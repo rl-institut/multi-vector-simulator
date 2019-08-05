@@ -1,0 +1,2 @@
+def economics():
+    return
