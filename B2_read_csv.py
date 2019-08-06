@@ -6,7 +6,7 @@
             path_to = os.path.abspath(settings['output_folder'] + '/inputs/'+ project_site_s[project_site]['timeseries_file'])
             shutil.copy(path_from, path_to)
 '''
-
+'''
 class csv_input():
 
     def column_not_existant(column_item, column_title, path_from):
@@ -66,3 +66,4 @@ class csv_input():
                         project_site.update({dictionary_title: pd.Series([0 for i in range(0, 8760)])})
 
         return
+'''

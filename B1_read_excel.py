@@ -87,12 +87,20 @@ class read_template:
         for asset_item in assets[dict_of_asset['title']]:
             # Add all activated assets of an asset group...
             if assets[dict_of_asset['title']][asset_item] == 'Yes':
-                # (only using first line of asset name in excel table)
-                short_asset_item = asset_item.split('\n', 1)
-                # ...to list of included assets
-                included.append(short_asset_item[0])
-                #...string of included assets
-                asset_string = asset_string + short_asset_item[0] + ', '
+                if asset_item == '(National) Electricity grid':
+                    short_asset_item = 'Transformer station'
+                    # ...to list of included assets
+                    included.append(short_asset_item)
+                    # ...string of included assets
+                    asset_string = asset_string + asset_item + ' (' + short_asset_item + ')' + ', '
+
+                else:
+                    # (only using first line of asset name in excel table)
+                    short_asset_item = asset_item.split('\n', 1)
+                    # ...to list of included assets
+                    included.append(short_asset_item[0])
+                    #...string of included assets
+                    asset_string = asset_string + short_asset_item[0] + ', '
 
         # Display included assets
         asset_string = asset_string[:-2]
@@ -111,4 +119,13 @@ class read_template:
                                usecols=dict_excel_data['column_string'],
                                nrows=dict_excel_data['number_of_rows'] - 1)
         data = data.to_dict(orient='dict')
+        return data
+
+    def read_excel_tab(user_input, dict_excel_data):
+        data = pd.read_excel(user_input['path_input_file'],
+                               sheet_name= dict_excel_data['tab_name'],
+                               skiprows=dict_excel_data['first_row'] - 1,
+                               index_col=dict_excel_data['index_col'],
+                               usecols=dict_excel_data['column_string'],
+                               nrows=dict_excel_data['number_of_rows'] - 1)
         return data

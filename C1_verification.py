@@ -1,4 +1,4 @@
-def verification():
+def verify():
     return
 
 class warnings():

@@ -53,7 +53,7 @@ class initializing():
         '''
         # Default values:
         path_input_file = './inputs/test_input_file_v1.xlsx'
-        display_output = '-info'# '-debug'
+        display_output = '-debug' #'-info'
         path_output_folder = './outputs'
         overwrite = False
 

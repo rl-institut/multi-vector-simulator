@@ -53,6 +53,6 @@ user_input = initializing.welcome(welcome_text)
 
 # Read all inputs
 logging.debug('Accessing script: B0_data_input')
-data_input.all(user_input)
-
+dict_of_values = data_input.all(user_input)
+print(dict_of_values.keys())
 
