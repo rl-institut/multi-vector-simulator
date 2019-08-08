@@ -93,7 +93,7 @@ class initializing():
                       'input_file_name': name_input_file,
                       'display_output': display_output,
                       'path_output_folder': path_output_folder,
-                      'path_output_folder_inputs':path_output_folder+'/inputs',
+                      'path_output_folder_inputs':path_output_folder+'/inputs/',
                       'overwrite': overwrite}
 
         logging.info('Creating folder "inputs" in output folder.')
