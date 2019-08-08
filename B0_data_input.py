@@ -10,13 +10,13 @@ class data_input:
         # Read from excel sheet, tab overview: Which components are used?
         included_assets = read_template.overview_energy_system(user_input)
 
-        dict_of_values = {}
+        dict_values = {}
 
         logging.debug('Get all project data from tab "Project data".')
         project_data, simulation_settings, economic_data = get_values.project_data(user_input)
-        dict_of_values.update({'project_data': project_data})
-        dict_of_values.update({'simulation_settings': simulation_settings})
-        dict_of_values.update({'economic_data': economic_data})
+        dict_values.update({'project_data': project_data})
+        dict_values.update({'settings': simulation_settings})
+        dict_values.update({'economic_data': economic_data})
 
         # generate dictionary of asset parameters from needed assets in scenario
         logging.debug('Determining the data for all assets')
@@ -25,7 +25,7 @@ class data_input:
                 logging.debug('...get data for each sector.')
                 for asset_group_item in included_assets[asset_group]:
                     dict_asset_group_item = get_values.sectors(user_input, asset_group_item)
-                    dict_of_values.update(dict_asset_group_item)
+                    dict_values.update(dict_asset_group_item)
             elif asset_group == 'demands':
                 # demands is directly included in sectors
                 pass
@@ -34,17 +34,17 @@ class data_input:
                 for asset_group_item in included_assets[asset_group]:
                     # Access each component individually
                     dict_asset_group_item = get_values.components(user_input, asset_group_item)
-                    dict_of_values.update(dict_asset_group_item)
+                    dict_values.update(dict_asset_group_item)
                     pass
 
-        return dict_of_values
+        return dict_values
 
 class get_values:
     def project_data(user_input):
         # Definition of data red from excel
         dict_excel_data = {'tab_name': 'Project data',
                            'first_row': 2,
-                           'number_of_rows': 25,
+                           'number_of_rows': 27,
                            'column_string': 'B:C',
                            'index_col': 0}
 
@@ -60,11 +60,20 @@ class get_values:
                         'capex_fix': data['CAPEX \n(investment costs, 1st year)'],
                         'opex_fix': data['OPEX \n(operational costs, 1st year)']}
 
-        simulation_settings = {'time_period': data['Evaluated timeframe'],
-                               'time_step': data['Time step']}
+        simulation_settings = {'evaluated_period': int(data['Evaluated timeframe']),
+                               'time_step': data['Time step'],
+                               'start_date': pd.Timestamp(data['Start date'])}
 
-        economic_data = {'discount_factor': data['WACC'],
+        simulation_settings.update({'index': pd.date_range(start=simulation_settings['start_date'],
+                                                           end = simulation_settings['start_date']
+                                                                 + pd.DateOffset(days=simulation_settings['evaluated_period'],
+                                                                                 hours=-1),
+                                                           freq=str(simulation_settings['time_step'])+'min')})
+        simulation_settings.update({'periods': len(simulation_settings['index'])})
+
+        economic_data = {'discount_factor': data['WACC']/100,
                          'project_duration': data['Project duration'],
+                         'tax': data['Tax']/100,
                          'currency': data['Currency']}
 
         return project_data, simulation_settings, economic_data
@@ -142,7 +151,8 @@ class get_values:
                                             'Demand side management of an demand series can only be (Yes/No).', dict_excel_data['tab_name'])
 
                     else:
-                        dict_demands[demand_name].update({all_titles[item]: data[demand_number][item]})
+                        dict_demands[demand_name].update({all_titles[item]: data[demand_number][item],
+                                                          'label': demand_name})
 
         return dict_demands
 
@@ -218,10 +228,9 @@ class assets:
         # Parameters distribution grid
         dict_asset = helpers.parameters(user_input, dict_excel_data['electricity_grid'])
         electricity_sector.update(dict_asset)
-
+        electricity_sector.update({'label': 'electricity_grid'})
         ## Retrieving all data concerning the electricity demand profiles
         demand_profiles = get_values.demand(user_input, dict_excel_data['demand'])
-
         dict_sector = {'electricity_grid': electricity_sector,
                        'electricity_demand': demand_profiles}
 
@@ -266,6 +275,7 @@ class assets:
         # Retrieving cost info
         dict_costs = helpers.cost_info(user_input, tab_name, ['electricity_grid', 'transformer_station'])
         transformer_station.update(dict_costs['transformer_station'])
+        transformer_station.update({'label': 'transformer_station'})
         transformer_station = {'transformer_station': transformer_station}
         return transformer_station
 
@@ -284,7 +294,7 @@ class assets:
                                                    'number_of_rows': 5,
                                                    'column_string': 'B:C',
                                                    'index_col': 0},
-                           'specific_generation': {'tab_name': tab_name,
+                           'file_name': {'tab_name': tab_name,
                                                'first_row': 27,
                                                'number_of_rows': 2,
                                                'column_string': 'B:C',
@@ -297,10 +307,10 @@ class assets:
         # Parameters solar panels
         dict_asset_parameters = helpers.parameters(user_input, dict_excel_data['pv_installation'])
         dict_asset['pv_installation'].update(dict_asset_parameters)
-        data = read_template.read_excel_tab(user_input, dict_excel_data['specific_generation'])
+        data = read_template.read_excel_tab(user_input, dict_excel_data['file_name'])
         # todo: check if exists
         dict_asset['pv_installation'].update({
-            'specific_generation_file':
+            'file_name':
                 data['File']['Historical electricity generation']})
         # Parameters solar inverter
         dict_asset_parameters = helpers.parameters(user_input, dict_excel_data['solar_inverter'])
@@ -309,6 +319,7 @@ class assets:
         dict_costs = helpers.cost_info(user_input, tab_name, ['pv_installation', 'solar_inverter'])
         for key in dict_costs.keys():
             dict_asset[key].update(dict_costs[key])
+            dict_asset[key].update({'label': key})
 
         dict_asset = {asset_group_item: dict_asset}
         return dict_asset
@@ -385,8 +396,10 @@ class assets:
         dict_costs = helpers.cost_info(user_input, tab_name, list(name_dict_sub_assets.keys()))
         for key in dict_costs.keys():
             dict_asset[key].update(dict_costs[key])
+            dict_asset[key].update({'label': key})
 
         dict_asset = {asset_group_item: dict_asset}
+        dict_asset[asset_group_item].update({'label': asset_group_item})
 
         return dict_asset
 
@@ -465,15 +478,5 @@ class assets:
     #'shortage_penalty_costs',
 
 
-    parameters_economic = ['tax',
-                           'discounting_factor',
-                           'annuity_factor',
-                           'crf']
 
-    parameters_project = ['longitude',
-                          'latitude',
-                          'country',
-                          'currency',
-                          'project_name',
-                          'scenario_name']
 '''

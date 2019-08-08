@@ -32,7 +32,7 @@ import logging
 # Loading all child functions
 from A_initialization import initializing
 from B0_data_input import data_input
-import C0_data_processing
+from C0_data_processing import data_processing
 import D0_modelling_and_optimization
 import E0_output_processing
 
@@ -53,6 +53,8 @@ user_input = initializing.welcome(welcome_text)
 
 # Read all inputs
 logging.debug('Accessing script: B0_data_input')
-dict_of_values = data_input.all(user_input)
-print(dict_of_values.keys())
+dict_values = data_input.all(user_input)
+dict_values.update({'user_input': user_input})
+print(dict_values.keys())
 
+data_processing.all(dict_values)
