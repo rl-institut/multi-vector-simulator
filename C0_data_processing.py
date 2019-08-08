@@ -116,6 +116,7 @@ class helpers:
 
 class receive_data:
     def timeseries_csv(settings, dict_asset, file_path, name):
+        #todo actually, here the csv should be copied to outputs/inputs
         data_set = pd.read_csv(file_path, sep=';')
         if len(data_set.index) == settings['periods']:
             dict_asset.update({'timeseries': pd.DataFrame(data_set.values, index = settings['index'])})

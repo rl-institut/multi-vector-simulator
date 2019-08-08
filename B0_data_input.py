@@ -61,7 +61,7 @@ class get_values:
                         'opex_fix': data['OPEX \n(operational costs, 1st year)']}
 
         simulation_settings = {'evaluated_period': int(data['Evaluated timeframe']),
-                               'time_step': data['Time step'],
+                               'time_step': int(data['Time step']),
                                'start_date': pd.Timestamp(data['Start date'])}
 
         simulation_settings.update({'index': pd.date_range(start=simulation_settings['start_date'],
@@ -201,8 +201,8 @@ class helpers:
                         logging.warning('Input error: %s\n'
                                         '%s on tab %s can only be (Yes/No).',
                                         item, user_input['tab_name'])
-
-
+                elif all_titles[item] == 'efficiency':
+                    dict_asset.update({all_titles[item]: data[item]/100})
                 else:
                     dict_asset.update({all_titles[item]: data[item]})
 

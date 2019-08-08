@@ -14,50 +14,66 @@ class verify():
         for asset_name in dict_values:
             if not(isinstance(dict_values[asset_name], dict)):
                 # checking first layer of dict_values
-                verify.all_valid_intervals(asset_name, dict_values[asset_name])
+                verify.all_valid_intervals(asset_name, dict_values[asset_name], "")
             else:
+                #logging.debug('Asset %s checked for validation.', asset_name)
                 for sub_asset_name in dict_values[asset_name]:
                     if not (isinstance(dict_values[asset_name][sub_asset_name], dict)):
                         #checking second layer of dict values
                         verify.all_valid_intervals(sub_asset_name,
-                                                   dict_values[asset_name][sub_asset_name])
+                                                   dict_values[asset_name][sub_asset_name],
+                                                   asset_name)
                     else:
+                        #logging.debug('\t Sub-asset %s checked for validation.', sub_asset_name)
                         for sub_sub_asset_name in dict_values[asset_name][sub_asset_name]:
                             if not (isinstance(dict_values[asset_name][sub_asset_name][sub_sub_asset_name], dict)):
                                 # checking third layer of dict values
-                                verify.all_valid_intervals(sub_asset_name,
-                                                           dict_values[asset_name][sub_asset_name][sub_sub_asset_name])
+                                verify.all_valid_intervals(sub_sub_asset_name,
+                                                           dict_values[asset_name][sub_asset_name][sub_sub_asset_name],
+                                                           asset_name + sub_asset_name)
                             else:
+                                #logging.debug('\t\t Sub-sub-asset %s checked for validation.', sub_sub_asset_name)
                                 logging.critical('Verification Error! Add another layer to evaluation.')
 
         logging.info('Input values have been verified. This verification not replace a manual input parameter check.')
         return
 
-    def all_valid_intervals(name, value):
-        #todo bessere darstellung
+    def all_valid_intervals(name, value, title):
+        valid_type_string = ['project_name',
+                             'scenario_name',
+                             'country',
+                             'file_name',
+                             'label',
+                             'currency',
+                             'path_output_folder',
+                             'display_output',
+                             'input_file_name',
+                             'path_input_file',
+                             'path_input_folder',
+                             'path_output_folder_inputs']
 
-        valid_intervals =  {'project_name': 'str',
-                            'scenario_name': 'str',
-                            'country': 'str',
-                            'longitude': [-90,90], #todo Range for lat/lon# ?!
-                            'latitude': [0,1], #todo Range for lat/lon?!
-                            'evaluated_period': 'int',
-                            'time_step': 'str',
-                            'start_date': pd.DatetimeIndex,
-                            'index': pd.DatetimeIndex,
-                            'periods': 'float',
-                            'lifetime': ['nonzero','any'],
+        valid_type_int = ['evaluated_period',
+                          'time_step',
+                          'periods']
+
+        valid_type_timestamp = ['start_date']
+
+        valid_type_index = ['index']
+
+        valid_binary = ['optimize_cap',
+                        'dsm',
+                        'overwrite']
+
+        valid_intervals =  {'longitude': [-180,180],
+                            'latitude': [-90,90],
+                            'lifetime': ['largerzero','any'],
                             'age_installed': [0,'any'],
                             'cap_installed':[0,'any'],
-                            'optimize_cap': [True, False],
-                            'dsm': [True, False],
                             'soc_min': [0,1],
                             'soc_max': [0,1],
                             'soc_initial': [0,1],
                             'crate': [0,1],
                             'efficiency': [0,1],
-                            'file_name': 'str',
-                            'label': 'str',
                             'electricity_cost_fix_annual': [0,'any'],
                             'electricity_price_var_kWh': [0,'any'],
                             'electricity_price_var_kW_monthly': [0,'any'],
@@ -68,37 +84,53 @@ class verify():
                             'opex_fix': [0,'any'],
                             'opex_var': [0,'any'],
                             'discount_factor': [0,1],
-                            'project_duration': ['nonzero','any'],
-                            'tax': [0,1],
-                            'currency': 'str'}
+                            'project_duration': ['largerzero','any'],
+                            'tax': [0,1]}
 
-        if valid_intervals[name] == 'str':
+        if name in valid_type_int:
+            if not(isinstance(value, int)):
+                logging.error('Input error! Value %s/%s is not in recommended format "integer".', name, title)
+
+        elif name in valid_type_string:
             if not(isinstance(value, str)):
-                logging.error('Input error! Value %s is not in recommended format "string".', name)
+                logging.error('Input error! Value %s/%s is not in recommended format "string".', name, title)
 
-        if valid_intervals[name] == int :
-            if not(isinstance(value, str)):
-                logging.error('Input error! Value %s is not in recommended format "string".', name)
+        elif name in valid_type_index:
+            if not (isinstance(value, pd.DatetimeIndex)):
+                logging.error('Input error! Value %s/%s is not in recommended format "pd.DatetimeIndex".', name, title)
 
-        elif valid_intervals[name] == [0,1]:
-            if value < 0:
-                logging.error('Input error! Value %s is not in recommended to be smaller than 0.', name)
-            elif 1 < value:
-                logging.error('Input error! Value %s is not in recommended to be larger than 1.', name)
+        elif name in valid_type_timestamp:
+            if not (isinstance(value, pd.Timestamp)):
+                logging.error('Input error! Value %s/%s is not in recommended format "pd.DatetimeIndex".', name, title)
 
-        elif valid_intervals[name] == [0,'any']:
-            if value < 0:
-                logging.error('Input error! Value %s is not in recommended to be smaller than 0.', name)
-
-        elif valid_intervals[name] == ['nonzero', 'any']:
-            if value <= 0:
-                logging.error('Input error! Value %s is not in recommended to be smaller than 0.', name)
-
-        elif valid_intervals[name] == [True, False]:
+        elif name in valid_binary:
             if not(value == True or value == False):
-                logging.error('Input error! Value %s is neither True nor False.', name)
+                logging.error('Input error! Value %s/%s is neither True nor False.', name, title)
 
-        #todo int missing
-        #todo type bla missing
+        elif name in valid_intervals:
+            if name == 'soc_initial':
+                if value != None:
+                    if not (0 <= value and value <=1):
+                        logging.error('Input error! Value %s/%s should be None, or between 0 and 1.', name, title)
+            else:
+
+                if valid_intervals[name][0]=='largerzero':
+                    if value <= 0:
+                        logging.error('Input error! Value %s/%s can not be to be smaller or equal to 0.', name, title)
+                elif valid_intervals[name][0]=='nonzero':
+                    if value == 0:
+                        logging.error('Input error! Value %s/%s can not be 0.', name, title)
+                elif valid_intervals[name][0]==0:
+                    if value < 0:
+                        logging.error('Input error! Value %s/%s has to be larger than or equal to 0.', name, title)
+
+                if valid_intervals[name][1] == 'any':
+                    pass
+                elif valid_intervals[name][1] == 1:
+                    if 1 < value:
+                        logging.error('Input error! Value %s/%s can not be larger than 1.', name, title)
+
+        else:
+            logging.warning('VALIDATION FAILED: No valid range defined for value %s/%s', name, title)
 
         return
