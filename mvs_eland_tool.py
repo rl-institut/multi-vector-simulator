@@ -33,7 +33,7 @@ import logging
 from A_initialization import initializing
 from B0_data_input import data_input
 from C0_data_processing import data_processing
-import D0_modelling_and_optimization
+from D0_modelling_and_optimization import modelling
 import E0_output_processing
 
 # Display welcome text 
@@ -50,11 +50,11 @@ welcome_text = \
 
 logging.debug('Accessing script: A_initialization')
 user_input = initializing.welcome(welcome_text)
-
 # Read all inputs
 logging.debug('Accessing script: B0_data_input')
-dict_values = data_input.all(user_input)
+dict_values, included_assets = data_input.all(user_input)
 dict_values.update({'user_input': user_input})
-print(dict_values.keys())
-
+print("")
 data_processing.all(dict_values)
+print("")
+modelling.run_oemof(dict_values, included_assets)

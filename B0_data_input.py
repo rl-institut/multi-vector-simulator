@@ -37,7 +37,7 @@ class data_input:
                     dict_values.update(dict_asset_group_item)
                     pass
 
-        return dict_values
+        return dict_values, included_assets
 
 class get_values:
     def project_data(user_input):

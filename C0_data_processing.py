@@ -52,6 +52,7 @@ class data_processing:
                                                         dict_values['economic_data'],
                                                         dict_values[asset_name][sub_asset_name])
 
+        logging.info('Processed cost data and added economic values.')
         return
 
 class helpers:
@@ -116,7 +117,6 @@ class helpers:
 
 class receive_data:
     def timeseries_csv(settings, user_input, dict_asset, file_path, name):
-        #todo actually, here the csv should be copied to outputs/inputs
         data_set = pd.read_csv(file_path, sep=';')
         if len(data_set.index) == settings['periods']:
             dict_asset.update({'timeseries': pd.DataFrame(data_set.values, index = settings['index'])})
@@ -134,6 +134,7 @@ class receive_data:
             sys.exit()
 
         shutil.copy(file_path, user_input['path_output_folder_inputs']+dict_asset['file_name'])
+        logging.debug('Copied timeseries %s to output folder / inputs.', file_path)
         return
 
     #get timeseries from online source
