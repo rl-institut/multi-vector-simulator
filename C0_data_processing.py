@@ -4,6 +4,7 @@ import pandas as pd
 import logging
 import sys, shutil
 import pprint as pp
+from copy import deepcopy
 
 class data_processing:
     def all(dict_values):
@@ -17,6 +18,13 @@ class data_processing:
         # Receive data from timeseries and process their format
         helpers.evaluate_timeseries(dict_values, receive_data.timeseries_csv, 'receive_data')
         #todo add option to receive data online
+
+        # Add symbolic costs
+        dict_values['ESS'].update({'charge_controller_symbolic': deepcopy(dict_values['ESS']['charge_controller'])})
+        for cost in ['capex', 'opex']:
+            for suffix in ['_var' + '_fix']:
+                dict_values['ESS']['charge_controller_symbolic'].update({cost+suffix: 0})
+        dict_values['ESS']['charge_controller_symbolic'].update({'label': 'charge_controller_symbolic'})
 
         # Adds costs to each asset and sub-asset
         data_processing.economic_data(dict_values)
@@ -102,10 +110,10 @@ class helpers:
                     function(dict_values['settings'], dict_values['user_input'], dict_values[asset_name][sub_name], file_path, asset_name)
 
         # Accessing timeseries of demands
-        for demand_type in ['electricity_demand', 'heat_demand']:
+        for demand_type in ['Electricity demand', 'Heat demand']:
             if demand_type in dict_values:
                 # Check for each
-                for demand_key in dict_values['electricity_demand']:
+                for demand_key in dict_values['Electricity demand']:
                     file_path = input_folder + dict_values[demand_type][demand_key]['file_name']
                     if use == 'verify':
                         # check if specific demand timeseries exists
