@@ -20,6 +20,7 @@ class data_input:
 
         # generate dictionary of asset parameters from needed assets in scenario
         logging.debug('Determining the data for all assets')
+        pp.pprint(included_assets)
         for asset_group in included_assets.keys():
             if asset_group == 'sectors':
                 logging.debug('...get data for each sector.')
@@ -80,6 +81,7 @@ class get_values:
 
     def sectors(user_input, asset_group_item):
         logging.debug('Receiving data of sector "%s".', asset_group_item)
+        # Captialization and spaces due to excel file input
         if asset_group_item == 'Electricity':
             dict_sector = assets.electricity_sector(user_input)
         elif asset_group_item == 'Heat':
@@ -94,7 +96,6 @@ class get_values:
             pass
         elif asset_group_item == 'H2':
             logging.error('Input data extraction of sector "%s" not defined!', asset_group_item)
-            #todo excel tab not defined
             pass
 
         return dict_sector
@@ -107,7 +108,7 @@ class get_values:
         elif asset_group_item == 'Wind plant':
             logging.error('Input data extraction of asset "%s" not defined!', asset_group_item)
             dict_value_specific = assets.wind(user_input, asset_group_item)
-        elif asset_group_item == 'Transformer station':
+        elif asset_group_item == 'transformer_station':
             dict_value_specific = assets.transformer_station(user_input, asset_group_item)
         elif asset_group_item == 'rectifier':
             logging.error('Input data extraction of asset "%s" not defined!', asset_group_item)
@@ -119,7 +120,7 @@ class get_values:
             logging.error('Input data extraction of asset "%s" not defined!', asset_group_item)
             dict_value_specific = assets.generator(user_input, asset_group_item)
         elif asset_group_item == 'ESS':
-            dict_value_specific = assets.ess(user_input, asset_group_item)
+            dict_value_specific = assets.electricity_storage(user_input, asset_group_item)
         else:
             logging.critical('Component %s can not be simulated, as it is not defined!', asset_group_item)
 
@@ -138,6 +139,9 @@ class get_values:
         dict_demands = {}
         for demand_number in data.keys():
             demand_name = data[demand_number]['Demand name']
+            demand_name = demand_name.replace("(", "")
+            demand_name = demand_name.replace(")", "")
+            demand_name = demand_name.replace(" ", "_")
             dict_demands.update({demand_name: {}})
             for item in all_titles.keys():
                 if item in data[demand_number].keys():
@@ -179,7 +183,6 @@ class helpers:
 
     def parameters(user_input, dict_excel_data):
         data = read_template.read_excel_dict(user_input, dict_excel_data)
-        print(data)
         data = data['Value']
         all_titles = {'Lifetime':                       'lifetime',
                       'Age of installed asset':         'age_installed',
@@ -187,8 +190,7 @@ class helpers:
                       'Efficiency':                     'efficiency',
                       'Inverter efficiency':            'efficiency',
                       'Distribution efficiency':        'efficiency',
-                      'Feed-in tariff (RES)':           'feedin_tariff_res',
-                      'Feed-in tariff (non-RES)':       'feedin_tariff_non_res',
+                      'Feed-in tariff':                 'feedin_tariff',
                       'Optimize additional capacities': 'optimize_cap'}
 
         dict_asset = {}
@@ -214,13 +216,13 @@ class assets:
     def electricity_sector(user_input):
         tab_name = 'Electricity'
         # Definition of data cells on excel template tab
-        dict_excel_data = {'Electricity grid': {'tab_name': tab_name,
+        dict_excel_data = {'electricity_grid': {'tab_name': tab_name,
                                          'first_row': 14,
                                          'number_of_rows': 4,
                                          'column_string': 'B:C',
                                          'index_col': 0},
                            'demand': {'tab_name': tab_name,
-                                      'first_row': 34,
+                                      'first_row': 33,
                                       'number_of_rows': 4,
                                       'column_string': 'B:E',
                                       'index_col': 0}}
@@ -228,17 +230,17 @@ class assets:
         ## Retrieving all data concerning the electricity sector
         electricity_sector = {}
         # Parameters distribution grid
-        dict_asset = helpers.parameters(user_input, dict_excel_data['Electricity grid'])
+        dict_asset = helpers.parameters(user_input, dict_excel_data['electricity_grid'])
         electricity_sector.update(dict_asset)
-        electricity_sector.update({'label': 'Electricity grid'})
+        electricity_sector.update({'label': 'electricity_grid'})
         ## Retrieving all data concerning the electricity demand profiles
         demand_profiles = get_values.demand(user_input, dict_excel_data['demand'])
-        dict_sector = {'Electricity grid': electricity_sector,
-                       'Electricity demand': demand_profiles}
+        dict_sector = {'electricity_grid': electricity_sector,
+                       'electricity_demand': demand_profiles}
 
         # Retrieving cost info
-        dict_costs = helpers.cost_info(user_input, tab_name, ['Electricity grid', 'Transformer station'])
-        dict_sector['Electricity grid'].update(dict_costs['Electricity grid'])
+        dict_costs = helpers.cost_info(user_input, tab_name, ['electricity_grid', 'transformer_station'])
+        dict_sector['electricity_grid'].update(dict_costs['electricity_grid'])
         return dict_sector
 
     def transformer_station(user_input, tab_name):
@@ -246,11 +248,11 @@ class assets:
         # Definition of data cells on excel template tab
         dict_excel_data = {'transformer_station': {'tab_name': tab_name,
                                                    'first_row': 19,
-                                                   'number_of_rows': 8,
+                                                   'number_of_rows': 7,
                                                    'column_string': 'B:C',
                                                    'index_col': 0},
                            'bill_cons': {'tab_name': tab_name,
-                                         'first_row': 29,
+                                         'first_row': 28,
                                          'number_of_rows': 3,
                                          'column_string': 'B,C,E,G,I',
                                          'index_col': 0}}
@@ -260,7 +262,7 @@ class assets:
         # Parameters transformer station
         dict_asset = helpers.parameters(user_input, dict_excel_data['transformer_station'])
         transformer_station.update(dict_asset)
-        # Electricity bill
+        # electricity bill
         data = read_template.read_excel_dict(user_input, dict_excel_data['bill_cons'])
         transformer_station.update({
             'electricity_cost_fix_annual':
@@ -275,11 +277,11 @@ class assets:
                 + data['Variable cost per kW peak demand/month ']['DSO']})
 
         # Retrieving cost info
-        dict_costs = helpers.cost_info(user_input, tab_name, ['Electricity grid', 'Transformer station'])
-        transformer_station.update(dict_costs['Transformer station'])
-        transformer_station.update({'label': 'Transformer station'})
-        transformer_station.update({'sector': 'Electricity'})
-        transformer_station = {'Transformer station': transformer_station}
+        dict_costs = helpers.cost_info(user_input, tab_name, ['electricity_grid', 'transformer_station'])
+        transformer_station.update(dict_costs['transformer_station'])
+        transformer_station.update({'label': 'transformer_station'})
+        transformer_station.update({'sector': 'electricity'})
+        transformer_station = {'transformer_station': transformer_station}
         return transformer_station
 
     # PV panels
@@ -324,11 +326,12 @@ class assets:
             dict_asset[key].update(dict_costs[key])
             dict_asset[key].update({'label': key})
 
-        dict_asset = {asset_group_item: dict_asset}
+        dict_asset = {'pv_plant': dict_asset}
+        dict_asset['pv_plant'].update({'label': 'pv_plant'})
         return dict_asset
 
-    # Electricity storage system
-    def ess(user_input, asset_group_item):
+    # electricity storage system
+    def electricity_storage(user_input, asset_group_item):
         tab_name = asset_group_item
 
         # Definition of data cells on excel template tab
@@ -403,9 +406,8 @@ class assets:
             dict_asset[key].update(dict_costs[key])
             dict_asset[key].update({'label': key})
 
-        dict_asset = {asset_group_item: dict_asset}
-        dict_asset[asset_group_item].update({'label': asset_group_item})
-
+        dict_asset = {'electricity_storage': dict_asset}
+        dict_asset['electricity_storage'].update({'label': 'electricity_storage'})
         return dict_asset
 
 

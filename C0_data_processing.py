@@ -19,12 +19,16 @@ class data_processing:
         helpers.evaluate_timeseries(dict_values, receive_data.timeseries_csv, 'receive_data')
         #todo add option to receive data online
 
+        helpers.define_sink(dict_values, 'electricity_excess', None)
         # Add symbolic costs
-        dict_values['ESS'].update({'charge_controller_symbolic': deepcopy(dict_values['ESS']['charge_controller'])})
-        for cost in ['capex', 'opex']:
-            for suffix in ['_var' + '_fix']:
-                dict_values['ESS']['charge_controller_symbolic'].update({cost+suffix: 0})
-        dict_values['ESS']['charge_controller_symbolic'].update({'label': 'charge_controller_symbolic'})
+        if 'electricity_storage' in dict_values:
+            helpers.create_twins_in_out(dict_values['electricity_storage'], 'charge_controller', drop_symbolic_costs=True)
+        if 'transformer_station' in dict_values:
+            helpers.create_twins_in_out(dict_values, 'transformer_station', drop_symbolic_costs=True)
+            helpers.define_source(dict_values, 'transformer_station', 'electricity_price_var_kWh')
+            helpers.define_sink(dict_values, 'transformer_station', 'feedin_tariff')
+
+        helpers.add_input_output_busses(dict_values)
 
         # Adds costs to each asset and sub-asset
         data_processing.economic_data(dict_values)
@@ -60,10 +64,115 @@ class data_processing:
                                                         dict_values['economic_data'],
                                                         dict_values[asset_name][sub_asset_name])
 
+                    for sub_sub_asset_name in dict_values[asset_name][sub_asset_name]:
+                        if isinstance(dict_values[asset_name][sub_asset_name][sub_sub_asset_name], dict):
+                            if 'lifetime' in dict_values[asset_name][sub_asset_name][sub_sub_asset_name].keys():
+                                # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity
+                                helpers.evaluate_lifetime_costs(dict_values['settings'],
+                                                                dict_values['economic_data'],
+                                                                dict_values[asset_name][sub_asset_name][sub_sub_asset_name])
+
+
         logging.info('Processed cost data and added economic values.')
         return
 
 class helpers:
+
+    def create_twins_in_out(dict_asset, name_subasset, drop_symbolic_costs):
+        subasset = dict_asset[name_subasset]
+        subasset.update({'label': name_subasset + '_in'})
+        subasset_symbolic = deepcopy(subasset)
+        subasset_symbolic.update({'label': name_subasset + '_out'})
+        if drop_symbolic_costs == True:
+            for cost in ['capex', 'opex']:
+                for suffix in ['_var', '_fix']:
+                    subasset_symbolic.update({cost + suffix: 0})
+        elif drop_symbolic_costs == False:
+            pass
+        else:
+            logging.error('Coding error: drop_symbolic_costs has to be True/False.')
+
+        del dict_asset[name_subasset]
+        dict_asset.update({name_subasset: {'in': subasset,
+                                           'out': subasset_symbolic}})
+        return
+
+    def define_source(dict_values, asset_name, price_name):
+        # todo not applicable jet for fuel source
+        if price_name == None:
+            price = 0
+        elif price_name in dict_values[asset_name]['in'].keys():
+            price = dict_values[asset_name]['in'][price_name]
+        else:
+            logging.warning('Price name %s does not exist in %s.', price_name, asset_name)
+
+        dict_values[asset_name].update({'source': {'label': asset_name + '_source',
+                                                   'price': price}})
+        return
+
+    def define_sink(dict_asset, asset_name, price_name):
+        if price_name == None:
+            dict_asset.update({asset_name: {'label': asset_name + '_sink',
+                                            'price': 0}})
+        elif asset_name in dict_asset.keys():
+            if price_name in dict_asset[asset_name]['out'].keys():
+                price = dict_asset[asset_name]['out'][price_name]
+                dict_asset[asset_name].update({'sink': {'label': asset_name + '_sink',
+                                                        'price': price}})
+            else:
+                logging.warning('Price name %s does not exist in %s.', price_name, asset_name)
+        else:
+            logging.error('Asset %s does not exist, while price_name = None.', asset_name)
+
+        return
+
+
+    def add_input_output_busses(dict_values):
+        for asset in dict_values.keys():
+            if asset in ['project_data', 'settings', 'economic_data', 'user_input', ]:
+                pass
+            elif asset == 'electricity_grid':
+                logging.warning('%s has not been included in model jet, specifically efficiency.', asset)
+
+            elif asset == 'electricity_excess':
+                dict_values[asset].update({'input_bus_name': 'electricity'})
+
+            elif asset == 'transformer_station':
+                dict_values[asset]['in'].update({'input_bus_name': dict_values[asset]['in']['sector'] + '_utility_consumption',
+                                                 'output_bus_name': dict_values[asset]['in']['sector']})
+                dict_values[asset]['source'].update({'output_bus_name': dict_values[asset]['in']['sector'] + '_utility_consumption'})
+                dict_values[asset]['out'].update({'input_bus_name': dict_values[asset]['out']['sector'],
+                                                  'output_bus_name': dict_values[asset]['out']['sector'] + '_utility_feedin'})
+                dict_values[asset]['sink'].update({'input_bus_name': dict_values[asset]['in']['sector'] + '_utility_feedin'})
+
+            elif asset == 'pv_plant':
+                dict_values[asset]['pv_installation'].update({'output_bus_name': 'electricity_dc_pv'})
+                dict_values[asset]['solar_inverter'].update({'input_bus_name': 'electricity_dc_pv',
+                                                     'output_bus_name': 'electricity'})
+            elif asset == 'wind_plant':
+                dict_values[asset]['wind_installation'].update({'output_bus_name': 'electricity'})
+
+            elif asset == 'electricity_storage':
+                dict_values[asset].update({'input_bus_name': 'electricity_dc_storage',
+                                           'output_bus_name': 'electricity_dc_storage'})
+                dict_values[asset]['charge_controller']['in'].update({'input_bus_name': 'electricity',
+                                                              'output_bus_name': 'electricity_dc_storage'})
+                dict_values[asset]['charge_controller']['out'].update({'input_bus_name': 'electricity_dc_storage',
+                                                                       'output_bus_name': 'electricity'})
+
+            elif asset == 'generator':
+                dict_values[asset].update({'input_bus_name': 'Fuel',
+                                   'output_bus_name': 'electricity'})
+
+            elif asset == 'electricity_demand':
+                for demand in dict_values[asset].keys():
+                    dict_values[asset][demand].update({'input_bus_name': 'electricity'})
+
+            else:
+                logging.warning('Asset %s undefined, no input/output busses added.', asset)
+
+        return
+
     def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         if 'capex_var' not in dict_asset:
             dict_asset.update({'capex_var': 0})
@@ -94,11 +203,11 @@ class helpers:
     def evaluate_timeseries(dict_values, function, use):
         input_folder = dict_values['user_input']['path_input_folder']
         # Accessing timeseries of components
-        for asset_name in ['PV plant', 'Wind plant']:
+        for asset_name in ['pv_plant', 'wind_plant']:
             if asset_name in dict_values:
-                if asset_name == 'PV plant':
+                if asset_name == 'pv_plant':
                     sub_name = 'pv_installation'
-                elif asset_name == 'Wind plant':
+                elif asset_name == 'wind_plant':
                     sub_name = 'wind_installation'
                 file_path = input_folder + dict_values[asset_name][sub_name]['file_name']
                 # Check if file existent
@@ -110,10 +219,10 @@ class helpers:
                     function(dict_values['settings'], dict_values['user_input'], dict_values[asset_name][sub_name], file_path, asset_name)
 
         # Accessing timeseries of demands
-        for demand_type in ['Electricity demand', 'Heat demand']:
+        for demand_type in ['electricity_demand', 'heat_demand']:
             if demand_type in dict_values:
                 # Check for each
-                for demand_key in dict_values['Electricity demand']:
+                for demand_key in dict_values['electricity_demand']:
                     file_path = input_folder + dict_values[demand_type][demand_key]['file_name']
                     if use == 'verify':
                         # check if specific demand timeseries exists
@@ -127,10 +236,11 @@ class receive_data:
     def timeseries_csv(settings, user_input, dict_asset, file_path, name):
         data_set = pd.read_csv(file_path, sep=';')
         if len(data_set.index) == settings['periods']:
-            dict_asset.update({'timeseries': pd.DataFrame(data_set.values, index = settings['index'])})
+            print(data_set.values)
+            dict_asset.update({'timeseries': pd.Series(data_set['kW'], index = settings['index'])})
             logging.debug('Added timeseries of %s (%s).', name, file_path)
         elif len(data_set.index) >= settings['periods']:
-            dict_asset.update({'timeseries': pd.DataFrame(data_set[0:len(settings['index'])].values,
+            dict_asset.update({'timeseries': pd.Series(data_set['kW'][0:len(settings['index'])].values,
                                                           index=settings['index'])})
             logging.info('Provided timeseries of %s (%s) longer than evaluated period. '
                          'Excess data dropped.', name, file_path)

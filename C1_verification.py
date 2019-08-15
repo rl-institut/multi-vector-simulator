@@ -35,7 +35,7 @@ class verify():
                                 #logging.debug('\t\t Sub-sub-asset %s checked for validation.', sub_sub_asset_name)
                                 logging.critical('Verification Error! Add another layer to evaluation.')
 
-        logging.info('Input values have been verified. This verification not replace a manual input parameter check.')
+        logging.info('Input values have been verified. This verification can not replace a manual input parameter check.')
         return
 
     def all_valid_intervals(name, value, title):
@@ -50,7 +50,8 @@ class verify():
                              'input_file_name',
                              'path_input_file',
                              'path_input_folder',
-                             'path_output_folder_inputs']
+                             'path_output_folder_inputs',
+                             'sector']
 
         valid_type_int = ['evaluated_period',
                           'time_step',
@@ -77,8 +78,7 @@ class verify():
                             'electricity_cost_fix_annual': [0,'any'],
                             'electricity_price_var_kWh': [0,'any'],
                             'electricity_price_var_kW_monthly': [0,'any'],
-                            'feedin_tariff_res': [0, 'any'],
-                            'feedin_tariff_non_res': [0,'any'],
+                            'feedin_tariff': [0, 'any'],
                             'capex_fix': [0,'any'],
                             'capex_var': [0,'any'],
                             'opex_fix': [0,'any'],
@@ -131,6 +131,6 @@ class verify():
                         logging.error('Input error! Value %s/%s can not be larger than 1.', name, title)
 
         else:
-            logging.warning('VALIDATION FAILED: No valid range defined for value %s/%s', name, title)
+            logging.warning('VALIDATION FAILED: Code does not define a valid range for value %s/%s', name, title)
 
         return

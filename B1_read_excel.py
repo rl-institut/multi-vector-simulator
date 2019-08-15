@@ -10,7 +10,7 @@ class read_template:
         This function determines the energy system defined in tab 'Overview'
         Each asset is added to the dictionary, if it is included in the energy system
         In a next step, in B0_data_input, each asset is attributed its technical values.
-        Asset groups: sectors, energy providers, generation assets, storage assets, conversion assets, demands
+        Asset groups: sectors, energy_providers, generation_assets, storage_assets, conversion_assets, demands
         :param user_input: includes location of input file
         :return: all assets included in energy system, saved in a dict
         (keys: asset groups, linked to list of strings of included assets)
@@ -28,25 +28,25 @@ class read_template:
                                              'number_of_rows': 6,
                                              'column_string': 'B:C',
                                              'index_col': 1},
-                                 'energy providers': {'title': 'External energy providers',
+                                 'energy_providers': {'title': 'External energy providers',
                                              'tab_name': tab_name,
                                              'first_row': 24,
                                              'number_of_rows': 5,
                                              'column_string': 'B:C',
                                              'index_col': 1},
-                                 'generation assets': {'title': 'Generation',
+                                 'generation_assets': {'title': 'Generation',
                                              'tab_name': tab_name,
                                              'first_row': 29,
                                              'number_of_rows': 6,
                                              'column_string': 'B:C',
                                              'index_col': 1},
-                                 'storage assets': {'title': 'Storage',
+                                 'storage_assets': {'title': 'Storage',
                                              'tab_name': tab_name,
                                              'first_row': 35,
                                              'number_of_rows': 5,
                                              'column_string': 'B:C',
                                              'index_col': 1},
-                                 'conversion assets': {'title': 'Conversion',
+                                 'conversion_assets': {'title': 'Conversion',
                                              'tab_name': tab_name,
                                              'first_row': 40,
                                              'number_of_rows': 5,
@@ -73,7 +73,7 @@ class read_template:
         Determining which assets of a asset group are included in energy system defined by "Overview" tab
         :param user_input: includes file path
         :param tab_name: Tab 'Overview'
-        :param asset_group_name: Name of asset group, ie. sectors, energy providers, generation assets, storage assets, conversion assets, demands
+        :param asset_group_name: Name of asset group, ie. sectors, energy_providers, generation_assets, storage_assets, conversion_assets, demands
         :param dict_of_asset: Defines where info on asset group is stored in tab 'Overview'
         :return: A list of strings naming the included assets #todo this list is capitalized.
         '''
@@ -88,7 +88,7 @@ class read_template:
             # Add all activated assets of an asset group...
             if assets[dict_of_asset['title']][asset_item] == 'Yes':
                 if asset_item == '(National) Electricity grid':
-                    short_asset_item = 'Transformer station'
+                    short_asset_item = 'transformer_station'
                     # ...to list of included assets
                     included.append(short_asset_item)
                     # ...string of included assets
@@ -107,7 +107,7 @@ class read_template:
         if len(asset_string) < 1:
             logging.info('This simulation does not include %s.', asset_group_name)
         else:
-            logging.info('This simulation includes following %s: \n \t\t\t\t %s', asset_group_name, asset_string)
+            logging.info('This simulation includes following %s: %s', asset_group_name, asset_string)
 
         return included
 

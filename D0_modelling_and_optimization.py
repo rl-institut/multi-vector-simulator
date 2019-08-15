@@ -3,12 +3,10 @@ import timeit
 import logging
 import oemof.solph as solph
 import pprint as pp
-from D1_model_components import define, call_component
+from D1_model_components import define, call_component, helpers
 
 class modelling:
-    def run_oemof(dict_values, included_assets):
-        pp.pprint(included_assets)
-
+    def run_oemof(dict_values):
         start = timeit.default_timer()
 
         logging.info('Initializing oemof simulation.')
@@ -22,43 +20,57 @@ class modelling:
                     'storages': {}}
 
         logging.info('Adding components to energy system model...')
-        for sector in included_assets['sectors']:
-            define.bus(model, dict_model, sector)
+        for dict_key in dict_values.keys():
+            if dict_key in ['project_data', 'settings', 'economic_data', 'user_input']:
+                pass
+            elif dict_key == 'electricity_grid':
+                define.bus(model, dict_key[:-5], **dict_model)
 
-        for component in included_assets['conversion assets']:
-            logging.warning('Necessity to add additional bus for %s?', component)
-            if component == 'generator':
-                define.bus(model, dict_model, 'Fuel')
+            elif dict_key == 'electricity_excess':
+                define.sink_dispatchable(model, dict_values[dict_key], **dict_model)
 
-        for coupling_component in included_assets['energy providers']:
-            define.bus(model, dict_model, dict_values[coupling_component]['sector'] + ' utility feedin')
-            define.bus(model, dict_model, dict_values[coupling_component]['sector'] + ' utility consumption')
-            call_component.utility_connection(model, dict_model, dict_values[coupling_component])
+            elif dict_key == 'transformer_station':
+                call_component.utility_connection(model, dict_values[dict_key], **dict_model)
 
-        for component in included_assets['generation assets']:
-            logging.debug('Adding all components connected to a %s to the system.', component)
-            if component == 'PV plant':
-                define.bus(model, dict_model, 'Electricity DC (PV)')
-                call_component.pv_plant(model, dict_model, dict_values[component])
-            elif component == 'Wind plant':
-                call_component.wind_plant(model, dict_model, dict_values[component])
+            elif dict_key == 'pv_plant':
+                call_component.pv_plant(model, dict_values[dict_key], **dict_model)
+
+            elif dict_key == 'wind_plant':
+                call_component.wind_plant(model, dict_values[dict_key], **dict_model)
+
+            elif dict_key == 'electricity_storage':
+                call_component.storage(model, dict_values[dict_key], **dict_model)  # todo add sector to ess attributes
+
+            elif dict_key == 'generator':
+                logging.warning('Asset %s not defined for oemof integration.', dict_key)
+                define.bus(model, 'Fuel', **dict_model)
+
+            elif dict_key == 'electricity_demand':
+                call_component.demands(model, dict_values[dict_key], **dict_model)
+
             else:
-                logging.warning('Unknown generation asset %s. '
-                                'Check validity and, if necessary, add another component.', component)
+                logging.warning('Unknown asset %s. '
+                                'Check validity and, if necessary, add another oemof component definition.', asset)
 
-        for component in included_assets['storage assets']:
-            logging.debug('Adding storage asset %s to the system.', component)
-            define.bus(model, dict_model, 'Electricity DC (Storage)')
-            call_component.storage(model, dict_model, dict_values[component], component) #todo add sector to ess attributes
-
-        for demand_type in included_assets['demands']:
-            call_component.demands(model, dict_model, dict_values[demand_type], demand_type)
-            logging.info('Added all %ss to the system.', demand_type)
 
         logging.debug('All components added.')
+        pp.pprint(model)
+        pp.pprint(dict_model['busses']['electricity'])
+        logging.debug('Create oemof model based on created components and busses.')
+        local_energy_system = solph.Model(model)
 
-        logging.info('Adding constraints to energy system model...')
+        logging.info('Adding constraints to oemof model...')
         logging.debug('All constraints added.')
 
         logging.info('Starting simulation.')
+        local_energy_system.solve(
+                    solver='cbc',
+                    solve_kwargs={'tee': False},# if tee_switch is true solver messages will be displayed
+                    cmdline_options={'ratioGap': str(0.03)}
+                    )  # ratioGap allowedGap mipgap
+        logging.info('Problem solved.')
+        duration = timeit.default_timer() - start
+        logging.info('Simulation time: %s minutes.', round(duration/60, 2))
+
+
         return
