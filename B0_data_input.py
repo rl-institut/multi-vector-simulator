@@ -3,8 +3,6 @@ import logging
 import pprint as pp
 from B1_read_excel import read_template
 
-
-
 class data_input:
     def all(user_input):
         # Read from excel sheet, tab overview: Which components are used?
@@ -42,6 +40,10 @@ class data_input:
 
 class get_values:
     def project_data(user_input):
+        '''
+        :param user_input:
+        :return:
+        '''
         # Definition of data red from excel
         dict_excel_data = {'tab_name': 'Project data',
                            'first_row': 2,
@@ -80,6 +82,11 @@ class get_values:
         return project_data, simulation_settings, economic_data
 
     def sectors(user_input, asset_group_item):
+        '''
+        :param user_input:
+        :param asset_group_item:
+        :return:
+        '''
         logging.debug('Receiving data of sector "%s".', asset_group_item)
         # Captialization and spaces due to excel file input
         if asset_group_item == 'Electricity':
@@ -101,6 +108,11 @@ class get_values:
         return dict_sector
 
     def components(user_input, asset_group_item):
+        '''
+        :param user_input:
+        :param asset_group_item:
+        :return:
+        '''
         logging.debug('Receiving data of asset "%s".', asset_group_item)
         # Access all data of specific asset
         if asset_group_item == 'PV plant':
@@ -127,6 +139,11 @@ class get_values:
         return dict_value_specific
 
     def demand(user_input, dict_excel_data):
+        '''
+        :param user_input:
+        :param dict_excel_data:
+        :return:
+        '''
         #todo this would require a test on whether or not profile exists!
 
         # Reading demand profiles
@@ -156,12 +173,19 @@ class get_values:
 
                     else:
                         dict_demands[demand_name].update({all_titles[item]: data[demand_number][item],
-                                                          'label': demand_name})
+                                                          'label': demand_name,
+                                                          'type': 'sink'})
 
         return dict_demands
 
 class helpers:
     def cost_info(user_input, tab_name, name_list):
+        '''
+        :param user_input:
+        :param tab_name:
+        :param name_list:
+        :return:
+        '''
         dict_all_cost_data = {}
         dict_excel_data = {}
         for item in range(0, len(name_list)):
@@ -182,6 +206,11 @@ class helpers:
         return dict_all_cost_data
 
     def parameters(user_input, dict_excel_data):
+        '''
+        :param user_input:
+        :param dict_excel_data:
+        :return:
+        '''
         data = read_template.read_excel_dict(user_input, dict_excel_data)
         data = data['Value']
         all_titles = {'Lifetime':                       'lifetime',
@@ -214,6 +243,10 @@ class helpers:
 
 class assets:
     def electricity_sector(user_input):
+        '''
+        :param user_input:
+        :return:
+        '''
         tab_name = 'Electricity'
         # Definition of data cells on excel template tab
         dict_excel_data = {'electricity_grid': {'tab_name': tab_name,
@@ -243,7 +276,12 @@ class assets:
         dict_sector['electricity_grid'].update(dict_costs['electricity_grid'])
         return dict_sector
 
-    def transformer_station(user_input, tab_name):
+    def transformer_station(user_input, tab_name):#
+        '''
+        :param user_input:
+        :param tab_name:
+        :return:
+        '''
         tab_name = 'Electricity'
         # Definition of data cells on excel template tab
         dict_excel_data = {'transformer_station': {'tab_name': tab_name,
@@ -279,8 +317,9 @@ class assets:
         # Retrieving cost info
         dict_costs = helpers.cost_info(user_input, tab_name, ['electricity_grid', 'transformer_station'])
         transformer_station.update(dict_costs['transformer_station'])
-        transformer_station.update({'label': 'transformer_station'})
-        transformer_station.update({'sector': 'electricity'})
+        transformer_station.update({'label': 'transformer_station',
+                                    'sector': 'electricity',
+                                    'type': 'transformers'})
         transformer_station = {'transformer_station': transformer_station}
         return transformer_station
 
@@ -316,15 +355,18 @@ class assets:
         # todo: check if exists
         dict_asset['pv_installation'].update({
             'file_name':
-                data['File']['Historical electricity generation']})
+                data['File']['Historical electricity generation'],
+            'type': 'source'})
         # Parameters solar inverter
         dict_asset_parameters = helpers.parameters(user_input, dict_excel_data['solar_inverter'])
         dict_asset['solar_inverter'].update(dict_asset_parameters)
+        dict_asset['solar_inverter'].update({'type': 'transformer'})
         # Retrieving cost info
         dict_costs = helpers.cost_info(user_input, tab_name, ['pv_installation', 'solar_inverter'])
         for key in dict_costs.keys():
             dict_asset[key].update(dict_costs[key])
-            dict_asset[key].update({'label': key})
+            dict_asset[key].update({'label': key,
+                                    'parent': 'pv_plant'})
 
         dict_asset = {'pv_plant': dict_asset}
         dict_asset['pv_plant'].update({'label': 'pv_plant'})
@@ -375,10 +417,12 @@ class assets:
         data = read_template.read_excel_dict(user_input, dict_excel_data['technical_data_storage_unit'])
         data = data['Value']
         dict_asset['charging_power'].update({'crate': data['Inflow C-rate'],
-                                            'efficiency': data['Inflow efficiency']/100})
+                                            'efficiency': data['Inflow efficiency']/100,
+                                             'type': 'storage'})
         dict_asset['capacity'].update({'soc_min': data['Min. charge']/100,
                                        'soc_max': data['Max. charge']/100,
-                                       'efficiency': data['Self-discharge / Charge loss per timestep']/100})
+                                       'efficiency': data['Self-discharge / Charge loss per timestep']/100,
+                                       'type': 'storage'})
 
         if data['Initial charge '] == 'None':
             dict_asset['capacity'].update({'soc_initial': None})
@@ -386,7 +430,8 @@ class assets:
             dict_asset['capacity'].update({'soc_initial': data['Initial charge'] / 100})
 
         dict_asset['discharging_power'].update({'efficiency': data['Outflow efficiency']/100,
-                                                'crate': data['Outflow C-rate']})
+                                                'crate': data['Outflow C-rate'],
+                                                'type': 'storage'})
 
         if data['Optimize additional capacities'] in ['yes', 'Yes', 'y']:
             dict_asset.update({'optimize_cap': True})
@@ -404,10 +449,12 @@ class assets:
         dict_costs = helpers.cost_info(user_input, tab_name, list(name_dict_sub_assets.keys()))
         for key in dict_costs.keys():
             dict_asset[key].update(dict_costs[key])
-            dict_asset[key].update({'label': key})
+            dict_asset[key].update({'label': key,
+                                    'parent': 'electricity_storage'})
 
         dict_asset = {'electricity_storage': dict_asset}
-        dict_asset['electricity_storage'].update({'label': 'electricity_storage'})
+        dict_asset['electricity_storage'].update({'label': 'electricity_storage',
+                                                  'type': 'storage'})
         return dict_asset
 
 

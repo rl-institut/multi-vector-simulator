@@ -4,6 +4,18 @@ import pprint as pp
 
 class helpers():
     def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs):
+        '''
+        Determines whether or not a component should be implemented with fix capactiy or be optimized
+        Might be possible to drop invest/non invest optimization in favour for invest optimization if max_capactiy
+        attributes ie. are set to 0 for fix (but less beautiful, and in case of generator even blocks nonconvex opt.)
+
+        :param model: oemof energy system object
+        :param dict_asset: entry in dict_values describing a specific component
+        :param func_constant: function to be applied if optimization not intended
+        :param func_optimize: function to be applied if optimization is intended
+        :param kwargs: named dictionary with all component objects of the energy system
+        :return: indirectly updated dictionary of all component objects (kwargs, initially dict_model)
+        '''
         if dict_asset['optimize_cap']==False:
             logging.info('Added: Component %s, excluded from optimization.', dict_asset['label'])
             func_constant(model, dict_asset, **kwargs)
@@ -18,6 +30,15 @@ class helpers():
 class call_component:
 
     def utility_connection(model, dict_asset, **kwargs):
+        '''
+        function defining an utlity connection, including consumption from and feed in to utility grid.
+        Should be adaptable to all energy sectors
+        Defines a multitude of components.
+
+        :param dict_asset: Dict entry of one asset in dict_values, here with sub-assets 'in', 'out', 'sink', 'source'
+        :param kwargs: dictionary of oemof component objects included in energy system model
+        :return: updated dictionary of omeof component objects included in energy system model
+        '''
         define.bus(model, dict_asset['in']['sector'] + '_utility_consumption', **kwargs)
         define.bus(model, dict_asset['out']['sector'] + '_utility_feedin', **kwargs)
 
@@ -43,13 +64,12 @@ class call_component:
         return
 
     def demands(model, dict_asset, **kwargs):
-        list_of_demands = []
         for demand in dict_asset.keys():
             define.sink_non_dispatchable(model, dict_asset[demand], **kwargs)
             logging.info('Added: Demand profile for %s on bus %s', demand, dict_asset[demand]['input_bus_name'])
         return
 
-    def storage(model, dict_asset, **kwargs):
+    def electricity_storage(model, dict_asset, **kwargs):
         define.bus(model, 'electricity_dc_storage', **kwargs)
 
         helpers.check_optimize_cap(model, dict_asset,
@@ -129,7 +149,7 @@ class define():
         storage = solph.components.GenericStorage(
             label=dict_asset['label'],
             nominal_storage_capacity=dict_asset['capacity']['cap_installed'],
-            inputs={kwargs['busses'][dict_asset['input_bus_name']]: solph.Flow( #todo create  but electricity dc
+            inputs={kwargs['busses'][dict_asset['input_bus_name']]: solph.Flow(
                 nominal_value= dict_asset['discharging_power']['cap_installed'], #limited through installed capacity, NOT c-rate
                 variable_costs=dict_asset['charging_power']['opex_var']
             )},  # maximum charge possible in one timestep
@@ -152,7 +172,7 @@ class define():
             label=dict_asset['label'],
             existing=dict_asset['capacity']['cap_installed'],
             investment=solph.Investment(ep_costs=dict_asset['capacity']['simulation_annuity']),
-            inputs={kwargs['busses'][dict_asset['input_bus_name']]: solph.Flow(  # todo create  but electricity dc
+            inputs={kwargs['busses'][dict_asset['input_bus_name']]: solph.Flow(
                 existing= dict_asset['charging_power']['cap_installed'],
                 investment = solph.Investment(ep_costs=dict_asset['charging_power']['simulation_annuity']),
                 variable_costs=dict_asset['charging_power']['opex_var']
@@ -230,7 +250,7 @@ class define():
 
     def source_dispatchable(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset['label'],
-                                 outputs={ kwargs['busses'][dict_asset['output_bus_name']]:
+                                 outputs={kwargs['busses'][dict_asset['output_bus_name']]:
                                               solph.Flow(label=dict_asset['label'],
                                                          variable_costs=dict_asset['price'])})
 

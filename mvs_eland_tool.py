@@ -16,8 +16,8 @@ Tool structure:
 (child sub)    --D1_model_components.py
 (child sub)    --D2_model_constraints.py
 
-(child)     --E0_output_processing.py
-(child sub)    --E1_flow_aggregation.py
+(child)     --F0_output.py
+(child sub)    --E1_process_results.py
 (child sub)    --E2_verification_of_constraints.py
 (child sub)    --E3_indicator_calculation.py
 
@@ -34,14 +34,15 @@ from A_initialization import initializing
 from B0_data_input import data_input
 from C0_data_processing import data_processing
 from D0_modelling_and_optimization import modelling
-import E0_output_processing
+from E0_evaluation import evaluation
+import F0_output
 
 # Display welcome text 
 version = '0.0.1' #update_me Versioning scheme: Major release.Minor release.Patches
 date = '01.08.2019' #update_me Update date
 
 welcome_text = \
-    '\n \n Multi-Vector Simulation Tool (MVST)  V' + version + ' ' + \
+    '\n \n Multi-Vector Simulation Tool (MVS) V' + version + ' ' + \
     '\n Version: ' + date + ' ' + \
     '\n Part of the toolbox of H2020 project "E-LAND", ' + \
     'Integrated multi-vector management system for Energy isLANDs' + \
@@ -60,4 +61,8 @@ logging.debug('Accessing script: C0_data_processing')
 data_processing.all(dict_values)
 print('')
 logging.debug('Accessing script: D0_modelling_and_optimization')
-modelling.run_oemof(dict_values)
+results_meta, results_main, dict_model = modelling.run_oemof(dict_values)
+print('')
+logging.debug('Accessing script: E0_evaluation')
+evaluation.evaluate_dict(dict_values, results_main, results_meta, dict_model)
+

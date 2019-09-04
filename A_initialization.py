@@ -5,6 +5,11 @@ import shutil
 
 class initializing():
     def welcome(welcome_text):
+        '''
+        Welcome message and initalization of logging on screen and on file level.
+        :param welcome_text: Welcome text defined in main function
+        :return: user input settings regarding screen output, input folder/file and output folder
+        '''
         logging.debug('Get user inputs from console')
         user_input = initializing.get_user_input()
 
@@ -33,16 +38,16 @@ class initializing():
 
         python A_mvs_eland.py path_to_input_file path_to_output_folder overwrite display_output
 
-        :param path_to_input_file
+        :param path_to_input_file:
             Descripes path to inputs excel file
             This file includes paths to timeseries file
-        :param path_to_output_folder
+        :param path_to_output_folder:
             Describes path to folder to be used for terminal output
             Must not exist before
-        :param overwrite
+        :param overwrite:
             (Optional) Can force tool to replace existing output folder
             "-f"
-        :param display_output
+        :param display_output:
             (Optional) Determines which messages are used for terminal output
                 "-debug": All logging messages
                 "-info": All informative messages and warnings (default)
@@ -103,6 +108,10 @@ class initializing():
         return user_input
 
     def check_input_directory(path_input_file):
+        '''
+        :param path_input_file:
+        :return:
+        '''
         split = path_input_file.rsplit('/', 1)
         path_input_folder = split[0]
         name_input_file = split[1]
@@ -120,6 +129,11 @@ class initializing():
         return path_input_folder, name_input_file
 
     def check_output_directory(path_output_folder, overwrite):
+        '''
+        :param path_output_folder:
+        :param overwrite:
+        :return:
+        '''
         logging.debug('Checking for output folder')
         if os.path.isdir(path_output_folder) == True:
             if overwrite == False:

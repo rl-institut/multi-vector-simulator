@@ -95,6 +95,9 @@ class helpers:
         del dict_asset[name_subasset]
         dict_asset.update({name_subasset: {'in': subasset,
                                            'out': subasset_symbolic}})
+
+        dict_asset[name_subasset]['in'].update({'type': 'transformer'})
+        dict_asset[name_subasset]['out'].update({'type': 'transformer'})
         return
 
     def define_source(dict_values, asset_name, price_name):
@@ -106,18 +109,21 @@ class helpers:
         else:
             logging.warning('Price name %s does not exist in %s.', price_name, asset_name)
 
-        dict_values[asset_name].update({'source': {'label': asset_name + '_source',
+        dict_values[asset_name].update({'source': {'type': 'source',
+                                                   'label': asset_name + '_source',
                                                    'price': price}})
         return
 
     def define_sink(dict_asset, asset_name, price_name):
         if price_name == None:
-            dict_asset.update({asset_name: {'label': asset_name + '_sink',
+            dict_asset.update({asset_name: {'type': 'sink',
+                                            'label': asset_name + '_sink',
                                             'price': 0}})
         elif asset_name in dict_asset.keys():
             if price_name in dict_asset[asset_name]['out'].keys():
                 price = dict_asset[asset_name]['out'][price_name]
-                dict_asset[asset_name].update({'sink': {'label': asset_name + '_sink',
+                dict_asset[asset_name].update({'sink': {'type': 'sink',
+                                                        'label': asset_name + '_sink',
                                                         'price': price}})
             else:
                 logging.warning('Price name %s does not exist in %s.', price_name, asset_name)
@@ -148,7 +154,7 @@ class helpers:
             elif asset == 'pv_plant':
                 dict_values[asset]['pv_installation'].update({'output_bus_name': 'electricity_dc_pv'})
                 dict_values[asset]['solar_inverter'].update({'input_bus_name': 'electricity_dc_pv',
-                                                     'output_bus_name': 'electricity'})
+                                                             'output_bus_name': 'electricity'})
             elif asset == 'wind_plant':
                 dict_values[asset]['wind_installation'].update({'output_bus_name': 'electricity'})
 
@@ -236,8 +242,7 @@ class receive_data:
     def timeseries_csv(settings, user_input, dict_asset, file_path, name):
         data_set = pd.read_csv(file_path, sep=';')
         if len(data_set.index) == settings['periods']:
-            print(data_set.values)
-            dict_asset.update({'timeseries': pd.Series(data_set['kW'], index = settings['index'])})
+            dict_asset.update({'timeseries': pd.Series(data_set['kW'].values, index = settings['index'])})
             logging.debug('Added timeseries of %s (%s).', name, file_path)
         elif len(data_set.index) >= settings['periods']:
             dict_asset.update({'timeseries': pd.Series(data_set['kW'][0:len(settings['index'])].values,
@@ -250,6 +255,10 @@ class receive_data:
                              'Provided timeseries of %s (%s) shorter then evaluated period. '
                              'Operation terminated', name, file_path)
             sys.exit()
+
+        dict_asset.update({'timeseries_peak': max(dict_asset['timeseries']),
+                           'timeseries_total': sum(dict_asset['timeseries']),
+                           'timeseries_average': sum(dict_asset['timeseries'])/len(dict_asset['timeseries'])})
 
         shutil.copy(file_path, user_input['path_output_folder_inputs']+dict_asset['file_name'])
         logging.debug('Copied timeseries %s to output folder / inputs.', file_path)
