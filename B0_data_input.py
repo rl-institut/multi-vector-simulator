@@ -176,6 +176,7 @@ class get_values:
 
                     else:
                         dict_demands[demand_name].update({all_titles[item]: data[demand_number][item],
+                                                          'parent': 'demand',
                                                           'label': demand_name,
                                                           'type': 'sink'})
 
