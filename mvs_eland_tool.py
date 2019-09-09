@@ -35,7 +35,7 @@ from B0_data_input import data_input
 from C0_data_processing import data_processing
 from D0_modelling_and_optimization import modelling
 from E0_evaluation import evaluation
-import F0_output
+from F0_output import output_processing
 
 # Display welcome text 
 version = '0.0.1' #update_me Versioning scheme: Major release.Minor release.Patches
@@ -66,3 +66,5 @@ print('')
 logging.debug('Accessing script: E0_evaluation')
 evaluation.evaluate_dict(dict_values, results_main, results_meta, dict_model)
 
+logging.debug('Accessing script: F0_outputs')
+output_processing.evaluate_dict(dict_values)

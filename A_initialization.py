@@ -58,7 +58,7 @@ class initializing():
         '''
         # Default values:
         path_input_file = './inputs/test_input_file_v1.xlsx'
-        display_output = '-debug' #'-info'
+        display_output =  '-debug' #'-info' #
         path_output_folder = './outputs'
         overwrite = False
 
@@ -93,7 +93,8 @@ class initializing():
         path_input_folder, name_input_file = initializing.check_input_directory(path_input_file)
         initializing.check_output_directory(path_output_folder, overwrite)
 
-        user_input = {'path_input_folder': path_input_folder + '/',
+        user_input = {'label': 'user_input',
+                      'path_input_folder': path_input_folder + '/',
                       'path_input_file': path_input_file,
                       'input_file_name': name_input_file,
                       'display_output': display_output,
@@ -149,7 +150,6 @@ class initializing():
                 logging.info('Removing existing folder ' + path_output_folder)
                 path_removed = os.path.abspath(path_output_folder)
                 shutil.rmtree(path_removed, ignore_errors=True)
-
 
         logging.info('Creating output folder ' + path_output_folder)
         os.mkdir(path_output_folder)

@@ -65,8 +65,9 @@ class call_component:
 
     def demands(model, dict_asset, **kwargs):
         for demand in dict_asset.keys():
-            define.sink_non_dispatchable(model, dict_asset[demand], **kwargs)
-            logging.info('Added: Demand profile for %s on bus %s', demand, dict_asset[demand]['input_bus_name'])
+            if demand != 'label':
+                define.sink_non_dispatchable(model, dict_asset[demand], **kwargs)
+                logging.info('Added: Demand profile for %s on bus %s', demand, dict_asset[demand]['input_bus_name'])
         return
 
     def electricity_storage(model, dict_asset, **kwargs):

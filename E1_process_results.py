@@ -1,15 +1,14 @@
 import logging
 
 class process_results:
-
     def check_for_evaluation_keys(dict_values, dict_asset, bus_data):
-        if isinstance(dict_asset, dict) and ('optimize_cap' in dict_asset.keys() or 'timeseries' in dict_asset.keys()):
+        if isinstance(dict_asset, dict) and ('output_bus_name' in dict_asset.keys() or 'input_bus_name' in dict_asset.keys()):#('optimize_cap' in dict_asset.keys() or 'timeseries' in dict_asset.keys()):
             process_results.asset_in_out(dict_values['settings'], bus_data,  dict_asset)
         return
 
     def asset_in_out(settings, bus_data, dict_asset):
         logging.debug('Accessing oemof simulation results for asset %s', dict_asset['label'])
-        if dict_asset['type'] == 'storage':
+        if dict_asset['type'] == 'storage' and 'parent' not in dict_asset:
             process_results.get_storage_results(settings, bus_data, dict_asset)
 
         elif dict_asset['type'] == 'transformer':
@@ -25,8 +24,6 @@ class process_results:
             helpers.get_flow(settings, bus_data[bus_name], dict_asset)
             helpers.get_optimal_cap(bus_data[bus_name], dict_asset, direction)
 
-        logging.info('Accessed simulation results of %s', dict_asset['label'])
-
         return
 
     def get_storage_results(settings, bus_data, dict_asset):
@@ -40,19 +37,21 @@ class process_results:
 
         capacity = storage_bus['sequences'][((dict_asset['label'], 'None'), 'capacity')]
         helpers.add_info_flows(settings, dict_asset['capacity'], capacity)
-
         if 'optimize_cap' in dict_asset:
             if dict_asset['optimize_cap'] == True:
                 power_charge = storage_bus['scalars'][
                     ((dict_asset['input_bus_name'], dict_asset['label']), 'invest')]
                 dict_asset['charging_power'].update({'optimal_additional_capacity': power_charge})
+                logging.debug('Accessed optimized capacity of asset %s: %s', dict_asset['charging_power']['label'], power_charge)
 
                 power_discharge = storage_bus['scalars'][
                     ((dict_asset['label'], dict_asset['output_bus_name']), 'invest')]
                 dict_asset['discharging_power'].update({'optimal_additional_capacity': power_discharge})
+                logging.debug('Accessed optimized capacity of asset %s: %s', dict_asset['discharging_power']['label'], power_discharge)
 
                 capacity = storage_bus['scalars'][((dict_asset['label'], 'None'), 'invest')]
                 dict_asset['capacity'].update({'optimal_additional_capacity': capacity})
+                logging.debug('Accessed optimized capacity of asset %s: %s', dict_asset['capacity']['label'], capacity)
 
             else:
                 dict_asset['charging_power'].update({'optimal_additional_capacity': 0})
@@ -75,6 +74,18 @@ class process_results:
         helpers.get_flow(settings, bus_data[dict_asset[output_name]], dict_asset, direction=output_name)
         helpers.get_optimal_cap(bus_data[dict_asset[output_name]], dict_asset, 'output_bus_name')
         return
+'''
+class storage():
+    if dict_asset['label'] == 'charging_power':
+        storage.get_charging_power()
+    elif dict_asset['label'] == 'discharging_power':
+        storage.get_discharging_power()
+    elif dict_asset['label'] == 'capacity':
+        storage.get_capacity()
+    else:
+        print('error, asset not evaluates %s', dict_asset['label'])
+    return
+'''
 
 class helpers:
     def get_optimal_cap(bus, dict_asset, direction):

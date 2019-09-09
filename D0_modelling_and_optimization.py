@@ -140,11 +140,11 @@ class modelling:
         duration = timeit.default_timer() - start
 
         dict_values.update({'simulation_results': {
+            'label': 'simulation_results',
             'objective_value': results_meta['objective'],
             'simulation_time': results_meta['solver']['Time'],
             'modelling_time': duration }})
         logging.info('Simulation time: %s minutes.', round(dict_values['simulation_results']['simulation_time']/60, 2))
         logging.info('Moddeling time: %s minutes.', round(dict_values['simulation_results']['modelling_time'] / 60, 2))
 
-        print(dict_model)
         return results_meta, results_main, dict_model

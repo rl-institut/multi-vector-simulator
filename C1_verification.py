@@ -42,6 +42,8 @@ class verify():
         valid_type_string = ['project_name',
                              'scenario_name',
                              'country',
+                             'parent',
+                             'type',
                              'file_name',
                              'label',
                              'currency',

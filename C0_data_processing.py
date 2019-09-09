@@ -93,7 +93,8 @@ class helpers:
             logging.error('Coding error: drop_symbolic_costs has to be True/False.')
 
         del dict_asset[name_subasset]
-        dict_asset.update({name_subasset: {'in': subasset,
+        dict_asset.update({name_subasset: {'label': name_subasset+'_in_out',
+                                           'in': subasset,
                                            'out': subasset_symbolic}})
 
         dict_asset[name_subasset]['in'].update({'type': 'transformer'})
@@ -119,9 +120,12 @@ class helpers:
             dict_asset.update({asset_name: {'type': 'sink',
                                             'label': asset_name + '_sink',
                                             'price': 0}})
+
         elif asset_name in dict_asset.keys():
             if price_name in dict_asset[asset_name]['out'].keys():
                 price = dict_asset[asset_name]['out'][price_name]
+                if price_name == 'feedin_tariff':
+                    price = -1 * price
                 dict_asset[asset_name].update({'sink': {'type': 'sink',
                                                         'label': asset_name + '_sink',
                                                         'price': price}})
@@ -131,7 +135,6 @@ class helpers:
             logging.error('Asset %s does not exist, while price_name = None.', asset_name)
 
         return
-
 
     def add_input_output_busses(dict_values):
         for asset in dict_values.keys():
@@ -172,7 +175,8 @@ class helpers:
 
             elif asset == 'electricity_demand':
                 for demand in dict_values[asset].keys():
-                    dict_values[asset][demand].update({'input_bus_name': 'electricity'})
+                    if demand != 'label':
+                        dict_values[asset][demand].update({'input_bus_name': 'electricity'})
 
             else:
                 logging.warning('Asset %s undefined, no input/output busses added.', asset)
@@ -183,7 +187,7 @@ class helpers:
         if 'capex_var' not in dict_asset:
             dict_asset.update({'capex_var': 0})
 
-        dict_asset.update({'lifetime_capex':
+        dict_asset.update({'lifetime_capex_var':
                                        economics.capex_from_investment(dict_asset['capex_var'],
                                                                        dict_asset['lifetime'],
                                                                        economic_data['project_duration'],
@@ -191,17 +195,23 @@ class helpers:
                                                                        economic_data['tax'])})
 
         # Annuities of components including opex AND capex #
-        dict_asset.update({'annuity_capex_opex':
-                                       economics.annuity(dict_asset['lifetime_capex'],
+        dict_asset.update({'annuity_capex_opex_var':
+                                       economics.annuity(dict_asset['lifetime_capex_var'],
                                                          economic_data['crf'])
                                        + dict_asset['opex_fix']})
+
+        dict_asset.update({'lifetime_opex_fix':
+                                       dict_asset['opex_fix'] * economic_data['annuity_factor']})
+
+        dict_asset.update({'lifetime_opex_var':
+                                       dict_asset['opex_var'] * economic_data['annuity_factor']})
 
         # Scaling annuity to timeframe
         # Updating all annuities above to annuities "for the timeframe", so that optimization is based on more adequate
         # costs. Includes project_cost_annuity, distribution_grid_cost_annuity, maingrid_extension_cost_annuity for
         # consistency eventhough these are not used in optimization.
         dict_asset.update({'simulation_annuity':
-                                       dict_asset['annuity_capex_opex'] / 365
+                                       dict_asset['annuity_capex_opex_var'] / 365
                                        * settings['evaluated_period']})
 
         return
@@ -229,13 +239,14 @@ class helpers:
             if demand_type in dict_values:
                 # Check for each
                 for demand_key in dict_values['electricity_demand']:
-                    file_path = input_folder + dict_values[demand_type][demand_key]['file_name']
-                    if use == 'verify':
-                        # check if specific demand timeseries exists
-                        function(file_path, demand_key)
-                    elif use == 'receive_data':
-                        # receive data and write it into dict_values
-                        function(dict_values['settings'], dict_values['user_input'], dict_values[demand_type][demand_key], file_path, demand_key)
+                    if demand_key != 'label':
+                        file_path = input_folder + dict_values[demand_type][demand_key]['file_name']
+                        if use == 'verify':
+                            # check if specific demand timeseries exists
+                            function(file_path, demand_key)
+                        elif use == 'receive_data':
+                            # receive data and write it into dict_values
+                            function(dict_values['settings'], dict_values['user_input'], dict_values[demand_type][demand_key], file_path, demand_key)
         return
 
 class receive_data:

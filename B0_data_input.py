@@ -55,15 +55,17 @@ class get_values:
 
         data = data['Unnamed: 2'] #todo - How to avoid this?
 
-        project_data = {'project_name':data['Project location name'],
-                        'scenario_name':data['Scenario'],
+        project_data = {'label': 'project_data',
+                        'project_name': data['Project location name'],
+                        'scenario_name': data['Scenario'],
                         'country': data['Country'],
                         'longitude': data['Location, longitude'],
                         'latitude': data['Location, latitude'],
                         'capex_fix': data['CAPEX \n(investment costs, 1st year)'],
                         'opex_fix': data['OPEX \n(operational costs, 1st year)']}
 
-        simulation_settings = {'evaluated_period': int(data['Evaluated timeframe']),
+        simulation_settings = {'label': 'settings',
+                               'evaluated_period': int(data['Evaluated timeframe']),
                                'time_step': int(data['Time step']),
                                'start_date': pd.Timestamp(data['Start date'])}
 
@@ -74,7 +76,8 @@ class get_values:
                                                            freq=str(simulation_settings['time_step'])+'min')})
         simulation_settings.update({'periods': len(simulation_settings['index'])})
 
-        economic_data = {'discount_factor': data['WACC']/100,
+        economic_data = {'label': 'economic_data',
+                         'discount_factor': data['WACC']/100,
                          'project_duration': data['Project duration'],
                          'tax': data['Tax']/100,
                          'currency': data['Currency']}
@@ -153,7 +156,7 @@ class get_values:
         all_titles = {'Demand side management (DSM)***':   'dsm',
                       'File (csv)':     'file_name'}
 
-        dict_demands = {}
+        dict_demands = {'label': 'electricity_demand'}
         for demand_number in data.keys():
             demand_name = data[demand_number]['Demand name']
             demand_name = demand_name.replace("(", "")
