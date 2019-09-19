@@ -30,15 +30,15 @@ class plots():
             #'Genset generation': '#000000',  # black
             'transformer_station_in': '#990099',  # violet
             'charge_controller_in': '#0033cc',  # light green
-            'electricity_excess_sink': '#996600',  # brown
+            sector+'_excess_sink': '#996600',  # brown
             'transformer_station_out': '#ff33cc',  # pink
             'charge_controller_out': '#ccccff',  # pidgeon blue
             #'Demand shortage': '#ff3300',  # bright red
-            'electricity_storage_soc': '#0033cc'  # blue
+            sector+'_storage_soc': '#0033cc'  # blue
             #'Grid availability': '#cc0000'  # red
         }
 
-        flows_les[0:steps].plot(title= sector +' flows in Local Energy System: '
+        flows_les.plot(title= sector +' flows in Local Energy System: '
                                        + project_data['project_name'] + ', '
                                        + project_data['scenario_name'],
                       color=[color_dict.get(x, '#333333') for x in flows_les.columns],
@@ -48,7 +48,7 @@ class plots():
         axes_mg.legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
 
         if boolean_subplots == True:
-            results_timeseries[sector+'_storage_soc'].plot(ax=axes[1],
+            results_timeseries[sector+'_storage_soc'][0:steps].plot(ax=axes[1],
                                                color=color_dict.get(sector+'_storage_soc', '#333333'),
                                                drawstyle='steps-mid')
             ylabel = sector+'_storage_soc'
@@ -62,3 +62,40 @@ class plots():
         plt.cla()
 
         return
+    '''
+    def draw_graph(energysystem, edge_labels=True, node_color='#eeac7e',
+                   edge_color='#eeac7e', plot=True, node_size=5500,
+                   with_labels=True, arrows=True, layout='dot'):
+        import networkx as nx
+        import oemof.graph as graph
+        grph = graph.create_nx_graph(energysystem)
+
+        if type(node_color) is dict:
+            node_color = [node_color.get(g, '#AFAFAF') for g in grph.nodes()]
+
+        # set drawing options
+        options = {
+            'prog': 'dot',
+            'with_labels': with_labels,
+            'node_color': node_color,
+            'edge_color': edge_color,
+            'node_size': node_size,
+            'arrows': arrows,
+            'font_size': 12,
+            'font_color': 'w'
+        }
+
+        # draw graph
+        pos = nx.drawing.nx_agraph.graphviz_layout(grph, prog=layout)
+
+        nx.draw(grph, pos=pos, **options)
+
+        # add edge labels for all edges
+        if edge_labels is True and plt:
+            labels = nx.get_edge_attributes(grph, 'weight')
+            nx.draw_networkx_edge_labels(grph, pos=pos, edge_labels=labels)
+
+        # show output
+        if plot is True:
+            plt.show()
+    '''

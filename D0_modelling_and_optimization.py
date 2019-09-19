@@ -100,6 +100,33 @@ class modelling:
         Minimal renewable share constraint
         '''
         logging.debug('All constraints added.')
+        '''
+        from f1_plotting import plots
+        color_dict = {
+            'coal': '#755d5d',
+            'gas': '#c76c56',
+            'oil': '#494a19',
+            'lignite': '#56201d',
+            'wind': '#4ca7c3',
+            'pv': '#ffde32',
+            'excess_el': '#9a9da1',
+            'pp_coal': '#755d5d',
+            'pp_gas': '#c76c56',
+            'pp_chp': '#eeac7e',
+            'b_heat_source': '#cd3333',
+            'heat_source': '#cd3333',
+            'heat_pump': '#42c77a',
+            'electricity': '#0079ff',
+            'demand_el': '#0079ff',
+            'shortage_el': '#ff2626',
+            'excess_el': '#ff2626',
+            'biomass': '#01b42e',
+            'pp_biomass': '#01b42e'}
+        plots.draw_graph(model, node_color=color_dict)
+        '''
+        logging.debug('Saving to lp-file.')
+        local_energy_system.write(dict_values['user_input']['path_output_folder'] + '/lp_file.lp',
+                    io_options={'symbolic_solver_labels': True})
 
         logging.info('Starting simulation.')
         local_energy_system.solve(
@@ -112,7 +139,6 @@ class modelling:
         # add results to the energy system to make it possible to store them.
         results_main = outputlib.processing.results(local_energy_system)
         results_meta = outputlib.processing.meta_results(local_energy_system)
-
 
         model.results['main'] = results_main
         model.results['meta'] = results_meta

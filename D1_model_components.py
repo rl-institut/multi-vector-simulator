@@ -233,7 +233,6 @@ class define():
             logging.warning("Error, %s timeseries not normalized, greater than 1.", dict_asset['label'])
         if any(dict_asset['timeseries_normalized'].values) < 0:
             logging.warning("Error, %s timeseries negative.", dict_asset['label'])
-
         source_non_dispatchable = solph.Source(label=dict_asset['label'],
                                  outputs={kwargs['busses'][dict_asset['output_bus_name']]:
                                               solph.Flow(label=dict_asset['label'],

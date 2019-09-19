@@ -14,6 +14,7 @@ class initializing():
         user_input = initializing.get_user_input()
 
         # Define logging settings and path for saving log
+
         logger.define_logging(logpath=user_input['path_output_folder'],
                               logfile='mvst_logfile.log',
                               file_level=logging.DEBUG)

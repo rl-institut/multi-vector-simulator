@@ -87,11 +87,8 @@ class helpers:
                     if ('output_bus_name' in dict_asset and dict_asset['output_bus_name'] == sector) \
                             or ('input_bus_name' in dict_asset and dict_asset['input_bus_name'] == sector):
                         if 'parent' in dict_asset and dict_asset['parent'] == 'demand':
-                            print(results_timeseries['total_demand_'+sector])
-                            print(dict_asset[key])
                             results_timeseries.update({'total_demand_'+sector:
                                                            results_timeseries['total_demand_'+sector]+dict_asset[key]})
-                            print(results_timeseries['total_demand_'+sector])
                         elif dict_asset['label'][-3:]=='out':
                             results_timeseries.update({dict_asset['label']: -dict_asset[key]})
                         else:
