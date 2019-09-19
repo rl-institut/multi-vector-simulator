@@ -2,6 +2,8 @@ import os, sys
 import logging
 import pandas as pd
 
+# web-application: valid input directly connected to cell-input
+
 class verify():
     def lookup_file(file_path, name):
         if os.path.isfile(file_path) == False:

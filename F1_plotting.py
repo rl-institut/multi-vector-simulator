@@ -57,6 +57,7 @@ class plots():
             axes[1].legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
 
         plt.savefig(user_input['path_output_folder'] + '/' + sector + '_flows_' + str(interval) + '_days.png', bbox_inches="tight")
+        #plt.show()
         plt.close()
         plt.clf()
         plt.cla()
