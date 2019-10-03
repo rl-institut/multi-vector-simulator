@@ -2,15 +2,21 @@ from F1_plotting import plots
 import pandas as pd
 import logging
 
+
 class output_processing():
     def evaluate_dict(dict_values):
         logging.info('Summarizing simulation results to results_timeseries and results_scalars_assets.')
         scalars = {}
 
+        # these dictionaries will save the necessary information to plot the additional capacities and the annuity costs of the assets
+        capacities = {}
+        annuity_costs = {}
+
         for sector in ['electricity', 'heat']:
+
             results_timeseries = {'total_demand_'+sector:
                                       pd.Series([0 for i in dict_values['settings']['index']],
-                                                   index = dict_values['settings']['index'])}
+                                                   index = dict_values['settings']['index'])} # en el Series, el primer argument són els valors i després es defineix l'index
             results_scalars_assets = {}
             results_scalars_other = {}
 
@@ -21,6 +27,13 @@ class output_processing():
                     if isinstance(dict_values[item][subitem], dict):
                         for subsubitem in dict_values[item][subitem].keys():
                             helpers.write_results(dict_values[item][subitem][subsubitem], results_scalars_assets, results_scalars_other, results_timeseries, sector)
+
+            # save the information regarding additional optimal capacities and annuity costs
+            for asset in results_scalars_assets:
+                if 'optimal_additional_capacity' in results_scalars_assets[asset]:
+                    capacities[asset] = results_scalars_assets[asset]['optimal_additional_capacity']
+                if 'annuity_total' in results_scalars_assets[asset]:
+                    annuity_costs[asset] = results_scalars_assets[asset]['annuity_total']
 
             results_timeseries = pd.DataFrame.from_dict(results_timeseries)
             results_scalars_assets = pd.DataFrame.from_dict(results_scalars_assets).transpose()
@@ -36,6 +49,9 @@ class output_processing():
             plots.flows(dict_values['user_input'], dict_values['project_data'], results_timeseries, sector, 14)
             plots.flows(dict_values['user_input'], dict_values['project_data'], results_timeseries, sector, 365)
 
+        # plot the capacities and the annuity costs
+        plots.capacities(dict_values['user_input'],dict_values['project_data'],capacities)
+        plots.costs(dict_values['user_input'],dict_values['project_data'],annuity_costs)
 
         # Write everything to file with multipe tabs
         results_scalar_output_file = '/scalars' + '.xlsx'

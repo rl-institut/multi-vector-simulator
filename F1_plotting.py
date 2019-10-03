@@ -6,12 +6,12 @@ import logging
 class plots():
     def flows(user_input, project_data, results_timeseries, sector, interval):
         logging.info('Creating plots for %s sector', sector)
-        steps = interval*24
-        flows_les = results_timeseries[0:steps]
-
+        steps = interval*24 #si interval es 14, agafa 14 dies.
+        flows_les = results_timeseries[0:steps] #sembla que segueix sent un DataFrame, com a minim està estructurat de la mateixa manera, amb files, columnes i data
+                                                # simplement està agafant les dades que li interessen de results_timeseries, que conté tots els flows per tots els invervals
         if sector+'_storage_soc' in results_timeseries.columns:
             boolean_subplots = True
-            flows_les = flows_les.drop([sector+'_storage_soc'], axis=1)
+            flows_les = flows_les.drop([sector+'_storage_soc'], axis=1) #es confirma que es un DataFrame pel drop, que elimina la columna o fila que tingui el nom que li diem
         else:
             boolean_subplots = False
 
@@ -38,6 +38,7 @@ class plots():
             #'Grid availability': '#cc0000'  # red
         }
 
+        # imprimeix el time_series directament, perque ja està ben col·locat, nomes li cal donar color amb color_dict i una mica d'estil
         flows_les.plot(title= sector +' flows in Local Energy System: '
                                        + project_data['project_name'] + ', '
                                        + project_data['scenario_name'],
@@ -58,6 +59,76 @@ class plots():
 
         plt.savefig(user_input['path_output_folder'] + '/' + sector + '_flows_' + str(interval) + '_days.png', bbox_inches="tight")
         #plt.show()
+        plt.close()
+        plt.clf()
+        plt.cla()
+
+        return
+
+    def capacities(user_input,project_data,capacities):
+        capacities = pd.Series(capacities)
+
+        logging.info('Creating bar-chart for components capacities')
+        capacities.plot.bar(title='Optimal additional capacities: '
+                                  + project_data['project_name'] + ', '
+                                  + project_data['scenario_name'])
+
+        plt.savefig(user_input['path_output_folder'] + '/optimal_additional_capacities.png', bbox_inches="tight")
+
+        plt.close()
+        plt.clf()
+        plt.cla()
+
+        return
+
+    def costs(user_input,project_data,annuity_costs):
+        # cost percentages are calculated
+        total = sum(annuity_costs.values())
+        annuity_costs.update({n: annuity_costs[n] / total for n in annuity_costs.keys()})
+
+        # those assets which do not reach 0,5% of total cost are included in others
+        annuity_total = {'others':0}
+        for asset in annuity_costs:
+            if annuity_costs[asset] > 0:
+                if annuity_costs[asset] < 0.005:
+                    annuity_total['others'] += annuity_costs[asset]
+                else:
+                    annuity_total[asset] = annuity_costs[asset]
+
+        # if one asset is clearly the most expensive, another pie chart is shown with the rest
+        for asset in annuity_total:
+            if annuity_total[asset] > 0.9:
+                major = asset
+                major_value = annuity_total[asset]
+                plots.costs_rest(user_input, project_data, major, major_value, annuity_total,total)
+
+        annuity_total = pd.Series(annuity_total)
+        logging.info('Creating pie-chart for total annuity costs')
+        annuity_total.plot.pie(title='Total annuity costs ('+str(round(total,2))+'$): '
+                                  + project_data['project_name'] + ', '
+                                  + project_data['scenario_name'],autopct='%1.1f%%',subplots=True)
+
+        plt.savefig(user_input['path_output_folder'] + '/total_annuity_costs.png', bbox_inches="tight")
+
+        plt.close()
+        plt.clf()
+        plt.cla()
+
+        return
+
+    def costs_rest(user_input,project_data,major,major_value,annuity_total,total):
+        # the rest of costs are plotted
+        annuity_total_rest = annuity_total.copy()
+        del(annuity_total_rest[major])
+        rest = sum(annuity_total_rest.values())
+        annuity_total_rest.update({n: annuity_total_rest[n] / rest for n in annuity_total_rest.keys()})
+        annuity_total_rest = pd.Series(annuity_total_rest)
+        annuity_total_rest.plot.pie(title='Rest of total annuity costs (' + str(round((1-major_value)*100)) + '% of '+str(round(total,2))+'$): '
+                                     + project_data['project_name'] + ', '
+                                     + project_data['scenario_name'], autopct='%1.1f%%', subplots=True)
+
+        plt.savefig(user_input['path_output_folder'] + '/total_annuity_costs_rest.png', bbox_inches="tight")
+
         plt.close()
         plt.clf()
         plt.cla()
