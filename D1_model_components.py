@@ -158,7 +158,7 @@ class define():
                 nominal_value= dict_asset['discharging_power']['cap_installed'], #limited through installed capacity, NOT c-rate #todo actually, if we only have a lithium battery... crate should suffice? i mean, with crate fixed AND fixed power, this is defined two times
                 variable_costs = dict_asset['discharging_power']['opex_var']
             )},  # maximum discharge possible in one timestep
-            loss_rate=dict_asset['capacity']['efficiency'],  # from timestep to timestep
+            loss_rate=dict_asset['capacity']['self_discharge'],  # from timestep to timestep
             min_storage_level=dict_asset['capacity']['soc_min'],
             max_storage_level=dict_asset['capacity']['soc_max'],
             initial_storage_level=dict_asset['capacity']['soc_initial'],  # in terms of SOC
@@ -183,7 +183,7 @@ class define():
                 investment=solph.Investment(ep_costs=dict_asset['discharging_power']['simulation_annuity']),
                 variable_costs=dict_asset['discharging_power']['opex_var']
             )},  # maximum discharge power
-            loss_rate=dict_asset['capacity']['efficiency'],  # from timestep to timestep
+            loss_rate=dict_asset['capacity']['self_discharge'],  # from timestep to timestep
             min_storage_level=dict_asset['capacity']['soc_min'],
             max_storage_level=dict_asset['capacity']['soc_max'],
             initial_storage_level=dict_asset['capacity']['soc_initial'],  # in terms of SOC #implication: balanced = True, ie. start=end
