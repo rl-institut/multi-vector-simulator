@@ -16,7 +16,7 @@ class output_processing():
 
             results_timeseries = {'total_demand_'+sector:
                                       pd.Series([0 for i in dict_values['settings']['index']],
-                                                   index = dict_values['settings']['index'])} # en el Series, el primer argument són els valors i després es defineix l'index
+                                                   index = dict_values['settings']['index'])} 
             results_scalars_assets = {}
             results_scalars_other = {}
 

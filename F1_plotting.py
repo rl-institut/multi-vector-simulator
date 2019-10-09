@@ -6,12 +6,11 @@ import logging
 class plots():
     def flows(user_input, project_data, results_timeseries, sector, interval):
         logging.info('Creating plots for %s sector', sector)
-        steps = interval*24 #si interval es 14, agafa 14 dies.
-        flows_les = results_timeseries[0:steps] #sembla que segueix sent un DataFrame, com a minim està estructurat de la mateixa manera, amb files, columnes i data
-                                                # simplement està agafant les dades que li interessen de results_timeseries, que conté tots els flows per tots els invervals
+        steps = interval*24
+        flows_les = results_timeseries[0:steps]
         if sector+'_storage_soc' in results_timeseries.columns:
             boolean_subplots = True
-            flows_les = flows_les.drop([sector+'_storage_soc'], axis=1) #es confirma que es un DataFrame pel drop, que elimina la columna o fila que tingui el nom que li diem
+            flows_les = flows_les.drop([sector+'_storage_soc'], axis=1)
         else:
             boolean_subplots = False
 
@@ -38,7 +37,7 @@ class plots():
             #'Grid availability': '#cc0000'  # red
         }
 
-        # imprimeix el time_series directament, perque ja està ben col·locat, nomes li cal donar color amb color_dict i una mica d'estil
+
         flows_les.plot(title= sector +' flows in Local Energy System: '
                                        + project_data['project_name'] + ', '
                                        + project_data['scenario_name'],
