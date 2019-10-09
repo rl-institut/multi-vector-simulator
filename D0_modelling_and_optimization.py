@@ -124,9 +124,10 @@ class modelling:
             'pp_biomass': '#01b42e'}
         plots.draw_graph(model, node_color=color_dict)
         '''
-        logging.debug('Saving to lp-file.')
-        local_energy_system.write(dict_values['user_input']['path_output_folder'] + '/lp_file.lp',
-                    io_options={'symbolic_solver_labels': True})
+        if dict_values['user_input']['lp_file_output'] == True:
+            logging.debug('Saving to lp-file.')
+            local_energy_system.write(dict_values['user_input']['path_output_folder'] + '/lp_file.lp',
+                        io_options={'symbolic_solver_labels': True})
 
         logging.info('Starting simulation.')
         local_energy_system.solve(

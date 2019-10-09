@@ -37,7 +37,7 @@ class initializing():
         '''
         Read user command from terminal inputs. Command:
 
-        python A_mvs_eland.py path_to_input_file path_to_output_folder overwrite display_output
+        python A_mvs_eland.py path_to_input_file path_to_output_folder overwrite display_output lp_file_output
 
         :param path_to_input_file:
             Descripes path to inputs excel file
@@ -55,13 +55,17 @@ class initializing():
                 "-warnings": All warnings
                 "-errors": Only errors
 
+        :param lp_file_output:
+            Save linear equation system generated as lp file
+
         :return:
         '''
         # Default values:
         path_input_file = './inputs/test_input_file_v1.xlsx'
         display_output =  '-debug' #'-info' #
-        path_output_folder = './outputs'
+        path_output_folder = './MVS_outputs'
         overwrite = False
+        lp_file_output = False
 
         # Read terminal inputs:
         if len(sys.argv) <= 1:
@@ -82,6 +86,9 @@ class initializing():
                     overwrite = True
                 elif str(sys.argv[argument]) in ['-debug', '-info', '-warnings', '-errors']:
                     display_output = str(sys.argv[argument])
+                elif str(sys.argv[argument]) in ['False', 'True']:
+                    if str(sys.argv[argument]) == 'True':
+                        lp_file_output = True
                 else:
                     logging.critical('Invalid command ' + str(sys.argv[argument]) + ' used. ' +
                                   '\n Operation terminated.')
@@ -101,7 +108,8 @@ class initializing():
                       'display_output': display_output,
                       'path_output_folder': path_output_folder,
                       'path_output_folder_inputs':path_output_folder+'/inputs/',
-                      'overwrite': overwrite}
+                      'overwrite': overwrite,
+                      'lp_file_output': lp_file_output}
 
         logging.info('Creating folder "inputs" in output folder.')
         os.mkdir(user_input['path_output_folder_inputs'])

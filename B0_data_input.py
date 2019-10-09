@@ -425,7 +425,7 @@ class assets:
                                              'type': 'storage'})
         dict_asset['capacity'].update({'soc_min': data['Min. charge']/100,
                                        'soc_max': data['Max. charge']/100,
-                                       'efficiency': data['Self-discharge / Charge loss per timestep']/100,
+                                       'self_discharge': data['Self-discharge / Charge loss per timestep']/100,
                                        'type': 'storage'})
 
         if data['Initial charge '] == 'None':
