@@ -3,7 +3,10 @@ from C2_economic_functions import economics
 import pandas as pd
 import logging
 import sys, shutil
-import pprint as pp
+import json
+import numpy
+import pandas as pd
+
 from copy import deepcopy
 
 class data_processing:
@@ -32,6 +35,8 @@ class data_processing:
 
         # Adds costs to each asset and sub-asset
         data_processing.economic_data(dict_values)
+
+        data_processing.store_as_json(dict_values)
         return
 
     def economic_data(dict_values):
@@ -68,12 +73,27 @@ class data_processing:
                         if isinstance(dict_values[asset_name][sub_asset_name][sub_sub_asset_name], dict):
                             if 'lifetime' in dict_values[asset_name][sub_asset_name][sub_sub_asset_name].keys():
                                 # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity
-                                helpers.evaluate_lifetime_costs(dict_values['settings'],
+                                helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
                                                                 dict_values['economic_data'],
                                                                 dict_values[asset_name][sub_asset_name][sub_sub_asset_name])
 
 
         logging.info('Processed cost data and added economic values.')
+        return
+
+    def store_as_json(dict_values):
+        def convert(o):
+            if isinstance(o, numpy.int64): return int(o)
+            if isinstance(o, pd.DatetimeIndex): return "date_range"
+            if isinstance(o, pd.datetime): return str(o)
+            print(o)
+            raise TypeError
+
+        myfile = open(dict_values['user_input']['path_output_folder'] + '/json_input_processed.json', 'w')
+        json_data = json.dumps(dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4)
+        myfile.write(json_data)
+        myfile.close()
+        print(myfile)
         return
 
 class helpers:
@@ -217,7 +237,7 @@ class helpers:
         return
 
     def evaluate_timeseries(dict_values, function, use):
-        input_folder = dict_values['user_input']['path_input_folder']
+        input_folder = dict_values['simulation_settings']['path_input_folder']
         # Accessing timeseries of components
         for asset_name in ['pv_plant', 'wind_plant']:
             if asset_name in dict_values:
