@@ -4,20 +4,22 @@ python:
   - '3.6'
 
 # To install packages which are not on pip
-#before_install:
-#  - sudo apt-get install ...
+before_install:
+  - sudo apt-get install coinor-cbc
 #addons:
 #  apt:
 #    update: true
 
 # command to install dependencies
 install:
+  - pip install -r requirements.txt
   - pip install -r tests/test_requirements.txt
 
 # commands to run tests 
 script:
-  - flake8
-  - pylint */*.py
+  - pytest tests/tests.py
+#  - flake8
+#  - pylint */*.py
 #jobs:
 #  include:
 #    - stage: "Tests"                # naming the Tests stage
