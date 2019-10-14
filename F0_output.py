@@ -1,4 +1,4 @@
-from F1_plotting import plots
+from .F1_plotting import plots
 import pandas as pd
 import logging
 
