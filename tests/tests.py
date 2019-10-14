@@ -1,5 +1,7 @@
 import pytest
+import os
 
+from mvs_eland_tool import main
 
 def test_run_smoothly():
-    assert 1 == 2
+    assert main() == 1
