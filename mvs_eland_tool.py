@@ -37,52 +37,60 @@ from D0_modelling_and_optimization import modelling
 from E0_evaluation import evaluation
 from F0_output import output_processing
 
-# Display welcome text 
-version = '0.0.1' #update_me Versioning scheme: Major release.Minor release.Patches
-date = '19.09.2019' #update_me Update date
 
-welcome_text = \
-    '\n \n Multi-Vector Simulation Tool (MVS) V' + version + ' ' + \
-    '\n Version: ' + date + ' ' + \
-    '\n Part of the toolbox of H2020 project "E-LAND", ' + \
-    'Integrated multi-vector management system for Energy isLANDs' + \
-    '\n Coded at: Reiner Lemoine Institute (Berlin) ' + \
-    '\n Contributors: Martha M. Hoffmann \n \n '
+def main():
+    # Display welcome text
+    version = '0.0.1' #update_me Versioning scheme: Major release.Minor release.Patches
+    date = '19.09.2019' #update_me Update date
 
-logging.debug('Accessing script: A_initialization')
-user_input = initializing.welcome(welcome_text)
-# Read all inputs
-print('')
-logging.debug('Accessing script: B0_data_input')
-dict_values, included_assets = data_input.all(user_input)
-dict_values.update({'user_input': user_input})
+    welcome_text = \
+        '\n \n Multi-Vector Simulation Tool (MVS) V' + version + ' ' + \
+        '\n Version: ' + date + ' ' + \
+        '\n Part of the toolbox of H2020 project "E-LAND", ' + \
+        'Integrated multi-vector management system for Energy isLANDs' + \
+        '\n Coded at: Reiner Lemoine Institute (Berlin) ' + \
+        '\n Contributors: Martha M. Hoffmann \n \n '
 
-import json
-import numpy
-import pandas as pd
-def convert(o):
-    if isinstance(o, numpy.int64): return int(o)
-    if isinstance(o, pd.DatetimeIndex): return "date_range"
-    if isinstance(o, pd.datetime): return str(o)
-    print(o)
-    raise TypeError
+    logging.debug('Accessing script: A_initialization')
+    user_input = initializing.welcome(welcome_text)
+    # Read all inputs
+    print('')
+    logging.debug('Accessing script: B0_data_input')
+    dict_values, included_assets = data_input.all(user_input)
+    dict_values.update({'user_input': user_input})
 
-myfile = open(dict_values['user_input']['path_output_folder']+'/dictionary_to_json.json', 'w')
-json = json.dumps(dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4)
-myfile.write(json)
-myfile.close()
+    import json
+    import numpy
+    import pandas as pd
+    def convert(o):
+        if isinstance(o, numpy.int64): return int(o)
+        if isinstance(o, pd.DatetimeIndex): return "date_range"
+        if isinstance(o, pd.datetime): return str(o)
+        print(o)
+        raise TypeError
 
-print(myfile)
-print('')
-logging.debug('Accessing script: C0_data_processing')
-data_processing.all(dict_values)
-print('')
-logging.debug('Accessing script: D0_modelling_and_optimization')
-results_meta, results_main, dict_model = modelling.run_oemof(dict_values)
+    myfile = open(dict_values['user_input']['path_output_folder']+'/dictionary_to_json.json', 'w')
+    json = json.dumps(dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4)
+    myfile.write(json)
+    myfile.close()
 
-print('')
-logging.debug('Accessing script: E0_evaluation')
-evaluation.evaluate_dict(dict_values, results_main, results_meta, dict_model)
+    print(myfile)
+    print('')
+    logging.debug('Accessing script: C0_data_processing')
+    data_processing.all(dict_values)
+    print('')
+    logging.debug('Accessing script: D0_modelling_and_optimization')
+    results_meta, results_main, dict_model = modelling.run_oemof(dict_values)
 
-logging.debug('Accessing script: F0_outputs')
-output_processing.evaluate_dict(dict_values)
+    print('')
+    logging.debug('Accessing script: E0_evaluation')
+    evaluation.evaluate_dict(dict_values, results_main, results_meta, dict_model)
+
+    logging.debug('Accessing script: F0_outputs')
+    output_processing.evaluate_dict(dict_values)
+
+    return 1
+
+if __name__=="__main__":
+    print('in main')
+    main()
