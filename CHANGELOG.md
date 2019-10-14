@@ -16,13 +16,27 @@ Here is a template for new release sections
 ### Removed
 -
 ```
-## [Unreleased]
+## [Unrelease]
 
 ### Added
-- one thing
+
 
 ### Changed
-- another thing
+
+
+### Removed
+
+
+## [0.0.1] - 2019-10-14
+
+### Added
+- CONTRIBUTING (#8)
+- CHANGELOG (#8)
+- Tests (#8, #10)
+
+### Changed
+- relative imports (#10)
+- moved `mvs_eland_tool`'s content in a function (#10)
 
 ### Removed
 - yet another thing
