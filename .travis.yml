@@ -4,8 +4,8 @@ python:
   - '3.6'
 
 # To install packages which are not on pip
-#before_install:
-#  - sudo apt-get install ...
+before_install:
+  - sudo apt-get install coinor-cbc
 #addons:
 #  apt:
 #    update: true
