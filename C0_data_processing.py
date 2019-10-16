@@ -36,7 +36,7 @@ class data_processing:
         # Adds costs to each asset and sub-asset
         data_processing.economic_data(dict_values)
 
-        data_processing.store_as_json(dict_values)
+        #data_processing.store_as_json(dict_values)
         return
 
     def economic_data(dict_values):
@@ -73,7 +73,7 @@ class data_processing:
                         if isinstance(dict_values[asset_name][sub_asset_name][sub_sub_asset_name], dict):
                             if 'lifetime' in dict_values[asset_name][sub_asset_name][sub_sub_asset_name].keys():
                                 # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity
-                                helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
+                                helpers.evaluate_lifetime_costs(dict_values['settings'],
                                                                 dict_values['economic_data'],
                                                                 dict_values[asset_name][sub_asset_name][sub_sub_asset_name])
 
@@ -237,7 +237,7 @@ class helpers:
         return
 
     def evaluate_timeseries(dict_values, function, use):
-        input_folder = dict_values['simulation_settings']['path_input_folder']
+        input_folder = dict_values['user_input']['path_input_folder']
         # Accessing timeseries of components
         for asset_name in ['pv_plant', 'wind_plant']:
             if asset_name in dict_values:

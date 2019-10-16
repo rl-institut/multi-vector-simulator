@@ -13,36 +13,26 @@ class verify():
         return
 
     def check_input_values(dict_values):
-
-        for key_1st_level in dict_values:
-            if not(isinstance(dict_values[key_1st_level], str)) \
-                    and "value" in dict_values[key_1st_level].keys():
+        for asset_name in dict_values:
+            if not(isinstance(dict_values[asset_name], dict)):
                 # checking first layer of dict_values
-                verify.all_valid_intervals(key_1st_level, dict_values[key_1st_level]['value'], "")
-            elif (isinstance(dict_values[key_1st_level], str)):
-                pass
+                verify.all_valid_intervals(asset_name, dict_values[asset_name], "")
             else:
                 #logging.debug('Asset %s checked for validation.', asset_name)
-                for sub_asset_name in dict_values[key_1st_level]:
-                    if not (isinstance(dict_values[key_1st_level][sub_asset_name], str)) \
-                            and "value" in dict_values[key_1st_level][sub_asset_name].keys():
+                for sub_asset_name in dict_values[asset_name]:
+                    if not (isinstance(dict_values[asset_name][sub_asset_name], dict)):
                         #checking second layer of dict values
                         verify.all_valid_intervals(sub_asset_name,
-                                                   dict_values[key_1st_level][sub_asset_name]['value'],
-                                                   key_1st_level)
-                    elif isinstance(dict_values[key_1st_level][sub_asset_name], str):
-                        pass
+                                                   dict_values[asset_name][sub_asset_name],
+                                                   asset_name)
                     else:
                         #logging.debug('\t Sub-asset %s checked for validation.', sub_asset_name)
-                        for sub_sub_asset_name in dict_values[key_1st_level][sub_asset_name]:
-                            if not (isinstance(dict_values[key_1st_level][sub_asset_name][sub_sub_asset_name], str)) \
-                                    and "value" in dict_values[key_1st_level][sub_asset_name][sub_sub_asset_name].keys() :
+                        for sub_sub_asset_name in dict_values[asset_name][sub_asset_name]:
+                            if not (isinstance(dict_values[asset_name][sub_asset_name][sub_sub_asset_name], dict)):
                                 # checking third layer of dict values
                                 verify.all_valid_intervals(sub_sub_asset_name,
-                                                           dict_values[key_1st_level][sub_asset_name][sub_sub_asset_name]['value'],
-                                                           key_1st_level + sub_asset_name)
-                            elif isinstance(dict_values[key_1st_level][sub_asset_name][sub_sub_asset_name], str):
-                                pass
+                                                           dict_values[asset_name][sub_asset_name][sub_sub_asset_name],
+                                                           asset_name + sub_asset_name)
                             else:
                                 #logging.debug('\t\t Sub-sub-asset %s checked for validation.', sub_sub_asset_name)
                                 logging.critical('Verification Error! Add another layer to evaluation.')
