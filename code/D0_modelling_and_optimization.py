@@ -41,7 +41,7 @@ class modelling:
         # "for loop" chosen to raise errors in case entries are not defined
         # other way would be: if key in dict_values: define/call component
         for dict_key in dict_values.keys():
-            if dict_key in ['project_data', 'settings', 'economic_data', 'user_input']:
+            if dict_key in ['project_data', 'settings', 'economic_data', 'simulation settings']:
                 pass
             elif dict_key == 'electricity_grid':
                 # this only defines the electricity bus itself
@@ -126,9 +126,9 @@ class modelling:
             'pp_biomass': '#01b42e'}
         plots.draw_graph(model, node_color=color_dict)
         '''
-        if dict_values['user_input']['lp_file_output'] == True:
+        if dict_values['simulation settings']['lp_file_output'] == True:
             logging.debug('Saving to lp-file.')
-            local_energy_system.write(dict_values['user_input']['path_output_folder'] + '/lp_file.lp',
+            local_energy_system.write(dict_values['simulation settings']['path_output_folder'] + '/lp_file.lp',
                         io_options={'symbolic_solver_labels': True})
 
         logging.info('Starting simulation.')

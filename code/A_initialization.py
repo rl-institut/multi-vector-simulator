@@ -101,7 +101,7 @@ class initializing():
 
         path_input_folder, name_input_file = initializing.check_input_directory(path_input_file)
         initializing.check_output_directory(path_output_folder, overwrite)
-        user_input = {'label': 'user_input',
+        user_input = {'label': 'simulation settings',
                       'path_input_folder': path_input_folder + '/',
                       'path_input_file': path_input_file,
                       'input_file_name': name_input_file,

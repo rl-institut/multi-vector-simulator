@@ -43,22 +43,22 @@ class output_processing():
             results_scalars_other = pd.DataFrame.from_dict(results_scalars_other).transpose()
 
             results_timeseries_output_file = 'timeseries_'+sector+'.xlsx'
-            results_timeseries.to_excel(dict_values['user_input']['path_output_folder'] + '/'+ results_timeseries_output_file)
+            results_timeseries.to_excel(dict_values['simulation settings']['path_output_folder'] + '/'+ results_timeseries_output_file)
             logging.info('Saved resulting timeseries to: %s.', results_timeseries_output_file)
 
             scalars.update({sector: {'results_scalars_assets': results_scalars_assets,
                                      'results_scalars_other': results_scalars_other}})
 
-            plots.flows(dict_values['user_input'], dict_values['project_data'], results_timeseries, sector, 14)
-            plots.flows(dict_values['user_input'], dict_values['project_data'], results_timeseries, sector, 365)
+            plots.flows(dict_values['simulation settings'], dict_values['project_data'], results_timeseries, sector, 14)
+            plots.flows(dict_values['simulation settings'], dict_values['project_data'], results_timeseries, sector, 365)
 
         # plot the capacities and the annuity costs
-        plots.capacities(dict_values['user_input'],dict_values['project_data'],capacities)
-        plots.costs(dict_values['user_input'],dict_values['project_data'],annuity_costs)
+        plots.capacities(dict_values['simulation settings'],dict_values['project_data'],capacities)
+        plots.costs(dict_values['simulation settings'],dict_values['project_data'],annuity_costs)
 
         # Write everything to file with multipe tabs
         results_scalar_output_file = '/scalars' + '.xlsx'
-        with pd.ExcelWriter(dict_values['user_input']['path_output_folder'] + results_scalar_output_file) as open_file:  # doctest: +SKIP
+        with pd.ExcelWriter(dict_values['simulation settings']['path_output_folder'] + results_scalar_output_file) as open_file:  # doctest: +SKIP
             for sector in scalars.keys():
                 scalars[sector]['results_scalars_assets'].to_excel(open_file, sheet_name=sector)
                 logging.info('Saved scalar results to: %s, tab %s.', results_scalar_output_file, sector)

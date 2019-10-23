@@ -3,7 +3,7 @@ import logging
 class economics:
     def get_costs(dict_asset, economic_data):
         if isinstance(dict_asset, dict) \
-                and not(dict_asset['label'] in ['settings', 'economic_data', 'electricity_demand', 'user_input', 'simulation_results']):
+                and not(dict_asset['label'] in ['settings', 'economic_data', 'electricity_demand', 'simulation settings', 'simulation_results']):
             logging.debug('Calculating costs of asset %s', dict_asset['label'])
             costs_total = 0
             cost_om = 0

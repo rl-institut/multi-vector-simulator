@@ -89,7 +89,7 @@ class data_processing:
             print(o)
             raise TypeError
 
-        myfile = open(dict_values['user_input']['path_output_folder'] + '/json_input_processed.json', 'w')
+        myfile = open(dict_values['simulation settings']['path_output_folder'] + '/json_input_processed.json', 'w')
         json_data = json.dumps(dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4)
         myfile.write(json_data)
         myfile.close()
@@ -158,7 +158,7 @@ class helpers:
 
     def add_input_output_busses(dict_values):
         for asset in dict_values.keys():
-            if asset in ['project_data', 'settings', 'economic_data', 'user_input', ]:
+            if asset in ['project_data', 'settings', 'economic_data', 'simulation settings', ]:
                 pass
             elif asset == 'electricity_grid':
                 logging.warning('%s has not been included in model jet, specifically efficiency.', asset)
@@ -237,7 +237,7 @@ class helpers:
         return
 
     def evaluate_timeseries(dict_values, function, use):
-        input_folder = dict_values['user_input']['path_input_folder']
+        input_folder = dict_values['simulation settings']['path_input_folder']
         # Accessing timeseries of components
         for asset_name in ['pv_plant', 'wind_plant']:
             if asset_name in dict_values:
@@ -252,7 +252,7 @@ class helpers:
                     function(file_path, asset_name)
                 elif use == 'receive_data':
                     # receive data and write it into dict_values
-                    function(dict_values['settings'], dict_values['user_input'], dict_values[asset_name][sub_name], file_path, asset_name)
+                    function(dict_values['settings'], dict_values['simulation settings'], dict_values[asset_name][sub_name], file_path, asset_name)
 
         # Accessing timeseries of demands
         for demand_type in ['electricity_demand', 'heat_demand']:
@@ -266,7 +266,7 @@ class helpers:
                             function(file_path, demand_key)
                         elif use == 'receive_data':
                             # receive data and write it into dict_values
-                            function(dict_values['settings'], dict_values['user_input'], dict_values[demand_type][demand_key], file_path, demand_key)
+                            function(dict_values['settings'], dict_values['simulation settings'], dict_values[demand_type][demand_key], file_path, demand_key)
         return
 
 class receive_data:
