@@ -11,12 +11,13 @@ from copy import deepcopy
 
 class data_processing:
     def all(dict_values):
+        data_processing.simulation_settings(dict_values['simulation_settings'])
+
         ## Verify inputs
         # check whether input values can be true
         verify.check_input_values(dict_values)
         # Check, whether files (demand, generation) are existing
         helpers.evaluate_timeseries(dict_values, verify.lookup_file, 'verify')
-
         ## Complete data values
         # Receive data from timeseries and process their format
         helpers.evaluate_timeseries(dict_values, receive_data.timeseries_csv, 'receive_data')
@@ -36,36 +37,55 @@ class data_processing:
         # Adds costs to each asset and sub-asset
         data_processing.economic_data(dict_values)
 
-        #data_processing.store_as_json(dict_values)
+        data_processing.store_as_json(dict_values)
         return
+
+    def simulation_settings(simulation_settings):
+        simulation_settings.update({'start_date': pd.to_datetime(simulation_settings['start_date'])})
+        simulation_settings.update({'end_date': simulation_settings['start_date']
+                                                               +pd.DateOffset(
+                                            days=simulation_settings['evaluated_period']['value'],
+                                            hours=-1)})
+
+        simulation_settings.update({
+            'time_index': pd.date_range(start=simulation_settings['start_date'],
+                                        end=simulation_settings['end_date'],
+                                        freq=str(simulation_settings['timestep']['value']) + 'min')})
+
+        simulation_settings.update({'periods': len(simulation_settings['time_index'])})
+        return simulation_settings
 
     def economic_data(dict_values):
         # Calculate annuitiy factor
         dict_values['economic_data'].update({
-            'annuity_factor': economics.annuity_factor(
-                dict_values['economic_data']['project_duration'],
-                dict_values['economic_data']['discount_factor'])})
+            'annuity_factor':
+                {'value': economics.annuity_factor(dict_values['economic_data']['project_duration']['value'],
+                dict_values['economic_data']['discount_factor']['value']),
+                'unit': '?'}})
 
         # Calculate crf
         dict_values['economic_data'].update({
-            'crf': economics.crf(
-                dict_values['economic_data']['project_duration'],
-                dict_values['economic_data']['discount_factor'])})
+            'crf':
+                {'value': economics.crf(
+                dict_values['economic_data']['project_duration']['value'],
+                dict_values['economic_data']['discount_factor']['value']),
+                'unit': "?"}})
 
         for asset_name in dict_values:
             # Main assets
             if 'lifetime' in dict_values[asset_name].keys():
                 # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity
-                helpers.evaluate_lifetime_costs(dict_values['settings'],
+                helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
                                                 dict_values['economic_data'],
                                                 dict_values[asset_name])
 
+            # todo this might be shortened (discuss in https://github.com/smartie2076/mvs_eland/issues/19)
             # Sub-assets, ie. pv_installation and solar_inverter of PV plant
             for sub_asset_name in dict_values[asset_name]:
                 if isinstance(dict_values[asset_name][sub_asset_name], dict):
                     if 'lifetime' in dict_values[asset_name][sub_asset_name].keys():
                         # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity
-                        helpers.evaluate_lifetime_costs(dict_values['settings'],
+                        helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
                                                         dict_values['economic_data'],
                                                         dict_values[asset_name][sub_asset_name])
 
@@ -73,10 +93,9 @@ class data_processing:
                         if isinstance(dict_values[asset_name][sub_asset_name][sub_sub_asset_name], dict):
                             if 'lifetime' in dict_values[asset_name][sub_asset_name][sub_sub_asset_name].keys():
                                 # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity
-                                helpers.evaluate_lifetime_costs(dict_values['settings'],
+                                helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
                                                                 dict_values['economic_data'],
                                                                 dict_values[asset_name][sub_asset_name][sub_sub_asset_name])
-
 
         logging.info('Processed cost data and added economic values.')
         return
@@ -208,31 +227,42 @@ class helpers:
             dict_asset.update({'capex_var': 0})
 
         dict_asset.update({'lifetime_capex_var':
-                                       economics.capex_from_investment(dict_asset['capex_var'],
-                                                                       dict_asset['lifetime'],
-                                                                       economic_data['project_duration'],
-                                                                       economic_data['discount_factor'],
-                                                                       economic_data['tax'])})
+                               {'value':
+                                    economics.capex_from_investment(dict_asset['capex_var']['value'],
+                                                                    dict_asset['lifetime']['value'],
+                                                                    economic_data['project_duration']['value'],
+                                                                    economic_data['discount_factor']['value'],
+                                                                    economic_data['tax']['value']),
+                                'unit': dict_asset['capex_var']['unit']}
+                           })
 
         # Annuities of components including opex AND capex #
         dict_asset.update({'annuity_capex_opex_var':
-                                       economics.annuity(dict_asset['lifetime_capex_var'],
-                                                         economic_data['crf'])
-                                       + dict_asset['opex_fix']})
+                               {'value':
+                                    economics.annuity(dict_asset['lifetime_capex_var']['value'],
+                                                         economic_data['crf']['value'])
+                                    + dict_asset['opex_fix']['value'],
+                                'unit': dict_asset['lifetime_capex_var']['unit']+'/a'}
+                           })
+
 
         dict_asset.update({'lifetime_opex_fix':
-                                       dict_asset['opex_fix'] * economic_data['annuity_factor']})
+                               {'value': dict_asset['opex_fix']['value'] * economic_data['annuity_factor']['value'],
+                                'unit': dict_asset['opex_fix']['unit'][:-2]}
+                            })
 
         dict_asset.update({'lifetime_opex_var':
-                                       dict_asset['opex_var'] * economic_data['annuity_factor']})
+                               {'value': dict_asset['opex_var']['value'] * economic_data['annuity_factor']['value'],
+                                'unit': "?"}
+                                       })
 
         # Scaling annuity to timeframe
         # Updating all annuities above to annuities "for the timeframe", so that optimization is based on more adequate
         # costs. Includes project_cost_annuity, distribution_grid_cost_annuity, maingrid_extension_cost_annuity for
         # consistency eventhough these are not used in optimization.
         dict_asset.update({'simulation_annuity':
-                                       dict_asset['annuity_capex_opex_var'] / 365
-                                       * settings['evaluated_period']})
+                                       dict_asset['annuity_capex_opex_var']['value'] / 365
+                                       * settings['evaluated_period']['value']})
 
         return
 

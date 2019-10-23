@@ -26,7 +26,7 @@ class modelling:
 
         logging.info('Initializing oemof simulation.')
         model = solph.EnergySystem(
-            timeindex=dict_values['settings']['index'])
+            timeindex=dict_values['simulation_settings']['time_index'])
 
         #this dictionary will include all generated oemof objects
         dict_model = {'busses': {},
