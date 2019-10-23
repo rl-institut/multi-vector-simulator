@@ -23,7 +23,9 @@ class data_processing:
         helpers.evaluate_timeseries(dict_values, receive_data.timeseries_csv, 'receive_data')
         #todo add option to receive data online
 
-        helpers.define_sink(dict_values, 'electricity_excess', None)
+        for sector in dict_values['project_data']['sectors']:
+            helpers.define_sink(dict_values, 'excess', None, sector)
+
         # Add symbolic costs
         if 'electricity_storage' in dict_values:
             helpers.create_twins_in_out(dict_values['electricity_storage'], 'charge_controller', drop_symbolic_costs=True)
@@ -139,25 +141,40 @@ class helpers:
                                                    'price': price}})
         return
 
-    def define_sink(dict_asset, asset_name, price_name):
+    def define_sink(dict_values, asset_name, price_name, input_bus_name):
+        # This generates the excess sink
         if price_name == None:
-            dict_asset.update({asset_name: {'type': 'sink',
-                                            'label': asset_name + '_sink',
-                                            'price': 0}})
+            price = 0
 
-        elif asset_name in dict_asset.keys():
-            if price_name in dict_asset[asset_name]['out'].keys():
-                price = dict_asset[asset_name]['out'][price_name]
+        elif asset_name in dict_values.keys():
+            if price_name in dict_values[asset_name]['out'].keys():
+                price = dict_values[asset_name]['out'][price_name]
                 if price_name == 'feedin_tariff':
+                    # the "price" for feed-in is negative, ie. creates revenue
                     price = -1 * price
-                dict_asset[asset_name].update({'sink': {'type': 'sink',
-                                                        'label': asset_name + '_sink',
-                                                        'price': price}})
             else:
                 logging.warning('Price name %s does not exist in %s.', price_name, asset_name)
         else:
             logging.error('Asset %s does not exist, while price_name = None.', asset_name)
 
+        # create a dictionary for the sink
+        sink = {'type': 'sink',
+                'label': asset_name + '_sink',
+                'input_bus_name': input_bus_name,
+                "capex_fix": {"value": 0, "unit": "currency"},
+                "capex_var": {"value": 0, "unit": "currency"},
+                "opex_fix": {"value": 0, "unit": "currency/year"},
+                "opex_var": {"value": price, "unit": "currency/kWh"},
+                "lifetime": {"value": dict_values['economic_data']['project_duration']['value'],
+                             "unit": "year"}
+                }
+
+        # create new input bus if non-existent before
+        if 'input_bus_name' not in dict_values['energyConsumption'].keys():
+            dict_values['energyConsumption'].update({input_bus_name: {}})
+
+        # update dictionary
+        dict_values['energyConsumption'][input_bus_name].update({asset_name: sink})
         return
 
     def add_input_output_busses(dict_values):
