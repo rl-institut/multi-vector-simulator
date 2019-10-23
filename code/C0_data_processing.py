@@ -103,6 +103,29 @@ class data_processing:
         return
 
 class helpers:
+    def define_dso_sinks_and_sources(dict_values, sector, dso):
+        if  dict_values['energyProviders'][sector]['peak_demand_pricing_period'] == 1:
+            helpers.define_sink(dict_values,
+                                'dso_consumption',
+                                'feedin_tariff',
+                                dict_values['energyProviders'][sector]['outflow_direction'])
+
+            helpers.define_source(dict_values,
+                                  'dso_feedin',
+                                  'energy_price',
+                                  dict_values['energyProviders'][sector]['inflow_direction'])
+
+
+        for pricing_period in range(1, dict_values['energyProviders'][sector]['peak_demand_pricing_period']+1):
+            helpers.define_sink(dict_values,
+                                'dso_consumption_period'+str(pricing_period),
+                                'feedin_tariff',
+                                dict_values['energyProviders'][sector]['outflow_direction'])
+
+            helpers.define_source(dict_values,
+                                  'dso_feedin_period'+str(pricing_period),
+                                  'electricity_price',
+                                  dict_values['energyProviders'][sector]['inflow_direction'])
 
     def create_twins_in_out(dict_asset, name_subasset, drop_symbolic_costs):
         subasset = dict_asset[name_subasset]
