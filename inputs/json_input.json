@@ -16,10 +16,8 @@
         "project_name": "Borg Havn",
         "scenario_name": "Warehouse 14",
         "sectors": {
-            "electricity_bus": "Electricity bus (LES)",
-            "heat_bus":  "Heat bus (LES)",
-            "gas_bus": null,
-            "h2_bus": null
+            "electricity": "Electricity bus (LES)",
+            "heat":  "Heat bus (LES)"
         }
     },
     "simulation_settings": {
@@ -32,7 +30,7 @@
         "overwrite": true,
         "path_input_file": "./inputs/test_input_file_v1.xlsx",
         "path_input_folder": "./inputs/",
-        "path_output_folder": "./outputs",
+        "path_output_folder": "./MVS_outputs",
         "path_output_folder_inputs": "./outputs/inputs/"
     },
     "fixCost": {
@@ -40,7 +38,7 @@
             "distribution_grid": {
                 "age_installed": {"value": 10, "unit": "year"},
                 "capex_fix": {"value": 0.0, "unit": "currency"},
-                "capex_var": {"value": 0.0, "unit": "currency/year"},
+                "capex_var": {"value": 0.0, "unit": "currency"},
                 "label": "distribution_grid",
                 "lifetime": {"value": 30, "unit": "year"},
                 "opex_fix": {"value": 0, "unit": "currency/year"},
@@ -48,8 +46,19 @@
             }
         },
         "project": {
-            "capex_fix": {"value": 0.0, "unit": "currency"},
-            "opex_fix": {"value": 4600, "unit": "currency per year (electricity bill)"}
+            "engineering": {
+                "capex_fix": {"value": 0, "unit": "currency"},
+                "capex_var": {"value": 0, "unit": "currency"},
+                "opex_fix": {"value": 0, "unit": "currency/year"},
+                "opex_var": {"value": 0, "unit": "currency/kWh"},
+                "lifetime": {"value": 20, "unit": "year"}
+            },
+            "operation":
+                {"capex_fix": {"value": 0, "unit": "currency"},
+                "capex_var": {"value": 0, "unit": "currency"},
+                "opex_fix": {"value": 4600, "unit": "currency/year (electricity bill)"},
+                "opex_var": {"value": 0, "unit": "currency/kWh"},
+                "lifetime": {"value": 20, "unit": "year"}}
             }
     },
     "energyConsumption": {
@@ -59,24 +68,38 @@
                 "file_name": "demand_habor.csv",
                 "label": "Habor",
                 "type_asset": "demand",
-                "type_oemof": "sink"
+                "type_oemof": "sink",
+                "capex_fix": {"value": 0, "unit": "currency"},
+                "capex_var": {"value": 0, "unit": "currency"},
+                "opex_fix": {"value": 0, "unit": "currency/year"},
+                "opex_var": {"value": 0, "unit": "currency/kWh"},
+                "lifetime": {"value": 20, "unit": "year"}
             },
             "demand_02": {
                 "dsm": false,
                 "file_name": "demand_remaining.csv",
                 "label": "Remaining demand",
                 "type_asset": "demand",
-                "type_oemof": "sink"
+                "type_oemof": "sink",
+                "capex_fix": {"value": 0, "unit": "currency"},
+                "capex_var": {"value": 0, "unit": "currency"},
+                "opex_fix": {"value": 0, "unit": "currency/year"},
+                "opex_var": {"value": 0, "unit": "currency/kWh"},
+                "lifetime": {"value": 20, "unit": "year"}
             },
             "demand_03": {
                 "dsm": false,
                 "file_name": "demand_shore_power.csv",
                 "label": "Shore power (docked ships)",
                 "type_asset": "demand",
-                "type_oemof": "sink"
-            },
+                "type_oemof": "sink",
+                "capex_fix": {"value": 0, "unit": "currency"},
+                "capex_var": {"value": 0, "unit": "currency"},
+                "opex_fix": {"value": 0, "unit": "currency/year"},
+                "opex_var": {"value": 0, "unit": "currency/kWh"},
+                "lifetime": {"value": 20, "unit": "year"}
+            }},
         "heat": {}
-        }
     },
     "energyProviders": {
         "electricity": {
@@ -90,7 +113,7 @@
                 "label": "Electricity Grid (DSO)",
                 "lifetime": {"value": 30, "unit": "year"},
                 "opex_fix":  {"value": 0, "unit": "currency/kW/year"},
-                "opex_var":  {"value": 0.54, "unit": "currency/kWh"},
+                "electricity_price":  {"value": 0.54, "unit": "currency/kWh"},
                 "optimizeCap": true,
                 "peak_demand_pricing_period": {"value": 12, "unit": "times per year"},
                 "type_oemof": "source"
@@ -155,9 +178,8 @@
                 "opex_var": {"value": 0, "unit": "currency/kWh"},
                 "optimizeCap": true,
                 "type_oemof": "transformer",
-                "inflow_direction": "Electricity bus (DSO)",
-                "outflow_direction": "Electricity bus (LES)"
-        }
+                "inflow_direction": "electricity (DSO)",
+                "outflow_direction": "electricity"}
     },
     "energyStorage": {
         "electricity": {
