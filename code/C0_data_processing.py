@@ -2,13 +2,12 @@ try:
     from .C1_verification import verify
     from .C2_economic_functions import economics
 except ImportError:
-    from C1_verification import verify
-    from C2_economic_functions import economics
+    from code.C1_verification import verify
+    from code.C2_economic_functions import economics
 
 import pandas as pd
 import logging
 import sys, shutil
-import pprint as pp
 from copy import deepcopy
 
 class data_processing:

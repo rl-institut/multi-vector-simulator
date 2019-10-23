@@ -4,7 +4,7 @@ import pprint as pp
 try:
     from .B1_read_excel import read_template
 except ImportError:
-    from B1_read_excel import read_template
+    from code.B1_read_excel import read_template
 
 class data_input:
     def all(user_input):
