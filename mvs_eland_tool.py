@@ -63,26 +63,21 @@ def main():
     user_input = initializing.welcome(welcome_text)
     # Read all inputs
     print('')
-    logging.debug('Accessing script: B0_data_input')
-    dict_values, included_assets = data_input.all(user_input)
-    dict_values.update({'user_input': user_input})
-
     import json
-    import numpy
-    import pandas as pd
-    def convert(o):
-        if isinstance(o, numpy.int64): return int(o)
-        if isinstance(o, pd.DatetimeIndex): return "date_range"
-        if isinstance(o, pd.datetime): return str(o)
-        print(o)
-        raise TypeError
 
-    myfile = open(dict_values['user_input']['path_output_folder']+'/dictionary_to_json.json', 'w')
-    json = json.dumps(dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4)
-    myfile.write(json)
-    myfile.close()
+    if user_input['input_file_name'][-4:] == "json":
+        with open(user_input['path_input_file']) as json_file:
+            dict_values = json.load(json_file)
 
-    print(myfile)
+    elif user_input['input_file_name'][-4:] == "xlsx":
+        logging.info('Input data has to be red from excel file.')
+        logging.debug('Accessing script: B0_data_input')
+        dict_values, included_assets = data_input.all(user_input)
+        dict_values.update({'user_input': user_input})
+
+    else:
+        logging.error("Wrong input file format. Can only be json or xlsx!")
+
     print('')
     logging.debug('Accessing script: C0_data_processing')
     data_processing.all(dict_values)
