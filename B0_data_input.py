@@ -1,7 +1,7 @@
 import pandas as pd
 import logging
 import pprint as pp
-from B1_read_excel import read_template
+from .B1_read_excel import read_template
 
 class data_input:
     def all(user_input):

@@ -1,7 +1,7 @@
 import logging
 import oemof.outputlib as outputlib
-from E1_process_results import process_results
-from E2_economics import economics
+from .E1_process_results import process_results
+from .E2_economics import economics
 
 class evaluation:
     def evaluate_dict(dict_values, results_main, results_meta, dict_model):

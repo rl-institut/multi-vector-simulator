@@ -1,5 +1,5 @@
-from C1_verification import verify
-from C2_economic_functions import economics
+from .C1_verification import verify
+from .C2_economic_functions import economics
 import pandas as pd
 import logging
 import sys, shutil
