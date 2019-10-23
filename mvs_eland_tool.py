@@ -32,7 +32,7 @@ import logging
 # Loading all child functions
 try:
     from .code.A_initialization import initializing
-    from .code.B0_data_input import data_input
+    from .code.B0_data_input_json import data_input
     from .code.C0_data_processing import data_processing
     from .code.D0_modelling_and_optimization import modelling
     from .code.E0_evaluation import evaluation
@@ -40,7 +40,7 @@ try:
 
 except ModuleNotFoundError:
     from code.A_initialization import initializing
-    from code.B0_data_input import data_input
+    from code.B0_data_input_json import data_input
     from code.C0_data_processing import data_processing
     from code.D0_modelling_and_optimization import modelling
     from code.E0_evaluation import evaluation
@@ -61,17 +61,12 @@ def main():
 
     logging.debug('Accessing script: A_initialization')
     user_input = initializing.welcome(welcome_text)
+
     # Read all inputs
     print('')
+    # todo: is user input completely used?
+    dict_values = data_input.get(user_input)
 
-    #if user_input['input_file_name'][-4:] == "json":
-    import json
-    with open(user_input['path_input_file']) as json_file:
-        dict_values = json.load(json_file)
-
-    # As Check whether B0_data_input is not used at all anymore.
-    # Else: use pieces of it
-    # Move read from json to B0
     print('')
     logging.debug('Accessing script: C0_data_processing')
     data_processing.all(dict_values)
