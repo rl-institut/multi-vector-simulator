@@ -16,13 +16,13 @@ Here is a template for new release sections
 ### Removed
 -
 ```
-## [Unrelease]
+## [0.0.1] - 2019-10-23
 
 ### Added
 
 
 ### Changed
-
+- Introduced new code structure (folder "code") and updated relative import paths (#17)
 
 ### Removed
 
