@@ -68,36 +68,21 @@
                 "file_name": "demand_habor.csv",
                 "label": "Habor",
                 "type_asset": "demand",
-                "type_oemof": "sink",
-                "capex_fix": {"value": 0, "unit": "currency"},
-         gic       "capex_var": {"value": 0, "unit": "currency"},
-                "opex_fix": {"value": 0, "unit": "currency/year"},
-                "opex_var": {"value": 0, "unit": "currency/kWh"},
-                "lifetime": {"value": 20, "unit": "year"}
+                "type_oemof": "sink"
             },
             "demand_02": {
                 "dsm": false,
                 "file_name": "demand_remaining.csv",
                 "label": "Remaining demand",
                 "type_asset": "demand",
-                "type_oemof": "sink",
-                "capex_fix": {"value": 0, "unit": "currency"},
-                "capex_var": {"value": 0, "unit": "currency"},
-                "opex_fix": {"value": 0, "unit": "currency/year"},
-                "opex_var": {"value": 0, "unit": "currency/kWh"},
-                "lifetime": {"value": 20, "unit": "year"}
+                "type_oemof": "sink"
             },
             "demand_03": {
                 "dsm": false,
                 "file_name": "demand_shore_power.csv",
                 "label": "Shore power (docked ships)",
                 "type_asset": "demand",
-                "type_oemof": "sink",
-                "capex_fix": {"value": 0, "unit": "currency"},
-                "capex_var": {"value": 0, "unit": "currency"},
-                "opex_fix": {"value": 0, "unit": "currency/year"},
-                "opex_var": {"value": 0, "unit": "currency/kWh"},
-                "lifetime": {"value": 20, "unit": "year"}
+                "type_oemof": "sink"
             }},
         "heat": {}
     },
@@ -105,9 +90,8 @@
         "electricity": {
             "DSO": {
                 "peak_demand_pricing": {"value": 60, "unit": "currency/kW"},
-                "efficiency": {"value": 0.96, "unit": "factor"},
                 "feedin_tariff": {"value": -0.5, "unit": "currency/kWh"},
-                "label": "electricity (DSO)",
+                "label": "dso",
                 "inflow_direction": "electricity feedin (DSO)",
                 "outflow_direction": "electricity consumption (DSO)",
                 "energy_price":  {"value": 0.54, "unit": "currency/kWh"},
