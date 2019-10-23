@@ -73,13 +73,28 @@ class data_processing:
                 dict_values['economic_data']['discount_factor']['value']),
                 'unit': "?"}})
 
-        # todo ll 77-90 might be shortened (discuss in https://github.com/smartie2076/mvs_eland/issues/19)
         # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity to each asset
-        list_asset_groups = ['fixCost', 'energyConsumption', 'energyProviders', 'energyConversion', 'energyStorage', 'energyProduction']
+        # todo: add sources and sinks depending on items in energy providers as pre-processing
+        #  energyProviders
+        for sector in dict_values['energyProviders']:
+            for dso in dict_values['energyProviders'][sector]:
+                helpers.define_dso_sinks_and_sources(dict_values, sector, dso)
+
+        for asset in dict_values['energyConversion']:
+            print(asset)
+            helpers.define_missing_cost_data(dict_values['economic_data'],
+                                            dict_values['energyConversion'][asset])
+            helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
+                                            dict_values['economic_data'],
+                                            dict_values['energyConversion'][asset])
+
+        list_asset_groups = ['fixCost', 'energyConsumption', 'energyStorage', 'energyProduction', 'energyProviders']
         for group in list_asset_groups:
             for sector in dict_values[group]:
                 for asset in dict_values[group][sector]:
                     print(group, sector, asset)
+                    helpers.define_missing_cost_data(dict_values['economic_data'],
+                                                     dict_values[group][sector][asset])
                     helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
                                                     dict_values['economic_data'],
                                                     dict_values[group][sector][asset])
