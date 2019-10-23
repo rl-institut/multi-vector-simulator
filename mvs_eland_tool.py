@@ -63,24 +63,19 @@ def main():
     user_input = initializing.welcome(welcome_text)
     # Read all inputs
     print('')
+
+    #if user_input['input_file_name'][-4:] == "json":
     import json
+    with open(user_input['path_input_file']) as json_file:
+        dict_values = json.load(json_file)
 
-    if user_input['input_file_name'][-4:] == "json":
-        with open(user_input['path_input_file']) as json_file:
-            dict_values = json.load(json_file)
-
-    elif user_input['input_file_name'][-4:] == "xlsx":
-        logging.info('Input data has to be red from excel file.')
-        logging.debug('Accessing script: B0_data_input')
-        dict_values, included_assets = data_input.all(user_input)
-        dict_values.update({'user_input': user_input})
-
-    else:
-        logging.error("Wrong input file format. Can only be json or xlsx!")
-
+    # As Check whether B0_data_input is not used at all anymore.
+    # Else: use pieces of it
+    # Move read from json to B0
     print('')
     logging.debug('Accessing script: C0_data_processing')
     data_processing.all(dict_values)
+
     print('')
     logging.debug('Accessing script: D0_modelling_and_optimization')
     results_meta, results_main, dict_model = modelling.run_oemof(dict_values)
