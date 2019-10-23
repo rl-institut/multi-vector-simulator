@@ -31,20 +31,20 @@ import logging
 
 # Loading all child functions
 try:
-    from .A_initialization import initializing
-    from .B0_data_input import data_input
-    from .C0_data_processing import data_processing
-    from .D0_modelling_and_optimization import modelling
-    from .E0_evaluation import evaluation
-    from .F0_output import output_processing
+    from code.A_initialization import initializing
+    from code.B0_data_input import data_input
+    from code.C0_data_processing import data_processing
+    from code.D0_modelling_and_optimization import modelling
+    from code.E0_evaluation import evaluation
+    from code.F0_output import output_processing
 
 except ModuleNotFoundError:
-    from A_initialization import initializing
-    from B0_data_input import data_input
-    from C0_data_processing import data_processing
-    from D0_modelling_and_optimization import modelling
-    from E0_evaluation import evaluation
-    from F0_output import output_processing
+    from code.A_initialization import initializing
+    from code.B0_data_input import data_input
+    from code.C0_data_processing import data_processing
+    from code.D0_modelling_and_optimization import modelling
+    from code.E0_evaluation import evaluation
+    from code.F0_output import output_processing
 
 def main():
     # Display welcome text
