@@ -22,7 +22,7 @@
     },
     "simulation_settings": {
         "label": "simulation_settings",
-        "evaluated_period": {"value": 100, "unit": "days"},
+        "evaluated_period": {"value": 365, "unit": "days"},
         "start_date": "2018-01-01 00:00:00",
         "timestep": {"value": 60, "unit": "minutes"},
         "display_output": "-debug",
