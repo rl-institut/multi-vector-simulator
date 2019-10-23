@@ -4,7 +4,10 @@ import logging
 import oemof.solph as solph
 import oemof.outputlib as outputlib
 import pprint as pp
-from .D1_model_components import define, call_component, helpers
+try:
+    from .D1_model_components import define, call_component, helpers
+except ImportError:
+    from D1_model_components import define, call_component, helpers
 
 class modelling:
     def run_oemof(dict_values):

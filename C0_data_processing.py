@@ -1,5 +1,10 @@
-from .C1_verification import verify
-from .C2_economic_functions import economics
+try:
+    from .C1_verification import verify
+    from .C2_economic_functions import economics
+except ImportError:
+    from C1_verification import verify
+    from C2_economic_functions import economics
+
 import pandas as pd
 import logging
 import sys, shutil
