@@ -1,7 +1,10 @@
 import pandas as pd
 import logging
 import pprint as pp
-from .B1_read_excel import read_template
+try:
+    from .B1_read_excel import read_template
+except ImportError:
+    from code.B1_read_excel import read_template
 
 class data_input:
     def all(user_input):

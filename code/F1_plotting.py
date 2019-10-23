@@ -1,9 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import logging
 
 class plots():
+    logging.getLogger('matplotlib.font_manager').disabled = True
+
     def flows(user_input, project_data, results_timeseries, sector, interval):
         logging.info('Creating plots for %s sector', sector)
         steps = interval*24

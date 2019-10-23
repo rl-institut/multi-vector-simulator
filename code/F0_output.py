@@ -1,4 +1,7 @@
-from .F1_plotting import plots
+try:
+    from .F1_plotting import plots
+except ImportError:
+    from code.F1_plotting import plots
 import pandas as pd
 import logging
 
