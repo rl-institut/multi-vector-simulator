@@ -103,6 +103,19 @@ class data_processing:
         return
 
 class helpers:
+    def define_missing_cost_data(economic_data, dict_asset):
+        basic_costs = {"capex_fix": {"value": 0, "unit": "currency"},
+                       "capex_var": {"value": 0, "unit": "currency"},
+                       "opex_fix": {"value": 0, "unit": "currency/year"},
+                       "opex_var": {"value": 0, "unit": "currency/kWh"},
+                       "lifetime": {"value": economic_data['project_duration']['value'],
+                                    "unit": "year"}}
+
+        for cost in basic_costs:
+            if cost not in dict_asset:
+                dict_asset.update({cost: basic_costs[cost]})
+        return
+
     def define_dso_sinks_and_sources(dict_values, sector, dso):
         if  dict_values['energyProviders'][sector]['peak_demand_pricing_period'] == 1:
             helpers.define_sink(dict_values,
