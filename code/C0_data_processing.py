@@ -71,31 +71,16 @@ class data_processing:
                 dict_values['economic_data']['discount_factor']['value']),
                 'unit': "?"}})
 
-        for asset_name in dict_values:
-            # Main assets
-            if 'lifetime' in dict_values[asset_name].keys():
-                # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity
-                helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
-                                                dict_values['economic_data'],
-                                                dict_values[asset_name])
-
-            # todo this might be shortened (discuss in https://github.com/smartie2076/mvs_eland/issues/19)
-            # Sub-assets, ie. pv_installation and solar_inverter of PV plant
-            for sub_asset_name in dict_values[asset_name]:
-                if isinstance(dict_values[asset_name][sub_asset_name], dict):
-                    if 'lifetime' in dict_values[asset_name][sub_asset_name].keys():
-                        # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity
-                        helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
-                                                        dict_values['economic_data'],
-                                                        dict_values[asset_name][sub_asset_name])
-
-                    for sub_sub_asset_name in dict_values[asset_name][sub_asset_name]:
-                        if isinstance(dict_values[asset_name][sub_asset_name][sub_sub_asset_name], dict):
-                            if 'lifetime' in dict_values[asset_name][sub_asset_name][sub_sub_asset_name].keys():
-                                # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity
-                                helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
-                                                                dict_values['economic_data'],
-                                                                dict_values[asset_name][sub_asset_name][sub_sub_asset_name])
+        # todo ll 77-90 might be shortened (discuss in https://github.com/smartie2076/mvs_eland/issues/19)
+        # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity to each asset
+        list_asset_groups = ['fixCost', 'energyConsumption', 'energyProviders', 'energyConversion', 'energyStorage', 'energyProduction']
+        for group in list_asset_groups:
+            for sector in dict_values[group]:
+                for asset in dict_values[group][sector]:
+                    print(group, sector, asset)
+                    helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
+                                                    dict_values['economic_data'],
+                                                    dict_values[group][sector][asset])
 
         logging.info('Processed cost data and added economic values.')
         return
