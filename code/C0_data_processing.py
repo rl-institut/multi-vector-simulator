@@ -21,15 +21,9 @@ class data_processing:
         ## Complete data values
         # Receive data from timeseries and process their format
         helpers.evaluate_timeseries(dict_values, receive_data.timeseries_csv, 'receive_data')
-        #todo add option to receive data online
-
-        for sector in dict_values['project_data']['sectors']:
-            helpers.define_sink(dict_values, 'excess', 0, sector)
-
-        helpers.add_input_output_busses(dict_values)
 
         # Adds costs to each asset and sub-asset
-        data_processing.economic_data(dict_values)
+        data_processing.process_all_assets(dict_values)
 
         data_processing.store_as_json(dict_values)
         return
@@ -49,14 +43,13 @@ class data_processing:
         simulation_settings.update({'periods': len(simulation_settings['time_index'])})
         return simulation_settings
 
-    def economic_data(dict_values):
+    def process_all_assets(dict_values):
         # Calculate annuitiy factor
         dict_values['economic_data'].update({
             'annuity_factor':
                 {'value': economics.annuity_factor(dict_values['economic_data']['project_duration']['value'],
                 dict_values['economic_data']['discount_factor']['value']),
                 'unit': '?'}})
-
         # Calculate crf
         dict_values['economic_data'].update({
             'crf':
@@ -65,6 +58,13 @@ class data_processing:
                 dict_values['economic_data']['discount_factor']['value']),
                 'unit': "?"}})
 
+        # defines dict_values['energyBusses'] for later reference
+        helpers.define_busses(dict_values)
+
+        #Define all excess sinks for sectors
+        for sector in dict_values['project_data']['sectors']:
+            helpers.define_sink(dict_values, 'excess', 0, sector)
+
         # add sources and sinks depending on items in energy providers as pre-processing
         for sector in dict_values['energyProviders']:
             for dso in dict_values['energyProviders'][sector]:
@@ -72,7 +72,6 @@ class data_processing:
 
         # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity to each asset
         for asset in dict_values['energyConversion']:
-            print(asset)
             helpers.define_missing_cost_data(dict_values['economic_data'],
                                             dict_values['energyConversion'][asset])
             helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
@@ -90,6 +89,8 @@ class data_processing:
                     helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
                                                     dict_values['economic_data'],
                                                     dict_values[group][sector][asset])
+                    # populated dict_values['energyBusses'] with assets
+                    helpers.update_busses_in_out_direction(dict_values, dict_values[group][sector])
 
         logging.info('Processed cost data and added economic values.')
         return
@@ -131,6 +132,45 @@ class helpers:
                 dict_asset.update({cost: basic_costs[cost]})
         return
 
+    def define_busses(dict_values):
+        dict_values.update({'energyBusses': {}})
+        # defines energy busses of sectors
+        for sector in dict_values['project_data']['sectors']:
+            dict_values['energyBusses'].update({sector: dict_values['project_data']['sectors'][sector]})
+
+        # defines busses accessed by conversion assets
+        helpers.update_busses_in_out_direction(dict_values, dict_values['energyConversion'])
+        return
+
+    def update_busses_in_out_direction(dict_values, assetgroup):
+        for asset in assetgroup:
+            if 'inflow_direction' in assetgroup[asset]:
+                bus = assetgroup[asset]['inflow_direction']
+                helpers.update_bus(dict_values, bus, asset, assetgroup[asset]['label'])
+
+            if 'outflow_direction' in assetgroup[asset]:
+                bus = assetgroup[asset]['outflow_direction']
+                helpers.update_bus(dict_values, bus, asset, assetgroup[asset]['label'])
+        return
+
+    def update_bus(dict_values, bus, asset, asset_label):
+        def suffix_bus(bus):
+            bus_name = bus + " bus"
+            return bus_name
+
+        if bus not in dict_values['energyBusses']:
+            dict_values['energyBusses'].update({bus: {suffix_bus(bus): {}}})
+        else:
+            print(dict_values['energyBusses'][bus])
+            print(dict_values['energyBusses'][bus][suffix_bus(bus)])
+
+            print({asset: asset_label})
+            dict_values['energyBusses'][bus][suffix_bus(bus)].update({asset: asset_label})
+
+        if asset_label in dict_values['energyBusses']:
+            dict_values['energyBusses'][bus][suffix_bus(bus)].update({asset: asset_label})
+        return
+
     def define_dso_sinks_and_sources(dict_values, sector, dso):
         number_of_pricing_periods = dict_values['energyProviders'][sector][dso]['peak_demand_pricing_period']['value']
         months_in_a_period = 12/number_of_pricing_periods
@@ -152,7 +192,6 @@ class helpers:
                     freq=str(dict_values['simulation_settings']['timestep']['value']) + 'min')
 
                 timeseries = timeseries.add(pd.Series(1, index=time_period), fill_value=0)
-
                 helpers.define_source(dict_values,
                                       dso + '_consumption_period_'+str(pricing_period),
                                       dict_values['energyProviders'][sector][dso]['energy_price']['value'],
@@ -182,6 +221,8 @@ class helpers:
 
         # update dictionary
         dict_values['energyProduction'][output_bus_name].update({asset_name: source})
+        # add to list of assets on busses
+        helpers.update_bus(dict_values, output_bus_name, asset_name, source['label'])
         return
 
     def define_sink(dict_values, asset_name, price, input_bus_name):
@@ -201,6 +242,9 @@ class helpers:
         # update dictionary
         dict_values['energyConsumption'][input_bus_name].update({asset_name: sink})
 
+        # add to list of assets on busses
+        print(input_bus_name, asset_name, sink['label'])
+        helpers.update_bus(dict_values, input_bus_name, asset_name, sink['label'])
         return
 
     def evaluate_lifetime_costs(settings, economic_data, dict_asset):
