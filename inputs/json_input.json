@@ -27,6 +27,7 @@
         "timestep": {"value": 60, "unit": "minutes"},
         "display_output": "-debug",
         "input_file_name": "test_input_file_v1.xlsx",
+        "output_lp_file": false,
         "overwrite": true,
         "path_input_file": "./inputs/test_input_file_v1.xlsx",
         "path_input_folder": "./inputs/",
@@ -91,12 +92,12 @@
             "DSO": {
                 "peak_demand_pricing": {"value": 60, "unit": "currency/kW"},
                 "feedin_tariff": {"value": -0.5, "unit": "currency/kWh"},
-                "label": "dso",
+                "label": "Electricity DSO",
                 "inflow_direction": "electricity feedin (DSO)",
                 "outflow_direction": "electricity consumption (DSO)",
                 "energy_price":  {"value": 0.54, "unit": "currency/kWh"},
                 "optimizeCap": true,
-                "peak_demand_pricing_period": {"value": 12, "unit": "times per simulation"},
+                "peak_demand_pricing_period": {"value": 12, "unit": "times per year (1,2,3,4,6,12"},
                 "type_oemof": "source"
             }
         },
