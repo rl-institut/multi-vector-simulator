@@ -129,9 +129,9 @@ class data_processing:
 class helpers:
     def define_missing_cost_data(economic_data, dict_asset):
         basic_costs = {"capex_fix": {"value": 0, "unit": "currency"},
-                       "capex_var": {"value": 0, "unit": "currency"},
+                       "capex_var": {"value": 0, "unit": "currency/unit"},
                        "opex_fix": {"value": 0, "unit": "currency/year"},
-                       "opex_var": {"value": 0, "unit": "currency/kWh"},
+                       "opex_var": {"value": 0, "unit": "currency/unit/year"},
                        "lifetime": {"value": economic_data['project_duration']['value'],
                                     "unit": "year"}}
 
