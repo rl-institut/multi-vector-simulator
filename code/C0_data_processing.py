@@ -141,28 +141,39 @@ class helpers:
         return
 
     def define_dso_sinks_and_sources(dict_values, sector, dso):
-        if  dict_values['energyProviders'][sector]['peak_demand_pricing_period'] == 1:
-            helpers.define_sink(dict_values,
-                                'dso_consumption',
-                                'feedin_tariff',
-                                dict_values['energyProviders'][sector]['outflow_direction'])
-
+        number_of_pricing_periods = dict_values['energyProviders'][sector][dso]['peak_demand_pricing_period']['value']
+        months_in_a_period = 12/number_of_pricing_periods
+        if number_of_pricing_periods == 1:
+            timeseries = pd.Series(1, index=dict_values['simulation_settings']['time_index'])
             helpers.define_source(dict_values,
-                                  'dso_feedin',
-                                  'energy_price',
-                                  dict_values['energyProviders'][sector]['inflow_direction'])
+                                  dso + '_consumption',
+                                  dict_values['energyProviders'][sector][dso]['energy_price']['value'],
+                                  dict_values['energyProviders'][sector][dso]['outflow_direction'],
+                                  timeseries)
+        else:
+            for pricing_period in range(1, number_of_pricing_periods+1):
+                timeseries = pd.Series(0, index=dict_values['simulation_settings']['time_index'])
+                time_period = pd.date_range(
+                    start=dict_values['simulation_settings']['start_date']
+                          + pd.DateOffset(months=(pricing_period-1)*months_in_a_period),
+                    end=dict_values['simulation_settings']['start_date']
+                          + pd.DateOffset(months=pricing_period*months_in_a_period),
+                    freq=str(dict_values['simulation_settings']['timestep']['value']) + 'min')
 
+                timeseries = timeseries.add(pd.Series(1, index=time_period), fill_value=0)
 
-        for pricing_period in range(1, dict_values['energyProviders'][sector]['peak_demand_pricing_period']+1):
-            helpers.define_sink(dict_values,
-                                'dso_consumption_period'+str(pricing_period),
-                                'feedin_tariff',
-                                dict_values['energyProviders'][sector]['outflow_direction'])
+                helpers.define_source(dict_values,
+                                      dso + '_consumption_period_'+str(pricing_period),
+                                      dict_values['energyProviders'][sector][dso]['energy_price']['value'],
+                                      dict_values['energyProviders'][sector][dso]['outflow_direction'],
+                                      timeseries)
 
-            helpers.define_source(dict_values,
-                                  'dso_feedin_period'+str(pricing_period),
-                                  'electricity_price',
-                                  dict_values['energyProviders'][sector]['inflow_direction'])
+        helpers.define_sink(dict_values,
+                            dso + '_feedin',
+                            -dict_values['energyProviders'][sector][dso]['feedin_tariff']['value'],
+                            dict_values['energyProviders'][sector][dso]['inflow_direction'])
+
+        return
 
     def create_twins_in_out(dict_asset, name_subasset, drop_symbolic_costs):
         subasset = dict_asset[name_subasset]
