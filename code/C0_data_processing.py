@@ -24,15 +24,7 @@ class data_processing:
         #todo add option to receive data online
 
         for sector in dict_values['project_data']['sectors']:
-            helpers.define_sink(dict_values, 'excess', None, sector)
-
-        # Add symbolic costs
-        if 'electricity_storage' in dict_values:
-            helpers.create_twins_in_out(dict_values['electricity_storage'], 'charge_controller', drop_symbolic_costs=True)
-        if 'transformer_station' in dict_values:
-            helpers.create_twins_in_out(dict_values, 'transformer_station', drop_symbolic_costs=True)
-            helpers.define_source(dict_values, 'transformer_station', 'electricity_price_var_kWh')
-            helpers.define_sink(dict_values, 'transformer_station', 'feedin_tariff')
+            helpers.define_sink(dict_values, 'excess', 0, sector)
 
         helpers.add_input_output_busses(dict_values)
 
