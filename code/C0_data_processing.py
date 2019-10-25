@@ -198,50 +198,36 @@ class helpers:
         dict_asset[name_subasset]['out'].update({'type': 'transformer'})
         return
 
-    def define_source(dict_values, asset_name, price_name):
-        # todo not applicable jet for fuel source
-        if price_name == None:
-            price = 0
-        elif price_name in dict_values[asset_name]['in'].keys():
-            price = dict_values[asset_name]['in'][price_name]
-        else:
-            logging.warning('Price name %s does not exist in %s.', price_name, asset_name)
+    def define_source(dict_values, asset_name, price, output_bus_name, timeseries):
+        source = {'type': 'source',
+                'label': asset_name + '_source',
+                'output_bus_name': output_bus_name,
+                'timeseries': timeseries,
+                "opex_var": {"value": price, "unit": "currency/unit"},
+                "lifetime": {"value": dict_values['economic_data']['project_duration']['value'],
+                             "unit": "year"}
+                }
 
-        dict_values[asset_name].update({'source': {'type': 'source',
-                                                   'label': asset_name + '_source',
-                                                   'price': price}})
+        # create new input bus if non-existent before
+        if output_bus_name not in dict_values['energyProduction'].keys():
+            dict_values['energyProduction'].update({output_bus_name: {}})
+
+        # update dictionary
+        dict_values['energyProduction'][output_bus_name].update({asset_name: source})
         return
 
-    def define_sink(dict_values, asset_name, price_name, input_bus_name):
-        # This generates the excess sink
-        if price_name == None:
-            price = 0
-
-        elif asset_name in dict_values.keys():
-            if price_name in dict_values[asset_name]['out'].keys():
-                price = dict_values[asset_name]['out'][price_name]
-                if price_name == 'feedin_tariff':
-                    # the "price" for feed-in is negative, ie. creates revenue
-                    price = -1 * price
-            else:
-                logging.warning('Price name %s does not exist in %s.', price_name, asset_name)
-        else:
-            logging.error('Asset %s does not exist, while price_name = None.', asset_name)
-
+    def define_sink(dict_values, asset_name, price, input_bus_name):
         # create a dictionary for the sink
         sink = {'type': 'sink',
                 'label': asset_name + '_sink',
                 'input_bus_name': input_bus_name,
-                "capex_fix": {"value": 0, "unit": "currency"},
-                "capex_var": {"value": 0, "unit": "currency"},
-                "opex_fix": {"value": 0, "unit": "currency/year"},
                 "opex_var": {"value": price, "unit": "currency/kWh"},
                 "lifetime": {"value": dict_values['economic_data']['project_duration']['value'],
                              "unit": "year"}
                 }
 
         # create new input bus if non-existent before
-        if 'input_bus_name' not in dict_values['energyConsumption'].keys():
+        if input_bus_name not in dict_values['energyConsumption'].keys():
             dict_values['energyConsumption'].update({input_bus_name: {}})
 
         # update dictionary
