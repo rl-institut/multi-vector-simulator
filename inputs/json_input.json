@@ -16,8 +16,8 @@
         "project_name": "Borg Havn",
         "scenario_name": "Warehouse 14",
         "sectors": {
-            "electricity": "Electricity bus (LES)",
-            "heat":  "Heat bus (LES)"
+            "electricity": "Electricity (LES)",
+            "heat":  "Heat bus"
         }
     },
     "simulation_settings": {
@@ -92,9 +92,9 @@
             "DSO": {
                 "peak_demand_pricing": {"value": 60, "unit": "currency/kW"},
                 "feedin_tariff": {"value": -0.5, "unit": "currency/kWh"},
-                "label": "Electricity DSO",
-                "inflow_direction": "electricity feedin (DSO)",
-                "outflow_direction": "electricity consumption (DSO)",
+                "label": "Electricity grid DSO",
+                "inflow_direction": "Electricity (DSO)",
+                "outflow_direction": "Electricity (DSO)",
                 "energy_price":  {"value": 0.54, "unit": "currency/kWh"},
                 "optimizeCap": true,
                 "peak_demand_pricing_period": {"value": 12, "unit": "times per year (1,2,3,4,6,12"},
@@ -115,7 +115,7 @@
             "opex_fix": {"value": 0.0, "unit": "currency/kW/year"},
             "opex_var": {"value": 0.0, "unit": "currency/kWh"},
             "inflow_direction": "ESS Li-Ion",
-            "outflow_direction": "Electricity bus (LES)",
+            "outflow_direction": "Electricity (LES)",
             "type_oemof": "transformer"
             },
         "solar_inverter_01": {
@@ -131,7 +131,7 @@
             "optimizeCap": true,
             "type_oemof": "transformer",
             "inflow_direction": "PV plant (mono)",
-            "outflow_direction": "Electricity bus (LES)"
+            "outflow_direction": "Electricity (LES)"
         },
         "solar_inverter_02": {
             "age_installed": {"value": 0, "unit": "year"},
@@ -146,7 +146,7 @@
             "optimizeCap": true,
             "type_oemof": "transformer",
             "inflow_direction": "PV plant (poly)",
-            "outflow_direction": "Electricity bus (LES)"
+            "outflow_direction": "Electricity (LES)"
         },
         "transformer_station": {
                 "age_installed": {"value": 5, "unit": "year"},
@@ -160,8 +160,22 @@
                 "opex_var": {"value": 0, "unit": "currency/kWh"},
                 "optimizeCap": true,
                 "type_oemof": "transformer",
-                "inflow_direction": "electricity (DSO)",
-                "outflow_direction": "electricity"}
+                "inflow_direction": "Electricity (DSO)",
+                "outflow_direction": "Electricity (LES)"},
+        "diesel_generator": {
+                "age_installed": {"value": 0, "unit": "year"},
+                "installedCap": {"value": 0, "unit": "kW"},
+                "capex_fix": {"value": 0, "unit": "currency"},
+                "capex_var": {"value": 600, "unit": "currency/kW"},
+                "efficiency": {"value": 0.33, "unit": "factor"},
+                "label": "Backup diesel generator",
+                "lifetime": {"value": 15, "unit": "year"},
+                "opex_fix":  {"value": 5, "unit": "currency/kW/year"},
+                "opex_var": {"value": 0, "unit": "currency/kWh"},
+                "optimizeCap": true,
+                "type_oemof": "transformer",
+                "inflow_direction": "Fuel",
+                "outflow_direction": "Electricity (LES)"}
     },
     "energyStorage": {
         "electricity": {
