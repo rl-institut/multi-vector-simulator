@@ -73,13 +73,12 @@ class data_processing:
                 dict_values['economic_data']['discount_factor']['value']),
                 'unit': "?"}})
 
-        # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity to each asset
-        # todo: add sources and sinks depending on items in energy providers as pre-processing
-        #  energyProviders
+        # add sources and sinks depending on items in energy providers as pre-processing
         for sector in dict_values['energyProviders']:
             for dso in dict_values['energyProviders'][sector]:
                 helpers.define_dso_sinks_and_sources(dict_values, sector, dso)
 
+        # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity to each asset
         for asset in dict_values['energyConversion']:
             print(asset)
             helpers.define_missing_cost_data(dict_values['economic_data'],
@@ -88,6 +87,7 @@ class data_processing:
                                             dict_values['economic_data'],
                                             dict_values['energyConversion'][asset])
 
+        # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity to each asset
         list_asset_groups = ['fixCost', 'energyConsumption', 'energyStorage', 'energyProduction', 'energyProviders']
         for group in list_asset_groups:
             for sector in dict_values[group]:
@@ -123,7 +123,6 @@ class data_processing:
         json_data = json.dumps(dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4)
         myfile.write(json_data)
         myfile.close()
-        print(myfile)
         return
 
 class helpers:
