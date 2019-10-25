@@ -166,29 +166,6 @@ class helpers:
 
         return
 
-    def create_twins_in_out(dict_asset, name_subasset, drop_symbolic_costs):
-        subasset = dict_asset[name_subasset]
-        subasset.update({'label': name_subasset + '_in'})
-        subasset_symbolic = deepcopy(subasset)
-        subasset_symbolic.update({'label': name_subasset + '_out'})
-        if drop_symbolic_costs == True:
-            for cost in ['capex', 'opex']:
-                for suffix in ['_var', '_fix']:
-                    subasset_symbolic.update({cost + suffix: 0})
-        elif drop_symbolic_costs == False:
-            pass
-        else:
-            logging.error('Coding error: drop_symbolic_costs has to be True/False.')
-
-        del dict_asset[name_subasset]
-        dict_asset.update({name_subasset: {'label': name_subasset+'_in_out',
-                                           'in': subasset,
-                                           'out': subasset_symbolic}})
-
-        dict_asset[name_subasset]['in'].update({'type': 'transformer'})
-        dict_asset[name_subasset]['out'].update({'type': 'transformer'})
-        return
-
     def define_source(dict_values, asset_name, price, output_bus_name, timeseries):
         source = {'type': 'source',
                 'label': asset_name + '_source',
@@ -223,52 +200,6 @@ class helpers:
 
         # update dictionary
         dict_values['energyConsumption'][input_bus_name].update({asset_name: sink})
-        return
-
-    def add_input_output_busses(dict_values):
-        for asset in dict_values.keys():
-            if asset in ['project_data', 'settings', 'economic_data', 'simulation_settings', ]:
-                pass
-            elif asset == 'electricity_grid':
-                logging.warning('%s has not been included in model jet, specifically efficiency.', asset)
-
-            elif asset == 'electricity_excess':
-                dict_values[asset].update({'input_bus_name': 'electricity'})
-
-            elif asset == 'transformer_station':
-                dict_values[asset]['in'].update({'input_bus_name': dict_values[asset]['in']['sector'] + '_utility_consumption',
-                                                 'output_bus_name': dict_values[asset]['in']['sector']})
-                dict_values[asset]['source'].update({'output_bus_name': dict_values[asset]['in']['sector'] + '_utility_consumption'})
-                dict_values[asset]['out'].update({'input_bus_name': dict_values[asset]['out']['sector'],
-                                                  'output_bus_name': dict_values[asset]['out']['sector'] + '_utility_feedin'})
-                dict_values[asset]['sink'].update({'input_bus_name': dict_values[asset]['in']['sector'] + '_utility_feedin'})
-
-            elif asset == 'pv_plant':
-                dict_values[asset]['pv_installation'].update({'output_bus_name': 'electricity_dc_pv'})
-                dict_values[asset]['solar_inverter'].update({'input_bus_name': 'electricity_dc_pv',
-                                                             'output_bus_name': 'electricity'})
-            elif asset == 'wind_plant':
-                dict_values[asset]['wind_installation'].update({'output_bus_name': 'electricity'})
-
-            elif asset == 'electricity_storage':
-                dict_values[asset].update({'input_bus_name': 'electricity_dc_storage',
-                                           'output_bus_name': 'electricity_dc_storage'})
-                dict_values[asset]['charge_controller']['in'].update({'input_bus_name': 'electricity',
-                                                              'output_bus_name': 'electricity_dc_storage'})
-                dict_values[asset]['charge_controller']['out'].update({'input_bus_name': 'electricity_dc_storage',
-                                                                       'output_bus_name': 'electricity'})
-
-            elif asset == 'generator':
-                dict_values[asset].update({'input_bus_name': 'Fuel',
-                                   'output_bus_name': 'electricity'})
-
-            elif asset == 'electricity_demand':
-                for demand in dict_values[asset].keys():
-                    if demand != 'label':
-                        dict_values[asset][demand].update({'input_bus_name': 'electricity'})
-
-            else:
-                logging.warning('Asset %s undefined, no input/output busses added.', asset)
 
         return
 
@@ -373,8 +304,4 @@ class receive_data:
 
         shutil.copy(file_path, user_input['path_output_folder_inputs']+dict_asset['file_name'])
         logging.debug('Copied timeseries %s to output folder / inputs.', file_path)
-        return
-
-    #get timeseries from online source
-    def timeseries_online():
         return
