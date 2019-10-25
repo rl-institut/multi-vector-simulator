@@ -103,11 +103,20 @@ class data_processing:
         return
 
     def store_as_json(dict_values):
+        # This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
         def convert(o):
             if isinstance(o, numpy.int64): return int(o)
+            # todo this actually dropt the date time index, which could be interesting
             if isinstance(o, pd.DatetimeIndex): return "date_range"
             if isinstance(o, pd.datetime): return str(o)
-            print(o)
+            # todo this also drops the timeindex, which is unfortunate.
+            if isinstance(o, pd.Series): return "pandas timeseries" #o.values
+            if isinstance(o, numpy.ndarray): return "numpy timeseries" #o.tolist()
+            if isinstance(o, pd.DataFrame): return "pandas dataframe" #o.to_json(orient='records')
+            logging.error('An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n'
+                          'Type: '+str(type(o)) +' \n'
+                          'Value(s): ' + str(o) + '\n'
+                          'Please edit function CO_data_processing.dataprocessing.store_as_json.')
             raise TypeError
 
         myfile = open(dict_values['simulation_settings']['path_output_folder'] + '/json_input_processed.json', 'w')
