@@ -34,7 +34,7 @@ class data_processing:
                                                                +pd.DateOffset(
                                             days=simulation_settings['evaluated_period']['value'],
                                             hours=-1)})
-
+        # create time index used for initializing oemof simulation
         simulation_settings.update({
             'time_index': pd.date_range(start=simulation_settings['start_date'],
                                         end=simulation_settings['end_date'],
@@ -126,14 +126,16 @@ class helpers:
                        "opex_var": {"value": 0, "unit": "currency/unit/year"},
                        "lifetime": {"value": economic_data['project_duration']['value'],
                                     "unit": "year"}}
-
+        # checks that an asset has all cost parameters needed for evaluation. Adds standard values.
         for cost in basic_costs:
             if cost not in dict_asset:
                 dict_asset.update({cost: basic_costs[cost]})
         return
 
     def define_busses(dict_values):
+        # create new group of assets: busses
         dict_values.update({'energyBusses': {}})
+
         # defines energy busses of sectors
         for sector in dict_values['project_data']['sectors']:
             dict_values['energyBusses'].update({sector: dict_values['project_data']['sectors'][sector]})
@@ -172,9 +174,12 @@ class helpers:
         return
 
     def define_dso_sinks_and_sources(dict_values, sector, dso):
+        # define to shorten code
         number_of_pricing_periods = dict_values['energyProviders'][sector][dso]['peak_demand_pricing_period']['value']
+        # defines the evaluation period
         months_in_a_period = 12/number_of_pricing_periods
         if number_of_pricing_periods == 1:
+            # if only one period: avoid suffix dso+'_consumption_period_1"
             timeseries = pd.Series(1, index=dict_values['simulation_settings']['time_index'])
             helpers.define_source(dict_values,
                                   dso + '_consumption',
@@ -182,6 +187,8 @@ class helpers:
                                   dict_values['energyProviders'][sector][dso]['outflow_direction'],
                                   timeseries)
         else:
+            # define one source for each pricing period
+            #todo does this already define the capex costs per period?
             for pricing_period in range(1, number_of_pricing_periods+1):
                 timeseries = pd.Series(0, index=dict_values['simulation_settings']['time_index'])
                 time_period = pd.date_range(
