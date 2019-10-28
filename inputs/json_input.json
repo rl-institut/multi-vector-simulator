@@ -17,7 +17,7 @@
         "scenario_name": "Warehouse 14",
         "sectors": {
             "electricity": "Electricity (LES)",
-            "heat":  "Heat bus"
+            "heat":  "Heat"
         }
     },
     "simulation_settings": {
