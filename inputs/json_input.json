@@ -115,6 +115,7 @@
             "opex_fix": {"value": 0.0, "unit": "currency/kW/year"},
             "opex_var": {"value": 0.0, "unit": "currency/kWh"},
             "inflow_direction": "ESS Li-Ion",
+            "optimizeCap": true,
             "outflow_direction": "Electricity (LES)",
             "type_oemof": "transformer"
             },
