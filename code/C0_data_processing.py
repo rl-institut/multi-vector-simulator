@@ -221,10 +221,13 @@ class helpers:
                                       dict_values['energyProviders'][sector][dso]['outflow_direction'],
                                       timeseries,
                                       capex_var=peak_demand_pricing)
+
+
         helpers.define_sink(dict_values,
                             dso + '_feedin',
                             -dict_values['energyProviders'][sector][dso]['feedin_tariff']['value'],
-                            dict_values['energyProviders'][sector][dso]['inflow_direction'])
+                            dict_values['energyProviders'][sector][dso]['inflow_direction'],
+                            capex_var={'value': 0, 'unit': 'currency/kW'})
 
         return
 
@@ -254,7 +257,7 @@ class helpers:
         helpers.update_bus(dict_values, output_bus_name, asset_name, source['label'])
         return
 
-    def define_sink(dict_values, asset_name, price, input_bus_name):
+    def define_sink(dict_values, asset_name, price, input_bus_name, **kwargs):
         # create a dictionary for the sink
         sink = {'type': 'sink',
                 'label': asset_name + '_sink',
@@ -263,6 +266,9 @@ class helpers:
                 "lifetime": {"value": dict_values['economic_data']['project_duration']['value'],
                              "unit": "year"}
                 }
+
+        if "capex_var" in kwargs:
+            sink.update({"capex_var": kwargs["capex_var"]})
 
         # create new input bus if non-existent before
         if input_bus_name not in dict_values['energyConsumption'].keys():
