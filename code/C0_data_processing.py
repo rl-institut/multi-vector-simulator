@@ -15,7 +15,7 @@ class data_processing:
 
         ## Verify inputs
         # check whether input values can be true
-        verify.check_input_values(dict_values)
+        #verify.check_input_values(dict_values)
         # Check, whether files (demand, generation) are existing
         helpers.evaluate_timeseries(dict_values, verify.lookup_file, 'verify')
         ## Complete data values
