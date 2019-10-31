@@ -4,9 +4,9 @@ import oemof.solph as solph
 import oemof.outputlib as outputlib
 
 try:
-    from .D1_model_components import define, call_component, helpers
+    from .D1_model_components import define_oemof_component, call_component, helpers
 except ImportError:
-    from code.D1_model_components import define, call_component, helpers
+    from code.D1_model_components import define_oemof_component, call_component, helpers
 
 class modelling:
     def run_oemof(dict_values):
@@ -40,55 +40,45 @@ class modelling:
         # Check all dict values and if necessary call component
         # "for loop" chosen to raise errors in case entries are not defined
         # other way would be: if key in dict_values: define/call component
-        for dict_key in dict_values.keys():
-            if dict_key in ['project_data', 'settings', 'economic_data', 'simulation_settings']:
-                pass
-            elif dict_key == 'electricity_grid':
-                # this only defines the electricity bus itself
-                # todo however, distribution grid efficiency is not jet included into the model!
-                # same goes for distibution costs per kWh
-                define.bus(model, dict_key[:-5], **dict_model)
+        for bus in dict_values['energyBusses']:
+            define_oemof_component.bus(model, bus, **dict_model)
 
-            elif dict_key == 'electricity_excess':
-                # defines excess sink
-                define.sink_dispatchable(model, dict_values[dict_key], **dict_model)
+        def warning_asset_type(asset, type, assetGroup):
+            logging.error('Asset %s has type %s, '
+                          'but this type is not an asset type attributed to asset group %s for oemof model generation.',
+                          asset, type, assetGroup)
+            return
 
-            elif dict_key == 'transformer_station':
-                # Defines transformer station with all sub components:
-                # two busses, sink, source, two transformers arributed with costs
-                # be aware: currently, BOTH consumption and feed-in defined by default, ie. a transformer only used
-                # for consumption is not implemented
-                # todo in future: here, multiple transformers relative to the peak demand pricing period should be implemented
-                # attibuted by actual value = timeseries, zeros and ones -> should allow sizing per pricing period
-                call_component.utility_connection(model, dict_values[dict_key], **dict_model)
-
-            elif dict_key == 'pv_plant':
-                # defines pv plant including own bus, pv installation and solar inverter
-                call_component.pv_plant(model, dict_values[dict_key], **dict_model)
-
-            elif dict_key == 'wind_plant':
-                logging.warning('Oemof component %s not defined!', dict_key)
-                call_component.wind_plant(model, dict_values[dict_key], **dict_model)
-
-            elif dict_key == 'electricity_storage':
-                # Defines electricity storage with all sub-components:
-                # bus, two transformers, storage with capacity, power in/out
-                # todo reevaluate if storage_fix is properly defined - it could either be defined based on c-rate or power!
-                call_component.electricity_storage(model, dict_values[dict_key], **dict_model)  # todo add sector to ess attributes
-
-            elif dict_key == 'generator':
-                # Simple generator with constant efficiency
-                # add other options: linear etc
-                logging.warning('Asset %s not defined for oemof integration.', dict_key)
-                define.bus(model, 'Fuel', **dict_model)
-
-            elif dict_key == 'electricity_demand':
-                # add all electricity demand profiles (a number of sinks)
-                call_component.demands(model, dict_values[dict_key], **dict_model)
-
+        for asset in dict_values['energyConversion']:
+            type = dict_values['energyConversion'][asset]['type_oemof']
+            if type == 'transformer':
+                call_component.transformer(model, dict_values['energyConversion'][asset], **dict_model)
             else:
-                logging.warning('Unknown asset %s. '
-                                'Check validity and, if necessary, add another oemof component definition.', dict_key)
+                warning_asset_type(asset, type, 'energyConversion')
+
+        for sector in dict_values['energyConsumption']:
+            for asset in dict_values['energyConsumption'][sector]:
+                type = dict_values['energyConsumption'][sector][asset]['type_oemof']
+                if type == 'sink':
+                    call_component.sink(model, dict_values['energyConsumption'][sector][asset], **dict_model)
+                else:
+                    warning_asset_type(asset, type, 'energyConsumption')
+
+        for sector in dict_values['energyProduction']:
+            for asset in dict_values['energyProduction'][sector]:
+                type = dict_values['energyProduction'][sector][asset]['type_oemof']
+                if type == 'source':
+                    call_component.source(model, dict_values['energyProduction'][sector][asset], **dict_model)
+                else:
+                    warning_asset_type(asset, type, 'energyProduction')
+
+        for sector in dict_values['energyStorage']:
+            for asset in dict_values['energyStorage'][sector]:
+                type = dict_values['energyStorage'][sector][asset]['type_oemof']
+                if type == 'storage':
+                    call_component.storage(model, dict_values['energyStorage'][sector][asset], **dict_model)
+                else:
+                    warning_asset_type(asset, type, 'energyStorage')
 
         logging.debug('All components added.')
 
