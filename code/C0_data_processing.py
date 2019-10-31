@@ -112,10 +112,12 @@ class data_processing:
                           'Please edit function CO_data_processing.dataprocessing.store_as_json.')
             raise TypeError
 
-        myfile = open(dict_values['simulation_settings']['path_output_folder'] + '/json_input_processed.json', 'w')
+        file_path = dict_values['simulation_settings']['path_output_folder'] + '/json_input_processed.json'
+        myfile = open(file_path, 'w')
         json_data = json.dumps(dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4)
         myfile.write(json_data)
         myfile.close()
+        logging.info('Converted and stored processed simulation data to json: %s', file_path)
         return
 
 class helpers:
