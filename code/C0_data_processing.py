@@ -127,9 +127,14 @@ class helpers:
                        "lifetime": {"value": economic_data['project_duration']['value'],
                                     "unit": "year"}}
         # checks that an asset has all cost parameters needed for evaluation. Adds standard values.
+        str = ""
         for cost in basic_costs:
             if cost not in dict_asset:
                 dict_asset.update({cost: basic_costs[cost]})
+                str = str+ " "+ cost
+
+        if len(str)>1:
+            logging.debug('Added basic costs to asset %s: %s', dict_asset['label'], str)
         return
 
     def define_busses(dict_values):
