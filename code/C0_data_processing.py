@@ -63,7 +63,7 @@ class data_processing:
 
         #Define all excess sinks for sectors
         for sector in dict_values['project_data']['sectors']:
-            helpers.define_sink(dict_values, 'excess', 0, sector)
+            helpers.define_sink(dict_values, dict_values['project_data']['sectors'][sector]+' excess', 0, dict_values['project_data']['sectors'][sector])
 
         # add sources and sinks depending on items in energy providers as pre-processing
         for sector in dict_values['energyProviders']:
