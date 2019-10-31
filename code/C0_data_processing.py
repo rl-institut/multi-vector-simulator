@@ -240,8 +240,9 @@ class helpers:
 
         if "capex_var" in kwargs:
             source.update({"capex_var": kwargs["capex_var"]})
-            logging.warning('Attention! %s is created, with a price of %s. 
-                            'If this is DSO supply, this could be improved. Please refer to Issue #23.')
+            logging.warning('Attention! %s is created, with a price of %s.'
+                            'If this is DSO supply, this could be improved. Please refer to Issue #23.',
+                            source['label'], source['opex_var']['value'])
 
         # create new input bus if non-existent before
         if output_bus_name not in dict_values['energyProduction'].keys():
