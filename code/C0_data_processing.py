@@ -112,7 +112,7 @@ class data_processing:
         # This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
         def convert(o):
             if isinstance(o, numpy.int64): return int(o)
-            # todo this actually dropt the date time index, which could be interesting
+            # todo this actually drops the date time index, which could be interesting
             if isinstance(o, pd.DatetimeIndex): return "date_range"
             if isinstance(o, pd.datetime): return str(o)
             # todo this also drops the timeindex, which is unfortunate.
@@ -220,7 +220,6 @@ class helpers:
                                   timeseries, capex_var=peak_demand_pricing)
         else:
             # define one source for each pricing period
-            #todo does this already define the capex costs per period?
             for pricing_period in range(1, number_of_pricing_periods+1):
                 timeseries = pd.Series(0, index=dict_values['simulation_settings']['time_index'])
                 time_period = pd.date_range(
