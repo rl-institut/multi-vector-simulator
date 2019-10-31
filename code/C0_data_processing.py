@@ -83,14 +83,27 @@ class data_processing:
         for group in list_asset_groups:
             for sector in dict_values[group]:
                 for asset in dict_values[group][sector]:
-                    print(group, sector, asset)
                     helpers.define_missing_cost_data(dict_values['economic_data'],
                                                      dict_values[group][sector][asset])
                     helpers.evaluate_lifetime_costs(dict_values['simulation_settings'],
                                                     dict_values['economic_data'],
                                                     dict_values[group][sector][asset])
-                    # populated dict_values['energyBusses'] with assets
-                    helpers.update_busses_in_out_direction(dict_values, dict_values[group][sector])
+                    if group not in ['fixCost', 'energyProviders']:
+                        # populated dict_values['energyBusses'] with assets
+                        helpers.update_busses_in_out_direction(dict_values, dict_values[group][sector])
+                        '''
+                        # attach to bus based on sector in json
+
+                        # this is only needed if we do not have the attributes input/outputdirection eg. for production
+                        if sector in dict_values['project_data']['sectors']:
+                            bus_name = dict_values['project_data']['sectors'][sector]
+                        else:
+                            bus_name = sector
+                        helpers.update_bus(dict_values,
+                                           bus_name,
+                                           asset,
+                                           dict_values[group][sector][asset]['label'])
+                        '''
 
         logging.info('Processed cost data and added economic values.')
         return
@@ -145,39 +158,42 @@ class helpers:
 
         # defines energy busses of sectors
         for sector in dict_values['project_data']['sectors']:
-            dict_values['energyBusses'].update({sector: dict_values['project_data']['sectors'][sector]})
+            dict_values['energyBusses'].update({helpers.bus_suffix(dict_values['project_data']['sectors'][sector]): {}})
 
         # defines busses accessed by conversion assets
         helpers.update_busses_in_out_direction(dict_values, dict_values['energyConversion'])
         return
 
-    def update_busses_in_out_direction(dict_values, assetgroup):
-        for asset in assetgroup:
-            if 'inflow_direction' in assetgroup[asset]:
-                bus = assetgroup[asset]['inflow_direction']
-                helpers.update_bus(dict_values, bus, asset, assetgroup[asset]['label'])
-
-            if 'outflow_direction' in assetgroup[asset]:
-                bus = assetgroup[asset]['outflow_direction']
-                helpers.update_bus(dict_values, bus, asset, assetgroup[asset]['label'])
+    def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
+        # checks for all assets of an group
+        for asset in asset_group:
+            # the bus that is connected to the inflow
+            if 'inflow_direction' in asset_group[asset]:
+                bus = asset_group[asset]['inflow_direction']
+                helpers.update_bus(dict_values, bus, asset, asset_group[asset]['label'])
+            # the bus that is connected to the outflow
+            if 'outflow_direction' in asset_group[asset]:
+                bus = asset_group[asset]['outflow_direction']
+                helpers.update_bus(dict_values, bus, asset, asset_group[asset]['label'])
+            # if asset connected to a basic sector bus, add to that sector's asset list
+            #if 'sector' in kwargs:
+            #    helpers.update_bus(dict_values, dict_values['project_data']['sectors'][kwargs['sector']], asset, asset_group[asset]['label'])
         return
 
+    def bus_suffix(bus):
+        bus_label = bus + " bus"
+        return bus_label
+
     def update_bus(dict_values, bus, asset, asset_label):
-        def suffix_bus(bus):
-            bus_name = bus + " bus"
-            return bus_name
+        bus_label = helpers.bus_suffix(bus)
+        # defines sector name (in function to ease later editing and possibly capitalization)
+        if bus_label not in dict_values['energyBusses']:
+            # add bus to asset group energyBusses
+            dict_values['energyBusses'].update({bus_label: {}})
 
-        if bus not in dict_values['energyBusses']:
-            dict_values['energyBusses'].update({bus: {suffix_bus(bus): {}}})
-        else:
-            print(dict_values['energyBusses'][bus])
-            print(dict_values['energyBusses'][bus][suffix_bus(bus)])
-
-            print({asset: asset_label})
-            dict_values['energyBusses'][bus][suffix_bus(bus)].update({asset: asset_label})
-
-        if asset_label in dict_values['energyBusses']:
-            dict_values['energyBusses'][bus][suffix_bus(bus)].update({asset: asset_label})
+        # Asset should added to respective bus
+        dict_values['energyBusses'][bus_label].update({asset: asset_label})
+        logging.debug('Added asset %s to bus %s', asset_label, bus_label)
         return
 
     def define_dso_sinks_and_sources(dict_values, sector, dso):
@@ -278,7 +294,6 @@ class helpers:
         dict_values['energyConsumption'][input_bus_name].update({asset_name: sink})
 
         # add to list of assets on busses
-        print(input_bus_name, asset_name, sink['label'])
         helpers.update_bus(dict_values, input_bus_name, asset_name, sink['label'])
         return
 
