@@ -63,7 +63,7 @@
             }
     },
     "energyConsumption": {
-        "electricity": {
+        "Electricity (LES)": {
             "demand_01": {
                 "dsm": false,
                 "file_name": "demand_habor.csv",
@@ -85,10 +85,10 @@
                 "type_asset": "demand",
                 "type_oemof": "sink"
             }},
-        "heat": {}
+        "Heat": {}
     },
     "energyProviders": {
-        "electricity": {
+        "Electricity (LES)": {
             "DSO": {
                 "peak_demand_pricing": {"value": 60, "unit": "currency/kW"},
                 "feedin_tariff": {"value": -0.5, "unit": "currency/kWh"},
@@ -101,7 +101,7 @@
                 "type_oemof": "source"
             }
         },
-        "heat": {}
+        "Heat": {}
     },
     "energyConversion": {
         "storage_charge_controller_01": {
@@ -139,7 +139,7 @@
             "capex_fix": {"value": 0.0, "unit": "currency"},
             "capex_var": {"value": 3000, "unit": "currency/kW"},
             "efficiency": {"value": 0.95, "unit": "factor"},
-            "label": "Solar inverter (ploy)",
+            "label": "Solar inverter (poly)",
             "lifetime": {"value": 15, "unit": "year"},
             "opex_fix": {"value": 0, "unit": "currency/kW/year"},
             "opex_var": {"value": 0, "unit": "currency/kWh"},
@@ -178,11 +178,12 @@
                 "outflow_direction": "Electricity (LES)"}
     },
     "energyStorage": {
-        "electricity": {
+        "Electricity (LES)": {
             "storage_01": {
                 "label": "ESS Li-Ion",
                 "optimizeCap": true,
                 "type_oemof": "storage",
+                "inflow_direction": "ESS Li-Ion",
                 "capacity": {
                     "age_installed": {"value": 0, "unit": "year"},
                     "installedCap": {"value": 0, "unit": "kWh"},
@@ -223,10 +224,10 @@
                 }
             }
         },
-        "heat": {}
+        "Heat": {}
     },
     "energyProduction": {
-        "electricity": {
+        "Electricity (LES)": {
             "pv_plant_01": {
                 "label": "PV plant (mono)",
                 "age_installed": {"value": 0, "unit": "year"},
@@ -238,8 +239,9 @@
                 "opex_fix": {"value": 80, "unit": "currency/kWp/year"},
                 "opex_var": {"value": 0, "unit": "currency/kWh"},
                 "optimizeCap": true,
-                "type_oemof": "source"
-                },
+                "type_oemof": "source",
+                "outflow_direction": "PV plant (mono)"
+            },
             "pv_plant_02": {
                 "label": "PV plant (poly)",
                 "age_installed": {"value": 0, "unit": "year"},
@@ -251,9 +253,24 @@
                 "opex_fix": {"value": 80, "unit": "currency/kWp/year"},
                 "opex_var": {"value": 0, "unit": "currency/kWh"},
                 "optimizeCap": true,
-                "type_oemof": "source"
+                "type_oemof": "source",
+                "outflow_direction": "PV plant (poly)"
+                },
+            "wind_plant_01": {
+                "label": "Wind plant",
+                "age_installed": {"value": 0, "unit": "year"},
+                "installedCap": {"value": 0, "unit": "kWp"},
+                "capex_fix": {"value": 100000, "unit": "currency"},
+                "capex_var": {"value": 7200, "unit": "currency/kWp"},
+                "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
+                "lifetime": {"value": 20, "unit": "year"},
+                "opex_fix": {"value": 80, "unit": "currency/kWp/year"},
+                "opex_var": {"value": 0, "unit": "currency/kWh"},
+                "optimizeCap": true,
+                "type_oemof": "source",
+                "outflow_direction": "Electricity (LES)"
                 }
         },
-        "heat": {}
+        "Heat": {}
     }
 }
