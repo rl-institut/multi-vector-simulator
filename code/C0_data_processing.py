@@ -185,6 +185,15 @@ class helpers:
         number_of_pricing_periods = dict_values['energyProviders'][sector][dso]['peak_demand_pricing_period']['value']
         # defines the evaluation period
         months_in_a_period = 12/number_of_pricing_periods
+        logging.info('Peak demand pricing is taking place %s times per year, ie. every %s months.', number_of_pricing_periods, months_in_a_period)
+        logging.debug('The peak demand pricing price of %s %s is set as capex_var of the sources of grid energy.',
+                      dict_values['energyProviders'][sector][dso]['peak_demand_pricing']['value'],
+                      dict_values['economic_data']['currency'])
+
+        peak_demand_pricing = {
+            'value': dict_values['energyProviders'][sector][dso]['peak_demand_pricing']['value'],
+            'unit': "currency/kWpeak"}
+
         if number_of_pricing_periods == 1:
             # if only one period: avoid suffix dso+'_consumption_period_1"
             timeseries = pd.Series(1, index=dict_values['simulation_settings']['time_index'])
@@ -192,7 +201,7 @@ class helpers:
                                   dso + '_consumption',
                                   dict_values['energyProviders'][sector][dso]['energy_price']['value'],
                                   dict_values['energyProviders'][sector][dso]['outflow_direction'],
-                                  timeseries)
+                                  timeseries, capex_var=peak_demand_pricing)
         else:
             # define one source for each pricing period
             #todo does this already define the capex costs per period?
@@ -210,8 +219,8 @@ class helpers:
                                       dso + '_consumption_period_'+str(pricing_period),
                                       dict_values['energyProviders'][sector][dso]['energy_price']['value'],
                                       dict_values['energyProviders'][sector][dso]['outflow_direction'],
-                                      timeseries)
-
+                                      timeseries,
+                                      capex_var=peak_demand_pricing)
         helpers.define_sink(dict_values,
                             dso + '_feedin',
                             -dict_values['energyProviders'][sector][dso]['feedin_tariff']['value'],
@@ -219,15 +228,20 @@ class helpers:
 
         return
 
-    def define_source(dict_values, asset_name, price, output_bus_name, timeseries):
+    def define_source(dict_values, asset_name, price, output_bus_name, timeseries, **kwargs):
         source = {'type': 'source',
-                'label': asset_name + '_source',
+                'label': asset_name + ' source',
                 'output_bus_name': output_bus_name,
                 'timeseries': timeseries,
                 "opex_var": {"value": price, "unit": "currency/unit"},
                 "lifetime": {"value": dict_values['economic_data']['project_duration']['value'],
                              "unit": "year"}
                 }
+
+        if "capex_var" in kwargs:
+            source.update({"capex_var": kwargs["capex_var"]})
+            logging.warning('Attention! %s is created, with a price of %s. 
+                            'If this is DSO supply, this could be improved. Please refer to Issue #23.')
 
         # create new input bus if non-existent before
         if output_bus_name not in dict_values['energyProduction'].keys():
