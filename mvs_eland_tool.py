@@ -28,6 +28,7 @@ child-sub:  Sub-child function, feeds only back to child functions
 '''
 
 import logging
+import os
 
 # Loading all child functions
 try:
@@ -49,7 +50,7 @@ except ModuleNotFoundError:
 def main():
     # Display welcome text
     version = '0.0.1' #update_me Versioning scheme: Major release.Minor release.Patches
-    date = '25.10.2019' #update_me Update date
+    date = '31.10.2019' #update_me Update date
 
     welcome_text = \
         '\n \n Multi-Vector Simulation Tool (MVS) V' + version + ' ' + \
@@ -73,15 +74,29 @@ def main():
 
     print('')
     logging.debug('Accessing script: D0_modelling_and_optimization')
-    results_meta, results_main, dict_model = modelling.run_oemof(dict_values)
-
+    results_meta, results_main = modelling.run_oemof(dict_values)
+    '''
+    if dict_values['simulation_settings']['restore_from_oemof_file'] == True:
+        if os.path.isfile(dict_values['simulation_settings']['path_output_folder'] + '/' + dict_values['simulation_settings']['oemof_file_name'])== False:
+            print('')
+            logging.debug('Accessing script: D0_modelling_and_optimization')
+            results_meta, results_main = modelling.run_oemof(dict_values)
+        else:
+            logging.debug('Restore the energy system and the results.')
+            import oemof.solph as solph
+            model = solph.EnergySystem()
+            model.restore(dpath=dict_values['simulation_settings']['path_output_folder'],
+                                  filename=dict_values['simulation_settings']['oemof_file_name'])
+            results_main = model.results['main']
+            results_meta = model.results['meta']
+            
+    '''
     print('')
     logging.debug('Accessing script: E0_evaluation')
-    evaluation.evaluate_dict(dict_values, results_main, results_meta, dict_model)
+    evaluation.evaluate_dict(dict_values, results_main, results_meta)
 
     logging.debug('Accessing script: F0_outputs')
     output_processing.evaluate_dict(dict_values)
-
     return 1
 
 if __name__=="__main__":
