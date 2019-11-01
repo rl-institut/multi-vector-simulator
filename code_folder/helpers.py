@@ -39,23 +39,23 @@ class process_results:
 
                 if dict_asset['optimize_cap'] == True:
                     power_charge = bus['sequences'][((dict_asset['power_charge']['input_bus_name'], dict_asset['label']), 'flow')]
-                    dict_asset['power_charge'].update({'optimal_additional_capacity': power_charge})
+                    dict_asset['power_charge'].update({'optimizedAddCap': power_charge})
 
                     power_discharge = bus['sequences'][
                         ((dict_asset['label'], dict_asset['power_discharge']['output_bus_name']), 'flow')]
-                    dict_asset['power_charge'].update({'optimal_additional_capacity': power_discharge})
+                    dict_asset['power_charge'].update({'optimizedAddCap': power_discharge})
 
                     capacity = bus['sequences'][((dict_asset['label'], 'None'), 'capacity')]
-                    dict_asset['capacity'].update({'optimal_additional_capacity': capacity})
+                    dict_asset['capacity'].update({'optimizedAddCap': capacity})
 
                 else:
-                    dict_asset['power_charge'].update({'optimal_additional_capacity': 0})
-                    dict_asset['power_charge'].update({'optimal_additional_capacity': 0})
-                    dict_asset['capacity'].update({'optimal_additional_capacity': 0})
+                    dict_asset['power_charge'].update({'optimizedAddCap': 0})
+                    dict_asset['power_charge'].update({'optimizedAddCap': 0})
+                    dict_asset['capacity'].update({'optimizedAddCap': 0})
 
             dict_asset.update({'timeseries_soc': dict_asset['capacity']['flow'] /
-                                                 (dict_asset['capacity']['cap_installed']
-                                                  + dict_asset['capacity']['optimal_additional_capacity'])})
+                                                 (dict_asset['capacity']['installedCap']
+                                                  + dict_asset['capacity']['optimizedAddCap'])})
 
         logging.info('Accessed simulation results of %s', dict_asset['label'])
 

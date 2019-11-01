@@ -33,8 +33,8 @@ class output_processing():
 
             # save the information regarding additional optimal capacities and annuity costs
             for asset in results_scalars_assets:
-                if 'optimal_additional_capacity' in results_scalars_assets[asset]:
-                    capacities[asset] = results_scalars_assets[asset]['optimal_additional_capacity']
+                if 'optimizedAddCap' in results_scalars_assets[asset]:
+                    capacities[asset] = results_scalars_assets[asset]['optimizedAddCap']
                 if 'annuity_total' in results_scalars_assets[asset]:
                     annuity_costs[asset] = results_scalars_assets[asset]['annuity_total']
 
@@ -85,7 +85,7 @@ class helpers:
     def write_scalars_assets(dict_asset, results_scalars_assets, results_timeseries, sector):
         keyword_list = ['type',
                         'timeseries_soc',
-                        'optimal_additional_capacity',
+                        'optimizedAddCap',
                         'total_flow',
                         'annual_total_flow',
                         'peak_flow',
