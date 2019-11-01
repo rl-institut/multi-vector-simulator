@@ -82,22 +82,23 @@ class modelling:
                     warning_asset_type(asset, type, 'energyStorage')
 
 
-        pp.pprint(dict_model)
+        #pp.pprint(dict_model)
         logging.debug('All components added.')
-
-        logging.debug('Create oemof model based on created components and busses.')
 
         #import oemof.graph as grph
         #my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
-        from .F1_plotting import plots
-        plots.draw_graph(model, node_color={})
+        #from .F1_plotting import plots
+        #plots.draw_graph(model, node_color={})
 
+        logging.debug('Creating oemof model based on created components and busses...')
         local_energy_system = solph.Model(model)
+        logging.debug('Created oemof model based on created components and busses.')
 
         logging.info('Adding constraints to oemof model...')
         # todo include constraints
         '''
         Stability constraint
+        include constraint linking two converters (ie "in/out")
         Minimal renewable share constraint
         '''
         logging.debug('All constraints added.')
@@ -123,26 +124,11 @@ class modelling:
 
         model.results['main'] = results_main
         model.results['meta'] = results_meta
-        '''
-                if experiment['save_lp_file'] == True:
-            logging.debug('Saving lp-file to folder.')
-            model.write(experiment['output_folder'] + '/lp_files/model_' + file_name + '.lp',
-                        io_options={'symbolic_solver_labels': True})
 
-        '''
-
-        '''
         # store energy system with results
-        model.dump(dpath=output_folder+'/oemof', filename = file_name + ".oemof" )
-        logging.debug('Stored results in ' + output_folder+'/oemof' + '/' + file_name + ".oemof")        
-        '''
-
-        '''
-        logging.debug('Restore the energy system and the results.')
-        micro_grid_system = solph.EnergySystem()
-        micro_grid_system.restore(dpath=output_folder+'/oemof',
-                                  filename=file_name + ".oemof")
-        '''
+        if dict_values['simulation_settings']['store_oemof_results'] == True:
+            model.dump(dpath=dict_values['simulation_settings']['path_output_folder'], filename = dict_values['simulation_settings']['oemof_file_name'] )
+            logging.debug('Stored results in %s/MVS_results.oemof.', dict_values['simulation_settings']['path_output_folder'])
 
         duration = timeit.default_timer() - start
 
@@ -151,7 +137,8 @@ class modelling:
             'objective_value': results_meta['objective'],
             'simulation_time': results_meta['solver']['Time'],
             'modelling_time': duration }})
+
         logging.info('Simulation time: %s minutes.', round(dict_values['simulation_results']['simulation_time']/60, 2))
         logging.info('Moddeling time: %s minutes.', round(dict_values['simulation_results']['modelling_time'] / 60, 2))
 
-        return results_meta, results_main, dict_model
+        return results_meta, results_main#, dict_model
