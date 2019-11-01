@@ -222,7 +222,7 @@ class helpers:
         data = data['Value']
         all_titles = {'Lifetime':                       'lifetime',
                       'Age of installed asset':         'age_installed',
-                      'Installed capacity':             'cap_installed',
+                      'Installed capacity':             'installedCap',
                       'Efficiency':                     'efficiency',
                       'Inverter efficiency':            'efficiency',
                       'Distribution efficiency':        'efficiency',
@@ -414,7 +414,7 @@ class assets:
         # Parameters solar panels
         all_titles = {'Lifetime (a)': 'lifetime',
                       'Age of installed asset (a)': 'age_installed',
-                      'Installed capacity (kW/kWh)': 'cap_installed'}
+                      'Installed capacity (kW/kWh)': 'installedCap'}
 
         data = read_template.read_excel_tab(user_input, dict_excel_data['economic_data'])
         for sub_asset in name_dict_sub_assets.keys():

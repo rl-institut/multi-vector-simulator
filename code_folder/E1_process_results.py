@@ -37,33 +37,31 @@ class process_results:
 
         capacity = storage_bus['sequences'][((dict_asset['label'], 'None'), 'capacity')]
         helpers.add_info_flows(settings, dict_asset['capacity'], capacity)
-        if 'optimize_cap' in dict_asset:
-            if dict_asset['optimize_cap'] == True:
+
+        if 'optimizeCap' in dict_asset:
+            if dict_asset['optimizeCap'] == True:
                 power_charge = storage_bus['scalars'][
                     ((dict_asset['input_bus_name'], dict_asset['label']), 'invest')]
-                dict_asset['charging_power'].update({'optimal_additional_capacity': power_charge})
+                dict_asset['charging_power'].update({'optimizedAddCap': {'value': power_charge, 'unit': dict_asset['charging_power']['unit']}})
                 logging.debug('Accessed optimized capacity of asset %s: %s', dict_asset['charging_power']['label'], power_charge)
 
                 power_discharge = storage_bus['scalars'][
                     ((dict_asset['label'], dict_asset['output_bus_name']), 'invest')]
-                dict_asset['discharging_power'].update({'optimal_additional_capacity': power_discharge})
+                dict_asset['discharging_power'].update({'optimizedAddCap': {'value': power_discharge, 'unit': dict_asset['discharging_power']['unit']}})
                 logging.debug('Accessed optimized capacity of asset %s: %s', dict_asset['discharging_power']['label'], power_discharge)
 
                 capacity = storage_bus['scalars'][((dict_asset['label'], 'None'), 'invest')]
-                dict_asset['capacity'].update({'optimal_additional_capacity': capacity})
+                dict_asset['capacity'].update({'optimizedAddCap': {'value': capacity, 'unit': dict_asset['capacity']['unit']}})
                 logging.debug('Accessed optimized capacity of asset %s: %s', dict_asset['capacity']['label'], capacity)
 
             else:
-                dict_asset['charging_power'].update({'optimal_additional_capacity': 0})
-                dict_asset['discharging_power'].update({'optimal_additional_capacity': 0})
-                dict_asset['capacity'].update({'optimal_additional_capacity': 0})
+                dict_asset['charging_power'].update({'optimizedAddCap': {'value': 0, 'unit': dict_asset['capacity']['unit']}})
+                dict_asset['discharging_power'].update({'optimizedAddCap': {'value': 0, 'unit': dict_asset['capacity']['unit']}})
+                dict_asset['capacity'].update({'optimizedAddCap': {'value': 0, 'unit': dict_asset['capacity']['unit']}})
 
         dict_asset.update({'timeseries_soc': dict_asset['capacity']['flow'] /
-                                             (dict_asset['capacity']['cap_installed']
-                                              + dict_asset['capacity']['optimal_additional_capacity'])})
-
-        process_results.get_transformator_results(settings, bus_data, dict_asset['charge_controller']['in'])
-        process_results.get_transformator_results(settings, bus_data, dict_asset['charge_controller']['out'])
+                                             (dict_asset['capacity']['installedCap']['value']
+                                              + dict_asset['capacity']['optimizedAddCap']['value'])})
         return
 
     def get_transformator_results(settings, bus_data, dict_asset):
@@ -89,8 +87,8 @@ class storage():
 
 class helpers:
     def get_optimal_cap(bus, dict_asset, direction):
-        if 'optimize_cap' in dict_asset:
-            if dict_asset['optimize_cap'] == True:
+        if 'optimizeCap' in dict_asset:
+            if dict_asset['optimizeCap'] == True:
                 if direction == 'input_bus_name':
                     optimal_capacity = bus['scalars'][((dict_asset['input_bus_name'], dict_asset['label']), 'invest')]
                 elif direction == 'output_bus_name':
@@ -101,20 +99,20 @@ class helpers:
                 if 'timeseries_peak' in dict_asset:
                     if dict_asset['timeseries_peak'] > 1:
                         dict_asset.update(
-                            {'optimal_additional_capacity': optimal_capacity * dict_asset['timeseries_peak']})
+                            {'optimizedAddCap': {'value': optimal_capacity * dict_asset['timeseries_peak'], 'unit': dict_asset['unit']}})
 
                     elif dict_asset['timeseries_peak'] > 0 and dict_asset['timeseries_peak'] < 1:
                         dict_asset.update(
-                            {'optimal_additional_capacity': optimal_capacity / dict_asset['timeseries_peak']})
+                            {'optimizedAddCap': optimal_capacity / dict_asset['timeseries_peak']})
                     else:
                         logging.warning(
                             'Time series peak of asset %s negative! Check timeseries. No optimized capacity derived.',
                             dict_asset['label'])
                         pass
                 else:
-                    dict_asset.update({'optimal_additional_capacity': optimal_capacity})
+                    dict_asset.update({'optimizedAddCap': optimal_capacity})
             else:
-                dict_asset.update({'optimal_additional_capacity': 0})
+                dict_asset.update({'optimizedAddCap': 0})
             logging.debug('Accessed optimized capacity of asset %s: %s', dict_asset['label'], optimal_capacity)
 
         return
@@ -144,8 +142,8 @@ class helpers:
     def add_info_flows(settings, dict_asset, flow):
         total_flow = sum(flow)
         dict_asset.update({'flow': flow,
-                           'total_flow': total_flow,
-                           'annual_total_flow': total_flow * 365 / settings['evaluated_period'],
-                           'peak_flow': max(flow),
-                           'average_flow': total_flow / len(flow)})
+                           'total_flow': {'value': total_flow, 'unit': 'kWh'},
+                           'annual_total_flow': {'value': total_flow * 365 / settings['evaluated_period']['value'], 'unit': 'kWh'},
+                           'peak_flow': {'value': max(flow), 'unit': 'kW'},
+                           'average_flow': {'value': total_flow / len(flow), 'unit': 'kW'}})
         return
