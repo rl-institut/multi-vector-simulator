@@ -1,7 +1,7 @@
 try:
     from .F1_plotting import plots
 except ImportError:
-    from code.F1_plotting import plots
+    from code_folder.F1_plotting import plots
 import pandas as pd
 import logging
 
