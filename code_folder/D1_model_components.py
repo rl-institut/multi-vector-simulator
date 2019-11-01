@@ -73,7 +73,7 @@ class define_oemof_component():
                                        nominal_value=dict_asset['installedCap']['value'],
                                        variable_costs=dict_asset['opex_var']['value'])},
                                    conversion_factors={
-                                       kwargs['busses'][dict_asset['output_bus_name']]: dict_asset['efficiency']}
+                                       kwargs['busses'][dict_asset['output_bus_name']]: dict_asset['efficiency']['value']}
                                    )
         model.add(transformer)
         kwargs['transformers'].update({dict_asset['label']: transformer})
@@ -88,7 +88,7 @@ class define_oemof_component():
                                        existing=dict_asset['installedCap']['value'],
                                        variable_costs=dict_asset['opex_var']['value'])},
                                    conversion_factors={
-                                       kwargs['busses'][dict_asset['output_bus_name']]: dict_asset['efficiency']}
+                                       kwargs['busses'][dict_asset['output_bus_name']]: dict_asset['efficiency']['value']}
                                    )
         model.add(transformer)
         kwargs['transformers'].update({dict_asset['label']: transformer})
@@ -106,10 +106,10 @@ class define_oemof_component():
                 nominal_value= dict_asset['discharging_power']['installedCap']['value'], #limited through installed capacity, NOT c-rate #todo actually, if we only have a lithium battery... crate should suffice? i mean, with crate fixed AND fixed power, this is defined two times
                 variable_costs = dict_asset['discharging_power']['opex_var']['value']
             )},  # maximum discharge possible in one timestep
-            loss_rate=dict_asset['capacity']['self_discharge'],  # from timestep to timestep
+            loss_rate=dict_asset['capacity']['efficiency']['value'],  # from timestep to timestep
             min_storage_level=dict_asset['capacity']['soc_min']['value'],
             max_storage_level=dict_asset['capacity']['soc_max']['value'],
-            initial_storage_level=dict_asset['capacity']['soc_initial'],  # in terms of SOC
+            initial_storage_level=dict_asset['capacity']['soc_initial']['value'],  # in terms of SOC
             inflow_conversion_factor=dict_asset['charging_power']['efficiency']['value'],  # storing efficiency
             outflow_conversion_factor=dict_asset['discharging_power']['efficiency']['value'])  # efficiency of discharge
         model.add(storage)
@@ -124,17 +124,17 @@ class define_oemof_component():
             inputs={kwargs['busses'][dict_asset['input_bus_name']]: solph.Flow(
                 existing= dict_asset['charging_power']['installedCap']['value'],
                 investment = solph.Investment(ep_costs=dict_asset['charging_power']['simulation_annuity']['value']),
-                variable_costs=dict_asset['charging_power']['opex_var']
+                variable_costs=dict_asset['charging_power']['opex_var']['value']
             )},  # maximum charge power
             outputs={kwargs['busses'][dict_asset['output_bus_name']]: solph.Flow(
                 existing=dict_asset['discharging_power']['installedCap']['value'],
                 investment=solph.Investment(ep_costs=dict_asset['discharging_power']['simulation_annuity']['value']),
-                variable_costs=dict_asset['discharging_power']['opex_var']
+                variable_costs=dict_asset['discharging_power']['opex_var']['value']
             )},  # maximum discharge power
             loss_rate=dict_asset['capacity']['efficiency']['value'],  # from timestep to timestep
             min_storage_level=dict_asset['capacity']['soc_min']['value'],
             max_storage_level=dict_asset['capacity']['soc_max']['value'],
-            initial_storage_level=dict_asset['capacity']['soc_initial'],  # in terms of SOC #implication: balanced = True, ie. start=end
+            initial_storage_level=dict_asset['capacity']['soc_initial']['value'],  # in terms of SOC #implication: balanced = True, ie. start=end
             inflow_conversion_factor=dict_asset['charging_power']['efficiency']['value'],  # storing efficiency
             outflow_conversion_factor=dict_asset['discharging_power']['efficiency']['value'], # efficiency of discharge
             invest_relation_input_capacity=dict_asset['charging_power']['crate']['value'],
