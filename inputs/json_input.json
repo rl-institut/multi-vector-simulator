@@ -30,7 +30,7 @@
         "path_input_file": "./inputs/test_input_file_v1.xlsx",
         "path_input_folder": "./inputs/",
         "path_output_folder": "./MVS_outputs",
-        "path_output_folder_inputs": "./outputs/inputs/",
+        "path_output_folder_inputs": "./MVS_outputs/inputs/",
         "store_oemof_results": true,
         "oemof_file_name": "MVS_results.oemof",
         "restore_from_oemof_file": true
@@ -216,6 +216,7 @@
                 "inflow_direction": "ESS Li-Ion",
                 "outflow_direction": "ESS Li-Ion",
                 "capacity": {
+                    "unit": "kWh",
                     "age_installed": {"value": 0, "unit": "year"},
                     "installedCap": {"value": 0, "unit": "kWh"},
                     "capex_fix": {"value": 0.0, "unit": "currency"},
@@ -230,6 +231,7 @@
                     "soc_min": {"value": 0.2, "unit": "factor"}
                 },
                 "charging_power": {
+                    "unit": "kW",
                     "age_installed": {"value": 0, "unit": "year"},
                     "installedCap": {"value": 0, "unit": "kW"},
                     "capex_fix": {"value": 0.0, "unit": "currency"},
@@ -242,6 +244,7 @@
                     "opex_var":  {"value": 0, "unit": "currency/kWh"}
                 },
                 "discharging_power": {
+                    "unit": "kW",
                     "age_installed": {"value": 0, "unit": "year"},
                     "installedCap": {"value": 0, "unit": "kW"},
                     "capex_fix": {"value": 0.0, "unit": "currency"},
@@ -260,6 +263,7 @@
         "Electricity (LES)": {
             "pv_plant_01": {
                 "label": "PV plant (mono)",
+                "unit": "kWp",
                 "age_installed": {"value": 0, "unit": "year"},
                 "installedCap": {"value": 0, "unit": "kWp"},
                 "capex_fix": {"value": 100000, "unit": "currency"},
@@ -274,6 +278,7 @@
             },
             "pv_plant_02": {
                 "label": "PV plant (poly)",
+                "unit": "kWp",
                 "age_installed": {"value": 0, "unit": "year"},
                 "installedCap": {"value": 0, "unit": "kWp"},
                 "capex_fix": {"value": 100000, "unit": "currency"},
@@ -288,6 +293,7 @@
                 },
             "wind_plant_01": {
                 "label": "Wind plant",
+                "unit": "kW",
                 "age_installed": {"value": 0, "unit": "year"},
                 "installedCap": {"value": 0, "unit": "kWp"},
                 "capex_fix": {"value": 100000, "unit": "currency"},
