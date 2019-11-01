@@ -147,6 +147,9 @@ class data_processing:
 class helpers:
     def define_missing_cost_data(economic_data, dict_asset):
         basic_costs = {"installedCap": {"value": 0, "unit": "currency"},
+                       "optimizeCap": False,
+                       "unit": "?",
+                       "installedCap": {"value": 0.0, "unit": "kW"},
                        "capex_fix": {"value": 0, "unit": "currency"},
                        "capex_var": {"value": 0, "unit": "currency/unit"},
                        "opex_fix": {"value": 0, "unit": "currency/year"},
