@@ -1,12 +1,38 @@
 import logging
+import pandas as pd
+import pprint as pp
+import matplotlib.pyplot as plt
 
 class process_results:
-    def check_for_evaluation_keys(dict_values, dict_asset, bus_data):
-        if isinstance(dict_asset, dict) and ('output_bus_name' in dict_asset.keys() or 'input_bus_name' in dict_asset.keys()):#('optimize_cap' in dict_asset.keys() or 'timeseries' in dict_asset.keys()):
-            process_results.asset_in_out(dict_values['settings'], bus_data,  dict_asset)
-        return
+    def get_timeseries_per_bus(dict_values, bus_data):
+        bus_data_timeseries = {}
+        for bus in bus_data.keys():
+            bus_data_timeseries.update({bus: pd.DataFrame(index=dict_values['simulation_settings']['time_index'])})
+            to_bus = {key[0][0]: key for key in bus_data[bus]['sequences'].keys() if key[0][1] == bus and key[1] == 'flow'}
+            for asset in to_bus:
+                bus_data_timeseries[bus][asset] = bus_data[bus]['sequences'][to_bus[asset]]
 
-    def asset_in_out(settings, bus_data, dict_asset):
+            from_bus = {key[0][1]: key for key in bus_data[bus]['sequences'].keys() if key[0][0] == bus and key[1] == 'flow'}
+            for asset in from_bus:
+                bus_data_timeseries[bus][asset] = - bus_data[bus]['sequences'][from_bus[asset]]
+
+        #todo this should be moved to f0_output
+        timeseries_output_file = '/timeseries_all_busses' + '.xlsx'
+        with pd.ExcelWriter(
+                dict_values['simulation_settings']['path_output_folder'] + timeseries_output_file) as open_file:  # doctest: +SKIP
+            for bus in bus_data_timeseries.keys():
+                bus_data_timeseries[bus].to_excel(open_file, sheet_name=bus)
+                bus_data_timeseries[bus].plot()
+                plt.savefig(dict_values['simulation_settings']['path_output_folder'] + '/' + bus + ' flows.png',
+                            bbox_inches="tight")
+                #plt.show()
+                plt.close()
+                plt.clf()
+                plt.cla()
+
+        logging.info('Saved flows at busses to: %s.', timeseries_output_file)
+        return bus_data_timeseries
+
         logging.debug('Accessing oemof simulation results for asset %s', dict_asset['label'])
         if dict_asset['type'] == 'storage' and 'parent' not in dict_asset:
             process_results.get_storage_results(settings, bus_data, dict_asset)
