@@ -34,22 +34,6 @@ class process_results:
         return bus_data_timeseries
 
         logging.debug('Accessing oemof simulation results for asset %s', dict_asset['label'])
-        if dict_asset['type'] == 'storage' and 'parent' not in dict_asset:
-            process_results.get_storage_results(settings, bus_data, dict_asset)
-
-        elif dict_asset['type'] == 'transformer':
-            process_results.get_transformator_results(settings, bus_data, dict_asset)
-
-        else:
-            if dict_asset['type'] == 'source':
-                direction = 'output_bus_name'
-            elif dict_asset['type'] == 'sink':
-                direction = 'input_bus_name'
-            else: logging.warning('Unknown component type %s of asset %s', dict_asset['type'], dict_asset['label'])
-            bus_name = dict_asset[direction]
-            helpers.get_flow(settings, bus_data[bus_name], dict_asset)
-            helpers.get_optimal_cap(bus_data[bus_name], dict_asset, direction)
-
         return
 
     def get_storage_results(settings, bus_data, dict_asset):
@@ -98,18 +82,6 @@ class process_results:
         helpers.get_flow(settings, bus_data[dict_asset[output_name]], dict_asset, direction=output_name)
         helpers.get_optimal_cap(bus_data[dict_asset[output_name]], dict_asset, 'output_bus_name')
         return
-'''
-class storage():
-    if dict_asset['label'] == 'charging_power':
-        storage.get_charging_power()
-    elif dict_asset['label'] == 'discharging_power':
-        storage.get_discharging_power()
-    elif dict_asset['label'] == 'capacity':
-        storage.get_capacity()
-    else:
-        print('error, asset not evaluates %s', dict_asset['label'])
-    return
-'''
 
 class helpers:
     def get_optimal_cap(bus, dict_asset, direction):
