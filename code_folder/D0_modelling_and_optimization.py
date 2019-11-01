@@ -2,6 +2,7 @@ import timeit
 import logging
 import oemof.solph as solph
 import oemof.outputlib as outputlib
+import pprint as pp
 
 try:
     from .D1_model_components import define_oemof_component, call_component, helpers
@@ -80,14 +81,16 @@ class modelling:
                 else:
                     warning_asset_type(asset, type, 'energyStorage')
 
+
+        pp.pprint(dict_model)
         logging.debug('All components added.')
 
         logging.debug('Create oemof model based on created components and busses.')
 
         #import oemof.graph as grph
         #my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
-        #from .F1_plotting import plots
-        #plots.draw_graph(model, node_color={})
+        from .F1_plotting import plots
+        plots.draw_graph(model, node_color={})
 
         local_energy_system = solph.Model(model)
 

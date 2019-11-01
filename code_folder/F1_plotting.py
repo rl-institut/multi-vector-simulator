@@ -134,7 +134,7 @@ class plots():
         plt.cla()
 
         return
-    '''
+
     def draw_graph(energysystem, edge_labels=True, node_color='#eeac7e',
                    edge_color='#eeac7e', plot=True, node_size=5500,
                    with_labels=True, arrows=True, layout='dot'):
@@ -170,4 +170,3 @@ class plots():
         # show output
         if plot is True:
             plt.show()
-    '''

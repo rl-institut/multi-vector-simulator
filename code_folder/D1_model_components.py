@@ -58,7 +58,6 @@ class helpers():
                             '"optimize_cap" of asset %s not True/False.', dict_asset['label'])
         return
 
-
 class define_oemof_component():
     def bus(model, name, **kwargs):
         logging.debug('Added: Bus %s', name)
