@@ -1,10 +1,15 @@
-from .C1_verification import verify
-from .C2_economic_functions import economics
+try:
+    from .code_folder.C1_verification import verify
+    from .code_folder.C2_economic_functions import economics
+    from .code_folder.F0_output import helpers as output
+except ImportError:
+    from code_folder.C1_verification import verify
+    from code_folder.C2_economic_functions import economics
+    from code_folder.F0_output import helpers as output
+
 import pandas as pd
 import logging
 import sys, shutil
-import json
-import numpy
 import pandas as pd
 
 from copy import deepcopy
@@ -21,7 +26,7 @@ class data_processing:
         # Adds costs to each asset and sub-asset
         data_processing.process_all_assets(dict_values)
 
-        data_processing.store_as_json(dict_values)
+        output.store_as_json(dict_values, 'json_input_processed')
         return
 
     def simulation_settings(simulation_settings):
@@ -117,31 +122,6 @@ class data_processing:
                         helpers.receive_timeseries_from_csv(dict_values['simulation_settings'], dict_values[group][sector][asset])
 
         logging.info('Processed cost data and added economic values.')
-        return
-
-    def store_as_json(dict_values):
-        # This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
-        def convert(o):
-            if isinstance(o, numpy.int64): return int(o)
-            # todo this actually drops the date time index, which could be interesting
-            if isinstance(o, pd.DatetimeIndex): return "date_range"
-            if isinstance(o, pd.datetime): return str(o)
-            # todo this also drops the timeindex, which is unfortunate.
-            if isinstance(o, pd.Series): return "pandas timeseries" #o.values
-            if isinstance(o, numpy.ndarray): return "numpy timeseries" #o.tolist()
-            if isinstance(o, pd.DataFrame): return "pandas dataframe" #o.to_json(orient='records')
-            logging.error('An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n'
-                          'Type: '+str(type(o)) +' \n'
-                          'Value(s): ' + str(o) + '\n'
-                          'Please edit function CO_data_processing.dataprocessing.store_as_json.')
-            raise TypeError
-
-        file_path = dict_values['simulation_settings']['path_output_folder'] + '/json_input_processed.json'
-        myfile = open(file_path, 'w')
-        json_data = json.dumps(dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4)
-        myfile.write(json_data)
-        myfile.close()
-        logging.info('Converted and stored processed simulation data to json: %s', file_path)
         return
 
 class helpers:

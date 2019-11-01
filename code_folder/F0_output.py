@@ -2,9 +2,11 @@ try:
     from .F1_plotting import plots
 except ImportError:
     from code_folder.F1_plotting import plots
+
+import json
+import numpy
 import pandas as pd
 import logging
-
 
 class output_processing():
     def evaluate_dict(dict_values):
@@ -16,10 +18,9 @@ class output_processing():
         annuity_costs = {}
 
         for sector in ['electricity', 'heat']:
-
             results_timeseries = {'total_demand_'+sector:
-                                      pd.Series([0 for i in dict_values['settings']['index']],
-                                                   index = dict_values['settings']['index'])} 
+                                      pd.Series([0 for i in dict_values['simulation_settings']['time_index']],
+                                                   index = dict_values['simulation_settings']['time_index'])}
             results_scalars_assets = {}
             results_scalars_other = {}
 
@@ -128,4 +129,29 @@ class helpers:
         for key in keyword_list:
             if key in dict_asset:
                 results_scalars_other[dict_asset['label']].update({key: dict_asset[key]})
+        return
+
+    def store_as_json(dict_values, file_name):
+        # This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
+        def convert(o):
+            if isinstance(o, numpy.int64): return int(o)
+            # todo this actually drops the date time index, which could be interesting
+            if isinstance(o, pd.DatetimeIndex): return "date_range"
+            if isinstance(o, pd.datetime): return str(o)
+            # todo this also drops the timeindex, which is unfortunate.
+            if isinstance(o, pd.Series): return "pandas timeseries" #o.values
+            if isinstance(o, numpy.ndarray): return "numpy timeseries" #o.tolist()
+            if isinstance(o, pd.DataFrame): return "pandas dataframe" #o.to_json(orient='records')
+            logging.error('An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n'
+                          'Type: '+str(type(o)) +' \n'
+                          'Value(s): ' + str(o) + '\n'
+                          'Please edit function CO_data_processing.dataprocessing.store_as_json.')
+            raise TypeError
+
+        file_path = dict_values['simulation_settings']['path_output_folder'] + '/' + file_name + '.json'
+        myfile = open(file_path, 'w')
+        json_data = json.dumps(dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4)
+        myfile.write(json_data)
+        myfile.close()
+        logging.info('Converted and stored processed simulation data to json: %s', file_path)
         return

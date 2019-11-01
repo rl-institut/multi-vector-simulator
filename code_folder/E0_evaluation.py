@@ -5,9 +5,11 @@ import pprint as pp
 try:
     from .code_folder.E1_process_results import process_results
     from .code_folder.E2_economics import economics
+    from .code_folder.F0_output import helpers as output
 except ImportError:
     from code_folder.E1_process_results import process_results
     from code_folder.E2_economics import economics
+    from code_folder.F0_output import helpers as output
 
 class evaluation:
     def evaluate_dict(dict_values, results_main, results_meta):
@@ -30,7 +32,6 @@ class evaluation:
                                                     dict_values['energyStorage'][sector][storage])
                 economics.get_costs(dict_values['energyStorage'][sector][storage], dict_values['economic_data'])
 
-        print(bus_data.keys())
         for asset in dict_values['energyConversion']:
             process_results.get_results(dict_values['simulation_settings'], bus_data, dict_values['energyConversion'][asset])
             economics.get_costs(dict_values['energyConversion'][asset], dict_values['economic_data'])
@@ -42,4 +43,5 @@ class evaluation:
                     economics.get_costs(dict_values[group][sector][asset], dict_values['economic_data'])
 
         logging.info('Evaluating optimized capacities and dispatch.')
+        output.store_as_json(dict_values, 'json_with_results')
         return
