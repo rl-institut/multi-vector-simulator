@@ -14,13 +14,9 @@ class data_processing:
         data_processing.simulation_settings(dict_values['simulation_settings'])
 
         ## Verify inputs
-        # check whether input values can be true
+        # todo check whether input values can be true
         #verify.check_input_values(dict_values)
-        # Check, whether files (demand, generation) are existing
-        helpers.evaluate_timeseries(dict_values, verify.lookup_file, 'verify')
-        ## Complete data values
-        # Receive data from timeseries and process their format
-        helpers.evaluate_timeseries(dict_values, receive_data.timeseries_csv, 'receive_data')
+        # todo Check, whether files (demand, generation) are existing
 
         # Adds costs to each asset and sub-asset
         data_processing.process_all_assets(dict_values)
@@ -116,6 +112,9 @@ class data_processing:
 
                     if group == 'energyProduction' and 'output_bus_name' not in dict_values[group][sector][asset]:
                         dict_values[group][sector][asset].update({'output_bus_name': helpers.bus_suffix(sector)})
+
+                    if group in ['energyConsumption', 'energyProduction'] and 'file_name' in dict_values[group][sector][asset]:
+                        helpers.receive_timeseries_from_csv(dict_values['simulation_settings'], dict_values[group][sector][asset])
 
         logging.info('Processed cost data and added economic values.')
         return
@@ -365,56 +364,25 @@ class helpers:
 
         return
 
-    def evaluate_timeseries(dict_values, function, use):
-        input_folder = dict_values['simulation_settings']['path_input_folder']
-        # Accessing timeseries of components
-        for asset_name in ['pv_plant', 'wind_plant']:
-            if asset_name in dict_values:
-                if asset_name == 'pv_plant':
-                    sub_name = 'pv_installation'
-                elif asset_name == 'wind_plant':
-                    sub_name = 'wind_installation'
-                file_path = input_folder + dict_values[asset_name][sub_name]['file_name']
-                # Check if file existent
-                if use == 'verify':
-                    # check if specific demand timeseries exists
-                    function(file_path, asset_name)
-                elif use == 'receive_data':
-                    # receive data and write it into dict_values
-                    function(dict_values['settings'], dict_values['simulation_settings'], dict_values[asset_name][sub_name], file_path, asset_name)
+    def receive_timeseries_from_csv(settings, dict_asset):
+        print(dict_asset)
+        file_path = settings['path_input_folder'] + dict_asset['file_name']
+        verify.lookup_file(file_path, dict_asset['label'])
 
-
-        # Accessing timeseries of demands
-        for demand_type in ['electricity_demand', 'heat_demand']:
-            if demand_type in dict_values:
-                # Check for each
-                for demand_key in dict_values['electricity_demand']:
-                    if demand_key != 'label':
-                        file_path = input_folder + dict_values[demand_type][demand_key]['file_name']
-                        if use == 'verify':
-                            # check if specific demand timeseries exists
-                            function(file_path, demand_key)
-                        elif use == 'receive_data':
-                            # receive data and write it into dict_values
-                            function(dict_values['settings'], dict_values['simulation_settings'], dict_values[demand_type][demand_key], file_path, demand_key)
-        return
-
-class receive_data:
-    def timeseries_csv(settings, user_input, dict_asset, file_path, name):
         data_set = pd.read_csv(file_path, sep=';')
         if len(data_set.index) == settings['periods']:
-            dict_asset.update({'timeseries': pd.Series(data_set['kW'].values, index = settings['index'])})
-            logging.debug('Added timeseries of %s (%s).', name, file_path)
+            dict_asset.update({'timeseries': pd.Series(data_set['kW'].values, index = settings['time_index'])})
+            logging.debug('Added timeseries of %s (%s).', dict_asset['label'], file_path)
         elif len(data_set.index) >= settings['periods']:
-            dict_asset.update({'timeseries': pd.Series(data_set['kW'][0:len(settings['index'])].values,
-                                                          index=settings['index'])})
+            dict_asset.update({'timeseries': pd.Series(data_set['kW'][0:len(settings['time_index'])].values,
+                                                          index=settings['time_index'])})
             logging.info('Provided timeseries of %s (%s) longer than evaluated period. '
-                         'Excess data dropped.', name, file_path)
+                         'Excess data dropped.', dict_asset['label'], file_path)
 
         elif len(data_set.index) <= settings['periods']:
             logging.critical('Input errror! '
                              'Provided timeseries of %s (%s) shorter then evaluated period. '
-                             'Operation terminated', name, file_path)
+                             'Operation terminated', dict_asset['label'], file_path)
             sys.exit()
 
         dict_asset.update({'timeseries_peak':
@@ -436,6 +404,6 @@ class receive_data:
             if any(dict_asset['timeseries_normalized'].values) < 0:
                 logging.warning("Error, %s timeseries negative.", dict_asset['label'])
 
-        shutil.copy(file_path, user_input['path_output_folder_inputs']+dict_asset['file_name'])
+        shutil.copy(file_path, settings['path_output_folder_inputs']+dict_asset['file_name'])
         logging.debug('Copied timeseries %s to output folder / inputs.', file_path)
         return
