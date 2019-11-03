@@ -211,7 +211,7 @@ class helpers:
                                   dso + '_consumption',
                                   dict_values['energyProviders'][sector][dso]['energy_price']['value'],
                                   dict_values['energyProviders'][sector][dso]['outflow_direction'],
-                                  timeseries, capex_var=peak_demand_pricing)
+                                  timeseries, opex_fix=peak_demand_pricing)
         else:
             # define one source for each pricing period
             for pricing_period in range(1, number_of_pricing_periods+1):
@@ -220,7 +220,7 @@ class helpers:
                     start=dict_values['simulation_settings']['start_date']
                           + pd.DateOffset(months=(pricing_period-1)*months_in_a_period),
                     end=dict_values['simulation_settings']['start_date']
-                          + pd.DateOffset(months=pricing_period*months_in_a_period),
+                          + pd.DateOffset(months=pricing_period*months_in_a_period, hours=-1),
                     freq=str(dict_values['simulation_settings']['timestep']['value']) + 'min')
 
                 timeseries = timeseries.add(pd.Series(1, index=time_period), fill_value=0)
@@ -229,7 +229,7 @@ class helpers:
                                       dict_values['energyProviders'][sector][dso]['energy_price']['value'],
                                       dict_values['energyProviders'][sector][dso]['outflow_direction'],
                                       timeseries,
-                                      capex_var=peak_demand_pricing)
+                                      opex_fix=peak_demand_pricing)
 
 
         helpers.define_sink(dict_values,
@@ -246,16 +246,24 @@ class helpers:
                 'label': asset_name + ' source',
                 'output_direction': output_bus,
                 'output_bus_name': output_bus_name,
+                'dispatchable': True,
                 'timeseries': timeseries,
                 "opex_var": {"value": price, "unit": "currency/unit"},
                 "lifetime": {"value": dict_values['economic_data']['project_duration']['value'],
                              "unit": "year"}
                 }
 
-        if "capex_var" in kwargs:
-            source.update({"capex_var": kwargs["capex_var"],
-                           'optimizeCap': True,
+        logging.debug('Asset %s: sum of timeseries = %s', asset_name, sum(timeseries.values))
+
+        if "opex_fix" in kwargs or "capex_var" in kwargs:
+            if "opex_fix" in kwargs:
+                source.update({"opex_fix": kwargs["opex_fix"]})
+            else:
+                source.update({"capex_var": kwargs["capex_var"]})
+
+            source.update({'optimizeCap': True,
                            'timeseries_peak': {'value': max(timeseries), 'unit': 'kW'},
+                           #todo if we have normalized timeseries hiere, the capex/opex (simulation) have changed, too
                            'timeseries_normalized': timeseries/max(timeseries)})
             logging.warning('Attention! %s is created, with a price of %s.'
                             'If this is DSO supply, this could be improved. Please refer to Issue #23.',
@@ -287,6 +295,9 @@ class helpers:
 
         if "capex_var" in kwargs:
             sink.update({"capex_var": kwargs["capex_var"],
+                         'optimizeCap': True})
+        if "opex_fix" in kwargs:
+            sink.update({"opex_fix": kwargs["opex_fix"],
                          'optimizeCap': True})
         else:
             sink.update({'optimizeCap': False})
@@ -348,7 +359,6 @@ class helpers:
         return
 
     def receive_timeseries_from_csv(settings, dict_asset):
-        print(dict_asset)
         file_path = settings['path_input_folder'] + dict_asset['file_name']
         verify.lookup_file(file_path, dict_asset['label'])
 
