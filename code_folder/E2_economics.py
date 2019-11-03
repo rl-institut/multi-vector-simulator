@@ -25,6 +25,7 @@ class economics:
                 costs_total = helpers.add_costs_and_total(dict_asset, 'costs_opex_var', costs_opex_var, costs_total)
                 cost_om = helpers.add_costs_and_total(dict_asset, 'costs_opex_var', costs_opex_var, cost_om)
 
+            #todo actually, price is probably not the label, but opex_var
             if helpers.all_list_in_dict(dict_asset, ['price', 'annual_total_flow']) == True:
                 costs_energy = dict_asset['price']['value'] * dict_asset['annual_total_flow']['value']
                 cost_om = helpers.add_costs_and_total(dict_asset, 'costs_energy', costs_energy, cost_om)
@@ -39,10 +40,10 @@ class economics:
                 cost_om = helpers.add_costs_and_total(dict_asset, 'costs_opex_fix', costs_opex_fix, cost_om)
 
             dict_asset.update({'costs_total': {'value': costs_total, 'unit': 'currency'},
-                               'cost_om': {'value': cost_om, 'unit': 'currency'}})
+                               'costs_om': {'value': cost_om, 'unit': 'currency'}})
 
             dict_asset.update({'annuity_total': {'value': dict_asset['costs_total']['value'] * economic_data['crf']['value'], 'unit': 'currency/year'},
-                               'annuity_om': {'value': dict_asset['cost_om']['value'] * economic_data['crf']['value'], 'unit': 'currency/year'}})
+                               'annuity_om': {'value': dict_asset['costs_om']['value'] * economic_data['crf']['value'], 'unit': 'currency/year'}})
         return
 
 class helpers:

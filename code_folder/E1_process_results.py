@@ -1,7 +1,6 @@
 import logging
 import pandas as pd
 import pprint as pp
-import matplotlib.pyplot as plt
 
 class process_results:
     def get_timeseries_per_bus(dict_values, bus_data):
@@ -13,31 +12,18 @@ class process_results:
                 bus_data_timeseries[bus][asset] = bus_data[bus]['sequences'][to_bus[asset]]
 
             from_bus = {key[0][1]: key for key in bus_data[bus]['sequences'].keys() if key[0][0] == bus and key[1] == 'flow'}
+            # todo this could also be counted as a negative value (inflow/outflow topology)
             for asset in from_bus:
-                bus_data_timeseries[bus][asset] = - bus_data[bus]['sequences'][from_bus[asset]]
+                bus_data_timeseries[bus][asset] = bus_data[bus]['sequences'][from_bus[asset]]
 
-        #todo this should be moved to f0_output
-        timeseries_output_file = '/timeseries_all_busses' + '.xlsx'
-        with pd.ExcelWriter(
-                dict_values['simulation_settings']['path_output_folder'] + timeseries_output_file) as open_file:  # doctest: +SKIP
-            for bus in bus_data_timeseries.keys():
-                bus_data_timeseries[bus].to_excel(open_file, sheet_name=bus)
-                bus_data_timeseries[bus].plot()
-                plt.savefig(dict_values['simulation_settings']['path_output_folder'] + '/' + bus + ' flows.png',
-                            bbox_inches="tight")
-                #plt.show()
-                plt.close()
-                plt.clf()
-                plt.cla()
+        dict_values.update({'optimizedFlows': bus_data_timeseries})
+        return
 
-        logging.info('Saved flows at busses to: %s.', timeseries_output_file)
-        return bus_data_timeseries
-
+    def write_bus_timeseries_to_dict_values():
         logging.debug('Accessing oemof simulation results for asset %s', dict_asset['label'])
         return
 
-    def get_storage_results(settings, bus_data, dict_asset):
-        storage_bus = bus_data[dict_asset['label']]
+    def get_storage_results(settings, storage_bus, dict_asset):
         power_charge = storage_bus['sequences'][((dict_asset['input_bus_name'], dict_asset['label']), 'flow')]
         helpers.add_info_flows(settings, dict_asset['charging_power'], power_charge)
 
@@ -74,67 +60,68 @@ class process_results:
                                               + dict_asset['capacity']['optimizedAddCap']['value'])})
         return
 
-    def get_transformator_results(settings, bus_data, dict_asset):
-        input_name = 'input_bus_name'
-        helpers.get_flow(settings, bus_data[dict_asset[input_name]], dict_asset, direction=input_name)
+    def get_results(settings, bus_data, dict_asset):
+        if 'input_bus_name' in dict_asset:
+            input_name = dict_asset['input_bus_name']
+            helpers.get_flow(settings, bus_data[input_name], dict_asset, direction="input")
 
-        output_name = 'output_bus_name'
-        helpers.get_flow(settings, bus_data[dict_asset[output_name]], dict_asset, direction=output_name)
-        helpers.get_optimal_cap(bus_data[dict_asset[output_name]], dict_asset, 'output_bus_name')
+        if 'output_bus_name' in dict_asset:
+            output_name = dict_asset['output_bus_name']
+            helpers.get_flow(settings, bus_data[output_name], dict_asset, direction="output")
+
+        # definie capacities
+        if 'output_bus_name' in dict_asset and 'in_bus_name' in dict_asset:
+            helpers.get_optimal_cap(bus_data[output_name], dict_asset, 'output')
+
+        elif 'in_bus_name' in dict_asset:
+            helpers.get_optimal_cap(bus_data[output_name], dict_asset, 'input')
+
+        elif 'output_bus_name' in dict_asset:
+            helpers.get_optimal_cap(bus_data[output_name], dict_asset, 'output')
         return
 
 class helpers:
     def get_optimal_cap(bus, dict_asset, direction):
         if 'optimizeCap' in dict_asset:
             if dict_asset['optimizeCap'] == True:
-                if direction == 'input_bus_name':
+                if direction == 'input':
                     optimal_capacity = bus['scalars'][((dict_asset['input_bus_name'], dict_asset['label']), 'invest')]
-                elif direction == 'output_bus_name':
+                elif direction == 'output':
                     optimal_capacity = bus['scalars'][((dict_asset['label'], dict_asset['output_bus_name']), 'invest')]
                 else:
                     logging.error('Function get_optimal_cap has invalid value of parameter direction.')
 
                 if 'timeseries_peak' in dict_asset:
-                    if dict_asset['timeseries_peak'] > 1:
+                    if dict_asset['timeseries_peak']['value']  > 1:
                         dict_asset.update(
                             {'optimizedAddCap': {'value': optimal_capacity * dict_asset['timeseries_peak'], 'unit': dict_asset['unit']}})
 
-                    elif dict_asset['timeseries_peak'] > 0 and dict_asset['timeseries_peak'] < 1:
+                    elif dict_asset['timeseries_peak']['value']  > 0 and dict_asset['timeseries_peak']['value'] < 1:
                         dict_asset.update(
-                            {'optimizedAddCap': optimal_capacity / dict_asset['timeseries_peak']})
+                            {'optimizedAddCap': {'value': optimal_capacity / dict_asset['timeseries_peak']['value'], 'unit': dict_asset['unit']}})
                     else:
                         logging.warning(
                             'Time series peak of asset %s negative! Check timeseries. No optimized capacity derived.',
                             dict_asset['label'])
                         pass
                 else:
-                    dict_asset.update({'optimizedAddCap': optimal_capacity})
+                    dict_asset.update({'optimizedAddCap': {'value': optimal_capacity, 'unit': dict_asset['unit']}})
+                logging.debug('Accessed optimized capacity of asset %s: %s', dict_asset['label'], optimal_capacity)
             else:
-                dict_asset.update({'optimizedAddCap': 0})
-            logging.debug('Accessed optimized capacity of asset %s: %s', dict_asset['label'], optimal_capacity)
+                dict_asset.update({'optimizedAddCap':  {'value': 0, 'unit': dict_asset['unit']}})
 
         return
 
-    def get_flow(settings, bus, dict_asset, **kwargs):
-        if dict_asset['type']=='transformer':
-            if kwargs['direction'] == 'input_bus_name':
-                flow = bus['sequences'][((dict_asset[kwargs['direction']], dict_asset['label']), 'flow')]
-            elif kwargs['direction'] == 'output_bus_name':
-                flow = bus['sequences'][((dict_asset['label'], dict_asset[kwargs['direction']]), 'flow')]
-            else: logging.error('Invalid argument direction in get_flow')
-            helpers.add_info_flows(settings, dict_asset, flow)
-
+    def get_flow(settings, bus, dict_asset, direction):
+        if direction == 'input':
+            flow = bus['sequences'][((dict_asset['input_bus_name'], dict_asset['label']), 'flow')]
+        elif direction == 'output':
+            flow = bus['sequences'][((dict_asset['label'], dict_asset['output_bus_name']), 'flow')]
         else:
-            if 'input_bus_name' in dict_asset:
-                flow = bus['sequences'][((dict_asset['input_bus_name'], dict_asset['label']), 'flow')]
-            elif 'output_bus_name' in dict_asset:
-                flow = bus['sequences'][((dict_asset['label'], dict_asset['output_bus_name']), 'flow')]
-            else:
-                logging.warning('Neither input- nor output bus defined!')
+            logging.warning('Value %s not "input" or "output"!', direction)
+        helpers.add_info_flows(settings, dict_asset, flow)
 
-            helpers.add_info_flows(settings, dict_asset, flow)
-
-        logging.debug('Accessed simulated timeseries of asset %s (total sum: %s)', dict_asset['label'], round(dict_asset['total_flow']))
+        logging.debug('Accessed simulated timeseries of asset %s (total sum: %s)', dict_asset['label'], round(dict_asset['total_flow']['value']))
         return
 
     def add_info_flows(settings, dict_asset, flow):
