@@ -92,7 +92,7 @@
         "Electricity (LES)": {
             "DSO": {
                 "peak_demand_pricing": {"value": 60, "unit": "currency/kW"},
-                "feedin_tariff": {"value": -0.5, "unit": "currency/kWh"},
+                "feedin_tariff": {"value": 0.4, "unit": "currency/kWh"},
                 "label": "Electricity grid DSO",
                 "inflow_direction": "Electricity (DSO)",
                 "outflow_direction": "Electricity (DSO)",
@@ -149,24 +149,9 @@
             "inflow_direction": "PV plant (mono)",
             "outflow_direction": "Electricity (LES)"
         },
-        "solar_inverter_02": {
-            "age_installed": {"value": 0, "unit": "year"},
-            "installedCap": {"value": 0, "unit": "kW"},
-            "capex_fix": {"value": 0.0, "unit": "currency"},
-            "capex_var": {"value": 3000, "unit": "currency/kW"},
-            "efficiency": {"value": 0.95, "unit": "factor"},
-            "label": "Solar inverter (poly)",
-            "lifetime": {"value": 15, "unit": "year"},
-            "opex_fix": {"value": 0, "unit": "currency/kW/year"},
-            "opex_var": {"value": 0, "unit": "currency/kWh"},
-            "optimizeCap": true,
-            "type_oemof": "transformer",
-            "inflow_direction": "PV plant (poly)",
-            "outflow_direction": "Electricity (LES)"
-        },
         "transformer_station_in": {
                 "age_installed": {"value": 5, "unit": "year"},
-                "installedCap": {"value": 0, "unit": "kW"},
+                "installedCap": {"value": 1250, "unit": "kW"},
                 "capex_fix": {"value": 0.0, "unit": "currency"},
                 "capex_var": {"value": 0, "unit": "currency/kW"},
                 "efficiency": {"value": 0.96, "unit": "factor"},
@@ -174,13 +159,13 @@
                 "lifetime": {"value": 30, "unit": "year"},
                 "opex_fix":  {"value": 0, "unit": "currency/kW/year"},
                 "opex_var": {"value": 0, "unit": "currency/kWh"},
-                "optimizeCap": true,
+                "optimizeCap": false,
                 "type_oemof": "transformer",
                 "inflow_direction": "Electricity (DSO)",
                 "outflow_direction": "Electricity (LES)"},
         "transformer_station_out": {
                 "age_installed": {"value": 5, "unit": "year"},
-                "installedCap": {"value": 0, "unit": "kW"},
+                "installedCap": {"value": 1250, "unit": "kW"},
                 "capex_fix": {"value": 0.0, "unit": "currency"},
                 "capex_var": {"value": 0, "unit": "currency/kW"},
                 "efficiency": {"value": 0.96, "unit": "factor"},
@@ -188,7 +173,7 @@
                 "lifetime": {"value": 30, "unit": "year"},
                 "opex_fix":  {"value": 0, "unit": "currency/kW/year"},
                 "opex_var": {"value": 0, "unit": "currency/kWh"},
-                "optimizeCap": true,
+                "optimizeCap": false,
                 "type_oemof": "transformer",
                 "inflow_direction": "Electricity (LES)",
                 "outflow_direction": "Electricity (DSO)"},
@@ -275,37 +260,7 @@
                 "optimizeCap": true,
                 "type_oemof": "source",
                 "outflow_direction": "PV plant (mono)"
-            },
-            "pv_plant_02": {
-                "label": "PV plant (poly)",
-                "unit": "kWp",
-                "age_installed": {"value": 0, "unit": "year"},
-                "installedCap": {"value": 0, "unit": "kWp"},
-                "capex_fix": {"value": 100000, "unit": "currency"},
-                "capex_var": {"value": 7200, "unit": "currency/kWp"},
-                "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
-                "lifetime": {"value": 20, "unit": "year"},
-                "opex_fix": {"value": 80, "unit": "currency/kWp/year"},
-                "opex_var": {"value": 0, "unit": "currency/kWh"},
-                "optimizeCap": true,
-                "type_oemof": "source",
-                "outflow_direction": "PV plant (poly)"
-                },
-            "wind_plant_01": {
-                "label": "Wind plant",
-                "unit": "kW",
-                "age_installed": {"value": 0, "unit": "year"},
-                "installedCap": {"value": 0, "unit": "kWp"},
-                "capex_fix": {"value": 100000, "unit": "currency"},
-                "capex_var": {"value": 7200, "unit": "currency/kWp"},
-                "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
-                "lifetime": {"value": 20, "unit": "year"},
-                "opex_fix": {"value": 80, "unit": "currency/kWp/year"},
-                "opex_var": {"value": 0, "unit": "currency/kWh"},
-                "optimizeCap": true,
-                "type_oemof": "source",
-                "outflow_direction": "Electricity (LES)"
-                }
+            }
         }
     }
 }
