@@ -24,12 +24,15 @@ class call_component:
         return
 
     def source(model, dict_asset, **kwargs):
-        if 'timeseries' in dict_asset:
+        if 'dispatchable' in dict_asset and dict_asset['dispatchable']==True:
+            helpers.check_optimize_cap(model, dict_asset,
+                                       func_constant=define_oemof_component.source_dispatchable_fix,
+                                       func_optimize=define_oemof_component.source_dispatchable_optimize, **kwargs)
+
+        else:
             helpers.check_optimize_cap(model, dict_asset,
                                        func_constant=define_oemof_component.source_non_dispatchable_fix,
                                        func_optimize=define_oemof_component.source_non_dispatchable_optimize, **kwargs)
-        else:
-            define_oemof_component.source_dispatchable(model, dict_asset, **kwargs)
         return
 
 class helpers():
@@ -68,8 +71,8 @@ class define_oemof_component():
 
     def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
         transformer = solph.Transformer(label=dict_asset['label'],
-                                   inputs={kwargs['busses'][dict_asset['inflow_direction']]: solph.Flow()},
-                                   outputs={kwargs['busses'][dict_asset['outflow_direction']]: solph.Flow(
+                                   inputs={kwargs['busses'][dict_asset['input_bus_name']]: solph.Flow()},
+                                   outputs={kwargs['busses'][dict_asset['output_bus_name']]: solph.Flow(
                                        nominal_value=dict_asset['installedCap']['value'],
                                        variable_costs=dict_asset['opex_var']['value'])},
                                    conversion_factors={
@@ -161,6 +164,7 @@ class define_oemof_component():
         return
 
     def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
+        print(dict_asset.keys())
         source_non_dispatchable = solph.Source(label=dict_asset['label'],
                                  outputs={kwargs['busses'][dict_asset['output_bus_name']]:
                                               solph.Flow(label=dict_asset['label'],
@@ -176,12 +180,47 @@ class define_oemof_component():
         kwargs['sources'].update({dict_asset['label']: source_non_dispatchable})
         return
 
-    def source_dispatchable(model, dict_asset, **kwargs):
-        source_dispatchable = solph.Source(label=dict_asset['label'],
-                                 outputs={kwargs['busses'][dict_asset['output_bus_name']]:
-                                              solph.Flow(label=dict_asset['label'],
-                                                         variable_costs=dict_asset['opex_var']['value'])})
+    def source_dispatchable_optimize(model, dict_asset, **kwargs):
+        if 'timeseries_normalized' in dict_asset:
+            source_dispatchable = solph.Source(label=dict_asset['label'],
+                                     outputs={kwargs['busses'][dict_asset['output_bus_name']]:
+                                                  solph.Flow(label=dict_asset['label'],
+                                                             max=dict_asset['timeseries_normalized'],
+                                                             investment=solph.Investment(
+                                                                 ep_costs=dict_asset['simulation_annuity']['value'] /
+                                                                          dict_asset['timeseries_peak']['value']),
+                                                             variable_costs=dict_asset['opex_var']['value'] /
+                                                                            dict_asset['timeseries_peak']['value']
+                                                             )})
+        else:
+            if 'timeseries' in dict_asset: logging.error('Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow')
+            source_dispatchable = solph.Source(label=dict_asset['label'],
+                                     outputs={kwargs['busses'][dict_asset['output_bus_name']]:
+                                                  solph.Flow(label=dict_asset['label'],
+                                                             investment=solph.Investment(
+                                                                 ep_costs=dict_asset['simulation_annuity']['value']),
+                                                             variable_costs=dict_asset['opex_var']['value'])})
+        model.add(source_dispatchable)
+        kwargs['sources'].update({dict_asset['label']: source_dispatchable})
+        logging.info('Added: Dispatchable source %s', dict_asset['label'])
+        return
 
+    def source_dispatchable_fix(model, dict_asset, **kwargs):
+        #todo 'timeseries_normalized' is correct term?
+        if 'timeseries_normalized' in dict_asset:
+            source_dispatchable = solph.Source(label=dict_asset['label'],
+                                     outputs={kwargs['busses'][dict_asset['output_bus_name']]:
+                                                  solph.Flow(label=dict_asset['label'],
+                                                             max=dict_asset['timeseries_normalized'],
+                                                             existing=dict_asset['installedCap']['value'],
+                                                             variable_costs=dict_asset['opex_var']['value'])})
+        else:
+            if 'timeseries' in dict_asset: logging.error('Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow')
+            source_dispatchable = solph.Source(label=dict_asset['label'],
+                                               outputs={kwargs['busses'][dict_asset['output_bus_name']]:
+                                                            solph.Flow(label=dict_asset['label'],
+                                                                       existing=dict_asset['installedCap']['value'],
+                                                                       variable_costs=dict_asset['opex_var']['value'])})
         model.add(source_dispatchable)
         kwargs['sources'].update({dict_asset['label']: source_dispatchable})
         logging.info('Added: Dispatchable source %s', dict_asset['label'])
