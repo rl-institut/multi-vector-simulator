@@ -31,15 +31,18 @@ class output_processing():
         helpers.store_timeseries_all_busses_to_excel(dict_values)
         # plot the capacities and the annuity costs
         plots.capacities(dict_values['simulation_settings'],dict_values['project_data'], dict_values['kpi']['scalar_matrix']['optimizedAddCap'])
-        plots.costs(dict_values['simulation_settings'],dict_values['project_data'], dict_values['kpi']['cost_matrix']['label'], dict_values['kpi']['cost_matrix']['annuity_total'])
+        # todo reachtivate plots.costs
+        #plots.costs(dict_values['simulation_settings'],dict_values['project_data'], dict_values['kpi']['cost_matrix']['label'], dict_values['kpi']['cost_matrix']['annuity_total'])
 
         # Write everything to file with multipe tabs
         results_scalar_output_file = '/scalars' + '.xlsx'
         with pd.ExcelWriter(dict_values['simulation_settings']['path_output_folder'] + results_scalar_output_file) as open_file:  # doctest: +SKIP
             for kpi_set in dict_values['kpi']:
-                dict_values['kpi'][kpi_set].to_excel(open_file, sheet_name=sector)
-                logging.info('Saved scalar results to: %s, tab %s.', results_scalar_output_file, sector)
-
+                if isinstance(dict_values['kpi'][kpi_set], dict):
+                    data = pd.DataFrame([dict_values['kpi'][kpi_set]]).to_excel(open_file, sheet_name=kpi_set)
+                else:
+                    dict_values['kpi'][kpi_set].to_excel(open_file, sheet_name=kpi_set)
+                logging.info('Saved scalar results to: %s, tab %s.', results_scalar_output_file, kpi_set)
         return
 
 class helpers:
