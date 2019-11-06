@@ -73,7 +73,7 @@ class verify():
                             'latitude': [-90,90],
                             'lifetime': ['largerzero','any'],
                             'age_installed': [0,'any'],
-                            'cap_installed':[0,'any'],
+                            'installedCap':[0,'any'],
                             'soc_min': [0,1],
                             'soc_max': [0,1],
                             'soc_initial': [0,1],

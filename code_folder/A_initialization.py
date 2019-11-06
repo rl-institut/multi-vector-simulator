@@ -61,7 +61,8 @@ class initializing():
         :return:
         '''
         # Default values:
-        path_input_file = './inputs/test_input_file_v1.xlsx'
+        #path_input_file = './inputs/test_input_file_v1.xlsx'
+        path_input_file = './inputs/json_input.json'
         display_output =  '-debug' #'-info' #
         path_output_folder = './MVS_outputs'
         overwrite = False
@@ -100,8 +101,7 @@ class initializing():
 
         path_input_folder, name_input_file = initializing.check_input_directory(path_input_file)
         initializing.check_output_directory(path_output_folder, overwrite)
-
-        user_input = {'label': 'user_input',
+        user_input = {'label': 'simulation_settings',
                       'path_input_folder': path_input_folder + '/',
                       'path_input_file': path_input_file,
                       'input_file_name': name_input_file,

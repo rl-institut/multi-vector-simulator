@@ -28,28 +28,29 @@ child-sub:  Sub-child function, feeds only back to child functions
 '''
 
 import logging
+import os
 
 # Loading all child functions
 try:
-    from .code.A_initialization import initializing
-    from .code.B0_data_input import data_input
-    from .code.C0_data_processing import data_processing
-    from .code.D0_modelling_and_optimization import modelling
-    from .code.E0_evaluation import evaluation
-    from .code.F0_output import output_processing
+    from .code_folder.A_initialization import initializing
+    from .code_folder.B0_data_input_json import data_input
+    from .code_folder.C0_data_processing import data_processing
+    from .code_folder.D0_modelling_and_optimization import modelling
+    from .code_folder.E0_evaluation import evaluation
+    from .code_folder.F0_output import output_processing
 
 except ModuleNotFoundError:
-    from code.A_initialization import initializing
-    from code.B0_data_input import data_input
-    from code.C0_data_processing import data_processing
-    from code.D0_modelling_and_optimization import modelling
-    from code.E0_evaluation import evaluation
-    from code.F0_output import output_processing
+    from code_folder.A_initialization import initializing
+    from code_folder.B0_data_input_json import data_input
+    from code_folder.C0_data_processing import data_processing
+    from code_folder.D0_modelling_and_optimization import modelling
+    from code_folder.E0_evaluation import evaluation
+    from code_folder.F0_output import output_processing
 
 def main():
     # Display welcome text
     version = '0.0.1' #update_me Versioning scheme: Major release.Minor release.Patches
-    date = '19.09.2019' #update_me Update date
+    date = '31.10.2019' #update_me Update date
 
     welcome_text = \
         '\n \n Multi-Vector Simulation Tool (MVS) V' + version + ' ' + \
@@ -61,42 +62,41 @@ def main():
 
     logging.debug('Accessing script: A_initialization')
     user_input = initializing.welcome(welcome_text)
+
     # Read all inputs
     print('')
-    logging.debug('Accessing script: B0_data_input')
-    dict_values, included_assets = data_input.all(user_input)
-    dict_values.update({'user_input': user_input})
+    # todo: is user input completely used?
+    dict_values = data_input.get(user_input)
 
-    import json
-    import numpy
-    import pandas as pd
-    def convert(o):
-        if isinstance(o, numpy.int64): return int(o)
-        if isinstance(o, pd.DatetimeIndex): return "date_range"
-        if isinstance(o, pd.datetime): return str(o)
-        print(o)
-        raise TypeError
-
-    myfile = open(dict_values['user_input']['path_output_folder']+'/dictionary_to_json.json', 'w')
-    json = json.dumps(dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4)
-    myfile.write(json)
-    myfile.close()
-
-    print(myfile)
     print('')
     logging.debug('Accessing script: C0_data_processing')
     data_processing.all(dict_values)
-    print('')
-    logging.debug('Accessing script: D0_modelling_and_optimization')
-    results_meta, results_main, dict_model = modelling.run_oemof(dict_values)
 
     print('')
+    logging.debug('Accessing script: D0_modelling_and_optimization')
+    results_meta, results_main = modelling.run_oemof(dict_values)
+    '''
+    if dict_values['simulation_settings']['restore_from_oemof_file'] == True:
+        if os.path.isfile(dict_values['simulation_settings']['path_output_folder'] + '/' + dict_values['simulation_settings']['oemof_file_name'])== False:
+            print('')
+            logging.debug('Accessing script: D0_modelling_and_optimization')
+            results_meta, results_main = modelling.run_oemof(dict_values)
+        else:
+            logging.debug('Restore the energy system and the results.')
+            import oemof.solph as solph
+            model = solph.EnergySystem()
+            model.restore(dpath=dict_values['simulation_settings']['path_output_folder'],
+                                  filename=dict_values['simulation_settings']['oemof_file_name'])
+            results_main = model.results['main']
+            results_meta = model.results['meta']
+            
+    '''
+    print('')
     logging.debug('Accessing script: E0_evaluation')
-    evaluation.evaluate_dict(dict_values, results_main, results_meta, dict_model)
+    evaluation.evaluate_dict(dict_values, results_main, results_meta)
 
     logging.debug('Accessing script: F0_outputs')
     output_processing.evaluate_dict(dict_values)
-
     return 1
 
 if __name__=="__main__":
