@@ -12,9 +12,8 @@ class process_results:
                 bus_data_timeseries[bus][asset] = bus_data[bus]['sequences'][to_bus[asset]]
 
             from_bus = {key[0][1]: key for key in bus_data[bus]['sequences'].keys() if key[0][0] == bus and key[1] == 'flow'}
-            # todo this could also be counted as a negative value (inflow/outflow topology)
             for asset in from_bus:
-                bus_data_timeseries[bus][asset] = bus_data[bus]['sequences'][from_bus[asset]]
+                bus_data_timeseries[bus][asset] = - bus_data[bus]['sequences'][from_bus[asset]]
 
         dict_values.update({'optimizedFlows': bus_data_timeseries})
         return
