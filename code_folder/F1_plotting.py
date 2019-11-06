@@ -81,19 +81,24 @@ class plots():
 
         return
 
-    def costs(user_input,project_data,annuity_costs):
+    def costs(user_input, project_data, names, annuity_costs):
         # cost percentages are calculated
-        total = sum(annuity_costs.values())
-        annuity_costs.update({n: annuity_costs[n] / total for n in annuity_costs.keys()})
+        total = sum(annuity_costs.values)
+        annuity_costs_prec = {}
+        annuities = pd.DataFrame(annuity_costs.values, columns=names.values)
 
+        for n in annuities.index:
+            annuity_costs_prec.update({n: annuities[n] / total})
+        print(annuity_costs_prec)
         # those assets which do not reach 0,5% of total cost are included in others
         annuity_total = {'others':0}
-        for asset in annuity_costs:
-            if annuity_costs[asset] > 0:
-                if annuity_costs[asset] < 0.005:
-                    annuity_total['others'] += annuity_costs[asset]
+        for asset in annuity_costs_prec:
+            print(annuity_costs_prec[asset])
+            if annuity_costs_prec[asset] > 0:
+                if annuity_costs_prec[asset] < 0.005:
+                    annuity_total['others'] += annuity_costs_prec[asset]
                 else:
-                    annuity_total[asset] = annuity_costs[asset]
+                    annuity_total[asset] = annuity_costs_prec[asset]
 
         # if one asset is clearly the most expensive, another pie chart is shown with the rest
         for asset in annuity_total:
