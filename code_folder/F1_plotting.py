@@ -65,11 +65,31 @@ class plots():
 
         return
 
-    def capacities(user_input,project_data,capacities):
-        capacities = pd.Series(capacities)
+    def capacities(user_input,project_data,assets,capacities):
+
+        # only items with an optimal added capacity over 0 are selected
+        indexes = []
+        capacities_added = []
+        i = 0
+        for capacity in capacities:
+            if capacity > 0:
+                indexes.append(i)
+                capacities_added.append(capacity)
+            i += 1
+        i = 0
+        assets_added = []
+        for asset in assets:
+            if i in indexes:
+                assets_added.append(asset)
+            i += 1
+
+        # Data frame definition and plotting
+        dfcapacities = pd.DataFrame()
+        dfcapacities['items'] = assets_added
+        dfcapacities['capacities'] = capacities_added
 
         logging.info('Creating bar-chart for components capacities')
-        capacities.plot.bar(title='Optimal additional capacities: '
+        dfcapacities.plot.bar(x='items',y='capacities',title='Optimal additional capacities: '
                                   + project_data['project_name'] + ', '
                                   + project_data['scenario_name'])
 
@@ -85,13 +105,16 @@ class plots():
         # cost percentages are calculated
         total = sum(annuity_costs.values)
         annuity_costs_prec = {}
-        annuities = pd.DataFrame(annuity_costs.values, columns=names.values)
+        annuities = pd.DataFrame(data=annuity_costs.values, index=names.values)
+        annuities = annuities.to_dict()[0]
 
-        for n in annuities.index:
-            annuity_costs_prec.update({n: annuities[n] / total})
-        print(annuity_costs_prec)
-        # those assets which do not reach 0,5% of total cost are included in others
-        annuity_total = {'others':0}
+        # only costs over 0 are selected
+        for asset in annuities:
+            if annuities[asset] > 0:
+                annuity_costs_prec.update({asset:annuities[asset]/total})
+
+        # those assets which do not reach 0,5% of total cost are included in 'others'
+        annuity_total = {'others': 0}
         for asset in annuity_costs_prec:
             print(annuity_costs_prec[asset])
             if annuity_costs_prec[asset] > 0:
@@ -105,13 +128,13 @@ class plots():
             if annuity_total[asset] > 0.9:
                 major = asset
                 major_value = annuity_total[asset]
-                plots.costs_rest(user_input, project_data, major, major_value, annuity_total,total)
+                plots.costs_rest(user_input, project_data, major, major_value, annuity_total, total)
 
         annuity_total = pd.Series(annuity_total)
         logging.info('Creating pie-chart for total annuity costs')
-        annuity_total.plot.pie(title='Total annuity costs ('+str(round(total,2))+'$): '
-                                  + project_data['project_name'] + ', '
-                                  + project_data['scenario_name'],autopct='%1.1f%%',subplots=True)
+        annuity_total.plot.pie(title='Total annuity costs (' + str(round(total, 2)) + '$): '
+                                     + project_data['project_name'] + ', '
+                                     + project_data['scenario_name'], autopct='%1.1f%%', subplots=True)
 
         plt.savefig(user_input['path_output_folder'] + '/total_annuity_costs.png', bbox_inches="tight")
 

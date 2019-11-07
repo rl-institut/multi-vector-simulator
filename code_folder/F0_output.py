@@ -29,10 +29,10 @@ class output_processing():
                         dict_values['optimizedFlows'][sector_name+' bus'], sector, 365)
 
         helpers.store_timeseries_all_busses_to_excel(dict_values)
+
         # plot the capacities and the annuity costs
-        plots.capacities(dict_values['simulation_settings'],dict_values['project_data'], dict_values['kpi']['scalar_matrix']['optimizedAddCap'])
-        # todo reachtivate plots.costs
-        #plots.costs(dict_values['simulation_settings'],dict_values['project_data'], dict_values['kpi']['cost_matrix']['label'], dict_values['kpi']['cost_matrix']['annuity_total'])
+        plots.capacities(dict_values['simulation_settings'],dict_values['project_data'], dict_values['kpi']['cost_matrix']['label'], dict_values['kpi']['scalar_matrix']['optimizedAddCap'])
+        plots.costs(dict_values['simulation_settings'],dict_values['project_data'], dict_values['kpi']['cost_matrix']['label'], dict_values['kpi']['cost_matrix']['annuity_total'])
 
         # Write everything to file with multipe tabs
         results_scalar_output_file = '/scalars' + '.xlsx'
