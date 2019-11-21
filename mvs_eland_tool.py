@@ -32,6 +32,7 @@ import os
 
 # Loading all child functions
 try:
+    #for tests
     from .code_folder.A_initialization import initializing
     from .code_folder.B0_data_input_json import data_input
     from .code_folder.C0_data_processing import data_processing
@@ -40,6 +41,7 @@ try:
     from .code_folder.F0_output import output_processing
 
 except ModuleNotFoundError:
+    #for terminal execution
     from code_folder.A_initialization import initializing
     from code_folder.B0_data_input_json import data_input
     from code_folder.C0_data_processing import data_processing
@@ -47,7 +49,7 @@ except ModuleNotFoundError:
     from code_folder.E0_evaluation import evaluation
     from code_folder.F0_output import output_processing
 
-def main():
+def main(**kwargs):
     # Display welcome text
     version = '0.0.1' #update_me Versioning scheme: Major release.Minor release.Patches
     date = '31.10.2019' #update_me Update date
@@ -61,7 +63,7 @@ def main():
         '\n Contributors: Martha M. Hoffmann \n \n '
 
     logging.debug('Accessing script: A_initialization')
-    user_input = initializing.welcome(welcome_text)
+    user_input = initializing.welcome(welcome_text, **kwargs)
 
     # Read all inputs
     print('')
