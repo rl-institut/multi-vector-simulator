@@ -1,8 +1,8 @@
 try:
-    from .code_folder.C1_verification import verify
-    from .code_folder.C2_economic_functions import economics
-    from .code_folder.F0_output import helpers as output
-except ImportError:
+    from .C1_verification import verify
+    from .C2_economic_functions import economics
+    from .F0_output import helpers as output
+except ModuleNotFoundError:
     from code_folder.C1_verification import verify
     from code_folder.C2_economic_functions import economics
     from code_folder.F0_output import helpers as output

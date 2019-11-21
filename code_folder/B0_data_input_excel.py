@@ -3,7 +3,7 @@ import logging
 import pprint as pp
 try:
     from .B1_read_excel import read_template
-except ImportError:
+except ModuleNotFoundError:
     from code_folder.B1_read_excel import read_template
 
 class data_input:

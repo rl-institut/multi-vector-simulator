@@ -4,10 +4,10 @@ import pandas as pd
 
 
 try:
-    from .code_folder.E1_process_results import process_results
-    from .code_folder.E2_economics import economics
-    from .code_folder.E3_indicator_calculation import indicators
-    from .code_folder.F0_output import helpers as output
+    from .E1_process_results import process_results
+    from .E2_economics import economics
+    from .E3_indicator_calculation import indicators
+    from .F0_output import helpers as output
 except ImportError:
     from code_folder.E1_process_results import process_results
     from code_folder.E2_economics import economics

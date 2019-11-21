@@ -1,17 +1,20 @@
+#!/usr/bin/env python
+
 import logging
 from oemof.tools import logger
+
 import os, sys
 import shutil
 
 class initializing():
-    def welcome(welcome_text):
+    def welcome(welcome_text, **kwargs):
         '''
         Welcome message and initalization of logging on screen and on file level.
         :param welcome_text: Welcome text defined in main function
         :return: user input settings regarding screen output, input folder/file and output folder
         '''
         logging.debug('Get user inputs from console')
-        user_input = initializing.get_user_input()
+        user_input = initializing.get_user_input(**kwargs)
 
         # Define logging settings and path for saving log
 
@@ -33,7 +36,7 @@ class initializing():
         logging.info(welcome_text)
         return user_input
 
-    def get_user_input():
+    def get_user_input(**kwargs):
         '''
         Read user command from terminal inputs. Command:
 
@@ -65,39 +68,44 @@ class initializing():
         path_input_file = './inputs/json_input.json'
         display_output =  '-debug' #'-info' #
         path_output_folder = './MVS_outputs'
-        overwrite = False
+        overwrite = False #todo this means that results will be overwritten.
         lp_file_output = False
 
-        # Read terminal inputs:
-        if len(sys.argv) <= 1:
-            logging.warning('No inputs file or output folder determined. '
-                            '\n Will use default values and delete existing output folder (test execution).')
+
+        print(kwargs)
+        if 'test' in kwargs and kwargs['test']==True:
             overwrite = True
-
-        elif len(sys.argv) == 2:
-            logging.error('Missing command path_output_folder. '
-                          '\n Operation terminated.')
-
-        elif len(sys.argv) == 3 or len(sys.argv) == 4:
-            # Read user commands from terminal inputs
-            path_input_file = str(sys.argv[1])
-            path_output_folder = str(sys.argv[2])
-            for argument in range(3,len(sys.argv)+1):
-                if str(sys.argv[argument])=='-f':
-                    overwrite = True
-                elif str(sys.argv[argument]) in ['-debug', '-info', '-warnings', '-errors']:
-                    display_output = str(sys.argv[argument])
-                elif str(sys.argv[argument]) in ['False', 'True']:
-                    if str(sys.argv[argument]) == 'True':
-                        lp_file_output = True
-                else:
-                    logging.critical('Invalid command ' + str(sys.argv[argument]) + ' used. ' +
-                                  '\n Operation terminated.')
-                    sys.exit()
         else:
-            logging.critical('Too many commands. '
-                            'Operation terminated.')
-            sys.exit()
+            # Read terminal inputs:
+            if len(sys.argv) <= 1:
+                logging.warning('No inputs file or output folder determined. '
+                                '\n Will use default values and delete existing output folder (test execution).')
+                overwrite = True
+
+            elif len(sys.argv) == 2:
+                logging.error('Missing command path_output_folder. '
+                              '\n Operation terminated.')
+
+            elif len(sys.argv) == 3 or len(sys.argv) == 4:
+                # Read user commands from terminal inputs
+                path_input_file = str(sys.argv[1])
+                path_output_folder = str(sys.argv[2])
+                for argument in range(3,len(sys.argv)+1):
+                    if str(sys.argv[argument])=='-f':
+                        overwrite = True
+                    elif str(sys.argv[argument]) in ['-debug', '-info', '-warnings', '-errors']:
+                        display_output = str(sys.argv[argument])
+                    elif str(sys.argv[argument]) in ['False', 'True']:
+                        if str(sys.argv[argument]) == 'True':
+                            lp_file_output = True
+                    else:
+                        logging.critical('Invalid command ' + str(sys.argv[argument]) + ' used. ' +
+                                      '\n Operation terminated.')
+                        sys.exit()
+            else:
+                logging.critical('Too many commands. '
+                                'Operation terminated.')
+                sys.exit()
 
         path_input_folder, name_input_file = initializing.check_input_directory(path_input_file)
         initializing.check_output_directory(path_output_folder, overwrite)
