@@ -1,4 +1,4 @@
-'''
+"""
 This is the main file of the tool "Multi-vector simulation tool".
 
 Tool structure:
@@ -25,14 +25,14 @@ patent:     Main file, all children connected through parent
 child:      Child file, one of the main functions of the tool.
             Internal processes, feeds output back to parent
 child-sub:  Sub-child function, feeds only back to child functions
-'''
+"""
 
 import logging
 import os
 
 # Loading all child functions
 try:
-    #for tests
+    # for tests
     from .code_folder.A_initialization import initializing
     from .code_folder.B0_data_input_json import data_input
     from .code_folder.C0_data_processing import data_processing
@@ -41,7 +41,7 @@ try:
     from .code_folder.F0_output import output_processing
 
 except ModuleNotFoundError:
-    #for terminal execution
+    # for terminal execution
     from code_folder.A_initialization import initializing
     from code_folder.B0_data_input_json import data_input
     from code_folder.C0_data_processing import data_processing
@@ -49,35 +49,43 @@ except ModuleNotFoundError:
     from code_folder.E0_evaluation import evaluation
     from code_folder.F0_output import output_processing
 
+
 def main(**kwargs):
     # Display welcome text
-    version = '0.0.1' #update_me Versioning scheme: Major release.Minor release.Patches
-    date = '31.10.2019' #update_me Update date
+    version = (
+        "0.0.1"
+    )  # update_me Versioning scheme: Major release.Minor release.Patches
+    date = "31.10.2019"  # update_me Update date
 
-    welcome_text = \
-        '\n \n Multi-Vector Simulation Tool (MVS) V' + version + ' ' + \
-        '\n Version: ' + date + ' ' + \
-        '\n Part of the toolbox of H2020 project "E-LAND", ' + \
-        'Integrated multi-vector management system for Energy isLANDs' + \
-        '\n Coded at: Reiner Lemoine Institute (Berlin) ' + \
-        '\n Contributors: Martha M. Hoffmann \n \n '
+    welcome_text = (
+        "\n \n Multi-Vector Simulation Tool (MVS) V"
+        + version
+        + " "
+        + "\n Version: "
+        + date
+        + " "
+        + '\n Part of the toolbox of H2020 project "E-LAND", '
+        + "Integrated multi-vector management system for Energy isLANDs"
+        + "\n Coded at: Reiner Lemoine Institute (Berlin) "
+        + "\n Contributors: Martha M. Hoffmann \n \n "
+    )
 
-    logging.debug('Accessing script: A_initialization')
+    logging.debug("Accessing script: A_initialization")
     user_input = initializing.welcome(welcome_text, **kwargs)
 
     # Read all inputs
-    print('')
+    print("")
     # todo: is user input completely used?
     dict_values = data_input.get(user_input)
 
-    print('')
-    logging.debug('Accessing script: C0_data_processing')
+    print("")
+    logging.debug("Accessing script: C0_data_processing")
     data_processing.all(dict_values)
 
-    print('')
-    logging.debug('Accessing script: D0_modelling_and_optimization')
+    print("")
+    logging.debug("Accessing script: D0_modelling_and_optimization")
     results_meta, results_main = modelling.run_oemof(dict_values)
-    '''
+    """
     if dict_values['simulation_settings']['restore_from_oemof_file'] == True:
         if os.path.isfile(dict_values['simulation_settings']['path_output_folder'] + '/' + dict_values['simulation_settings']['oemof_file_name'])== False:
             print('')
@@ -92,15 +100,16 @@ def main(**kwargs):
             results_main = model.results['main']
             results_meta = model.results['meta']
             
-    '''
-    print('')
-    logging.debug('Accessing script: E0_evaluation')
+    """
+    print("")
+    logging.debug("Accessing script: E0_evaluation")
     evaluation.evaluate_dict(dict_values, results_main, results_meta)
 
-    logging.debug('Accessing script: F0_outputs')
+    logging.debug("Accessing script: F0_outputs")
     output_processing.evaluate_dict(dict_values)
     return 1
 
-if __name__=="__main__":
-    print('in main')
+
+if __name__ == "__main__":
+    print("in main")
     main()

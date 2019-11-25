@@ -2,16 +2,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import logging
 
-class plots():
-    logging.getLogger('matplotlib.font_manager').disabled = True
+
+class plots:
+    logging.getLogger("matplotlib.font_manager").disabled = True
 
     def flows(user_input, project_data, results_timeseries, sector, interval):
-        logging.info('Creating plots for %s sector', sector)
-        steps = interval*24
+        logging.info("Creating plots for %s sector", sector)
+        steps = interval * 24
         flows_les = results_timeseries[0:steps]
-        if sector+'_storage_soc' in results_timeseries.columns:
+        if sector + "_storage_soc" in results_timeseries.columns:
             boolean_subplots = True
-            flows_les = flows_les.drop([sector+'_storage_soc'], axis=1)
+            flows_les = flows_les.drop([sector + "_storage_soc"], axis=1)
         else:
             boolean_subplots = False
 
@@ -24,48 +25,61 @@ class plots():
 
         # website with websafe hexacolours: https://www.colorhexa.com/web-safe-colors
         color_dict = {
-            'total_demand_'+sector: '#33ff00',  # dark green
-            'solar_inverter': '#ffcc00',  # orange
+            "total_demand_" + sector: "#33ff00",  # dark green
+            "solar_inverter": "#ffcc00",  # orange
             #'Wind generation': '#33ccff',  # light blue
             #'Genset generation': '#000000',  # black
-            'transformer_station_in': '#990099',  # violet
-            'charge_controller_in': '#0033cc',  # light green
-            sector+'_excess_sink': '#996600',  # brown
-            'transformer_station_out': '#ff33cc',  # pink
-            'charge_controller_out': '#ccccff',  # pidgeon blue
+            "transformer_station_in": "#990099",  # violet
+            "charge_controller_in": "#0033cc",  # light green
+            sector + "_excess_sink": "#996600",  # brown
+            "transformer_station_out": "#ff33cc",  # pink
+            "charge_controller_out": "#ccccff",  # pidgeon blue
             #'Demand shortage': '#ff3300',  # bright red
-            sector+'_storage_soc': '#0033cc'  # blue
+            sector + "_storage_soc": "#0033cc"  # blue
             #'Grid availability': '#cc0000'  # red
         }
 
-
-        flows_les.plot(title= sector +' flows in Local Energy System: '
-                                       + project_data['project_name'] + ', '
-                                       + project_data['scenario_name'],
-                      color=[color_dict.get(x, '#333333') for x in flows_les.columns],
-                      ax=axes_mg,
-                      drawstyle='steps-mid')
-        axes_mg.set(xlabel='Time', ylabel=sector+' flow in kWh')
-        axes_mg.legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
+        flows_les.plot(
+            title=sector
+            + " flows in Local Energy System: "
+            + project_data["project_name"]
+            + ", "
+            + project_data["scenario_name"],
+            color=[color_dict.get(x, "#333333") for x in flows_les.columns],
+            ax=axes_mg,
+            drawstyle="steps-mid",
+        )
+        axes_mg.set(xlabel="Time", ylabel=sector + " flow in kWh")
+        axes_mg.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
         if boolean_subplots == True:
-            results_timeseries[sector+'_storage_soc'][0:steps].plot(ax=axes[1],
-                                               color=color_dict.get(sector+'_storage_soc', '#333333'),
-                                               drawstyle='steps-mid')
-            ylabel = sector+'_storage_soc'
+            results_timeseries[sector + "_storage_soc"][0:steps].plot(
+                ax=axes[1],
+                color=color_dict.get(sector + "_storage_soc", "#333333"),
+                drawstyle="steps-mid",
+            )
+            ylabel = sector + "_storage_soc"
 
-            axes[1].set(xlabel='Time', ylabel=ylabel)
-            axes[1].legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
+            axes[1].set(xlabel="Time", ylabel=ylabel)
+            axes[1].legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
-        plt.savefig(user_input['path_output_folder'] + '/' + sector + '_flows_' + str(interval) + '_days.png', bbox_inches="tight")
-        #plt.show()
+        plt.savefig(
+            user_input["path_output_folder"]
+            + "/"
+            + sector
+            + "_flows_"
+            + str(interval)
+            + "_days.png",
+            bbox_inches="tight",
+        )
+        # plt.show()
         plt.close()
         plt.clf()
         plt.cla()
 
         return
 
-    def capacities(user_input,project_data,assets,capacities):
+    def capacities(user_input, project_data, assets, capacities):
 
         # only items with an optimal added capacity over 0 are selected
         indexes = []
@@ -85,15 +99,23 @@ class plots():
 
         # Data frame definition and plotting
         dfcapacities = pd.DataFrame()
-        dfcapacities['items'] = assets_added
-        dfcapacities['capacities'] = capacities_added
+        dfcapacities["items"] = assets_added
+        dfcapacities["capacities"] = capacities_added
 
-        logging.info('Creating bar-chart for components capacities')
-        dfcapacities.plot.bar(x='items',y='capacities',title='Optimal additional capacities: '
-                                  + project_data['project_name'] + ', '
-                                  + project_data['scenario_name'])
+        logging.info("Creating bar-chart for components capacities")
+        dfcapacities.plot.bar(
+            x="items",
+            y="capacities",
+            title="Optimal additional capacities: "
+            + project_data["project_name"]
+            + ", "
+            + project_data["scenario_name"],
+        )
 
-        plt.savefig(user_input['path_output_folder'] + '/optimal_additional_capacities.png', bbox_inches="tight")
+        plt.savefig(
+            user_input["path_output_folder"] + "/optimal_additional_capacities.png",
+            bbox_inches="tight",
+        )
 
         plt.close()
         plt.clf()
@@ -111,15 +133,15 @@ class plots():
         # only costs over 0 are selected
         for asset in annuities:
             if annuities[asset] > 0:
-                annuity_costs_prec.update({asset:annuities[asset]/total})
+                annuity_costs_prec.update({asset: annuities[asset] / total})
 
         # those assets which do not reach 0,5% of total cost are included in 'others'
-        annuity_total = {'others': 0}
+        annuity_total = {"others": 0}
         for asset in annuity_costs_prec:
             print(annuity_costs_prec[asset])
             if annuity_costs_prec[asset] > 0:
                 if annuity_costs_prec[asset] < 0.005:
-                    annuity_total['others'] += annuity_costs_prec[asset]
+                    annuity_total["others"] += annuity_costs_prec[asset]
                 else:
                     annuity_total[asset] = annuity_costs_prec[asset]
 
@@ -128,15 +150,27 @@ class plots():
             if annuity_total[asset] > 0.9:
                 major = asset
                 major_value = annuity_total[asset]
-                plots.costs_rest(user_input, project_data, major, major_value, annuity_total, total)
+                plots.costs_rest(
+                    user_input, project_data, major, major_value, annuity_total, total
+                )
 
         annuity_total = pd.Series(annuity_total)
-        logging.info('Creating pie-chart for total annuity costs')
-        annuity_total.plot.pie(title='Total annuity costs (' + str(round(total, 2)) + '$): '
-                                     + project_data['project_name'] + ', '
-                                     + project_data['scenario_name'], autopct='%1.1f%%', subplots=True)
+        logging.info("Creating pie-chart for total annuity costs")
+        annuity_total.plot.pie(
+            title="Total annuity costs ("
+            + str(round(total, 2))
+            + "$): "
+            + project_data["project_name"]
+            + ", "
+            + project_data["scenario_name"],
+            autopct="%1.1f%%",
+            subplots=True,
+        )
 
-        plt.savefig(user_input['path_output_folder'] + '/total_annuity_costs.png', bbox_inches="tight")
+        plt.savefig(
+            user_input["path_output_folder"] + "/total_annuity_costs.png",
+            bbox_inches="tight",
+        )
 
         plt.close()
         plt.clf()
@@ -144,18 +178,32 @@ class plots():
 
         return
 
-    def costs_rest(user_input,project_data,major,major_value,annuity_total,total):
+    def costs_rest(user_input, project_data, major, major_value, annuity_total, total):
         # the rest of costs are plotted
         annuity_total_rest = annuity_total.copy()
-        del(annuity_total_rest[major])
+        del annuity_total_rest[major]
         rest = sum(annuity_total_rest.values())
-        annuity_total_rest.update({n: annuity_total_rest[n] / rest for n in annuity_total_rest.keys()})
+        annuity_total_rest.update(
+            {n: annuity_total_rest[n] / rest for n in annuity_total_rest.keys()}
+        )
         annuity_total_rest = pd.Series(annuity_total_rest)
-        annuity_total_rest.plot.pie(title='Rest of total annuity costs (' + str(round((1-major_value)*100)) + '% of '+str(round(total,2))+'$): '
-                                     + project_data['project_name'] + ', '
-                                     + project_data['scenario_name'], autopct='%1.1f%%', subplots=True)
+        annuity_total_rest.plot.pie(
+            title="Rest of total annuity costs ("
+            + str(round((1 - major_value) * 100))
+            + "% of "
+            + str(round(total, 2))
+            + "$): "
+            + project_data["project_name"]
+            + ", "
+            + project_data["scenario_name"],
+            autopct="%1.1f%%",
+            subplots=True,
+        )
 
-        plt.savefig(user_input['path_output_folder'] + '/total_annuity_costs_rest.png', bbox_inches="tight")
+        plt.savefig(
+            user_input["path_output_folder"] + "/total_annuity_costs_rest.png",
+            bbox_inches="tight",
+        )
 
         plt.close()
         plt.clf()
@@ -163,26 +211,35 @@ class plots():
 
         return
 
-    def draw_graph(energysystem, edge_labels=True, node_color='#eeac7e',
-                   edge_color='#eeac7e', plot=True, node_size=5500,
-                   with_labels=True, arrows=True, layout='dot'):
+    def draw_graph(
+        energysystem,
+        edge_labels=True,
+        node_color="#eeac7e",
+        edge_color="#eeac7e",
+        plot=True,
+        node_size=5500,
+        with_labels=True,
+        arrows=True,
+        layout="dot",
+    ):
         import networkx as nx
         import oemof.graph as graph
+
         grph = graph.create_nx_graph(energysystem)
 
         if type(node_color) is dict:
-            node_color = [node_color.get(g, '#AFAFAF') for g in grph.nodes()]
+            node_color = [node_color.get(g, "#AFAFAF") for g in grph.nodes()]
 
         # set drawing options
         options = {
-            'prog': 'dot',
-            'with_labels': with_labels,
-            'node_color': node_color,
-            'edge_color': edge_color,
-            'node_size': node_size,
-            'arrows': arrows,
-            'font_size': 12,
-            'font_color': 'w'
+            "prog": "dot",
+            "with_labels": with_labels,
+            "node_color": node_color,
+            "edge_color": edge_color,
+            "node_size": node_size,
+            "arrows": arrows,
+            "font_size": 12,
+            "font_color": "w",
         }
 
         # draw graph
@@ -192,7 +249,7 @@ class plots():
 
         # add edge labels for all edges
         if edge_labels is True and plt:
-            labels = nx.get_edge_attributes(grph, 'weight')
+            labels = nx.get_edge_attributes(grph, "weight")
             nx.draw_networkx_edge_labels(grph, pos=pos, edge_labels=labels)
 
         # show output
