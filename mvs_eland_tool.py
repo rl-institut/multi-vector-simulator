@@ -49,7 +49,6 @@ except ModuleNotFoundError:
     from code_folder.E0_evaluation import evaluation
     from code_folder.F0_output import output_processing
 
-
 def main(**kwargs):
     # Display welcome text
     version = (
