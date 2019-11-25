@@ -41,13 +41,22 @@ If your branch does not exist on the remote server yet, git will provide you wit
 
 #### Step 3: Run tests locally
 
-To run integration tests locally:
+To install all packages required for the integration tests locally:
 ```bash
 pip install -r tests/test_requirements.txt
 ```
 
-The tests which are currently automated are linting tests, you can run them locally by copying the scripts under the comment
-`# command to run tests` of the `.travis.yml` file.
+Please run the tests locally before pushing your feature to the developer branch. You do that by running:
+```bash
+pytest ./tests/tests.py 
+```
+Integrated tests (see ./tests/tests.py):
+
+|Name of test | Issue tested | Description| ToDo if test fails |
+|---|---|---|---|
+|test_run_smoothly | Code not terminating | Test checking whether mvs_eland_tool.py runs through | Re-check execution of mvs_eland_tool.py and make sure it does not terminate. |
+| test_blacks_main | Code formatting |  Python code is tested with [Blacks](https://github.com/psf/black) for correct formatting ie. line breaks and line lenghts. Tested for mvs_eland_tool.py  | run 'black mvs_eland_tool.py' and commit changes with own commit message.|
+| test_blacks_code_folder | Code formatting |  Python code is tested with [Blacks](https://github.com/psf/black) for correct formatting ie. line breaks and line lenghts. Tested for all python code files in './code_folder'.  | run 'code_folder/*.py' and commit changes with own commit message. |
 
 We want more integration tests.
 

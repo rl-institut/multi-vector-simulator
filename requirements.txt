@@ -1,5 +1,6 @@
 appdirs==1.4.3
 blinker==1.4
+black==19.10b0
 cycler==0.10.0
 decorator==4.4.0
 dill==0.2.9
