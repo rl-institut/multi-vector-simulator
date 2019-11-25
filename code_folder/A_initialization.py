@@ -74,7 +74,6 @@ class initializing:
         overwrite = False  # todo this means that results will be overwritten.
         lp_file_output = False
 
-        print(kwargs)
         if "test" in kwargs and kwargs["test"] == True:
             overwrite = True
         else:
