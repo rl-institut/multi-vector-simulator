@@ -16,16 +16,26 @@ Here is a template for new release sections
 ### Removed
 -
 ```
-## [0.0.1] - 2019-10-23
+## [0.0.2] - 2019-11-25
 
 ### Added
-
+- Introduced test for correct code formatting (blacks, closed issue #31, #18)
+- Now unlimited number of busses possible
+- Now with monthly peak demand pricing 
+- Two test json files
+- Files to create wiki page "Exemplary Workflow"
 
 ### Changed
-- Introduced new code structure (folder "code") and updated relative import paths (#17)
+- Introduced new code structure (folder "code") and updated relative import paths (closed #17)
+- Introduced (basic) plots of optimized capacities and costs (addresses issue #29)
+- CONTRIBUTING
+- CHANGELOG
+- Tests and travis file
+- requirements.txt
 
 ### Removed
-
+- Excel input file
+- Python files to read from excel
 
 ## [0.0.1] - 2019-10-14
 
