@@ -67,8 +67,7 @@ class initializing:
         :return:
         """
         # Default values:
-        # path_input_file = './inputs/test_input_file_v1.xlsx'
-        path_input_file = "./inputs/json_input.json"
+        path_input_file = "./inputs/working_example.json"
         display_output = "-debug"  #'-info' #
         path_output_folder = "./MVS_outputs"
         overwrite = False  # todo this means that results will be overwritten.
