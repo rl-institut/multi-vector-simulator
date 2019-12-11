@@ -6,10 +6,11 @@
 Welcome to Multi-Vector Simulator (MVS)'s documentation!
 ========================================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
+.. toctree::
+   Overview
+   Installation
+   Contributing
 
 
 Indices and tables
