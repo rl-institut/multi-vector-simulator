@@ -1,6 +1,7 @@
 import logging
 import oemof.solph as solph
 
+
 class call_component:
     def transformer(model, dict_asset, **kwargs):
         helpers.check_optimize_cap(
