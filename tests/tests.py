@@ -9,11 +9,11 @@ def test_run_smoothly():
     assert main(test=True) == 1
 
 def test_blacks_main():
-    # Testing code formatting
-    r = os.system("black --check mvs_eland_tool.py")
+    # Testing code formatting in main folder
+    r = os.system("black --check *.py")
     assert r == 0
 
 def test_blacks_code_folder():
-    # Testing code formatting
+    # Testing code formatting in code folder
     r = os.system("black --check code_folder/*.py")
     assert r == 0
