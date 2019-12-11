@@ -80,3 +80,5 @@ Readthedocs of the MVS is compiled with the content of folder "docs". After edit
     make html
 
 To update the html pages of readthedocs. Then you can commit, push and pull it like normal code. 
+
+An introduction to creating the readthedocs with Sphinx is given here: https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html.
