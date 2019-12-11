@@ -10,7 +10,7 @@ Welcome to Multi-Vector Simulator (MVS)'s documentation!
 .. toctree::
    Overview
    Installation
-   Contributing
+   Developing
 
 
 Indices and tables
