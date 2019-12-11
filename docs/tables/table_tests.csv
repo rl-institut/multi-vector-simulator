@@ -1,0 +1,4 @@
+Name of test&Issue tested&Description&To-Do if test fails
+test_run_smoothly&Code not terminating&Test checking whether mvs_eland_tool.py runs through&Re-check execution of mvs_eland_tool.py and make sure it does not terminate.
+test_blacks_main&Code formatting& Python code is tested with [Blacks](https://github.com/psf/black) for correct formatting ie. line breaks and line lenghts. Tested for mvs_eland_tool.py &Run 'black mvs_eland_tool.py' and commit changes with own commit message.
+test_blacks_code_folder&Code formatting& Python code is tested with [Blacks](https://github.com/psf/black) for correct formatting ie. line breaks and line lenghts. Tested for all python code files in './code_folder'. &Run 'code_folder/"*".py' and commit changes with own commit message.
