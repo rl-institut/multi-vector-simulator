@@ -72,3 +72,11 @@ Add a line `Fix #<number of the issue created in Step 2.0>` in the description o
 TODO elaborate on the pull request
 
 
+## Contributing to Readthedocs
+
+Readthedocs of the MVS is compiled with the content of folder "docs". After editing, execute
+
+    cd docs
+    make html
+
+To update the html pages of readthedocs. Then you can commit, push and pull it like normal code. 
