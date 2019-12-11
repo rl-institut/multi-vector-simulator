@@ -16,6 +16,22 @@ Here is a template for new release sections
 ### Removed
 -
 ```
+
+# [Developer version] - 2019-MM-DD
+
+### Added
+- LICENSE.md with GPL v2.0
+- folder "docs" and content to generate readthedocs
+- Started readthedocs homepage: https://readthedocs.org/projects/mvs-eland/
+
+### Changed
+- requirements.txt only includes packages needed for users of MVS
+- test_requirements.txt includes packages used by developers of MVS
+- CONTRIBUTING: Now with read the docs
+
+### Removed
+- Output files excluded from repro
+
 ## [0.0.2] - 2019-11-25
 
 ### Added
