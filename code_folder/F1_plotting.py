@@ -128,6 +128,7 @@ class plots:
         settings = dict_values["simulation_settings"]
         project_data = dict_values["project_data"]
 
+        # Annuity costs plot (only plot if there are values with cost over 0)
         label, path = "Annuities", "annuities_costs"
         show_annuity_total = False
         for element in dict_values["kpi"]["cost_matrix"]["annuity_total"].values:
@@ -141,6 +142,7 @@ class plots:
                                                   label,
                                                   path)
 
+            # if there is a dominant assets, another plot with the remaining assets is created
             for asset in costs_total:
                 if costs_total[asset] > 0.9 and costs_total[asset] < 1:
                     major = asset
@@ -149,7 +151,7 @@ class plots:
                         settings, project_data, major, major_value, costs_total, total, label, path
                     )
 
-
+        # First-investment costs plot (only plot if there are values with cost over 0)
         label, path = "First-time investment", "first_time_investment_costs"
         show_costs_investment = False
         for element in dict_values["kpi"]["cost_matrix"]["costs_investment"].values:
@@ -163,6 +165,7 @@ class plots:
                                                   label,
                                                   path)
 
+            # if there is a dominant assets, another plot with the remaining assets is created
             for asset in costs_total:
                 if costs_total[asset] > 0.9 and costs_total[asset] < 1:
                     major = asset
@@ -171,7 +174,7 @@ class plots:
                         settings, project_data, major, major_value, costs_total, total, label, path
                     )
 
-
+        # O&M costs plot (only plot if there are values with cost over 0)
         label,path = "Operation & Maintenance","operation_and_maintenance_costs"
         show_costs_om = False
         for element in dict_values["kpi"]["cost_matrix"]["costs_om"].values:
@@ -185,6 +188,7 @@ class plots:
                                                  label,
                                                  path)
 
+            # if there is a dominant assets, another plot with the remaining assets is created
             for asset in costs_total:
                 if costs_total[asset] > 0.9 and costs_total[asset] < 1:
                     major = asset
@@ -196,24 +200,26 @@ class plots:
         return
 
 
+    # costs are plotted in %
     def plot_costs(settings,project_data,names,costs,label,path):
 
         costs = pd.DataFrame(data=costs.values, index=names.values)
         costs = costs.to_dict()[0]
 
-        # only costs over 0 are selected
+        # only assets with costs over 0 are plotted
         costs_prec = {}
         for asset in costs:
             if costs[asset] > 0:
                 costs_prec.update({asset: costs[asset]})
 
+        # % is calculated
         total = sum(costs_prec.values())
         costs_prec.update(
             {n: costs_prec[n] / total for n in costs_prec.keys()}
         )
 
         # those assets which do not reach 0,5% of total cost are included in 'others'
-        # if there are more than one consumption period, they are grouped
+        # if there are more than one consumption period, they are grouped in DSO_consumption
         others = 0
         DSO_consumption = 0
         costs_total = {}
@@ -231,7 +237,7 @@ class plots:
         if others > 0:
             costs_total["others"] = others
 
-
+        # dict is saved to proceed with plotting the remaining assets if there is a dominant one (more than 90%)
         costs_total_dict = costs_total
 
         costs_total = pd.Series(costs_total)
@@ -260,9 +266,9 @@ class plots:
 
         return costs_total_dict,total
 
+    # the rest of costs are plotted if there is a dominant one (over 90%)
     def plot_costs_rest(settings, project_data, major, major_value, costs_total, total, label, path):
 
-        # the rest of costs are plotted
         costs_total_rest = costs_total.copy()
         del costs_total_rest[major]
         rest = sum(costs_total_rest.values())

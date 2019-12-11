@@ -50,16 +50,8 @@ class output_processing:
 
         helpers.store_timeseries_all_busses_to_excel(dict_values)
 
-        print('-----')
-        print('capacities')
-        print(dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"].values)
-        print('annuities')
-        print(dict_values["kpi"]["cost_matrix"]["annuity_total"].values)
-        print('investment')
-        print(dict_values["kpi"]["cost_matrix"]["costs_investment"].values)
-        print('om')
-        print(dict_values["kpi"]["cost_matrix"]["costs_om"].values)
-        # plot the capacities and the annuity costs
+
+        # plot optimal capacities if there are optimized assets
         show_optimal_capacities = False
         for element in dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"].values:
             if element > 0:
@@ -72,6 +64,7 @@ class output_processing:
                 dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
             )
 
+        # plot annuity, first-investment and om costs
         plots.costs(dict_values)
 
 
