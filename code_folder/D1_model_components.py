@@ -1,7 +1,5 @@
 import logging
 import oemof.solph as solph
-import pprint as pp
-
 
 class call_component:
     def transformer(model, dict_asset, **kwargs):
@@ -254,7 +252,6 @@ class define_oemof_component:
         return
 
     def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
-        print(dict_asset.keys())
         source_non_dispatchable = solph.Source(
             label=dict_asset["label"],
             outputs={
