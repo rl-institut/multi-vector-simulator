@@ -7,6 +7,7 @@ __pycache__/
 MVS_outputs/
 venv_ubuntu/
 venv_windows/
+.idea/
 
 # C extensions
 *.so
