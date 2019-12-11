@@ -22,6 +22,7 @@ Here is a template for new release sections
 ### Added
 - LICENSE.md with GPL v2.0
 - folder "docs" and content to generate readthedocs
+- Started readthedocs homepage: https://readthedocs.org/projects/mvs-eland/
 
 ### Changed
 - requirements.txt only includes packages needed for users of MVS
