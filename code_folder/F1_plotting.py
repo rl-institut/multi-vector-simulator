@@ -128,7 +128,7 @@ class plots:
         settings = dict_values["simulation_settings"]
         project_data = dict_values["project_data"]
 
-        label, path = "Annuities costs", "annuities_costs"
+        label, path = "Annuities", "annuities_costs"
         show_annuity_total = False
         for element in dict_values["kpi"]["cost_matrix"]["annuity_total"].values:
             if element > 0:
@@ -150,7 +150,7 @@ class plots:
                     )
 
 
-        label, path = "First-time investment costs", "first_time_investment_costs"
+        label, path = "First-time investment", "first_time_investment_costs"
         show_costs_investment = False
         for element in dict_values["kpi"]["cost_matrix"]["costs_investment"].values:
             if element > 0:
@@ -172,7 +172,7 @@ class plots:
                     )
 
 
-        label,path = "Operation & Maintenance costs","operation_and_maintenance_costs"
+        label,path = "Operation & Maintenance","operation_and_maintenance_costs"
         show_costs_om = False
         for element in dict_values["kpi"]["cost_matrix"]["costs_om"].values:
             if element > 0:
@@ -198,24 +198,39 @@ class plots:
 
     def plot_costs(settings,project_data,names,costs,label,path):
 
-        total = sum(costs.values)
-        costs_prec = {}
         costs = pd.DataFrame(data=costs.values, index=names.values)
         costs = costs.to_dict()[0]
 
         # only costs over 0 are selected
+        costs_prec = {}
         for asset in costs:
             if costs[asset] > 0:
-                costs_prec.update({asset: costs[asset] / total})
+                costs_prec.update({asset: costs[asset]})
+
+        total = sum(costs_prec.values())
+        costs_prec.update(
+            {n: costs_prec[n] / total for n in costs_prec.keys()}
+        )
 
         # those assets which do not reach 0,5% of total cost are included in 'others'
-        costs_total = {"others": 0}
+        # if there are more than one consumption period, they are grouped
+        others = 0
+        DSO_consumption = 0
+        costs_total = {}
         for asset in costs_prec:
             if costs_prec[asset] > 0:
-                if costs_prec[asset] < 0.005:
-                    costs_total["others"] += costs_prec[asset]
+                if "DSO_consumption" in asset:
+                    DSO_consumption += costs_prec[asset]
+                elif costs_prec[asset] < 0.005:
+                    others += costs_prec[asset]
                 else:
                     costs_total[asset] = costs_prec[asset]
+
+        if DSO_consumption > 0:
+            costs_total["DSO_consumption"] = DSO_consumption
+        if others > 0:
+            costs_total["others"] = others
+
 
         costs_total_dict = costs_total
 
@@ -237,6 +252,10 @@ class plots:
             settings["path_output_folder"] + "/" + path + ".png",
             bbox_inches="tight",
         )
+
+        plt.close()
+        plt.clf()
+        plt.cla()
 
 
         return costs_total_dict,total
