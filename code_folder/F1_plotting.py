@@ -135,12 +135,14 @@ class plots:
             if element > 0:
                 show_annuity_total = True
         if show_annuity_total:
-            costs_total, total = plots.plot_costs(settings,
-                                                  project_data,
-                                                  dict_values["kpi"]["cost_matrix"]["label"],
-                                                  dict_values["kpi"]["cost_matrix"]["annuity_total"],
-                                                  label,
-                                                  path)
+            costs_total, total = plots.plot_costs(
+                settings,
+                project_data,
+                dict_values["kpi"]["cost_matrix"]["label"],
+                dict_values["kpi"]["cost_matrix"]["annuity_total"],
+                label,
+                path,
+            )
 
             # if there is a dominant assets, another plot with the remaining assets is created
             for asset in costs_total:
@@ -148,7 +150,14 @@ class plots:
                     major = asset
                     major_value = costs_total[asset]
                     plots.plot_costs_rest(
-                        settings, project_data, major, major_value, costs_total, total, label, path
+                        settings,
+                        project_data,
+                        major,
+                        major_value,
+                        costs_total,
+                        total,
+                        label,
+                        path,
                     )
 
         # First-investment costs plot (only plot if there are values with cost over 0)
@@ -158,12 +167,14 @@ class plots:
             if element > 0:
                 show_costs_investment = True
         if show_costs_investment:
-            costs_total, total = plots.plot_costs(settings,
-                                                  project_data,
-                                                  dict_values["kpi"]["cost_matrix"]["label"],
-                                                  dict_values["kpi"]["cost_matrix"]["costs_investment"],
-                                                  label,
-                                                  path)
+            costs_total, total = plots.plot_costs(
+                settings,
+                project_data,
+                dict_values["kpi"]["cost_matrix"]["label"],
+                dict_values["kpi"]["cost_matrix"]["costs_investment"],
+                label,
+                path,
+            )
 
             # if there is a dominant assets, another plot with the remaining assets is created
             for asset in costs_total:
@@ -171,22 +182,31 @@ class plots:
                     major = asset
                     major_value = costs_total[asset]
                     plots.plot_costs_rest(
-                        settings, project_data, major, major_value, costs_total, total, label, path
+                        settings,
+                        project_data,
+                        major,
+                        major_value,
+                        costs_total,
+                        total,
+                        label,
+                        path,
                     )
 
         # O&M costs plot (only plot if there are values with cost over 0)
-        label,path = "Operation & Maintenance","operation_and_maintenance_costs"
+        label, path = "Operation & Maintenance", "operation_and_maintenance_costs"
         show_costs_om = False
         for element in dict_values["kpi"]["cost_matrix"]["costs_om"].values:
             if element > 0:
                 show_costs_om = True
         if show_costs_om:
-            costs_total,total = plots.plot_costs(settings,
-                                                 project_data,
-                                                 dict_values["kpi"]["cost_matrix"]["label"],
-                                                 dict_values["kpi"]["cost_matrix"]["costs_om"],
-                                                 label,
-                                                 path)
+            costs_total, total = plots.plot_costs(
+                settings,
+                project_data,
+                dict_values["kpi"]["cost_matrix"]["label"],
+                dict_values["kpi"]["cost_matrix"]["costs_om"],
+                label,
+                path,
+            )
 
             # if there is a dominant assets, another plot with the remaining assets is created
             for asset in costs_total:
@@ -194,14 +214,20 @@ class plots:
                     major = asset
                     major_value = costs_total[asset]
                     plots.plot_costs_rest(
-                        settings, project_data, major, major_value, costs_total, total, label, path
+                        settings,
+                        project_data,
+                        major,
+                        major_value,
+                        costs_total,
+                        total,
+                        label,
+                        path,
                     )
 
         return
 
-
     # costs are plotted in %
-    def plot_costs(settings,project_data,names,costs,label,path):
+    def plot_costs(settings, project_data, names, costs, label, path):
 
         costs = pd.DataFrame(data=costs.values, index=names.values)
         costs = costs.to_dict()[0]
@@ -214,9 +240,7 @@ class plots:
 
         # % is calculated
         total = sum(costs_prec.values())
-        costs_prec.update(
-            {n: costs_prec[n] / total for n in costs_prec.keys()}
-        )
+        costs_prec.update({n: costs_prec[n] / total for n in costs_prec.keys()})
 
         # those assets which do not reach 0,5% of total cost are included in 'others'
         # if there are more than one consumption period, they are grouped in DSO_consumption
@@ -243,31 +267,31 @@ class plots:
         costs_total = pd.Series(costs_total)
         logging.info("Creating pie-chart for total " + label)
         costs_total.plot.pie(
-            title=  label
-                    + " costs ("
-                    + str(round(total, 2))
-                    + "$): "
-                    + project_data["project_name"]
-                    + ", "
-                    + project_data["scenario_name"],
+            title=label
+            + " costs ("
+            + str(round(total, 2))
+            + "$): "
+            + project_data["project_name"]
+            + ", "
+            + project_data["scenario_name"],
             autopct="%1.1f%%",
             subplots=True,
         )
 
         plt.savefig(
-            settings["path_output_folder"] + "/" + path + ".png",
-            bbox_inches="tight",
+            settings["path_output_folder"] + "/" + path + ".png", bbox_inches="tight",
         )
 
         plt.close()
         plt.clf()
         plt.cla()
 
-
-        return costs_total_dict,total
+        return costs_total_dict, total
 
     # the rest of costs are plotted if there is a dominant one (over 90%)
-    def plot_costs_rest(settings, project_data, major, major_value, costs_total, total, label, path):
+    def plot_costs_rest(
+        settings, project_data, major, major_value, costs_total, total, label, path
+    ):
 
         costs_total_rest = costs_total.copy()
         del costs_total_rest[major]
@@ -278,21 +302,21 @@ class plots:
         costs_total_rest = pd.Series(costs_total_rest)
         costs_total_rest.plot.pie(
             title="Rest of "
-                  + label
-                  +  "("
-                  + str(round((1 - major_value) * 100))
-                  + "% of "
-                  + str(round(total, 2))
-                  + "$): "
-                  + project_data["project_name"]
-                  + ", "
-                  + project_data["scenario_name"],
+            + label
+            + "("
+            + str(round((1 - major_value) * 100))
+            + "% of "
+            + str(round(total, 2))
+            + "$): "
+            + project_data["project_name"]
+            + ", "
+            + project_data["scenario_name"],
             autopct="%1.1f%%",
             subplots=True,
         )
 
         plt.savefig(
-           settings["path_output_folder"] + "/" + path + "_rest.png",
+            settings["path_output_folder"] + "/" + path + "_rest.png",
             bbox_inches="tight",
         )
 
@@ -300,9 +324,7 @@ class plots:
         plt.clf()
         plt.cla()
 
-
         return
-
 
     def draw_graph(
         energysystem,
