@@ -57,18 +57,27 @@ class data_processing:
 
     def process_all_assets(dict_values):
         # read timeseries with filename provided for technical parameters (efficiency and minimum and maximum storage level)
-        for asset in dict_values['energyConversion']:
-            dict_asset = dict_values['energyConversion'][asset]
-            if 'file_name' in dict_asset['efficiency']:
-                helpers.receive_timeseries_from_csv(dict_values["simulation_settings"],dict_asset,"efficiency")
+        for asset in dict_values["energyConversion"]:
+            dict_asset = dict_values["energyConversion"][asset]
+            if "file_name" in dict_asset["efficiency"]:
+                helpers.receive_timeseries_from_csv(
+                    dict_values["simulation_settings"], dict_asset, "efficiency"
+                )
 
-        for sector in dict_values['energyStorage']:
-            for asset in dict_values['energyStorage'][sector]:
-                for component in ["capacity","charging_power","discharging_power"]:
-                    dict_asset = dict_values['energyStorage'][sector][asset][component]
-                    for parameter in ["efficiency","soc_min","soc_max"]:
-                        if parameter in dict_asset and "file_name" in dict_asset[parameter]:
-                                helpers.receive_timeseries_from_csv(dict_values["simulation_settings"], dict_asset,parameter)
+        for sector in dict_values["energyStorage"]:
+            for asset in dict_values["energyStorage"][sector]:
+                for component in ["capacity", "charging_power", "discharging_power"]:
+                    dict_asset = dict_values["energyStorage"][sector][asset][component]
+                    for parameter in ["efficiency", "soc_min", "soc_max"]:
+                        if (
+                            parameter in dict_asset
+                            and "file_name" in dict_asset[parameter]
+                        ):
+                            helpers.receive_timeseries_from_csv(
+                                dict_values["simulation_settings"],
+                                dict_asset,
+                                parameter,
+                            )
 
         # Calculate annuitiy factor
         dict_values["economic_data"].update(
@@ -103,7 +112,7 @@ class data_processing:
             helpers.define_sink(
                 dict_values,
                 dict_values["project_data"]["sectors"][sector] + " excess",
-                {"value":0,"unit":"currency/kWh"},
+                {"value": 0, "unit": "currency/kWh"},
                 dict_values["project_data"]["sectors"][sector],
             )
             logging.debug(
@@ -208,9 +217,8 @@ class data_processing:
                         helpers.receive_timeseries_from_csv(
                             dict_values["simulation_settings"],
                             dict_values[group][sector][asset],
-                            "input"
+                            "input",
                         )
-
 
         logging.info("Processed cost data and added economic values.")
         return
@@ -220,12 +228,13 @@ class helpers:
     def define_missing_cost_data(dict_values, dict_asset):
 
         # read timeseries with filename provided for variable costs
-        for parameter in ["capex_var","opex_var"]:
+        for parameter in ["capex_var", "opex_var"]:
             if parameter in dict_asset and "file_name" in dict_asset[parameter]:
-                helpers.receive_timeseries_from_csv(dict_values["simulation_settings"],dict_asset,parameter)
+                helpers.receive_timeseries_from_csv(
+                    dict_values["simulation_settings"], dict_asset, parameter
+                )
 
-
-        economic_data = dict_values['economic_data']
+        economic_data = dict_values["economic_data"]
 
         basic_costs = {
             "installedCap": {"value": 0, "unit": "currency"},
@@ -275,13 +284,39 @@ class helpers:
             # the bus that is connected to the inflow
             if "inflow_direction" in asset_group[asset]:
                 bus = asset_group[asset]["inflow_direction"]
-                asset_group[asset].update({"input_bus_name": helpers.bus_suffix(bus)})
-                helpers.update_bus(dict_values, bus, asset, asset_group[asset]["label"])
+                if isinstance(bus, list):
+                    bus_list = []
+                    for subbus in bus:
+                        bus_list.append(helpers.bus_suffix(subbus))
+                        helpers.update_bus(
+                            dict_values, subbus, asset, asset_group[asset]["label"]
+                        )
+                    asset_group[asset].update({"input_bus_name": bus_list})
+                else:
+                    asset_group[asset].update(
+                        {"input_bus_name": helpers.bus_suffix(bus)}
+                    )
+                    helpers.update_bus(
+                        dict_values, bus, asset, asset_group[asset]["label"]
+                    )
             # the bus that is connected to the outflow
             if "outflow_direction" in asset_group[asset]:
                 bus = asset_group[asset]["outflow_direction"]
-                asset_group[asset].update({"output_bus_name": helpers.bus_suffix(bus)})
-                helpers.update_bus(dict_values, bus, asset, asset_group[asset]["label"])
+                if isinstance(bus, list):
+                    bus_list = []
+                    for subbus in bus:
+                        bus_list.append(helpers.bus_suffix(subbus))
+                        helpers.update_bus(
+                            dict_values, subbus, asset, asset_group[asset]["label"]
+                        )
+                    asset_group[asset].update({"output_bus_name": bus_list})
+                else:
+                    asset_group[asset].update(
+                        {"output_bus_name": helpers.bus_suffix(bus)}
+                    )
+                    helpers.update_bus(
+                        dict_values, bus, asset, asset_group[asset]["label"]
+                    )
         return
 
     def bus_suffix(bus):
@@ -313,10 +348,16 @@ class helpers:
         )
         dict_asset = dict_values["energyProviders"][sector][dso]
         if "file_name" in dict_asset["peak_demand_pricing"]:
-            helpers.receive_timeseries_from_csv(dict_values["simulation_settings"], dict_asset, "peak_demand_pricing")
+            helpers.receive_timeseries_from_csv(
+                dict_values["simulation_settings"], dict_asset, "peak_demand_pricing"
+            )
 
-        peak_demand_pricing = dict_values["energyProviders"][sector][dso]["peak_demand_pricing"]["value"]
-        if isinstance(peak_demand_pricing,float) or isinstance(peak_demand_pricing,int):
+        peak_demand_pricing = dict_values["energyProviders"][sector][dso][
+            "peak_demand_pricing"
+        ]["value"]
+        if isinstance(peak_demand_pricing, float) or isinstance(
+            peak_demand_pricing, int
+        ):
             logging.debug(
                 "The peak demand pricing price of %s %s is set as capex_var of the sources of grid energy.",
                 peak_demand_pricing,
@@ -325,11 +366,9 @@ class helpers:
         else:
             logging.debug(
                 "The peak demand pricing price of %s %s is set as capex_var of the sources of grid energy.",
-                sum(peak_demand_pricing)/len(peak_demand_pricing),
+                sum(peak_demand_pricing) / len(peak_demand_pricing),
                 dict_values["economic_data"]["currency"],
             )
-
-
 
         peak_demand_pricing = {
             "value": dict_values["energyProviders"][sector][dso]["peak_demand_pricing"][
@@ -390,7 +429,7 @@ class helpers:
 
         return
 
-    def define_source(dict_values,asset_name, price, output_bus, timeseries, **kwargs):
+    def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwargs):
         output_bus_name = helpers.bus_suffix(output_bus)
 
         source = {
@@ -400,7 +439,7 @@ class helpers:
             "output_bus_name": output_bus_name,
             "dispatchable": True,
             "timeseries": timeseries,
-            #"opex_var": {"value": price, "unit": "currency/unit"},
+            # "opex_var": {"value": price, "unit": "currency/unit"},
             "lifetime": {
                 "value": dict_values["economic_data"]["project_duration"]["value"],
                 "unit": "year",
@@ -409,10 +448,22 @@ class helpers:
 
         # read time series for opex_var if a file name has been provided in energy price
         if "file_name" in price:
-            source.update({"opex_var":{"file_name":price["file_name"],"header":price["header"],"unit":price["unit"]}})
-            helpers.receive_timeseries_from_csv(dict_values["simulation_settings"],source,"opex_var")
+            source.update(
+                {
+                    "opex_var": {
+                        "file_name": price["file_name"],
+                        "header": price["header"],
+                        "unit": price["unit"],
+                    }
+                }
+            )
+            helpers.receive_timeseries_from_csv(
+                dict_values["simulation_settings"], source, "opex_var"
+            )
         else:
-            source.update({"opex_var":{"value":price["value"],"unit":price["unit"]}})
+            source.update(
+                {"opex_var": {"value": price["value"], "unit": price["unit"]}}
+            )
 
         logging.debug(
             "Asset %s: sum of timeseries = %s", asset_name, sum(timeseries.values)
@@ -459,7 +510,7 @@ class helpers:
             "label": asset_name + "_sink",
             "input_direction": input_bus,
             "input_bus_name": input_bus_name,
-            #"opex_var": {"value": price, "unit": "currency/kWh"},
+            # "opex_var": {"value": price, "unit": "currency/kWh"},
             "lifetime": {
                 "value": dict_values["economic_data"]["project_duration"]["value"],
                 "unit": "year",
@@ -469,17 +520,29 @@ class helpers:
         # read time series for opex_var if a file name has been provided in energy_price
         if "file_name" in price:
             sink.update(
-                {"opex_var": {"file_name": price["file_name"], "header": price["header"], "unit": price["unit"]}})
-            helpers.receive_timeseries_from_csv(dict_values["simulation_settings"], sink, "opex_var")
-            if asset_name[-6:] == "feedin": # change into negative value if this is a feedin sink
-                sink["opex_var"].update({"value": [-i for i in sink["opex_var"]["value"]]})
+                {
+                    "opex_var": {
+                        "file_name": price["file_name"],
+                        "header": price["header"],
+                        "unit": price["unit"],
+                    }
+                }
+            )
+            helpers.receive_timeseries_from_csv(
+                dict_values["simulation_settings"], sink, "opex_var"
+            )
+            if (
+                asset_name[-6:] == "feedin"
+            ):  # change into negative value if this is a feedin sink
+                sink["opex_var"].update(
+                    {"value": [-i for i in sink["opex_var"]["value"]]}
+                )
         else:
             if asset_name[-6:] == "feedin":
                 value = -price["value"]
             else:
                 value = price["value"]
             sink.update({"opex_var": {"value": value, "unit": price["unit"]}})
-
 
         if "capex_var" in kwargs:
             sink.update({"capex_var": kwargs["capex_var"], "optimizeCap": True})
@@ -508,15 +571,23 @@ class helpers:
         opex_fix = dict_asset["opex_fix"]["value"]
 
         # take average value is capex_var or opex_var are timeseries
-        if isinstance(dict_asset["capex_var"]["value"],float) or isinstance(dict_asset["capex_var"]["value"],int):
+        if isinstance(dict_asset["capex_var"]["value"], float) or isinstance(
+            dict_asset["capex_var"]["value"], int
+        ):
             capex_var = dict_asset["capex_var"]["value"]
         else:
-            capex_var = sum(dict_asset["capex_var"]["value"])/len(dict_asset["capex_var"]["value"])
+            capex_var = sum(dict_asset["capex_var"]["value"]) / len(
+                dict_asset["capex_var"]["value"]
+            )
 
-        if isinstance(dict_asset["opex_var"]["value"],float) or isinstance(dict_asset["opex_var"]["value"],int):
+        if isinstance(dict_asset["opex_var"]["value"], float) or isinstance(
+            dict_asset["opex_var"]["value"], int
+        ):
             opex_var = dict_asset["opex_var"]["value"]
         else:
-            opex_var = sum(dict_asset["opex_var"]["value"])/len(dict_asset["opex_var"]["value"])
+            opex_var = sum(dict_asset["opex_var"]["value"]) / len(
+                dict_asset["opex_var"]["value"]
+            )
 
         dict_asset.update(
             {
@@ -541,7 +612,7 @@ class helpers:
                         dict_asset["lifetime_capex_var"]["value"],
                         economic_data["crf"]["value"],
                     )
-                    + opex_fix, # changes from opex_var
+                    + opex_fix,  # changes from opex_var
                     "unit": dict_asset["lifetime_capex_var"]["unit"] + "/a",
                 }
             }
@@ -560,8 +631,7 @@ class helpers:
         dict_asset.update(
             {
                 "lifetime_opex_var": {
-                    "value": opex_var
-                    * economic_data["annuity_factor"]["value"],
+                    "value": opex_var * economic_data["annuity_factor"]["value"],
                     "unit": "?",
                 }
             }
@@ -586,7 +656,7 @@ class helpers:
 
     # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
     # so additional values like peak, total or average must be calculated. Any other type does not need this additional info.
-    def receive_timeseries_from_csv(settings, dict_asset,type):
+    def receive_timeseries_from_csv(settings, dict_asset, type):
         file_name = dict_asset[type]["file_name"]
         header = dict_asset[type]["header"]
         unit = dict_asset[type]["unit"]
@@ -596,19 +666,43 @@ class helpers:
         data_set = pd.read_csv(file_path, sep=";")
         if len(data_set.index) == settings["periods"]:
             if type == "input":
-                dict_asset.update({"timeseries": pd.Series(data_set[header].values, index=settings["time_index"])})
+                dict_asset.update(
+                    {
+                        "timeseries": pd.Series(
+                            data_set[header].values, index=settings["time_index"]
+                        )
+                    }
+                )
             else:
-                dict_asset[type].update({"value":pd.Series(data_set[header].values, index=settings["time_index"])})
+                dict_asset[type].update(
+                    {
+                        "value": pd.Series(
+                            data_set[header].values, index=settings["time_index"]
+                        )
+                    }
+                )
             logging.debug(
                 "Added timeseries of %s (%s).", dict_asset["label"], file_path
             )
         elif len(data_set.index) >= settings["periods"]:
             if type == "input":
-                dict_asset.update({"timeseries": pd.Series(data_set[header][0 : len(settings["time_index"])].values,
-                                                           index=settings["time_index"],)})
+                dict_asset.update(
+                    {
+                        "timeseries": pd.Series(
+                            data_set[header][0 : len(settings["time_index"])].values,
+                            index=settings["time_index"],
+                        )
+                    }
+                )
             else:
-                dict_asset[type].update({"value": pd.Series(data_set[header][0 : len(settings["time_index"])].values,
-                                                            index=settings["time_index"]),})
+                dict_asset[type].update(
+                    {
+                        "value": pd.Series(
+                            data_set[header][0 : len(settings["time_index"])].values,
+                            index=settings["time_index"],
+                        ),
+                    }
+                )
             logging.info(
                 "Provided timeseries of %s (%s) longer than evaluated period. "
                 "Excess data dropped.",
@@ -660,11 +754,10 @@ class helpers:
                         dict_asset["label"],
                     )
                 if any(dict_asset["timeseries_normalized"].values) < 0:
-                    logging.warning("Error, %s timeseries negative.", dict_asset["label"])
+                    logging.warning(
+                        "Error, %s timeseries negative.", dict_asset["label"]
+                    )
 
-        shutil.copy(
-            file_path, settings["path_output_folder_inputs"] + file_name
-        )
+        shutil.copy(file_path, settings["path_output_folder_inputs"] + file_name)
         logging.debug("Copied timeseries %s to output folder / inputs.", file_path)
         return
-
