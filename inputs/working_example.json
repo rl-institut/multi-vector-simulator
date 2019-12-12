@@ -31,7 +31,7 @@
         "path_input_folder": "./inputs/",
         "path_output_folder": "./MVS_outputs",
         "path_output_folder_inputs": "./MVS_outputs/inputs/",
-        "store_oemof_results": true,
+        "store_oemof_results": false,
         "oemof_file_name": "MVS_results.oemof",
         "restore_from_oemof_file": true
     },

@@ -1,7 +1,13 @@
+#todo: Ask PFD what this does and if all info there is applicable
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+MVS_outputs/
+venv_ubuntu/
+venv_windows/
+.idea/
 
 # C extensions
 *.so
