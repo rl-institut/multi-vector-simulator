@@ -3,6 +3,23 @@ import os
 import json
 from pathlib import Path
 
+"""
+This module reads csv files from "mvs_eland/inputs/elements/csv", converts each
+into a json file and stores it in "mvs_eland/inputs/elements/json". Each csv 
+file is checked for the right parameters.
+
+In order to add a new component, the according parameters and the json 
+structure needs to be added by hand into this script. 
+
+todo (if needed) to make the code more generic:
+- a function that converts csv to json and takes the required parameters as an 
+    argument 
+- a function that joins all single json files and builds the structure 
+    (subkeys) from arguments
+"""
+
+
+
 
 def infer_resources():
 
