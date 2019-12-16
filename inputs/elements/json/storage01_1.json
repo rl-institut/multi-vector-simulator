@@ -1,0 +1,9 @@
+{
+    "storage_01": {
+        "inflow_direction": "ESS Li-Ion",
+        "label": "ESS Li-Ion",
+        "optimizeCap": "True",
+        "outflow_direction": "ESS Li-Ion",
+        "type_oemof": "storage"
+    }
+}

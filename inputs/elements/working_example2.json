@@ -1,0 +1,278 @@
+{
+  "energyProduction": {
+    "Electricity (LES)": {
+      "pv_plant_01": {
+        "age_installed": "{'value': 0, 'unit': 'year'}",
+        "capex_fix": "{'value': 100000, 'unit': 'currency'}",
+        "capex_var": "{'value': 7200, 'unit': 'currency/kWp'}",
+        "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
+        "installedCap": "{'value': 0, 'unit': 'kWp'}",
+        "label": "PV plant (mono)",
+        "lifetime": "{'value': 30, 'unit': 'year'}",
+        "opex_fix": "{'value': 80, 'unit': 'currency/kWp/year'}",
+        "opex_var": "{'value': 0, 'unit': 'currency/kWh'}",
+        "optimizeCap": "True",
+        "outflow_direction": "PV plant (mono)",
+        "type_oemof": "source",
+        "unit": "kWp"
+      }
+    }
+  },
+  "project": {
+    "engineering": {
+      "capex_fix": "{'value': 0, 'unit': 'currency'}",
+      "capex_var": "{'value': 0, 'unit': 'currency'}",
+      "label": "R&D, engineering",
+      "lifetime": "{'value': 20, 'unit': 'year'}",
+      "opex_fix": "{'value': 0, 'unit': 'currency/year'}",
+      "opex_var": "{'value': 0, 'unit': 'currency/kWh'}"
+    },
+    "operation": {
+      "capex_fix": "{'value': 0, 'unit': 'currency'}",
+      "capex_var": "{'value': 0, 'unit': 'currency'}",
+      "label": "Fix project operation",
+      "lifetime": "{'value': 20, 'unit': 'year'}",
+      "opex_fix": "{'value': 4600, 'unit': 'currency/year (electricity bill)'}",
+      "opex_var": "{'value': 0, 'unit': 'currency/kWh'}"
+    }
+  },
+  "energyConversion": {
+    "storage_charge_controller_in": {
+      "age_installed": "{'value': 0.0, 'unit': 'year'}",
+      "capex_fix": "{'value': 0.0, 'unit': 'currency'}",
+      "capex_var": "{'value': 0.0, 'unit': 'currency/kW'}",
+      "efficiency": "{'value': 1, 'unit': 'factor'}",
+      "inflow_direction": "Electricity (LES)",
+      "installedCap": "{'value': 0.0, 'unit': 'kW'}",
+      "label": "Charge Contoller ESS Li-Ion (charge)",
+      "lifetime": "{'value': 10, 'unit': 'year'}",
+      "opex_fix": "{'value': 0.0, 'unit': 'currency/kW/year'}",
+      "opex_var": "{'value': 0.0, 'unit': 'currency/kWh'}",
+      "optimizeCap": "True",
+      "outflow_direction": "ESS Li-Ion",
+      "type_oemof": "transformer"
+    },
+    "storage_charge_controller_out": {
+      "age_installed": "{'value': 0.0, 'unit': 'year'}",
+      "capex_fix": "{'value': 0.0, 'unit': 'currency'}",
+      "capex_var": "{'value': 0.0, 'unit': 'currency/kW'}",
+      "efficiency": "{'value': 1, 'unit': 'factor'}",
+      "inflow_direction": "ESS Li-Ion",
+      "installedCap": "{'value': 0.0, 'unit': 'kW'}",
+      "label": "Charge Contoller ESS Li-Ion (discharge)",
+      "lifetime": "{'value': 10, 'unit': 'year'}",
+      "opex_fix": "{'value': 0.0, 'unit': 'currency/kW/year'}",
+      "opex_var": "{'value': 0.0, 'unit': 'currency/kWh'}",
+      "optimizeCap": "True",
+      "outflow_direction": "Electricity (LES)",
+      "type_oemof": "transformer"
+    },
+    "solar_inverter_01": {
+      "age_installed": "{'value': 0, 'unit': 'year'}",
+      "capex_fix": "{'value': 0.0, 'unit': 'currency'}",
+      "capex_var": "{'value': 3000, 'unit': 'currency/kW'}",
+      "efficiency": "{'value': 1.0, 'unit': 'factor'}",
+      "inflow_direction": "PV plant (mono)",
+      "installedCap": "{'value': 0, 'unit': 'kW'}",
+      "label": "Solar inverter (mono)",
+      "lifetime": "{'value': 15, 'unit': 'year'}",
+      "opex_fix": "{'value': 0, 'unit': 'currency/kW/year'}",
+      "opex_var": "{'value': 0, 'unit': 'currency/kWh'}",
+      "optimizeCap": "True",
+      "outflow_direction": "Electricity (LES)",
+      "type_oemof": "transformer"
+    },
+    "transformer_station_in": {
+      "age_installed": "{'value': 5, 'unit': 'year'}",
+      "capex_fix": "{'value': 0.0, 'unit': 'currency'}",
+      "capex_var": "{'value': 0, 'unit': 'currency/kW'}",
+      "efficiency": "{'value': 0.96, 'unit': 'factor'}",
+      "inflow_direction": "Electricity (DSO)",
+      "installedCap": "{'value': 1250, 'unit': 'kW'}",
+      "label": "Transformer station (DSO) consumption",
+      "lifetime": "{'value': 30, 'unit': 'year'}",
+      "opex_fix": "{'value': 0, 'unit': 'currency/kW/year'}",
+      "opex_var": "{'value': 0, 'unit': 'currency/kWh'}",
+      "optimizeCap": "False",
+      "outflow_direction": "Electricity (LES)",
+      "type_oemof": "transformer"
+    },
+    "transformer_station_out": {
+      "age_installed": "{'value': 5, 'unit': 'year'}",
+      "capex_fix": "{'value': 0.0, 'unit': 'currency'}",
+      "capex_var": "{'value': 0, 'unit': 'currency/kW'}",
+      "efficiency": "{'value': 0.96, 'unit': 'factor'}",
+      "inflow_direction": "Electricity (LES)",
+      "installedCap": "{'value': 1250, 'unit': 'kW'}",
+      "label": "Transformer station (DSO) feedin",
+      "lifetime": "{'value': 30, 'unit': 'year'}",
+      "opex_fix": "{'value': 0, 'unit': 'currency/kW/year'}",
+      "opex_var": "{'value': 0, 'unit': 'currency/kWh'}",
+      "optimizeCap": "False",
+      "outflow_direction": "Electricity (DSO)",
+      "type_oemof": "transformer"
+    },
+    "diesel_generator": {
+      "age_installed": "{'value': 0, 'unit': 'year'}",
+      "capex_fix": "{'value': 0, 'unit': 'currency'}",
+      "capex_var": "{'value': 600, 'unit': 'currency/kW'}",
+      "efficiency": "{'value': 0.33, 'unit': 'factor'}",
+      "inflow_direction": "Fuel",
+      "installedCap": "{'value': 0, 'unit': 'kW'}",
+      "label": "Backup diesel generator",
+      "lifetime": "{'value': 15, 'unit': 'year'}",
+      "opex_fix": "{'value': 5, 'unit': 'currency/kW/year'}",
+      "opex_var": "{'value': 0, 'unit': 'currency/kWh'}",
+      "optimizeCap": "True",
+      "outflow_direction": "Electricity (LES)",
+      "type_oemof": "transformer"
+    }
+  },
+  "energyProviders": {
+    "Electricity (LES)": {
+      "DSO": {
+        "energy_price": "{'value': 0.54, 'unit': 'currency/kWh'}",
+        "feedin_tariff": "{'value': 0.4, 'unit': 'currency/kWh'}",
+        "inflow_direction": "Electricity (DSO)",
+        "label": "Electricity grid DSO",
+        "optimizeCap": "True",
+        "outflow_direction": "Electricity (DSO)",
+        "peak_demand_pricing": "{'value': 60, 'unit': 'currency/kW'}",
+        "peak_demand_pricing_period": "{'value': 12, 'unit': 'times per year (1,2,3,4,6,12'}",
+        "type_oemof": "source"
+      }
+    }
+  },
+  "simulation_settings": {
+    "display_output": "-debug",
+    "evaluated_period": "{'value': 365, 'unit': 'days'}",
+    "input_file_name": "test_input_file_v1.xlsx",
+    "label": "simulation_settings",
+    "oemof_file_name": "MVS_results.oemof",
+    "output_lp_file": "False",
+    "overwrite": "True",
+    "path_input_file": "./inputs/test_input_file_v1.xlsx",
+    "path_input_folder": "./inputs/",
+    "path_output_folder": "./MVS_outputs",
+    "path_output_folder_inputs": "./MVS_outputs/inputs/",
+    "restore_from_oemof_file": "True",
+    "start_date": "2018-01-01 00:00:00",
+    "store_oemof_results": "True",
+    "timestep": "{'value': 60, 'unit': 'minutes'}"
+  },
+  "energyStorage": {
+    "Electricity (LES)": {
+      "storage_01": {
+        "inflow_direction": "ESS Li-Ion",
+        "label": "ESS Li-Ion",
+        "optimizeCap": "True",
+        "outflow_direction": "ESS Li-Ion",
+        "type_oemof": "storage",
+        "capacity": {
+          "age_installed": "{'value': 0, 'unit': 'year'}",
+          "capex_fix": "{'value': 0.0, 'unit': 'currency'}",
+          "capex_var": "{'value': 4000, 'unit': 'currency/kWh'}",
+          "crate": NaN,
+          "efficiency": "{'value': 0.0, 'unit': 'factor'}",
+          "installedCap": "{'value': 0, 'unit': 'kWh'}",
+          "label": "Storage capacity",
+          "lifetime": "{'value': 10, 'unit': 'year'}",
+          "opex_fix": "{'value': 0, 'unit': 'currency/kWh/year'}",
+          "opex_var": "{'value': 0, 'unit': 'currency/kWh'}",
+          "soc_initial": "{'value': None, 'unit': 'None or factor'}",
+          "soc_max": "{'value': 1.0, 'unit': 'factor'}",
+          "soc_min": "{'value': 0.2, 'unit': 'factor'}",
+          "unit": "kWh"
+        },
+        "charging_power": {
+          "age_installed": "{'value': 0, 'unit': 'year'}",
+          "capex_fix": "{'value': 0.0, 'unit': 'currency'}",
+          "capex_var": "{'value': 0, 'unit': 'currency/kW'}",
+          "crate": "{'value': 1, 'unit': 'factor of total capacity (kWh)'}",
+          "efficiency": "{'value': 0.9500000000000001, 'unit': 'factor'}",
+          "installedCap": "{'value': 0, 'unit': 'kW'}",
+          "label": "discharging_power",
+          "lifetime": "{'value': 10, 'unit': 'year'}",
+          "opex_fix": "{'value': 0, 'unit': 'currency/kW/year'}",
+          "opex_var": "{'value': 0, 'unit': 'currency/kWh'}",
+          "soc_initial": NaN,
+          "soc_max": NaN,
+          "soc_min": NaN,
+          "unit": "kW"
+        },
+        "discharging_power": {
+          "age_installed": "{'value': 0, 'unit': 'year'}",
+          "capex_fix": "{'value': 0.0, 'unit': 'currency'}",
+          "capex_var": "{'value': 0, 'unit': 'currency/kW'}",
+          "crate": "{'value': 1, 'unit': 'factor of total capacity (kWh)'}",
+          "efficiency": "{'value': 0.9500000000000001, 'unit': 'factor'}",
+          "installedCap": "{'value': 0, 'unit': 'kW'}",
+          "label": "discharging_power",
+          "lifetime": "{'value': 10, 'unit': 'year'}",
+          "opex_fix": "{'value': 0, 'unit': 'currency/kW/year'}",
+          "opex_var": "{'value': 0, 'unit': 'currency/kWh'}",
+          "soc_initial": NaN,
+          "soc_max": NaN,
+          "soc_min": NaN,
+          "unit": "kW"
+        }
+      }
+    }
+  },
+  "economic_data": {
+    "currency": "NOK",
+    "discount_factor": "{'value': 0.06, 'unit': 'factor'}",
+    "label": "economic_data",
+    "project_duration": "{'value': 30, 'unit': 'year'}",
+    "tax": "{'value': 0.0, 'unit': 'factor'}"
+  },
+  "project_data": {
+    "country": "Norway",
+    "label": "project_data",
+    "latitude": "59.17905",
+    "longitude": "10.95787",
+    "project_id": "1",
+    "project_name": "Borg Havn",
+    "scenario_id": "1",
+    "scenario_name": "Warehouse 14",
+    "sectors": "{'electricity': 'Electricity (LES)'}"
+  },
+  "fixCost": {
+    "electricity": {
+      "distribution_grid": {
+        "age_installed": "{'value': 10, 'unit': 'year'}",
+        "capex_fix": "{'value': 0.0, 'unit': 'currency'}",
+        "capex_var": "{'value': 0.0, 'unit': 'currency'}",
+        "label": "distribution grid infrastructure",
+        "lifetime": "{'value': 30, 'unit': 'year'}",
+        "opex_fix": "{'value': 0, 'unit': 'currency/year'}",
+        "opex_var": "{'value': 0, 'unit': 'currency/kWh'}"
+      }
+    }
+  },
+  "energyConsumption": {
+    "Electricity (LES)": {
+      "demand_01": {
+        "dsm": "False",
+        "file_name": "demand_habor.csv",
+        "label": "Habor",
+        "type_asset": "demand",
+        "type_oemof": "sink"
+      },
+      "demand_02": {
+        "dsm": "False",
+        "file_name": "demand_remaining.csv",
+        "label": "Remaining demand",
+        "type_asset": "demand",
+        "type_oemof": "sink"
+      },
+      "demand_03": {
+        "dsm": "False",
+        "file_name": "demand_shore_power.csv",
+        "label": "Shore power (docked ships)",
+        "type_asset": "demand",
+        "type_oemof": "sink"
+      }
+    }
+  }
+}

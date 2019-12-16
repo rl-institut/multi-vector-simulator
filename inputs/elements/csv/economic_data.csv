@@ -1,0 +1,6 @@
+,economic_data
+currency,NOK
+discount_factor,"{'value': 0.06, 'unit': 'factor'}"
+label,economic_data
+project_duration,"{'value': 30, 'unit': 'year'}"
+tax,"{'value': 0.0, 'unit': 'factor'}"

@@ -1,0 +1,10 @@
+,DSO
+energy_price,"{'value': 0.54, 'unit': 'currency/kWh'}"
+feedin_tariff,"{'value': 0.4, 'unit': 'currency/kWh'}"
+inflow_direction,Electricity (DSO)
+label,Electricity grid DSO
+optimizeCap,True
+outflow_direction,Electricity (DSO)
+peak_demand_pricing,"{'value': 60, 'unit': 'currency/kW'}"
+peak_demand_pricing_period,"{'value': 12, 'unit': 'times per year (1,2,3,4,6,12'}"
+type_oemof,source
