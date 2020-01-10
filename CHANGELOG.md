@@ -16,6 +16,21 @@ Here is a template for new release sections
 ### Removed
 -
 ```
+
+## [0.0.3] - 2020-01-10
+
+### Added
+- new feature to create the input json file from a collection of csv files
+- new module added: A1_csv_to_json.py
+
+### Changed
+- CHANGELOG
+- directory structure of input/
+
+### Removed
+/
+
+
 ## [0.0.2] - 2019-11-25
 
 ### Added
