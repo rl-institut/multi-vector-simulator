@@ -15,8 +15,6 @@ that folder and creates one json input file for mvs
 """
 
 
-
-
 def infer_resources():
 
     """
@@ -41,7 +39,6 @@ def infer_resources():
     output_filename = "working_example2.json"
 
     create_input_json(input_directory, output_filename)
-
 
 
 def create_input_json(input_directory, output_filename, pass_back=False):
@@ -73,8 +70,8 @@ def create_input_json(input_directory, output_filename, pass_back=False):
             parameters=['dsm', 'file_name', 'label', 'type_asset',
                         'type_oemof']
             single_dict=create_json_from_csv(input_directory,
-                                 filename="energyConsumption",
-                                 parameters=parameters)
+                                             filename="energyConsumption",
+                                             parameters=parameters)
             input_json.update(single_dict)
         elif f == 'energyConversion.csv':
 
@@ -83,17 +80,17 @@ def create_input_json(input_directory, output_filename, pass_back=False):
                           'label', 'lifetime', 'opex_fix','opex_var',
                           'optimizeCap', 'outflow_direction', 'type_oemof']
             single_dict=create_json_from_csv(input_directory,
-                                 filename="energyConversion",
-                                 parameters=parameters)
+                                             filename="energyConversion",
+                                             parameters=parameters)
             input_json.update(single_dict)
 
         elif f == 'energyStorage.csv':
             parameters = ['inflow_direction', 'label', 'optimizeCap',
-                       'outflow_direction',
-                       'type_oemof', 'storage_filename']
+                          'outflow_direction', 'type_oemof',
+                          'storage_filename']
             single_dict=create_json_from_csv(input_directory,
-                                 filename="energyStorage",
-                                 parameters=parameters)
+                                             filename="energyStorage",
+                                             parameters=parameters)
             input_json.update(single_dict)
         elif f == 'energyProduction.csv':
 
@@ -103,8 +100,8 @@ def create_input_json(input_directory, output_filename, pass_back=False):
                           'optimizeCap', 'outflow_direction',
                           'type_oemof', 'unit']
             single_dict=create_json_from_csv(input_directory,
-                                 filename="energyProduction",
-                                 parameters=parameters)
+                                             filename="energyProduction",
+                                             parameters=parameters)
             input_json.update(single_dict)
         elif f == "energyProviders.csv":
             parameters = ['energy_price', 'feedin_tariff', 'inflow_direction',
@@ -112,22 +109,22 @@ def create_input_json(input_directory, output_filename, pass_back=False):
                           'peak_demand_pricing','peak_demand_pricing_period',
                           'type_oemof']
             single_dict=create_json_from_csv(input_directory,
-                                 filename="energyProviders",
-                                 parameters=parameters)
+                                             filename="energyProviders",
+                                             parameters=parameters)
             input_json.update(single_dict)
         elif f == "project.csv":
             parameters = ['capex_fix', 'capex_var', 'label', 'lifetime',
                           'opex_fix', 'opex_var']
             single_dict=create_json_from_csv(input_directory,
-                                 filename="project",
-                                 parameters=parameters)
+                                             filename="project",
+                                             parameters=parameters)
             input_json.update(single_dict)
         elif f == "fixcost.csv":
             parameters = ['age_installed', 'capex_fix', 'capex_var', 'label',
                           'lifetime','opex_fix', 'opex_var']
             single_dict=create_json_from_csv(input_directory,
-                                 filename="fixcost",
-                                 parameters=parameters)
+                                             filename="fixcost",
+                                             parameters=parameters)
             input_json.update(single_dict)
         elif f == "simulation_settings.csv":
             parameters = ['display_output', 'evaluated_period',
@@ -138,23 +135,23 @@ def create_input_json(input_directory, output_filename, pass_back=False):
                           'restore_from_oemof_file', 'start_date',
                           'store_oemof_results', 'timestep']
             single_dict=create_json_from_csv(input_directory,
-                                 filename="simulation_settings",
-                                 parameters=parameters)
+                                             filename="simulation_settings",
+                                             parameters=parameters)
             input_json.update(single_dict)
         elif f == "project_data.csv":
             parameters = ['country', 'label', 'latitude', 'longitude',
                           'project_id','project_name', 'scenario_id',
                           'scenario_name', 'sectors']
             single_dict=create_json_from_csv(input_directory,
-                                 filename="project_data",
-                                 parameters=parameters)
+                                             filename="project_data",
+                                             parameters=parameters)
             input_json.update(single_dict)
         elif f == "economic_data.csv":
             parameters = ['currency', 'discount_factor', 'label',
                           'project_duration', 'tax']
             single_dict=create_json_from_csv(input_directory,
-                                 filename="economic_data",
-                                 parameters=parameters)
+                                             filename="economic_data",
+                                             parameters=parameters)
             input_json.update(single_dict)
         elif "storage_" in f:
             pass
@@ -169,6 +166,8 @@ def create_input_json(input_directory, output_filename, pass_back=False):
         json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
     logging.info(
         "json stored into '/mvs_eland/inputs/%s", output_filename)
+    if pass_back:
+        return input_json
 
 
 def create_json_from_csv(input_directory, filename, parameters):
@@ -204,7 +203,7 @@ def create_json_from_csv(input_directory, filename, parameters):
             if i in parameters:
                 logging.error(
                     "In the file %s.csv" % filename + " the parameter "
-                    + str(i) +" is missing. "
+                    + str(i) + " is missing. "
                     "check /mvs_eland/inputs/elements/default_csv for correct "
                     "parameter names.")
             else:
