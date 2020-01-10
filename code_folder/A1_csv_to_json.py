@@ -25,7 +25,7 @@ def infer_resources():
     """
     input_directory= os.path.join(Path(os.path.dirname(__file__)).parent,
                                   "inputs/elements/")
-    output_filename = "working_example3.json"
+    output_filename = "working_example2.json"
 
     create_input_json(input_directory, output_filename)
 
