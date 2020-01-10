@@ -2,6 +2,19 @@ import pandas as pd
 import os
 import json
 from pathlib import Path
+import logging
+
+"""
+How to use:
+all default input csv's are stored in '/mvs_eland/inputs/elements/default_csv'.
+These csvs are not to be changed! All csvs that you need in order to set up your 
+energy system should be stored into '/mvs_eland/inputs/elements/csv'. Here you
+can change parameters and add components. Please do not delete any parameter. 
+The function "infer_resources()" reads all csv that are stored in that folder 
+and creates one json input file for mvs
+"""
+
+
 
 
 def infer_resources():
@@ -49,6 +62,10 @@ def create_input_json(input_directory, output_filename, pass_back=False):
     :return: None
         saves
     """
+    logging.info(
+        "loading and converting all csv's from '/mvs_eland/inputs/elements/csv'"
+        " into one json"
+    )
     input_json = {}
     for f in os.listdir(os.path.join(input_directory, "csv/")):
 
@@ -142,12 +159,16 @@ def create_input_json(input_directory, output_filename, pass_back=False):
         elif "storage_" in f:
             pass
         else:
-            print('The file', f, 'is not in the input list.')
+            logging.error(
+                "The file %s" %f + " is not recognized as input file for mvs \n"
+                "check '/mvs_eland/inputs/elements/default_csv' for correct "
+                "file names.")
 
     with open(os.path.join(input_directory, output_filename),
               "w") as outfile:
         json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
-
+    logging.info(
+        "json stored into '/mvs_eland/inputs/%s", output_filename)
 
 def create_json_from_csv(input_directory, filename, parameters):
 
@@ -180,9 +201,17 @@ def create_json_from_csv(input_directory, filename, parameters):
     if len(extra) > 0:
         for i in extra:
             if i in parameters:
-                print('The %s' %filename, ' parameter', i, 'is missing.')
+                logging.error(
+                "In the file %s.csv" % filename + " the parameter " + str(i) +
+                " is missing. "
+                 "check /mvs_eland/inputs/elements/default_csv for correct "
+                "parameter names.")
             else:
-                print('The %s' %filename, 'parameter', i, 'is does not exist.')
+                logging.error(
+                'In the file %s.csv' % filename + ' the parameter ' + str(i) +
+                ' is not recognized. \n'
+                "check '/mvs_eland/inputs/elements/default_csv' for correct "
+                "parameter names.")
 
     # convert csv to json
     single_dict2 = {}
@@ -214,9 +243,13 @@ def create_json_from_csv(input_directory, filename, parameters):
 
 
 def add_storage(storage_filename, input_directory):
-    if os.path.exists(
+
+    if not os.path.exists(
             os.path.join(input_directory, 'csv/',
-                         "%s.csv" % storage_filename)):  # todo: hier verallgemeinern
+                         "%s.csv" % storage_filename)):
+        logging.error(
+            'The storage file %s.csv' % storage_filename + " is missing!")
+    else:   # todo: hier verallgemeinern
         parameters = ['age_installed', 'capex_fix', 'capex_var',
                       'crate', 'efficiency', 'installedCap', 'label',
                       'lifetime', 'opex_fix', 'opex_var', 'soc_initial',
@@ -225,8 +258,7 @@ def add_storage(storage_filename, input_directory):
                                             filename=storage_filename,
                                             parameters=parameters)
         return single_dict
-    else:
-        print("File %s.csv" % storage_filename, "is missing")
+
 
 if __name__ == '__main__':
     infer_resources()
