@@ -9,9 +9,15 @@ How to use:
 all default input csv's are stored in '/mvs_eland/inputs/elements/default_csv'.
 These csvs are not to be changed! All csvs that you need in order to set up 
 your energy system should be stored into '/mvs_eland/inputs/elements/csv'. Here
-you can change parameters and add components. Please do not delete any 
-parameter. The function "infer_resources()" reads all csv that are stored in 
-that folder and creates one json input file for mvs
+you can change parameters and add components. The given parameters need to be 
+maintained. 
+Storage: The "energyStorage.csv" contains information about all storages. 
+For each storage there needs to be another file named exactly as the according 
+storage-column in "energyStorage.csv", usually this is "storage_01", 
+"storage_02" etc. Please stick to this convention.
+After all the function "infer_resources()" reads all csv that are stored in 
+the folder '/mvs_eland/inputs/elements/csv' and creates one json input file 
+for mvs
 """
 
 
