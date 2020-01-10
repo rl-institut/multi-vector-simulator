@@ -6,9 +6,9 @@ import logging
 
 """
 How to use:
-all default input csv's are stored in '/mvs_eland/inputs/elements/default_csv'.
+all default input csv"s are stored in "/mvs_eland/inputs/elements/default_csv".
 These csvs are not to be changed! All csvs that you need in order to set up 
-your energy system should be stored into '/mvs_eland/inputs/elements/csv'. Here
+your energy system should be stored into "/mvs_eland/inputs/elements/csv". Here
 you can change parameters and add components. The given parameters need to be 
 maintained. 
 Storage: The "energyStorage.csv" contains information about all storages. 
@@ -16,7 +16,7 @@ For each storage there needs to be another file named exactly as the according
 storage-column in "energyStorage.csv", usually this is "storage_01", 
 "storage_02" etc. Please stick to this convention.
 After all the function "infer_resources()" reads all csv that are stored in 
-the folder '/mvs_eland/inputs/elements/csv' and creates one json input file 
+the folder "/mvs_eland/inputs/elements/csv" and creates one json input file 
 for mvs
 """
 
@@ -24,7 +24,7 @@ for mvs
 def infer_resources():
 
     """
-    Method looks at all csv-files in 'mvs_eland/inputs/elements/csv",
+    Method looks at all csv-files in "mvs_eland/inputs/elements/csv",
     converts them into json files and joins them together into the file
     "mvs_eland/inputs/working_example2.json". When reading the csv files it is
     checked, weather all required parameters for each component are given.
@@ -55,7 +55,7 @@ def create_input_json(input_directory, output_filename, pass_back=False):
     one json file
 
     :param input_directory: str
-        name of the input directory where the csv's can be found
+        name of the input directory where the csv"s can be found
     :param output_filename: str
         name of the output file with ending
     :param pass_back: binary
@@ -72,89 +72,89 @@ def create_input_json(input_directory, output_filename, pass_back=False):
     input_json = {}
     for f in os.listdir(os.path.join(input_directory, "csv/")):
 
-        if f == 'energyConsumption.csv':
-            parameters=['dsm', 'file_name', 'label', 'type_asset',
-                        'type_oemof']
+        if f == "energyConsumption.csv":
+            parameters=["dsm", "file_name", "label", "type_asset",
+                        "type_oemof"]
             single_dict=create_json_from_csv(input_directory,
                                              filename="energyConsumption",
                                              parameters=parameters)
             input_json.update(single_dict)
-        elif f == 'energyConversion.csv':
+        elif f == "energyConversion.csv":
 
-            parameters = ['age_installed', 'capex_fix', 'capex_var',
-                          'efficiency','inflow_direction', 'installedCap',
-                          'label', 'lifetime', 'opex_fix','opex_var',
-                          'optimizeCap', 'outflow_direction', 'type_oemof']
+            parameters = ["age_installed", "capex_fix", "capex_var",
+                          "efficiency","inflow_direction", "installedCap",
+                          "label", "lifetime", "opex_fix","opex_var",
+                          "optimizeCap", "outflow_direction", "type_oemof"]
             single_dict=create_json_from_csv(input_directory,
                                              filename="energyConversion",
                                              parameters=parameters)
             input_json.update(single_dict)
 
-        elif f == 'energyStorage.csv':
-            parameters = ['inflow_direction', 'label', 'optimizeCap',
-                          'outflow_direction', 'type_oemof',
-                          'storage_filename']
+        elif f == "energyStorage.csv":
+            parameters = ["inflow_direction", "label", "optimizeCap",
+                          "outflow_direction", "type_oemof",
+                          "storage_filename"]
             single_dict=create_json_from_csv(input_directory,
                                              filename="energyStorage",
                                              parameters=parameters)
             input_json.update(single_dict)
-        elif f == 'energyProduction.csv':
+        elif f == "energyProduction.csv":
 
-            parameters = ['age_installed', 'capex_fix', 'capex_var',
-                          'file_name', 'installedCap', 'label',
-                          'lifetime', 'opex_fix', 'opex_var',
-                          'optimizeCap', 'outflow_direction',
-                          'type_oemof', 'unit']
+            parameters = ["age_installed", "capex_fix", "capex_var",
+                          "file_name", "installedCap", "label",
+                          "lifetime", "opex_fix", "opex_var",
+                          "optimizeCap", "outflow_direction",
+                          "type_oemof", "unit"]
             single_dict=create_json_from_csv(input_directory,
                                              filename="energyProduction",
                                              parameters=parameters)
             input_json.update(single_dict)
         elif f == "energyProviders.csv":
-            parameters = ['energy_price', 'feedin_tariff', 'inflow_direction',
-                          'label','optimizeCap', 'outflow_direction',
-                          'peak_demand_pricing','peak_demand_pricing_period',
-                          'type_oemof']
+            parameters = ["energy_price", "feedin_tariff", "inflow_direction",
+                          "label","optimizeCap", "outflow_direction",
+                          "peak_demand_pricing","peak_demand_pricing_period",
+                          "type_oemof"]
             single_dict=create_json_from_csv(input_directory,
                                              filename="energyProviders",
                                              parameters=parameters)
             input_json.update(single_dict)
         elif f == "project.csv":
-            parameters = ['capex_fix', 'capex_var', 'label', 'lifetime',
-                          'opex_fix', 'opex_var']
+            parameters = ["capex_fix", "capex_var", "label", "lifetime",
+                          "opex_fix", "opex_var"]
             single_dict=create_json_from_csv(input_directory,
                                              filename="project",
                                              parameters=parameters)
             input_json.update(single_dict)
         elif f == "fixcost.csv":
-            parameters = ['age_installed', 'capex_fix', 'capex_var', 'label',
-                          'lifetime','opex_fix', 'opex_var']
+            parameters = ["age_installed", "capex_fix", "capex_var", "label",
+                          "lifetime","opex_fix", "opex_var"]
             single_dict=create_json_from_csv(input_directory,
                                              filename="fixcost",
                                              parameters=parameters)
             input_json.update(single_dict)
         elif f == "simulation_settings.csv":
-            parameters = ['display_output', 'evaluated_period',
-                          'input_file_name', 'label','oemof_file_name',
-                          'output_lp_file', 'overwrite', 'path_input_file',
-                            'path_input_folder', 'path_output_folder',
-                          'path_output_folder_inputs',
-                          'restore_from_oemof_file', 'start_date',
-                          'store_oemof_results', 'timestep']
+            parameters = ["display_output", "evaluated_period",
+                          "input_file_name", "label","oemof_file_name",
+                          "output_lp_file", "overwrite", "path_input_file",
+                            "path_input_folder", "path_output_folder",
+                          "path_output_folder_inputs",
+                          "restore_from_oemof_file", "start_date",
+                          "store_oemof_results", "timestep"]
             single_dict=create_json_from_csv(input_directory,
                                              filename="simulation_settings",
                                              parameters=parameters)
             input_json.update(single_dict)
         elif f == "project_data.csv":
-            parameters = ['country', 'label', 'latitude', 'longitude',
-                          'project_id','project_name', 'scenario_id',
-                          'scenario_name', 'sectors']
+            parameters = ["country", "label", "latitude", "longitude",
+                          "project_id","project_name", "scenario_id",
+                          "scenario_name", "sectors"]
             single_dict=create_json_from_csv(input_directory,
                                              filename="project_data",
                                              parameters=parameters)
             input_json.update(single_dict)
         elif f == "economic_data.csv":
-            parameters = ['currency', 'discount_factor', 'label',
-                          'project_duration', 'tax']
+            parameters = ["currency", "discount_factor", "label",
+                          "project_duration", "tax"]
             single_dict=create_json_from_csv(input_directory,
                                              filename="economic_data",
                                              parameters=parameters)
@@ -164,14 +164,14 @@ def create_input_json(input_directory, output_filename, pass_back=False):
         else:
             logging.error(
                 "The file %s" %f + " is not recognized as input file for mvs "
-                "check '/mvs_eland/inputs/elements/default_csv' for correct "
+                "check /mvs_eland/inputs/elements/default_csv for correct "
                 "file names.")
 
     with open(os.path.join(input_directory, output_filename),
               "w") as outfile:
         json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
     logging.info(
-        "json stored into '/mvs_eland/inputs/%s", output_filename)
+        "json stored into /mvs_eland/inputs/%s", output_filename)
     if pass_back:
         return input_json
 
@@ -179,13 +179,13 @@ def create_input_json(input_directory, output_filename, pass_back=False):
 def create_json_from_csv(input_directory, filename, parameters):
 
     """
-    One csv file is loaded and it's parameters are checked. The csv file is
+    One csv file is loaded and it"s parameters are checked. The csv file is
     then converted to a dictionary; the name of the csv file is used as the
     main key of the dictionary. Exceptions are made for the files
-    ['economic_data', 'project', 'project_data', 'simulation_settings'], here
+    ["economic_data", "project", "project_data", "simulation_settings"], here
     no main key is added. Another exception is made for the file
     "energyStorage". When this file is processed, the according "storage_"
-    files (names of the 'storage_'-columns in "energyStorage" are called and
+    files (names of the "storage_"-columns in "energyStorage" are called and
     added to the energyStorage Dictionary.
 
 
@@ -214,10 +214,10 @@ def create_json_from_csv(input_directory, filename, parameters):
                     "parameter names.")
             else:
                 logging.error(
-                    'In the file %s.csv' % filename + ' the parameter '
-                    + str(i) + ' is not recognized. \n'
-                    'check /mvs_eland/inputs/elements/default_csv for correct '
-                    'parameter names.')
+                    "In the file %s.csv" % filename + " the parameter "
+                    + str(i) + " is not recognized. \n"
+                    "check /mvs_eland/inputs/elements/default_csv for correct "
+                    "parameter names.")
 
     # convert csv to json
     single_dict2 = {}
@@ -233,12 +233,12 @@ def create_json_from_csv(input_directory, filename, parameters):
                                        "unit": row["unit"]}})
             single_dict.update({column : column_dict})
             # add exception for energyStorage
-            if filename == 'energyStorage':
+            if filename == "energyStorage":
                 storage_dict=add_storage(column, input_directory)
                 single_dict[column].update(storage_dict)
     # add exception for single dicts
-    if filename in ['economic_data', 'project', 'project_data',
-                    'simulation_settings']:
+    if filename in ["economic_data", "project", "project_data",
+                    "simulation_settings"]:
         return single_dict
     elif "storage_" in filename:
         return single_dict
@@ -251,20 +251,20 @@ def create_json_from_csv(input_directory, filename, parameters):
 def add_storage(storage_filename, input_directory):
 
     if not os.path.exists(
-            os.path.join(input_directory, 'csv/',
+            os.path.join(input_directory, "csv/",
                          "%s.csv" % storage_filename)):
         logging.error(
-            'The storage file %s.csv' % storage_filename + " is missing!")
+            "The storage file %s.csv" % storage_filename + " is missing!")
     else:
-        parameters = ['age_installed', 'capex_fix', 'capex_var',
-                      'crate', 'efficiency', 'installedCap', 'label',
-                      'lifetime', 'opex_fix', 'opex_var', 'soc_initial',
-                      'soc_max', 'soc_min', 'unit']
+        parameters = ["age_installed", "capex_fix", "capex_var",
+                      "crate", "efficiency", "installedCap", "label",
+                      "lifetime", "opex_fix", "opex_var", "soc_initial",
+                      "soc_max", "soc_min", "unit"]
         single_dict = create_json_from_csv(input_directory,
                                            filename=storage_filename,
                                            parameters=parameters)
         return single_dict
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     infer_resources()
