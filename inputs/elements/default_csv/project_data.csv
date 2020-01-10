@@ -1,0 +1,10 @@
+,unit,project_data
+country,str,Norway
+label,str,project_data
+latitude,str,59.17905
+longitude,str,10.95787
+project_id,str,1
+project_name,str,Borg Havn
+scenario_id,str,1
+scenario_name,str,Warehouse 14
+sectors,str,{'electricity': 'Electricity (LES)'}
