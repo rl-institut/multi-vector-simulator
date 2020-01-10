@@ -196,7 +196,7 @@ def create_json_from_csv(input_directory, filename, parameters):
                                   "%s.csv" % filename),
                      sep=",", header=0, index_col=0)
 
-    #check parameters
+    # check parameters
     extra = list(set(parameters) ^ set(df.index))
     if len(extra) > 0:
         for i in extra:
