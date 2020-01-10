@@ -25,93 +25,93 @@ def infer_resources():
     """
     input_directory= os.path.join(Path(os.path.dirname(__file__)).parent,
                                   "inputs/elements/")
+    output_filename = "working_example3.json"
 
-    convert_all_csv_to_json(input_directory)
-
-    join_json_files(input_directory)
+    create_input_json(input_directory, output_filename)
 
 
-def convert_all_csv_to_json(input_directory):
+
+def create_input_json(input_directory, output_filename, pass_back=False):
 
     """
     reads all csv files in "mvs_eland/inputs/elements/csv", checks if all
-    required parameters for each csv file are available and saves them as
-    json into "mvs_eland/inputs/elements/json"
+    required parameters for each csv file are available and saves them into
+    one json file
 
-    :param input_directory:
-    :return:
+    :param input_directory: str
+        name of the input directory where the csv's can be found
+    :param output_filename: str
+        name of the output file with ending
+    :param pass_back: binary
+        if pass_back=True: the final json dict is returned. Otherwise it is only
+        saved
+
+    :return: None
+        saves
     """
+    input_json = {}
     for f in os.listdir(os.path.join(input_directory, "csv/")):
 
-        if f == 'demand.csv':
+        if f == 'energyConsumption.csv':
             parameters=['dsm', 'file_name', 'label', 'type_asset',
                         'type_oemof']
-            create_json_from_csv(input_directory,
-                                 filename="demand",
+            single_dict=create_json_from_csv(input_directory,
+                                 filename="energyConsumption",
                                  parameters=parameters)
-
-        elif f == 'transformer.csv':
+            input_json.update(single_dict)
+        elif f == 'energyConversion.csv':
 
             parameters = ['age_installed', 'capex_fix', 'capex_var',
                           'efficiency','inflow_direction', 'installedCap',
                           'label', 'lifetime', 'opex_fix','opex_var',
                           'optimizeCap', 'outflow_direction', 'type_oemof']
-            create_json_from_csv(input_directory,
-                                 filename="transformer",
+            single_dict=create_json_from_csv(input_directory,
+                                 filename="energyConversion",
                                  parameters=parameters)
+            input_json.update(single_dict)
 
-        elif f == 'storage01_1.csv':
-
+        elif f == 'energyStorage.csv':
             parameters = ['inflow_direction', 'label', 'optimizeCap',
                        'outflow_direction',
-                       'type_oemof']
-            create_json_from_csv(input_directory,
-                                 filename="storage01_1",
+                       'type_oemof', 'storage_filename']
+            single_dict=create_json_from_csv(input_directory,
+                                 filename="energyStorage",
                                  parameters=parameters)
-
-            if os.path.exists(
-                    os.path.join(input_directory, 'csv/', 'storage01_2.csv')):
-                parameters = ['age_installed', 'capex_fix', 'capex_var',
-                              'crate','efficiency','installedCap', 'label',
-                              'lifetime','opex_fix', 'opex_var', 'soc_initial',
-                              'soc_max', 'soc_min', 'unit']
-                create_json_from_csv(input_directory,
-                                     filename="storage01_2",
-                                     parameters=parameters)
-            else:
-                print("File storage01_02.csv is missing")
-        elif f == 'storage01_2.csv':
-            pass
-        elif f == 'pv_plant_01.csv':
+            input_json.update(single_dict)
+        elif f == 'energyProduction.csv':
 
             parameters = ['age_installed', 'capex_fix', 'capex_var',
                           'file_name', 'installedCap', 'label',
                           'lifetime', 'opex_fix', 'opex_var',
                           'optimizeCap', 'outflow_direction',
                           'type_oemof', 'unit']
-            create_json_from_csv(input_directory,
-                                 filename="pv_plant_01",
+            single_dict=create_json_from_csv(input_directory,
+                                 filename="energyProduction",
                                  parameters=parameters)
-        elif f == "DSO.csv":
+            input_json.update(single_dict)
+        elif f == "energyProviders.csv":
             parameters = ['energy_price', 'feedin_tariff', 'inflow_direction',
                           'label','optimizeCap', 'outflow_direction',
                           'peak_demand_pricing','peak_demand_pricing_period',
                           'type_oemof']
-            create_json_from_csv(input_directory,
-                                 filename="DSO",
+            single_dict=create_json_from_csv(input_directory,
+                                 filename="energyProviders",
                                  parameters=parameters)
+            input_json.update(single_dict)
         elif f == "project.csv":
             parameters = ['capex_fix', 'capex_var', 'label', 'lifetime',
                           'opex_fix', 'opex_var']
-            create_json_from_csv(input_directory,
+            single_dict=create_json_from_csv(input_directory,
                                  filename="project",
                                  parameters=parameters)
-        elif f == "fixcost_electricity.csv":
+            input_json.update(single_dict)
+        elif f == "fixcost.csv":
             parameters = ['age_installed', 'capex_fix', 'capex_var', 'label',
                           'lifetime','opex_fix', 'opex_var']
-            create_json_from_csv(input_directory,
-                                 filename="fixcost_electricity",
+            single_dict=create_json_from_csv(input_directory,
+                                 filename="fixcost",
                                  parameters=parameters)
+            input_json.update(single_dict)
         elif f == "simulation_settings.csv":
             parameters = ['display_output', 'evaluated_period',
                           'input_file_name', 'label','oemof_file_name',
@@ -120,40 +120,62 @@ def convert_all_csv_to_json(input_directory):
                           'path_output_folder_inputs',
                           'restore_from_oemof_file', 'start_date',
                           'store_oemof_results', 'timestep']
-            create_json_from_csv(input_directory,
+            single_dict=create_json_from_csv(input_directory,
                                  filename="simulation_settings",
                                  parameters=parameters)
+            input_json.update(single_dict)
         elif f == "project_data.csv":
             parameters = ['country', 'label', 'latitude', 'longitude',
                           'project_id','project_name', 'scenario_id',
                           'scenario_name', 'sectors']
-            create_json_from_csv(input_directory,
+            single_dict=create_json_from_csv(input_directory,
                                  filename="project_data",
                                  parameters=parameters)
+            input_json.update(single_dict)
         elif f == "economic_data.csv":
             parameters = ['currency', 'discount_factor', 'label',
                           'project_duration', 'tax']
-            create_json_from_csv(input_directory,
+            single_dict=create_json_from_csv(input_directory,
                                  filename="economic_data",
                                  parameters=parameters)
+            input_json.update(single_dict)
+        elif "storage_" in f:
+            pass
         else:
             print('The file', f, 'is not in the input list.')
+
+    with open(os.path.join(input_directory, output_filename),
+              "w") as outfile:
+        json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
 
 
 def create_json_from_csv(input_directory, filename, parameters):
 
     """
-    :param input_directory: directory dame in which the csv files are in
-    :param filename: name of the file that should be transformed, without
-            ending
-    :param parameters: List of parameters names that are required
-    :return: None
-        saves a json file with >filename<.json
+    One csv file is loaded and it's parameters are checked. The csv file is
+    then converted to a dictionary; the name of the csv file is used as the
+    main key of the dictionary. Exceptions are made for the files
+    ['economic_data', 'project', 'project_data', 'simulation_settings'], here
+    no main key is added. Another exception is made for the file
+    "energyStorage". When this file is processed, the according "storage_"
+    files (names of the 'storage_'-columns in "energyStorage" are called and
+    added to the energyStorage Dictionary.
+
+
+    :param input_directory: str
+        directory name in which the csv files are stored in
+    :param filename: str
+        name of the file that is transformed into a json, without ending
+    :param parameters: list
+        List of parameters names that are required
+    :return: dict
+        the converted dictionary
     """
     df = pd.read_csv(os.path.join(input_directory, "csv/",
                                   "%s.csv" % filename),
                      sep=",", header=0, index_col=0)
 
+    #check parameters
     extra = list(set(parameters) ^ set(df.index))
     if len(extra) > 0:
         for i in extra:
@@ -162,97 +184,49 @@ def create_json_from_csv(input_directory, filename, parameters):
             else:
                 print('The %s' %filename, 'parameter', i, 'is does not exist.')
 
-    myfile = open(os.path.join(input_directory, "json/",
-                                  "%s.json" % filename),"w")
-    transformer_data = json.dumps(df.to_dict(), indent=4)
-    myfile.write(transformer_data)
-    myfile.close()
-
-def join_json_files(input_directory):
-
-    """
-    reads all json files in "mvs_eland/inputs/elements/json/" and brings them
-    into the right form for the mvs working example input file
-
-    :param input_directory: name of the input directory that contains the
-            folders "csv/" and "json/"
-    :return: None
-    """
-    result = {}
-    json_input_directory = os.path.join(input_directory, "json/")
-    with open(os.path.join(input_directory, "working_example2.json"),
-              "w") as outfile:
-        for f in os.listdir(json_input_directory):
-            with open(os.path.join(json_input_directory,
-                                   f), 'rb') as infile:
-                if f == 'transformer.json':
-                    json_file = {}
-                    json_file["energyConversion"] = json.load(infile)
-                    result.update(json_file)
-                elif f == "demand.json":
-                    json_file1 = {}
-                    json_file2 = {}
-                    json_file1["Electricity (LES)"] = json.load(infile)
-                    json_file2["energyConsumption"] = json_file1
-                    result.update(json_file2)
-                elif f == "storage01_1.json":
-                    json_file1 = {}
-                    json_file_storage1 = {}
-                    json_file1["Electricity (LES)"] = json.load(infile)
-                    json_file_storage1["energyStorage"] = json_file1
-
-                    if os.path.exists(
-                            os.path.join(input_directory, "json/",
-                                         'storage01_2.json')):
-                        f = 'storage01_2.json'
-                        with open(os.path.join(json_input_directory,
-                                               f), 'rb') as infile:
-                            json_file_storage1["energyStorage"][
-                                "Electricity (LES)"]["storage_01"].update(
-                                json.load(infile))
-                    else:
-                        print("The storage file storage01_2.json is missing")
-                    result.update(json_file_storage1)
-                elif f == "storage01_2.json":
-                    pass
-                elif f == "pv_plant_01.json":
-                    json_file1 = {}
-                    json_file2 = {}
-                    json_file1["Electricity (LES)"] = json.load(infile)
-                    json_file2["energyProduction"] = json_file1
-                    result.update(json_file2)
-                elif f == "DSO.json":
-                    json_file1 = {}
-                    json_file2 = {}
-                    json_file1["Electricity (LES)"] = json.load(infile)
-                    json_file2["energyProviders"] = json_file1
-                    result.update(json_file2)
-                elif f == "project.json":
-                    json_file1 = {}
-                    json_file1["project"] = json.load(infile)
-                    result.update(json_file1)
-                elif f == "fixcost_electricity.json":
-                    json_file1 = {}
-                    json_file2 = {}
-                    json_file1["electricity"] = json.load(infile)
-                    json_file2["fixCost"] = json_file1
-                    result.update(json_file2)
-                elif f == "simulation_settings.json":
-                    json_file1 = {}
-                    json_file1 = json.load(infile)
-                    result.update(json_file1)
-                elif f == "project_data.json":
-                    json_file1 = {}
-                    json_file1 = json.load(infile)
-                    result.update(json_file1)
-                elif f == "economic_data.json":
-                    json_file1 = {}
-                    json_file1 = json.load(infile)
-                    result.update(json_file1)
+    # convert csv to json
+    single_dict2 = {}
+    single_dict = {}
+    for column in df:
+        if column != "unit":
+            column_dict={}
+            for i, row in df.iterrows():
+                if row["unit"]=="str":
+                    column_dict.update({i: row[column]})
                 else:
-                    print('The file', f, 'is not in the input list.')
-        json.dump(result, outfile, indent=2)
+                    column_dict.update({i: {"value": row[column],
+                                       "unit": row["unit"]}})
+            single_dict.update({column : column_dict})
+            # add exception for energyStorage
+            if filename == 'energyStorage':
+                storage_dict=add_storage(column, input_directory)
+                single_dict[column].update(storage_dict)
+    # add exception for single dicts
+    if filename in ['economic_data', 'project', 'project_data',
+                    'simulation_settings']:
+        return single_dict
+    elif "storage_" in filename:
+        return single_dict
 
+    else:
+        single_dict2.update({filename : single_dict})
+        return single_dict2
+
+
+def add_storage(storage_filename, input_directory):
+    if os.path.exists(
+            os.path.join(input_directory, 'csv/',
+                         "%s.csv" % storage_filename)):  # todo: hier verallgemeinern
+        parameters = ['age_installed', 'capex_fix', 'capex_var',
+                      'crate', 'efficiency', 'installedCap', 'label',
+                      'lifetime', 'opex_fix', 'opex_var', 'soc_initial',
+                      'soc_max', 'soc_min', 'unit']
+        single_dict = create_json_from_csv(input_directory,
+                                            filename=storage_filename,
+                                            parameters=parameters)
+        return single_dict
+    else:
+        print("File %s.csv" % storage_filename, "is missing")
 
 if __name__ == '__main__':
     infer_resources()
