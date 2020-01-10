@@ -1,6 +1,0 @@
-,demand_01,demand_02,demand_03
-dsm,False,False,False
-file_name,demand_habor.csv,demand_remaining.csv,demand_shore_power.csv
-label,Habor,Remaining demand,Shore power (docked ships)
-type_asset,demand,demand,demand
-type_oemof,sink,sink,sink

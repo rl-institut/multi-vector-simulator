@@ -1,16 +1,16 @@
-,simulation_settings
-display_output,-debug
-evaluated_period,"{'value': 365, 'unit': 'days'}"
-input_file_name,test_input_file_v1.xlsx
-label,simulation_settings
-oemof_file_name,MVS_results.oemof
-output_lp_file,False
-overwrite,True
-path_input_file,./inputs/test_input_file_v1.xlsx
-path_input_folder,./inputs/
-path_output_folder,./MVS_outputs
-path_output_folder_inputs,./MVS_outputs/inputs/
-restore_from_oemof_file,True
-start_date,2018-01-01 00:00:00
-store_oemof_results,True
-timestep,"{'value': 60, 'unit': 'minutes'}"
+,unit,simulation_settings
+display_output,str,-debug
+evaluated_period,days,365
+input_file_name,str,test_input_file_v1.xlsx
+label,str,simulation_settings
+oemof_file_name,str,MVS_results.oemof
+output_lp_file,str,False
+overwrite,str,True
+path_input_file,str,./inputs/test_input_file_v1.xlsx
+path_input_folder,str,./inputs/
+path_output_folder,str,./MVS_outputs
+path_output_folder_inputs,str,./MVS_outputs/inputs/
+restore_from_oemof_file,str,True
+start_date,str,2018-01-01 00:00:00
+store_oemof_results,str,True
+timestep,minutes,60
