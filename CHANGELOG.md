@@ -20,18 +20,18 @@ Here is a template for new release sections
 # [Developer version] - 2019-01-13
 
 ### Added
-- LICENSE.md with GPL v2.0
-- folder "docs" and content to generate readthedocs
-- Started readthedocs homepage: https://readthedocs.org/projects/mvs-eland/
+- LICENSE.md with GPL v2.0 (#38, smartie2076)
+- folder "docs" and content to generate readthedocs (#39, smartie2076)
+- Started readthedocs homepage (not working): https://readthedocs.org/projects/mvs-eland/ (#39, smartie2076)
 
 ### Changed
-- requirements.txt only includes packages needed for users of MVS
-- test_requirements.txt includes packages used by developers of MVS
-- CONTRIBUTING: Now with read the docs
-- README: Now with contextualization of MVS, setup & installation, utilization of and contributing to MVS
+- requirements.txt only includes packages needed for users of MVS (#39, smartie2076)
+- test_requirements.txt includes packages used by developers of MVS (#39, smartie2076)
+- CONTRIBUTING: Now with read the docs (smartie2076)
+- README: Now with contextualization of MVS, setup & installation, utilization of and contributing to MVS (#47, smartie2076)
 
 ### Removed
-- Output files excluded from repro
+- Output files excluded from repro (smartie2076)
 
 ## [0.0.2] - 2019-11-25
 
