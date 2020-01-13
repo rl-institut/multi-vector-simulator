@@ -106,7 +106,7 @@ class plots:
         dfcapacities.plot.bar(
             x="items",
             y="capacities",
-            title="Optimal additional capacities: "
+            title="Optimal additional capacities (kW): "
             + project_data["project_name"]
             + ", "
             + project_data["scenario_name"],
@@ -123,41 +123,152 @@ class plots:
 
         return
 
-    def costs(user_input, project_data, names, annuity_costs):
-        # cost percentages are calculated
-        total = sum(annuity_costs.values)
-        annuity_costs_prec = {}
-        annuities = pd.DataFrame(data=annuity_costs.values, index=names.values)
-        annuities = annuities.to_dict()[0]
+    def costs(dict_values):
 
-        # only costs over 0 are selected
-        for asset in annuities:
-            if annuities[asset] > 0:
-                annuity_costs_prec.update({asset: annuities[asset] / total})
+        settings = dict_values["simulation_settings"]
+        project_data = dict_values["project_data"]
+
+        # Annuity costs plot (only plot if there are values with cost over 0)
+        label, path = "Annuities", "annuities_costs"
+        show_annuity_total = False
+        for element in dict_values["kpi"]["cost_matrix"]["annuity_total"].values:
+            if element > 0:
+                show_annuity_total = True
+        if show_annuity_total:
+            costs_total, total = plots.plot_costs(
+                settings,
+                project_data,
+                dict_values["kpi"]["cost_matrix"]["label"],
+                dict_values["kpi"]["cost_matrix"]["annuity_total"],
+                label,
+                path,
+            )
+
+            # if there is a dominant assets, another plot with the remaining assets is created
+            for asset in costs_total:
+                if costs_total[asset] > 0.9 and costs_total[asset] < 1:
+                    major = asset
+                    major_value = costs_total[asset]
+                    plots.plot_costs_rest(
+                        settings,
+                        project_data,
+                        major,
+                        major_value,
+                        costs_total,
+                        total,
+                        label,
+                        path,
+                    )
+
+        # First-investment costs plot (only plot if there are values with cost over 0)
+        label, path = "First-time investment", "first_time_investment_costs"
+        show_costs_investment = False
+        for element in dict_values["kpi"]["cost_matrix"]["costs_investment"].values:
+            if element > 0:
+                show_costs_investment = True
+        if show_costs_investment:
+            costs_total, total = plots.plot_costs(
+                settings,
+                project_data,
+                dict_values["kpi"]["cost_matrix"]["label"],
+                dict_values["kpi"]["cost_matrix"]["costs_investment"],
+                label,
+                path,
+            )
+
+            # if there is a dominant assets, another plot with the remaining assets is created
+            for asset in costs_total:
+                if costs_total[asset] > 0.9 and costs_total[asset] < 1:
+                    major = asset
+                    major_value = costs_total[asset]
+                    plots.plot_costs_rest(
+                        settings,
+                        project_data,
+                        major,
+                        major_value,
+                        costs_total,
+                        total,
+                        label,
+                        path,
+                    )
+
+        # O&M costs plot (only plot if there are values with cost over 0)
+        label, path = "Operation & Maintenance", "operation_and_maintenance_costs"
+        show_costs_om = False
+        for element in dict_values["kpi"]["cost_matrix"]["costs_om"].values:
+            if element > 0:
+                show_costs_om = True
+        if show_costs_om:
+            costs_total, total = plots.plot_costs(
+                settings,
+                project_data,
+                dict_values["kpi"]["cost_matrix"]["label"],
+                dict_values["kpi"]["cost_matrix"]["costs_om"],
+                label,
+                path,
+            )
+
+            # if there is a dominant assets, another plot with the remaining assets is created
+            for asset in costs_total:
+                if costs_total[asset] > 0.9 and costs_total[asset] < 1:
+                    major = asset
+                    major_value = costs_total[asset]
+                    plots.plot_costs_rest(
+                        settings,
+                        project_data,
+                        major,
+                        major_value,
+                        costs_total,
+                        total,
+                        label,
+                        path,
+                    )
+
+        return
+
+    # costs are plotted in %
+    def plot_costs(settings, project_data, names, costs, label, path):
+
+        costs = pd.DataFrame(data=costs.values, index=names.values)
+        costs = costs.to_dict()[0]
+
+        # only assets with costs over 0 are plotted
+        costs_prec = {}
+        for asset in costs:
+            if costs[asset] > 0:
+                costs_prec.update({asset: costs[asset]})
+
+        # % is calculated
+        total = sum(costs_prec.values())
+        costs_prec.update({n: costs_prec[n] / total for n in costs_prec.keys()})
 
         # those assets which do not reach 0,5% of total cost are included in 'others'
-        annuity_total = {"others": 0}
-        for asset in annuity_costs_prec:
-            print(annuity_costs_prec[asset])
-            if annuity_costs_prec[asset] > 0:
-                if annuity_costs_prec[asset] < 0.005:
-                    annuity_total["others"] += annuity_costs_prec[asset]
+        # if there are more than one consumption period, they are grouped in DSO_consumption
+        others = 0
+        DSO_consumption = 0
+        costs_total = {}
+        for asset in costs_prec:
+            if costs_prec[asset] > 0:
+                if "DSO_consumption" in asset:
+                    DSO_consumption += costs_prec[asset]
+                elif costs_prec[asset] < 0.005:
+                    others += costs_prec[asset]
                 else:
-                    annuity_total[asset] = annuity_costs_prec[asset]
+                    costs_total[asset] = costs_prec[asset]
 
-        # if one asset is clearly the most expensive, another pie chart is shown with the rest
-        for asset in annuity_total:
-            if annuity_total[asset] > 0.9:
-                major = asset
-                major_value = annuity_total[asset]
-                plots.costs_rest(
-                    user_input, project_data, major, major_value, annuity_total, total
-                )
+        if DSO_consumption > 0:
+            costs_total["DSO_consumption"] = DSO_consumption
+        if others > 0:
+            costs_total["others"] = others
 
-        annuity_total = pd.Series(annuity_total)
-        logging.info("Creating pie-chart for total annuity costs")
-        annuity_total.plot.pie(
-            title="Total annuity costs ("
+        # dict is saved to proceed with plotting the remaining assets if there is a dominant one (more than 90%)
+        costs_total_dict = costs_total
+
+        costs_total = pd.Series(costs_total)
+        logging.info("Creating pie-chart for total " + label)
+        costs_total.plot.pie(
+            title=label
+            + " costs ("
             + str(round(total, 2))
             + "$): "
             + project_data["project_name"]
@@ -168,27 +279,31 @@ class plots:
         )
 
         plt.savefig(
-            user_input["path_output_folder"] + "/total_annuity_costs.png",
-            bbox_inches="tight",
+            settings["path_output_folder"] + "/" + path + ".png", bbox_inches="tight",
         )
 
         plt.close()
         plt.clf()
         plt.cla()
 
-        return
+        return costs_total_dict, total
 
-    def costs_rest(user_input, project_data, major, major_value, annuity_total, total):
-        # the rest of costs are plotted
-        annuity_total_rest = annuity_total.copy()
-        del annuity_total_rest[major]
-        rest = sum(annuity_total_rest.values())
-        annuity_total_rest.update(
-            {n: annuity_total_rest[n] / rest for n in annuity_total_rest.keys()}
+    # the rest of costs are plotted if there is a dominant one (over 90%)
+    def plot_costs_rest(
+        settings, project_data, major, major_value, costs_total, total, label, path
+    ):
+
+        costs_total_rest = costs_total.copy()
+        del costs_total_rest[major]
+        rest = sum(costs_total_rest.values())
+        costs_total_rest.update(
+            {n: costs_total_rest[n] / rest for n in costs_total_rest.keys()}
         )
-        annuity_total_rest = pd.Series(annuity_total_rest)
-        annuity_total_rest.plot.pie(
-            title="Rest of total annuity costs ("
+        costs_total_rest = pd.Series(costs_total_rest)
+        costs_total_rest.plot.pie(
+            title="Rest of "
+            + label
+            + "("
             + str(round((1 - major_value) * 100))
             + "% of "
             + str(round(total, 2))
@@ -201,7 +316,7 @@ class plots:
         )
 
         plt.savefig(
-            user_input["path_output_folder"] + "/total_annuity_costs_rest.png",
+            settings["path_output_folder"] + "/" + path + "_rest.png",
             bbox_inches="tight",
         )
 

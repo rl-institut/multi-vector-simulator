@@ -69,21 +69,21 @@
         "Electricity (LES)": {
             "demand_01": {
                 "dsm": false,
-                "file_name": "demand_habor.csv",
+                "input": {"file_name": "demand_habor.csv","header": "kW","unit": "kW"},
                 "label": "Habor",
                 "type_asset": "demand",
                 "type_oemof": "sink"
             },
             "demand_02": {
                 "dsm": false,
-                "file_name": "demand_remaining.csv",
+                "input": {"file_name": "demand_remaining.csv","header": "kW","unit": "kW"},
                 "label": "Remaining demand",
                 "type_asset": "demand",
                 "type_oemof": "sink"
             },
             "demand_03": {
                 "dsm": false,
-                "file_name": "demand_shore_power.csv",
+                "input": {"file_name": "demand_shore_power.csv","header": "kW","unit": "kW"},
                 "label": "Shore power (docked ships)",
                 "type_asset": "demand",
                 "type_oemof": "sink"
@@ -253,7 +253,7 @@
                 "installedCap": {"value": 0, "unit": "kWp"},
                 "capex_fix": {"value": 100000, "unit": "currency"},
                 "capex_var": {"value": 7200, "unit": "currency/kWp"},
-                "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
+                "input": {"file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv","header": "kW","unit": "kW"},
                 "lifetime": {"value": 30, "unit": "year"},
                 "opex_fix": {"value": 80, "unit": "currency/kWp/year"},
                 "opex_var": {"value": 0, "unit": "currency/kWh"},

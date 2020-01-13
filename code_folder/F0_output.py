@@ -50,19 +50,21 @@ class output_processing:
 
         helpers.store_timeseries_all_busses_to_excel(dict_values)
 
-        # plot the capacities and the annuity costs
-        plots.capacities(
-            dict_values["simulation_settings"],
-            dict_values["project_data"],
-            dict_values["kpi"]["cost_matrix"]["label"],
-            dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
-        )
-        plots.costs(
-            dict_values["simulation_settings"],
-            dict_values["project_data"],
-            dict_values["kpi"]["cost_matrix"]["label"],
-            dict_values["kpi"]["cost_matrix"]["annuity_total"],
-        )
+        # plot optimal capacities if there are optimized assets
+        show_optimal_capacities = False
+        for element in dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"].values:
+            if element > 0:
+                show_optimal_capacities = True
+        if show_optimal_capacities:
+            plots.capacities(
+                dict_values["simulation_settings"],
+                dict_values["project_data"],
+                dict_values["kpi"]["cost_matrix"]["label"],
+                dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
+            )
+
+        # plot annuity, first-investment and om costs
+        plots.costs(dict_values)
 
         # Write everything to file with multipe tabs
         results_scalar_output_file = "/scalars" + ".xlsx"
