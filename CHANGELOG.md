@@ -17,7 +17,7 @@ Here is a template for new release sections
 -
 ```
 
-# [Developer version] - 2019-MM-DD
+# [Developer version] - 2019-01-13
 
 ### Added
 - LICENSE.md with GPL v2.0
@@ -28,6 +28,7 @@ Here is a template for new release sections
 - requirements.txt only includes packages needed for users of MVS
 - test_requirements.txt includes packages used by developers of MVS
 - CONTRIBUTING: Now with read the docs
+- README: Now with contextualization of MVS, setup & installation, utilization of and contributing to MVS
 
 ### Removed
 - Output files excluded from repro
