@@ -78,13 +78,13 @@ You can also follow the [steps](https://oemof.readthedocs.io/en/latest/installat
     
 ## Using the MVS
 
-Use the MVS by editing the json file (also possible by copy&paste in a new folder) and execute:
+To run the MVS with custom inputs, edit the json input file and run
 
     `python mvs_eland_tool.py path_input_file path_output_folder`
 
-With *path_input_file*: Path to folder including json 
+With `path_input_file`: path to json input file
 
-and *path_output_folder*: Path where simulation results should be stored
+and `path_output_folder`: path of the folder where simulation results should be stored
 
 ## Contributing
 
