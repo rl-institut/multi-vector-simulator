@@ -4,17 +4,53 @@ class economics:
     # and something with the replacement costs
 
     # annuity factor to calculate present value of cash flows
-    def annuity_factor(project_life, wacc):
+    def annuity_factor(self, project_life, wacc):
+        """
+
+        Parameters
+        ----------
+        project_life
+        wacc
+
+        Returns
+        -------
+
+        """
         # discount_rate was replaced here by wacc
         annuity_factor = 1 / wacc - 1 / (wacc * (1 + wacc) ** project_life)
         return annuity_factor
 
     # accounting factor to translate present value to annual cash flows
-    def crf(project_life, wacc):
+    def crf(self, project_life, wacc):
+        """
+
+        Parameters
+        ----------
+        project_life
+        wacc
+
+        Returns
+        -------
+
+        """
         crf = (wacc * (1 + wacc) ** project_life) / ((1 + wacc) ** project_life - 1)
         return crf
 
-    def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
+    def capex_from_investment(self, investment_t0, lifetime, project_life, wacc, tax):
+        """
+
+        Parameters
+        ----------
+        investment_t0
+        lifetime
+        project_life
+        wacc
+        tax
+
+        Returns
+        -------
+
+        """
         # [quantity, investment, installation, weight, lifetime, om, first_investment]
         if project_life == lifetime:
             number_of_investments = 1
@@ -46,15 +82,47 @@ class economics:
 
         return capex
 
-    def annuity(present_value, crf):
+    def annuity(self, present_value, crf):
+        """
+
+        Parameters
+        ----------
+        present_value
+        crf
+
+        Returns
+        -------
+
+        """
         annuity = present_value * crf
         return annuity
 
-    def present_value_from_annuity(annuity, annuity_factor):
+    def present_value_from_annuity(self, annuity, annuity_factor):
+        """
+
+        Parameters
+        ----------
+        annuity
+        annuity_factor
+
+        Returns
+        -------
+
+        """
         present_value = annuity * annuity_factor
         return present_value
 
-    def fuel_price_present_value(economics,):
+    def fuel_price_present_value(self, economics,):
+        """
+        
+        Parameters
+        ----------
+        economics
+
+        Returns
+        -------
+
+        """
         cash_flow_fuel_l = 0
         fuel_price_i = economics["fuel_price"]
         # todo check this calculation again!

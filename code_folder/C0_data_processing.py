@@ -15,7 +15,17 @@ from copy import deepcopy
 
 
 class data_processing:
-    def all(dict_values):
+    def all(self, dict_values):
+        """
+
+        Parameters
+        ----------
+        dict_values
+
+        Returns
+        -------
+
+        """
         data_processing.simulation_settings(dict_values["simulation_settings"])
 
         ## Verify inputs
@@ -29,7 +39,17 @@ class data_processing:
         output.store_as_json(dict_values, "json_input_processed")
         return
 
-    def simulation_settings(simulation_settings):
+    def simulation_settings(self, simulation_settings):
+        """
+
+        Parameters
+        ----------
+        simulation_settings
+
+        Returns
+        -------
+
+        """
         simulation_settings.update(
             {"start_date": pd.to_datetime(simulation_settings["start_date"])}
         )
@@ -55,7 +75,17 @@ class data_processing:
         simulation_settings.update({"periods": len(simulation_settings["time_index"])})
         return simulation_settings
 
-    def process_all_assets(dict_values):
+    def process_all_assets(self, dict_values):
+        """
+
+        Parameters
+        ----------
+        dict_values
+
+        Returns
+        -------
+
+        """
         # read timeseries with filename provided for technical parameters (efficiency and minimum and maximum storage level)
         for asset in dict_values["energyConversion"]:
             dict_asset = dict_values["energyConversion"][asset]
@@ -225,7 +255,18 @@ class data_processing:
 
 
 class helpers:
-    def define_missing_cost_data(dict_values, dict_asset):
+    def define_missing_cost_data(self, dict_values, dict_asset):
+        """
+
+        Parameters
+        ----------
+        dict_values
+        dict_asset
+
+        Returns
+        -------
+
+        """
 
         # read timeseries with filename provided for variable costs
         for parameter in ["capex_var", "opex_var"]:
@@ -262,7 +303,17 @@ class helpers:
             logging.debug("Added basic costs to asset %s: %s", dict_asset["label"], str)
         return
 
-    def define_busses(dict_values):
+    def define_busses(self, dict_values):
+        """
+
+        Parameters
+        ----------
+        dict_values
+
+        Returns
+        -------
+
+        """
         # create new group of assets: busses
         dict_values.update({"energyBusses": {}})
 
@@ -278,7 +329,19 @@ class helpers:
         )
         return
 
-    def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
+    def update_busses_in_out_direction(self, dict_values, asset_group, **kwargs):
+        """
+
+        Parameters
+        ----------
+        dict_values
+        asset_group
+        kwargs
+
+        Returns
+        -------
+
+        """
         # checks for all assets of an group
         for asset in asset_group:
             # the bus that is connected to the inflow
@@ -319,11 +382,34 @@ class helpers:
                     )
         return
 
-    def bus_suffix(bus):
+    def bus_suffix(self, bus):
+        """
+
+        Parameters
+        ----------
+        bus
+
+        Returns
+        -------
+
+        """
         bus_label = bus + " bus"
         return bus_label
 
-    def update_bus(dict_values, bus, asset, asset_label):
+    def update_bus(self, dict_values, bus, asset, asset_label):
+        """
+
+        Parameters
+        ----------
+        dict_values
+        bus
+        asset
+        asset_label
+
+        Returns
+        -------
+
+        """
         bus_label = helpers.bus_suffix(bus)
         if bus_label not in dict_values["energyBusses"]:
             # add bus to asset group energyBusses
@@ -334,7 +420,19 @@ class helpers:
         logging.debug("Added asset %s to bus %s", asset_label, bus_label)
         return
 
-    def define_dso_sinks_and_sources(dict_values, sector, dso):
+    def define_dso_sinks_and_sources(self, dict_values, sector, dso):
+        """
+
+        Parameters
+        ----------
+        dict_values
+        sector
+        dso
+
+        Returns
+        -------
+
+        """
         # define to shorten code
         number_of_pricing_periods = dict_values["energyProviders"][sector][dso][
             "peak_demand_pricing_period"
@@ -429,7 +527,22 @@ class helpers:
 
         return
 
-    def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwargs):
+    def define_source(self, dict_values, asset_name, price, output_bus, timeseries, **kwargs):
+        """
+
+        Parameters
+        ----------
+        dict_values
+        asset_name
+        price
+        output_bus
+        timeseries
+        kwargs
+
+        Returns
+        -------
+
+        """
         output_bus_name = helpers.bus_suffix(output_bus)
 
         source = {
@@ -502,7 +615,21 @@ class helpers:
         helpers.update_bus(dict_values, output_bus, asset_name, source["label"])
         return
 
-    def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
+    def define_sink(self, dict_values, asset_name, price, input_bus, **kwargs):
+        """
+
+        Parameters
+        ----------
+        dict_values
+        asset_name
+        price
+        input_bus
+        kwargs
+
+        Returns
+        -------
+
+        """
         input_bus_name = helpers.bus_suffix(input_bus)
         # create a dictionary for the sink
         sink = {
@@ -562,7 +689,19 @@ class helpers:
         helpers.update_bus(dict_values, input_bus, asset_name, sink["label"])
         return
 
-    def evaluate_lifetime_costs(settings, economic_data, dict_asset):
+    def evaluate_lifetime_costs(self, settings, economic_data, dict_asset):
+        """
+
+        Parameters
+        ----------
+        settings
+        economic_data
+        dict_asset
+
+        Returns
+        -------
+
+        """
         if "capex_var" not in dict_asset:
             dict_asset.update({"capex_var": 0})
         if "opex_fix" not in dict_asset:
@@ -656,7 +795,19 @@ class helpers:
 
     # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
     # so additional values like peak, total or average must be calculated. Any other type does not need this additional info.
-    def receive_timeseries_from_csv(settings, dict_asset, type):
+    def receive_timeseries_from_csv(self, settings, dict_asset, type):
+        """
+
+        Parameters
+        ----------
+        settings
+        dict_asset
+        type
+
+        Returns
+        -------
+
+        """
         file_name = dict_asset[type]["file_name"]
         header = dict_asset[type]["header"]
         unit = dict_asset[type]["unit"]

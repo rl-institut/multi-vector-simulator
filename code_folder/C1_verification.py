@@ -6,7 +6,18 @@ import pandas as pd
 
 
 class verify:
-    def lookup_file(file_path, name):
+    def lookup_file(self, file_path, name):
+        """
+
+        Parameters
+        ----------
+        file_path
+        name
+
+        Returns
+        -------
+
+        """
         if os.path.isfile(file_path) == False:
             logging.critical(
                 "Missing file! "
@@ -17,7 +28,17 @@ class verify:
             sys.exit()
         return
 
-    def check_input_values(dict_values):
+    def check_input_values(self, dict_values):
+        """
+
+        Parameters
+        ----------
+        dict_values
+
+        Returns
+        -------
+
+        """
         for asset_name in dict_values:
             if not (isinstance(dict_values[asset_name], dict)):
                 # checking first layer of dict_values
@@ -64,7 +85,19 @@ class verify:
         )
         return
 
-    def all_valid_intervals(name, value, title):
+    def all_valid_intervals(self, name, value, title):
+        """
+
+        Parameters
+        ----------
+        name
+        value
+        title
+
+        Returns
+        -------
+
+        """
         valid_type_string = [
             "project_name",
             "scenario_name",
