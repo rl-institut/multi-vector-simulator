@@ -22,7 +22,7 @@ copyright = "2019, Reiner Lemoine Institut and Martha M. Hoffmann"
 author = "Reiner Lemoine Institut and Martha M. Hoffmann"
 
 # The full version, including alpha/beta/rc tags
-release = "[0.0.2]"
+release = "0.0.2"
 
 
 # -- General configuration ---------------------------------------------------
