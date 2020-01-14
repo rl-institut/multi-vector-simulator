@@ -21,17 +21,19 @@ If you are interested to try out the code, please feel free to do so! In case th
 
 We are still working on including a readthedocs for the MVS. You will be able to find further information on this tool and code [HERE](https://readthedocs.org/projects/mvs-eland/).
 
-## Set-up and installation
+## Setup and installation
 
-To set-up the MVS, follow the steps below:
+To set up the MVS, follow the steps below:
 
 * If python3 is not pre-installed: Install miniconda (for python 3.7: https://docs.conda.io/en/latest/miniconda.html)
 
-* Download the [cbc-solver](https://projects.coin-or.org/Cbc) into your system from https://ampl.com/dl/open/cbc/ and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables  (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights)
+* Clone or download the latest [MVS release](https://github.com/smartie2076/mvs_eland/releases)
 
-* Download latest [MVS release](https://github.com/smartie2076/mvs_eland/releases)
+    `git clone https://github.com/smartie2076/mvs_eland.git`
 
-* Open Anaconda prompt (or other software as Pycharm) to create and activate environment:
+    and move to the `mvs_eland` folder
+
+* Open Anaconda prompt (or other software as Pycharm) to create and activate a virtual environment
 
     `conda create -n [your_env_name] python=3.5`
     `activate [your env_name]`
@@ -40,7 +42,8 @@ To set-up the MVS, follow the steps below:
 
     `pip install -r requirements.txt`
 
-* Check if requirements were installed with
+* Download the [cbc-solver](https://projects.coin-or.org/Cbc) into your system from https://ampl.com/dl/open/cbc/ and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables  (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights). 
+You can also follow the [steps](https://oemof.readthedocs.io/en/latest/installation_and_setup.html) from the oemof setup instructions
 
     `pip list`
     
