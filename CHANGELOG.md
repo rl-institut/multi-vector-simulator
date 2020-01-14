@@ -11,25 +11,26 @@ Here is a template for new release sections
 
 ### Added
 -
-### Changed
+### Changed 
 -
 ### Removed
 -
 ```
 
-## [Developer version] - 2020-01-10
+## [Developer version] - 2020-MM-DD
 
 ### Added
-- LICENSE.md with GPL v2.0  (@smartie2076)
-- folder "docs" and content to generate readthedocs (@smartie2076)
-- Started readthedocs homepage: https://readthedocs.org/projects/mvs-eland/  (@smartie2076)
+- LICENSE.md with GPL v2.0 (#38, smartie2076)
+- folder "docs" and content to generate readthedocs (#39, smartie2076)
+- Started readthedocs homepage (not working): https://readthedocs.org/projects/mvs-eland/ (#39, smartie2076, #57, Bachibouzouk)
 - new feature to create the input json file from a collection of csv files (@Piranias)
 - new module added: A1_csv_to_json.py (@Piranias)
 
 ### Changed
-- requirements.txt only includes packages needed for users of MVS  (@smartie2076)
-- test_requirements.txt includes packages used by developers of MVS (@smartie2076)
+- requirements.txt only includes packages needed for users of MVS (#39, smartie2076)
+- test_requirements.txt includes packages used by developers of MVS (#39, smartie2076)
 - CONTRIBUTING: Now with read the docs (@smartie2076)
+- README: Now with contextualization of MVS, setup & installation, utilization of and contributing to MVS (#47, smartie2076)
 - CHANGELOG.md (@Piranias, @smartie2076)
 - directory structure of input/ (@Piranias)
 
