@@ -8,11 +8,19 @@ import shutil
 
 
 class initializing:
-    def welcome(welcome_text, **kwargs):
+    def welcome(self, welcome_text, **kwargs):
         """
         Welcome message and initalization of logging on screen and on file level.
-        :param welcome_text: Welcome text defined in main function
-        :return: user input settings regarding screen output, input folder/file and output folder
+
+        Parameters
+        ----------
+        welcome_text:
+            Welcome text defined in main function
+        kwargs:
+
+        Returns
+        -------
+        user input settings regarding screen output, input folder/file and output folder
         """
         logging.debug("Get user inputs from console")
         user_input = initializing.get_user_input(**kwargs)
@@ -39,7 +47,7 @@ class initializing:
         logging.info(welcome_text)
         return user_input
 
-    def get_user_input(**kwargs):
+    def get_user_input(self, **kwargs):
         """
         Read user command from terminal inputs. Command:
 
@@ -141,10 +149,16 @@ class initializing:
         )
         return user_input
 
-    def check_input_directory(path_input_file):
+    def check_input_directory(self, path_input_file):
         """
-        :param path_input_file:
-        :return:
+
+        Parameters
+        ----------
+        path_input_file
+
+        Returns
+        -------
+
         """
         split = path_input_file.rsplit("/", 1)
         path_input_folder = split[0]
@@ -166,11 +180,17 @@ class initializing:
             sys.exit()
         return path_input_folder, name_input_file
 
-    def check_output_directory(path_output_folder, overwrite):
+    def check_output_directory(self, path_output_folder, overwrite):
         """
-        :param path_output_folder:
-        :param overwrite:
-        :return:
+
+        Parameters
+        ----------
+        path_output_folder
+        overwrite
+
+        Returns
+        -------
+
         """
         logging.debug("Checking for output folder")
         if os.path.isdir(path_output_folder) == True:
