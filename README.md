@@ -72,7 +72,7 @@ You can also follow the [steps](https://oemof.readthedocs.io/en/latest/installat
     
 * You can also run all existing tests by executing
 
-    `pip install -r tests/requirements.txt`
+    `pip install -r tests/test_requirements.txt`
     
     `pytest tests/tests.py`
     
