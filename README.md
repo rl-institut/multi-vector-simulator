@@ -8,7 +8,7 @@ Firstly, an analysis of the current energy system, which can be set up automatic
 The tool is being developed within the scope of the H2020 project E-LAND (Integrated multi-vector management system for Energy isLANDs, project homepage [HERE](https://elandh2020.eu/)). A graphical user interface for the MVS will be integrated.
 
 *Latest release*
-The latest release is [v.0.0.2](https://github.com/smartie2076/mvs_eland/releases), and includes the working code of the MVS using json as an input. It is not validated and test coverage is still 0%. Please check the CHANGELOG.md for [past](https://github.com/smartie2076/mvs_eland/blob/master/CONTRIBUTING.md) updates and changes.
+The latest release is [v.0.0.2](https://github.com/smartie2076/mvs_eland/releases), and includes the working code of the MVS using json as an input. It is not validated and test coverage is still 0%. Please check the [CHANGELOG.md](https://github.com/smartie2076/mvs_eland/blob/master/CHANGELOG.md) for past updates and changes.
 
 *Upcoming*
 As the MVS is still under development, many changes will still occur in the code as well as code structure. If you want to try the MVS, please make sure to check this project regularly. A new release is planned for end of January ([Issue](https://github.com/smartie2076/mvs_eland/issues/51), [Milestone](https://github.com/smartie2076/mvs_eland/milestone/1)). 
