@@ -33,6 +33,10 @@ To set up the MVS, follow the steps below:
 
     and move to the `mvs_eland` folder
 
+* Download the [cbc-solver](https://projects.coin-or.org/Cbc) into your system from https://ampl.com/dl/open/cbc/ and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables  (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights). 
+
+    You can also follow the [steps](https://oemof.readthedocs.io/en/latest/installation_and_setup.html) from the oemof setup instructions
+
 * Open Anaconda prompt (or other software as Pycharm) to create and activate a virtual environment
 
     `conda create -n [your_env_name] python=3.5`
@@ -41,9 +45,6 @@ To set up the MVS, follow the steps below:
 * Install required packages from requirements.txt file using pip
 
     `pip install -r requirements.txt`
-
-* Download the [cbc-solver](https://projects.coin-or.org/Cbc) into your system from https://ampl.com/dl/open/cbc/ and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables  (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights). 
-You can also follow the [steps](https://oemof.readthedocs.io/en/latest/installation_and_setup.html) from the oemof setup instructions
 
 * Test if that the cbc solver is properly installed by typing
 
