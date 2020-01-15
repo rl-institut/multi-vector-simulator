@@ -9,7 +9,8 @@ How to use:
 all default input csv"s are stored in "/mvs_eland/inputs/elements/default_csv".
 These csvs are not to be changed! All csvs that you need in order to set up 
 your energy system should be stored into "/mvs_eland/inputs/elements/csv". Here
-you can change parameters and add components. The given parameters need to be 
+In this directory you can change parameters and add components within the csv 
+files. 
 maintained. 
 Storage: The "energyStorage.csv" contains information about all storages. 
 For each storage there needs to be another file named exactly as the according 
