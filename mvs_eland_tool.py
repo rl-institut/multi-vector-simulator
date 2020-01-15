@@ -4,7 +4,7 @@ This is the main file of the tool "Multi-vector simulation tool".
 Tool structure:
 
 (parent)    mvs_eland_tool.py
-(child)     --A_initialization.py
+(child)     --A0_initialization.py
 
 (child)      --B0_data_input.py
 
@@ -33,8 +33,9 @@ import os
 # Loading all child functions
 try:
     # for tests
-    from .code_folder.A_initialization import initializing
-    from .code_folder.B0_data_input_json import data_input
+    from .code_folder.A0_initialization import initializing
+    from .code_folder.A1_csv_to_json import DataInputFromCsv
+#    from .code_folder.B0_data_input_json import data_input
     from .code_folder.C0_data_processing import data_processing
     from .code_folder.D0_modelling_and_optimization import modelling
     from .code_folder.E0_evaluation import evaluation
@@ -42,8 +43,9 @@ try:
 
 except ModuleNotFoundError:
     # for terminal execution
-    from code_folder.A_initialization import initializing
-    from code_folder.B0_data_input_json import data_input
+    from code_folder.A0_initialization import initializing
+    from code_folder.A1_csv_to_json import DataInputFromCsv
+#    from code_folder.B0_data_input_json import data_input
     from code_folder.C0_data_processing import data_processing
     from code_folder.D0_modelling_and_optimization import modelling
     from code_folder.E0_evaluation import evaluation
@@ -70,13 +72,17 @@ def main(**kwargs):
         + "\n Contributors: Martha M. Hoffmann \n \n "
     )
 
-    logging.debug("Accessing script: A_initialization")
+    logging.debug("Accessing script: A0_initialization")
     user_input = initializing.welcome(welcome_text, **kwargs)
 
     # Read all inputs
-    print("")
-    # todo: is user input completely used?
-    dict_values = data_input.get(user_input)
+#    print("")
+#    # todo: is user input completely used?
+#    dict_values = data_input.get(user_input)
+
+    logging.debug("Accessing script: A1_csv_to_json")
+    dict_values = DataInputFromCsv.create_input_json()
+
 
     print("")
     logging.debug("Accessing script: C0_data_processing")
