@@ -317,7 +317,6 @@ def create_json_from_csv(input_directory, filename, parameters):
         return single_dict
     elif "storage_" in filename:
         return single_dict
-
     else:
         single_dict2.update({filename: single_dict})
         return single_dict2
