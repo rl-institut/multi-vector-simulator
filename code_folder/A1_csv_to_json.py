@@ -56,7 +56,7 @@ def create_input_json(input_directory, output_filename, pass_back=False):
     one json file
 
     :param input_directory: str
-        name of the input directory where the csv"s can be found
+        path of the directory where the input csv files can be found
     :param output_filename: str
         name of the output file with ending
     :param pass_back: binary
