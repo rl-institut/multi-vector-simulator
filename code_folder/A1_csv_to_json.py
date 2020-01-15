@@ -58,7 +58,7 @@ def create_input_json(input_directory, output_filename, pass_back=False):
     :param input_directory: str
         path of the directory where the input csv files can be found
     :param output_filename: str
-        name of the output file with ending
+        path of the output file with file extension (it should be .json)
     :param pass_back: binary
         if pass_back=True: the final json dict is returned. Otherwise it is
         only saved
