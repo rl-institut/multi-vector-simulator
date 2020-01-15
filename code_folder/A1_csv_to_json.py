@@ -51,7 +51,7 @@ def infer_resources():
 def create_input_json(input_directory, output_filename, pass_back=False):
 
     """
-    reads all csv files in "mvs_eland/inputs/elements/csv", checks if all
+    reads all csv files in input_directory, checks if all
     required parameters for each csv file are available and saves them into
     one json file
 
