@@ -258,7 +258,7 @@ def create_json_from_csv(input_directory, filename, parameters):
 
 
     :param input_directory: str
-        directory name in which the csv files are stored in
+        path of the directory where the input csv files can be found
     :param filename: str
         name of the file that is transformed into a json, without ending
     :param parameters: list
