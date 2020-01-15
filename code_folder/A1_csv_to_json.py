@@ -45,8 +45,7 @@ class DataInputFromCsv:
             if pass_back=True: the final json dict is returned. Otherwise it is
             only saved
 
-        :return: None
-            saves
+        :return: None or dict
         """
         if input_directory == None:
             input_directory = os.path.join(
@@ -214,9 +213,7 @@ class DataInputFromCsv:
         with open(os.path.join(input_directory, output_filename), "w") as outfile:
             json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
         logging.info("Json file created successully from csv's and stored into"
-                     "/mvs_eland/inputs/%s" % output_filename + "\n"
-                    "Scenario includes %s" % len(list_assets) + " assets of "
-                    "type: %s" % list_assets)
+                     "/mvs_eland/inputs/%s" % output_filename + "\n")
         logging.debug("Json created successfully from csv.")
         if pass_back:
             return input_json
@@ -284,14 +281,19 @@ class DataInputFromCsv:
         # convert csv to json
         single_dict2 = {}
         single_dict = {}
+        asset_name_string = ""
         if len(df.columns) ==1:
             logging.debug(
                 "No %s" % filename + " assets are added because all "
                                      "columns of the csv file are empty.")
+
         for column in df:
             if column != "unit":
                 column_dict = {}
                 for i, row in df.iterrows():
+                    if i == 'label':
+                        asset_name_string = asset_name_string + row[column] + \
+                                            ', '
                     if row["unit"] == "str":
                         column_dict.update({i: row[column]})
                     else:
@@ -301,6 +303,9 @@ class DataInputFromCsv:
                 if filename == "energyStorage":
                     storage_dict = DataInputFromCsv.add_storage(column, input_directory)
                     single_dict[column].update(storage_dict)
+        logging.info(
+            'From file %s following assets are added to the energy '
+            'system: %s', filename, asset_name_string[:-2])
         # add exception for single dicts
         if filename in ["economic_data", "project", "project_data", "simulation_settings"]:
             return single_dict
