@@ -6,22 +6,24 @@ import logging
 
 """
 How to use:
-all default input csv"s are stored in "/mvs_eland/inputs/elements/default_csv".
+all default input csv"s are stored in "/mvs_eland/inputs/elements/default_csv"/
+the input directory.
 These csvs are not to be changed! All csvs that you need in order to set up 
-your energy system should be stored into "/mvs_eland/inputs/elements/csv". Here
-you can change parameters and add components. The given parameters need to be 
-maintained. 
+your energy system should be stored into "/mvs_eland/inputs/elements/csv"/
+the input directory. In this directory you can change parameters and add 
+components within the csv files. The given parameters need to be maintained. 
 Storage: The "energyStorage.csv" contains information about all storages. 
 For each storage there needs to be another file named exactly as the according 
 storage-column in "energyStorage.csv", usually this is "storage_01", 
 "storage_02" etc. Please stick to this convention.
 After all the function "infer_resources()" reads all csv that are stored in 
-the folder "/mvs_eland/inputs/elements/csv" and creates one json input file 
-for mvs
+the folder "/mvs_eland/inputs/elements/csv"/the input directory and creates one
+json input file for mvs
 """
 
 
-def infer_resources():
+def infer_resources(output_filename= "working_example2.json",
+                    input_directory=None, pass_back=False):
 
     """
     Method looks at all csv-files in "mvs_eland/inputs/elements/csv",
@@ -40,12 +42,12 @@ def infer_resources():
         the json file "working_example2.json" is saved
 
     """
-    input_directory = os.path.join(
+    if input_directory == None:
+        input_directory = os.path.join(
         Path(os.path.dirname(__file__)).parent, "inputs/elements/"
     )
-    output_filename = "working_example2.json"
 
-    create_input_json(input_directory, output_filename)
+    create_input_json(input_directory, output_filename, pass_back)
 
 
 def create_input_json(input_directory, output_filename, pass_back=False):
