@@ -247,7 +247,7 @@ def create_input_json(input_directory, output_filename, pass_back=False):
 def create_json_from_csv(input_directory, filename, parameters):
 
     """
-    One csv file is loaded and it"s parameters are checked. The csv file is
+    One csv file is loaded and it's parameters are checked. The csv file is
     then converted to a dictionary; the name of the csv file is used as the
     main key of the dictionary. Exceptions are made for the files
     ["economic_data", "project", "project_data", "simulation_settings"], here
