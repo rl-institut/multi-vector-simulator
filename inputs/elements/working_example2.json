@@ -1,4 +1,20 @@
 {
+    "economic_data": {
+        "currency": "NOK",
+        "discount_factor": {
+            "unit": "factor",
+            "value": "0.06"
+        },
+        "label": "economic_data",
+        "project_duration": {
+            "unit": "year",
+            "value": "30"
+        },
+        "tax": {
+            "unit": "factor",
+            "value": "0.0 "
+        }
+    },
     "energyConsumption": {
         "demand_01": {
             "dsm": "False",
