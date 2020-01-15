@@ -55,11 +55,18 @@ class DataInputFromCsv:
 
         logging.info(
             "loading and converting all csv's from %s" % input_directory +
-            " into one json"
+            "csv/ into one json"
         )
 
         input_json = {}
         # hardcoded required lists of parameters for the according csv file
+        maximum_files=['energyProduction', 'project', 'fixcost',
+                              'simulation_settings', 'project_data',
+                              'economic_data', 'energyConversion',
+                              'energyStorage', 'energyProviders']
+        required_files_list=['energyProduction', 'project', 'fixcost',
+                              'simulation_settings', 'project_data',
+                              'economic_data', 'energyProduction']
         parameterlist = {}
         parameterlist.update({'energyConsumption': ["dsm", "file_name", "label",
                                                      "type_asset", "type_oemof"]})
@@ -168,8 +175,7 @@ class DataInputFromCsv:
         for f in os.listdir(os.path.join(input_directory, "csv/")):
             filename = f[:-4]
             if filename in parameterlist.keys():
-                if filename!= "energyStorage":
-                    list_assets.append(str(filename))
+                list_assets.append(str(filename))
                 parameters = parameterlist[filename]
                 single_dict = DataInputFromCsv.create_json_from_csv(input_directory,
                                                    filename,
@@ -179,11 +185,30 @@ class DataInputFromCsv:
                 list_assets.append(str(f[:-4]))
                 pass
             else:
+                csv_default_directory = os.path.join(
+                    Path(os.path.dirname(__file__)).parent,
+                    "tests/default_csv/")
                 logging.error(
                     "The file %s" % f + " is not recognized as input file for mvs "
-                    "check /mvs_eland/inputs/elements/default_csv for correct "
+                    "check %s", csv_default_directory + "for correct "
                     "file names."
                 )
+        #check if all required files are available
+        extra = list(set(list_assets) ^ set(maximum_files))
+#        missing = list(set(list_assets) ^ set(required_files_list))
+        for i in extra:
+            if i in required_files_list:
+                logging.error(
+                    'Required input file %s' %i + " is missing! Please add it"
+                "into %s" %os.path.join(input_directory, "csv/") +".")
+            elif i in maximum_files:
+                logging.debug("No %s" %i +".csv file found. This is an "
+                                          "accepted option.")
+            elif "storage_" in i:
+                pass
+            else:
+                logging.debug("File %s" % i + ".csv is an unknown filename and"
+                              " will not be processed.")
 
 
         with open(os.path.join(input_directory, output_filename), "w") as outfile:
@@ -224,7 +249,8 @@ class DataInputFromCsv:
         logging.debug(
             "Loading input data from csv: %s", filename
         )
-        csv_default_directory=os.path.join(input_directory, "default_csv/")
+        csv_default_directory=os.path.join(
+            Path(os.path.dirname(__file__)).parent, "tests/default_csv/")
         df = pd.read_csv(
             os.path.join(input_directory, "csv/", "%s.csv" % filename),
             sep=",",
@@ -258,6 +284,10 @@ class DataInputFromCsv:
         # convert csv to json
         single_dict2 = {}
         single_dict = {}
+        if len(df.columns) ==1:
+            logging.debug(
+                "No %s" % filename + " assets are added because all "
+                                     "columns of the csv file are empty.")
         for column in df:
             if column != "unit":
                 column_dict = {}
