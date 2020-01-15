@@ -6,12 +6,15 @@ import logging
 
 """
 How to use:
-all default input csv"s are stored in "/mvs_eland/inputs/elements/default_csv"/
-the input directory.
+all default input csv"s are stored in "/mvs_eland/inputs/elements/default_csv"
+or the input directory/default_csv.
 These csvs are not to be changed! All csvs that you need in order to set up 
-your energy system should be stored into "/mvs_eland/inputs/elements/csv"/
-the input directory. In this directory you can change parameters and add 
+your energy system should be stored into "/mvs_eland/inputs/elements/csv" or
+the input directory/csv. In this directory you can change parameters and add 
 components within the csv files. The given parameters need to be maintained. 
+your energy system should be stored into "/mvs_eland/inputs/elements/csv" or
+the input directory/csv. In this directory you can change parameters and add 
+components within the csv files. The given parameters need to be maintained.
 Storage: The "energyStorage.csv" contains information about all storages. 
 For each storage there needs to be another file named exactly as the according 
 storage-column in "energyStorage.csv", usually this is "storage_01", 
