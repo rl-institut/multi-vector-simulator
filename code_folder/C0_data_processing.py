@@ -281,6 +281,7 @@ class helpers:
 
         # read timeseries with filename provided for variable costs.
         # if multiple opex_var or capex_var are given for multiple busses, it checks if any value is a timeseries
+        # this enables using electricity price timeseries
         for parameter in ["capex_var", "opex_var"]:
             if parameter in dict_asset:
                 if isinstance(dict_asset[parameter]["value"], dict):
