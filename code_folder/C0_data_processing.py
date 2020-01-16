@@ -65,7 +65,7 @@ class data_processing:
                 helpers.receive_timeseries_from_csv(
                     dict_values["simulation_settings"], dict_asset, "efficiency"
                 )
-            # in case there are more than one values provided (case n input busses and 1 output bus or 1 input bus and n output busses)
+            # in case there is more than one parameter provided (either (A) n input busses and 1 output bus or (B) 1 input bus and n output busses)
             # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
             elif isinstance(dict_asset["efficiency"]["value"], list):
                 updated_values = []
