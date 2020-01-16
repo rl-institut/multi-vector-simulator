@@ -89,7 +89,7 @@ class data_processing:
                 if len(values_info) > 0:
                     dict_asset["efficiency"].update({"values_info": values_info})
 
-        # same distinction of values provided with dictionaries (one input and one output) or list (multiple).
+        # same distinction of parameters provided with dictionaries (one input and one output) or list (multiple).
         # The can at turn be scalars, mantained, or timeseries
         for sector in dict_values["energyStorage"]:
             for asset in dict_values["energyStorage"][sector]:
