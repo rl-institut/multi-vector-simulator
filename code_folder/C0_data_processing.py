@@ -90,7 +90,7 @@ class data_processing:
                     dict_asset["efficiency"].update({"values_info": values_info})
 
         # same distinction of parameters provided with dictionaries (one input and one output) or list (multiple).
-        # The can at turn be scalars, mantained, or timeseries
+        # The can in turn be scalars, mantained, or timeseries
         for sector in dict_values["energyStorage"]:
             for asset in dict_values["energyStorage"][sector]:
                 for component in ["capacity", "charging_power", "discharging_power"]:
