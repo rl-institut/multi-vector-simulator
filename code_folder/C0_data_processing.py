@@ -60,7 +60,7 @@ class data_processing:
 
         for asset in dict_values["energyConversion"]:
             dict_asset = dict_values["energyConversion"][asset]
-            # in case there is one value provided (case one input bus and one output bus)
+            # in case there is only one parameter provided (input bus and one output bus)
             if isinstance(dict_asset["efficiency"]["value"], dict):
                 helpers.receive_timeseries_from_csv(
                     dict_values["simulation_settings"], dict_asset, "efficiency"
