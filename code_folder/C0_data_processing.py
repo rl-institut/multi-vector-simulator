@@ -68,6 +68,7 @@ class data_processing:
             # in case there is more than one parameter provided (either (A) n input busses and 1 output bus or (B) 1 input bus and n output busses)
             # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
             elif isinstance(dict_asset["efficiency"]["value"], list):
+                logging.debug('Asset %s has multiple input/output busses with a list of efficiencies. Reading list', dict_asset[label])
                 updated_values = []
                 values_info = (
                     []
