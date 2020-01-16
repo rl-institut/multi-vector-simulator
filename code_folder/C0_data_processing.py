@@ -690,7 +690,7 @@ class helpers:
             sink.update({"opex_fix": kwargs["opex_fix"], "optimizeCap": True})
         else:
             sink.update({"optimizeCap": False})
-
+    # If multiple input busses exist
         if isinstance(input_bus, list):
             for bus in input_bus:
                 if bus not in dict_values["energyConsumption"].keys():
