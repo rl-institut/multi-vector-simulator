@@ -11,7 +11,7 @@ Welcome to Multi-Vector Simulator (MVS)'s documentation!
    Overview
    Installation
    Developing
-
+   Code
 
 Indices and tables
 ==================
