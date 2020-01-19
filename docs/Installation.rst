@@ -1,5 +1,6 @@
-Installation of MVS
-===================
+========================
+Getting started with MVS
+========================
 
 
 Setup process for users
