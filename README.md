@@ -1,4 +1,6 @@
 # MVS - Multi-Vector Simulator of the E-Land toolbox
+
+[![Documentation Status](https://readthedocs.org/projects/mvs-eland/badge/?version=latest)](https://mvs-eland.readthedocs.io/en/latest/?badge=latest)
 Rights: [Reiner Lemoine Institut (Berlin)](https://reiner-lemoine-institut.de/)
 
 The multi-vector simulator (MVS) allows the evaluation of local sector-coupled energy systems that include the energy carriers electricity, heat and/or gas. The MVS has three main features:
