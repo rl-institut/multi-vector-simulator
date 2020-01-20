@@ -1,3 +1,7 @@
+==================
+Code documentation
+==================
+
 Initialization
 --------------
 

@@ -1,11 +1,10 @@
-Contributing to the MVS development
-===================================
-
-CONTRIBUTING.md
----------------
+===================
+Contributing to MVS
+===================
 
 Proposed workflow
 -----------------
+The workflow is described in the CONTRIBUTING.md file in the repository
 
 Build documentation
 -------------------

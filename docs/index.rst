@@ -3,6 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+========================================================
 Welcome to Multi-Vector Simulator (MVS)'s documentation!
 ========================================================
 
@@ -13,6 +14,7 @@ Welcome to Multi-Vector Simulator (MVS)'s documentation!
    Developing
    Code
 
+==================
 Indices and tables
 ==================
 
