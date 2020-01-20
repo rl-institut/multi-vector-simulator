@@ -284,7 +284,6 @@ class DataInputFromCsv:
         if pass_back:
             return input_json
 
-
     def create_json_from_csv(input_directory, filename, parameters):
 
         """
@@ -385,9 +384,13 @@ class DataInputFromCsv:
                 if filename == "energyStorage":
                     storage_dict = DataInputFromCsv.add_storage(column, input_directory)
                     single_dict[column].update(storage_dict)
+
         logging.info(
-            'From file %s following assets are added to the energy '
-            'system: %s', filename, asset_name_string[:-2])
+            "From file %s following assets are added to the energy " "system: %s",
+            filename,
+            asset_name_string[:-2],
+        )
+
         # add exception for single dicts
         if filename in [
             "economic_data",
@@ -400,7 +403,7 @@ class DataInputFromCsv:
         else:
             single_dict2.update({filename: single_dict})
             return single_dict2
-
+        return
 
     def add_storage(storage_filename, input_directory):
 
