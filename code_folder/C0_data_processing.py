@@ -16,6 +16,15 @@ from copy import deepcopy
 
 class data_processing:
     def all(dict_values):
+        """
+        Function executing all pre-processing steps necessary
+
+        :param: dict
+        All input data in dict format
+
+        :return: Pre-processed dictionary with all input parameters
+
+        """
         data_processing.simulation_settings(dict_values["simulation_settings"])
         data_processing.identify_energy_vectors(dict_values)
 
@@ -31,6 +40,16 @@ class data_processing:
         return
 
     def identify_energy_vectors(dict_values):
+        """
+        Identifies all energyVectors used in the energy system by checking every entry 'energyVector' of all assets.
+        energyVectors later will be used to distribute costs and KPI amongst the sectors (not implemented)
+
+        :param: dict
+        All input data in dict format
+
+        :return:
+        Update dict['project_data'] by used sectors
+        """
         dict_of_sectors = {}
         names_of_sectors = ""
         for level1 in dict_values.keys():
@@ -47,6 +66,14 @@ class data_processing:
         return
 
     def simulation_settings(simulation_settings):
+        """
+        Updates simulation settings by all time-related parameters.
+
+        :param: dict
+        Simulation parameters of the input data
+        :return: dict
+        Update simulation_settings by start date, end date, timeindex, and number of simulation periods
+        """
         simulation_settings.update(
             {"start_date": pd.to_datetime(simulation_settings["start_date"])}
         )
