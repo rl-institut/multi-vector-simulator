@@ -157,6 +157,9 @@ class DataInputFromCsv:
                 ]
             }
         )
+        parameterlist.update(
+            {
+                "fixcost": [
                     "age_installed",
                     "capex_fix",
                     "capex_var",
@@ -164,8 +167,12 @@ class DataInputFromCsv:
                     "lifetime",
                     "opex_fix",
                     "opex_var",
-                ]})
-        parameterlist.update({'simulation_settings': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "simulation_settings": [
                     "display_output",
                     "evaluated_period",
                     "input_file_name",
@@ -181,8 +188,12 @@ class DataInputFromCsv:
                     "start_date",
                     "store_oemof_results",
                     "timestep",
-                ]})
-        parameterlist.update({'project_data': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "project_data": [
                     "country",
                     "label",
                     "latitude",
@@ -192,8 +203,9 @@ class DataInputFromCsv:
                     "scenario_id",
                     "scenario_name",
                     "sectors",
-                ]})
-        parameterlist.update({'economic_data': [
+                ]
+            }
+        )
         parameterlist.update(
             {
                 "economic_data": [
