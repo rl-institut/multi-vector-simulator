@@ -309,11 +309,11 @@ class DataInputFromCsv:
             the converted dictionary
         """
 
-        logging.debug(
-            "Loading input data from csv: %s", filename
+        logging.debug("Loading input data from csv: %s", filename)
+        csv_default_directory = os.path.join(
+            Path(os.path.dirname(__file__)).parent, "tests/default_csv/"
         )
-        csv_default_directory=os.path.join(
-            Path(os.path.dirname(__file__)).parent, "tests/default_csv/")
+
         df = pd.read_csv(
             os.path.join(input_directory, "csv/", "%s.csv" % filename),
             sep=",",
@@ -331,8 +331,8 @@ class DataInputFromCsv:
                         + " the parameter "
                         + str(i)
                         + " is missing. "
-                        "check %s", csv_default_directory + "for correct "
-                        "parameter names."
+                        "check %s",
+                        csv_default_directory + "for correct " "parameter names.",
                     )
                 else:
                     logging.error(
@@ -340,26 +340,26 @@ class DataInputFromCsv:
                         + " the parameter "
                         + str(i)
                         + " is not recognized. \n"
-                        "check %s", csv_default_directory + "for correct "
-                        "parameter names."
+                        "check %s",
+                        csv_default_directory + "for correct " "parameter names.",
                     )
 
         # convert csv to json
         single_dict2 = {}
         single_dict = {}
         asset_name_string = ""
-        if len(df.columns) ==1:
+        if len(df.columns) == 1:
             logging.debug(
                 "No %s" % filename + " assets are added because all "
-                                     "columns of the csv file are empty.")
+                "columns of the csv file are empty."
+            )
 
         for column in df:
             if column != "unit":
                 column_dict = {}
                 for i, row in df.iterrows():
-                    if i == 'label':
-                        asset_name_string = asset_name_string + row[column] + \
-                                            ', '
+                    if i == "label":
+                        asset_name_string = asset_name_string + row[column] + ", "
                     if row["unit"] == "str":
                         column_dict.update({i: row[column]})
                     else:
