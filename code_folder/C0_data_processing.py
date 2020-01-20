@@ -68,7 +68,6 @@ class data_processing:
     def simulation_settings(simulation_settings):
         """
         Updates simulation settings by all time-related parameters.
-
         :param: dict
         Simulation parameters of the input data
         :return: dict
@@ -343,7 +342,6 @@ class helpers:
             dict_values["energyBusses"].update(
                 {helpers.bus_suffix(dict_values["project_data"]["sectors"][sector]): {}}
             )
-
         # defines busses accessed by conversion assets
         helpers.update_busses_in_out_direction(
             dict_values, dict_values["energyConversion"]
@@ -389,6 +387,7 @@ class helpers:
                     helpers.update_bus(
                         dict_values, bus, asset, asset_group[asset]["label"]
                     )
+
         return
 
     def bus_suffix(bus):
@@ -549,7 +548,7 @@ class helpers:
 
             source.update(
                 {
-                    "optimizeCap": True,
+                    "optimizeCap": {'value': True, 'unit': 'bool'},
                     "timeseries_peak": {"value": max(timeseries), "unit": "kW"},
                     # todo if we have normalized timeseries hiere, the capex/opex (simulation) have changed, too
                     "timeseries_normalized": timeseries / max(timeseries),
@@ -562,8 +561,6 @@ class helpers:
                 source["opex_var"]["value"],
             )
         else:
-            source.update({"optimizeCap": False})
-
             source.update({"optimizeCap": {'value': False, 'unit': 'bool'}})
 
         # update dictionary
@@ -615,11 +612,11 @@ class helpers:
             sink.update({"opex_var": {"value": value, "unit": price["unit"]}})
 
         if "capex_var" in kwargs:
-            sink.update({"capex_var": kwargs["capex_var"], "optimizeCap": True})
+            sink.update({"capex_var": kwargs["capex_var"], "optimizeCap": {'value': True, 'unit': 'bool'}})
         if "opex_fix" in kwargs:
-            sink.update({"opex_fix": kwargs["opex_fix"], "optimizeCap": True})
+            sink.update({"opex_fix": kwargs["opex_fix"], "optimizeCap": {'value': True, 'unit': 'bool'}})
         else:
-            sink.update({"optimizeCap": False})
+            sink.update({"optimizeCap": {'value': False, 'unit': 'bool'}})
         # update dictionary
         dict_values["energyConsumption"].update({asset_name: sink})
         # add to list of assets on busses
@@ -738,6 +735,7 @@ class helpers:
         data_set = pd.read_csv(file_path, sep=";")
         if 'file_name' in dict_asset:
             header = data_set.columns[0]
+
         if len(data_set.index) == settings["periods"]:
             if type == "input":
                 dict_asset.update(
@@ -813,7 +811,7 @@ class helpers:
                 }
             )
 
-            if dict_asset["optimizeCap"] == True:
+            if dict_asset["optimizeCap"]["value"] == True:
                 logging.debug("Normalizing timeseries of %s.", dict_asset["label"])
                 dict_asset.update(
                     {

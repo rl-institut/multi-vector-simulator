@@ -65,7 +65,7 @@ class helpers:
         :param kwargs: named dictionary with all component objects of the energy system
         :return: indirectly updated dictionary of all component objects (kwargs, initially dict_model)
         """
-        if dict_asset["optimizeCap"]['value']  == False:
+        if dict_asset["optimizeCap"]['value'] == False:
             func_constant(model, dict_asset, **kwargs)
             logging.debug(
                 "Defined asset %s as %s (fix capacity)",
