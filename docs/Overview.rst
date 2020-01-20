@@ -1,5 +1,6 @@
-Getting to know the Project
-===========================
+=================
+About the Project
+=================
 
 H2020 Project E-Land
 --------------------
