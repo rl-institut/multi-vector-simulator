@@ -89,7 +89,8 @@ class DataInputFromCsv:
                     "label",
                     "type_asset",
                     "type_oemof",
-                    "energyVector"
+                    "energyVector",
+                    "unit"
                 ]
             }
         )
@@ -109,7 +110,8 @@ class DataInputFromCsv:
                     "optimizeCap",
                     "outflow_direction",
                     "type_oemof",
-                    "energyVector"
+                    "energyVector",
+                    "unit"
                 ]
             }
         )

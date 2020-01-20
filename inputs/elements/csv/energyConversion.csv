@@ -13,3 +13,4 @@ optimizeCap,str,True,True,True,False,False,True
 outflow_direction,str,ESS Li-Ion,Electricity (LES),Electricity (LES),Electricity (LES),Electricity (DSO),Electricity (LES)
 energyVector,str,Electricity,Electricity,Electricity,Electricity,Electricity,Electricity
 type_oemof,str,transformer,transformer,transformer,transformer,transformer,transformer
+unit,str,kW,kW,kW,kVA,kVA,kW
