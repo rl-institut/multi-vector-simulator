@@ -225,6 +225,7 @@ class DataInputFromCsv:
                 logging.warning('File %s is a possible input for generating a json from csv"s, '
                                 'but list of parameters is not defined.', input_file)
 
+        # Read all csv files from path input directory/csv/
         list_assets = []
         for f in os.listdir(os.path.join(input_directory, "csv/")):
             filename = f[:-4]
@@ -248,6 +249,7 @@ class DataInputFromCsv:
                     "file names."
                 )
         #check if all required files are available
+        # check if all required files are available
         extra = list(set(list_assets) ^ set(maximum_files))
 #        missing = list(set(list_assets) ^ set(required_files_list))
         for i in extra:
@@ -265,6 +267,7 @@ class DataInputFromCsv:
                               " will not be processed.")
 
 
+        # store generated json file to file in input_directory. This json will be used in the simulation.
         with open(os.path.join(input_directory, output_filename), "w") as outfile:
             json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
         logging.info("Json file created successully from csv's and stored into"
