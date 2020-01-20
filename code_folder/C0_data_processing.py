@@ -721,13 +721,23 @@ class helpers:
     # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
     # so additional values like peak, total or average must be calculated. Any other type does not need this additional info.
     def receive_timeseries_from_csv(settings, dict_asset, type):
-        file_name = dict_asset[type]["file_name"]
-        header = dict_asset[type]["header"]
-        unit = dict_asset[type]["unit"]
+        #todo this input/file_name thing is a workaround and has to be improved in the future
+        # if only filename is given here, then only one column can be in the csv
+        if 'input' in dict_asset:
+            file_name = dict_asset[type]["file_name"]
+            header = dict_asset[type]["header"]
+            unit = dict_asset[type]["unit"]
+
+        elif 'file_name' in dict_asset:
+            file_name = dict_asset["file_name"]
+            unit = dict_asset["unit"] + '/h'
+
         file_path = settings["path_input_folder"] + file_name
         verify.lookup_file(file_path, dict_asset["label"])
 
         data_set = pd.read_csv(file_path, sep=";")
+        if 'file_name' in dict_asset:
+            header = data_set.columns[0]
         if len(data_set.index) == settings["periods"]:
             if type == "input":
                 dict_asset.update(
