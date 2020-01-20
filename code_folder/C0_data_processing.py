@@ -18,14 +18,14 @@ class data_processing:
     def all(dict_values):
         """
         Function executing all pre-processing steps necessary
-
-        :param: dict
+        :param dict_values
         All input data in dict format
 
-        :return: Pre-processed dictionary with all input parameters
+        :return Pre-processed dictionary with all input parameters
 
         """
         data_processing.simulation_settings(dict_values["simulation_settings"])
+        data_processing.economic_parameters(dict_values["economic_data"])
         data_processing.identify_energy_vectors(dict_values)
 
         ## Verify inputs
