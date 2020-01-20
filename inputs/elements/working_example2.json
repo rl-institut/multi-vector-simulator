@@ -20,25 +20,31 @@
             "dsm": "False",
             "energyVector": "Electricity",
             "file_name": "demand_habor.csv",
+            "inflow_direction": "Electricity",
             "label": "Habor",
             "type_asset": "demand",
-            "type_oemof": "sink"
+            "type_oemof": "sink",
+            "unit": "kW"
         },
         "demand_02": {
             "dsm": "False",
             "energyVector": "Electricity",
             "file_name": "demand_remaining.csv",
+            "inflow_direction": "Electricity",
             "label": "Remaining demand",
             "type_asset": "demand",
-            "type_oemof": "sink"
+            "type_oemof": "sink",
+            "unit": "kW"
         },
         "demand_03": {
             "dsm": "False",
             "energyVector": "Electricity",
             "file_name": "demand_shore_power.csv",
+            "inflow_direction": "Electricity",
             "label": "Shore power (docked ships)",
             "type_asset": "demand",
-            "type_oemof": "sink"
+            "type_oemof": "sink",
+            "unit": "kW"
         }
     },
     "energyConversion": {
@@ -78,9 +84,13 @@
                 "unit": "currency/kWh",
                 "value": 0
             },
-            "optimizeCap": "True",
-            "outflow_direction": "Electricity (LES)",
-            "type_oemof": "transformer"
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "outflow_direction": "Electricity",
+            "type_oemof": "transformer",
+            "unit": "kW"
         },
         "solar_inverter_01": {
             "age_installed": {
@@ -118,9 +128,13 @@
                 "unit": "currency/kWh",
                 "value": 0.0
             },
-            "optimizeCap": "True",
-            "outflow_direction": "Electricity (LES)",
-            "type_oemof": "transformer"
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "outflow_direction": "Electricity",
+            "type_oemof": "transformer",
+            "unit": "kW"
         },
         "storage_charge_controller_in": {
             "age_installed": {
@@ -140,7 +154,7 @@
                 "value": 1
             },
             "energyVector": "Electricity",
-            "inflow_direction": "Electricity (LES)",
+            "inflow_direction": "Electricity",
             "installedCap": {
                 "unit": "kW",
                 "value": 0.0
@@ -158,9 +172,13 @@
                 "unit": "currency/kWh",
                 "value": 0.0
             },
-            "optimizeCap": "True",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
             "outflow_direction": "ESS Li-Ion",
-            "type_oemof": "transformer"
+            "type_oemof": "transformer",
+            "unit": "kW"
         },
         "storage_charge_controller_out": {
             "age_installed": {
@@ -198,9 +216,13 @@
                 "unit": "currency/kWh",
                 "value": 0.0
             },
-            "optimizeCap": "True",
-            "outflow_direction": "Electricity (LES)",
-            "type_oemof": "transformer"
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "outflow_direction": "Electricity",
+            "type_oemof": "transformer",
+            "unit": "kW"
         },
         "transformer_station_in": {
             "age_installed": {
@@ -238,9 +260,13 @@
                 "unit": "currency/kWh",
                 "value": 0.0
             },
-            "optimizeCap": "False",
-            "outflow_direction": "Electricity (LES)",
-            "type_oemof": "transformer"
+            "optimizeCap": {
+                "unit": "bool",
+                "value": false
+            },
+            "outflow_direction": "Electricity",
+            "type_oemof": "transformer",
+            "unit": "kVA"
         },
         "transformer_station_out": {
             "age_installed": {
@@ -260,7 +286,7 @@
                 "value": 0.96
             },
             "energyVector": "Electricity",
-            "inflow_direction": "Electricity (LES)",
+            "inflow_direction": "Electricity",
             "installedCap": {
                 "unit": "kW",
                 "value": 1250
@@ -278,9 +304,13 @@
                 "unit": "currency/kWh",
                 "value": 0.0
             },
-            "optimizeCap": "False",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": false
+            },
             "outflow_direction": "Electricity (DSO)",
-            "type_oemof": "transformer"
+            "type_oemof": "transformer",
+            "unit": "kVA"
         }
     },
     "energyProduction": {
@@ -316,7 +346,10 @@
                 "unit": "currency/kWh",
                 "value": 0
             },
-            "optimizeCap": "True",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
             "outflow_direction": "PV plant (mono)",
             "type_oemof": "source",
             "unit": "kWp"
@@ -335,7 +368,10 @@
             },
             "inflow_direction": "Electricity (DSO)",
             "label": "Electricity grid DSO",
-            "optimizeCap": "True",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
             "outflow_direction": "Electricity (DSO)",
             "peak_demand_pricing": {
                 "unit": "currency/kW",
@@ -509,7 +545,10 @@
             "energyVector": "Electricity",
             "inflow_direction": "ESS Li-Ion",
             "label": "ESS Li-Ion",
-            "optimizeCap": "True",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
             "outflow_direction": "ESS Li-Ion",
             "storage_filename": "storage01.csv",
             "type_oemof": "storage"
