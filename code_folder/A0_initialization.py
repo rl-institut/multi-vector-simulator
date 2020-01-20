@@ -17,23 +17,23 @@ class initializing:
         logging.debug("Get user inputs from console")
         user_input = initializing.get_user_input(**kwargs)
 
-        # Define logging settings and path for saving log
+        # Set screen level (terminal output) according to user inputs
+        if user_input["display_output"] == "-debug":
+            screen_level=logging.DEBUG
+        elif user_input["display_output"] == "-info":
+            screen_level=logging.INFO
+        elif user_input["display_output"] == "-warning":
+            screen_level=logging.WARNING
+        elif user_input["display_output"] == "-error":
+            screen_level=logging.ERROR
 
+        # Define logging settings and path for saving log
         logger.define_logging(
             logpath=user_input["path_output_folder"],
             logfile="mvst_logfile.log",
             file_level=logging.DEBUG,
+            screen_level=screen_level
         )
-
-        # Set screen level (terminal output) according to user inputs
-        if user_input["display_output"] == "-debug":
-            logger.define_logging(screen_level=logging.DEBUG)
-        elif user_input["display_output"] == "-info":
-            logger.define_logging(screen_level=logging.INFO)
-        elif user_input["display_output"] == "-warning":
-            logger.define_logging(screen_level=logging.WARNING)
-        elif user_input["display_output"] == "-error":
-            logger.define_logging(screen_level=logging.ERROR)
 
         # display welcome text
         logging.info(welcome_text)
