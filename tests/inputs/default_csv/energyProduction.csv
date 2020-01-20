@@ -8,7 +8,8 @@ label,str,PV plant (mono)
 lifetime,year,30
 opex_fix,currency/unit/year,80
 opex_var,currency/kWh,0
-optimizeCap,str,True
+optimizeCap,bool,True
 outflow_direction,str,PV plant (mono)
 type_oemof,str,source
 unit,str,kWp
+energyVector,str,Electricity

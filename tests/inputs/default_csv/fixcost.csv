@@ -1,8 +1,8 @@
-,unit,distribution_grid
-age_installed,year,10
-capex_fix,currency,0.0
-capex_var,currency,0.0
-label,str,distribution grid infrastructure
-lifetime,year,30
-opex_fix,currency/year,0
-opex_var,currency/kWh,0
+,unit,distribution_grid,engineering,operation
+age_installed,year,10, 0, 0
+capex_fix,currency,0.0,0,0
+capex_var,currency,0.0,0,0
+label,str,distribution grid infrastructure,"R&D, engineering",Fix project operation
+lifetime,year,30,20,20
+opex_fix,currency/year,0,0,4600
+opex_var,currency/kWh,0,0,0

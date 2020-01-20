@@ -7,4 +7,3 @@ project_id,str,1
 project_name,str,Borg Havn
 scenario_id,str,1
 scenario_name,str,Warehouse 14
-sectors,str,{'electricity': 'Electricity (LES)'}
