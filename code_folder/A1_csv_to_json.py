@@ -142,15 +142,9 @@ class DataInputFromCsv:
                     "peak_demand_pricing",
                     "peak_demand_pricing_period",
                     "type_oemof",
-        parameterlist.update({'project': [
-                    "capex_fix",
-                    "capex_var",
-                    "label",
-                    "lifetime",
-                    "opex_fix",
-                    "opex_var",
-                ]})
-        parameterlist.update({'fixcost': [
+                ]
+            }
+        )
                     "age_installed",
                     "capex_fix",
                     "capex_var",
