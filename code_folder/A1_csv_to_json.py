@@ -26,9 +26,9 @@ json input file for mvs
 
 
 class DataInputFromCsv:
-    def create_input_json(input_directory=None,
-                          output_filename= "working_example2.json",
-                          pass_back=True):
+    def create_input_json(
+        input_directory=None, output_filename="working_example2.json", pass_back=True
+    ):
 
         """
         Method looks at all csv-files in "mvs_eland/inputs/elements/csv",
@@ -49,12 +49,12 @@ class DataInputFromCsv:
         """
         if input_directory == None:
             input_directory = os.path.join(
-            Path(os.path.dirname(__file__)).parent, "inputs/elements/"
-        )
+                Path(os.path.dirname(__file__)).parent, "inputs/elements/"
+            )
 
         logging.info(
-            "loading and converting all csv's from %s" % input_directory +
-            "csv/ into one json"
+            "loading and converting all csv's from %s" % input_directory
+            + "csv/ into one json"
         )
 
         input_json = {}
@@ -67,9 +67,22 @@ class DataInputFromCsv:
                               'simulation_settings', 'project_data',
                               'economic_data', 'energyProduction']
         parameterlist = {}
-        parameterlist.update({'energyConsumption': ["dsm", "file_name", "label",
-                                                     "type_asset", "type_oemof"]})
-        parameterlist.update({'energyConversion': [
+
+        # Hardcoded list of parameters for each of the csv files.
+        parameterlist.update(
+            {
+                "energyConsumption": [
+                    "dsm",
+                    "file_name",
+                    "label",
+                    "type_asset",
+                    "type_oemof",
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "energyConversion": [
                     "age_installed",
                     "capex_fix",
                     "capex_var",
@@ -83,16 +96,24 @@ class DataInputFromCsv:
                     "optimizeCap",
                     "outflow_direction",
                     "type_oemof",
-                ]})
-        parameterlist.update({'energyStorage': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "energyStorage": [
                     "inflow_direction",
                     "label",
                     "optimizeCap",
                     "outflow_direction",
                     "type_oemof",
                     "storage_filename",
-                ]})
-        parameterlist.update({'energyProduction': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "energyProduction": [
                     "age_installed",
                     "capex_fix",
                     "capex_var",
@@ -106,8 +127,12 @@ class DataInputFromCsv:
                     "outflow_direction",
                     "type_oemof",
                     "unit",
-                ]})
-        parameterlist.update({'energyProviders': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "energyProviders": [
                     "energy_price",
                     "feedin_tariff",
                     "inflow_direction",
@@ -117,7 +142,6 @@ class DataInputFromCsv:
                     "peak_demand_pricing",
                     "peak_demand_pricing_period",
                     "type_oemof",
-                ]})
         parameterlist.update({'project': [
                     "capex_fix",
                     "capex_var",
@@ -164,12 +188,18 @@ class DataInputFromCsv:
                     "sectors",
                 ]})
         parameterlist.update({'economic_data': [
+        parameterlist.update(
+            {
+                "economic_data": [
                     "currency",
                     "discount_factor",
                     "label",
                     "project_duration",
-                    "tax"
-                ]})
+                    "tax",
+                ]
+            }
+        )
+
         list_assets = []
         for f in os.listdir(os.path.join(input_directory, "csv/")):
             filename = f[:-4]
