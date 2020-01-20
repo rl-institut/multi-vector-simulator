@@ -123,30 +123,32 @@ class data_processing:
                                 parameter,
                             )
 
+    def economic_parameters(economic_parameters):
         # Calculate annuitiy factor
-        dict_values["economic_data"].update(
+        economic_parameters.update(
             {
                 "annuity_factor": {
                     "value": economics.annuity_factor(
-                        dict_values["economic_data"]["project_duration"]["value"],
-                        dict_values["economic_data"]["discount_factor"]["value"],
+                        economic_parameters["project_duration"]["value"],
+                        economic_parameters["discount_factor"]["value"],
                     ),
                     "unit": "?",
                 }
             }
         )
         # Calculate crf
-        dict_values["economic_data"].update(
+        economic_parameters.update(
             {
                 "crf": {
                     "value": economics.crf(
-                        dict_values["economic_data"]["project_duration"]["value"],
-                        dict_values["economic_data"]["discount_factor"]["value"],
+                        economic_parameters["project_duration"]["value"],
+                        economic_parameters["discount_factor"]["value"],
                     ),
                     "unit": "?",
                 }
             }
         )
+        return
 
         # defines dict_values['energyBusses'] for later reference
         helpers.define_busses(dict_values)
