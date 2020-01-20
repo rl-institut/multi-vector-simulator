@@ -389,7 +389,11 @@ class DataInputFromCsv:
             'From file %s following assets are added to the energy '
             'system: %s', filename, asset_name_string[:-2])
         # add exception for single dicts
-        if filename in ["economic_data", "project", "project_data", "simulation_settings"]:
+        if filename in [
+            "economic_data",
+            "project_data",
+            "simulation_settings",
+        ]:
             return single_dict
         elif "storage_" in filename:
             return single_dict
