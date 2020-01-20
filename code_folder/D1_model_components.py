@@ -386,7 +386,7 @@ class define_oemof_component:
         return
 
     def source_non_dispatchable_fix(model, dict_asset, **kwargs):
-        # check if the source has multiple output busses
+        # check if the source has multiple output flows
         if isinstance(dict_asset["output_bus_name"], list):
             outputs = {}
             index = 0
