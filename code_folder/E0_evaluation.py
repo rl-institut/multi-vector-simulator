@@ -65,8 +65,7 @@ class evaluation:
                     dict_values["energyStorage"][storage][
                         "label"
                     ]: outputlib.views.node(
-                        results_main,
-                        dict_values["energyStorage"][storage]["label"],
+                        results_main, dict_values["energyStorage"][storage]["label"],
                     )
                 }
             )
@@ -76,8 +75,7 @@ class evaluation:
                 dict_values["energyStorage"][storage],
             )
             economics.get_costs(
-                dict_values["energyStorage"][storage],
-                dict_values["economic_data"],
+                dict_values["energyStorage"][storage], dict_values["economic_data"],
             )
             helpers.store_result_matrix(
                 dict_values["kpi"], dict_values["energyStorage"][storage]

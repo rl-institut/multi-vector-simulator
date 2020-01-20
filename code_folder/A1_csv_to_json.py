@@ -90,7 +90,7 @@ class DataInputFromCsv:
                     "type_asset",
                     "type_oemof",
                     "energyVector",
-                    "unit"
+                    "unit",
                 ]
             }
         )
@@ -111,7 +111,7 @@ class DataInputFromCsv:
                     "outflow_direction",
                     "type_oemof",
                     "energyVector",
-                    "unit"
+                    "unit",
                 ]
             }
         )
@@ -124,7 +124,7 @@ class DataInputFromCsv:
                     "outflow_direction",
                     "type_oemof",
                     "storage_filename",
-                    "energyVector"
+                    "energyVector",
                 ]
             }
         )
@@ -144,7 +144,7 @@ class DataInputFromCsv:
                     "outflow_direction",
                     "type_oemof",
                     "unit",
-                    "energyVector"
+                    "energyVector",
                 ]
             }
         )
@@ -160,7 +160,7 @@ class DataInputFromCsv:
                     "peak_demand_pricing",
                     "peak_demand_pricing_period",
                     "type_oemof",
-                    "energyVector"
+                    "energyVector",
                 ]
             }
         )
@@ -377,8 +377,10 @@ class DataInputFromCsv:
                             elif value in ["False", "false", "F"]:
                                 value = False
                             else:
-                                logging.warning('Parameter %s of asset %s is not a boolean value '
-                                                '(True/T/true or False/F/false.')
+                                logging.warning(
+                                    "Parameter %s of asset %s is not a boolean value "
+                                    "(True/T/true or False/F/false."
+                                )
                         else:
                             if value == "None":
                                 value = None

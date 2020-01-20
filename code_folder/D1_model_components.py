@@ -65,7 +65,7 @@ class helpers:
         :param kwargs: named dictionary with all component objects of the energy system
         :return: indirectly updated dictionary of all component objects (kwargs, initially dict_model)
         """
-        if dict_asset["optimizeCap"]['value'] == False:
+        if dict_asset["optimizeCap"]["value"] == False:
             func_constant(model, dict_asset, **kwargs)
             logging.debug(
                 "Defined asset %s as %s (fix capacity)",
@@ -73,7 +73,7 @@ class helpers:
                 dict_asset["type_oemof"],
             )
 
-        elif dict_asset["optimizeCap"]['value'] == True:
+        elif dict_asset["optimizeCap"]["value"] == True:
             func_optimize(model, dict_asset, **kwargs)
             logging.debug(
                 "Defined asset %s as %s (to be optimized)",
@@ -83,7 +83,8 @@ class helpers:
         else:
             logging.warning(
                 "Input error! " '"optimizeCap" of asset %s not True/False, but %s.',
-                dict_asset["label"], dict_asset["optimizeCap"]['value']
+                dict_asset["label"],
+                dict_asset["optimizeCap"]["value"],
             )
         return
 

@@ -24,8 +24,7 @@ class output_processing:
 
             for asset in dict_values["energyConsumption"]:
                 total_demand = (
-                    total_demand
-                    + dict_values["energyConsumption"][asset]["flow"]
+                    total_demand + dict_values["energyConsumption"][asset]["flow"]
                 )
 
             # todo this should actually link to C0: helpers.bus_suffix

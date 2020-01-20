@@ -54,15 +54,22 @@ class data_processing:
         names_of_sectors = ""
         for level1 in dict_values.keys():
             for level2 in dict_values[level1].keys():
-                if isinstance(dict_values[level1][level2], dict) \
-                        and 'energyVector' in dict_values[level1][level2].keys():
-                    energy_vector_name = dict_values[level1][level2]['energyVector']
+                if (
+                    isinstance(dict_values[level1][level2], dict)
+                    and "energyVector" in dict_values[level1][level2].keys()
+                ):
+                    energy_vector_name = dict_values[level1][level2]["energyVector"]
                     if energy_vector_name not in dict_of_sectors.keys():
-                        dict_of_sectors.update({energy_vector_name: energy_vector_name.replace("_", " ")})
-                        names_of_sectors = names_of_sectors + energy_vector_name + ', '
+                        dict_of_sectors.update(
+                            {energy_vector_name: energy_vector_name.replace("_", " ")}
+                        )
+                        names_of_sectors = names_of_sectors + energy_vector_name + ", "
 
-        dict_values['project_data'].update({'sectors': dict_of_sectors})
-        logging.info('The energy system modelled includes following energy vectors / sectors: %s', names_of_sectors[:-2])
+        dict_values["project_data"].update({"sectors": dict_of_sectors})
+        logging.info(
+            "The energy system modelled includes following energy vectors / sectors: %s",
+            names_of_sectors[:-2],
+        )
         return
 
     def simulation_settings(simulation_settings):
@@ -150,34 +157,43 @@ class data_processing:
             "energyConversion",
             "energyStorage",
             "energyProduction",
-            "energyConsumption"]
+            "energyConsumption",
+        ]
 
         for asset_group in asset_group_list:
-            logging.info('Pre-processing all assets in asset group %s.', asset_group)
+            logging.info("Pre-processing all assets in asset group %s.", asset_group)
             if asset_group != "energyProviders":
                 # Populates dict_values['energyBusses'] with assets
                 helpers.update_busses_in_out_direction(
                     dict_values, dict_values[asset_group]
                 )
-            if asset_group == "energyConversion": process_asset_group.energyConversion(dict_values, asset_group)
-            elif asset_group == "energyProduction": process_asset_group.energyProduction(dict_values, asset_group)
-            elif asset_group == "energyStorage": process_asset_group.energyStorage(dict_values, asset_group)
-            elif asset_group == "energyProviders": process_asset_group.energyProviders(dict_values, asset_group)
-            elif asset_group == "energyConsumption": process_asset_group.energyConsumption(dict_values, asset_group)
-            else: logging.error('Coding error. Asset group list item %s not known.', asset_group)
-            logging.debug('Finished pre-processing all assets in asset group %s.', asset_group)
-
+            if asset_group == "energyConversion":
+                process_asset_group.energyConversion(dict_values, asset_group)
+            elif asset_group == "energyProduction":
+                process_asset_group.energyProduction(dict_values, asset_group)
+            elif asset_group == "energyStorage":
+                process_asset_group.energyStorage(dict_values, asset_group)
+            elif asset_group == "energyProviders":
+                process_asset_group.energyProviders(dict_values, asset_group)
+            elif asset_group == "energyConsumption":
+                process_asset_group.energyConsumption(dict_values, asset_group)
+            else:
+                logging.error(
+                    "Coding error. Asset group list item %s not known.", asset_group
+                )
+            logging.debug(
+                "Finished pre-processing all assets in asset group %s.", asset_group
+            )
 
         logging.info("Processed cost data and added economic values.")
         return
+
 
 class process_asset_group:
     def energyConversion(dict_values, group):
         # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity to each asset
         for asset in dict_values[group]:
-            helpers.define_missing_cost_data(
-                dict_values, dict_values[group][asset]
-            )
+            helpers.define_missing_cost_data(dict_values, dict_values[group][asset])
             helpers.evaluate_lifetime_costs(
                 dict_values["simulation_settings"],
                 dict_values["economic_data"],
@@ -187,15 +203,15 @@ class process_asset_group:
             # read timeseries with filename provided for technical parameters (efficiency and minimum and maximum storage level)
             if "file_name" in dict_values[group][asset]["efficiency"]:
                 helpers.receive_timeseries_from_csv(
-                    dict_values["simulation_settings"], dict_values[group][asset], "efficiency"
+                    dict_values["simulation_settings"],
+                    dict_values[group][asset],
+                    "efficiency",
                 )
         return
 
     def energyProduction(dict_values, group):
         for asset in dict_values[group]:
-            helpers.define_missing_cost_data(
-                dict_values, dict_values[group][asset]
-            )
+            helpers.define_missing_cost_data(dict_values, dict_values[group][asset])
             helpers.evaluate_lifetime_costs(
                 dict_values["simulation_settings"],
                 dict_values["economic_data"],
@@ -214,8 +230,7 @@ class process_asset_group:
         for asset in dict_values[group]:
             for subasset in ["capacity", "charging_power", "discharging_power"]:
                 helpers.define_missing_cost_data(
-                    dict_values,
-                    dict_values[group][asset][subasset],
+                    dict_values, dict_values[group][asset][subasset],
                 )
                 helpers.evaluate_lifetime_costs(
                     dict_values["simulation_settings"],
@@ -226,8 +241,9 @@ class process_asset_group:
                 # check if parameters are provided as timeseries
                 for parameter in ["efficiency", "soc_min", "soc_max"]:
                     if (
-                            parameter in dict_values[group][asset][subasset]
-                            and "file_name" in dict_values[group][asset][subasset][parameter]
+                        parameter in dict_values[group][asset][subasset]
+                        and "file_name"
+                        in dict_values[group][asset][subasset][parameter]
                     ):
                         helpers.receive_timeseries_from_csv(
                             dict_values["simulation_settings"],
@@ -239,18 +255,14 @@ class process_asset_group:
             dict_values[group][asset].update(
                 {
                     "input_bus_name": helpers.bus_suffix(
-                        dict_values[group][asset][
-                            "inflow_direction"
-                        ]
+                        dict_values[group][asset]["inflow_direction"]
                     )
                 }
             )
             dict_values[group][asset].update(
                 {
                     "output_bus_name": helpers.bus_suffix(
-                        dict_values[group][asset][
-                            "outflow_direction"
-                        ]
+                        dict_values[group][asset]["outflow_direction"]
                     )
                 }
             )
@@ -262,9 +274,7 @@ class process_asset_group:
             helpers.define_dso_sinks_and_sources(dict_values, asset)
 
             # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity to each asset
-            helpers.define_missing_cost_data(
-                dict_values, dict_values[group][asset]
-            )
+            helpers.define_missing_cost_data(dict_values, dict_values[group][asset])
             helpers.evaluate_lifetime_costs(
                 dict_values["simulation_settings"],
                 dict_values["economic_data"],
@@ -274,9 +284,7 @@ class process_asset_group:
 
     def energyConsumption(dict_values, group):
         for asset in dict_values[group]:
-            helpers.define_missing_cost_data(
-                dict_values, dict_values[group][asset]
-            )
+            helpers.define_missing_cost_data(dict_values, dict_values[group][asset])
             helpers.evaluate_lifetime_costs(
                 dict_values["simulation_settings"],
                 dict_values["economic_data"],
@@ -284,7 +292,11 @@ class process_asset_group:
             )
             if "input_bus_name" not in dict_values[group][asset]:
                 dict_values[group][asset].update(
-                    {"input_bus_name": helpers.bus_suffix(dict_values[group][asset]['energyVector'])}
+                    {
+                        "input_bus_name": helpers.bus_suffix(
+                            dict_values[group][asset]["energyVector"]
+                        )
+                    }
                 )
 
             if "input" in dict_values[group][asset]:
@@ -295,6 +307,7 @@ class process_asset_group:
                 )
 
         return
+
 
 class helpers:
     def define_missing_cost_data(dict_values, dict_asset):
@@ -309,7 +322,7 @@ class helpers:
         economic_data = dict_values["economic_data"]
 
         basic_costs = {
-            "optimizeCap": {'value': False, 'unit': 'bool'},
+            "optimizeCap": {"value": False, "unit": "bool"},
             "unit": "?",
             "installedCap": {"value": 0.0, "unit": "unit"},
             "capex_fix": {"value": 0, "unit": "currency"},
@@ -548,7 +561,7 @@ class helpers:
 
             source.update(
                 {
-                    "optimizeCap": {'value': True, 'unit': 'bool'},
+                    "optimizeCap": {"value": True, "unit": "bool"},
                     "timeseries_peak": {"value": max(timeseries), "unit": "kW"},
                     # todo if we have normalized timeseries hiere, the capex/opex (simulation) have changed, too
                     "timeseries_normalized": timeseries / max(timeseries),
@@ -561,7 +574,7 @@ class helpers:
                 source["opex_var"]["value"],
             )
         else:
-            source.update({"optimizeCap": {'value': False, 'unit': 'bool'}})
+            source.update({"optimizeCap": {"value": False, "unit": "bool"}})
 
         # update dictionary
         dict_values["energyProduction"].update({asset_name: source})
@@ -612,11 +625,21 @@ class helpers:
             sink.update({"opex_var": {"value": value, "unit": price["unit"]}})
 
         if "capex_var" in kwargs:
-            sink.update({"capex_var": kwargs["capex_var"], "optimizeCap": {'value': True, 'unit': 'bool'}})
+            sink.update(
+                {
+                    "capex_var": kwargs["capex_var"],
+                    "optimizeCap": {"value": True, "unit": "bool"},
+                }
+            )
         if "opex_fix" in kwargs:
-            sink.update({"opex_fix": kwargs["opex_fix"], "optimizeCap": {'value': True, 'unit': 'bool'}})
+            sink.update(
+                {
+                    "opex_fix": kwargs["opex_fix"],
+                    "optimizeCap": {"value": True, "unit": "bool"},
+                }
+            )
         else:
-            sink.update({"optimizeCap": {'value': False, 'unit': 'bool'}})
+            sink.update({"optimizeCap": {"value": False, "unit": "bool"}})
         # update dictionary
         dict_values["energyConsumption"].update({asset_name: sink})
         # add to list of assets on busses
@@ -718,22 +741,22 @@ class helpers:
     # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
     # so additional values like peak, total or average must be calculated. Any other type does not need this additional info.
     def receive_timeseries_from_csv(settings, dict_asset, type):
-        #todo this input/file_name thing is a workaround and has to be improved in the future
+        # todo this input/file_name thing is a workaround and has to be improved in the future
         # if only filename is given here, then only one column can be in the csv
-        if 'input' in dict_asset:
+        if "input" in dict_asset:
             file_name = dict_asset[type]["file_name"]
             header = dict_asset[type]["header"]
             unit = dict_asset[type]["unit"]
 
-        elif 'file_name' in dict_asset:
+        elif "file_name" in dict_asset:
             file_name = dict_asset["file_name"]
-            unit = dict_asset["unit"] + '/h'
+            unit = dict_asset["unit"] + "/h"
 
         file_path = settings["path_input_folder"] + file_name
         verify.lookup_file(file_path, dict_asset["label"])
 
         data_set = pd.read_csv(file_path, sep=";")
-        if 'file_name' in dict_asset:
+        if "file_name" in dict_asset:
             header = data_set.columns[0]
 
         if len(data_set.index) == settings["periods"]:

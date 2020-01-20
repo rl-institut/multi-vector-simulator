@@ -13,6 +13,7 @@ except ImportError:
         helpers,
     )
 
+
 class modelling:
     def run_oemof(dict_values):
         """
@@ -70,14 +71,11 @@ class modelling:
             else:
                 warning_asset_type(asset, type, "energyConversion")
 
-
         for asset in dict_values["energyConsumption"]:
             type = dict_values["energyConsumption"][asset]["type_oemof"]
             if type == "sink":
                 call_component.sink(
-                    model,
-                    dict_values["energyConsumption"][asset],
-                    **dict_model
+                    model, dict_values["energyConsumption"][asset], **dict_model
                 )
             else:
                 warning_asset_type(asset, type, "energyConsumption")
@@ -87,9 +85,7 @@ class modelling:
             type = dict_values["energyProduction"][asset]["type_oemof"]
             if type == "source":
                 call_component.source(
-                    model,
-                    dict_values["energyProduction"][asset],
-                    **dict_model
+                    model, dict_values["energyProduction"][asset], **dict_model
                 )
             else:
                 warning_asset_type(asset, type, "energyProduction")
@@ -105,10 +101,10 @@ class modelling:
 
         logging.debug("All components added.")
 
-        #import oemof.graph as grph
-        #my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
-        #from .F1_plotting import plots
-        #plots.draw_graph(model, node_color={})
+        # import oemof.graph as grph
+        # my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
+        # from .F1_plotting import plots
+        # plots.draw_graph(model, node_color={})
 
         logging.debug("Creating oemof model based on created components and busses...")
         local_energy_system = solph.Model(model)
@@ -122,7 +118,6 @@ class modelling:
         Minimal renewable share constraint
         """
         logging.debug("All constraints added.")
-
 
         if dict_values["simulation_settings"]["output_lp_file"] == True:
             logging.debug("Saving to lp-file.")
