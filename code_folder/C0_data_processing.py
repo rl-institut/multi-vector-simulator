@@ -620,14 +620,8 @@ class helpers:
             sink.update({"opex_fix": kwargs["opex_fix"], "optimizeCap": True})
         else:
             sink.update({"optimizeCap": False})
-
-        # create new input bus if non-existent before
-        if input_bus not in dict_values["energyConsumption"].keys():
-            dict_values["energyConsumption"].update({input_bus: {}})
-
         # update dictionary
-        dict_values["energyConsumption"][input_bus].update({asset_name: sink})
-
+        dict_values["energyConsumption"].update({asset_name: sink})
         # add to list of assets on busses
         helpers.update_bus(dict_values, input_bus, asset_name, sink["label"])
         return
