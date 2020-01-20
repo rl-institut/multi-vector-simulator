@@ -5,4 +5,5 @@ label,str,Habor,Remaining demand,Shore power (docked ships)
 type_asset,str,demand,demand,demand
 type_oemof,str,sink,sink,sink
 energyVector,str,Electricity,Electricity,Electricity
+inflow_direction,str,Electricity (LES),Electricity (LES),Electricity (LES)
 unit,str,kW,kW,kW

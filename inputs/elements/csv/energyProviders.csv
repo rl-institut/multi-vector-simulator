@@ -3,7 +3,7 @@ energy_price,currency/kWh,0.54
 feedin_tariff,currency/kWh,0.4
 inflow_direction,str,Electricity (DSO)
 label,str,Electricity grid DSO
-optimizeCap,str,True
+optimizeCap,bool,True
 outflow_direction,str,Electricity (DSO)
 peak_demand_pricing,currency/kW,60
 peak_demand_pricing_period,"times per year (1,2,3,4,6,12)",12

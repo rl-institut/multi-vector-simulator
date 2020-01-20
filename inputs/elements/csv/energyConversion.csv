@@ -9,7 +9,7 @@ label,str,Charge Contoller ESS Li-Ion (charge),Charge Contoller ESS Li-Ion (disc
 lifetime,year,10,10,15,30,30,15
 opex_fix,currency/kW/year,0.0,0.0,0.0,0.0,0.0,5
 opex_var,currency/kWh,0.0,0.0,0.0,0.0,0.0,0
-optimizeCap,str,True,True,True,False,False,True
+optimizeCap,bool,True,True,True,False,False,True
 outflow_direction,str,ESS Li-Ion,Electricity (LES),Electricity (LES),Electricity (LES),Electricity (DSO),Electricity (LES)
 energyVector,str,Electricity,Electricity,Electricity,Electricity,Electricity,Electricity
 type_oemof,str,transformer,transformer,transformer,transformer,transformer,transformer

@@ -365,23 +365,28 @@ class DataInputFromCsv:
                 for i, row in df.iterrows():
                     if i == "label":
                         asset_name_string = asset_name_string + row[column] + ", "
+
+                    # Find type of input value (csv file is read into df as an object)
                     if row["unit"] == "str":
                         column_dict.update({i: row[column]})
                     else:
                         value = row[column]
-
-                        # Find type of input value (csv file is read into df as an object)
-                        if value == "None":
-                            value = None
-                        elif value == "True":
-                            value = True
-                        elif value == "False":
-                            value = False
+                        if row["unit"] == "bool":
+                            if value in ["True", "true", "t"]:
+                                value = True
+                            elif value in ["False", "false", "F"]:
+                                value = False
+                            else:
+                                logging.warning('Parameter %s of asset %s is not a boolean value '
+                                                '(True/T/true or False/F/false.')
                         else:
-                            try:
-                                value = int(value)
-                            except:
-                                value = float(value)
+                            if value == "None":
+                                value = None
+                            else:
+                                try:
+                                    value = int(value)
+                                except:
+                                    value = float(value)
 
                         column_dict.update({i: {"value": value, "unit": row["unit"]}})
 
