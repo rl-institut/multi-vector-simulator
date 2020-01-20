@@ -363,7 +363,23 @@ class DataInputFromCsv:
                     if row["unit"] == "str":
                         column_dict.update({i: row[column]})
                     else:
-                        column_dict.update({i: {"value": row[column], "unit": row["unit"]}})
+                        value = row[column]
+
+                        # Find type of input value (csv file is read into df as an object)
+                        if value == "None":
+                            value = None
+                        elif value == "True":
+                            value = True
+                        elif value == "False":
+                            value = False
+                        else:
+                            try:
+                                value = int(value)
+                            except:
+                                value = float(value)
+
+                        column_dict.update({i: {"value": value, "unit": row["unit"]}})
+
                 single_dict.update({column: column_dict})
                 # add exception for energyStorage
                 if filename == "energyStorage":
