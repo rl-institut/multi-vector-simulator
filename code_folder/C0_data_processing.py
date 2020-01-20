@@ -17,6 +17,7 @@ from copy import deepcopy
 class data_processing:
     def all(dict_values):
         data_processing.simulation_settings(dict_values["simulation_settings"])
+        data_processing.identify_energy_vectors(dict_values)
 
         ## Verify inputs
         # todo check whether input values can be true
@@ -27,6 +28,22 @@ class data_processing:
         data_processing.process_all_assets(dict_values)
 
         output.store_as_json(dict_values, "json_input_processed")
+        return
+
+    def identify_energy_vectors(dict_values):
+        dict_of_sectors = {}
+        names_of_sectors = ""
+        for level1 in dict_values.keys():
+            for level2 in dict_values[level1].keys():
+                if isinstance(dict_values[level1][level2], dict) \
+                        and 'energyVector' in dict_values[level1][level2].keys():
+                    energy_vector_name = dict_values[level1][level2]['energyVector']
+                    if energy_vector_name not in dict_of_sectors.keys():
+                        dict_of_sectors.update({energy_vector_name: energy_vector_name.replace("_", " ")})
+                        names_of_sectors = names_of_sectors + energy_vector_name + ', '
+
+        dict_values['project_data'].update({'sectors': dict_of_sectors})
+        logging.info('The energy system modelled includes following energy vectors / sectors: %s', names_of_sectors[:-2])
         return
 
     def simulation_settings(simulation_settings):

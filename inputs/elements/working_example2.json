@@ -18,6 +18,7 @@
     "energyConsumption": {
         "demand_01": {
             "dsm": "False",
+            "energyVector": "Electricity",
             "file_name": "demand_habor.csv",
             "label": "Habor",
             "type_asset": "demand",
@@ -25,6 +26,7 @@
         },
         "demand_02": {
             "dsm": "False",
+            "energyVector": "Electricity",
             "file_name": "demand_remaining.csv",
             "label": "Remaining demand",
             "type_asset": "demand",
@@ -32,6 +34,7 @@
         },
         "demand_03": {
             "dsm": "False",
+            "energyVector": "Electricity",
             "file_name": "demand_shore_power.csv",
             "label": "Shore power (docked ships)",
             "type_asset": "demand",
@@ -56,6 +59,7 @@
                 "unit": "factor",
                 "value": 0.33
             },
+            "energyVector": "Electricity",
             "inflow_direction": "Fuel",
             "installedCap": {
                 "unit": "kW",
@@ -95,6 +99,7 @@
                 "unit": "factor",
                 "value": 1.0
             },
+            "energyVector": "Electricity",
             "inflow_direction": "PV plant (mono)",
             "installedCap": {
                 "unit": "kW",
@@ -134,6 +139,7 @@
                 "unit": "factor",
                 "value": 1
             },
+            "energyVector": "Electricity",
             "inflow_direction": "Electricity (LES)",
             "installedCap": {
                 "unit": "kW",
@@ -173,6 +179,7 @@
                 "unit": "factor",
                 "value": 1
             },
+            "energyVector": "Electricity",
             "inflow_direction": "ESS Li-Ion",
             "installedCap": {
                 "unit": "kW",
@@ -212,6 +219,7 @@
                 "unit": "factor",
                 "value": 0.96
             },
+            "energyVector": "Electricity",
             "inflow_direction": "Electricity (DSO)",
             "installedCap": {
                 "unit": "kW",
@@ -251,6 +259,7 @@
                 "unit": "factor",
                 "value": 0.96
             },
+            "energyVector": "Electricity",
             "inflow_direction": "Electricity (LES)",
             "installedCap": {
                 "unit": "kW",
@@ -288,6 +297,7 @@
                 "unit": "currency/unit",
                 "value": 7200
             },
+            "energyVector": "Electricity",
             "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
             "installedCap": {
                 "unit": "kWp",
@@ -314,6 +324,7 @@
     },
     "energyProviders": {
         "DSO": {
+            "energyVector": "Electricity",
             "energy_price": {
                 "unit": "currency/kWh",
                 "value": 0.54
@@ -495,6 +506,7 @@
                 },
                 "unit": "kW"
             },
+            "energyVector": "Electricity",
             "inflow_direction": "ESS Li-Ion",
             "label": "ESS Li-Ion",
             "optimizeCap": "True",
@@ -594,8 +606,7 @@
         "project_id": "1",
         "project_name": "Borg Havn",
         "scenario_id": "1",
-        "scenario_name": "Warehouse 14",
-        "sectors": "{'electricity': 'Electricity (LES)'}"
+        "scenario_name": "Warehouse 14"
     },
     "simulation_settings": {
         "display_output": "-debug",

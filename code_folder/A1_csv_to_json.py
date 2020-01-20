@@ -89,6 +89,7 @@ class DataInputFromCsv:
                     "label",
                     "type_asset",
                     "type_oemof",
+                    "energyVector"
                 ]
             }
         )
@@ -108,6 +109,7 @@ class DataInputFromCsv:
                     "optimizeCap",
                     "outflow_direction",
                     "type_oemof",
+                    "energyVector"
                 ]
             }
         )
@@ -120,6 +122,7 @@ class DataInputFromCsv:
                     "outflow_direction",
                     "type_oemof",
                     "storage_filename",
+                    "energyVector"
                 ]
             }
         )
@@ -139,6 +142,7 @@ class DataInputFromCsv:
                     "outflow_direction",
                     "type_oemof",
                     "unit",
+                    "energyVector"
                 ]
             }
         )
@@ -154,6 +158,7 @@ class DataInputFromCsv:
                     "peak_demand_pricing",
                     "peak_demand_pricing_period",
                     "type_oemof",
+                    "energyVector"
                 ]
             }
         )
@@ -202,7 +207,6 @@ class DataInputFromCsv:
                     "project_name",
                     "scenario_id",
                     "scenario_name",
-                    "sectors",
                 ]
             }
         )
