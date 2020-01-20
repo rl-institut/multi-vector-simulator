@@ -218,6 +218,13 @@ class DataInputFromCsv:
             }
         )
 
+        # test if all input files in maximum file are mentioned in parameterlist:
+        # todo translate to pytest
+        for input_file in maximum_files:
+            if input_file not in parameterlist.keys():
+                logging.warning('File %s is a possible input for generating a json from csv"s, '
+                                'but list of parameters is not defined.', input_file)
+
         list_assets = []
         for f in os.listdir(os.path.join(input_directory, "csv/")):
             filename = f[:-4]
