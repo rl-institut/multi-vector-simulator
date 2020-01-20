@@ -232,7 +232,7 @@ class define_oemof_component:
         -------
 
         """
-        # check if the transformer has multiple input or multiple outpus busses
+        # check if the transformer has multiple input or multiple output flows
         # the investment object is always in the output buss
         if isinstance(dict_asset["input_bus_name"], list):
             inputs = {}
