@@ -68,7 +68,7 @@ class DataInputFromCsv:
             "energyProduction",
             "energyStorage",
             "energyProviders",
-            "energyConsumption"
+            "energyConsumption",
         ]
 
         # hardcorded list of necessary csv files
@@ -222,8 +222,11 @@ class DataInputFromCsv:
         # todo translate to pytest
         for input_file in maximum_files:
             if input_file not in parameterlist.keys():
-                logging.warning('File %s is a possible input for generating a json from csv"s, '
-                                'but list of parameters is not defined.', input_file)
+                logging.warning(
+                    'File %s is a possible input for generating a json from csv"s, '
+                    "but list of parameters is not defined.",
+                    input_file,
+                )
 
         # Read all csv files from path input directory/csv/
         list_assets = []
@@ -232,46 +235,51 @@ class DataInputFromCsv:
             if filename in parameterlist.keys():
                 list_assets.append(str(filename))
                 parameters = parameterlist[filename]
-                single_dict = DataInputFromCsv.create_json_from_csv(input_directory,
-                                                   filename,
-                                                   parameters=parameters)
+                single_dict = DataInputFromCsv.create_json_from_csv(
+                    input_directory, filename, parameters=parameters
+                )
                 input_json.update(single_dict)
             elif "storage_" in f:
                 list_assets.append(str(f[:-4]))
                 pass
             else:
                 csv_default_directory = os.path.join(
-                    Path(os.path.dirname(__file__)).parent,
-                    "tests/default_csv/")
+                    Path(os.path.dirname(__file__)).parent, "tests/default_csv/"
+                )
                 logging.error(
                     "The file %s" % f + " is not recognized as input file for mvs "
-                    "check %s", csv_default_directory + "for correct "
-                    "file names."
+                    "check %s",
+                    csv_default_directory + "for correct " "file names.",
                 )
-        #check if all required files are available
+
         # check if all required files are available
         extra = list(set(list_assets) ^ set(maximum_files))
-#        missing = list(set(list_assets) ^ set(required_files_list))
+        #        missing = list(set(list_assets) ^ set(required_files_list))
         for i in extra:
             if i in required_files_list:
                 logging.error(
-                    'Required input file %s' %i + " is missing! Please add it"
-                "into %s" %os.path.join(input_directory, "csv/") +".")
+                    "Required input file %s" % i + " is missing! Please add it"
+                    "into %s" % os.path.join(input_directory, "csv/") + "."
+                )
             elif i in maximum_files:
-                logging.debug("No %s" %i +".csv file found. This is an "
-                                          "accepted option.")
+                logging.debug(
+                    "No %s" % i + ".csv file found. This is an " "accepted option."
+                )
             elif "storage_" in i:
                 pass
             else:
-                logging.debug("File %s" % i + ".csv is an unknown filename and"
-                              " will not be processed.")
-
+                logging.debug(
+                    "File %s" % i + ".csv is an unknown filename and"
+                    " will not be processed."
+                )
 
         # store generated json file to file in input_directory. This json will be used in the simulation.
         with open(os.path.join(input_directory, output_filename), "w") as outfile:
             json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
-        logging.info("Json file created successully from csv's and stored into"
-                     "/mvs_eland/inputs/%s" % output_filename + "\n")
+        logging.info(
+            "Json file created successully from csv's and stored into"
+            "/mvs_eland/inputs/%s" % output_filename + "\n"
+        )
         logging.debug("Json created successfully from csv.")
         if pass_back:
             return input_json
