@@ -58,14 +58,26 @@ class DataInputFromCsv:
         )
 
         input_json = {}
-        # hardcoded required lists of parameters for the according csv file
-        maximum_files=['energyProduction', 'project', 'fixcost',
-                              'simulation_settings', 'project_data',
-                              'economic_data', 'energyConversion',
-                              'energyStorage', 'energyProviders']
-        required_files_list=['energyProduction', 'project', 'fixcost',
-                              'simulation_settings', 'project_data',
-                              'economic_data', 'energyProduction']
+        # hardcoded required lists of parameters for the creation of json files according csv file
+        maximum_files = [
+            "fixcost",
+            "simulation_settings",
+            "project_data",
+            "economic_data",
+            "energyConversion",
+            "energyProduction",
+            "energyStorage",
+            "energyProviders",
+            "energyConsumption"
+        ]
+
+        # hardcorded list of necessary csv files
+        required_files_list = [
+            "energyConsumption",
+            "simulation_settings",
+            "project_data",
+            "economic_data",
+        ]
         parameterlist = {}
 
         # Hardcoded list of parameters for each of the csv files.
