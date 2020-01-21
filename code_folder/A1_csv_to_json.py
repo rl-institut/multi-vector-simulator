@@ -26,9 +26,9 @@ json input file for mvs
 
 
 class DataInputFromCsv:
-    def create_input_json(input_directory=None,
-                          output_filename= "working_example2.json",
-                          pass_back=True):
+    def create_input_json(
+        input_directory=None, output_filename="working_example2.json", pass_back=True
+    ):
 
         """
         Method looks at all csv-files in "mvs_eland/inputs/elements/csv",
@@ -49,27 +49,52 @@ class DataInputFromCsv:
         """
         if input_directory == None:
             input_directory = os.path.join(
-            Path(os.path.dirname(__file__)).parent, "inputs/elements/"
-        )
+                Path(os.path.dirname(__file__)).parent, "inputs/elements/"
+            )
 
         logging.info(
-            "loading and converting all csv's from %s" % input_directory +
-            "csv/ into one json"
+            "loading and converting all csv's from %s" % input_directory
+            + "csv/ into one json"
         )
 
         input_json = {}
-        # hardcoded required lists of parameters for the according csv file
-        maximum_files=['energyProduction', 'project', 'fixcost',
-                              'simulation_settings', 'project_data',
-                              'economic_data', 'energyConversion',
-                              'energyStorage', 'energyProviders']
-        required_files_list=['energyProduction', 'project', 'fixcost',
-                              'simulation_settings', 'project_data',
-                              'economic_data', 'energyProduction']
+        # hardcoded required lists of parameters for the creation of json files according csv file
+        maximum_files = [
+            "fixcost",
+            "simulation_settings",
+            "project_data",
+            "economic_data",
+            "energyConversion",
+            "energyProduction",
+            "energyStorage",
+            "energyProviders",
+            "energyConsumption",
+        ]
+
+        # hardcorded list of necessary csv files
+        required_files_list = [
+            "energyConsumption",
+            "simulation_settings",
+            "project_data",
+            "economic_data",
+        ]
         parameterlist = {}
-        parameterlist.update({'energyConsumption': ["dsm", "file_name", "label",
-                                                     "type_asset", "type_oemof"]})
-        parameterlist.update({'energyConversion': [
+
+        # Hardcoded list of parameters for each of the csv files.
+        parameterlist.update(
+            {
+                "energyConsumption": [
+                    "dsm",
+                    "file_name",
+                    "label",
+                    "type_asset",
+                    "type_oemof",
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "energyConversion": [
                     "age_installed",
                     "capex_fix",
                     "capex_var",
@@ -83,16 +108,24 @@ class DataInputFromCsv:
                     "optimizeCap",
                     "outflow_direction",
                     "type_oemof",
-                ]})
-        parameterlist.update({'energyStorage': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "energyStorage": [
                     "inflow_direction",
                     "label",
                     "optimizeCap",
                     "outflow_direction",
                     "type_oemof",
                     "storage_filename",
-                ]})
-        parameterlist.update({'energyProduction': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "energyProduction": [
                     "age_installed",
                     "capex_fix",
                     "capex_var",
@@ -106,8 +139,12 @@ class DataInputFromCsv:
                     "outflow_direction",
                     "type_oemof",
                     "unit",
-                ]})
-        parameterlist.update({'energyProviders': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "energyProviders": [
                     "energy_price",
                     "feedin_tariff",
                     "inflow_direction",
@@ -117,16 +154,12 @@ class DataInputFromCsv:
                     "peak_demand_pricing",
                     "peak_demand_pricing_period",
                     "type_oemof",
-                ]})
-        parameterlist.update({'project': [
-                    "capex_fix",
-                    "capex_var",
-                    "label",
-                    "lifetime",
-                    "opex_fix",
-                    "opex_var",
-                ]})
-        parameterlist.update({'fixcost': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "fixcost": [
                     "age_installed",
                     "capex_fix",
                     "capex_var",
@@ -134,8 +167,12 @@ class DataInputFromCsv:
                     "lifetime",
                     "opex_fix",
                     "opex_var",
-                ]})
-        parameterlist.update({'simulation_settings': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "simulation_settings": [
                     "display_output",
                     "evaluated_period",
                     "input_file_name",
@@ -151,8 +188,12 @@ class DataInputFromCsv:
                     "start_date",
                     "store_oemof_results",
                     "timestep",
-                ]})
-        parameterlist.update({'project_data': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "project_data": [
                     "country",
                     "label",
                     "latitude",
@@ -162,62 +203,86 @@ class DataInputFromCsv:
                     "scenario_id",
                     "scenario_name",
                     "sectors",
-                ]})
-        parameterlist.update({'economic_data': [
+                ]
+            }
+        )
+        parameterlist.update(
+            {
+                "economic_data": [
                     "currency",
                     "discount_factor",
                     "label",
                     "project_duration",
-                    "tax"
-                ]})
+                    "tax",
+                ]
+            }
+        )
+
+        # test if all input files in maximum file are mentioned in parameterlist:
+        # todo translate to pytest
+        for input_file in maximum_files:
+            if input_file not in parameterlist.keys():
+                logging.warning(
+                    'File %s is a possible input for generating a json from csv"s, '
+                    "but list of parameters is not defined.",
+                    input_file,
+                )
+
+        # Read all csv files from path input directory/csv/
         list_assets = []
         for f in os.listdir(os.path.join(input_directory, "csv/")):
             filename = f[:-4]
             if filename in parameterlist.keys():
                 list_assets.append(str(filename))
                 parameters = parameterlist[filename]
-                single_dict = DataInputFromCsv.create_json_from_csv(input_directory,
-                                                   filename,
-                                                   parameters=parameters)
+                single_dict = DataInputFromCsv.create_json_from_csv(
+                    input_directory, filename, parameters=parameters
+                )
                 input_json.update(single_dict)
             elif "storage_" in f:
                 list_assets.append(str(f[:-4]))
                 pass
             else:
                 csv_default_directory = os.path.join(
-                    Path(os.path.dirname(__file__)).parent,
-                    "tests/default_csv/")
+                    Path(os.path.dirname(__file__)).parent, "tests/default_csv/"
+                )
                 logging.error(
                     "The file %s" % f + " is not recognized as input file for mvs "
-                    "check %s", csv_default_directory + "for correct "
-                    "file names."
+                    "check %s",
+                    csv_default_directory + "for correct " "file names.",
                 )
-        #check if all required files are available
+
+        # check if all required files are available
         extra = list(set(list_assets) ^ set(maximum_files))
-#        missing = list(set(list_assets) ^ set(required_files_list))
+        #        missing = list(set(list_assets) ^ set(required_files_list))
         for i in extra:
             if i in required_files_list:
                 logging.error(
-                    'Required input file %s' %i + " is missing! Please add it"
-                "into %s" %os.path.join(input_directory, "csv/") +".")
+                    "Required input file %s" % i + " is missing! Please add it"
+                    "into %s" % os.path.join(input_directory, "csv/") + "."
+                )
             elif i in maximum_files:
-                logging.debug("No %s" %i +".csv file found. This is an "
-                                          "accepted option.")
+                logging.debug(
+                    "No %s" % i + ".csv file found. This is an " "accepted option."
+                )
             elif "storage_" in i:
                 pass
             else:
-                logging.debug("File %s" % i + ".csv is an unknown filename and"
-                              " will not be processed.")
+                logging.debug(
+                    "File %s" % i + ".csv is an unknown filename and"
+                    " will not be processed."
+                )
 
-
+        # store generated json file to file in input_directory. This json will be used in the simulation.
         with open(os.path.join(input_directory, output_filename), "w") as outfile:
             json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
-        logging.info("Json file created successully from csv's and stored into"
-                     "/mvs_eland/inputs/%s" % output_filename + "\n")
+        logging.info(
+            "Json file created successully from csv's and stored into"
+            "/mvs_eland/inputs/%s" % output_filename + "\n"
+        )
         logging.debug("Json created successfully from csv.")
         if pass_back:
             return outfile
-
 
     def create_json_from_csv(input_directory, filename, parameters):
 
@@ -243,11 +308,11 @@ class DataInputFromCsv:
             the converted dictionary
         """
 
-        logging.debug(
-            "Loading input data from csv: %s", filename
+        logging.debug("Loading input data from csv: %s", filename)
+        csv_default_directory = os.path.join(
+            Path(os.path.dirname(__file__)).parent, "tests/default_csv/"
         )
-        csv_default_directory=os.path.join(
-            Path(os.path.dirname(__file__)).parent, "tests/default_csv/")
+
         df = pd.read_csv(
             os.path.join(input_directory, "csv/", "%s.csv" % filename),
             sep=",",
@@ -265,8 +330,8 @@ class DataInputFromCsv:
                         + " the parameter "
                         + str(i)
                         + " is missing. "
-                        "check %s", csv_default_directory + "for correct "
-                        "parameter names."
+                        "check %s",
+                        csv_default_directory + "for correct " "parameter names.",
                     )
                 else:
                     logging.error(
@@ -274,47 +339,71 @@ class DataInputFromCsv:
                         + " the parameter "
                         + str(i)
                         + " is not recognized. \n"
-                        "check %s", csv_default_directory + "for correct "
-                        "parameter names."
+                        "check %s",
+                        csv_default_directory + "for correct " "parameter names.",
                     )
 
         # convert csv to json
         single_dict2 = {}
         single_dict = {}
         asset_name_string = ""
-        if len(df.columns) ==1:
+        if len(df.columns) == 1:
             logging.debug(
                 "No %s" % filename + " assets are added because all "
-                                     "columns of the csv file are empty.")
+                "columns of the csv file are empty."
+            )
 
         for column in df:
             if column != "unit":
                 column_dict = {}
                 for i, row in df.iterrows():
-                    if i == 'label':
-                        asset_name_string = asset_name_string + row[column] + \
-                                            ', '
+                    if i == "label":
+                        asset_name_string = asset_name_string + row[column] + ", "
                     if row["unit"] == "str":
                         column_dict.update({i: row[column]})
                     else:
-                        column_dict.update({i: {"value": row[column], "unit": row["unit"]}})
+                        value = row[column]
+
+                        # Find type of input value (csv file is read into df as an object)
+                        if value == "None":
+                            value = None
+                        elif value == "True":
+                            value = True
+                        elif value == "False":
+                            value = False
+                        else:
+                            try:
+                                value = int(value)
+                            except:
+                                value = float(value)
+
+                        column_dict.update({i: {"value": value, "unit": row["unit"]}})
+
                 single_dict.update({column: column_dict})
                 # add exception for energyStorage
                 if filename == "energyStorage":
                     storage_dict = DataInputFromCsv.add_storage(column, input_directory)
                     single_dict[column].update(storage_dict)
+
         logging.info(
-            'From file %s following assets are added to the energy '
-            'system: %s', filename, asset_name_string[:-2])
+            "From file %s following assets are added to the energy " "system: %s",
+            filename,
+            asset_name_string[:-2],
+        )
+
         # add exception for single dicts
-        if filename in ["economic_data", "project", "project_data", "simulation_settings"]:
+        if filename in [
+            "economic_data",
+            "project_data",
+            "simulation_settings",
+        ]:
             return single_dict
         elif "storage_" in filename:
             return single_dict
         else:
             single_dict2.update({filename: single_dict})
             return single_dict2
-
+        return
 
     def add_storage(storage_filename, input_directory):
 

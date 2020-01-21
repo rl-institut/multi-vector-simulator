@@ -3,16 +3,16 @@
         "currency": "NOK",
         "discount_factor": {
             "unit": "factor",
-            "value": "0.06"
+            "value": 0.06
         },
         "label": "economic_data",
         "project_duration": {
             "unit": "year",
-            "value": "30"
+            "value": 30
         },
         "tax": {
             "unit": "factor",
-            "value": "0.0 "
+            "value": 0.0
         }
     },
     "energyConsumption": {
@@ -42,37 +42,37 @@
         "diesel_generator": {
             "age_installed": {
                 "unit": "year",
-                "value": "0"
+                "value": 0
             },
             "capex_fix": {
                 "unit": "currency",
-                "value": "0"
+                "value": 0
             },
             "capex_var": {
                 "unit": "currency/kW",
-                "value": "600"
+                "value": 600
             },
             "efficiency": {
                 "unit": "factor",
-                "value": "0.33"
+                "value": 0.33
             },
             "inflow_direction": "Fuel",
             "installedCap": {
                 "unit": "kW",
-                "value": "0"
+                "value": 0
             },
             "label": "Backup diesel generator",
             "lifetime": {
                 "unit": "year",
-                "value": "15"
+                "value": 15
             },
             "opex_fix": {
                 "unit": "currency/kW/year",
-                "value": "5"
+                "value": 5
             },
             "opex_var": {
                 "unit": "currency/kWh",
-                "value": "0"
+                "value": 0
             },
             "optimizeCap": "True",
             "outflow_direction": "Electricity (LES)",
@@ -81,37 +81,37 @@
         "solar_inverter_01": {
             "age_installed": {
                 "unit": "year",
-                "value": "0"
+                "value": 0
             },
             "capex_fix": {
                 "unit": "currency",
-                "value": "0.0"
+                "value": 0.0
             },
             "capex_var": {
                 "unit": "currency/kW",
-                "value": "3000"
+                "value": 3000
             },
             "efficiency": {
                 "unit": "factor",
-                "value": "1.0"
+                "value": 1.0
             },
             "inflow_direction": "PV plant (mono)",
             "installedCap": {
                 "unit": "kW",
-                "value": "0.0"
+                "value": 0.0
             },
             "label": "Solar inverter (mono)",
             "lifetime": {
                 "unit": "year",
-                "value": "15"
+                "value": 15
             },
             "opex_fix": {
                 "unit": "currency/kW/year",
-                "value": "0.0"
+                "value": 0.0
             },
             "opex_var": {
                 "unit": "currency/kWh",
-                "value": "0.0"
+                "value": 0.0
             },
             "optimizeCap": "True",
             "outflow_direction": "Electricity (LES)",
@@ -120,37 +120,37 @@
         "storage_charge_controller_in": {
             "age_installed": {
                 "unit": "year",
-                "value": "0.0"
+                "value": 0.0
             },
             "capex_fix": {
                 "unit": "currency",
-                "value": "0.0"
+                "value": 0.0
             },
             "capex_var": {
                 "unit": "currency/kW",
-                "value": "0.0"
+                "value": 0.0
             },
             "efficiency": {
                 "unit": "factor",
-                "value": "1"
+                "value": 1
             },
             "inflow_direction": "Electricity (LES)",
             "installedCap": {
                 "unit": "kW",
-                "value": "0.0"
+                "value": 0.0
             },
             "label": "Charge Contoller ESS Li-Ion (charge)",
             "lifetime": {
                 "unit": "year",
-                "value": "10"
+                "value": 10
             },
             "opex_fix": {
                 "unit": "currency/kW/year",
-                "value": "0.0"
+                "value": 0.0
             },
             "opex_var": {
                 "unit": "currency/kWh",
-                "value": "0.0"
+                "value": 0.0
             },
             "optimizeCap": "True",
             "outflow_direction": "ESS Li-Ion",
@@ -159,37 +159,37 @@
         "storage_charge_controller_out": {
             "age_installed": {
                 "unit": "year",
-                "value": "0.0"
+                "value": 0.0
             },
             "capex_fix": {
                 "unit": "currency",
-                "value": "0.0"
+                "value": 0.0
             },
             "capex_var": {
                 "unit": "currency/kW",
-                "value": "0.0"
+                "value": 0.0
             },
             "efficiency": {
                 "unit": "factor",
-                "value": "1"
+                "value": 1
             },
             "inflow_direction": "ESS Li-Ion",
             "installedCap": {
                 "unit": "kW",
-                "value": "0.0"
+                "value": 0.0
             },
             "label": "Charge Contoller ESS Li-Ion (discharge)",
             "lifetime": {
                 "unit": "year",
-                "value": "10"
+                "value": 10
             },
             "opex_fix": {
                 "unit": "currency/kW/year",
-                "value": "0.0"
+                "value": 0.0
             },
             "opex_var": {
                 "unit": "currency/kWh",
-                "value": "0.0"
+                "value": 0.0
             },
             "optimizeCap": "True",
             "outflow_direction": "Electricity (LES)",
@@ -198,37 +198,37 @@
         "transformer_station_in": {
             "age_installed": {
                 "unit": "year",
-                "value": "5"
+                "value": 5
             },
             "capex_fix": {
                 "unit": "currency",
-                "value": "0.0"
+                "value": 0.0
             },
             "capex_var": {
                 "unit": "currency/kW",
-                "value": "0.0"
+                "value": 0.0
             },
             "efficiency": {
                 "unit": "factor",
-                "value": "0.96"
+                "value": 0.96
             },
             "inflow_direction": "Electricity (DSO)",
             "installedCap": {
                 "unit": "kW",
-                "value": "1250"
+                "value": 1250
             },
             "label": "Transformer station (DSO) consumption",
             "lifetime": {
                 "unit": "year",
-                "value": "30"
+                "value": 30
             },
             "opex_fix": {
                 "unit": "currency/kW/year",
-                "value": "0.0"
+                "value": 0.0
             },
             "opex_var": {
                 "unit": "currency/kWh",
-                "value": "0.0"
+                "value": 0.0
             },
             "optimizeCap": "False",
             "outflow_direction": "Electricity (LES)",
@@ -237,37 +237,37 @@
         "transformer_station_out": {
             "age_installed": {
                 "unit": "year",
-                "value": "5"
+                "value": 5
             },
             "capex_fix": {
                 "unit": "currency",
-                "value": "0.0"
+                "value": 0.0
             },
             "capex_var": {
                 "unit": "currency/kW",
-                "value": "0.0"
+                "value": 0.0
             },
             "efficiency": {
                 "unit": "factor",
-                "value": "0.96"
+                "value": 0.96
             },
             "inflow_direction": "Electricity (LES)",
             "installedCap": {
                 "unit": "kW",
-                "value": "1250"
+                "value": 1250
             },
             "label": "Transformer station (DSO) feedin",
             "lifetime": {
                 "unit": "year",
-                "value": "30"
+                "value": 30
             },
             "opex_fix": {
                 "unit": "currency/kW/year",
-                "value": "0.0"
+                "value": 0.0
             },
             "opex_var": {
                 "unit": "currency/kWh",
-                "value": "0.0"
+                "value": 0.0
             },
             "optimizeCap": "False",
             "outflow_direction": "Electricity (DSO)",
@@ -278,33 +278,33 @@
         "pv_plant_01": {
             "age_installed": {
                 "unit": "year",
-                "value": "0"
+                "value": 0
             },
             "capex_fix": {
                 "unit": "currency",
-                "value": "10000"
+                "value": 10000
             },
             "capex_var": {
                 "unit": "currency/unit",
-                "value": "7200"
+                "value": 7200
             },
             "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
             "installedCap": {
                 "unit": "kWp",
-                "value": "0"
+                "value": 0
             },
             "label": "PV plant (mono)",
             "lifetime": {
                 "unit": "year",
-                "value": "30"
+                "value": 30
             },
             "opex_fix": {
                 "unit": "currency/unit/year",
-                "value": "80"
+                "value": 80
             },
             "opex_var": {
                 "unit": "currency/kWh",
-                "value": "0"
+                "value": 0
             },
             "optimizeCap": "True",
             "outflow_direction": "PV plant (mono)",
@@ -316,11 +316,11 @@
         "DSO": {
             "energy_price": {
                 "unit": "currency/kWh",
-                "value": "0.54"
+                "value": 0.54
             },
             "feedin_tariff": {
                 "unit": "currency/kWh",
-                "value": "0.4"
+                "value": 0.4
             },
             "inflow_direction": "Electricity (DSO)",
             "label": "Electricity grid DSO",
@@ -328,11 +328,11 @@
             "outflow_direction": "Electricity (DSO)",
             "peak_demand_pricing": {
                 "unit": "currency/kW",
-                "value": "60"
+                "value": 60
             },
             "peak_demand_pricing_period": {
                 "unit": "times per year (1,2,3,4,6,12)",
-                "value": "12"
+                "value": 12
             },
             "type_oemof": "source"
         }
@@ -342,15 +342,15 @@
             "capacity": {
                 "age_installed": {
                     "unit": "year",
-                    "value": "0"
+                    "value": 0
                 },
                 "capex_fix": {
                     "unit": "currency",
-                    "value": "0.0"
+                    "value": 0.0
                 },
                 "capex_var": {
                     "unit": "currency/kWh",
-                    "value": "4000"
+                    "value": 4000
                 },
                 "crate": {
                     "unit": "factor of total capacity (kWh)",
@@ -358,76 +358,76 @@
                 },
                 "efficiency": {
                     "unit": "factor",
-                    "value": "0.0"
+                    "value": 0.0
                 },
                 "installedCap": {
                     "unit": "kWh",
-                    "value": "0.0"
+                    "value": 0.0
                 },
                 "label": "Storage capacity",
                 "lifetime": {
                     "unit": "year",
-                    "value": "10"
+                    "value": 10
                 },
                 "opex_fix": {
                     "unit": "currency/kWh/year",
-                    "value": "0"
+                    "value": 0
                 },
                 "opex_var": {
                     "unit": "currency/kWh",
-                    "value": "0"
+                    "value": 0
                 },
                 "soc_initial": {
                     "unit": "None or factor",
-                    "value": "None"
+                    "value": null
                 },
                 "soc_max": {
                     "unit": "factor",
-                    "value": "1.0"
+                    "value": 1.0
                 },
                 "soc_min": {
                     "unit": "factor",
-                    "value": "0.2"
+                    "value": 0.2
                 },
                 "unit": "kWh"
             },
             "charging_power": {
                 "age_installed": {
                     "unit": "year",
-                    "value": "0"
+                    "value": 0
                 },
                 "capex_fix": {
                     "unit": "currency",
-                    "value": "0.0"
+                    "value": 0.0
                 },
                 "capex_var": {
                     "unit": "currency/kWh",
-                    "value": "0"
+                    "value": 0
                 },
                 "crate": {
                     "unit": "factor of total capacity (kWh)",
-                    "value": "1"
+                    "value": 1
                 },
                 "efficiency": {
                     "unit": "factor",
-                    "value": "0.9500000000000001"
+                    "value": 0.9500000000000001
                 },
                 "installedCap": {
                     "unit": "kWh",
-                    "value": "0"
+                    "value": 0
                 },
                 "label": "discharging_power",
                 "lifetime": {
                     "unit": "year",
-                    "value": "10"
+                    "value": 10
                 },
                 "opex_fix": {
                     "unit": "currency/kWh/year",
-                    "value": "0"
+                    "value": 0
                 },
                 "opex_var": {
                     "unit": "currency/kWh",
-                    "value": "0"
+                    "value": 0
                 },
                 "soc_initial": {
                     "unit": "None or factor",
@@ -446,40 +446,40 @@
             "discharging_power": {
                 "age_installed": {
                     "unit": "year",
-                    "value": "0"
+                    "value": 0
                 },
                 "capex_fix": {
                     "unit": "currency",
-                    "value": "0.0"
+                    "value": 0.0
                 },
                 "capex_var": {
                     "unit": "currency/kWh",
-                    "value": "0"
+                    "value": 0
                 },
                 "crate": {
                     "unit": "factor of total capacity (kWh)",
-                    "value": "1"
+                    "value": 1
                 },
                 "efficiency": {
                     "unit": "factor",
-                    "value": "0.9500000000000001"
+                    "value": 0.9500000000000001
                 },
                 "installedCap": {
                     "unit": "kWh",
-                    "value": "0"
+                    "value": 0
                 },
                 "label": "discharging_power",
                 "lifetime": {
                     "unit": "year",
-                    "value": "10"
+                    "value": 10
                 },
                 "opex_fix": {
                     "unit": "currency/kWh/year",
-                    "value": "0"
+                    "value": 0
                 },
                 "opex_var": {
                     "unit": "currency/kWh",
-                    "value": "0"
+                    "value": 0
                 },
                 "soc_initial": {
                     "unit": "None or factor",
@@ -503,79 +503,87 @@
             "type_oemof": "storage"
         }
     },
-    "engineering": {
-        "capex_fix": {
-            "unit": "currency",
-            "value": "0"
-        },
-        "capex_var": {
-            "unit": "currency",
-            "value": "0"
-        },
-        "label": "R&D, engineering",
-        "lifetime": {
-            "unit": "year",
-            "value": "20"
-        },
-        "opex_fix": {
-            "unit": "currency/year",
-            "value": "0"
-        },
-        "opex_var": {
-            "unit": "currency/kWh",
-            "value": "0"
-        }
-    },
     "fixcost": {
         "distribution_grid": {
             "age_installed": {
                 "unit": "year",
-                "value": "10"
+                "value": 10
             },
             "capex_fix": {
                 "unit": "currency",
-                "value": "0.0"
+                "value": 0.0
             },
             "capex_var": {
                 "unit": "currency",
-                "value": "0.0"
+                "value": 0.0
             },
             "label": "distribution grid infrastructure",
             "lifetime": {
                 "unit": "year",
-                "value": "30"
+                "value": 30
             },
             "opex_fix": {
                 "unit": "currency/year",
-                "value": "0"
+                "value": 0
             },
             "opex_var": {
                 "unit": "currency/kWh",
-                "value": "0"
+                "value": 0
             }
-        }
-    },
-    "operation": {
-        "capex_fix": {
-            "unit": "currency",
-            "value": "0"
         },
-        "capex_var": {
-            "unit": "currency",
-            "value": "0"
+        "engineering": {
+            "age_installed": {
+                "unit": "year",
+                "value": 0
+            },
+            "capex_fix": {
+                "unit": "currency",
+                "value": 0
+            },
+            "capex_var": {
+                "unit": "currency",
+                "value": 0
+            },
+            "label": "R&D, engineering",
+            "lifetime": {
+                "unit": "year",
+                "value": 20
+            },
+            "opex_fix": {
+                "unit": "currency/year",
+                "value": 0
+            },
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": 0
+            }
         },
-        "label": "Fix project operation",
-        "lifetime": {
-            "unit": "year",
-            "value": "20"
-        },
-        "opex_fix": {
-            "unit": "currency/year",
-            "value": "4600"
-        },
-        "opex_var": {
-            "unit": "currency/kWh",
-            "value": "0"
+        "operation": {
+            "age_installed": {
+                "unit": "year",
+                "value": 0
+            },
+            "capex_fix": {
+                "unit": "currency",
+                "value": 0
+            },
+            "capex_var": {
+                "unit": "currency",
+                "value": 0
+            },
+            "label": "Fix project operation",
+            "lifetime": {
+                "unit": "year",
+                "value": 20
+            },
+            "opex_fix": {
+                "unit": "currency/year",
+                "value": 4600
+            },
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": 0
+            }
         }
     },
     "project_data": {
@@ -593,7 +601,7 @@
         "display_output": "-debug",
         "evaluated_period": {
             "unit": "days",
-            "value": "365"
+            "value": 365
         },
         "input_file_name": "test_input_file_v1.xlsx",
         "label": "simulation_settings",
@@ -609,7 +617,7 @@
         "store_oemof_results": "True",
         "timestep": {
             "unit": "minutes",
-            "value": "60"
+            "value": 60
         }
     }
 }
