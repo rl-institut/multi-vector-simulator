@@ -99,7 +99,7 @@ class define_oemof_component:
 
     def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
         """
-
+        Defines a transformer with constant efficiency, with multiple or single input or output busses, and with fixed capacity
         Parameters
         ----------
         dict_asset:
@@ -178,7 +178,7 @@ class define_oemof_component:
 
     def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
         """
-
+        Defines a transformer with constant efficiency, with multiple or single input or output busses, to be optimized
         Parameters
         ----------
         dict_asset:

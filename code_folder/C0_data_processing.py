@@ -71,7 +71,7 @@ class data_processing:
                 helpers.treat_multiple_flows(dict_asset, dict_values, "efficiency")
 
         # same distinction of values provided with dictionaries (one input and one output) or list (multiple).
-        # The can at turn be scalars, mantained, or timeseries
+        # They can at turn be scalars, mantained, or timeseries
         for sector in dict_values["energyStorage"]:
             for asset in dict_values["energyStorage"][sector]:
                 for component in ["capacity", "charging_power", "discharging_power"]:
