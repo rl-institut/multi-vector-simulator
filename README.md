@@ -71,6 +71,10 @@ To set up the MVS, follow the steps below:
 
     ```
     
+* Install the mvs_eland package locally
+
+    `python setup.py install`
+
 * Test if the MVS is running by executing
 
     `python mvs_eland_tool.py`

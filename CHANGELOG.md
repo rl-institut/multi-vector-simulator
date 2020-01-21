@@ -24,6 +24,7 @@ Here is a template for new release sections
 - folder "docs" and content to generate readthedocs (#39, smartie2076)
 - Started readthedocs homepage (not working): https://readthedocs.org/projects/mvs-eland/ (#39, smartie2076, #57, Bachibouzouk)
 - Badges for build and docs (#70, Bachibouzouk)
+- Setup file (#72, Bachibouzouk)
 
 ### Changed
 - requirements.txt only includes packages needed for users of MVS (#39, smartie2076)
