@@ -1,7 +1,0 @@
-,unit,engineering,operation
-capex_fix,currency,0,0
-capex_var,currency,0,0
-label,str,"R&D, engineering",Fix project operation
-lifetime,year,20,20
-opex_fix,currency/year,0,4600
-opex_var,currency/kWh,0,0
