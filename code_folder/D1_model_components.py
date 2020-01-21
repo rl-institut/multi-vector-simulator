@@ -5,23 +5,13 @@ import pprint as pp
 
 class call_component:
     def transformer(model, dict_asset, **kwargs):
-        if not helpers.check_multiple_buses(model, dict_asset):
-            helpers.check_optimize_cap(
-                model,
-                dict_asset,
-                func_constant=define_oemof_component.transformer_constant_efficiency_fix,
-                func_optimize=define_oemof_component.transformer_constant_efficiency_optimize,
-                **kwargs
-            )
-        else:
-            helpers.check_optimize_cap(
-                model,
-                dict_asset,
-                func_constant=define_oemof_component.transformer_constant_efficiency_multiple_buses_fix,
-                func_optimize=define_oemof_component.transformer_constant_efficiency_multiple_buses_optimize,
-                **kwargs
-            )
-
+        helpers.check_optimize_cap(
+            model,
+            dict_asset,
+            func_constant=define_oemof_component.transformer_constant_efficiency_fix,
+            func_optimize=define_oemof_component.transformer_constant_efficiency_optimize,
+            **kwargs
+        )
         return
 
     def storage(model, dict_asset, **kwargs):
@@ -98,12 +88,6 @@ class helpers:
             )
         return
 
-    def check_multiple_buses(model, dict_asset):
-        if isinstance(dict_asset["input_bus_name"], list) or isinstance(
-            dict_asset["output_bus_name"], list
-        ):
-            return True
-
 
 class define_oemof_component:
     def bus(model, name, **kwargs):
@@ -114,28 +98,8 @@ class define_oemof_component:
         return
 
     def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
-        transformer = solph.Transformer(
-            label=dict_asset["label"],
-            inputs={kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow()},
-            outputs={
-                kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
-                    nominal_value=dict_asset["installedCap"]["value"],
-                    variable_costs=dict_asset["opex_var"]["value"],
-                )
-            },
-            conversion_factors={
-                kwargs["busses"][dict_asset["output_bus_name"]]: dict_asset[
-                    "efficiency"
-                ]["value"]
-            },
-        )
-        model.add(transformer)
-        kwargs["transformers"].update({dict_asset["label"]: transformer})
-        return
-
-    def transformer_constant_efficiency_multiple_buses_fix(model, dict_asset, **kwargs):
         """
-
+        Defines a transformer with constant efficiency, with multiple or single input or output busses, and with fixed capacity
         Parameters
         ----------
         dict_asset:
@@ -148,39 +112,58 @@ class define_oemof_component:
 
         """
         # check if the transformer has multiple input or multiple outpus busses
-        if isinstance(dict_asset["input_bus_name"], list):
-            inputs = {}
-            index = 0
-            for bus in dict_asset["input_bus_name"]:
-                variable_costs = dict_asset["opex_var"]["value"][index]
-                inputs[kwargs["busses"][bus]] = solph.Flow(
-                    nominal_value=dict_asset["installedCap"]["value"],
-                    variable_costs=variable_costs,
-                )
-                index += 1
-            outputs = {kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow()}
-            efficiencies = {}
-            for i in range(len(dict_asset["efficiency"]["value"])):
-                efficiencies[kwargs["busses"][dict_asset["input_bus_name"][i]]] = (
-                    1 / dict_asset["efficiency"]["value"][i]
-                )
+        if isinstance(dict_asset["input_bus_name"], list) or isinstance(
+            dict_asset["output_bus_name"], list
+        ):
+            if isinstance(dict_asset["input_bus_name"], list):
+                inputs = {}
+                index = 0
+                for bus in dict_asset["input_bus_name"]:
+                    variable_costs = dict_asset["opex_var"]["value"][index]
+                    inputs[kwargs["busses"][bus]] = solph.Flow(
+                        nominal_value=dict_asset["installedCap"]["value"],
+                        variable_costs=variable_costs,
+                    )
+                    index += 1
+                outputs = {
+                    kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow()
+                }
+                efficiencies = {}
+                for i in range(len(dict_asset["efficiency"]["value"])):
+                    efficiencies[kwargs["busses"][dict_asset["input_bus_name"][i]]] = (
+                        1 / dict_asset["efficiency"]["value"][i]
+                    )
+
+            else:
+                inputs = {kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow()}
+                outputs = {}
+                index = 0
+                for bus in dict_asset["output_bus_name"]:
+                    variable_costs = dict_asset["opex_var"]["value"][index]
+                    outputs[kwargs["busses"][bus]] = solph.Flow(
+                        nominal_value=dict_asset["installedCap"]["value"],
+                        variable_costs=variable_costs,
+                    )
+                    index += 1
+                efficiencies = {}
+                for i in range(len(dict_asset["efficiency"]["value"])):
+                    efficiencies[
+                        kwargs["busses"][dict_asset["output_bus_name"][i]]
+                    ] = dict_asset["efficiency"]["value"][i]
 
         else:
             inputs = {kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow()}
-            outputs = {}
-            index = 0
-            for bus in dict_asset["output_bus_name"]:
-                variable_costs = dict_asset["opex_var"]["value"][index]
-                outputs[kwargs["busses"][bus]] = solph.Flow(
+            outputs = {
+                kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
                     nominal_value=dict_asset["installedCap"]["value"],
-                    variable_costs=variable_costs,
+                    variable_costs=dict_asset["opex_var"]["value"],
                 )
-                index += 1
-            efficiencies = {}
-            for i in range(len(dict_asset["efficiency"]["value"])):
-                efficiencies[
-                    kwargs["busses"][dict_asset["output_bus_name"][i]]
-                ] = dict_asset["efficiency"]["value"][i]
+            }
+            efficiencies = {
+                kwargs["busses"][dict_asset["output_bus_name"]]: dict_asset[
+                    "efficiency"
+                ]["value"]
+            }
 
         transformer = solph.Transformer(
             label=dict_asset["label"],
@@ -194,33 +177,8 @@ class define_oemof_component:
         return
 
     def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
-        transformer = solph.Transformer(
-            label=dict_asset["label"],
-            inputs={kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow()},
-            outputs={
-                kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
-                    investment=solph.Investment(
-                        ep_costs=dict_asset["simulation_annuity"]["value"]
-                    ),
-                    existing=dict_asset["installedCap"]["value"],
-                    variable_costs=dict_asset["opex_var"]["value"],
-                )
-            },
-            conversion_factors={
-                kwargs["busses"][dict_asset["output_bus_name"]]: dict_asset[
-                    "efficiency"
-                ]["value"]
-            },
-        )
-        model.add(transformer)
-        kwargs["transformers"].update({dict_asset["label"]: transformer})
-        return
-
-    def transformer_constant_efficiency_multiple_buses_optimize(
-        model, dict_asset, **kwargs
-    ):
         """
-
+        Defines a transformer with constant efficiency, with multiple or single input or output busses, to be optimized
         Parameters
         ----------
         dict_asset:
@@ -232,18 +190,58 @@ class define_oemof_component:
         -------
 
         """
-        # check if the transformer has multiple input or multiple output flows
-        # the investment object is always in the output buss
-        if isinstance(dict_asset["input_bus_name"], list):
-            inputs = {}
-            index = 0
-            for bus in dict_asset["input_bus_name"]:
-                variable_costs = dict_asset["opex_var"]["value"][index]
-                inputs[kwargs["busses"][bus]] = solph.Flow(
-                    existing=dict_asset["installedCap"]["value"],
-                    variable_costs=variable_costs,
-                )
-                index += 1
+        # check if the transformer has multiple input or multiple outpus busses
+        # the investment object is always in the output bus
+        if isinstance(dict_asset["input_bus_name"], list) or isinstance(
+            dict_asset["output_bus_name"], list
+        ):
+            if isinstance(dict_asset["input_bus_name"], list):
+                inputs = {}
+                index = 0
+                for bus in dict_asset["input_bus_name"]:
+                    variable_costs = dict_asset["opex_var"]["value"][index]
+                    inputs[kwargs["busses"][bus]] = solph.Flow(
+                        existing=dict_asset["installedCap"]["value"],
+                        variable_costs=variable_costs,
+                    )
+                    index += 1
+                outputs = {
+                    kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
+                        investment=solph.Investment(
+                            ep_costs=dict_asset["simulation_annuity"]["value"]
+                        ),
+                        existing=dict_asset["installedCap"]["value"],
+                        variable_costs=dict_asset["opex_var"]["value"],
+                    )
+                }
+                efficiencies = {}
+                for i in range(len(dict_asset["efficiency"]["value"])):
+                    efficiencies[
+                        kwargs["busses"][dict_asset["input_bus_name"][i]]
+                    ] = 1 / (dict_asset["efficiency"]["value"][i])
+
+            else:
+                inputs = {kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow()}
+                outputs = {}
+                index = 0
+                for bus in dict_asset["output_bus_name"]:
+                    variable_costs = dict_asset["opex_var"]["value"][index]
+                    outputs[kwargs["busses"][bus]] = solph.Flow(
+                        investment=solph.Investment(
+                            ep_costs=dict_asset["simulation_annuity"]["value"]
+                        ),
+                        existing=dict_asset["installedCap"]["value"],
+                        variable_costs=variable_costs,
+                    )
+                    index += 1
+                efficiencies = {}
+                for i in range(len(dict_asset["efficiency"]["value"])):
+                    efficiencies[
+                        kwargs["busses"][dict_asset["output_bus_name"][i]]
+                    ] = dict_asset["efficiency"]["value"][i]
+
+        else:
+            inputs = {kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow()}
             outputs = {
                 kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
                     investment=solph.Investment(
@@ -253,31 +251,11 @@ class define_oemof_component:
                     variable_costs=dict_asset["opex_var"]["value"],
                 )
             }
-            efficiencies = {}
-            for i in range(len(dict_asset["efficiency"]["value"])):
-                efficiencies[kwargs["busses"][dict_asset["input_bus_name"][i]]] = 1 / (
-                    dict_asset["efficiency"]["value"][i]
-                )
-
-        else:
-            inputs = {kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow()}
-            outputs = {}
-            index = 0
-            for bus in dict_asset["output_bus_name"]:
-                variable_costs = dict_asset["opex_var"]["value"][index]
-                outputs[kwargs["busses"][bus]] = solph.Flow(
-                    investment=solph.Investment(
-                        ep_costs=dict_asset["simulation_annuity"]["value"]
-                    ),
-                    existing=dict_asset["installedCap"]["value"],
-                    variable_costs=variable_costs,
-                )
-                index += 1
-            efficiencies = {}
-            for i in range(len(dict_asset["efficiency"]["value"])):
-                efficiencies[
-                    kwargs["busses"][dict_asset["output_bus_name"][i]]
-                ] = dict_asset["efficiency"]["value"][i]
+            efficiencies = {
+                kwargs["busses"][dict_asset["output_bus_name"]]: dict_asset[
+                    "efficiency"
+                ]["value"]
+            }
 
         transformer = solph.Transformer(
             label=dict_asset["label"],
@@ -480,7 +458,6 @@ class define_oemof_component:
                     )
                     index += 1
             else:
-                print(dict_asset["label"])
                 outputs = {
                     kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
                         label=dict_asset["label"],

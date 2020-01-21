@@ -68,30 +68,11 @@ class data_processing:
             # in case there is more than one parameter provided (either (A) n input busses and 1 output bus or (B) 1 input bus and n output busses)
             # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
             elif isinstance(dict_asset["efficiency"]["value"], list):
+                helpers.treat_multiple_flows(dict_asset, dict_values, "efficiency")
+        
+        # same distinction of values provided with dictionaries (one input and one output) or list (multiple).
+        # They can at turn be scalars, mantained, or timeseries
                 logging.debug('Asset %s has multiple input/output busses with a list of efficiencies. Reading list', dict_asset[label])
-                updated_values = []
-                values_info = (
-                    []
-                )  # filenames and headers will be stored to allow keeping track of the timeseries generation
-                for element in dict_asset["efficiency"]["value"]:
-                    if isinstance(element, dict):
-                        updated_values.append(
-                            helpers.get_timeseries_multiple_flows(
-                                dict_values["simulation_settings"],
-                                dict_asset,
-                                element["file_name"],
-                                element["header"],
-                            )
-                        )
-                        values_info.append(element)
-                    else:
-                        updated_values.append(element)
-                dict_asset["efficiency"]["value"] = updated_values
-                if len(values_info) > 0:
-                    dict_asset["efficiency"].update({"values_info": values_info})
-
-        # same distinction of parameters provided with dictionaries (one input and one output) or list (multiple).
-        # The can in turn be scalars, mantained, or timeseries
         for sector in dict_values["energyStorage"]:
             for asset in dict_values["energyStorage"][sector]:
                 for component in ["capacity", "charging_power", "discharging_power"]:
@@ -108,29 +89,9 @@ class data_processing:
                         elif parameter in dict_asset and isinstance(
                             dict_asset[parameter]["value"], list
                         ):
-                            updated_values = []
-                            values_info = (
-                                []
-                            )  # filenames and headers will be stored to allow keeping track of the timeseries generation
-                            for element in dict_asset[parameter]["value"]:
-                                if isinstance(element, dict):
-                                    updated_values.append(
-                                        helpers.get_timeseries_multiple_flows(
-                                            dict_values["simulation_settings"],
-                                            dict_asset,
-                                            element["file_name"],
-                                            element["header"],
-                                        )
-                                    )
-                                    values_info.append(element)
-                                else:
-                                    updated_values.append(element)
-
-                            dict_asset[parameter]["value"] = updated_values
-                            if len(values_info) > 0:
-                                dict_asset[parameter].update(
-                                    {"values_info": values_info}
-                                )
+                            helpers.treat_multiple_flows(
+                                dict_asset, dict_values, parameter
+                            )
 
         # Calculate annuitiy factor
         dict_values["economic_data"].update(
@@ -281,34 +242,14 @@ class helpers:
     def define_missing_cost_data(dict_values, dict_asset):
 
         # read timeseries with filename provided for variable costs.
-        # if multiple opex_var or capex_var are given for multiple busses, it checks if any value is a timeseries
-        # this enables using electricity price timeseries
-        for parameter in ["capex_var", "opex_var"]:
-            if parameter in dict_asset:
-                if isinstance(dict_asset[parameter]["value"], dict):
-                    helpers.receive_timeseries_from_csv(
-                        dict_values["simulation_settings"], dict_asset, parameter
-                    )
-                elif isinstance(dict_asset[parameter]["value"], list):
-                    updated_values = []
-                    values_info = []
-                    for element in dict_asset[parameter]["value"]:
-                        if isinstance(element, dict):
-                            updated_values.append(
-                                helpers.get_timeseries_multiple_flows(
-                                    dict_values["simulation_settings"],
-                                    dict_asset,
-                                    element["file_name"],
-                                    element["header"],
-                                )
-                            )
-                            values_info.append(element)
-                        else:
-                            updated_values.append(element)
-
-                    dict_asset[parameter]["value"] = updated_values
-                    if len(values_info) > 0:
-                        dict_asset[parameter].update({"values_info": values_info})
+        # if multiple opex_var are given for multiple busses, it checks if any value is a timeseries
+        if "opex_var" in dict_asset:
+            if isinstance(dict_asset["opex_var"]["value"], dict):
+                helpers.receive_timeseries_from_csv(
+                    dict_values["simulation_settings"], dict_asset, "opex_var"
+                )
+            elif isinstance(dict_asset["opex_var"]["value"], list):
+                helpers.treat_multiple_flows(dict_asset, dict_values, "opex_var")
 
         economic_data = dict_values["economic_data"]
 
@@ -717,21 +658,13 @@ class helpers:
             dict_asset.update({"opex_fix": 0})
 
         opex_fix = dict_asset["opex_fix"]["value"]
-
-        # take average value is capex_var or opex_var are timeseries
-        if isinstance(dict_asset["capex_var"]["value"], float) or isinstance(
-            dict_asset["capex_var"]["value"], int
-        ):
-            capex_var = dict_asset["capex_var"]["value"]
-        else:
-            capex_var = sum(dict_asset["capex_var"]["value"]) / len(
-                dict_asset["capex_var"]["value"]
-            )
-
+        capex_var = dict_asset["capex_var"]["value"]
+        # take average value of opex_var if it is a timeseries
         if isinstance(dict_asset["opex_var"]["value"], float) or isinstance(
             dict_asset["opex_var"]["value"], int
         ):
             opex_var = dict_asset["opex_var"]["value"]
+
         # if multiple busses are provided, it takes the first opex_var (corresponding to the first bus)
         # to calculate the lifetime_opex_var
         elif isinstance(dict_asset["opex_var"]["value"], list):
@@ -916,6 +849,45 @@ class helpers:
 
         shutil.copy(file_path, settings["path_output_folder_inputs"] + file_name)
         logging.debug("Copied timeseries %s to output folder / inputs.", file_path)
+        return
+
+    def treat_multiple_flows(dict_asset, dict_values, parameter):
+        """
+        This function consider the case a technical parameter on the json file has a list of values because multiple
+        inputs or outputs busses are considered.
+        Parameters
+        ----------
+        dict_values:
+        dictionary of current values of the asset
+        parameter:
+        usually efficiency. Different efficiencies will be given if an asset has multiple inputs or outputs busses,
+        so a list must be considered.
+
+        Returns
+        -------
+
+        """
+        updated_values = []
+        values_info = (
+            []
+        )  # filenames and headers will be stored to allow keeping track of the timeseries generation
+        for element in dict_asset[parameter]["value"]:
+            if isinstance(element, dict):
+                updated_values.append(
+                    helpers.get_timeseries_multiple_flows(
+                        dict_values["simulation_settings"],
+                        dict_asset,
+                        element["file_name"],
+                        element["header"],
+                    )
+                )
+                values_info.append(element)
+            else:
+                updated_values.append(element)
+        dict_asset[parameter]["value"] = updated_values
+        if len(values_info) > 0:
+            dict_asset[parameter].update({"values_info": values_info})
+
         return
 
     # reads timeseries specifically when the need comes from a multiple or output busses situation
