@@ -69,10 +69,10 @@ class data_processing:
             # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
             elif isinstance(dict_asset["efficiency"]["value"], list):
                 helpers.treat_multiple_flows(dict_asset, dict_values, "efficiency")
+        
+        # same distinction of values provided with dictionaries (one input and one output) or list (multiple).
+        # They can at turn be scalars, mantained, or timeseries
                 logging.debug('Asset %s has multiple input/output busses with a list of efficiencies. Reading list', dict_asset[label])
-
-        # same distinction of parameters provided with dictionaries (one input and one output) or list (multiple).
-        # The can in turn be scalars, mantained, or timeseries
         for sector in dict_values["energyStorage"]:
             for asset in dict_values["energyStorage"][sector]:
                 for component in ["capacity", "charging_power", "discharging_power"]:
@@ -242,7 +242,6 @@ class helpers:
     def define_missing_cost_data(dict_values, dict_asset):
 
         # read timeseries with filename provided for variable costs.
-
         # if multiple opex_var are given for multiple busses, it checks if any value is a timeseries
         if "opex_var" in dict_asset:
             if isinstance(dict_asset["opex_var"]["value"], dict):
