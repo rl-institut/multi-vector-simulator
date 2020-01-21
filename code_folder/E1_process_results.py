@@ -5,9 +5,17 @@ import pprint as pp
 
 class process_results:
     def get_timeseries_per_bus(dict_values, bus_data):
+        """
+        Reads simulation results of all busses.
+        :param dict_values:
+        :param bus_data:
+        :return:
+        """
         bus_data_timeseries = {}
         print(bus_data)
         for bus in bus_data.keys():
+            print(bus)
+            print(bus_data[bus].keys())
             bus_data_timeseries.update(
                 {
                     bus: pd.DataFrame(
@@ -61,7 +69,7 @@ class process_results:
         helpers.add_info_flows(settings, dict_asset["capacity"], capacity)
 
         if "optimizeCap" in dict_asset:
-            if dict_asset["optimizeCap"] == True:
+            if dict_asset["optimizeCap"]["value"] == True:
                 power_charge = storage_bus["scalars"][
                     ((dict_asset["input_bus_name"], dict_asset["label"]), "invest")
                 ]
@@ -217,7 +225,7 @@ class process_results:
 class helpers:
     def get_optimal_cap(bus, dict_asset, bus_name, direction):
         if "optimizeCap" in dict_asset:
-            if dict_asset["optimizeCap"] == True:
+            if dict_asset["optimizeCap"]["value"] == True:
                 if direction == "input":
                     optimal_capacity = bus["scalars"][
                         ((bus_name, dict_asset["label"]), "invest")
