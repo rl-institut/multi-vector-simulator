@@ -35,8 +35,7 @@ try:
     # for tests
     from .code_folder.A0_initialization import initializing
     from .code_folder.A1_csv_to_json import DataInputFromCsv
-
-    #    from .code_folder.B0_data_input_json import data_input
+    from .code_folder.B0_data_input_json import data_input
     from .code_folder.C0_data_processing import data_processing
     from .code_folder.D0_modelling_and_optimization import modelling
     from .code_folder.E0_evaluation import evaluation
@@ -46,8 +45,7 @@ except ModuleNotFoundError:
     # for terminal execution
     from code_folder.A0_initialization import initializing
     from code_folder.A1_csv_to_json import DataInputFromCsv
-
-    #    from code_folder.B0_data_input_json import data_input
+    from code_folder.B0_data_input_json import data_input
     from code_folder.C0_data_processing import data_processing
     from code_folder.D0_modelling_and_optimization import modelling
     from code_folder.E0_evaluation import evaluation
@@ -83,7 +81,11 @@ def main(**kwargs):
     #    dict_values = data_input.get(user_input)
 
     logging.debug("Accessing script: A1_csv_to_json")
-    dict_values = DataInputFromCsv.create_input_json()
+    path_to_json_from_csv = DataInputFromCsv.create_input_json()
+    user_input.update({"path_input_file": path_to_json_from_csv})
+    
+    logging.debug("Accessing script: B0_data_input_json")
+    dict_values = data_input.get(user_input)
 
     print("")
     logging.debug("Accessing script: C0_data_processing")

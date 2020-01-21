@@ -288,7 +288,7 @@ class DataInputFromCsv:
         )
         logging.debug("Json created successfully from csv.")
         if pass_back:
-            return input_json
+            return outfile
 
     def create_json_from_csv(input_directory, filename, parameters):
 
