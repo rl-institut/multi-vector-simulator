@@ -12,6 +12,7 @@ class process_results:
         :return:
         """
         bus_data_timeseries = {}
+        print(bus_data)
         for bus in bus_data.keys():
             print(bus)
             print(bus_data[bus].keys())
@@ -158,41 +159,80 @@ class process_results:
         return
 
     def get_results(settings, bus_data, dict_asset):
+        # Check if the component has multiple input or output busses
         if "input_bus_name" in dict_asset:
             input_name = dict_asset["input_bus_name"]
-            helpers.get_flow(
-                settings, bus_data[input_name], dict_asset, direction="input"
-            )
+            if not isinstance(input_name, list):
+                helpers.get_flow(
+                    settings,
+                    bus_data[input_name],
+                    dict_asset,
+                    input_name,
+                    direction="input",
+                )
+            else:
+                for bus in input_name:
+                    helpers.get_flow(
+                        settings, bus_data[bus], dict_asset, bus, direction="input"
+                    )
 
         if "output_bus_name" in dict_asset:
             output_name = dict_asset["output_bus_name"]
-            helpers.get_flow(
-                settings, bus_data[output_name], dict_asset, direction="output"
-            )
+            if not isinstance(output_name, list):
+                helpers.get_flow(
+                    settings,
+                    bus_data[output_name],
+                    dict_asset,
+                    output_name,
+                    direction="output",
+                )
+            else:
+                for bus in output_name:
+                    helpers.get_flow(
+                        settings, bus_data[bus], dict_asset, bus, direction="output"
+                    )
 
-        # definie capacities
+        # definie capacities. Check if the component has multiple input or output busses
         if "output_bus_name" in dict_asset and "in_bus_name" in dict_asset:
-            helpers.get_optimal_cap(bus_data[output_name], dict_asset, "output")
+            if not isinstance(output_name, list):
+                helpers.get_optimal_cap(
+                    bus_data[output_name], dict_asset, output_name, "output"
+                )
+            else:
+                for bus in output_name:
+                    helpers.get_optimal_cap(bus_data[bus], dict_asset, bus, "output")
 
         elif "in_bus_name" in dict_asset:
-            helpers.get_optimal_cap(bus_data[output_name], dict_asset, "input")
+            if not isinstance(output_name, list):
+                helpers.get_optimal_cap(
+                    bus_data[output_name], dict_asset, output_name, "input"
+                )
+            else:
+                for bus in output_name:
+                    helpers.get_optimal_cap(bus_data[bus], dict_asset, bus, "input")
 
         elif "output_bus_name" in dict_asset:
-            helpers.get_optimal_cap(bus_data[output_name], dict_asset, "output")
+            if not isinstance(output_name, list):
+                helpers.get_optimal_cap(
+                    bus_data[output_name], dict_asset, output_name, "output"
+                )
+            else:
+                for bus in output_name:
+                    helpers.get_optimal_cap(bus_data[bus], dict_asset, bus, "output")
         return
 
 
 class helpers:
-    def get_optimal_cap(bus, dict_asset, direction):
+    def get_optimal_cap(bus, dict_asset, bus_name, direction):
         if "optimizeCap" in dict_asset:
             if dict_asset["optimizeCap"]["value"] == True:
                 if direction == "input":
                     optimal_capacity = bus["scalars"][
-                        ((dict_asset["input_bus_name"], dict_asset["label"]), "invest")
+                        ((bus_name, dict_asset["label"]), "invest")
                     ]
                 elif direction == "output":
                     optimal_capacity = bus["scalars"][
-                        ((dict_asset["label"], dict_asset["output_bus_name"]), "invest")
+                        ((dict_asset["label"], bus_name), "invest")
                     ]
                 else:
                     logging.error(
@@ -251,15 +291,12 @@ class helpers:
 
         return
 
-    def get_flow(settings, bus, dict_asset, direction):
+    def get_flow(settings, bus, dict_asset, bus_name, direction):
         if direction == "input":
-            flow = bus["sequences"][
-                ((dict_asset["input_bus_name"], dict_asset["label"]), "flow")
-            ]
+            flow = bus["sequences"][((bus_name, dict_asset["label"]), "flow")]
         elif direction == "output":
-            flow = bus["sequences"][
-                ((dict_asset["label"], dict_asset["output_bus_name"]), "flow")
-            ]
+            flow = bus["sequences"][((dict_asset["label"], bus_name), "flow")]
+
         else:
             logging.warning('Value %s not "input" or "output"!', direction)
         helpers.add_info_flows(settings, dict_asset, flow)
