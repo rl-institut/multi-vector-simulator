@@ -60,18 +60,19 @@ class data_processing:
 
         for asset in dict_values["energyConversion"]:
             dict_asset = dict_values["energyConversion"][asset]
-            # in case there is one value provided (case one input bus and one output bus)
+            # in case there is only one parameter provided (input bus and one output bus)
             if isinstance(dict_asset["efficiency"]["value"], dict):
                 helpers.receive_timeseries_from_csv(
                     dict_values["simulation_settings"], dict_asset, "efficiency"
                 )
-            # in case there are more than one values provided (case n input busses and 1 output bus or 1 input bus and n output busses)
+            # in case there is more than one parameter provided (either (A) n input busses and 1 output bus or (B) 1 input bus and n output busses)
             # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
             elif isinstance(dict_asset["efficiency"]["value"], list):
                 helpers.treat_multiple_flows(dict_asset, dict_values, "efficiency")
-
+        
         # same distinction of values provided with dictionaries (one input and one output) or list (multiple).
         # They can at turn be scalars, mantained, or timeseries
+                logging.debug('Asset %s has multiple input/output busses with a list of efficiencies. Reading list', dict_asset[label])
         for sector in dict_values["energyStorage"]:
             for asset in dict_values["energyStorage"][sector]:
                 for component in ["capacity", "charging_power", "discharging_power"]:
@@ -631,7 +632,7 @@ class helpers:
             sink.update({"opex_fix": kwargs["opex_fix"], "optimizeCap": True})
         else:
             sink.update({"optimizeCap": False})
-
+    # If multiple input busses exist
         if isinstance(input_bus, list):
             for bus in input_bus:
                 if bus not in dict_values["energyConsumption"].keys():
