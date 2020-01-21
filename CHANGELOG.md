@@ -25,14 +25,18 @@ Here is a template for new release sections
 - Started readthedocs homepage (not working): https://readthedocs.org/projects/mvs-eland/ (#39, smartie2076, #57, Bachibouzouk)
 - new feature to create the input json file from a collection of csv files (@Piranias)
 - new module added: A1_csv_to_json.py (@Piranias)
+- Badges for build and docs (#70, Bachibouzouk)
+- Setup file (#72, Bachibouzouk)
 
 ### Changed
 - requirements.txt only includes packages needed for users of MVS (#39, smartie2076)
 - test_requirements.txt includes packages used by developers of MVS (#39, smartie2076)
 - CONTRIBUTING: Now with read the docs (@smartie2076)
 - README: Now with contextualization of MVS, setup & installation, utilization of and contributing to MVS (#47, smartie2076)
-- CHANGELOG.md (@Piranias, @smartie2076)
-- directory structure of input/ (@Piranias)
+- CHANGELOG.md 
+- directory structure of input/ (#49 @Piranias)
+- json data structure reduced to 2 (main) levels: goup and asset (#49 @smartie2076)
+- logging now stores into appropriate logfile (@smartie2076)
 
 ### Removed
 - Output files excluded from repro  (@smartie2076)
