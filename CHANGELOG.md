@@ -17,7 +17,7 @@ Here is a template for new release sections
 -
 ```
 
-## [Developer version] - 2020-01-22
+## [0.0.3] - 2020-01-22
 
 ### Added
 - LICENSE.md with GPL v2.0 (#38, smartie2076)
