@@ -218,7 +218,7 @@ class process_asset_group:
                 # They can at turn be scalars, mantained, or timeseries
                 logging.debug(
                     "Asset %s has multiple input/output busses with a list of efficiencies. Reading list",
-                    dict_values[group][asset]["label"]
+                    dict_values[group][asset]["label"],
                 )
 
         return
