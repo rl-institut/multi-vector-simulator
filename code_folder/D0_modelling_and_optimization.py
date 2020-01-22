@@ -101,10 +101,10 @@ class modelling:
 
         logging.debug("All components added.")
 
-        #import oemof.graph as grph
-        #my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
-        #from .F1_plotting import plots
-        #plots.draw_graph(model, node_color={})
+        # import oemof.graph as grph
+        # my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
+        # from .F1_plotting import plots
+        # plots.draw_graph(model, node_color={})
 
         logging.debug("Creating oemof model based on created components and busses...")
         local_energy_system = solph.Model(model)

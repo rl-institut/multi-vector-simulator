@@ -105,7 +105,6 @@ class data_processing:
         simulation_settings.update({"periods": len(simulation_settings["time_index"])})
         return simulation_settings
 
-
     def economic_parameters(economic_parameters):
         # Calculate annuitiy factor
         economic_parameters.update(
@@ -204,16 +203,23 @@ class process_asset_group:
             # in case there is only one parameter provided (input bus and one output bus)
             if isinstance(dict_values[group][asset]["efficiency"]["value"], dict):
                 helpers.receive_timeseries_from_csv(
-                    dict_values["simulation_settings"], dict_values[group][asset], "efficiency"
+                    dict_values["simulation_settings"],
+                    dict_values[group][asset],
+                    "efficiency",
                 )
             # in case there is more than one parameter provided (either (A) n input busses and 1 output bus or (B) 1 input bus and n output busses)
             # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
             elif isinstance(dict_values[group][asset]["efficiency"]["value"], list):
-                helpers.treat_multiple_flows(dict_values[group][asset], dict_values, "efficiency")
-        
+                helpers.treat_multiple_flows(
+                    dict_values[group][asset], dict_values, "efficiency"
+                )
+
                 # same distinction of values provided with dictionaries (one input and one output) or list (multiple).
                 # They can at turn be scalars, mantained, or timeseries
-                logging.debug('Asset %s has multiple input/output busses with a list of efficiencies. Reading list', dict_asset[label])   
+                logging.debug(
+                    "Asset %s has multiple input/output busses with a list of efficiencies. Reading list",
+                    dict_asset[label],
+                )
 
         return
 
@@ -249,20 +255,22 @@ class process_asset_group:
                 # check if parameters are provided as timeseries
                 for parameter in ["efficiency", "soc_min", "soc_max"]:
                     if parameter in dict_values[group][asset][subasset] and isinstance(
-                            dict_values[group][asset][subasset][parameter]["value"], dict
-                        ):
-                            helpers.receive_timeseries_from_csv(
-                                dict_values["simulation_settings"],
-                                dict_values[group][asset][subasset],
-                                parameter,
-                            )
-                    elif parameter in dict_values[group][asset][subasset] and isinstance(
-                            dict_values[group][asset][subasset][parameter]["value"], list
-                        ):
-                            helpers.treat_multiple_flows(
-                                dict_values[group][asset][subasset], dict_values, parameter
-                            )
-                        
+                        dict_values[group][asset][subasset][parameter]["value"], dict
+                    ):
+                        helpers.receive_timeseries_from_csv(
+                            dict_values["simulation_settings"],
+                            dict_values[group][asset][subasset],
+                            parameter,
+                        )
+                    elif parameter in dict_values[group][asset][
+                        subasset
+                    ] and isinstance(
+                        dict_values[group][asset][subasset][parameter]["value"], list
+                    ):
+                        helpers.treat_multiple_flows(
+                            dict_values[group][asset][subasset], dict_values, parameter
+                        )
+
             # define input and output bus names
             dict_values[group][asset].update(
                 {
@@ -619,10 +627,10 @@ class helpers:
             )
         else:
             source.update({"optimizeCap": {"value": False, "unit": "bool"}})
-        
+
         # update dictionary
         dict_values["energyProduction"].update({asset_name: source})
-        
+
         # create new input bus if non-existent before. Check if multiple busses are provided
         if isinstance(output_bus, list):
             for bus in output_bus:
@@ -631,7 +639,7 @@ class helpers:
         else:
             # add to list of assets on busses
             helpers.update_bus(dict_values, output_bus, asset_name, source["label"])
-                    
+
         return
 
     def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
@@ -721,11 +729,11 @@ class helpers:
                 }
             )
         else:
-          sink.update({"optimizeCap": {"value": False, "unit": "bool"}})
-          
+            sink.update({"optimizeCap": {"value": False, "unit": "bool"}})
+
         # update dictionary
         dict_values["energyConsumption"].update({asset_name: sink})
-                                                
+
         # If multiple input busses exist
         if isinstance(input_bus, list):
             for bus in input_bus:
@@ -849,7 +857,7 @@ class helpers:
         verify.lookup_file(file_path, dict_asset["label"])
 
         data_set = pd.read_csv(file_path, sep=";")
-        
+
         if "file_name" in dict_asset:
             header = data_set.columns[0]
 
