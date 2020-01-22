@@ -39,6 +39,7 @@ Here is a template for new release sections
 - directory structure of input/ (#49 @Piranias)
 - json data structure reduced to 2 (main) levels: goup and asset (#49 @smartie2076)
 - logging now stores into appropriate logfile (@smartie2076)
+- change code_folder to src (#80)
 
 ### Removed
 - Output files excluded from repro  (@smartie2076)
