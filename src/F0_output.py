@@ -1,7 +1,7 @@
 try:
     from .F1_plotting import plots
 except ImportError:
-    from code_folder.F1_plotting import plots
+    from src.F1_plotting import plots
 
 import json
 import numpy

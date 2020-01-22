@@ -3,9 +3,9 @@ try:
     from .C2_economic_functions import economics
     from .F0_output import helpers as output
 except ModuleNotFoundError:
-    from code_folder.C1_verification import verify
-    from code_folder.C2_economic_functions import economics
-    from code_folder.F0_output import helpers as output
+    from src.C1_verification import verify
+    from src.C2_economic_functions import economics
+    from src.F0_output import helpers as output
 
 import logging
 import sys, shutil

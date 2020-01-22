@@ -33,23 +33,23 @@ import os
 # Loading all child functions
 try:
     # for tests
-    from .code_folder.A0_initialization import initializing
-    from .code_folder.A1_csv_to_json import DataInputFromCsv
-    from .code_folder.B0_data_input_json import data_input
-    from .code_folder.C0_data_processing import data_processing
-    from .code_folder.D0_modelling_and_optimization import modelling
-    from .code_folder.E0_evaluation import evaluation
-    from .code_folder.F0_output import output_processing
+    from .src.A0_initialization import initializing
+    from .src.A1_csv_to_json import DataInputFromCsv
+    from .src.B0_data_input_json import data_input
+    from .src.C0_data_processing import data_processing
+    from .src.D0_modelling_and_optimization import modelling
+    from .src.E0_evaluation import evaluation
+    from .src.F0_output import output_processing
 
 except ModuleNotFoundError:
     # for terminal execution
-    from code_folder.A0_initialization import initializing
-    from code_folder.A1_csv_to_json import DataInputFromCsv
-    from code_folder.B0_data_input_json import data_input
-    from code_folder.C0_data_processing import data_processing
-    from code_folder.D0_modelling_and_optimization import modelling
-    from code_folder.E0_evaluation import evaluation
-    from code_folder.F0_output import output_processing
+    from src.A0_initialization import initializing
+    from src.A1_csv_to_json import DataInputFromCsv
+    from src.B0_data_input_json import data_input
+    from src.C0_data_processing import data_processing
+    from src.D0_modelling_and_optimization import modelling
+    from src.E0_evaluation import evaluation
+    from src.F0_output import output_processing
 
 
 def main(**kwargs):
