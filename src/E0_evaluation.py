@@ -9,11 +9,11 @@ try:
     from .E3_indicator_calculation import indicators
     from .F0_output import helpers as output
 except ImportError:
-    from code_folder.E1_process_results import process_results
-    from code_folder.E2_economics import economics
-    from code_folder.E3_indicator_calculation import indicators
+    from src.E1_process_results import process_results
+    from src.E2_economics import economics
+    from src.E3_indicator_calculation import indicators
 
-    from code_folder.F0_output import helpers as output
+    from src.F0_output import helpers as output
 
 
 class evaluation:
