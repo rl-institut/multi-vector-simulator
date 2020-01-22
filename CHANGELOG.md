@@ -17,7 +17,7 @@ Here is a template for new release sections
 -
 ```
 
-## [Developer version] - 2020-MM-DD
+## [Developer version] - 2020-01-22
 
 ### Added
 - LICENSE.md with GPL v2.0 (#38, smartie2076)
@@ -28,7 +28,7 @@ Here is a template for new release sections
 - Badges for build and docs (#70, Bachibouzouk)
 - Setup file (#72, Bachibouzouk)
 - Parameters can now be a list of values, eg. efficiencies for two busses or multiple input/output vectors (#52, @marc-juanpera) 
-- Parameters can now be a timeseries (eg. efficiency of a converter, electricity prices) (#82, @marc-juanpera) 
+- Parameters can now be a timeseries (eg. efficiency of a converter, electricity prices) (#37, #82, @marc-juanpera) 
 - Parameters can now be defined as a list as well as as a timeseries (#52,#82, @marc-juanpera) 
 
 ### Changed
