@@ -367,30 +367,34 @@ class DataInputFromCsv:
                         asset_name_string = asset_name_string + row[column] + ", "
 
                     # Find type of input value (csv file is read into df as an object)
-                    if row["unit"] == "str":
-                        column_dict.update({i: row[column]})
-                    else:
-                        value = row[column]
-                        if row["unit"] == "bool":
-                            if value in ["True", "true", "t"]:
-                                value = True
-                            elif value in ["False", "false", "F"]:
-                                value = False
-                            else:
-                                logging.warning(
-                                    "Parameter %s of asset %s is not a boolean value "
-                                    "(True/T/true or False/F/false."
-                                )
+                    if isinstance(row[column], str) and ("[" in row[column] or "]" in row[column]):
+                        if "[" not in row[column] or "]" not in row[column]:
+                            logging.warning("In file %s, asset %s for parameter %s either '[' or ']' is missing.", filename, column, i)
                         else:
-                            if value == "None":
-                                value = None
-                            else:
-                                try:
-                                    value = int(value)
-                                except:
-                                    value = float(value)
+                            # Define list of efficiencies by efficiency,factor,"[1;2]"
+                            value_string=row[column].replace('[','').replace(']', '')
+                            value_list = value_string.split(';')
+                            for item in range(0,len(value_list)):
+                                column_dict = DataInputFromCsv.conversion(filename,column_dict,row,i,column,value_list[item])
+                                if row['unit'] != 'str':
+                                    if 'value' in column_dict[i]:
+                                        # if wrapped in list is a scalar
+                                        value_list[item] = column_dict[i]['value']
+                                    else:
+                                        # if wrapped in list is a dictionary (ie. timeseries)
+                                        value_list[item] = column_dict[i]
 
-                        column_dict.update({i: {"value": value, "unit": row["unit"]}})
+                                else:
+                                    # if wrapped in list is a string
+                                    value_list[item] = column_dict[i]
+
+                            if row['unit'] != 'str':
+                                column_dict.update({i: {"value": value_list, "unit": row["unit"]}})
+                            else:
+                                column_dict.update({i: value_list})
+                            logging.info("Parameter %s of asset %s is defined as a list.", i, column)
+                    else:
+                        column_dict = DataInputFromCsv.conversion(filename,column_dict,row,i,column,row[column])
 
                 single_dict.update({column: column_dict})
                 # add exception for energyStorage
@@ -417,6 +421,45 @@ class DataInputFromCsv:
             single_dict2.update({filename: single_dict})
             return single_dict2
         return
+
+    def conversion(filename,column_dict,row,i,column,value):
+        if isinstance(value, str) and ("{" in value or "}" in value):
+            # if parameter defined as dictionary
+            # example: input,str,"{'file_name':'pv_gen_merra2_2014_eff1_tilt40_az180.csv','header':'kW','unit':'kW'}"
+            # todo this would not include [value, dict] eg. for multiple busses with one fix and one timeseries efficiency
+            if "{" not in value or "}" not in value:
+                logging.warning("In file %s, asset %s for parameter %s either '{' or '}' is missing.", filename, column, i)
+            else:
+                dict_string = value.replace("'", "\"")
+                value_dict = json.loads(dict_string)
+                column_dict.update({i: value_dict})
+                logging.info("Parameter %s of asset %s is defined as a timeseries.", i, column)
+
+        elif row["unit"] == "str":
+            column_dict.update({i: value})
+
+        else:
+            if row["unit"] == "bool":
+                if value in ["True", "true", "t"]:
+                    value = True
+                elif value in ["False", "false", "F"]:
+                    value = False
+                else:
+                    logging.warning(
+                        "Parameter %s of asset %s is not a boolean value "
+                        "(True/T/true or False/F/false."
+                    )
+            else:
+                if value == "None":
+                    value = None
+                else:
+                    try:
+                        value = int(value)
+                    except:
+                        value = float(value)
+
+            column_dict.update({i: {"value": value, "unit": row["unit"]}})
+        return column_dict
 
     def add_storage(storage_filename, input_directory):
 
