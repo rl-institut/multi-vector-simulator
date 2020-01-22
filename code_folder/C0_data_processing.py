@@ -200,13 +200,27 @@ class process_asset_group:
                 dict_values[group][asset],
             )
 
-            # read timeseries with filename provided for technical parameters (efficiency and minimum and maximum storage level)
-            if "file_name" in dict_values[group][asset]["efficiency"]:
+            # in case there is only one parameter provided (input bus and one output bus)
+            if isinstance(dict_values[group][asset]["efficiency"]["value"], dict):
                 helpers.receive_timeseries_from_csv(
                     dict_values["simulation_settings"],
                     dict_values[group][asset],
                     "efficiency",
                 )
+            # in case there is more than one parameter provided (either (A) n input busses and 1 output bus or (B) 1 input bus and n output busses)
+            # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
+            elif isinstance(dict_values[group][asset]["efficiency"]["value"], list):
+                helpers.treat_multiple_flows(
+                    dict_values[group][asset], dict_values, "efficiency"
+                )
+
+                # same distinction of values provided with dictionaries (one input and one output) or list (multiple).
+                # They can at turn be scalars, mantained, or timeseries
+                logging.debug(
+                    "Asset %s has multiple input/output busses with a list of efficiencies. Reading list",
+                    dict_values[group][asset]["label"],
+                )
+
         return
 
     def energyProduction(dict_values, group):
@@ -240,15 +254,21 @@ class process_asset_group:
 
                 # check if parameters are provided as timeseries
                 for parameter in ["efficiency", "soc_min", "soc_max"]:
-                    if (
-                        parameter in dict_values[group][asset][subasset]
-                        and "file_name"
-                        in dict_values[group][asset][subasset][parameter]
+                    if parameter in dict_values[group][asset][subasset] and isinstance(
+                        dict_values[group][asset][subasset][parameter]["value"], dict
                     ):
                         helpers.receive_timeseries_from_csv(
                             dict_values["simulation_settings"],
                             dict_values[group][asset][subasset],
                             parameter,
+                        )
+                    elif parameter in dict_values[group][asset][
+                        subasset
+                    ] and isinstance(
+                        dict_values[group][asset][subasset][parameter]["value"], list
+                    ):
+                        helpers.treat_multiple_flows(
+                            dict_values[group][asset][subasset], dict_values, parameter
                         )
 
             # define input and output bus names
@@ -312,12 +332,15 @@ class process_asset_group:
 class helpers:
     def define_missing_cost_data(dict_values, dict_asset):
 
-        # read timeseries with filename provided for variable costs
-        for parameter in ["capex_var", "opex_var"]:
-            if parameter in dict_asset and "file_name" in dict_asset[parameter]:
+        # read timeseries with filename provided for variable costs.
+        # if multiple opex_var are given for multiple busses, it checks if any value is a timeseries
+        if "opex_var" in dict_asset:
+            if isinstance(dict_asset["opex_var"]["value"], dict):
                 helpers.receive_timeseries_from_csv(
-                    dict_values["simulation_settings"], dict_asset, parameter
+                    dict_values["simulation_settings"], dict_asset, "opex_var"
                 )
+            elif isinstance(dict_asset["opex_var"]["value"], list):
+                helpers.treat_multiple_flows(dict_asset, dict_values, "opex_var")
 
         economic_data = dict_values["economic_data"]
 
@@ -430,8 +453,9 @@ class helpers:
             number_of_pricing_periods,
             months_in_a_period,
         )
+
         dict_asset = dict_values["energyProviders"][dso]
-        if "file_name" in dict_asset["peak_demand_pricing"]:
+        if isinstance(dict_asset["peak_demand_pricing"]["value"], dict):
             helpers.receive_timeseries_from_csv(
                 dict_values["simulation_settings"], dict_asset, "peak_demand_pricing"
             )
@@ -514,7 +538,13 @@ class helpers:
         return
 
     def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwargs):
-        output_bus_name = helpers.bus_suffix(output_bus)
+        # create name of bus. Check if multiple busses are given
+        if isinstance(output_bus, list):
+            output_bus_name = []
+            for bus in output_bus:
+                output_bus_name.append(helpers.bus_suffix(bus))
+        else:
+            output_bus_name = helpers.bus_suffix(output_bus)
 
         source = {
             "type_oemof": "source",
@@ -530,13 +560,35 @@ class helpers:
             },
         }
 
-        # read time series for opex_var if a file name has been provided in energy price
-        if "file_name" in price:
+        # check if multiple busses are provided
+        # for each bus, read time series for opex_var if a file name has been provided in energy price
+        if isinstance(price["value"], list):
+            source.update({"opex_var": {"value": [], "unit": price["unit"]}})
+            values_info = []
+            for element in price["value"]:
+                if isinstance(element, dict):
+                    source["opex_var"]["value"].append(
+                        helpers.get_timeseries_multiple_flows(
+                            dict_values["simulation_settings"],
+                            source,
+                            element["file_name"],
+                            element["header"],
+                        )
+                    )
+                    values_info.append(element)
+                else:
+                    source["opex_var"]["value"].append(element)
+            if len(values_info) > 0:
+                source["opex_var"]["values_info"] = values_info
+
+        elif isinstance(price["value"], dict):
             source.update(
                 {
                     "opex_var": {
-                        "file_name": price["file_name"],
-                        "header": price["header"],
+                        "value": {
+                            "file_name": price["value"]["file_name"],
+                            "header": price["value"]["header"],
+                        },
                         "unit": price["unit"],
                     }
                 }
@@ -578,12 +630,27 @@ class helpers:
 
         # update dictionary
         dict_values["energyProduction"].update({asset_name: source})
-        # add to list of assets on busses
-        helpers.update_bus(dict_values, output_bus, asset_name, source["label"])
+
+        # create new input bus if non-existent before. Check if multiple busses are provided
+        if isinstance(output_bus, list):
+            for bus in output_bus:
+                # add to list of assets on busses
+                helpers.update_bus(dict_values, bus, asset_name, source["label"])
+        else:
+            # add to list of assets on busses
+            helpers.update_bus(dict_values, output_bus, asset_name, source["label"])
+
         return
 
     def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
-        input_bus_name = helpers.bus_suffix(input_bus)
+        # create name of bus. Check if multiple busses are given
+        if isinstance(input_bus, list):
+            input_bus_name = []
+            for bus in input_bus:
+                input_bus_name.append(helpers.bus_suffix(bus))
+        else:
+            input_bus_name = helpers.bus_suffix(input_bus)
+
         # create a dictionary for the sink
         sink = {
             "type_oemof": "sink",
@@ -597,13 +664,36 @@ class helpers:
             },
         }
 
-        # read time series for opex_var if a file name has been provided in energy_price
-        if "file_name" in price:
+        # check if multiple busses are provided
+        # for each bus, read time series for opex_var if a file name has been provided in feedin tariff
+        if isinstance(price["value"], list):
+            sink.update({"opex_var": {"value": [], "unit": price["unit"]}})
+            values_info = []
+            for element in price["value"]:
+                if isinstance(element, dict):
+                    timeseries = helpers.get_timeseries_multiple_flows(
+                        dict_values["simulation_settings"],
+                        sink,
+                        element["file_name"],
+                        element["header"],
+                    )
+                    if asset_name[-6:] == "feedin":
+                        sink["opex_var"]["value"].append([-i for i in timeseries])
+                    else:
+                        sink["opex_var"]["value"].append(timeseries)
+                else:
+                    sink["opex_var"]["value"].append(element)
+            if len(values_info) > 0:
+                sink["opex_var"]["values_info"] = values_info
+
+        elif isinstance(price["value"], dict):
             sink.update(
                 {
                     "opex_var": {
-                        "file_name": price["file_name"],
-                        "header": price["header"],
+                        "value": {
+                            "file_name": price["value"]["file_name"],
+                            "header": price["value"]["header"],
+                        },
                         "unit": price["unit"],
                     }
                 }
@@ -640,10 +730,18 @@ class helpers:
             )
         else:
             sink.update({"optimizeCap": {"value": False, "unit": "bool"}})
+
         # update dictionary
         dict_values["energyConsumption"].update({asset_name: sink})
-        # add to list of assets on busses
-        helpers.update_bus(dict_values, input_bus, asset_name, sink["label"])
+
+        # If multiple input busses exist
+        if isinstance(input_bus, list):
+            for bus in input_bus:
+                helpers.update_bus(dict_values, bus, asset_name, sink["label"])
+        else:
+            # add to list of assets on busses
+            helpers.update_bus(dict_values, input_bus, asset_name, sink["label"])
+
         return
 
     def evaluate_lifetime_costs(settings, economic_data, dict_asset):
@@ -653,21 +751,21 @@ class helpers:
             dict_asset.update({"opex_fix": 0})
 
         opex_fix = dict_asset["opex_fix"]["value"]
-
-        # take average value is capex_var or opex_var are timeseries
-        if isinstance(dict_asset["capex_var"]["value"], float) or isinstance(
-            dict_asset["capex_var"]["value"], int
-        ):
-            capex_var = dict_asset["capex_var"]["value"]
-        else:
-            capex_var = sum(dict_asset["capex_var"]["value"]) / len(
-                dict_asset["capex_var"]["value"]
-            )
-
+        capex_var = dict_asset["capex_var"]["value"]
+        # take average value of opex_var if it is a timeseries
         if isinstance(dict_asset["opex_var"]["value"], float) or isinstance(
             dict_asset["opex_var"]["value"], int
         ):
             opex_var = dict_asset["opex_var"]["value"]
+
+        # if multiple busses are provided, it takes the first opex_var (corresponding to the first bus)
+        # to calculate the lifetime_opex_var
+        elif isinstance(dict_asset["opex_var"]["value"], list):
+            first_value = dict_asset["opex_var"]["value"][0]
+            if isinstance(first_value, float) or isinstance(first_value, int):
+                opex_var = first_value
+            else:
+                opex_var = sum(first_value) / len(first_value)
         else:
             opex_var = sum(dict_asset["opex_var"]["value"]) / len(
                 dict_asset["opex_var"]["value"]
@@ -741,21 +839,25 @@ class helpers:
     # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
     # so additional values like peak, total or average must be calculated. Any other type does not need this additional info.
     def receive_timeseries_from_csv(settings, dict_asset, type):
-        # todo this input/file_name thing is a workaround and has to be improved in the future
-        # if only filename is given here, then only one column can be in the csv
-        if "input" in dict_asset:
+        if type == "input" and "input" in dict_asset:
             file_name = dict_asset[type]["file_name"]
             header = dict_asset[type]["header"]
             unit = dict_asset[type]["unit"]
-
         elif "file_name" in dict_asset:
+            # todo this input/file_name thing is a workaround and has to be improved in the future
+            # if only filename is given here, then only one column can be in the csv
             file_name = dict_asset["file_name"]
             unit = dict_asset["unit"] + "/h"
+        else:
+            file_name = dict_asset[type]["value"]["file_name"]
+            header = dict_asset[type]["value"]["header"]
+            unit = dict_asset[type]["unit"]
 
         file_path = settings["path_input_folder"] + file_name
         verify.lookup_file(file_path, dict_asset["label"])
 
         data_set = pd.read_csv(file_path, sep=";")
+
         if "file_name" in dict_asset:
             header = data_set.columns[0]
 
@@ -769,13 +871,11 @@ class helpers:
                     }
                 )
             else:
-                dict_asset[type].update(
-                    {
-                        "value": pd.Series(
-                            data_set[header].values, index=settings["time_index"]
-                        )
-                    }
+                dict_asset[type]["value_info"] = dict_asset[type]["value"]
+                dict_asset[type]["value"] = pd.Series(
+                    data_set[header].values, index=settings["time_index"]
                 )
+
             logging.debug(
                 "Added timeseries of %s (%s).", dict_asset["label"], file_path
             )
@@ -790,14 +890,12 @@ class helpers:
                     }
                 )
             else:
-                dict_asset[type].update(
-                    {
-                        "value": pd.Series(
-                            data_set[header][0 : len(settings["time_index"])].values,
-                            index=settings["time_index"],
-                        ),
-                    }
+                dict_asset[type]["value_info"] = dict_asset[type]["value"]
+                dict_asset[type]["value"] = pd.Series(
+                    data_set[header][0 : len(settings["time_index"])].values,
+                    index=settings["time_index"],
                 )
+
             logging.info(
                 "Provided timeseries of %s (%s) longer than evaluated period. "
                 "Excess data dropped.",
@@ -856,3 +954,81 @@ class helpers:
         shutil.copy(file_path, settings["path_output_folder_inputs"] + file_name)
         logging.debug("Copied timeseries %s to output folder / inputs.", file_path)
         return
+
+    def treat_multiple_flows(dict_asset, dict_values, parameter):
+        """
+        This function consider the case a technical parameter on the json file has a list of values because multiple
+        inputs or outputs busses are considered.
+        Parameters
+        ----------
+        dict_values:
+        dictionary of current values of the asset
+        parameter:
+        usually efficiency. Different efficiencies will be given if an asset has multiple inputs or outputs busses,
+        so a list must be considered.
+
+        Returns
+        -------
+
+        """
+        updated_values = []
+        values_info = (
+            []
+        )  # filenames and headers will be stored to allow keeping track of the timeseries generation
+        for element in dict_asset[parameter]["value"]:
+            if isinstance(element, dict):
+                updated_values.append(
+                    helpers.get_timeseries_multiple_flows(
+                        dict_values["simulation_settings"],
+                        dict_asset,
+                        element["file_name"],
+                        element["header"],
+                    )
+                )
+                values_info.append(element)
+            else:
+                updated_values.append(element)
+        dict_asset[parameter]["value"] = updated_values
+        if len(values_info) > 0:
+            dict_asset[parameter].update({"values_info": values_info})
+
+        return
+
+    # reads timeseries specifically when the need comes from a multiple or output busses situation
+    # returns the timeseries. Does not update any dictionary
+    def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
+        """
+
+        Parameters
+        ----------
+        dict_asset:
+        dictionary of the asset
+        file_name:
+        name of the file to read the time series
+        header:
+        name of the column where the timeseries is provided
+
+        Returns
+        -------
+
+        """
+        file_path = settings["path_input_folder"] + file_name
+        verify.lookup_file(file_path, dict_asset["label"])
+
+        data_set = pd.read_csv(file_path, sep=";")
+        if len(data_set.index) == settings["periods"]:
+            return pd.Series(data_set[header].values, index=settings["time_index"])
+        elif len(data_set.index) >= settings["periods"]:
+            return pd.Series(
+                data_set[header][0 : len(settings["time_index"])].values,
+                index=settings["time_index"],
+            )
+        elif len(data_set.index) <= settings["periods"]:
+            logging.critical(
+                "Input error! "
+                "Provided timeseries of %s (%s) shorter then evaluated period. "
+                "Operation terminated",
+                dict_asset["label"],
+                file_path,
+            )
+            sys.exit()
