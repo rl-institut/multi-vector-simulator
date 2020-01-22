@@ -106,7 +106,7 @@ class plots:
         dfcapacities.plot.bar(
             x="items",
             y="capacities",
-            title="Optimal additional capacities (kW/kWh/kWhp): "
+            title="Optimal additional capacities (kW/kWh/kWp): "
             + project_data["project_name"]
             + ", "
             + project_data["scenario_name"],
