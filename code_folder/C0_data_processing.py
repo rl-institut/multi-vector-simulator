@@ -249,7 +249,7 @@ class process_asset_group:
                 # check if parameters are provided as timeseries
                 for parameter in ["efficiency", "soc_min", "soc_max"]:
                     if parameter in dict_values[group][asset][subasset] and isinstance(
-                            dict_asset[parameter]["value"], dict
+                            dict_values[group][asset][subasset][parameter]["value"], dict
                         ):
                             helpers.receive_timeseries_from_csv(
                                 dict_values["simulation_settings"],
@@ -723,10 +723,10 @@ class helpers:
         else:
           sink.update({"optimizeCap": {"value": False, "unit": "bool"}})
           
-    # update dictionary
-        dict_values["energyConsumption"].update({asset_name: sink}
+        # update dictionary
+        dict_values["energyConsumption"].update({asset_name: sink})
                                                 
-    # If multiple input busses exist
+        # If multiple input busses exist
         if isinstance(input_bus, list):
             for bus in input_bus:
                 helpers.update_bus(dict_values, bus, asset_name, sink["label"])

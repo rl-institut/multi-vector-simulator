@@ -12,10 +12,7 @@ class process_results:
         :return:
         """
         bus_data_timeseries = {}
-        print(bus_data)
         for bus in bus_data.keys():
-            print(bus)
-            print(bus_data[bus].keys())
             bus_data_timeseries.update(
                 {
                     bus: pd.DataFrame(
