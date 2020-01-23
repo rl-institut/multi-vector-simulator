@@ -10,29 +10,33 @@ from .constants import REPO_PATH
 
 class TestClass:
 
-    output_path = os.path.join('.', 'tests', 'MVS_outputs')
+    output_path = os.path.join(".", "tests", "MVS_outputs")
 
     def setup_method(self):
-        print('setup')
+
         os.mkdir(self.output_path)
-        os.mkdir(os.path.join(self.output_path, 'dummy'))
+        os.mkdir(os.path.join(self.output_path, "dummy"))
 
     def test_create_output_path_ask_to_overwrite_existing_no(self):
-        with mock.patch('builtins.input', return_value="no"):
+        with mock.patch("builtins.input", return_value="no"):
             with pytest.raises(FileExistsError):
-                initializing.check_output_directory(os.path.join(self.output_path), overwrite=False)
+                initializing.check_output_directory(
+                    os.path.join(self.output_path), overwrite=False
+                )
             assert os.path.exists(self.output_path)
 
     def test_create_output_path_ask_overwrite_existing_yes(self):
-        with mock.patch('builtins.input', return_value="yes"):
-            initializing.check_output_directory(os.path.join(self.output_path), overwrite=False)
+        with mock.patch("builtins.input", return_value="yes"):
+            initializing.check_output_directory(
+                os.path.join(self.output_path), overwrite=False
+            )
             assert os.path.exists(self.output_path)
 
-
     def test_create_output_path_existing_yes(self):
-        initializing.check_output_directory(os.path.join(self.output_path), overwrite=True)
+        initializing.check_output_directory(
+            os.path.join(self.output_path), overwrite=True
+        )
         assert os.path.exists(self.output_path)
-
 
     def teardown_method(self):
         shutil.rmtree(self.output_path, ignore_errors=True)

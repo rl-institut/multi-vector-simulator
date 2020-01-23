@@ -53,7 +53,11 @@ def check_output_directory(path_output_folder, overwrite):
                 logging.critical(
                     "Output folder exists and should not be overwritten. Please choose other folder."
                 )
-                raise(FileExistsError("Output folder exists and should not be overwritten. Please choose other folder."))
+                raise (
+                    FileExistsError(
+                        "Output folder exists and should not be overwritten. Please choose other folder."
+                    )
+                )
 
         if overwrite is True:
             logging.info("Removing existing folder " + path_output_folder)
