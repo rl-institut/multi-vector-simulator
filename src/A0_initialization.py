@@ -12,9 +12,9 @@ def check_input_directory(path_input_file):
     :param path_input_file:
     :return:
     """
-    split = path_input_file.rsplit("/", 1)
-    path_input_folder = split[0]
-    name_input_file = split[1]
+
+    path_input_folder = os.path.dirname(path_input_file)
+    name_input_file = os.path.basename(path_input_file)
 
     logging.debug("Checking for inputs files")
     if os.path.isdir(path_input_folder) is False:
