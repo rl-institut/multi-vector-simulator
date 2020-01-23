@@ -1,14 +1,10 @@
-try:
-    from .F1_plotting import plots
-except ImportError:
-    from src.F1_plotting import plots
-
 import json
 import numpy
 import pandas as pd
 import logging
 import matplotlib.pyplot as plt
 
+import src.F1_plotting as plots
 
 class output_processing:
     def evaluate_dict(dict_values):
