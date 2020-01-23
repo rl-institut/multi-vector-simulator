@@ -7,7 +7,7 @@ import pprint as pp
 try:
     from .D1_model_components import define_oemof_component, call_component, helpers
 except ImportError:
-    from code_folder.D1_model_components import (
+    from src.D1_model_components import (
         define_oemof_component,
         call_component,
         helpers,
@@ -71,41 +71,34 @@ class modelling:
             else:
                 warning_asset_type(asset, type, "energyConversion")
 
-        for sector in dict_values["energyConsumption"]:
-            for asset in dict_values["energyConsumption"][sector]:
-                type = dict_values["energyConsumption"][sector][asset]["type_oemof"]
-                if type == "sink":
-                    call_component.sink(
-                        model,
-                        dict_values["energyConsumption"][sector][asset],
-                        **dict_model
-                    )
-                else:
-                    warning_asset_type(asset, type, "energyConsumption")
+        for asset in dict_values["energyConsumption"]:
+            type = dict_values["energyConsumption"][asset]["type_oemof"]
+            if type == "sink":
+                call_component.sink(
+                    model, dict_values["energyConsumption"][asset], **dict_model
+                )
+            else:
+                warning_asset_type(asset, type, "energyConsumption")
 
-        for sector in dict_values["energyProduction"]:
-            for asset in dict_values["energyProduction"][sector]:
-                type = dict_values["energyProduction"][sector][asset]["type_oemof"]
-                if type == "source":
-                    call_component.source(
-                        model,
-                        dict_values["energyProduction"][sector][asset],
-                        **dict_model
-                    )
-                else:
-                    warning_asset_type(asset, type, "energyProduction")
+        for asset in dict_values["energyProduction"]:
 
-        for sector in dict_values["energyStorage"]:
-            for asset in dict_values["energyStorage"][sector]:
-                type = dict_values["energyStorage"][sector][asset]["type_oemof"]
-                if type == "storage":
-                    call_component.storage(
-                        model, dict_values["energyStorage"][sector][asset], **dict_model
-                    )
-                else:
-                    warning_asset_type(asset, type, "energyStorage")
+            type = dict_values["energyProduction"][asset]["type_oemof"]
+            if type == "source":
+                call_component.source(
+                    model, dict_values["energyProduction"][asset], **dict_model
+                )
+            else:
+                warning_asset_type(asset, type, "energyProduction")
 
-        # pp.pprint(dict_model)
+        for asset in dict_values["energyStorage"]:
+            type = dict_values["energyStorage"][asset]["type_oemof"]
+            if type == "storage":
+                call_component.storage(
+                    model, dict_values["energyStorage"][asset], **dict_model
+                )
+            else:
+                warning_asset_type(asset, type, "energyStorage")
+
         logging.debug("All components added.")
 
         # import oemof.graph as grph
@@ -125,9 +118,7 @@ class modelling:
         Minimal renewable share constraint
         """
         logging.debug("All constraints added.")
-        """
 
-        """
         if dict_values["simulation_settings"]["output_lp_file"] == True:
             logging.debug("Saving to lp-file.")
             local_energy_system.write(

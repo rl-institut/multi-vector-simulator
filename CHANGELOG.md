@@ -11,11 +11,48 @@ Here is a template for new release sections
 
 ### Added
 -
-### Changed
+### Changed 
 -
 ### Removed
 -
 ```
+
+## [unreleased]
+
+### Added
+-
+### Changed 
+-
+### Removed
+-
+
+## [0.0.3] - 2020-01-22
+
+### Added
+- LICENSE.md with GPL v2.0 (#38, smartie2076)
+- folder "docs" and content to generate readthedocs (#39, smartie2076)
+- Started readthedocs homepage (not working): https://readthedocs.org/projects/mvs-eland/ (#39, smartie2076, #57, Bachibouzouk)
+- new feature to create the input json file from a collection of csv files (@Piranias)
+- new module added: A1_csv_to_json.py (@Piranias)
+- Badges for build and docs (#70, Bachibouzouk)
+- Setup file (#72, Bachibouzouk)
+- Parameters can now be a list of values, eg. efficiencies for two busses or multiple input/output vectors (#52, @marc-juanpera) 
+- Parameters can now be a timeseries (eg. efficiency of a converter, electricity prices) (#37, #82, @marc-juanpera) 
+- Parameters can now be defined as a list as well as as a timeseries (#52,#82, @marc-juanpera) 
+
+### Changed
+- requirements.txt only includes packages needed for users of MVS (#39, smartie2076)
+- test_requirements.txt includes packages used by developers of MVS (#39, smartie2076)
+- CONTRIBUTING: Now with read the docs (@smartie2076)
+- README: Now with contextualization of MVS, setup & installation, utilization of and contributing to MVS (#47, smartie2076)
+- directory structure of input/ (#49 @Piranias)
+- json data structure reduced to 2 (main) levels: goup and asset (#49 @smartie2076)
+- logging now stores into appropriate logfile (@smartie2076)
+- change code_folder to src (#80)
+
+### Removed
+- Output files excluded from repro  (@smartie2076)
+
 ## [0.0.2] - 2019-11-25
 
 ### Added

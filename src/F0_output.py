@@ -1,7 +1,7 @@
 try:
     from .F1_plotting import plots
 except ImportError:
-    from code_folder.F1_plotting import plots
+    from src.F1_plotting import plots
 
 import json
 import numpy
@@ -22,10 +22,9 @@ class output_processing:
                 index=dict_values["simulation_settings"]["time_index"],
             )
 
-            for asset in dict_values["energyConsumption"][sector_name]:
+            for asset in dict_values["energyConsumption"]:
                 total_demand = (
-                    total_demand
-                    + dict_values["energyConsumption"][sector_name][asset]["flow"]
+                    total_demand + dict_values["energyConsumption"][asset]["flow"]
                 )
 
             # todo this should actually link to C0: helpers.bus_suffix
@@ -50,19 +49,21 @@ class output_processing:
 
         helpers.store_timeseries_all_busses_to_excel(dict_values)
 
-        # plot the capacities and the annuity costs
-        plots.capacities(
-            dict_values["simulation_settings"],
-            dict_values["project_data"],
-            dict_values["kpi"]["cost_matrix"]["label"],
-            dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
-        )
-        plots.costs(
-            dict_values["simulation_settings"],
-            dict_values["project_data"],
-            dict_values["kpi"]["cost_matrix"]["label"],
-            dict_values["kpi"]["cost_matrix"]["annuity_total"],
-        )
+        # plot optimal capacities if there are optimized assets
+        show_optimal_capacities = False
+        for element in dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"].values:
+            if element > 0:
+                show_optimal_capacities = True
+        if show_optimal_capacities:
+            plots.capacities(
+                dict_values["simulation_settings"],
+                dict_values["project_data"],
+                dict_values["kpi"]["cost_matrix"]["label"],
+                dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
+            )
+
+        # plot annuity, first-investment and om costs
+        plots.costs(dict_values)
 
         # Write everything to file with multipe tabs
         results_scalar_output_file = "/scalars" + ".xlsx"

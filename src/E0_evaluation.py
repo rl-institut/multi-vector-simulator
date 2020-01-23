@@ -9,11 +9,11 @@ try:
     from .E3_indicator_calculation import indicators
     from .F0_output import helpers as output
 except ImportError:
-    from code_folder.E1_process_results import process_results
-    from code_folder.E2_economics import economics
-    from code_folder.E3_indicator_calculation import indicators
+    from src.E1_process_results import process_results
+    from src.E2_economics import economics
+    from src.E3_indicator_calculation import indicators
 
-    from code_folder.F0_output import helpers as output
+    from src.F0_output import helpers as output
 
 
 class evaluation:
@@ -58,30 +58,28 @@ class evaluation:
         process_results.get_timeseries_per_bus(dict_values, bus_data)
 
         # Store all information related to storages in bus_data, as storage capacity acts as a bus
-        for sector in dict_values["energyStorage"]:
-            for storage in dict_values["energyStorage"][sector]:
-                bus_data.update(
-                    {
-                        dict_values["energyStorage"][sector][storage][
-                            "label"
-                        ]: outputlib.views.node(
-                            results_main,
-                            dict_values["energyStorage"][sector][storage]["label"],
-                        )
-                    }
-                )
-                process_results.get_storage_results(
-                    dict_values["simulation_settings"],
-                    bus_data[dict_values["energyStorage"][sector][storage]["label"]],
-                    dict_values["energyStorage"][sector][storage],
-                )
-                economics.get_costs(
-                    dict_values["energyStorage"][sector][storage],
-                    dict_values["economic_data"],
-                )
-                helpers.store_result_matrix(
-                    dict_values["kpi"], dict_values["energyStorage"][sector][storage]
-                )
+
+        for storage in dict_values["energyStorage"]:
+            bus_data.update(
+                {
+                    dict_values["energyStorage"][storage][
+                        "label"
+                    ]: outputlib.views.node(
+                        results_main, dict_values["energyStorage"][storage]["label"],
+                    )
+                }
+            )
+            process_results.get_storage_results(
+                dict_values["simulation_settings"],
+                bus_data[dict_values["energyStorage"][storage]["label"]],
+                dict_values["energyStorage"][storage],
+            )
+            economics.get_costs(
+                dict_values["energyStorage"][storage], dict_values["economic_data"],
+            )
+            helpers.store_result_matrix(
+                dict_values["kpi"], dict_values["energyStorage"][storage]
+            )
 
         for asset in dict_values["energyConversion"]:
             process_results.get_results(
@@ -97,19 +95,18 @@ class evaluation:
             )
 
         for group in ["energyProduction", "energyConsumption"]:
-            for sector in dict_values[group]:
-                for asset in dict_values[group][sector]:
-                    process_results.get_results(
-                        dict_values["simulation_settings"],
-                        bus_data,
-                        dict_values[group][sector][asset],
-                    )
-                    economics.get_costs(
-                        dict_values[group][sector][asset], dict_values["economic_data"]
-                    )
-                    helpers.store_result_matrix(
-                        dict_values["kpi"], dict_values[group][sector][asset]
-                    )
+            for asset in dict_values[group]:
+                process_results.get_results(
+                    dict_values["simulation_settings"],
+                    bus_data,
+                    dict_values[group][asset],
+                )
+                economics.get_costs(
+                    dict_values[group][asset], dict_values["economic_data"]
+                )
+                helpers.store_result_matrix(
+                    dict_values["kpi"], dict_values[group][asset]
+                )
 
         indicators.all_totals(dict_values)
 

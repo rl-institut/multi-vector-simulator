@@ -151,7 +151,10 @@
             },
             "efficiency": {
                 "unit": "factor",
-                "value": 1
+                "value": [
+                    1,
+                    1
+                ]
             },
             "energyVector": "Electricity",
             "inflow_direction": "Electricity",
@@ -170,13 +173,19 @@
             },
             "opex_var": {
                 "unit": "currency/kWh",
-                "value": 0.0
+                "value": [
+                    1,
+                    1
+                ]
             },
             "optimizeCap": {
                 "unit": "bool",
                 "value": true
             },
-            "outflow_direction": "ESS Li-Ion",
+            "outflow_direction": [
+                "ESS Li-Ion",
+                "Electricity"
+            ],
             "type_oemof": "transformer",
             "unit": "kW"
         },
@@ -379,7 +388,7 @@
             },
             "peak_demand_pricing_period": {
                 "unit": "times per year (1,2,3,4,6,12)",
-                "value": 12
+                "value": 2
             },
             "type_oemof": "source"
         }

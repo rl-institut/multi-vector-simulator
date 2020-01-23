@@ -18,7 +18,7 @@ install:
 # commands to run tests 
 script:
   - pytest tests/tests.py
-#  - flake8
+  - black --check . --exclude docs/
 #  - pylint */*.py
 #jobs:
 #  include:
