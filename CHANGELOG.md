@@ -20,9 +20,9 @@ Here is a template for new release sections
 ## [unreleased]
 
 ### Added
--
+- tests for the A0 module (#87)
 ### Changed 
--
+- removed unused class structure in all modules, execution stay the same (#86)
 ### Removed
 -
 
