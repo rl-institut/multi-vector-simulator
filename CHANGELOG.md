@@ -22,7 +22,7 @@ Here is a template for new release sections
 ### Added
 -
 ### Changed 
--
+- removed unused class structure in all modules, execution stay the same (#86)
 ### Removed
 -
 
