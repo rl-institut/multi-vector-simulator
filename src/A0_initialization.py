@@ -17,14 +17,14 @@ def check_input_directory(path_input_file):
     name_input_file = split[1]
 
     logging.debug("Checking for inputs files")
-    if os.path.isdir(path_input_folder) == False:
+    if os.path.isdir(path_input_folder) is False:
         logging.critical(
             "Missing folder for inputs! "
             "\n The input folder can not be found. Operation terminated."
         )
         sys.exit()
 
-    if os.path.isfile(path_input_file) == False:
+    if os.path.isfile(path_input_file) is False:
         logging.critical(
             "Missing input excel file! "
             "\n The input excel file can not be found. Operation terminated."
@@ -40,21 +40,22 @@ def check_output_directory(path_output_folder, overwrite):
     :return:
     """
     logging.debug("Checking for output folder")
-    if os.path.isdir(path_output_folder) == True:
-        if overwrite == False:
+    if os.path.isdir(path_output_folder) is True:
+        if overwrite is False:
             user_reply = input(
                 "Attention: Output overwrite? "
                 "\n Output folder already exists. Should it be overwritten? (y/n)"
             )
+            print(user_reply)
             if user_reply in ["y", "Y", "yes", "Yes"]:
-                overwrite == True
+                overwrite is True
             else:
                 logging.critical(
                     "Output folder exists and should not be overwritten. Please choose other folder."
                 )
                 sys.exit()
 
-        if overwrite == True:
+        if overwrite is True:
             logging.info("Removing existing folder " + path_output_folder)
             path_removed = os.path.abspath(path_output_folder)
             shutil.rmtree(path_removed, ignore_errors=True)
@@ -98,7 +99,7 @@ def get_user_input(**kwargs):
     overwrite = False  # todo this means that results will be overwritten.
     lp_file_output = False
 
-    if "test" in kwargs and kwargs["test"] == True:
+    if "test" in kwargs and kwargs["test"] is True:
         overwrite = True
     else:
         # Read terminal inputs:
