@@ -2,15 +2,10 @@ import timeit
 import logging
 import oemof.solph as solph
 import oemof.outputlib as outputlib
-import pprint as pp
 
-try:
-    from .D1_model_components import define_oemof_component, call_component, helpers
-except ImportError:
-    from src.D1_model_components import (
-        define_oemof_component,
-        call_component,
-        helpers,
+
+import src.D1_model_components as model_components
+
     )
 
 
