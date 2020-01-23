@@ -24,9 +24,23 @@ from pathlib import Path
 import logging
 import pandas as pd
 
+ALLOWED_FILES = (
+    "fixcost",
+    "simulation_settings",
+    "project_data",
+    "economic_data",
+    "energyConversion",
+    "energyProduction",
+    "energyStorage",
+    "energyProviders",
+    "energyConsumption",
+)
+
 
 def create_input_json(
-    input_directory=None, output_filename="working_example2.json", pass_back=True
+    input_directory=os.path.join("inputs", "elements"),
+    output_filename="working_example2.json",
+    pass_back=True,
 ):
 
     """
@@ -46,10 +60,6 @@ def create_input_json(
 
     :return: None or dict
     """
-    if input_directory is None:
-        input_directory = os.path.join(
-            Path(os.path.dirname(__file__)).parent, "inputs/elements/"
-        )
 
     logging.info(
         "loading and converting all csv's from %s" % input_directory
@@ -58,17 +68,6 @@ def create_input_json(
 
     input_json = {}
     # hardcoded required lists of parameters for the creation of json files according csv file
-    maximum_files = [
-        "fixcost",
-        "simulation_settings",
-        "project_data",
-        "economic_data",
-        "energyConversion",
-        "energyProduction",
-        "energyStorage",
-        "energyProviders",
-        "energyConsumption",
-    ]
 
     # hardcorded list of necessary csv files
     required_files_list = [
@@ -223,29 +222,19 @@ def create_input_json(
         }
     )
 
-    # test if all input files in maximum file are mentioned in parameterlist:
-    # todo translate to pytest
-    for input_file in maximum_files:
-        if input_file not in parameterlist.keys():
-            logging.warning(
-                'File %s is a possible input for generating a json from csv"s, '
-                "but list of parameters is not defined.",
-                input_file,
-            )
-
     # Read all csv files from path input directory/csv/
     list_assets = []
     for f in os.listdir(os.path.join(input_directory, "csv/")):
-        filename = f[:-4]
+        filename = str(f[:-4])
         if filename in parameterlist.keys():
-            list_assets.append(str(filename))
+            list_assets.append(filename)
             parameters = parameterlist[filename]
             single_dict = create_json_from_csv(
                 input_directory, filename, parameters=parameters
             )
             input_json.update(single_dict)
-        elif "storage_" in f:
-            list_assets.append(str(f[:-4]))
+        elif "storage_" in filename:
+            list_assets.append(filename)
             pass
         else:
             csv_default_directory = os.path.join(
@@ -258,15 +247,15 @@ def create_input_json(
             )
 
     # check if all required files are available
-    extra = list(set(list_assets) ^ set(maximum_files))
-    #        missing = list(set(list_assets) ^ set(required_files_list))
+    extra = list(set(list_assets) ^ set(ALLOWED_FILES))
+
     for i in extra:
         if i in required_files_list:
             logging.error(
                 "Required input file %s" % i + " is missing! Please add it"
                 "into %s" % os.path.join(input_directory, "csv/") + "."
             )
-        elif i in maximum_files:
+        elif i in ALLOWED_FILES:
             logging.debug(
                 "No %s" % i + ".csv file found. This is an " "accepted option."
             )
