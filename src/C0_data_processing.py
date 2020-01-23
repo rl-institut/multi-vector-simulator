@@ -1,17 +1,9 @@
-try:
-    from .C1_verification import verify
-    from .C2_economic_functions import economics
-    from .F0_output import helpers as output
-except ModuleNotFoundError:
-    from src.C1_verification import verify
-    from src.C2_economic_functions import economics
-    from src.F0_output import helpers as output
-
+import sys
+import shutil
 import logging
-import sys, shutil
 import pandas as pd
 
-from copy import deepcopy
+import src.C1_verification as verify
 
 
 class data_processing:
