@@ -67,7 +67,7 @@ def main(**kwargs):
     # Read all inputs
     #    print("")
     #    # todo: is user input completely used?
-    #    dict_values = data_input.load_json(user_input)
+    #    dict_values = data_input.load_json(user_input["path_input_file"])
 
     logging.debug("Accessing script: A1_csv_to_json")
     path_to_json_from_csv = load_data_from_csv.create_input_json()
