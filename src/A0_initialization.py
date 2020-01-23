@@ -12,19 +12,19 @@ def check_input_directory(path_input_file):
     :param path_input_file:
     :return:
     """
-    split = path_input_file.rsplit("/", 1)
-    path_input_folder = split[0]
-    name_input_file = split[1]
+
+    path_input_folder = os.path.dirname(path_input_file)
+    name_input_file = os.path.basename(path_input_file)
 
     logging.debug("Checking for inputs files")
-    if os.path.isdir(path_input_folder) == False:
+    if os.path.isdir(path_input_folder) is False:
         logging.critical(
             "Missing folder for inputs! "
             "\n The input folder can not be found. Operation terminated."
         )
         sys.exit()
 
-    if os.path.isfile(path_input_file) == False:
+    if os.path.isfile(path_input_file) is False:
         logging.critical(
             "Missing input excel file! "
             "\n The input excel file can not be found. Operation terminated."
@@ -40,40 +40,54 @@ def check_output_directory(path_output_folder, overwrite):
     :return:
     """
     logging.debug("Checking for output folder")
-    if os.path.isdir(path_output_folder) == True:
-        if overwrite == False:
+    if os.path.exists(path_output_folder) is True:
+        if overwrite is False:
             user_reply = input(
                 "Attention: Output overwrite? "
                 "\n Output folder already exists. Should it be overwritten? (y/n)"
             )
+            print(user_reply)
             if user_reply in ["y", "Y", "yes", "Yes"]:
-                overwrite == True
+                overwrite is True
             else:
                 logging.critical(
                     "Output folder exists and should not be overwritten. Please choose other folder."
                 )
-                sys.exit()
+                raise (
+                    FileExistsError(
+                        "Output folder exists and should not be overwritten. Please choose other folder."
+                    )
+                )
 
-        if overwrite == True:
+        if overwrite is True:
             logging.info("Removing existing folder " + path_output_folder)
             path_removed = os.path.abspath(path_output_folder)
             shutil.rmtree(path_removed, ignore_errors=True)
+            logging.info("Creating output folder " + path_output_folder)
+            os.mkdir(path_output_folder)
 
-    logging.info("Creating output folder " + path_output_folder)
-    os.mkdir(path_output_folder)
-    return
+    else:
+        logging.info("Creating output folder " + path_output_folder)
+        os.mkdir(path_output_folder)
 
 
-def get_user_input(**kwargs):
+def get_user_input(
+    path_input_file="./inputs/working_example.json",
+    path_output_folder="./MVS_outputs",
+    overwrite=False,  # todo this means that results will be overwritten.
+    display_output="-debug",
+    lp_file_output=False,
+    **kwargs
+):
     """
     Read user command from terminal inputs. Command:
 
     python A_mvs_eland.py path_to_input_file path_to_output_folder overwrite display_output lp_file_output
 
-    :param path_to_input_file:
+    :param path_input_file:
         Descripes path to inputs excel file
         This file includes paths to timeseries file
-    :param path_to_output_folder:
+    :param path_output_folder:
         Describes path to folder to be used for terminal output
         Must not exist before
     :param overwrite:
@@ -91,14 +105,8 @@ def get_user_input(**kwargs):
 
     :return:
     """
-    # Default values:
-    path_input_file = "./inputs/working_example.json"
-    display_output = "-debug"  #'-info' #
-    path_output_folder = "./MVS_outputs"
-    overwrite = False  # todo this means that results will be overwritten.
-    lp_file_output = False
 
-    if "test" in kwargs and kwargs["test"] == True:
+    if "test" in kwargs and kwargs["test"] is True:
         overwrite = True
     else:
         # Read terminal inputs:
@@ -145,19 +153,21 @@ def get_user_input(**kwargs):
 
     path_input_folder, name_input_file = check_input_directory(path_input_file)
     check_output_directory(path_output_folder, overwrite)
+
     user_input = {
         "label": "simulation_settings",
         "path_input_folder": path_input_folder + "/",
         "path_input_file": path_input_file,
-        "input_file_name": name_input_file,
-        "display_output": display_output,
         "path_output_folder": path_output_folder,
         "path_output_folder_inputs": path_output_folder + "/inputs/",
-        "overwrite": overwrite,
         "lp_file_output": lp_file_output,
+        "input_file_name": name_input_file,
+        "display_output": display_output,
+        "overwrite": overwrite,
     }
 
     logging.info('Creating folder "inputs" in output folder.')
+
     os.mkdir(user_input["path_output_folder_inputs"])
     shutil.copy(user_input["path_input_file"], user_input["path_output_folder_inputs"])
     return user_input
@@ -173,14 +183,18 @@ def welcome(welcome_text, **kwargs):
     user_input = get_user_input(**kwargs)
 
     # Set screen level (terminal output) according to user inputs
-    if user_input["display_output"] == "-debug":
+    console_log = user_input.pop("display_output")
+
+    if console_log == "-debug":
         screen_level = logging.DEBUG
-    elif user_input["display_output"] == "-info":
+    elif console_log == "-info":
         screen_level = logging.INFO
-    elif user_input["display_output"] == "-warning":
+    elif console_log == "-warning":
         screen_level = logging.WARNING
-    elif user_input["display_output"] == "-error":
+    elif console_log == "-error":
         screen_level = logging.ERROR
+    else:
+        screen_level = logging.INFO
 
     # Define logging settings and path for saving log
     logger.define_logging(
