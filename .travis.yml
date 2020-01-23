@@ -18,8 +18,9 @@ install:
 
 # commands to run tests 
 script:
-  - pytest tests/tests.py
-  - black --check . --exclude docs/
+  - - black --check . --exclude docs/
+  - pytest
+
 #  - pylint */*.py
 #jobs:
 #  include:
