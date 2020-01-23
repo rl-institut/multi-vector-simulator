@@ -8,7 +8,7 @@ import src.A0_initialization as initializing
 from .constants import REPO_PATH
 
 
-class TestClass:
+class TestOutputPath:
 
     output_path = os.path.join(".", "tests", "MVS_outputs")
 
@@ -40,6 +40,22 @@ class TestClass:
 
     def teardown_method(self):
         shutil.rmtree(self.output_path, ignore_errors=True)
+
+
+class TestUserInput:
+
+    output_path = os.path.join(".", "tests", "MVS_outputs")
+
+    def test_user_input(self):
+        initializing.get_user_input(path_output_folder=self.output_path)
+        assert os.path.exists(self.output_path)
+        assert os.path.exists(
+            os.path.join(self.output_path, "inputs", "working_example.json")
+        )
+
+    def teardown_method(self):
+        if os.path.exists(self.output_path):
+            shutil.rmtree(self.output_path, ignore_errors=True)
 
 
 def test_check_input_path_posix():
