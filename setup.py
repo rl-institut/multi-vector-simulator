@@ -115,7 +115,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=["src"],  # Required
+    packages=["src", "mvs_eland_tool"],  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you
