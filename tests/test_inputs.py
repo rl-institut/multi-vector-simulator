@@ -70,3 +70,24 @@ def test_check_input_path_posix():
 
     assert folder == os.path.join(REPO_PATH, "inputs")
     assert file == "working_example.json"
+
+
+class TestCommandLineInput:
+
+    parser = initializing.create_parser()
+
+    def test_input_file(self):
+        parsed = self.parser.parse_args(["-i", "input_file"])
+        assert parsed.path_input_file == "input_file"
+
+    def test_output_folder(self):
+        parsed = self.parser.parse_args(["-o", "output_folder"])
+        assert parsed.path_output_folder == "output_folder"
+
+    def test_overwrite_false_by_default(self):
+        parsed = self.parser.parse_args([])
+        assert parsed.overwrite is False
+
+    def test_overwrite_activation(self):
+        parsed = self.parser.parse_args(["-f"])
+        assert parsed.overwrite is True
