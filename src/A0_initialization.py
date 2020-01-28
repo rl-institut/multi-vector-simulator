@@ -32,6 +32,15 @@ def create_parser():
         default=DEFAULT_OUTPUT_FOLDER,
     )
     parser.add_argument(
+        "-log",
+        dest="display_output",
+        help="level of log in the console",
+        nargs="?",
+        default="info",
+        const="info",
+        choices=["debug", "info", "error", "warning"],
+    )
+    parser.add_argument(
         "-f",
         dest="overwrite",
         help="overwrite the output folder",
