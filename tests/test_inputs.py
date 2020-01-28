@@ -91,3 +91,16 @@ class TestCommandLineInput:
     def test_overwrite_activation(self):
         parsed = self.parser.parse_args(["-f"])
         assert parsed.overwrite is True
+
+    def test_log_assignation(self):
+        parsed = self.parser.parse_args(["-log", "debug"])
+        assert parsed.display_output == "debug"
+
+    def test_log_default(self):
+        parsed = self.parser.parse_args([])
+        assert parsed.display_output == "info"
+
+    def test_log_not_accepting_other_choices(self):
+        with pytest.raises(SystemExit) as argparse_error:
+            parsed = self.parser.parse_args(["-log", "something"])
+        assert str(argparse_error.value) == "2"
