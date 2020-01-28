@@ -6,7 +6,7 @@ import src.A1_csv_to_json as load_data_from_csv
 import src.B0_data_input_json as data_input
 from src.A1_csv_to_json import ALLOWED_FILES
 
-elements = os.path.join(REPO_PATH, "inputs", "elements")
+elements = os.path.join(REPO_PATH, "tests", "inputs")
 
 
 def test_create_input_json_creation_of_json_file():
