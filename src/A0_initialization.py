@@ -3,13 +3,45 @@ import os
 import sys
 import shutil
 import logging
+import argparse
 
 from oemof.tools import logger
 
 # works only when the commands are executed from the root of the repository
 REPO_PATH = os.path.abspath(os.curdir)
-DEFAULT_INPUT_FILE = os.path.join(REPO_PATH, 'inputs', 'working_example.json')
-DEFAULT_OUTPUT_FOLDER = os.path.join(REPO_PATH, 'MVS_outputs')
+DEFAULT_INPUT_FILE = os.path.join(REPO_PATH, "inputs", "working_example.json")
+DEFAULT_OUTPUT_FOLDER = os.path.join(REPO_PATH, "MVS_outputs")
+
+
+def create_parser():
+    parser = argparse.ArgumentParser(prog="mvs", description="Process MVS arguments")
+    parser.add_argument(
+        "-i",
+        dest="path_input_file",
+        nargs="?",
+        type=str,
+        help="path to the json input file",
+        default=DEFAULT_INPUT_FILE,
+    )
+    parser.add_argument(
+        "-o",
+        dest="path_output_folder",
+        nargs="?",
+        type=str,
+        help="output folder for the simulation's results",
+        default=DEFAULT_OUTPUT_FOLDER,
+    )
+    parser.add_argument(
+        "-f",
+        dest="overwrite",
+        help="overwrite the output folder",
+        nargs="?",
+        const=True,
+        default=False,
+        type=bool,
+    )
+    return parser
+
 
 def check_input_directory(path_input_file):
     """
