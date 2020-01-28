@@ -77,7 +77,7 @@ def main(**kwargs):
     user_input.update({"path_input_file": path_to_json_from_csv})
 
     logging.debug("Accessing script: B0_data_input_json")
-    dict_values = data_input.load_json(user_input['path_input_file'])
+    dict_values = data_input.load_json(user_input["path_input_file"])
 
     print("")
     logging.debug("Accessing script: C0_data_processing")
