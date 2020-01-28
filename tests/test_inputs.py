@@ -24,6 +24,7 @@ class TestOutputPath:
                     os.path.join(self.output_path), overwrite=False
                 )
             assert os.path.exists(self.output_path)
+            assert os.path.exists(os.path.join(self.output_path, "dummy"))
 
     def test_create_output_path_ask_overwrite_existing_yes(self):
         with mock.patch("builtins.input", return_value="yes"):
@@ -31,12 +32,14 @@ class TestOutputPath:
                 os.path.join(self.output_path), overwrite=False
             )
             assert os.path.exists(self.output_path)
+            assert not os.path.exists(os.path.join(self.output_path, "dummy"))
 
     def test_create_output_path_existing_yes(self):
         initializing.check_output_directory(
             os.path.join(self.output_path), overwrite=True
         )
         assert os.path.exists(self.output_path)
+        assert not os.path.exists(os.path.join(self.output_path, "dummy"))
 
     def teardown_method(self):
         shutil.rmtree(self.output_path, ignore_errors=True)
