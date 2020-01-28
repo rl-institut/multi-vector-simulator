@@ -22,11 +22,13 @@ Here is a template for new release sections
 ### Added
 - tests for the A0 module (#87)
 - badge for coveralls.io (#90)
+- tests for the parsing of arguments (#97)
 ### Changed 
 - removed unused class structure in all modules, execution stay the same (#86)
 - link to build for this repository instead of previous one (#95)
+- use argparser to parse the arguments from command line (#97)
 ### Removed
--
+- argument parsing using sys.argv (#97)
 
 ## [0.0.3] - 2020-01-22
 
