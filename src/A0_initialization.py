@@ -6,6 +6,10 @@ import logging
 
 from oemof.tools import logger
 
+# works only when the commands are executed from the root of the repository
+REPO_PATH = os.path.abspath(os.curdir)
+DEFAULT_INPUT_FILE = os.path.join(REPO_PATH, 'inputs', 'working_example.json')
+DEFAULT_OUTPUT_FOLDER = os.path.join(REPO_PATH, 'MVS_outputs')
 
 def check_input_directory(path_input_file):
     """
@@ -72,8 +76,8 @@ def check_output_directory(path_output_folder, overwrite):
 
 
 def get_user_input(
-    path_input_file="./inputs/working_example.json",
-    path_output_folder="./MVS_outputs",
+    path_input_file=DEFAULT_INPUT_FILE,
+    path_output_folder=DEFAULT_OUTPUT_FOLDER,
     overwrite=False,  # todo this means that results will be overwritten.
     display_output="-debug",
     lp_file_output=False,
