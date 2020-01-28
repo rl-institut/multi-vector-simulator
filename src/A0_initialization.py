@@ -89,9 +89,8 @@ def check_output_directory(path_output_folder, overwrite):
         if overwrite is False:
             user_reply = input(
                 "Attention: Output overwrite? "
-                "\n Output folder already exists. Should it be overwritten? (y/n)"
+                "\n Output folder already exists. Should it be overwritten? (y/[N])"
             )
-            print(user_reply)
             if user_reply in ["y", "Y", "yes", "Yes"]:
                 overwrite = True
             else:
