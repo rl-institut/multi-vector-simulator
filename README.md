@@ -2,6 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/mvs-eland/badge/?version=latest)](https://mvs-eland.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.org/smartie2076/mvs_eland.svg?branch=dev)](https://travis-ci.org/smartie2076/mvs_eland)
+[![Coverage Status](https://coveralls.io/repos/github/rl-institut/mvs_eland/badge.svg?branch=dev)](https://coveralls.io/github/rl-institut/mvs_eland?branch=dev)
 
 Rights: [Reiner Lemoine Institut (Berlin)](https://reiner-lemoine-institut.de/)
 

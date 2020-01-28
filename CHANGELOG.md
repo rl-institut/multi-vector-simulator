@@ -21,6 +21,7 @@ Here is a template for new release sections
 
 ### Added
 - tests for the A0 module (#87)
+- badge for coveralls.io (#90)
 ### Changed 
 - removed unused class structure in all modules, execution stay the same (#86)
 ### Removed
