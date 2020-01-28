@@ -21,7 +21,7 @@ def create_parser():
         nargs="?",
         type=str,
         help="path to the json input file",
-        default=DEFAULT_INPUT_FILE,
+        default=None,
     )
     parser.add_argument(
         "-o",
@@ -29,7 +29,7 @@ def create_parser():
         nargs="?",
         type=str,
         help="output folder for the simulation's results",
-        default=DEFAULT_OUTPUT_FOLDER,
+        default=None,
     )
     parser.add_argument(
         "-log",
@@ -58,6 +58,9 @@ def check_input_directory(path_input_file):
     :return:
     """
 
+    if REPO_PATH not in os.path.abspath(path_input_file):
+        path_input_file = os.path.join(REPO_PATH, path_input_file)
+
     path_input_folder = os.path.dirname(path_input_file)
     name_input_file = os.path.basename(path_input_file)
 
@@ -84,6 +87,10 @@ def check_output_directory(path_output_folder, overwrite):
     :param overwrite:
     :return:
     """
+
+    if REPO_PATH not in os.path.abspath(path_output_folder):
+        path_output_folder = os.path.join(REPO_PATH, path_output_folder)
+
     logging.debug("Checking for output folder")
     if os.path.exists(path_output_folder) is True:
         if overwrite is False:
@@ -116,8 +123,8 @@ def check_output_directory(path_output_folder, overwrite):
 
 
 def get_user_input(
-    path_input_file=DEFAULT_INPUT_FILE,
-    path_output_folder=DEFAULT_OUTPUT_FOLDER,
+    path_input_file=None,
+    path_output_folder=None,
     overwrite=False,  # todo this means that results will be overwritten.
     display_output="info",
     lp_file_output=False,
@@ -149,6 +156,14 @@ def get_user_input(
 
     :return:
     """
+
+    if path_input_file is None:
+        path_input_file = DEFAULT_INPUT_FILE
+
+    if path_output_folder is None:
+        path_output_folder = DEFAULT_OUTPUT_FOLDER
+    else:
+        pass
 
     if "test" in kwargs and kwargs["test"] is True:
         overwrite = True
