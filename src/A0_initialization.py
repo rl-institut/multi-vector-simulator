@@ -120,7 +120,7 @@ def get_user_input(
     path_input_file=DEFAULT_INPUT_FILE,
     path_output_folder=DEFAULT_OUTPUT_FOLDER,
     overwrite=False,  # todo this means that results will be overwritten.
-    display_output="-debug",
+    display_output="info",
     lp_file_output=False,
     **kwargs
 ):
@@ -153,48 +153,6 @@ def get_user_input(
 
     if "test" in kwargs and kwargs["test"] is True:
         overwrite = True
-    else:
-        # Read terminal inputs:
-        if len(sys.argv) <= 1:
-            logging.warning(
-                "No inputs file or output folder determined. "
-                "\n Will use default values and delete existing output folder (test execution)."
-            )
-            overwrite = True
-
-        elif len(sys.argv) == 2:
-            logging.error(
-                "Missing command path_output_folder. " "\n Operation terminated."
-            )
-
-        elif len(sys.argv) == 3 or len(sys.argv) == 4:
-            # Read user commands from terminal inputs
-            path_input_file = str(sys.argv[1])
-            path_output_folder = str(sys.argv[2])
-            for argument in range(3, len(sys.argv) + 1):
-                if str(sys.argv[argument]) == "-f":
-                    overwrite = True
-                elif str(sys.argv[argument]) in [
-                    "-debug",
-                    "-info",
-                    "-warnings",
-                    "-errors",
-                ]:
-                    display_output = str(sys.argv[argument])
-                elif str(sys.argv[argument]) in ["False", "True"]:
-                    if str(sys.argv[argument]) == "True":
-                        lp_file_output = True
-                else:
-                    logging.critical(
-                        "Invalid command "
-                        + str(sys.argv[argument])
-                        + " used. "
-                        + "\n Operation terminated."
-                    )
-                    sys.exit()
-        else:
-            logging.critical("Too many commands. " "Operation terminated.")
-            sys.exit()
 
     path_input_folder, name_input_file = check_input_directory(path_input_file)
     check_output_directory(path_output_folder, overwrite)
@@ -230,13 +188,13 @@ def welcome(welcome_text, **kwargs):
     # Set screen level (terminal output) according to user inputs
     console_log = user_input.pop("display_output")
 
-    if console_log == "-debug":
+    if console_log == "debug":
         screen_level = logging.DEBUG
-    elif console_log == "-info":
+    elif console_log == "info":
         screen_level = logging.INFO
-    elif console_log == "-warning":
+    elif console_log == "warning":
         screen_level = logging.WARNING
-    elif console_log == "-error":
+    elif console_log == "error":
         screen_level = logging.ERROR
     else:
         screen_level = logging.INFO
