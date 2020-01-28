@@ -24,6 +24,7 @@ Here is a template for new release sections
 - badge for coveralls.io (#90)
 ### Changed 
 - removed unused class structure in all modules, execution stay the same (#86)
+- link to build for this repository instead of previous one (#95)
 ### Removed
 -
 
