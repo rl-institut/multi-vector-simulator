@@ -93,7 +93,7 @@ def check_output_directory(path_output_folder, overwrite):
             )
             print(user_reply)
             if user_reply in ["y", "Y", "yes", "Yes"]:
-                overwrite is True
+                overwrite = True
             else:
                 logging.critical(
                     "Output folder exists and should not be overwritten. Please choose other folder."
