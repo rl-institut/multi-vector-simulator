@@ -1,10 +1,12 @@
-import pandas as pd
-import pprint as pp
 import json
 
 
-class data_input:
-    def get(user_input):
-        with open(user_input["path_input_file"]) as json_file:
-            dict_values = json.load(json_file)
-        return dict_values
+def load_json(path_input_file):
+    """Opens and reads json input file and parses it to dict of input parameters.
+
+    :param path_input_file:
+    :return: dict of all input parameters
+    """
+    with open(path_input_file) as json_file:
+        dict_values = json.load(json_file)
+    return dict_values
