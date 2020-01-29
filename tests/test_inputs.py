@@ -48,13 +48,30 @@ class TestOutputPath:
 class TestUserInput:
 
     output_path = os.path.join(".", "tests", "MVS_outputs")
+    input_path = os.path.join("tests", "inputs")
+    fake_input_path = os.path.join("tests", "fake_inputs")
 
-    def test_user_input(self):
+    def test_user_input_path_folder_copy_in_output(self):
         initializing.get_user_input(path_output_folder=self.output_path)
         assert os.path.exists(self.output_path)
         assert os.path.exists(
             os.path.join(self.output_path, "inputs", "working_example.json")
         )
+
+    def test_user_input_path_input_folder_not_existing(self):
+        with pytest.raises(NotADirectoryError):
+            initializing.get_user_input(
+                path_input_file=self.fake_input_path,
+                path_output_folder=self.output_path,
+            )
+
+    def test_user_input_path_input_file_not_existing(self):
+        with pytest.raises(FileNotFoundError):
+            initializing.get_user_input(
+                path_input_file=os.path.join(self.input_path, "not_existing.json"),
+                path_output_folder=self.output_path,
+                overwrite=True,
+            )
 
     def teardown_method(self):
         if os.path.exists(self.output_path):
@@ -63,16 +80,15 @@ class TestUserInput:
 
 def test_check_input_path_posix():
     if os.name == "posix":
-        folder, file = initializing.check_input_directory(
+        folder = initializing.check_input_directory(
             "{}/inputs/working_example.json".format(REPO_PATH)
         )
     else:
-        folder, file = initializing.check_input_directory(
+        folder = initializing.check_input_directory(
             "{}\\inputs\\working_example.json".format(REPO_PATH)
         )
 
     assert folder == os.path.join(REPO_PATH, "inputs")
-    assert file == "working_example.json"
 
 
 class TestCommandLineInput:
