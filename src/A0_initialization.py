@@ -78,7 +78,8 @@ def check_input_directory(path_input_file):
             "\n The input excel file can not be found. Operation terminated."
         )
         sys.exit()
-    return path_input_folder, name_input_file
+
+    return path_input_folder
 
 
 def check_output_directory(path_output_folder, overwrite):
@@ -168,7 +169,7 @@ def get_user_input(
     if "test" in kwargs and kwargs["test"] is True:
         overwrite = True
 
-    path_input_folder, name_input_file = check_input_directory(path_input_file)
+    path_input_folder = check_input_directory(path_input_file)
     check_output_directory(path_output_folder, overwrite)
 
     user_input = {
@@ -178,7 +179,6 @@ def get_user_input(
         "path_output_folder": path_output_folder,
         "path_output_folder_inputs": path_output_folder + "/inputs/",
         "lp_file_output": lp_file_output,
-        "input_file_name": name_input_file,
         "display_output": display_output,
         "overwrite": overwrite,
     }

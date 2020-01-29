@@ -484,9 +484,7 @@ def add_storage(storage_filename, input_directory):
         dictionary containing the storage parameters
     """
 
-    if not os.path.exists(
-        os.path.join(input_directory, "%s.csv" % storage_filename)
-    ):
+    if not os.path.exists(os.path.join(input_directory, "%s.csv" % storage_filename)):
         logging.error("The storage file %s.csv" % storage_filename + " is missing!")
     else:
         parameters = [
