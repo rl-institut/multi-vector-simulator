@@ -11,13 +11,23 @@ Here is a template for new release sections
 
 ### Added
 -
-### Changed 
+### Changed
 -
 ### Removed
 -
 ```
 
-## [unreleased]
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Removed
+
+
+
+## [0.1.0] - 2020-01-30
 
 ### Added
 - tests for the A0 module (#87)
