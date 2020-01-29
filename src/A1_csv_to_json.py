@@ -180,7 +180,6 @@ def create_input_json(
             "simulation_settings": [
                 "display_output",
                 "evaluated_period",
-                "input_file_name",
                 "label",
                 "oemof_file_name",
                 "output_lp_file",
@@ -224,7 +223,7 @@ def create_input_json(
 
     # Read all csv files from path input directory/csv/
     list_assets = []
-    for f in os.listdir(os.path.join(input_directory, "csv/")):
+    for f in os.listdir(input_directory):
         filename = str(f[:-4])
         if filename in parameterlist.keys():
             list_assets.append(filename)
@@ -304,12 +303,9 @@ def create_json_from_csv(input_directory, filename, parameters):
     """
 
     logging.debug("Loading input data from csv: %s", filename)
-    csv_default_directory = os.path.join(
-        Path(os.path.dirname(__file__)).parent, "tests/default_csv/"
-    )
 
     df = pd.read_csv(
-        os.path.join(input_directory, "csv/", "%s.csv" % filename),
+        os.path.join(input_directory, "%s.csv" % filename),
         sep=",",
         header=0,
         index_col=0,
@@ -326,7 +322,7 @@ def create_json_from_csv(input_directory, filename, parameters):
                     + str(i)
                     + " is missing. "
                     "check %s",
-                    csv_default_directory + "for correct " "parameter names.",
+                    input_directory + "for correct " "parameter names.",
                 )
             else:
                 logging.error(
@@ -335,7 +331,7 @@ def create_json_from_csv(input_directory, filename, parameters):
                     + str(i)
                     + " is not recognized. \n"
                     "check %s",
-                    csv_default_directory + "for correct " "parameter names.",
+                    input_directory + "for correct " "parameter names.",
                 )
 
     # convert csv to json
@@ -489,7 +485,7 @@ def add_storage(storage_filename, input_directory):
     """
 
     if not os.path.exists(
-        os.path.join(input_directory, "csv/", "%s.csv" % storage_filename)
+        os.path.join(input_directory, "%s.csv" % storage_filename)
     ):
         logging.error("The storage file %s.csv" % storage_filename + " is missing!")
     else:
