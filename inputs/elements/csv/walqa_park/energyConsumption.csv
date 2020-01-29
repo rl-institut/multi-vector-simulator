@@ -1,5 +1,5 @@
 ,unit,electricity,H2
-dsm,str,False,False
+dsm,str,FALSE,FALSE
 file_name,str,electricity_demand.csv,h2_demand.csv
 label,str,electricity demand,FCEV
 type_asset,str,demand,demand

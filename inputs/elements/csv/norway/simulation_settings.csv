@@ -11,6 +11,6 @@ path_input_folder,str,./inputs/
 path_output_folder,str,./MVS_outputs
 path_output_folder_inputs,str,./MVS_outputs/inputs/
 restore_from_oemof_file,str,True
-start_date,str,01/01/2018 0:00
+start_date,str,2018-01-01 00:00:00
 store_oemof_results,str,True
 timestep,minutes,60
