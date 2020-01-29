@@ -1,7 +1,8 @@
 # MVS - Multi-Vector Simulator of the E-Land toolbox
 
 [![Documentation Status](https://readthedocs.org/projects/mvs-eland/badge/?version=latest)](https://mvs-eland.readthedocs.io/en/latest/?badge=latest)
-[![Build Status](https://travis-ci.org/smartie2076/mvs_eland.svg?branch=dev)](https://travis-ci.org/smartie2076/mvs_eland)
+[![Build Status](https://travis-ci.org/rl-institut/mvs_eland.svg?branch=dev)](https://travis-ci.org/rl-institut/mvs_eland.svg?branch=dev)
+[![Coverage Status](https://coveralls.io/repos/github/rl-institut/mvs_eland/badge.svg?branch=dev)](https://coveralls.io/github/rl-institut/mvs_eland?branch=dev)
 
 Rights: [Reiner Lemoine Institut (Berlin)](https://reiner-lemoine-institut.de/)
 
@@ -12,12 +13,12 @@ Firstly, an analysis of the current energy system, which can be set up automatic
 The tool is being developed within the scope of the H2020 project E-LAND (Integrated multi-vector management system for Energy isLANDs, project homepage [HERE](https://elandh2020.eu/)). A graphical user interface for the MVS will be integrated.
 
 *Latest release*
-The latest release is [v.0.0.2](https://github.com/smartie2076/mvs_eland/releases), and includes the working code of the MVS using json as an input. It is not validated and test coverage is still 0%. Please check the [CHANGELOG.md](https://github.com/smartie2076/mvs_eland/blob/master/CHANGELOG.md) for past updates and changes.
+Check the [latest release](https://github.com/rl-institut/mvs_eland/releases/latest), and includes the working code of the MVS using json as an input. It is not validated and test coverage is still 0%. Please check the [CHANGELOG.md](https://github.com/rl-institut/mvs_eland/blob/master/CHANGELOG.md) for past updates and changes.
 
 *Upcoming*
-As the MVS is still under development, many changes will still occur in the code as well as code structure. If you want to try the MVS, please make sure to check this project regularly. A new release is planned for end of January ([Issue](https://github.com/smartie2076/mvs_eland/issues/51), [Milestone](https://github.com/smartie2076/mvs_eland/milestone/1)). 
+As the MVS is still under development, many changes will still occur in the code as well as code structure. If you want to try the MVS, please make sure to check this project regularly. A new release is planned for end of January ([Issue](https://github.com/rl-institut/mvs_eland/issues/51), [Milestone](https://github.com/rl-institut/mvs_eland/milestone/1)). 
 
-For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in turn might not be tested. You find the changelog [HERE](https://github.com/smartie2076/mvs_eland/blob/dev/CHANGELOG.md).
+For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in turn might not be tested. You find the changelog [HERE](https://github.com/rl-institut/mvs_eland/blob/dev/CHANGELOG.md).
 
 # Getting started
 
@@ -31,9 +32,9 @@ To set up the MVS, follow the steps below:
 
 * If python3 is not pre-installed: Install miniconda (for python 3.7: https://docs.conda.io/en/latest/miniconda.html)
 
-* Clone or download the latest [MVS release](https://github.com/smartie2076/mvs_eland/releases)
+* Clone or download the latest [MVS release](https://github.com/rl-institut/mvs_eland/releases)
 
-    `git clone https://github.com/smartie2076/mvs_eland.git`
+    `git clone https://github.com/rl-institut/mvs_eland.git`
 
     and move to the `mvs_eland` folder
 
@@ -97,4 +98,4 @@ and `path_output_folder`: path of the folder where simulation results should be 
 
 ## Contributing
 
-If you want to contribute to this project, please read [CONTRIBUTING.md](https://github.com/smartie2076/mvs_eland/blob/dev/CONTRIBUTING.md). For less experienced github users we propose a workflow [HERE](https://github.com/smartie2076/mvs_eland/wiki/Examplary-Workflow).
+If you want to contribute to this project, please read [CONTRIBUTING.md](https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md). For less experienced github users we propose a workflow [HERE](https://github.com/rl-institut/mvs_eland/wiki/Examplary-Workflow).

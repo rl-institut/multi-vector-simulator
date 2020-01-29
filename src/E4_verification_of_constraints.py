@@ -1,2 +1,6 @@
 def verification():
+    """
+
+    :return:
+    """
     return
