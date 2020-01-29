@@ -62,22 +62,25 @@ def check_input_directory(path_input_file):
         path_input_file = os.path.join(REPO_PATH, path_input_file)
 
     path_input_folder = os.path.dirname(path_input_file)
-    name_input_file = os.path.basename(path_input_file)
 
     logging.debug("Checking for inputs files")
-    if os.path.isdir(path_input_folder) is False:
-        logging.critical(
-            "Missing folder for inputs! "
-            "\n The input folder can not be found. Operation terminated."
-        )
-        sys.exit()
 
-    if os.path.isfile(path_input_file) is False:
-        logging.critical(
-            "Missing input excel file! "
-            "\n The input excel file can not be found. Operation terminated."
-        )
-        sys.exit()
+    if path_input_file.endswith("json"):
+        if os.path.isfile(path_input_file) is False:
+            raise (
+                FileNotFoundError(
+                    "Missing input json file! "
+                    "\n The input json file can not be found. Operation terminated."
+                )
+            )
+    else:
+        if os.path.exists(path_input_file) is False:
+            raise (
+                NotADirectoryError(
+                    "Missing folder for inputs! "
+                    "\n The input folder can not be found. Operation terminated."
+                )
+            )
 
     return path_input_folder
 
@@ -105,6 +108,7 @@ def check_output_directory(path_output_folder, overwrite):
                 logging.critical(
                     "Output folder exists and should not be overwritten. Please choose other folder."
                 )
+
                 raise (
                     FileExistsError(
                         "Output folder exists and should not be overwritten. Please choose other folder."
@@ -174,10 +178,10 @@ def get_user_input(
 
     user_input = {
         "label": "simulation_settings",
-        "path_input_folder": path_input_folder + "/",
+        "path_input_folder": path_input_folder,
         "path_input_file": path_input_file,
         "path_output_folder": path_output_folder,
-        "path_output_folder_inputs": path_output_folder + "/inputs/",
+        "path_output_folder_inputs": os.path.join(path_output_folder, "inputs"),
         "lp_file_output": lp_file_output,
         "display_output": display_output,
         "overwrite": overwrite,
