@@ -1,7 +1,6 @@
 ,unit,simulation_settings
 display_output,str,-debug
 evaluated_period,days,365
-input_file_name,str,test_input_file_v1.xlsx
 label,str,simulation_settings
 oemof_file_name,str,MVS_results.oemof
 output_lp_file,str,False
