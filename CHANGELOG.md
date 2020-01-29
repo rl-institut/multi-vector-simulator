@@ -23,10 +23,12 @@ Here is a template for new release sections
 - tests for the A0 module (#87)
 - badge for coveralls.io (#90)
 - tests for the parsing of arguments (#97)
+- exceptions for missing input file/folder (#98)
 ### Changed 
 - removed unused class structure in all modules, execution stay the same (#86)
 - link to build for this repository instead of previous one (#95)
 - use argparser to parse the arguments from command line (#97)
+- the full path of input folder containing csv is now required (#98)
 ### Removed
 - argument parsing using sys.argv (#97)
 

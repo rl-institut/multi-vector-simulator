@@ -93,7 +93,6 @@ def all_valid_intervals(name, value, title):
         "currency",
         "path_output_folder",
         "display_output",
-        "input_file_name",
         "path_input_file",
         "path_input_folder",
         "path_output_folder_inputs",
