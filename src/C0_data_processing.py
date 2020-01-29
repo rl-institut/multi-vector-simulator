@@ -319,7 +319,7 @@ class process_asset_group:
                     }
                 )
 
-            if "input" in dict_values[group][asset]:
+            if "file_name" in dict_values[group][asset]:
                 helpers.receive_timeseries_from_csv(
                     dict_values["simulation_settings"],
                     dict_values[group][asset],
@@ -857,7 +857,6 @@ class helpers:
         verify.lookup_file(file_path, dict_asset["label"])
 
         data_set = pd.read_csv(file_path, sep=";")
-
         if "file_name" in dict_asset:
             header = data_set.columns[0]
 
