@@ -1,7 +1,9 @@
 import os
-import mock
+import sys
 import argparse
 import shutil
+import mock
+import pytest
 
 from mvs_eland_tool.mvs_eland_tool import main
 
@@ -13,9 +15,13 @@ def setup_module():
         shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
 
 
+# this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+# alone it called
+@pytest.mark.skipif(
+    "tests/test_simulation.py" not in sys.argv, reason="requires python3.3"
+)
 @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
 def test_run_smoothly(mock_args):
-
     main(path_output_folder=OUTPUT_PATH)
     assert 1 == 1
 
