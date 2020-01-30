@@ -20,10 +20,10 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
-
-### Changed
-
-### Removed
+- test for running the main function (#109)
+- the user can run the tool simply with `python mvs_tool.py` (#109)
+### Fixed
+- \#108 (#109)
 
 
 
