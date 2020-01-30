@@ -18,16 +18,22 @@ Here is a template for new release sections
 ```
 
 ## [Unreleased]
-
 ### Added
 
 ### Changed
 
 ### Removed
 
+## [0.1.0] -2020-01-30
+
+### Added
+- test for running the main function (#109)
+- the user can run the tool simply with `python mvs_tool.py` (#109)
+### Fixed
+- \#108 (#109)
 
 
-## [0.1.0] - 2020-01-30
+## [0.1.0] - 2020-01-29
 
 ### Added
 - tests for the A0 module (#87)
