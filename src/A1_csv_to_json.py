@@ -1,7 +1,7 @@
 """
 How to use:
-all default input csv"s are stored in "/mvs_eland/inputs/elements/default_csv"
-or the input directory/default_csv.
+all default input csv files are stored in "/mvs_eland/inputs/elements/csv"
+or the input directory/csv.
 These csvs are not to be changed! All csvs that you need in order to set up
 your energy system should be stored into "/mvs_eland/inputs/elements/csv" or
 the input directory/csv. In this directory you can change parameters and add
@@ -46,7 +46,7 @@ def create_input_json(
     """
     Method looks at all csv-files in "mvs_eland/inputs/elements/csv",
     converts them into json files and joins them together into the file
-    "mvs_eland/inputs/working_example2.json". When reading the csv files it is
+    "mvs_eland/inputs/working_example.json". When reading the csv files it is
     checked, weather all required parameters for each component are given.
     Missing parameters will return a message.
 
