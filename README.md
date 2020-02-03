@@ -78,23 +78,27 @@ To set up the MVS, follow the steps below:
 
 * Test if the MVS is running by executing
 
-    `python mvs_eland_tool.py`
+    `python mvs_tool.py`
     
 * You can also run all existing tests by executing
 
     `pip install -r tests/test_requirements.txt`
     
-    `pytest tests/tests.py`
+    `pytest`
     
 ## Using the MVS
 
 To run the MVS with custom inputs, edit the json input file and run
 
-    `python mvs_eland_tool.py path_input_file path_output_folder`
+    `python mvs_tool.py -i path_input_file -o path_output_folder`
 
 With `path_input_file`: path to json input file
 
 and `path_output_folder`: path of the folder where simulation results should be stored
+
+For more information about the possible command lines
+
+`python mvs_tool.py -h`
 
 ## Contributing
 

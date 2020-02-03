@@ -3,8 +3,53 @@ import os
 import sys
 import shutil
 import logging
+import argparse
 
 from oemof.tools import logger
+
+# works only when the commands are executed from the root of the repository
+REPO_PATH = os.path.abspath(os.curdir)
+DEFAULT_INPUT_FILE = os.path.join(REPO_PATH, "inputs", "working_example.json")
+DEFAULT_OUTPUT_FOLDER = os.path.join(REPO_PATH, "MVS_outputs")
+
+
+def create_parser():
+    parser = argparse.ArgumentParser(prog="mvs", description="Process MVS arguments")
+    parser.add_argument(
+        "-i",
+        dest="path_input_file",
+        nargs="?",
+        type=str,
+        help="path to the json input file",
+        default=None,
+    )
+    parser.add_argument(
+        "-o",
+        dest="path_output_folder",
+        nargs="?",
+        type=str,
+        help="output folder for the simulation's results",
+        default=None,
+    )
+    parser.add_argument(
+        "-log",
+        dest="display_output",
+        help="level of log in the console",
+        nargs="?",
+        default="info",
+        const="info",
+        choices=["debug", "info", "error", "warning"],
+    )
+    parser.add_argument(
+        "-f",
+        dest="overwrite",
+        help="overwrite the output folder",
+        nargs="?",
+        const=True,
+        default=False,
+        type=bool,
+    )
+    return parser
 
 
 def check_input_directory(path_input_file):
@@ -13,24 +58,31 @@ def check_input_directory(path_input_file):
     :return:
     """
 
+    if REPO_PATH not in os.path.abspath(path_input_file):
+        path_input_file = os.path.join(REPO_PATH, path_input_file)
+
     path_input_folder = os.path.dirname(path_input_file)
-    name_input_file = os.path.basename(path_input_file)
 
     logging.debug("Checking for inputs files")
-    if os.path.isdir(path_input_folder) is False:
-        logging.critical(
-            "Missing folder for inputs! "
-            "\n The input folder can not be found. Operation terminated."
-        )
-        sys.exit()
 
-    if os.path.isfile(path_input_file) is False:
-        logging.critical(
-            "Missing input excel file! "
-            "\n The input excel file can not be found. Operation terminated."
-        )
-        sys.exit()
-    return path_input_folder, name_input_file
+    if path_input_file.endswith("json"):
+        if os.path.isfile(path_input_file) is False:
+            raise (
+                FileNotFoundError(
+                    "Missing input json file! "
+                    "\n The input json file can not be found. Operation terminated."
+                )
+            )
+    else:
+        if os.path.exists(path_input_file) is False:
+            raise (
+                NotADirectoryError(
+                    "Missing folder for inputs! "
+                    "\n The input folder can not be found. Operation terminated."
+                )
+            )
+
+    return path_input_folder
 
 
 def check_output_directory(path_output_folder, overwrite):
@@ -39,20 +91,24 @@ def check_output_directory(path_output_folder, overwrite):
     :param overwrite:
     :return:
     """
+
+    if REPO_PATH not in os.path.abspath(path_output_folder):
+        path_output_folder = os.path.join(REPO_PATH, path_output_folder)
+
     logging.debug("Checking for output folder")
     if os.path.exists(path_output_folder) is True:
         if overwrite is False:
             user_reply = input(
                 "Attention: Output overwrite? "
-                "\n Output folder already exists. Should it be overwritten? (y/n)"
+                "\n Output folder already exists. Should it be overwritten? (y/[N])"
             )
-            print(user_reply)
             if user_reply in ["y", "Y", "yes", "Yes"]:
-                overwrite is True
+                overwrite = True
             else:
                 logging.critical(
                     "Output folder exists and should not be overwritten. Please choose other folder."
                 )
+
                 raise (
                     FileExistsError(
                         "Output folder exists and should not be overwritten. Please choose other folder."
@@ -72,10 +128,10 @@ def check_output_directory(path_output_folder, overwrite):
 
 
 def get_user_input(
-    path_input_file="./inputs/working_example.json",
-    path_output_folder="./MVS_outputs",
+    path_input_file=None,
+    path_output_folder=None,
     overwrite=False,  # todo this means that results will be overwritten.
-    display_output="-debug",
+    display_output="info",
     lp_file_output=False,
     **kwargs
 ):
@@ -106,62 +162,27 @@ def get_user_input(
     :return:
     """
 
+    if path_input_file is None:
+        path_input_file = DEFAULT_INPUT_FILE
+
+    if path_output_folder is None:
+        path_output_folder = DEFAULT_OUTPUT_FOLDER
+    else:
+        pass
+
     if "test" in kwargs and kwargs["test"] is True:
         overwrite = True
-    else:
-        # Read terminal inputs:
-        if len(sys.argv) <= 1:
-            logging.warning(
-                "No inputs file or output folder determined. "
-                "\n Will use default values and delete existing output folder (test execution)."
-            )
-            overwrite = True
 
-        elif len(sys.argv) == 2:
-            logging.error(
-                "Missing command path_output_folder. " "\n Operation terminated."
-            )
-
-        elif len(sys.argv) == 3 or len(sys.argv) == 4:
-            # Read user commands from terminal inputs
-            path_input_file = str(sys.argv[1])
-            path_output_folder = str(sys.argv[2])
-            for argument in range(3, len(sys.argv) + 1):
-                if str(sys.argv[argument]) == "-f":
-                    overwrite = True
-                elif str(sys.argv[argument]) in [
-                    "-debug",
-                    "-info",
-                    "-warnings",
-                    "-errors",
-                ]:
-                    display_output = str(sys.argv[argument])
-                elif str(sys.argv[argument]) in ["False", "True"]:
-                    if str(sys.argv[argument]) == "True":
-                        lp_file_output = True
-                else:
-                    logging.critical(
-                        "Invalid command "
-                        + str(sys.argv[argument])
-                        + " used. "
-                        + "\n Operation terminated."
-                    )
-                    sys.exit()
-        else:
-            logging.critical("Too many commands. " "Operation terminated.")
-            sys.exit()
-
-    path_input_folder, name_input_file = check_input_directory(path_input_file)
+    path_input_folder = check_input_directory(path_input_file)
     check_output_directory(path_output_folder, overwrite)
 
     user_input = {
         "label": "simulation_settings",
-        "path_input_folder": path_input_folder + "/",
+        "path_input_folder": path_input_folder,
         "path_input_file": path_input_file,
         "path_output_folder": path_output_folder,
-        "path_output_folder_inputs": path_output_folder + "/inputs/",
+        "path_output_folder_inputs": os.path.join(path_output_folder, "inputs"),
         "lp_file_output": lp_file_output,
-        "input_file_name": name_input_file,
         "display_output": display_output,
         "overwrite": overwrite,
     }
@@ -185,13 +206,13 @@ def welcome(welcome_text, **kwargs):
     # Set screen level (terminal output) according to user inputs
     console_log = user_input.pop("display_output")
 
-    if console_log == "-debug":
+    if console_log == "debug":
         screen_level = logging.DEBUG
-    elif console_log == "-info":
+    elif console_log == "info":
         screen_level = logging.INFO
-    elif console_log == "-warning":
+    elif console_log == "warning":
         screen_level = logging.WARNING
-    elif console_log == "-error":
+    elif console_log == "error":
         screen_level = logging.ERROR
     else:
         screen_level = logging.INFO
