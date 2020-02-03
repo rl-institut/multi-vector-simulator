@@ -62,7 +62,8 @@ def main(**kwargs):
     # Parse the arguments from the command line
     parser = initializing.create_parser()
     args = vars(parser.parse_args())
-    kwargs.update(**args)
+    args.update(**kwargs)
+    kwargs = args
 
     logging.debug("Accessing script: A0_initialization")
     user_input = initializing.welcome(welcome_text, **kwargs)
