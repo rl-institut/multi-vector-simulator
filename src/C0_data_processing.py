@@ -231,7 +231,6 @@ def energyConversion(dict_values, group):
     return
 
 
-
 def energyProduction(dict_values, group):
     """
 
@@ -350,13 +349,11 @@ def energyConsumption(dict_values, group):
                     )
                 }
             )
-      
+
         if "file_name" in dict_values[group][asset]:
-                helpers.receive_timeseries_from_csv(
-                    dict_values["simulation_settings"],
-                    dict_values[group][asset],
-                    "input",
-                )
+            receive_timeseries_from_csv(
+                dict_values["simulation_settings"], dict_values[group][asset], "input",
+            )
     return
 
 
