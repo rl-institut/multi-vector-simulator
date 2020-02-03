@@ -13,9 +13,9 @@ Storage: The "energyStorage.csv" contains information about all storages.
 For each storage there needs to be another file named exactly as the according
 storage-column in "energyStorage.csv", usually this is "storage_01",
 "storage_02" etc. Please stick to this convention.
-After all the function "infer_resources()" reads all csv that are stored in
-the folder "/mvs_eland/inputs/elements/csv"/the input directory and creates one
-json input file for mvs
+After all the function "infer_resources()" reads all csv files that are stored
+in the folder "/mvs_eland/inputs/elements/csv"/the input directory and creates
+one json input file for mvs.
 """
 
 import os
@@ -63,7 +63,7 @@ def create_input_json(
 
     logging.info(
         "loading and converting all csv's from %s" % input_directory
-        + "csv/ into one json"
+        + "/csv/ into one json"
     )
 
     input_json = {}
@@ -322,7 +322,7 @@ def create_json_from_csv(input_directory, filename, parameters):
                     + str(i)
                     + " is missing. "
                     "check %s",
-                    input_directory + "for correct " "parameter names.",
+                    input_directory + " for correct parameter names.",
                 )
             else:
                 logging.error(
@@ -331,7 +331,7 @@ def create_json_from_csv(input_directory, filename, parameters):
                     + str(i)
                     + " is not recognized. \n"
                     "check %s",
-                    input_directory + "for correct " "parameter names.",
+                    input_directory + " for correct parameter names.",
                 )
 
     # convert csv to json
