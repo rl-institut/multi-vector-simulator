@@ -1,6 +1,6 @@
 """
 How to use:
-all default input csv files are stored in "/mvs_eland/inputs/elements/csv"
+all default input csv files are stored in "/inputs/elements/csv"
 or their path is provided by the input directory.
 These csvs are not to be changed! All csvs that you need in order to set up
 your energy system should be stored into "/mvs_eland/inputs/elements/csv" or
