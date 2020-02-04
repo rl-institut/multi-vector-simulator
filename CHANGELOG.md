@@ -22,6 +22,8 @@ Here is a template for new release sections
 
 ### Changed
 - Give priority from kwargs on command line arguments (#112)
+- Docstrings of module A1 (#113)
+- Changed keyword argument to positional argument for `create_input_json` function (#113)
 
 ### Removed
 
