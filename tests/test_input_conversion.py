@@ -31,9 +31,9 @@ def test_load_json_overwrite_output_folder_from_json():
         os.path.join(elements, "test_example_create.json"), path_output_folder="test"
     )
     assert dict_values["simulation_settings"]["path_output_folder"] == "test"
-    assert dict_values["simulation_settings"]["path_output_folder_inputs"] == os.path.join(
-        "test", "inputs"
-    )
+    assert dict_values["simulation_settings"][
+        "path_output_folder_inputs"
+    ] == os.path.join("test", "inputs")
 
 
 def test_load_json_overwrite_input_folder_from_json():
