@@ -63,7 +63,7 @@ def create_input_json(
 
     logging.info(
         "loading and converting all csv's from %s" % input_directory
-        + "/csv/ into one json"
+        + " into one json"
     )
 
     input_json = {}
