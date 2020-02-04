@@ -62,6 +62,7 @@ def main(**kwargs):
     # Parse the arguments from the command line
     parser = initializing.create_parser()
     args = vars(parser.parse_args())
+    # Give priority from kwargs on command line arguments
     args.update(**kwargs)
     kwargs = args
 
