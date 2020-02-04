@@ -1,21 +1,18 @@
 """
-How to use:
-all default input csv files are stored in "/inputs/elements/csv"
-or their path is provided by the input directory.
-These csvs are not to be changed! All csvs that you need in order to set up
-your energy system should be stored into "/mvs_eland/inputs/elements/csv" or
-the input directory/csv. In this directory you can change parameters and add
-components within the csv files. The given parameters need to be maintained.
-your energy system should be stored into "/mvs_eland/inputs/elements/csv" or
-the input directory/csv. In this directory you can change parameters and add
-components within the csv files. The given parameters need to be maintained.
+Convert csv files to json file as input for the simulation.
+
+The default input csv files are stored in "/inputs/elements/csv".
+Otherwise their path is provided by the user.
+
+The user can change parameters of the simulation of of the energy system in the csv files.
+
 Storage: The "energyStorage.csv" contains information about all storages.
-For each storage there needs to be another file named exactly as the according
-storage-column in "energyStorage.csv", usually this is "storage_01",
-"storage_02" etc. Please stick to this convention.
-After all the function "infer_resources()" reads all csv files that are stored
-in the folder provided by the user (input_directory) and creates
-one json input file for mvs.
+For each storage there needs to be another file named exactly after each storage-column in the
+"energyStorage.csv" file. For the default file this is "storage_01", "storage_02" etc.
+Please stick to this convention.
+
+The function "create_input_json()" reads all csv files that are stored
+in the given input folder (input_directory) and creates one json input file for mvs_tool.
 """
 
 import os
