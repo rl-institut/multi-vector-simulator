@@ -41,11 +41,11 @@ def create_input_json(
     """
     Convert csv files to json file as input for the simulation.
 
-    Method looks at all csv-files in "mvs_eland/inputs/elements/csv",
-    converts them into json files and joins them together into the
-    `input_directory` with the filename `output_filename`. When reading the csv
-    files it is checked, weather all required parameters for each component
-    are given. Missing parameters will return a message.
+    Looks at all csv-files in `input_directory` and compile the information they contain
+    into a json file. The json file is then saved within the `input_directory`
+    with the filename `output_filename`.
+    While reading the csv files, it is checked, whether all required parameters
+    for each component are provided. Missing parameters will return a warning message.
 
     :param input_directory: str
         path of the directory where the input csv files can be found
@@ -217,7 +217,7 @@ def create_input_json(
         }
     )
 
-    # Read all csv files from path input directory/csv/
+    # Read all csv files from path input directory
     list_assets = []
     for f in os.listdir(input_directory):
         filename = str(f[:-4])
@@ -245,8 +245,8 @@ def create_input_json(
     for i in extra:
         if i in required_files_list:
             logging.error(
-                "Required input file %s" % i + " is missing! Please add it"
-                "into %s" % os.path.join(input_directory, "csv/") + "."
+                "Required input file %s is missing! Please add it"
+                "into %s." % (i, os.path.join(input_directory))
             )
         elif i in ALLOWED_FILES:
             logging.debug(
