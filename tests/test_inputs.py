@@ -1,11 +1,16 @@
 import os
+import sys
 import shutil
 import pytest
 import mock
+import argparse
 
 import src.A0_initialization as initializing
+from mvs_eland_tool.mvs_eland_tool import main
 
 from .constants import REPO_PATH
+
+OUTPUT_PATH = os.path.join(".", "tests", "other")
 
 
 class TestOutputPath:
@@ -123,3 +128,19 @@ class TestCommandLineInput:
         with pytest.raises(SystemExit) as argparse_error:
             parsed = self.parser.parse_args(["-log", "something"])
         assert str(argparse_error.value) == "2"
+
+    # this ensure that the test is only ran if explicitly executed,
+    # ie not when the `pytest` command alone it called
+    @pytest.mark.skipif(
+        "tests/test_inputs.py" not in sys.argv, reason="requires python3.3"
+    )
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=argparse.Namespace(path_output_folder=OUTPUT_PATH),
+    )
+    def test_user_defined_output_path(self, mock_args):
+        main()
+        assert os.path.exists(OUTPUT_PATH)
+
+    def teardown_method(self):
+        shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
