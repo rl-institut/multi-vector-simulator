@@ -17,7 +17,6 @@ in the given input folder (input_directory) and creates one json input file for 
 
 import os
 import json
-from pathlib import Path
 import logging
 import pandas as pd
 
@@ -60,8 +59,7 @@ def create_input_json(
     """
 
     logging.info(
-        "loading and converting all csv's from %s" % input_directory
-        + " into one json"
+        "loading and converting all csv's from %s" % input_directory + " into one json"
     )
 
     input_json = {}
@@ -232,15 +230,13 @@ def create_input_json(
             input_json.update(single_dict)
         elif "storage_" in filename:
             list_assets.append(filename)
+            # TODO
             pass
         else:
-            csv_default_directory = os.path.join(
-                Path(os.path.dirname(__file__)).parent, "tests/default_csv/"
-            )
             logging.error(
                 "The file %s" % f + " is not recognized as input file for mvs "
                 "check %s",
-                csv_default_directory + "for correct " "file names.",
+                input_directory + "for correct " "file names.",
             )
 
     # check if all required files are available
@@ -264,7 +260,8 @@ def create_input_json(
                 " will not be processed."
             )
 
-    # store generated json file to file in input_directory. This json will be used in the simulation.
+    # store generated json file to file in input_directory.
+    # This json will be used in the simulation.
     with open(os.path.join(input_directory, output_filename), "w") as outfile:
         json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
     logging.info(
