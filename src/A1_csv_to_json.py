@@ -14,7 +14,7 @@ For each storage there needs to be another file named exactly as the according
 storage-column in "energyStorage.csv", usually this is "storage_01",
 "storage_02" etc. Please stick to this convention.
 After all the function "infer_resources()" reads all csv files that are stored
-in the folder "/mvs_eland/inputs/elements/csv"/the input directory and creates
+in the folder provided by the user (input_directory) and creates
 one json input file for mvs.
 """
 
