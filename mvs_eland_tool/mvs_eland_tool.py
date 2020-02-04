@@ -59,12 +59,13 @@ def main(**kwargs):
         + "\n Coded at: Reiner Lemoine Institute (Berlin) "
         + "\n Contributors: Martha M. Hoffmann \n \n "
     )
+
+    logging.debug("Accessing script: A0_initialization")
     # Parse the arguments from the command line
     parser = initializing.create_parser()
     args = vars(parser.parse_args())
     kwargs.update(**args)
 
-    logging.debug("Accessing script: A0_initialization")
     user_input = initializing.welcome(welcome_text, **kwargs)
 
     # Read all inputs
