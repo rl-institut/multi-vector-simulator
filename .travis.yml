@@ -18,7 +18,7 @@ install:
 
 # commands to run tests 
 script:
-  - - black --check . --exclude docs/
+  - black --check . --exclude docs/
   - coverage run -m pytest
 
 after_success:
