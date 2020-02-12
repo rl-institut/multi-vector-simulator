@@ -203,7 +203,7 @@ def energyConversion(dict_values, group):
     """
     #
     for asset in dict_values[group]:
-        print("asset",asset)
+        print("asset", asset)
         define_missing_cost_data(dict_values, dict_values[group][asset])
         evaluate_lifetime_costs(
             dict_values["simulation_settings"],

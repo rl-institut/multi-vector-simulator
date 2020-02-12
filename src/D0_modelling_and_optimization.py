@@ -113,12 +113,14 @@ def run_oemof(dict_values):
     logging.info("Adding constraints to oemof model...")
     # todo include constraints
     if "Electrolyser" in dict_model["transformers"]:
-        model_constraints.standby_consumption(local_energy_system,
-                                        dict_model["busses"]["Electricity bus"],
-                                        dict_model["busses"]["H2 bus"],
-                                        dict_model["transformers"]["Electrolyser"],
-                                        dict_model["sinks"]["Electrolyser standby_sink"],
-                                        dict_values["energyConversion"]["electrolyser"]["efficiency"]["value"])
+        model_constraints.standby_consumption(
+            local_energy_system,
+            dict_model["busses"]["Electricity bus"],
+            dict_model["busses"]["H2 bus"],
+            dict_model["transformers"]["Electrolyser"],
+            dict_model["sinks"]["Electrolyser standby_sink"],
+            dict_values["energyConversion"]["electrolyser"]["efficiency"]["value"],
+        )
     """
     Stability constraint
     include constraint linking two converters (ie "in/out")
