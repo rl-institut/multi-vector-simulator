@@ -203,12 +203,21 @@ def energyConversion(dict_values, group):
     """
     #
     for asset in dict_values[group]:
+        print("asset",asset)
         define_missing_cost_data(dict_values, dict_values[group][asset])
         evaluate_lifetime_costs(
             dict_values["simulation_settings"],
             dict_values["economic_data"],
             dict_values[group][asset],
         )
+
+        if asset == "electrolyser":
+            define_sink(
+                dict_values,
+                "Electrolyser standby",
+                {"value": 0.000001, "unit": "currency/kWh"},
+                "Electricity",
+            )
 
         # in case there is only one parameter provided (input bus and one output bus)
         if isinstance(dict_values[group][asset]["efficiency"]["value"], dict):
