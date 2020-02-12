@@ -59,12 +59,15 @@ def main(**kwargs):
         + "\n Coded at: Reiner Lemoine Institute (Berlin) "
         + "\n Contributors: Martha M. Hoffmann \n \n "
     )
+
+    logging.debug("Accessing script: A0_initialization")
     # Parse the arguments from the command line
     parser = initializing.create_parser()
     args = vars(parser.parse_args())
-    kwargs.update(**args)
+    # Give priority from kwargs on command line arguments
+    args.update(**kwargs)
+    kwargs = args
 
-    logging.debug("Accessing script: A0_initialization")
     user_input = initializing.welcome(welcome_text, **kwargs)
 
     # Read all inputs
@@ -74,7 +77,9 @@ def main(**kwargs):
 
     if not user_input["path_input_file"].endswith("json"):
         logging.debug("Accessing script: A1_csv_to_json")
-        path_to_json_from_csv = load_data_from_csv.create_input_json()
+        path_to_json_from_csv = load_data_from_csv.create_input_json(
+            input_directory=user_input["path_input_folder"]
+        )
         user_input.update({"path_input_file": path_to_json_from_csv})
 
     logging.debug("Accessing script: B0_data_input_json")

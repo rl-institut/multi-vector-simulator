@@ -21,8 +21,14 @@ Here is a template for new release sections
 ### Added
 
 ### Changed
+- Give priority from kwargs on command line arguments (#112)
+- Docstrings of module A1 (#113)
+- Changed keyword argument to positional argument for `create_input_json` function (#113)
 
 ### Removed
+
+### Fixed
+- Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
 
 ## [0.1.0] -2020-01-30
 
