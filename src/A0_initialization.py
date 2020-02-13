@@ -196,7 +196,8 @@ def get_user_input(
 
 def welcome(welcome_text, **kwargs):
     """
-    Welcome message and initalization of logging on screen and on file level.
+    Welcome message and initialization of logging on screen and on file level.
+
     :param welcome_text: Welcome text defined in main function
     :return: user input settings regarding screen output, input folder/file and output folder
     """
