@@ -229,7 +229,6 @@ def energyConversion(dict_values, group):
                 "Asset %s has multiple input/output busses with a list of efficiencies. Reading list",
                 dict_values[group][asset]["label"],
             )
-
     return
 
 
@@ -352,11 +351,10 @@ def energyConsumption(dict_values, group):
                 }
             )
 
-        if "input" in dict_values[group][asset]:
+        if "file_name" in dict_values[group][asset]:
             receive_timeseries_from_csv(
                 dict_values["simulation_settings"], dict_values[group][asset], "input",
             )
-
     return
 
 
