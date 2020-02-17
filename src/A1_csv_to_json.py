@@ -183,6 +183,7 @@ def create_input_json(
                 "path_input_file",
                 "path_input_folder",
                 "path_output_folder",
+                "path_input_sequences",
                 "path_output_folder_inputs",
                 "restore_from_oemof_file",
                 "start_date",
