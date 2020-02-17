@@ -61,8 +61,6 @@ def check_input_directory(path_input_file):
     if REPO_PATH not in os.path.abspath(path_input_file):
         path_input_file = os.path.join(REPO_PATH, path_input_file)
 
-    path_input_folder = os.path.dirname(path_input_file)
-
     logging.debug("Checking for inputs files")
 
     if path_input_file.endswith("json"):
@@ -73,6 +71,8 @@ def check_input_directory(path_input_file):
                     "\n The input json file can not be found. Operation terminated."
                 )
             )
+        path_input_folder = os.path.dirname(path_input_file)
+
     else:
         if os.path.exists(path_input_file) is False:
             raise (
@@ -81,6 +81,7 @@ def check_input_directory(path_input_file):
                     "\n The input folder can not be found. Operation terminated."
                 )
             )
+        path_input_folder = path_input_file
 
     return path_input_folder
 
