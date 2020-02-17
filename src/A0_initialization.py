@@ -189,8 +189,13 @@ def get_user_input(
 
     logging.info('Creating folder "inputs" in output folder.')
 
-    os.mkdir(user_input["path_output_folder_inputs"])
-    shutil.copy(user_input["path_input_file"], user_input["path_output_folder_inputs"])
+#    os.mkdir(user_input["path_output_folder_inputs"])
+    if os.path.isdir(user_input["path_input_file"]):
+        shutil.copytree(user_input["path_input_file"],
+                    user_input["path_output_folder_inputs"])
+    else:
+        shutil.copy(user_input["path_input_file"],
+                    user_input["path_output_folder_inputs"])
     return user_input
 
 
