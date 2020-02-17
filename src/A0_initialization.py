@@ -61,7 +61,7 @@ def check_input_directory(path_input_file):
     if REPO_PATH not in os.path.abspath(path_input_file):
         path_input_file = os.path.join(REPO_PATH, path_input_file)
 
-    path_input_folder = os.path.dirname(path_input_file)
+    path_input_folder = path_input_file
 
     logging.debug("Checking for inputs files")
 
@@ -189,7 +189,8 @@ def get_user_input(
 
     logging.info('Creating folder "inputs" in output folder.')
 
-    os.mkdir(user_input["path_output_folder_inputs"])
+#    if not os.path.exists(user_input["path_output_folder_inputs"]):
+#        os.mkdir(user_input["path_output_folder_inputs"])
     if os.path.isdir(user_input["path_input_file"]):
         shutil.copytree(user_input["path_input_file"],
                     user_input["path_output_folder_inputs"])
