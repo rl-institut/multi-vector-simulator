@@ -52,7 +52,7 @@ def create_parser():
     return parser
 
 
-def check_input_directory(path_input_file):
+def check_input_directory(path_input_file, path_input_folder=None):
     """
     :param path_input_file:
     :return:
@@ -61,7 +61,8 @@ def check_input_directory(path_input_file):
     if REPO_PATH not in os.path.abspath(path_input_file):
         path_input_file = os.path.join(REPO_PATH, path_input_file)
 
-    path_input_folder = os.path.dirname(path_input_file)
+    if path_input_folder is None:
+        path_input_folder = os.path.dirname(path_input_file)
 
     logging.debug("Checking for inputs files")
 
@@ -173,7 +174,7 @@ def get_user_input(
     if "test" in kwargs and kwargs["test"] is True:
         overwrite = True
 
-    path_input_folder = check_input_directory(path_input_file)
+    path_input_folder = check_input_directory(path_input_file, **kwargs)
     check_output_directory(path_output_folder, overwrite)
 
     user_input = {
