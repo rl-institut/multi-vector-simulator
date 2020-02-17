@@ -11,6 +11,7 @@ from oemof.tools import logger
 REPO_PATH = os.path.abspath(os.curdir)
 DEFAULT_INPUT_FILE = os.path.join(REPO_PATH, "inputs", "working_example.json")
 DEFAULT_OUTPUT_FOLDER = os.path.join(REPO_PATH, "MVS_outputs")
+DEFAULT_SEQUENCES_FOLDER = os.path.join(REPO_PATH, "inputs", "sequences")
 
 
 def create_parser():
@@ -63,6 +64,8 @@ def check_input_directory(path_input_file):
 
     logging.debug("Checking for inputs files")
 
+    path_input_folder = os.path.dirname(path_input_file)
+
     if path_input_file.endswith("json"):
         if os.path.isfile(path_input_file) is False:
             raise (
@@ -71,7 +74,6 @@ def check_input_directory(path_input_file):
                     "\n The input json file can not be found. Operation terminated."
                 )
             )
-        path_input_folder = os.path.dirname(path_input_file)
 
     else:
         if os.path.exists(path_input_file) is False:
@@ -81,7 +83,6 @@ def check_input_directory(path_input_file):
                     "\n The input folder can not be found. Operation terminated."
                 )
             )
-        path_input_folder = path_input_file
 
     return path_input_folder
 
@@ -131,6 +132,7 @@ def check_output_directory(path_output_folder, overwrite):
 def get_user_input(
     path_input_file=None,
     path_output_folder=None,
+    path_input_sequences=None,
     overwrite=False,  # todo this means that results will be overwritten.
     display_output="info",
     lp_file_output=False,
@@ -143,10 +145,11 @@ def get_user_input(
 
     :param path_input_file:
         Descripes path to inputs excel file
-        This file includes paths to timeseries file
     :param path_output_folder:
         Describes path to folder to be used for terminal output
         Must not exist before
+    :param path_input_sequences:
+        Describes path to sequences/timeseries
     :param overwrite:
         (Optional) Can force tool to replace existing output folder
         "-f"
@@ -168,6 +171,9 @@ def get_user_input(
 
     if path_output_folder is None:
         path_output_folder = DEFAULT_OUTPUT_FOLDER
+
+    if path_input_sequences is None:
+        path_input_sequences = DEFAULT_SEQUENCES_FOLDER
     else:
         pass
 
@@ -182,6 +188,7 @@ def get_user_input(
         "path_input_folder": path_input_folder,
         "path_input_file": path_input_file,
         "path_output_folder": path_output_folder,
+        "path_input_sequences": path_input_sequences,
         "path_output_folder_inputs": os.path.join(path_output_folder, "inputs"),
         "lp_file_output": lp_file_output,
         "display_output": display_output,
@@ -192,7 +199,7 @@ def get_user_input(
 
 #    os.mkdir(user_input["path_output_folder_inputs"])
     if os.path.isdir(user_input["path_input_file"]):
-        shutil.copytree(user_input["path_input_file"],
+        shutil.copytree(user_input["path_input_folder"],
                     user_input["path_output_folder_inputs"])
     else:
         shutil.copy(user_input["path_input_file"],
