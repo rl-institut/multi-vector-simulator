@@ -934,7 +934,9 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
         header = dict_asset[type]["value"]["header"]
         unit = dict_asset[type]["unit"]
 
-    file_path = os.path.join(settings["path_input_folder"], file_name)
+    input_sequences_folder = os.path.join(os.path.dirname(
+        os.path.dirname(settings["path_input_folder"])), "sequences")
+    file_path = os.path.join(input_sequences_folder, file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
     data_set = pd.read_csv(file_path, sep=";")
@@ -1091,7 +1093,9 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
     -------
 
     """
-    file_path = os.path.join(settings["path_input_folder"], file_name)
+    input_sequences_folder = os.path.join(os.path.dirname(
+        os.path.dirname(settings["path_input_folder"])), "sequences")
+    file_path = os.path.join(input_sequences_folder, file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
     data_set = pd.read_csv(file_path, sep=";")
