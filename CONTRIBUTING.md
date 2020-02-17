@@ -56,7 +56,7 @@ Integrated tests (see ./tests/tests.py):
 |---|---|---|---|
 |test_run_smoothly | Code not terminating | Test checking whether mvs_eland_tool.py runs through | Re-check execution of mvs_eland_tool.py and make sure it does not terminate. |
 | test_blacks_main | Code formatting |  Python code is tested with [Blacks](https://github.com/psf/black) for correct formatting ie. line breaks and line lenghts. Tested for mvs_eland_tool.py  | run 'black mvs_eland_tool.py' and commit changes with own commit message.|
-| test_blacks_code_folder | Code formatting |  Python code is tested with [Blacks](https://github.com/psf/black) for correct formatting ie. line breaks and line lenghts. Tested for all python code files in './code_folder'.  | run 'code_folder/*.py' and commit changes with own commit message. |
+| test_blacks_src | Code formatting |  Python code is tested with [Blacks](https://github.com/psf/black) for correct formatting ie. line breaks and line lenghts. Tested for all python code files in './src'.  | run 'src/*.py' and commit changes with own commit message. |
 
 We want more integration tests.
 

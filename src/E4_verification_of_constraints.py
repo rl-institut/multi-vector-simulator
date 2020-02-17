@@ -1,0 +1,6 @@
+def verification():
+    """
+
+    :return:
+    """
+    return

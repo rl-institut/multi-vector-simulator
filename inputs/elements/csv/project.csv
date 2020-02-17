@@ -1,7 +1,0 @@
-,engineering,operation
-capex_fix,"{'value': 0, 'unit': 'currency'}","{'value': 0, 'unit': 'currency'}"
-capex_var,"{'value': 0, 'unit': 'currency'}","{'value': 0, 'unit': 'currency'}"
-label,"R&D, engineering",Fix project operation
-lifetime,"{'value': 20, 'unit': 'year'}","{'value': 20, 'unit': 'year'}"
-opex_fix,"{'value': 0, 'unit': 'currency/year'}","{'value': 4600, 'unit': 'currency/year (electricity bill)'}"
-opex_var,"{'value': 0, 'unit': 'currency/kWh'}","{'value': 0, 'unit': 'currency/kWh'}"

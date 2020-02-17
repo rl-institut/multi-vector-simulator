@@ -17,20 +17,70 @@ Here is a template for new release sections
 -
 ```
 
-# [Developer version] - 2019-MM-DD
-
+## [Unreleased]
 ### Added
-- LICENSE.md with GPL v2.0
-- folder "docs" and content to generate readthedocs
-- Started readthedocs homepage: https://readthedocs.org/projects/mvs-eland/
 
 ### Changed
-- requirements.txt only includes packages needed for users of MVS
-- test_requirements.txt includes packages used by developers of MVS
-- CONTRIBUTING: Now with read the docs
+- Give priority from kwargs on command line arguments (#112)
+- Docstrings of module A1 (#113)
+- Changed keyword argument to positional argument for `create_input_json` function (#113)
 
 ### Removed
-- Output files excluded from repro
+
+### Fixed
+- Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
+- \#111 & \#114 fix user choice of output folder via command line arguments(#115)
+
+## [0.1.0] -2020-01-30
+
+### Added
+- test for running the main function (#109)
+- the user can run the tool simply with `python mvs_tool.py` (#109)
+### Fixed
+- \#108 (#109)
+
+
+## [0.1.0] - 2020-01-29
+
+### Added
+- tests for the A0 module (#87)
+- badge for coveralls.io (#90)
+- tests for the parsing of arguments (#97)
+- exceptions for missing input file/folder (#98)
+### Changed 
+- removed unused class structure in all modules, execution stay the same (#86)
+- link to build for this repository instead of previous one (#95)
+- use argparser to parse the arguments from command line (#97)
+- the full path of input folder containing csv is now required (#98)
+### Removed
+- argument parsing using sys.argv (#97)
+
+## [0.0.3] - 2020-01-22
+
+### Added
+- LICENSE.md with GPL v2.0 (#38, smartie2076)
+- folder "docs" and content to generate readthedocs (#39, smartie2076)
+- Started readthedocs homepage (not working): https://readthedocs.org/projects/mvs-eland/ (#39, smartie2076, #57, Bachibouzouk)
+- new feature to create the input json file from a collection of csv files (@Piranias)
+- new module added: A1_csv_to_json.py (@Piranias)
+- Badges for build and docs (#70, Bachibouzouk)
+- Setup file (#72, Bachibouzouk)
+- Parameters can now be a list of values, eg. efficiencies for two busses or multiple input/output vectors (#52, @marc-juanpera) 
+- Parameters can now be a timeseries (eg. efficiency of a converter, electricity prices) (#37, #82, @marc-juanpera) 
+- Parameters can now be defined as a list as well as as a timeseries (#52,#82, @marc-juanpera) 
+
+### Changed
+- requirements.txt only includes packages needed for users of MVS (#39, smartie2076)
+- test_requirements.txt includes packages used by developers of MVS (#39, smartie2076)
+- CONTRIBUTING: Now with read the docs (@smartie2076)
+- README: Now with contextualization of MVS, setup & installation, utilization of and contributing to MVS (#47, smartie2076)
+- directory structure of input/ (#49 @Piranias)
+- json data structure reduced to 2 (main) levels: goup and asset (#49 @smartie2076)
+- logging now stores into appropriate logfile (@smartie2076)
+- change code_folder to src (#80)
+
+### Removed
+- Output files excluded from repro  (@smartie2076)
 
 ## [0.0.2] - 2019-11-25
 
