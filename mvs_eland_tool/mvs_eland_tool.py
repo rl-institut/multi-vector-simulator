@@ -87,7 +87,7 @@ def main(**kwargs):
         user_input["path_input_file"],
         path_input_folder=user_input["path_input_folder"],
         path_output_folder=user_input["path_output_folder"],
-        path_input_sequences=user_input["path_input_sequences"]
+        path_input_sequences=user_input["path_input_sequences"],
     )
 
     print("")
