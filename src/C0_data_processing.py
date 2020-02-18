@@ -1028,7 +1028,9 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
             if any(dict_asset["timeseries_normalized"].values) < 0:
                 logging.warning("Error, %s timeseries negative.", dict_asset["label"])
 
-    shutil.copy(file_path, settings["path_output_folder_inputs"] + file_name)
+    shutil.copy(
+        file_path, os.path.join(settings["path_output_folder_inputs"], file_name)
+    )
     logging.debug("Copied timeseries %s to output folder / inputs.", file_path)
     return
 
