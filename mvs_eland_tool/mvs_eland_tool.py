@@ -78,7 +78,7 @@ def main(**kwargs):
     if not user_input["path_input_file"].endswith("json"):
         logging.debug("Accessing script: A1_csv_to_json")
         path_to_json_from_csv = load_data_from_csv.create_input_json(
-            input_directory=user_input["path_input_folder"]
+            input_directory=user_input["path_input_file"]
         )
         user_input.update({"path_input_file": path_to_json_from_csv})
 
@@ -87,6 +87,7 @@ def main(**kwargs):
         user_input["path_input_file"],
         path_input_folder=user_input["path_input_folder"],
         path_output_folder=user_input["path_output_folder"],
+        path_input_sequences=user_input["path_input_sequences"],
     )
 
     print("")

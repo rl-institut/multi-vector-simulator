@@ -59,9 +59,6 @@ class TestUserInput:
     def test_user_input_path_folder_copy_in_output(self):
         initializing.get_user_input(path_output_folder=self.output_path)
         assert os.path.exists(self.output_path)
-        assert os.path.exists(
-            os.path.join(self.output_path, "inputs", "working_example.json")
-        )
 
     def test_user_input_path_input_folder_not_existing(self):
         with pytest.raises(NotADirectoryError):
