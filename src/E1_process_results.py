@@ -249,7 +249,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                         {
                             "optimizedAddCap": {
                                 "value": optimal_capacity
-                                * dict_asset["timeseries_peak"],
+                                * dict_asset["timeseries_peak"]["value"],
                                 "unit": dict_asset["unit"],
                             }
                         }
