@@ -13,6 +13,7 @@ Welcome to Multi-Vector Simulator (MVS)'s documentation!
    Installation
    Developing
    Code
+   MVS_parameters
 
 ==================
 Indices and tables
