@@ -5,6 +5,8 @@ MVS E-Lands Parameters and Definitions
 Parameters in energyConversion.csv and shared by several components in the other CSVs/JSON files:
 -----------------
 
+**First row of the csv (C1, E1, D1...)**: Input the names of the conversion components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
+
 **age_installed**: The number of years the asset has already been in operation
 
 **capex_fix**: A fixed cost to implement the asset, eg. planning costs which do not depend on the (optimized) asset capacity (€)
@@ -40,10 +42,9 @@ Parameters in energyConversion.csv and shared by several components in the other
 Parameters specific to energyProduction.csv
 -----------------
 
+**First row of the csv (C1, E1, D1...)**: Input the names of the production components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
+
 **file_name**: Name of the csv file containing the input PV generation time-series. E.g.: filename.csv 
-
-**In C1, D1, E1... cells**: Input the names of the generation components in the format pv_plant_01, wind_plant_01, pv_plant_02, and so on (different from the parameter label!)
-
 
 
 Parameters specific to energyProviders.csv
@@ -79,11 +80,11 @@ Parameters specific to project_data.csv
 Parameters specific to energyConsumption.csv
 -----------------
 
+**First row of the csv (C1, E1, D1...)**: Input the names of the consumption components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
+
 **dsm**: Demand Side Management. Acceptable values are either True or False. Currently, not implemented. 
 
 **type_asset**: [Depreciated in the current version of MVS E-Lands]
-
-**In C1, D1, E1... cells**: Input the names of the various consumption components in the system in the format demand_01, demand_02, etc (different from the parameter label!)
 
 
 Parameters specific to economic_data.csv
@@ -148,6 +149,6 @@ Parameters specific to each simulation_settings.csv
 Parameters specific to each energyStorage.csv
 -----------------
 
-**In C1, D1, E1... cells of the CSV**: Input the names of the various storage components in the system, in the format storage_01, storage_02, etc (different from the parameter label!)
+**First row of the csv (C1, E1, D1...)**: Input the names of the storage components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
 
 **storage_filename**: Corresponding to the values in C1, D1, E1… cells, enter the correct CSV filename which hosts the parameters of the corresponding storage component.
