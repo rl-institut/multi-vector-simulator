@@ -49,26 +49,35 @@ Parameters specific to energyProduction.csv
 Parameters specific to energyProviders.csv
 -----------------
 
-energy_price: Price of electricity sourced from the utility grid (€/kWh)
+**energy_price**: Price of electricity sourced from the utility grid (€/kWh)
 
-feedin_tariff: Price received for feeding electricity into the grid (€/kWh)
+**feedin_tariff**: Price received for feeding electricity into the grid (€/kWh)
 
-peak_demand_pricing: Price to be paid additionally for energy-consumption based on the peak demand of a period (€/kW)
-Peak_demand_pricing_period: Number of reference periods in one year for the peak demand pricing. Only one of the following are acceptable values: 1 (yearly), 2, 3 ,4, 6, 12 (monthly).
+**peak_demand_pricing**: Price to be paid additionally for energy-consumption based on the peak demand of a period (€/kW)
+
+**Peak_demand_pricing_period**: Number of reference periods in one year for the peak demand pricing. Only one of the following are acceptable values: 1 (yearly), 2, 3 ,4, 6, 12 (monthly).
 
 
 Parameters specific to project_data.csv
+-----------------
 
-country: Name of the country where the project is being deployed. E.g.: Germany
-latitude: Latitude coordinate of the project’s geographical location
-longitude: Longitude coordinate of the project’s geographical location
-Project_id: Users can assign a project ID as per their preference. 
-Project_name: Users can assign a project name as per their preference.
-scenario_id: Users can assign a scenario id as per their preference.
-scenario_name: Users can assign a scenario name as per their preference.
+**country**: Name of the country where the project is being deployed. E.g.: Germany
+
+**latitude**: Latitude coordinate of the project’s geographical location
+
+**longitude**: Longitude coordinate of the project’s geographical location
+
+**Project_id**: Users can assign a project ID as per their preference. 
+
+**Project_name**: Users can assign a project name as per their preference.
+
+**scenario_id**: Users can assign a scenario id as per their preference.
+
+**scenario_name**: Users can assign a scenario name as per their preference.
 
 
 Parameters specific to energyConsumption.csv
+-----------------
 
 dsm: Demand Side Management. Acceptable values are either True or False. Currently, not implemented. 
 type_asset: [Depreciated in the current version of MVS E-Lands]
@@ -76,6 +85,7 @@ In C1, D1, E1... cells: Input the names of the various consumption components in
 
 
 Parameters specific to economic_data.csv
+-----------------
 
 currency: The currency of the country where the project is implemented. For example, in the case of Germany, the value is EUR. For Norway, it is NOK. 
 discount_factor: Discount factor is the factor which accounts for the depreciation in the value of money in the future, compared to the current value of the same money. 
