@@ -608,4 +608,5 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     sink_demand = solph.Sink(label=dict_asset["label"], inputs=inputs,)
     model.add(sink_demand)
     kwargs["sinks"].update({dict_asset["label"]: sink_demand})
+    logging.info("Added: Non-dispatchable sink %s", dict_asset["label"])
     return

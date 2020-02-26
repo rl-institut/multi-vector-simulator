@@ -8,6 +8,7 @@ output_lp_file,str,False
 overwrite,str,True
 path_input_file,str,./inputs/test_input_file_v1.xlsx
 path_input_folder,str,./inputs/
+path_input_sequences,str,./inputs/sequences/
 path_output_folder,str,./MVS_outputs
 path_output_folder_inputs,str,./MVS_outputs/inputs/
 restore_from_oemof_file,str,True

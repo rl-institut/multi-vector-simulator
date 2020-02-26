@@ -1,7 +1,7 @@
 # MVS - Multi-Vector Simulator of the E-Land toolbox
 
 [![Documentation Status](https://readthedocs.org/projects/mvs-eland/badge/?version=latest)](https://mvs-eland.readthedocs.io/en/latest/?badge=latest)
-[![Build Status](https://travis-ci.org/rl-institut/mvs_eland.svg?branch=dev)](https://travis-ci.org/rl-institut/mvs_eland.svg?branch=dev)
+[![Build Status](https://travis-ci.com/rl-institut/mvs_eland.svg?branch=dev)](https://travis-ci.com/rl-institut/mvs_eland)
 [![Coverage Status](https://coveralls.io/repos/github/rl-institut/mvs_eland/badge.svg?branch=dev)](https://coveralls.io/github/rl-institut/mvs_eland?branch=dev)
 
 Rights: [Reiner Lemoine Institut (Berlin)](https://reiner-lemoine-institut.de/)
@@ -24,7 +24,7 @@ For advanced programmers: You can also use the dev version that includes the lat
 
 If you are interested to try out the code, please feel free to do so! In case that you are planning to use it for a specific or a larger-scale project, we would be very happy if you would get in contact with us, eg. via issue. Maybe you have ideas that can help the MVS move forward? Maybe you noticed a bug that we can resolve?
 
-We are still working on including a readthedocs for the MVS. You will be able to find further information on this tool and code [HERE](https://mvs-eland.readthedocs.io/en/latest/) (developer version).
+We are still working on including a readthedocs for the MVS. Some information on this tool and code is already available [here](https://mvs-eland.readthedocs.io/en/stable/) (stable version, latest developments [here](https://mvs-eland.readthedocs.io/en/latest/)).
 
 ## Setup and installation
 

@@ -1,3 +1,4 @@
+import os
 import sys
 import shutil
 import logging
@@ -102,7 +103,7 @@ def simulation_settings(simulation_settings):
 
 
 def economic_parameters(economic_parameters):
-    """Calculate annuitiy factor
+    """Calculate annuity factor
 
     :param economic_parameters:
     :return:
@@ -237,7 +238,6 @@ def energyConversion(dict_values, group):
                 "Asset %s has multiple input/output busses with a list of efficiencies. Reading list",
                 dict_values[group][asset]["label"],
             )
-
     return
 
 
@@ -360,11 +360,10 @@ def energyConsumption(dict_values, group):
                 }
             )
 
-        if "input" in dict_values[group][asset]:
+        if "file_name" in dict_values[group][asset]:
             receive_timeseries_from_csv(
                 dict_values["simulation_settings"], dict_values[group][asset], "input",
             )
-
     return
 
 
@@ -944,7 +943,7 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
         header = dict_asset[type]["value"]["header"]
         unit = dict_asset[type]["unit"]
 
-    file_path = settings["path_input_folder"] + file_name
+    file_path = os.path.join(settings["path_input_sequences"], file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
     data_set = pd.read_csv(file_path, sep=";")
@@ -1038,7 +1037,9 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
             if any(dict_asset["timeseries_normalized"].values) < 0:
                 logging.warning("Error, %s timeseries negative.", dict_asset["label"])
 
-    shutil.copy(file_path, settings["path_output_folder_inputs"] + file_name)
+    shutil.copy(
+        file_path, os.path.join(settings["path_output_folder_inputs"], file_name)
+    )
     logging.debug("Copied timeseries %s to output folder / inputs.", file_path)
     return
 
@@ -1101,7 +1102,7 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
     -------
 
     """
-    file_path = settings["path_input_folder"] + file_name
+    file_path = os.path.join(settings["path_input_sequences"], file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
     data_set = pd.read_csv(file_path, sep=";")
