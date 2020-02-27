@@ -46,9 +46,15 @@ To install all packages required for the integration tests locally:
 pip install -r tests/test_requirements.txt
 ```
 
+**!!! Important !!!**: You also need to install the mvs package locally in develop mode:
+```bash
+python setup.py develop
+```
+Otherwise your changes will not be perceived by the tests unless you run `python setup.py install` each time.
+
 Please run the tests locally before pushing your feature to the developer branch. You do that by running:
 ```bash
-pytest ./tests/tests.py 
+pytest
 ```
 Integrated tests (see ./tests/tests.py):
 
