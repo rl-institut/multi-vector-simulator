@@ -1,3 +1,9 @@
+"""
+In this module the tests run over whole simulation from main, not just single functions of modules
+
+What should differ between the different functions is the input file
+
+"""
 import os
 import sys
 import argparse
@@ -23,6 +29,8 @@ def setup_module():
 @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
 def test_run_smoothly(mock_args):
     main(path_output_folder=OUTPUT_PATH)
+    # TODO: find typical output values to write better test, currently it only test that main() run
+    # TODO: without crashing, but does not test if the output make sense
     assert 1 == 1
 
 
