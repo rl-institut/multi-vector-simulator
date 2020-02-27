@@ -1,4 +1,4 @@
-"
+"""
 Module A0_initialization should define the most basic settings of the MVS simulation. This includes
 - Executing the MVS from terminal
    - Using json input file
@@ -10,4 +10,4 @@ Module A0_initialization should define the most basic settings of the MVS simula
 - Create output directory
 - Display welcome message with current version number
 - Define logging depth
-"
+"""
