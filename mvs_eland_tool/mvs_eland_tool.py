@@ -61,14 +61,8 @@ def main(**kwargs):
     )
 
     logging.debug("Accessing script: A0_initialization")
-    # Parse the arguments from the command line
-    parser = initializing.create_parser()
-    args = vars(parser.parse_args())
-    # Give priority from kwargs on command line arguments
-    args.update(**kwargs)
-    kwargs = args
 
-    user_input = initializing.welcome(welcome_text, **kwargs)
+    user_input = initializing.process_user_arguments(welcome_text=welcome_text, **kwargs)
 
     # Read all inputs
     #    print("")
