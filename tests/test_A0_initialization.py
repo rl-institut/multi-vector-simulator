@@ -3,10 +3,9 @@ import sys
 import shutil
 import pytest
 import mock
-import argparse
+import logging
 
 import src.A0_initialization as initializing
-from mvs_eland_tool.mvs_eland_tool import main
 
 from src.constants import (
     REPO_PATH,
@@ -14,12 +13,12 @@ from src.constants import (
     INPUTS_COPY,
     INPUT_FOLDER,
     OUTPUT_FOLDER,
-JSON_FNAME,
+    JSON_FNAME,
     JSON_EXT,
-CSV_FNAME,
+    CSV_FNAME,
     CSV_EXT,
     DEFAULT_INPUT_PATH,
-    DEFAULT_OUTPUT_PATH
+    DEFAULT_OUTPUT_PATH,
 )
 
 
@@ -52,12 +51,12 @@ class TestProcessUserArguments:
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(["-ext", JSON_EXT]),
     )
-    def test_if_json_opt_and_no_json_file_in_input_folder_raise_filenotfound_error(self, m_args, tmpdir):
+    def test_if_json_opt_and_no_json_file_in_input_folder_raise_filenotfound_error(
+        self, m_args, tmpdir
+    ):
         """provide a temporary dir with no .json in it"""
         with pytest.raises(FileNotFoundError):
-            initializing.process_user_arguments(
-                path_input_folder=tmpdir,
-            )
+            initializing.process_user_arguments(path_input_folder=tmpdir)
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
@@ -68,46 +67,72 @@ class TestProcessUserArguments:
     ):
         # create a folder with two json files
         os.mkdir(self.fake_input_path)
-        with open(os.path.join(self.fake_input_path, JSON_FNAME), 'w') as of:
-            of.write('something')
-        with open(os.path.join(self.fake_input_path, "file2.json"), 'w') as of:
-            of.write('something')
+        with open(os.path.join(self.fake_input_path, JSON_FNAME), "w") as of:
+            of.write("something")
+        with open(os.path.join(self.fake_input_path, "file2.json"), "w") as of:
+            of.write("something")
         with pytest.raises(FileExistsError):
             initializing.process_user_arguments()
 
-    def test_if_json_opt_path_input_file_set_to_path_input_folder(self):
-        """Check that the path_input_file is <path_input_folder>
-
-            in module A1_csv_to_json this will be transformed into a .json file
-        """
-        pass
-
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-ext", CSV_EXT]),
+    )
     def test_if_csv_opt_and_csv_elements_folder_not_in_input_folder_raise_filenotfound_error(
-        self,
+        self, m_args, tmpdir
     ):
-        pass
-        # with pytest.raises(FileNotFoundError):
-        #     initializing.get_user_input(
-        #         path_input_file=os.path.join(self.input_path, "not_existing.json"),
-        #         path_output_folder=self.output_path,
-        #         overwrite=True,
-        #     )
+        with pytest.raises(FileNotFoundError):
+            initializing.process_user_arguments(path_input_folder=tmpdir)
 
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            ["-i", fake_input_path, "-ext", CSV_EXT, "-o", test_out_path]
+        ),
+    )
     def test_if_csv_opt_path_input_file_set_to_path_input_folder_mvs_csv_config_dot_json(
-        self,
+        self, m_args, tmpdir
     ):
         """Check that the path_input_file is <path_input_folder>/mvs_csv_config.json """
-        pass
+        os.mkdir(self.fake_input_path)
+        os.mkdir(os.path.join(self.fake_input_path, CSV_ELEMENTS))
+        user_inputs = initializing.process_user_arguments()
+        assert user_inputs["path_input_file"] == os.path.join(
+            self.fake_input_path, CSV_ELEMENTS, CSV_FNAME
+        )
 
-    def test_if_log_opt_display_output_is_set_with_correct_value(self):
-        pass
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            ["-i", test_in_path, "-log", "error", "-o", test_out_path]
+        ),
+    )
+    def test_if_log_opt_display_output_is_set_with_correct_value(self, m_args):
+        initializing.process_user_arguments()
+        # TODO check the logging level
+        assert 0
 
-    def test_if_path_output_folder_exists_raise_fileexists_error(self):
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-i", test_in_path, "-o", test_out_path]),
+    )
+    def test_if_path_output_folder_exists_raise_fileexists_error(self, m_args):
         """The error message should advice the user to use -f option to force overwrite"""
-        pass
+        os.mkdir(self.test_out_path)
+        with pytest.raises(FileExistsError):
+            initializing.process_user_arguments()
 
-    def test_if_f_opt_preexisting_path_output_folder_should_be_replaced(self):
-        pass
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-i", test_in_path, "-f", "-o", test_out_path]),
+    )
+    def test_if_f_opt_preexisting_path_output_folder_should_be_replaced(self, m_args):
+        os.mkdir(self.test_out_path)
+        some_file = os.path.join(self.test_out_path, "a_file.txt")
+        with open(some_file, "w") as of:
+            of.write("something")
+        initializing.process_user_arguments()
+        assert os.path.exists(some_file) is False
 
     def teardown_method(self):
         if os.path.exists(self.test_out_path):
