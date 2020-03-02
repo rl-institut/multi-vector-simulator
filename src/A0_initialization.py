@@ -18,24 +18,37 @@ import shutil
 import logging
 import argparse
 
+from src.constants import (
+    DEFAULT_INPUT_PATH,
+    DEFAULT_OUTPUT_PATH,
+    DEFAULT_SEQUENCES_PATH,
+)
 from oemof.tools import logger
 
 # works only when the commands are executed from the root of the repository
 REPO_PATH = os.path.abspath(os.curdir)
-DEFAULT_INPUT_FILE = os.path.join(REPO_PATH, "inputs", "working_example.json")
-DEFAULT_OUTPUT_FOLDER = os.path.join(REPO_PATH, "MVS_outputs")
-DEFAULT_SEQUENCES_FOLDER = os.path.join(REPO_PATH, "inputs", "sequences")
+
 
 
 def create_parser():
     parser = argparse.ArgumentParser(prog="mvs", description="Process MVS arguments")
     parser.add_argument(
         "-i",
-        dest="path_input_file",
+        dest="path_input_folder",
         nargs="?",
         type=str,
         help="path to the json input file",
-        default=None,
+        default=DEFAULT_INPUT_PATH,
+    )
+    parser.add_argument(
+        "-ext",
+        dest="input_type",
+        nargs="?",
+        type=str,
+        help="type (json or csv) of the input files",
+        default="json",
+        const="info",
+        choices=["json", "csv"]
     )
     parser.add_argument(
         "-o",
@@ -43,7 +56,7 @@ def create_parser():
         nargs="?",
         type=str,
         help="output folder for the simulation's results",
-        default=None,
+        default=DEFAULT_OUTPUT_PATH,
     )
     parser.add_argument(
         "-log",
