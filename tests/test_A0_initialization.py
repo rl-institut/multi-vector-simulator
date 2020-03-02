@@ -6,6 +6,8 @@ import mock
 import argparse
 import logging
 
+from mvs_eland_tool.mvs_eland_tool import main
+
 import src.A0_initialization as initializing
 
 from src.constants import (
@@ -146,13 +148,11 @@ def test_check_input_path_posix():
     """Verify the code works on both windows and linux path systems"""
     if os.name == "posix":
         folder = initializing.check_input_folder(
-            "{}/tests/inputs/".format(REPO_PATH),
-            JSON_EXT
+            "{}/tests/inputs/".format(REPO_PATH), JSON_EXT
         )
     else:
         folder = initializing.check_input_folder(
-            "{}\\tests\\inputs\\".format(REPO_PATH),
-            JSON_EXT
+            "{}\\tests\\inputs\\".format(REPO_PATH), JSON_EXT
         )
 
     assert folder == os.path.join(REPO_PATH, "tests", "inputs", JSON_FNAME)
@@ -222,11 +222,13 @@ class TestCommandLineInput:
     # this ensure that the test is only ran if explicitly executed,
     # ie not when the `pytest` command alone it called
     @pytest.mark.skipif(
-        "tests/test_inputs.py" not in sys.argv, reason="requires python3.3"
+        "tests/test_A0_initialization.py" not in sys.argv, reason="requires python3.3"
     )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
-        return_value=argparse.Namespace(path_output_folder=TEST_OUTPUT_PATH),
+        return_value=PARSER.parse_args(
+            ["-i", os.path.join("tests", "inputs"), "-o", TEST_OUTPUT_PATH]
+        ),
     )
     def test_user_defined_output_path(self, mock_args):
         main()

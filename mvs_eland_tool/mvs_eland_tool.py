@@ -62,7 +62,9 @@ def main(**kwargs):
 
     logging.debug("Accessing script: A0_initialization")
 
-    user_input = initializing.process_user_arguments(welcome_text=welcome_text, **kwargs)
+    user_input = initializing.process_user_arguments(
+        welcome_text=welcome_text, **kwargs
+    )
 
     # Read all inputs
     #    print("")
