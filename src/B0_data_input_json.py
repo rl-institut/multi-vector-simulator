@@ -2,7 +2,7 @@ import os
 import json
 
 """
-This model is used to open and a json file and parse it as a dict all input parameters for the energy 
+This module is used to open a json file and parse it as a dict all input parameters for the energy 
 system.
 
 It will be an interface to the EPA.
