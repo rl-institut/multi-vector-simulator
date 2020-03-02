@@ -21,14 +21,12 @@ import argparse
 from src.constants import (
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
-    DEFAULT_SEQUENCES_PATH,
     JSON_FNAME,
     CSV_FNAME,
     JSON_EXT,
     CSV_EXT,
     CSV_ELEMENTS,
     INPUTS_COPY,
-    USER_INPUT_ARGUMENTS,
 )
 
 from oemof.tools import logger
@@ -182,7 +180,6 @@ def process_user_arguments(
     path_input_folder=None,
     input_type=None,
     path_output_folder=None,
-    path_input_sequences=None,
     overwrite=None,
     display_output=None,
     lp_file_output=False,
@@ -199,8 +196,6 @@ def process_user_arguments(
     :param path_output_folder:
         Describes path to folder to be used for terminal output (command line "-o")
         Must not exist before
-    :param path_input_sequences:
-        Describes path to sequences/timeseries
     :param overwrite:
         (Optional) Can force tool to replace existing output folder (command line "-f")
     :param display_output:
@@ -232,16 +227,12 @@ def process_user_arguments(
     if path_output_folder is None:
         path_output_folder = args.get("path_output_folder")
 
-    if path_input_sequences is None:
-        path_input_sequences = args.get("path_input_sequences", DEFAULT_SEQUENCES_PATH)
-
     if overwrite is None:
         overwrite = args.get("overwrite")
 
     if display_output is None:
         display_output = args.get("display_output")
 
-    print(path_input_folder)
     path_input_file = check_input_folder(path_input_folder, input_type)
     path_output_folder_inputs = check_output_folder(
         path_input_folder, path_output_folder, overwrite
@@ -250,7 +241,6 @@ def process_user_arguments(
     user_input = {
         "label": "simulation_settings",
         "path_input_folder": path_input_folder,
-        "path_input_sequences": path_input_sequences,
         "input_type": input_type,
         "path_input_file": path_input_file,
         "path_output_folder": path_output_folder,
@@ -283,11 +273,3 @@ def process_user_arguments(
         logging.info(welcome_text)
 
     return user_input
-
-
-logger.define_logging(
-    logpath=".",
-    logfile="mvst_logfile.log",
-    file_level=logging.DEBUG,
-    screen_level=logging.ERROR,
-)
