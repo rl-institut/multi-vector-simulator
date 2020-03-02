@@ -107,23 +107,45 @@ def test_check_input_path_posix():
 
 
 OUTPUT_PATH = os.path.join(".", "tests", "other")
+TEST_OUTPUT_PATH = os.path.join(".", "tests", "other")
 
 
 class TestCommandLineInput:
 
     parser = initializing.create_parser()
 
-    def test_input_json_file(self):
-        parsed = self.parser.parse_args(["-json", "input_file"])
-        assert parsed.path_input_file == "input_file"
+    def test_input_folder(self):
+        parsed = self.parser.parse_args(["-i", "input_folder"])
+        assert parsed.path_input_folder == "input_folder"
 
-    def test_input_csv_file(self):
-        parsed = self.parser.parse_args(["-csv", "input_file"])
-        assert parsed.path_input_file == os.path.join("input_file", CSV_ELEMENTS)
+    def test_default_input_folder(self):
+        parsed = self.parser.parse_args([])
+        assert parsed.path_input_folder == DEFAULT_INPUT_PATH
+
+    def test_input_json_ext(self):
+        parsed = self.parser.parse_args(["-ext", JSON_EXT])
+        assert parsed.input_type == JSON_EXT
+
+    def test_input_csv_ext(self):
+        parsed = self.parser.parse_args(["-ext", CSV_EXT])
+        assert parsed.input_type == CSV_EXT
+
+    def test_default_input_type(self):
+        parsed = self.parser.parse_args([])
+        assert parsed.input_type == JSON_EXT
+
+    def test_ext_not_accepting_other_choices(self):
+        with pytest.raises(SystemExit) as argparse_error:
+            parsed = self.parser.parse_args(["-ext", "something"])
+        assert str(argparse_error.value) == "2"
 
     def test_output_folder(self):
         parsed = self.parser.parse_args(["-o", "output_folder"])
         assert parsed.path_output_folder == "output_folder"
+
+    def test_default_output_folder(self):
+        parsed = self.parser.parse_args([])
+        assert parsed.path_output_folder == DEFAULT_OUTPUT_PATH
 
     def test_overwrite_false_by_default(self):
         parsed = self.parser.parse_args([])
@@ -153,12 +175,12 @@ class TestCommandLineInput:
     )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
-        return_value=argparse.Namespace(path_output_folder=OUTPUT_PATH),
+        return_value=argparse.Namespace(path_output_folder=TEST_OUTPUT_PATH),
     )
     def test_user_defined_output_path(self, mock_args):
         main()
-        assert os.path.exists(OUTPUT_PATH)
+        assert os.path.exists(TEST_OUTPUT_PATH)
 
     def teardown_method(self):
-        if os.path.exists(OUTPUT_PATH):
-            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+        if os.path.exists(TEST_OUTPUT_PATH):
+            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
