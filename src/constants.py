@@ -41,8 +41,7 @@ DEFAULT_SEQUENCES_PATH = os.path.join(REPO_PATH, INPUT_FOLDER, SEQUENCES)
 USER_INPUT_ARGUMENTS = (
     "path_input_file",
     "path_output_folder",
-    "input_type"
-    "path_input_sequences",
+    "input_type" "path_input_sequences",
     "overwrite",
     "display_output",
 )
