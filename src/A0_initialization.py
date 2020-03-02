@@ -173,8 +173,6 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
         logging.info('Creating folder "inputs" in output folder.')
         shutil.copytree(path_input_folder, path_output_folder_inputs)
 
-    return path_output_folder_inputs
-
 
 def process_user_arguments(
     path_input_folder=None,
@@ -234,9 +232,7 @@ def process_user_arguments(
         display_output = args.get("display_output")
 
     path_input_file = check_input_folder(path_input_folder, input_type)
-    path_output_folder_inputs = check_output_folder(
-        path_input_folder, path_output_folder, overwrite
-    )
+    check_output_folder(path_input_folder, path_output_folder, overwrite)
 
     user_input = {
         "label": "simulation_settings",
@@ -244,7 +240,6 @@ def process_user_arguments(
         "input_type": input_type,
         "path_input_file": path_input_file,
         "path_output_folder": path_output_folder,
-        "path_output_folder_inputs": path_output_folder_inputs,
         "lp_file_output": lp_file_output,
         "overwrite": overwrite,
     }
