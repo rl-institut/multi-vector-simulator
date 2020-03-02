@@ -8,49 +8,72 @@ import argparse
 import src.A0_initialization as initializing
 from mvs_eland_tool.mvs_eland_tool import main
 
-from .constants import REPO_PATH, CSV_ELEMENTS, INPUTS_COPY
+from src.constants import (
+    REPO_PATH,
+    CSV_ELEMENTS,
+    INPUTS_COPY,
+    INPUT_FOLDER,
+    OUTPUT_FOLDER,
+JSON_FNAME,
+    JSON_EXT,
+CSV_FNAME,
+    CSV_EXT,
+    DEFAULT_INPUT_PATH,
+    DEFAULT_OUTPUT_PATH
+)
+
+
+PARSER = initializing.create_parser()
 
 
 class TestProcessUserArguments:
 
-    output_path = os.path.join(".", "tests", "MVS_outputs")
-    input_path = os.path.join("tests", "inputs")
+    test_in_path = os.path.join("tests", "inputs")
+    test_out_path = os.path.join(".", "tests", "MVS_outputs")
     fake_input_path = os.path.join("tests", "fake_inputs")
 
-    def test_input_folder_is_copied_in_output_within_folder_named_input(self):
-        pass
-        # initializing.get_user_input(path_output_folder=self.output_path)
-        # assert os.path.exists(self.output_path)
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-i", test_in_path, "-o", test_out_path]),
+    )
+    def test_input_folder_is_copied_in_output_within_folder_named_input(self, m_args):
+        initializing.process_user_arguments()
+        assert os.path.exists(os.path.join(self.test_out_path, INPUTS_COPY))
 
-    def test_input_folder_not_existing_raise_filenotfound_error(self):
-        pass
-        # with pytest.raises(NotADirectoryError):
-        #     initializing.get_user_input(
-        #         path_input_file=self.fake_input_path,
-        #         path_output_folder=self.output_path,
-        #     )
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-i", fake_input_path, "-o", test_out_path]),
+    )
+    def test_input_folder_not_existing_raise_filenotfound_error(self, m_args):
+        with pytest.raises(FileNotFoundError):
+            initializing.process_user_arguments()
 
-    def test_if_json_opt_and_no_json_file_in_input_folder_raise_filenotfound_error(
-        self,
-    ):
-        pass
-        # with pytest.raises(FileNotFoundError):
-        #     initializing.get_user_input(
-        #         path_input_file=os.path.join(self.input_path, "not_existing.json"),
-        #         path_output_folder=self.output_path,
-        #         overwrite=True,
-        #     )
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-ext", JSON_EXT]),
+    )
+    def test_if_json_opt_and_no_json_file_in_input_folder_raise_filenotfound_error(self, m_args, tmpdir):
+        """provide a temporary dir with no .json in it"""
+        with pytest.raises(FileNotFoundError):
+            initializing.process_user_arguments(
+                path_input_folder=tmpdir,
+            )
 
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-i", fake_input_path, "-ext", JSON_EXT]),
+    )
     def test_if_json_opt_and_more_than_one_json_file_in_input_folder_raise_fileexists_error(
-        self,
+        self, m_args
     ):
-        pass
-        # with pytest.raises(FileNotFoundError):
-        #     initializing.get_user_input(
-        #         path_input_file=os.path.join(self.input_path, "not_existing.json"),
-        #         path_output_folder=self.output_path,
-        #         overwrite=True,
-        #     )
+        # create a folder with two json files
+        os.mkdir(self.fake_input_path)
+        with open(os.path.join(self.fake_input_path, JSON_FNAME), 'w') as of:
+            of.write('something')
+        with open(os.path.join(self.fake_input_path, "file2.json"), 'w') as of:
+            of.write('something')
+        with pytest.raises(FileExistsError):
+            initializing.process_user_arguments()
 
     def test_if_json_opt_path_input_file_set_to_path_input_folder(self):
         """Check that the path_input_file is <path_input_folder>
@@ -87,9 +110,10 @@ class TestProcessUserArguments:
         pass
 
     def teardown_method(self):
-        pass
-        # if os.path.exists(self.output_path):
-        #     shutil.rmtree(self.output_path, ignore_errors=True)
+        if os.path.exists(self.test_out_path):
+            shutil.rmtree(self.test_out_path, ignore_errors=True)
+        if os.path.exists(self.fake_input_path):
+            shutil.rmtree(self.fake_input_path, ignore_errors=True)
 
 
 def test_check_input_path_posix():
@@ -106,7 +130,6 @@ def test_check_input_path_posix():
     assert folder == os.path.join(REPO_PATH, "inputs")
 
 
-OUTPUT_PATH = os.path.join(".", "tests", "other")
 TEST_OUTPUT_PATH = os.path.join(".", "tests", "other")
 
 
