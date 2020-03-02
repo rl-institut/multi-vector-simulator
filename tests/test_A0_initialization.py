@@ -3,6 +3,7 @@ import sys
 import shutil
 import pytest
 import mock
+import argparse
 import logging
 
 import src.A0_initialization as initializing
@@ -144,15 +145,17 @@ class TestProcessUserArguments:
 def test_check_input_path_posix():
     """Verify the code works on both windows and linux path systems"""
     if os.name == "posix":
-        folder = initializing.check_input_directory(
-            "{}/inputs/working_example.json".format(REPO_PATH)
+        folder = initializing.check_input_folder(
+            "{}/tests/inputs/".format(REPO_PATH),
+            JSON_EXT
         )
     else:
-        folder = initializing.check_input_directory(
-            "{}\\inputs\\working_example.json".format(REPO_PATH)
+        folder = initializing.check_input_folder(
+            "{}\\tests\\inputs\\".format(REPO_PATH),
+            JSON_EXT
         )
 
-    assert folder == os.path.join(REPO_PATH, "inputs")
+    assert folder == os.path.join(REPO_PATH, "tests", "inputs", JSON_FNAME)
 
 
 TEST_OUTPUT_PATH = os.path.join(".", "tests", "other")
