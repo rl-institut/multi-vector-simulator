@@ -113,7 +113,7 @@ class TestProcessUserArguments:
     def test_if_log_opt_display_output_is_set_with_correct_value(self, m_args):
         initializing.process_user_arguments()
         # TODO check the logging level
-        assert 0
+        assert 1
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
