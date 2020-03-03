@@ -1,24 +1,38 @@
 """
-Module A0_initialization should define the most basic settings of the MVS simulation. This includes
-- Executing the MVS from terminal
-   - Using json input file
-   - Using csv input files
-   - Optional: Force folder overwrite
-   - Optional: Display logging in terminal
-- Set default values for MVS execution
-- Check that all necessary (and called) files exist
-- Create output directory
-- Display welcome message with current version number
-- Define logging depth
+Module A0_initialization defines functions to parse user inputs to the MVS simulation.
+    - Display welcome message with current version number
+    - Parse command line arguments and set default values for MVS parameters if not provided
+    - Check that all necessary files and folder exists
+    - Create output directory
+    - Define screen logging depth
+
+Usage from root of repository:
+python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]]
+                          [-o [PATH_OUTPUT_FOLDER]]
+                          [-log [{debug,info,error,warning}]] [-f [OVERWRITE]]
+
+Process MVS arguments
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i [PATH_INPUT_FOLDER]
+                        path to the input folder
+  -ext [{json,csv}]     type (json or csv) of the input files (default: 'json'
+  -o [PATH_OUTPUT_FOLDER]
+                        path to the output folder for the simulation's results
+  -log [{debug,info,error,warning}]
+                        level of logging in the console
+  -f [OVERWRITE]        overwrite the output folder if True (default: False)
+
 """
 
 import os
-import sys
 import shutil
 import logging
 import argparse
 
 from src.constants import (
+    REPO_PATH,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
     JSON_FNAME,
@@ -31,18 +45,21 @@ from src.constants import (
 
 from oemof.tools import logger
 
-# works only when the commands are executed from the root of the repository
-REPO_PATH = os.path.abspath(os.curdir)
-
 
 def create_parser():
-    parser = argparse.ArgumentParser(prog="mvs", description="Process MVS arguments")
+    """Create a command line argument parser for MVS
+
+    :return: parser
+    """
+    parser = argparse.ArgumentParser(
+        prog="python mvs_tool.py", description="Process MVS arguments"
+    )
     parser.add_argument(
         "-i",
         dest="path_input_folder",
         nargs="?",
         type=str,
-        help="path to the json input file",
+        help="path to the input folder",
         default=DEFAULT_INPUT_PATH,
     )
     parser.add_argument(
@@ -50,23 +67,23 @@ def create_parser():
         dest="input_type",
         nargs="?",
         type=str,
-        help="type (json or csv) of the input files",
-        default="json",
-        const="json",
-        choices=["json", "csv"],
+        help="type (json or csv) of the input files (default: 'json'",
+        default=JSON_EXT,
+        const=JSON_EXT,
+        choices=[JSON_EXT, CSV_EXT],
     )
     parser.add_argument(
         "-o",
         dest="path_output_folder",
         nargs="?",
         type=str,
-        help="output folder for the simulation's results",
+        help="path to the output folder for the simulation's results",
         default=DEFAULT_OUTPUT_PATH,
     )
     parser.add_argument(
         "-log",
         dest="display_output",
-        help="level of log in the console",
+        help="level of logging in the console",
         nargs="?",
         default="info",
         const="info",
@@ -75,7 +92,7 @@ def create_parser():
     parser.add_argument(
         "-f",
         dest="overwrite",
-        help="overwrite the output folder",
+        help="overwrite the output folder if True (default: False)",
         nargs="?",
         const=True,
         default=False,
@@ -85,7 +102,13 @@ def create_parser():
 
 
 def check_input_folder(path_input_folder, input_type):
-    """
+    """Enforces the rules for the input folder and files
+
+        There should be a single json file for config (described under JSON_FNAME) in case
+        input_type is equal to JSON_EXT.
+        There should be a folder with csv files (name of folder given by CSV_ELEMENTS) in case
+        input_type is equal to CSV_EXT.
+
 
     :param path_input_folder: path to input folder
     :param input_type: of of JSON_EXT or CSV_EXT
@@ -100,7 +123,6 @@ def check_input_folder(path_input_folder, input_type):
 
     if input_type == JSON_EXT:
         path_input_file = os.path.join(path_input_folder, JSON_FNAME)
-        print(path_input_file)
         if os.path.exists(path_input_file) is False:
             raise (
                 FileNotFoundError(
@@ -133,7 +155,12 @@ def check_input_folder(path_input_folder, input_type):
 
 
 def check_output_folder(path_input_folder, path_output_folder, overwrite):
-    """
+    """Enforces the rules for the output folder
+
+            An error is raised if the path_output_folder already exists, unless overwrite is set
+            to True. The path_output_folder is created if not existing and the content of
+            path_input_folder is copied in a folder named INPUTS_COPY.
+
     :param path_input_folder: path to input folder
     :param path_output_folder: path to output folder
     :param overwrite: boolean indicating what to do if the output folder exists already
@@ -153,7 +180,8 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
         if overwrite is False:
             raise (
                 FileExistsError(
-                    "Output folder exists and should not be overwritten. Please choose other folder."
+                    "Output folder {} already exists and should not be overwritten. "
+                    "Please choose other folder.".format(path_output_folder)
                 )
             )
         else:
@@ -185,7 +213,7 @@ def process_user_arguments(
 ):
     """
     Process user command from terminal inputs. If inputs provided as arguments of the function,
-    it will overwrite the command line arguments.
+    they will overwrite the command line arguments.
 
     :param path_input_folder:
         Descripes path to inputs folder (command line "-i")
@@ -198,15 +226,15 @@ def process_user_arguments(
         (Optional) Can force tool to replace existing output folder (command line "-f")
     :param display_output:
         (Optional) Determines which messages are used for terminal output (command line "-log")
-            "-debug": All logging messages
-            "-info": All informative messages and warnings (default)
-            "-warnings": All warnings
-            "-errors": Only errors
+            "debug": All logging messages
+            "info": All informative messages and warnings (default)
+            "warnings": All warnings
+            "errors": Only errors
     :param lp_file_output:
         Save linear equation system generated as lp file
     :param welcome_text:
         Text to be displayed
-    :return:
+    :return: a dict with these arguments as keys (except welcome_text which is replaced by label)
     """
 
     logging.debug("Get user inputs from console")
@@ -240,8 +268,9 @@ def process_user_arguments(
         "input_type": input_type,
         "path_input_file": path_input_file,
         "path_output_folder": path_output_folder,
-        "lp_file_output": lp_file_output,
         "overwrite": overwrite,
+        "display_output": display_output,
+        "lp_file_output": lp_file_output,
     }
 
     if display_output == "debug":
