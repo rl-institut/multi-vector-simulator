@@ -1,6 +1,6 @@
 r"""
 Module E3 indicator calculation
-------------------------
+-------------------------------
 
 In module E3 the technical KPI are evaluated:
 - calculate renewable share
