@@ -1,6 +1,16 @@
 import logging
 import pandas as pd
 
+r"""
+Module E1 process results
+-------------------------
+Module E1 processes the oemof results.
+- receive timeseries per bus for all assets
+- write timeseries to dictionary
+- get optimal capacity of optimized assets
+- add the evaluation of timeseries
+
+"""
 
 def get_timeseries_per_bus(dict_values, bus_data):
     """
