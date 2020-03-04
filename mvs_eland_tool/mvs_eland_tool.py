@@ -28,6 +28,7 @@ child-sub:  Sub-child function, feeds only back to child functions
 """
 
 import logging
+import os
 
 # Loading all child functions
 
@@ -38,6 +39,11 @@ import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
 import src.F0_output as output_processing
+
+from src.constants import (
+    CSV_ELEMENTS,
+    CSV_FNAME
+)
 
 
 def main(**kwargs):
@@ -73,9 +79,10 @@ def main(**kwargs):
 
     if user_input["input_type"] == "csv":
         logging.debug("Accessing script: A1_csv_to_json")
-        path_to_json_from_csv = load_data_from_csv.create_input_json(
+        load_data_from_csv.create_input_json(
             input_directory=os.path.join(user_input["path_input_folder"],
-                                         CSV_ELEMENTS)
+                                         CSV_ELEMENTS),
+            output_filename=CSV_FNAME
         )
         user_input.update({"path_input_file": path_to_json_from_csv})
 
