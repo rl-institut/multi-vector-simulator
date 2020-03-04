@@ -42,7 +42,8 @@ import src.F0_output as output_processing
 
 from src.constants import (
     CSV_ELEMENTS,
-    CSV_FNAME
+    CSV_FNAME,
+    CSV_EXT
 )
 
 
