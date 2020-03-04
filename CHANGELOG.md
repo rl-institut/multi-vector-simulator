@@ -27,6 +27,7 @@ Here is a template for new release sections
 - Changed keyword argument to positional argument for `create_input_json` function (#113)
 - function `get_user_inputs` renamed `process_user_arguments` (#138)
 - Tests for the module A0 (#138)
+Terminal commands changed (#135)
 ### Removed
 - Function welcome from module A0 (#138)
 ### Fixed
@@ -118,5 +119,4 @@ Here is a template for new release sections
 
 ### Removed
 - yet another thing
-
 
