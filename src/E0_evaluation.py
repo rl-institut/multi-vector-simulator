@@ -8,6 +8,15 @@ import src.E2_economics as economics
 import src.E3_indicator_calculation as indicators
 import src.F0_output as output
 
+r"""
+Module E0 evaluation
+====================
+
+Module E0 evaluates the oemof results and calculates the KPI
+- define dictionary entry for kpi matrix
+- define dictionary entry for cost matrix
+- store all results to matrix
+"""
 
 def evaluate_dict(dict_values, results_main, results_meta):
     """
