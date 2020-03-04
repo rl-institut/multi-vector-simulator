@@ -263,8 +263,8 @@ def create_input_json(
     with open(os.path.join(input_directory, output_filename), "w") as outfile:
         json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
     logging.info(
-        "Json file created successully from csv's and stored into"
-        "/mvs_eland/inputs/%s" % output_filename + "\n"
+        "Json file created successully from csv's and stored into "
+        "%s" % os.path.join(input_directory, output_filename) + "\n"
     )
     logging.debug("Json created successfully from csv.")
     if pass_back:
@@ -500,7 +500,3 @@ def add_storage(storage_filename, input_directory):
             input_directory, filename=storage_filename, parameters=parameters
         )
         return single_dict
-
-
-if __name__ == "__main__":
-    create_input_json()
