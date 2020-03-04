@@ -27,7 +27,7 @@ REQUIRED_CSV_FILES = (
     "energyConsumption",
 )
 # name of the folder containing timeseries described by .csv files
-SEQUENCES = "sequences"
+TIME_SERIES = "time_series"
 # name of the folder containing the output of the simulation
 OUTPUT_FOLDER = "MVS_outputs"
 # name of the folder containing the copied content of the input folder within the output folder
@@ -36,7 +36,6 @@ INPUTS_COPY = INPUT_FOLDER
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)
-DEFAULT_SEQUENCES_PATH = os.path.join(REPO_PATH, INPUT_FOLDER, SEQUENCES)
 
 USER_INPUT_ARGUMENTS = (
     "path_input_file",
