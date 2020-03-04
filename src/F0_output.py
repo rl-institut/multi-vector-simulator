@@ -6,6 +6,19 @@ import matplotlib.pyplot as plt
 
 import src.F1_plotting as plots
 
+r"""
+Module F0 Output
+================
+The model F0 output defines all functions that store evaluation results to file.
+- Aggregate demand profiles to a total demand profile
+- Plotting all energy flows for both 14 and 365 days for each energy bus
+- Store timeseries of all energy flows to excel (one sheet = one energy bus)
+- execute function: plot optimised capacities as a barchart (F1)
+- execute function: plot all annuities as a barchart (F1)
+- store scalars/KPI to excel
+- process dictionary so that it can be stored to Json
+- store dictionary to Json
+"""
 
 def evaluate_dict(dict_values):
     """
