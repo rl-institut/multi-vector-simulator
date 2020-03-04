@@ -84,7 +84,6 @@ def main(**kwargs):
                                          CSV_ELEMENTS),
             output_filename=CSV_FNAME
         )
-        user_input.update({"path_input_file": path_to_json_from_csv})
 
     logging.debug("Accessing script: B0_data_input_json")
     dict_values = data_input.load_json(
