@@ -2,6 +2,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import logging
 
+r"""
+Module F1 describes all the functions that create plots.
+
+- creating graphs for energy flows
+- creating bar chart for capacity
+- creating bar chart for cost data
+- creating network graph for the model brackets only working on Ubuntu
+"""
 
 logging.getLogger("matplotlib.font_manager").disabled = True
 
