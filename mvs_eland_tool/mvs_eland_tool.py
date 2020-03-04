@@ -40,11 +40,7 @@ import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
 import src.F0_output as output_processing
 
-from src.constants import (
-    CSV_ELEMENTS,
-    CSV_FNAME,
-    CSV_EXT
-)
+from src.constants import CSV_ELEMENTS, CSV_FNAME, CSV_EXT
 
 
 def main(**kwargs):
@@ -81,9 +77,8 @@ def main(**kwargs):
     if user_input["input_type"] == CSV_EXT:
         logging.debug("Accessing script: A1_csv_to_json")
         load_data_from_csv.create_input_json(
-            input_directory=os.path.join(user_input["path_input_folder"],
-                                         CSV_ELEMENTS),
-            output_filename=CSV_FNAME
+            input_directory=os.path.join(user_input["path_input_folder"], CSV_ELEMENTS),
+            output_filename=CSV_FNAME,
         )
 
     logging.debug("Accessing script: B0_data_input_json")
