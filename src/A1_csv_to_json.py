@@ -500,7 +500,3 @@ def add_storage(storage_filename, input_directory):
             input_directory, filename=storage_filename, parameters=parameters
         )
         return single_dict
-
-
-if __name__ == "__main__":
-    create_input_json()

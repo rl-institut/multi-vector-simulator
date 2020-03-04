@@ -71,10 +71,11 @@ def main(**kwargs):
     #    # todo: is user input completely used?
     #    dict_values = data_input.load_json(user_input["path_input_file"])
 
-    if not user_input["path_input_file"].endswith("json"):
+    if user_input["input_type"] == "csv":
         logging.debug("Accessing script: A1_csv_to_json")
         path_to_json_from_csv = load_data_from_csv.create_input_json(
-            input_directory=user_input["path_input_file"]
+            input_directory=os.path.join(user_input["path_input_folder"],
+                                         CSV_ELEMENTS)
         )
         user_input.update({"path_input_file": path_to_json_from_csv})
 
