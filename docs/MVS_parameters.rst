@@ -1,9 +1,9 @@
-===================
+======================================
 Parameters and Definitions in CSV/JSON 
-===================
+======================================
 
 project_data.csv
------------------
+----------------
 
 **country**: Name of the country where the project is being deployed. E.g.: Germany
 
@@ -32,29 +32,24 @@ economic_data.csv
 **tax**: Tax factor. 
 
 simulation_settings.csv
------------------
+-----------------------
 
-**display_output**: [Developer setting] Default value is -debug
+**display_output**: [Developer setting] Default value is "debug"
 
-**evaluated_period**: The number of days for which the simulation is to be run. 
-
-**Input_file_name**: [Depreciated in the current version of MVS E-Lands]
+**evaluated_period**: The number of days for which the simulation is to be run.
 
 **oemof_file_name**: The name of the OEMOF file in which the simulation results are stored. 
 
 **output_lp_file**: Acceptable values are either True or False. Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user to peer ‘under the hood’ to understand how the program optimizes for the solution. 
 
-**overwrite**: Acceptable values are either True or False. Entering True would result in the existing values in the output files of the previous simulation being replaced with the values generated in the current simulation. 
+**overwrite**: Acceptable values are either True or False. Entering True would result in the existing values in the output files of the previous simulation being replaced with the values generated in the current simulation.
 
-**path_input_file**: [Depreciated in the current version of MVS E-Lands]
+**path_input_folder**: The path to the directory where the CSVs/JSON files are located. By default, the input directory path is: inputs/
 
-**path_input_folder**: The path to the directory where the CSVs/JSON files are located. By default, the input directory path is: mvs_eland/inputs/
+**input_type**: Whether the input is from the `mvs_config.json` file ("json") or from csv files
+located within <path_input_folder>/csv_elements/
 
-**path_input_sequences**: The path to the directory where the demand and generation time series files are located. By default, the input directory path is: mvs_eland/inputs/sequences/
-
-**path_output_folder**: The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands. By default, the i output directory path is: mvs_eland/MVS_outputs/
-
-**path_output_folder_inputs**:
+**path_output_folder**: The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands. By default, the output directory path is: MVS_outputs/
 
 **restore_from_oemof_file**: [Developer setting] Allows the developer to check the OEMOF file where the results are stored and edit the simulation parameters in it. 
 
@@ -65,7 +60,7 @@ simulation_settings.csv
 **timestep**: Length of the timesteps. Acceptable values in minutes. This is currently only tested for 60-minute intervals.
 
 Common Parameters in the CSV/JSON files and in energyConversion.csv:
------------------
+--------------------------------------------------------------------
 
 **First row of the csv (C1, E1, D1...)**: Input the names of the conversion components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
 
@@ -101,7 +96,7 @@ Common Parameters in the CSV/JSON files and in energyConversion.csv:
 
 
 energyProduction.csv
------------------
+--------------------
 
 **First row of the csv (C1, E1, D1...)**: Input the names of the production components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
 
@@ -109,7 +104,7 @@ energyProduction.csv
 
 
 energyProviders.csv
------------------
+-------------------
 
 **energy_price**: Price of electricity sourced from the utility grid (€/kWh)
 
@@ -121,7 +116,7 @@ energyProviders.csv
 
 
 energyConsumption.csv
------------------
+---------------------
 
 **First row of the csv (C1, E1, D1...)**: Input the names of the consumption components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
 
@@ -138,7 +133,7 @@ energyStorage.csv
 **storage_filename**: Corresponding to the values in C1, D1, E1… cells, enter the correct CSV filename which hosts the parameters of the corresponding storage component.
 
 storage_xx.csv
------------------
+--------------
 
 **crate**: C-rate is the rate at which the storage can charge or discharge relative to the nominal capacity of the storage.
 A c-rate of 1 implies that the battery can discharge or charge completely in a single timestep. 

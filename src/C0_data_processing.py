@@ -4,6 +4,8 @@ import shutil
 import logging
 import pandas as pd
 
+from src.constants import INPUTS_COPY, TIME_SERIES
+
 import src.C1_verification as verify
 import src.C2_economic_functions as economics
 import src.F0_output as output
@@ -934,7 +936,7 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
         header = dict_asset[type]["value"]["header"]
         unit = dict_asset[type]["unit"]
 
-    file_path = os.path.join(settings["path_input_sequences"], file_name)
+    file_path = os.path.join(settings["path_input_folder"], TIME_SERIES, file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
     data_set = pd.read_csv(file_path, sep=";")
@@ -1029,7 +1031,7 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
                 logging.warning("Error, %s timeseries negative.", dict_asset["label"])
 
     shutil.copy(
-        file_path, os.path.join(settings["path_output_folder_inputs"], file_name)
+        file_path, os.path.join(settings["path_output_folder"], INPUTS_COPY, file_name)
     )
     logging.debug("Copied timeseries %s to output folder / inputs.", file_path)
     return
@@ -1093,7 +1095,7 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
     -------
 
     """
-    file_path = os.path.join(settings["path_input_sequences"], file_name)
+    file_path = os.path.join(settings["path_input_folder"], file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
     data_set = pd.read_csv(file_path, sep=";")

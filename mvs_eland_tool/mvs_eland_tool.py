@@ -28,6 +28,7 @@ child-sub:  Sub-child function, feeds only back to child functions
 """
 
 import logging
+import os
 
 # Loading all child functions
 
@@ -38,6 +39,8 @@ import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
 import src.F0_output as output_processing
+
+from src.constants import CSV_ELEMENTS, CSV_FNAME, CSV_EXT
 
 
 def main(**kwargs):
@@ -61,33 +64,28 @@ def main(**kwargs):
     )
 
     logging.debug("Accessing script: A0_initialization")
-    # Parse the arguments from the command line
-    parser = initializing.create_parser()
-    args = vars(parser.parse_args())
-    # Give priority from kwargs on command line arguments
-    args.update(**kwargs)
-    kwargs = args
 
-    user_input = initializing.welcome(welcome_text, **kwargs)
+    user_input = initializing.process_user_arguments(
+        welcome_text=welcome_text, **kwargs
+    )
 
     # Read all inputs
     #    print("")
     #    # todo: is user input completely used?
     #    dict_values = data_input.load_json(user_input["path_input_file"])
 
-    if not user_input["path_input_file"].endswith("json"):
+    if user_input["input_type"] == CSV_EXT:
         logging.debug("Accessing script: A1_csv_to_json")
-        path_to_json_from_csv = load_data_from_csv.create_input_json(
-            input_directory=user_input["path_input_file"]
+        load_data_from_csv.create_input_json(
+            input_directory=os.path.join(user_input["path_input_folder"], CSV_ELEMENTS),
+            output_filename=CSV_FNAME,
         )
-        user_input.update({"path_input_file": path_to_json_from_csv})
 
     logging.debug("Accessing script: B0_data_input_json")
     dict_values = data_input.load_json(
         user_input["path_input_file"],
         path_input_folder=user_input["path_input_folder"],
         path_output_folder=user_input["path_output_folder"],
-        path_input_sequences=user_input["path_input_sequences"],
     )
 
     print("")

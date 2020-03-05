@@ -19,14 +19,17 @@ Here is a template for new release sections
 
 ## [Unreleased]
 ### Added
-
+- Doctring of module A0 (#138)
+- Constants in `src/constants.py` (#153, #154)
 ### Changed
-- Give priority from kwargs on command line arguments (#112)
+- Give priority from kwargs on command line arguments (#112, #138)
 - Docstrings of module A1 (#113)
 - Changed keyword argument to positional argument for `create_input_json` function (#113)
-
+- function `get_user_inputs` renamed `process_user_arguments` (#138)
+- Tests for the module A0 (#138)
+Terminal commands changed (#135)
 ### Removed
-
+- Function welcome from module A0 (#138)
 ### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
 - \#111 & \#114 fix user choice of output folder via command line arguments(#115)
@@ -116,5 +119,4 @@ Here is a template for new release sections
 
 ### Removed
 - yet another thing
-
 
