@@ -84,7 +84,27 @@ For less experienced github users we propose a workflow `here <https://github.co
 Using MVS
 ---------
 
-To run the MVS with custom inputs, edit the json input file and run::
+To run the MVS with custom inputs, change the "input" folder without changing the folder structure and execute following command from root of the repository:
 
-    python mvs_tool.py -i path_input_file -o path_output_folder
+    python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]]
+                          [-o [PATH_OUTPUT_FOLDER]]
+                          [-log [{debug,info,error,warning}]] [-f [OVERWRITE]]
 
+Optional arguments:
+  -h, --help            show this help message and exit
+  -i [PATH_INPUT_FOLDER]
+                        path to the input folder
+  -ext [{json,csv}]     type (json or csv) of the input files (default: 'json'
+  -o [PATH_OUTPUT_FOLDER]
+                        path to the output folder for the simulation's results
+  -log [{debug,info,error,warning}]
+                        level of logging in the console
+  -f [OVERWRITE]        overwrite the output folder if True (default: False)
+  
+ Ie. if you want to run the MVS with csv input, type
+ 
+         python mvs_tool.py -i path_input_folder -ext json
+         
+ If you want to run it with json input, type:
+ 
+         python mvs_tool.py -i path_input_folder -ext csv
