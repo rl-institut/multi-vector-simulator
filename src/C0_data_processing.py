@@ -1054,8 +1054,7 @@ def flows_processing(user_input, timeseries, asset_name, column_head):
         ax=axes_mg,
         drawstyle="steps-mid",
     )
-    axes_mg.set(xlabel="Time", ylabel=column_head + " flow in kWh")
-    axes_mg.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+    axes_mg.set(xlabel="Time", ylabel=column_head)
 
     plt.savefig(
         user_input["path_output_folder"]
@@ -1134,7 +1133,7 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
     file_path = os.path.join(settings["path_input_folder"], TIME_SERIES, file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
-    data_set = pd.read_csv(file_path, sep=";")
+    data_set = pd.read_csv(file_path, sep=",")
     if len(data_set.index) == settings["periods"]:
         return pd.Series(data_set[header].values, index=settings["time_index"])
     elif len(data_set.index) >= settings["periods"]:
