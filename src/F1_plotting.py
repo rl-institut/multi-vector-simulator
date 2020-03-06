@@ -5,7 +5,6 @@ import logging
 
 logging.getLogger("matplotlib.font_manager").disabled = True
 
-
 def flows(user_input, project_data, results_timeseries, sector, interval):
     """
 

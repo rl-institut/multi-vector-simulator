@@ -3,6 +3,10 @@ import sys
 import shutil
 import logging
 import pandas as pd
+import matplotlib.pyplot as plt
+import logging
+
+logging.getLogger("matplotlib.font_manager").disabled = True
 
 from src.constants import INPUTS_COPY, TIME_SERIES
 
@@ -1030,11 +1034,43 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
             if any(dict_asset["timeseries_normalized"].values) < 0:
                 logging.warning("Error, %s timeseries negative.", dict_asset["label"])
 
+    #plot all timeseries that are red into simulation input
+    flows_processing(settings, dict_asset['timeseries'], dict_asset['label'], header)
+
+    #copy input files
     shutil.copy(
         file_path, os.path.join(settings["path_output_folder"], INPUTS_COPY, file_name)
     )
     logging.debug("Copied timeseries %s to output folder / inputs.", file_path)
     return
+
+def flows_processing(user_input, timeseries, asset_name, column_head):
+    logging.info("Creating plots for asset %s's parameter %s", asset_name, column_head)
+    fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
+    axes_mg = axes
+
+    timeseries.plot(
+        title=asset_name,
+        ax=axes_mg,
+        drawstyle="steps-mid",
+    )
+    axes_mg.set(xlabel="Time", ylabel=column_head + " flow in kWh")
+    axes_mg.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
+
+    plt.savefig(
+        user_input["path_output_folder"]
+        + "/"
+        + "input_timeseries_"
+        + asset_name
+        + "_"
+        + column_head
+        + ".png",
+        bbox_inches="tight",
+    )
+    # plt.show()
+    plt.close()
+    plt.clf()
+    plt.cla()
 
 
 def treat_multiple_flows(dict_asset, dict_values, parameter):
