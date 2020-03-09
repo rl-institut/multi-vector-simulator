@@ -180,7 +180,6 @@ def create_input_json(
                 "label",
                 "oemof_file_name",
                 "output_lp_file",
-                "overwrite",
                 "restore_from_oemof_file",
                 "plot_nx_graph",
                 "start_date",
