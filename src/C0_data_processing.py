@@ -682,12 +682,20 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                 "timeseries_normalized": timeseries / max(timeseries),
             }
         )
-        logging.warning(
-            "Attention! %s is created, with a price of %s."
-            "If this is DSO supply, this could be improved. Please refer to Issue #23.",
-            source["label"],
-            source["opex_var"]["value"],
-        )
+        if type(source["opex_var"]["value"]) == pd.Series:
+            logging.warning(
+                "Attention! %s is created, with a price defined as a timeseries (average: %s). "
+                "If this is DSO supply, this could be improved. Please refer to Issue #23.",
+                source["label"],
+                source["opex_var"]["value"].mean(),
+            )
+        else:
+            logging.warning(
+                "Attention! %s is created, with a price of %s."
+                "If this is DSO supply, this could be improved. Please refer to Issue #23. ",
+                source["label"],
+                source["opex_var"]["value"],
+            )
     else:
         source.update({"optimizeCap": {"value": False, "unit": "bool"}})
 
@@ -1035,7 +1043,10 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
                 logging.warning("Error, %s timeseries negative.", dict_asset["label"])
 
     #plot all timeseries that are red into simulation input
-    flows_processing(settings, dict_asset['timeseries'], dict_asset['label'], header)
+    try:
+        flows_processing(settings, dict_asset['timeseries'], dict_asset['label'], header)
+    except:
+        flows_processing(settings, dict_asset[type]["value"], dict_asset['label'], header)
 
     #copy input files
     shutil.copy(
