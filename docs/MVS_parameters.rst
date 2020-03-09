@@ -40,16 +40,7 @@ simulation_settings.csv
 
 **oemof_file_name**: The name of the OEMOF file in which the simulation results are stored. 
 
-**output_lp_file**: Acceptable values are either True or False. Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user to peer ‘under the hood’ to understand how the program optimizes for the solution. 
-
-**overwrite**: Acceptable values are either True or False. Entering True would result in the existing values in the output files of the previous simulation being replaced with the values generated in the current simulation.
-
-**path_input_folder**: The path to the directory where the CSVs/JSON files are located. By default, the input directory path is: inputs/
-
-**input_type**: Whether the input is from the `mvs_config.json` file ("json") or from csv files
-located within <path_input_folder>/csv_elements/
-
-**path_output_folder**: The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands. By default, the output directory path is: MVS_outputs/
+**output_lp_file**: Acceptable values are either True or False. Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user to peer ‘under the hood’ to understand how the program optimizes for the solution.
 
 **restore_from_oemof_file**: [Developer setting] Allows the developer to check the OEMOF file where the results are stored and edit the simulation parameters in it. 
 
