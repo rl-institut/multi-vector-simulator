@@ -111,10 +111,10 @@ For more information about the possible command lines
 
 Edit the json (or csv files) and run the `main()` function. The following `kwargs` are possible:
 
-- **overwrite** (bool): Determines whether to replace existing results in `path_output_folder` with the results of the current simulation (True) or not (False). Default: `False`.
-- **input_type** (str): Defines whether the input is taken from the `mvs_config.json` file ("json") or from csv files ('csv') located within <path_input_folder>/csv_elements/. Default: `json`.
-- **path_input_folder** (str): The path to the directory where the input CSVs/JSON files are located. Default: `inputs/`.
-- **path_output_folder** (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands. Default: `MVS_outputs/`.
+- `overwrite` (bool): Determines whether to replace existing results in `path_output_folder` with the results of the current simulation (True) or not (False). Default: `False`.
+- `input_type` (str): Defines whether the input is taken from the `mvs_config.json` file ("json") or from csv files ('csv') located within <path_input_folder>/csv_elements/. Default: `json`.
+- `path_input_folder` (str): The path to the directory where the input CSVs/JSON files are located. Default: `inputs/`.
+- `path_output_folder` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands. Default: `MVS_outputs/`.
 
 
 ## Contributing
