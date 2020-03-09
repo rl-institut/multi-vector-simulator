@@ -30,6 +30,7 @@ Here is a template for new release sections
 Terminal commands changed (#135)
 ### Removed
 - Function welcome from module A0 (#138)
+- Parameters `input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs` from `simulation_settings.csv` (#178)
 ### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
 - \#111 & \#114 fix user choice of output folder via command line arguments(#115)
