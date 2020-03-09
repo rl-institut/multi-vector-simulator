@@ -107,7 +107,7 @@ For more information about the possible command lines
 
 `python mvs_tool.py -h`
 
-##### 1) Use the `main()` function
+##### 2) Use the `main()` function
 
 Edit the json (or csv files) and run the `main()` function. The following `kwargs` are possible:
 
