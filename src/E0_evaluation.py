@@ -82,6 +82,22 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 dict_values["kpi"], dict_values["energyStorage"][storage][storage_item]
             )
 
+        if (
+            dict_values["energyStorage"][storage]["input_bus_name"]
+            in dict_values["optimizedFlows"].keys()
+        ) or (
+            dict_values["energyStorage"][storage]["output_bus_name"]
+            in dict_values["optimizedFlows"].keys()
+        ):
+            bus_name = dict_values["energyStorage"][storage]["input_bus_name"]
+            timeseries_name = dict_values["energyStorage"][storage]["label"] \
+                              + " ("\
+                              + str(round(dict_values["energyStorage"][storage]["capacity"]["optimizedAddCap"]["value"],1)) \
+                              + dict_values["energyStorage"][storage]["capacity"]["optimizedAddCap"]["unit"] \
+                              + ") SOC"
+
+            dict_values["optimizedFlows"][bus_name][timeseries_name] = dict_values["energyStorage"][storage]["timeseries_soc"]
+
     for asset in dict_values["energyConversion"]:
         process_results.get_results(
             dict_values["simulation_settings"],
