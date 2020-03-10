@@ -72,12 +72,15 @@ def evaluate_dict(dict_values, results_main, results_meta):
             dict_values["energyStorage"][storage],
         )
 
-        #hardcoded list of names in storage_01.csv
+        # hardcoded list of names in storage_01.csv
         for storage_item in ["capacity", "charging_power", "discharging_power"]:
             economics.get_costs(
-                dict_values["energyStorage"][storage][storage_item], dict_values["economic_data"],
+                dict_values["energyStorage"][storage][storage_item],
+                dict_values["economic_data"],
             )
-            store_result_matrix(dict_values["kpi"], dict_values["energyStorage"][storage][storage_item])
+            store_result_matrix(
+                dict_values["kpi"], dict_values["energyStorage"][storage][storage_item]
+            )
 
     for asset in dict_values["energyConversion"]:
         process_results.get_results(
