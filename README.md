@@ -109,7 +109,7 @@ For more information about the possible command lines
 
 ##### 2) Use the `main()` function
 
-Edit the json (or csv files) and run the `main()` function. The following `kwargs` are possible:
+Edit the csv files (or, for devs, the json file) and run the `main()` function. The following `kwargs` are possible:
 
 - `overwrite` (bool): Determines whether to replace existing results in `path_output_folder` with the results of the current simulation (True) or not (False). Default: `False`.
 - `input_type` (str): Defines whether the input is taken from the `mvs_config.json` file ("json") or from csv files ('csv') located within <path_input_folder>/csv_elements/. Default: `json`.
