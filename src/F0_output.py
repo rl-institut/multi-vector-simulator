@@ -15,9 +15,7 @@ def evaluate_dict(dict_values):
     for sector in dict_values["project_data"]["sectors"]:
         sector_name = dict_values["project_data"]["sectors"][sector]
 
-        logging.info(
-            "Aggregating flows for the %s sector.", sector_name
-        )
+        logging.info("Aggregating flows for the %s sector.", sector_name)
 
         # Plot flows for one sector for the 14 first days
         plots.flows(
@@ -37,8 +35,7 @@ def evaluate_dict(dict_values):
             365,
         )
 
-
-        '''
+        """
         ###
         # Aggregation of demand profiles to total demand
         ###
@@ -63,7 +60,7 @@ def evaluate_dict(dict_values):
         dict_values["optimizedFlows"][sector_name + " bus"][
             "Total demand " + sector_name
         ] = total_demand
-        '''
+        """
 
     # storing all flows to exel.
     store_timeseries_all_busses_to_excel(dict_values)
