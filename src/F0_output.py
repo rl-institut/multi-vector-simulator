@@ -13,15 +13,21 @@ def evaluate_dict(dict_values):
     )
     for sector in dict_values["project_data"]["sectors"]:
         sector_name = dict_values["project_data"]["sectors"][sector]
+        logging.info(
+            "Aggregating flows for the %s sector.", sector_name
+        )
         total_demand = pd.Series(
             [0 for i in dict_values["simulation_settings"]["time_index"]],
             index=dict_values["simulation_settings"]["time_index"],
         )
 
         for asset in dict_values["energyConsumption"]:
-            total_demand = (
-                total_demand + dict_values["energyConsumption"][asset]["flow"]
-            )
+            # key "energyVector" not included in excess sinks, ie. this filters them out from demand.
+            if "energyVector" in dict_values["energyConsumption"][asset].keys() \
+                    and dict_values["energyConsumption"][asset]["energyVector"] == sector_name:
+                total_demand = (
+                    total_demand + dict_values["energyConsumption"][asset]["flow"]
+                )
 
         # todo this should actually link to C0: helpers.bus_suffix
         dict_values["optimizedFlows"][sector_name + " bus"][
