@@ -33,6 +33,7 @@ Terminal commands changed (#135)
 ### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
 - \#111 & \#114 fix user choice of output folder via command line arguments(#115)
+- Demand is no longer aggregated across sectors when processing/plotting in E1 (#169)
 
 ## [0.1.0] -2020-01-30
 
