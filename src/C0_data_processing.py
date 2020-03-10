@@ -1045,7 +1045,7 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
     return
 
 
-def flows_processing(user_input, timeseries, asset_name, column_head):
+def plot_input_timeseries(user_input, timeseries, asset_name, column_head):
     logging.info("Creating plots for asset %s's parameter %s", asset_name, column_head)
     fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
     axes_mg = axes
