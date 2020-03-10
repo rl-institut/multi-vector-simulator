@@ -1035,7 +1035,7 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
                 logging.warning("Error, %s timeseries negative.", dict_asset["label"])
 
     # plot all timeseries that are red into simulation input
-    flows_processing(settings, dict_asset["timeseries"], dict_asset["label"], header)
+    plot_input_timeseries(settings, dict_asset["timeseries"], dict_asset["label"], header)
 
     # copy input files
     shutil.copy(
