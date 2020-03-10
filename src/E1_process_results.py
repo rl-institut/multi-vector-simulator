@@ -155,6 +155,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
             )
         }
     )
+
     return
 
 
