@@ -372,7 +372,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
                 actual_value=dict_asset["timeseries"],
                 fixed=True,
                 nominal_value=dict_asset["installedCap"]["value"],
-                variable_costs=dict_asset["opex_var"]["value"][index],
+                variable_costs=dict_asset["opex_var"][0],
             )
             index += 1
     else:
@@ -408,7 +408,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                     ep_costs=dict_asset["simulation_annuity"]["value"]
                     / dict_asset["timeseries_peak"]["value"]
                 ),
-                variable_costs=dict_asset["opex_var"]["value"][0]
+                variable_costs=dict_asset["opex_var"]["value"][index]
                 / dict_asset["timeseries_peak"]["value"],
             )
             index += 1
