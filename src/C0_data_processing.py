@@ -1039,7 +1039,7 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
         settings, dict_asset["timeseries"], dict_asset["label"], header
     )
 
-    #copy input files
+    # copy input files
     shutil.copy(
         file_path, os.path.join(settings["path_output_folder"], INPUTS_COPY, file_name)
     )
@@ -1053,9 +1053,7 @@ def plot_input_timeseries(user_input, timeseries, asset_name, column_head):
     axes_mg = axes
 
     timeseries.plot(
-        title=asset_name,
-        ax=axes_mg,
-        drawstyle="steps-mid",
+        title=asset_name, ax=axes_mg, drawstyle="steps-mid",
     )
     axes_mg.set(xlabel="Time", ylabel=column_head)
 
