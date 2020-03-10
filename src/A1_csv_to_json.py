@@ -183,6 +183,7 @@ def create_input_json(
                 "path_input_folder",
                 "path_output_folder",
                 "restore_from_oemof_file",
+                "plot_nx_graph",
                 "start_date",
                 "store_oemof_results",
                 "timestep",
