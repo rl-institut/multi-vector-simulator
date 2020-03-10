@@ -21,6 +21,9 @@ Here is a template for new release sections
 ### Added
 - Doctring of module A0 (#138)
 - Constants in `src/constants.py` (#153, #154)
+- Plotting an networkx graph can now be turned of/on via "plot_nx_graph" in simulation_settings (#172)
+- Plot all timeseries used as input data (#171)
+
 ### Changed
 - Give priority from kwargs on command line arguments (#112, #138)
 - Docstrings of module A1 (#113)
