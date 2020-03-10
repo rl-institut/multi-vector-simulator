@@ -939,7 +939,7 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
     file_path = os.path.join(settings["path_input_folder"], TIME_SERIES, file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
-    data_set = pd.read_csv(file_path, sep=";")
+    data_set = pd.read_csv(file_path, sep=",")
 
     if "file_name" in dict_asset:
         header = data_set.columns[0]
@@ -1095,7 +1095,7 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
     -------
 
     """
-    file_path = os.path.join(settings["path_input_folder"], file_name)
+    file_path = os.path.join(settings["path_input_folder"], TIME_SERIES, file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
     data_set = pd.read_csv(file_path, sep=";")
