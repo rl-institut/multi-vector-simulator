@@ -11,16 +11,46 @@ def evaluate_dict(dict_values):
     logging.info(
         "Summarizing simulation results to results_timeseries and results_scalars_assets."
     )
+
     for sector in dict_values["project_data"]["sectors"]:
         sector_name = dict_values["project_data"]["sectors"][sector]
+
         logging.info(
             "Aggregating flows for the %s sector.", sector_name
         )
+
+        # Plot flows for one sector for the 14 first days
+        plots.flows(
+            dict_values["simulation_settings"],
+            dict_values["project_data"],
+            dict_values["optimizedFlows"][sector_name + " bus"],
+            sector,
+            14,
+        )
+
+        # Plot flows for one sector for a year
+        plots.flows(
+            dict_values["simulation_settings"],
+            dict_values["project_data"],
+            dict_values["optimizedFlows"][sector_name + " bus"],
+            sector,
+            365,
+        )
+
+
+        '''
+        ###
+        # Aggregation of demand profiles to total demand
+        ###
+        This would store demands are twice - as total demand as well as individual demand!
+
+        # Initialize
         total_demand = pd.Series(
             [0 for i in dict_values["simulation_settings"]["time_index"]],
             index=dict_values["simulation_settings"]["time_index"],
         )
 
+        # Add demands (exclude excess)
         for asset in dict_values["energyConsumption"]:
             # key "energyVector" not included in excess sinks, ie. this filters them out from demand.
             if "energyVector" in dict_values["energyConsumption"][asset].keys() \
@@ -33,22 +63,9 @@ def evaluate_dict(dict_values):
         dict_values["optimizedFlows"][sector_name + " bus"][
             "Total demand " + sector_name
         ] = total_demand
+        '''
 
-        plots.flows(
-            dict_values["simulation_settings"],
-            dict_values["project_data"],
-            dict_values["optimizedFlows"][sector_name + " bus"],
-            sector,
-            14,
-        )
-        plots.flows(
-            dict_values["simulation_settings"],
-            dict_values["project_data"],
-            dict_values["optimizedFlows"][sector_name + " bus"],
-            sector,
-            365,
-        )
-
+    # storing all flows to exel.
     store_timeseries_all_busses_to_excel(dict_values)
 
     # plot optimal capacities if there are optimized assets
