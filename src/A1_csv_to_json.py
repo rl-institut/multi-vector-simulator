@@ -84,6 +84,7 @@ def create_input_json(
                 "type_asset",
                 "type_oemof",
                 "energyVector",
+                # "inflow_direction",
                 "unit",
             ]
         }
