@@ -656,7 +656,10 @@
         "input_file_name": "test_input_file_v1.xlsx",
         "label": "simulation_settings",
         "oemof_file_name": "MVS_results.oemof",
-        "output_lp_file": "False",
+        "output_lp_file": {
+            "unit": "boolean",
+            "value": "False
+        },
         "overwrite": "True",
         "path_input_file": "./inputs/test_input_file_v1.xlsx",
         "path_input_folder": "./inputs/",
