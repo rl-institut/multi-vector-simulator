@@ -8,11 +8,6 @@ import src.F1_plotting as plots
 
 
 def evaluate_dict(dict_values):
-    """
-
-    :param dict_values:
-    :return:
-    """
     logging.info(
         "Summarizing simulation results to results_timeseries and results_scalars_assets."
     )

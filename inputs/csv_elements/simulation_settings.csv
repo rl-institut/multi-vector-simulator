@@ -3,8 +3,9 @@ display_output,str,-debug
 evaluated_period,days,365
 label,str,simulation_settings
 oemof_file_name,str,MVS_results.oemof
-output_lp_file,str,False
+output_lp_file,bool,False
 restore_from_oemof_file,str,True
 start_date,str,2018-01-01 00:00:00
 store_oemof_results,str,True
 timestep,minutes,60
+plot_nx_graph,bool,False

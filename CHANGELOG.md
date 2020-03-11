@@ -21,6 +21,9 @@ Here is a template for new release sections
 ### Added
 - Doctring of module A0 (#138)
 - Constants in `src/constants.py` (#153, #154)
+- Plotting an networkx graph can now be turned of/on via "plot_nx_graph" in simulation_settings (#172)
+- Plot all timeseries used as input data (#171)
+
 ### Changed
 - Give priority from kwargs on command line arguments (#112, #138)
 - Docstrings of module A1 (#113)
@@ -34,6 +37,7 @@ Terminal commands changed (#135)
 ### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
 - \#111 & \#114 fix user choice of output folder via command line arguments(#115)
+- Sources can now have variable costs (#173)
 
 ## [0.1.0] -2020-01-30
 
