@@ -676,6 +676,7 @@
         "timestep": {
             "unit": "minutes",
             "value": 60
-        }
+        },
+        "plot_nx_graph": "False",
     }
 }
