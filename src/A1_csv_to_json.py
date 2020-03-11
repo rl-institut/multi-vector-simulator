@@ -175,7 +175,6 @@ def create_input_json(
     parameterlist.update(
         {
             "simulation_settings": [
-                "display_output",
                 "evaluated_period",
                 "label",
                 "oemof_file_name",
