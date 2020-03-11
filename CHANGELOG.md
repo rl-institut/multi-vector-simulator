@@ -39,6 +39,7 @@ Terminal commands changed (#135)
 - \#111 & \#114 fix user choice of output folder via command line arguments(#115)
 - Sources can now have variable costs (#173)
 - \#182 Boolean simulation settings now also take affect
+- Demand is no longer aggregated across sectors when processing/plotting in E1 (#169)
 
 ## [0.1.0] -2020-01-30
 
