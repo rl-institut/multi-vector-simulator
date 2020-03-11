@@ -104,6 +104,7 @@ def run_oemof(dict_values):
         import oemof.graph as grph
 
         # my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
+
         from src.F1_plotting import draw_graph
 
         draw_graph(model, node_color={})

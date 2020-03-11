@@ -1,5 +1,4 @@
 ,unit,simulation_settings
-display_output,str,-debug
 evaluated_period,days,365
 label,str,simulation_settings
 oemof_file_name,str,MVS_results.oemof
