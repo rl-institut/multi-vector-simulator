@@ -105,6 +105,7 @@ def run_oemof(dict_values):
 
         # my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
         from src.F1_plotting import draw_graph
+
         draw_graph(model, node_color={})
         logging.debug("Created networkx graph of the energy system.")
 
