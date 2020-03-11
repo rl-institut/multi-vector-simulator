@@ -665,8 +665,14 @@
         "path_output_folder_inputs": "./MVS_outputs/inputs/",
         "restore_from_oemof_file": "True",
         "start_date": "2018-01-01 00:00:00",
-        "store_oemof_results": "True",
-        "plot_nx_graph": "False",
+        "store_oemof_results": {
+            "unit": "boolean",
+            "value": "False
+        },
+        "plot_nx_graph": {
+            "unit": "boolean",
+            "value": "False
+        },
         "timestep": {
             "unit": "minutes",
             "value": 60
