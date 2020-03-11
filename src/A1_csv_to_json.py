@@ -174,14 +174,10 @@ def create_input_json(
     parameterlist.update(
         {
             "simulation_settings": [
-                "display_output",
                 "evaluated_period",
                 "label",
                 "oemof_file_name",
                 "output_lp_file",
-                "overwrite",
-                "path_input_folder",
-                "path_output_folder",
                 "restore_from_oemof_file",
                 "plot_nx_graph",
                 "start_date",

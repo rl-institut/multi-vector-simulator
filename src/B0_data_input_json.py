@@ -17,20 +17,13 @@ def load_json(
 
     # The user specified a value
     if path_input_folder is not None:
-        if dict_values["simulation_settings"]["path_input_folder"] != path_input_folder:
-            dict_values["simulation_settings"]["path_input_folder"] = path_input_folder
+        dict_values["simulation_settings"]["path_input_folder"] = path_input_folder
 
     # The user specified a value
     if path_output_folder is not None:
-        if (
-            dict_values["simulation_settings"]["path_output_folder"]
-            != path_output_folder
-        ):
-            dict_values["simulation_settings"][
-                "path_output_folder"
-            ] = path_output_folder
-            dict_values["simulation_settings"][
-                "path_output_folder_inputs"
-            ] = os.path.join(path_output_folder, "inputs")
+        dict_values["simulation_settings"]["path_output_folder"] = path_output_folder
+        dict_values["simulation_settings"]["path_output_folder_inputs"] = os.path.join(
+            path_output_folder, "inputs"
+        )
 
     return dict_values
