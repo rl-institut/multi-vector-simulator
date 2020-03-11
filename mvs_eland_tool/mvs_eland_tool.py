@@ -45,6 +45,28 @@ from src.constants import CSV_ELEMENTS, CSV_FNAME, CSV_EXT
 
 def main(**kwargs):
     # Display welcome text
+    r"""
+    Starts MVS tool simulations.
+
+    Other Parameters
+    ----------------
+    overwrite : bool
+        Determines whether to replace existing results in `path_output_folder`
+        with the results of the current simulation (True) or not (False).
+        Default: False.
+    input_type : str
+        Defines whether the input is taken from the `mvs_config.json` file
+        ("json") or from csv files ('csv') located within
+        <path_input_folder>/csv_elements/. Default: 'json'.
+    path_input_folder : str
+        The path to the directory where the input CSVs/JSON files are located.
+        Default: 'inputs/'.
+    path_output_folder : str
+        The path to the directory where the results of the simulation such as
+        the plots, time series, results JSON files are saved by MVS E-Lands.
+        Default: 'MVS_outputs/'
+
+    """
     version = (
         "0.1.1"  # update_me Versioning scheme: Major release.Minor release.Patches
     )
