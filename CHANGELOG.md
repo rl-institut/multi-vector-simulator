@@ -38,6 +38,7 @@ Terminal commands changed (#135)
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
 - \#111 & \#114 fix user choice of output folder via command line arguments(#115)
 - Sources can now have variable costs (#173)
+- \#182 Boolean simulation settings now also take affect
 
 ## [0.1.0] -2020-01-30
 
