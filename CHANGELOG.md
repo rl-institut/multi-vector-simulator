@@ -18,6 +18,16 @@ Here is a template for new release sections
 ```
 
 ## [Unreleased]
+
+### Added
+
+### Changed
+
+### Removed
+
+
+## [0.2.0] - 2020-03-13
+
 ### Added
 - Doctring of module A0 (#138)
 - Constants in `src/constants.py` (#153, #154)
