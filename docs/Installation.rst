@@ -70,41 +70,41 @@ To set up the MVS, please follow the steps below:
     pytest
 
     
+Using the MVS
+-------------
 
-Additional information for developers
--------------------------------
+To run the MVS with custom inputs you have several options:
+
+##### 1) Use the command line
+
+Edit the json input file (or csv files) and run
+
+    `python mvs_tool.py -i path_input_file -ext json -o path_output_folder`
+
+With 
+`path_input_file`: path to json input file,
+
+`ext`: json for using a json file and csv for using csv files
+
+and `path_output_folder`: path of the folder where simulation results should be stored.
+
+For more information about the possible command lines
+
+`python mvs_tool.py -h`
+
+##### 2) Use the `main()` function
+
+Edit the csv files (or, for devs, the json file) and run the `main()` function. The following `kwargs` are possible:
+
+- `overwrite` (bool): Determines whether to replace existing results in `path_output_folder` with the results of the current simulation (True) or not (False). Default: `False`.
+- `input_type` (str): Defines whether the input is taken from the `mvs_config.json` file ("json") or from csv files ('csv') located within <path_input_folder>/csv_elements/. Default: `json`.
+- `path_input_folder` (str): The path to the directory where the input CSVs/JSON files are located. Default: `inputs/`.
+- `path_output_folder` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands. Default: `MVS_outputs/`.
+
+
+Contributing and additional information for developers
+------------------------------------------------------
+
+If you want to contribute to this project, please read [CONTRIBUTING.md](https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md). For less experienced github users we propose a workflow [HERE](https://github.com/rl-institut/mvs_eland/wiki/Examplary-Workflow).
 
 For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in turn might not be tested. You can find the CHANGELOG.md `here <https://github.com/rl-institut/mvs_eland/blob/dev/CHANGELOG.md>`_. 
-
-If you want to contribute to this project, please read `CONTRIBUTING.md <https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md>`. 
-
-For less experienced github users we propose a workflow `here <https://github.com/rl-institut/mvs_eland/wiki/Examplary-Workflow>`.
-
-
-Using MVS
----------
-
-To run the MVS with custom inputs, change the "input" folder without changing the folder structure and execute following command from root of the repository:
-
-    python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]]
-                          [-o [PATH_OUTPUT_FOLDER]]
-                          [-log [{debug,info,error,warning}]] [-f [OVERWRITE]]
-
-Optional arguments:
-  -h, --help            show this help message and exit
-  -i [PATH_INPUT_FOLDER]
-                        path to the input folder
-  -ext [{json,csv}]     type (json or csv) of the input files (default: 'json'
-  -o [PATH_OUTPUT_FOLDER]
-                        path to the output folder for the simulation's results
-  -log [{debug,info,error,warning}]
-                        level of logging in the console
-  -f [OVERWRITE]        overwrite the output folder if True (default: False)
-  
- Ie. if you want to run the MVS with csv input, type
- 
-         python mvs_tool.py -i path_input_folder -ext json
-         
- If you want to run it with json input, type:
- 
-         python mvs_tool.py -i path_input_folder -ext csv
