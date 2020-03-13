@@ -29,8 +29,10 @@ Here is a template for new release sections
 ## [0.2.0] - 2020-03-13
 
 ### Added
+- Readthedocs documentation for input parameters (#128)
 - Doctring of module A0 (#138)
 - Constants in `src/constants.py` (#153, #154)
+- Readthedocs documentation for installation (#162)
 - Plotting an networkx graph can now be turned of/on via "plot_nx_graph" in simulation_settings (#172)
 - Plot all timeseries used as input data (#171)
 
