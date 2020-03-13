@@ -382,7 +382,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
                 actual_value=dict_asset["timeseries"],
                 fixed=True,
                 nominal_value=dict_asset["installedCap"]["value"],
-                variable_costs=dict_asset["opex_var"],
+                variable_costs=dict_asset["opex_var"]["value"],
             )
         }
 
@@ -408,7 +408,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                     ep_costs=dict_asset["simulation_annuity"]["value"]
                     / dict_asset["timeseries_peak"]["value"]
                 ),
-                variable_costs=dict_asset["opex_var"]["value"][0]
+                variable_costs=dict_asset["opex_var"]["value"][index]
                 / dict_asset["timeseries_peak"]["value"],
             )
             index += 1
@@ -608,4 +608,5 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     sink_demand = solph.Sink(label=dict_asset["label"], inputs=inputs,)
     model.add(sink_demand)
     kwargs["sinks"].update({dict_asset["label"]: sink_demand})
+    logging.info("Added: Non-dispatchable sink %s", dict_asset["label"])
     return

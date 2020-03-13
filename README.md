@@ -1,7 +1,7 @@
 # MVS - Multi-Vector Simulator of the E-Land toolbox
 
 [![Documentation Status](https://readthedocs.org/projects/mvs-eland/badge/?version=latest)](https://mvs-eland.readthedocs.io/en/latest/?badge=latest)
-[![Build Status](https://travis-ci.org/rl-institut/mvs_eland.svg?branch=dev)](https://travis-ci.org/rl-institut/mvs_eland.svg?branch=dev)
+[![Build Status](https://travis-ci.com/rl-institut/mvs_eland.svg?branch=dev)](https://travis-ci.com/rl-institut/mvs_eland)
 [![Coverage Status](https://coveralls.io/repos/github/rl-institut/mvs_eland/badge.svg?branch=dev)](https://coveralls.io/github/rl-institut/mvs_eland?branch=dev)
 
 Rights: [Reiner Lemoine Institut (Berlin)](https://reiner-lemoine-institut.de/)
@@ -24,7 +24,7 @@ For advanced programmers: You can also use the dev version that includes the lat
 
 If you are interested to try out the code, please feel free to do so! In case that you are planning to use it for a specific or a larger-scale project, we would be very happy if you would get in contact with us, eg. via issue. Maybe you have ideas that can help the MVS move forward? Maybe you noticed a bug that we can resolve?
 
-We are still working on including a readthedocs for the MVS. You will be able to find further information on this tool and code [HERE](https://mvs-eland.readthedocs.io/en/latest/) (developer version).
+We are still working on including a readthedocs for the MVS. Some information on this tool and code is already available [here](https://mvs-eland.readthedocs.io/en/stable/) (stable version, latest developments [here](https://mvs-eland.readthedocs.io/en/latest/)).
 
 ## Setup and installation
 
@@ -88,17 +88,34 @@ To set up the MVS, follow the steps below:
     
 ## Using the MVS
 
-To run the MVS with custom inputs, edit the json input file and run
+To run the MVS with custom inputs you have several options:
 
-    `python mvs_tool.py -i path_input_file -o path_output_folder`
+##### 1) Use the command line
 
-With `path_input_file`: path to json input file
+Edit the json input file (or csv files) and run
 
-and `path_output_folder`: path of the folder where simulation results should be stored
+    `python mvs_tool.py -i path_input_file -ext json -o path_output_folder`
+
+With 
+`path_input_file`: path to json input file,
+
+`ext`: json for using a json file and csv for using csv files
+
+and `path_output_folder`: path of the folder where simulation results should be stored.
 
 For more information about the possible command lines
 
 `python mvs_tool.py -h`
+
+##### 2) Use the `main()` function
+
+Edit the csv files (or, for devs, the json file) and run the `main()` function. The following `kwargs` are possible:
+
+- `overwrite` (bool): Determines whether to replace existing results in `path_output_folder` with the results of the current simulation (True) or not (False). Default: `False`.
+- `input_type` (str): Defines whether the input is taken from the `mvs_config.json` file ("json") or from csv files ('csv') located within <path_input_folder>/csv_elements/. Default: `json`.
+- `path_input_folder` (str): The path to the directory where the input CSVs/JSON files are located. Default: `inputs/`.
+- `path_output_folder` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands. Default: `MVS_outputs/`.
+
 
 ## Contributing
 
