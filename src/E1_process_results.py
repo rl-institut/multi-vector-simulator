@@ -244,21 +244,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                 )
 
             if "timeseries_peak" in dict_asset:
-                if dict_asset["timeseries_peak"]["value"] > 1:
-                    dict_asset.update(
-                        {
-                            "optimizedAddCap": {
-                                "value": optimal_capacity
-                                * dict_asset["timeseries_peak"]["value"],
-                                "unit": dict_asset["unit"],
-                            }
-                        }
-                    )
-
-                elif (
-                    dict_asset["timeseries_peak"]["value"] > 0
-                    and dict_asset["timeseries_peak"]["value"] < 1
-                ):
+                if dict_asset["timeseries_peak"]["value"] > 0:
                     dict_asset.update(
                         {
                             "optimizedAddCap": {
@@ -270,7 +256,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                     )
                 else:
                     logging.warning(
-                        "Time series peak of asset %s negative! Check timeseries. No optimized capacity derived.",
+                        "Time series peak of asset %s negative or zero! Check timeseries. No optimized capacity derived.",
                         dict_asset["label"],
                     )
                     pass
