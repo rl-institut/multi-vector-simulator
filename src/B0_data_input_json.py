@@ -5,6 +5,8 @@ import json
 This module is used to open a json file and parse it as a dict all input parameters for the energy 
 system.
 
+If the user does not give the input parameters "path_input_folder", "path_output_folder" or "path_output_folder_inputs", they are replaced by the default values.
+
 It will be an interface to the EPA.
 """
 
