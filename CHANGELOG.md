@@ -23,6 +23,7 @@ Here is a template for new release sections
 - Constants in `src/constants.py` (#153, #154)
 - Plotting an networkx graph can now be turned of/on via "plot_nx_graph" in simulation_settings (#172)
 - Plot all timeseries used as input data (#171)
+- Pull request template (#198)
 
 ### Changed
 - Give priority from kwargs on command line arguments (#112, #138)
