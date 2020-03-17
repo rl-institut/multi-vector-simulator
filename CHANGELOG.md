@@ -57,7 +57,7 @@ Here is a template for new release sections
 - \#182 Boolean simulation settings now also take affect
 - Demand is no longer aggregated across sectors when processing/plotting in E1 (#169)
 
-## [0.1.0] -2020-01-30
+## [0.1.1] -2020-01-30
 
 ### Added
 - test for running the main function (#109)
