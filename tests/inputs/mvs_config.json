@@ -628,20 +628,17 @@
         "scenario_name": "Warehouse 14"
     },
     "simulation_settings": {
-        "display_output": "-debug",
+        "display_output": "debug",
         "evaluated_period": {
             "unit": "days",
             "value": 365
         },
-        "input_file_name": "test_input_file_v1.xlsx",
         "label": "simulation_settings",
         "oemof_file_name": "MVS_results.oemof",
         "output_lp_file": "False",
         "overwrite": "True",
-        "path_input_file": "./inputs/test_input_file_v1.xlsx",
-        "path_input_folder": "./inputs/",
-        "path_output_folder": "./MVS_outputs",
-        "path_output_folder_inputs": "./MVS_outputs/inputs/",
+        "path_input_folder": "./tests/inputs/",
+        "path_output_folder": "./tests/MVS_outputs",
         "restore_from_oemof_file": "True",
         "start_date": "2018-01-01 00:00:00",
         "store_oemof_results": "True",
