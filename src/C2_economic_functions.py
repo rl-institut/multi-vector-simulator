@@ -2,6 +2,19 @@
 # - there were some project costs included wrongly,
 # and something with the replacement costs
 
+"""
+Module C2 performs the economic pre-processing of MVS' input parameters.
+It includes basic economic formulas.
+
+Functionalities:
+- Calculate annuity factor
+- calculate crf depending on year
+- calculate specific lifetime capex, considering replacement costs and residual value of the asset
+- calculate annuity from present costs
+- calculate present costs based on annuity
+- calculate effective fuel price cost, in case there is a annual fuel price change (this functionality still has to be checked in this module)
+"""
+
 
 # annuity factor to calculate present value of cash flows
 def annuity_factor(project_life, wacc):
