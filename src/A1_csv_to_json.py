@@ -94,6 +94,7 @@ def create_input_json(
                 "type_asset",
                 "type_oemof",
                 "energyVector",
+                # "inflow_direction",
                 "unit",
             ]
         }
@@ -184,18 +185,12 @@ def create_input_json(
     parameterlist.update(
         {
             "simulation_settings": [
-                "display_output",
                 "evaluated_period",
                 "label",
                 "oemof_file_name",
                 "output_lp_file",
-                "overwrite",
-                "path_input_file",
-                "path_input_folder",
-                "path_output_folder",
-                "path_input_sequences",
-                "path_output_folder_inputs",
                 "restore_from_oemof_file",
+                "plot_nx_graph",
                 "start_date",
                 "store_oemof_results",
                 "timestep",
@@ -276,8 +271,8 @@ def create_input_json(
     with open(os.path.join(input_directory, output_filename), "w") as outfile:
         json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
     logging.info(
-        "Json file created successully from csv's and stored into"
-        "/mvs_eland/inputs/%s" % output_filename + "\n"
+        "Json file created successully from csv's and stored into "
+        "%s" % os.path.join(input_directory, output_filename) + "\n"
     )
     logging.debug("Json created successfully from csv.")
     if pass_back:
@@ -513,7 +508,3 @@ def add_storage(storage_filename, input_directory):
             input_directory, filename=storage_filename, parameters=parameters
         )
         return single_dict
-
-
-if __name__ == "__main__":
-    create_input_json()

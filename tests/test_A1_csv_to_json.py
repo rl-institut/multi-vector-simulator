@@ -1,10 +1,11 @@
 import os
 
-from .constants import REPO_PATH
+from src.constants import REPO_PATH, INPUT_FOLDER, CSV_ELEMENTS
 
 import src.A1_csv_to_json as load_data_from_csv
 
-elements = os.path.join(REPO_PATH, "tests", "inputs", "csv_elements")
+elements = os.path.join(REPO_PATH, "tests", INPUT_FOLDER, CSV_ELEMENTS)
+
 
 def test_create_input_json_creation_of_json_file():
     load_data_from_csv.create_input_json(
