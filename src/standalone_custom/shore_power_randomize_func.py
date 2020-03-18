@@ -5,7 +5,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def randomize_shore_power(times, shore_power,
-                          filename="demand_shore_power.csv", docks=1):
+                          filename="randomized_shore_power_demand.csv",
+                          docks=1):
     r"""
     Creates randomized shore power time series.
 
