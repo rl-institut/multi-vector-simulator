@@ -14,6 +14,24 @@ import src.C1_verification as verify
 import src.C2_economic_functions as economics
 import src.F0_output as output
 
+"""
+Module C0 prepares the data red from csv or json for simulation, ie. pre-processes it. 
+- Verify input values with C1
+- Identify energyVectors and write them to project_data/sectors
+- Create a sink for each energyVector (this actually might be changed in the future - create an excess sink for each bus?)
+- Process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
+- Add economic parameters to json with C2
+- Calculate "simulation annuity" used in oemof model
+- Add demand sinks to energyVectors (this should actually be changed and demand sinks should be added to bus relative to input_direction, also see issue #179)
+- Translate input_directions/output_directions to bus names
+- Add missing cost data to automatically generated objects (eg. DSO transformers)
+- Read timeseries of assets and store into json (differ between one-column csv, multi-column csv)
+- Read timeseries for parameter of an asset, eg. efficiency
+- Parse list of inputs/outputs, eg. for chp
+- Define dso sinks, soures, transformer stations (this will be changed due to bug #119), also for peak demand pricing
+- Add a source if a conversion object is connected to a new input_direction (bug #186)
+- Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
+"""
 
 def all(dict_values):
     """
