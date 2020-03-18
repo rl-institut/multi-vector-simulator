@@ -10,8 +10,8 @@ def test_randomize_shore_power():
     }
     shore_power_df = pd.DataFrame(shore_power_df)
 
-    times = pd.date_range(start="1.1.2017 00:00", freq="h", periods=8760)
+    time = pd.date_range(start="1.1.2017 00:00", freq="h", periods=8760)
 
     sum_exp = 1400
-    profile = randomize_shore_power(index=times, shore_power=shore_power_df)
+    profile = randomize_shore_power(times=time, shore_power=shore_power_df)
     assert profile.sum() == sum_exp

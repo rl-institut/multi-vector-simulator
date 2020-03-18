@@ -43,7 +43,7 @@ def randomize_shore_power(times, shore_power,
     for column in shore_power.columns:
         correct_combination = False
         while correct_combination != True:
-            logging.info(f"Get shore power times for: {column} docking time.")
+            logging.info(f"Get shore power times for ship type: {column}")
             # Get random time steps from time series
             time_of_events = pd.Series(
                 [shore_power[column]["Power"] for i in range(0, len(times))], index=times
@@ -65,8 +65,8 @@ def randomize_shore_power(times, shore_power,
 
             expected_length = (shore_power[column]["Duration"]) * len(
                 time_of_events)
-            if len(joined_periods) != expected_length or \
-                    not times.contains(joined_periods[-1]):
+            if (len(joined_periods) != expected_length or
+                    not times.contains(joined_periods[-1])):
                 # try a new combination of "start" time steps
                 correct_combination = False
                 continue
