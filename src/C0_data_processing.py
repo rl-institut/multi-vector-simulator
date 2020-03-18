@@ -33,6 +33,7 @@ Module C0 prepares the data red from csv or json for simulation, ie. pre-process
 - Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
 """
 
+
 def all(dict_values):
     """
     Function executing all pre-processing steps necessary
