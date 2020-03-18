@@ -121,5 +121,5 @@ if __name__ == "__main__":
     }
     shore_power_df = pd.DataFrame(shore_power_df)
     print(shore_power_df)
-    times = pd.date_range(start="1.1.2017 00:00", freq="h", periods=8760)
-    randomize_shore_power(times=times, shore_power=shore_power_df)
+    time = pd.date_range(start="1.1.2017 00:00", freq="h", periods=8760)
+    randomize_shore_power(times=time, shore_power=shore_power_df)
