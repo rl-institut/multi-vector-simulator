@@ -1,4 +1,7 @@
 import pandas as pd
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 def randomize_shore_power(times, shore_power, filename="demand_shore_power.csv", docks=1):
     # fuer docstring
@@ -12,7 +15,7 @@ def randomize_shore_power(times, shore_power, filename="demand_shore_power.csv",
     for column in shore_power.columns:
         correct_combination = False
         while correct_combination != True:
-            print("Get shore power times for: ", column, " docking time")  # todo logging
+            logging.info(f"Get shore power times for: {column} docking time.")
             time_of_events = pd.Series(
                 [shore_power[column]["Power"] for i in range(0, len(times))], index=times
             ).reset_index()['index'].sample(
@@ -76,7 +79,7 @@ def randomize_shore_power(times, shore_power, filename="demand_shore_power.csv",
     total_shore_power.drop('count', axis=1, inplace=True)
     total_shore_power = total_shore_power.sum(axis=1)
 
-    # todo add header to time series and maybe delete index
+    logging.info(f"Write shore power time series to file {filename}.")
     total_shore_power.to_csv(filename)
     return total_shore_power
 
