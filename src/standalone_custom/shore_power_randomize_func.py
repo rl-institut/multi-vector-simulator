@@ -36,6 +36,8 @@ def randomize_shore_power(times, shore_power,
     * Now there's now time step between two ships charging. There could be one
       one hour in between for docking and undocking.
     * Possible feature: Maximum amount of periods in which all docks are used.
+    * Write more tests - for convenient testing this function might have to
+      be split into several functions.
 
     """
     total_shore_power = pd.DataFrame([0 for i in range(0, len(times))], index=times, columns=['count'])
