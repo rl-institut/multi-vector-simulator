@@ -30,7 +30,8 @@ Here is a template for new release sections
 - Changed keyword argument to positional argument for `create_input_json` function (#113)
 - function `get_user_inputs` renamed `process_user_arguments` (#138)
 - Tests for the module A0 (#138)
-Terminal commands changed (#135)
+- Terminal commands (#135)
+- Shore power randomization improved + amount of available docks can be chosen (#202)
 ### Removed
 - Function welcome from module A0 (#138)
 - Parameters `input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs` from `simulation_settings.csv` (#178)
