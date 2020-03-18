@@ -1,7 +1,6 @@
 import pandas as pd
 
-
-def randomize_shore_power(index, shore_power, filename=None, docks=1):
+def randomize_shore_power(index, shore_power, filename="demand_shore_power.csv", docks=1):
     # fuer docstring
     # Annahme bzw. Anforderung Daten:
     # Spalten in shore_power fassen Andock-Zeiten von Schiffen zusammen, die nicht gleichzeitig laden können.
@@ -77,7 +76,7 @@ def randomize_shore_power(index, shore_power, filename=None, docks=1):
     total_shore_power = total_shore_power.sum(axis=1)
 
     # todo add header to time series and maybe delete index
-    total_shore_power.to_csv("demand_shore_power.csv")
+    total_shore_power.to_csv(filename)
     return total_shore_power
 
 
