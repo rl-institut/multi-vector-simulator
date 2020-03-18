@@ -133,7 +133,7 @@ def randomize_shore_power(
     total_shore_power.name = 'power'
 
     logging.info(f"Write shore power time series to file {filename}.")
-    total_shore_power.to_csv(filename, header=True)
+    total_shore_power.to_csv(filename, header=True, index=False)
     return total_shore_power
 
 
