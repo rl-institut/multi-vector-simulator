@@ -18,9 +18,22 @@ Here is a template for new release sections
 ```
 
 ## [Unreleased]
+
 ### Added
+- Pull request template (#198)
+
+### Changed
+- Shore power randomization improved + amount of available docks can be chosen (#202)
+### Removed
+
+
+## [0.2.0] - 2020-03-13
+
+### Added
+- Readthedocs documentation for input parameters (#128)
 - Doctring of module A0 (#138)
 - Constants in `src/constants.py` (#153, #154)
+- Readthedocs documentation for installation (#162)
 - Plotting an networkx graph can now be turned of/on via "plot_nx_graph" in simulation_settings (#172)
 - Plot all timeseries used as input data (#171)
 
@@ -31,10 +44,11 @@ Here is a template for new release sections
 - function `get_user_inputs` renamed `process_user_arguments` (#138)
 - Tests for the module A0 (#138)
 - Terminal commands (#135)
-- Shore power randomization improved + amount of available docks can be chosen (#202)
+
 ### Removed
 - Function welcome from module A0 (#138)
 - Parameters `input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs` from `simulation_settings.csv` (#178)
+
 ### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
 - \#111 & \#114 fix user choice of output folder via command line arguments(#115)
@@ -45,7 +59,7 @@ Here is a template for new release sections
 - \#182 Boolean simulation settings now also take affect
 - Demand is no longer aggregated across sectors when processing/plotting in E1 (#169)
 
-## [0.1.0] -2020-01-30
+## [0.1.1] -2020-01-30
 
 ### Added
 - test for running the main function (#109)
