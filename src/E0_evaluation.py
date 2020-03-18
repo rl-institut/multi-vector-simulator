@@ -71,10 +71,45 @@ def evaluate_dict(dict_values, results_main, results_meta):
             bus_data[dict_values["energyStorage"][storage]["label"]],
             dict_values["energyStorage"][storage],
         )
-        economics.get_costs(
-            dict_values["energyStorage"][storage], dict_values["economic_data"],
-        )
-        store_result_matrix(dict_values["kpi"], dict_values["energyStorage"][storage])
+
+        # hardcoded list of names in storage_01.csv
+        for storage_item in ["capacity", "charging_power", "discharging_power"]:
+            economics.get_costs(
+                dict_values["energyStorage"][storage][storage_item],
+                dict_values["economic_data"],
+            )
+            store_result_matrix(
+                dict_values["kpi"], dict_values["energyStorage"][storage][storage_item]
+            )
+
+        if (
+            dict_values["energyStorage"][storage]["input_bus_name"]
+            in dict_values["optimizedFlows"].keys()
+        ) or (
+            dict_values["energyStorage"][storage]["output_bus_name"]
+            in dict_values["optimizedFlows"].keys()
+        ):
+            bus_name = dict_values["energyStorage"][storage]["input_bus_name"]
+            timeseries_name = (
+                dict_values["energyStorage"][storage]["label"]
+                + " ("
+                + str(
+                    round(
+                        dict_values["energyStorage"][storage]["capacity"][
+                            "optimizedAddCap"
+                        ]["value"],
+                        1,
+                    )
+                )
+                + dict_values["energyStorage"][storage]["capacity"]["optimizedAddCap"][
+                    "unit"
+                ]
+                + ") SOC"
+            )
+
+            dict_values["optimizedFlows"][bus_name][timeseries_name] = dict_values[
+                "energyStorage"
+            ][storage]["timeseries_soc"]
 
     for asset in dict_values["energyConversion"]:
         process_results.get_results(
