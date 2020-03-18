@@ -34,7 +34,7 @@ def randomize_shore_power(
     Todo
     -----
     * Adapt format of `total_shore_power` for MVS. (f.e. header, index ...)
-    * Now there's now time step between two ships charging. There could be one
+    * Now there's no time step between two ships charging. There could be one
       one hour in between for docking and undocking.
     * Possible feature: Maximum amount of periods in which all docks are used.
     * Write more tests - for convenient testing this function might have to
