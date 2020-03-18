@@ -1,19 +1,20 @@
 import pandas as pd
 
-def randomize_shore_power(index, shore_power, filename="demand_shore_power.csv", docks=1):
+def randomize_shore_power(times, shore_power, filename="demand_shore_power.csv", docks=1):
     # fuer docstring
     # Annahme bzw. Anforderung Daten:
     # Spalten in shore_power fassen Andock-Zeiten von Schiffen zusammen, die nicht gleichzeitig laden können.
     # Schiffe der versch. Spalten können gleichzeitig geladne werdne, wenn mehr als ein Dock. `docks`=1, 2, 3
     # todo einführen: Laden zweier Schiffe soll mind. einmal überlappen FRAGE: heißt überlappen kompl. Dauer des einen Schiffes oder mind. ein Zeitschritt?
-    total_shore_power = pd.DataFrame([0 for i in range(0, len(index))], index=index, columns=['count'])
+
+    total_shore_power = pd.DataFrame([0 for i in range(0, len(times))], index=times, columns=['count'])
 
     for column in shore_power.columns:
         correct_combination = False
         while correct_combination != True:
             print("Get shore power times for: ", column, " docking time")  # todo logging
             time_of_events = pd.Series(
-                [shore_power[column]["Power"] for i in range(0, len(index))], index=index
+                [shore_power[column]["Power"] for i in range(0, len(times))], index=times
             ).reset_index()['index'].sample(
                 n=shore_power[column]["Number"], replace=False  # number of events
             )
@@ -33,7 +34,7 @@ def randomize_shore_power(index, shore_power, filename="demand_shore_power.csv",
             expected_length = (shore_power[column]["Duration"]) * len(
                 time_of_events)
             if len(joined_periods) != expected_length or \
-                    not index.contains(joined_periods[-1]):
+                    not times.contains(joined_periods[-1]):
                 # try a new combination of "start" time steps
                 correct_combination = False
                 continue
@@ -88,4 +89,4 @@ if __name__ == "__main__":
     shore_power_df = pd.DataFrame(shore_power_df)
     print(shore_power_df)
     times = pd.date_range(start="1.1.2017 00:00", freq="h", periods=8760)
-    randomize_shore_power(index=times, shore_power=shore_power_df)
+    randomize_shore_power(times=times, shore_power=shore_power_df)
