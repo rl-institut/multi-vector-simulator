@@ -20,6 +20,7 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+- Pull request template (#198)
 
 ### Changed
 
@@ -42,7 +43,7 @@ Here is a template for new release sections
 - Changed keyword argument to positional argument for `create_input_json` function (#113)
 - function `get_user_inputs` renamed `process_user_arguments` (#138)
 - Tests for the module A0 (#138)
-Terminal commands changed (#135)
+- Terminal commands changed (#135)
 ### Removed
 - Function welcome from module A0 (#138)
 - Parameters `input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs` from `simulation_settings.csv` (#178)
@@ -56,7 +57,7 @@ Terminal commands changed (#135)
 - \#182 Boolean simulation settings now also take affect
 - Demand is no longer aggregated across sectors when processing/plotting in E1 (#169)
 
-## [0.1.0] -2020-01-30
+## [0.1.1] -2020-01-30
 
 ### Added
 - test for running the main function (#109)
