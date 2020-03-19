@@ -99,7 +99,8 @@ Edit the csv files (or, for devs, the json file) and run the `main()` function. 
 - `input_type` (str): Defines whether the input is taken from the `mvs_config.json` file ("json") or from csv files ('csv') located within <path_input_folder>/csv_elements/. Default: `json`.
 - `path_input_folder` (str): The path to the directory where the input CSVs/JSON files are located. Default: `inputs/`.
 - `path_output_folder` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands. Default: `MVS_outputs/`.
-
+- `display_output` (str): Sets the level of displayed logging messages. Options: "debug", "info", "warning", "error". Default: "info".
+- `lp_file_output` (bool): Specifies whether linear equation system generated is saved as lp file. Default: False.
 
 Contributing and additional information for developers
 ------------------------------------------------------
