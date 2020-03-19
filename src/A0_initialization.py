@@ -182,7 +182,9 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
                 FileExistsError(
                     "Output folder {} already exists. "
                     "If you want to overwrite the folder, please choose the force option -f when executing the MVS. "
-                    "Otherwise, provide a name to a new output folder with option -o.".format(path_output_folder)
+                    "Otherwise, provide a name to a new output folder with option -o.".format(
+                        path_output_folder
+                    )
                 )
             )
         else:

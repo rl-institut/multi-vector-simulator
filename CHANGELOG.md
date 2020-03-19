@@ -23,7 +23,7 @@ Here is a template for new release sections
 - Pull request template (#198)
 
 ### Changed
-
+- Shore power randomization improved + amount of available docks can be chosen (#202)
 ### Removed
 
 
@@ -43,10 +43,12 @@ Here is a template for new release sections
 - Changed keyword argument to positional argument for `create_input_json` function (#113)
 - function `get_user_inputs` renamed `process_user_arguments` (#138)
 - Tests for the module A0 (#138)
-- Terminal commands changed (#135)
+- Terminal commands (#135)
+
 ### Removed
 - Function welcome from module A0 (#138)
 - Parameters `input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs` from `simulation_settings.csv` (#178)
+
 ### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
 - \#111 & \#114 fix user choice of output folder via command line arguments(#115)
