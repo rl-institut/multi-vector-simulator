@@ -77,21 +77,20 @@ To run the MVS with custom inputs you have several options:
 
 ##### 1) Use the command line
 
-Edit the json input file (or csv files) and run
-
-    `python mvs_tool.py -i path_input_file -ext json -o path_output_folder`
-
-With 
-`path_input_file`: path to json input file,
-
-`ext`: json for using a json file and csv for using csv files
-
-and `path_output_folder`: path of the folder where simulation results should be stored.
-
-For more information about the possible command lines
-
-`python mvs_tool.py -h`
-
+Edit the json input file (or csv files) and run::
+    
+    python mvs_tool.py -i path_input_file -ext json -o path_output_folder
+    
+With::
+    
+    `path_input_file`: path to json input file,
+    `ext`: json for using a json file and csv for using csv files
+    `path_output_folder`: path of the folder where simulation results should be stored.
+    
+For more information about the possible command lines::
+    
+    python mvs_tool.py -h
+    
 ##### 2) Use the `main()` function
 
 Edit the csv files (or, for devs, the json file) and run the `main()` function. The following `kwargs` are possible:
