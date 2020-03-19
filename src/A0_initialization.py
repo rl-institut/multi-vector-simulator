@@ -180,8 +180,9 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
         if overwrite is False:
             raise (
                 FileExistsError(
-                    "Output folder {} already exists and should not be overwritten. "
-                    "Please choose other folder.".format(path_output_folder)
+                    "Output folder {} already exists. "
+                    "If you want to overwrite the folder, please choose the force option -f when executing the MVS. "
+                    "Otherwise, provide a name to a new output folder with option -o.".format(path_output_folder)
                 )
             )
         else:
