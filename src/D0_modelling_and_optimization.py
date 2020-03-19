@@ -100,7 +100,7 @@ def run_oemof(dict_values):
 
     logging.debug("All components added.")
 
-    if dict_values["simulation_settings"]["plot_nx_graph"]["value"] == True:
+    if dict_values["simulation_settings"]["plot_nx_graph"] == True:
         import oemof.graph as grph
 
         # my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
