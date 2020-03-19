@@ -2,7 +2,7 @@
 Module A0_initialization defines functions to parse user inputs to the MVS simulation.
     - Display welcome message with current version number
     - Parse command line arguments and set default values for MVS parameters if not provided
-    - Check that all necessary files and folder exists
+    - Check that all necessary files and folder exist
     - Create output directory
     - Define screen logging depth
 
@@ -17,7 +17,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -i [PATH_INPUT_FOLDER]
                         path to the input folder
-  -ext [{json,csv}]     type (json or csv) of the input files (default: 'json'
+  -ext [{json,csv}]     type (json or csv) of the input files (default: 'json')
   -o [PATH_OUTPUT_FOLDER]
                         path to the output folder for the simulation's results
   -log [{debug,info,error,warning}]
@@ -219,9 +219,9 @@ def process_user_arguments(
     they will overwrite the command line arguments.
 
     :param path_input_folder:
-        Descripes path to inputs folder (command line "-i")
+        Describes path to inputs folder (command line "-i")
     :param input_type:
-        Descripes type of input to expect (command line "-ext")
+        Describes type of input to expect (command line "-ext")
     :param path_output_folder:
         Describes path to folder to be used for terminal output (command line "-o")
         Must not exist before
@@ -290,7 +290,7 @@ def process_user_arguments(
     # Define logging settings and path for saving log
     logger.define_logging(
         logpath=path_output_folder,
-        logfile="mvst_logfile.log",
+        logfile="mvs_logfile.log",
         file_level=logging.DEBUG,
         screen_level=screen_level,
     )
