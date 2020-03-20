@@ -657,7 +657,7 @@
         "label": "simulation_settings",
         "oemof_file_name": "MVS_results.oemof",
         "output_lp_file": {
-            "unit": "boolean",
+            "unit": "bool",
             "value": "False"
         },
         "overwrite": "True",
@@ -669,17 +669,16 @@
         "restore_from_oemof_file": "True",
         "start_date": "2018-01-01 00:00:00",
         "store_oemof_results": {
-            "unit": "boolean",
+            "unit": "bool",
             "value": "False"
         },
         "plot_nx_graph": {
-            "unit": "boolean",
+            "unit": "bool",
             "value": "False"
         },
         "timestep": {
             "unit": "minutes",
             "value": 60
-        },
-        "plot_nx_graph": "False"
+        }
     }
 }
