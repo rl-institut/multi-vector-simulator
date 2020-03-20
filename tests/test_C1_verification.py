@@ -21,5 +21,3 @@ def test_lookup_file_non_existing_file():
 # def test_all_valid_intervals():
 #     pass
 #     # todo note: function is not used so far
-
-

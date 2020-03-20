@@ -26,8 +26,10 @@ def lookup_file(file_path, name):
     :return:
     """
     if os.path.isfile(file_path) == False:
-        msg = (f"Missing file! The timeseries file '{file_path}' \nof asset " +
-               f"{name} can not be found. Operation terminated.")
+        msg = (
+            f"Missing file! The timeseries file '{file_path}' \nof asset "
+            + f"{name} can not be found. Operation terminated."
+        )
         raise FileNotFoundError(msg)
     return
 
