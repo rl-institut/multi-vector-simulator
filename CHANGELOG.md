@@ -24,10 +24,15 @@ Here is a template for new release sections
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
-- Rename "boolean" to "bool" in example json file (#214)
+- Update kwargs of main func in docstring and in documentation (#208)
 
 ### Removed
 
+### Fixed
+- Rename "boolean" to "bool" in example json file (#214)
+- Fix json file (#203)
+- Fix searching for dict key "input_bus_name" (#210) and using input_name instead of output_name (#219)
+- Delete duplicated entry of `plot_nx_graph` from json file (#209)
 
 ## [0.2.0] - 2020-03-13
 
