@@ -23,13 +23,9 @@ def lookup_file(file_path, name):
     :return:
     """
     if os.path.isfile(file_path) == False:
-        logging.critical(
-            "Missing file! "
-            "\n The timeseries file %s of asset %s can not be found. Operation terminated.",
-            file_path,
-            name,
-        )
-        sys.exit()
+        msg = (f"Missing file! The timeseries file '{file_path}' \nof asset " +
+               f"{name} can not be found. Operation terminated.")
+        raise FileNotFoundError(msg)
     return
 
 
