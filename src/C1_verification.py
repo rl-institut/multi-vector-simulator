@@ -1,16 +1,18 @@
+"""
+Module C1 is used to validate the input data compiled in A1 or red in B0.
+
+In A1/B0, the input parameters were parsed to str/bool/float/int. This module
+tests whether the parameters are in correct value ranges:
+- Display error message when wrong type
+- Display error message when outside defined range
+
+"""
+
 import os, sys
 import logging
 import pandas as pd
 
 # web-application: valid input directly connected to cell-input
-
-"""
-Module C1 is used to validate the input data compiled in A1 or red in B0.
-
-In A1/B0, the input parameters were parsed to str/bool/float/int. This module tests whether the parameters are in correct value ranges:
-- Display error message when wrong type
-- Display error message when outside defined range
-"""
 
 
 def lookup_file(file_path, name):
