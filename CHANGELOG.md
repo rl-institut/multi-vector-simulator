@@ -24,6 +24,8 @@ Here is a template for new release sections
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
+- Rename "boolean" to "bool" in example json file (#214)
+
 ### Removed
 
 
