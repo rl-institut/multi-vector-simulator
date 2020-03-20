@@ -17,6 +17,9 @@ import pandas as pd
 
 def lookup_file(file_path, name):
     """
+    Checks whether file specified in `file_path` exists.
+
+    If it does not exist a critical logging message and a system exit is risen.
 
     :param file_path:
     :param name:
@@ -82,6 +85,10 @@ def check_input_values(dict_values):
 
 def all_valid_intervals(name, value, title):
     """
+    Checks whether `value` of `name` is valid.
+
+    Checks include the expected type and the expected range a parameter is
+    supposed to be inside.
 
     :param name:
     :param value:
