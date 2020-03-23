@@ -21,31 +21,16 @@ The model F0 output defines all functions that store evaluation results to file.
 """
 
 def evaluate_dict(dict_values):
-    """
-
-    :param dict_values:
-    :return:
-    """
     logging.info(
         "Summarizing simulation results to results_timeseries and results_scalars_assets."
     )
+
     for sector in dict_values["project_data"]["sectors"]:
         sector_name = dict_values["project_data"]["sectors"][sector]
-        total_demand = pd.Series(
-            [0 for i in dict_values["simulation_settings"]["time_index"]],
-            index=dict_values["simulation_settings"]["time_index"],
-        )
 
-        for asset in dict_values["energyConsumption"]:
-            total_demand = (
-                total_demand + dict_values["energyConsumption"][asset]["flow"]
-            )
+        logging.info("Aggregating flows for the %s sector.", sector_name)
 
-        # todo this should actually link to C0: helpers.bus_suffix
-        dict_values["optimizedFlows"][sector_name + " bus"][
-            "Total demand " + sector_name
-        ] = total_demand
-
+        # Plot flows for one sector for the 14 first days
         plots.flows(
             dict_values["simulation_settings"],
             dict_values["project_data"],
@@ -53,6 +38,8 @@ def evaluate_dict(dict_values):
             sector,
             14,
         )
+
+        # Plot flows for one sector for a year
         plots.flows(
             dict_values["simulation_settings"],
             dict_values["project_data"],
@@ -61,6 +48,34 @@ def evaluate_dict(dict_values):
             365,
         )
 
+        """
+        ###
+        # Aggregation of demand profiles to total demand
+        ###
+        This would store demands are twice - as total demand as well as individual demand!
+
+        # Initialize
+        total_demand = pd.Series(
+            [0 for i in dict_values["simulation_settings"]["time_index"]],
+            index=dict_values["simulation_settings"]["time_index"],
+        )
+
+        # Add demands (exclude excess)
+        for asset in dict_values["energyConsumption"]:
+            # key "energyVector" not included in excess sinks, ie. this filters them out from demand.
+            if "energyVector" in dict_values["energyConsumption"][asset].keys() \
+                    and dict_values["energyConsumption"][asset]["energyVector"] == sector_name:
+                total_demand = (
+                    total_demand + dict_values["energyConsumption"][asset]["flow"]
+                )
+
+        # todo this should actually link to C0: helpers.bus_suffix
+        dict_values["optimizedFlows"][sector_name + " bus"][
+            "Total demand " + sector_name
+        ] = total_demand
+        """
+
+    # storing all flows to exel.
     store_timeseries_all_busses_to_excel(dict_values)
 
     # plot optimal capacities if there are optimized assets

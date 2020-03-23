@@ -656,7 +656,10 @@
         "input_file_name": "test_input_file_v1.xlsx",
         "label": "simulation_settings",
         "oemof_file_name": "MVS_results.oemof",
-        "output_lp_file": "False",
+        "output_lp_file": {
+            "unit": "bool",
+            "value": "False"
+        },
         "overwrite": "True",
         "path_input_file": "./inputs/test_input_file_v1.xlsx",
         "path_input_folder": "./inputs/",
@@ -665,7 +668,14 @@
         "path_output_folder_inputs": "./MVS_outputs/inputs/",
         "restore_from_oemof_file": "True",
         "start_date": "2018-01-01 00:00:00",
-        "store_oemof_results": "True",
+        "store_oemof_results": {
+            "unit": "bool",
+            "value": "False"
+        },
+        "plot_nx_graph": {
+            "unit": "bool",
+            "value": "False"
+        },
         "timestep": {
             "unit": "minutes",
             "value": 60

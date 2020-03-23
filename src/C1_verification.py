@@ -95,7 +95,6 @@ def all_valid_intervals(name, value, title):
         "display_output",
         "path_input_file",
         "path_input_folder",
-        "path_output_folder_inputs",
         "sector",
     ]
 
