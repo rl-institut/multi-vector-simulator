@@ -5,8 +5,8 @@ Troubleshooting
 Installation
 ------------
 
-Python package pygraphviz
-#########################
+Python package "pygraphviz"
+###########################
 
 The installation of pygraphviz can cause errors. 
 You can circumvent this issue by setting the *simulation_setting* *plot_nx_graph* to False. 
@@ -17,6 +17,16 @@ Pygraphviz could not be installed with pip. Solution:
 
     sudo apt-get install python3-dev graphviz libgraphviz-dev pkg-config
     pip install pygraphviz
+    
+Python package "xlrd"
+#####################
+
+On **Windows** there can be issues installing xlrd. This could solve your troubles:
+
+1. Delete xlrd from requirements.txt
+2. Download the xlrd-1.2.0-py2.py3-none-any.whl file from: https://pypi.org/project/xlrd/#files
+3. Copy the file to main directory of the project on your laptop
+4. Install it manually writing pip install xlrd-1.2.0-py2.py3-none-any.whl
 
 
 Error messages and MVS termination
