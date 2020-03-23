@@ -1,6 +1,16 @@
 import logging
 import oemof.solph as solph
 
+"""
+Module D1 includes all functions that are required to build an oemof model with adaptable components
+
+- add transformer objects (fix, to be optimized)
+- add source objects (fix, to be optimized, dispatchable, non-dispatchable)
+- add sink objects (fix, to be optimized, dispatchable, non-dispatchable)
+- add storage objects (fix, to be optimized)
+- add multiple input/output busses if required for each of the assets
+- add oemof component parameters as scalar or timeseries values                
+"""
 
 def transformer(model, dict_asset, **kwargs):
     check_optimize_cap(
@@ -471,7 +481,8 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
     else:
         if "timeseries" in dict_asset:
             logging.error(
-                "Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow"
+                "Change code in 
+                /source_dispatchable: timeseries_normalized not the only key determining the flow"
             )
         # check if the source has multiple output busses
         if isinstance(dict_asset["output_bus_name"], list):
