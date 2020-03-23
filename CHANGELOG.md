@@ -27,7 +27,7 @@ Here is a template for new release sections
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
 - Update kwargs of main func in docstring and in documentation (#208)
-- Changed troubleshooting.rst for pygraphviz (#218) and xlrd (#11)
+- troubleshooting.rst: Added help for pygraphviz (#218) and xlrd (#11)
 
 ### Removed
 
