@@ -22,6 +22,7 @@ Here is a template for new release sections
 ### Added
 - Pull request template (#198)
 - Issue template (#212)
+- File troubleshooting.rst to readthedocs
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
