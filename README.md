@@ -88,17 +88,35 @@ To set up the MVS, follow the steps below:
     
 ## Using the MVS
 
-To run the MVS with custom inputs, edit the json input file and run
+To run the MVS with custom inputs you have several options:
 
-    `python mvs_tool.py -i path_input_file -o path_output_folder`
+##### 1) Use the command line
 
-With `path_input_file`: path to json input file
+Edit the json input file (or csv files) and run
 
-and `path_output_folder`: path of the folder where simulation results should be stored
+    `python mvs_tool.py -i path_input_folder -ext json -o path_output_folder`
+
+With 
+`path_input_folder`: path to folder with input data,
+
+`ext`: json for using a json file and csv for using csv files
+
+and `path_output_folder`: path of the folder where simulation results should be stored.
 
 For more information about the possible command lines
 
 `python mvs_tool.py -h`
+
+##### 2) Use the `main()` function
+
+Edit the csv files (or, for devs, the json file) and run the `main()` function. The following `kwargs` are possible:
+
+- `overwrite` (bool): Determines whether to replace existing results in `path_output_folder` with the results of the current simulation (True) or not (False). Default: `False`.
+- `input_type` (str): Defines whether the input is taken from the `mvs_config.json` file ("json") or from csv files ('csv') located within <path_input_folder>/csv_elements/. Default: `json`.
+- `path_input_folder` (str): The path to the directory where the input CSVs/JSON files are located. Default: `inputs/`.
+- `path_output_folder` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands. Default: `MVS_outputs/`.
+- `display_output` (str): Sets the level of displayed logging messages. Options: "debug", "info", "warning", "error". Default: "info".
+- `lp_file_output` (bool): Specifies whether linear equation system generated is saved as lp file. Default: False.
 
 ## Contributing
 
