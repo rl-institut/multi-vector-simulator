@@ -6,6 +6,22 @@ import oemof.outputlib as outputlib
 
 import src.D1_model_components as model_components
 
+"""
+Functional requirements of module D0:
+- measure time needed to build model
+- measure time needed to solve model
+- generate energy system model for oemof
+- create dictionary of components so that they can be used for constraints and some
+- raise warning if component not a (in mvs defined) oemof model type
+- add all energy conversion, energy consumption, energy production, energy storage devices model
+- plot network graph
+- at constraints to remote model
+- store lp file (optional)
+- start oemof simulation
+- process results by giving them to the next function
+- dump oemof results
+- add simulation parameters to dict values 
+"""
 
 def run_oemof(dict_values):
     """
