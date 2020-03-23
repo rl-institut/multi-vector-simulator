@@ -35,4 +35,13 @@ Error messages and MVS termination
 Eventhough we try to keep the error messages of the MVS clear and concise, there might be a some that are harder to understand. 
 This especially applies to error messages that occur due to the termination of the oemof optimization process.
 
+json.decoder.JSONDecodeError
+############################
+
+If the error `json.decoder.JSONDecodeError` is raised, there is a formatting issue with the json file that is used as an input file.
+
+Have you changed the json file manually? Please check for correct formatting, ie. aphostrophes, commas, brackets, and so on.
+
+If you have not changed the Json file yourself please consider raising an issue in the github project.
+
 
