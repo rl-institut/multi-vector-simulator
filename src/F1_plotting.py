@@ -27,9 +27,16 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
     logging.info("Creating plots for %s sector", sector)
     steps = interval * 24
     flows_les = results_timeseries[0:steps]
-    if sector + "_storage_soc" in results_timeseries.columns:
+
+    includes_soc = False
+    for column in results_timeseries.columns:
+        if "SOC" in column:
+            includes_soc = True
+            soc_column_name = column
+
+    if includes_soc == True:
         boolean_subplots = True
-        flows_les = flows_les.drop([sector + "_storage_soc"], axis=1)
+        flows_les = flows_les.drop([soc_column_name], axis=1)
     else:
         boolean_subplots = False
 
@@ -40,6 +47,7 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
         fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
         axes_mg = axes[0]
 
+    """
     # website with websafe hexacolours: https://www.colorhexa.com/web-safe-colors
     color_dict = {
         "total_demand_" + sector: "#33ff00",  # dark green
@@ -55,6 +63,7 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
         sector + "_storage_soc": "#0033cc"  # blue
         #'Grid availability': '#cc0000'  # red
     }
+    """
 
     flows_les.plot(
         title=sector
@@ -62,7 +71,7 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
         + project_data["project_name"]
         + ", "
         + project_data["scenario_name"],
-        color=[color_dict.get(x, "#333333") for x in flows_les.columns],
+        # color=[color_dict.get(x, "#333333") for x in flows_les.columns],
         ax=axes_mg,
         drawstyle="steps-mid",
     )
@@ -70,12 +79,12 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
     axes_mg.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
     if boolean_subplots == True:
-        results_timeseries[sector + "_storage_soc"][0:steps].plot(
+        results_timeseries[soc_column_name][0:steps].plot(
             ax=axes[1],
-            color=color_dict.get(sector + "_storage_soc", "#333333"),
+            # color=color_dict.get(soc_column_name, "#333333"),
             drawstyle="steps-mid",
         )
-        ylabel = sector + "_storage_soc"
+        ylabel = sector + " SOC"
 
         axes[1].set(xlabel="Time", ylabel=ylabel)
         axes[1].legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
