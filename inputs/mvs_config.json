@@ -375,11 +375,11 @@
             "outflow_direction": "Electricity (DSO)",
             "peak_demand_pricing": {
                 "unit": "currency/kW",
-                "value": 60
+                "value": 0
             },
             "peak_demand_pricing_period": {
                 "unit": "times per year (1,2,3,4,6,12)",
-                "value": 12
+                "value": 1
             },
             "type_oemof": "source"
         }
@@ -648,33 +648,28 @@
         "scenario_name": "Warehouse 14"
     },
     "simulation_settings": {
-        "display_output": "-debug",
         "evaluated_period": {
             "unit": "days",
             "value": 365
         },
-        "input_file_name": "test_input_file_v1.xlsx",
         "label": "simulation_settings",
         "oemof_file_name": "MVS_results.oemof",
         "output_lp_file": {
             "unit": "bool",
-            "value": "False"
-        },
-        "overwrite": "True",
-        "path_input_file": "./inputs/test_input_file_v1.xlsx",
-        "path_input_folder": "./inputs/",
-        "path_input_sequences": "./inputs/sequences/",
-        "path_output_folder": "./MVS_outputs",
-        "path_output_folder_inputs": "./MVS_outputs/inputs/",
-        "restore_from_oemof_file": "True",
-        "start_date": "2018-01-01 00:00:00",
-        "store_oemof_results": {
-            "unit": "bool",
-            "value": "False"
+            "value": false
         },
         "plot_nx_graph": {
             "unit": "bool",
-            "value": "False"
+            "value": false
+        },
+        "restore_from_oemof_file": {
+            "unit": "bool",
+            "value": true
+        },
+        "start_date": "2018-01-01 00:00:00",
+        "store_oemof_results": {
+            "unit": "bool",
+            "value": true
         },
         "timestep": {
             "unit": "minutes",
