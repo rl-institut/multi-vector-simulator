@@ -28,6 +28,7 @@ Here is a template for new release sections
 - Shore power randomization improved + amount of available docks can be chosen (#202)
 - Update kwargs of main func in docstring and in documentation (#208)
 - `troubleshooting.rst`: Added help for `pygraphviz` (#218), `xlrd` (#11), `json.decoder.JSONDecodeError` (#206)
+- FileNotFoundError messages in A0 (#227)
 
 ### Removed
 
