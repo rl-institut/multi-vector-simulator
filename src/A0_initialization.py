@@ -127,17 +127,17 @@ def check_input_folder(path_input_folder, input_type):
             raise (
                 FileNotFoundError(
                     "Missing input json file!\n"
-                    "The input json file '{}' can not be found.\n"
-                    "Operation terminated.".format(JSON_FNAME)
+                    "The input json file '{}' in path '{}' can not be found.\n"
+                    "Operation terminated.".format(JSON_FNAME, path_input_folder)
                 )
             )
         json_files = [f for f in os.listdir(path_input_folder) if f.endswith(JSON_EXT)]
         if len(json_files) > 1:
             raise (
                 FileExistsError(
-                    "Two many json files in input folder ({})!\n"
+                    "Two many json files ({}) in input folder '{}'!\n"
                     "Only the input json file '{}' should be present.\n"
-                    "Operation terminated.".format(", ".join(json_files), JSON_FNAME)
+                    "Operation terminated.".format(", ".join(json_files), path_input_folder, JSON_FNAME)
                 )
             )
     elif input_type == CSV_EXT:
@@ -146,8 +146,8 @@ def check_input_folder(path_input_folder, input_type):
             raise (
                 FileNotFoundError(
                     "Missing folder for csv inputs! "
-                    "The input csv folder '{}' can not be found.\n"
-                    "Operation terminated.".format(CSV_ELEMENTS)
+                    "The input csv folder '{}' can not be found in the input path '{}'.\n"
+                    "Operation terminated.".format(CSV_ELEMENTS, path_input_folder)
                 )
             )
 
