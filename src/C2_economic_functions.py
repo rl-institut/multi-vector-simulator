@@ -20,9 +20,9 @@ Functionalities:
 def annuity_factor(project_life, wacc):
     """
 
-    :param project_life:
-    :param wacc:
-    :return:
+    :param project_life: time period over which the costs of the system occur
+    :param wacc: weighted average cost of capital, which is the after-tax average cost of various capital sources
+    :return: financial value. if multiplied by the annuity (or payment), returns the present value of that annuity
     """
     # discount_rate was replaced here by wacc
     annuity_factor = 1 / wacc - 1 / (wacc * (1 + wacc) ** project_life)
@@ -33,9 +33,9 @@ def annuity_factor(project_life, wacc):
 def crf(project_life, wacc):
     """
 
-    :param project_life:
-    :param wacc:
-    :return:
+    :param project_life: time period over which the costs of the system occur
+    :param wacc: weighted average cost of capital, which is the after-tax average cost of various capital sources
+    :return: ratio used to calculate the present value of an annuity
     """
     crf = (wacc * (1 + wacc) ** project_life) / ((1 + wacc) ** project_life - 1)
     return crf
@@ -44,12 +44,12 @@ def crf(project_life, wacc):
 def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
     """
 
-    :param investment_t0:
-    :param lifetime:
-    :param project_life:
-    :param wacc:
-    :param tax:
-    :return:
+    :param investment_t0: first investment at the beginning of the project made at year 0
+    :param lifetime: time period over which investments and re-investments can occur. can be equal to or smaller than project_life
+    :param project_life: time period over which the costs of the system occur
+    :param wacc: weighted average cost of capital, which is the after-tax average cost of various capital sources
+    :param tax: compulsory financial charge paid to the government
+    :return: capital expenditure for an asset over project lifetime
     """
     # [quantity, investment, installation, weight, lifetime, om, first_investment]
     if project_life == lifetime:
@@ -70,7 +70,7 @@ def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
                     (1 + wacc) ** (count_of_replacements * lifetime)
                 )
 
-    # Substraction of component value at end of life with last replacement (= number_of_investments - 1)
+    # Subtraction of component value at end of life with last replacement (= number_of_investments - 1)
     if number_of_investments * lifetime > project_life:
         last_investment = first_time_investment / (
             (1 + wacc) ** ((number_of_investments - 1) * lifetime)
@@ -86,9 +86,9 @@ def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
 def annuity(present_value, crf):
     """
 
-    :param present_value:
-    :param crf:
-    :return:
+    :param present_value: current equivalent value of a set of future cash flows for an asset
+    :param crf: ratio used to calculate the present value of an annuity
+    :return: payment made at equal intervals
     """
     annuity = present_value * crf
     return annuity
@@ -97,9 +97,9 @@ def annuity(present_value, crf):
 def present_value_from_annuity(annuity, annuity_factor):
     """
 
-    :param annuity:
-    :param annuity_factor:
-    :return:
+    :param annuity: payment made at equal intervals
+    :param annuity_factor: financial value
+    :return: present value of future payments from an annuity
     """
     present_value = annuity * annuity_factor
     return present_value
@@ -108,8 +108,8 @@ def present_value_from_annuity(annuity, annuity_factor):
 def fuel_price_present_value(economics,):
     """
 
-    :param economics:
-    :return:
+    :param economics: dict with fuel data values
+    :return: present value of the fuel price over the lifetime of the project
     """
     cash_flow_fuel_l = 0
     fuel_price_i = economics["fuel_price"]
