@@ -137,7 +137,9 @@ def check_input_folder(path_input_folder, input_type):
                 FileExistsError(
                     "Two many json files ({}) in input folder '{}'!\n"
                     "Only the input json file '{}' should be present.\n"
-                    "Operation terminated.".format(", ".join(json_files), path_input_folder, JSON_FNAME)
+                    "Operation terminated.".format(
+                        ", ".join(json_files), path_input_folder, JSON_FNAME
+                    )
                 )
             )
     elif input_type == CSV_EXT:
