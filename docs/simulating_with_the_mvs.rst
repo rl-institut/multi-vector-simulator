@@ -11,7 +11,7 @@ Input files
 
 All input files stored in a specifically formatted input folder. The path to the input folder is up to you.
 
-.. image:: /figures/folder_structure_inputs.png
+.. image:: images/folder_structure_inputs.png
  :width: 400
 
 There are two options to insert all input data – Json and CSV. These will be explained below.
