@@ -1,6 +1,3 @@
-import logging
-import oemof.solph as solph
-
 """
 Module D1 includes all functions that are required to build an oemof model with adaptable components
 
@@ -9,8 +6,13 @@ Module D1 includes all functions that are required to build an oemof model with 
 - add sink objects (fix, to be optimized, dispatchable, non-dispatchable)
 - add storage objects (fix, to be optimized)
 - add multiple input/output busses if required for each of the assets
-- add oemof component parameters as scalar or timeseries values                
+- add oemof component parameters as scalar or timeseries values
+
 """
+
+import logging
+import oemof.solph as solph
+
 
 def transformer(model, dict_asset, **kwargs):
     check_optimize_cap(
