@@ -6,8 +6,7 @@ import src.C1_verification as C1
 
 
 def test_lookup_file_existing_file():
-    file_name = os.path.join(os.path.dirname(__file__), "inputs",
-                             "mvs_config.json")
+    file_name = os.path.join(os.path.dirname(__file__), "inputs", "mvs_config.json")
     # no error is risen
     C1.lookup_file(file_path=file_name, name="test")
 
