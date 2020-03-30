@@ -5,18 +5,22 @@ Code documentation
 Initialization
 --------------
 
-.. automodule:: src.A_initialization
+.. automodule:: src.constants
    :members:
    :undoc-members:
 
+.. automodule:: src.A0_initialization
+   :members:
+   :undoc-members:
+
+.. automodule:: src.A1_csv_to_json
+   :members:
+   :undoc-members:
+   
 Data input
 ----------
 
 .. automodule:: src.B0_data_input_json
-   :members:
-   :undoc-members:
-
-.. automodule:: src.B2_read_csv
    :members:
    :undoc-members:
 
