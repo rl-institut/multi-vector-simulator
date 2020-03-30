@@ -384,7 +384,7 @@ def plot_costs_rest(
         plt.cla()
 
     else:
-        logging.warning("There is no costs_total_rest to plot.")
+        logging.debug("No plot for costs_total_rest created, as remaning costs were 0.")
     return
 
 
