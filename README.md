@@ -94,7 +94,7 @@ To run the MVS with custom inputs you have several options:
 
 Edit the json input file (or csv files) and run
 
-    `python mvs_tool.py -i path_input_folder -ext json -o path_output_folder`
+  `python mvs_tool.py -i path_input_folder -ext json -o path_output_folder`
 
 With 
 `path_input_folder`: path to folder with input data,
