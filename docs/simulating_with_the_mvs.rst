@@ -12,7 +12,7 @@ Input files
 All input files stored in a specifically formatted input folder. The path to the input folder is up to you.
 
 .. image:: images/folder_structure_inputs.png
- :width: 400
+ :width: 200
 
 There are two options to insert all input data – Json and CSV. These will be explained below.
 
@@ -44,7 +44,7 @@ For that, each of the following files have to be present in the folder "csv_elem
 - simulation_settings.csv - Simulation settings, including start date and duration
 - project_data.csv - some generic project information
 
-When defining your energy system with this CSV files, please also refer to the definition of parameters that you can find here: [stable](https://mvs-eland.readthedocs.io/en/stable/MVS_parameters.html) / [latest](https://mvs-eland.readthedocs.io/en/latest/MVS_parameters.html).
+When defining your energy system with this CSV files, please also refer to the definition of parameters that you can find here: `stable <https://mvs-eland.readthedocs.io/en/stable/MVS_parameters.html>`_ / `latest <https://mvs-eland.readthedocs.io/en/latest/MVS_parameters.html>`_.
 
 Defining an energy system
 -------------------------
