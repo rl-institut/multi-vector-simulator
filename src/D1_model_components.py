@@ -65,8 +65,8 @@ def source(model, dict_asset, **kwargs):
 
 def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs):
     """
-    Determines whether or not a component should be implemented with fix capactiy or be optimized
-    Might be possible to drop invest/non invest optimization in favour for invest optimization if max_capactiy
+    Determines whether or not a component should be implemented with its fixed nominal capacitiy or an optimized value
+    Might be possible to drop non invest optimization in favour of invest optimization if max_capactiy
     attributes ie. are set to 0 for fix (but less beautiful, and in case of generator even blocks nonconvex opt.)
 
     :param model: oemof energy system object
