@@ -22,7 +22,7 @@ def annuity_factor(project_life, wacc):
 
     :param project_life: time period over which the costs of the system occur
     :param wacc: weighted average cost of capital, which is the after-tax average cost of various capital sources
-    :return: financial value. if multiplied by the annuity (or payment), returns the present value of that annuity
+    :return: financial value "annuity factor". Dividing a present cost by tha annuity factor returns its annuity, multiplying an annuity with the annuity factor returns its present value. 
     """
     # discount_rate was replaced here by wacc
     annuity_factor = 1 / wacc - 1 / (wacc * (1 + wacc) ** project_life)
@@ -35,7 +35,7 @@ def crf(project_life, wacc):
 
     :param project_life: time period over which the costs of the system occur
     :param wacc: weighted average cost of capital, which is the after-tax average cost of various capital sources
-    :return: ratio used to calculate the present value of an annuity
+    :return: capital recovery factor, a ratio used to calculate the present value of an annuity
     """
     crf = (wacc * (1 + wacc) ** project_life) / ((1 + wacc) ** project_life - 1)
     return crf
@@ -45,7 +45,7 @@ def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
     """
 
     :param investment_t0: first investment at the beginning of the project made at year 0
-    :param lifetime: time period over which investments and re-investments can occur. can be equal to or smaller than project_life
+    :param lifetime: time period over which investments and re-investments can occur. can be equal to, longer or shorter than project_life
     :param project_life: time period over which the costs of the system occur
     :param wacc: weighted average cost of capital, which is the after-tax average cost of various capital sources
     :param tax: compulsory financial charge paid to the government
@@ -88,7 +88,7 @@ def annuity(present_value, crf):
 
     :param present_value: current equivalent value of a set of future cash flows for an asset
     :param crf: ratio used to calculate the present value of an annuity
-    :return: payment made at equal intervals
+    :return: annuity, ie. payment made at equal intervals
     """
     annuity = present_value * crf
     return annuity
