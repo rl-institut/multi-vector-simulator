@@ -21,10 +21,13 @@ Here is a template for new release sections
 
 ### Added
 - Pull request template (#198)
+- Issue template (#212)
+- File `troubleshooting.rst` to readthedocs
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
 - Update kwargs of main func in docstring and in documentation (#208)
+- `troubleshooting.rst`: Added help for `pygraphviz` (#218), `xlrd` (#11), `json.decoder.JSONDecodeError` (#206)
 
 ### Removed
 
@@ -51,6 +54,7 @@ Here is a template for new release sections
 - function `get_user_inputs` renamed `process_user_arguments` (#138)
 - Tests for the module A0 (#138)
 - Terminal commands (#135)
+- PR request template (open/done/not applicable) (#205)
 
 ### Removed
 - Function welcome from module A0 (#138)
