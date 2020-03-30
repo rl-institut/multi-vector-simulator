@@ -357,6 +357,7 @@ def plot_costs_rest(
         {n: costs_total_rest[n] / rest for n in costs_total_rest.keys()}
     )
     costs_total_rest = pd.Series(costs_total_rest)
+    # check if there are any remaining costs that could be plotted
     if costs_total_rest.empty == False:
         costs_total_rest.plot.pie(
             title="Rest of "
