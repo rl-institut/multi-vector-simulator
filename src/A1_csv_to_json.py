@@ -131,6 +131,7 @@ def create_input_json(
                 "capex_var",
                 "file_name",
                 "installedCap",
+                "maximumCap",
                 "label",
                 "lifetime",
                 "opex_fix",

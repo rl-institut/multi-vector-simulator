@@ -698,6 +698,9 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
             )
     else:
         source.update({"optimizeCap": {"value": False, "unit": "bool"}})
+    if "maximumCap" in dict_values["energyProduction"]["pv_plant_01"]:          #todo: correct pvplant
+        source.update({"maximumCap": dict_values["energyProduction"]
+        ["pv_plant_01"]["maximumCap"]})
 
     # update dictionary
     dict_values["energyProduction"].update({asset_name: source})

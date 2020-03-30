@@ -112,6 +112,7 @@ def all_valid_intervals(name, value, title):
         "lifetime": ["largerzero", "any"],
         "age_installed": [0, "any"],
         "installedCap": [0, "any"],
+        "maximumCap" : [0, "any"],
         "soc_min": [0, 1],
         "soc_max": [0, 1],
         "soc_initial": [0, 1],
