@@ -481,8 +481,8 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
     else:
         if "timeseries" in dict_asset:
             logging.error(
-                "Change code in 
-                /source_dispatchable: timeseries_normalized not the only key determining the flow"
+                "Change code in source_dispatchable: timeseries_normalized " +
+                "not the only key determining the flow"
             )
         # check if the source has multiple output busses
         if isinstance(dict_asset["output_bus_name"], list):
