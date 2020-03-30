@@ -357,30 +357,33 @@ def plot_costs_rest(
         {n: costs_total_rest[n] / rest for n in costs_total_rest.keys()}
     )
     costs_total_rest = pd.Series(costs_total_rest)
-    costs_total_rest.plot.pie(
-        title="Rest of "
-        + label
-        + "("
-        + str(round((1 - major_value) * 100))
-        + "% of "
-        + str(round(total, 2))
-        + "$): "
-        + project_data["project_name"]
-        + ", "
-        + project_data["scenario_name"],
-        autopct="%1.1f%%",
-        subplots=True,
-    )
+    if costs_total_rest.empty == False:
+        costs_total_rest.plot.pie(
+            title="Rest of "
+            + label
+            + "("
+            + str(round((1 - major_value) * 100))
+            + "% of "
+            + str(round(total, 2))
+            + "$): "
+            + project_data["project_name"]
+            + ", "
+            + project_data["scenario_name"],
+            autopct="%1.1f%%",
+            subplots=True,
+        )
 
-    plt.savefig(
-        settings["path_output_folder"] + "/" + path + "_other_costs.png",
-        bbox_inches="tight",
-    )
+        plt.savefig(
+            settings["path_output_folder"] + "/" + path + "_other_costs.png",
+            bbox_inches="tight",
+        )
 
-    plt.close()
-    plt.clf()
-    plt.cla()
+        plt.close()
+        plt.clf()
+        plt.cla()
 
+    else:
+        logging.warning("There is no costs_total_rest to plot.")
     return
 
 
