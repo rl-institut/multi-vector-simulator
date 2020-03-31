@@ -14,7 +14,7 @@ fuel_keys = {
 }
 
 
-def test_annuity_factor_calculation():
+def test_annuity_factor():
     """
 
     Tests whether the MVS is correctly calculating the annuity factor
@@ -83,4 +83,3 @@ def test_fuel_price_present_value(economics):
     PV_fuel_price = e_functions.fuel_price_present_value(fuel_keys)
     # still not sure how not to use float number in assert
     assert PV_fuel_price == 13.06049955 * ((0.1 * (1 + 0.1) ** 20) / ((1 + 0.1) ** 20 - 1))
-
