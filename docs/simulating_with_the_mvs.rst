@@ -49,8 +49,28 @@ When defining your energy system with this CSV files, please also refer to the d
 Defining an energy system
 -------------------------
 
+When you energy system you basically have to fill out the CSV sheets that are provided in the folder "csv_elements". For each asset you want to add, you have to add new column. If you do not have an asset of a specific type, simply leave the columns empty (but leave the columns with the parameter names and units).
+
+The unit columns also tell you what type of information is required from you (string, boolean, number). In case doubt, also consider the parameter list that is linked above. Do not delete any of the rows of the CSV´s – each parameters needed for the simulation. There will also be warnings if you do so.
+
 Building a model from assets and energy flows
 #############################################
+
+Simulating an energy system with the MVS requires a certain level of abstraction. In general, as it is based on the programming framework oemof, it will depict the energy system only as linearized model. This allows for the quick computation of the optimal system sizing and approximate dispatch, but does not replace operational management.
+
+The level of abstraction and system detail needed for an MVS simulation will be explained based on an exemplary local energy system. Let's assume that we want to simulate an industrial site with some electrical demand, the grid connection, a battery as well as a PV plant. A schematic of such a system shown below.
+
+.. image:: images/energy_system.png
+ :width: 200
+
+We can see that we have an electricity bus, to which all other components are connected, specifically demand external electricity supply and the local assets (battery and PV). However even though all those components belong to the same sector, their interconnection with the electricity bus or here the electricity grid could be detailed in the deeper manner.
+
+As such, in reality, the battery may be on an own DC electricity bus, which is either the separate from or identical to the DC bus of the PV plant. Both DC busses would have to be interconnected with the main electricity bus (AC) through an inverter, or in case of bi-directional flow for the battery with an rectifier as well.
+
+Just like so, the DSO could either be only providing electricity also allowing feed in, or the demand may be split up into multiple demand profiles. This granularity of information would be something that the MVS model requires to properly depict the system behaviour and resulted optimal capacities and dispatch. The information fed into the MVS via the CSV's would therefore define following components:
+
+.. image:: images/energy_system_model.png
+ :width: 200
 
 Adding a timeseries for a parameter
 ###################################
