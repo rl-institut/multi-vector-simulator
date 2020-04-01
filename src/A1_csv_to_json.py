@@ -131,7 +131,6 @@ def create_input_json(
                 "capex_var",
                 "file_name",
                 "installedCap",
-                "maximumCap",
                 "label",
                 "lifetime",
                 "opex_fix",
@@ -302,6 +301,10 @@ def create_json_from_csv(input_directory, filename, parameters):
         header=0,
         index_col=0,
     )
+
+    #check wether parameter maximumCap is availavle                             #todo in next version: add maximumCap to hardcoded parameter list above
+    if "maximumCap" in df.index:
+        parameters.append("maximumCap")
 
     # check parameters
     extra = list(set(parameters) ^ set(df.index))
