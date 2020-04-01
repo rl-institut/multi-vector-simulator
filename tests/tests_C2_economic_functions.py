@@ -73,7 +73,7 @@ def test_annuity():
     Tests whether the MVS is correctly calculating the annuity value
     """
     A = e_functions.annuity(present_value, crf)
-    assert A == 295000 * 0.12
+    assert A == 295000 * crf
 
 
 def test_present_value_from_annuity():
