@@ -41,7 +41,7 @@ def test_capex_from_investment_lifetime_equals_project_life():
     Tests whether the MVS is correctly calculating the capital expenditure of the project if the lifetime is equal to project_life
     """
     CAPEX = e_functions.capex_from_investment(investment_t0, lifetime[0], project_life, wacc, tax)
-    assert CAPEX == 220000 * (1 + 0.15)
+    assert CAPEX == investment_t0 * (1 + 0.15)
 
 
 def test_capex_from_investment_lifetime_smaller_than_project_life():
