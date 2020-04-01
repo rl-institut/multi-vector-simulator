@@ -29,6 +29,7 @@ Here is a template for new release sections
 - Shore power randomization improved + amount of available docks can be chosen (#202)
 - Update kwargs of main func in docstring and in documentation (#208)
 - `troubleshooting.rst`: Added help for `pygraphviz` (#218), `xlrd` (#11), `json.decoder.JSONDecodeError` (#206)
+- Update json file `mvs_config.json`: Default with no peak demand pricing. Replace string "False" by boolean `false`. Remove depreciated parameters from `simulation_settings`(`input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs`) (#234)
 
 ### Removed
 
@@ -37,6 +38,7 @@ Here is a template for new release sections
 - Fix json file (#203)
 - Fix searching for dict key "input_bus_name" (#210) and using input_name instead of output_name (#219)
 - Delete duplicated entry of `plot_nx_graph` from json file (#209)
+- Fix plotting error in F1, plot only if Data frame is not empty (#230, #234)
 
 ## [0.2.0] - 2020-03-13
 
