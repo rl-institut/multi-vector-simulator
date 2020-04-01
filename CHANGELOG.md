@@ -48,6 +48,7 @@ Here is a template for new release sections
 - Readthedocs documentation for installation (#162)
 - Plotting an networkx graph can now be turned of/on via "plot_nx_graph" in simulation_settings (#172)
 - Plot all timeseries used as input data (#171)
+- Integrate new parameter maximumCap as nominal value for powerplants (#124)
 
 ### Changed
 - Give priority from kwargs on command line arguments (#112, #138)
