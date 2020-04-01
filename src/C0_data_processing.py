@@ -698,9 +698,10 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
             )
     else:
         source.update({"optimizeCap": {"value": False, "unit": "bool"}})
-    if "maximumCap" in dict_values["energyProduction"]["pv_plant_01"]:          #todo: correct pvplant
-        source.update({"maximumCap": dict_values["energyProduction"]
-        ["pv_plant_01"]["maximumCap"]})
+    if "maximumCap" in set().union(*dict_values["energyProduction"].values()): #todo: make this more generic also for energyCoversion??
+        for key in set().union(dict_values["energyProduction"].keys()):
+            source.update({"maximumCap": dict_values["energyProduction"]
+            [key]["maximumCap"]})
 
     # update dictionary
     dict_values["energyProduction"].update({asset_name: source})
