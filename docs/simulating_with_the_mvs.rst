@@ -72,6 +72,8 @@ Just like so, the DSO could either be only providing electricity also allowing f
 .. image:: images/energy_system_model.png
  :width: 200
 
+Ideally you scratch down the energy system you want to simulate with the above-mentioned granularity and only using sources, sinks, transformers and buses (meaning the oemof components). When interconnecting different assets make sure that you use the correct bus name in each of the CSV input files. The bus names are defined with *input_direction* and *output_direction*. if you interconnect your assets or buses incorrectly the system will still be bought but the simulation terminated. If you're not sure whether or not you build your system correctly change the parameter *plot_networkx_graph* in the simulation_settings to True. When executing the simulation, the MVS were now generate a rough graphic visualisation of your energy system. There, all components and buses should be part of a single system - otherwise you misconfigured your energy system.
+
 Adding a timeseries for a parameter
 ###################################
 
