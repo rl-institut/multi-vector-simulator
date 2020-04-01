@@ -703,10 +703,19 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     if "maximumCap" in set().union(
         *dict_values["energyProduction"].values()
     ):  # todo: make this more generic also for energyCoversion??
+
         for key in set().union(dict_values["energyProduction"].keys()):
-            source.update(
-                {"maximumCap": dict_values["energyProduction"][key]["maximumCap"]}
-            )
+            # check if maximumCap is greater that installedCap
+            if dict_values["energyProduction"][key]["maximumCap"]["value"] >= \
+                dict_values["energyProduction"][key]["installedCap"]["value"]:
+                source.update(
+                    {"maximumCap": dict_values["energyProduction"][key]["maximumCap"]}
+                )
+            else:
+                logging.warning("The stated maximumCap is smaller than the "
+                              "installedCap. Please enter a greater maximumCap"
+                              ". This way the maximumCap will not be used in "
+                              "the simulation")
 
     # update dictionary
     dict_values["energyProduction"].update({asset_name: source})
