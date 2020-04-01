@@ -711,8 +711,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                 # check if maximumCap >= installedCap
                 if (
                     dict_values["energyProduction"][key]["maximumCap"]["value"]
-                    >= dict_values["energyProduction"][key]["installedCap"]
-                ["value"]
+                    >= dict_values["energyProduction"][key]["installedCap"]["value"]
                 ):
                     # add maximumCap to source
                     source.update(
