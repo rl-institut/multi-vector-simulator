@@ -449,7 +449,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                         investment=solph.Investment(
                             ep_costs=dict_asset["simulation_annuity"]["value"]
                             / dict_asset["timeseries_peak"]["value"],
-                            maximum = dict_asset["maximumCap"]
+                            maximum = dict_asset["maximumCap"]["value"]
                         ),
                         variable_costs=dict_asset["opex_var"]["value"][0]
                         / dict_asset["timeseries_peak"]["value"],
@@ -477,7 +477,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                         investment=solph.Investment(
                             ep_costs=dict_asset["simulation_annuity"]["value"]
                             / dict_asset["timeseries_peak"]["value"],
-                            maximum=dict_asset["maximumCap"]
+                            maximum=dict_asset["maximumCap"]["value"]
                         ),
                         variable_costs=dict_asset["opex_var"]["value"]
                         / dict_asset["timeseries_peak"]["value"]
