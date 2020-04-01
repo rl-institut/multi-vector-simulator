@@ -303,11 +303,15 @@ def create_json_from_csv(input_directory, filename, parameters):
     )
 
     # check wether parameter maximumCap is availavle                             #todo in next version: add maximumCap to hardcoded parameter list above
-   new_parameter = "maximumCap"
-    if new_parameter  in df.index:
-        parameters.append(new_parameter )
-   else:
-       logging.warning("You are not using the parameter %s for asset group %s, which allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). In the upcoming version of the MVS, this parameter will be required.", new_parameter, filename) 
+    new_parameter = "maximumCap"
+    if new_parameter in df.index:
+        parameters.append(new_parameter)
+    else:
+        logging.warning(
+            "You are not using the parameter %s for asset group %s, which allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). In the upcoming version of the MVS, this parameter will be required.",
+            new_parameter,
+            filename,
+        )
 
     # check parameters
     extra = list(set(parameters) ^ set(df.index))
