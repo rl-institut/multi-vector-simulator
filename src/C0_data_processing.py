@@ -271,7 +271,7 @@ def energyProduction(dict_values, group):
                         "For this simulation, the maximumCap will be "
                         "disregarded and not be used in the simulation"
                     )
-                    dict_values[group][asset]["maximumCap"] = None
+                    dict_values[group][asset]["maximumCap"]["value"] = None
                 # check if maximumCao is 0
                 elif dict_values[group][asset]["maximumCap"]["value"] == 0:
                     logging.warning(
@@ -279,18 +279,7 @@ def energyProduction(dict_values, group):
                         "For this simulation, the maximumCap will be "
                         "disregarded and not be used in the simulation."
                     )
-                    dict_values[group][asset]["maximumCap"] = None
-            if (
-                dict_values[group][asset]["maximumCap"]["value"]
-                < dict_values[group][asset]["installedCap"]["value"]
-            ):
-                logging.warning(
-                    "The stated maximumCap is smaller than the "
-                    "installedCap. Please enter a greater maximumCap"
-                    ". For this simulation, the maximumCap will be disregarded and not be used in "
-                    "the simulation."
-                )
-                del dict_values[group][asset]["maximumCap"]
+                    dict_values[group][asset]["maximumCap"]["value"] = None
     return
 
 
