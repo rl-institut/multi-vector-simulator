@@ -77,5 +77,7 @@ Ideally you scratch down the energy system you want to simulate with the above-m
 Adding a timeseries for a parameter
 ###################################
 
+Sometimes you may want to define a parameter not as a scalar value but as a timeseries. This can for example happen for efficiencies (heat pump COP during the seasons), energy prices (currently only hourly resolution), or the state of charge (for example if you want to achieve a certain stage of charge of an FCEV at a certain point of time.
+
 Using multiple in- or output busses
 ###################################
