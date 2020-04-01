@@ -302,7 +302,7 @@ def create_json_from_csv(input_directory, filename, parameters):
         index_col=0,
     )
 
-    #check wether parameter maximumCap is availavle                             #todo in next version: add maximumCap to hardcoded parameter list above
+    # check wether parameter maximumCap is availavle                             #todo in next version: add maximumCap to hardcoded parameter list above
     if "maximumCap" in df.index:
         parameters.append("maximumCap")
 

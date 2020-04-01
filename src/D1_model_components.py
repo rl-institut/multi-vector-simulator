@@ -451,7 +451,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                         investment=solph.Investment(
                             ep_costs=dict_asset["simulation_annuity"]["value"]
                             / dict_asset["timeseries_peak"]["value"],
-                            maximum = dict_asset["maximumCap"]["value"]
+                            maximum=dict_asset["maximumCap"]["value"],
                         ),
                         variable_costs=dict_asset["opex_var"]["value"][0]
                         / dict_asset["timeseries_peak"]["value"],
@@ -462,16 +462,15 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                         max=dict_asset["timeseries_normalized"],
                         investment=solph.Investment(
                             ep_costs=dict_asset["simulation_annuity"]["value"]
-                                     / dict_asset["timeseries_peak"]["value"]
+                            / dict_asset["timeseries_peak"]["value"]
                         ),
                         variable_costs=dict_asset["opex_var"]["value"][0]
-                                       / dict_asset["timeseries_peak"][
-                                           "value"]
+                        / dict_asset["timeseries_peak"]["value"],
                     )
 
                 index += 1
         else:
-            #check if maximumCap parameter exists, if it is greater than 0
+            # check if maximumCap parameter exists, if it is greater than 0
             # and add it to solph.Flow()
             if "maximumCap" in dict_asset and dict_asset["maximumCap"]["value"] > 0:
                 outputs = {
@@ -481,24 +480,23 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                         investment=solph.Investment(
                             ep_costs=dict_asset["simulation_annuity"]["value"]
                             / dict_asset["timeseries_peak"]["value"],
-                            maximum=dict_asset["maximumCap"]["value"]
+                            maximum=dict_asset["maximumCap"]["value"],
                         ),
                         variable_costs=dict_asset["opex_var"]["value"]
-                        / dict_asset["timeseries_peak"]["value"]
+                        / dict_asset["timeseries_peak"]["value"],
                     )
                 }
             else:
                 outputs = {
-                    kwargs["busses"][
-                        dict_asset["output_bus_name"]]: solph.Flow(
+                    kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
                         label=dict_asset["label"],
                         max=dict_asset["timeseries_normalized"],
                         investment=solph.Investment(
                             ep_costs=dict_asset["simulation_annuity"]["value"]
-                                     / dict_asset["timeseries_peak"]["value"]
+                            / dict_asset["timeseries_peak"]["value"]
                         ),
                         variable_costs=dict_asset["opex_var"]["value"]
-                                       / dict_asset["timeseries_peak"]["value"]
+                        / dict_asset["timeseries_peak"]["value"],
                     )
                 }
 
