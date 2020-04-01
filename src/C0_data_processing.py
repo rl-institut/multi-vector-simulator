@@ -259,12 +259,16 @@ def energyProduction(dict_values, group):
             )
         if "maximumCap" in dict_values[group][asset]:
             # check if maximumCap is greater that installedCap
-            if dict_values[group][asset]["maximumCap"]["value"] < \
-                    dict_values[group][asset]["installedCap"]["value"]:
-                logging.warning("The stated maximumCap is smaller than the "
-                              "installedCap. Please enter a greater maximumCap"
-                              ". This way the maximumCap will not be used in "
-                              "the simulation")
+            if (
+                dict_values[group][asset]["maximumCap"]["value"]
+                < dict_values[group][asset]["installedCap"]["value"]
+            ):
+                logging.warning(
+                    "The stated maximumCap is smaller than the "
+                    "installedCap. Please enter a greater maximumCap"
+                    ". This way the maximumCap will not be used in "
+                    "the simulation"
+                )
                 del dict_values[group][asset]["maximumCap"]
     return
 

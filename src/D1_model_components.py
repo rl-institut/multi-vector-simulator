@@ -409,11 +409,11 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                     existing=dict_asset["installedCap"]["value"],
                     investment=solph.Investment(
                         ep_costs=dict_asset["simulation_annuity"]["value"]
-                                 / dict_asset["timeseries_peak"]["value"],
-                            maximum=dict_asset["maximumCap"]["value"]
+                        / dict_asset["timeseries_peak"]["value"],
+                        maximum=dict_asset["maximumCap"]["value"],
                     ),
                     variable_costs=dict_asset["opex_var"]["value"][index]
-                                   / dict_asset["timeseries_peak"]["value"],
+                    / dict_asset["timeseries_peak"]["value"],
                 )
             else:
                 outputs[kwargs["busses"][bus]] = solph.Flow(
@@ -423,10 +423,10 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                     existing=dict_asset["installedCap"]["value"],
                     investment=solph.Investment(
                         ep_costs=dict_asset["simulation_annuity"]["value"]
-                                 / dict_asset["timeseries_peak"]["value"]
+                        / dict_asset["timeseries_peak"]["value"]
                     ),
                     variable_costs=dict_asset["opex_var"]["value"][index]
-                                   / dict_asset["timeseries_peak"]["value"],
+                    / dict_asset["timeseries_peak"]["value"],
                 )
                 index += 1
 
@@ -441,12 +441,12 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                     investment=solph.Investment(
                         ep_costs=dict_asset["simulation_annuity"]["value"]
                         / dict_asset["timeseries_peak"]["value"],
-                            maximum=dict_asset["maximumCap"]["value"]
+                        maximum=dict_asset["maximumCap"]["value"],
                     ),
                     variable_costs=dict_asset["opex_var"]["value"]
                     / dict_asset["timeseries_peak"]["value"],
                 )
-             }
+            }
         else:
             outputs = {
                 kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
@@ -456,10 +456,10 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                     existing=dict_asset["installedCap"]["value"],
                     investment=solph.Investment(
                         ep_costs=dict_asset["simulation_annuity"]["value"]
-                                 / dict_asset["timeseries_peak"]["value"]
+                        / dict_asset["timeseries_peak"]["value"]
                     ),
                     variable_costs=dict_asset["opex_var"]["value"]
-                                   / dict_asset["timeseries_peak"]["value"],
+                    / dict_asset["timeseries_peak"]["value"],
                 )
             }
 
@@ -486,7 +486,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                         investment=solph.Investment(
                             ep_costs=dict_asset["simulation_annuity"]["value"]
                             / dict_asset["timeseries_peak"]["value"],
-                            maximum=dict_asset["maximumCap"]["value"]
+                            maximum=dict_asset["maximumCap"]["value"],
                         ),
                         variable_costs=dict_asset["opex_var"]["value"][0]
                         / dict_asset["timeseries_peak"]["value"],
