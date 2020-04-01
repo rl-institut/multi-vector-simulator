@@ -442,6 +442,8 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
             outputs = {}
             index = 0
             for bus in dict_asset["output_bus_name"]:
+                # check if maximumCap parameter exists, if it is greater than 0
+                # and add it to solph.Flow()
                 if "maximumCap" in dict_asset and dict_asset["maximumCap"]["value"] > 0:
                     outputs[kwargs["busses"][bus]] = solph.Flow(
                         label=dict_asset["label"],
@@ -469,6 +471,8 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
 
                 index += 1
         else:
+            #check if maximumCap parameter exists, if it is greater than 0
+            # and add it to solph.Flow()
             if "maximumCap" in dict_asset and dict_asset["maximumCap"]["value"] > 0:
                 outputs = {
                     kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(

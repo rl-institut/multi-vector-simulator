@@ -698,6 +698,8 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
             )
     else:
         source.update({"optimizeCap": {"value": False, "unit": "bool"}})
+
+    # check if maximumCap exists in energyProduction dict and add it to source
     if "maximumCap" in set().union(*dict_values["energyProduction"].values()): #todo: make this more generic also for energyCoversion??
         for key in set().union(dict_values["energyProduction"].keys()):
             source.update({"maximumCap": dict_values["energyProduction"]
