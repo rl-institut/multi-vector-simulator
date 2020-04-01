@@ -266,8 +266,8 @@ def energyProduction(dict_values, group):
                 logging.warning(
                     "The stated maximumCap is smaller than the "
                     "installedCap. Please enter a greater maximumCap"
-                    ". This way the maximumCap will not be used in "
-                    "the simulation"
+                    ". For this simulation, the maximumCap will be disregarded and not be used in "
+                    "the simulation."
                 )
                 del dict_values[group][asset]["maximumCap"]
     return
