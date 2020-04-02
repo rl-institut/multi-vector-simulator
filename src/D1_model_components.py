@@ -15,6 +15,45 @@ import oemof.solph as solph
 
 
 def transformer(model, dict_asset, **kwargs):
+    r"""
+    Defines a transformer component specified in `dict_asset`.
+
+    Depending on the 'value' of 'optimizeCap' in `dict_asset` the transformer
+    is defined with a fixed capacity or a capacity to be optimized.
+    The transformer has multiple or single input or output busses depending on
+    the types of keys 'input_bus_name' and 'output_bus_name' in `dict_asset`.
+
+    Parameters
+    ----------
+    model : oemof.solph.network.EnergySystem object
+        See the oemof documentation for more information.
+    dict_asset : dict
+        Contains information about the transformer like (not exhaustive):
+        efficiency, installed capacity ('installedCap'), information on the
+        busses the transformer is connected to ('input_bus_name',
+        'output_bus_name').
+
+    Other Parameters
+    ----------------
+    busses : dict
+    sinks : dict, optional
+    sources : dict, optional
+    transformers : dict
+    storages : dict, optional
+
+    Notes
+    -----
+    The transformer has either multiple input or multiple output busses.
+
+    The following functions are used for defining the transformer:
+    * :py:func:`~.transformer_constant_efficiency_fix`
+    * :py:func:`~.transformer_constant_efficiency_optimize`
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with transformer object.
+
+    """
     check_optimize_cap(
         model,
         dict_asset,
@@ -66,17 +105,43 @@ def source(model, dict_asset, **kwargs):
 
 
 def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs):
-    """
-    Determines whether or not a component should be implemented with its fixed nominal capacitiy or an optimized value
-    Might be possible to drop non invest optimization in favour of invest optimization if max_capactiy
-    attributes ie. are set to 0 for fix (but less beautiful, and in case of generator even blocks nonconvex opt.)
+    r"""
+    Defines a component specified in `dict_asset` with fixed capacity or capacity to be optimized.
 
-    :param model: oemof energy system object
-    :param dict_asset: entry in dict_values describing a specific component
-    :param func_constant: function to be applied if optimization not intended
-    :param func_optimize: function to be applied if optimization is intended
-    :param kwargs: named dictionary with all component objects of the energy system
-    :return: indirectly updated dictionary of all component objects (kwargs, initially dict_model)
+    Parameters
+    ----------
+    model : oemof.solph.network.EnergySystem object
+        See the oemof documentation for more information.
+    dict_asset : dict
+        Contains information about the asset like (not exhaustive):
+        efficiency, installed capacity ('installedCap'), information on the
+        busses the asset is connected to (f.e. 'input_bus_name',
+        'output_bus_name').
+    func_constant : func
+        Function to be applied if optimization not intended.
+    func_optimize : func
+        Function to be applied if optimization not intended.
+
+    Other Parameters
+    ----------------
+    Required are `busses` and a dictionary belonging to the respective oemof
+    type of the asset.
+
+    busses : dict, optional
+    sinks : dict, optional
+    sources : dict, optional
+    transformers : dict, optional
+    storages : dict, optional
+
+    Todos
+    -----
+    Might be possible to drop non invest optimization in favour of invest optimization if max_capactiy
+    attributes ie. are set to 0 for fix (but less beautiful, and in case of generator even blocks nonconvex opt.).
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the component object.
+
     """
     if dict_asset["optimizeCap"]["value"] == False:
         func_constant(model, dict_asset, **kwargs)
@@ -111,16 +176,14 @@ def bus(model, name, **kwargs):
 
 def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
     """
-    Defines a transformer with constant efficiency, with multiple or single input or output busses, and with fixed capacity
-    Parameters
-    ----------
-    dict_asset:
-    dictionary of the asset
-    kwargs:
-    other parameters, basically the busses components
+    Defines a transformer with constant efficiency and fixed capacity.
+
+    See :py:func:`~.transformer` for more information, including parameters.
 
     Returns
     -------
+    Indirectly updated dictionary of all component objects (`model`,
+    dict of asset in `kwargs`).
 
     """
     # check if the transformer has multiple input or multiple outpus busses
@@ -189,16 +252,14 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
 
 def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
     """
-    Defines a transformer with constant efficiency, with multiple or single input or output busses, to be optimized
-    Parameters
-    ----------
-    dict_asset:
-    dictionary of the asset
-    kwargs:
-    other parameters, basically the busses components
+    Defines a transformer with constant efficiency and a capacity to be optimized.
+
+    See :py:func:`~.transformer` for more information, including parameters.
 
     Returns
     -------
+    Indirectly updated dictionary of all component objects (`model`,
+    dict of asset in `kwargs`).
 
     """
     # check if the transformer has multiple input or multiple outpus busses
