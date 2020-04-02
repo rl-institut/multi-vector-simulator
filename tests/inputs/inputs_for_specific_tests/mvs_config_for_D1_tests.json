@@ -12,38 +12,16 @@
         }
     },
     "energyConversion": {
-        "diesel_generator": {
-            "age_installed": {
-                "unit": "year",
-                "value": 0
-            },
-            "capex_fix": {
-                "unit": "currency",
-                "value": 0
-            },
-            "capex_var": {
-                "unit": "currency/kW",
-                "value": 600
-            },
+        "transformer_optimize_single_busses": {
             "efficiency": {
                 "unit": "factor",
                 "value": 0.33
             },
-            "energyVector": "Electricity",
-            "inflow_direction": "Fuel",
             "installedCap": {
                 "unit": "kW",
                 "value": 0
             },
-            "label": "Backup diesel generator",
-            "lifetime": {
-                "unit": "year",
-                "value": 15
-            },
-            "opex_fix": {
-                "unit": "currency/kW/year",
-                "value": 5
-            },
+            "label": "Transformer optimize single busses",
             "opex_var": {
                 "unit": "currency/kWh",
                 "value": 0
@@ -52,9 +30,12 @@
                 "unit": "bool",
                 "value": true
             },
-            "outflow_direction": "Electricity",
-            "type_oemof": "transformer",
-            "unit": "kW"
+            "input_bus_name": "Fuel bus",
+            "output_bus_name": "Electricity bus",
+            "simulation_annuity": {
+                "value": 60,
+                "unit": "currency/unit/simulation period"},
+            "type_oemof": "transformer"
         },
         "solar_inverter_01": {
             "age_installed": {

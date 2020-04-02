@@ -6,3 +6,5 @@ CSV_ELEMENTS = "csv_elements"
 INPUTS_COPY = "inputs"
 
 REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+TEST_REPO_PATH = os.path.dirname(__file__)
