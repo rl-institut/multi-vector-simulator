@@ -131,6 +131,8 @@ class TestSourceComponent:
 
 
 class TestStorageComponent:
+
+    # could think about what is definitely necessary for the storage and test whether these attributes were set
     def test_storage_optimize(self):
         pass
 
