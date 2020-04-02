@@ -8,7 +8,7 @@ tax = 0.15
 lifetime = {
     "equal project life": project_life,
     "smaller project life": project_life - 5,
-    "bigger project life": project_life + 15
+    "bigger project life": project_life + 15,
 }
 present_value = 295000
 crf = 0.12
@@ -18,7 +18,7 @@ fuel_keys = {
     "fuel_price": 1.3,
     "fuel_price_change_annual": 0,
     "project_lifetime": project_life,
-    "wacc": wacc
+    "wacc": wacc,
 }
 
 
@@ -45,7 +45,9 @@ def test_capex_from_investment_lifetime_equals_project_life():
 
     Tests whether the MVS is correctly calculating the capital expenditure of the project if the lifetime is equal to project_life
     """
-    CAPEX = e_functions.capex_from_investment(investment_t0, lifetime["equal project life"], project_life, wacc, tax)
+    CAPEX = e_functions.capex_from_investment(
+        investment_t0, lifetime["equal project life"], project_life, wacc, tax
+    )
     assert CAPEX == investment_t0 * (1 + tax)
 
 
@@ -54,13 +56,27 @@ def test_capex_from_investment_lifetime_smaller_than_project_life():
 
     Tests whether the MVS is correctly calculating the capital expenditure of the project if the lifetime is smaller than project_life
     """
-    CAPEX = e_functions.capex_from_investment(investment_t0, lifetime["smaller project life"], project_life, wacc, tax)
+    CAPEX = e_functions.capex_from_investment(
+        investment_t0, lifetime["smaller project life"], project_life, wacc, tax
+    )
     first_investment = investment_t0 * (1 + tax)
-    assert CAPEX == first_investment + first_investment / (1 + wacc) ** (1 * lifetime["smaller project life"]) \
-           + first_investment + first_investment / (1 + wacc) ** (1 * lifetime["smaller project life"]) \
-           + first_investment / (1 + wacc) ** (2 * lifetime["smaller project life"]) \
-           - ((first_investment / ((1 + wacc) ** ((2 - 1) * lifetime["smaller project life"]))) / lifetime["smaller project life"]) \
-           * (2 * lifetime["smaller project life"] - project_life)
+    assert CAPEX == first_investment + first_investment / (1 + wacc) ** (
+        1 * lifetime["smaller project life"]
+    ) + first_investment + first_investment / (1 + wacc) ** (
+        1 * lifetime["smaller project life"]
+    ) + first_investment / (
+        1 + wacc
+    ) ** (
+        2 * lifetime["smaller project life"]
+    ) - (
+        (
+            first_investment
+            / ((1 + wacc) ** ((2 - 1) * lifetime["smaller project life"]))
+        )
+        / lifetime["smaller project life"]
+    ) * (
+        2 * lifetime["smaller project life"] - project_life
+    )
 
 
 def test_capex_from_investment_lifetime_bigger_than_project_life():
@@ -68,11 +84,18 @@ def test_capex_from_investment_lifetime_bigger_than_project_life():
 
     Tests whether the MVS is correctly calculating the capital expenditure of the project if the lifetime is bigger than project_life
     """
-    CAPEX = e_functions.capex_from_investment(investment_t0, lifetime["bigger project life"], project_life, wacc, tax)
+    CAPEX = e_functions.capex_from_investment(
+        investment_t0, lifetime["bigger project life"], project_life, wacc, tax
+    )
     first_investment = investment_t0 * (1 + tax)
-    assert CAPEX == first_investment + first_investment / (1 + wacc) ** (1 * lifetime["bigger project life"]) \
-           - ((first_investment / ((1 + wacc) ** ((1 - 1) * lifetime["bigger project life"]))) / lifetime["bigger project life"]) \
-           * (1 * lifetime["bigger project life"] - project_life)
+    assert CAPEX == first_investment + first_investment / (1 + wacc) ** (
+        1 * lifetime["bigger project life"]
+    ) - (
+        (first_investment / ((1 + wacc) ** ((1 - 1) * lifetime["bigger project life"])))
+        / lifetime["bigger project life"]
+    ) * (
+        1 * lifetime["bigger project life"] - project_life
+    )
 
 
 def test_annuity():
