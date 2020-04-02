@@ -1,5 +1,6 @@
 import dash
 import dash_html_components as html
+import time
 
 app = dash.Dash(__name__)
 
@@ -15,7 +16,7 @@ projectName = 'Harbor Norway'
 scenarioName = '100% self-generation'
 releaseDesign = '0.0x'
 branchID = 'xcdd5eg004'
-simDate = 'DD – MM – 20YY'
+simDate = time.strftime("%Y-%m-%d")
 
 # Header section with logo and the title of the report, and CSS styling. Work in progress...
 
