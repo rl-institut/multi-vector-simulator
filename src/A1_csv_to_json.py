@@ -269,8 +269,7 @@ def create_input_json(
         return outfile.name
 
 
-def create_json_from_csv(input_directory, filename, parameters,
-                         storage = False):
+def create_json_from_csv(input_directory, filename, parameters, storage=False):
 
     """
     One csv file is loaded and it's parameters are checked. The csv file is
@@ -394,8 +393,9 @@ def create_json_from_csv(input_directory, filename, parameters,
             single_dict.update({column: column_dict})
             # add exception for energyStorage
             if filename == "energyStorage":
-                storage_dict = add_storage(df.loc["storage_filename"][column][:-4],
-                                           input_directory)
+                storage_dict = add_storage(
+                    df.loc["storage_filename"][column][:-4], input_directory
+                )
                 single_dict[column].update(storage_dict)
 
     logging.info(
@@ -500,7 +500,9 @@ def add_storage(storage_filename, input_directory):
             "unit",
         ]
         single_dict = create_json_from_csv(
-            input_directory, filename=storage_filename, parameters=parameters,
-            storage=True
+            input_directory,
+            filename=storage_filename,
+            parameters=parameters,
+            storage=True,
         )
         return single_dict
