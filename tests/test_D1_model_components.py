@@ -104,30 +104,34 @@ class TestSourceComponent:
     def test_source_dispatchable_optimize_cap_normalized_timeseries_single_output_bus(self):
         pass
 
+    def test_source_dispatchable_optimize_cap_without_timeseries_multiple_output_busses(self):
+        pass
+
+    def test_source_dispatchable_optimize_cap_without_timeseries_single_output_bus(self):
+        pass
+
     def test_source_dispatchable_optimize_cap_timeseries_not_normalized_multiple_output_busses(self):
         pass
 
     def test_source_dispatchable_optimize_cap_timeseries_not_normalized_single_output_bus(self):
         pass
 
-    # note: does the following exist?
-    # def test_source_dispatchable_optimize_timeseries_not_normalized_multiple_output_busses(self):
-    #     pass
-    #
-    #
-    # def test_source_dispatchable_optimize_timeseries_not_normalized_single_output_bus(self):
-    #     pass
-
-    def test_source_dispatchable_fix_cap_timeseries_not_normalized_multiple_output_busses(self):
+    def test_source_dispatchable_fix_cap_normalized_timeseries_multiple_output_busses(self):
         pass
 
-    def test_source_dispatchable_fix_cap_timeseries_not_normalized_single_output_bus(self):
+    def test_source_dispatchable_fix_cap_normalized_timeseries_single_output_bus(self):
         pass
 
     def test_source_dispatchable_fix_cap_without_timeseries_multiple_output_busses(self):
         pass
 
     def test_source_dispatchable_fix_cap_without_timeseries_single_output_bus(self):
+        pass
+
+    def test_source_dispatchable_fix_cap_timeseries_not_normalized_multiple_output_busses(self):
+        pass
+
+    def test_source_dispatchable_fix_cap_timeseries_not_normalized_single_output_bus(self):
         pass
 
 
