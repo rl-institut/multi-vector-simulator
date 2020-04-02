@@ -81,3 +81,9 @@ Sometimes you may want to define a parameter not as a scalar value but as a time
 
 Using multiple in- or output busses
 ###################################
+
+- `Pull Request #63 <https://github.com/rl-institut/mvs_eland/pull/63>`_
+
+- Parameters can now be a list of values, eg. efficiencies for two busses or multiple input/output vectors (#52)
+- Parameters can now be a timeseries (eg. efficiency of a converter, electricity prices) (#37, #82)
+- Parameters can now be defined as a list as well as as a timeseries (#52,#82)
