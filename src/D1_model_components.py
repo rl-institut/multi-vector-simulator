@@ -1,5 +1,5 @@
 """
-Module D1 includes all functions that are required to build an oemof model with adaptable components
+Module D1 includes all functions that are required to build an oemof model with adaptable components.
 
 - add transformer objects (fix, to be optimized)
 - add source objects (fix, to be optimized, dispatchable, non-dispatchable)
@@ -186,7 +186,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
     dict of asset in `kwargs`).
 
     """
-    # check if the transformer has multiple input or multiple outpus busses
+    # check if the transformer has multiple input or multiple output busses
     if isinstance(dict_asset["input_bus_name"], list) or isinstance(
         dict_asset["output_bus_name"], list
     ):
@@ -262,7 +262,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
     dict of asset in `kwargs`).
 
     """
-    # check if the transformer has multiple input or multiple outpus busses
+    # check if the transformer has multiple input or multiple output busses
     # the investment object is always in the output bus
     if isinstance(dict_asset["input_bus_name"], list) or isinstance(
         dict_asset["output_bus_name"], list

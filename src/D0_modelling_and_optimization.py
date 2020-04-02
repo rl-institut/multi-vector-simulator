@@ -79,8 +79,7 @@ def run_oemof(dict_values):
         else:
             warning_asset_type(asset, type, "energyConsumption")
 
-    for asset in dict_values["energyProduction"]:
-
+    for asset in dict_values["energyProduction"]:  # todo remove empty line
         type = dict_values["energyProduction"][asset]["type_oemof"]
         if type == "source":
             model_components.source(
