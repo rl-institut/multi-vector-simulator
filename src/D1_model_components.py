@@ -65,6 +65,37 @@ def transformer(model, dict_asset, **kwargs):
 
 
 def storage(model, dict_asset, **kwargs):
+    r"""
+    Defines a storage component specified in `dict_asset`.
+
+    Depending on the 'value' of 'optimizeCap' in `dict_asset` the storage
+    is defined with a fixed capacity or a capacity to be optimized.
+
+    Parameters
+    ----------
+    model : oemof.solph.network.EnergySystem object
+        See the oemof documentation for more information.
+    dict_asset : dict
+        Contains information about the storage like (not exhaustive):
+        efficiency, installed capacity ('installedCap'), information on the
+        busses the storage is connected to ('input_bus_name',
+        'output_bus_name'),
+
+    Other Parameters
+    ----------------
+    busses : dict
+    sinks : dict, optional
+    sources : dict, optional
+    transformers : dict, optional
+    storages : dict
+
+    Notes
+    -----
+    The following functions are used for defining the storage:
+    * :py:func:`~.storage_fix`
+    * :py:func:`~.storage_optimize`
+
+    """
     check_optimize_cap(
         model,
         dict_asset,
@@ -76,6 +107,40 @@ def storage(model, dict_asset, **kwargs):
 
 
 def sink(model, dict_asset, **kwargs):
+    r"""
+    Defines a sink component specified in `dict_asset`.
+
+    Depending on the 'value' of 'optimizeCap' in `dict_asset` the sink
+    is defined with a fixed capacity or a capacity to be optimized. If a time
+    series is provided for the sink (key 'timeseries' in `dict_asset`) it is
+    defined as a non dispatchable sink, otherwise as dispatchable sink.
+    The sink has multiple or a single input bus depending on the type of the
+    key 'input_bus_name' in `dict_asset`.
+
+    Parameters
+    ----------
+    model : oemof.solph.network.EnergySystem object
+        See the oemof documentation for more information.
+    dict_asset : dict
+        Contains information about the storage like (not exhaustive):
+        efficiency, installed capacity ('installedCap'), information on the
+        busses the sink is connected to ('input_bus_name'),
+
+    Other Parameters
+    ----------------
+    busses : dict
+    sinks : dict
+    sources : dict, optional
+    transformers : dict, optional
+    storages : dict, optional
+
+    Notes
+    -----
+    The following functions are used for defining the sink:
+    * :py:func:`~.sink_non_dispatchable`
+    * :py:func:`~.sink_dispatchable`
+
+    """
     if "timeseries" in dict_asset:
         sink_non_dispatchable(model, dict_asset, **kwargs)
     else:
@@ -84,6 +149,48 @@ def sink(model, dict_asset, **kwargs):
 
 
 def source(model, dict_asset, **kwargs):
+    r"""
+    Defines a source component specified in `dict_asset`.
+
+    Depending on the 'value' of 'optimizeCap' in `dict_asset` the source
+    is defined with a fixed capacity or a capacity to be optimized. If a time
+    series is provided for the source (key 'timeseries' in `dict_asset`) it is
+    defined as a non dispatchable source, otherwise as dispatchable source.
+    The source has multiple or a single output bus depending on the type of the
+    key 'input_bus_name' in `dict_asset`.
+
+    Parameters
+    ----------
+    model : oemof.solph.network.EnergySystem object
+        See the oemof documentation for more information.
+    dict_asset : dict
+        Contains information about the storage like (not exhaustive):
+        efficiency, installed capacity ('installedCap'), information on the
+        busses the sink is connected to ('input_bus_name'),
+
+    Other Parameters
+    ----------------
+    busses : dict
+    sinks : dict
+    sources : dict, optional
+    transformers : dict, optional
+    storages : dict, optional
+
+    Notes
+    -----
+    The following functions are used for defining the source:
+    * :py:func:`~.source_dispatchable_fix`
+    * :py:func:`~.source_dispatchable_optimize`
+    * :py:func:`~.source_non_dispatchable_fix`
+    * :py:func:`~.source_non_dispatchable_optimize`
+
+    Todos
+    -----
+    * We should actually not allow multiple output busses, probably - because a
+        pv would then feed in twice as much as solar_gen_specific for example,
+        see issue #121
+
+    """
     if "dispatchable" in dict_asset and dict_asset["dispatchable"] == True:
         check_optimize_cap(
             model,
@@ -167,6 +274,10 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
 
 
 def bus(model, name, **kwargs):
+    r"""
+    Adds bus `name` to `model` and to 'busses' in `kwargs`.
+
+    """
     logging.debug("Added: Bus %s", name)
     bus = solph.Bus(label=name)
     kwargs["busses"].update({name: bus})
@@ -175,15 +286,15 @@ def bus(model, name, **kwargs):
 
 
 def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
-    """
+    r"""
     Defines a transformer with constant efficiency and fixed capacity.
 
     See :py:func:`~.transformer` for more information, including parameters.
 
+
     Returns
     -------
-    Indirectly updated dictionary of all component objects (`model`,
-    dict of asset in `kwargs`).
+    Indirectly updated `model` and dict of asset in `kwargs` with the transformer object.
 
     """
     # check if the transformer has multiple input or multiple output busses
@@ -251,15 +362,14 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
 
 
 def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
-    """
+    r"""
     Defines a transformer with constant efficiency and a capacity to be optimized.
 
     See :py:func:`~.transformer` for more information, including parameters.
 
     Returns
     -------
-    Indirectly updated dictionary of all component objects (`model`,
-    dict of asset in `kwargs`).
+    Indirectly updated `model` and dict of asset in `kwargs` with the transformer object.
 
     """
     # check if the transformer has multiple input or multiple output busses
@@ -342,6 +452,16 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
 
 
 def storage_fix(model, dict_asset, **kwargs):
+    r"""
+    Defines a storage with a fixed capacity.
+
+    See :py:func:`~.storage` for more information, including parameters.
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the storage object.
+
+    """
     storage = solph.components.GenericStorage(
         label=dict_asset["label"],
         nominal_storage_capacity=dict_asset["capacity"]["installedCap"]["value"],
@@ -382,6 +502,16 @@ def storage_fix(model, dict_asset, **kwargs):
 
 
 def storage_optimize(model, dict_asset, **kwargs):
+    r"""
+    Defines a storage with a capacity to be optimized.
+
+    See :py:func:`~.storage` for more information, including parameters.
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the storage object.
+
+    """
     storage = solph.components.GenericStorage(
         label=dict_asset["label"],
         existing=dict_asset["capacity"]["installedCap"]["value"],
@@ -435,6 +565,16 @@ def storage_optimize(model, dict_asset, **kwargs):
 
 
 def source_non_dispatchable_fix(model, dict_asset, **kwargs):
+    r"""
+    Defines a non dispatchable source with a fixed capacity.
+
+    See :py:func:`~.source` for more information, including parameters.
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the source object.
+
+    """
     # check if the source has multiple output flows
     if isinstance(dict_asset["output_bus_name"], list):
         outputs = {}
@@ -467,6 +607,16 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
 
 
 def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
+    r"""
+    Defines a non dispatchable source with a capacity to be optimized.
+
+    See :py:func:`~.source` for more information, including parameters.
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the source object.
+
+    """
     # check if the source has multiple output busses
     if isinstance(dict_asset["output_bus_name"], list):
         outputs = {}
@@ -509,6 +659,16 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
 
 
 def source_dispatchable_optimize(model, dict_asset, **kwargs):
+    r"""
+    Defines a dispatchable source with a capacity to be optimized.
+
+    See :py:func:`~.source` for more information, including parameters.
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the source object.
+
+    """
     if "timeseries_normalized" in dict_asset:
         # check if the source has multiple output busses
         if isinstance(dict_asset["output_bus_name"], list):
@@ -579,6 +739,16 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
 
 
 def source_dispatchable_fix(model, dict_asset, **kwargs):
+    r"""
+    Defines a dispatchable source with a fixed capacity.
+
+    See :py:func:`~.source` for more information, including parameters.
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the source object.
+
+    """
     # todo 'timeseries_normalized' is correct term?
     if "timeseries_normalized" in dict_asset:
         # check if the source has multiple output busses
@@ -635,6 +805,16 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
 
 
 def sink_dispatchable(model, dict_asset, **kwargs):
+    r"""
+    Defines a dispatchable sink.
+
+    See :py:func:`~.sink` for more information, including parameters.
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the sink object.
+
+    """
     # check if the sink has multiple input busses
     if isinstance(dict_asset["input_bus_name"], list):
         inputs = {}
@@ -662,6 +842,16 @@ def sink_dispatchable(model, dict_asset, **kwargs):
 
 
 def sink_non_dispatchable(model, dict_asset, **kwargs):
+    r"""
+    Defines a non dispatchable sink.
+
+    See :py:func:`~.sink` for more information, including parameters.
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the sink object.
+
+    """
     # check if the sink has multiple input busses
     if isinstance(dict_asset["input_bus_name"], list):
         inputs = {}
