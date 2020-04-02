@@ -64,6 +64,24 @@ class TestTransformerComponent:
 
     def test_transformer_fix_cap_single_busses(self):
         pass
+
+    ### tests for transformer with time dependent efficiency
+    def test_transformer_efficiency_time_series_optimize_cap_multiple_input_busses(self):
+        pass
+
+    def test_transformer_efficiency_time_series_optimize_cap_multiple_output_busses(self):
+        pass
+
+    def test_transformer_efficiency_time_series_optimize_cap_single_busses(self):
+        pass
+
+    def test_transformer_efficiency_time_series_fix_cap_multiple_input_busses(self):
+        pass
+
+    def test_transformer_efficiency_time_series_fix_cap_multiple_output_busses(self):
+        pass
+
+    def test_transformer_efficiency_time_series_fix_cap_single_busses(self):
         pass
 
 
