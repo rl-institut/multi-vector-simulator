@@ -159,7 +159,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
             dict_asset["type_oemof"],
         )
     else:
-        logging.warning(
+        logging.warning(  # todo raise error
             "Input error! " '"optimize_cap" of asset %s not True/False.',
             dict_asset["label"],
         )

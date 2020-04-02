@@ -139,11 +139,9 @@ class TestStorageComponent:
 
 
 ### other functionalities
-def test_bus(self):
+def test_bus():
     pass
 
 
 def test_check_optimize_cap_raise_error():
     pass
-
-
