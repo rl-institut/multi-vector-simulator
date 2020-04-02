@@ -41,13 +41,13 @@ class TestTransformerComponent:
     #         "Electricity bus": solph.Bus(label="Electricity bus")
     #     }  # todo fixture for the whole model if needed for other classes
 
-    def test_transformer_optimize_multiple_input_busses(self):
+    def test_transformer_optimize_cap_multiple_input_busses(self):
         pass
 
-    def test_transformer_optimize_multiple_output_busses(self):
+    def test_transformer_optimize_cap_multiple_output_busses(self):
         pass
 
-    def test_transformer_optimize_single_busses(self):
+    def test_transformer_optimize_cap_single_busses(self):
         # dict_asset = self.dict_values["energyConversion"][
         #     "transformer_optimize_single_busses"]
         # D1.transformer(model=self.model, dict_asset=dict_asset,
@@ -56,13 +56,14 @@ class TestTransformerComponent:
         # check if transformers contains transformer    transformers[dict_asset[label]...
         pass
 
-    def test_transformer_fix_multiple_input_busses(self):
+    def test_transformer_fix_cap_multiple_input_busses(self):
         pass
 
-    def test_transformer_fix_multiple_output_busses(self):
+    def test_transformer_fix_cap_multiple_output_busses(self):
         pass
 
-    def test_transformer_fix_single_busses(self):
+    def test_transformer_fix_cap_single_busses(self):
+        pass
         pass
 
 
@@ -84,29 +85,29 @@ class TestSinkComponent:
 
 class TestSourceComponent:
     ## non dispatchable
-    def test_source_non_dispatchable_optimize_multiple_output_busses(self):
+    def test_source_non_dispatchable_optimize_cap_multiple_output_busses(self):
         pass
 
-    def test_source_non_dispatchable_optimize_single_output_bus(self):
+    def test_source_non_dispatchable_optimize_cap_single_output_bus(self):
         pass
 
-    def test_source_non_dispatchable_fix_multiple_output_busses(self):
+    def test_source_non_dispatchable_fix_cap_multiple_output_busses(self):
         pass
 
-    def test_source_non_dispatchable_fix_single_output_bus(self):
+    def test_source_non_dispatchable_fix_cap_single_output_bus(self):
         pass
 
     ## dispatchable
-    def test_source_dispatchable_optimize_normalized_timeseries_multiple_output_busses(self):
+    def test_source_dispatchable_optimize_cap_normalized_timeseries_multiple_output_busses(self):
         pass
 
-    def test_source_dispatchable_optimize_normalized_timeseries_single_output_bus(self):
+    def test_source_dispatchable_optimize_cap_normalized_timeseries_single_output_bus(self):
         pass
 
-    def test_source_dispatchable_optimize_without_timeseries_multiple_output_busses(self):
+    def test_source_dispatchable_optimize_cap_timeseries_not_normalized_multiple_output_busses(self):
         pass
 
-    def test_source_dispatchable_optimize_without_timeseries_single_output_bus(self):
+    def test_source_dispatchable_optimize_cap_timeseries_not_normalized_single_output_bus(self):
         pass
 
     # note: does the following exist?
@@ -117,16 +118,16 @@ class TestSourceComponent:
     # def test_source_dispatchable_optimize_timeseries_not_normalized_single_output_bus(self):
     #     pass
 
-    def test_source_dispatchable_fix_normalized_timeseries_multiple_output_busses(self):
+    def test_source_dispatchable_fix_cap_timeseries_not_normalized_multiple_output_busses(self):
         pass
 
-    def test_source_dispatchable_fix_normalized_timeseries_single_output_bus(self):
+    def test_source_dispatchable_fix_cap_timeseries_not_normalized_single_output_bus(self):
         pass
 
-    def test_source_dispatchable_fix_without_timeseries_multiple_output_busses(self):
+    def test_source_dispatchable_fix_cap_without_timeseries_multiple_output_busses(self):
         pass
 
-    def test_source_dispatchable_fix_without_timeseries_single_output_bus(self):
+    def test_source_dispatchable_fix_cap_without_timeseries_single_output_bus(self):
         pass
 
 
