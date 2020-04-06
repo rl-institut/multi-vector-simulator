@@ -379,11 +379,9 @@ def energyStorage(dict_values, group):
                             group,
                         asset
                         )
-                        dict_values[group][asset][subasset]["maximumCap"]
-                        ["value"] = None
+                        dict_values[group][asset][subasset]["maximumCap"]["value"] = None
                     # check if maximumCao is 0
-                    elif dict_values[group][asset][subasset]["maximumCap"]
-                        ["value"] == 0:
+                    elif dict_values[group][asset][subasset]["maximumCap"]["value"] == 0:
                         logging.warning(
                             "The stated maximumCap of zero in %s %s is invalid."
                             "For this simulation, the maximumCap will be "
@@ -391,8 +389,7 @@ def energyStorage(dict_values, group):
                             group,
                         asset
                         )
-                        dict_values[group][asset][subasset]["maximumCap"]
-                        ["value"] = None
+                        dict_values[group][asset][subasset]["maximumCap"]["value"] = None
             else:
                 dict_values[group][asset][subasset].update(
                     {"maximumCap": {"value": None, "unit": "kWp"}})
