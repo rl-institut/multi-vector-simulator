@@ -177,7 +177,8 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
 
 def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
     """
-    Defines a transformer with constant efficiency, with multiple or single input or output busses, to be optimized
+    Defines a transformer with constant efficiency, with multiple or single
+    input or output busses, to be optimized
     Parameters
     ----------
     dict_asset:
@@ -207,7 +208,8 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             outputs = {
                 kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
                     investment=solph.Investment(
-                        ep_costs=dict_asset["simulation_annuity"]["value"]
+                        ep_costs=dict_asset["simulation_annuity"]["value"],
+                        maximum=dict_asset["maximumCap"]["value"]
                     ),
                     existing=dict_asset["installedCap"]["value"],
                     variable_costs=dict_asset["opex_var"]["value"],
@@ -227,7 +229,8 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 variable_costs = dict_asset["opex_var"]["value"][index]
                 outputs[kwargs["busses"][bus]] = solph.Flow(
                     investment=solph.Investment(
-                        ep_costs=dict_asset["simulation_annuity"]["value"]
+                        ep_costs=dict_asset["simulation_annuity"]["value"],
+                        maximum=dict_asset["maximumCap"]["value"]
                     ),
                     existing=dict_asset["installedCap"]["value"],
                     variable_costs=variable_costs,
@@ -244,7 +247,8 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
         outputs = {
             kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
                 investment=solph.Investment(
-                    ep_costs=dict_asset["simulation_annuity"]["value"]
+                    ep_costs=dict_asset["simulation_annuity"]["value"],
+                    maximum=dict_asset["maximumCap"]["value"]
                 ),
                 existing=dict_asset["installedCap"]["value"],
                 variable_costs=dict_asset["opex_var"]["value"],
