@@ -412,7 +412,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
         "simulation_settings",
     ]:
         return single_dict
-    elif storage == True:
+    elif storage is True:
         return single_dict
     else:
         single_dict2.update({filename: single_dict})
