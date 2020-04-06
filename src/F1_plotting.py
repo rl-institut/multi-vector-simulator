@@ -435,7 +435,7 @@ def draw_graph(
     }
 
     # draw graph
-    plt.figure(figsize=(20,10))
+    plt.figure(figsize=(20, 10))
     pos = nx.drawing.nx_agraph.graphviz_layout(grph, prog=layout)
 
     nx.draw(grph, pos=pos, **options)
@@ -446,8 +446,6 @@ def draw_graph(
         nx.draw_networkx_edge_labels(grph, pos=pos, edge_labels=labels)
 
     plt.savefig(
-        user_input["path_output_folder"]
-        + "/"
-        + "network_graph.png",
+        user_input["path_output_folder"] + "/" + "network_graph.png",
         bbox_inches="tight",
     )
