@@ -216,6 +216,39 @@ def energyConversion(dict_values, group):
             dict_values["economic_data"],
             dict_values[group][asset],
         )
+        if "maximumCap" in dict_values[group][asset]:
+            # check if maximumCap is greater that installedCap
+            if dict_values[group][asset]["maximumCap"]["value"] is not None:
+                if (
+                        dict_values[group][asset]["maximumCap"][
+                            "value"]
+                        < dict_values[group][asset]["installedCap"][
+                    "value"]
+                ):
+
+                    logging.warning(
+                        "The stated maximumCap in %s %s is smaller than the "
+                        "installedCap. Please enter a greater maximumCap."
+                        "For this simulation, the maximumCap will be "
+                        "disregarded and not be used in the simulation", group,
+                        asset
+                    )
+                    dict_values[group][asset]["maximumCap"][
+                        "value"] = None
+                # check if maximumCao is 0
+                elif dict_values[group][asset]["maximumCap"][
+                    "value"] == 0:
+                    logging.warning(
+                        "The stated maximumCap of zero in %s %s is invalid."
+                        "For this simulation, the maximumCap will be "
+                        "disregarded and not be used in the simulation.", group,
+                        asset
+                    )
+                    dict_values[group][asset]["maximumCap"][
+                        "value"] = None
+        else:
+            dict_values[group][asset].update(
+                {"maximumCap": {"value": None, "unit": "kWp"}})
 
         # in case there is only one parameter provided (input bus and one output bus)
         if isinstance(dict_values[group][asset]["efficiency"]["value"], dict):
@@ -266,18 +299,21 @@ def energyProduction(dict_values, group):
                 ):
 
                     logging.warning(
-                        "The stated maximumCap is smaller than the "
+                        "The stated maximumCap in %s %s is smaller than the "
                         "installedCap. Please enter a greater maximumCap."
                         "For this simulation, the maximumCap will be "
-                        "disregarded and not be used in the simulation"
+                        "disregarded and not be used in the simulation", group,
+                        asset
                     )
                     dict_values[group][asset]["maximumCap"]["value"] = None
                 # check if maximumCao is 0
                 elif dict_values[group][asset]["maximumCap"]["value"] == 0:
                     logging.warning(
-                        "The stated maximumCap of zero is invalid."
+                        "The stated maximumCap of zero in %s %s is invalid."
                         "For this simulation, the maximumCap will be "
-                        "disregarded and not be used in the simulation."
+                        "disregarded and not be used in the simulation.",
+                        group,
+                        asset
                     )
                     dict_values[group][asset]["maximumCap"]["value"] = None
     return
@@ -303,19 +339,24 @@ def energyStorage(dict_values, group):
 
             # check if parameters are provided as timeseries
             for parameter in ["efficiency", "soc_min", "soc_max"]:
-                if parameter in dict_values[group][asset][subasset] and isinstance(
-                    dict_values[group][asset][subasset][parameter]["value"], dict
+                if parameter in dict_values[group][asset][subasset] and \
+                        isinstance(
+                    dict_values[group][asset][subasset][parameter]["value"],
+                            dict
                 ):
                     receive_timeseries_from_csv(
                         dict_values["simulation_settings"],
                         dict_values[group][asset][subasset],
                         parameter,
                     )
-                elif parameter in dict_values[group][asset][subasset] and isinstance(
-                    dict_values[group][asset][subasset][parameter]["value"], list
+                elif parameter in dict_values[group][asset][subasset] and \
+                        isinstance(
+                    dict_values[group][asset][subasset][parameter]["value"],
+                            list
                 ):
                     treat_multiple_flows(
-                        dict_values[group][asset][subasset], dict_values, parameter
+                        dict_values[group][asset][subasset], dict_values,
+                        parameter
                     )
 
             if "maximumCap" in dict_values[group][asset][subasset]:
@@ -323,26 +364,35 @@ def energyStorage(dict_values, group):
                 if dict_values[group][asset][subasset]["maximumCap"][
                     "value"] is not None:
                     if (
-                            dict_values[group][asset][subasset]["maximumCap"]["value"]
-                            < dict_values[group][asset][subasset]["installedCap"][
-                        "value"]
+                            dict_values[group][asset][subasset]["maximumCap"]
+                            ["value"]
+                            < dict_values[group][asset][subasset]
+                    ["installedCap"]["value"]
                     ):
 
                         logging.warning(
-                            "The stated maximumCap is smaller than the "
-                            "installedCap. Please enter a greater maximumCap."
+                            "The stated maximumCap in %s %s is smaller than "
+                            "the installedCap. Please enter a greater "
+                            "maximumCap."
                             "For this simulation, the maximumCap will be "
-                            "disregarded and not be used in the simulation"
+                            "disregarded and not be used in the simulation",
+                            group,
+                        asset
                         )
-                        dict_values[group][asset][subasset]["maximumCap"]["value"] = None
+                        dict_values[group][asset][subasset]["maximumCap"]
+                        ["value"] = None
                     # check if maximumCao is 0
-                    elif dict_values[group][asset][subasset]["maximumCap"]["value"] == 0:
+                    elif dict_values[group][asset][subasset]["maximumCap"]
+                        ["value"] == 0:
                         logging.warning(
-                            "The stated maximumCap of zero is invalid."
+                            "The stated maximumCap of zero in %s %s is invalid."
                             "For this simulation, the maximumCap will be "
-                            "disregarded and not be used in the simulation."
+                            "disregarded and not be used in the simulation.",
+                            group,
+                        asset
                         )
-                        dict_values[group][asset][subasset]["maximumCap"]["value"] = None
+                        dict_values[group][asset][subasset]["maximumCap"]
+                        ["value"] = None
             else:
                 dict_values[group][asset][subasset].update(
                     {"maximumCap": {"value": None, "unit": "kWp"}})
@@ -375,7 +425,8 @@ def energyProviders(dict_values, group):
     for asset in dict_values[group]:
         define_dso_sinks_and_sources(dict_values, asset)
 
-        # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity to each asset
+        # Add lifetime capex (incl. replacement costs), calculate annuity
+        # (incl. om), and simulation annuity to each asset
         define_missing_cost_data(dict_values, dict_values[group][asset])
         evaluate_lifetime_costs(
             dict_values["simulation_settings"],
@@ -410,7 +461,8 @@ def energyConsumption(dict_values, group):
 
         if "file_name" in dict_values[group][asset]:
             receive_timeseries_from_csv(
-                dict_values["simulation_settings"], dict_values[group][asset], "input",
+                dict_values["simulation_settings"], dict_values[group][asset],
+                "input",
             )
     return
 
@@ -424,7 +476,8 @@ def define_missing_cost_data(dict_values, dict_asset):
     """
 
     # read timeseries with filename provided for variable costs.
-    # if multiple opex_var are given for multiple busses, it checks if any value is a timeseries
+    # if multiple opex_var are given for multiple busses, it checks if any v
+    # alue is a timeseries
     if "opex_var" in dict_asset:
         if isinstance(dict_asset["opex_var"]["value"], dict):
             receive_timeseries_from_csv(
@@ -449,7 +502,8 @@ def define_missing_cost_data(dict_values, dict_asset):
         },
     }
 
-    # checks that an asset has all cost parameters needed for evaluation. Adds standard values.
+    # checks that an asset has all cost parameters needed for evaluation.
+    # Adds standard values.
     str = ""
     for cost in basic_costs:
         if cost not in dict_asset:
@@ -457,7 +511,8 @@ def define_missing_cost_data(dict_values, dict_asset):
             str = str + " " + cost
 
     if len(str) > 1:
-        logging.debug("Added basic costs to asset %s: %s", dict_asset["label"], str)
+        logging.debug("Added basic costs to asset %s: %s", dict_asset["label"],
+                      str)
     return
 
 
@@ -497,7 +552,8 @@ def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
                 bus_list = []
                 for subbus in bus:
                     bus_list.append(bus_suffix(subbus))
-                    update_bus(dict_values, subbus, asset, asset_group[asset]["label"])
+                    update_bus(dict_values, subbus, asset, asset_group[asset]
+                    ["label"])
                 asset_group[asset].update({"input_bus_name": bus_list})
             else:
                 asset_group[asset].update({"input_bus_name": bus_suffix(bus)})
@@ -509,11 +565,13 @@ def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
                 bus_list = []
                 for subbus in bus:
                     bus_list.append(bus_suffix(subbus))
-                    update_bus(dict_values, subbus, asset, asset_group[asset]["label"])
+                    update_bus(dict_values, subbus, asset, asset_group[asset]
+                    ["label"])
                 asset_group[asset].update({"output_bus_name": bus_list})
             else:
                 asset_group[asset].update({"output_bus_name": bus_suffix(bus)})
-                update_bus(dict_values, bus, asset, asset_group[asset]["label"])
+                update_bus(dict_values, bus, asset, asset_group[asset]
+                ["label"])
 
     return
 
@@ -562,7 +620,8 @@ def define_dso_sinks_and_sources(dict_values, dso):
     # defines the evaluation period
     months_in_a_period = 12 / number_of_pricing_periods
     logging.info(
-        "Peak demand pricing is taking place %s times per year, ie. every %s months.",
+        "Peak demand pricing is taking place %s times per year, ie. every %s "
+        "months.",
         number_of_pricing_periods,
         months_in_a_period,
     )
@@ -578,19 +637,22 @@ def define_dso_sinks_and_sources(dict_values, dso):
     ]
     if isinstance(peak_demand_pricing, float) or isinstance(peak_demand_pricing, int):
         logging.debug(
-            "The peak demand pricing price of %s %s is set as capex_var of the sources of grid energy.",
+            "The peak demand pricing price of %s %s is set as capex_var of "
+            "the sources of grid energy.",
             peak_demand_pricing,
             dict_values["economic_data"]["currency"],
         )
     else:
         logging.debug(
-            "The peak demand pricing price of %s %s is set as capex_var of the sources of grid energy.",
+            "The peak demand pricing price of %s %s is set as capex_var of "
+            "the sources of grid energy.",
             sum(peak_demand_pricing) / len(peak_demand_pricing),
             dict_values["economic_data"]["currency"],
         )
 
     peak_demand_pricing = {
-        "value": dict_values["energyProviders"][dso]["peak_demand_pricing"]["value"],
+        "value": dict_values["energyProviders"][dso]["peak_demand_pricing"]
+        ["value"],
         "unit": "currency/kWpeak",
     }
 
@@ -677,7 +739,8 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     }
 
     # check if multiple busses are provided
-    # for each bus, read time series for opex_var if a file name has been provided in energy price
+    # for each bus, read time series for opex_var if a file name has been
+    # provided in energy price
     if isinstance(price["value"], list):
         source.update({"opex_var": {"value": [], "unit": price["unit"]}})
         values_info = []
