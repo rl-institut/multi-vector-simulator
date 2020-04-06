@@ -22,6 +22,7 @@ def transformer(model, dict_asset, **kwargs):
     is defined with a fixed capacity or a capacity to be optimized.
     The transformer has multiple or single input or output busses depending on
     the types of keys 'input_bus_name' and 'output_bus_name' in `dict_asset`.
+    todo info about constant efficiency and time series as efficiency
 
     Parameters
     ----------

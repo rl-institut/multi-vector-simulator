@@ -102,6 +102,8 @@ class TestSinkComponent:
 
 
 class TestSourceComponent:
+    # todo: only single output busses...
+    #  We should actually not allow multiple output busses, probably - because a pv would then feed in twice as much as solar_gen_specific for example, see issue #121
     ## non dispatchable
     def test_source_non_dispatchable_optimize_cap_multiple_output_busses(self):
         pass
