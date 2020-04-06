@@ -333,6 +333,10 @@
                 "unit": "kWp",
                 "value": 0
             },
+            "maximumCap": {
+                "unit": "kWp",
+                "value": 1000
+            },
             "label": "PV plant (mono)",
             "lifetime": {
                 "unit": "year",
