@@ -5,6 +5,7 @@ capex_var,currency/kWh,4000,0,0
 crate,factor of total capacity (kWh),,1,1
 efficiency,factor,0.0,0.9500000000000001,0.9500000000000001
 installedCap,kWh,0.0,0,0
+maximumCap,kWh,500,3, 3
 label,str,Storage capacity,discharging_power,discharging_power
 lifetime,year,10,10,10
 opex_fix,currency/kWh/year,0,0,0

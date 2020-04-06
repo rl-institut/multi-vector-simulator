@@ -318,6 +318,34 @@ def energyStorage(dict_values, group):
                         dict_values[group][asset][subasset], dict_values, parameter
                     )
 
+            if "maximumCap" in dict_values[group][asset][subasset]:
+                # check if maximumCap is greater that installedCap
+                if dict_values[group][asset][subasset]["maximumCap"][
+                    "value"] is not None:
+                    if (
+                            dict_values[group][asset][subasset]["maximumCap"]["value"]
+                            < dict_values[group][asset][subasset]["installedCap"][
+                        "value"]
+                    ):
+
+                        logging.warning(
+                            "The stated maximumCap is smaller than the "
+                            "installedCap. Please enter a greater maximumCap."
+                            "For this simulation, the maximumCap will be "
+                            "disregarded and not be used in the simulation"
+                        )
+                        dict_values[group][asset][subasset]["maximumCap"]["value"] = None
+                    # check if maximumCao is 0
+                    elif dict_values[group][asset][subasset]["maximumCap"]["value"] == 0:
+                        logging.warning(
+                            "The stated maximumCap of zero is invalid."
+                            "For this simulation, the maximumCap will be "
+                            "disregarded and not be used in the simulation."
+                        )
+                        dict_values[group][asset][subasset]["maximumCap"]["value"] = None
+            else:
+                dict_values[group][asset][subasset].update(
+                    {"maximumCap": {"value": None, "unit": "kWp"}})
         # define input and output bus names
         dict_values[group][asset].update(
             {
