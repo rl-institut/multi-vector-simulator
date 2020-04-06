@@ -435,6 +435,7 @@ def draw_graph(
     }
 
     # draw graph
+    plt.figure(figsize=(20,10))
     pos = nx.drawing.nx_agraph.graphviz_layout(grph, prog=layout)
 
     nx.draw(grph, pos=pos, **options)
