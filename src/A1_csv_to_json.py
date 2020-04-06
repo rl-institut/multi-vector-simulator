@@ -290,7 +290,8 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
     :param parameters: list
         List of parameters names that are required
     :param storage: bool
-        default value is False. If the function is called by add_storage() the
+        default value is False. If the function is called by
+        add_storage_components() the
         parameter storage is set to True
     :return: dict
         the converted dictionary
@@ -393,7 +394,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
             single_dict.update({column: column_dict})
             # add exception for energyStorage
             if filename == "energyStorage":
-                storage_dict = add_storage(
+                storage_dict = add_storage_components(
                     df.loc["storage_filename"][column][:-4], input_directory
                 )
                 single_dict[column].update(storage_dict)
@@ -466,7 +467,7 @@ def conversion(filename, column_dict, row, i, column, value):
     return column_dict
 
 
-def add_storage(storage_filename, input_directory):
+def add_storage_components(storage_filename, input_directory):
 
     """
     loads the csv of a the specific storage listed as column in
