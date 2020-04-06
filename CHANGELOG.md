@@ -30,7 +30,7 @@ Here is a template for new release sections
 - `troubleshooting.rst`: Added help for `pygraphviz` (#218), `xlrd` (#11), `json.decoder.JSONDecodeError` (#206)
 - FileNotFoundError messages in A0 (#227)
 - Update json file `mvs_config.json`: Default with no peak demand pricing. Replace string "False" by boolean `false`. Remove depreciated parameters from `simulation_settings`(`input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs`) (#234)
-
+- Save network graph as png to output folder instead of showing it (#242)
 ### Removed
 
 ### Fixed
