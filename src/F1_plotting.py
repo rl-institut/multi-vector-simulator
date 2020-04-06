@@ -392,10 +392,10 @@ def plot_costs_rest(
 
 def draw_graph(
     energysystem,
+    user_input,
     edge_labels=True,
     node_color="#eeac7e",
     edge_color="#eeac7e",
-    plot=True,
     node_size=5500,
     with_labels=True,
     arrows=True,
@@ -444,6 +444,9 @@ def draw_graph(
         labels = nx.get_edge_attributes(grph, "weight")
         nx.draw_networkx_edge_labels(grph, pos=pos, edge_labels=labels)
 
-    # show output
-    if plot is True:
-        plt.show()
+    plt.savefig(
+        user_input["path_output_folder"]
+        + "/"
+        + "network_graph.png",
+        bbox_inches="tight",
+    )
