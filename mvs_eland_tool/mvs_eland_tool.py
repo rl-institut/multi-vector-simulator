@@ -50,21 +50,27 @@ def main(**kwargs):
 
     Other Parameters
     ----------------
-    overwrite : bool
+    overwrite : bool, optional
         Determines whether to replace existing results in `path_output_folder`
         with the results of the current simulation (True) or not (False).
         Default: False.
-    input_type : str
+    input_type : str, optional
         Defines whether the input is taken from the `mvs_config.json` file
         ("json") or from csv files ('csv') located within
         <path_input_folder>/csv_elements/. Default: 'json'.
-    path_input_folder : str
+    path_input_folder : str, optional
         The path to the directory where the input CSVs/JSON files are located.
         Default: 'inputs/'.
-    path_output_folder : str
+    path_output_folder : str, optional
         The path to the directory where the results of the simulation such as
         the plots, time series, results JSON files are saved by MVS E-Lands.
         Default: 'MVS_outputs/'
+    display_output : str, optional
+        Sets the level of displayed logging messages.
+        Options: "debug", "info", "warning", "error". Default: "info".
+    lp_file_output : bool, optional
+        Specifies whether linear equation system generated is saved as lp file.
+        Default: False.
 
     """
     version = (
