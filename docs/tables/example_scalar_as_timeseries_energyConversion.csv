@@ -1,0 +1,16 @@
+,unit,solar_inverter_01,transformer_station_in,transformer_station_out,heat_pump
+age_installed,year,0,5,5,0
+capex_fix,currency,0,0,0,0
+capex_var,currency/kW,3000,0,0,7000
+efficiency,factor,1,0.96,0.96,"{'value': {'file_name': 'cops_eers_test.csv', 'header': 'no_unit'}, 'unit': ''}"
+inflow_direction,str,PV plant (mono),Electricity (DSO),Electricity,Electricity
+installedCap,kW,0,0,0,0
+label,str,Solar inverter (mono),Transformer station (DSO) consumption,Transformer station (DSO) feedin,Heat pump
+lifetime,year,15,30,30,20
+opex_fix,currency/kW/year,0,0,0,0
+opex_var,currency/kWh,0,0,0,0
+optimizeCap,bool,True,True,True,True
+outflow_direction,str,Electricity,Electricity,Electricity (DSO),Heat
+energyVector,str,Electricity,Electricity,Electricity,Electricity
+type_oemof,str,transformer,transformer,transformer,transformer
+unit,str,kW,kVA,kVA,kW

@@ -77,7 +77,32 @@ Ideally you scratch down the energy system you want to simulate with the above-m
 Adding a timeseries for a parameter
 ###################################
 
-Sometimes you may want to define a parameter not as a scalar value but as a timeseries. This can for example happen for efficiencies (heat pump COP during the seasons), energy prices (currently only hourly resolution), or the state of charge (for example if you want to achieve a certain stage of charge of an FCEV at a certain point of time.
+Sometimes you may want to define a parameter not as a scalar value but as a timeseries. This can for example happen for efficiencies (heat pump COP during the seasons), energy prices (currently only hourly resolution), or the state of charge (for example if you want to achieve a certain stage of charge of an FCEV at a certain point of time).
+
+You can define a scalar as a timeseries in the csv input files (not applicable for `energyConsumption.csv`), by replacing the scalar value with following dictionary:
+
+    {'value': {'file_name': 'your_file_name.csv', 'header': 'your_header'}, 'unit': 'your_unit'}
+
+The feature was tested for following paramters:
+
+- energy_price
+
+- feedin_tariff
+
+- opex_var
+
+- efficiency
+
+You can see an implemented example here, where the heat pump has a time-dependet efficiency:
+
+.. csv-table:: Example for defining a scalar parameter as a timeseries
+   :file: tables/example_scalar_as_timeseries_energyConversion.csv
+   :widths: 70, 30, 50, 50, 50, 50
+   :header-rows: 1
+
+The features were integrated with `Pull Request #63 <https://github.com/rl-institut/mvs_eland/pull/63>`_. For more information, you might also reference following issues:
+
+- Parameters can now be a timeseries (eg. efficiency of a converter, electricity prices) (`Issue #37 <https://github.com/rl-institut/mvs_eland/issue/37>`_, `Issue #82 <https://github.com/rl-institut/mvs_eland/issue/82>`_)
 
 Using multiple in- or output busses
 ###################################
