@@ -123,6 +123,9 @@ If you're not sure whether or not you build your system correctly change the par
 When executing the simulation, the MVS were now generate a rough graphic visualisation of your energy system.
 There, all components and buses should be part of a single system - otherwise you misconfigured your energy system.
 
+**You need to be aware that you yourself have to make sure that the units you assign to your assets and energy flows make sense.
+The MVS does neither perform a logical check, nor does it transform units, eg. from MWh to kWh.**
+
 Adding a timeseries for a parameter
 ###################################
 
