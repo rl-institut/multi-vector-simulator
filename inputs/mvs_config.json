@@ -333,6 +333,10 @@
                 "unit": "kWp",
                 "value": 0
             },
+            "maximumCap": {
+                "unit": "kWp",
+                "value": 1000
+            },
             "label": "PV plant (mono)",
             "lifetime": {
                 "unit": "year",
@@ -550,7 +554,7 @@
                 "value": true
             },
             "outflow_direction": "ESS Li-Ion",
-            "storage_filename": "storage01.csv",
+            "storage_filename": "storage_01.csv",
             "type_oemof": "storage"
         }
     },
