@@ -315,6 +315,10 @@ def energyProduction(dict_values, group):
                         asset,
                     )
                     dict_values[group][asset]["maximumCap"]["value"] = None
+        else:
+            dict_values[group][asset].update(
+                    {"maximumCap": {"value": None, "unit": "kWp"}}
+
     return
 
 
