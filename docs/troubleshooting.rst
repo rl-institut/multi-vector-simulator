@@ -29,6 +29,13 @@ On **Windows** there can be issues installing xlrd. This could solve your troubl
 4. Install it manually writing pip install xlrd-1.2.0-py2.py3-none-any.whl
 
 
+cbc-solver
+##########
+
+While with Ubuntu the installation of the cbc solver should work rather well, even when adding it to the environment variables (like described in the installation instructions) can sometimes not work on Windows. This was experienced with Windows 10.
+
+A workaround is to directly put the `cbc.exe` file into the pycharm project, ie. in the same folder where also the CHANGELOG.md is located. Python/Oemof/Pyomo then are able to find the solver.
+
 Error messages and MVS termination
 ----------------------------------
 
