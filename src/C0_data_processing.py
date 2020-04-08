@@ -805,6 +805,9 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     else:
         source.update({"optimizeCap": {"value": False, "unit": "bool"}})
 
+    # add the parameter "maximumCap" to DSO source
+    source.update({"maximumCap": {"value": None, "unit": "kWp"}})
+
     # update dictionary
     dict_values["energyProduction"].update({asset_name: source})
 
