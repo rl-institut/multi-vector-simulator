@@ -1,5 +1,5 @@
 """
-Module C1 is used to validate the input data compiled in A1 or red in B0.
+Module C1 is used to validate the input data compiled in A1 or read in B0.
 
 In A1/B0, the input parameters were parsed to str/bool/float/int. This module
 tests whether the parameters are in correct value ranges:
