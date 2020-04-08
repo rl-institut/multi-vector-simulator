@@ -152,7 +152,7 @@ You can see an implemented example here, where the heat pump has a time-dependen
 
 .. csv-table:: Example for defining a scalar parameter as a timeseries
    :file: tables/example_scalar_as_timeseries_energyConversion.csv
-   :widths: 70, 30, 50, 50, 50, 50
+   :widths: 70, 30, 50
    :header-rows: 1
 
 The features were integrated with `Pull Request #63 <https://github.com/rl-institut/mvs_eland/pull/63>`_.
