@@ -102,8 +102,11 @@ def main(**kwargs):
     #    # todo: is user input completely used?
     #    dict_values = data_input.load_json(user_input["path_input_file"])
 
+    move_copy_config_file = False
+
     if user_input["input_type"] == CSV_EXT:
         logging.debug("Accessing script: A1_csv_to_json")
+        move_copy_config_file = True
         load_data_from_csv.create_input_json(
             input_directory=os.path.join(user_input["path_input_folder"], CSV_ELEMENTS),
             output_filename=CSV_FNAME,
@@ -114,6 +117,7 @@ def main(**kwargs):
         user_input["path_input_file"],
         path_input_folder=user_input["path_input_folder"],
         path_output_folder=user_input["path_output_folder"],
+        move_copy=move_copy_config_file,
     )
 
     print("")
