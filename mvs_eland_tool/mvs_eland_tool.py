@@ -40,7 +40,7 @@ import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
 import src.F0_output as output_processing
 
-from src.constants import CSV_ELEMENTS, CSV_FNAME, CSV_EXT
+from src.constants import CSV_ELEMENTS, CSV_FNAME, CSV_EXT, DEFAULT_MAIN_KWARGS
 
 
 def main(**kwargs):
@@ -73,6 +73,11 @@ def main(**kwargs):
         Default: False.
 
     """
+
+    for k, v in DEFAULT_MAIN_KWARGS.items():
+        if k not in kwargs:
+            kwargs[k] = v
+
     version = (
         "0.2.0"  # update_me Versioning scheme: Major release.Minor release.Patches
     )
