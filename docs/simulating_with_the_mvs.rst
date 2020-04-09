@@ -76,7 +76,7 @@ If you do not have an asset of a specific type,
 simply leave the columns empty (but leave the columns with the parameter names and units).
 
 The unit columns also tell you what type of information is required from you (string, boolean, number).
-In case doubt, also consider the parameter list that is linked above.
+In case of doubts, also consider the parameter list that is linked above.
 Do not delete any of the rows of the CSV´s – each parameter is needed for the simulation.
 There will also be warnings if you do so.
 
