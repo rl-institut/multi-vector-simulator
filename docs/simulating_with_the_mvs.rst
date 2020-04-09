@@ -25,24 +25,6 @@ The path to the input folder is up to you.
 
 There are two options to insert all input data – Json and CSV. These will be explained below.
 
-Json file: mvs_config.json
-##########################
-
-In combination especially with the planned graphical user interface for the MVS (EPA),
-a json file will be used to store and provide all input data necessary to understand relation.
-The Json file itself is created by the EPA, ie. there are no manual changes.
-You can use a specific Json input file if you want to test a simulation that has been made public online,
-one test simulation, or as a developer that has knowingly edited the Json file.
-
-As this requires to adhere to quite specific formatting rules,
-this can really only be recommended for advanced users.
-
-There can only be a single Json file in your input folder.
-As some parameters in the Json file link to a time series provided as a CSV,
-the folder "time_series" should be present in your input folder
-and provide all necessary input data that is an timeseries format.
-This can include for example PV generation time series demand time series.
-
 Csv files: csv_elements folder
 ##############################
 
@@ -66,6 +48,25 @@ For that, each of the following files have to be present in the folder "csv_elem
 
 When defining your energy system with this CSV files,
 please also refer to the definition of parameters that you can find here: `stable <https://mvs-eland.readthedocs.io/en/stable/MVS_parameters.html>`_ / `latest <https://mvs-eland.readthedocs.io/en/latest/MVS_parameters.html>`_.
+
+Json file: mvs_config.json
+##########################
+
+In combination especially with the planned graphical user interface for the MVS (EPA),
+a json file will be used to store and provide all input data necessary to understand relation.
+The Json file itself is created by the EPA, ie. there are no manual changes.
+You can use a specific Json input file if you want to test a simulation that has been made public online,
+one test simulation, or as a developer that has knowingly edited the Json file.
+
+As this requires to adhere to quite specific formatting rules,
+this can really only be recommended for advanced users.
+
+There can only be a single Json file in your input folder.
+As some parameters in the Json file link to a time series provided as a CSV,
+the folder "time_series" should be present in your input folder
+and provide all necessary input data that is an timeseries format.
+This can include for example PV generation time series demand time series.
+
 
 Defining an energy system
 -------------------------
