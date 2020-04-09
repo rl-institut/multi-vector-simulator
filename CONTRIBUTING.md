@@ -77,6 +77,8 @@ Add a line `Fix #<number of the issue created at Step 1>` in the description of 
 
 The previous steps could be performed even before you solved the issue, to let other people know
  you are working on the issue.
+ 
+ Please follow the indications in the pull request template and update the appropriate checkboxes :)
 
 Once you are satisfied with your PR you should ask someone to review it. Before that please lint
  your code with [Black](https://github.com/psf/black) (run `black . --exclude docs/`) and
