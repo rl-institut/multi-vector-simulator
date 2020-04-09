@@ -18,12 +18,26 @@ def load_json(
 ):
     """Opens and reads json input file and parses it to dict of input parameters.
 
+    Parameters
+    ----------
+
     path_input_file: str
-    path_input_folder: str, optional
-    path_output_folder: str, optional
+        The path to the json file created from csv files
+    path_input_folder : str, optional
+        The path to the directory where the input CSVs/JSON files are located.
+        Default: 'inputs/'.
+    path_output_folder : str, optional
+        The path to the directory where the results of the simulation such as
+        the plots, time series, results JSON files are saved by MVS E-Lands.
+        Default: 'MVS_outputs/'
     move_copy: bool, optional
         if this is set to True, the path_input_file will be moved to the path_output_folder
-    :return: dict of all input parameters
+        Default: False
+
+    Returns
+    -------
+
+    dict of all input parameters of the MVS E-Lands simulation
     """
     with open(path_input_file) as json_file:
         dict_values = json.load(json_file)
@@ -39,6 +53,7 @@ def load_json(
             path_output_folder, INPUTS_COPY
         )
 
+    # Move the json file created from csv to the copy of the input folder in the output folder
     if move_copy is True:
         os.replace(
             path_input_file,
