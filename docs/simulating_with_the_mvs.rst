@@ -4,7 +4,7 @@ Simulating with the MVS
 
 The MVS can perform capacity as well as dispatch optimisations of a specific energy system.
 This means that both the capacity that is to be bought is optimised as well as the respective assets operation.
-To perform an energy system simulation, a multitude of input parameters needed, which are described in link.
+To perform an energy system simulation, a multitude of input parameters is needed, which are described in link.
 They include economic parameters, technological parameters and project settings.
 Together they define all aspects of the energy system to the simulated and optimised.
 With this, the MVS builds an energy system model which is translated to an equation system which is to be solved.
