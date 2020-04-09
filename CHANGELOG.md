@@ -34,6 +34,7 @@ Here is a template for new release sections
 - FileNotFoundError messages in A0 (#227)
 - Update json file `mvs_config.json`: Default with no peak demand pricing. Replace string "False" by boolean `false`. Remove depreciated parameters from `simulation_settings`(`input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs`) (#234)
 - Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
+- variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
 
 ### Removed
 
@@ -68,6 +69,7 @@ Here is a template for new release sections
 ### Removed
 - Function welcome from module A0 (#138)
 - Parameters `input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs` from `simulation_settings.csv` (#178)
+
 
 ### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
