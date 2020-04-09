@@ -19,7 +19,7 @@ def lookup_file(file_path, name):
     """
     Checks whether file specified in `file_path` exists.
 
-    If it does not exist a critical logging message and a system exit is risen.
+    If it does not exist, a FileNotFoundError is raised.
 
     :param file_path: File name including path of file that is checked.
     :param name: Something referring to which component the file belongs. In
