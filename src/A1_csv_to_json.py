@@ -238,10 +238,6 @@ def create_input_json(
                 "Required input file %s is missing! Please add it"
                 "into %s." % (i, os.path.join(input_directory))
             )
-        elif i in REQUIRED_FILES:
-            logging.debug(
-                "No %s" % i + ".csv file found. This is an " "accepted option."
-            )
         elif "storage_" in i:
             pass
         else:
