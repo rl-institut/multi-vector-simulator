@@ -121,7 +121,7 @@ The bus names are defined with *input_direction* and *output_direction*.
 If you interconnect your assets or buses incorrectly the system will still be bought but the simulation terminated.
 If you're not sure whether or not you build your system correctly change the parameter *plot_networkx_graph* in the simulation_settings to True.
 When executing the simulation, the MVS will now generate a rough graphic visualisation of your energy system.
-There, all components and buses should be part of a single system - otherwise you misconfigured your energy system.
+There, all components and buses should be part of a single system (i.e. linked to each other) - otherwise you misconfigured your energy system.
 
 **You need to be aware that you yourself have to make sure that the units you assign to your assets and energy flows make sense.
 The MVS does neither perform a logical check, nor does it transform units, eg. from MWh to kWh.**
