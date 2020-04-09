@@ -447,7 +447,7 @@ def draw_graph(
         labels = nx.get_edge_attributes(grph, "weight")
         nx.draw_networkx_edge_labels(grph, pos=pos, edge_labels=labels)
 
-    if show_plot:
+    if show_plot is True:
         fig.show()
 
     if save_plot:
