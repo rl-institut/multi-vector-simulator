@@ -91,7 +91,7 @@ but does not replace operational management.
 
 The level of abstraction and system detail needed for an MVS simulation will be explained based on an exemplary local energy system.
 Let's assume that we want to simulate an industrial site with some electrical demand, the grid connection, a battery as well as a PV plant.
-A schematic of such a system shown below.
+A schematic of such a system is shown below.
 
 .. image:: images/energy_system.png
  :width: 200
