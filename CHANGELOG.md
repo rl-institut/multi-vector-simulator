@@ -23,6 +23,7 @@ Here is a template for new release sections
 - Pull request template (#198)
 - Issue template (#212)
 - File `troubleshooting.rst` to readthedocs
+- Tests for the module C1 (only used function) (#152)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
