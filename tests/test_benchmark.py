@@ -11,9 +11,10 @@ import shutil
 import mock
 import pytest
 
+from .constants import TEST_REPO_PATH
 from mvs_eland_tool.mvs_eland_tool import main
 
-OUTPUT_PATH = os.path.join(".", "tests", "MVS_outputs_simulation")
+OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs_simulation")
 
 
 def setup_module():
@@ -21,10 +22,12 @@ def setup_module():
         shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
 
 
+fname = os.path.basename(__file__)
+
 # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
 # alone it called
 @pytest.mark.skipif(
-    "tests/test_simulation.py" not in sys.argv, reason="requires python3.3"
+    "tests/{}".format(fname) not in sys.argv, reason="requires python3.3"
 )
 @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
 def test_run_smoothly(mock_args):
