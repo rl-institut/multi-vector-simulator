@@ -70,7 +70,7 @@ please also refer to the definition of parameters that you can find here: `stabl
 Defining an energy system
 -------------------------
 
-When you energy system you basically have to fill out the CSV sheets that are provided in the folder "csv_elements".
+For defining your energy system you basically have to fill out the CSV sheets that are provided in the folder "csv_elements".
 For each asset you want to add, you have to add new column.
 If you do not have an asset of a specific type,
 simply leave the columns empty (but leave the columns with the parameter names and units).
