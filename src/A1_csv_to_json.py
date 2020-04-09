@@ -65,13 +65,6 @@ def create_input_json(
     input_json = {}
     # hardcoded required lists of parameters for the creation of json files according csv file
 
-    # hardcorded list of necessary csv files
-    required_files_list = [
-        "energyConsumption",
-        "simulation_settings",
-        "project_data",
-        "economic_data",
-    ]
     parameterlist = {}
 
     # Hardcoded list of parameters for each of the csv files.
@@ -240,7 +233,7 @@ def create_input_json(
     extra = list(set(list_assets) ^ set(ALLOWED_FILES))
 
     for i in extra:
-        if i in required_files_list:
+        if i in ALLOWED_FILES:
             logging.error(
                 "Required input file %s is missing! Please add it"
                 "into %s." % (i, os.path.join(input_directory))
