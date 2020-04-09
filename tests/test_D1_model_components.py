@@ -7,16 +7,13 @@ import oemof.solph as solph
 # internal imports
 import src.D1_model_components as D1
 from tests.constants import (
-    TEST_REPO_PATH
+    D1_JSON
 )
-
-JSON_PATH = os.path.join(TEST_REPO_PATH, "inputs", "inputs_for_specific_tests",
-                         "mvs_config_for_D1_tests.json")
 
 
 # @pytest.fixture()
 # def get_json():
-#     with open(JSON_PATH) as json_file:
+#     with open(D1_JSON) as json_file:
 #         dict_values = json.load(json_file)
 #     yield dict_values
 #
