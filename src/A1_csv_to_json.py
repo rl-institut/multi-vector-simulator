@@ -181,6 +181,7 @@ def create_input_json(
                 "output_lp_file",
                 "restore_from_oemof_file",
                 "display_nx_graph",
+                "store_nx_graph",
                 "start_date",
                 "store_oemof_results",
                 "timestep",

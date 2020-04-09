@@ -397,6 +397,7 @@ def draw_graph(
     node_color="#eeac7e",
     edge_color="#eeac7e",
     show_plot=True,
+    save_plot=True,
     node_size=5500,
     with_labels=True,
     arrows=True,
@@ -449,7 +450,8 @@ def draw_graph(
     if show_plot:
         fig.show()
 
-    # fig.savefig(
-    #     user_input["path_output_folder"] + "/" + "network_graph.png",
-    #     bbox_inches="tight",
-    # )
+    if save_plot:
+        fig.savefig(
+            user_input["path_output_folder"] + "/" + "network_graph.png",
+            bbox_inches="tight",
+        )

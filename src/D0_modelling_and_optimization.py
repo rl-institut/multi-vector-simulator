@@ -100,14 +100,23 @@ def run_oemof(dict_values):
 
     logging.debug("All components added.")
 
-    if dict_values["simulation_settings"]["display_nx_graph"]["value"] == True:
+    if (
+        dict_values["simulation_settings"]["display_nx_graph"]["value"] == True
+        or dict_values["simulation_settings"]["store_nx_graph"]["value"] == True
+    ):
         import oemof.graph as grph
 
         # my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
 
         from src.F1_plotting import draw_graph
 
-        draw_graph(model, node_color={}, user_input=dict_values["simulation_settings"], show_plot=dict_values["simulation_settings"]["display_nx_graph"]["value"])
+        draw_graph(
+            model,
+            node_color={},
+            show_plot=dict_values["simulation_settings"]["display_nx_graph"]["value"],
+            save_plot=dict_values["simulation_settings"]["store_nx_graph"]["value"],
+            user_input=dict_values["simulation_settings"],
+        )
         logging.debug("Created networkx graph of the energy system.")
 
     logging.debug("Creating oemof model based on created components and busses...")
