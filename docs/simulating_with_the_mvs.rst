@@ -17,7 +17,7 @@ and then how to make an energy system model out of your real local energy system
 Input files
 -----------
 
-All input files stored in a specifically formatted input folder.
+All input files need to be stored in a specifically formatted input folder.
 The path to the input folder is up to you.
 
 .. image:: images/folder_structure_inputs.png
