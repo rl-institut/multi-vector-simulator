@@ -46,7 +46,7 @@ This can include for example PV generation time series demand time series.
 Csv files: csv_elements folder
 ##############################
 
-Usually user, that is not using the MVS in combination with the EPA,
+Usually a user, that is not using the MVS in combination with the EPA,
 will use CSV input files to define the local energy system, and respectively, the scenario.
 
 Specifically, the MVS will create a Json file ("mvs_csv_config.json") from the provided input data,
