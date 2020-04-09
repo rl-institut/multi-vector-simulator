@@ -14,7 +14,7 @@ It will be an interface to the EPA.
 
 
 def load_json(
-    path_input_file, path_input_folder=None, path_output_folder=None, move_copy=True
+    path_input_file, path_input_folder=None, path_output_folder=None, move_copy=False
 ):
     """Opens and reads json input file and parses it to dict of input parameters.
 

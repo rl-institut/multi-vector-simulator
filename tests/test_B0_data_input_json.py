@@ -52,7 +52,7 @@ class TestTemporaryJsonFileDisposal:
             input_directory=CSV_PATH, output_filename=CSV_FNAME, pass_back=True
         )
         dict_values = data_input.load_json(
-            JSON_CSV_PATH, path_output_folder=self.test_out_path
+            JSON_CSV_PATH, path_output_folder=self.test_out_path, move_copy=True
         )
 
         assert (
@@ -67,15 +67,13 @@ class TestTemporaryJsonFileDisposal:
         )
 
         assert (
-                os.path.exists(
-                    os.path.join(
-                        dict_values["simulation_settings"]["path_input_folder"],
-                        CSV_FNAME,
-                    )
+            os.path.exists(
+                os.path.join(
+                    dict_values["simulation_settings"]["path_input_folder"], CSV_FNAME,
                 )
-                is False
+            )
+            is False
         )
-
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
@@ -90,17 +88,17 @@ class TestTemporaryJsonFileDisposal:
             input_directory=CSV_PATH, output_filename=CSV_FNAME, pass_back=True
         )
         dict_values = data_input.load_json(
-            JSON_CSV_PATH, path_output_folder=self.test_out_path
+            JSON_CSV_PATH, path_output_folder=self.test_out_path, move_copy=True
         )
 
         assert (
-                os.path.exists(
-                    os.path.join(
-                        dict_values["simulation_settings"]["path_output_folder_inputs"],
-                        CSV_FNAME,
-                    )
+            os.path.exists(
+                os.path.join(
+                    dict_values["simulation_settings"]["path_output_folder_inputs"],
+                    CSV_FNAME,
                 )
-                is True
+            )
+            is True
         )
 
     def teardown_method(self):
