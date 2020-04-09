@@ -12,4 +12,3 @@ INPUT_FOLDER = "inputs"
 JSON_FNAME = "mvs_config.json"
 
 JSON_PATH = os.path.join(REPO_PATH, INPUT_FOLDER, JSON_FNAME)
-
