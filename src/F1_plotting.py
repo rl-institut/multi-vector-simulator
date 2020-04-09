@@ -450,7 +450,7 @@ def draw_graph(
     if show_plot is True:
         fig.show()
 
-    if save_plot:
+    if save_plot is True:
         fig.savefig(
             user_input["path_output_folder"] + "/" + "network_graph.png",
             bbox_inches="tight",
