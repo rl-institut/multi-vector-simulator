@@ -25,6 +25,7 @@ Here is a template for new release sections
 - File `troubleshooting.rst` to readthedocs
 - Tests for the module C1 (only used function) (#152)
 - Save network graph as png to output folder if new parameter `store_nx_graph` is true (#242)
+- Tests for the module B0 (#140)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
