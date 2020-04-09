@@ -396,6 +396,7 @@ def draw_graph(
     edge_labels=True,
     node_color="#eeac7e",
     edge_color="#eeac7e",
+    show_plot=True,
     node_size=5500,
     with_labels=True,
     arrows=True,
@@ -435,17 +436,20 @@ def draw_graph(
     }
 
     # draw graph
-    plt.figure(figsize=(20, 10))
+    fig, ax = plt.subplots(figsize=(20, 10))
     pos = nx.drawing.nx_agraph.graphviz_layout(grph, prog=layout)
 
-    nx.draw(grph, pos=pos, **options)
+    nx.draw(grph, pos=pos, ax=ax, **options)
 
     # add edge labels for all edges
     if edge_labels is True and plt:
         labels = nx.get_edge_attributes(grph, "weight")
         nx.draw_networkx_edge_labels(grph, pos=pos, edge_labels=labels)
 
-    plt.savefig(
-        user_input["path_output_folder"] + "/" + "network_graph.png",
-        bbox_inches="tight",
-    )
+    if show_plot:
+        fig.show()
+
+    # fig.savefig(
+    #     user_input["path_output_folder"] + "/" + "network_graph.png",
+    #     bbox_inches="tight",
+    # )
