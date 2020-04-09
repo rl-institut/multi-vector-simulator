@@ -25,7 +25,9 @@ Here is a template for new release sections
 - File `troubleshooting.rst` to readthedocs
 - Tests for the module C1 (only used function) (#152)
 - Save network graph as png to output folder if new parameter `store_nx_graph` is true (#242)
-- Tests for the module B0 (#140)
+- Tests for the module B0 (#140, #255)
+- Possibility to move the json file after reading it (useful if json file created from csv files
+) (#255)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -35,7 +37,6 @@ Here is a template for new release sections
 - Update json file `mvs_config.json`: Default with no peak demand pricing. Replace string "False" by boolean `false`. Remove depreciated parameters from `simulation_settings`(`input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs`) (#234)
 - Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
 - variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
-
 ### Removed
 
 ### Fixed
