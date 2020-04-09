@@ -6,3 +6,10 @@ CSV_ELEMENTS = "csv_elements"
 INPUTS_COPY = "inputs"
 
 REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+INPUT_FOLDER = "inputs"
+
+JSON_FNAME = "mvs_config.json"
+
+JSON_PATH = os.path.join(REPO_PATH, INPUT_FOLDER, JSON_FNAME)
+
