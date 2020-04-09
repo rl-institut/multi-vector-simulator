@@ -7,7 +7,7 @@ INPUTS_COPY = "inputs"
 
 REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-INPUT_FOLDER = "inputs"
+from src.constants import INPUT_FOLDER
 
 JSON_FNAME = "mvs_config.json"
 
