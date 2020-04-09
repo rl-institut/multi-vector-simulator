@@ -9,6 +9,6 @@ REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 from src.constants import INPUT_FOLDER
 
-JSON_FNAME = "mvs_config.json"
+from src.constants import JSON_FNAME
 
 JSON_PATH = os.path.join(REPO_PATH, INPUT_FOLDER, JSON_FNAME)
