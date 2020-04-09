@@ -24,6 +24,7 @@ Here is a template for new release sections
 - Issue template (#212)
 - File `troubleshooting.rst` to readthedocs
 - Tests for the module C1 (only used function) (#152)
+- Save network graph as png to output folder if new parameter `store_nx_graph` is true (#242)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -31,7 +32,8 @@ Here is a template for new release sections
 - `troubleshooting.rst`: Added help for `pygraphviz` (#218), `xlrd` (#11), `json.decoder.JSONDecodeError` (#206)
 - FileNotFoundError messages in A0 (#227)
 - Update json file `mvs_config.json`: Default with no peak demand pricing. Replace string "False" by boolean `false`. Remove depreciated parameters from `simulation_settings`(`input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs`) (#234)
-- Save network graph as png to output folder instead of showing it (#242)
+- Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
+
 ### Removed
 
 ### Fixed
