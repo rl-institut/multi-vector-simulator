@@ -118,7 +118,7 @@ Ideally you scratch down the energy system you want to simulate with the above-m
 and only using sources, sinks, transformers and buses (meaning the oemof components).
 When interconnecting different assets make sure that you use the correct bus name in each of the CSV input files.
 The bus names are defined with *input_direction* and *output_direction*.
-If you interconnect your assets or buses incorrectly the system will still be bought but the simulation terminated.
+If you interconnect your assets or buses incorrectly the system will still be built but the simulation terminated.
 If you're not sure whether or not you build your system correctly change the parameter *plot_networkx_graph* in the simulation_settings to True.
 When executing the simulation, the MVS will now generate a rough graphic visualisation of your energy system.
 There, all components and buses should be part of a single system (i.e. linked to each other) - otherwise you misconfigured your energy system.
