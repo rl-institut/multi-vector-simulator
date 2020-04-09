@@ -16,32 +16,12 @@
         }
     },
     "energyConsumption": {
-        "demand_01": {
+        "demand": {
             "dsm": "False",
             "energyVector": "Electricity",
-            "file_name": "demand_habor.csv",
+            "file_name": "electricity.csv",
             "inflow_direction": "Electricity",
             "label": "Habor",
-            "type_asset": "demand",
-            "type_oemof": "sink",
-            "unit": "kW"
-        },
-        "demand_02": {
-            "dsm": "False",
-            "energyVector": "Electricity",
-            "file_name": "demand_remaining.csv",
-            "inflow_direction": "Electricity",
-            "label": "Remaining demand",
-            "type_asset": "demand",
-            "type_oemof": "sink",
-            "unit": "kW"
-        },
-        "demand_03": {
-            "dsm": "False",
-            "energyVector": "Electricity",
-            "file_name": "demand_shore_power.csv",
-            "inflow_direction": "Electricity",
-            "label": "Shore power (docked ships)",
             "type_asset": "demand",
             "type_oemof": "sink",
             "unit": "kW"
@@ -328,7 +308,7 @@
                 "value": 7200
             },
             "energyVector": "Electricity",
-            "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
+            "file_name": "solar_generation.csv",
             "installedCap": {
                 "unit": "kWp",
                 "value": 0
@@ -379,7 +359,7 @@
             },
             "peak_demand_pricing_period": {
                 "unit": "times per year (1,2,3,4,6,12)",
-                "value": 12
+                "value": 1
             },
             "type_oemof": "source"
         }
@@ -648,21 +628,17 @@
         "scenario_name": "Warehouse 14"
     },
     "simulation_settings": {
-        "display_output": "-debug",
+        "display_output": "debug",
         "evaluated_period": {
             "unit": "days",
             "value": 365
         },
-        "input_file_name": "test_input_file_v1.xlsx",
         "label": "simulation_settings",
         "oemof_file_name": "MVS_results.oemof",
         "output_lp_file": "False",
         "overwrite": "True",
-        "path_input_file": "./inputs/test_input_file_v1.xlsx",
-        "path_input_folder": "./inputs/",
-        "path_input_sequences": "./inputs/sequences/",
-        "path_output_folder": "./MVS_outputs",
-        "path_output_folder_inputs": "./MVS_outputs/inputs/",
+        "path_input_folder": "./tests/inputs/",
+        "path_output_folder": "./tests/MVS_outputs",
         "restore_from_oemof_file": "True",
         "start_date": "2018-01-01 00:00:00",
         "store_oemof_results": "True",

@@ -1,41 +1,89 @@
-#!/usr/bin/env python
+"""
+Module A0_initialization defines functions to parse user inputs to the MVS simulation.
+    - Display welcome message with current version number
+    - Parse command line arguments and set default values for MVS parameters if not provided
+    - Check that all necessary files and folder exist
+    - Create output directory
+    - Define screen logging depth
+
+Usage from root of repository:
+python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]]
+                          [-o [PATH_OUTPUT_FOLDER]]
+                          [-log [{debug,info,error,warning}]] [-f [OVERWRITE]]
+
+Process MVS arguments
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i [PATH_INPUT_FOLDER]
+                        path to the input folder
+  -ext [{json,csv}]     type (json or csv) of the input files (default: 'json')
+  -o [PATH_OUTPUT_FOLDER]
+                        path to the output folder for the simulation's results
+  -log [{debug,info,error,warning}]
+                        level of logging in the console
+  -f [OVERWRITE]        overwrite the output folder if True (default: False)
+
+"""
+
 import os
-import sys
 import shutil
 import logging
 import argparse
 
-from oemof.tools import logger
+from src.constants import (
+    REPO_PATH,
+    DEFAULT_INPUT_PATH,
+    DEFAULT_OUTPUT_PATH,
+    JSON_FNAME,
+    CSV_FNAME,
+    JSON_EXT,
+    CSV_EXT,
+    CSV_ELEMENTS,
+    INPUTS_COPY,
+)
 
-# works only when the commands are executed from the root of the repository
-REPO_PATH = os.path.abspath(os.curdir)
-DEFAULT_INPUT_FILE = os.path.join(REPO_PATH, "inputs", "working_example.json")
-DEFAULT_OUTPUT_FOLDER = os.path.join(REPO_PATH, "MVS_outputs")
-DEFAULT_SEQUENCES_FOLDER = os.path.join(REPO_PATH, "inputs", "sequences")
+from oemof.tools import logger
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(prog="mvs", description="Process MVS arguments")
+    """Create a command line argument parser for MVS
+
+    :return: parser
+    """
+    parser = argparse.ArgumentParser(
+        prog="python mvs_tool.py", description="Process MVS arguments"
+    )
     parser.add_argument(
         "-i",
-        dest="path_input_file",
+        dest="path_input_folder",
         nargs="?",
         type=str,
-        help="path to the json input file",
-        default=None,
+        help="path to the input folder",
+        default=DEFAULT_INPUT_PATH,
+    )
+    parser.add_argument(
+        "-ext",
+        dest="input_type",
+        nargs="?",
+        type=str,
+        help="type (json or csv) of the input files (default: 'json'",
+        default=JSON_EXT,
+        const=JSON_EXT,
+        choices=[JSON_EXT, CSV_EXT],
     )
     parser.add_argument(
         "-o",
         dest="path_output_folder",
         nargs="?",
         type=str,
-        help="output folder for the simulation's results",
-        default=None,
+        help="path to the output folder for the simulation's results",
+        default=DEFAULT_OUTPUT_PATH,
     )
     parser.add_argument(
         "-log",
         dest="display_output",
-        help="level of log in the console",
+        help="level of logging in the console",
         nargs="?",
         default="info",
         const="info",
@@ -44,7 +92,7 @@ def create_parser():
     parser.add_argument(
         "-f",
         dest="overwrite",
-        help="overwrite the output folder",
+        help="overwrite the output folder if True (default: False)",
         nargs="?",
         const=True,
         default=False,
@@ -53,193 +101,204 @@ def create_parser():
     return parser
 
 
-def check_input_directory(path_input_file):
-    """
-    :param path_input_file:
-    :return:
+def check_input_folder(path_input_folder, input_type):
+    """Enforces the rules for the input folder and files
+
+        There should be a single json file for config (described under JSON_FNAME) in case
+        input_type is equal to JSON_EXT.
+        There should be a folder with csv files (name of folder given by CSV_ELEMENTS) in case
+        input_type is equal to CSV_EXT.
+
+
+    :param path_input_folder: path to input folder
+    :param input_type: of of JSON_EXT or CSV_EXT
+    :return: the json filename which will be used as input of the simulation
     """
 
-    if REPO_PATH not in os.path.abspath(path_input_file):
-        path_input_file = os.path.join(REPO_PATH, path_input_file)
+    # make the path absolute
+    if REPO_PATH not in os.path.abspath(path_input_folder):
+        path_input_folder = os.path.join(REPO_PATH, path_input_folder)
 
     logging.debug("Checking for inputs files")
 
-    path_input_folder = os.path.dirname(path_input_file)
-
-    if path_input_file.endswith("json"):
-        if os.path.isfile(path_input_file) is False:
-            raise (
-                FileNotFoundError(
-                    "Missing input json file! "
-                    "\n The input json file can not be found. Operation terminated."
-                )
-            )
-
-    else:
+    if input_type == JSON_EXT:
+        path_input_file = os.path.join(path_input_folder, JSON_FNAME)
         if os.path.exists(path_input_file) is False:
             raise (
-                NotADirectoryError(
-                    "Missing folder for inputs! "
-                    "\n The input folder can not be found. Operation terminated."
+                FileNotFoundError(
+                    "Missing input json file!\n"
+                    "The input json file '{}' in path '{}' can not be found.\n"
+                    "Operation terminated.".format(JSON_FNAME, path_input_folder)
+                )
+            )
+        json_files = [f for f in os.listdir(path_input_folder) if f.endswith(JSON_EXT)]
+        if len(json_files) > 1:
+            raise (
+                FileExistsError(
+                    "Two many json files ({}) in input folder '{}'!\n"
+                    "Only the input json file '{}' should be present.\n"
+                    "Operation terminated.".format(
+                        ", ".join(json_files), path_input_folder, JSON_FNAME
+                    )
+                )
+            )
+    elif input_type == CSV_EXT:
+        path_input_file = os.path.join(path_input_folder, CSV_ELEMENTS, CSV_FNAME)
+        if os.path.exists(os.path.join(path_input_folder, CSV_ELEMENTS)) is False:
+            raise (
+                FileNotFoundError(
+                    "Missing folder for csv inputs! "
+                    "The input csv folder '{}' can not be found in the input path '{}'.\n"
+                    "Operation terminated.".format(CSV_ELEMENTS, path_input_folder)
                 )
             )
 
-    return path_input_folder
+    return path_input_file
 
 
-def check_output_directory(path_output_folder, overwrite):
+def check_output_folder(path_input_folder, path_output_folder, overwrite):
+    """Enforces the rules for the output folder
+
+            An error is raised if the path_output_folder already exists, unless overwrite is set
+            to True. The path_output_folder is created if not existing and the content of
+            path_input_folder is copied in a folder named INPUTS_COPY.
+
+    :param path_input_folder: path to input folder
+    :param path_output_folder: path to output folder
+    :param overwrite: boolean indicating what to do if the output folder exists already
+    :return: the path to the folder stored in the output folder as copy of the input folder
     """
-    :param path_output_folder:
-    :param overwrite:
-    :return:
-    """
 
+    # make the path absolute
+    if REPO_PATH not in os.path.abspath(path_input_folder):
+        path_input_folder = os.path.join(REPO_PATH, path_input_folder)
     if REPO_PATH not in os.path.abspath(path_output_folder):
         path_output_folder = os.path.join(REPO_PATH, path_output_folder)
+
+    path_output_folder_inputs = os.path.join(path_output_folder, INPUTS_COPY)
 
     logging.debug("Checking for output folder")
     if os.path.exists(path_output_folder) is True:
         if overwrite is False:
-            user_reply = input(
-                "Attention: Output overwrite? "
-                "\n Output folder already exists. Should it be overwritten? (y/[N])"
-            )
-            if user_reply in ["y", "Y", "yes", "Yes"]:
-                overwrite = True
-            else:
-                logging.critical(
-                    "Output folder exists and should not be overwritten. Please choose other folder."
-                )
-
-                raise (
-                    FileExistsError(
-                        "Output folder exists and should not be overwritten. Please choose other folder."
+            raise (
+                FileExistsError(
+                    "Output folder {} already exists. "
+                    "If you want to overwrite the folder, please choose the force option -f when executing the MVS. "
+                    "Otherwise, provide a name to a new output folder with option -o.".format(
+                        path_output_folder
                     )
                 )
+            )
+        else:
+            logging.info("Removing existing output folder " + path_output_folder)
+            # might not work on windows
+            shutil.rmtree(path_output_folder, ignore_errors=True)
 
-        if overwrite is True:
-            logging.info("Removing existing folder " + path_output_folder)
-            path_removed = os.path.abspath(path_output_folder)
-            shutil.rmtree(path_removed, ignore_errors=True)
             logging.info("Creating output folder " + path_output_folder)
             os.mkdir(path_output_folder)
 
+            logging.info('Creating folder "inputs" in output folder.')
+            shutil.copytree(path_input_folder, path_output_folder_inputs)
     else:
         logging.info("Creating output folder " + path_output_folder)
         os.mkdir(path_output_folder)
 
+        logging.info('Creating folder "inputs" in output folder.')
+        shutil.copytree(path_input_folder, path_output_folder_inputs)
 
-def get_user_input(
-    path_input_file=None,
+
+def process_user_arguments(
+    path_input_folder=None,
+    input_type=None,
     path_output_folder=None,
-    path_input_sequences=None,
-    overwrite=False,  # todo this means that results will be overwritten.
-    display_output="info",
+    overwrite=None,
+    display_output=None,
     lp_file_output=False,
-    **kwargs
+    welcome_text=None,
 ):
     """
-    Read user command from terminal inputs. Command:
+    Process user command from terminal inputs. If inputs provided as arguments of the function,
+    they will overwrite the command line arguments.
 
-    python A_mvs_eland.py path_to_input_file path_to_output_folder overwrite display_output lp_file_output
-
-    :param path_input_file:
-        Descripes path to inputs excel file
+    :param path_input_folder:
+        Describes path to inputs folder (command line "-i")
+    :param input_type:
+        Describes type of input to expect (command line "-ext")
     :param path_output_folder:
-        Describes path to folder to be used for terminal output
+        Describes path to folder to be used for terminal output (command line "-o")
         Must not exist before
-    :param path_input_sequences:
-        Describes path to sequences/timeseries
     :param overwrite:
-        (Optional) Can force tool to replace existing output folder
-        "-f"
+        (Optional) Can force tool to replace existing output folder (command line "-f")
     :param display_output:
-        (Optional) Determines which messages are used for terminal output
-            "-debug": All logging messages
-            "-info": All informative messages and warnings (default)
-            "-warnings": All warnings
-            "-errors": Only errors
-
+        (Optional) Determines which messages are used for terminal output (command line "-log")
+            "debug": All logging messages
+            "info": All informative messages and warnings (default)
+            "warnings": All warnings
+            "errors": Only errors
     :param lp_file_output:
         Save linear equation system generated as lp file
-
-    :return:
+    :param welcome_text:
+        Text to be displayed
+    :return: a dict with these arguments as keys (except welcome_text which is replaced by label)
     """
 
-    if path_input_file is None:
-        path_input_file = DEFAULT_INPUT_FILE
+    logging.debug("Get user inputs from console")
+
+    # Parse the arguments from the command line
+    parser = create_parser()
+    args = vars(parser.parse_args())
+
+    # Give priority from kwargs over command line arguments
+    if path_input_folder is None:
+        path_input_folder = args.get("path_input_folder")
+
+    if input_type is None:
+        input_type = args.get("input_type")
 
     if path_output_folder is None:
-        path_output_folder = DEFAULT_OUTPUT_FOLDER
+        path_output_folder = args.get("path_output_folder")
 
-    if path_input_sequences is None:
-        path_input_sequences = DEFAULT_SEQUENCES_FOLDER
-    else:
-        pass
+    if overwrite is None:
+        overwrite = args.get("overwrite")
 
-    if "test" in kwargs and kwargs["test"] is True:
-        overwrite = True
+    if display_output is None:
+        display_output = args.get("display_output")
 
-    path_input_folder = check_input_directory(path_input_file)
-    check_output_directory(path_output_folder, overwrite)
+    path_input_file = check_input_folder(path_input_folder, input_type)
+    check_output_folder(path_input_folder, path_output_folder, overwrite)
 
     user_input = {
         "label": "simulation_settings",
         "path_input_folder": path_input_folder,
+        "input_type": input_type,
         "path_input_file": path_input_file,
         "path_output_folder": path_output_folder,
-        "path_input_sequences": path_input_sequences,
-        "path_output_folder_inputs": os.path.join(path_output_folder, "inputs"),
-        "lp_file_output": lp_file_output,
-        "display_output": display_output,
         "overwrite": overwrite,
+        "display_output": display_output,
+        "lp_file_output": lp_file_output,
     }
 
-    logging.info('Creating folder "inputs" in output folder.')
-
-    if os.path.isdir(user_input["path_input_file"]):
-        shutil.copytree(
-            user_input["path_input_folder"], user_input["path_output_folder_inputs"]
-        )
-    else:
-        shutil.copy(
-            user_input["path_input_file"], user_input["path_output_folder_inputs"]
-        )
-    return user_input
-
-
-def welcome(welcome_text, **kwargs):
-    """
-    Welcome message and initialization of logging on screen and on file level.
-
-    :param welcome_text: Welcome text defined in main function
-    :return: user input settings regarding screen output, input folder/file and output folder
-    """
-    logging.debug("Get user inputs from console")
-    user_input = get_user_input(**kwargs)
-
-    # Set screen level (terminal output) according to user inputs
-    console_log = user_input.pop("display_output")
-
-    if console_log == "debug":
+    if display_output == "debug":
         screen_level = logging.DEBUG
-    elif console_log == "info":
+    elif display_output == "info":
         screen_level = logging.INFO
-    elif console_log == "warning":
+    elif display_output == "warning":
         screen_level = logging.WARNING
-    elif console_log == "error":
+    elif display_output == "error":
         screen_level = logging.ERROR
     else:
         screen_level = logging.INFO
 
     # Define logging settings and path for saving log
     logger.define_logging(
-        logpath=user_input["path_output_folder"],
-        logfile="mvst_logfile.log",
+        logpath=path_output_folder,
+        logfile="mvs_logfile.log",
         file_level=logging.DEBUG,
         screen_level=screen_level,
     )
 
-    # display welcome text
-    logging.info(welcome_text)
+    if welcome_text is not None:
+        # display welcome text
+        logging.info(welcome_text)
+
     return user_input

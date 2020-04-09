@@ -4,5 +4,5 @@ label,str,ESS Li-Ion
 optimizeCap,bool,True
 outflow_direction,str,ESS Li-Ion
 type_oemof,str,storage
-storage_filename,str,storage01.csv
+storage_filename,str,storage_01.csv
 energyVector,str,Electricity

@@ -18,20 +18,66 @@ Here is a template for new release sections
 ```
 
 ## [Unreleased]
+
 ### Added
+- Pull request template (#198)
+- Issue template (#212)
+- File `troubleshooting.rst` to readthedocs
+- Tests for the module C1 (only used function) (#152)
+- Tests for the module B0 (#140)
 
 ### Changed
-- Give priority from kwargs on command line arguments (#112)
-- Docstrings of module A1 (#113)
-- Changed keyword argument to positional argument for `create_input_json` function (#113)
+- Shore power randomization improved + amount of available docks can be chosen (#202)
+- Update kwargs of main func in docstring and in documentation (#208)
+- `troubleshooting.rst`: Added help for `pygraphviz` (#218), `xlrd` (#11), `json.decoder.JSONDecodeError` (#206)
+- FileNotFoundError messages in A0 (#227)
+- Update json file `mvs_config.json`: Default with no peak demand pricing. Replace string "False" by boolean `false`. Remove depreciated parameters from `simulation_settings`(`input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs`) (#234)
 
 ### Removed
 
 ### Fixed
+- Rename "boolean" to "bool" in example json file (#214)
+- Fix json file (#203)
+- Fix searching for dict key "input_bus_name" (#210) and using input_name instead of output_name (#219)
+- Delete duplicated entry of `plot_nx_graph` from json file (#209)
+- Fix plotting error in F1, plot only if Data frame is not empty (#230, #234)
+- Fix naming error for storages (#166)
+
+## [0.2.0] - 2020-03-13
+
+### Added
+- Readthedocs documentation for input parameters (#128)
+- Doctring of module A0 (#138)
+- Constants in `src/constants.py` (#153, #154)
+- Readthedocs documentation for installation (#162)
+- Plotting an networkx graph can now be turned of/on via "plot_nx_graph" in simulation_settings (#172)
+- Plot all timeseries used as input data (#171)
+- Integrate new parameter maximumCap as nominal value for energyProduction assets, ie. PV or wind plants (#124)
+
+### Changed
+- Give priority from kwargs on command line arguments (#112, #138)
+- Docstrings of module A1 (#113)
+- Changed keyword argument to positional argument for `create_input_json` function (#113)
+- function `get_user_inputs` renamed `process_user_arguments` (#138)
+- Tests for the module A0 (#138)
+- Terminal commands (#135)
+- PR request template (open/done/not applicable) (#205)
+
+### Removed
+- Function welcome from module A0 (#138)
+- Parameters `input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs` from `simulation_settings.csv` (#178)
+
+### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
 - \#111 & \#114 fix user choice of output folder via command line arguments(#115)
+- Demand is no longer aggregated across sectors when processing/plotting in E1 (#169)
+- Optimized storage capacities are printed into results matrix (#188)
+- Sector diagrams now also include SOC diagrams (#189)
+- Sources can now have variable costs (#173)
+- \#182 Boolean simulation settings now also take affect
+- Demand is no longer aggregated across sectors when processing/plotting in E1 (#169)
 
-## [0.1.0] -2020-01-30
+## [0.1.1] -2020-01-30
 
 ### Added
 - test for running the main function (#109)
@@ -116,5 +162,3 @@ Here is a template for new release sections
 
 ### Removed
 - yet another thing
-
-

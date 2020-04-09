@@ -3,6 +3,12 @@ import sys
 import shutil
 import logging
 import pandas as pd
+import matplotlib.pyplot as plt
+import logging
+
+logging.getLogger("matplotlib.font_manager").disabled = True
+
+from src.constants import INPUTS_COPY, TIME_SERIES
 
 import src.C1_verification as verify
 import src.C2_economic_functions as economics
@@ -251,6 +257,29 @@ def energyProduction(dict_values, group):
             receive_timeseries_from_csv(
                 dict_values["simulation_settings"], dict_values[group][asset], "input",
             )
+        if "maximumCap" in dict_values[group][asset]:
+            # check if maximumCap is greater that installedCap
+            if dict_values[group][asset]["maximumCap"]["value"] is not None:
+                if (
+                    dict_values[group][asset]["maximumCap"]["value"]
+                    < dict_values[group][asset]["installedCap"]["value"]
+                ):
+
+                    logging.warning(
+                        "The stated maximumCap is smaller than the "
+                        "installedCap. Please enter a greater maximumCap."
+                        "For this simulation, the maximumCap will be "
+                        "disregarded and not be used in the simulation"
+                    )
+                    dict_values[group][asset]["maximumCap"]["value"] = None
+                # check if maximumCao is 0
+                elif dict_values[group][asset]["maximumCap"]["value"] == 0:
+                    logging.warning(
+                        "The stated maximumCap of zero is invalid."
+                        "For this simulation, the maximumCap will be "
+                        "disregarded and not be used in the simulation."
+                    )
+                    dict_values[group][asset]["maximumCap"]["value"] = None
     return
 
 
@@ -676,12 +705,20 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                 "timeseries_normalized": timeseries / max(timeseries),
             }
         )
-        logging.warning(
-            "Attention! %s is created, with a price of %s."
-            "If this is DSO supply, this could be improved. Please refer to Issue #23.",
-            source["label"],
-            source["opex_var"]["value"],
-        )
+        if type(source["opex_var"]["value"]) == pd.Series:
+            logging.warning(
+                "Attention! %s is created, with a price defined as a timeseries (average: %s). "
+                "If this is DSO supply, this could be improved. Please refer to Issue #23.",
+                source["label"],
+                source["opex_var"]["value"].mean(),
+            )
+        else:
+            logging.warning(
+                "Attention! %s is created, with a price of %s."
+                "If this is DSO supply, this could be improved. Please refer to Issue #23. ",
+                source["label"],
+                source["opex_var"]["value"],
+            )
     else:
         source.update({"optimizeCap": {"value": False, "unit": "bool"}})
 
@@ -934,10 +971,10 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
         header = dict_asset[type]["value"]["header"]
         unit = dict_asset[type]["unit"]
 
-    file_path = os.path.join(settings["path_input_sequences"], file_name)
+    file_path = os.path.join(settings["path_input_folder"], TIME_SERIES, file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
-    data_set = pd.read_csv(file_path, sep=";")
+    data_set = pd.read_csv(file_path, sep=",")
 
     if "file_name" in dict_asset:
         header = data_set.columns[0]
@@ -1028,11 +1065,48 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
             if any(dict_asset["timeseries_normalized"].values) < 0:
                 logging.warning("Error, %s timeseries negative.", dict_asset["label"])
 
+    # plot all timeseries that are red into simulation input
+    try:
+        plot_input_timeseries(
+            settings, dict_asset["timeseries"], dict_asset["label"], header
+        )
+    except:
+        plot_input_timeseries(
+            settings, dict_asset[type]["value"], dict_asset["label"], header
+        )
+
+    # copy input files
     shutil.copy(
-        file_path, os.path.join(settings["path_output_folder_inputs"], file_name)
+        file_path, os.path.join(settings["path_output_folder"], INPUTS_COPY, file_name)
     )
     logging.debug("Copied timeseries %s to output folder / inputs.", file_path)
     return
+
+
+def plot_input_timeseries(user_input, timeseries, asset_name, column_head):
+    logging.info("Creating plots for asset %s's parameter %s", asset_name, column_head)
+    fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
+    axes_mg = axes
+
+    timeseries.plot(
+        title=asset_name, ax=axes_mg, drawstyle="steps-mid",
+    )
+    axes_mg.set(xlabel="Time", ylabel=column_head)
+
+    plt.savefig(
+        user_input["path_output_folder"]
+        + "/"
+        + "input_timeseries_"
+        + asset_name
+        + "_"
+        + column_head
+        + ".png",
+        bbox_inches="tight",
+    )
+    # plt.show()
+    plt.close()
+    plt.clf()
+    plt.cla()
 
 
 def treat_multiple_flows(dict_asset, dict_values, parameter):
@@ -1093,10 +1167,10 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
     -------
 
     """
-    file_path = os.path.join(settings["path_input_sequences"], file_name)
+    file_path = os.path.join(settings["path_input_folder"], TIME_SERIES, file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
-    data_set = pd.read_csv(file_path, sep=";")
+    data_set = pd.read_csv(file_path, sep=",")
     if len(data_set.index) == settings["periods"]:
         return pd.Series(data_set[header].values, index=settings["time_index"])
     elif len(data_set.index) >= settings["periods"]:

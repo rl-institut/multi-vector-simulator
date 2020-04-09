@@ -206,18 +206,18 @@ def get_results(settings, bus_data, dict_asset):
                 get_flow(settings, bus_data[bus], dict_asset, bus, direction="output")
 
     # definie capacities. Check if the component has multiple input or output busses
-    if "output_bus_name" in dict_asset and "in_bus_name" in dict_asset:
+    if "output_bus_name" in dict_asset and "input_bus_name" in dict_asset:
         if not isinstance(output_name, list):
             get_optimal_cap(bus_data[output_name], dict_asset, output_name, "output")
         else:
             for bus in output_name:
                 get_optimal_cap(bus_data[bus], dict_asset, bus, "output")
 
-    elif "in_bus_name" in dict_asset:
-        if not isinstance(output_name, list):
-            get_optimal_cap(bus_data[output_name], dict_asset, output_name, "input")
+    elif "input_bus_name" in dict_asset:
+        if not isinstance(input_name, list):
+            get_optimal_cap(bus_data[input_name], dict_asset, input_name, "input")
         else:
-            for bus in output_name:
+            for bus in input_name:
                 get_optimal_cap(bus_data[bus], dict_asset, bus, "input")
 
     elif "output_bus_name" in dict_asset:
@@ -254,21 +254,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                 )
 
             if "timeseries_peak" in dict_asset:
-                if dict_asset["timeseries_peak"]["value"] > 1:
-                    dict_asset.update(
-                        {
-                            "optimizedAddCap": {
-                                "value": optimal_capacity
-                                * dict_asset["timeseries_peak"]["value"],
-                                "unit": dict_asset["unit"],
-                            }
-                        }
-                    )
-
-                elif (
-                    dict_asset["timeseries_peak"]["value"] > 0
-                    and dict_asset["timeseries_peak"]["value"] < 1
-                ):
+                if dict_asset["timeseries_peak"]["value"] > 0:
                     dict_asset.update(
                         {
                             "optimizedAddCap": {
@@ -280,7 +266,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                     )
                 else:
                     logging.warning(
-                        "Time series peak of asset %s negative! Check timeseries. No optimized capacity derived.",
+                        "Time series peak of asset %s negative or zero! Check timeseries. No optimized capacity derived.",
                         dict_asset["label"],
                     )
                     pass

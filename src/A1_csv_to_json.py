@@ -84,6 +84,7 @@ def create_input_json(
                 "type_asset",
                 "type_oemof",
                 "energyVector",
+                # "inflow_direction",
                 "unit",
             ]
         }
@@ -174,18 +175,12 @@ def create_input_json(
     parameterlist.update(
         {
             "simulation_settings": [
-                "display_output",
                 "evaluated_period",
                 "label",
                 "oemof_file_name",
                 "output_lp_file",
-                "overwrite",
-                "path_input_file",
-                "path_input_folder",
-                "path_output_folder",
-                "path_input_sequences",
-                "path_output_folder_inputs",
                 "restore_from_oemof_file",
+                "plot_nx_graph",
                 "start_date",
                 "store_oemof_results",
                 "timestep",
@@ -266,15 +261,15 @@ def create_input_json(
     with open(os.path.join(input_directory, output_filename), "w") as outfile:
         json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
     logging.info(
-        "Json file created successully from csv's and stored into"
-        "/mvs_eland/inputs/%s" % output_filename + "\n"
+        "Json file created successully from csv's and stored into "
+        "%s" % os.path.join(input_directory, output_filename) + "\n"
     )
     logging.debug("Json created successfully from csv.")
     if pass_back:
         return outfile.name
 
 
-def create_json_from_csv(input_directory, filename, parameters):
+def create_json_from_csv(input_directory, filename, parameters, storage=False):
 
     """
     One csv file is loaded and it's parameters are checked. The csv file is
@@ -290,10 +285,14 @@ def create_json_from_csv(input_directory, filename, parameters):
     :param input_directory: str
         path of the directory where the input csv files can be found
     :param filename: str
-        name of the inputfile that is transformed into a json, without
+        name of the input file that is transformed into a json, without
         extension
     :param parameters: list
         List of parameters names that are required
+    :param storage: bool
+        default value is False. If the function is called by
+        add_storage_components() the
+        parameter storage is set to True
     :return: dict
         the converted dictionary
     """
@@ -306,6 +305,17 @@ def create_json_from_csv(input_directory, filename, parameters):
         header=0,
         index_col=0,
     )
+
+    # check wether parameter maximumCap is availavle                             #todo in next version: add maximumCap to hardcoded parameter list above
+    new_parameter = "maximumCap"
+    if new_parameter in df.index:
+        parameters.append(new_parameter)
+    else:
+        logging.warning(
+            "You are not using the parameter %s for asset group %s, which allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). In the upcoming version of the MVS, this parameter will be required.",
+            new_parameter,
+            filename,
+        )
 
     # check parameters
     extra = list(set(parameters) ^ set(df.index))
@@ -395,7 +405,9 @@ def create_json_from_csv(input_directory, filename, parameters):
             single_dict.update({column: column_dict})
             # add exception for energyStorage
             if filename == "energyStorage":
-                storage_dict = add_storage(column, input_directory)
+                storage_dict = add_storage_components(
+                    df.loc["storage_filename"][column][:-4], input_directory
+                )
                 single_dict[column].update(storage_dict)
 
     logging.info(
@@ -411,7 +423,7 @@ def create_json_from_csv(input_directory, filename, parameters):
         "simulation_settings",
     ]:
         return single_dict
-    elif "storage_" in filename:
+    elif storage is True:
         return single_dict
     else:
         single_dict2.update({filename: single_dict})
@@ -466,7 +478,7 @@ def conversion(filename, column_dict, row, i, column, value):
     return column_dict
 
 
-def add_storage(storage_filename, input_directory):
+def add_storage_components(storage_filename, input_directory):
 
     """
     loads the csv of a the specific storage listed as column in
@@ -500,10 +512,9 @@ def add_storage(storage_filename, input_directory):
             "unit",
         ]
         single_dict = create_json_from_csv(
-            input_directory, filename=storage_filename, parameters=parameters
+            input_directory,
+            filename=storage_filename,
+            parameters=parameters,
+            storage=True,
         )
         return single_dict
-
-
-if __name__ == "__main__":
-    create_input_json()
