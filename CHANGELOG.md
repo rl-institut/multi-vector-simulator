@@ -23,6 +23,7 @@ Here is a template for new release sections
 - Pull request template (#198)
 - Issue template (#212)
 - File `troubleshooting.rst` to readthedocs
+- Tests for the module C1 (only used function) (#152)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -39,6 +40,7 @@ Here is a template for new release sections
 - Fix searching for dict key "input_bus_name" (#210) and using input_name instead of output_name (#219)
 - Delete duplicated entry of `plot_nx_graph` from json file (#209)
 - Fix plotting error in F1, plot only if Data frame is not empty (#230, #234)
+- Fix naming error for storages (#166)
 
 ## [0.2.0] - 2020-03-13
 
@@ -49,6 +51,7 @@ Here is a template for new release sections
 - Readthedocs documentation for installation (#162)
 - Plotting an networkx graph can now be turned of/on via "plot_nx_graph" in simulation_settings (#172)
 - Plot all timeseries used as input data (#171)
+- Integrate new parameter maximumCap as nominal value for energyProduction assets, ie. PV or wind plants (#124)
 
 ### Changed
 - Give priority from kwargs on command line arguments (#112, #138)
@@ -158,4 +161,3 @@ Here is a template for new release sections
 
 ### Removed
 - yet another thing
-
