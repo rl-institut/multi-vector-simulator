@@ -21,10 +21,18 @@ Module E0 evaluates the oemof results and calculates the KPI
 def evaluate_dict(dict_values, results_main, results_meta):
     """
 
-    :param dict_values:
-    :param results_main:
-    :param results_meta:
-    :return:
+    Parameters
+    ----------
+    dict_values: dict
+        simulation parameters
+    results_main: DataFrame
+        oemof simulation results as output by outputlib.processing.results()
+    results_meta: DataFrame
+        oemof simulation meta information as output by outputlib.processing.meta_results()
+
+    Returns
+    -------
+
     """
     dict_values.update(
         {
@@ -153,9 +161,14 @@ def evaluate_dict(dict_values, results_main, results_meta):
 def store_result_matrix(dict_kpi, dict_asset):
     """Storing results to vector and then result matrix for saving it in csv.
 
-    :param dict_kpi:
-    :param dict_asset:
-    :return:
+    Parameters
+    ----------
+    dict_kpi
+    dict_asset
+
+    Returns
+    -------
+
     """
 
     round_to_comma = 5
