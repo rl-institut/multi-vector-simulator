@@ -41,6 +41,7 @@ from src.constants import (
     CSV_EXT,
     CSV_ELEMENTS,
     INPUTS_COPY,
+    DEFAULT_MAIN_KWARGS,
 )
 
 from oemof.tools import logger
@@ -250,19 +251,25 @@ def process_user_arguments(
 
     # Give priority from kwargs over command line arguments
     if path_input_folder is None:
-        path_input_folder = args.get("path_input_folder")
+        path_input_folder = args.get(
+            "path_input_folder", DEFAULT_MAIN_KWARGS["path_input_folder"]
+        )
 
     if input_type is None:
-        input_type = args.get("input_type")
+        input_type = args.get("input_type", DEFAULT_MAIN_KWARGS["input_type"])
 
     if path_output_folder is None:
-        path_output_folder = args.get("path_output_folder")
+        path_output_folder = args.get(
+            "path_output_folder", DEFAULT_MAIN_KWARGS["path_output_folder"]
+        )
 
     if overwrite is None:
-        overwrite = args.get("overwrite")
+        overwrite = args.get("overwrite", DEFAULT_MAIN_KWARGS["overwrite"])
 
     if display_output is None:
-        display_output = args.get("display_output")
+        display_output = args.get(
+            "display_output", DEFAULT_MAIN_KWARGS["display_output"]
+        )
 
     path_input_file = check_input_folder(path_input_folder, input_type)
     check_output_folder(path_input_folder, path_output_folder, overwrite)
