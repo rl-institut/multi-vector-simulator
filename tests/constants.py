@@ -4,6 +4,7 @@ import os
 from src.constants import (
     INPUT_FOLDER,
     JSON_FNAME,
+    JSON_EXT,
     CSV_ELEMENTS,
     INPUTS_COPY,
     CSV_FNAME,

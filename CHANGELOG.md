@@ -28,6 +28,7 @@ Here is a template for new release sections
 - Tests for the module B0 (#140, #255)
 - Possibility to move the json file after reading it (useful if json file created from csv files
 ) (#255)
+- Benchmark test for csv inputs (#254)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -37,6 +38,7 @@ Here is a template for new release sections
 - Update json file `mvs_config.json`: Default with no peak demand pricing. Replace string "False" by boolean `false`. Remove depreciated parameters from `simulation_settings`(`input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs`) (#234)
 - Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
 - variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
+
 ### Removed
 
 ### Fixed
@@ -46,6 +48,7 @@ Here is a template for new release sections
 - Delete duplicated entry of `plot_nx_graph` from json file (#209)
 - Fix plotting error in F1, plot only if Data frame is not empty (#230, #234)
 - Fix naming error for storages (#166)
+- Benchmark test that the simulation is running with default settings (#254)
 
 ## [0.2.0] - 2020-03-13
 
