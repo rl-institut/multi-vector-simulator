@@ -29,6 +29,10 @@ Here is a template for new release sections
 - Possibility to move the json file after reading it (useful if json file created from csv files
 ) (#255)
 - Benchmark test for csv inputs (#254)
+- File `simulating_with_the_mvs.rst` to readthedocs: How to use the input files (csv/json) (#130), how to create an own simulation/project
+tipps for module building, and hint that units in the MVS are not checked (PR #229)
+- Images for `simulating_with_the_mvs.rst`: images/energy_system.png, images/energy_system_model.png, images/folder_structure_inputs.png
+- Tables for `simulating_with_the_mvs.rst`: tables/example_multiple_inputs_energyConversion.csv, tables/example_scalar_as_timeseries_energyConversion.csv
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
