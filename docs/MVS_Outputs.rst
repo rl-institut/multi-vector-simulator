@@ -75,7 +75,10 @@ Renewable share (RES)
 Describes the share of the MES demand that is supplied from renewable sources.
 
 .. math::
-  RES ={\sum_i {E_{RES,generation} (i)⋅w_i}}/{\sum_j {E_{generation}(j)⋅w_j}+\sum_k {E_{grid} (k)}}
+  RES =\frac{\sum_i {E_{RES,generation} (i)⋅w_i}}{\sum_j {E_{generation}(j)⋅w_j}+\sum_k {E_{grid} (k)}}
+  with i \epsilon [PV,Geothermal,…]
+  and j \epsilon [generation assets 1,2,…]
+  and  k \epsilon [DSO 1,2…]
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
