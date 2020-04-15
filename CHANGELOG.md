@@ -40,6 +40,7 @@ Here is a template for new release sections
 - Delete duplicated entry of `plot_nx_graph` from json file (#209)
 - Fix plotting error in F1, plot only if Data frame is not empty (#230, #234)
 - Fix naming error for storages (#166)
+- Fix specific parameters in storage columns (#75)
 
 ## [0.2.0] - 2020-03-13
 
