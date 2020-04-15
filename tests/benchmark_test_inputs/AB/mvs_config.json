@@ -71,94 +71,6 @@
             "outflow_direction": "Electricity",
             "type_oemof": "transformer",
             "unit": "kW"
-        },
-        "transformer_station_in": {
-            "age_installed": {
-                "unit": "year",
-                "value": 5
-            },
-            "capex_fix": {
-                "unit": "currency",
-                "value": 0.0
-            },
-            "capex_var": {
-                "unit": "currency/kW",
-                "value": 0.0
-            },
-            "efficiency": {
-                "unit": "factor",
-                "value": 0.96
-            },
-            "energyVector": "Electricity",
-            "inflow_direction": "Electricity (DSO)",
-            "installedCap": {
-                "unit": "kW",
-                "value": 1250
-            },
-            "label": "Transformer station (DSO) consumption",
-            "lifetime": {
-                "unit": "year",
-                "value": 30
-            },
-            "opex_fix": {
-                "unit": "currency/kW/year",
-                "value": 0.0
-            },
-            "opex_var": {
-                "unit": "currency/kWh",
-                "value": 0.0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": false
-            },
-            "outflow_direction": "Electricity",
-            "type_oemof": "transformer",
-            "unit": "kVA"
-        },
-        "transformer_station_out": {
-            "age_installed": {
-                "unit": "year",
-                "value": 5
-            },
-            "capex_fix": {
-                "unit": "currency",
-                "value": 0.0
-            },
-            "capex_var": {
-                "unit": "currency/kW",
-                "value": 0.0
-            },
-            "efficiency": {
-                "unit": "factor",
-                "value": 0.96
-            },
-            "energyVector": "Electricity",
-            "inflow_direction": "Electricity",
-            "installedCap": {
-                "unit": "kW",
-                "value": 1250
-            },
-            "label": "Transformer station (DSO) feedin",
-            "lifetime": {
-                "unit": "year",
-                "value": 30
-            },
-            "opex_fix": {
-                "unit": "currency/kW/year",
-                "value": 0.0
-            },
-            "opex_var": {
-                "unit": "currency/kWh",
-                "value": 0.0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": false
-            },
-            "outflow_direction": "Electricity (DSO)",
-            "type_oemof": "transformer",
-            "unit": "kVA"
         }
     },
     "energyProduction": {
@@ -207,35 +119,7 @@
             "unit": "kWp"
         }
     },
-    "energyProviders": {
-        "DSO": {
-            "energyVector": "Electricity",
-            "energy_price": {
-                "unit": "currency/kWh",
-                "value": 0.54
-            },
-            "feedin_tariff": {
-                "unit": "currency/kWh",
-                "value": 0.4
-            },
-            "inflow_direction": "Electricity (DSO)",
-            "label": "Electricity grid DSO",
-            "optimizeCap": {
-                "unit": "bool",
-                "value": true
-            },
-            "outflow_direction": "Electricity (DSO)",
-            "peak_demand_pricing": {
-                "unit": "currency/kW",
-                "value": 0
-            },
-            "peak_demand_pricing_period": {
-                "unit": "times per year (1,2,3,4,6,12)",
-                "value": 1
-            },
-            "type_oemof": "source"
-        }
-    },
+    "energyProviders": {},
     "energyStorage": {},
     "fixcost": {},
     "project_data": {
