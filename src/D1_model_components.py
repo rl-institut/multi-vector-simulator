@@ -315,52 +315,52 @@ def storage_fix(model, dict_asset, **kwargs):
 def storage_optimize(model, dict_asset, **kwargs):
     storage = solph.components.GenericStorage(
         label=dict_asset["label"],
-        existing=dict_asset["capacity"]["installedCap"]["value"],
+        existing=dict_asset["storage capacity"]["installedCap"]["value"],
         investment=solph.Investment(
-            ep_costs=dict_asset["capacity"]["simulation_annuity"]["value"],
-            maximum=dict_asset["capacity"]["maximumCap"]["value"],
+            ep_costs=dict_asset["storage capacity"]["simulation_annuity"]["value"],
+            maximum=dict_asset["storage capacity"]["maximumCap"]["value"],
         ),
         inputs={
             kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow(
-                existing=dict_asset["charging_power"]["installedCap"]["value"],
+                existing=dict_asset["input power"]["installedCap"]["value"],
                 investment=solph.Investment(
-                    ep_costs=dict_asset["charging_power"]["simulation_annuity"][
+                    ep_costs=dict_asset["input power"]["simulation_annuity"][
                         "value"
                     ],
-                    maximum=dict_asset["charging_power"]["maximumCap"]["value"],
+                    maximum=dict_asset["input power"]["maximumCap"]["value"],
                 ),
-                variable_costs=dict_asset["charging_power"]["opex_var"]["value"],
+                variable_costs=dict_asset["input power"]["opex_var"]["value"],
             )
         },  # maximum charge power
         outputs={
             kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
-                existing=dict_asset["discharging_power"]["installedCap"]["value"],
+                existing=dict_asset["output power"]["installedCap"]["value"],
                 investment=solph.Investment(
-                    ep_costs=dict_asset["discharging_power"]["simulation_annuity"][
+                    ep_costs=dict_asset["output power"]["simulation_annuity"][
                         "value"
                     ],
-                    maximum=dict_asset["charging_power"]["maximumCap"]["value"],
+                    maximum=dict_asset["input power"]["maximumCap"]["value"],
                 ),
-                variable_costs=dict_asset["discharging_power"]["opex_var"]["value"],
+                variable_costs=dict_asset["output power"]["opex_var"]["value"],
             )
         },  # maximum discharge power
-        loss_rate=dict_asset["capacity"]["efficiency"][
+        loss_rate=dict_asset["storage capacity"]["efficiency"][
             "value"
         ],  # from timestep to timestep
-        min_storage_level=dict_asset["capacity"]["soc_min"]["value"],
-        max_storage_level=dict_asset["capacity"]["soc_max"]["value"],
-        initial_storage_level=dict_asset["capacity"]["soc_initial"][
+        min_storage_level=dict_asset["storage capacity"]["soc_min"]["value"],
+        max_storage_level=dict_asset["storage capacity"]["soc_max"]["value"],
+        initial_storage_level=dict_asset["storage capacity"]["soc_initial"][
             "value"
         ],  # in terms of SOC #implication: balanced = True, ie. start=end
-        inflow_conversion_factor=dict_asset["charging_power"]["efficiency"][
+        inflow_conversion_factor=dict_asset["input power"]["efficiency"][
             "value"
         ],  # storing efficiency
-        outflow_conversion_factor=dict_asset["discharging_power"]["efficiency"][
+        outflow_conversion_factor=dict_asset["output power"]["efficiency"][
             "value"
         ],  # efficiency of discharge
-        invest_relation_input_capacity=dict_asset["charging_power"]["crate"]["value"],
+        invest_relation_input_capacity=dict_asset["input power"]["crate"]["value"],
         # storage can be charged with invest_relation_output_capacity*capacity in one timeperiod
-        invest_relation_output_capacity=dict_asset["discharging_power"]["crate"][
+        invest_relation_output_capacity=dict_asset["output power"]["crate"][
             "value"
         ]
         # storage can be emptied with invest_relation_output_capacity*capacity in one timeperiod

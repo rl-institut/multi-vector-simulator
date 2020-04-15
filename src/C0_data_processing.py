@@ -331,7 +331,7 @@ def energyStorage(dict_values, group):
     :return:
     """
     for asset in dict_values[group]:
-        for subasset in ["capacity", "charging_power", "discharging_power"]:
+        for subasset in ["storage capacity", "input power", "output power"]:
             define_missing_cost_data(
                 dict_values, dict_values[group][asset][subasset],
             )

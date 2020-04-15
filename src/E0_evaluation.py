@@ -73,7 +73,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         )
 
         # hardcoded list of names in storage_01.csv
-        for storage_item in ["capacity", "charging_power", "discharging_power"]:
+        for storage_item in ["storage capacity", "input power", "output power"]:
             economics.get_costs(
                 dict_values["energyStorage"][storage][storage_item],
                 dict_values["economic_data"],
@@ -95,13 +95,13 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + " ("
                 + str(
                     round(
-                        dict_values["energyStorage"][storage]["capacity"][
+                        dict_values["energyStorage"][storage]["storage capacity"][
                             "optimizedAddCap"
                         ]["value"],
                         1,
                     )
                 )
-                + dict_values["energyStorage"][storage]["capacity"]["optimizedAddCap"][
+                + dict_values["energyStorage"][storage]["storage capacity"]["optimizedAddCap"][
                     "unit"
                 ]
                 + ") SOC"
