@@ -249,7 +249,8 @@ def process_user_arguments(
     parser = create_parser()
     args = vars(parser.parse_args())
 
-    # Give priority from kwargs over command line arguments
+    # Give priority from user input kwargs over command line arguments
+    # However the command line arguments have priority over default kwargs
     if path_input_folder is None:
         path_input_folder = args.get(
             "path_input_folder", DEFAULT_MAIN_KWARGS["path_input_folder"]
