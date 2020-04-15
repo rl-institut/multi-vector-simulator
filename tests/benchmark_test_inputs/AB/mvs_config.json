@@ -91,7 +91,7 @@
             "file_name": "production.csv",
             "installedCap": {
                 "unit": "kWp",
-                "value": 0
+                "value": 5
             },
             "maximumCap": {
                 "unit": "kWp",
@@ -112,7 +112,7 @@
             },
             "optimizeCap": {
                 "unit": "bool",
-                "value": true
+                "value": false
             },
             "outflow_direction": "PV plant (mono)",
             "type_oemof": "source",
@@ -128,7 +128,7 @@
         "latitude": "0",
         "longitude": "0",
         "project_id": "1",
-        "project_name": "Benchmark test for peak pricing case electricity bus",
+        "project_name": "Benchmark test for replacing grid consumtion with PV generation",
         "scenario_id": "2",
         "scenario_name": "A+B"
     },
@@ -141,7 +141,7 @@
         "oemof_file_name": "MVS_results.oemof",
         "output_lp_file": {
             "unit": "bool",
-            "value": true
+            "value": false
         },
         "display_nx_graph": {
             "unit": "bool",
