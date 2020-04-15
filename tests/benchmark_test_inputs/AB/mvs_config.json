@@ -1,0 +1,284 @@
+{
+    "economic_data": {
+        "currency": "EUR",
+        "discount_factor": {
+            "unit": "factor",
+            "value": 0.08
+        },
+        "label": "economic_data",
+        "project_duration": {
+            "unit": "year",
+            "value": 1
+        },
+        "tax": {
+            "unit": "factor",
+            "value": 0.0
+        }
+    },
+    "energyConsumption": {
+        "demand_01": {
+            "dsm": "False",
+            "energyVector": "Electricity",
+            "file_name": "demand.csv",
+            "inflow_direction": "Electricity",
+            "label": "Grid",
+            "type_asset": "demand",
+            "type_oemof": "sink",
+            "unit": "kW"
+        }
+    },
+    "energyConversion": {
+        "solar_inverter_01": {
+            "age_installed": {
+                "unit": "year",
+                "value": 0
+            },
+            "capex_fix": {
+                "unit": "currency",
+                "value": 0.0
+            },
+            "capex_var": {
+                "unit": "currency/kW",
+                "value": 3000
+            },
+            "efficiency": {
+                "unit": "factor",
+                "value": 1.0
+            },
+            "energyVector": "Electricity",
+            "inflow_direction": "PV plant (mono)",
+            "installedCap": {
+                "unit": "kW",
+                "value": 0.0
+            },
+            "label": "Solar inverter (mono)",
+            "lifetime": {
+                "unit": "year",
+                "value": 15
+            },
+            "opex_fix": {
+                "unit": "currency/kW/year",
+                "value": 0.0
+            },
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": 0.0
+            },
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "outflow_direction": "Electricity",
+            "type_oemof": "transformer",
+            "unit": "kW"
+        },
+        "transformer_station_in": {
+            "age_installed": {
+                "unit": "year",
+                "value": 5
+            },
+            "capex_fix": {
+                "unit": "currency",
+                "value": 0.0
+            },
+            "capex_var": {
+                "unit": "currency/kW",
+                "value": 0.0
+            },
+            "efficiency": {
+                "unit": "factor",
+                "value": 0.96
+            },
+            "energyVector": "Electricity",
+            "inflow_direction": "Electricity (DSO)",
+            "installedCap": {
+                "unit": "kW",
+                "value": 1250
+            },
+            "label": "Transformer station (DSO) consumption",
+            "lifetime": {
+                "unit": "year",
+                "value": 30
+            },
+            "opex_fix": {
+                "unit": "currency/kW/year",
+                "value": 0.0
+            },
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": 0.0
+            },
+            "optimizeCap": {
+                "unit": "bool",
+                "value": false
+            },
+            "outflow_direction": "Electricity",
+            "type_oemof": "transformer",
+            "unit": "kVA"
+        },
+        "transformer_station_out": {
+            "age_installed": {
+                "unit": "year",
+                "value": 5
+            },
+            "capex_fix": {
+                "unit": "currency",
+                "value": 0.0
+            },
+            "capex_var": {
+                "unit": "currency/kW",
+                "value": 0.0
+            },
+            "efficiency": {
+                "unit": "factor",
+                "value": 0.96
+            },
+            "energyVector": "Electricity",
+            "inflow_direction": "Electricity",
+            "installedCap": {
+                "unit": "kW",
+                "value": 1250
+            },
+            "label": "Transformer station (DSO) feedin",
+            "lifetime": {
+                "unit": "year",
+                "value": 30
+            },
+            "opex_fix": {
+                "unit": "currency/kW/year",
+                "value": 0.0
+            },
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": 0.0
+            },
+            "optimizeCap": {
+                "unit": "bool",
+                "value": false
+            },
+            "outflow_direction": "Electricity (DSO)",
+            "type_oemof": "transformer",
+            "unit": "kVA"
+        }
+    },
+    "energyProduction": {
+        "pv_plant_01": {
+            "age_installed": {
+                "unit": "year",
+                "value": 0
+            },
+            "capex_fix": {
+                "unit": "currency",
+                "value": 10000
+            },
+            "capex_var": {
+                "unit": "currency/unit",
+                "value": 7200
+            },
+            "energyVector": "Electricity",
+            "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
+            "installedCap": {
+                "unit": "kWp",
+                "value": 0
+            },
+            "maximumCap": {
+                "unit": "kWp",
+                "value": 1000
+            },
+            "label": "PV plant (mono)",
+            "lifetime": {
+                "unit": "year",
+                "value": 30
+            },
+            "opex_fix": {
+                "unit": "currency/unit/year",
+                "value": 80
+            },
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": 0
+            },
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "outflow_direction": "PV plant (mono)",
+            "type_oemof": "source",
+            "unit": "kWp"
+        }
+    },
+    "energyProviders": {
+        "DSO": {
+            "energyVector": "Electricity",
+            "energy_price": {
+                "unit": "currency/kWh",
+                "value": 0.54
+            },
+            "feedin_tariff": {
+                "unit": "currency/kWh",
+                "value": 0.4
+            },
+            "inflow_direction": "Electricity (DSO)",
+            "label": "Electricity grid DSO",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "outflow_direction": "Electricity (DSO)",
+            "peak_demand_pricing": {
+                "unit": "currency/kW",
+                "value": 0
+            },
+            "peak_demand_pricing_period": {
+                "unit": "times per year (1,2,3,4,6,12)",
+                "value": 1
+            },
+            "type_oemof": "source"
+        }
+    },
+    "energyStorage": {},
+    "fixcost": {},
+    "project_data": {
+        "country": "NA",
+        "label": "project_data",
+        "latitude": "0",
+        "longitude": "0",
+        "project_id": "1",
+        "project_name": "Benchmark test for peak pricing case electricity bus",
+        "scenario_id": "2",
+        "scenario_name": "A+B"
+    },
+    "simulation_settings": {
+        "evaluated_period": {
+            "unit": "days",
+            "value": 365
+        },
+        "label": "simulation_settings",
+        "oemof_file_name": "MVS_results.oemof",
+        "output_lp_file": {
+            "unit": "bool",
+            "value": true
+        },
+        "display_nx_graph": {
+            "unit": "bool",
+            "value": false
+        },
+        "store_nx_graph": {
+            "unit": "bool",
+            "value": true
+        },
+        "restore_from_oemof_file": {
+            "unit": "bool",
+            "value": false
+        },
+        "start_date": "2018-01-01 00:00:00",
+        "store_oemof_results": {
+            "unit": "bool",
+            "value": true
+        },
+        "timestep": {
+            "unit": "minutes",
+            "value": 60
+        }
+    }
+}
