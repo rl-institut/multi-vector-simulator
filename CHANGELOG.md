@@ -23,6 +23,12 @@ Here is a template for new release sections
 - Pull request template (#198)
 - Issue template (#212)
 - File `troubleshooting.rst` to readthedocs
+- Tests for the module C1 (only used function) (#152)
+- Save network graph as png to output folder if new parameter `store_nx_graph` is true (#242)
+- Tests for the module B0 (#140, #255)
+- Possibility to move the json file after reading it (useful if json file created from csv files
+) (#255)
+- Benchmark test for csv inputs (#254)
 - File `simulating_with_the_mvs.rst` to readthedocs: How to use the input files (csv/json) (#130), how to create an own simulation/project
 tipps for module building, and hint that units in the MVS are not checked (PR #229)
 - Images for `simulating_with_the_mvs.rst`: images/energy_system.png, images/energy_system_model.png, images/folder_structure_inputs.png
@@ -34,6 +40,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - `troubleshooting.rst`: Added help for `pygraphviz` (#218), `xlrd` (#11), `json.decoder.JSONDecodeError` (#206)
 - FileNotFoundError messages in A0 (#227)
 - Update json file `mvs_config.json`: Default with no peak demand pricing. Replace string "False" by boolean `false`. Remove depreciated parameters from `simulation_settings`(`input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs`) (#234)
+- Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
+- variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
 
 ### Removed
 
@@ -44,6 +52,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Delete duplicated entry of `plot_nx_graph` from json file (#209)
 - Fix plotting error in F1, plot only if Data frame is not empty (#230, #234)
 - Fix naming error for storages (#166)
+- Benchmark test that the simulation is running with default settings (#254)
 
 ## [0.2.0] - 2020-03-13
 
@@ -68,6 +77,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 ### Removed
 - Function welcome from module A0 (#138)
 - Parameters `input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs` from `simulation_settings.csv` (#178)
+
 
 ### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
