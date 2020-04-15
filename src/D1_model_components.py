@@ -324,9 +324,7 @@ def storage_optimize(model, dict_asset, **kwargs):
             kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow(
                 existing=dict_asset["input power"]["installedCap"]["value"],
                 investment=solph.Investment(
-                    ep_costs=dict_asset["input power"]["simulation_annuity"][
-                        "value"
-                    ],
+                    ep_costs=dict_asset["input power"]["simulation_annuity"]["value"],
                     maximum=dict_asset["input power"]["maximumCap"]["value"],
                 ),
                 variable_costs=dict_asset["input power"]["opex_var"]["value"],
@@ -336,9 +334,7 @@ def storage_optimize(model, dict_asset, **kwargs):
             kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
                 existing=dict_asset["output power"]["installedCap"]["value"],
                 investment=solph.Investment(
-                    ep_costs=dict_asset["output power"]["simulation_annuity"][
-                        "value"
-                    ],
+                    ep_costs=dict_asset["output power"]["simulation_annuity"]["value"],
                     maximum=dict_asset["input power"]["maximumCap"]["value"],
                 ),
                 variable_costs=dict_asset["output power"]["opex_var"]["value"],
@@ -360,9 +356,7 @@ def storage_optimize(model, dict_asset, **kwargs):
         ],  # efficiency of discharge
         invest_relation_input_capacity=dict_asset["input power"]["crate"]["value"],
         # storage can be charged with invest_relation_output_capacity*capacity in one timeperiod
-        invest_relation_output_capacity=dict_asset["output power"]["crate"][
-            "value"
-        ]
+        invest_relation_output_capacity=dict_asset["output power"]["crate"]["value"]
         # storage can be emptied with invest_relation_output_capacity*capacity in one timeperiod
     )
     model.add(storage)

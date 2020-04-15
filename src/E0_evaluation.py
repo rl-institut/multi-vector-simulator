@@ -101,9 +101,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
                         1,
                     )
                 )
-                + dict_values["energyStorage"][storage]["storage capacity"]["optimizedAddCap"][
-                    "unit"
-                ]
+                + dict_values["energyStorage"][storage]["storage capacity"][
+                    "optimizedAddCap"
+                ]["unit"]
                 + ") SOC"
             )
 

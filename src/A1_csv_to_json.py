@@ -350,61 +350,89 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
             "No %s" % filename + " assets are added because all "
             "columns of the csv file are empty."
         )
-    df_copy=df
+    df_copy = df
     for column in df_copy:
         if column != "unit":
             column_dict = {}
             # the storage columns are checked for the right parameters,
             # Nan values that are not needed are deleted
             if storage == True:
-                #check if all three columns are available
+                # check if all three columns are available
                 if len(df_copy.columns) < 4:
-                    logging.error("The file " + filename +".csv requires "
-                                    "three columns, you have only inserted %s"
-                                    + len(df_copy.columns) + "columns.")
+                    logging.error(
+                        "The file " + filename + ".csv requires "
+                        "three columns, you have only inserted %s"
+                        + len(df_copy.columns)
+                        + "columns."
+                    )
                 # add column specific parameters
                 if column == "storage capacity":
-                    extra=["soc_initial", "soc_max", "soc_min"]
+                    extra = ["soc_initial", "soc_max", "soc_min"]
                 elif column == "input power" or column == "output power":
-                    extra=["crate", "opex_var"]
+                    extra = ["crate", "opex_var"]
                 else:
-                    logging.error("The column name " + column + " in The file "
-                                    + filename + ".csv is not valid. "
-                                    "Please use the column names: "
-                                    "'storage capacity', 'input power' and "
-                                                             "'output power'.")
-                column_parameters=parameters + extra
+                    logging.error(
+                        "The column name "
+                        + column
+                        + " in The file "
+                        + filename
+                        + ".csv is not valid. "
+                        "Please use the column names: "
+                        "'storage capacity', 'input power' and "
+                        "'output power'."
+                    )
+                column_parameters = parameters + extra
                 # check if required parameters are missing
                 for i in set(column_parameters) - set(df_copy.index):
-                    logging.warning("In file "
-                                    + filename + ".csv the parameter "
-                                    + str(i) + " in column " + column +
-                                    " is missing.")
+                    logging.warning(
+                        "In file "
+                        + filename
+                        + ".csv the parameter "
+                        + str(i)
+                        + " in column "
+                        + column
+                        + " is missing."
+                    )
                 for i in df_copy.index:
                     if i not in column_parameters:
                         # check if not required parameters are set to Nan and
                         # if not, set them to Nan
-                        if pd.isnull(df_copy.loc[[i],[column]].values)==False:
+                        if pd.isnull(df_copy.loc[[i], [column]].values) == False:
                             logging.warning(
-                                "The storage parameter " + str(i) +
-                                " in column" + column + " of the file "
-                                + filename +".csv should be set to "
+                                "The storage parameter "
+                                + str(i)
+                                + " in column"
+                                + column
+                                + " of the file "
+                                + filename
+                                + ".csv should be set to "
                                 "NaN. It will not be considered in the "
-                                                       "simulation"
+                                "simulation"
                             )
-                            df_copy.loc[[i], [column]]= "NaN"
+                            df_copy.loc[[i], [column]] = "NaN"
                         else:
-                            logging.debug("In file "
-                                + filename +".csv the parameter "
-                                + str(i) +" in column " + column +" is "
+                            logging.debug(
+                                "In file "
+                                + filename
+                                + ".csv the parameter "
+                                + str(i)
+                                + " in column "
+                                + column
+                                + " is "
                                 "NaN. This is correct; the parameter "
-                                "will not be considered.")
+                                "will not be considered."
+                            )
                     # check if all other values have a value unequal to Nan
                     else:
-                        if pd.isnull(df_copy.loc[[i],[column]].values)==True:
-                            logging.warning("In file "
-                                + filename +".csv the parameter "
-                                + str(i) +" in column " + column +" is "
+                        if pd.isnull(df_copy.loc[[i], [column]].values) == True:
+                            logging.warning(
+                                "In file "
+                                + filename
+                                + ".csv the parameter "
+                                + str(i)
+                                + " in column "
+                                + column
+                                + " is "
                                 "NaN. Please insert a value. For this "
                                 "simulation the value is set to 0 "
                                 "automatically."
@@ -554,7 +582,7 @@ def add_storage_components(storage_filename, input_directory):
     if not os.path.exists(os.path.join(input_directory, "%s.csv" % storage_filename)):
         logging.error("The storage file %s.csv" % storage_filename + " is missing!")
     else:
-        #hardcoded parameterlist of common parameters in all columns
+        # hardcoded parameterlist of common parameters in all columns
         parameters = [
             "age_installed",
             "capex_fix",
