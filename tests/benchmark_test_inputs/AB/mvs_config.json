@@ -176,7 +176,7 @@
                 "value": 7200
             },
             "energyVector": "Electricity",
-            "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
+            "file_name": "production.csv",
             "installedCap": {
                 "unit": "kWp",
                 "value": 0
