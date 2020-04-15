@@ -74,10 +74,6 @@ def main(**kwargs):
 
     """
 
-    for k, v in DEFAULT_MAIN_KWARGS.items():
-        if k not in kwargs:
-            kwargs[k] = v
-
     version = (
         "0.2.0"  # update_me Versioning scheme: Major release.Minor release.Patches
     )
