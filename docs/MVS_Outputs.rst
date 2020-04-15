@@ -88,6 +88,10 @@ CO2 Emissions
 The total C02 emissions of the MES in question can be calculated
 with all aggregated energy flows from the generation assets and their subsequent emission factor:
 
+.. math::
+  CO2 Emissions= \sum_i {E_{gen} (i)⋅CO2_{eq} (i)}
+  with i \epsilon [generation assets 1,2,…]
+
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
 Degree of autonomy (DA)
@@ -102,13 +106,16 @@ As above, we apply a weighting based on Electricity Equivalent.
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
 
-Degree of sector-coupling
-#########################
+Degree of sector-coupling (DSC)
+###############################
 
 While a MES includes multiple energy carriers,
 this fact does not define how strongly interconnected its sectors are.
 To measure this, we propose to compare the energy flows in between the sectors to the energy demand supplied:
 
+.. math::
+   DSC=\frac{\sum_{i,j}{E_{conversion} (i,j)⋅w_i}}{\sum_i {E_{demand} (i)⋅w_i}}
+   with i,j \epsilon [Electricity,H2…]
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
