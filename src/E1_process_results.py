@@ -309,7 +309,9 @@ def get_flow(settings, bus, dict_asset, bus_name, direction):
         flow = bus["sequences"][((dict_asset["label"], bus_name), "flow")]
 
     else:
-        logging.warning('Value %s not "input" or "output"!', direction)
+        raise ValueError(
+            f"`direction` should be 'input' or 'output' but is {direction}."
+        )
     add_info_flows(settings, dict_asset, flow)
 
     logging.debug(
