@@ -20,7 +20,7 @@ import json
 import logging
 import pandas as pd
 
-ALLOWED_FILES = (
+REQUIRED_FILES = (
     "fixcost",
     "simulation_settings",
     "project_data",
@@ -65,13 +65,6 @@ def create_input_json(
     input_json = {}
     # hardcoded required lists of parameters for the creation of json files according csv file
 
-    # hardcorded list of necessary csv files
-    required_files_list = [
-        "energyConsumption",
-        "simulation_settings",
-        "project_data",
-        "economic_data",
-    ]
     parameterlist = {}
 
     # Hardcoded list of parameters for each of the csv files.
@@ -180,7 +173,8 @@ def create_input_json(
                 "oemof_file_name",
                 "output_lp_file",
                 "restore_from_oemof_file",
-                "plot_nx_graph",
+                "display_nx_graph",
+                "store_nx_graph",
                 "start_date",
                 "store_oemof_results",
                 "timestep",
@@ -236,17 +230,13 @@ def create_input_json(
             )
 
     # check if all required files are available
-    extra = list(set(list_assets) ^ set(ALLOWED_FILES))
+    extra = list(set(list_assets) ^ set(REQUIRED_FILES))
 
     for i in extra:
-        if i in required_files_list:
+        if i in REQUIRED_FILES:
             logging.error(
                 "Required input file %s is missing! Please add it"
                 "into %s." % (i, os.path.join(input_directory))
-            )
-        elif i in ALLOWED_FILES:
-            logging.debug(
-                "No %s" % i + ".csv file found. This is an " "accepted option."
             )
         elif "storage_" in i:
             pass

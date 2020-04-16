@@ -67,6 +67,8 @@ Common Parameters in the CSV/JSON files and in energyConversion.csv:
 
 **installedCap**: The already existing installed capacity in-place, which will also be replaced after its lifetime (kW)
 
+**maximumCap**: The maximum installable capacity
+
 **label**: Name of the asset
 
 **lifetime**: Number of operational years of the asset until it has to be replaced
