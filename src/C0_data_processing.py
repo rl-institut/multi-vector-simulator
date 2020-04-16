@@ -262,7 +262,6 @@ def energyProduction(dict_values, group):
         # check if maximumCap exists and add it to dict_values
         add_maximum_cap(dict_values, group, asset)
 
-
     return
 
 
@@ -1202,16 +1201,13 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
 
     """
     if subasset is None:
-        dict=dict_values[group][asset]
+        dict = dict_values[group][asset]
     else:
-        dict=dict_values[group][asset][subasset]
+        dict = dict_values[group][asset][subasset]
     if "maximumCap" in dict:
         # check if maximumCap is greater that installedCap
         if dict["maximumCap"]["value"] is not None:
-            if (
-                    dict["maximumCap"]["value"]
-                    < dict["installedCap"]["value"]
-            ):
+            if dict["maximumCap"]["value"] < dict["installedCap"]["value"]:
 
                 logging.warning(
                     "The stated maximumCap in %s %s is smaller than the "
@@ -1233,6 +1229,4 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
                 )
                 dict["maximumCap"]["value"] = None
     else:
-        dict.update(
-            {"maximumCap": {"value": None, "unit": dict["unit"]}}
-        )
+        dict.update({"maximumCap": {"value": None, "unit": dict["unit"]}})
