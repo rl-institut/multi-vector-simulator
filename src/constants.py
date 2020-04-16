@@ -44,3 +44,12 @@ USER_INPUT_ARGUMENTS = (
     "overwrite",
     "display_output",
 )
+
+DEFAULT_MAIN_KWARGS = dict(
+    overwrite=False,
+    input_type=JSON_EXT,
+    path_input_folder=DEFAULT_INPUT_PATH,
+    path_output_folder=DEFAULT_OUTPUT_PATH,
+    display_output="info",
+    lp_file_output=False,
+)
