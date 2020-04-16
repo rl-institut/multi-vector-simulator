@@ -216,37 +216,8 @@ def energyConversion(dict_values, group):
             dict_values["economic_data"],
             dict_values[group][asset],
         )
-        if "maximumCap" in dict_values[group][asset]:
-            # check if maximumCap is greater that installedCap
-            if dict_values[group][asset]["maximumCap"]["value"] is not None:
-                if (
-                    dict_values[group][asset]["maximumCap"]["value"]
-                    < dict_values[group][asset]["installedCap"]["value"]
-                ):
-
-                    logging.warning(
-                        "The stated maximumCap in %s %s is smaller than the "
-                        "installedCap. Please enter a greater maximumCap."
-                        "For this simulation, the maximumCap will be "
-                        "disregarded and not be used in the simulation",
-                        group,
-                        asset,
-                    )
-                    dict_values[group][asset]["maximumCap"]["value"] = None
-                # check if maximumCao is 0
-                elif dict_values[group][asset]["maximumCap"]["value"] == 0:
-                    logging.warning(
-                        "The stated maximumCap of zero in %s %s is invalid."
-                        "For this simulation, the maximumCap will be "
-                        "disregarded and not be used in the simulation.",
-                        group,
-                        asset,
-                    )
-                    dict_values[group][asset]["maximumCap"]["value"] = None
-        else:
-            dict_values[group][asset].update(
-                {"maximumCap": {"value": None, "unit": "kWp"}}
-            )
+        # check if maximumCap exists and add it to dict_values
+        add_maximum_cap(dict_values=dict_values, group=group, asset=asset)
 
         # in case there is only one parameter provided (input bus and one output bus)
         if isinstance(dict_values[group][asset]["efficiency"]["value"], dict):
@@ -288,37 +259,9 @@ def energyProduction(dict_values, group):
             receive_timeseries_from_csv(
                 dict_values["simulation_settings"], dict_values[group][asset], "input",
             )
-        if "maximumCap" in dict_values[group][asset]:
-            # check if maximumCap is greater that installedCap
-            if dict_values[group][asset]["maximumCap"]["value"] is not None:
-                if (
-                    dict_values[group][asset]["maximumCap"]["value"]
-                    < dict_values[group][asset]["installedCap"]["value"]
-                ):
+        # check if maximumCap exists and add it to dict_values
+        add_maximum_cap(dict_values, group, asset)
 
-                    logging.warning(
-                        "The stated maximumCap in %s %s is smaller than the "
-                        "installedCap. Please enter a greater maximumCap."
-                        "For this simulation, the maximumCap will be "
-                        "disregarded and not be used in the simulation",
-                        group,
-                        asset,
-                    )
-                    dict_values[group][asset]["maximumCap"]["value"] = None
-                # check if maximumCao is 0
-                elif dict_values[group][asset]["maximumCap"]["value"] == 0:
-                    logging.warning(
-                        "The stated maximumCap of zero in %s %s is invalid."
-                        "For this simulation, the maximumCap will be "
-                        "disregarded and not be used in the simulation.",
-                        group,
-                        asset,
-                    )
-                    dict_values[group][asset]["maximumCap"]["value"] = None
-        else:
-            dict_values[group][asset].update(
-                {"maximumCap": {"value": None, "unit": "kWp"}}
-            )
 
     return
 
@@ -357,48 +300,9 @@ def energyStorage(dict_values, group):
                     treat_multiple_flows(
                         dict_values[group][asset][subasset], dict_values, parameter
                     )
+            # check if maximumCap exists and add it to dict_values
+            add_maximum_cap(dict_values, group, asset, subasset)
 
-            if "maximumCap" in dict_values[group][asset][subasset]:
-                # check if maximumCap is greater that installedCap
-                if (
-                    dict_values[group][asset][subasset]["maximumCap"]["value"]
-                    is not None
-                ):
-                    if (
-                        dict_values[group][asset][subasset]["maximumCap"]["value"]
-                        < dict_values[group][asset][subasset]["installedCap"]["value"]
-                    ):
-
-                        logging.warning(
-                            "The stated maximumCap in %s %s is smaller than "
-                            "the installedCap. Please enter a greater "
-                            "maximumCap."
-                            "For this simulation, the maximumCap will be "
-                            "disregarded and not be used in the simulation",
-                            group,
-                            asset,
-                        )
-                        dict_values[group][asset][subasset]["maximumCap"][
-                            "value"
-                        ] = None
-                    # check if maximumCao is 0
-                    elif (
-                        dict_values[group][asset][subasset]["maximumCap"]["value"] == 0
-                    ):
-                        logging.warning(
-                            "The stated maximumCap of zero in %s %s is invalid."
-                            "For this simulation, the maximumCap will be "
-                            "disregarded and not be used in the simulation.",
-                            group,
-                            asset,
-                        )
-                        dict_values[group][asset][subasset]["maximumCap"][
-                            "value"
-                        ] = None
-            else:
-                dict_values[group][asset][subasset].update(
-                    {"maximumCap": {"value": None, "unit": "kWp"}}
-                )
         # define input and output bus names
         dict_values[group][asset].update(
             {
@@ -1278,3 +1182,57 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
             file_path,
         )
         sys.exit()
+
+
+def add_maximum_cap(dict_values, group, asset, subasset=None):
+    """
+    Checks if maximumCap is in the csv file and if not, adds it to the dict
+
+    Parameters
+    ----------
+    dict_values: dict
+        dictionary of all assets
+    asset: str
+        asset name
+    subasset: str
+        subasset name
+
+    Returns
+    -------
+
+    """
+    if subasset is None:
+        dict=dict_values[group][asset]
+    else:
+        dict=dict_values[group][asset][subasset]
+    if "maximumCap" in dict:
+        # check if maximumCap is greater that installedCap
+        if dict["maximumCap"]["value"] is not None:
+            if (
+                    dict["maximumCap"]["value"]
+                    < dict["installedCap"]["value"]
+            ):
+
+                logging.warning(
+                    "The stated maximumCap in %s %s is smaller than the "
+                    "installedCap. Please enter a greater maximumCap."
+                    "For this simulation, the maximumCap will be "
+                    "disregarded and not be used in the simulation",
+                    group,
+                    asset,
+                )
+                dict["maximumCap"]["value"] = None
+            # check if maximumCao is 0
+            elif dict["maximumCap"]["value"] == 0:
+                logging.warning(
+                    "The stated maximumCap of zero in %s %s is invalid."
+                    "For this simulation, the maximumCap will be "
+                    "disregarded and not be used in the simulation.",
+                    group,
+                    asset,
+                )
+                dict["maximumCap"]["value"] = None
+    else:
+        dict.update(
+            {"maximumCap": {"value": None, "unit": dict["unit"]}}
+        )
