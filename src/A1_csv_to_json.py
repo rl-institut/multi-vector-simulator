@@ -289,10 +289,10 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
         extension
     :param parameters: list
         List of parameters names that are required
-    :param storage_column: str
-        default value is None. If the function is called by
+    :param storage: bool
+        default value is False. If the function is called by
         add_storage_components() the
-        parameter is filled with the specific storage_column name
+        parameter is set to True
     :return: dict
         the converted dictionary
     """
