@@ -54,6 +54,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Fix naming error for storages (#166)
 - Benchmark test that the simulation is running with default settings (#254)
 - Fix specific parameters for each storage column (#75)
+- Overwrite local results when running through brenchmark tests (#260)
+
 
 ## [0.2.0] - 2020-03-13
 
