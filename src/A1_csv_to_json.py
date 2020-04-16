@@ -397,17 +397,22 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                     if i not in column_parameters:
                         # check if not required parameters are set to Nan and
                         # if not, set them to Nan
-                        if i not in ["crate", "opex_var", "soc_initial",
-                                     "soc_max", "soc_min"]:
+                        if i not in [
+                            "crate",
+                            "opex_var",
+                            "soc_initial",
+                            "soc_max",
+                            "soc_min",
+                        ]:
                             logging.warning(
                                 "The storage parameter "
                                 + str(i)
                                 + " if the file "
                                 + filename
                                 + ".csv is not recognized. It will not be "
-                                  "considered in the simulation."
+                                "considered in the simulation."
                             )
-                            df_copy.loc[[i], [column]]="NaN"
+                            df_copy.loc[[i], [column]] = "NaN"
 
                         elif pd.isnull(df_copy.loc[[i], [column]].values) == False:
                             logging.warning(
