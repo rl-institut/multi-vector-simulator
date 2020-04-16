@@ -662,9 +662,13 @@
             "unit": "bool",
             "value": false
         },
-        "plot_nx_graph": {
+        "display_nx_graph": {
             "unit": "bool",
             "value": false
+        },
+        "store_nx_graph": {
+            "unit": "bool",
+            "value": true
         },
         "restore_from_oemof_file": {
             "unit": "bool",
