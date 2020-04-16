@@ -1,4 +1,5 @@
 import src.C2_economic_functions as e_functions
+from pytest import approx
 
 project_life = 20
 wacc = 0.1
@@ -14,6 +15,9 @@ present_value = 295000
 crf = 0.12
 annuity = 35400
 annuity_factor = 1 / 0.12
+exp_capex_equal_project_life = 253000
+exp_capex_smaller_project_life = 287687.793
+exp_capex_bigger_project_life = 153754.207
 fuel_keys = {
     "fuel_price": 1.3,
     "fuel_price_change_annual": 0,
@@ -48,7 +52,7 @@ def test_capex_from_investment_lifetime_equals_project_life():
     CAPEX = e_functions.capex_from_investment(
         investment_t0, lifetime["equal project life"], project_life, wacc, tax
     )
-    assert CAPEX == investment_t0 * (1 + tax)
+    assert CAPEX == exp_capex_equal_project_life
 
 
 def test_capex_from_investment_lifetime_smaller_than_project_life():
@@ -59,24 +63,7 @@ def test_capex_from_investment_lifetime_smaller_than_project_life():
     CAPEX = e_functions.capex_from_investment(
         investment_t0, lifetime["smaller project life"], project_life, wacc, tax
     )
-    first_investment = investment_t0 * (1 + tax)
-    assert CAPEX == first_investment + first_investment / (1 + wacc) ** (
-        1 * lifetime["smaller project life"]
-    ) + first_investment + first_investment / (1 + wacc) ** (
-        1 * lifetime["smaller project life"]
-    ) + first_investment / (
-        1 + wacc
-    ) ** (
-        2 * lifetime["smaller project life"]
-    ) - (
-        (
-            first_investment
-            / ((1 + wacc) ** ((2 - 1) * lifetime["smaller project life"]))
-        )
-        / lifetime["smaller project life"]
-    ) * (
-        2 * lifetime["smaller project life"] - project_life
-    )
+    assert CAPEX == approx(exp_capex_smaller_project_life, rel=1e-3)
 
 
 def test_capex_from_investment_lifetime_bigger_than_project_life():
@@ -87,15 +74,7 @@ def test_capex_from_investment_lifetime_bigger_than_project_life():
     CAPEX = e_functions.capex_from_investment(
         investment_t0, lifetime["bigger project life"], project_life, wacc, tax
     )
-    first_investment = investment_t0 * (1 + tax)
-    assert CAPEX == first_investment + first_investment / (1 + wacc) ** (
-        1 * lifetime["bigger project life"]
-    ) - (
-        (first_investment / ((1 + wacc) ** ((1 - 1) * lifetime["bigger project life"])))
-        / lifetime["bigger project life"]
-    ) * (
-        1 * lifetime["bigger project life"] - project_life
-    )
+    assert CAPEX == approx(exp_capex_bigger_project_life, rel=1e-3)
 
 
 def test_annuity():
