@@ -622,7 +622,7 @@
     "simulation_settings": {
         "evaluated_period": {
             "unit": "days",
-            "value": 365
+            "value": 2
         },
         "label": "simulation_settings",
         "oemof_file_name": "MVS_results.oemof",
