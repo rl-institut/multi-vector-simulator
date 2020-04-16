@@ -194,7 +194,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 }
             )
 
-    dict_asset.update(
+    dict_asset.update(  # todo: this could be a separate function for testing.
         {
             "timeseries_soc": dict_asset["capacity"]["flow"]
             / (
