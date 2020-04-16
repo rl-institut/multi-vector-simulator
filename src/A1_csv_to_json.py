@@ -18,7 +18,6 @@ in the given input folder (input_directory) and creates one json input file for 
 import os
 import json
 import logging
-import numpy as np
 import pandas as pd
 
 REQUIRED_FILES = (
@@ -405,7 +404,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                             )
                             df_copy.loc[[i], [column]] = "NaN"
 
-                        elif pd.isnull(df_copy.at[i,column]) is False:
+                        elif pd.isnull(df_copy.at[i, column]) is False:
                             logging.warning(
                                 "The storage parameter "
                                 + str(i)
@@ -431,7 +430,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                                 "will not be considered."
                             )
                     # check if all other values have a value unequal to Nan
-                    elif pd.isnull(df_copy.at[i,column]) is True:
+                    elif pd.isnull(df_copy.at[i, column]) is True:
                         logging.warning(
                             "In file "
                             + filename
