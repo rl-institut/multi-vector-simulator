@@ -42,7 +42,7 @@ def test_run_smoothly_json(mock_args):
 )
 @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
 def test_run_smoothly_csv(mock_args):
-    main(input_type=CSV_EXT, path_output_folder=OUTPUT_PATH)
+    main(input_type=CSV_EXT, path_output_folder=OUTPUT_PATH, overwrite=True)
     assert 1 == 1
 
 
