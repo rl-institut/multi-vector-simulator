@@ -18,6 +18,7 @@ in the given input folder (input_directory) and creates one json input file for 
 import os
 import json
 import logging
+import numpy as np
 import pandas as pd
 
 REQUIRED_FILES = (
@@ -404,7 +405,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                             )
                             df_copy.loc[[i], [column]] = "NaN"
 
-                        elif pd.isnull(df_copy.loc[[i], [column]].values) == False:
+                        elif pd.isnull(df_copy.at[i,column]) is False:
                             logging.warning(
                                 "The storage parameter "
                                 + str(i)
@@ -430,21 +431,20 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                                 "will not be considered."
                             )
                     # check if all other values have a value unequal to Nan
-                    else:
-                        if pd.isnull(df_copy.loc[[i], [column]].values) == True:
-                            logging.warning(
-                                "In file "
-                                + filename
-                                + ".csv the parameter "
-                                + str(i)
-                                + " in column "
-                                + column
-                                + " is "
-                                "NaN. Please insert a value of 0 or int. For this "
-                                "simulation the value is set to 0 "
-                                "automatically."
-                            )
-                            df_copy.loc[[i], [column]] = 0
+                    elif pd.isnull(df_copy.at[i,column]) is True:
+                        logging.warning(
+                            "In file "
+                            + filename
+                            + ".csv the parameter "
+                            + str(i)
+                            + " in column "
+                            + column
+                            + " is "
+                            "NaN. Please insert a value of 0 or int. For this "
+                            "simulation the value is set to 0 "
+                            "automatically."
+                        )
+                        df_copy.loc[[i], [column]] = 0
                 # delete not required rows in column
                 df = df_copy[df_copy[column].notna()]
             for i, row in df.iterrows():
