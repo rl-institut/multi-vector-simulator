@@ -50,7 +50,7 @@ Here is a template for new release sections
 - Readthedocs documentation for installation (#162)
 - Plotting an networkx graph can now be turned of/on via "plot_nx_graph" in simulation_settings (#172)
 - Plot all timeseries used as input data (#171)
-- Integrate new parameter maximumCap as nominal value for energyProduction assets, ie. PV or wind plants (#124)
+- Integrate new parameter maximumCap as nominal value for energyProduction assets, ie. PV or wind plants (#125 )
 - Integrate new parameter maximumCap as nominal value for storage assets and transformers
 
 ### Changed
