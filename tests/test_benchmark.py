@@ -19,7 +19,6 @@ fname = os.path.basename(__file__)
 
 
 class TestSimulation:
-
     def setup_method(self):
         if os.path.exists(OUTPUT_PATH):
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
