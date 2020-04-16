@@ -358,10 +358,10 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
             # Nan values that are not needed are deleted
             if storage == True:
                 # check if all three columns are available
-                if len(df_copy.columns) < 4:
+                if len(df_copy.columns) < 4 or len(df_copy.columns) > 4:
                     logging.error(
                         "The file " + filename + ".csv requires "
-                        "three columns, you have only inserted %s"
+                        "three columns, you have inserted %s"
                         + len(df_copy.columns)
                         + "columns."
                     )
@@ -397,11 +397,23 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                     if i not in column_parameters:
                         # check if not required parameters are set to Nan and
                         # if not, set them to Nan
-                        if pd.isnull(df_copy.loc[[i], [column]].values) == False:
+                        if i not in ["crate", "opex_var", "soc_initial",
+                                     "soc_max", "soc_min"]:
                             logging.warning(
                                 "The storage parameter "
                                 + str(i)
-                                + " in column"
+                                + " if the file "
+                                + filename
+                                + ".csv is not recognized. It will not be "
+                                  "considered in the simulation."
+                            )
+                            df_copy.loc[[i], [column]]="NaN"
+
+                        elif pd.isnull(df_copy.loc[[i], [column]].values) == False:
+                            logging.warning(
+                                "The storage parameter "
+                                + str(i)
+                                + " in column "
                                 + column
                                 + " of the file "
                                 + filename
@@ -433,7 +445,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                                 + " in column "
                                 + column
                                 + " is "
-                                "NaN. Please insert a value. For this "
+                                "NaN. Please insert a value of 0 or int. For this "
                                 "simulation the value is set to 0 "
                                 "automatically."
                             )
