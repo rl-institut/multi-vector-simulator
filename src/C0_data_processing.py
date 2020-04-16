@@ -245,7 +245,7 @@ def energyConversion(dict_values, group):
                     dict_values[group][asset]["maximumCap"]["value"] = None
         else:
             dict_values[group][asset].update(
-                {"maximumCap": {"value": None, "unit": "kWp"}}
+                {"maximumCap": {"value": None, "unit": dict_values[group][asset]["unit"]}}
             )
 
         # in case there is only one parameter provided (input bus and one output bus)
