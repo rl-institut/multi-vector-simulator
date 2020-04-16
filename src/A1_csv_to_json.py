@@ -289,12 +289,22 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
 
     logging.debug("Loading input data from csv: %s", filename)
 
-    df = pd.read_csv(
-        os.path.join(input_directory, "%s.csv" % filename),
-        sep=",",
-        header=0,
-        index_col=0,
-    )
+    # allow different separators for csv files, take the first one which works
+    read_csv = True
+    separators = [",", ";"]
+    idx = 0
+    while read_csv is True:
+        df = pd.read_csv(
+            os.path.join(input_directory, "%s.csv" % filename),
+            sep=separators[idx],
+            header=0,
+            index_col=0,
+        )
+
+        if len(df.columns) > 0:
+            read_csv = False
+        else:
+            idx = idx + 1
 
     # check wether parameter maximumCap is availavle                             #todo in next version: add maximumCap to hardcoded parameter list above
     new_parameter = "maximumCap"
@@ -405,6 +415,8 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
         filename,
         asset_name_string[:-2],
     )
+
+    print(input_directory, filename, parameters)
 
     # add exception for single dicts
     if filename in [
