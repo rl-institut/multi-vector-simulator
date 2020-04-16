@@ -323,8 +323,8 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                     ((dict_asset["label"], bus_name), "invest")
                 ]
             else:
-                logging.error(
-                    "Function get_optimal_cap has invalid value of parameter direction."
+                raise ValueError(
+                    f"`direction` should be 'input' or 'output' but is {direction}."
                 )
 
             if "timeseries_peak" in dict_asset:
