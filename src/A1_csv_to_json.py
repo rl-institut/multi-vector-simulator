@@ -416,7 +416,6 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
         asset_name_string[:-2],
     )
 
-    print(input_directory, filename, parameters)
 
     # add exception for single dicts
     if filename in [
