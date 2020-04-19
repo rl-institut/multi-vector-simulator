@@ -20,6 +20,8 @@ import json
 import logging
 import pandas as pd
 
+from src.constants import CSV_SEPARATORS
+
 REQUIRED_FILES = (
     "fixcost",
     "simulation_settings",
@@ -291,12 +293,12 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
 
     # allow different separators for csv files, take the first one which works
     seperator_unknown = True
-    separators = [",", ";", "&"]
+
     idx = 0
-    while seperator_unknown is True and idx < len(separators):
+    while seperator_unknown is True and idx < len(CSV_SEPARATORS):
         df = pd.read_csv(
             os.path.join(input_directory, "%s.csv" % filename),
-            sep=separators[idx],
+            sep=CSV_SEPARATORS[idx],
             header=0,
             index_col=0,
         )
@@ -310,7 +312,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
         raise ValueError(
             "The csv file {} has a separator for values which is not one of the "
             "following: {}. The file was therefore unparsable".format(
-                os.path.join(input_directory, "%s.csv" % filename), separators
+                os.path.join(input_directory, "%s.csv" % filename), CSV_SEPARATORS
             )
         )
 
