@@ -293,7 +293,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
     seperator_unknown = True
     separators = [",", ";"]
     idx = 0
-    while seperator_unknown is True:
+    while seperator_unknown is True and idx < len(separators):
         df = pd.read_csv(
             os.path.join(input_directory, "%s.csv" % filename),
             sep=separators[idx],
@@ -305,6 +305,14 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
             seperator_unknown = False
         else:
             idx = idx + 1
+
+    if seperator_unknown is True:
+        raise ValueError(
+            "The csv file {} has a separator for values which is not one of the "
+            "following: {}. The file was therefore unparsable".format(
+                os.path.join(input_directory, "%s.csv" % filename), separators
+            )
+        )
 
     # check wether parameter maximumCap is availavle                             #todo in next version: add maximumCap to hardcoded parameter list above
     new_parameter = "maximumCap"
