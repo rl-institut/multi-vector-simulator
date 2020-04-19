@@ -290,10 +290,10 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
     logging.debug("Loading input data from csv: %s", filename)
 
     # allow different separators for csv files, take the first one which works
-    read_csv = True
+    seperator_unknown = True
     separators = [",", ";"]
     idx = 0
-    while read_csv is True:
+    while seperator_unknown is True:
         df = pd.read_csv(
             os.path.join(input_directory, "%s.csv" % filename),
             sep=separators[idx],
@@ -302,7 +302,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
         )
 
         if len(df.columns) > 0:
-            read_csv = False
+            seperator_unknown = False
         else:
             idx = idx + 1
 
