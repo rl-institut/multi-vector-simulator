@@ -8,6 +8,8 @@ elements = os.path.join(REPO_PATH, "tests", INPUT_FOLDER, CSV_ELEMENTS)
 CSV_TEST = os.path.join(REPO_PATH, "tests", "test_data")
 CSV_PARAMETERS = ["param1", "param2"]
 
+CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {"value": 21, "unit": "factor"}}}
+
 
 def test_create_input_json_creation_of_json_file():
     load_data_from_csv.create_input_json(
@@ -20,24 +22,15 @@ def test_create_json_from_csv_with_comma_separated_csv():
     d = load_data_from_csv.create_json_from_csv(
         CSV_TEST, "csv_comma", CSV_PARAMETERS, storage=False
     )
-
-    assert d == {
-        "csv_comma": {
-            "col1": {"param1": "val11", "param2": {"value": 21, "unit": "factor"}}
-        }
-    }
+    assert d == {"csv_comma": CSV_EXAMPLE}
 
 
-def test_create_json_from_csv_with_semicolumn_separated_csv():
+def test_create_json_from_csv_with_semicolon_separated_csv():
     d = load_data_from_csv.create_json_from_csv(
-        CSV_TEST, "csv_semicolumn", CSV_PARAMETERS, storage=False
+        CSV_TEST, "csv_semicolon", CSV_PARAMETERS, storage=False
     )
 
-    assert d == {
-        "csv_semicolumn": {
-            "col1": {"param1": "val11", "param2": {"value": 21, "unit": "factor"}}
-        }
-    }
+    assert d == {"csv_semicolon": CSV_EXAMPLE}
 
 
 def teardown_module():
