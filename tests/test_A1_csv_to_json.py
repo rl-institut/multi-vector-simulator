@@ -1,7 +1,7 @@
 import os
+import pytest
 
 from src.constants import REPO_PATH, INPUT_FOLDER, CSV_ELEMENTS
-
 import src.A1_csv_to_json as load_data_from_csv
 
 elements = os.path.join(REPO_PATH, "tests", INPUT_FOLDER, CSV_ELEMENTS)
@@ -39,6 +39,14 @@ def test_create_json_from_csv_with_ampersand_separated_csv():
     )
 
     assert d == {"csv_ampersand": CSV_EXAMPLE}
+
+
+def test_create_json_from_csv_with_unknown_separator_for_csv():
+
+    with pytest.raises(ValueError):
+        load_data_from_csv.create_json_from_csv(
+            CSV_TEST, "csv_unknown_separator", CSV_PARAMETERS, storage=False
+        )
 
 
 def teardown_module():
