@@ -76,6 +76,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Tests for the module A0 (#138)
 - Terminal commands (#135)
 - PR request template (open/done/not applicable) (#205)
+- URL of coverall badge (#265) 
 
 ### Removed
 - Function welcome from module A0 (#138)
