@@ -33,5 +33,13 @@ def test_create_json_from_csv_with_semicolon_separated_csv():
     assert d == {"csv_semicolon": CSV_EXAMPLE}
 
 
+def test_create_json_from_csv_with_ampersand_separated_csv():
+    d = load_data_from_csv.create_json_from_csv(
+        CSV_TEST, "csv_ampersand", CSV_PARAMETERS, storage=False
+    )
+
+    assert d == {"csv_ampersand": CSV_EXAMPLE}
+
+
 def teardown_module():
     os.remove(os.path.join(elements, "test_example_create.json"))
