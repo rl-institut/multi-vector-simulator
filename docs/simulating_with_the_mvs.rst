@@ -49,6 +49,9 @@ For that, each of the following files have to be present in the folder "csv_elem
 When defining your energy system with this CSV files,
 please also refer to the definition of parameters that you can find here: `stable <https://mvs-eland.readthedocs.io/en/stable/MVS_parameters.html>`_ / `latest <https://mvs-eland.readthedocs.io/en/latest/MVS_parameters.html>`_.
 
+Please note that the allowed separators for csv files are located in `src/constants.py` under the
+`CSV_SEPARATORS` variable. Currently only `[',', ';', '&']` are allowed.
+
 Json file: mvs_config.json
 ##########################
 
