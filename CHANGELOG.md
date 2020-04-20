@@ -42,6 +42,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Update json file `mvs_config.json`: Default with no peak demand pricing. Replace string "False" by boolean `false`. Remove depreciated parameters from `simulation_settings`(`input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs`) (#234)
 - Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
 - variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
+- the columns of the storage_xx files are renamed and the specific parameters for each column are checked in A1 (#259)
 
 ### Removed
 
