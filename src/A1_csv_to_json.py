@@ -138,7 +138,7 @@ def create_input_json(
         return outfile.name
 
 
-def create_json_from_csv(input_directory, filename, parameters, storage=False):
+def create_json_from_csv(input_directory, filename, parameters=None, storage=False):
 
     """
     One csv file is loaded and it's parameters are checked. The csv file is
@@ -168,13 +168,21 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
 
     logging.debug("Loading input data from csv: %s", filename)
 
+    parameters = REQUIRED_CSV_PARAMETERS.get(filename, parameters)
+
+    if parameters is None:
+        raise MissingParameterError(
+            f"No parameters were provided to extract from the file file {filename}.csv \n"
+            f"Please check {input_directory} for correct parameter names."
+        )
+
     # allow different separators for csv files, take the first one which works
     seperator_unknown = True
 
     idx = 0
     while seperator_unknown is True and idx < len(CSV_SEPARATORS):
         df = pd.read_csv(
-            os.path.join(input_directory, "%s.csv" % filename),
+            os.path.join(input_directory, "{}.csv".format(filename)),
             sep=CSV_SEPARATORS[idx],
             header=0,
             index_col=0,
@@ -186,47 +194,47 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
             idx = idx + 1
 
     if seperator_unknown is True:
-        raise ValueError(
+        raise CsvParsingError(
             "The csv file {} has a separator for values which is not one of the "
             "following: {}. The file was therefore unparsable".format(
-                os.path.join(input_directory, "%s.csv" % filename), CSV_SEPARATORS
+                os.path.join(input_directory, f"{filename}.csv"), CSV_SEPARATORS
             )
         )
 
-    # check wether parameter maximumCap is availavle                             #todo in next version: add maximumCap to hardcoded parameter list above
+    # check wether parameter maximumCap is availavle
+    # TODO in next version: add maximumCap to hardcoded parameter list above
     new_parameter = "maximumCap"
     if new_parameter in df.index:
         parameters.append(new_parameter)
     else:
         logging.warning(
-            "You are not using the parameter %s for asset group %s, which allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). In the upcoming version of the MVS, this parameter will be required.",
-            new_parameter,
-            filename,
+            f"You are not using the parameter {new_parameter} for asset group {filename}, which allows "
+            "setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). "
+            "In the upcoming version of the MVS, this parameter will be required."
         )
 
     # check parameters
+    missing_parameters = []
+    wrong_parameters = []
     if storage is False:
         extra = list(set(parameters) ^ set(df.index))
         if len(extra) > 0:
             for i in extra:
                 if i in parameters:
-                    logging.error(
-                        "In the file %s.csv" % filename
-                        + " the parameter "
-                        + str(i)
-                        + " is missing. "
-                        "check %s",
-                        input_directory + " for correct parameter names.",
-                    )
+                    missing_parameters.append(i)
                 else:
-                    logging.error(
-                        "In the file %s.csv" % filename
-                        + " the parameter "
-                        + str(i)
-                        + " is not recognized. \n"
-                        "check %s",
-                        input_directory + " for correct parameter names.",
-                    )
+                    wrong_parameters.append(i)
+
+    if len(missing_parameters) > 0:
+        raise MissingParameterError(
+            f"In the file {filename}.csv the parameter {i} is missing. \n"
+            f"Please check {input_directory} for correct parameter names."
+        )
+    elif len(wrong_parameters) > 0:
+        raise WrongParameterError(
+            f"In the file {filename}.csv the parameter {i} is not recognized. \n"
+            f"Please check {input_directory} for correct parameter names."
+        )
 
     # convert csv to json
     single_dict2 = {}
