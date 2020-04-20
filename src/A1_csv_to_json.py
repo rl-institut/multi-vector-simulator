@@ -408,7 +408,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                         # check if not required parameters are set to Nan and
                         # if not, set them to Nan
                         if i not in [
-                            "crate",
+                            "c_rate",
                             "opex_var",
                             "soc_initial",
                             "soc_max",
