@@ -360,7 +360,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
             "No %s" % filename + " assets are added because all "
             "columns of the csv file are empty."
         )
-    df_copy = df
+    df_copy = df.copy()
     for column in df_copy:
         if column != "unit":
             column_dict = {}
