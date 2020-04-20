@@ -24,6 +24,11 @@ def test_create_input_json_already_existing_json_file_raises_FileExistsError():
         A1.create_input_json(input_directory=CSV_PATH)
 
 
+def test_create_input_json_raises_FileNotFoundError_if_missing_required_csv_files():
+    with pytest.raises(FileNotFoundError):
+        A1.create_input_json(input_directory=DUMMY_CSV_PATH)
+
+
 def test_create_input_json_required_fields_are_filled():
     js_file = A1.create_input_json(input_directory=CSV_PATH, pass_back=True)
     js = data_input.load_json(js_file)
@@ -61,11 +66,41 @@ def test_create_json_from_csv_with_ampersand_separated_csv():
     assert d == {"csv_ampersand": CSV_EXAMPLE}
 
 
-def test_create_json_from_csv_with_unknown_separator_for_csv():
+def test_create_json_from_csv_with_unknown_separator_for_csv_raises_CsvParsingError():
 
-    with pytest.raises(ValueError):
+    with pytest.raises(A1.CsvParsingError):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH, "csv_unknown_separator", CSV_PARAMETERS, storage=False
+        )
+
+
+def test_create_json_from_csv_without_providing_parameters_raises_WrongParameterError():
+
+    with pytest.raises(A1.WrongParameterError):
+        A1.create_json_from_csv(
+            DUMMY_CSV_PATH, "csv_comma", parameters=[], storage=False
+        )
+
+
+def test_create_json_from_csv_with_uncomplete_parameters_raises_MissingParameterError():
+
+    with pytest.raises(A1.MissingParameterError):
+        A1.create_json_from_csv(
+            DUMMY_CSV_PATH,
+            "csv_comma",
+            parameters=["param1", "param2", "param3"],
+            storage=False,
+        )
+
+
+def test_create_json_from_csv_with_wrong_parameters_raises_WrongParameterError():
+
+    with pytest.raises(A1.WrongParameterError):
+        A1.create_json_from_csv(
+            DUMMY_CSV_PATH,
+            "csv_wrong_parameter",
+            parameters=["param1", "param2"],
+            storage=False,
         )
 
 
