@@ -2,7 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/mvs-eland/badge/?version=latest)](https://mvs-eland.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.com/rl-institut/mvs_eland.svg?branch=dev)](https://travis-ci.com/rl-institut/mvs_eland)
-[![Coverage Status](https://coveralls.io/repos/github/rl-institut/mvs_eland/badge.svg?branch=dev)](https://coveralls.io/github/rl-institut/mvs_eland?branch=dev)
+[![Coverage Status](https://coveralls.io/repos/github/rl-institut/mvs_eland/badge.svg)](https://coveralls.io/github/rl-institut/mvs_eland)
 
 Rights: [Reiner Lemoine Institut (Berlin)](https://reiner-lemoine-institut.de/)
 
@@ -94,7 +94,7 @@ To run the MVS with custom inputs you have several options:
 
 Edit the json input file (or csv files) and run
 
-    `python mvs_tool.py -i path_input_folder -ext json -o path_output_folder`
+  `python mvs_tool.py -i path_input_folder -ext json -o path_output_folder`
 
 With 
 `path_input_folder`: path to folder with input data,
