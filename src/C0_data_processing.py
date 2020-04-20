@@ -36,7 +36,7 @@ def all(dict_values):
     # Adds costs to each asset and sub-asset
     process_all_assets(dict_values)
 
-    output.store_as_json(dict_values, "json_input_processed")
+    output.store_as_json(dict_values, dict_values["simulation_settings"]["path_output_folder"], "json_input_processed")
     return
 
 

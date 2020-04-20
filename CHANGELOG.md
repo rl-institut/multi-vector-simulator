@@ -52,6 +52,7 @@ Here is a template for new release sections
 - function `get_user_inputs` renamed `process_user_arguments` (#138)
 - Tests for the module A0 (#138)
 - Terminal commands (#135)
+- Function converting json to dict (#142)
 
 ### Removed
 - Function welcome from module A0 (#138)

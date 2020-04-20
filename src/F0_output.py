@@ -147,40 +147,41 @@ def store_timeseries_all_busses_to_excel(dict_values):
     return
 
 
-def store_as_json(dict_values, file_name):
+def convert(o):
+    # This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
+    if isinstance(o, numpy.int64):
+        return int(o)
+    # todo this actually drops the date time index, which could be interesting
+    if isinstance(o, pd.DatetimeIndex):
+        return "date_range"
+    #if isinstance(o, pd.datetime):
+    #    return str(o)
+    if isinstance(o, pd.Timestamp):
+        return str(o)
+    # todo this also drops the timeindex, which is unfortunate.
+    if isinstance(o, pd.Series):
+        return "pandas timeseries"  # o.values
+    if isinstance(o, numpy.ndarray):
+        return "numpy timeseries"  # o.tolist()
+    if isinstance(o, pd.DataFrame):
+        return "pandas dataframe"  # o.to_json(orient='records')
+    logging.error(
+        "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"
+        "Type: " + str(type(o)) + " \n"
+        "Value(s): " + str(o) + "\n"
+        "Please edit function CO_data_processing.dataprocessing.store_as_json."
+    )
+    raise TypeError
+
+def store_as_json(dict_values, output_folder, file_name):
     """
 
     :param dict_values:
     :param file_name:
     :return:
     """
-
-    # This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
-    def convert(o):
-        if isinstance(o, numpy.int64):
-            return int(o)
-        # todo this actually drops the date time index, which could be interesting
-        if isinstance(o, pd.DatetimeIndex):
-            return "date_range"
-        if isinstance(o, pd.datetime):
-            return str(o)
-        # todo this also drops the timeindex, which is unfortunate.
-        if isinstance(o, pd.Series):
-            return "pandas timeseries"  # o.values
-        if isinstance(o, numpy.ndarray):
-            return "numpy timeseries"  # o.tolist()
-        if isinstance(o, pd.DataFrame):
-            return "pandas dataframe"  # o.to_json(orient='records')
-        logging.error(
-            "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"
-            "Type: " + str(type(o)) + " \n"
-            "Value(s): " + str(o) + "\n"
-            "Please edit function CO_data_processing.dataprocessing.store_as_json."
-        )
-        raise TypeError
-
     file_path = (
-        dict_values["simulation_settings"]["path_output_folder"]
+        output_folder
         + "/"
         + file_name
         + ".json"
