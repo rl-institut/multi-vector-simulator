@@ -6,6 +6,7 @@ import dash_html_components as html
 import time
 import pandas as pd
 import reverse_geocoder as rg
+import json
 
 # Initialize the app
 app = dash.Dash(__name__)
@@ -21,7 +22,6 @@ colors = {
 dfprojectData = pd.read_csv('../inputs/csv_elements/project_data.csv')
 dfeconomicData = pd.read_csv('../inputs/csv_elements/economic_data.csv')
 dfsimSettíngs = pd.read_csv('../inputs/csv_elements/simulation_settings.csv')
-dfsectors = pd.read_csv('../inputs/csv_elements/energyConsumption.csv')
 
 # Obtaining the coordinates of the project location
 coordinates = (float(dfprojectData['project_data'][2]), float(dfprojectData['project_data'][3]))
@@ -53,6 +53,15 @@ releaseDesign = '0.0x'
 branchID = 'xcdd5eg004'
 simDate = time.strftime("%Y-%m-%d")
 
+# Determining the sectors which were simulated
+
+with open('../MVS_outputs/json_input_processed.json') as f:
+    data = json.load(f)
+sectors = list(data['project_data']['sectors'].keys())
+sec_list = """"""
+for sec in sectors:
+    sec_list += "\n" + f'\u2022 {sec.upper()}'
+
 
 # Function that creates a HTML table from a Pandas dataframe
 def make_dash_table(df):
@@ -65,25 +74,6 @@ def make_dash_table(df):
         table.append(html.Tr(html_row))
     return table
 
-# Determine the sectors and the demands;
-dfsectors = dfsectors.drop('unit', axis=1)
-dfsectors = dfsectors.set_index('Unnamed: 0')
-
-# List of sectors
-sectors = []
-for col in dfsectors.columns:
-    if dfsectors.loc['energyVector', col] not in sectors:
-        sectors.append(dfsectors.loc['energyVector', col])
-
-# Dictionary with sectors and the respective demands
-sectors_dic = {}
-for sec in sectors:
-    for col in dfsectors.columns:
-        if dfsectors.loc['energyVector', col] == sec:
-            if sec in sectors_dic:
-                sectors_dic[sec].append(col)
-            else:
-                sectors_dic[sec] = [col]
 
 # Header section with logo and the title of the report, and CSS styling. Work in progress...
 
@@ -295,13 +285,14 @@ app.layout = html.Div([
                                                  })]),
 
     html.Div(className='blockoftext2', children=[html.P('The simulation was performed for the energy system '
-                                                        'covering the following sectors:',
-                                                        style={
-                                                            'textAlign': 'justify',
-                                                            'fontSize': '40px',
-                                                            'margin': '30px'
-                                                        }
-                                                        )]),
+                                                        'covering the following sectors:'),
+                                                 html.P(f'{sec_list}')
+                                                 ],
+             style={
+                 'textAlign': 'justify',
+                 'fontSize': '40px',
+                 'margin': '30px'
+             })
 
 ])
 
