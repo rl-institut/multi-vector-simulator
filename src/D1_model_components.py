@@ -275,7 +275,9 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
 def storage_fix(model, dict_asset, **kwargs):
     storage = solph.components.GenericStorage(
         label=dict_asset["label"],
-        nominal_storage_capacity=dict_asset["storage capacity"]["installedCap"]["value"],
+        nominal_storage_capacity=dict_asset["storage capacity"]["installedCap"][
+            "value"
+        ],
         inputs={
             kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow(
                 nominal_value=dict_asset["output power"]["installedCap"][
@@ -303,9 +305,7 @@ def storage_fix(model, dict_asset, **kwargs):
         inflow_conversion_factor=dict_asset["input power"]["efficiency"][
             "value"
         ],  # storing efficiency
-        outflow_conversion_factor=dict_asset["output power"]["efficiency"][
-            "value"
-        ],
+        outflow_conversion_factor=dict_asset["output power"]["efficiency"]["value"],
     )  # efficiency of discharge
     model.add(storage)
     kwargs["storages"].update({dict_asset["label"]: storage})
