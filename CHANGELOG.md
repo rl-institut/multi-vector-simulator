@@ -55,6 +55,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Benchmark test that the simulation is running with default settings (#254)
 - Fix specific parameters for each storage column (#75)
 - Overwrite local results when running through brenchmark tests (#260)
+- Allow more than one separator for csv files(#263)
 
 
 ## [0.2.0] - 2020-03-13
@@ -77,6 +78,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Tests for the module A0 (#138)
 - Terminal commands (#135)
 - PR request template (open/done/not applicable) (#205)
+- URL of coverall badge (#265) 
 
 ### Removed
 - Function welcome from module A0 (#138)
