@@ -350,7 +350,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                 # check if all three columns are available
                 if len(df_copy.columns) < 4 or len(df_copy.columns) > 4:
                     logging.error(
-                        "The file " + filename + ".csv requires "
+                        f"The file {filename}.csv requires "
                         "three columns, you have inserted %s"
                         + len(df_copy.columns)
                         + "columns."
