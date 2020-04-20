@@ -371,9 +371,8 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                 if len(df_copy.columns) < 4 or len(df_copy.columns) > 4:
                     logging.error(
                         f"The file {filename}.csv requires "
-                        "three columns, you have inserted %s"
-                        + len(df_copy.columns)
-                        + "columns."
+                        f"three columns, you have inserted {len(df_copy.columns)}"
+                        "columns."
                     )
                 # add column specific parameters
                 if column == "storage capacity":
@@ -382,12 +381,8 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                     extra = ["c_rate", "opex_var"]
                 else:
                     logging.error(
-                        "The column name "
-                        + column
-                        + " in The file "
-                        + filename
-                        + ".csv is not valid. "
-                        "Please use the column names: "
+                        f"The column name {column} in The file {filename}.csv"
+                        " is not valid. Please use the column names: "
                         "'storage capacity', 'input power' and "
                         "'output power'."
                     )
@@ -395,13 +390,8 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                 # check if required parameters are missing
                 for i in set(column_parameters) - set(df_copy.index):
                     logging.warning(
-                        "In file "
-                        + filename
-                        + ".csv the parameter "
-                        + str(i)
-                        + " in column "
-                        + column
-                        + " is missing."
+                        f"In file {filename}.csv the parameter {str(i)}"
+                        f" in column {column} is missing."
                     )
                 for i in df_copy.index:
                     if i not in column_parameters:
@@ -415,51 +405,32 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                             "soc_min",
                         ]:
                             logging.warning(
-                                "The storage parameter "
-                                + str(i)
-                                + " if the file "
-                                + filename
-                                + ".csv is not recognized. It will not be "
+                                f"The storage parameter {str(i)} of the file "
+                                f"{filename}.csv is not recognized. It will not be "
                                 "considered in the simulation."
                             )
                             df_copy.loc[[i], [column]] = "NaN"
 
                         elif pd.isnull(df_copy.at[i, column]) is False:
                             logging.warning(
-                                "The storage parameter "
-                                + str(i)
-                                + " in column "
-                                + column
-                                + " of the file "
-                                + filename
-                                + ".csv should be set to "
-                                "NaN. It will not be considered in the "
+                                f"The storage parameter {str(i)} in column "
+                                f" {column} of the file {filename}.csv should "
+                                "be set to NaN. It will not be considered in the "
                                 "simulation"
                             )
                             df_copy.loc[[i], [column]] = "NaN"
                         else:
                             logging.debug(
-                                "In file "
-                                + filename
-                                + ".csv the parameter "
-                                + str(i)
-                                + " in column "
-                                + column
-                                + " is "
-                                "NaN. This is correct; the parameter "
-                                "will not be considered."
+                                f"In file {filename}.csv the parameter {str(i)}"
+                                f" in column {column} is NaN. This is correct; "
+                                f"the parameter will not be considered."
                             )
                     # check if all other values have a value unequal to Nan
                     elif pd.isnull(df_copy.at[i, column]) is True:
                         logging.warning(
-                            "In file "
-                            + filename
-                            + ".csv the parameter "
-                            + str(i)
-                            + " in column "
-                            + column
-                            + " is "
-                            "NaN. Please insert a value of 0 or int. For this "
+                            f"In file {filename}.csv the parameter {str(i)}"
+                            f" in column {column} is NaN. Please insert a value "
+                            "of 0 or int. For this "
                             "simulation the value is set to 0 "
                             "automatically."
                         )
@@ -605,8 +576,8 @@ def add_storage_components(storage_filename, input_directory):
         dictionary containing the storage parameters
     """
 
-    if not os.path.exists(os.path.join(input_directory, "%s.csv" % storage_filename)):
-        logging.error("The storage file %s.csv" % storage_filename + " is missing!")
+    if not os.path.exists(os.path.join(input_directory, f"{storage_filename}.csv")):
+        logging.error(f"The storage file {storage_filename}.csv is missing!")
     else:
         # hardcoded parameterlist of common parameters in all columns
         parameters = [
