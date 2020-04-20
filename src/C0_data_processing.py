@@ -1210,7 +1210,7 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
             if dict["maximumCap"]["value"] < dict["installedCap"]["value"]:
 
                 logging.warning(
-                    "The stated maximumCap in %s %s is smaller than the "
+                    f"The stated maximumCap in {group} {asset} is smaller than the "
                     "installedCap. Please enter a greater maximumCap."
                     "For this simulation, the maximumCap will be "
                     "disregarded and not be used in the simulation",
@@ -1221,11 +1221,9 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
             # check if maximumCao is 0
             elif dict["maximumCap"]["value"] == 0:
                 logging.warning(
-                    "The stated maximumCap of zero in %s %s is invalid."
+                    f"The stated maximumCap of zero in {group} {asset} is invalid."
                     "For this simulation, the maximumCap will be "
-                    "disregarded and not be used in the simulation.",
-                    group,
-                    asset,
+                    "disregarded and not be used in the simulation."
                 )
                 dict["maximumCap"]["value"] = None
     else:
