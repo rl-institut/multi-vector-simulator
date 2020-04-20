@@ -357,39 +357,47 @@ def plot_costs_rest(
         {n: costs_total_rest[n] / rest for n in costs_total_rest.keys()}
     )
     costs_total_rest = pd.Series(costs_total_rest)
-    costs_total_rest.plot.pie(
-        title="Rest of "
-        + label
-        + "("
-        + str(round((1 - major_value) * 100))
-        + "% of "
-        + str(round(total, 2))
-        + "$): "
-        + project_data["project_name"]
-        + ", "
-        + project_data["scenario_name"],
-        autopct="%1.1f%%",
-        subplots=True,
-    )
+    # check if there are any remaining costs that could be plotted
+    if costs_total_rest.empty == False:
+        costs_total_rest.plot.pie(
+            title="Rest of "
+            + label
+            + "("
+            + str(round((1 - major_value) * 100))
+            + "% of "
+            + str(round(total, 2))
+            + "$): "
+            + project_data["project_name"]
+            + ", "
+            + project_data["scenario_name"],
+            autopct="%1.1f%%",
+            subplots=True,
+        )
 
-    plt.savefig(
-        settings["path_output_folder"] + "/" + path + "_other_costs.png",
-        bbox_inches="tight",
-    )
+        plt.savefig(
+            settings["path_output_folder"] + "/" + path + "_other_costs.png",
+            bbox_inches="tight",
+        )
 
-    plt.close()
-    plt.clf()
-    plt.cla()
+        plt.close()
+        plt.clf()
+        plt.cla()
 
+    else:
+        logging.debug(
+            "No plot for costs_total_rest created, as remaining costs were 0."
+        )
     return
 
 
 def draw_graph(
     energysystem,
+    user_input,
     edge_labels=True,
     node_color="#eeac7e",
     edge_color="#eeac7e",
-    plot=True,
+    show_plot=True,
+    save_plot=True,
     node_size=5500,
     with_labels=True,
     arrows=True,
@@ -429,15 +437,21 @@ def draw_graph(
     }
 
     # draw graph
+    fig, ax = plt.subplots(figsize=(20, 10))
     pos = nx.drawing.nx_agraph.graphviz_layout(grph, prog=layout)
 
-    nx.draw(grph, pos=pos, **options)
+    nx.draw(grph, pos=pos, ax=ax, **options)
 
     # add edge labels for all edges
     if edge_labels is True and plt:
         labels = nx.get_edge_attributes(grph, "weight")
         nx.draw_networkx_edge_labels(grph, pos=pos, edge_labels=labels)
 
-    # show output
-    if plot is True:
-        plt.show()
+    if show_plot is True:
+        fig.show()
+
+    if save_plot is True:
+        fig.savefig(
+            user_input["path_output_folder"] + "/" + "network_graph.png",
+            bbox_inches="tight",
+        )
