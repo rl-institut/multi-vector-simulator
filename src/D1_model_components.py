@@ -275,35 +275,35 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
 def storage_fix(model, dict_asset, **kwargs):
     storage = solph.components.GenericStorage(
         label=dict_asset["label"],
-        nominal_storage_capacity=dict_asset["capacity"]["installedCap"]["value"],
+        nominal_storage_capacity=dict_asset["storage capacity"]["installedCap"]["value"],
         inputs={
             kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow(
-                nominal_value=dict_asset["discharging_power"]["installedCap"][
+                nominal_value=dict_asset["output power"]["installedCap"][
                     "value"
                 ],  # limited through installed capacity, NOT c-rate
-                variable_costs=dict_asset["charging_power"]["opex_var"]["value"],
+                variable_costs=dict_asset["input power"]["opex_var"]["value"],
             )
         },  # maximum charge possible in one timestep
         outputs={
             kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
-                nominal_value=dict_asset["discharging_power"]["installedCap"][
+                nominal_value=dict_asset["output power"]["installedCap"][
                     "value"
                 ],  # limited through installed capacity, NOT c-rate #todo actually, if we only have a lithium battery... crate should suffice? i mean, with crate fixed AND fixed power, this is defined two times
-                variable_costs=dict_asset["discharging_power"]["opex_var"]["value"],
+                variable_costs=dict_asset["output power"]["opex_var"]["value"],
             )
         },  # maximum discharge possible in one timestep
-        loss_rate=dict_asset["capacity"]["efficiency"][
+        loss_rate=dict_asset["storage capacity"]["efficiency"][
             "value"
         ],  # from timestep to timestep
-        min_storage_level=dict_asset["capacity"]["soc_min"]["value"],
-        max_storage_level=dict_asset["capacity"]["soc_max"]["value"],
-        initial_storage_level=dict_asset["capacity"]["soc_initial"][
+        min_storage_level=dict_asset["storage capacity"]["soc_min"]["value"],
+        max_storage_level=dict_asset["storage capacity"]["soc_max"]["value"],
+        initial_storage_level=dict_asset["storage capacity"]["soc_initial"][
             "value"
         ],  # in terms of SOC
-        inflow_conversion_factor=dict_asset["charging_power"]["efficiency"][
+        inflow_conversion_factor=dict_asset["input power"]["efficiency"][
             "value"
         ],  # storing efficiency
-        outflow_conversion_factor=dict_asset["discharging_power"]["efficiency"][
+        outflow_conversion_factor=dict_asset["output power"]["efficiency"][
             "value"
         ],
     )  # efficiency of discharge
