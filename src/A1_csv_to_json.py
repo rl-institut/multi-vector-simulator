@@ -379,7 +379,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                 if column == "storage capacity":
                     extra = ["soc_initial", "soc_max", "soc_min"]
                 elif column == "input power" or column == "output power":
-                    extra = ["crate", "opex_var"]
+                    extra = ["c_rate", "opex_var"]
                 else:
                     logging.error(
                         "The column name "
