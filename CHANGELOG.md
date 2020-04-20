@@ -54,6 +54,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Fix plotting error in F1, plot only if Data frame is not empty (#230, #234)
 - Fix naming error for storages (#166)
 - Benchmark test that the simulation is running with default settings (#254)
+- Overwrite local results when running through brenchmark tests (#260)
+- Allow more than one separator for csv files(#263)
 
 ## [0.2.0] - 2020-03-13
 
@@ -64,7 +66,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Readthedocs documentation for installation (#162)
 - Plotting an networkx graph can now be turned of/on via "plot_nx_graph" in simulation_settings (#172)
 - Plot all timeseries used as input data (#171)
-- Integrate new parameter maximumCap as nominal value for energyProduction assets, ie. PV or wind plants (#124)
+- Integrate new parameter maximumCap as nominal value for energyProduction assets, ie. PV or wind plants (#125 )
+- Integrate new parameter maximumCap as nominal value for storage assets and transformers (PR #243, comp. issue #125)
 
 ### Changed
 - Give priority from kwargs on command line arguments (#112, #138)
@@ -74,6 +77,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Tests for the module A0 (#138)
 - Terminal commands (#135)
 - PR request template (open/done/not applicable) (#205)
+- URL of coverall badge (#265) 
 
 ### Removed
 - Function welcome from module A0 (#138)

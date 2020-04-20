@@ -20,6 +20,8 @@ import json
 import logging
 import pandas as pd
 
+from src.constants import CSV_SEPARATORS
+
 REQUIRED_FILES = (
     "fixcost",
     "simulation_settings",
@@ -289,12 +291,30 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
 
     logging.debug("Loading input data from csv: %s", filename)
 
-    df = pd.read_csv(
-        os.path.join(input_directory, "%s.csv" % filename),
-        sep=",",
-        header=0,
-        index_col=0,
-    )
+    # allow different separators for csv files, take the first one which works
+    seperator_unknown = True
+
+    idx = 0
+    while seperator_unknown is True and idx < len(CSV_SEPARATORS):
+        df = pd.read_csv(
+            os.path.join(input_directory, "%s.csv" % filename),
+            sep=CSV_SEPARATORS[idx],
+            header=0,
+            index_col=0,
+        )
+
+        if len(df.columns) > 0:
+            seperator_unknown = False
+        else:
+            idx = idx + 1
+
+    if seperator_unknown is True:
+        raise ValueError(
+            "The csv file {} has a separator for values which is not one of the "
+            "following: {}. The file was therefore unparsable".format(
+                os.path.join(input_directory, "%s.csv" % filename), CSV_SEPARATORS
+            )
+        )
 
     # check wether parameter maximumCap is availavle                             #todo in next version: add maximumCap to hardcoded parameter list above
     new_parameter = "maximumCap"

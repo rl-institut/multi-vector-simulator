@@ -26,6 +26,8 @@ REQUIRED_CSV_FILES = (
     "energyProviders",
     "energyConsumption",
 )
+# allowed symbols for separating values in .csv files
+CSV_SEPARATORS = (",", ";", "&")
 # name of the folder containing timeseries described by .csv files
 TIME_SERIES = "time_series"
 # name of the folder containing the output of the simulation
