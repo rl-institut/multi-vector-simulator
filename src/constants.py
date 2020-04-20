@@ -66,6 +66,7 @@ REQUIRED_CSV_PARAMETERS = {
         "type_asset",
         "type_oemof",
         "energyVector",
+        "inflow_direction",
         "unit",
     ],
     "energyConversion": [
