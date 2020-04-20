@@ -16,7 +16,34 @@ import pytest
 import argparse
 import logging
 
-import src.A0_initialization as initializing
+import pandas as pd
+import numpy as np
+import src.F0_output as F0
+from src.constants import OUTPUT_FOLDER
+
+
+start_time = "2020-01-01 00:00"
+periods = 3
+values = [0, 1, 2]
+
+pandas_DatetimeIndex = pd.date_range(start = start_time, periods = periods, freq = "60min")
+
+scalar = 2
+
+json_test_dictionary = {
+    "bool": True,
+    "str": "str",
+    "numpy_int64": np.int64(scalar),
+    "pandas_DatetimeIndex": pandas_DatetimeIndex,
+    "pandas_Timestamp": pd.Timestamp(start_time),
+    "pandas_series": pd.Series(values, index=pandas_DatetimeIndex),
+    "numpy_array": np.array(values),
+    "pandas_Dataframe": pd.DataFrame({
+        "a": values,
+        "b": values}),
+}
+
+unknown_type = np.float32(scalar/10)
 
 def test_demand_aggregation_per_energy_vector():
     assert 0
@@ -42,26 +69,45 @@ def test_store_scalars_to_excel():
 def test_store_timeseries_to_excel():
     assert 0
 
-def test_processing_dict_for_json_export_parse_int():
-    assert 0
+def test_processing_dict_for_json_export_parse_bool():
+    file_name = "test_json_bool"
+    F0.store_as_json(json_test_dictionary["bool"], OUTPUT_FOLDER, file_name)
+    assert os.path.exists(OUTPUT_FOLDER +"/"+file_name+".json") is True
 
-def test_processing_dict_for_json_export_parse_pd_DatetimeIndex():
-    assert 0
+def test_processing_dict_for_json_export_parse_str():
+    file_name = "test_json_str"
+    F0.store_as_json(json_test_dictionary["str"], OUTPUT_FOLDER, file_name)
+    assert os.path.exists(OUTPUT_FOLDER +"/"+file_name+".json") is True
 
-def test_processing_dict_for_json_export_parse_pd_datetime():
-    assert 0
+def test_processing_dict_for_json_export_parse_numpy_int64():
+    expr = F0.convert(json_test_dictionary["numpy_int64"])
+    assert expr == scalar
 
-def test_processing_dict_for_json_export_parse_pd_series():
-    assert 0
+def test_processing_dict_for_json_export_parse_pandas_DatetimeIndex():
+    expr = F0.convert(json_test_dictionary["pandas_DatetimeIndex"])
+    assert expr == "date_range"
 
-def test_processing_dict_for_json_export_parse_np_array():
-    assert 0
+def test_processing_dict_for_json_export_parse_pandas_Timestamp():
+    expr = F0.convert(json_test_dictionary["pandas_Timestamp"])
+    assert expr == start_time
 
-def test_processing_dict_for_json_export_parse_pd_Dataframe():
-    assert 0
+def test_processing_dict_for_json_export_parse_pandas_series():
+    expr = F0.convert(json_test_dictionary["pandas_series"])
+    assert expr == "pandas timeseries"
+
+def test_processing_dict_for_json_export_parse_numpy_array():
+    expr = F0.convert(json_test_dictionary["numpy_array"])
+    assert expr == "numpy timeseries"
+
+def test_processing_dict_for_json_export_parse_pandas_Dataframe():
+    expr = F0.convert(json_test_dictionary["pandas_Dataframe"])
+    assert expr == "pandas dataframe"
 
 def test_processing_dict_for_json_export_parse_unknown():
-    assert TypeError
+    with pytest.raises(TypeError):
+        F0.convert(unknown_type)
 
 def test_store_dict_into_json():
-    assert 0
+    file_name = "test_json_converter"
+    F0.store_as_json(json_test_dictionary, OUTPUT_FOLDER, file_name)
+    assert os.path.exists(OUTPUT_FOLDER +"/"+file_name+".json") is True
