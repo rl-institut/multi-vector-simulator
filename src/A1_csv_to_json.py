@@ -100,46 +100,38 @@ def create_input_json(
         filename = str(f[:-4])
         if filename in REQUIRED_CSV_FILES:
             list_assets.append(filename)
-            parameters = REQUIRED_CSV_PARAMETERS[filename]
-            single_dict = create_json_from_csv(
-                input_directory, filename, parameters=parameters
-            )
+            single_dict = create_json_from_csv(input_directory, filename)
             input_json.update(single_dict)
         elif "storage_" in filename:
             list_assets.append(filename)
             # TODO
             pass
-        else:
-            logging.error(
-                "The file %s" % f + " is not recognized as input file for mvs "
-                "check %s",
-                input_directory + "for correct " "file names.",
-            )
 
     # check if all required files are available
     extra = list(set(list_assets) ^ set(REQUIRED_CSV_FILES))
 
+    missing_csv_files = []
     for i in extra:
         if i in REQUIRED_CSV_FILES:
-            logging.error(
-                "Required input file %s is missing! Please add it"
-                "into %s." % (i, os.path.join(input_directory))
-            )
+            missing_csv_files.append(i)
         elif "storage_" in i:
             pass
         else:
-            logging.debug(
-                "File %s" % i + ".csv is an unknown filename and"
-                " will not be processed."
+            logging.error(
+                f"File {i}.csv is an unknown filename and will not be processed."
             )
 
+    if len(missing_csv_files) > 0:
+        raise FileNotFoundError(
+            f"Required input files {missing_csv_files} are missing! Please add them "
+            f"into {input_directory}. The required files are {REQUIRED_CSV_FILES}"
+        )
     # store generated json file to file in input_directory.
     # This json will be used in the simulation.
     with open(output_filename, "w") as outfile:
         json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
     logging.info(
-        "Json file created successully from csv's and stored into "
-        "%s" % output_filename + "\n"
+        f"Json file created successully from csv's and stored into {output_filename}\n"
     )
     logging.debug("Json created successfully from csv.")
     if pass_back:
