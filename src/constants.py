@@ -26,6 +26,8 @@ REQUIRED_CSV_FILES = (
     "energyProviders",
     "energyConsumption",
 )
+# allowed symbols for separating values in .csv files
+CSV_SEPARATORS = (",", ";", "&")
 # name of the folder containing timeseries described by .csv files
 TIME_SERIES = "time_series"
 # name of the folder containing the output of the simulation
@@ -43,4 +45,13 @@ USER_INPUT_ARGUMENTS = (
     "input_type" "path_input_sequences",
     "overwrite",
     "display_output",
+)
+
+DEFAULT_MAIN_KWARGS = dict(
+    overwrite=False,
+    input_type=JSON_EXT,
+    path_input_folder=DEFAULT_INPUT_PATH,
+    path_output_folder=DEFAULT_OUTPUT_PATH,
+    display_output="info",
+    lp_file_output=False,
 )
