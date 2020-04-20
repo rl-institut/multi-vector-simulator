@@ -40,7 +40,7 @@ def create_input_json(
 
     Looks at all csv-files in `input_directory` and compile the information they contain
     into a json file. The json file is then saved within the `input_directory`
-    with the filename `output_filename`.
+    with the filename `CSV_FNAME`.
     While reading the csv files, it is checked, whether all required parameters
     for each component are provided. Missing parameters will return a warning message.
 
@@ -59,7 +59,15 @@ def create_input_json(
         "loading and converting all csv's from %s" % input_directory + " into one json"
     )
 
-    output_filename = CSV_FNAME
+    output_filename = os.path.join(input_directory, CSV_FNAME)
+
+    if os.path.exists(output_filename):
+        raise FileExistsError(
+            f"The mvs json config file {CSV_FNAME} already exists in the input "
+            f"folder {input_directory}. This is likely due to an aborted "
+            f"previous run. Please make sure no such file is located within "
+            f"the folder prior to run a new simulation"
+        )
 
     input_json = {}
     # hardcoded required lists of parameters for the creation of json files according csv file
@@ -246,11 +254,11 @@ def create_input_json(
 
     # store generated json file to file in input_directory.
     # This json will be used in the simulation.
-    with open(os.path.join(input_directory, output_filename), "w") as outfile:
+    with open(output_filename, "w") as outfile:
         json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
     logging.info(
         "Json file created successully from csv's and stored into "
-        "%s" % os.path.join(input_directory, output_filename) + "\n"
+        "%s" % output_filename + "\n"
     )
     logging.debug("Json created successfully from csv.")
     if pass_back:
