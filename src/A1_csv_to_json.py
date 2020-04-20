@@ -30,7 +30,12 @@ import json
 import logging
 import pandas as pd
 
-from src.constants import CSV_SEPARATORS, REQUIRED_CSV_FILES, CSV_FNAME
+from src.constants import (
+    CSV_FNAME,
+    CSV_SEPARATORS,
+    REQUIRED_CSV_FILES,
+    REQUIRED_CSV_PARAMETERS,
+)
 
 
 def create_input_json(
@@ -70,156 +75,14 @@ def create_input_json(
         )
 
     input_json = {}
-    # hardcoded required lists of parameters for the creation of json files according csv file
-    parameterlist = {}
-
-    # Hardcoded list of parameters for each of the csv files.
-    parameterlist.update(
-        {
-            "energyConsumption": [
-                "dsm",
-                "file_name",
-                "label",
-                "type_asset",
-                "type_oemof",
-                "energyVector",
-                # "inflow_direction",
-                "unit",
-            ]
-        }
-    )
-    parameterlist.update(
-        {
-            "energyConversion": [
-                "age_installed",
-                "capex_fix",
-                "capex_var",
-                "efficiency",
-                "inflow_direction",
-                "installedCap",
-                "label",
-                "lifetime",
-                "opex_fix",
-                "opex_var",
-                "optimizeCap",
-                "outflow_direction",
-                "type_oemof",
-                "energyVector",
-                "unit",
-            ]
-        }
-    )
-    parameterlist.update(
-        {
-            "energyStorage": [
-                "inflow_direction",
-                "label",
-                "optimizeCap",
-                "outflow_direction",
-                "type_oemof",
-                "storage_filename",
-                "energyVector",
-            ]
-        }
-    )
-    parameterlist.update(
-        {
-            "energyProduction": [
-                "age_installed",
-                "capex_fix",
-                "capex_var",
-                "file_name",
-                "installedCap",
-                "label",
-                "lifetime",
-                "opex_fix",
-                "opex_var",
-                "optimizeCap",
-                "outflow_direction",
-                "type_oemof",
-                "unit",
-                "energyVector",
-            ]
-        }
-    )
-    parameterlist.update(
-        {
-            "energyProviders": [
-                "energy_price",
-                "feedin_tariff",
-                "inflow_direction",
-                "label",
-                "optimizeCap",
-                "outflow_direction",
-                "peak_demand_pricing",
-                "peak_demand_pricing_period",
-                "type_oemof",
-                "energyVector",
-            ]
-        }
-    )
-    parameterlist.update(
-        {
-            "fixcost": [
-                "age_installed",
-                "capex_fix",
-                "capex_var",
-                "label",
-                "lifetime",
-                "opex_fix",
-                "opex_var",
-            ]
-        }
-    )
-    parameterlist.update(
-        {
-            "simulation_settings": [
-                "evaluated_period",
-                "label",
-                "oemof_file_name",
-                "output_lp_file",
-                "restore_from_oemof_file",
-                "display_nx_graph",
-                "store_nx_graph",
-                "start_date",
-                "store_oemof_results",
-                "timestep",
-            ]
-        }
-    )
-    parameterlist.update(
-        {
-            "project_data": [
-                "country",
-                "label",
-                "latitude",
-                "longitude",
-                "project_id",
-                "project_name",
-                "scenario_id",
-                "scenario_name",
-            ]
-        }
-    )
-    parameterlist.update(
-        {
-            "economic_data": [
-                "currency",
-                "discount_factor",
-                "label",
-                "project_duration",
-                "tax",
-            ]
-        }
-    )
 
     # Read all csv files from path input directory
     list_assets = []
     for f in os.listdir(input_directory):
         filename = str(f[:-4])
-        if filename in parameterlist.keys():
+        if filename in REQUIRED_CSV_FILES:
             list_assets.append(filename)
-            parameters = parameterlist[filename]
+            parameters = REQUIRED_CSV_PARAMETERS[filename]
             single_dict = create_json_from_csv(
                 input_directory, filename, parameters=parameters
             )
