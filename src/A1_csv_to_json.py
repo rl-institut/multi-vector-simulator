@@ -38,6 +38,24 @@ from src.constants import (
 )
 
 
+class MissingParameterError(ValueError):
+    """Exception raised for missing parameters of a csv input file."""
+
+    pass
+
+
+class WrongParameterError(ValueError):
+    """Exception raised for errors in the parameters of a csv input file."""
+
+    pass
+
+
+class CsvParsingError(ValueError):
+    """Exception raised for errors in the parameters of a csv input file."""
+
+    pass
+
+
 def create_input_json(
     input_directory, pass_back=True,
 ):
