@@ -15,12 +15,14 @@ The function "create_input_json()" reads all csv files that are stored
 in the given input folder (input_directory) and creates one json input file for mvs_tool.
 
 Functions of this module (that need to be tested)
-- read all necessary input files (allowed files) from folder inputs
-- display error message if Json already in csv_elements
-- read all parameters in CSV
+- read all necessary input files (`REQUIRED_CSV_FILES`) from input folder
+- display error message if `CSV_FNAME` already in input folder
+- read all parameters in from csv files
 - parse parameter that is given as a timeseries with input file name and header
 - parse parameter that is given as a list
-- check that parameter that is given as a list results and subsequent other parameters to be given as list e.g. if we have two output flows in conversion assets there should be two efficiencies to operational costs (this is not implemented in code yet)
+- check that parameter that is given as a list results and subsequent other parameters to be given
+  as list e.g. if we have two output flows in conversion assets there should be two efficiencies
+  to operational costs (this is not implemented in code yet)
 - only necessary parameters should be transferred to json dict, error message with additonal parameters
 - parse data from csv according to intended types - string, boolean, float, int, dict, list!
 """
@@ -237,7 +239,6 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
         )
 
     # convert csv to json
-    single_dict2 = {}
     single_dict = {}
     asset_name_string = ""
     if len(df.columns) == 1:
@@ -395,6 +396,7 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
     elif storage is True:
         return single_dict
     else:
+        single_dict2 = {}
         single_dict2.update({filename: single_dict})
         return single_dict2
     return
