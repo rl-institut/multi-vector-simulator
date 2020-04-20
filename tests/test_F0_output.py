@@ -16,6 +16,8 @@ import pytest
 import argparse
 import logging
 
+import src.A0_initialization as initializing
+
 def test_demand_aggregation_per_energy_vector():
     assert 0
 
