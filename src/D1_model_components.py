@@ -354,9 +354,9 @@ def storage_optimize(model, dict_asset, **kwargs):
         outflow_conversion_factor=dict_asset["output power"]["efficiency"][
             "value"
         ],  # efficiency of discharge
-        invest_relation_input_capacity=dict_asset["input power"]["crate"]["value"],
+        invest_relation_input_capacity=dict_asset["input power"]["c_rate"]["value"],
         # storage can be charged with invest_relation_output_capacity*capacity in one timeperiod
-        invest_relation_output_capacity=dict_asset["output power"]["crate"]["value"]
+        invest_relation_output_capacity=dict_asset["output power"]["c_rate"]["value"]
         # storage can be emptied with invest_relation_output_capacity*capacity in one timeperiod
     )
     model.add(storage)
