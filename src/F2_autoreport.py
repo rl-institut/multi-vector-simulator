@@ -7,6 +7,7 @@ import time
 import pandas as pd
 import reverse_geocoder as rg
 import json
+import dash_table
 
 # Initialize the app
 app = dash.Dash(__name__)
@@ -62,6 +63,30 @@ sec_list = """"""
 for sec in sectors:
     sec_list += "\n" + f'\u2022 {sec.upper()}'
 
+# Creating a dataframe for the demands
+with open('../MVS_outputs/json_with_results.json') as gf:
+    data1 = json.load(gf)
+
+demands = data1['energyConsumption']
+
+del demands['DSO_feedin']
+del demands['Electricity excess']
+
+dem_keys = list(demands.keys())
+
+demand_data = {}
+
+for dem in dem_keys:
+    demand_data.update({dem: [demands[dem]['timeseries_peak']["value"],
+                              demands[dem]['timeseries_average']["value"],
+                              demands[dem]['timeseries_total']["value"]]})
+
+df_dem = pd.DataFrame.from_dict(demand_data, orient='index',
+                                columns=['Peak Demand (kW)', 'Mean Demand (kW)', 'Total Demand per annum (kW)'])
+df_dem.index.name = 'Demands'
+df_dem = df_dem.reset_index()
+df_dem = df_dem.round(3)
+
 
 # Function that creates a HTML table from a Pandas dataframe
 def make_dash_table(df):
@@ -80,8 +105,7 @@ def make_dash_table(df):
 app.layout = html.Div([
 
     html.Div(className='header_title_logo',
-             children=[html.Img(id='mvslogo', src='https://elandh2020.eu/wp-content/themes/netron/libs/images/logo'
-                                                  '/logo-eland-original.svg', width='370px'),
+             children=[html.Img(id='mvslogo', src='assets/logo-eland-original.jpg', width='370px'),
                        html.H1('MULTI VECTOR SIMULATION - REPORT SHEET')],
              style={
                  'textAlign': 'center',
@@ -292,7 +316,66 @@ app.layout = html.Div([
                  'textAlign': 'justify',
                  'fontSize': '40px',
                  'margin': '30px'
-             })
+             }),
+
+    html.Div(className='demandmatter', children=[html.H4('Electricity Demand'),
+                                                 html.P('Electricity demands that have to be supplied are: ')], style={
+        'textAlign': 'left',
+        'fontSize': '40px',
+        'margin': '30px'}),
+
+    html.Div(children=[dash_table.DataTable(
+        id='table',
+        columns=[{"name": i, "id": i} for i in df_dem.columns],
+        data=df_dem.to_dict('records'),
+        style_cell={'padding': '5px',
+                    'height': 'auto',
+                    'width': 'auto'},
+        style_data_conditional=[
+            {
+                'if': {'row_index': 'odd'},
+                'backgroundColor': 'rgb(248, 248, 248)'
+            }],
+        style_header={
+            'fontWeight': 'bold',
+            'color': '#060075'
+        },
+        style_table={
+            'margin': '30px',
+            'fontSize': '40px'
+        }
+    )]),
+
+    html.Div(className='timeseriesplots',
+             children=[
+                 html.Img(id='demand_ts',
+                          src='../MVS_outputs/input_timeseries_Habor_kW.png', width='200px'),
+                 html.Br([]),
+                 html.H4('PV System Input Time Series', style={
+                     'textAlign': 'left',
+                     'fontSize': '40px',
+                     'margin': '30px'}),
+                 html.Br([]),
+                 html.Img(id='pvoutput_ts',
+                          src='../MVS_outputs/input_timeseries_PV plant (mono)_kW.png')
+             ],
+             style={
+                 'margin': '30px'
+             }),
+    html.Br(),
+
+    html.Div(className='heading1', children=[html.H2('Energy System Components',
+                                                     style={
+                                                         'textAlign': 'left',
+                                                         'margin': '30px',
+                                                         'fontSize': '60px',
+                                                         'color': '#8c3604',
+                                                     }),
+                                             html.Hr(
+                                                 style={
+                                                     'color': '#000000',
+                                                     'margin': '30px',
+                                                 })]),
 
 ])
 
