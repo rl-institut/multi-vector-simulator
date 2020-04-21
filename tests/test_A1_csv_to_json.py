@@ -10,6 +10,14 @@ from .constants import CSV_PATH, CSV_FNAME, DUMMY_CSV_PATH, REQUIRED_CSV_FILES
 CSV_PARAMETERS = ["param1", "param2"]
 
 CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {"value": 21, "unit": "factor"}}}
+CSV_TIMESERIES = {
+    "col1": {
+        "param1": {
+            "value": {"file_name": "test_time_series.csv", "header": "power"},
+            "unit": "kW",
+        }
+    }
+}
 
 
 def test_create_input_json_creation_of_json_file():
@@ -113,6 +121,15 @@ def test_create_json_from_csv_ignore_extra_parameters_in_csv():
         storage=False,
     )
     assert d == {"csv_wrong_parameter": CSV_EXAMPLE}
+
+
+def test_create_json_from_csv_for_time_series():
+
+    d = A1.create_json_from_csv(
+        DUMMY_CSV_PATH, "csv_timeseries", parameters=["param1"], storage=False,
+    )
+    assert d == {"csv_timeseries": CSV_TIMESERIES}
+
 
 def teardown_function():
     if os.path.exists(os.path.join(CSV_PATH, CSV_FNAME)):
