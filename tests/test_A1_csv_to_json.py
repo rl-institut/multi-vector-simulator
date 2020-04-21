@@ -11,12 +11,31 @@ CSV_PARAMETERS = ["param1", "param2"]
 
 CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {"value": 21, "unit": "factor"}}}
 CSV_TIMESERIES = {
-    "col1": {
-        "param1": {
-            "value": {"file_name": "test_time_series.csv", "header": "power"},
-            "unit": "kW",
-        }
+    "param1": {
+        "value": {"file_name": "test_time_series.csv", "header": "power"},
+        "unit": "kW",
     }
+}
+
+CSV_LIST = {
+    "param1": ["one", " two"],
+    "param2": {"unit": "factor", "value": [1.02, 3.04]},
+    "param3": {"unit": "currency/kWh", "value": [0.2, 0.7]},
+    "param4": {"unit": "bool", "value": [True, " False", " True"]},
+    "param5": {"unit": "year", "value": [2, 7]},
+}
+
+CONVERSION_TYPE = {
+    "param_str": "one",
+    "param_factor": {"unit": "factor", "value": 1.04},
+    "param_cur": {"unit": "currency/kWh", "value": 18.9},
+    "param_bool1": {"unit": "bool", "value": True},
+    "param_bool2": {"unit": "bool", "value": True},
+    "param_bool3": {"unit": "bool", "value": False},
+    "param_bool4": {"unit": "bool", "value": False},
+    "param_bool5": {"unit": "bool", "value": True},
+    "param_bool6": {"unit": "bool", "value": False},
+    "param_year": {"unit": "year", "value": 8},
 }
 
 
@@ -128,7 +147,43 @@ def test_create_json_from_csv_for_time_series():
     d = A1.create_json_from_csv(
         DUMMY_CSV_PATH, "csv_timeseries", parameters=["param1"], storage=False,
     )
-    assert d == {"csv_timeseries": CSV_TIMESERIES}
+    for k, v in d["csv_timeseries"]["col1"].items():
+        assert v == CSV_TIMESERIES[k]
+
+
+def test_create_json_from_csv_for_list():
+
+    d = A1.create_json_from_csv(
+        DUMMY_CSV_PATH,
+        "csv_list",
+        parameters=["param1", "param2", "param3", "param4", "param5"],
+        storage=False,
+    )
+    for k, v in d["csv_list"]["col1"].items():
+        assert v == CSV_LIST[k]
+
+
+def test_conversion():
+
+    d = A1.create_json_from_csv(
+        DUMMY_CSV_PATH,
+        "csv_type",
+        parameters=[
+            "param_str",
+            "param_factor",
+            "param_cur",
+            "param_bool1",
+            "param_bool2",
+            "param_bool3",
+            "param_bool4",
+            "param_bool5",
+            "param_bool6",
+            "param_year",
+        ],
+        storage=False,
+    )
+    for k, v in d["csv_type"]["col1"].items():
+        assert v == CONVERSION_TYPE[k]
 
 
 def teardown_function():
