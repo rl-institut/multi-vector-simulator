@@ -20,6 +20,7 @@ The model F0 output defines all functions that store evaluation results to file.
 - store dictionary to Json
 """
 
+
 def evaluate_dict(dict_values):
 
     logging.info(
@@ -79,7 +80,6 @@ def evaluate_dict(dict_values):
     # storing all flows to exel.
     store_timeseries_all_busses_to_excel(dict_values)
 
-
     # plot optimal capacities if there are optimized assets
     plot_optimized_capacities(dict_values)
 
@@ -89,6 +89,7 @@ def evaluate_dict(dict_values):
     # Write everything to file with multipe tabs
     store_scalars_to_excel(dict_values)
     return
+
 
 def plot_optimized_capacities(dict_values):
     show_optimal_capacities = False
@@ -103,6 +104,7 @@ def plot_optimized_capacities(dict_values):
             dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
         )
     return
+
 
 def store_scalars_to_excel(dict_values):
     results_scalar_output_file = "/scalars" + ".xlsx"
@@ -123,6 +125,7 @@ def store_scalars_to_excel(dict_values):
                 kpi_set,
             )
     return
+
 
 def store_timeseries_all_busses_to_excel(dict_values):
     """
@@ -162,7 +165,7 @@ def convert(o):
     # todo this actually drops the date time index, which could be interesting
     if isinstance(o, pd.DatetimeIndex):
         return "date_range"
-    #if isinstance(o, pd.datetime):
+    # if isinstance(o, pd.datetime):
     #    return str(o)
     if isinstance(o, pd.Timestamp):
         return str(o)
@@ -181,6 +184,7 @@ def convert(o):
     )
     raise TypeError
 
+
 def store_as_json(dict_values, output_folder, file_name):
     """
 
@@ -188,12 +192,7 @@ def store_as_json(dict_values, output_folder, file_name):
     :param file_name:
     :return:
     """
-    file_path = (
-        output_folder
-        + "/"
-        + file_name
-        + ".json"
-    )
+    file_path = output_folder + "/" + file_name + ".json"
     myfile = open(file_path, "w")
     json_data = json.dumps(
         dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4

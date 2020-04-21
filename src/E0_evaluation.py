@@ -8,6 +8,7 @@ import src.E2_economics as economics
 import src.E3_indicator_calculation as indicators
 import src.F0_output as output
 
+
 def evaluate_dict(dict_values, results_main, results_meta):
     """
 
@@ -132,7 +133,11 @@ def evaluate_dict(dict_values, results_main, results_meta):
     indicators.all_totals(dict_values)
 
     logging.info("Evaluating optimized capacities and dispatch.")
-    output.store_as_json(dict_values, dict_values["simulation_settings"]["path_output_folder"], "json_with_results")
+    output.store_as_json(
+        dict_values,
+        dict_values["simulation_settings"]["path_output_folder"],
+        "json_with_results",
+    )
     return
 
 
