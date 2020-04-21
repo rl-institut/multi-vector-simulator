@@ -18,10 +18,10 @@ CSV_TIMESERIES = {
 }
 
 CSV_LIST = {
-    "param1": ["one", " two"],
+    "param1": ["one", "two"],
     "param2": {"unit": "factor", "value": [1.02, 3.04]},
     "param3": {"unit": "currency/kWh", "value": [0.2, 0.7]},
-    "param4": {"unit": "bool", "value": [True, " False", " True"]},
+    "param4": {"unit": "bool", "value": [True, False, True]},
     "param5": {"unit": "year", "value": [2, 7]},
 }
 
