@@ -329,8 +329,9 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                         df_copy.loc[[i], [column]] = 0
                 # delete not required rows in column
                 df = df_copy[df_copy[column].notna()]
-            for i, row in df.iterrows():
-                if i == "label":
+
+            for param, row in df.iterrows():
+                if param == "label":
                     asset_name_string = asset_name_string + row[column] + ", "
 
                 # Find type of input value (csv file is read into df as an object)
@@ -339,8 +340,8 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                 ):
                     if "[" not in row[column] or "]" not in row[column]:
                         logging.warning(
-                            f"In file {filename}, asset {column} for parameter {i} either '[' or "
-                            f"']' is missing."
+                            f"In file {filename}, asset {column} for parameter {param} either '[' "
+                            f"or ']' is missing."
                         )
                     else:
                         # Define list of efficiencies by efficiency,factor,"[1;2]"
@@ -354,7 +355,7 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                                     if separator_count > 0:
                                         raise ValueError(
                                             f"The separator of the list for the "
-                                            f"parameter {i} is not unique"
+                                            f"parameter {param} is not unique"
                                         )
                                     separator_count = value_string.count(separator)
                                     list_separator = separator
@@ -366,25 +367,25 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                                 filename, column_dict, row, i, column, value_list[item],
                             )
                             if row["unit"] != "str":
-                                if "value" in column_dict[i]:
+                                if "value" in column_dict[param]:
                                     # if wrapped in list is a scalar
-                                    value_list[item] = column_dict[i]["value"]
+                                    value_list[item] = column_dict[param]["value"]
                                 else:
                                     # if wrapped in list is a dictionary (ie. timeseries)
-                                    value_list[item] = column_dict[i]
+                                    value_list[item] = column_dict[param]
 
                             else:
                                 # if wrapped in list is a string
-                                value_list[item] = column_dict[i]
+                                value_list[item] = column_dict[param]
 
                         if row["unit"] != "str":
                             column_dict.update(
-                                {i: {"value": value_list, "unit": row["unit"]}}
+                                {param: {"value": value_list, "unit": row["unit"]}}
                             )
                         else:
-                            column_dict.update({i: value_list})
+                            column_dict.update({param: value_list})
                         logging.info(
-                            "Parameter %s of asset %s is defined as a list.", i, column,
+                            f"Parameter {param} of asset {column} is defined as a list."
                         )
                 else:
                     column_dict = conversion(
