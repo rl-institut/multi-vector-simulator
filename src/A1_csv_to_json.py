@@ -339,15 +339,28 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                 ):
                     if "[" not in row[column] or "]" not in row[column]:
                         logging.warning(
-                            "In file %s, asset %s for parameter %s either '[' or ']' is missing.",
-                            filename,
-                            column,
-                            i,
+                            f"In file {filename}, asset {column} for parameter {i} either '[' or "
+                            f"']' is missing."
                         )
                     else:
                         # Define list of efficiencies by efficiency,factor,"[1;2]"
                         value_string = row[column].replace("[", "").replace("]", "")
-                        value_list = value_string.split(";")
+
+                        list_separator = None
+                        separator_count = 0
+                        for separator in CSV_SEPARATORS:
+                            if separator in value_string:
+                                if value_string.count(separator) > separator_count:
+                                    if separator_count > 0:
+                                        raise ValueError(
+                                            f"The separator of the list for the "
+                                            f"parameter {i} is not unique"
+                                        )
+                                    separator_count = value_string.count(separator)
+                                    list_separator = separator
+
+                        value_list = value_string.split(list_separator)
+
                         for item in range(0, len(value_list)):
                             column_dict = conversion(
                                 filename, column_dict, row, i, column, value_list[item],
