@@ -344,9 +344,10 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                             f"or ']' is missing."
                         )
                     else:
-                        # Define list of efficiencies by efficiency,factor,"[1;2]"
+                        # Define list of efficiencies by efficiency,factor,"[1,2]"
                         value_string = row[column].replace("[", "").replace("]", "")
 
+                        # find the separator used for the list amongst the CSV_SEPARATORS
                         list_separator = None
                         separator_count = 0
                         for separator in CSV_SEPARATORS:
