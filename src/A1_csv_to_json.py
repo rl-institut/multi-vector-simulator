@@ -20,7 +20,9 @@ import json
 import logging
 import pandas as pd
 
-ALLOWED_FILES = (
+from src.constants import CSV_SEPARATORS
+
+REQUIRED_FILES = (
     "fixcost",
     "simulation_settings",
     "project_data",
@@ -65,13 +67,6 @@ def create_input_json(
     input_json = {}
     # hardcoded required lists of parameters for the creation of json files according csv file
 
-    # hardcorded list of necessary csv files
-    required_files_list = [
-        "energyConsumption",
-        "simulation_settings",
-        "project_data",
-        "economic_data",
-    ]
     parameterlist = {}
 
     # Hardcoded list of parameters for each of the csv files.
@@ -180,7 +175,8 @@ def create_input_json(
                 "oemof_file_name",
                 "output_lp_file",
                 "restore_from_oemof_file",
-                "plot_nx_graph",
+                "display_nx_graph",
+                "store_nx_graph",
                 "start_date",
                 "store_oemof_results",
                 "timestep",
@@ -236,17 +232,13 @@ def create_input_json(
             )
 
     # check if all required files are available
-    extra = list(set(list_assets) ^ set(ALLOWED_FILES))
+    extra = list(set(list_assets) ^ set(REQUIRED_FILES))
 
     for i in extra:
-        if i in required_files_list:
+        if i in REQUIRED_FILES:
             logging.error(
                 "Required input file %s is missing! Please add it"
                 "into %s." % (i, os.path.join(input_directory))
-            )
-        elif i in ALLOWED_FILES:
-            logging.debug(
-                "No %s" % i + ".csv file found. This is an " "accepted option."
             )
         elif "storage_" in i:
             pass
@@ -292,19 +284,37 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
     :param storage: bool
         default value is False. If the function is called by
         add_storage_components() the
-        parameter storage is set to True
+        parameter is set to True
     :return: dict
         the converted dictionary
     """
 
     logging.debug("Loading input data from csv: %s", filename)
 
-    df = pd.read_csv(
-        os.path.join(input_directory, "%s.csv" % filename),
-        sep=",",
-        header=0,
-        index_col=0,
-    )
+    # allow different separators for csv files, take the first one which works
+    seperator_unknown = True
+
+    idx = 0
+    while seperator_unknown is True and idx < len(CSV_SEPARATORS):
+        df = pd.read_csv(
+            os.path.join(input_directory, "%s.csv" % filename),
+            sep=CSV_SEPARATORS[idx],
+            header=0,
+            index_col=0,
+        )
+
+        if len(df.columns) > 0:
+            seperator_unknown = False
+        else:
+            idx = idx + 1
+
+    if seperator_unknown is True:
+        raise ValueError(
+            "The csv file {} has a separator for values which is not one of the "
+            "following: {}. The file was therefore unparsable".format(
+                os.path.join(input_directory, "%s.csv" % filename), CSV_SEPARATORS
+            )
+        )
 
     # check wether parameter maximumCap is availavle                             #todo in next version: add maximumCap to hardcoded parameter list above
     new_parameter = "maximumCap"
@@ -318,27 +328,28 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
         )
 
     # check parameters
-    extra = list(set(parameters) ^ set(df.index))
-    if len(extra) > 0:
-        for i in extra:
-            if i in parameters:
-                logging.error(
-                    "In the file %s.csv" % filename
-                    + " the parameter "
-                    + str(i)
-                    + " is missing. "
-                    "check %s",
-                    input_directory + " for correct parameter names.",
-                )
-            else:
-                logging.error(
-                    "In the file %s.csv" % filename
-                    + " the parameter "
-                    + str(i)
-                    + " is not recognized. \n"
-                    "check %s",
-                    input_directory + " for correct parameter names.",
-                )
+    if storage is False:
+        extra = list(set(parameters) ^ set(df.index))
+        if len(extra) > 0:
+            for i in extra:
+                if i in parameters:
+                    logging.error(
+                        "In the file %s.csv" % filename
+                        + " the parameter "
+                        + str(i)
+                        + " is missing. "
+                        "check %s",
+                        input_directory + " for correct parameter names.",
+                    )
+                else:
+                    logging.error(
+                        "In the file %s.csv" % filename
+                        + " the parameter "
+                        + str(i)
+                        + " is not recognized. \n"
+                        "check %s",
+                        input_directory + " for correct parameter names.",
+                    )
 
     # convert csv to json
     single_dict2 = {}
@@ -349,10 +360,83 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
             "No %s" % filename + " assets are added because all "
             "columns of the csv file are empty."
         )
-
-    for column in df:
+    df_copy = df.copy()
+    for column in df_copy:
         if column != "unit":
             column_dict = {}
+            # the storage columns are checked for the right parameters,
+            # Nan values that are not needed are deleted
+            if storage == True:
+                # check if all three columns are available
+                if len(df_copy.columns) < 4 or len(df_copy.columns) > 4:
+                    logging.error(
+                        f"The file {filename}.csv requires "
+                        f"three columns, you have inserted {len(df_copy.columns)}"
+                        "columns."
+                    )
+                # add column specific parameters
+                if column == "storage capacity":
+                    extra = ["soc_initial", "soc_max", "soc_min"]
+                elif column == "input power" or column == "output power":
+                    extra = ["c_rate", "opex_var"]
+                else:
+                    logging.error(
+                        f"The column name {column} in The file {filename}.csv"
+                        " is not valid. Please use the column names: "
+                        "'storage capacity', 'input power' and "
+                        "'output power'."
+                    )
+                column_parameters = parameters + extra
+                # check if required parameters are missing
+                for i in set(column_parameters) - set(df_copy.index):
+                    logging.warning(
+                        f"In file {filename}.csv the parameter {str(i)}"
+                        f" in column {column} is missing."
+                    )
+                for i in df_copy.index:
+                    if i not in column_parameters:
+                        # check if not required parameters are set to Nan and
+                        # if not, set them to Nan
+                        if i not in [
+                            "c_rate",
+                            "opex_var",
+                            "soc_initial",
+                            "soc_max",
+                            "soc_min",
+                        ]:
+                            logging.warning(
+                                f"The storage parameter {str(i)} of the file "
+                                f"{filename}.csv is not recognized. It will not be "
+                                "considered in the simulation."
+                            )
+                            df_copy.loc[[i], [column]] = "NaN"
+
+                        elif pd.isnull(df_copy.at[i, column]) is False:
+                            logging.warning(
+                                f"The storage parameter {str(i)} in column "
+                                f" {column} of the file {filename}.csv should "
+                                "be set to NaN. It will not be considered in the "
+                                "simulation"
+                            )
+                            df_copy.loc[[i], [column]] = "NaN"
+                        else:
+                            logging.debug(
+                                f"In file {filename}.csv the parameter {str(i)}"
+                                f" in column {column} is NaN. This is correct; "
+                                f"the parameter will not be considered."
+                            )
+                    # check if all other values have a value unequal to Nan
+                    elif pd.isnull(df_copy.at[i, column]) is True:
+                        logging.warning(
+                            f"In file {filename}.csv the parameter {str(i)}"
+                            f" in column {column} is NaN. Please insert a value "
+                            "of 0 or int. For this "
+                            "simulation the value is set to 0 "
+                            "automatically."
+                        )
+                        df_copy.loc[[i], [column]] = 0
+                # delete not required rows in column
+                df = df_copy[df_copy[column].notna()]
             for i, row in df.iterrows():
                 if i == "label":
                     asset_name_string = asset_name_string + row[column] + ", "
@@ -411,7 +495,7 @@ def create_json_from_csv(input_directory, filename, parameters, storage=False):
                 single_dict[column].update(storage_dict)
 
     logging.info(
-        "From file %s following assets are added to the energy " "system: %s",
+        "From file %s following assets are added to the energy system: %s",
         filename,
         asset_name_string[:-2],
     )
@@ -492,23 +576,19 @@ def add_storage_components(storage_filename, input_directory):
         dictionary containing the storage parameters
     """
 
-    if not os.path.exists(os.path.join(input_directory, "%s.csv" % storage_filename)):
-        logging.error("The storage file %s.csv" % storage_filename + " is missing!")
+    if not os.path.exists(os.path.join(input_directory, f"{storage_filename}.csv")):
+        logging.error(f"The storage file {storage_filename}.csv is missing!")
     else:
+        # hardcoded parameterlist of common parameters in all columns
         parameters = [
             "age_installed",
             "capex_fix",
             "capex_var",
-            "crate",
             "efficiency",
             "installedCap",
             "label",
             "lifetime",
             "opex_fix",
-            "opex_var",
-            "soc_initial",
-            "soc_max",
-            "soc_min",
             "unit",
         ]
         single_dict = create_json_from_csv(

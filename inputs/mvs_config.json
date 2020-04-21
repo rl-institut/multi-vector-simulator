@@ -390,7 +390,7 @@
     },
     "energyStorage": {
         "storage_01": {
-            "capacity": {
+            "storage capacity": {
                 "age_installed": {
                     "unit": "year",
                     "value": 0
@@ -402,10 +402,6 @@
                 "capex_var": {
                     "unit": "currency/kWh",
                     "value": 4000
-                },
-                "crate": {
-                    "unit": "factor of total capacity (kWh)",
-                    "value": NaN
                 },
                 "efficiency": {
                     "unit": "factor",
@@ -424,10 +420,6 @@
                     "unit": "currency/kWh/year",
                     "value": 0
                 },
-                "opex_var": {
-                    "unit": "currency/kWh",
-                    "value": 0
-                },
                 "soc_initial": {
                     "unit": "None or factor",
                     "value": null
@@ -442,7 +434,7 @@
                 },
                 "unit": "kWh"
             },
-            "charging_power": {
+            "input power": {
                 "age_installed": {
                     "unit": "year",
                     "value": 0
@@ -479,22 +471,10 @@
                 "opex_var": {
                     "unit": "currency/kWh",
                     "value": 0
-                },
-                "soc_initial": {
-                    "unit": "None or factor",
-                    "value": NaN
-                },
-                "soc_max": {
-                    "unit": "factor",
-                    "value": NaN
-                },
-                "soc_min": {
-                    "unit": "factor",
-                    "value": NaN
                 },
                 "unit": "kW"
             },
-            "discharging_power": {
+            "output power": {
                 "age_installed": {
                     "unit": "year",
                     "value": 0
@@ -531,18 +511,6 @@
                 "opex_var": {
                     "unit": "currency/kWh",
                     "value": 0
-                },
-                "soc_initial": {
-                    "unit": "None or factor",
-                    "value": NaN
-                },
-                "soc_max": {
-                    "unit": "factor",
-                    "value": NaN
-                },
-                "soc_min": {
-                    "unit": "factor",
-                    "value": NaN
                 },
                 "unit": "kW"
             },
@@ -654,7 +622,7 @@
     "simulation_settings": {
         "evaluated_period": {
             "unit": "days",
-            "value": 365
+            "value": 2
         },
         "label": "simulation_settings",
         "oemof_file_name": "MVS_results.oemof",
@@ -662,9 +630,13 @@
             "unit": "bool",
             "value": false
         },
-        "plot_nx_graph": {
+        "display_nx_graph": {
             "unit": "bool",
             "value": false
+        },
+        "store_nx_graph": {
+            "unit": "bool",
+            "value": true
         },
         "restore_from_oemof_file": {
             "unit": "bool",

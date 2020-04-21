@@ -67,13 +67,16 @@ Common Parameters in the CSV/JSON files and in energyConversion.csv:
 
 **installedCap**: The already existing installed capacity in-place, which will also be replaced after its lifetime (kW)
 
+**maximumCap**: The maximum installable capacity
+
 **label**: Name of the asset
 
 **lifetime**: Number of operational years of the asset until it has to be replaced
 
 **opex_fix**: Specific annual OPEX of the asset (€/kW/year)
 
-**opex_var**: Variable cost associated with a flow through/from the asset (€/kWh)
+**opex_var**: Variable cost associated with a flow through/from the asset (€/kWh). In "storage_xx.csv" only the columns "input power" and "output power"
+require a value, in column "storage capacity" opex_var should be set to NaN.
 
 **optimizeCap**: Permissible values are either True or False; ‘True’ if the user wants to perform capacity optimization for various components
 
@@ -125,12 +128,11 @@ energyStorage.csv
 
 storage_xx.csv
 --------------
+**c_rate**: C-rate is the rate at which the storage can charge or discharge relative to the nominal capacity of the storage.
+A c-rate of 1 implies that the battery can discharge or charge completely in a single timestep. Only the columns "input power" and "output power" require a value, in column "storage capacity" crate should be set to NaN.
 
-**crate**: C-rate is the rate at which the storage can charge or discharge relative to the nominal capacity of the storage.
-A c-rate of 1 implies that the battery can discharge or charge completely in a single timestep. 
+**soc_initial**: The level of charge (as a factor of the actual capacity)  in the storage in the zeroth timestep. Acceptable values are either None or the factor. Only the column "storage capacity" require a value, in column "input power" and "output power" soc_initial should be set to NaN.
 
-**soc_initial**: The level of charge (as a factor of the actual capacity)  in the storage in the zeroth timestep. Acceptable values are either None or the factor. 
+**soc_max**: The maximum permissible level of charge in the battery (generally, it is when the battery is filled to its nominal capacity), represented by the value 1.0. Users can  also specify a certain value as a factor of the actual capacity. Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_max should be set to NaN.
 
-**soc_max**: The maximum permissible level of charge in the battery (generally, it is when the battery is filled to its nominal capacity), represented by the value 1.0. Users can  also specify a certain value as a factor of the actual capacity. 
-
-**soc_min**: The minimum permissible level of charge in the battery as a factor of the nominal capacity of the battery. 
+**soc_min**: The minimum permissible level of charge in the battery as a factor of the nominal capacity of the battery. Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_min should be set to NaN.
