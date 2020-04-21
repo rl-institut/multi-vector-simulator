@@ -74,9 +74,9 @@ def test_create_json_from_csv_with_unknown_separator_for_csv_raises_CsvParsingEr
         )
 
 
-def test_create_json_from_csv_without_providing_parameters_raises_WrongParameterError():
+def test_create_json_from_csv_without_providing_parameters_raises_MissingParameterError():
 
-    with pytest.raises(A1.WrongParameterError):
+    with pytest.raises(A1.MissingParameterError):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH, "csv_comma", parameters=[], storage=False
         )
@@ -93,9 +93,9 @@ def test_create_json_from_csv_with_uncomplete_parameters_raises_MissingParameter
         )
 
 
-def test_create_json_from_csv_with_wrong_parameters_raises_WrongParameterError():
+def test_create_json_from_csv_with_wrong_parameters_raises_WrongParameterWarning():
 
-    with pytest.raises(A1.WrongParameterError):
+    with pytest.warns(A1.WrongParameterWarning):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_wrong_parameter",
@@ -103,6 +103,16 @@ def test_create_json_from_csv_with_wrong_parameters_raises_WrongParameterError()
             storage=False,
         )
 
+
+def test_create_json_from_csv_ignore_extra_parameters_in_csv():
+
+    d = A1.create_json_from_csv(
+        DUMMY_CSV_PATH,
+        "csv_wrong_parameter",
+        parameters=["param1", "param2"],
+        storage=False,
+    )
+    assert d == {"csv_wrong_parameter": CSV_EXAMPLE}
 
 def teardown_function():
     if os.path.exists(os.path.join(CSV_PATH, CSV_FNAME)):
