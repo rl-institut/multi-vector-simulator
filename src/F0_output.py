@@ -21,6 +21,7 @@ The model F0 output defines all functions that store evaluation results to file.
 """
 
 def evaluate_dict(dict_values):
+
     logging.info(
         "Summarizing simulation results to results_timeseries and results_scalars_assets."
     )
@@ -78,7 +79,18 @@ def evaluate_dict(dict_values):
     # storing all flows to exel.
     store_timeseries_all_busses_to_excel(dict_values)
 
+
     # plot optimal capacities if there are optimized assets
+    plot_optimized_capacities(dict_values)
+
+    # plot annuity, first-investment and om costs
+    plots.costs(dict_values)
+
+    # Write everything to file with multipe tabs
+    store_scalars_to_excel(dict_values)
+    return
+
+def plot_optimized_capacities(dict_values):
     show_optimal_capacities = False
     for element in dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"].values:
         if element > 0:
@@ -90,11 +102,9 @@ def evaluate_dict(dict_values):
             dict_values["kpi"]["cost_matrix"]["label"],
             dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
         )
+    return
 
-    # plot annuity, first-investment and om costs
-    plots.costs(dict_values)
-
-    # Write everything to file with multipe tabs
+def store_scalars_to_excel(dict_values):
     results_scalar_output_file = "/scalars" + ".xlsx"
     with pd.ExcelWriter(
         dict_values["simulation_settings"]["path_output_folder"]
@@ -113,7 +123,6 @@ def evaluate_dict(dict_values):
                 kpi_set,
             )
     return
-
 
 def store_timeseries_all_busses_to_excel(dict_values):
     """

@@ -28,6 +28,9 @@ values = [0, 1, 2]
 
 pandas_DatetimeIndex = pd.date_range(start = start_time, periods = periods, freq = "60min")
 pandas_Series = pd.Series(values, index=pandas_DatetimeIndex)
+pandas_Dataframe = pd.DataFrame({
+        "a": values,
+        "b": values})
 scalar = 2
 
 json_test_dictionary = {
@@ -38,26 +41,21 @@ json_test_dictionary = {
     "pandas_Timestamp": pd.Timestamp(start_time),
     "pandas_series": pandas_Series,
     "numpy_array": np.array(values),
-    "pandas_Dataframe": pd.DataFrame({
-        "a": values,
-        "b": values}),
+    "pandas_Dataframe": pandas_Dataframe
 }
 
 unknown_type = np.float32(scalar/10)
 
 bus = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series})
 
-dict_timeseries_test_one_bus = {
-    "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
-    "optimizedFlows": {"a_bus": bus}}
 
-dict_timeseries_test_two_busses = {
-    "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
-    "optimizedFlows": {"a_bus": bus, "b_bus": bus}}
+
+
+def test_evaluate_result_dictionary():
+    assert 0 == 0
 
 def test_demand_aggregation_per_energy_vector():
     assert 0 == 0
-
 
 def test_plot_energy_flows_limit_to_14_days():
     assert 0 == 0
@@ -71,8 +69,18 @@ def test_store_barchart_for_capacities():
 def test_store_barchart_annuities():
     assert 0 == 0
 
-def test_store_scalars_to_excel():
-    assert 0 == 0
+dict_scalars = {
+    "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
+    "kpi": {"economic": pandas_Dataframe,
+            "technical": pandas_Dataframe}}
+
+def test_store_scalars_to_excel_two_tabs():
+    F0.store_scalars_to_excel(dict_scalars)
+    assert (os.path.exists(OUTPUT_FOLDER +"/scalars" + ".xlsx") is True)
+
+dict_timeseries_test_one_bus = {
+    "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
+    "optimizedFlows": {"a_bus": bus}}
 
 def test_store_each_bus_timeseries_to_excel_and_png_one_bus():
     F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_one_bus)
@@ -83,6 +91,9 @@ def test_store_each_bus_timeseries_to_excel_and_png_one_bus():
 
     assert test is True
 
+dict_timeseries_test_two_busses = {
+    "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
+    "optimizedFlows": {"a_bus": bus, "b_bus": bus}}
 
 def test_store_each_bus_timeseries_to_excel_and_png_two_busses():
     F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
