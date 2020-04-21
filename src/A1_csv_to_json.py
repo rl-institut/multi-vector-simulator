@@ -364,7 +364,12 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
 
                         for item in range(0, len(value_list)):
                             column_dict = conversion(
-                                filename, column_dict, row, i, column, value_list[item],
+                                value_list[item].strip(),
+                                column_dict,
+                                row,
+                                param=param,
+                                asset=column,
+                                filename=filename,
                             )
                             if row["unit"] != "str":
                                 if "value" in column_dict[param]:
@@ -389,7 +394,12 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                         )
                 else:
                     column_dict = conversion(
-                        filename, column_dict, row, i, column, row[column]
+                        row[column],
+                        column_dict,
+                        row,
+                        param=param,
+                        asset=column,
+                        filename=filename,
                     )
 
             single_dict.update({column: column_dict})
@@ -422,39 +432,36 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
     return
 
 
-def conversion(filename, column_dict, row, i, column, value):
+def conversion(value, asset_dict, row, param, asset, filename=""):
     if isinstance(value, str) and ("{" in value or "}" in value):
         # if parameter defined as dictionary
         # example: input,str,"{'file_name':'pv_gen_merra2_2014_eff1_tilt40_az180.csv','header':'kW','unit':'kW'}"
         # todo this would not include [value, dict] eg. for multiple busses with one fix and one timeseries efficiency
         if "{" not in value or "}" not in value:
             logging.warning(
-                "In file %s, asset %s for parameter %s either '{' or '}' is missing.",
-                filename,
-                column,
-                i,
+                f"In file {filename}, asset {asset} for parameter {param} either '{{' or '}}' is "
+                f"missing."
             )
         else:
             dict_string = value.replace("'", '"')
-            value_dict = json.loads(dict_string)
-            column_dict.update({i: value_dict})
+            asset_dict.update({param: json.loads(dict_string)})
             logging.info(
-                "Parameter %s of asset %s is defined as a timeseries.", i, column
+                f"Parameter {param} of asset {asset} is defined as a timeseries."
             )
 
     elif row["unit"] == "str":
-        column_dict.update({i: value})
+        asset_dict.update({param: value})
 
     else:
         if row["unit"] == "bool":
-            if value in ["True", "true", "t"]:
+            if value in ["True", "true", "T", "t", "1"]:
                 value = True
-            elif value in ["False", "false", "F"]:
+            elif value in ["False", "false", "F", "f", "0"]:
                 value = False
             else:
                 logging.warning(
-                    "Parameter %s of asset %s is not a boolean value "
-                    "(True/T/true or False/F/false."
+                    f"Parameter {param} of asset {asset} is not a boolean value "
+                    "(True/T/true or False/F/false)."
                 )
         else:
             if value == "None":
@@ -465,8 +472,8 @@ def conversion(filename, column_dict, row, i, column, value):
                 except:
                     value = float(value)
 
-        column_dict.update({i: {"value": value, "unit": row["unit"]}})
-    return column_dict
+        asset_dict.update({param: {"value": value, "unit": row["unit"]}})
+    return asset_dict
 
 
 def add_storage_components(storage_filename, input_directory):
