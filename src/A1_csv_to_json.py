@@ -30,6 +30,7 @@ Functions of this module (that need to be tested)
 import os
 import json
 import logging
+import warnings
 import pandas as pd
 
 from src.constants import (
@@ -46,7 +47,7 @@ class MissingParameterError(ValueError):
     pass
 
 
-class WrongParameterError(ValueError):
+class WrongParameterWarning(UserWarning):
     """Exception raised for errors in the parameters of a csv input file."""
 
     pass
@@ -227,16 +228,21 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                 else:
                     wrong_parameters.append(i)
 
-    if len(missing_parameters) > 0:
+    if len(missing_parameters) > 0 or len(parameters) == 0:
         raise MissingParameterError(
             f"In the file {filename}.csv the parameter {i} is missing. \n"
             f"Please check {input_directory} for correct parameter names."
         )
     elif len(wrong_parameters) > 0:
-        raise WrongParameterError(
-            f"In the file {filename}.csv the parameter {i} is not recognized. \n"
-            f"Please check {input_directory} for correct parameter names."
+        warnings.warn(
+            WrongParameterWarning(
+                f"The parameter {i} in the file"
+                f"{os.path.join(input_directory,filename)}.csv is not expected. \n"
+                f"Expected parameters are {parameters}"
+            )
         )
+        # ignore the wrong parameter which is in the csv but not required by the parameters list
+        df = df.drop(wrong_parameters)
 
     # convert csv to json
     single_dict = {}
