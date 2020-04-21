@@ -52,7 +52,7 @@ def test_capex_from_investment_lifetime_equals_project_life():
     CAPEX = e_functions.capex_from_investment(
         investment_t0, lifetime["equal project life"], project_life, wacc, tax
     )
-    assert CAPEX == exp_capex_equal_project_life
+    assert round(CAPEX, 7) == exp_capex_equal_project_life
 
 
 def test_capex_from_investment_lifetime_smaller_than_project_life():
