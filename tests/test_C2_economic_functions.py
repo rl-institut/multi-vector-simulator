@@ -17,7 +17,7 @@ annuity = 35400
 annuity_factor = 1 / 0.12
 exp_capex_equal_project_life = 253000
 exp_capex_smaller_project_life = 287687.793
-exp_capex_bigger_project_life = 153754.207
+exp_capex_bigger_project_life = 153574.207
 fuel_keys = {
     "fuel_price": 1.3,
     "fuel_price_change_annual": 0,
@@ -95,7 +95,7 @@ def test_present_value_from_annuity():
     assert PV_from_annuity == annuity * annuity_factor
 
 
-def test_fuel_price_present_value_without_fuel_price_change(economics):
+def test_fuel_price_present_value_without_fuel_price_change():
     """
 
     Tests whether the MVS is correctly calculating the present value of the fuel price over the lifetime of the project without fuel price change
