@@ -121,7 +121,6 @@ def store_timeseries_all_busses_to_excel(dict_values):
     :param dict_values:
     :return:
     """
-    # todo this should be moved to f0_output
     timeseries_output_file = "/timeseries_all_busses" + ".xlsx"
     with pd.ExcelWriter(
         dict_values["simulation_settings"]["path_output_folder"]
