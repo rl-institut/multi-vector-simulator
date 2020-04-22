@@ -34,6 +34,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Images for `simulating_with_the_mvs.rst`: images/energy_system.png, images/energy_system_model.png, images/folder_structure_inputs.png
 - Tables for `simulating_with_the_mvs.rst`: tables/example_multiple_inputs_energyConversion.csv, tables/example_scalar_as_timeseries_energyConversion.csv
 - PLANNED in PR #257: Technical parameters (#223): Energy flows (aggregated) per asset, Renewable share, Degree of autonomy, Degree of sector-coupling
+- Test for the module A1 (#141)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -43,6 +44,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Update json file `mvs_config.json`: Default with no peak demand pricing. Replace string "False" by boolean `false`. Remove depreciated parameters from `simulation_settings`(`input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs`) (#234)
 - Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
 - variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
+- the columns of the storage_xx files are renamed and the specific parameters for each column are checked in A1 (#259)
 
 ### Removed
 
@@ -54,8 +56,10 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Fix plotting error in F1, plot only if Data frame is not empty (#230, #234)
 - Fix naming error for storages (#166)
 - Benchmark test that the simulation is running with default settings (#254)
+- Fix specific parameters for each storage column (#259)
 - Overwrite local results when running through brenchmark tests (#260)
 - Allow more than one separator for csv files(#263)
+
 
 ## [0.2.0] - 2020-03-13
 

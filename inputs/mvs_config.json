@@ -19,7 +19,7 @@
         "demand_01": {
             "dsm": "False",
             "energyVector": "Electricity",
-            "file_name": "demand_habor.csv",
+            "file_name": "demand_harbor.csv",
             "inflow_direction": "Electricity",
             "label": "Habor",
             "type_asset": "demand",
@@ -390,7 +390,7 @@
     },
     "energyStorage": {
         "storage_01": {
-            "capacity": {
+            "storage capacity": {
                 "age_installed": {
                     "unit": "year",
                     "value": 0
@@ -402,10 +402,6 @@
                 "capex_var": {
                     "unit": "currency/kWh",
                     "value": 4000
-                },
-                "crate": {
-                    "unit": "factor of total capacity (kWh)",
-                    "value": NaN
                 },
                 "efficiency": {
                     "unit": "factor",
@@ -424,10 +420,6 @@
                     "unit": "currency/kWh/year",
                     "value": 0
                 },
-                "opex_var": {
-                    "unit": "currency/kWh",
-                    "value": 0
-                },
                 "soc_initial": {
                     "unit": "None or factor",
                     "value": null
@@ -442,7 +434,7 @@
                 },
                 "unit": "kWh"
             },
-            "charging_power": {
+            "input power": {
                 "age_installed": {
                     "unit": "year",
                     "value": 0
@@ -455,7 +447,7 @@
                     "unit": "currency/kWh",
                     "value": 0
                 },
-                "crate": {
+                "c_rate": {
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
@@ -479,22 +471,10 @@
                 "opex_var": {
                     "unit": "currency/kWh",
                     "value": 0
-                },
-                "soc_initial": {
-                    "unit": "None or factor",
-                    "value": NaN
-                },
-                "soc_max": {
-                    "unit": "factor",
-                    "value": NaN
-                },
-                "soc_min": {
-                    "unit": "factor",
-                    "value": NaN
                 },
                 "unit": "kW"
             },
-            "discharging_power": {
+            "output power": {
                 "age_installed": {
                     "unit": "year",
                     "value": 0
@@ -507,7 +487,7 @@
                     "unit": "currency/kWh",
                     "value": 0
                 },
-                "crate": {
+                "c_rate": {
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
@@ -531,18 +511,6 @@
                 "opex_var": {
                     "unit": "currency/kWh",
                     "value": 0
-                },
-                "soc_initial": {
-                    "unit": "None or factor",
-                    "value": NaN
-                },
-                "soc_max": {
-                    "unit": "factor",
-                    "value": NaN
-                },
-                "soc_min": {
-                    "unit": "factor",
-                    "value": NaN
                 },
                 "unit": "kW"
             },
