@@ -63,24 +63,6 @@ def get_timeseries_per_bus(dict_values, bus_data):
     return
 
 
-def write_bus_timeseries_to_dict_values(dict_asset):
-    r"""
-
-    Parameters
-    ----------
-    dict_asset : dict
-
-
-    Returns
-    -------
-
-    """
-    logging.debug(
-        "Accessing oemof simulation results for asset %s", dict_asset["label"]
-    )
-    return
-
-
 def get_storage_results(settings, storage_bus, dict_asset):
     r"""
     Reads storage results of simulation and stores them in `dict_asset`.
