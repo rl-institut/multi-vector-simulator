@@ -11,6 +11,7 @@ In module E3 the technical KPI are evaluated:
 - calculate degree of sector coupling
 """
 
+
 def all_totals(dict_values):
     """
     Calculate sum of all cost parameters
