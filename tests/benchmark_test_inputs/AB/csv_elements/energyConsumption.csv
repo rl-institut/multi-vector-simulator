@@ -1,7 +1,7 @@
 ,unit,demand_01
 dsm,str,False
 file_name,str,demand.csv
-label,str,Grid
+label,str,demand_01
 type_asset,str,demand
 type_oemof,str,sink
 energyVector,str,Electricity
