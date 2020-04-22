@@ -47,20 +47,16 @@ unknown_type = np.float32(scalar / 10)
 bus = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series})
 
 
-def test_evaluate_result_dictionary():
-    assert 0 == 0
+#def test_evaluate_result_dictionary():
+#    assert 0 == 0
 
 
-def test_demand_aggregation_per_energy_vector():
-    assert 0 == 0
+#def test_plot_energy_flows_limit_to_14_days():
+#    assert 0 == 0
 
 
-def test_plot_energy_flows_limit_to_14_days():
-    assert 0 == 0
-
-
-def test_plot_energy_flows_limit_to_365_days():
-    assert 0 == 0
+#def test_plot_energy_flows_limit_to_365_days():
+#    assert 0 == 0
 
 dict_scalar_capacities = {
     "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
@@ -73,9 +69,6 @@ dict_scalar_capacities = {
 def test_store_barchart_for_capacities():
     F0.plot_optimized_capacities(dict_scalar_capacities)
     assert os.path.exists(OUTPUT_FOLDER + "/optimal_additional_capacities.png") is True
-
-def test_store_barchart_annuities():
-    assert 0 == 0
 
 dict_scalars_two_tabs_dict = {
     "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
