@@ -110,7 +110,6 @@ REQUIRED_CSV_PARAMETERS = {
         "type_oemof",
         "unit",
         "energyVector",
-        # "renewableAsset",
     ],
     "energyProviders": [
         "energy_price",
@@ -123,7 +122,6 @@ REQUIRED_CSV_PARAMETERS = {
         "peak_demand_pricing_period",
         "type_oemof",
         "energyVector",
-        # "renewable_share"
     ],
     "fixcost": [
         "age_installed",
