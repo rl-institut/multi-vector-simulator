@@ -1,0 +1,4 @@
+,unit,col1
+param1,factor,"{'value': {'file_name': 'test_time_series.csv', 'header': 'power'}, 'unit':
+'kW'}"
+

@@ -9,9 +9,13 @@ from src.constants import (
     INPUTS_COPY,
     CSV_FNAME,
     CSV_EXT,
+    REQUIRED_CSV_FILES,
+    REQUIRED_CSV_PARAMETERS,
 )
 
 TEST_REPO_PATH = os.path.dirname(__file__)
+
+DUMMY_CSV_PATH = os.path.join(TEST_REPO_PATH, "test_data")
 
 CSV_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER, CSV_ELEMENTS)
 JSON_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER, JSON_FNAME)
