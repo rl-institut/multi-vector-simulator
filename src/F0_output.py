@@ -22,6 +22,11 @@ The model F0 output defines all functions that store evaluation results to file.
 
 
 def evaluate_dict(dict_values):
+    """
+    This is the main function of F0. It calls all functions that prepare the simulation output, ie. Storing all simulation output into excellent files, bar charts, and graphs.
+    :param dict_values: dict Of all input and output parameters up to F0
+    :return: NA
+    """
 
     logging.info(
         "Summarizing simulation results to results_timeseries and results_scalars_assets."
@@ -92,6 +97,12 @@ def evaluate_dict(dict_values):
 
 
 def plot_optimized_capacities(dict_values):
+    """
+    This function determinants whether or not any capacities are added to the optimal system and calls the function plotting those capacities as a bar chart.
+    :param dict_values: dict Of all input and output parameters up to F0
+    :return: Bar chart of capacities
+    """
+
     show_optimal_capacities = False
     for element in dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"].values:
         if element > 0:
@@ -100,13 +111,18 @@ def plot_optimized_capacities(dict_values):
         plots.capacities(
             dict_values["simulation_settings"],
             dict_values["project_data"],
-            dict_values["kpi"]["cost_matrix"]["label"],
+            dict_values["kpi"]["scalar_matrix"]["label"],
             dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
         )
     return
 
 
 def store_scalars_to_excel(dict_values):
+    """
+    All output data that is a scalar is storage to an excellent file tab. This could for example be economical data or technical data.
+    :param dict_values: dict Of all input and output parameters up to F0
+    :return: Excel file with scalar data
+    """
     results_scalar_output_file = "/scalars" + ".xlsx"
     with pd.ExcelWriter(
         dict_values["simulation_settings"]["path_output_folder"]
@@ -129,10 +145,11 @@ def store_scalars_to_excel(dict_values):
 
 def store_timeseries_all_busses_to_excel(dict_values):
     """
-
-    :param dict_values:
-    :return:
+    This function plots the energy flows of each single bus and the energy system and saves it as PNG and additionally as a tab and an Excel sheet.
+    :param dict_values: dict Of all input and output parameters up to F0
+    :return: Plots and excel with all timeseries of each bus
     """
+
     timeseries_output_file = "/timeseries_all_busses" + ".xlsx"
     with pd.ExcelWriter(
         dict_values["simulation_settings"]["path_output_folder"]
@@ -148,8 +165,7 @@ def store_timeseries_all_busses_to_excel(dict_values):
                 + " flows.png",
                 bbox_inches="tight",
             )
-            # if bus == 'Electricity (LES) bus' or bus == 'Electricity (DSO) bus':
-            #    plt.show()
+
             plt.close()
             plt.clf()
             plt.cla()
@@ -159,7 +175,11 @@ def store_timeseries_all_busses_to_excel(dict_values):
 
 
 def convert(o):
-    # This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
+    """
+    This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
+    :param o: Any type. Object to be converted to json-storable value.
+    :return: json-storable value.
+    """
     if isinstance(o, numpy.int64):
         return int(o)
     # todo this actually drops the date time index, which could be interesting
@@ -187,10 +207,11 @@ def convert(o):
 
 def store_as_json(dict_values, output_folder, file_name):
     """
-
-    :param dict_values:
-    :param file_name:
-    :return:
+    Stores are dictionary as a Json file and converts all values that are incompatible with the Json format
+    :param dict_values: dict to be stored as json
+    :param output_folder: Folder into which json should be stored
+    :param file_name: Name of the file the json should be stored as
+    :return: Stored json file
     """
     file_path = output_folder + "/" + file_name + ".json"
     myfile = open(file_path, "w")

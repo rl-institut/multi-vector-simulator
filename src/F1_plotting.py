@@ -100,12 +100,12 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
 
 def capacities(user_input, project_data, assets, capacities):
     """
-
-    :param user_input:
-    :param project_data:
-    :param assets:
-    :param capacities:
-    :return:
+    This function determines the assets for which the optimised capacity is larger than zero and then plots those capacities in a bar chart.
+    :param user_input: dict Simulation settings including the output path
+    :param project_data: dict Project data including project name and scenario name
+    :param assets: list of asset names
+    :param capacities: list of asset capacities
+    :return: png with bar chart of optimized capacities
     """
 
     # only items with an optimal added capacity over 0 are selected
