@@ -556,6 +556,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         "unit": "currency/kWpeak",
     }
 
+    list_of_dso_energyProduction_assets = []
     if number_of_pricing_periods == 1:
         # if only one period: avoid suffix dso+'_consumption_period_1"
         timeseries = pd.Series(
@@ -569,6 +570,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
             timeseries,
             opex_fix=peak_demand_pricing,
         )
+        list_of_dso_energyProduction_assets.append(dso + "_consumption")
     else:
         # define one source for each pricing period
         for pricing_period in range(1, number_of_pricing_periods + 1):
@@ -585,14 +587,16 @@ def define_dso_sinks_and_sources(dict_values, dso):
             )
 
             timeseries = timeseries.add(pd.Series(1, index=time_period), fill_value=0)
+            dso_source_name = dso + "_consumption_period_" + str(pricing_period)
             define_source(
                 dict_values,
-                dso + "_consumption_period_" + str(pricing_period),
+                dso_source_name,
                 dict_values["energyProviders"][dso]["energy_price"],
                 dict_values["energyProviders"][dso]["outflow_direction"],
                 timeseries,
                 opex_fix=peak_demand_pricing,
             )
+            list_of_dso_energyProduction_assets.append(dso_source_name)
 
     define_sink(
         dict_values,
@@ -601,6 +605,10 @@ def define_dso_sinks_and_sources(dict_values, dso):
         dict_values["energyProviders"][dso]["inflow_direction"],
         capex_var={"value": 0, "unit": "currency/kW"},
     )
+
+    dict_values["energyProviders"][dso].update({
+        "connected_consumption_sources": list_of_dso_energyProduction_assets,
+        "connected_feedin_sink": dso + "_feedin"})
 
     return
 
