@@ -74,10 +74,6 @@ def main(**kwargs):
 
     """
 
-    for k, v in DEFAULT_MAIN_KWARGS.items():
-        if k not in kwargs:
-            kwargs[k] = v
-
     version = (
         "0.2.0"  # update_me Versioning scheme: Major release.Minor release.Patches
     )
@@ -113,8 +109,7 @@ def main(**kwargs):
         logging.debug("Accessing script: A1_csv_to_json")
         move_copy_config_file = True
         load_data_from_csv.create_input_json(
-            input_directory=os.path.join(user_input["path_input_folder"], CSV_ELEMENTS),
-            output_filename=CSV_FNAME,
+            input_directory=os.path.join(user_input["path_input_folder"], CSV_ELEMENTS)
         )
 
     logging.debug("Accessing script: B0_data_input_json")
