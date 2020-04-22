@@ -36,8 +36,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - PLANNED in PR #257: Technical parameters (#223): Energy flows (aggregated) per asset, Renewable share, Degree of autonomy, Degree of sector-coupling
 - Test for the module A1 (#141)
 - Test for the module E3 (#143)
-- Added parameter "renewableAsset" to energyProduction.csv and "renewable_share" to energyProviders.csv, so that a renewable share can be identified (#257)
-
+- PLANNED in PR #257: Technical parameters (#223): Energy flows (aggregated) per asset, Renewable share, Degree of autonomy, Degree of sector-coupling
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)

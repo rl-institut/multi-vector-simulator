@@ -7,6 +7,7 @@ In module E3 the technical KPI are evaluated:
 - calculate degree of autonomy
 - calculate total generation of each asset
 - calculate energy flows between sectors
+- calculate degree of autonomy me
 - calculate degree of sector coupling
 """
 
