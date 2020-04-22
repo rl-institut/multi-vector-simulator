@@ -19,7 +19,8 @@ import logging
 import pandas as pd
 import numpy as np
 import src.F0_output as F0
-from src.constants import OUTPUT_FOLDER
+
+OUTPUT_PATH = os.path.abspath(os.path.join(".", "tests", "test_outputs"))
 
 
 start_time = "2020-01-01 00:00"
@@ -46,7 +47,6 @@ unknown_type = np.float32(scalar / 10)
 
 bus = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series})
 
-
 # def test_evaluate_result_dictionary():
 #    assert 0 == 0
 
@@ -58,127 +58,131 @@ bus = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series
 # def test_plot_energy_flows_limit_to_365_days():
 #    assert 0 == 0
 
-dict_scalar_capacities = {
-    "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
-    "project_data": {"project_name": "a_project", "scenario_name": "a_scenario"},
-    "kpi": {
-        "scalar_matrix": pd.DataFrame(
-            {"label": ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
-        )
-    },
-}
+class TestFileCreation:
+    if not os.path.exists(OUTPUT_PATH):
+        os.mkdir(OUTPUT_PATH)
+
+    def test_store_barchart_for_capacities(self):
+        dict_scalar_capacities = {
+            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            "project_data": {"project_name": "a_project", "scenario_name": "a_scenario"},
+            "kpi": {
+                "scalar_matrix": pd.DataFrame(
+                    {"label": ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
+                )
+            },
+        }
+        F0.plot_optimized_capacities(dict_scalar_capacities)
+        assert os.path.exists(os.path.join(OUTPUT_PATH, "optimal_additional_capacities.png")) is True
 
 
-def test_store_barchart_for_capacities():
-    F0.plot_optimized_capacities(dict_scalar_capacities)
-    assert os.path.exists(OUTPUT_FOLDER + "/optimal_additional_capacities.png") is True
+    def test_store_scalars_to_excel_two_tabs_dict(self):
+        dict_scalars_two_tabs_dict = {
+            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            "kpi": {"economic": pandas_Dataframe, "technical": {"param1": 1, "param2": 2}},
+        }
+        F0.store_scalars_to_excel(dict_scalars_two_tabs_dict)
+        assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars" + ".xlsx")) is True
 
 
-dict_scalars_two_tabs_dict = {
-    "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
-    "kpi": {"economic": pandas_Dataframe, "technical": {"param1": 1, "param2": 2}},
-}
+    def test_store_scalars_to_excel_two_tabs_no_dict(self):
+        dict_scalars_two_tabs = {
+            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            "kpi": {"economic": pandas_Dataframe, "technical": pandas_Dataframe},
+        }
+
+        F0.store_scalars_to_excel(dict_scalars_two_tabs)
+        assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars" + ".xlsx")) is True
 
 
-def test_store_scalars_to_excel_two_tabs_dict():
-    F0.store_scalars_to_excel(dict_scalars_two_tabs_dict)
-    assert os.path.exists(OUTPUT_FOLDER + "/scalars" + ".xlsx") is True
+    def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
+        dict_timeseries_test_one_bus = {
+            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            "optimizedFlows": {"a_bus": bus},
+        }
 
-
-dict_scalars_two_tabs = {
-    "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
-    "kpi": {"economic": pandas_Dataframe, "technical": pandas_Dataframe},
-}
-
-
-def test_store_scalars_to_excel_two_tabs_no_dict():
-    F0.store_scalars_to_excel(dict_scalars_two_tabs)
-    assert os.path.exists(OUTPUT_FOLDER + "/scalars" + ".xlsx") is True
-
-
-dict_timeseries_test_one_bus = {
-    "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
-    "optimizedFlows": {"a_bus": bus},
-}
-
-
-def test_store_each_bus_timeseries_to_excel_and_png_one_bus():
-    F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_one_bus)
-    test = False
-    if os.path.exists(OUTPUT_FOLDER + "/timeseries_all_busses" + ".xlsx") is True:
-        if os.path.exists(OUTPUT_FOLDER + "/" + "a_bus" + " flows.png") is True:
-            test = True
-    assert test is True
-
-
-dict_timeseries_test_two_busses = {
-    "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
-    "optimizedFlows": {"a_bus": bus, "b_bus": bus},
-}
-
-
-def test_store_each_bus_timeseries_to_excel_and_png_two_busses():
-    F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
-    test = False
-    if os.path.exists(OUTPUT_FOLDER + "/timeseries_all_busses" + ".xlsx") is True:
-        if os.path.exists(OUTPUT_FOLDER + "/" + "a_bus" + " flows.png") is True:
-            if os.path.exists(OUTPUT_FOLDER + "/" + "b_bus" + " flows.png") is True:
+        F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_one_bus)
+        test = False
+        if os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx")) is True:
+            if os.path.exists(os.path.join(OUTPUT_PATH, "a_bus" + " flows.png")) is True:
                 test = True
-
-    assert test is True
-
-
-def test_processing_dict_for_json_export_parse_bool():
-    file_name = "test_json_bool"
-    F0.store_as_json(json_test_dictionary["bool"], OUTPUT_FOLDER, file_name)
-    assert os.path.exists(OUTPUT_FOLDER + "/" + file_name + ".json") is True
+        assert test is True
 
 
-def test_processing_dict_for_json_export_parse_str():
-    file_name = "test_json_str"
-    F0.store_as_json(json_test_dictionary["str"], OUTPUT_FOLDER, file_name)
-    assert os.path.exists(OUTPUT_FOLDER + "/" + file_name + ".json") is True
+    def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
+        dict_timeseries_test_two_busses = {
+            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            "optimizedFlows": {"a_bus": bus, "b_bus": bus},
+        }
+        F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
+        test = False
+        if os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx")) is True:
+            if os.path.exists(os.path.join(OUTPUT_PATH, "a_bus" + " flows.png")) is True:
+                if os.path.exists(os.path.join(OUTPUT_PATH,"b_bus" + " flows.png")) is True:
+                    test = True
+
+        assert test is True
+
+    def test_store_dict_into_json(self):
+        file_name = "test_json_converter"
+        F0.store_as_json(json_test_dictionary, OUTPUT_PATH, file_name)
+        assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
+
+    def teardown_module(self):
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+
+class TestDictionaryToJsonConversion:
+    if not os.path.exists(OUTPUT_PATH):
+        os.mkdir(OUTPUT_PATH)
+    def test_processing_dict_for_json_export_parse_bool(self):
+        file_name = "test_json_bool"
+        F0.store_as_json(json_test_dictionary["bool"], OUTPUT_PATH, file_name)
+        assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
 
-def test_processing_dict_for_json_export_parse_numpy_int64():
-    expr = F0.convert(json_test_dictionary["numpy_int64"])
-    assert expr == scalar
+    def test_processing_dict_for_json_export_parse_str(self):
+        file_name = "test_json_str"
+        F0.store_as_json(json_test_dictionary["str"], OUTPUT_PATH, file_name)
+        assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
+
+    def test_processing_dict_for_json_export_parse_numpy_int64(self):
+        expr = F0.convert(json_test_dictionary["numpy_int64"])
+        assert expr == scalar
 
 
-def test_processing_dict_for_json_export_parse_pandas_DatetimeIndex():
-    expr = F0.convert(json_test_dictionary["pandas_DatetimeIndex"])
-    assert expr == "date_range"
+    def test_processing_dict_for_json_export_parse_pandas_DatetimeIndex(self):
+        expr = F0.convert(json_test_dictionary["pandas_DatetimeIndex"])
+        assert expr == "date_range"
 
 
-def test_processing_dict_for_json_export_parse_pandas_Timestamp():
-    expr = F0.convert(json_test_dictionary["pandas_Timestamp"])
-    test = False
-    if expr == start_time:
-        test = True
-    assert test == False
+    def test_processing_dict_for_json_export_parse_pandas_Timestamp(self):
+        expr = F0.convert(json_test_dictionary["pandas_Timestamp"])
+        test = False
+        if expr == start_time:
+            test = True
+        assert test == False
 
 
-def test_processing_dict_for_json_export_parse_pandas_series():
-    expr = F0.convert(json_test_dictionary["pandas_series"])
-    assert expr == "pandas timeseries"
+    def test_processing_dict_for_json_export_parse_pandas_series(self):
+        expr = F0.convert(json_test_dictionary["pandas_series"])
+        assert expr == "pandas timeseries"
 
 
-def test_processing_dict_for_json_export_parse_numpy_array():
-    expr = F0.convert(json_test_dictionary["numpy_array"])
-    assert expr == "numpy timeseries"
+    def test_processing_dict_for_json_export_parse_numpy_array(self):
+        expr = F0.convert(json_test_dictionary["numpy_array"])
+        assert expr == "numpy timeseries"
 
 
-def test_processing_dict_for_json_export_parse_pandas_Dataframe():
-    expr = F0.convert(json_test_dictionary["pandas_Dataframe"])
-    assert expr == "pandas dataframe"
+    def test_processing_dict_for_json_export_parse_pandas_Dataframe(self):
+        expr = F0.convert(json_test_dictionary["pandas_Dataframe"])
+        assert expr == "pandas dataframe"
 
 
-def test_processing_dict_for_json_export_parse_unknown():
-    with pytest.raises(TypeError):
-        F0.convert(unknown_type)
+    def test_processing_dict_for_json_export_parse_unknown(self):
+        with pytest.raises(TypeError):
+            F0.convert(unknown_type)
 
-
-def test_store_dict_into_json():
-    file_name = "test_json_converter"
-    F0.store_as_json(json_test_dictionary, OUTPUT_FOLDER, file_name)
-    assert os.path.exists(OUTPUT_FOLDER + "/" + file_name + ".json") is True
+    def teardown_module(self):
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)

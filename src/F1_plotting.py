@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import logging
-
+import os
 
 logging.getLogger("matplotlib.font_manager").disabled = True
 
@@ -63,13 +63,11 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
         axes[1].set(xlabel="Time", ylabel=ylabel)
         axes[1].legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
-    plt.savefig(
-        user_input["path_output_folder"]
-        + "/"
-        + sector
-        + "_flows_"
-        + str(interval)
-        + "_days.png",
+    path = os.path.join(
+        user_input["path_output_folder"],
+        sector+ "_flows_" + str(interval)+ "_days.png")
+
+    plt.savefig(path,
         bbox_inches="tight",
     )
     # plt.show()
@@ -112,6 +110,7 @@ def capacities(user_input, project_data, assets, capacities):
     dfcapacities["capacities"] = capacities_added
 
     logging.info("Creating bar-chart for components capacities")
+
     dfcapacities.plot.bar(
         x="items",
         y="capacities",
@@ -121,8 +120,9 @@ def capacities(user_input, project_data, assets, capacities):
         + project_data["scenario_name"],
     )
 
+    path = os.path.join(user_input["path_output_folder"], "optimal_additional_capacities.png")
     plt.savefig(
-        user_input["path_output_folder"] + "/optimal_additional_capacities.png",
+        path,
         bbox_inches="tight",
     )
 

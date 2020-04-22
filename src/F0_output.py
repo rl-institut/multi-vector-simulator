@@ -3,6 +3,7 @@ import numpy
 import pandas as pd
 import logging
 import matplotlib.pyplot as plt
+import os
 
 import src.F1_plotting as plots
 
@@ -213,7 +214,7 @@ def store_as_json(dict_values, output_folder, file_name):
     :param file_name: Name of the file the json should be stored as
     :return: Stored json file
     """
-    file_path = output_folder + "/" + file_name + ".json"
+    file_path = os.path.abspath(os.path.join(output_folder, file_name + ".json"))
     myfile = open(file_path, "w")
     json_data = json.dumps(
         dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4
