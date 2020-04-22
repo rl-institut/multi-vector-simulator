@@ -39,24 +39,6 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
         fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
         axes_mg = axes[0]
 
-    """
-    # website with websafe hexacolours: https://www.colorhexa.com/web-safe-colors
-    color_dict = {
-        "total_demand_" + sector: "#33ff00",  # dark green
-        "solar_inverter": "#ffcc00",  # orange
-        #'Wind generation': '#33ccff',  # light blue
-        #'Genset generation': '#000000',  # black
-        "transformer_station_in": "#990099",  # violet
-        "charge_controller_in": "#0033cc",  # light green
-        sector + "_excess_sink": "#996600",  # brown
-        "transformer_station_out": "#ff33cc",  # pink
-        "charge_controller_out": "#ccccff",  # pidgeon blue
-        #'Demand shortage': '#ff3300',  # bright red
-        sector + "_storage_soc": "#0033cc"  # blue
-        #'Grid availability': '#cc0000'  # red
-    }
-    """
-
     flows_les.plot(
         title=sector
         + " flows in Local Energy System: "
