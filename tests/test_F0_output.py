@@ -47,44 +47,49 @@ unknown_type = np.float32(scalar / 10)
 bus = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series})
 
 
-#def test_evaluate_result_dictionary():
+# def test_evaluate_result_dictionary():
 #    assert 0 == 0
 
 
-#def test_plot_energy_flows_limit_to_14_days():
+# def test_plot_energy_flows_limit_to_14_days():
 #    assert 0 == 0
 
 
-#def test_plot_energy_flows_limit_to_365_days():
+# def test_plot_energy_flows_limit_to_365_days():
 #    assert 0 == 0
 
 dict_scalar_capacities = {
     "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
-    "project_data": {"project_name": "a_project",
-                     "scenario_name": "a_scenario"},
-    "kpi": {"scalar_matrix": pd.DataFrame({
-        "label": ["asset_a", "asset_b"],
-        "optimizedAddCap": [1,2]})}}
+    "project_data": {"project_name": "a_project", "scenario_name": "a_scenario"},
+    "kpi": {
+        "scalar_matrix": pd.DataFrame(
+            {"label": ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
+        )
+    },
+}
+
 
 def test_store_barchart_for_capacities():
     F0.plot_optimized_capacities(dict_scalar_capacities)
     assert os.path.exists(OUTPUT_FOLDER + "/optimal_additional_capacities.png") is True
 
+
 dict_scalars_two_tabs_dict = {
     "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
-    "kpi": {"economic": pandas_Dataframe,
-            "technical": {"param1": 1,
-                          "param2": 2}},
+    "kpi": {"economic": pandas_Dataframe, "technical": {"param1": 1, "param2": 2}},
 }
+
 
 def test_store_scalars_to_excel_two_tabs_dict():
     F0.store_scalars_to_excel(dict_scalars_two_tabs_dict)
     assert os.path.exists(OUTPUT_FOLDER + "/scalars" + ".xlsx") is True
 
+
 dict_scalars_two_tabs = {
     "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
     "kpi": {"economic": pandas_Dataframe, "technical": pandas_Dataframe},
 }
+
 
 def test_store_scalars_to_excel_two_tabs_no_dict():
     F0.store_scalars_to_excel(dict_scalars_two_tabs)
@@ -96,6 +101,7 @@ dict_timeseries_test_one_bus = {
     "optimizedFlows": {"a_bus": bus},
 }
 
+
 def test_store_each_bus_timeseries_to_excel_and_png_one_bus():
     F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_one_bus)
     test = False
@@ -104,10 +110,12 @@ def test_store_each_bus_timeseries_to_excel_and_png_one_bus():
             test = True
     assert test is True
 
+
 dict_timeseries_test_two_busses = {
     "simulation_settings": {"path_output_folder": OUTPUT_FOLDER},
     "optimizedFlows": {"a_bus": bus, "b_bus": bus},
 }
+
 
 def test_store_each_bus_timeseries_to_excel_and_png_two_busses():
     F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
