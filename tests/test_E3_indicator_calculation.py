@@ -2,18 +2,22 @@ import pandas as pd
 
 import src.E3_indicator_calculation as E3
 
+numbers = [10, 15, 20, 25]
+
 dict_scalars = {
     "kpi": {
         "cost_matrix": pd.DataFrame(
-            {"label": ["asset_1", "asset_2"], "cost": [15, 25], "annuity": [10, 20]}
+            {
+                "label": ["asset_1", "asset_2"],
+                "cost": [numbers[1], numbers[3]],
+                "annuity": [numbers[0], numbers[2]],
+            }
         ),
         "scalars": {},
     }
 }
 
-print(dict_scalars)
-
-scalars_expected = {"cost": 40, "annuity": 30}
+scalars_expected = {"cost": numbers[1] + numbers[3], "annuity": numbers[0] + numbers[2]}
 
 
 class TestEconomicIndicators:
