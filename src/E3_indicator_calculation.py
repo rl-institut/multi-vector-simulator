@@ -93,8 +93,8 @@ def weighting_for_sector_coupled_parameters(dict_values):
     :return: Specific KPI that describes sector-coupled system
     """
 
-    for kpi in dict_values["kpi"]["scalars"]:
-        if dict_values["kpi"]["scalars"][kpi] is dict:
-            "Sector-coupled KPI" =
-            ({"Sector-specific renewable share": dict_renewable_share})
+    #for kpi in dict_values["kpi"]["scalars"]:
+    #    if dict_values["kpi"]["scalars"][kpi] is dict:
+    #        "Sector-coupled KPI" =
+    #        ({"Sector-specific renewable share": dict_renewable_share})
     return
