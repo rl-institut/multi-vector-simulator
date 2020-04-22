@@ -34,6 +34,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Images for `simulating_with_the_mvs.rst`: images/energy_system.png, images/energy_system_model.png, images/folder_structure_inputs.png
 - Tables for `simulating_with_the_mvs.rst`: tables/example_multiple_inputs_energyConversion.csv, tables/example_scalar_as_timeseries_energyConversion.csv
 - Test for the module A1 (#141)
+- Test for the module E3 (#143)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
