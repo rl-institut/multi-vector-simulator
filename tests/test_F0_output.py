@@ -22,7 +22,6 @@ import src.F0_output as F0
 
 OUTPUT_PATH = os.path.abspath(os.path.join(".", "tests", "test_outputs"))
 
-
 start_time = "2020-01-01 00:00"
 periods = 3
 values = [0, 1, 2]
@@ -60,7 +59,7 @@ bus = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series
 
 
 class TestFileCreation:
-    if not os.path.exists(OUTPUT_PATH):
+    def setup_class(self):
         os.mkdir(OUTPUT_PATH)
 
     def test_store_barchart_for_capacities(self):
@@ -111,17 +110,11 @@ class TestFileCreation:
         }
 
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_one_bus)
-        test = False
-        if (
+        assert (
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
             is True
-        ):
-            if (
-                os.path.exists(os.path.join(OUTPUT_PATH, "a_bus" + " flows.png"))
-                is True
-            ):
-                test = True
-        assert test is True
+        )
+        assert os.path.exists(os.path.join(OUTPUT_PATH, "a_bus" + " flows.png")) is True
 
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         dict_timeseries_test_two_busses = {
@@ -129,35 +122,25 @@ class TestFileCreation:
             "optimizedFlows": {"a_bus": bus, "b_bus": bus},
         }
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
-        test = False
-        if (
+        assert (
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
             is True
-        ):
-            if (
-                os.path.exists(os.path.join(OUTPUT_PATH, "a_bus" + " flows.png"))
-                is True
-            ):
-                if (
-                    os.path.exists(os.path.join(OUTPUT_PATH, "b_bus" + " flows.png"))
-                    is True
-                ):
-                    test = True
-
-        assert test is True
+        )
+        assert os.path.exists(os.path.join(OUTPUT_PATH, "a_bus" + " flows.png")) is True
+        assert os.path.exists(os.path.join(OUTPUT_PATH, "b_bus" + " flows.png")) is True
 
     def test_store_dict_into_json(self):
         file_name = "test_json_converter"
         F0.store_as_json(json_test_dictionary, OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
-    def teardown_module(self):
+    def teardown_class(self):
         if os.path.exists(OUTPUT_PATH):
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
 
 
 class TestDictionaryToJsonConversion:
-    if not os.path.exists(OUTPUT_PATH):
+    def setup_class(self):
         os.mkdir(OUTPUT_PATH)
 
     def test_processing_dict_for_json_export_parse_bool(self):
@@ -201,6 +184,6 @@ class TestDictionaryToJsonConversion:
         with pytest.raises(TypeError):
             F0.convert(unknown_type)
 
-    def teardown_module(self):
+    def teardown_class(self):
         if os.path.exists(OUTPUT_PATH):
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
