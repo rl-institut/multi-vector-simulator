@@ -44,6 +44,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
 - variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
 - the columns of the storage_xx files are renamed and the specific parameters for each column are checked in A1 (#259)
+- Default input files from "inputs": Changed some parameters (#143) 
 
 ### Removed
 
@@ -58,7 +59,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Fix specific parameters for each storage column (#259)
 - Overwrite local results when running through brenchmark tests (#260)
 - Allow more than one separator for csv files(#263)
-
+- Fix long label resulting from total project costs (#270)
 
 ## [0.2.0] - 2020-03-13
 
