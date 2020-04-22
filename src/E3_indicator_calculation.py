@@ -85,3 +85,16 @@ def renewable_share_sector_specific(dict_values):
 
     dict_values["kpi"]["scalars"].update({"Sector-specific renewable share": dict_renewable_share})
     return
+
+def weighting_for_sector_coupled_parameters(dict_values):
+    """
+
+    :param dict_values:  dict with all project information and results,
+    :return: Specific KPI that describes sector-coupled system
+    """
+
+    for kpi in dict_values["kpi"]["scalars"]:
+        if dict_values["kpi"]["scalars"][kpi] is dict:
+            "Sector-coupled KPI" =
+            ({"Sector-specific renewable share": dict_renewable_share})
+    return
