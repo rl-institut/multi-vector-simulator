@@ -34,6 +34,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Images for `simulating_with_the_mvs.rst`: images/energy_system.png, images/energy_system_model.png, images/folder_structure_inputs.png
 - Tables for `simulating_with_the_mvs.rst`: tables/example_multiple_inputs_energyConversion.csv, tables/example_scalar_as_timeseries_energyConversion.csv
 - Test for the module A1 (#141)
+- Test for module F0 (#142)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -44,6 +45,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
 - variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
 - the columns of the storage_xx files are renamed and the specific parameters for each column are checked in A1 (#259)
+- Seperated functions in F0 to ease testing (#142)
 
 ### Removed
 
