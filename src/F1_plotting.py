@@ -65,10 +65,11 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
 
     path = os.path.join(
         user_input["path_output_folder"],
-        sector+ "_flows_" + str(interval)+ "_days.png")
+        sector + "_flows_" + str(interval) + "_days.png",
+    )
 
-    plt.savefig(path,
-        bbox_inches="tight",
+    plt.savefig(
+        path, bbox_inches="tight",
     )
     # plt.show()
     plt.close()
@@ -120,10 +121,11 @@ def capacities(user_input, project_data, assets, capacities):
         + project_data["scenario_name"],
     )
 
-    path = os.path.join(user_input["path_output_folder"], "optimal_additional_capacities.png")
+    path = os.path.join(
+        user_input["path_output_folder"], "optimal_additional_capacities.png"
+    )
     plt.savefig(
-        path,
-        bbox_inches="tight",
+        path, bbox_inches="tight",
     )
 
     plt.close()
