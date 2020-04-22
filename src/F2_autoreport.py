@@ -8,6 +8,7 @@ import pandas as pd
 import reverse_geocoder as rg
 import json
 import dash_table
+import base64
 
 # Initialize the app
 app = dash.Dash(__name__)
@@ -27,7 +28,7 @@ dfsimSettíngs = pd.read_csv('../inputs/csv_elements/simulation_settings.csv')
 # Obtaining the coordinates of the project location
 coordinates = (float(dfprojectData['project_data'][2]), float(dfprojectData['project_data'][3]))
 
-# Determining the location of the project
+# Determining the geographical location of the project
 geoList = rg.search(coordinates)
 geoDict = geoList[0]
 location = geoDict['name']
@@ -46,13 +47,18 @@ dict_simsettings = {'Evaluated period': dfsimSettíngs.at[0, 'simulation_setting
                     'Start date': dfsimSettíngs.at[5, 'simulation_settings'],
                     'Timestep length': dfsimSettíngs.at[7, 'simulation_settings']}
 
-df_simsettings = pd.DataFrame(list(dict_simsettings.items()))
+df_simsettings = pd.DataFrame(list(dict_simsettings.items()), columns=['Setting', 'Value'])
 
 projectName = 'Harbor Norway'
 scenarioName = '100% self-generation'
 releaseDesign = '0.0x'
 branchID = 'xcdd5eg004'
 simDate = time.strftime("%Y-%m-%d")
+
+# Reading images
+
+pv_dem_ts = base64.b64encode(open('../MVS_outputs/input_timeseries_Habor_kW.png', 'rb').read())
+pv_inp_ts = base64.b64encode(open('../MVS_outputs/input_timeseries_PV plant (mono)_kW.png', 'rb').read())
 
 # Determining the sectors which were simulated
 
@@ -87,17 +93,85 @@ df_dem.index.name = 'Demands'
 df_dem = df_dem.reset_index()
 df_dem = df_dem.round(3)
 
+# Creating a DF for the components table
 
-# Function that creates a HTML table from a Pandas dataframe
-def make_dash_table(df):
-    """ Return a dash definition of an HTML table for a Pandas dataframe """
-    table = []
-    for index, row in df.iterrows():
-        html_row = []
-        for i in range(len(row)):
-            html_row.append(html.Td([row[i]]))
-        table.append(html.Tr(html_row))
-    return table
+with open('../MVS_outputs/json_input_processed.json') as bf:
+    data2 = json.load(bf)
+
+components1 = data2['energyProduction']
+components2 = data2['energyConversion']
+
+del components1['DSO_consumption_period_1']
+del components1['DSO_consumption_period_2']
+
+comp1_keys = list(components1.keys())
+comp2_keys = list(components2.keys())
+
+components = {}
+
+for comps in comp1_keys:
+    components.update({comps: [components1[comps]['type_oemof'],
+                               components1[comps]['installedCap']['value'],
+                               components1[comps]['optimizeCap']['value']]})
+for comps in comp2_keys:
+    components.update({comps: [components2[comps]['type_oemof'],
+                               components2[comps]['installedCap']['value'],
+                               components2[comps]['optimizeCap']['value']]})
+
+df_comp = pd.DataFrame.from_dict(components, orient='index',
+                                 columns=['Type of Component', 'Installed Capcity', 'Optimization'])
+df_comp.index.name = 'Component'
+df_comp = df_comp.reset_index()
+
+for i in range(len(df_comp)):
+    if df_comp.at[i, 'Optimization']:
+        df_comp.iloc[i, df_comp.columns.get_loc('Optimization')] = 'Yes'
+    else:
+        df_comp.iloc[i, df_comp.columns.get_loc('Optimization')] = 'No'
+
+# Creating a Pandas dataframe for the components optimization results table
+
+df_scalars = pd.read_excel('../MVS_outputs/scalars.xlsx', sheet_name='scalar_matrix')
+df_scalars = df_scalars.drop(['Unnamed: 0', 'total_flow', 'peak_flow', 'average_flow'], axis=1)
+df_scalars = df_scalars.rename(columns={'label': 'Component/Parameter', 'optimizedAddCap': 'CAP',
+                                        'annual_total_flow': 'Aggregated Flow'})
+
+# # Function that creates a HTML table from a Pandas dataframe
+# def make_dash_table(df):
+#     """ Return a dash definition of an HTML table for a Pandas dataframe """
+#     table = []
+#     for index, row in df.iterrows():
+#         html_row = []
+#         for i in range(len(row)):
+#             html_row.append(html.Td([row[i]]))
+#         table.append(html.Tr(html_row))
+#     return table
+
+
+# Function that creates a Dash DataTable from a Pandas dataframe
+def make_dash_data_table(df):
+    """"""
+    return (dash_table.DataTable(
+        columns=[{"name": i, "id": i} for i in df.columns],
+        data=df.to_dict('records'),
+        style_cell={'padding': '5px',
+                    'height': 'auto',
+                    'width': 'auto',
+                    'textAlign': 'center'},
+        style_data_conditional=[
+            {
+                'if': {'row_index': 'odd'},
+                'backgroundColor': 'rgb(248, 248, 248)'
+            }],
+        style_header={
+            'fontWeight': 'bold',
+            'color': '#8c3604'
+        },
+        style_table={
+            'margin': '30px',
+            'fontSize': '40px'
+        }
+    ))
 
 
 # Header section with logo and the title of the report, and CSS styling. Work in progress...
@@ -250,7 +324,8 @@ app.layout = html.Div([
 
                             html.Br([]),
 
-                            html.Table(make_dash_table(df_projectData)),
+                            # html.Table(make_dash_table(df_projectData)),
+                            html.Div(className='tableplay', children=[make_dash_data_table(df_projectData)])
                         ],
                         className="projdata",
                         style={
@@ -282,7 +357,8 @@ app.layout = html.Div([
                                        }
                             ),
                             html.Br([]),
-                            html.Table(make_dash_table(df_simsettings))
+                            # html.Table(make_dash_table(df_simsettings))
+                            html.Div(className='tableplay', children=[make_dash_data_table(df_simsettings)])
                         ],
                         className="projdata",
                         style={
@@ -310,7 +386,11 @@ app.layout = html.Div([
 
     html.Div(className='blockoftext2', children=[html.P('The simulation was performed for the energy system '
                                                         'covering the following sectors:'),
-                                                 html.P(f'{sec_list}')
+                                                 html.P(f'{sec_list}', style={'borderStyle': 'solid',
+                                                                              'borderWidth': 'thick',
+                                                                              'width': 'auto',
+                                                                              'padding': '20px',
+                                                                              'textAlign': 'center'})
                                                  ],
              style={
                  'textAlign': 'justify',
@@ -324,44 +404,24 @@ app.layout = html.Div([
         'fontSize': '40px',
         'margin': '30px'}),
 
-    html.Div(children=[dash_table.DataTable(
-        id='table',
-        columns=[{"name": i, "id": i} for i in df_dem.columns],
-        data=df_dem.to_dict('records'),
-        style_cell={'padding': '5px',
-                    'height': 'auto',
-                    'width': 'auto'},
-        style_data_conditional=[
-            {
-                'if': {'row_index': 'odd'},
-                'backgroundColor': 'rgb(248, 248, 248)'
-            }],
-        style_header={
-            'fontWeight': 'bold',
-            'color': '#060075'
-        },
-        style_table={
-            'margin': '30px',
-            'fontSize': '40px'
-        }
-    )]),
+    html.Div(children=[make_dash_data_table(df_dem)]),
 
     html.Div(className='timeseriesplots',
              children=[
-                 html.Img(id='demand_ts',
-                          src='../MVS_outputs/input_timeseries_Habor_kW.png', width='200px'),
+                 html.Img(src='data:image/png;base64,{}'.format(pv_inp_ts.decode()), width='1500px'),
                  html.Br([]),
                  html.H4('PV System Input Time Series', style={
                      'textAlign': 'left',
-                     'fontSize': '40px',
-                     'margin': '30px'}),
+                     'fontSize': '40px'}),
                  html.Br([]),
-                 html.Img(id='pvoutput_ts',
-                          src='../MVS_outputs/input_timeseries_PV plant (mono)_kW.png')
+                 html.Img(src='data:image/png;base64,{}'.format(pv_dem_ts.decode()), width='1500px')
              ],
              style={
                  'margin': '30px'
              }),
+
+    html.Div(),
+
     html.Br(),
 
     html.Div(className='heading1', children=[html.H2('Energy System Components',
@@ -376,6 +436,62 @@ app.layout = html.Div([
                                                      'color': '#000000',
                                                      'margin': '30px',
                                                  })]),
+
+    html.Div(className='blockoftext2', children=[
+        html.P('The energy system is comprised of the following components:')
+    ],
+             style={
+                 'textAlign': 'justify',
+                 'fontSize': '40px',
+                 'margin': '30px'
+             }),
+
+    html.Div(children=[make_dash_data_table(df_comp)]),
+
+    html.Br([]),
+
+    html.Div(className='simresultsbox', children=[html.H2('SIMULATION RESULTS')],
+             style={
+                 'textAlign': 'center',
+                 'borderStyle': 'solid',
+                 'borderWidth': 'thin',
+                 'padding': '0.5px',
+                 'margin': '30px',
+                 'fontSize': '250%',
+                 'width': '3000px',
+                 'margin-left': 'auto',
+                 'margin-right': 'auto',
+                 'background': colors['inp-box'],
+                 'color': colors['font-inpbox'],
+                 'verticalAlign': 'middle'
+
+             }),
+
+    html.Br([]),
+
+    html.Div(className='heading1', children=[html.H2('Dispatch & Energy Flows',
+                                                     style={
+                                                         'textAlign': 'left',
+                                                         'margin': '30px',
+                                                         'fontSize': '60px',
+                                                         'color': '#8c3604',
+                                                     }),
+                                             html.Hr(
+                                                 style={
+                                                     'color': '#000000',
+                                                     'margin': '30px',
+                                                 })]),
+
+    html.Div(className='blockoftext2', children=[
+        html.P('The capacity optimization of components that were to be used resulted in:')
+    ],
+             style={
+                 'textAlign': 'justify',
+                 'fontSize': '40px',
+                 'margin': '30px'
+             }),
+
+    html.Div(children=[make_dash_data_table(df_scalars)])
 
 ])
 
