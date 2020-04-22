@@ -100,10 +100,24 @@ def run_oemof(dict_values):
 
     logging.debug("All components added.")
 
-    # import oemof.graph as grph
-    # my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
-    # from .F1_plotting import plots
-    # plots.draw_graph(model, node_color={})
+    if (
+        dict_values["simulation_settings"]["display_nx_graph"]["value"] == True
+        or dict_values["simulation_settings"]["store_nx_graph"]["value"] is True
+    ):
+        import oemof.graph as grph
+
+        # my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
+
+        from src.F1_plotting import draw_graph
+
+        draw_graph(
+            model,
+            node_color={},
+            show_plot=dict_values["simulation_settings"]["display_nx_graph"]["value"],
+            save_plot=dict_values["simulation_settings"]["store_nx_graph"]["value"],
+            user_input=dict_values["simulation_settings"],
+        )
+        logging.debug("Created networkx graph of the energy system.")
 
     logging.debug("Creating oemof model based on created components and busses...")
     local_energy_system = solph.Model(model)
@@ -118,7 +132,7 @@ def run_oemof(dict_values):
     """
     logging.debug("All constraints added.")
 
-    if dict_values["simulation_settings"]["output_lp_file"] == True:
+    if dict_values["simulation_settings"]["output_lp_file"]["value"] == True:
         logging.debug("Saving to lp-file.")
         local_energy_system.write(
             dict_values["simulation_settings"]["path_output_folder"] + "/lp_file.lp",
@@ -143,7 +157,7 @@ def run_oemof(dict_values):
     model.results["meta"] = results_meta
 
     # store energy system with results
-    if dict_values["simulation_settings"]["store_oemof_results"] == True:
+    if dict_values["simulation_settings"]["store_oemof_results"]["value"] == True:
         model.dump(
             dpath=dict_values["simulation_settings"]["path_output_folder"],
             filename=dict_values["simulation_settings"]["oemof_file_name"],
