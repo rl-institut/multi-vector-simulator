@@ -225,25 +225,26 @@ def convert(o):
         answer = int(o)
     # todo this actually drops the date time index, which could be interesting
     elif isinstance(o, pd.DatetimeIndex):
-        answer =  "date_range"
+        answer = "date_range"
     elif isinstance(o, pd.Timestamp):
-        answer =  str(o)
+        answer = str(o)
     # todo this also drops the timeindex, which is unfortunate.
     elif isinstance(o, pd.Series):
-        answer =  "pandas timeseries"
+        answer = "pandas timeseries"
     elif isinstance(o, numpy.ndarray):
-        answer =  "numpy timeseries"
+        answer = "numpy timeseries"
     elif isinstance(o, pd.DataFrame):
-        answer =  "pandas dataframe"
+        answer = "pandas dataframe"
     else:
         raise TypeError(
             "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"
             "Type: " + str(type(o)) + " \n "
             "Value(s): " + str(o) + "\n"
             "Please edit function CO_data_processing.dataprocessing.store_as_json."
-    )
+        )
 
     return answer
+
 
 def store_as_json(dict_values, output_folder, file_name):
     """Stores are dictionary as a Json file and converts all values that are incompatible with the Json format

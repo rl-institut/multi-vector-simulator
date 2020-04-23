@@ -24,4 +24,3 @@ def all_totals(dict_values):
                 {column: dict_values["kpi"]["cost_matrix"][column].sum()}
             )
     return
-

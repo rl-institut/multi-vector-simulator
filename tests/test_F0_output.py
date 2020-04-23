@@ -22,7 +22,7 @@ import src.F0_output as F0
 
 from .constants import TEST_REPO_PATH
 
-OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs"))
+OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
 START_TIME = "2020-01-01 00:00"
 PERIODS = 3
@@ -62,6 +62,7 @@ BUS = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series
 
 class TestFileCreation:
     """ """
+
     def setup_class(self):
         """ """
         shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
@@ -153,6 +154,7 @@ class TestFileCreation:
 
 class TestDictionaryToJsonConversion:
     """ """
+
     def setup_class(self):
         """ """
         shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
