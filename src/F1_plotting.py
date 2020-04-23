@@ -81,7 +81,7 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
 
 def capacities(user_input, project_data, assets, capacities):
     """
-    This function determines the assets for which the optimised capacity is larger than zero and then plots those capacities in a bar chart.
+    Determines the assets for which the optimized capacity is larger than zero and then plots those capacities in a bar chart.
     :param user_input: dict Simulation settings including the output path
     :param project_data: dict Project data including project name and scenario name
     :param assets: list of asset names

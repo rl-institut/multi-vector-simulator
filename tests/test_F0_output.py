@@ -2,11 +2,11 @@
 - Aggregate demand profiles to a total demand profile
 - Plotting all energy flows for both 14 and 365 days for each energy bus
 - Store timeseries of all energy flows to excel (one sheet = one energy bus)
-- execute function: plot optimised capacities as a barchart (F1)
-- execute function: plot all annuities as a barchart (F1)
-- store scalars/KPI to excel
-- process dictionary so that it can be stored to Json
-- store dictionary to Json
+- Execute function: plot optimised capacities as a barchart (F1)
+- Execute function: plot all annuities as a barchart (F1)
+- Store scalars/KPI to excel
+- Process dictionary so that it can be stored to Json
+- Store dictionary to Json
 """
 
 import os
@@ -20,7 +20,9 @@ import pandas as pd
 import numpy as np
 import src.F0_output as F0
 
-OUTPUT_PATH = os.path.abspath(os.path.join(".", "tests", "test_outputs"))
+from .constants import TEST_REPO_PATH
+
+OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs"))
 
 START_TIME = "2020-01-01 00:00"
 PERIODS = 3
