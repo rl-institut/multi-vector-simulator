@@ -7,6 +7,7 @@ In module E3 the technical KPI are evaluated:
 - calculate degree of autonomy
 - calculate total generation of each asset
 - calculate energy flows between sectors
+- calculate degree of autonomy me
 - calculate degree of sector coupling
 """
 import logging
@@ -33,7 +34,6 @@ def all_totals(dict_values):
                 {column: dict_values[KPI_DICT][KPI_COST_MATRIX][column].sum()}
             )
     return
-
 
 def total_demand_each_sector(dict_values):
     """
