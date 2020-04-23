@@ -36,6 +36,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - PLANNED in PR #257: Technical parameters (#223): Energy flows (aggregated) per asset, Renewable share, Degree of autonomy, Degree of sector-coupling
 - Test for the module A1 (#141)
 - Test for the module E3 (#143)
+- Test for module F0 (#142)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -47,6 +48,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
 - the columns of the storage_xx files are renamed and the specific parameters for each column are checked in A1 (#259)
 - Default input files from "inputs": Changed some parameters (#143) 
+- Seperated functions in F0 to ease testing (#142)
 
 ### Removed
 
@@ -84,11 +86,11 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Terminal commands (#135)
 - PR request template (open/done/not applicable) (#205)
 - URL of coverall badge (#265) 
+- Function converting json to dict (#142)
 
 ### Removed
 - Function welcome from module A0 (#138)
 - Parameters `input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs` from `simulation_settings.csv` (#178)
-
 
 ### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
@@ -185,3 +187,4 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 
 ### Removed
 - yet another thing
+
