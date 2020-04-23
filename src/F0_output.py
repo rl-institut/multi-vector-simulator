@@ -12,20 +12,20 @@ Module F0 Output
 ================
 The model F0 output defines all functions that store evaluation results to file.
 - Aggregate demand profiles to a total demand profile
-- Plotting all energy flows for both 14 and 365 days for each energy bus
+- Plot all energy flows for both 14 and 365 days for each energy bus
 - Store timeseries of all energy flows to excel (one sheet = one energy bus)
-- execute function: plot optimised capacities as a barchart (F1)
-- execute function: plot all annuities as a barchart (F1)
-- store scalars/KPI to excel
-- process dictionary so that it can be stored to Json
-- store dictionary to Json
+- Execute function: plot optimised capacities as a barchart (F1)
+- Execute function: plot all annuities as a barchart (F1)
+- Store scalars/KPI to excel
+- Process dictionary so that it can be stored to Json
+- Store dictionary to Json
 """
 
 
 def evaluate_dict(dict_values):
     """
-    This is the main function of F0. It calls all functions that prepare the simulation output, ie. Storing all simulation output into excellent files, bar charts, and graphs.
-    :param dict_values: dict Of all input and output parameters up to F0
+    This is the main function of F0. It calls all functions that process the simulation outputs, ie. storing all simulation outputs into csv files, bar charts, and graphs.
+    :param dict_values: dict of all input and output parameters up to F0
     :return: NA
     """
 
@@ -99,8 +99,8 @@ def evaluate_dict(dict_values):
 
 def plot_optimized_capacities(dict_values):
     """
-    This function determinants whether or not any capacities are added to the optimal system and calls the function plotting those capacities as a bar chart.
-    :param dict_values: dict Of all input and output parameters up to F0
+    Determines whether or not any capacities are added to the optimal system and calls the function plotting those capacities as a bar chart.
+    :param dict_values: dict of all input and output parameters up to F0
     :return: Bar chart of capacities
     """
 
@@ -120,8 +120,8 @@ def plot_optimized_capacities(dict_values):
 
 def store_scalars_to_excel(dict_values):
     """
-    All output data that is a scalar is storage to an excellent file tab. This could for example be economical data or technical data.
-    :param dict_values: dict Of all input and output parameters up to F0
+    Stores any output data that is a scalar to an excel file tab. This could for example be economical data or technical data.
+    :param dict_values: dict of all input and output parameters up to F0
     :return: Excel file with scalar data
     """
     results_scalar_output_file = "/scalars" + ".xlsx"
@@ -146,8 +146,8 @@ def store_scalars_to_excel(dict_values):
 
 def store_timeseries_all_busses_to_excel(dict_values):
     """
-    This function plots the energy flows of each single bus and the energy system and saves it as PNG and additionally as a tab and an Excel sheet.
-    :param dict_values: dict Of all input and output parameters up to F0
+    Plots the energy flows of each single bus and the energy system and saves it as PNG. In addition, it also saves it as a tab in an excel file.
+    :param dict_values: dict of all input and output parameters up to F0
     :return: Plots and excel with all timeseries of each bus
     """
 
@@ -208,7 +208,7 @@ def convert(o):
 
 def store_as_json(dict_values, output_folder, file_name):
     """
-    Stores are dictionary as a Json file and converts all values that are incompatible with the Json format
+    Stores a dictionary as a Json file and converts all values that are incompatible with the Json format
     :param dict_values: dict to be stored as json
     :param output_folder: Folder into which json should be stored
     :param file_name: Name of the file the json should be stored as
