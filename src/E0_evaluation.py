@@ -132,6 +132,10 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     indicators.all_totals(dict_values)
 
+    # Processing further KPI
+    indicators.total_renewable_and_non_renewable_energy_origin(dict_values)
+    indicators.renewable_share(dict_values)
+
     logging.info("Evaluating optimized capacities and dispatch.")
     output.store_as_json(dict_values, "json_with_results")
     return
