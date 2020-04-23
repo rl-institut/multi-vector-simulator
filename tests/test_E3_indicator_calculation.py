@@ -79,17 +79,22 @@ dict_weighting_two_sectors = {
 
 
 class TestGeneralEvaluation:
+    """ """
     def test_totalling_scalars_values(self):
+        """ """
         E3.all_totals(dict_scalars)
         return dict_scalars[KPI_DICT][KPI_SCALARS_DICT] == scalars_expected
 
     def test_total_dispatch_of_each_asset(self):
+        """ """
         assert 0 == 0
 
     def test_total_demand_of_each_sector(self):
+        """ """
         assert 0 == 0
 
     def test_total_renewable_and_non_renewable_origin_of_each_sector(self):
+        """ """
         E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
         assert (
             "Total internal renewable generation"
@@ -149,20 +154,25 @@ class TestGeneralEvaluation:
         )
 
     def test_intersectoral_energy_flows_unilateral(self):
+        """ """
         assert 0 == 0
 
     def test_intersectoral_energy_flows_bilateral(self):
+        """ """
         assert 0 == 0
 
 
 class TestTechnicalParameters:
+    """ """
     def test_weighting_for_sector_coupled_kpi_unknown_sector(self):
+        """ """
         with pytest.raises(ValueError):
             E3.weighting_for_sector_coupled_kpi(
                 dict_weighting_unknown_sector, a_kpi_name
             )
 
     def test_weighting_for_sector_coupled_kpi_one_sector(self):
+        """ """
         E3.weighting_for_sector_coupled_kpi(dict_weighting_one_sector, a_kpi_name)
         assert a_kpi_name in dict_weighting_one_sector[KPI_DICT][KPI_SCALARS_DICT]
         assert (
@@ -171,12 +181,14 @@ class TestTechnicalParameters:
         )
 
     def test_weighting_for_sector_coupled_kpi_multiple_sectors(self):
+        """ """
         E3.weighting_for_sector_coupled_kpi(dict_weighting_two_sectors, a_kpi_name)
         exp = numbers[1] + numbers[2] * DEFAULT_WEIGHTS_ENERGY_CARRIERS["H2"]["value"]
         assert a_kpi_name in dict_weighting_two_sectors[KPI_DICT][KPI_SCALARS_DICT]
         assert dict_weighting_two_sectors[KPI_DICT][KPI_SCALARS_DICT][a_kpi_name] == exp
 
     def test_renewable_share_one_sector(self):
+        """ """
         E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
         E3.renewable_share(dict_renewable_energy_use)
         exp = exp_res / (exp_non_res + exp_res)
@@ -201,55 +213,70 @@ class TestTechnicalParameters:
         )
 
     def test_renewable_share_equation_is_1(self):
+        """ """
         tot_res = 100
         tot_non_res = 0
         renewable_share = E3.renewable_share_equation(tot_res, tot_non_res)
         assert renewable_share == tot_res / (tot_res + tot_non_res)
 
     def test_renewable_share_equation_is_0(self):
+        """ """
         tot_res = 0
         tot_non_res = 100
         renewable_share = E3.renewable_share_equation(tot_res, tot_non_res)
         assert renewable_share == tot_res / (tot_res + tot_non_res)
 
     def test_renewable_share_equation_below_1(self):
+        """ """
         tot_res = 20
         tot_non_res = 100
         renewable_share = E3.renewable_share_equation(tot_res, tot_non_res)
         assert renewable_share == tot_res / (tot_res + tot_non_res)
 
     def test_degree_of_autonomy_below_1(self):
+        """ """
         assert 0 == 0
 
     def test_degree_of_autonomomy_is_1(self):
+        """ """
         assert 0 == 0
 
     def test_degree_of_autonomy_above_1(self):
+        """ """
         assert 0 == 0
 
     def test_degree_of_sector_coupling_below_1(self):
+        """ """
         assert 0 == 0
 
     def test_degree_of_sector_coupling_is_1(self):
+        """ """
         assert 0 == 0
 
     def test_degree_of_sector_coupling_above_1(self):
+        """ """
         assert 0 == 0
 
     def test_onsite_energy_fraction_below_1(self):
+        """ """
         assert 0 == 0
 
     def test_onsite_energy_fraction_is_1(self):
+        """ """
         assert 0 == 0
 
     def test_onsite_energy_fraction_above_1(self):
+        """ """
         assert 0 == 0
 
     def test_onsite_energy_matching_below_1(self):
+        """ """
         assert 0 == 0
 
     def test_onsite_energy_matching_is_1(self):
+        """ """
         assert 0 == 0
 
     def test_onsite_energy_matching_above_1(self):
+        """ """
         assert 0 == 0
