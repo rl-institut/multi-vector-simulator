@@ -182,29 +182,28 @@ def convert(o):
     :return: json-storable value.
     """
     if isinstance(o, numpy.int64):
-        return int(o)
+        answer = int(o)
     # todo this actually drops the date time index, which could be interesting
-    if isinstance(o, pd.DatetimeIndex):
-        return "date_range"
-    # if isinstance(o, pd.datetime):
-    #    return str(o)
-    if isinstance(o, pd.Timestamp):
-        return str(o)
+    elif isinstance(o, pd.DatetimeIndex):
+        answer =  "date_range"
+    elif isinstance(o, pd.Timestamp):
+        answer =  str(o)
     # todo this also drops the timeindex, which is unfortunate.
-    if isinstance(o, pd.Series):
-        return "pandas timeseries"  # o.values
-    if isinstance(o, numpy.ndarray):
-        return "numpy timeseries"  # o.tolist()
-    if isinstance(o, pd.DataFrame):
-        return "pandas dataframe"  # o.to_json(orient='records')
-    logging.error(
-        "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"
-        "Type: " + str(type(o)) + " \n"
-        "Value(s): " + str(o) + "\n"
-        "Please edit function CO_data_processing.dataprocessing.store_as_json."
+    elif isinstance(o, pd.Series):
+        answer =  "pandas timeseries"
+    elif isinstance(o, numpy.ndarray):
+        answer =  "numpy timeseries"
+    elif isinstance(o, pd.DataFrame):
+        answer =  "pandas dataframe"
+    else:
+        raise TypeError(
+            "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"
+            "Type: " + str(type(o)) + " \n "
+            "Value(s): " + str(o) + "\n"
+            "Please edit function CO_data_processing.dataprocessing.store_as_json."
     )
-    raise TypeError
 
+    return answer
 
 def store_as_json(dict_values, output_folder, file_name):
     """
