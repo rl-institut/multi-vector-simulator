@@ -62,6 +62,7 @@ class TestFileCreation:
     """ """
     def setup_class(self):
         """ """
+        self.teardown()
         os.mkdir(OUTPUT_PATH)
 
     def test_store_barchart_for_capacities(self):
@@ -152,6 +153,7 @@ class TestDictionaryToJsonConversion:
     """ """
     def setup_class(self):
         """ """
+        self.teardown()
         os.mkdir(OUTPUT_PATH)
 
     def test_processing_dict_for_json_export_parse_bool(self):
