@@ -14,4 +14,3 @@ outflow_direction,str,PV plant (mono)
 type_oemof,str,source
 unit,str,kWp
 energyVector,str,Electricity
-renewableAsset,bool,True
