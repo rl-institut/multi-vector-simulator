@@ -59,6 +59,10 @@ simDate = time.strftime("%Y-%m-%d")
 
 pv_dem_ts = base64.b64encode(open('../MVS_outputs/input_timeseries_Habor_kW.png', 'rb').read())
 pv_inp_ts = base64.b64encode(open('../MVS_outputs/input_timeseries_PV plant (mono)_kW.png', 'rb').read())
+el_flows_14 = base64.b64encode(open('../MVS_outputs/Electricity_flows_14_days.png', 'rb').read())
+el_flows_365 = base64.b64encode(open('../MVS_outputs/Electricity_flows_365_days.png', 'rb').read())
+op_add_caps = base64.b64encode(open('../MVS_outputs/optimal_additional_capacities.png', 'rb').read())
+pv_inv_flow = base64.b64encode(open('../MVS_outputs/PV plant (mono) bus flows.png', 'rb').read())
 
 # Determining the sectors which were simulated
 
@@ -91,7 +95,7 @@ df_dem = pd.DataFrame.from_dict(demand_data, orient='index',
                                 columns=['Peak Demand (kW)', 'Mean Demand (kW)', 'Total Demand per annum (kW)'])
 df_dem.index.name = 'Demands'
 df_dem = df_dem.reset_index()
-df_dem = df_dem.round(3)
+df_dem = df_dem.round(2)
 
 # Creating a DF for the components table
 
@@ -135,6 +139,16 @@ df_scalars = pd.read_excel('../MVS_outputs/scalars.xlsx', sheet_name='scalar_mat
 df_scalars = df_scalars.drop(['Unnamed: 0', 'total_flow', 'peak_flow', 'average_flow'], axis=1)
 df_scalars = df_scalars.rename(columns={'label': 'Component/Parameter', 'optimizedAddCap': 'CAP',
                                         'annual_total_flow': 'Aggregated Flow'})
+df_scalars = df_scalars.round(2)
+
+# Creating a Pandas dataframe for the costs' results
+
+df_costs1 = pd.read_excel('../MVS_outputs/scalars.xlsx', sheet_name='cost_matrix')
+df_costs1 = df_costs1.round(2)
+df_costs = df_costs1[['label', 'costs_total', 'costs_upfront', 'annuity_total', 'annuity_om']].copy()
+df_costs = df_costs.rename(columns={'label': 'Component', 'costs_total': 'CAP',
+                                    'costs_upfront': 'Upfront Investment Costs'})
+
 
 # # Function that creates a HTML table from a Pandas dataframe
 # def make_dash_table(df):
@@ -307,6 +321,7 @@ app.layout = html.Div([
                 [
                     html.Div(
                         [
+                            html.Br([]),
                             html.H4(
                                 ['Project Data'], className="projdataheading",
                                 style={'position': 'relative',
@@ -322,10 +337,7 @@ app.layout = html.Div([
                                        }
                             ),
 
-                            html.Br([]),
-
-                            # html.Table(make_dash_table(df_projectData)),
-                            html.Div(className='tableplay', children=[make_dash_data_table(df_projectData)])
+                            html.Div(className='tableplay', children=[make_dash_data_table(df_projectData)]),
                         ],
                         className="projdata",
                         style={
@@ -342,6 +354,7 @@ app.layout = html.Div([
                 [
                     html.Div(
                         [
+                            html.Br([]),
                             html.H4(
                                 ['Simulation Settings'], className="projdataheading",
                                 style={'position': 'relative',
@@ -356,8 +369,7 @@ app.layout = html.Div([
                                        'paddingRight': '60px'
                                        }
                             ),
-                            html.Br([]),
-                            # html.Table(make_dash_table(df_simsettings))
+
                             html.Div(className='tableplay', children=[make_dash_data_table(df_simsettings)])
                         ],
                         className="projdata",
@@ -398,7 +410,17 @@ app.layout = html.Div([
                  'margin': '30px'
              }),
 
-    html.Div(className='demandmatter', children=[html.H4('Electricity Demand'),
+    html.Div(className='demandmatter', children=[html.H4('Electricity Demand', style={'position': 'relative',
+                                                                                      'left': '0',
+                                                                                      'height': '20%',
+                                                                                      'margin': '0mm',
+                                                                                      'borderLeft': '20px solid #8c3604',
+                                                                                      'background': '#ffffff',
+                                                                                      'paddingTop': '1px',
+                                                                                      'paddingBottom': '1px',
+                                                                                      'paddingLeft': '30px',
+                                                                                      'paddingRight': '60px'
+                                                                                      }),
                                                  html.P('Electricity demands that have to be supplied are: ')], style={
         'textAlign': 'left',
         'fontSize': '40px',
@@ -408,13 +430,24 @@ app.layout = html.Div([
 
     html.Div(className='timeseriesplots',
              children=[
-                 html.Img(src='data:image/png;base64,{}'.format(pv_inp_ts.decode()), width='1500px'),
+                 html.Img(src='data:image/png;base64,{}'.format(pv_dem_ts.decode()), width='1500px'),
                  html.Br([]),
                  html.H4('PV System Input Time Series', style={
                      'textAlign': 'left',
-                     'fontSize': '40px'}),
+                     'fontSize': '40px',
+                     'position': 'relative',
+                     'left': '0',
+                     'height': '20%',
+                     'margin': '0mm',
+                     'borderLeft': '20px solid #8c3604',
+                     'background': '#ffffff',
+                     'paddingTop': '1px',
+                     'paddingBottom': '1px',
+                     'paddingLeft': '30px',
+                     'paddingRight': '60px'
+                 }),
                  html.Br([]),
-                 html.Img(src='data:image/png;base64,{}'.format(pv_dem_ts.decode()), width='1500px')
+                 html.Img(src='data:image/png;base64,{}'.format(pv_inp_ts.decode()), width='1500px')
              ],
              style={
                  'margin': '30px'
@@ -491,7 +524,73 @@ app.layout = html.Div([
                  'margin': '30px'
              }),
 
-    html.Div(children=[make_dash_data_table(df_scalars)])
+    html.Div(children=[make_dash_data_table(df_scalars)]),
+    html.Div(className='blockoftext2', children=[
+        html.P('With this, the demands are met with the following dispatch schedules:'),
+        html.P('a. Flows in the system for a duration of 14 days', style={'marginLeft': '20px'})
+    ],
+             style={
+                 'textAlign': 'justify',
+                 'fontSize': '40px',
+                 'margin': '30px'
+             }),
+
+    html.Img(src='data:image/png;base64,{}'.format(el_flows_14.decode()),
+             style={'display': 'block',
+                    'marginLeft': '50px',
+                    'maxWidth': '100%',
+                    'height': 'auto'
+                    }),
+
+    html.P('b. Flows in the system for the whole year', style={'marginLeft': '50px',
+                                                               'textAlign': 'justify',
+                                                               'fontSize': '40px',
+                                                               }),
+    html.Img(src='data:image/png;base64,{}'.format(el_flows_365.decode()),
+             style={'display': 'block',
+                    'marginLeft': '50px',
+                    'maxWidth': '100%',
+                    'height': 'auto'
+                    }),
+
+    html.Br(style={'marginBottom': '5px'}),
+
+    html.Div(className='res_images', children=[
+        html.Img(src='data:image/png;base64,{}'.format(op_add_caps.decode())),
+        html.Img(src='data:image/png;base64,{}'.format(pv_inv_flow.decode()))
+    ],
+             style={'display': 'block',
+                    'marginLeft': '50px',
+                    'maxWidth': '100%',
+                    'height': 'auto',
+                    'marginBottom': '5px'
+                    }
+             ),
+
+    html.P('This results in the following KPI of the dispatch:', style={'marginLeft': '50px',
+                                                                        'textAlign': 'justify',
+                                                                        'fontSize': '40px',
+                                                                        }),
+    html.Div(className='heading1', children=[html.H2('Economic Evaluation',
+                                                     style={
+                                                         'textAlign': 'left',
+                                                         'margin': '30px',
+                                                         'fontSize': '60px',
+                                                         'color': '#8c3604',
+                                                     }),
+                                             html.Hr(
+                                                 style={
+                                                     'color': '#000000',
+                                                     'margin': '30px',
+                                                 })]),
+
+    html.P('The following installation and operation costs result from capacity and dispatch optimization:',
+           style={'margin': '30px',
+                  'textAlign': 'justify',
+                  'fontSize': '40px',
+                  }),
+
+    html.Div(children=[make_dash_data_table(df_costs)])
 
 ])
 
