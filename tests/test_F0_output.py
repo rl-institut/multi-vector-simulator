@@ -181,10 +181,7 @@ class TestDictionaryToJsonConversion:
     def test_processing_dict_for_json_export_parse_pandas_Timestamp(self):
         """ """
         expr = F0.convert(JSON_TEST_DICTIONARY["pandas_Timestamp"])
-        test = False
-        if expr == START_TIME:
-            test = True
-        assert test == False
+        assert isinstance(expr, str)
 
     def test_processing_dict_for_json_export_parse_pandas_series(self):
         """ """
