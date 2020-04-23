@@ -22,29 +22,29 @@ import src.F0_output as F0
 
 OUTPUT_PATH = os.path.abspath(os.path.join(".", "tests", "test_outputs"))
 
-start_time = "2020-01-01 00:00"
-periods = 3
-values = [0, 1, 2]
+START_TIME = "2020-01-01 00:00"
+PERIODS = 3
+VALUES = [0, 1, 2]
 
-pandas_DatetimeIndex = pd.date_range(start=start_time, periods=periods, freq="60min")
-pandas_Series = pd.Series(values, index=pandas_DatetimeIndex)
-pandas_Dataframe = pd.DataFrame({"a": values, "b": values})
-scalar = 2
+pandas_DatetimeIndex = pd.date_range(start=START_TIME, periods=PERIODS, freq="60min")
+pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
+pandas_Dataframe = pd.DataFrame({"a": VALUES, "b": VALUES})
+SCALAR = 2
 
-json_test_dictionary = {
+JSON_TEST_DICTIONARY = {
     "bool": True,
     "str": "str",
-    "numpy_int64": np.int64(scalar),
+    "numpy_int64": np.int64(SCALAR),
     "pandas_DatetimeIndex": pandas_DatetimeIndex,
-    "pandas_Timestamp": pd.Timestamp(start_time),
+    "pandas_Timestamp": pd.Timestamp(START_TIME),
     "pandas_series": pandas_Series,
-    "numpy_array": np.array(values),
+    "numpy_array": np.array(VALUES),
     "pandas_Dataframe": pandas_Dataframe,
 }
 
-unknown_type = np.float32(scalar / 10)
+UNKNOWN_TYPE = np.float32(SCALAR / 10)
 
-bus = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series})
+BUS = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series})
 
 # def test_evaluate_result_dictionary():
 #    assert 0 == 0
@@ -112,7 +112,7 @@ class TestFileCreation:
         """ """
         dict_timeseries_test_one_bus = {
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
-            "optimizedFlows": {"a_bus": bus},
+            "optimizedFlows": {"a_bus": BUS},
         }
 
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_one_bus)
@@ -126,7 +126,7 @@ class TestFileCreation:
         """ """
         dict_timeseries_test_two_busses = {
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
-            "optimizedFlows": {"a_bus": bus, "b_bus": bus},
+            "optimizedFlows": {"a_bus": BUS, "b_bus": BUS},
         }
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
         assert (
@@ -139,7 +139,7 @@ class TestFileCreation:
     def test_store_dict_into_json(self):
         """ """
         file_name = "test_json_converter"
-        F0.store_as_json(json_test_dictionary, OUTPUT_PATH, file_name)
+        F0.store_as_json(JSON_TEST_DICTIONARY, OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
     def teardown_class(self):
@@ -157,52 +157,52 @@ class TestDictionaryToJsonConversion:
     def test_processing_dict_for_json_export_parse_bool(self):
         """ """
         file_name = "test_json_bool"
-        F0.store_as_json(json_test_dictionary["bool"], OUTPUT_PATH, file_name)
+        F0.store_as_json(JSON_TEST_DICTIONARY["bool"], OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
     def test_processing_dict_for_json_export_parse_str(self):
         """ """
         file_name = "test_json_str"
-        F0.store_as_json(json_test_dictionary["str"], OUTPUT_PATH, file_name)
+        F0.store_as_json(JSON_TEST_DICTIONARY["str"], OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
     def test_processing_dict_for_json_export_parse_numpy_int64(self):
         """ """
-        expr = F0.convert(json_test_dictionary["numpy_int64"])
-        assert expr == scalar
+        expr = F0.convert(JSON_TEST_DICTIONARY["numpy_int64"])
+        assert expr == SCALAR
 
     def test_processing_dict_for_json_export_parse_pandas_DatetimeIndex(self):
         """ """
-        expr = F0.convert(json_test_dictionary["pandas_DatetimeIndex"])
+        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_DatetimeIndex"])
         assert expr == "date_range"
 
     def test_processing_dict_for_json_export_parse_pandas_Timestamp(self):
         """ """
-        expr = F0.convert(json_test_dictionary["pandas_Timestamp"])
+        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_Timestamp"])
         test = False
-        if expr == start_time:
+        if expr == START_TIME:
             test = True
         assert test == False
 
     def test_processing_dict_for_json_export_parse_pandas_series(self):
         """ """
-        expr = F0.convert(json_test_dictionary["pandas_series"])
+        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_series"])
         assert expr == "pandas timeseries"
 
     def test_processing_dict_for_json_export_parse_numpy_array(self):
         """ """
-        expr = F0.convert(json_test_dictionary["numpy_array"])
+        expr = F0.convert(JSON_TEST_DICTIONARY["numpy_array"])
         assert expr == "numpy timeseries"
 
     def test_processing_dict_for_json_export_parse_pandas_Dataframe(self):
         """ """
-        expr = F0.convert(json_test_dictionary["pandas_Dataframe"])
+        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_Dataframe"])
         assert expr == "pandas dataframe"
 
     def test_processing_dict_for_json_export_parse_unknown(self):
         """ """
         with pytest.raises(TypeError):
-            F0.convert(unknown_type)
+            F0.convert(UNKNOWN_TYPE)
 
     def teardown_class(self):
         """ """
