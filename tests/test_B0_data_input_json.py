@@ -48,32 +48,14 @@ class TestTemporaryJsonFileDisposal:
     def test_load_json_removes_json_file_from_inputs_folder(self, m_args):
         initializing.process_user_arguments()
 
-        load_data_from_csv.create_input_json(
-            input_directory=CSV_PATH, output_filename=CSV_FNAME, pass_back=True
-        )
+        load_data_from_csv.create_input_json(input_directory=CSV_PATH, pass_back=True)
         dict_values = data_input.load_json(
             JSON_CSV_PATH, path_output_folder=self.test_out_path, move_copy=True
         )
 
-        assert (
-            os.path.exists(
-                os.path.join(
-                    dict_values["simulation_settings"]["path_input_folder"],
-                    CSV_ELEMENTS,
-                    CSV_FNAME,
-                )
-            )
-            is False
-        )
+        assert os.path.exists(os.path.join(CSV_PATH, CSV_ELEMENTS, CSV_FNAME,)) is False
 
-        assert (
-            os.path.exists(
-                os.path.join(
-                    dict_values["simulation_settings"]["path_input_folder"], CSV_FNAME,
-                )
-            )
-            is False
-        )
+        assert os.path.exists(os.path.join(CSV_PATH, CSV_FNAME,)) is False
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
@@ -84,9 +66,7 @@ class TestTemporaryJsonFileDisposal:
     def test_load_json_copies_json_file_to_output_folder(self, m_args):
         initializing.process_user_arguments()
 
-        load_data_from_csv.create_input_json(
-            input_directory=CSV_PATH, output_filename=CSV_FNAME, pass_back=True
-        )
+        load_data_from_csv.create_input_json(input_directory=CSV_PATH, pass_back=True)
         dict_values = data_input.load_json(
             JSON_CSV_PATH, path_output_folder=self.test_out_path, move_copy=True
         )

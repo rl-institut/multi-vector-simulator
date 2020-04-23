@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import logging
+import os
 
 r"""
 Module F1 describes all the functions that create plots.
@@ -11,18 +12,29 @@ Module F1 describes all the functions that create plots.
 - creating network graph for the model brackets only working on Ubuntu
 """
 
+
 logging.getLogger("matplotlib.font_manager").disabled = True
 
 
 def flows(user_input, project_data, results_timeseries, sector, interval):
     """
 
-    :param user_input:
-    :param project_data:
-    :param results_timeseries:
-    :param sector:
-    :param interval:
-    :return:
+    Parameters
+    ----------
+    user_input :
+        param project_data:
+    results_timeseries :
+        param sector:
+    interval :
+        return:
+    project_data :
+        
+    sector :
+        
+
+    Returns
+    -------
+
     """
     logging.info("Creating plots for %s sector", sector)
     steps = interval * 24
@@ -46,24 +58,6 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
     else:
         fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
         axes_mg = axes[0]
-
-    """
-    # website with websafe hexacolours: https://www.colorhexa.com/web-safe-colors
-    color_dict = {
-        "total_demand_" + sector: "#33ff00",  # dark green
-        "solar_inverter": "#ffcc00",  # orange
-        #'Wind generation': '#33ccff',  # light blue
-        #'Genset generation': '#000000',  # black
-        "transformer_station_in": "#990099",  # violet
-        "charge_controller_in": "#0033cc",  # light green
-        sector + "_excess_sink": "#996600",  # brown
-        "transformer_station_out": "#ff33cc",  # pink
-        "charge_controller_out": "#ccccff",  # pidgeon blue
-        #'Demand shortage': '#ff3300',  # bright red
-        sector + "_storage_soc": "#0033cc"  # blue
-        #'Grid availability': '#cc0000'  # red
-    }
-    """
 
     flows_les.plot(
         title=sector
@@ -89,14 +83,13 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
         axes[1].set(xlabel="Time", ylabel=ylabel)
         axes[1].legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
+    path = os.path.join(
+        user_input["path_output_folder"],
+        sector + "_flows_" + str(interval) + "_days.png",
+    )
+
     plt.savefig(
-        user_input["path_output_folder"]
-        + "/"
-        + sector
-        + "_flows_"
-        + str(interval)
-        + "_days.png",
-        bbox_inches="tight",
+        path, bbox_inches="tight",
     )
     # plt.show()
     plt.close()
@@ -107,13 +100,24 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
 
 
 def capacities(user_input, project_data, assets, capacities):
-    """
+    """Determines the assets for which the optimized capacity is larger than zero and then plots those capacities in a bar chart.
 
-    :param user_input:
-    :param project_data:
-    :param assets:
-    :param capacities:
-    :return:
+    Parameters
+    ----------
+    user_input :
+        dict Simulation settings including the output path
+    project_data :
+        dict Project data including project name and scenario name
+    assets :
+        list of asset names
+    capacities :
+        list of asset capacities
+
+    Returns
+    -------
+    type
+        png with bar chart of optimized capacities
+
     """
 
     # only items with an optimal added capacity over 0 are selected
@@ -138,6 +142,7 @@ def capacities(user_input, project_data, assets, capacities):
     dfcapacities["capacities"] = capacities_added
 
     logging.info("Creating bar-chart for components capacities")
+
     dfcapacities.plot.bar(
         x="items",
         y="capacities",
@@ -147,9 +152,11 @@ def capacities(user_input, project_data, assets, capacities):
         + project_data["scenario_name"],
     )
 
+    path = os.path.join(
+        user_input["path_output_folder"], "optimal_additional_capacities.png"
+    )
     plt.savefig(
-        user_input["path_output_folder"] + "/optimal_additional_capacities.png",
-        bbox_inches="tight",
+        path, bbox_inches="tight",
     )
 
     plt.close()
@@ -162,8 +169,14 @@ def capacities(user_input, project_data, assets, capacities):
 def costs(dict_values):
     """
 
-    :param dict_values:
-    :return:
+    Parameters
+    ----------
+    dict_values :
+        return:
+
+    Returns
+    -------
+
     """
 
     settings = dict_values["simulation_settings"]
@@ -272,13 +285,24 @@ def costs(dict_values):
 def plot_costs(settings, project_data, names, costs, label, path):
     """
 
-    :param settings:
-    :param project_data:
-    :param names:
-    :param costs:
-    :param label:
-    :param path:
-    :return:
+    Parameters
+    ----------
+    settings :
+        param project_data:
+    names :
+        param costs:
+    label :
+        param path:
+    project_data :
+        
+    costs :
+        
+    path :
+        
+
+    Returns
+    -------
+
     """
 
     costs = pd.DataFrame(data=costs.values, index=names.values)
@@ -347,15 +371,28 @@ def plot_costs_rest(
 ):
     """
 
-    :param settings:
-    :param project_data:
-    :param major:
-    :param major_value:
-    :param costs_total:
-    :param total:
-    :param label:
-    :param path:
-    :return:
+    Parameters
+    ----------
+    settings :
+        param project_data:
+    major :
+        param major_value:
+    costs_total :
+        param total:
+    label :
+        param path:
+    project_data :
+        
+    major_value :
+        
+    total :
+        
+    path :
+        
+
+    Returns
+    -------
+
     """
 
     costs_total_rest = costs_total.copy()
@@ -413,16 +450,36 @@ def draw_graph(
 ):
     """
 
-    :param energysystem:
-    :param edge_labels:
-    :param node_color:
-    :param edge_color:
-    :param plot:
-    :param node_size:
-    :param with_labels:
-    :param arrows:
-    :param layout:
-    :return:
+    Parameters
+    ----------
+    energysystem :
+        param edge_labels:
+    node_color :
+        param edge_color: (Default value = "#eeac7e")
+    plot :
+        param node_size:
+    with_labels :
+        param arrows: (Default value = True)
+    layout :
+        return: (Default value = "dot")
+    user_input :
+        
+    edge_labels :
+         (Default value = True)
+    edge_color :
+         (Default value = "#eeac7e")
+    show_plot :
+         (Default value = True)
+    save_plot :
+         (Default value = True)
+    node_size :
+         (Default value = 5500)
+    arrows :
+         (Default value = True)
+
+    Returns
+    -------
+
     """
     import networkx as nx
     import oemof.graph as graph
