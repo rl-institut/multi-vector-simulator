@@ -167,3 +167,10 @@ REQUIRED_CSV_PARAMETERS = {
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
+
+DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
+    "Electricity": {"unit": "kWh_eleq/kWh_el",
+                    "value": 1},
+    "H2": {"unit": "kWh_eleq/kgH2",
+                    "value": 32.87},
+}
