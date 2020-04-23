@@ -209,19 +209,20 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
     # TODO create this as a function, so that in future also new parameters can be added
     list_of_new_parameters = {
         "maximumCap": "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
-
         "renewableAsset": "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
-
-        "renewable_share": "allows defining the renewable share of the DSO supply (Values: Float). "}
+        "renewable_share": "allows defining the renewable share of the DSO supply (Values: Float). ",
+    }
 
     for new_parameter in list_of_new_parameters:
         if new_parameter in df.index:
             parameters.append(new_parameter)
         else:
-            #todo this message should only be displayed in case that the parameter is actually supposed to be applied to each of the files. For maxCap, this is also not valid, eg. it should not be added to economic_data
-            logging.warning(f"You are not using the parameter {new_parameter} for asset group {filename}, which "
-                            + list_of_new_parameters[new_parameter]
-                            + "In the upcoming version of the MVS, this parameter will be required.")
+            # todo this message should only be displayed in case that the parameter is actually supposed to be applied to each of the files. For maxCap, this is also not valid, eg. it should not be added to economic_data
+            logging.warning(
+                f"You are not using the parameter {new_parameter} for asset group {filename}, which "
+                + list_of_new_parameters[new_parameter]
+                + "In the upcoming version of the MVS, this parameter will be required."
+            )
 
     # check parameters
     missing_parameters = []

@@ -169,10 +169,8 @@ REQUIRED_CSV_PARAMETERS = {
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
 
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
-    "Electricity": {"unit": "kWh_eleq/kWh_el",
-                    "value": 1},
-    "H2": {"unit": "kWh_eleq/kgH2",
-                    "value": 32.87},
+    "Electricity": {"unit": "kWh_eleq/kWh_el", "value": 1},
+    "H2": {"unit": "kWh_eleq/kgH2", "value": 32.87},
 }
 
 # Names for KPI output
@@ -185,4 +183,4 @@ KPI_UNCOUPLED_DICT = "KPI individual sectors"
 
 KPI_COST_MATRIX = "cost_matrix"
 
-#KPI_FLOW_MATRIX
+# KPI_FLOW_MATRIX

@@ -606,9 +606,12 @@ def define_dso_sinks_and_sources(dict_values, dso):
         capex_var={"value": 0, "unit": "currency/kW"},
     )
 
-    dict_values["energyProviders"][dso].update({
-        "connected_consumption_sources": list_of_dso_energyProduction_assets,
-        "connected_feedin_sink": dso + "_feedin"})
+    dict_values["energyProviders"][dso].update(
+        {
+            "connected_consumption_sources": list_of_dso_energyProduction_assets,
+            "connected_feedin_sink": dso + "_feedin",
+        }
+    )
 
     return
 
