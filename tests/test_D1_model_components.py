@@ -45,13 +45,19 @@ class TestTransformerComponent:
         pass
 
     def test_transformer_optimize_cap_single_busses(self):
-        # dict_asset = self.dict_values["energyConversion"][
-        #     "transformer_optimize_single_busses"]
-        # D1.transformer(model=self.model, dict_asset=dict_asset,
-        #                transformers=self.transformers, busses=self.busses)
-        # check if model was updated with transformer (check inputs and outputs)   model.entities[-1]
-        # check if transformers contains transformer    transformers[dict_asset[label]...
-        pass
+        dict_asset = self.dict_values["energyConversion"][
+            "transformer_optimize_single_busses"]
+        label = dict_asset["label"]
+
+        D1.transformer(model=self.model, dict_asset=dict_asset,
+                       transformers=self.transformers, busses=self.busses)
+
+        # self.model should contain the transformer
+        assert self.model.entities[-1].label == label
+        assert isinstance(self.model.entities[-1], solph.network.Transformer)
+        # only one output and one input bus
+        assert len(self.transformers[dict_asset["label"]].outputs.data) == 1
+        # check output bus
 
     def test_transformer_fix_cap_multiple_input_busses(self):
         pass
