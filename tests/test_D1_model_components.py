@@ -11,32 +11,32 @@ from tests.constants import (
 )
 
 
-# @pytest.fixture()
-# def get_json():
-#     with open(D1_JSON) as json_file:
-#         dict_values = json.load(json_file)
-#     yield dict_values
-#
-#
-# @pytest.fixture()
-# def get_model():
-#     time_index = pd.date_range(start=pd.to_datetime("2018-01-01 00:00:00"),
-#                                end=pd.to_datetime("2018-12-31 23:00:00"),
-#                                freq="H")
-#     yield solph.EnergySystem(timeindex=time_index)
+@pytest.fixture()
+def get_json():
+    with open(D1_JSON) as json_file:
+        dict_values = json.load(json_file)
+    yield dict_values
+
+
+@pytest.fixture()
+def get_model():
+    time_index = pd.date_range(start=pd.to_datetime("2018-01-01 00:00:00"),
+                               end=pd.to_datetime("2018-12-31 23:00:00"),
+                               freq="H")
+    yield solph.EnergySystem(timeindex=time_index)
 
 
 class TestTransformerComponent:
 
-    # @pytest.fixture(autouse=True)
-    # def setup_class(self, get_json, get_model):
-    #     self.dict_values = get_json
-    #     self.model = get_model
-    #     self.transformers = {}
-    #     self.busses = {
-    #         "Fuel bus": solph.Bus(label="Fuel bus"),
-    #         "Electricity bus": solph.Bus(label="Electricity bus")
-    #     }  # todo fixture for the whole model if needed for other classes
+    @pytest.fixture(autouse=True)
+    def setup_class(self, get_json, get_model):
+        self.dict_values = get_json
+        self.model = get_model
+        self.transformers = {}
+        self.busses = {
+            "Fuel bus": solph.Bus(label="Fuel bus"),
+            "Electricity bus": solph.Bus(label="Electricity bus")
+        }
 
     def test_transformer_optimize_cap_multiple_input_busses(self):
         pass
