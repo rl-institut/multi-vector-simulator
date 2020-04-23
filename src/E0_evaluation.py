@@ -18,6 +18,7 @@ Module E0 evaluates the oemof results and calculates the KPI
 - store all results to matrix
 """
 
+
 def evaluate_dict(dict_values, results_main, results_meta):
     """
 
