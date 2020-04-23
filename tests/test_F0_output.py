@@ -59,10 +59,13 @@ bus = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series
 
 
 class TestFileCreation:
+    """ """
     def setup_class(self):
+        """ """
         os.mkdir(OUTPUT_PATH)
 
     def test_store_barchart_for_capacities(self):
+        """ """
         dict_scalar_capacities = {
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "project_data": {
@@ -84,6 +87,7 @@ class TestFileCreation:
         )
 
     def test_store_scalars_to_excel_two_tabs_dict(self):
+        """ """
         dict_scalars_two_tabs_dict = {
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "kpi": {
@@ -95,6 +99,7 @@ class TestFileCreation:
         assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars" + ".xlsx")) is True
 
     def test_store_scalars_to_excel_two_tabs_no_dict(self):
+        """ """
         dict_scalars_two_tabs = {
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "kpi": {"economic": pandas_Dataframe, "technical": pandas_Dataframe},
@@ -104,6 +109,7 @@ class TestFileCreation:
         assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars" + ".xlsx")) is True
 
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
+        """ """
         dict_timeseries_test_one_bus = {
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": bus},
@@ -117,6 +123,7 @@ class TestFileCreation:
         assert os.path.exists(os.path.join(OUTPUT_PATH, "a_bus" + " flows.png")) is True
 
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
+        """ """
         dict_timeseries_test_two_busses = {
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": bus, "b_bus": bus},
@@ -130,38 +137,47 @@ class TestFileCreation:
         assert os.path.exists(os.path.join(OUTPUT_PATH, "b_bus" + " flows.png")) is True
 
     def test_store_dict_into_json(self):
+        """ """
         file_name = "test_json_converter"
         F0.store_as_json(json_test_dictionary, OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
     def teardown_class(self):
+        """ """
         if os.path.exists(OUTPUT_PATH):
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
 
 
 class TestDictionaryToJsonConversion:
+    """ """
     def setup_class(self):
+        """ """
         os.mkdir(OUTPUT_PATH)
 
     def test_processing_dict_for_json_export_parse_bool(self):
+        """ """
         file_name = "test_json_bool"
         F0.store_as_json(json_test_dictionary["bool"], OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
     def test_processing_dict_for_json_export_parse_str(self):
+        """ """
         file_name = "test_json_str"
         F0.store_as_json(json_test_dictionary["str"], OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
     def test_processing_dict_for_json_export_parse_numpy_int64(self):
+        """ """
         expr = F0.convert(json_test_dictionary["numpy_int64"])
         assert expr == scalar
 
     def test_processing_dict_for_json_export_parse_pandas_DatetimeIndex(self):
+        """ """
         expr = F0.convert(json_test_dictionary["pandas_DatetimeIndex"])
         assert expr == "date_range"
 
     def test_processing_dict_for_json_export_parse_pandas_Timestamp(self):
+        """ """
         expr = F0.convert(json_test_dictionary["pandas_Timestamp"])
         test = False
         if expr == start_time:
@@ -169,21 +185,26 @@ class TestDictionaryToJsonConversion:
         assert test == False
 
     def test_processing_dict_for_json_export_parse_pandas_series(self):
+        """ """
         expr = F0.convert(json_test_dictionary["pandas_series"])
         assert expr == "pandas timeseries"
 
     def test_processing_dict_for_json_export_parse_numpy_array(self):
+        """ """
         expr = F0.convert(json_test_dictionary["numpy_array"])
         assert expr == "numpy timeseries"
 
     def test_processing_dict_for_json_export_parse_pandas_Dataframe(self):
+        """ """
         expr = F0.convert(json_test_dictionary["pandas_Dataframe"])
         assert expr == "pandas dataframe"
 
     def test_processing_dict_for_json_export_parse_unknown(self):
+        """ """
         with pytest.raises(TypeError):
             F0.convert(unknown_type)
 
     def teardown_class(self):
+        """ """
         if os.path.exists(OUTPUT_PATH):
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)

@@ -23,10 +23,18 @@ The model F0 output defines all functions that store evaluation results to file.
 
 
 def evaluate_dict(dict_values):
-    """
-    This is the main function of F0. It calls all functions that prepare the simulation output, ie. Storing all simulation output into excellent files, bar charts, and graphs.
-    :param dict_values: dict Of all input and output parameters up to F0
-    :return: NA
+    """This is the main function of F0. It calls all functions that prepare the simulation output, ie. Storing all simulation output into excellent files, bar charts, and graphs.
+
+    Parameters
+    ----------
+    dict_values :
+        dict Of all input and output parameters up to F0
+
+    Returns
+    -------
+    type
+        NA
+
     """
 
     logging.info(
@@ -98,10 +106,18 @@ def evaluate_dict(dict_values):
 
 
 def plot_optimized_capacities(dict_values):
-    """
-    This function determinants whether or not any capacities are added to the optimal system and calls the function plotting those capacities as a bar chart.
-    :param dict_values: dict Of all input and output parameters up to F0
-    :return: Bar chart of capacities
+    """This function determinants whether or not any capacities are added to the optimal system and calls the function plotting those capacities as a bar chart.
+
+    Parameters
+    ----------
+    dict_values :
+        dict Of all input and output parameters up to F0
+
+    Returns
+    -------
+    type
+        Bar chart of capacities
+
     """
 
     show_optimal_capacities = False
@@ -119,10 +135,18 @@ def plot_optimized_capacities(dict_values):
 
 
 def store_scalars_to_excel(dict_values):
-    """
-    All output data that is a scalar is storage to an excellent file tab. This could for example be economical data or technical data.
-    :param dict_values: dict Of all input and output parameters up to F0
-    :return: Excel file with scalar data
+    """All output data that is a scalar is storage to an excellent file tab. This could for example be economical data or technical data.
+
+    Parameters
+    ----------
+    dict_values :
+        dict Of all input and output parameters up to F0
+
+    Returns
+    -------
+    type
+        Excel file with scalar data
+
     """
     results_scalar_output_file = "/scalars" + ".xlsx"
     with pd.ExcelWriter(
@@ -145,10 +169,18 @@ def store_scalars_to_excel(dict_values):
 
 
 def store_timeseries_all_busses_to_excel(dict_values):
-    """
-    This function plots the energy flows of each single bus and the energy system and saves it as PNG and additionally as a tab and an Excel sheet.
-    :param dict_values: dict Of all input and output parameters up to F0
-    :return: Plots and excel with all timeseries of each bus
+    """This function plots the energy flows of each single bus and the energy system and saves it as PNG and additionally as a tab and an Excel sheet.
+
+    Parameters
+    ----------
+    dict_values :
+        dict Of all input and output parameters up to F0
+
+    Returns
+    -------
+    type
+        Plots and excel with all timeseries of each bus
+
     """
 
     timeseries_output_file = "/timeseries_all_busses" + ".xlsx"
@@ -176,10 +208,18 @@ def store_timeseries_all_busses_to_excel(dict_values):
 
 
 def convert(o):
-    """
-    This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
-    :param o: Any type. Object to be converted to json-storable value.
-    :return: json-storable value.
+    """This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
+
+    Parameters
+    ----------
+    o :
+        Any type. Object to be converted to json-storable value.
+
+    Returns
+    -------
+    type
+        json-storable value.
+
     """
     if isinstance(o, numpy.int64):
         answer = int(o)
@@ -206,12 +246,22 @@ def convert(o):
     return answer
 
 def store_as_json(dict_values, output_folder, file_name):
-    """
-    Stores are dictionary as a Json file and converts all values that are incompatible with the Json format
-    :param dict_values: dict to be stored as json
-    :param output_folder: Folder into which json should be stored
-    :param file_name: Name of the file the json should be stored as
-    :return: Stored json file
+    """Stores are dictionary as a Json file and converts all values that are incompatible with the Json format
+
+    Parameters
+    ----------
+    dict_values :
+        dict to be stored as json
+    output_folder :
+        Folder into which json should be stored
+    file_name :
+        Name of the file the json should be stored as
+
+    Returns
+    -------
+    type
+        Stored json file
+
     """
     file_path = os.path.abspath(os.path.join(output_folder, file_name + ".json"))
     myfile = open(file_path, "w")
