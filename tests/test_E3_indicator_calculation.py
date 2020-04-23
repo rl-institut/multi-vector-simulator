@@ -1,21 +1,23 @@
 import os
 import json
 import pandas as pd
+import pytest
 
 import src.E3_indicator_calculation as E3
+from src.constants import KPI_DICT, KPI_SCALARS_DICT, KPI_UNCOUPLED_DICT, KPI_COST_MATRIX
 
 numbers = [10, 15, 20, 25]
 
 dict_scalars = {
-    "kpi": {
-        "cost_matrix": pd.DataFrame(
+    KPI_DICT: {
+        KPI_COST_MATRIX: pd.DataFrame(
             {
                 "label": ["asset_1", "asset_2"],
                 "cost": [numbers[1], numbers[3]],
                 "annuity": [numbers[0], numbers[2]],
             }
         ),
-        "scalars": {},
+        KPI_SCALARS_DICT: {},
     }
 }
 
@@ -38,7 +40,7 @@ exp_non_res = (flow_small * 2 * (1 - renewable_share_dso))
 class TestGeneralEvaluation:
     def test_totalling_scalars_values(self):
         E3.all_totals(dict_scalars)
-        return dict_scalars["kpi"]["scalars"] == scalars_expected
+        return dict_scalars[KPI_DICT][KPI_SCALARS_DICT] == scalars_expected
 
     def test_total_dispatch_of_each_asset(self):
         assert 0 == 0
@@ -48,14 +50,14 @@ class TestGeneralEvaluation:
 
     def test_total_renewable_and_non_renewable_origin_of_each_sector(self):
         E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
-        assert "Total internal renewable generation" in dict_renewable_energy_use["kpi"]["scalars"]
-        assert "Total renewable energy use" in dict_renewable_energy_use["kpi"]["scalars"]
-        assert "Total internal non-renewable generation" in dict_renewable_energy_use["kpi"]["scalars"]
-        assert "Total non-renewable energy use" in dict_renewable_energy_use["kpi"]["scalars"]
-        assert dict_renewable_energy_use["kpi"]["scalars"]["Total internal renewable generation"]["Electricity"] == flow_medium
-        assert dict_renewable_energy_use["kpi"]["scalars"]["Total internal non-renewable generation"]["Electricity"] == 0
-        assert dict_renewable_energy_use["kpi"]["scalars"]["Total renewable energy use"]["Electricity"] == exp_res
-        assert dict_renewable_energy_use["kpi"]["scalars"]["Total non-renewable energy use"]["Electricity"] == exp_non_res
+        assert "Total internal renewable generation" in dict_renewable_energy_use[KPI_DICT][KPI_UNCOUPLED_DICT]
+        assert "Total renewable energy use" in dict_renewable_energy_use[KPI_DICT][KPI_UNCOUPLED_DICT]
+        assert "Total internal non-renewable generation" in dict_renewable_energy_use[KPI_DICT][KPI_UNCOUPLED_DICT]
+        assert "Total non-renewable energy use" in dict_renewable_energy_use[KPI_DICT][KPI_UNCOUPLED_DICT]
+        assert dict_renewable_energy_use[KPI_DICT][KPI_UNCOUPLED_DICT]["Total internal renewable generation"]["Electricity"] == flow_medium
+        assert dict_renewable_energy_use[KPI_DICT][KPI_UNCOUPLED_DICT]["Total internal non-renewable generation"]["Electricity"] == 0
+        assert dict_renewable_energy_use[KPI_DICT][KPI_UNCOUPLED_DICT]["Total renewable energy use"]["Electricity"] == exp_res
+        assert dict_renewable_energy_use[KPI_DICT][KPI_UNCOUPLED_DICT]["Total non-renewable energy use"]["Electricity"] == exp_non_res
 
     def test_intersectoral_energy_flows_unilateral(self):
         assert 0 == 0
@@ -65,6 +67,18 @@ class TestGeneralEvaluation:
 
 
 class TestTechnicalParameters:
+    #def test_weighting_for_sector_coupled_parameters_unknown_parameters(self):
+    #    with pytest.raises(TypeError):
+    #        E3.weighting_for_sector_coupled_parameters()
+
+    #def test_weighting_for_sector_coupled_parameters_one_sector(self):
+    #    E3.weighting_for_sector_coupled_parameters()
+    #    assert 0 == 0
+
+    #def test_weighting_for_sector_coupled_parameters_multiple_sectors(self):
+    #    E3.weighting_for_sector_coupled_parameters()
+    #    assert 0 == 0
+
     def test_renewable_share_one_sector_is_0(self):
         assert 0 == 0
 
@@ -72,7 +86,7 @@ class TestTechnicalParameters:
         E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
         E3.renewable_share_sector_specific(dict_renewable_energy_use)
         exp = exp_res / (exp_non_res + exp_res)
-        assert dict_renewable_energy_use["kpi"]["scalars"]["Sector-specific renewable share"]["Electricity"] == exp
+        assert dict_renewable_energy_use[KPI_DICT][KPI_UNCOUPLED_DICT]["Renewable share"]["Electricity"] == exp
 
     def test_renewable_share_one_sector_is_1(self):
         assert 0 == 0

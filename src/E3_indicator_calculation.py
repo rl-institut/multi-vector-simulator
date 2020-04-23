@@ -9,7 +9,16 @@ In module E3 the technical KPI are evaluated:
 - calculate energy flows between sectors
 - calculate degree of sector coupling
 """
+import logging
+import pandas as pd
 
+from src.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
+from src.constants import KPI_DICT, KPI_SCALARS_DICT, KPI_UNCOUPLED_DICT, KPI_COST_MATRIX
+
+class MissingDefaultParameterError(ValueError):
+    """Exception raised for missing parameters in constants.py."""
+
+    pass
 
 def all_totals(dict_values):
     """
@@ -17,10 +26,10 @@ def all_totals(dict_values):
     :param dict_values: dict all input parameters and restults up to E0
     :return: List of all total cost parameters for the project
     """
-    for column in dict_values["kpi"]["cost_matrix"].columns:
+    for column in dict_values[KPI_DICT][KPI_COST_MATRIX].columns:
         if column != "label":
-            dict_values["kpi"]["scalars"].update(
-                {column: dict_values["kpi"]["cost_matrix"][column].sum()}
+            dict_values[KPI_DICT][KPI_SCALARS_DICT].update(
+                {column: dict_values[KPI_DICT][KPI_COST_MATRIX][column].sum()}
             )
     return
 
@@ -38,11 +47,14 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
     :param dict_values: dict with all project input data and results up to E0
     :return: Updated dict_values with total internal/overall renewable and non-renewable energy origin
     """
+    dict_values[KPI_DICT].update({KPI_UNCOUPLED_DICT: {}})
+
     renewable_origin = {}
     non_renewable_origin = {}
     for sector in dict_values["project_data"]["sectors"]:
         renewable_origin.update({sector: 0})
         non_renewable_origin.update({sector: 0})
+
 
     for asset in dict_values["energyProduction"]:
         if "renewableAsset" in dict_values["energyProduction"][asset]:
@@ -53,7 +65,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
                 non_renewable_origin[sector] += dict_values["energyProduction"][asset]["total_flow"]["value"]
 
 
-    dict_values["kpi"]["scalars"].update({"Total internal renewable generation": renewable_origin.copy(),
+    dict_values[KPI_DICT][KPI_UNCOUPLED_DICT].update({"Total internal renewable generation": renewable_origin.copy(),
                                           "Total internal non-renewable generation": non_renewable_origin.copy()})
 
     for DSO in dict_values["energyProviders"]:
@@ -64,7 +76,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
             non_renewable_origin[sector] += dict_values["energyProduction"][DSO_source]["total_flow"]["value"] \
                                             * (1-dict_values["energyProviders"][DSO]["renewable_share"]["value"])
 
-    dict_values["kpi"]["scalars"].update({"Total renewable energy use": renewable_origin,
+    dict_values[KPI_DICT][KPI_UNCOUPLED_DICT].update({"Total renewable energy use": renewable_origin,
                                           "Total non-renewable energy use": non_renewable_origin})
     return
 
@@ -78,12 +90,12 @@ def renewable_share_sector_specific(dict_values):
     """
     dict_renewable_share = {}
     for sector in dict_values["project_data"]["sectors"]:
-        total_res = dict_values["kpi"]["scalars"]["Total renewable energy use"][sector]
-        total_non_res = dict_values["kpi"]["scalars"]["Total non-renewable energy use"][sector]
+        total_res = dict_values[KPI_DICT][KPI_UNCOUPLED_DICT]["Total renewable energy use"][sector]
+        total_non_res = dict_values[KPI_DICT][KPI_UNCOUPLED_DICT]["Total non-renewable energy use"][sector]
         renewable_share = total_res/(total_non_res+total_res)
         dict_renewable_share.update({sector: renewable_share})
 
-    dict_values["kpi"]["scalars"].update({"Sector-specific renewable share": dict_renewable_share})
+    dict_values[KPI_DICT][KPI_UNCOUPLED_DICT].update({"Renewable share": dict_renewable_share})
     return
 
 def weighting_for_sector_coupled_parameters(dict_values):
@@ -92,9 +104,22 @@ def weighting_for_sector_coupled_parameters(dict_values):
     :param dict_values:  dict with all project information and results,
     :return: Specific KPI that describes sector-coupled system
     """
+    energy_equivalent = 0
 
-    #for kpi in dict_values["kpi"]["scalars"]:
-    #    if dict_values["kpi"]["scalars"][kpi] is dict:
+    for sector in dict_values["project_data"]["sectors"]:
+        if sector not in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
+            raise MissingDefaultParameterError(
+                f"The electricity equivalent value of energy carrier {sector} is not defined. "
+                f"Please add this information to the variable DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py.")
+
+    for sector_kpi in dict_values[KPI_DICT][KPI_UNCOUPLED_DICT]:
+        for sector in dict_values[KPI_DICT][KPI_UNCOUPLED_DICT][sector_kpi]:
+            energy_equivalent += dict_values[KPI_DICT][KPI_UNCOUPLED_DICT][sector_kpi][sector] \
+                                 * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector]["value"]
+        dict_values[KPI_DICT][KPI_SCALARS_DICT].update({sector_kpi: energy_equivalent})
+
+    #for kpi in dict_values[KPI_DICT][KPI_SCALARS_DICT]:
+    #    if dict_values[KPI_DICT][KPI_SCALARS_DICT][kpi] is dict:
     #        "Sector-coupled KPI" =
     #        ({"Sector-specific renewable share": dict_renewable_share})
     return
