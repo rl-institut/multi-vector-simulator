@@ -19,7 +19,7 @@ OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
 PARSER = initializing.create_parser()
 TEST_INPUT_PATH_NX_TRUE = os.path.join(TEST_REPO_PATH, "inputs_F1_plot_nx_true")
-TEST_INPUT_PATH_NX_FALSE = os.path.join(TEST_REPO_PATH, "inputs_F1_plot_nx_true")
+TEST_INPUT_PATH_NX_FALSE = os.path.join(TEST_REPO_PATH, "inputs_F1_plot_nx_false")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "F1_outputs")
 
 # Data for test_if_plot_of_all_energy_flows_for_all_sectors_are_stored_for_14_days
