@@ -137,6 +137,37 @@ class TestFileCreation:
                 is True
         )
 
+    def test_determine_if_plotting_necessary_True(self):
+        PARAMETER_VALUES = [2, 3, 0]
+        process_pie_chart = F1.determine_if_plotting_necessary(PARAMETER_VALUES)
+        assert process_pie_chart == True
+
+    def test_determine_if_plotting_necessary_False(self):
+        PARAMETER_VALUES = [0, 0, 0]
+        process_pie_chart = F1.determine_if_plotting_necessary(PARAMETER_VALUES)
+        assert process_pie_chart == False
+
+    def test_recalculate_distribution_of_rest_costs_no_major(self):
+        COSTS_PERC = pd.Series({"asset3": 0.1,
+                                "asset4": 0.196,
+                                "asset5": 0.004,
+                                "DSO_consumption":0.7})
+        plot_minor_costs_pie, costs_perc_grouped_minor, rest = F1.recalculate_distribution_of_rest_costs(COSTS_PERC)
+        assert plot_minor_costs_pie == False
+
+    def test_recalculate_distribution_of_rest_costs_with_major(self):
+        COSTS_PERC = pd.Series({"asset3": 0.05,
+                                "asset4": 0.046,
+                                "others": 0.004,
+                                "DSO_consumption":0.9})
+
+        plot_minor_costs_pie, costs_perc_grouped_minor, rest = F1.recalculate_distribution_of_rest_costs(COSTS_PERC)
+        assert plot_minor_costs_pie == True
+        assert abs(costs_perc_grouped_minor["asset3"] - 0.5) < 0.001
+        assert abs(costs_perc_grouped_minor["asset4"] - 0.46) < 0.001
+        assert abs(costs_perc_grouped_minor["others"] - 0.04) < 0.001
+        assert rest == 0.1
+
     def test_group_costs_for_pie_charts(self):
         COSTS = pd.Series({"asset1": 0,
                               "asset2": 0,
