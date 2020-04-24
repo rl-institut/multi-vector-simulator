@@ -18,24 +18,24 @@ logging.getLogger("matplotlib.font_manager").disabled = True
 
 def flows(user_input, project_data, results_timeseries, sector, interval):
     """
-
     Parameters
     ----------
-    user_input :
-        param project_data:
-    results_timeseries :
-        param sector:
-    interval :
-        return:
-    project_data :
-        
-    sector :
-        
+    user_input: dict
+        part of the dict_values that includes the output folders name
+    project_data: dict
+        part of the dict_values that includes Name for setting title of plots
+    results_timeseries: pd Dataframe
+        Timeseries that is to be plotted
+    sector: str
+        sector that is to be plotted, ie. energyVectors of the energy system - not each and every bus.
+    interval: int
+        Time interval in days covered on the x-axis
 
     Returns
     -------
-
+    Plot of "interval" duration on x-axis for all energy flows connected to the main bus supplying the demand of a specific sector
     """
+
     logging.info("Creating plots for %s sector", sector)
     steps = interval * 24
     flows_les = results_timeseries[0:steps]
@@ -104,13 +104,13 @@ def capacities(user_input, project_data, assets, capacities):
 
     Parameters
     ----------
-    user_input :
-        dict Simulation settings including the output path
-    project_data :
-        dict Project data including project name and scenario name
-    assets :
+    user_input : dict
+        Simulation settings including the output path
+    project_data : dict
+        Project data including project name and scenario name
+    assets : list
         list of asset names
-    capacities :
+    capacities : list
         list of asset capacities
 
     Returns
