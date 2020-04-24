@@ -124,14 +124,15 @@ def plot_optimized_capacities(dict_values):
     for element in dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"].values:
         if element > 0:
             show_optimal_capacities = True
-    if show_optimal_capacities:
+
+    if show_optimal_capacities is True:
         plots.capacities(
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["kpi"]["scalar_matrix"]["label"],
             dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
         )
-    return
+    return show_optimal_capacities
 
 
 def store_scalars_to_excel(dict_values):

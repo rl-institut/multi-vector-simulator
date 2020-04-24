@@ -61,14 +61,30 @@ BUS = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series
 
 
 class TestFileCreation:
-    """ """
 
     def setup_class(self):
         """ """
         shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
         os.mkdir(OUTPUT_PATH)
 
-    def test_store_barchart_for_capacities(self):
+    def test_store_barchart_for_capacities_no_additional_capacities(self):
+        """ """
+        dict_scalar_capacities = {
+            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            "project_data": {
+                "project_name": "a_project",
+                "scenario_name": "a_scenario",
+            },
+            "kpi": {
+                "scalar_matrix": pd.DataFrame(
+                    {"label": ["asset_a", "asset_b"], "optimizedAddCap": [0, 0]}
+                )
+            },
+        }
+        show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
+        assert show_optimal_capacities == False
+
+    def test_store_barchart_for_capacities_with_additional_capacities(self):
         """ """
         dict_scalar_capacities = {
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
@@ -82,13 +98,8 @@ class TestFileCreation:
                 )
             },
         }
-        F0.plot_optimized_capacities(dict_scalar_capacities)
-        assert (
-            os.path.exists(
-                os.path.join(OUTPUT_PATH, "optimal_additional_capacities.png")
-            )
-            is True
-        )
+        show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
+        assert show_optimal_capacities == True
 
     def test_store_scalars_to_excel_two_tabs_dict(self):
         """ """
