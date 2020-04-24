@@ -8,7 +8,7 @@ Module F1 describes all the functions that create plots.
 
 - creating graphs for energy flows
 - creating bar chart for capacity
-- creating bar chart for cost data
+- creating pie chart for cost data
 - creating network graph for the model brackets only working on Ubuntu
 """
 
@@ -190,9 +190,9 @@ def evaluate_cost_parameter(dict_values, parameter, file_name_suffix):
         if element > 0:
             show_annuity_total = True
     if show_annuity_total:
-        costs_perc = drop_no_cost_assets(dict_values["kpi"]["cost_matrix"][parameter],
-                                         dict_values["kpi"]["cost_matrix"]["label"])
-        costs_perc_grouped, total = group_costs(costs_perc)
+
+        costs_perc_grouped, total = group_costs(dict_values["kpi"]["cost_matrix"][parameter],
+                                                dict_values["kpi"]["cost_matrix"]["label"])
 
         costs_perc_grouped_pandas = pd.Series(costs_perc_grouped)
 
@@ -226,44 +226,24 @@ def evaluate_cost_parameter(dict_values, parameter, file_name_suffix):
                 )
     return
 
-def drop_no_cost_assets(costs, names):
-    """
-    Pre-process the cost data, so that only assets that induce costs are displayed when plotting
-    Parameters
-    ----------
-    costs: pd.Series
-        A number of cost values
-    names: pd.Series
-        A number of names
-
-    Returns
-    -------
-    dictionary of costs with only assets that have costs
-    """
-    costs = pd.DataFrame(data=costs.values, index=names.values)
-    costs = costs.to_dict()[0]
-
-    # only assets with costs over 0 are plotted
-    costs_prec = {}
-    for asset in costs:
-        if costs[asset] > 0:
-            costs_prec.update({asset: costs[asset]})
-    return costs_prec
-
-def group_costs(costs_perc):
+def group_costs(costs, names):
     """
     Calculates the percentage of different asset of the costs and also groups them by asset/DSO source/others
     Parameters
     ----------
-    costs_perc: pd.DataFrame
-        DataFrame with relevant cost data, index is asset name
+    costs_perc: dict
+        dict relevant cost data, and asset name
 
     Returns
     -------
     Dictionary with costs in groups, ie. into asset/others and DSO as well as total costs
     """
+    costs = pd.DataFrame(data=costs.values, index=names.values)
+    costs = costs.to_dict()[0]
+
     # % is calculated
-    total = sum(costs_perc.values())
+    total = sum(costs.values())
+    costs_perc = costs.copy()
     costs_perc.update({n: costs_perc[n] / total for n in costs_perc.keys()})
 
     # those assets which do not reach 0,5% of total cost are included in 'others'
@@ -272,60 +252,18 @@ def group_costs(costs_perc):
     DSO_consumption = 0
     costs_perc_grouped = {}
     for asset in costs_perc:
-        if costs_perc[asset] > 0:
-            if "DSO_consumption" in asset:
-                DSO_consumption += costs_perc[asset]
-            elif costs_perc[asset] < 0.005:
-                others += costs_perc[asset]
-            else:
-                costs_perc_grouped[asset] = costs_perc[asset]
+        if "DSO_consumption" in asset:
+            DSO_consumption += costs_perc[asset]
+        elif costs_perc[asset] < 0.005:
+            others += costs_perc[asset]
+        else:
+            costs_perc_grouped[asset] = costs_perc[asset]
 
     if DSO_consumption > 0:
         costs_perc_grouped["DSO_consumption"] = DSO_consumption
     if others > 0:
         costs_perc_grouped["others"] = others
     return costs_perc_grouped, total
-
-def plot_a_piechart(settings, path, costs, label, title):
-    """
-    plots a pie chart of a dataset
-
-    Parameters
-    ----------
-    settings: dict
-        includes output path
-
-    path: str
-        name of the plot
-
-    costs: pd.DataFrame
-        cost data
-
-    label: str
-        label of the pie chart, ie. cost type
-
-    title: str
-        title of the pie chart
-
-    Returns
-    -------
-    Pie chart of a dataset
-
-    """
-    logging.info("Creating pie-chart for total " + label)
-    costs.plot.pie(
-        title=title,
-        autopct="%1.1f%%",
-        subplots=True,
-    )
-    plt.savefig(
-        settings["path_output_folder"] + "/" + path + ".png", bbox_inches="tight",
-    )
-
-    plt.close()
-    plt.clf()
-    plt.cla()
-    return
 
 # the rest of costs are plotted if there is a dominant one (over 90%)
 def plot_costs_rest(
@@ -380,6 +318,47 @@ def plot_costs_rest(
         logging.debug(
             "No plot for costs_total_rest created, as remaining costs were 0."
         )
+    return
+
+def plot_a_piechart(settings, file_name, costs, label, title):
+    """
+    plots a pie chart of a dataset
+
+    Parameters
+    ----------
+    settings: dict
+        includes output path
+
+    file_name: str
+        name of the plot
+
+    costs: pd.DataFrame
+        cost data
+
+    label: str
+        label of the pie chart, ie. cost type
+
+    title: str
+        title of the pie chart
+
+    Returns
+    -------
+    Pie chart of a dataset
+
+    """
+    logging.info("Creating pie-chart for total " + label)
+    costs.plot.pie(
+        title=title,
+        autopct="%1.1f%%",
+        subplots=True,
+    )
+    plt.savefig(
+        settings["path_output_folder"] + "/" + file_name + ".png", bbox_inches="tight",
+    )
+
+    plt.close()
+    plt.clf()
+    plt.cla()
     return
 
 def draw_graph(

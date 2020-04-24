@@ -124,8 +124,45 @@ class TestFileCreation:
                 is True
         )
 
-    def test_if_bar_charts_of_costs_are_stored(self):
-        assert 0 == 0
+    def test_if_pie_charts_of_costs_is_stored(self):
+        costs = pd.DataFrame({"cost1": 0.2,
+                      "cost2": 0.8}, index=[0,1])
+        label = "a_label"
+        title= "a_title"
+        F1.plot_a_piechart(USER_INPUT, "filename", costs, label, title)
+        assert (
+                os.path.exists(
+                    os.path.join(OUTPUT_PATH, "filename.png")
+                )
+                is True
+        )
+
+    def test_group_costs_for_pie_charts(self):
+        COSTS = pd.Series({"asset1": 0,
+                              "asset2": 0,
+                              "asset3": 100,
+                              "asset4": 196,
+                              "asset5": 4,
+                              "DSO_consumption":700})
+
+        costs_perc_grouped, total = F1.group_costs(COSTS, COSTS.index)
+
+        exp = {"asset3": 0.1,
+               "asset4": 0.196,
+               "others": 0.004,
+               "DSO_consumption":0.7}
+
+
+        assert total == 1000
+        assert "asset1" not in costs_perc_grouped
+        assert "asset2" not in costs_perc_grouped
+        assert "asset3" in costs_perc_grouped
+        assert "asset4" in costs_perc_grouped
+        assert "asset5" not in costs_perc_grouped
+        assert "DSO_consumption" in costs_perc_grouped
+        assert "others" in costs_perc_grouped
+        assert costs_perc_grouped == exp
+
 
     def test_store_barchart_for_capacities(self):
         """ """
