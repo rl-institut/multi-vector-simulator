@@ -36,7 +36,7 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
     Plot of "interval" duration on x-axis for all energy flows connected to the main bus supplying the demand of a specific sector
     """
 
-    logging.info("Creating plots for %s sector", sector)
+    logging.info("Creating plots for %s sector, %s days", sector, interval)
     steps = interval * 24
     flows_les = results_timeseries[0:steps]
 
@@ -204,7 +204,7 @@ def evaluate_cost_parameter(dict_values, parameter, file_name_suffix):
                 + ", " \
                 + dict_values["project_data"]["scenario_name"]
 
-        plot_a_piechart(dict_values["simulation_settings"], dict_values["project_data"], file_name_suffix,
+        plot_a_piechart(dict_values["simulation_settings"], file_name_suffix,
                         costs_perc_grouped_pandas, label, title)
 
         # if there is a dominant assets, another plot with the remaining assets is created
@@ -318,7 +318,6 @@ def plot_a_piechart(settings, path, costs, label, title):
         autopct="%1.1f%%",
         subplots=True,
     )
-
     plt.savefig(
         settings["path_output_folder"] + "/" + path + ".png", bbox_inches="tight",
     )
@@ -376,8 +375,7 @@ def plot_costs_rest(
             + ", "\
             + project_data["scenario_name"]
 
-        plot_a_piechart(settings, project_data, path, costs_total_rest, label, title)
-
+        plot_a_piechart(settings, path, costs_total_rest, label+ " (rest)", title)
     else:
         logging.debug(
             "No plot for costs_total_rest created, as remaining costs were 0."
