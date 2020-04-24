@@ -61,7 +61,6 @@ BUS = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series
 
 
 class TestFileCreation:
-
     def setup_class(self):
         """ """
         shutil.rmtree(OUTPUT_PATH, ignore_errors=True)

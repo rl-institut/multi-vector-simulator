@@ -104,6 +104,7 @@ def evaluate_dict(dict_values):
     store_scalars_to_excel(dict_values)
     return
 
+
 def plot_piecharts_of_costs(dict_values):
     """
     Kicks of plotting piecharts of different cost paramameters (ie. annuity and total cost, potentially in the future LCOE)
@@ -121,12 +122,15 @@ def plot_piecharts_of_costs(dict_values):
     F1_plots.evaluate_cost_parameter(dict_values, "annuity_total", "annuity")
 
     # First-investment costs plot (only plot if there are values with cost over 0)
-    F1_plots.evaluate_cost_parameter(dict_values, "costs_investment", "upfront_investment_costs")
+    F1_plots.evaluate_cost_parameter(
+        dict_values, "costs_investment", "upfront_investment_costs"
+    )
 
     # O&M costs plot (only plot if there are values with cost over 0)
-    F1_plots.evaluate_cost_parameter(dict_values, "costs_om", "operation_and_maintenance_costs")
+    F1_plots.evaluate_cost_parameter(
+        dict_values, "costs_om", "operation_and_maintenance_costs"
+    )
     return
-
 
 
 def plot_optimized_capacities(dict_values):

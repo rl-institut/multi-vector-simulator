@@ -190,4 +190,3 @@ def run_oemof(dict_values):
     )
 
     return results_meta, results_main
-

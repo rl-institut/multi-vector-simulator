@@ -165,6 +165,7 @@ def capacities(user_input, project_data, assets, capacities):
 
     return
 
+
 def evaluate_cost_parameter(dict_values, parameter, file_name):
     """
     Generates pie plot of a chosen cost parameter, and if one asset is overly present in the cost distribution with 90% of the costs,
@@ -185,41 +186,64 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
     # Annuity costs plot (only plot if there are values with cost over 0)
     label = file_name.replace("_", " ")
 
-    process_pie_chart = determine_if_plotting_necessary(dict_values["kpi"]["cost_matrix"][parameter].values)
-            
+    process_pie_chart = determine_if_plotting_necessary(
+        dict_values["kpi"]["cost_matrix"][parameter].values
+    )
+
     if process_pie_chart is True:
 
-        costs_perc_grouped, total = group_costs(dict_values["kpi"]["cost_matrix"][parameter],
-                                                dict_values["kpi"]["cost_matrix"]["label"])
+        costs_perc_grouped, total = group_costs(
+            dict_values["kpi"]["cost_matrix"][parameter],
+            dict_values["kpi"]["cost_matrix"]["label"],
+        )
 
         costs_perc_grouped_pandas = pd.Series(costs_perc_grouped)
 
-        title = label \
-                + " costs (" \
-                + str(round(total, 2)) \
-                + "$): " \
-                + dict_values["project_data"]["project_name"] \
-                + ", " \
-                + dict_values["project_data"]["scenario_name"]
+        title = (
+            label
+            + " costs ("
+            + str(round(total, 2))
+            + "$): "
+            + dict_values["project_data"]["project_name"]
+            + ", "
+            + dict_values["project_data"]["scenario_name"]
+        )
 
-        plot_a_piechart(dict_values["simulation_settings"], file_name,
-                        costs_perc_grouped_pandas, label, title)
+        plot_a_piechart(
+            dict_values["simulation_settings"],
+            file_name,
+            costs_perc_grouped_pandas,
+            label,
+            title,
+        )
 
         # if there is a dominant assets, another plot with the remaining assets is created
-        plot_minor_costs_pie, costs_perc_grouped_minor, rest = recalculate_distribution_of_rest_costs(costs_perc_grouped_pandas)
+        (
+            plot_minor_costs_pie,
+            costs_perc_grouped_minor,
+            rest,
+        ) = recalculate_distribution_of_rest_costs(costs_perc_grouped_pandas)
         if plot_minor_costs_pie is True:
-            title = "Minor part of " \
-                    + label \
-                    + "(" \
-                    + str(round(rest * 100)) \
-                    + "% of " \
-                    + str(round(total, 2)) \
-                    + "$): " \
-                    + dict_values["project_data"]["project_name"] \
-                    + ", " \
-                    + dict_values["project_data"]["scenario_name"]
+            title = (
+                "Minor part of "
+                + label
+                + "("
+                + str(round(rest * 100))
+                + "% of "
+                + str(round(total, 2))
+                + "$): "
+                + dict_values["project_data"]["project_name"]
+                + ", "
+                + dict_values["project_data"]["scenario_name"]
+            )
 
-            plot_a_piechart(dict_values["simulation_settings"], file_name + "_minor", costs_perc_grouped_minor, label + " (minor)", title)
+            plot_a_piechart(
+                dict_values["simulation_settings"],
+                file_name + "_minor",
+                costs_perc_grouped_minor,
+                label + " (minor)",
+                title,
+            )
     return
 
 
@@ -240,6 +264,7 @@ def determine_if_plotting_necessary(parameter_values):
         if element > 0:
             process_pie_chart = True
     return process_pie_chart
+
 
 def group_costs(costs, names):
     """
@@ -280,6 +305,7 @@ def group_costs(costs, names):
         costs_perc_grouped["others"] = others
     return costs_perc_grouped, total
 
+
 def recalculate_distribution_of_rest_costs(costs_perc_grouped_pandas):
     """
     Determines whether there is one major player in the cost distribution, and if so, prepares plotting the remaining percent-
@@ -303,13 +329,19 @@ def recalculate_distribution_of_rest_costs(costs_perc_grouped_pandas):
     if plot_minor_costs_pie == True:
         costs_perc_grouped_pandas = costs_perc_grouped_pandas.drop([major])
         rest = costs_perc_grouped_pandas.values.sum()
-        costs_perc_grouped_minor = pd.Series([costs_perc_grouped_pandas[n] / rest for n in costs_perc_grouped_pandas.index],
-                                             index=costs_perc_grouped_pandas.index)
+        costs_perc_grouped_minor = pd.Series(
+            [
+                costs_perc_grouped_pandas[n] / rest
+                for n in costs_perc_grouped_pandas.index
+            ],
+            index=costs_perc_grouped_pandas.index,
+        )
     else:
         costs_perc_grouped_minor = pd.Series()
         rest = 0
 
     return plot_minor_costs_pie, costs_perc_grouped_minor, rest
+
 
 def plot_a_piechart(settings, file_name, costs, label, title):
     """
@@ -339,9 +371,7 @@ def plot_a_piechart(settings, file_name, costs, label, title):
     """
     logging.info("Creating pie-chart for total " + label)
     costs.plot.pie(
-        title=title,
-        autopct="%1.1f%%",
-        subplots=True,
+        title=title, autopct="%1.1f%%", subplots=True,
     )
     plt.savefig(
         settings["path_output_folder"] + "/" + file_name + ".png", bbox_inches="tight",
@@ -351,6 +381,7 @@ def plot_a_piechart(settings, file_name, costs, label, title):
     plt.clf()
     plt.cla()
     return
+
 
 def draw_graph(
     energysystem,
