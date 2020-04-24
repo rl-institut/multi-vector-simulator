@@ -1,0 +1,16 @@
+,unit,storage capacity,input power,output power
+age_installed,year,0,0,0
+capex_fix,currency,0.0,0.0,0.0
+capex_var,currency/kWh,4000,0,0
+c_rate,factor of total capacity (kWh),NaN,1,1
+efficiency,factor,0.0,0.9500000000000001,0.9500000000000001
+installedCap,kWh,0.0,0,0
+label,str,Storage capacity,discharging_power,discharging_power
+lifetime,year,10,10,10
+opex_fix,currency/kWh/year,0,0,0
+opex_var,currency/kWh,NaN,0,0
+opex_var,currency/kWh,NaN,0,0
+soc_initial,None or factor,None,NaN,NaN
+soc_max,factor,1.0,NaN,NaN
+soc_min,factor,0.2,NaN,NaN
+unit,str,kWh,kW,kW
