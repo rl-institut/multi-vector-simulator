@@ -165,146 +165,81 @@ def capacities(user_input, project_data, assets, capacities):
 
     return
 
-
-def costs(dict_values):
+def evaluate_cost_parameter(dict_values, parameter, file_name_suffix):
     """
+    Generates pie plot of a chosen cost parameter, and if one asset is overly present in the cost distribution with 90% of the costs,
+    a pie plot of the distribution of the remaining 10% of the costs.
 
     Parameters
     ----------
-    dict_values :
-        return:
+    dict_values: dict
+
+    parameter: cost parameter to be plotted
+
+    file_name_suffix: file name that is to be used
 
     Returns
     -------
-
+    pie plot plot of a cost parameter
     """
-
-    settings = dict_values["simulation_settings"]
-    project_data = dict_values["project_data"]
-
     # Annuity costs plot (only plot if there are values with cost over 0)
-    label, path = "Annuities", "annuities_costs"
+    label = file_name_suffix.replace("_", " ")
+
     show_annuity_total = False
-    for element in dict_values["kpi"]["cost_matrix"]["annuity_total"].values:
+    for element in dict_values["kpi"]["cost_matrix"][parameter].values:
         if element > 0:
             show_annuity_total = True
     if show_annuity_total:
-        costs_total, total = plot_costs(
-            settings,
-            project_data,
-            dict_values["kpi"]["cost_matrix"]["label"],
-            dict_values["kpi"]["cost_matrix"]["annuity_total"],
-            label,
-            path,
-        )
+        costs_perc = drop_no_cost_assets(dict_values["kpi"]["cost_matrix"][parameter],
+                                         dict_values["kpi"]["cost_matrix"]["label"])
+        costs_perc_grouped, total = group_costs(costs_perc)
+
+        costs_perc_grouped_pandas = pd.Series(costs_perc_grouped)
+
+        title = label \
+                + " costs (" \
+                + str(round(total, 2)) \
+                + "$): " \
+                + dict_values["project_data"]["project_name"] \
+                + ", " \
+                + dict_values["project_data"]["scenario_name"]
+
+        plot_a_piechart(dict_values["simulation_settings"], dict_values["project_data"], file_name_suffix,
+                        costs_perc_grouped_pandas, label, title)
 
         # if there is a dominant assets, another plot with the remaining assets is created
-        for asset in costs_total:
-            if costs_total[asset] > 0.9 and costs_total[asset] < 1:
-                major = asset
-                major_value = costs_total[asset]
-                plot_costs_rest(
-                    settings,
-                    project_data,
-                    major,
-                    major_value,
-                    costs_total,
-                    total,
-                    label,
-                    path,
+        if any(costs_perc_grouped_pandas.values > 0.9):
+            for asset in costs_perc_grouped:
+                if costs_perc_grouped[asset] > 0.9 and costs_perc_grouped[asset] < 1: #why should it even be larger 1?
+                    major = asset
+                    major_value = costs_perc_grouped[asset]
+
+            plot_costs_rest(
+                dict_values["simulation_settings"],
+                dict_values["project_data"],
+                major,
+                major_value,
+                costs_perc_grouped,
+                total,
+                label,
+                file_name_suffix,
                 )
-
-    # First-investment costs plot (only plot if there are values with cost over 0)
-    label, path = "First-time investment", "first_time_investment_costs"
-    show_costs_investment = False
-    for element in dict_values["kpi"]["cost_matrix"]["costs_investment"].values:
-        if element > 0:
-            show_costs_investment = True
-    if show_costs_investment:
-        costs_total, total = plot_costs(
-            settings,
-            project_data,
-            dict_values["kpi"]["cost_matrix"]["label"],
-            dict_values["kpi"]["cost_matrix"]["costs_investment"],
-            label,
-            path,
-        )
-
-        # if there is a dominant assets, another plot with the remaining assets is created
-        for asset in costs_total:
-            if costs_total[asset] > 0.9 and costs_total[asset] < 1:
-                major = asset
-                major_value = costs_total[asset]
-                plot_costs_rest(
-                    settings,
-                    project_data,
-                    major,
-                    major_value,
-                    costs_total,
-                    total,
-                    label,
-                    path,
-                )
-
-    # O&M costs plot (only plot if there are values with cost over 0)
-    label, path = "Operation & Maintenance", "operation_and_maintenance_costs"
-    show_costs_om = False
-    for element in dict_values["kpi"]["cost_matrix"]["costs_om"].values:
-        if element > 0:
-            show_costs_om = True
-    if show_costs_om:
-        costs_total, total = plot_costs(
-            settings,
-            project_data,
-            dict_values["kpi"]["cost_matrix"]["label"],
-            dict_values["kpi"]["cost_matrix"]["costs_om"],
-            label,
-            path,
-        )
-
-        # if there is a dominant assets, another plot with the remaining assets is created
-        for asset in costs_total:
-            if costs_total[asset] > 0.9 and costs_total[asset] < 1:
-                major = asset
-                major_value = costs_total[asset]
-                plot_costs_rest(
-                    settings,
-                    project_data,
-                    major,
-                    major_value,
-                    costs_total,
-                    total,
-                    label,
-                    path,
-                )
-
     return
 
-
-# costs are plotted in %
-def plot_costs(settings, project_data, names, costs, label, path):
+def drop_no_cost_assets(costs, names):
     """
-
+    Pre-process the cost data, so that only assets that induce costs are displayed when plotting
     Parameters
     ----------
-    settings :
-        param project_data:
-    names :
-        param costs:
-    label :
-        param path:
-    project_data :
-        
-    costs :
-        
-    path :
-        
+    costs: pd.Series
+        A number of cost values
+    names: pd.Series
+        A number of names
 
     Returns
     -------
-
+    dictionary of costs with only assets that have costs
     """
-
     costs = pd.DataFrame(data=costs.values, index=names.values)
     costs = costs.to_dict()[0]
 
@@ -313,43 +248,73 @@ def plot_costs(settings, project_data, names, costs, label, path):
     for asset in costs:
         if costs[asset] > 0:
             costs_prec.update({asset: costs[asset]})
+    return costs_prec
 
+def group_costs(costs_perc):
+    """
+    Calculates the percentage of different asset of the costs and also groups them by asset/DSO source/others
+    Parameters
+    ----------
+    costs_perc: pd.DataFrame
+        DataFrame with relevant cost data, index is asset name
+
+    Returns
+    -------
+    Dictionary with costs in groups, ie. into asset/others and DSO as well as total costs
+    """
     # % is calculated
-    total = sum(costs_prec.values())
-    costs_prec.update({n: costs_prec[n] / total for n in costs_prec.keys()})
+    total = sum(costs_perc.values())
+    costs_perc.update({n: costs_perc[n] / total for n in costs_perc.keys()})
 
     # those assets which do not reach 0,5% of total cost are included in 'others'
     # if there are more than one consumption period, they are grouped in DSO_consumption
     others = 0
     DSO_consumption = 0
-    costs_total = {}
-    for asset in costs_prec:
-        if costs_prec[asset] > 0:
+    costs_perc_grouped = {}
+    for asset in costs_perc:
+        if costs_perc[asset] > 0:
             if "DSO_consumption" in asset:
-                DSO_consumption += costs_prec[asset]
-            elif costs_prec[asset] < 0.005:
-                others += costs_prec[asset]
+                DSO_consumption += costs_perc[asset]
+            elif costs_perc[asset] < 0.005:
+                others += costs_perc[asset]
             else:
-                costs_total[asset] = costs_prec[asset]
+                costs_perc_grouped[asset] = costs_perc[asset]
 
     if DSO_consumption > 0:
-        costs_total["DSO_consumption"] = DSO_consumption
+        costs_perc_grouped["DSO_consumption"] = DSO_consumption
     if others > 0:
-        costs_total["others"] = others
+        costs_perc_grouped["others"] = others
+    return costs_perc_grouped, total
 
-    # dict is saved to proceed with plotting the remaining assets if there is a dominant one (more than 90%)
-    costs_total_dict = costs_total
+def plot_a_piechart(settings, path, costs, label, title):
+    """
+    plots a pie chart of a dataset
 
-    costs_total = pd.Series(costs_total)
+    Parameters
+    ----------
+    settings: dict
+        includes output path
+
+    path: str
+        name of the plot
+
+    costs: pd.DataFrame
+        cost data
+
+    label: str
+        label of the pie chart, ie. cost type
+
+    title: str
+        title of the pie chart
+
+    Returns
+    -------
+    Pie chart of a dataset
+
+    """
     logging.info("Creating pie-chart for total " + label)
-    costs_total.plot.pie(
-        title=label
-        + " costs ("
-        + str(round(total, 2))
-        + "$): "
-        + project_data["project_name"]
-        + ", "
-        + project_data["scenario_name"],
+    costs.plot.pie(
+        title=title,
         autopct="%1.1f%%",
         subplots=True,
     )
@@ -361,9 +326,7 @@ def plot_costs(settings, project_data, names, costs, label, path):
     plt.close()
     plt.clf()
     plt.cla()
-
-    return costs_total_dict, total
-
+    return
 
 # the rest of costs are plotted if there is a dominant one (over 90%)
 def plot_costs_rest(
@@ -373,21 +336,19 @@ def plot_costs_rest(
 
     Parameters
     ----------
-    settings :
-        param project_data:
-    major :
-        param major_value:
-    costs_total :
-        param total:
-    label :
-        param path:
-    project_data :
-        
+    settings : dict
+
+    project_data: dict
+
+    costs_total : pd.DataFrame
+
+    label : str
+
     major_value :
         
-    total :
+    total : float
         
-    path :
+    path : str
         
 
     Returns
@@ -404,36 +365,24 @@ def plot_costs_rest(
     costs_total_rest = pd.Series(costs_total_rest)
     # check if there are any remaining costs that could be plotted
     if costs_total_rest.empty == False:
-        costs_total_rest.plot.pie(
-            title="Rest of "
-            + label
-            + "("
-            + str(round((1 - major_value) * 100))
-            + "% of "
-            + str(round(total, 2))
-            + "$): "
-            + project_data["project_name"]
-            + ", "
-            + project_data["scenario_name"],
-            autopct="%1.1f%%",
-            subplots=True,
-        )
+        title = "Rest of "\
+            + label\
+            + "("\
+            + str(round((1 - major_value) * 100))\
+            + "% of "\
+            + str(round(total, 2))\
+            + "$): "\
+            + project_data["project_name"]\
+            + ", "\
+            + project_data["scenario_name"]
 
-        plt.savefig(
-            settings["path_output_folder"] + "/" + path + "_other_costs.png",
-            bbox_inches="tight",
-        )
-
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plot_a_piechart(settings, project_data, path, costs_total_rest, label, title)
 
     else:
         logging.debug(
             "No plot for costs_total_rest created, as remaining costs were 0."
         )
     return
-
 
 def draw_graph(
     energysystem,

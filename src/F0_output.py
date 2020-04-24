@@ -5,7 +5,7 @@ import logging
 import matplotlib.pyplot as plt
 import os
 
-import src.F1_plotting as plots
+import src.F1_plotting as F1_plots
 
 r"""
 Module F0 Output
@@ -47,7 +47,7 @@ def evaluate_dict(dict_values):
         logging.info("Aggregating flows for the %s sector.", sector_name)
 
         # Plot flows for one sector for the 14 first days
-        plots.flows(
+        F1_plots.flows(
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
@@ -56,7 +56,7 @@ def evaluate_dict(dict_values):
         )
 
         # Plot flows for one sector for a year
-        plots.flows(
+        F1_plots.flows(
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
@@ -98,11 +98,35 @@ def evaluate_dict(dict_values):
     plot_optimized_capacities(dict_values)
 
     # plot annuity, first-investment and om costs
-    plots.costs(dict_values)
+    plot_piecharts_of_costs(dict_values)
 
     # Write everything to file with multipe tabs
     store_scalars_to_excel(dict_values)
     return
+
+def plot_piecharts_of_costs(dict_values):
+    """
+    Kicks of plotting piecharts of different cost paramameters (ie. annuity and total cost, potentially in the future LCOE)
+    Parameters
+    ----------
+    dict_values : dict
+        all simulation input and output data up to this point
+
+    Returns
+    -------
+    Pie charts for various parameters.
+    """
+
+    # Annuity costs plot (only plot if there are values with cost over 0)
+    F1_plots.evaluate_cost_parameter(dict_values, "annuity_total", "annuity")
+
+    # First-investment costs plot (only plot if there are values with cost over 0)
+    F1_plots.evaluate_cost_parameter(dict_values, "costs_investment", "upfront_investment_costs")
+
+    # O&M costs plot (only plot if there are values with cost over 0)
+    F1_plots.evaluate_cost_parameter(dict_values, "costs_om", "operation_and_maintenance_costs")
+    return
+
 
 
 def plot_optimized_capacities(dict_values):
@@ -126,7 +150,7 @@ def plot_optimized_capacities(dict_values):
             show_optimal_capacities = True
 
     if show_optimal_capacities is True:
-        plots.capacities(
+        F1_plots.capacities(
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["kpi"]["scalar_matrix"]["label"],
