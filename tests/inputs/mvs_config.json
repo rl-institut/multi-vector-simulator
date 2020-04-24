@@ -447,7 +447,7 @@
                     "unit": "currency/kWh",
                     "value": 0
                 },
-                "crate": {
+                "c_rate": {
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
