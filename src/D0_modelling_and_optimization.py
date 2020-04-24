@@ -189,4 +189,5 @@ def run_oemof(dict_values):
         round(dict_values["simulation_results"]["modelling_time"] / 60, 2),
     )
 
-    return results_meta, results_main  # , dict_model
+    return results_meta, results_main
+
