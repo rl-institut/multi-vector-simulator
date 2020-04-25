@@ -1,4 +1,5 @@
 {
+
     "energyConsumption": {
         "demand": {
             "dsm": "False",
@@ -22,6 +23,56 @@
                 "value": 0
             },
             "label": "Transformer optimize single busses",
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": 0
+            },
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "input_bus_name": "Fuel bus",
+            "output_bus_name": "Electricity bus",
+            "simulation_annuity": {
+                "value": 60,
+                "unit": "currency/unit/simulation period"},
+            "type_oemof": "transformer"
+        },
+        "transformer_fix_single_busses": {
+            "efficiency": {
+                "unit": "factor",
+                "value": 0.33
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 10
+            },
+            "label": "Transformer fix single busses",
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": 0
+            },
+            "optimizeCap": {
+                "unit": "bool",
+                "value": false
+            },
+            "input_bus_name": "Fuel bus",
+            "output_bus_name": "Electricity bus",
+            "simulation_annuity": {
+                "value": 60,
+                "unit": "currency/unit/simulation period"},
+            "type_oemof": "transformer"
+        },
+        "test_asset_for_error_raising": {
+            "efficiency": {
+                "unit": "factor",
+                "value": 0.33
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 0
+            },
+            "label": "Test asset for error raising",
             "opex_var": {
                 "unit": "currency/kWh",
                 "value": 0

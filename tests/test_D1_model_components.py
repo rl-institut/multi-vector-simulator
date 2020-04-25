@@ -60,12 +60,21 @@ class TestTransformerComponent:
         D1.transformer(model=self.model, dict_asset=dict_asset,
                        transformers=self.transformers, busses=self.busses)
 
-        # self.model should contain the transformer
-        assert self.model.entities[-1].label == label
-        assert isinstance(self.model.entities[-1], solph.network.Transformer)
+        # self.transformers should contain the transformer (key = label, value = transformer object)
+        assert label in self.transformers
+        assert isinstance(self.transformers[label], solph.network.Transformer)
+
+        # self.models should contain the transformer (indirectly tested)
         # only one output and one input bus
-        assert len(self.transformers[dict_asset["label"]].outputs.data) == 1
-        # check output bus
+        assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
+        assert len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        # check output bus (`nominal_value`, `investment` and `existing`)
+        output_bus = self.model.entities[-1].outputs.data[
+            self.busses[dict_asset["output_bus_name"]]
+        ]
+        assert isinstance(output_bus.investment, solph.options.Investment)
+        assert output_bus.existing == dict_asset["installedCap"]["value"]
+        assert output_bus.nominal_value == None
 
     def test_transformer_fix_cap_multiple_input_busses(self):
         pass
@@ -74,7 +83,33 @@ class TestTransformerComponent:
         pass
 
     def test_transformer_fix_cap_single_busses(self):
-        pass
+        dict_asset = self.dict_values["energyConversion"][
+            "transformer_fix_single_busses"
+        ]
+        label = dict_asset["label"]
+
+        D1.transformer(
+            model=self.model,
+            dict_asset=dict_asset,
+            transformers=self.transformers,
+            busses=self.busses,
+        )
+
+        # self.transformers should contain the transformer (key = label, value = transformer object)
+        assert label in self.transformers
+        assert isinstance(self.transformers[label], solph.network.Transformer)
+
+        # self.models should contain the transformer (indirectly tested)
+        # only one output and one input bus
+        assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
+        assert len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        # check output bus (`nominal_value`, `investment` and `existing`)
+        output_bus = self.model.entities[-1].outputs.data[
+            self.busses[dict_asset["output_bus_name"]]
+        ]
+        assert output_bus.investment == None
+        assert hasattr(output_bus, "existing") == False
+        assert output_bus.nominal_value == dict_asset["installedCap"]["value"]
 
     ### tests for transformer with time dependent efficiency
     def test_transformer_efficiency_time_series_optimize_cap_multiple_input_busses(self):
