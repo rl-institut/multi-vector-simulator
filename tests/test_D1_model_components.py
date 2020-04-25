@@ -26,17 +26,21 @@ def get_model():
     yield solph.EnergySystem(timeindex=time_index)
 
 
+@pytest.fixture()
+def get_busses():
+    yield {
+        "Fuel bus": solph.Bus(label="Fuel bus"),
+        "Electricity bus": solph.Bus(label="Electricity bus")
+    }
+
 class TestTransformerComponent:
 
     @pytest.fixture(autouse=True)
-    def setup_class(self, get_json, get_model):
+    def setup_class(self, get_json, get_model, get_busses):
         self.dict_values = get_json
         self.model = get_model
         self.transformers = {}
-        self.busses = {
-            "Fuel bus": solph.Bus(label="Fuel bus"),
-            "Electricity bus": solph.Bus(label="Electricity bus")
-        }
+        self.busses = get_busses
 
     def test_transformer_optimize_cap_multiple_input_busses(self):
         pass
