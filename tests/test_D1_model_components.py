@@ -212,9 +212,54 @@ class TestStorageComponent:
 
 
 ### other functionalities
-def test_bus():
-    pass
 
 
-def test_check_optimize_cap_raise_error():
-    pass
+class TestBusFunction:
+    @pytest.fixture(autouse=True)
+    def setup_class(self, get_model, get_busses):
+        self.model = get_model
+        self.busses = get_busses
+
+    def test_bus_add_to_empty_dict(self):
+        label = "Test bus"
+        busses = {}
+        D1.bus(model=self.model, name=label, busses=busses)
+
+        # self.model should contain the test bus
+        assert self.model.entities[-1].label == label
+        assert isinstance(self.model.entities[-1], solph.network.Bus)
+
+        # busses should contain the test bus (key = label, value = bus object)
+        assert label in busses
+        assert isinstance(busses[label], solph.network.Bus)
+
+    def test_bus_add_to_not_empty_dict(self):
+        label = "Test bus 2"
+        D1.bus(model=self.model, name=label, busses=self.busses)
+
+        # self.model should contain the test bus
+        assert self.model.entities[-1].label == label
+        assert isinstance(self.model.entities[-1], solph.network.Bus)
+
+        # self.busses should contain the test bus (key = label, value = bus object)
+        assert label in self.busses
+        assert isinstance(self.busses[label], solph.network.Bus)
+
+
+def test_check_optimize_cap_raise_error(get_json, get_model, get_busses):
+    dict_values = get_json
+    model = get_model
+    busses = get_busses
+    test_asset = dict_values["energyConversion"]["test_asset_for_error_raising"]
+    test_asset["optimizeCap"]["value"] = "wrong value"
+
+    msg = f"Input error! 'optimize_cap' of asset {test_asset['label']}"
+    with pytest.raises(ValueError, match=msg):
+        D1.check_optimize_cap(
+            model=model,
+            dict_asset=test_asset,
+            func_constant=D1.transformer_constant_efficiency_fix,
+            func_optimize=D1.transformer_constant_efficiency_optimize,
+            busses=busses,
+            transformers={},
+        )
