@@ -15,6 +15,9 @@ SPECIFIC_TEST_INPUT_DIRECTORY = "inputs_for_specific_tests"
 
 
 # json file for specific D1 tests
-D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY,
-                       SPECIFIC_TEST_INPUT_DIRECTORY,
-                       "mvs_config_for_D1_tests.json")
+D1_JSON = os.path.join(
+    TEST_REPO_PATH,
+    TEST_INPUT_DIRECTORY,
+    SPECIFIC_TEST_INPUT_DIRECTORY,
+    "mvs_config_for_D1_tests.json",
+)

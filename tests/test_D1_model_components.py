@@ -6,10 +6,7 @@ import oemof.solph as solph
 
 # internal imports
 import src.D1_model_components as D1
-from tests.constants import (
-    D1_JSON
-)
-
+from tests.constants import D1_JSON
 
 # fixtures that help creating variables and data needed for the tests
 @pytest.fixture()
@@ -22,10 +19,12 @@ def get_json():
 
 @pytest.fixture()
 def get_model():
-    time_index = pd.date_range(start=pd.to_datetime("2018-01-01 00:00:00"),
-                               end=pd.to_datetime("2018-12-31 23:00:00"),
-                               freq="H")
     """ Creates solph.EnergySystem model. """
+    time_index = pd.date_range(
+        start=pd.to_datetime("2018-01-01 00:00:00"),
+        end=pd.to_datetime("2018-12-31 23:00:00"),
+        freq="H",
+    )
     yield solph.EnergySystem(timeindex=time_index)
 
 
@@ -34,8 +33,9 @@ def get_busses():
     """ Creates busses (solph.Bus) dictionary. """
     yield {
         "Fuel bus": solph.Bus(label="Fuel bus"),
-        "Electricity bus": solph.Bus(label="Electricity bus")
+        "Electricity bus": solph.Bus(label="Electricity bus"),
     }
+
 
 class TestTransformerComponent:
     @pytest.fixture(autouse=True)
@@ -84,11 +84,15 @@ class TestTransformerComponent:
 
     def test_transformer_optimize_cap_single_busses(self):
         dict_asset = self.dict_values["energyConversion"][
-            "transformer_optimize_single_busses"]
-        label = dict_asset["label"]
+            "transformer_optimize_single_busses"
+        ]
 
-        D1.transformer(model=self.model, dict_asset=dict_asset,
-                       transformers=self.transformers, busses=self.busses)
+        D1.transformer(
+            model=self.model,
+            dict_asset=dict_asset,
+            transformers=self.transformers,
+            busses=self.busses,
+        )
 
         # only one output and one input bus
         assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
@@ -107,7 +111,6 @@ class TestTransformerComponent:
         dict_asset = self.dict_values["energyConversion"][
             "transformer_fix_single_busses"
         ]
-        label = dict_asset["label"]
 
         D1.transformer(
             model=self.model,
@@ -124,10 +127,14 @@ class TestTransformerComponent:
         self.helper_test_transformer_in_model_and_dict(optimize=False, dict_asset=dict_asset)
 
     ### tests for transformer with time dependent efficiency
-    def test_transformer_efficiency_time_series_optimize_cap_multiple_input_busses(self):
+    def test_transformer_efficiency_time_series_optimize_cap_multiple_input_busses(
+        self,
+    ):
         pass
 
-    def test_transformer_efficiency_time_series_optimize_cap_multiple_output_busses(self):
+    def test_transformer_efficiency_time_series_optimize_cap_multiple_output_busses(
+        self,
+    ):
         pass
 
     def test_transformer_efficiency_time_series_optimize_cap_single_busses(self):
@@ -176,37 +183,57 @@ class TestSourceComponent:
         pass
 
     ## dispatchable
-    def test_source_dispatchable_optimize_cap_normalized_timeseries_multiple_output_busses(self):
+    def test_source_dispatchable_optimize_cap_normalized_timeseries_multiple_output_busses(
+        self,
+    ):
         pass
 
-    def test_source_dispatchable_optimize_cap_normalized_timeseries_single_output_bus(self):
+    def test_source_dispatchable_optimize_cap_normalized_timeseries_single_output_bus(
+        self,
+    ):
         pass
 
-    def test_source_dispatchable_optimize_cap_timeseries_not_normalized_multiple_output_busses(self):
+    def test_source_dispatchable_optimize_cap_timeseries_not_normalized_multiple_output_busses(
+        self,
+    ):
         pass
 
-    def test_source_dispatchable_optimize_cap_timeseries_not_normalized_single_output_bus(self):
+    def test_source_dispatchable_optimize_cap_timeseries_not_normalized_single_output_bus(
+        self,
+    ):
         pass
 
-    def test_source_dispatchable_optimize_cap_without_timeseries_multiple_output_busses(self):
+    def test_source_dispatchable_optimize_cap_without_timeseries_multiple_output_busses(
+        self,
+    ):
         pass
 
-    def test_source_dispatchable_optimize_cap_without_timeseries_single_output_bus(self):
+    def test_source_dispatchable_optimize_cap_without_timeseries_single_output_bus(
+        self,
+    ):
         pass
 
-    def test_source_dispatchable_fix_cap_normalized_timeseries_multiple_output_busses(self):
+    def test_source_dispatchable_fix_cap_normalized_timeseries_multiple_output_busses(
+        self,
+    ):
         pass
 
     def test_source_dispatchable_fix_cap_normalized_timeseries_single_output_bus(self):
         pass
 
-    def test_source_dispatchable_fix_cap_timeseries_not_normalized_multiple_output_busses(self):
+    def test_source_dispatchable_fix_cap_timeseries_not_normalized_multiple_output_busses(
+        self,
+    ):
         pass
 
-    def test_source_dispatchable_fix_cap_timeseries_not_normalized_single_output_bus(self):
+    def test_source_dispatchable_fix_cap_timeseries_not_normalized_single_output_bus(
+        self,
+    ):
         pass
 
-    def test_source_dispatchable_fix_cap_without_timeseries_multiple_output_busses(self):
+    def test_source_dispatchable_fix_cap_without_timeseries_multiple_output_busses(
+        self,
+    ):
         pass
 
     def test_source_dispatchable_fix_cap_without_timeseries_single_output_bus(self):

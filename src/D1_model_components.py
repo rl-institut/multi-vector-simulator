@@ -60,7 +60,7 @@ def transformer(model, dict_asset, **kwargs):
         dict_asset,
         func_constant=transformer_constant_efficiency_fix,
         func_optimize=transformer_constant_efficiency_optimize,
-        **kwargs
+        **kwargs,
     )
     return
 
@@ -102,7 +102,7 @@ def storage(model, dict_asset, **kwargs):
         dict_asset,
         func_constant=storage_fix,
         func_optimize=storage_optimize,
-        **kwargs
+        **kwargs,
     )
     return
 
@@ -198,7 +198,7 @@ def source(model, dict_asset, **kwargs):
             dict_asset,
             func_constant=source_dispatchable_fix,
             func_optimize=source_dispatchable_optimize,
-            **kwargs
+            **kwargs,
         )
 
     else:
@@ -207,7 +207,7 @@ def source(model, dict_asset, **kwargs):
             dict_asset,
             func_constant=source_non_dispatchable_fix,
             func_optimize=source_non_dispatchable_optimize,
-            **kwargs
+            **kwargs,
         )
     return
 
@@ -762,8 +762,8 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
     else:
         if "timeseries" in dict_asset:
             logging.error(
-                "Change code in source_dispatchable: timeseries_normalized " +
-                "not the only key determining the flow"
+                "Change code in source_dispatchable: timeseries_normalized "
+                + "not the only key determining the flow"
             )
         # check if the source has multiple output busses
         if isinstance(dict_asset["output_bus_name"], list):
