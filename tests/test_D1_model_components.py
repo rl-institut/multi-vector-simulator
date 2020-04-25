@@ -11,8 +11,10 @@ from tests.constants import (
 )
 
 
+# fixtures that help creating variables and data needed for the tests
 @pytest.fixture()
 def get_json():
+    """ Reads input json file. """
     with open(D1_JSON) as json_file:
         dict_values = json.load(json_file)
     yield dict_values
@@ -23,20 +25,22 @@ def get_model():
     time_index = pd.date_range(start=pd.to_datetime("2018-01-01 00:00:00"),
                                end=pd.to_datetime("2018-12-31 23:00:00"),
                                freq="H")
+    """ Creates solph.EnergySystem model. """
     yield solph.EnergySystem(timeindex=time_index)
 
 
 @pytest.fixture()
 def get_busses():
+    """ Creates busses (solph.Bus) dictionary. """
     yield {
         "Fuel bus": solph.Bus(label="Fuel bus"),
         "Electricity bus": solph.Bus(label="Electricity bus")
     }
 
 class TestTransformerComponent:
-
     @pytest.fixture(autouse=True)
     def setup_class(self, get_json, get_model, get_busses):
+        """ Sets up class attributes for the tests. """
         self.dict_values = get_json
         self.model = get_model
         self.transformers = {}
