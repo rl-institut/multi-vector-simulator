@@ -3,6 +3,7 @@ import os
 import shutil
 import logging
 import mock
+import pandas as pd
 
 import src.A0_initialization as initializing
 import src.B0_data_input_json as data_input
@@ -64,6 +65,24 @@ def test_evaluate_dict_append_new_fields():
     for k in ("kpi", "optimizedFlows"):
         assert k not in dict_values_before
         assert k in dict_values_after
+
+
+def test_evaluate_dict_important_fields_in_output_dict():
+
+    with open(DICT_AFTER, "rb") as handle:
+        dict_values_after = pickle.load(handle)
+
+    for k in ("kpi_matrix", "cost_matrix"):
+        assert k in dict_values_after["kpi"]
+
+
+def test_evaluate_dict_fields_values_in_output_dict_are_dataframes():
+
+    with open(DICT_AFTER, "rb") as handle:
+        dict_values_after = pickle.load(handle)
+
+    for k in ("kpi_matrix", "cost_matrix"):
+        assert isinstance(dict_values_after["kpi"][k], pd.DataFrame)
 
 
 def teardown_module():
