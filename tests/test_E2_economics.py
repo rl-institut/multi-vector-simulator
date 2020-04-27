@@ -48,7 +48,7 @@ list_test_true = ["value_0", "value_1", "value_2"]
 list_test_false = ["value_4", "value_5"]
 
 
-def test_get_costs(self):
+def test_get_costs():
 
     """
 
