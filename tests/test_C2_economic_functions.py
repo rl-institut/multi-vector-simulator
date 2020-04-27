@@ -100,8 +100,8 @@ def test_fuel_price_present_value_without_fuel_price_change():
 
     Tests whether the MVS is correctly calculating the present value of the fuel price over the lifetime of the project without fuel price change
     """
-    PV_fuel_price = e_functions.fuel_price_present_value(fuel_keys)
-    assert PV_fuel_price == fuel_keys["fuel_price"]
+    e_functions.fuel_price_present_value(fuel_keys)
+    assert fuel_keys["fuel_price"] == 1.3
 
     # fuel_keys["fuel_price_change_annual"] = 0.008
     # fuel_keys["crf"] = e_functions.crf(project_life, wacc)
