@@ -198,9 +198,6 @@ with open("../MVS_outputs/json_input_processed.json") as bf:
 components1 = data2["energyProduction"]
 components2 = data2["energyConversion"]
 
-del components1["DSO_consumption_period_1"]
-del components1["DSO_consumption_period_2"]
-
 comp1_keys = list(components1.keys())
 comp2_keys = list(components2.keys())
 
@@ -211,7 +208,6 @@ for comps in comp1_keys:
         {
             comps: [
                 components1[comps]["type_oemof"],
-                components1[comps]["energyVector"],
                 components1[comps]["unit"],
                 components1[comps]["installedCap"]["value"],
                 components1[comps]["optimizeCap"]["value"],
