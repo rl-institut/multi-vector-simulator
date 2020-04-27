@@ -99,6 +99,15 @@ def create_parser():
         default=False,
         type=bool,
     )
+    parser.add_argument(
+        "-pdf",
+        dest="pdf_report",
+        help="generate a pdf report of the simulation if True (default: False)",
+        nargs="?",
+        const=True,
+        default=False,
+        type=bool,
+    )
     return parser
 
 
