@@ -139,8 +139,15 @@ class TestProcessUserArguments:
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
-        return_value=PARSER.parse_args(["-i", test_in_path, "-f", "-o", os.path.join(
-            test_out_path, "recursive_folder")]),
+        return_value=PARSER.parse_args(
+            [
+                "-i",
+                test_in_path,
+                "-f",
+                "-o",
+                os.path.join(test_out_path, "recursive_folder"),
+            ]
+        ),
     )
     def test_if_path_output_folder_recursive_create_full_path(self, m_args):
         initializing.process_user_arguments()
