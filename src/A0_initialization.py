@@ -196,13 +196,13 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
             shutil.rmtree(path_output_folder, ignore_errors=True)
 
             logging.info("Creating output folder " + path_output_folder)
-            os.mkdir(path_output_folder)
+            os.makedirs(path_output_folder)
 
             logging.info('Creating folder "inputs" in output folder.')
             shutil.copytree(path_input_folder, path_output_folder_inputs)
     else:
         logging.info("Creating output folder " + path_output_folder)
-        os.mkdir(path_output_folder)
+        os.makedirs(path_output_folder)
 
         logging.info('Creating folder "inputs" in output folder.')
         shutil.copytree(path_input_folder, path_output_folder_inputs)
