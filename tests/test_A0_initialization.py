@@ -162,7 +162,7 @@ class TestProcessUserArguments:
     )
     def test_if_path_output_folder_recursive_create_full_path(self, m_args):
         user_inputs = initializing.process_user_arguments()
-        assert user_inputs["pdf_report_path"] == os.path.join(
+        assert user_inputs["path_pdf_report"] == os.path.join(
             self.test_out_path, PDF_REPORT
         )
 
