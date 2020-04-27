@@ -137,6 +137,15 @@ class TestProcessUserArguments:
         initializing.process_user_arguments()
         assert os.path.exists(some_file) is False
 
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-i", test_in_path, "-f", "-o", os.path.join(
+            test_out_path, "recursive_folder")]),
+    )
+    def test_if_path_output_folder_recursive_create_full_path(self, m_args):
+        initializing.process_user_arguments()
+        assert os.path.exists(os.path.join(self.test_out_path, "recursive_folder"))
+
     def teardown_method(self):
         if os.path.exists(self.test_out_path):
             shutil.rmtree(self.test_out_path, ignore_errors=True)
