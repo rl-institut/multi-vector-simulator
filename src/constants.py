@@ -165,3 +165,14 @@ REQUIRED_CSV_PARAMETERS = {
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
+
+KPI_SCALARS = (
+    "annuity_om",
+    "annuity_total",
+    "costs_investment",
+    "costs_om",
+    "costs_opex_fix",
+    "costs_opex_var",
+    "costs_total",
+    "costs_upfront",
+)
