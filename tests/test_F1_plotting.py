@@ -60,7 +60,6 @@ class TestNetworkx:
             ["-i", TEST_INPUT_PATH_NX_TRUE, "-o", TEST_OUTPUT_PATH, "-ext", "csv", "-f"]
         ),
     )
-
     def test_if_networkx_graph_is_stored_save_plot_true(self, m_args):
         mvs_eland_tool.main()
         assert (
@@ -81,7 +80,6 @@ class TestNetworkx:
             ]
         ),
     )
-
     def test_if_networkx_graph_is_stored_save_plot_false(self, m_args):
         mvs_eland_tool.main()
         assert (
