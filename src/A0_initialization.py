@@ -42,6 +42,7 @@ from src.constants import (
     CSV_ELEMENTS,
     INPUTS_COPY,
     DEFAULT_MAIN_KWARGS,
+    PDF_REPORT,
 )
 
 from oemof.tools import logger
@@ -222,6 +223,7 @@ def process_user_arguments(
     input_type=None,
     path_output_folder=None,
     overwrite=None,
+    pdf_report=None,
     display_output=None,
     lp_file_output=False,
     welcome_text=None,
@@ -239,6 +241,8 @@ def process_user_arguments(
         Must not exist before
     :param overwrite:
         (Optional) Can force tool to replace existing output folder (command line "-f")
+    :param pdf_report:
+        (Optional) Can generate an automatic pdf report of the simulation's results (Command line "-pdf")
     :param display_output:
         (Optional) Determines which messages are used for terminal output (command line "-log")
             "debug": All logging messages
@@ -276,6 +280,9 @@ def process_user_arguments(
     if overwrite is None:
         overwrite = args.get("overwrite", DEFAULT_MAIN_KWARGS["overwrite"])
 
+    if pdf_report is None:
+        pdf_report = args.get("pdf_report", DEFAULT_MAIN_KWARGS["pdf_report"])
+
     if display_output is None:
         display_output = args.get(
             "display_output", DEFAULT_MAIN_KWARGS["display_output"]
@@ -294,6 +301,9 @@ def process_user_arguments(
         "display_output": display_output,
         "lp_file_output": lp_file_output,
     }
+
+    if pdf_report is True:
+        user_input.update({"path_pdf_report": os.path.join(path_output_folder, PDF_REPORT)})
 
     if display_output == "debug":
         screen_level = logging.DEBUG

@@ -54,6 +54,9 @@ def main(**kwargs):
         Determines whether to replace existing results in `path_output_folder`
         with the results of the current simulation (True) or not (False).
         Default: False.
+    pdf_report: cool, optional
+        Can generate an automatic pdf report of the simulation's results (True) or not (False)
+        Default: False.
     input_type : str, optional
         Defines whether the input is taken from the `mvs_config.json` file
         ("json") or from csv files ('csv') located within
