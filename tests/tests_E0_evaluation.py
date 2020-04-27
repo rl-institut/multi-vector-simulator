@@ -11,7 +11,7 @@ import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
 
-from .constants import TEST_REPO_PATH, INPUT_FOLDER
+from .constants import TEST_REPO_PATH, INPUT_FOLDER, KPI_SCALARS
 
 PARSER = initializing.create_parser()
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
@@ -83,6 +83,18 @@ def test_evaluate_dict_fields_values_in_output_dict_are_dataframes():
 
     for k in ("scalar_matrix", "cost_matrix"):
         assert isinstance(dict_values_after["kpi"][k], pd.DataFrame)
+
+
+def test_evaluate_check_dict_fields_in_output_dict_under_kpi_scalar_fields():
+
+    with open(DICT_AFTER, "rb") as handle:
+        dict_values_after = pickle.load(handle)
+
+    for k in KPI_SCALARS:
+        assert k in dict_values_after["kpi"]["scalars"]
+
+    for k in dict_values_after["kpi"]["scalars"]:
+        assert k in KPI_SCALARS
 
 
 def teardown_module():
