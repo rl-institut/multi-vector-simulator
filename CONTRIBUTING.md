@@ -67,6 +67,13 @@ If a test fails, it is only due to what you changed (the test must passed before
   test names and error messages are there to help you find the error, please read them to try to
    debug yourself before seeking assistance :)
 
+Some test take more time to run (run a simulation) and were therefore disabled by default. it is
+ nevertheless important that you run a simulation test before you ask a review, to make sure the
+  code still works
+ ```bash
+pytest tests/test_benchmark.py
+```
+
 #### Step 4: Submit a pull request (PR)
 
 Follow the [steps](https://help.github.com/en/articles/creating-a-pull-request) of the github help to create the PR.
@@ -83,7 +90,7 @@ The previous steps could be performed even before you solved the issue, to let o
 Once you are satisfied with your PR you should ask someone to review it. Before that please lint
  your code with [Black](https://github.com/psf/black) (run `black . --exclude docs/`) and
   described succinctly what you have done in the [CHANGELOG](https://github.com/rl-institut/mvs_eland/blob/dev/CHANGELOG.md) file (indicating the number of the PR in parenthesis after
-  the description, not the number of the issue)
+  the description, not the number of the issue).
 
 
 ## Contributing to Readthedocs

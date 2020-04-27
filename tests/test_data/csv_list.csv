@@ -1,0 +1,6 @@
+,unit,col1
+param1,str,[one; two]
+param2,factor,"[1.02, 3.04]"
+param3,currency/kWh,"[0.2, 0.7]"
+param4,bool,"[True, False, True]"
+param5,year,"[2, 7]"

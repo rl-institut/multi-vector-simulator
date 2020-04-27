@@ -24,7 +24,20 @@ Here is a template for new release sections
 - Issue template (#212)
 - File `troubleshooting.rst` to readthedocs
 - Tests for the module C1 (only used function) (#152)
-- Tests for the module B0 (#140)
+- Save network graph as png to output folder if new parameter `store_nx_graph` is true (#242)
+- Tests for the module B0 (#140, #255)
+- Possibility to move the json file after reading it (useful if json file created from csv files
+) (#255)
+- Benchmark test for csv inputs (#254)
+- File `simulating_with_the_mvs.rst` to readthedocs: How to use the input files (csv/json) (#130), how to create an own simulation/project
+tipps for module building, and hint that units in the MVS are not checked (PR #229)
+- Images for `simulating_with_the_mvs.rst`: images/energy_system.png, images/energy_system_model.png, images/folder_structure_inputs.png
+- Tables for `simulating_with_the_mvs.rst`: tables/example_multiple_inputs_energyConversion.csv, tables/example_scalar_as_timeseries_energyConversion.csv
+- PLANNED in PR #257: Technical parameters (#223): Energy flows (aggregated) per asset, Renewable share, Degree of autonomy, Degree of sector-coupling
+- Test for the module A1 (#141)
+- Test for the module E3 (#143)
+- Test for the module F0 (#142)
+- Test for the module E0 (#146)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -32,6 +45,11 @@ Here is a template for new release sections
 - `troubleshooting.rst`: Added help for `pygraphviz` (#218), `xlrd` (#11), `json.decoder.JSONDecodeError` (#206)
 - FileNotFoundError messages in A0 (#227)
 - Update json file `mvs_config.json`: Default with no peak demand pricing. Replace string "False" by boolean `false`. Remove depreciated parameters from `simulation_settings`(`input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs`) (#234)
+- Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
+- variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
+- the columns of the storage_xx files are renamed and the specific parameters for each column are checked in A1 (#259)
+- Default input files from "inputs": Changed some parameters (#143) 
+- Seperated functions in F0 to ease testing (#142)
 
 ### Removed
 
@@ -42,6 +60,11 @@ Here is a template for new release sections
 - Delete duplicated entry of `plot_nx_graph` from json file (#209)
 - Fix plotting error in F1, plot only if Data frame is not empty (#230, #234)
 - Fix naming error for storages (#166)
+- Benchmark test that the simulation is running with default settings (#254)
+- Fix specific parameters for each storage column (#259)
+- Overwrite local results when running through brenchmark tests (#260)
+- Allow more than one separator for csv files(#263)
+- Fix long label resulting from total project costs (#270)
 
 ## [0.2.0] - 2020-03-13
 
@@ -52,7 +75,8 @@ Here is a template for new release sections
 - Readthedocs documentation for installation (#162)
 - Plotting an networkx graph can now be turned of/on via "plot_nx_graph" in simulation_settings (#172)
 - Plot all timeseries used as input data (#171)
-- Integrate new parameter maximumCap as nominal value for energyProduction assets, ie. PV or wind plants (#124)
+- Integrate new parameter maximumCap as nominal value for energyProduction assets, ie. PV or wind plants (#125 )
+- Integrate new parameter maximumCap as nominal value for storage assets and transformers (PR #243, comp. issue #125)
 
 ### Changed
 - Give priority from kwargs on command line arguments (#112, #138)
@@ -62,6 +86,8 @@ Here is a template for new release sections
 - Tests for the module A0 (#138)
 - Terminal commands (#135)
 - PR request template (open/done/not applicable) (#205)
+- URL of coverall badge (#265) 
+- Function converting json to dict (#142)
 
 ### Removed
 - Function welcome from module A0 (#138)
@@ -162,3 +188,4 @@ Here is a template for new release sections
 
 ### Removed
 - yet another thing
+

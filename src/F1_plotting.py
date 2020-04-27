@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import logging
-
+import os
 
 logging.getLogger("matplotlib.font_manager").disabled = True
 
@@ -39,24 +39,6 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
         fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
         axes_mg = axes[0]
 
-    """
-    # website with websafe hexacolours: https://www.colorhexa.com/web-safe-colors
-    color_dict = {
-        "total_demand_" + sector: "#33ff00",  # dark green
-        "solar_inverter": "#ffcc00",  # orange
-        #'Wind generation': '#33ccff',  # light blue
-        #'Genset generation': '#000000',  # black
-        "transformer_station_in": "#990099",  # violet
-        "charge_controller_in": "#0033cc",  # light green
-        sector + "_excess_sink": "#996600",  # brown
-        "transformer_station_out": "#ff33cc",  # pink
-        "charge_controller_out": "#ccccff",  # pidgeon blue
-        #'Demand shortage': '#ff3300',  # bright red
-        sector + "_storage_soc": "#0033cc"  # blue
-        #'Grid availability': '#cc0000'  # red
-    }
-    """
-
     flows_les.plot(
         title=sector
         + " flows in Local Energy System: "
@@ -81,14 +63,13 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
         axes[1].set(xlabel="Time", ylabel=ylabel)
         axes[1].legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
+    path = os.path.join(
+        user_input["path_output_folder"],
+        sector + "_flows_" + str(interval) + "_days.png",
+    )
+
     plt.savefig(
-        user_input["path_output_folder"]
-        + "/"
-        + sector
-        + "_flows_"
-        + str(interval)
-        + "_days.png",
-        bbox_inches="tight",
+        path, bbox_inches="tight",
     )
     # plt.show()
     plt.close()
@@ -100,12 +81,12 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
 
 def capacities(user_input, project_data, assets, capacities):
     """
-
-    :param user_input:
-    :param project_data:
-    :param assets:
-    :param capacities:
-    :return:
+    Determines the assets for which the optimized capacity is larger than zero and then plots those capacities in a bar chart.
+    :param user_input: dict Simulation settings including the output path
+    :param project_data: dict Project data including project name and scenario name
+    :param assets: list of asset names
+    :param capacities: list of asset capacities
+    :return: png with bar chart of optimized capacities
     """
 
     # only items with an optimal added capacity over 0 are selected
@@ -130,6 +111,7 @@ def capacities(user_input, project_data, assets, capacities):
     dfcapacities["capacities"] = capacities_added
 
     logging.info("Creating bar-chart for components capacities")
+
     dfcapacities.plot.bar(
         x="items",
         y="capacities",
@@ -139,9 +121,11 @@ def capacities(user_input, project_data, assets, capacities):
         + project_data["scenario_name"],
     )
 
+    path = os.path.join(
+        user_input["path_output_folder"], "optimal_additional_capacities.png"
+    )
     plt.savefig(
-        user_input["path_output_folder"] + "/optimal_additional_capacities.png",
-        bbox_inches="tight",
+        path, bbox_inches="tight",
     )
 
     plt.close()
@@ -392,10 +376,12 @@ def plot_costs_rest(
 
 def draw_graph(
     energysystem,
+    user_input,
     edge_labels=True,
     node_color="#eeac7e",
     edge_color="#eeac7e",
-    plot=True,
+    show_plot=True,
+    save_plot=True,
     node_size=5500,
     with_labels=True,
     arrows=True,
@@ -435,15 +421,21 @@ def draw_graph(
     }
 
     # draw graph
+    fig, ax = plt.subplots(figsize=(20, 10))
     pos = nx.drawing.nx_agraph.graphviz_layout(grph, prog=layout)
 
-    nx.draw(grph, pos=pos, **options)
+    nx.draw(grph, pos=pos, ax=ax, **options)
 
     # add edge labels for all edges
     if edge_labels is True and plt:
         labels = nx.get_edge_attributes(grph, "weight")
         nx.draw_networkx_edge_labels(grph, pos=pos, edge_labels=labels)
 
-    # show output
-    if plot is True:
-        plt.show()
+    if show_plot is True:
+        fig.show()
+
+    if save_plot is True:
+        fig.savefig(
+            user_input["path_output_folder"] + "/" + "network_graph.png",
+            bbox_inches="tight",
+        )
