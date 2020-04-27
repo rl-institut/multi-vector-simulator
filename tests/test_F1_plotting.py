@@ -10,7 +10,13 @@ import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 
 import src.F1_plotting as F1
-from tests.constants import TEST_REPO_PATH, DUMMY_CSV_PATH, INPUT_FOLDER, CSV_ELEMENTS, CSV_FNAME
+from tests.constants import (
+    TEST_REPO_PATH,
+    DUMMY_CSV_PATH,
+    INPUT_FOLDER,
+    CSV_ELEMENTS,
+    CSV_FNAME,
+)
 
 SECTOR = "Electricity"
 INTERVAL = 2
@@ -22,7 +28,9 @@ TEST_INPUT_PATH_NX_TRUE = os.path.join(TEST_REPO_PATH, "inputs_F1_plot_nx_true")
 TEST_JSON_PATH_NX_TRUE = os.path.join(TEST_INPUT_PATH_NX_TRUE, CSV_ELEMENTS, CSV_FNAME)
 
 TEST_INPUT_PATH_NX_FALSE = os.path.join(TEST_REPO_PATH, "inputs_F1_plot_nx_false")
-TEST_JSON_PATH_NX_FALSE = os.path.join(TEST_INPUT_PATH_NX_FALSE, CSV_ELEMENTS, CSV_FNAME)
+TEST_JSON_PATH_NX_FALSE = os.path.join(
+    TEST_INPUT_PATH_NX_FALSE, CSV_ELEMENTS, CSV_FNAME
+)
 
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "F1_outputs")
@@ -75,17 +83,28 @@ class TestNetworkx_True:
         results_meta, results_main = modelling.run_oemof(dict_values)
 
     def test_if_networkx_graph_is_stored_save_plot_true(self):
-        assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
+        assert (
+            os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
+        )
 
     def teardown_class(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
 
+
 class TestNetworkx_False:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-i", TEST_INPUT_PATH_NX_FALSE, "-o", TEST_OUTPUT_PATH, "-ext", "csv", "-f"]
+            [
+                "-i",
+                TEST_INPUT_PATH_NX_FALSE,
+                "-o",
+                TEST_OUTPUT_PATH,
+                "-ext",
+                "csv",
+                "-f",
+            ]
         ),
     )
     def setup_class(m_args):
@@ -108,11 +127,14 @@ class TestNetworkx_False:
         results_meta, results_main = modelling.run_oemof(dict_values)
 
     def test_if_networkx_graph_is_stored_save_plot_false(self):
-        assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
+        assert (
+            os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
+        )
 
     def teardown_class(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+
 
 class TestFileCreation:
     def setup_class(self):
