@@ -98,7 +98,8 @@ class TestNetworkx:
             logging.debug("Accessing script: D0_modelling_and_optimization")
             results_meta, results_main = modelling.run_oemof(dict_values)
 
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "network_graph.png")) is False
+        assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
+
 
 
 class TestFileCreation:
