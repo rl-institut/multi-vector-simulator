@@ -4,10 +4,8 @@ import mock
 import pandas as pd
 import logging
 
+import mvs_eland_tool.mvs_eland_tool as mvs_eland_tool
 import src.A0_initialization as initializing
-import src.B0_data_input_json as data_input
-import src.C0_data_processing as data_processing
-import src.D0_modelling_and_optimization as modelling
 
 import src.F1_plotting as F1
 from tests.constants import (
@@ -55,43 +53,20 @@ DICT_KPI = {
 }
 
 
-class TestNetworkx_True:
+class TestNetworkx:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
             ["-i", TEST_INPUT_PATH_NX_TRUE, "-o", TEST_OUTPUT_PATH, "-ext", "csv", "-f"]
         ),
     )
-    def setup_class(m_args):
-        """Run the simulation up to module E0 and save dict_values before and after evaluation"""
-        if os.path.exists(TEST_OUTPUT_PATH):
-            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
-        user_input = initializing.process_user_arguments()
 
-        logging.debug("Accessing script: B0_data_input_json")
-        dict_values = data_input.load_json(
-            user_input["path_input_file"],
-            path_input_folder=user_input["path_input_folder"],
-            path_output_folder=user_input["path_output_folder"],
-            move_copy=False,
-        )
-        logging.debug("Accessing script: C0_data_processing")
-        data_processing.all(dict_values)
-
-        logging.debug("Accessing script: D0_modelling_and_optimization")
-        results_meta, results_main = modelling.run_oemof(dict_values)
-
-    def test_if_networkx_graph_is_stored_save_plot_true(self):
+    def test_if_networkx_graph_is_stored_save_plot_true(self, m_args):
+        mvs_eland_tool.main()
         assert (
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
         )
 
-    def teardown_class(self):
-        if os.path.exists(TEST_OUTPUT_PATH):
-            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
-
-
-class TestNetworkx_False:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
@@ -106,31 +81,14 @@ class TestNetworkx_False:
             ]
         ),
     )
-    def setup_class(m_args):
-        """Run the simulation up to module E0 and save dict_values before and after evaluation"""
-        if os.path.exists(TEST_OUTPUT_PATH):
-            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
-        user_input = initializing.process_user_arguments()
 
-        logging.debug("Accessing script: B0_data_input_json")
-        dict_values = data_input.load_json(
-            user_input["path_input_file"],
-            path_input_folder=user_input["path_input_folder"],
-            path_output_folder=user_input["path_output_folder"],
-            move_copy=False,
-        )
-        logging.debug("Accessing script: C0_data_processing")
-        data_processing.all(dict_values)
-
-        logging.debug("Accessing script: D0_modelling_and_optimization")
-        results_meta, results_main = modelling.run_oemof(dict_values)
-
-    def test_if_networkx_graph_is_stored_save_plot_false(self):
+    def test_if_networkx_graph_is_stored_save_plot_false(self, m_args):
+        mvs_eland_tool.main()
         assert (
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
         )
 
-    def teardown_class(self):
+    def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
 
