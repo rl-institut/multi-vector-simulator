@@ -39,6 +39,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for the module F0 (#142)
 - Test for the module E0 (#146)
 - Test for module F1 (#157)
+- Benchmark test with only PV and grid (#258)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
