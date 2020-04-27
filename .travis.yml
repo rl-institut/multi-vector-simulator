@@ -6,6 +6,7 @@ python:
 # To install packages which are not on pip
 before_install:
   - sudo apt-get install coinor-cbc
+  - sudo apt-get install graphviz
 #addons:
 #  apt:
 #    update: true

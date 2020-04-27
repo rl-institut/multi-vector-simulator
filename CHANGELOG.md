@@ -38,6 +38,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for the module E3 (#143)
 - Test for the module F0 (#142)
 - Test for the module E0 (#146)
+- Test for module F1 (#157)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -50,6 +51,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - the columns of the storage_xx files are renamed and the specific parameters for each column are checked in A1 (#259)
 - Default input files from "inputs": Changed some parameters (#143) 
 - Seperated functions in F0 to ease testing (#142)
+- Moved some functions between F0 and F1, rearranged functions in F1 (#157)
 
 ### Removed
 
