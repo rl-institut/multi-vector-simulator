@@ -11,6 +11,30 @@ import dash_table
 import base64
 import git
 import folium
+import os
+
+from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
+
+OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
+CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
+
+# Foundation JS styling sheets that are to be used to improve the formatting of the web app
+external_scripts = [
+    {
+        "src": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/js/foundation.min.js",
+        "integrity": "sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=",
+        "crossorigin": "anonymous",
+    }
+]
+
+external_stylesheets = [
+    {
+        "href": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/css/foundation.min.css",
+        "rel": "stylesheet",
+        "integrity": "sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I",
+        "crossorigin": "anonymous",
+    }
+]
 
 # Initialize the app
 app = dash.Dash(__name__)
@@ -23,6 +47,9 @@ colors = {
     'font-inpbox': '#FFFFFF'
 }
 # Reading the relevant user-inputs from the csv files into Pandas dataframes
+
+
+
 dfprojectData = pd.read_csv('../inputs/csv_elements/project_data.csv')
 dfeconomicData = pd.read_csv('../inputs/csv_elements/economic_data.csv')
 dfsimSettíngs = pd.read_csv('../inputs/csv_elements/simulation_settings.csv')
