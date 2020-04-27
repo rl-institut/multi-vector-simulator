@@ -22,6 +22,7 @@ from src.constants import (
     CSV_EXT,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
+    PDF_REPORT,
 )
 
 
@@ -153,6 +154,18 @@ class TestProcessUserArguments:
         initializing.process_user_arguments()
         assert os.path.exists(os.path.join(self.test_out_path, "recursive_folder"))
 
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            ["-i", test_in_path, "-o", test_out_path, "-pdf"]
+        ),
+    )
+    def test_if_path_output_folder_recursive_create_full_path(self, m_args):
+        user_inputs = initializing.process_user_arguments()
+        assert user_inputs["pdf_report_path"] == os.path.join(
+            self.test_out_path, PDF_REPORT
+        )
+
     def teardown_method(self):
         if os.path.exists(self.test_out_path):
             shutil.rmtree(self.test_out_path, ignore_errors=True)
@@ -221,6 +234,14 @@ class TestCommandLineInput:
     def test_overwrite_activation(self):
         parsed = self.parser.parse_args(["-f"])
         assert parsed.overwrite is True
+
+    def test_pdf_report_false_by_default(self):
+        parsed = self.parser.parse_args([])
+        assert parsed.pdf_report is False
+
+    def test_pdf_report_activation(self):
+        parsed = self.parser.parse_args(["-pdf"])
+        assert parsed.pdf_report is True
 
     def test_log_assignation(self):
         parsed = self.parser.parse_args(["-log", "debug"])
