@@ -8,7 +8,7 @@ dict_asset = {
     "capex_var": {"value": 4000, "unit": "currency/unit"},
     "annual_total_flow": {"value": 50000, "unit": "kWh"},
     "lifetime_opex_var": {"value": 10, "unit": "year"},
-    "price": {"value": 2 , "unit": "currency"},
+    "price": {"value": 2, "unit": "currency"},
     "installedCap": {"value": 1000, "unit": "kWh"},
     "lifetime_opex_fix": {"value": 10, "unit": "year"},
 }
@@ -20,7 +20,7 @@ dict_asset_test = {
     "capex_var": {"value": 4000, "unit": "currency/unit"},
     "annual_total_flow": {"value": 50000, "unit": "kWh"},
     "lifetime_opex_var": {"value": 10, "unit": "year"},
-    "price": {"value": 2 , "unit": "currency"},
+    "price": {"value": 2, "unit": "currency"},
     "installedCap": {"value": 1000, "unit": "kWh"},
     "lifetime_opex_fix": {"value": 10, "unit": "year"},
     "costs_investment": {"value": 86000},
@@ -34,9 +34,7 @@ dict_asset_test = {
     "annuity_om": {"value": 81600.0, "unit": "currency/year"},
 }
 
-economic_data = {
-    "crf": {"value": 0.12}
-}
+economic_data = {"crf": {"value": 0.12}}
 
 cost = 10000
 total_costs = 5000
@@ -69,7 +67,7 @@ def test_add_costs_and_total():
     -------
 
     """
-    Total_Costs = E2.add_costs_and_total(DA_2, "cost", cost, total_costs)
+    Total_Costs = E2.add_costs_and_total(Dict_2, "cost", cost, total_costs)
     assert Total_Costs == cost + total_costs
 
 
