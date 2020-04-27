@@ -72,7 +72,7 @@ def test_evaluate_dict_important_fields_in_output_dict():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    for k in ("kpi_matrix", "cost_matrix"):
+    for k in ("scalar_matrix", "cost_matrix"):
         assert k in dict_values_after["kpi"]
 
 
@@ -81,7 +81,7 @@ def test_evaluate_dict_fields_values_in_output_dict_are_dataframes():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    for k in ("kpi_matrix", "cost_matrix"):
+    for k in ("scalar_matrix", "cost_matrix"):
         assert isinstance(dict_values_after["kpi"][k], pd.DataFrame)
 
 
