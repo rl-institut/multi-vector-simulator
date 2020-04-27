@@ -13,6 +13,22 @@ import git
 import folium
 import os
 
+import threading
+import sys
+import pdfkit
+
+
+def print_pdf(app):
+    """Run the dash app in a thread an print a pdf before exiting"""
+    td = threading.Thread(target=app.run_server)
+    td.daemon = True
+    td.start()
+    pdfkit.from_url("http://127.0.0.1:8050", "out.pdf")
+    td.join(2)
+    sys.exit()
+
+
+
 from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
