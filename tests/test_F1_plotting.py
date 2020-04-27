@@ -32,7 +32,6 @@ TEST_JSON_PATH_NX_FALSE = os.path.join(
     TEST_INPUT_PATH_NX_FALSE, CSV_ELEMENTS, CSV_FNAME
 )
 
-
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "F1_outputs")
 
 # Data for test_if_plot_of_all_energy_flows_for_all_sectors_are_stored_for_14_days
@@ -71,9 +70,9 @@ class TestNetworkx_True:
 
         logging.debug("Accessing script: B0_data_input_json")
         dict_values = data_input.load_json(
-            TEST_JSON_PATH_NX_TRUE,
-            path_input_folder=TEST_INPUT_PATH_NX_TRUE,
-            path_output_folder=TEST_OUTPUT_PATH,
+            user_input["path_input_file"],
+            path_input_folder=user_input["path_input_folder"],
+            path_output_folder=user_input["path_output_folder"],
             move_copy=False,
         )
         logging.debug("Accessing script: C0_data_processing")
@@ -115,9 +114,9 @@ class TestNetworkx_False:
 
         logging.debug("Accessing script: B0_data_input_json")
         dict_values = data_input.load_json(
-            TEST_JSON_PATH_NX_FALSE,
-            path_input_folder=TEST_INPUT_PATH_NX_FALSE,
-            path_output_folder=TEST_OUTPUT_PATH,
+            user_input["path_input_file"],
+            path_input_folder=user_input["path_input_folder"],
+            path_output_folder=user_input["path_output_folder"],
             move_copy=False,
         )
         logging.debug("Accessing script: C0_data_processing")

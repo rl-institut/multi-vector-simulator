@@ -19,7 +19,7 @@
         "demand_01": {
             "dsm": "False",
             "energyVector": "Electricity",
-            "file_name": "demand_habor.csv",
+            "file_name": "demand_harbor.csv",
             "inflow_direction": "Electricity",
             "label": "Habor",
             "type_asset": "demand",

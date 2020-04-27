@@ -11,6 +11,7 @@ from src.constants import (
     CSV_EXT,
     REQUIRED_CSV_FILES,
     REQUIRED_CSV_PARAMETERS,
+    KPI_SCALARS,
 )
 
 TEST_REPO_PATH = os.path.dirname(__file__)

@@ -36,7 +36,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - PLANNED in PR #257: Technical parameters (#223): Energy flows (aggregated) per asset, Renewable share, Degree of autonomy, Degree of sector-coupling
 - Test for the module A1 (#141)
 - Test for the module E3 (#143)
-- Test for module F0 (#142)
+- Test for the module F0 (#142)
+- Test for the module E0 (#146)
 - Test for module F1 (#157)
 
 ### Changed
@@ -66,6 +67,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Overwrite local results when running through brenchmark tests (#260)
 - Allow more than one separator for csv files(#263)
 - Fix long label resulting from total project costs (#270)
+- Bug when the output path had contained an unexisting folder within an unexisting folder it
+ would return an error (#278)
 
 ## [0.2.0] - 2020-03-13
 
