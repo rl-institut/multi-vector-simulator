@@ -12,6 +12,7 @@ from src.constants import (
     REQUIRED_CSV_FILES,
     REQUIRED_CSV_PARAMETERS,
     KPI_SCALARS,
+    PDF_REPORT,
 )
 
 TEST_REPO_PATH = os.path.dirname(__file__)
