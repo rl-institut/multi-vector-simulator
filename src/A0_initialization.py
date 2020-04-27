@@ -303,7 +303,9 @@ def process_user_arguments(
     }
 
     if pdf_report is True:
-        user_input.update({"path_pdf_report": os.path.join(path_output_folder, PDF_REPORT)})
+        user_input.update(
+            {"path_pdf_report": os.path.join(path_output_folder, PDF_REPORT)}
+        )
 
     if display_output == "debug":
         screen_level = logging.DEBUG
