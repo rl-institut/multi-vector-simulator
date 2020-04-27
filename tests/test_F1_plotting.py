@@ -10,7 +10,7 @@ import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 
 import src.F1_plotting as F1
-from tests.constants import TEST_REPO_PATH, DUMMY_CSV_PATH, INPUT_FOLDER
+from tests.constants import TEST_REPO_PATH, DUMMY_CSV_PATH, INPUT_FOLDER, CSV_ELEMENTS, CSV_FNAME
 
 SECTOR = "Electricity"
 INTERVAL = 2
@@ -19,7 +19,12 @@ OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
 PARSER = initializing.create_parser()
 TEST_INPUT_PATH_NX_TRUE = os.path.join(TEST_REPO_PATH, "inputs_F1_plot_nx_true")
+TEST_JSON_PATH_NX_TRUE = os.path.join(TEST_INPUT_PATH_NX_TRUE, CSV_ELEMENTS, CSV_FNAME)
+
 TEST_INPUT_PATH_NX_FALSE = os.path.join(TEST_REPO_PATH, "inputs_F1_plot_nx_false")
+TEST_JSON_PATH_NX_FALSE = os.path.join(TEST_INPUT_PATH_NX_FALSE, CSV_ELEMENTS, CSV_FNAME)
+
+
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "F1_outputs")
 
 # Data for test_if_plot_of_all_energy_flows_for_all_sectors_are_stored_for_14_days
@@ -43,64 +48,71 @@ DICT_KPI = {
 }
 
 
-class TestNetworkx:
-    def test_if_networkx_graph_is_stored_save_plot_true(self):
-        @mock.patch(
-            "argparse.ArgumentParser.parse_args",
-            return_value=PARSER.parse_args(
-                ["-i", TEST_INPUT_PATH_NX_TRUE, "-o", TEST_OUTPUT_PATH, "-ext", "csv"]
-            ),
+class TestNetworkx_True:
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            ["-i", TEST_INPUT_PATH_NX_TRUE, "-o", TEST_OUTPUT_PATH, "-ext", "csv", "-f"]
+        ),
+    )
+    def setup_class(m_args):
+        """Run the simulation up to module E0 and save dict_values before and after evaluation"""
+        if os.path.exists(TEST_OUTPUT_PATH):
+            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+        user_input = initializing.process_user_arguments()
+
+        logging.debug("Accessing script: B0_data_input_json")
+        dict_values = data_input.load_json(
+            TEST_JSON_PATH_NX_TRUE,
+            path_input_folder=TEST_INPUT_PATH_NX_TRUE,
+            path_output_folder=TEST_OUTPUT_PATH,
+            move_copy=False,
         )
-        def setup_module(m_args):
-            """Run the simulation up to module E0 and save dict_values before and after evaluation"""
-            if os.path.exists(TEST_OUTPUT_PATH):
-                shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
-            user_input = initializing.process_user_arguments()
+        logging.debug("Accessing script: C0_data_processing")
+        data_processing.all(dict_values)
 
-            logging.debug("Accessing script: B0_data_input_json")
-            dict_values = data_input.load_json(
-                user_input["path_input_file"],
-                path_input_folder=user_input["path_input_folder"],
-                path_output_folder=user_input["path_output_folder"],
-                move_copy=False,
-            )
-            logging.debug("Accessing script: C0_data_processing")
-            data_processing.all(dict_values)
+        logging.debug("Accessing script: D0_modelling_and_optimization")
+        results_meta, results_main = modelling.run_oemof(dict_values)
 
-            logging.debug("Accessing script: D0_modelling_and_optimization")
-            results_meta, results_main = modelling.run_oemof(dict_values)
+    def test_if_networkx_graph_is_stored_save_plot_true(self):
+        assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
 
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "network_graph.png")) is True
+    def teardown_class(self):
+        if os.path.exists(TEST_OUTPUT_PATH):
+            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+
+class TestNetworkx_False:
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            ["-i", TEST_INPUT_PATH_NX_FALSE, "-o", TEST_OUTPUT_PATH, "-ext", "csv", "-f"]
+        ),
+    )
+    def setup_class(m_args):
+        """Run the simulation up to module E0 and save dict_values before and after evaluation"""
+        if os.path.exists(TEST_OUTPUT_PATH):
+            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+        user_input = initializing.process_user_arguments()
+
+        logging.debug("Accessing script: B0_data_input_json")
+        dict_values = data_input.load_json(
+            TEST_JSON_PATH_NX_FALSE,
+            path_input_folder=TEST_INPUT_PATH_NX_FALSE,
+            path_output_folder=TEST_OUTPUT_PATH,
+            move_copy=False,
+        )
+        logging.debug("Accessing script: C0_data_processing")
+        data_processing.all(dict_values)
+
+        logging.debug("Accessing script: D0_modelling_and_optimization")
+        results_meta, results_main = modelling.run_oemof(dict_values)
 
     def test_if_networkx_graph_is_stored_save_plot_false(self):
-        @mock.patch(
-            "argparse.ArgumentParser.parse_args",
-            return_value=PARSER.parse_args(
-                ["-i", TEST_INPUT_PATH_NX_FALSE, "-o", TEST_OUTPUT_PATH, "-ext", "csv"]
-            ),
-        )
-        def setup_module(m_args):
-            """Run the simulation up to module E0 and save dict_values before and after evaluation"""
-            if os.path.exists(TEST_OUTPUT_PATH):
-                shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
-            user_input = initializing.process_user_arguments()
-
-            logging.debug("Accessing script: B0_data_input_json")
-            dict_values = data_input.load_json(
-                user_input["path_input_file"],
-                path_input_folder=user_input["path_input_folder"],
-                path_output_folder=user_input["path_output_folder"],
-                move_copy=False,
-            )
-            logging.debug("Accessing script: C0_data_processing")
-            data_processing.all(dict_values)
-
-            logging.debug("Accessing script: D0_modelling_and_optimization")
-            results_meta, results_main = modelling.run_oemof(dict_values)
-
         assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
 
-
+    def teardown_class(self):
+        if os.path.exists(TEST_OUTPUT_PATH):
+            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
 
 class TestFileCreation:
     def setup_class(self):
