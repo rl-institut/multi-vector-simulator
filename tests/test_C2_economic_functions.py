@@ -103,8 +103,3 @@ def test_fuel_price_present_value_without_fuel_price_change():
     e_functions.fuel_price_present_value(fuel_keys)
     assert fuel_keys["fuel_price"] == 1.3
 
-    # fuel_keys["fuel_price_change_annual"] = 0.008
-    # fuel_keys["crf"] = e_functions.crf(project_life, wacc)
-    # PV_fuel_price = e_functions.fuel_price_present_value(fuel_keys)
-    # still not sure how not to use float number in assert
-    # assert PV_fuel_price == 13.06049955 * ((0.1 * (1 + 0.1) ** 20) / ((1 + 0.1) ** 20 - 1))
