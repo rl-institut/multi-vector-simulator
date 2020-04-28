@@ -129,7 +129,8 @@ energyStorage.csv
 storage_xx.csv
 --------------
 **c_rate**: C-rate is the rate at which the storage can charge or discharge relative to the nominal capacity of the storage.
-A c-rate of 1 implies that the battery can discharge or charge completely in a single timestep. Only the columns "input power" and "output power" require a value, in column "storage capacity" crate should be set to NaN.
+A c-rate of 1 implies that the battery can discharge or charge completely in a single timestep.
+Only the columns "input power" and "output power" require a value, in column "storage capacity" c_rate should be set to NaN.
 
 **soc_initial**: The level of charge (as a factor of the actual capacity)  in the storage in the zeroth timestep. Acceptable values are either None or the factor. Only the column "storage capacity" require a value, in column "input power" and "output power" soc_initial should be set to NaN.
 
