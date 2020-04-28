@@ -182,3 +182,14 @@ KPI_UNCOUPLED_DICT = "KPI individual sectors"
 KPI_COST_MATRIX = "cost_matrix"
 
 # KPI_FLOW_MATRIX
+=======
+KPI_SCALARS = (
+    "annuity_om",
+    "annuity_total",
+    "costs_investment",
+    "costs_om",
+    "costs_opex_fix",
+    "costs_opex_var",
+    "costs_total",
+    "costs_upfront",
+)

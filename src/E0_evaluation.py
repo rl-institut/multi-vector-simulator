@@ -8,14 +8,32 @@ import src.E2_economics as economics
 import src.E3_indicator_calculation as indicators
 import src.F0_output as output
 
+r"""
+Module E0 evaluation
+====================
+
+Module E0 evaluates the oemof results and calculates the KPI
+- define dictionary entry for kpi matrix
+- define dictionary entry for cost matrix
+- store all results to matrix
+"""
+
 
 def evaluate_dict(dict_values, results_main, results_meta):
     """
 
-    :param dict_values:
-    :param results_main:
-    :param results_meta:
-    :return:
+    Parameters
+    ----------
+    dict_values: dict
+        simulation parameters
+    results_main: DataFrame
+        oemof simulation results as output by outputlib.processing.results()
+    results_meta: DataFrame
+        oemof simulation meta information as output by outputlib.processing.meta_results()
+
+    Returns
+    -------
+
     """
     dict_values.update(
         {
@@ -137,16 +155,25 @@ def evaluate_dict(dict_values, results_main, results_meta):
     indicators.renewable_share(dict_values)
 
     logging.info("Evaluating optimized capacities and dispatch.")
-    output.store_as_json(dict_values, "json_with_results")
+    output.store_as_json(
+        dict_values,
+        dict_values["simulation_settings"]["path_output_folder"],
+        "json_with_results",
+    )
     return
 
 
 def store_result_matrix(dict_kpi, dict_asset):
     """Storing results to vector and then result matrix for saving it in csv.
 
-    :param dict_kpi:
-    :param dict_asset:
-    :return:
+    Parameters
+    ----------
+    dict_kpi
+    dict_asset
+
+    Returns
+    -------
+
     """
 
     round_to_comma = 5

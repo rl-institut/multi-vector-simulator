@@ -133,7 +133,6 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
         weighting_for_sector_coupled_kpi(dict_values, sector_specific_kpi)
     return
 
-
 def renewable_share(dict_values):
     """Determination of renewable share of one sector
 
