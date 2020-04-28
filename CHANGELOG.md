@@ -20,6 +20,7 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+- Tests for module C2 (#151)
 - Pull request template (#198)
 - Issue template (#212)
 - File `troubleshooting.rst` to readthedocs
