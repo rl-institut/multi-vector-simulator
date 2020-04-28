@@ -1,0 +1,11 @@
+,unit,simulation_settings
+evaluated_period,days,7
+label,str,simulation_settings
+oemof_file_name,str,MVS_results.oemof
+output_lp_file,bool,True
+restore_from_oemof_file,bool,True
+start_date,str,2018-01-01 00:00:00
+store_oemof_results,bool,True
+timestep,minutes,60
+display_nx_graph,bool,False
+store_nx_graph,bool,True

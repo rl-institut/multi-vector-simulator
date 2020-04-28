@@ -33,6 +33,14 @@ Here is a template for new release sections
 tipps for module building, and hint that units in the MVS are not checked (PR #229)
 - Images for `simulating_with_the_mvs.rst`: images/energy_system.png, images/energy_system_model.png, images/folder_structure_inputs.png
 - Tables for `simulating_with_the_mvs.rst`: tables/example_multiple_inputs_energyConversion.csv, tables/example_scalar_as_timeseries_energyConversion.csv
+- PLANNED in PR #257: Technical parameters (#223): Energy flows (aggregated) per asset, Renewable share, Degree of autonomy, Degree of sector-coupling
+- Test for the module A1 (#141)
+- Test for the module E3 (#143)
+- Test for the module F0 (#142)
+- Test for the module E0 (#146)
+- Test for module F1 (#157)
+- Benchmark test with only PV and grid (#258)
+- Module F2 for auto-reporting results of MVS simulation (#232)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -43,6 +51,9 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
 - variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
 - the columns of the storage_xx files are renamed and the specific parameters for each column are checked in A1 (#259)
+- Default input files from "inputs": Changed some parameters (#143) 
+- Seperated functions in F0 to ease testing (#142)
+- Moved some functions between F0 and F1, rearranged functions in F1 (#157)
 
 ### Removed
 
@@ -57,7 +68,9 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Fix specific parameters for each storage column (#259)
 - Overwrite local results when running through brenchmark tests (#260)
 - Allow more than one separator for csv files(#263)
-
+- Fix long label resulting from total project costs (#270)
+- Bug when the output path had contained an unexisting folder within an unexisting folder it
+ would return an error (#278)
 
 ## [0.2.0] - 2020-03-13
 
@@ -80,11 +93,11 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Terminal commands (#135)
 - PR request template (open/done/not applicable) (#205)
 - URL of coverall badge (#265) 
+- Function converting json to dict (#142)
 
 ### Removed
 - Function welcome from module A0 (#138)
 - Parameters `input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs` from `simulation_settings.csv` (#178)
-
 
 ### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)
@@ -181,3 +194,4 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 
 ### Removed
 - yet another thing
+
