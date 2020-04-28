@@ -102,4 +102,3 @@ def test_fuel_price_present_value_without_fuel_price_change():
     """
     e_functions.fuel_price_present_value(fuel_keys)
     assert fuel_keys["fuel_price"] == 1.3
-
