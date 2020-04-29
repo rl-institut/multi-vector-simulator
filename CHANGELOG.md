@@ -55,7 +55,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Default input files from "inputs": Changed some parameters (#143) 
 - Seperated functions in F0 to ease testing (#142)
 - Moved some functions between F0 and F1, rearranged functions in F1 (#157)
-
+- Call timeseries plot function for each bus (#278)
+ 
 ### Removed
 
 ### Fixed
@@ -72,6 +73,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Fix long label resulting from total project costs (#270)
 - Bug when the output path had contained an unexisting folder within an unexisting folder it
  would return an error (#278)
+ - Display SOC (#278)
 
 ## [0.2.0] - 2020-03-13
 

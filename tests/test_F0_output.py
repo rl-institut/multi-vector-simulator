@@ -125,6 +125,10 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
         """ """
         dict_timeseries_test_one_bus = {
+            "project_data": {
+                "project_name": "a_project",
+                "scenario_name": "a_scenario",
+            },
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS},
         }
@@ -134,11 +138,20 @@ class TestFileCreation:
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
             is True
         )
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "a_bus" + " flows.png")) is True
+        assert (
+            os.path.exists(
+                os.path.join(OUTPUT_PATH, "a_bus" + "_flows_" + str(365) + "_days.png")
+            )
+            is True
+        )
 
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         """ """
         dict_timeseries_test_two_busses = {
+            "project_data": {
+                "project_name": "a_project",
+                "scenario_name": "a_scenario",
+            },
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS, "b_bus": BUS},
         }
@@ -147,8 +160,18 @@ class TestFileCreation:
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
             is True
         )
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "a_bus" + " flows.png")) is True
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "b_bus" + " flows.png")) is True
+        assert (
+            os.path.exists(
+                os.path.join(OUTPUT_PATH, "a_bus" + "_flows_" + str(365) + "_days.png")
+            )
+            is True
+        )
+        assert (
+            os.path.exists(
+                os.path.join(OUTPUT_PATH, "b_bus" + "_flows_" + str(365) + "_days.png")
+            )
+            is True
+        )
 
     def test_store_dict_into_json(self):
         """ """

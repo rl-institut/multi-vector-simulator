@@ -16,7 +16,7 @@ Module F1 describes all the functions that create plots.
 logging.getLogger("matplotlib.font_manager").disabled = True
 
 
-def flows(user_input, project_data, results_timeseries, sector, interval):
+def flows(user_input, project_data, results_timeseries, bus, interval):
     """
     Parameters
     ----------
@@ -26,7 +26,7 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
         part of the dict_values that includes Name for setting title of plots
     results_timeseries: pd Dataframe
         Timeseries that is to be plotted
-    sector: str
+    bus: str
         sector that is to be plotted, ie. energyVectors of the energy system - not each and every bus.
     interval: int
         Time interval in days covered on the x-axis
@@ -36,62 +36,54 @@ def flows(user_input, project_data, results_timeseries, sector, interval):
     Plot of "interval" duration on x-axis for all energy flows connected to the main bus supplying the demand of a specific sector
     """
 
-    logging.info("Creating plots for %s sector, %s days", sector, interval)
+    logging.info("Creating plots for %s sector, %s days", bus, interval)
     steps = interval * 24
     flows_les = results_timeseries[0:steps]
 
     includes_soc = False
     for column in results_timeseries.columns:
+        print("print", column)
         if "SOC" in column:
             includes_soc = True
             soc_column_name = column
 
-    if includes_soc == True:
-        boolean_subplots = True
+    if includes_soc is True:
         flows_les = flows_les.drop([soc_column_name], axis=1)
-    else:
-        boolean_subplots = False
-
-    if boolean_subplots == False:
-        fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
-        axes_mg = axes
-    else:
         fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
         axes_mg = axes[0]
+    else:
+        fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
+        axes_mg = axes
 
     flows_les.plot(
-        title=sector
-        + " flows in Local Energy System: "
+        title=bus
+        + " flows in LES: "
         + project_data["project_name"]
         + ", "
         + project_data["scenario_name"],
-        # color=[color_dict.get(x, "#333333") for x in flows_les.columns],
         ax=axes_mg,
         drawstyle="steps-mid",
     )
-    axes_mg.set(xlabel="Time", ylabel=sector + " flow in kWh")
+    axes_mg.set(xlabel="Time", ylabel=bus + " flow in kWh")
     axes_mg.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
-    if boolean_subplots == True:
+    if includes_soc is True:
         results_timeseries[soc_column_name][0:steps].plot(
-            ax=axes[1],
-            # color=color_dict.get(soc_column_name, "#333333"),
-            drawstyle="steps-mid",
+            ax=axes[1], drawstyle="steps-mid",
         )
-        ylabel = sector + " SOC"
+        ylabel = bus + " SOC"
 
         axes[1].set(xlabel="Time", ylabel=ylabel)
         axes[1].legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
     path = os.path.join(
-        user_input["path_output_folder"],
-        sector + "_flows_" + str(interval) + "_days.png",
+        user_input["path_output_folder"], bus + "_flows_" + str(interval) + "_days.png",
     )
 
     plt.savefig(
         path, bbox_inches="tight",
     )
-    # plt.show()
+
     plt.close()
     plt.clf()
     plt.cla()
