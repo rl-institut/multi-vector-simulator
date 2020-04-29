@@ -219,18 +219,13 @@ def store_timeseries_all_busses_to_excel(dict_values):
     ) as open_file:  # doctest: +SKIP
         for bus in dict_values["optimizedFlows"]:
             dict_values["optimizedFlows"][bus].to_excel(open_file, sheet_name=bus)
-            dict_values["optimizedFlows"][bus].plot()
-            plt.savefig(
-                dict_values["simulation_settings"]["path_output_folder"]
-                + "/"
-                + bus
-                + " flows.png",
-                bbox_inches="tight",
+            F1_plots.flows(
+                dict_values["simulation_settings"],
+                dict_values["project_data"],
+                dict_values["optimizedFlows"][bus],
+                bus,
+                365,
             )
-
-            plt.close()
-            plt.clf()
-            plt.cla()
 
     logging.info("Saved flows at busses to: %s.", timeseries_output_file)
     return
