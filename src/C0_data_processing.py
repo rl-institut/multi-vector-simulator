@@ -3,6 +3,12 @@ import sys
 import shutil
 import logging
 import pandas as pd
+import matplotlib.pyplot as plt
+import logging
+
+logging.getLogger("matplotlib.font_manager").disabled = True
+
+from src.constants import INPUTS_COPY, TIME_SERIES
 
 import src.C1_verification as verify
 import src.C2_economic_functions as economics
@@ -30,7 +36,11 @@ def all(dict_values):
     # Adds costs to each asset and sub-asset
     process_all_assets(dict_values)
 
-    output.store_as_json(dict_values, "json_input_processed")
+    output.store_as_json(
+        dict_values,
+        dict_values["simulation_settings"]["path_output_folder"],
+        "json_input_processed",
+    )
     return
 
 
@@ -211,6 +221,8 @@ def energyConversion(dict_values, group):
             dict_values["economic_data"],
             dict_values[group][asset],
         )
+        # check if maximumCap exists and add it to dict_values
+        add_maximum_cap(dict_values=dict_values, group=group, asset=asset)
 
         if asset == "electrolyser":
             define_sink(
@@ -260,6 +272,9 @@ def energyProduction(dict_values, group):
             receive_timeseries_from_csv(
                 dict_values["simulation_settings"], dict_values[group][asset], "input",
             )
+        # check if maximumCap exists and add it to dict_values
+        add_maximum_cap(dict_values, group, asset)
+
     return
 
 
@@ -271,7 +286,7 @@ def energyStorage(dict_values, group):
     :return:
     """
     for asset in dict_values[group]:
-        for subasset in ["capacity", "charging_power", "discharging_power"]:
+        for subasset in ["storage capacity", "input power", "output power"]:
             define_missing_cost_data(
                 dict_values, dict_values[group][asset][subasset],
             )
@@ -297,6 +312,8 @@ def energyStorage(dict_values, group):
                     treat_multiple_flows(
                         dict_values[group][asset][subasset], dict_values, parameter
                     )
+            # check if maximumCap exists and add it to dict_values
+            add_maximum_cap(dict_values, group, asset, subasset)
 
         # define input and output bus names
         dict_values[group][asset].update(
@@ -327,7 +344,8 @@ def energyProviders(dict_values, group):
     for asset in dict_values[group]:
         define_dso_sinks_and_sources(dict_values, asset)
 
-        # Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity to each asset
+        # Add lifetime capex (incl. replacement costs), calculate annuity
+        # (incl. om), and simulation annuity to each asset
         define_missing_cost_data(dict_values, dict_values[group][asset])
         evaluate_lifetime_costs(
             dict_values["simulation_settings"],
@@ -376,7 +394,8 @@ def define_missing_cost_data(dict_values, dict_asset):
     """
 
     # read timeseries with filename provided for variable costs.
-    # if multiple opex_var are given for multiple busses, it checks if any value is a timeseries
+    # if multiple opex_var are given for multiple busses, it checks if any v
+    # alue is a timeseries
     if "opex_var" in dict_asset:
         if isinstance(dict_asset["opex_var"]["value"], dict):
             receive_timeseries_from_csv(
@@ -401,7 +420,8 @@ def define_missing_cost_data(dict_values, dict_asset):
         },
     }
 
-    # checks that an asset has all cost parameters needed for evaluation. Adds standard values.
+    # checks that an asset has all cost parameters needed for evaluation.
+    # Adds standard values.
     str = ""
     for cost in basic_costs:
         if cost not in dict_asset:
@@ -514,7 +534,8 @@ def define_dso_sinks_and_sources(dict_values, dso):
     # defines the evaluation period
     months_in_a_period = 12 / number_of_pricing_periods
     logging.info(
-        "Peak demand pricing is taking place %s times per year, ie. every %s months.",
+        "Peak demand pricing is taking place %s times per year, ie. every %s "
+        "months.",
         number_of_pricing_periods,
         months_in_a_period,
     )
@@ -530,13 +551,15 @@ def define_dso_sinks_and_sources(dict_values, dso):
     ]
     if isinstance(peak_demand_pricing, float) or isinstance(peak_demand_pricing, int):
         logging.debug(
-            "The peak demand pricing price of %s %s is set as capex_var of the sources of grid energy.",
+            "The peak demand pricing price of %s %s is set as capex_var of "
+            "the sources of grid energy.",
             peak_demand_pricing,
             dict_values["economic_data"]["currency"],
         )
     else:
         logging.debug(
-            "The peak demand pricing price of %s %s is set as capex_var of the sources of grid energy.",
+            "The peak demand pricing price of %s %s is set as capex_var of "
+            "the sources of grid energy.",
             sum(peak_demand_pricing) / len(peak_demand_pricing),
             dict_values["economic_data"]["currency"],
         )
@@ -629,7 +652,8 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     }
 
     # check if multiple busses are provided
-    # for each bus, read time series for opex_var if a file name has been provided in energy price
+    # for each bus, read time series for opex_var if a file name has been
+    # provided in energy price
     if isinstance(price["value"], list):
         source.update({"opex_var": {"value": [], "unit": price["unit"]}})
         values_info = []
@@ -685,14 +709,25 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                 "timeseries_normalized": timeseries / max(timeseries),
             }
         )
-        logging.warning(
-            "Attention! %s is created, with a price of %s."
-            "If this is DSO supply, this could be improved. Please refer to Issue #23.",
-            source["label"],
-            source["opex_var"]["value"],
-        )
+        if type(source["opex_var"]["value"]) == pd.Series:
+            logging.warning(
+                "Attention! %s is created, with a price defined as a timeseries (average: %s). "
+                "If this is DSO supply, this could be improved. Please refer to Issue #23.",
+                source["label"],
+                source["opex_var"]["value"].mean(),
+            )
+        else:
+            logging.warning(
+                "Attention! %s is created, with a price of %s."
+                "If this is DSO supply, this could be improved. Please refer to Issue #23. ",
+                source["label"],
+                source["opex_var"]["value"],
+            )
     else:
         source.update({"optimizeCap": {"value": False, "unit": "bool"}})
+
+    # add the parameter "maximumCap" to DSO source
+    source.update({"maximumCap": {"value": None, "unit": "kWp"}})
 
     # update dictionary
     dict_values["energyProduction"].update({asset_name: source})
@@ -943,10 +978,10 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
         header = dict_asset[type]["value"]["header"]
         unit = dict_asset[type]["unit"]
 
-    file_path = os.path.join(settings["path_input_sequences"], file_name)
+    file_path = os.path.join(settings["path_input_folder"], TIME_SERIES, file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
-    data_set = pd.read_csv(file_path, sep=";")
+    data_set = pd.read_csv(file_path, sep=",")
 
     if "file_name" in dict_asset:
         header = data_set.columns[0]
@@ -1037,11 +1072,48 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
             if any(dict_asset["timeseries_normalized"].values) < 0:
                 logging.warning("Error, %s timeseries negative.", dict_asset["label"])
 
+    # plot all timeseries that are red into simulation input
+    try:
+        plot_input_timeseries(
+            settings, dict_asset["timeseries"], dict_asset["label"], header
+        )
+    except:
+        plot_input_timeseries(
+            settings, dict_asset[type]["value"], dict_asset["label"], header
+        )
+
+    # copy input files
     shutil.copy(
-        file_path, os.path.join(settings["path_output_folder_inputs"], file_name)
+        file_path, os.path.join(settings["path_output_folder"], INPUTS_COPY, file_name)
     )
     logging.debug("Copied timeseries %s to output folder / inputs.", file_path)
     return
+
+
+def plot_input_timeseries(user_input, timeseries, asset_name, column_head):
+    logging.info("Creating plots for asset %s's parameter %s", asset_name, column_head)
+    fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
+    axes_mg = axes
+
+    timeseries.plot(
+        title=asset_name, ax=axes_mg, drawstyle="steps-mid",
+    )
+    axes_mg.set(xlabel="Time", ylabel=column_head)
+
+    plt.savefig(
+        user_input["path_output_folder"]
+        + "/"
+        + "input_timeseries_"
+        + asset_name
+        + "_"
+        + column_head
+        + ".png",
+        bbox_inches="tight",
+    )
+    # plt.show()
+    plt.close()
+    plt.clf()
+    plt.cla()
 
 
 def treat_multiple_flows(dict_asset, dict_values, parameter):
@@ -1102,10 +1174,10 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
     -------
 
     """
-    file_path = os.path.join(settings["path_input_sequences"], file_name)
+    file_path = os.path.join(settings["path_input_folder"], TIME_SERIES, file_name)
     verify.lookup_file(file_path, dict_asset["label"])
 
-    data_set = pd.read_csv(file_path, sep=";")
+    data_set = pd.read_csv(file_path, sep=",")
     if len(data_set.index) == settings["periods"]:
         return pd.Series(data_set[header].values, index=settings["time_index"])
     elif len(data_set.index) >= settings["periods"]:
@@ -1122,3 +1194,50 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
             file_path,
         )
         sys.exit()
+
+
+def add_maximum_cap(dict_values, group, asset, subasset=None):
+    """
+    Checks if maximumCap is in the csv file and if not, adds it to the dict
+
+    Parameters
+    ----------
+    dict_values: dict
+        dictionary of all assets
+    asset: str
+        asset name
+    subasset: str
+        subasset name
+
+    Returns
+    -------
+
+    """
+    if subasset is None:
+        dict = dict_values[group][asset]
+    else:
+        dict = dict_values[group][asset][subasset]
+    if "maximumCap" in dict:
+        # check if maximumCap is greater that installedCap
+        if dict["maximumCap"]["value"] is not None:
+            if dict["maximumCap"]["value"] < dict["installedCap"]["value"]:
+
+                logging.warning(
+                    f"The stated maximumCap in {group} {asset} is smaller than the "
+                    "installedCap. Please enter a greater maximumCap."
+                    "For this simulation, the maximumCap will be "
+                    "disregarded and not be used in the simulation",
+                    group,
+                    asset,
+                )
+                dict["maximumCap"]["value"] = None
+            # check if maximumCao is 0
+            elif dict["maximumCap"]["value"] == 0:
+                logging.warning(
+                    f"The stated maximumCap of zero in {group} {asset} is invalid."
+                    "For this simulation, the maximumCap will be "
+                    "disregarded and not be used in the simulation."
+                )
+                dict["maximumCap"]["value"] = None
+    else:
+        dict.update({"maximumCap": {"value": None, "unit": dict["unit"]}})

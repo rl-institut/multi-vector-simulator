@@ -8,14 +8,32 @@ import src.E2_economics as economics
 import src.E3_indicator_calculation as indicators
 import src.F0_output as output
 
+r"""
+Module E0 evaluation
+====================
+
+Module E0 evaluates the oemof results and calculates the KPI
+- define dictionary entry for kpi matrix
+- define dictionary entry for cost matrix
+- store all results to matrix
+"""
+
 
 def evaluate_dict(dict_values, results_main, results_meta):
     """
 
-    :param dict_values:
-    :param results_main:
-    :param results_meta:
-    :return:
+    Parameters
+    ----------
+    dict_values: dict
+        simulation parameters
+    results_main: DataFrame
+        oemof simulation results as output by outputlib.processing.results()
+    results_meta: DataFrame
+        oemof simulation meta information as output by outputlib.processing.meta_results()
+
+    Returns
+    -------
+
     """
     dict_values.update(
         {
@@ -71,10 +89,45 @@ def evaluate_dict(dict_values, results_main, results_meta):
             bus_data[dict_values["energyStorage"][storage]["label"]],
             dict_values["energyStorage"][storage],
         )
-        economics.get_costs(
-            dict_values["energyStorage"][storage], dict_values["economic_data"],
-        )
-        store_result_matrix(dict_values["kpi"], dict_values["energyStorage"][storage])
+
+        # hardcoded list of names in storage_01.csv
+        for storage_item in ["storage capacity", "input power", "output power"]:
+            economics.get_costs(
+                dict_values["energyStorage"][storage][storage_item],
+                dict_values["economic_data"],
+            )
+            store_result_matrix(
+                dict_values["kpi"], dict_values["energyStorage"][storage][storage_item]
+            )
+
+        if (
+            dict_values["energyStorage"][storage]["input_bus_name"]
+            in dict_values["optimizedFlows"].keys()
+        ) or (
+            dict_values["energyStorage"][storage]["output_bus_name"]
+            in dict_values["optimizedFlows"].keys()
+        ):
+            bus_name = dict_values["energyStorage"][storage]["input_bus_name"]
+            timeseries_name = (
+                dict_values["energyStorage"][storage]["label"]
+                + " ("
+                + str(
+                    round(
+                        dict_values["energyStorage"][storage]["storage capacity"][
+                            "optimizedAddCap"
+                        ]["value"],
+                        1,
+                    )
+                )
+                + dict_values["energyStorage"][storage]["storage capacity"][
+                    "optimizedAddCap"
+                ]["unit"]
+                + ") SOC"
+            )
+
+            dict_values["optimizedFlows"][bus_name][timeseries_name] = dict_values[
+                "energyStorage"
+            ][storage]["timeseries_soc"]
 
     for asset in dict_values["energyConversion"]:
         process_results.get_results(
@@ -98,16 +151,25 @@ def evaluate_dict(dict_values, results_main, results_meta):
     indicators.all_totals(dict_values)
 
     logging.info("Evaluating optimized capacities and dispatch.")
-    output.store_as_json(dict_values, "json_with_results")
+    output.store_as_json(
+        dict_values,
+        dict_values["simulation_settings"]["path_output_folder"],
+        "json_with_results",
+    )
     return
 
 
 def store_result_matrix(dict_kpi, dict_asset):
     """Storing results to vector and then result matrix for saving it in csv.
 
-    :param dict_kpi:
-    :param dict_asset:
-    :return:
+    Parameters
+    ----------
+    dict_kpi
+    dict_asset
+
+    Returns
+    -------
+
     """
 
     round_to_comma = 5

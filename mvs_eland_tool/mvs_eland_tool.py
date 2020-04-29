@@ -28,6 +28,7 @@ child-sub:  Sub-child function, feeds only back to child functions
 """
 
 import logging
+import os
 
 # Loading all child functions
 
@@ -39,13 +40,44 @@ import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
 import src.F0_output as output_processing
 
+from src.constants import CSV_ELEMENTS, CSV_FNAME, CSV_EXT, DEFAULT_MAIN_KWARGS
+
 
 def main(**kwargs):
     # Display welcome text
+    r"""
+    Starts MVS tool simulations.
+
+    Other Parameters
+    ----------------
+    overwrite : bool, optional
+        Determines whether to replace existing results in `path_output_folder`
+        with the results of the current simulation (True) or not (False).
+        Default: False.
+    input_type : str, optional
+        Defines whether the input is taken from the `mvs_config.json` file
+        ("json") or from csv files ('csv') located within
+        <path_input_folder>/csv_elements/. Default: 'json'.
+    path_input_folder : str, optional
+        The path to the directory where the input CSVs/JSON files are located.
+        Default: 'inputs/'.
+    path_output_folder : str, optional
+        The path to the directory where the results of the simulation such as
+        the plots, time series, results JSON files are saved by MVS E-Lands.
+        Default: 'MVS_outputs/'
+    display_output : str, optional
+        Sets the level of displayed logging messages.
+        Options: "debug", "info", "warning", "error". Default: "info".
+    lp_file_output : bool, optional
+        Specifies whether linear equation system generated is saved as lp file.
+        Default: False.
+
+    """
+
     version = (
-        "0.1.1"  # update_me Versioning scheme: Major release.Minor release.Patches
+        "0.2.0"  # update_me Versioning scheme: Major release.Minor release.Patches
     )
-    date = "25.11.2019"  # update_me Update date
+    date = "2020-03-13"  # update_me Update date
 
     welcome_text = (
         "\n \n Multi-Vector Simulation Tool (MVS) V"
@@ -61,33 +93,31 @@ def main(**kwargs):
     )
 
     logging.debug("Accessing script: A0_initialization")
-    # Parse the arguments from the command line
-    parser = initializing.create_parser()
-    args = vars(parser.parse_args())
-    # Give priority from kwargs on command line arguments
-    args.update(**kwargs)
-    kwargs = args
 
-    user_input = initializing.welcome(welcome_text, **kwargs)
+    user_input = initializing.process_user_arguments(
+        welcome_text=welcome_text, **kwargs
+    )
 
     # Read all inputs
     #    print("")
     #    # todo: is user input completely used?
     #    dict_values = data_input.load_json(user_input["path_input_file"])
 
-    if not user_input["path_input_file"].endswith("json"):
+    move_copy_config_file = False
+
+    if user_input["input_type"] == CSV_EXT:
         logging.debug("Accessing script: A1_csv_to_json")
-        path_to_json_from_csv = load_data_from_csv.create_input_json(
-            input_directory=user_input["path_input_file"]
+        move_copy_config_file = True
+        load_data_from_csv.create_input_json(
+            input_directory=os.path.join(user_input["path_input_folder"], CSV_ELEMENTS)
         )
-        user_input.update({"path_input_file": path_to_json_from_csv})
 
     logging.debug("Accessing script: B0_data_input_json")
     dict_values = data_input.load_json(
         user_input["path_input_file"],
         path_input_folder=user_input["path_input_folder"],
         path_output_folder=user_input["path_output_folder"],
-        path_input_sequences=user_input["path_input_sequences"],
+        move_copy=move_copy_config_file,
     )
 
     print("")
