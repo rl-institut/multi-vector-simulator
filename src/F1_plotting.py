@@ -42,7 +42,6 @@ def flows(user_input, project_data, results_timeseries, bus, interval):
 
     includes_soc = False
     for column in results_timeseries.columns:
-        print("print", column)
         if "SOC" in column:
             includes_soc = True
             soc_column_name = column
