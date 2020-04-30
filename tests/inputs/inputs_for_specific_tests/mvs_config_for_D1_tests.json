@@ -1,15 +1,29 @@
 {
 
     "energyConsumption": {
-        "demand": {
-            "dsm": "False",
-            "energyVector": "Electricity",
-            "file_name": "electricity.csv",
-            "inflow_direction": "Electricity",
-            "label": "Habor",
-            "type_asset": "demand",
-            "type_oemof": "sink",
-            "unit": "kW"
+        "non_dispatchable_single": {
+            "input_bus_name": "Electricity bus",
+            "label": "Non dispatchable single"
+        },
+        "non_dispatchable_multiple": {
+            "input_bus_name": ["Electricity bus", "Electricity bus 2"],
+            "label": "Non dispatchable multiple"
+        },
+        "dispatchable_single": {
+            "input_bus_name": "Electricity bus",
+            "label": "Dispatchable single",
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": 0.8
+            }
+        },
+        "dispatchable_multiple": {
+            "input_bus_name": ["Electricity bus", "Electricity bus 2"],
+            "label": "Dispatchable multiple",
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": [0.8, 0.8]
+            }
         }
     },
     "energyConversion": {
@@ -36,7 +50,40 @@
             "simulation_annuity": {
                 "value": 60,
                 "unit": "currency/unit/simulation period"},
-            "type_oemof": "transformer"
+            "type_oemof": "transformer",
+            "maximumCap": {
+                "unit": "kWp",
+                "value": 10
+            }
+        },
+        "transformer_optimize_multiple_input_busses": {
+            "efficiency": {
+                "unit": "factor",
+                "value": [0.33, 0.33]
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 0
+            },
+            "label": "Transformer optimize multiple input busses",
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": [0, 0]
+            },
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "input_bus_name": ["Fuel bus", "Coal bus"],
+            "output_bus_name": "Electricity bus",
+            "simulation_annuity": {
+                "value": 60,
+                "unit": "currency/unit/simulation period"},
+            "type_oemof": "transformer",
+            "maximumCap": {
+                "unit": "kWp",
+                "value": 10
+            }
         },
         "transformer_fix_single_busses": {
             "efficiency": {
@@ -57,6 +104,31 @@
                 "value": false
             },
             "input_bus_name": "Fuel bus",
+            "output_bus_name": "Electricity bus",
+            "simulation_annuity": {
+                "value": 60,
+                "unit": "currency/unit/simulation period"},
+            "type_oemof": "transformer"
+        },
+        "transformer_fix_multiple_input_busses": {
+            "efficiency": {
+                "unit": "factor",
+                "value": [0.33, 0.33]
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 10
+            },
+            "label": "Transformer fix multiple input busses",
+            "opex_var": {
+                "unit": "currency/kWh",
+                "value": [0, 0]
+            },
+            "optimizeCap": {
+                "unit": "bool",
+                "value": false
+            },
+            "input_bus_name": ["Fuel bus", "Coal bus"],
             "output_bus_name": "Electricity bus",
             "simulation_annuity": {
                 "value": 60,
