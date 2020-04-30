@@ -1,6 +1,6 @@
 import pytest
+from pandas.util.testing import assert_series_equal
 import pandas as pd
-import os
 import json
 import oemof.solph as solph
 
@@ -34,6 +34,7 @@ def get_busses():
     yield {
         "Fuel bus": solph.Bus(label="Fuel bus"),
         "Electricity bus": solph.Bus(label="Electricity bus"),
+        "Electricity bus 2": solph.Bus(label="Electricity bus 2"),
         "Coal bus": solph.Bus(label="Coal bus"),
     }
 
@@ -201,21 +202,92 @@ class TestTransformerComponent:
     def test_transformer_efficiency_time_series_fix_cap_single_busses(self):
         pass
 
-
+# todo sink: evtl nur ein flow erlaubt --> falls doch mehr siehe saved py in save ofrnder eland einordnen
 class TestSinkComponent:
-    def test_sink_non_dispatchable_multiple_input_busses(self):
-        pass
-        # check if model was updated with sink (check inputs and outputs)
-        # check if sinks now contains sink
+
+    @pytest.fixture(autouse=True)
+    def setup_class(self, get_json, get_model, get_busses):
+        """ Sets up class attributes for the tests. """
+        self.dict_values = get_json
+        self.model = get_model
+        self.busses = get_busses
+        self.sinks = {}
+        self.time_series = pd.Series(data=[0.5, 0.4, 0.0])
+
+    def helper_test_sink_in_model_and_dict(self, dispatchable, dict_asset, amount_inputs):
+        """
+        Helps testing whether `self.sinks` and `self.model` was updated.
+
+        Checks done:
+        * self.sinks contains the sink (key = label, value = sink object)
+        * self.models contains the sink (indirectly tested)
+        * input bus has appropriate values for `fixed`, `actual_value` and `variable_costs` (depending on 'dispatchable')
+        * expected amount of input flows according to `amount_inputs`
+
+        """
+        # self.sinks should contain the sink (key = label, value = sink object)
+        assert dict_asset["label"] in self.sinks
+        assert isinstance(self.sinks[dict_asset["label"]], solph.network.Sink)
+
+        # check amount of sinks
+        assert len([str(i) for i in self.model.entities[-1].inputs]) == amount_inputs
+
+        # self.models should contain the sink (indirectly tested)
+        # check input bus(es) (`fixed`, `actual_value` and `variable_costs`)
+        # foreach input bus - these values are expected to be different
+        # depending on `dispatchable`
+        if amount_inputs == 1:
+            input_bus_names = [dict_asset["input_bus_name"]]
+            if dispatchable == True:
+                opex_var = [dict_asset["opex_var"]["value"]]
+        elif amount_inputs > 1:
+            input_bus_names = dict_asset["input_bus_name"]
+            if dispatchable == True:
+                opex_var = dict_asset["opex_var"]["value"]
+        else:
+            raise ValueError("`amount_inputs` should be int but not zero.")
+        for input_bus_name, i in zip(input_bus_names, range(len(input_bus_names))):
+            input_bus = self.model.entities[-1].inputs[self.busses[input_bus_name]]
+            if dispatchable == False:
+                assert input_bus.fixed == True
+                assert_series_equal(input_bus.actual_value, dict_asset["timeseries"])
+                assert input_bus.variable_costs.default == 0  # this only is a real check if opex_var is not 0
+            elif dispatchable == True:
+                assert input_bus.fixed == False
+                assert len(input_bus.actual_value) == 0
+                assert input_bus.variable_costs.default == opex_var[i]
+            else:
+                raise ValueError(f"`dispatchable` should be True/False but is '{dispatchable}'")
 
     def test_sink_non_dispatchable_single_input_bus(self):
-        pass
+        dict_asset = self.dict_values["energyConsumption"]["non_dispatchable_single"]
+        dict_asset["timeseries"] = self.time_series
 
-    def test_sink_dispatchable_multiple_input_busses(self):
-        pass
+        D1.sink_non_dispatchable(model=self.model, dict_asset=dict_asset, sinks=self.sinks, busses=self.busses)
+
+        self.helper_test_sink_in_model_and_dict(dispatchable=False, dict_asset=dict_asset, amount_inputs=1)
+
+    def test_sink_non_dispatchable_multiple_input_busses(self):
+        dict_asset = self.dict_values["energyConsumption"]["non_dispatchable_multiple"]
+        dict_asset["timeseries"] = self.time_series
+
+        D1.sink_non_dispatchable(model=self.model, dict_asset=dict_asset, sinks=self.sinks, busses=self.busses)
+
+        self.helper_test_sink_in_model_and_dict(dispatchable=False, dict_asset=dict_asset, amount_inputs=2)
 
     def test_sink_dispatchable_single_input_bus(self):
-        pass
+        dict_asset = self.dict_values["energyConsumption"]["dispatchable_single"]
+
+        D1.sink_dispatchable(model=self.model, dict_asset=dict_asset, sinks=self.sinks, busses=self.busses)
+
+        self.helper_test_sink_in_model_and_dict(dispatchable=True, dict_asset=dict_asset, amount_inputs=1)
+
+    def test_sink_dispatchable_multiple_input_busses(self):
+        dict_asset = self.dict_values["energyConsumption"]["dispatchable_multiple"]
+
+        D1.sink_dispatchable(model=self.model, dict_asset=dict_asset, sinks=self.sinks, busses=self.busses)
+
+        self.helper_test_sink_in_model_and_dict(dispatchable=True, dict_asset=dict_asset, amount_inputs=2)
 
 
 class TestSourceComponent:
