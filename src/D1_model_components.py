@@ -472,7 +472,7 @@ def storage_fix(model, dict_asset, **kwargs):
         ],
         inputs={
             kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow(
-                nominal_value=dict_asset["output power"]["installedCap"][
+                nominal_value=dict_asset["input power"]["installedCap"][
                     "value"
                 ],  # limited through installed capacity, NOT c-rate
                 variable_costs=dict_asset["input power"]["opex_var"]["value"],
@@ -537,7 +537,7 @@ def storage_optimize(model, dict_asset, **kwargs):
                 existing=dict_asset["output power"]["installedCap"]["value"],
                 investment=solph.Investment(
                     ep_costs=dict_asset["output power"]["simulation_annuity"]["value"],
-                    maximum=dict_asset["input power"]["maximumCap"]["value"],
+                    maximum=dict_asset["output power"]["maximumCap"]["value"],
                 ),
                 variable_costs=dict_asset["output power"]["opex_var"]["value"],
             )
