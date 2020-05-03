@@ -360,17 +360,21 @@ def plot_a_piechart(settings, file_name, costs, label, title):
     Pie chart of a dataset
 
     """
-    logging.info("Creating pie-chart for total " + label)
-    costs.plot.pie(
-        title=title, autopct="%1.1f%%", subplots=True,
-    )
-    plt.savefig(
-        settings["path_output_folder"] + "/" + file_name + ".png", bbox_inches="tight",
-    )
+    if costs.empty == False:
+        logging.info("Creating pie-chart for total " + label)
+        costs.plot.pie(
+            title=title, autopct="%1.1f%%", subplots=True,
+        )
+        plt.savefig(
+            settings["path_output_folder"] + "/" + file_name + ".png",
+            bbox_inches="tight",
+        )
 
-    plt.close()
-    plt.clf()
-    plt.cla()
+        plt.close()
+        plt.clf()
+        plt.cla()
+    else:
+        logging.debug("No plot for costs created, as remaining costs were 0.")
     return
 
 

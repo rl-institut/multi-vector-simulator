@@ -70,6 +70,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Fix specific parameters for each storage column (#259)
 - Overwrite local results when running through brenchmark tests (#260)
 - Allow more than one separator for csv files(#263)
+- fix plotting pie chart for costs, if statement added if no costs are available (#267)
 - Fix long label resulting from total project costs (#270)
 - Bug when the output path had contained an unexisting folder within an unexisting folder it
  would return an error (#278)
