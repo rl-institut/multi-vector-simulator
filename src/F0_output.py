@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import os
 
 import src.F1_plotting as F1_plots
+import src.F2_autoreport as autoreport
 
 r"""
 Module F0 Output
@@ -102,7 +103,11 @@ def evaluate_dict(dict_values):
 
     # Write everything to file with multipe tabs
     store_scalars_to_excel(dict_values)
-    return
+    app = autoreport.create_app(
+        dict_values["simulation_settings"]["path_input_folder"],
+        dict_values["simulation_settings"]["path_output_folder"],
+    )
+    autoreport.print_pdf(app)
 
 
 def plot_piecharts_of_costs(dict_values):
