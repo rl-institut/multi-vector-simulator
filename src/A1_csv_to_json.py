@@ -141,7 +141,8 @@ def create_input_json(
         return outfile.name
 
 
-def create_json_from_csv(input_directory, filename, parameters=None, storage=False):
+def create_json_from_csv(input_directory, filename, parameters=None,
+                         asset_is_a_storage =False):
 
     """
     One csv file is loaded and it's parameters are checked. The csv file is
@@ -161,7 +162,7 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
         extension
     :param parameters: list
         List of parameters names that are required
-    :param storage: bool
+    :param asset_is_a_storage : bool
         default value is False. If the function is called by
         add_storage_components() the
         parameter is set to True
@@ -219,7 +220,7 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
     # check parameters
     missing_parameters = []
     wrong_parameters = []
-    if storage is False:
+    if asset_is_a_storage is False:
         extra = list(set(parameters) ^ set(df.index))
         if len(extra) > 0:
             for i in extra:
@@ -258,7 +259,7 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
             column_dict = {}
             # the storage columns are checked for the right parameters,
             # Nan values that are not needed are deleted
-            if storage == True:
+            if asset_is_a_storage == True:
                 # check if all three columns are available
                 if len(df_copy.columns) < 4 or len(df_copy.columns) > 4:
                     logging.error(
@@ -424,7 +425,7 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
         "simulation_settings",
     ]:
         return single_dict
-    elif storage is True:
+    elif asset_is_a_storage is True:
         return single_dict
     else:
         single_dict2 = {}
@@ -510,6 +511,6 @@ def add_storage_components(storage_filename, input_directory):
             input_directory,
             filename=storage_filename,
             parameters=parameters,
-            storage=True,
+            asset_is_a_storage =True,
         )
         return single_dict
