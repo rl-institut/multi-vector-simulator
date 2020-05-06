@@ -57,7 +57,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Seperated functions in F0 to ease testing (#142)
 - Moved some functions between F0 and F1, rearranged functions in F1 (#157)
 - Call timeseries plot function for each bus (#278)
-- rename "storage" paremeter in A1 and Tests_A1 to "asset_is_a_storage"
+- rename "storage" parameter in A1 and tests_A1 to "asset_is_a_storage"
  
 ### Removed
 
@@ -200,4 +200,3 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 
 ### Removed
 - yet another thing
-
