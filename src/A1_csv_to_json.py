@@ -317,7 +317,7 @@ def create_json_from_csv(
                         elif pd.isnull(df_copy.at[i, column]) is False:
                             warnings.warn(
                                 WrongParameterWarning(
-                                    f"The storage parameter {str(i)} in column "
+                                    f"The storage parameter {i} in column "
                                     f" {column} of the file {filename}.csv should "
                                     "be set to NaN. It will not be considered in the "
                                     "simulation"
@@ -334,7 +334,7 @@ def create_json_from_csv(
                     elif pd.isnull(df_copy.at[i, column]) is True:
                         warnings.warn(
                             WrongParameterWarning(
-                                f"In file {filename}.csv the parameter {str(i)}"
+                                f"In file {filename}.csv the parameter {i}"
                                 f" in column {column} is NaN. Please insert a value "
                                 "of 0 or int. For this "
                                 "simulation the value is set to 0 "
