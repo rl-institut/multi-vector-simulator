@@ -38,11 +38,11 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for the module E3 (#143)
 - Test for the module F0 (#142)
 - Test for the module E0 (#146)
-- Test for module F1 (#157)
+- Test for module F1 (#157, #297)
 - Benchmark test with only PV and grid (#258)
 - Module F2 for auto-reporting results of MVS simulation (#232)
 - Tests for module C2 (#151)
-- Test for module F1 (#297)
+- Tests for storage for the module A1 (#299)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -57,6 +57,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Seperated functions in F0 to ease testing (#142)
 - Moved some functions between F0 and F1, rearranged functions in F1 (#157)
 - Call timeseries plot function for each bus (#278)
+- rename "storage" parameter in A1 and tests_A1 to "asset_is_a_storage"
  
 ### Removed
 
@@ -199,4 +200,3 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 
 ### Removed
 - yet another thing
-
