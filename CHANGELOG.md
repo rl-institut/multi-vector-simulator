@@ -38,7 +38,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for the module E3 (#143)
 - Test for the module F0 (#142)
 - Test for the module E0 (#146)
-- Test for module F1 (#157)
+- Test for module F1 (#157, #297)
 - Benchmark test with only PV and grid (#258)
 - Module F2 for auto-reporting results of MVS simulation (#232)
 - Tests for module C2 (#151)
