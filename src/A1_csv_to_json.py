@@ -266,7 +266,7 @@ def create_json_from_csv(
             column_dict = {}
             # the storage columns are checked for the right parameters,
             # Nan values that are not needed are deleted
-            if asset_is_a_storage == True:
+            if asset_is_a_storage is True:
                 # check if all three columns are available
                 if len(df_copy.columns) < 4 or len(df_copy.columns) > 4:
                     logging.error(
