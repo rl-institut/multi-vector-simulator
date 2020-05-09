@@ -10,9 +10,6 @@ License
 
 Flowchart
 -------
-
-.. image:: images/MVS_flowchart.png
- :width: 200
  
 The MVS’ global flowchart, or graphical model, is divided into three connected blocks that trace the logic sequence: inputs, system model, and outputs. This is a typical representation of a simulation model.
 The user is asked to enter the required data through a web interface. This input data is split into  four categories:
@@ -22,3 +19,6 @@ The user is asked to enter the required data through a web interface. This input
   4.	Meteorological data, which is related to the components that generate electricity by harnessing an existing source of energy that is weather- and time-dependent (e.g., solar and wind power).
 This set of input data is then translated to a linear programming problem, also known as a constrained optimization problem. The MVS is based on the oemof python library that describes the problem by specifying the objective function, the decision variables and the constraints. The aim is to minimize the production costs by determining the generating units’ optimal output, which meets the total demand.
 The simulation outputs are also separated into categories. The economic results, such as the levelized cost of electricity or heat or the net present value of the projected investments, are the ones used for financial evaluation and decision making. The technical results also showcase several important values, such as the optimized capacities and dispatch of each asset. Lastly, the system’s environmental contribution is shown through the value of CO2 emissions. 
+
+.. image:: images/MVS_flowchart.png
+ :width: 200
