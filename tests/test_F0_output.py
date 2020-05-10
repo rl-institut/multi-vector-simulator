@@ -213,7 +213,10 @@ class TestDictionaryToJsonConversion:
     def test_processing_dict_for_json_export_parse_pandas_DatetimeIndex(self):
         """ """
         expr = F0.convert(JSON_TEST_DICTIONARY["pandas_DatetimeIndex"])
-        assert expr == "date_range"
+        assert (
+            expr
+            == '{"columns":[0],"index":[1577836800000,1577840400000,1577844000000],"data":[[1577836800000],[1577840400000],[1577844000000]]}'
+        )
 
     def test_processing_dict_for_json_export_parse_pandas_Timestamp(self):
         """ """
@@ -223,17 +226,22 @@ class TestDictionaryToJsonConversion:
     def test_processing_dict_for_json_export_parse_pandas_series(self):
         """ """
         expr = F0.convert(JSON_TEST_DICTIONARY["pandas_series"])
-        assert expr == "pandas timeseries"
+        assert (
+            expr
+            == '{"name":null,"index":[1577836800000,1577840400000,1577844000000],"data":[0,1,2]}'
+        )
 
     def test_processing_dict_for_json_export_parse_numpy_array(self):
         """ """
         expr = F0.convert(JSON_TEST_DICTIONARY["numpy_array"])
-        assert expr == "numpy timeseries"
+        assert expr == '{"array": [0, 1, 2]}'
 
     def test_processing_dict_for_json_export_parse_pandas_Dataframe(self):
         """ """
         expr = F0.convert(JSON_TEST_DICTIONARY["pandas_Dataframe"])
-        assert expr == "pandas dataframe"
+        assert (
+            expr == '{"columns":["a","b"],"index":[0,1,2],"data":[[0,0],[1,1],[2,2]]}'
+        )
 
     def test_processing_dict_for_json_export_parse_unknown(self):
         """ """
