@@ -52,6 +52,24 @@ class TestACElectricityBus:
         # make sure the sum of the bus flow is always zero (there are rounding errors)
         assert df_busses_flow.net_sum.map(lambda x: 0 if x < 1e-4 else 1).sum() == 0
 
+        # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+        # alone is called
+        @pytest.mark.skipif(
+            "tests/{}".format(fname) not in sys.argv, reason="requires python3.3"
+        )
+        @mock.patch(
+            "argparse.ArgumentParser.parse_args", return_value=argparse.Namespace()
+        )
+        def test_run_generator(self, margs):
+            use_case = "AD"
+
+            # TODO inkove the functions inside main() and modify the fuel cost from close to 0 to
+            #  larger than the grid cost directly in the `dict_values` before the simulation
+
+            # TODO alternatively one could also input a variable fuel cost (as a list) over X
+            #  days to be able to observe the trend
+            assert 1 == 0
+
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
