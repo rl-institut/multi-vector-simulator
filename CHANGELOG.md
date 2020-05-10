@@ -60,6 +60,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Moved some functions between F0 and F1, rearranged functions in F1 (#157)
 - Call timeseries plot function for each bus (#278)
 - rename "storage" parameter in A1 and tests_A1 to "asset_is_a_storage"
+- Convert the list and arrays into the json_with_results.json (#304)
  
 ### Removed
 
