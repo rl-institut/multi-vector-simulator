@@ -19,10 +19,10 @@ Model verification is related to computer programming and looks into whether the
 
 Operational validity determines if the model’s output is within the required accuracy. In order to achieve that, several validation techniques are used, namely:
 
-  *	Benchmark testing, through which scenarios are created with different constraints and component combinations, and the output is calculated and compared to the expected one;
+*	Benchmark testing, through which scenarios are created with different constraints and component combinations, and the output is calculated and compared to the expected one;
   
-  *	Extreme scenarios (e.g., drastic meteorological conditions), created to make sure the simulation is through, then evaluate the output behavior by the use of graphs and qualitative analysis;
+*	Extreme scenarios (e.g., drastic meteorological conditions), created to make sure the simulation is through, then evaluate the output behavior by the use of graphs and qualitative analysis;
   
-  *	Replication of one pilot project, with a validated optimization model with different component representation to compare and assess the results; and
+*	Replication of one pilot project, with a validated optimization model with different component representation to compare and assess the results; and
   
-  *	Sensitivity analysis, through which input-output transformations are studied to show the impact of changing the values of some input parameters.
+*	Sensitivity analysis, through which input-output transformations are studied to show the impact of changing the values of some input parameters.
