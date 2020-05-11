@@ -249,7 +249,6 @@ def convert(o):
         answer = int(o)
     # todo this actually drops the date time index, which could be interesting
     elif isinstance(o, pd.DatetimeIndex):
-        answer = "date_range"
         answer = o.to_frame().to_json(orient="split")
     elif isinstance(o, pd.Timestamp):
         answer = str(o)
