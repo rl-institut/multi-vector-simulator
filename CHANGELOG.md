@@ -20,6 +20,8 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+- Flowchart and relative description (#305)
+- License is referenced
 - Pull request template (#198)
 - Issue template (#212)
 - File `troubleshooting.rst` to readthedocs
