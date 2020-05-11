@@ -20,6 +20,7 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+- Validation scheme (#306)
 - Pull request template (#198)
 - Issue template (#212)
 - File `troubleshooting.rst` to readthedocs
