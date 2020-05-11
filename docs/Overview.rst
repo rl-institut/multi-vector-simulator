@@ -18,7 +18,6 @@ Conceptual model validation consists of looking into the underlying theories and
 Model verification is related to computer programming and looks into whether the code is a correct representation of the conceptual model. To accomplish that, integration tests for each module will be written to assert that the output is as expected. The simulation will also be run several times for the same input data to double check the results. 
 
 Operational validity determines if the model’s output is within the required accuracy. In order to achieve that, several validation techniques are used, namely:
-
 *	Benchmark testing, through which scenarios are created with different constraints and component combinations, and the output is calculated and compared to the expected one;
   
 *	Extreme scenarios (e.g., drastic meteorological conditions), created to make sure the simulation is through, then evaluate the output behavior by the use of graphs and qualitative analysis;
