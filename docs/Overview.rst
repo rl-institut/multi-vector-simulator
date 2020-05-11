@@ -11,7 +11,7 @@ The MVS is licensed with the **GNU General Public License v2.0**. The GNU GPL is
 Flowchart
 -------
  
-The MVS’ global flowchart, or graphical model, is divided into three connected blocks that trace the logic sequence: inputs, system model, and outputs. This is a typical representation of a simulation model.
+The MVS' global flowchart, or graphical model, is divided into three connected blocks that trace the logic sequence: Inputs, system model, and outputs. This is a typical representation of a simulation model.
 The user is asked to enter the required data through a web interface. In developer mode, the data is submitted as a number of csv files. This input data is split into  four categories:
 
 1.	Project description, which entails the general information regarding the project (country, coordinates, etc.), as well as the economic data such as the discount factor, project duration, or tax;
