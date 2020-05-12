@@ -82,7 +82,7 @@ class TestFileCreation:
             },
         }
         show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
-        assert show_optimal_capacities == False
+        assert show_optimal_capacities is False
 
     def test_store_barchart_for_capacities_with_additional_capacities(self):
         """ """
@@ -99,7 +99,7 @@ class TestFileCreation:
             },
         }
         show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
-        assert show_optimal_capacities == True
+        assert show_optimal_capacities is True
 
     def test_store_scalars_to_excel_two_tabs_dict(self):
         """ """
