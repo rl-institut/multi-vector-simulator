@@ -1,5 +1,7 @@
 import os
 import json
+import numpy as np
+import pandas as pd
 
 from src.constants import CSV_FNAME, INPUTS_COPY
 
@@ -11,6 +13,48 @@ If the user does not give the input parameters "path_input_folder", "path_output
 
 It will be an interface to the EPA.
 """
+
+
+def convert_special_types(a_dict, prev_key=None):
+    """Convert the field values of the mvs result json file which are not simple types.
+
+    The function is recursive to explore all nested levels
+
+    Parameters
+    ----------
+    a_dict: variable
+        In the recursion, this is either a dict (moving down one nesting level) or a field value
+    prev_key: str
+        The previous key of the dict in the recursive loop
+    Returns
+    The original dictionary, with the serialized instances of pandas.Series,
+    pandas.DatetimeIndex, pandas.DataFrame, numpy.array converted back to their original form
+    -------
+
+    """
+
+    if isinstance(a_dict, dict):
+        # the a_dict argument is a dictionary, therefore we dive deeper in the nesting level
+        answer = {}
+        for k in a_dict:
+            answer[k] = convert_special_types(a_dict[k], prev_key=k)
+
+    else:
+        # the a_dict argument is not a dictionary, therefore we check if is one the serialized type
+        # pandas.Series, pandas.DatetimeIndex, pandas.DataFrame, numpy.array
+        answer = a_dict
+        if isinstance(a_dict, str):
+            if "index" in a_dict and "column" in a_dict:
+                # pandas.DatetimeIndex or pandas.DataFrame
+                answer = pd.read_json(a_dict, orient="split")
+            elif "index" in a_dict and "name" in a_dict:
+                # pandas.Series
+                answer = pd.read_json(a_dict, orient="split", typ="series")
+            elif "array" in a_dict:
+                # numpy.array
+                answer = np.array(json.loads(a_dict)["array"])
+
+    return answer
 
 
 def load_json(
@@ -41,6 +85,8 @@ def load_json(
     """
     with open(path_input_file) as json_file:
         dict_values = json.load(json_file)
+
+    dict_values = convert_special_types(dict_values)
 
     # The user specified a value
     if path_input_folder is not None:

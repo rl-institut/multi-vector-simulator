@@ -249,16 +249,16 @@ def convert(o):
         answer = int(o)
     # todo this actually drops the date time index, which could be interesting
     elif isinstance(o, pd.DatetimeIndex):
-        answer = "date_range"
+        answer = o.to_frame().to_json(orient="split")
     elif isinstance(o, pd.Timestamp):
         answer = str(o)
     # todo this also drops the timeindex, which is unfortunate.
     elif isinstance(o, pd.Series):
-        answer = "pandas timeseries"
+        answer = o.to_json(orient="split")
     elif isinstance(o, numpy.ndarray):
-        answer = "numpy timeseries"
+        answer = json.dumps({"array": o.tolist()})
     elif isinstance(o, pd.DataFrame):
-        answer = "pandas dataframe"
+        answer = o.to_json(orient="split")
     else:
         raise TypeError(
             "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"
