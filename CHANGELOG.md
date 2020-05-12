@@ -38,7 +38,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - PLANNED in PR #257: Technical parameters (#223): Energy flows (aggregated) per asset, Renewable share, Degree of autonomy, Degree of sector-coupling
 - Test for the module A1 (#141)
 - Test for the module E3 (#143)
-- Test for the module F0 (#142)
+- Test for the module F0 (#142, #304)
 - Test for the module E0 (#146)
 - Test for module F1 (#157, #297)
 - Benchmark test with only PV and grid (#258)
@@ -56,11 +56,12 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
 - the columns of the storage_xx files are renamed and the specific parameters for each column are checked in A1 (#259)
 - Default input files from "inputs": Changed some parameters (#143) 
-- Seperated functions in F0 to ease testing (#142)
+- Separated functions in F0 to ease testing (#142)
 - Moved some functions between F0 and F1, rearranged functions in F1 (#157)
 - Call timeseries plot function for each bus (#278)
 - rename "storage" parameter in A1 and tests_A1 to "asset_is_a_storage"
-- Convert the list and arrays into the json_with_results.json (#304)
+- Serialize the DataFrame and arrays into the json_with_results.json (#304)
+- Convert serialized DataFrame and arrays back into these types in the B0.load_json function (#304)
  
 ### Removed
 
