@@ -18,6 +18,7 @@ import logging
 
 import pandas as pd
 import numpy as np
+import src.B0_data_input_json as B0
 import src.F0_output as F0
 
 from .constants import TEST_REPO_PATH
@@ -243,10 +244,53 @@ class TestDictionaryToJsonConversion:
             expr == '{"columns":["a","b"],"index":[0,1,2],"data":[[0,0],[1,1],[2,2]]}'
         )
 
+    def test_processing_dict_for_json_export_parse_pandas_DatetimeIndex(self):
+        """ """
+        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_DatetimeIndex"])
+        assert (
+            expr
+            == '{"columns":[0],"index":[1577836800000,1577840400000,1577844000000],"data":[[1577836800000],[1577840400000],[1577844000000]]}'
+        )
+
     def test_processing_dict_for_json_export_parse_unknown(self):
         """ """
         with pytest.raises(TypeError):
             F0.convert(UNKNOWN_TYPE)
+
+    def teardown_class(self):
+        """ """
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+
+
+class TestLoadDictionaryFromJson:
+    """ """
+
+    def setup_class(self):
+        """ """
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+        os.mkdir(OUTPUT_PATH)
+        self.file_name = "test_json_converter"
+        F0.store_as_json(JSON_TEST_DICTIONARY, OUTPUT_PATH, self.file_name)
+        self.value_dict = B0.load_json(
+            os.path.join(OUTPUT_PATH, self.file_name + ".json")
+        )
+
+    def test_load_json_parse_pandas_series(self):
+        """ """
+        k = "pandas_series"
+        assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
+
+    def test_load_json_parse_numpy_array(self):
+        """ """
+        k = "numpy_array"
+        assert np.array_equal(self.value_dict[k], JSON_TEST_DICTIONARY[k])
+
+    def test_load_json_export_parse_pandas_Dataframe(self):
+        """ """
+        k = "pandas_Dataframe"
+        assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
 
     def teardown_class(self):
         """ """
