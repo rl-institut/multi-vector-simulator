@@ -24,7 +24,10 @@ script:
 
 after_success:
   - coverage report -m
-  - COVERALLS_REPO_TOKEN=${{ secrets.coverage_token }} coveralls
+  - coveralls
+
+env:
+  - COVERALLS_REPO_TOKEN=${{ secrets.coverage_token }}
 #  - pylint */*.py
 #jobs:
 #  include:
