@@ -32,7 +32,7 @@ class TestACElectricityBus:
         "tests/{}".format(fname) not in sys.argv, reason="requires python3.3"
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
-    def test_run_pv(self, margs):
+    def test_benchmark_AB_grid_pv(self, margs):
         use_case = "AB"
         main(
             path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
@@ -58,7 +58,7 @@ class TestACElectricityBus:
         "tests/{}".format(fname) not in sys.argv, reason="requires python3.3"
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
-    def test_run_battery(self, margs):
+    def test_benchmark_AE_grid_battery(self, margs):
         use_case = "AE"
         main(
             path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
