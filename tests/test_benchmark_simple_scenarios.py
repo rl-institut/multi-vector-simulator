@@ -32,7 +32,7 @@ class TestACElectricityBus:
         "tests/{}".format(fname) not in sys.argv, reason="requires python3.3"
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
-    def test_run_smoothly_json(self, margs):
+    def test_benchmark_AB_grid_pv(self, margs):
         use_case = "AB"
         main(
             path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
@@ -51,6 +51,30 @@ class TestACElectricityBus:
 
         # make sure the sum of the bus flow is always zero (there are rounding errors)
         assert df_busses_flow.net_sum.map(lambda x: 0 if x < 1e-4 else 1).sum() == 0
+
+    # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+    # alone is called
+    @pytest.mark.skipif(
+        "tests/{}".format(fname) not in sys.argv, reason="requires python3.3"
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_benchmark_AE_grid_battery(self, margs):
+        use_case = "AE"
+        main(
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=CSV_EXT,
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+        )
+
+        df_busses_flow = pd.read_excel(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
+            sheet_name="battery bus",
+        )
+        # make the time the index
+        df_busses_flow = df_busses_flow.set_index("Unnamed: 0")
+
+        # TODO make sure the battery is not used
+        assert 1 == 0
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
