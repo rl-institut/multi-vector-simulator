@@ -82,6 +82,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Bug when the output path had contained an unexisting folder within an unexisting folder it
  would return an error (#278)
  - Display SOC (#278)
+ - Automatic update of the test coverage with coveralls.io (#307)
 
 ## [0.2.0] - 2020-03-13
 
