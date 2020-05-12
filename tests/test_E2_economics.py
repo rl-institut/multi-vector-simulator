@@ -1,84 +1,103 @@
+import pickle
+import os
+import shutil
+import logging
+import mock
+import pandas as pd
+
+import src.A0_initialization as initializing
+import src.B0_data_input_json as data_input
+import src.C0_data_processing as data_processing
+import src.D0_modelling_and_optimization as modelling
+import src.E0_evaluation as evaluation
 import src.E2_economics as E2
-import unittest
 
-dict_asset = {
-    "lifetime_capex_var": {"value": 10, "unit": "year"},
-    "capex_fix": {"value": 16000, "unit": "currency"},
-    "optimizedAddCap": {"value": 7000, "unit": "currency"},
-    "capex_var": {"value": 4000, "unit": "currency/unit"},
-    "annual_total_flow": {"value": 50000, "unit": "kWh"},
-    "lifetime_opex_var": {"value": 10, "unit": "year"},
-    "price": {"value": 2, "unit": "currency"},
-    "installedCap": {"value": 1000, "unit": "kWh"},
-    "lifetime_opex_fix": {"value": 10, "unit": "year"},
-}
-economic_data = {"crf": {"value": 0.12}}
+from tests.constants import TEST_REPO_PATH, INPUT_FOLDER
+import tests.inputs.csv_elements as inp
 
-dict_asset_test = {
-    "lifetime_capex_var": {"value": 10, "unit": "year"},
-    "capex_fix": {"value": 16000, "unit": "currency"},
-    "optimizedAddCap": {"value": 7000, "unit": "currency"},
-    "capex_var": {"value": 4000, "unit": "currency/unit"},
-    "annual_total_flow": {"value": 50000, "unit": "kWh"},
-    "lifetime_opex_var": {"value": 10, "unit": "year"},
-    "price": {"value": 2, "unit": "currency"},
-    "installedCap": {"value": 1000, "unit": "kWh"},
-    "lifetime_opex_fix": {"value": 10, "unit": "year"},
-    "costs_investment": {"value": 86000},
-    "costs_upfront": {"value": 27000},
-    "costs_opex_var": {"value": 500000},
-    "costs_energy": {"value": 100000},
-    "costs_opex_fix": {"value": 80000},
-    "costs_total": {"value": 693000, "unit": "currency"},
-    "cost_om": {"value": 680000, "unit": "currency"},
-    "annuity_total": {"value": 83160.0, "unit": "currency/year"},
-    "annuity_om": {"value": 81600.0, "unit": "currency/year"},
-}
+PARSER = initializing.create_parser()
+TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs")
 
-cost = 10000
-total_costs = 5000
-Dict_2 = {}
-Dict_3 = {
-    "value_0": 0,
-    "value_1": 1,
-    "value_2": 2,
-}
-list_test_true = ["value_0", "value_1", "value_2"]
-list_test_false = ["value_4", "value_5"]
+DICT_ASSET_BEFORE = os.path.join(TEST_REPO_PATH, "dict_values_before_E2.pickle")
+
+DICT_ASSET_AFTER = os.path.join(TEST_REPO_PATH, "dict_values_after_E2.pickle")
+
+@mock.patch(
+    "argparse.ArgumentParser.parse_args",
+    return_value=PARSER.parse_args(["-i", TEST_INPUT_PATH, "-o", TEST_OUTPUT_PATH]),
+)
+def setup_module(m_args):
+    """Run the simulation up to module E2 and save dict_asset before and after economics"""
+    if os.path.exists(TEST_OUTPUT_PATH):
+        shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    user_input = initializing.process_user_arguments()
+
+    logging.debug("Accessing script: B0_data_input_json")
+    dict_values = data_input.load_json(
+        user_input["path_input_file"],
+        path_input_folder=user_input["path_input_folder"],
+        path_output_folder=user_input["path_output_folder"],
+        move_copy=False,
+    )
+
+    logging.debug("Accessing script: C0_data_processing")
+    data_processing.all(dict_values)
+    dict_asset = dict_values["energyProviders"][dso]
+    data_processing.define_missing_cost_data(dict_values, dict_asset)
+    data_processing.define_dso_sinks_and_sources(dict_values, dso)
+    data_processing.evaluate_lifetime_costs(inp.settings, inp.economic_data, dict_asset)
 
 
-class Test_E2(unittest.TestCase):
-    def test_get_costs(self):
+    logging.debug("Accessing script: D0_modelling_and_optimization")
+    results_meta, results_main = modelling.run_oemof(dict_values)
 
-        """
+    logging.debug("Accessing script: E0_evaluation")
+    evaluation.evaluate_dict(dict_values, results_main, results_meta)
+    evaluation.store_result_matrix(dict_kpi, dict_asset)
 
-        Returns
-        -------
+    with open(DICT_ASSET_BEFORE, "wb") as handle:
+        pickle.dump(dict_asset, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-        """
-        E2.get_costs(dict_asset, economic_data)
-        self.assertEqual(dict_asset, dict_asset_test)
+    #print(dict_asset)
 
-    def test_add_costs_and_total(self):
-        """
+    logging.debug("Accessing script: E2_economics")
+    E2.get_costs(dict_asset, inp.economic_data)
 
-        Returns
-        -------
-
-        """
-        Total_Costs = E2.add_costs_and_total(Dict_2, "cost", cost, total_costs)
-        self.assertEqual(Total_Costs, cost + total_costs)
-
-    def test_all_list_in_dict(self):
-        """
-
-        Returns
-        -------
-
-        """
-        self.assertEqual(E2.all_list_in_dict(Dict_3, list_test_true), True)
-        self.assertEqual(E2.all_list_in_dict(Dict_3, list_test_false), False)
+    with open(DICT_ASSET_AFTER, "wb") as handle:
+        pickle.dump(dict_asset, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_get_costs():
+    with open(DICT_ASSET_BEFORE, "rb") as handle:
+        dict_asset_before = pickle.load(handle)
+
+    with open(DICT_ASSET_AFTER, "rb") as handle:
+        dict_asset_after = pickle.load(handle)
+
+
+
+def teardown_module():
+    # Remove the output folder
+    if os.path.exists(TEST_OUTPUT_PATH):
+        shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    # Remove the pickle files
+    for d in (DICT_ASSET_BEFORE, DICT_ASSET_AFTER):
+        if os.path.exists(d):
+            os.remove(d)
+
+
+
+"""
+def test_add_costs_and_total(self):
+    """"""
+    Total_Costs = E2.add_costs_and_total(Dict_2, "cost", cost, total_costs)
+    self.assertEqual(Total_Costs, cost + total_costs)
+
+def test_all_list_in_dict(self):
+    """"""
+    self.assertEqual(E2.all_list_in_dict(Dict_3, list_test_true), True)
+    self.assertEqual(E2.all_list_in_dict(Dict_3, list_test_false), False)
+
+###
+
