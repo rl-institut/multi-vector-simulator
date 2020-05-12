@@ -20,6 +20,8 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+
+- Description of validation scheme into readthedocs (#306)
 - Flowchart and relative description (#305)
 - License is referenced
 - Pull request template (#198)
