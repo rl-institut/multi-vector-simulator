@@ -2,10 +2,10 @@
 evaluated_period,days,7
 label,str,simulation_settings
 oemof_file_name,str,MVS_results.oemof
-output_lp_file,bool,True
+output_lp_file,bool,False
 restore_from_oemof_file,bool,True
 start_date,str,2018-01-01 00:00:00
-store_oemof_results,bool,True
+store_oemof_results,bool,False
 timestep,minutes,60
 display_nx_graph,bool,False
-store_nx_graph,bool,True
+store_nx_graph,bool,False
