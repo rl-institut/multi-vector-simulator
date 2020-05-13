@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import logging
 import os
-
+from src.constants import PATHS_TO_PLOTS, PLOTS_BUSSES, PLOTS_DEMANDS, PLOTS_RESOURCES, PLOTS_NX, PLOTS_PERFORMANCE, PLOTS_COSTS
 r"""
 Module F1 describes all the functions that create plots.
 
@@ -16,7 +16,7 @@ Module F1 describes all the functions that create plots.
 logging.getLogger("matplotlib.font_manager").disabled = True
 
 
-def flows(user_input, project_data, results_timeseries, bus, interval):
+def flows(dict_values, user_input, project_data, results_timeseries, bus, interval):
     """
     Parameters
     ----------
@@ -82,6 +82,9 @@ def flows(user_input, project_data, results_timeseries, bus, interval):
     plt.savefig(
         path, bbox_inches="tight",
     )
+    #update_list = dict_values[PATHS_TO_PLOTS][PLOTS_BUSSES] + [path]
+    if interval != 14:
+        dict_values[PATHS_TO_PLOTS][PLOTS_BUSSES] += [str(path)]
 
     plt.close()
     plt.clf()
@@ -89,8 +92,7 @@ def flows(user_input, project_data, results_timeseries, bus, interval):
 
     return
 
-
-def capacities(user_input, project_data, assets, capacities):
+def capacities(dict_values, user_input, project_data, assets, capacities):
     """Determines the assets for which the optimized capacity is larger than zero and then plots those capacities in a bar chart.
 
     Parameters
@@ -150,6 +152,7 @@ def capacities(user_input, project_data, assets, capacities):
         path, bbox_inches="tight",
     )
 
+    dict_values[PATHS_TO_PLOTS][PLOTS_PERFORMANCE] += [str(path)]
     plt.close()
     plt.clf()
     plt.cla()
@@ -200,7 +203,7 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
             + dict_values["project_data"]["scenario_name"]
         )
 
-        plot_a_piechart(
+        plot_a_piechart(dict_values,
             dict_values["simulation_settings"],
             file_name,
             costs_perc_grouped_pandas,
@@ -228,7 +231,7 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
                 + dict_values["project_data"]["scenario_name"]
             )
 
-            plot_a_piechart(
+            plot_a_piechart(dict_values,
                 dict_values["simulation_settings"],
                 file_name + "_minor",
                 costs_perc_grouped_minor,
@@ -334,7 +337,7 @@ def recalculate_distribution_of_rest_costs(costs_perc_grouped_pandas):
     return plot_minor_costs_pie, costs_perc_grouped_minor, rest
 
 
-def plot_a_piechart(settings, file_name, costs, label, title):
+def plot_a_piechart(dict_values,settings, file_name, costs, label, title):
     """
     plots a pie chart of a dataset
 
@@ -365,11 +368,12 @@ def plot_a_piechart(settings, file_name, costs, label, title):
         costs.plot.pie(
             title=title, autopct="%1.1f%%", subplots=True,
         )
+        path =  os.path.join(settings["path_output_folder"], file_name+".png")
         plt.savefig(
-            settings["path_output_folder"] + "/" + file_name + ".png",
+            path,
             bbox_inches="tight",
         )
-
+        dict_values[PATHS_TO_PLOTS][PLOTS_COSTS] += [str(path)]
         plt.close()
         plt.clf()
         plt.cla()
@@ -378,7 +382,7 @@ def plot_a_piechart(settings, file_name, costs, label, title):
     return
 
 
-def draw_graph(
+def draw_graph(dict_values,
     energysystem,
     user_input,
     edge_labels=True,
@@ -459,7 +463,11 @@ def draw_graph(
         fig.show()
 
     if save_plot is True:
+        path =  os.path.join(user_input["path_output_folder"],"network_graph.png")
+        dict_values[PATHS_TO_PLOTS][PLOTS_NX] += [str(path)]
+
         fig.savefig(
-            user_input["path_output_folder"] + "/" + "network_graph.png",
+            path,
             bbox_inches="tight",
         )
+

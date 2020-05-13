@@ -48,7 +48,7 @@ def evaluate_dict(dict_values):
         logging.info("Aggregating flows for the %s sector.", sector_name)
 
         # Plot flows for one sector for the 14 first days
-        F1_plots.flows(
+        F1_plots.flows(dict_values,
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
@@ -57,7 +57,7 @@ def evaluate_dict(dict_values):
         )
 
         # Plot flows for one sector for a year
-        F1_plots.flows(
+        F1_plots.flows(dict_values,
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
@@ -166,7 +166,7 @@ def plot_optimized_capacities(dict_values):
             show_optimal_capacities = True
 
     if show_optimal_capacities is True:
-        F1_plots.capacities(
+        F1_plots.capacities(dict_values,
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["kpi"]["scalar_matrix"]["label"],
@@ -231,7 +231,7 @@ def store_timeseries_all_busses_to_excel(dict_values):
     ) as open_file:  # doctest: +SKIP
         for bus in dict_values["optimizedFlows"]:
             dict_values["optimizedFlows"][bus].to_excel(open_file, sheet_name=bus)
-            F1_plots.flows(
+            F1_plots.flows(dict_values,
                 dict_values["simulation_settings"],
                 dict_values["project_data"],
                 dict_values["optimizedFlows"][bus],
