@@ -1217,9 +1217,7 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
                     f"The stated maximumCap in {group} {asset} is smaller than the "
                     "installedCap. Please enter a greater maximumCap."
                     "For this simulation, the maximumCap will be "
-                    "disregarded and not be used in the simulation",
-                    group,
-                    asset,
+                    "disregarded and not be used in the simulation"
                 )
                 dict["maximumCap"]["value"] = None
             # check if maximumCao is 0
