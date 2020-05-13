@@ -120,9 +120,6 @@ def run_oemof(dict_values):
         dict_values["simulation_settings"]["display_nx_graph"]["value"] == True
         or dict_values["simulation_settings"]["store_nx_graph"]["value"] is True
     ):
-        import oemof.graph as grph
-
-        # my_graph = grph.create_nx_graph(model, filename="my_graph.xml")
 
         from src.F1_plotting import draw_graph
 
