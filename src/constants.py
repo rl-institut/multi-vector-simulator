@@ -183,9 +183,9 @@ KPI_SCALARS = (
 
 # names for plots in json
 PATHS_TO_PLOTS = "paths_to_plots"
-PLOTS_DEMANDS = "performance"
+PLOTS_DEMANDS = "demands"
 PLOTS_RESOURCES = "resources"
 PLOTS_NX = "nx"
-PLOTS_PERFORMANCE = "demands"
+PLOTS_PERFORMANCE = "performance"
 PLOTS_COSTS = "costs"
 PLOTS_BUSSES = "flows_on_busses"
