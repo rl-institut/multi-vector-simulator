@@ -15,6 +15,10 @@ from tests.constants import (
     CSV_ELEMENTS,
     CSV_FNAME,
 )
+from src.constants import PLOTS_BUSSES, PATHS_TO_PLOTS, PLOTS_DEMANDS, PLOTS_RESOURCES, PLOTS_NX, PLOTS_PERFORMANCE, PLOTS_COSTS
+
+dict_values={PATHS_TO_PLOTS: {PLOTS_BUSSES: [], PLOTS_DEMANDS: [], PLOTS_RESOURCES: [], PLOTS_NX: [],
+                                     PLOTS_PERFORMANCE: [], PLOTS_COSTS: []}}
 
 SECTOR = "Electricity"
 INTERVAL = 2
@@ -98,7 +102,7 @@ class TestFileCreation:
         os.mkdir(OUTPUT_PATH)
 
     def test_if_plot_of_all_energy_flows_for_all_sectors_are_stored_for_14_days(self):
-        F1.flows(USER_INPUT, PROJECT_DATA, RESULTS_TIMESERIES, SECTOR, INTERVAL)
+        F1.flows(dict_values,USER_INPUT, PROJECT_DATA, RESULTS_TIMESERIES, SECTOR, INTERVAL)
         assert (
             os.path.exists(
                 os.path.join(
@@ -187,7 +191,7 @@ class TestFileCreation:
 
     def test_store_barchart_for_capacities(self):
         """ """
-        F1.capacities(
+        F1.capacities(dict_values,
             USER_INPUT,
             PROJECT_DATA,
             DICT_KPI["kpi"]["scalar_matrix"]["label"],
