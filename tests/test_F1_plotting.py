@@ -112,14 +112,14 @@ class TestFileCreation:
         costs = pd.DataFrame({"cost1": 0.2, "cost2": 0.8}, index=[0, 1])
         label = "a_label"
         title = "a_title"
-        F1.plot_a_piechart(USER_INPUT, "filename", costs, label, title)
+        F1.plot_a_piechart(dict_values,USER_INPUT, "filename", costs, label, title)
         assert os.path.exists(os.path.join(OUTPUT_PATH, "filename.png")) is True
 
     def test_if_pie_charts_of_empty_costs_is_created(self):
         costs = pd.DataFrame({"cost1": None, "cost2": None}, index=[])
         label = "a_label"
         title = "a_title"
-        F1.plot_a_piechart(USER_INPUT, "filename1", costs, label, title)
+        F1.plot_a_piechart(dict_values,USER_INPUT, "filename1", costs, label, title)
         assert os.path.exists(os.path.join(OUTPUT_PATH, "filename1.png")) is False
 
     def test_determine_if_plotting_necessary_True(self):

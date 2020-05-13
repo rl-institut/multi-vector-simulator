@@ -103,6 +103,13 @@ def evaluate_dict(dict_values):
 
     # Write everything to file with multipe tabs
     store_scalars_to_excel(dict_values)
+
+    store_as_json(
+        dict_values,
+        dict_values["simulation_settings"]["path_output_folder"],
+        "json_with_results",
+    )
+
     app = autoreport.create_app(
         dict_values["simulation_settings"]["path_input_folder"],
         dict_values["simulation_settings"]["path_output_folder"],
