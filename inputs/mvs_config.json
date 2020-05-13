@@ -19,7 +19,7 @@
         "demand_01": {
             "dsm": "False",
             "energyVector": "Electricity",
-            "file_name": "demand_habor.csv",
+            "file_name": "demand_harbor.csv",
             "inflow_direction": "Electricity",
             "label": "Habor",
             "type_asset": "demand",
@@ -333,6 +333,10 @@
                 "unit": "kWp",
                 "value": 0
             },
+            "maximumCap": {
+                "unit": "kWp",
+                "value": 1000
+            },
             "label": "PV plant (mono)",
             "lifetime": {
                 "unit": "year",
@@ -375,18 +379,18 @@
             "outflow_direction": "Electricity (DSO)",
             "peak_demand_pricing": {
                 "unit": "currency/kW",
-                "value": 60
+                "value": 0
             },
             "peak_demand_pricing_period": {
                 "unit": "times per year (1,2,3,4,6,12)",
-                "value": 12
+                "value": 1
             },
             "type_oemof": "source"
         }
     },
     "energyStorage": {
         "storage_01": {
-            "capacity": {
+            "storage capacity": {
                 "age_installed": {
                     "unit": "year",
                     "value": 0
@@ -398,10 +402,6 @@
                 "capex_var": {
                     "unit": "currency/kWh",
                     "value": 4000
-                },
-                "crate": {
-                    "unit": "factor of total capacity (kWh)",
-                    "value": NaN
                 },
                 "efficiency": {
                     "unit": "factor",
@@ -420,10 +420,6 @@
                     "unit": "currency/kWh/year",
                     "value": 0
                 },
-                "opex_var": {
-                    "unit": "currency/kWh",
-                    "value": 0
-                },
                 "soc_initial": {
                     "unit": "None or factor",
                     "value": null
@@ -438,7 +434,7 @@
                 },
                 "unit": "kWh"
             },
-            "charging_power": {
+            "input power": {
                 "age_installed": {
                     "unit": "year",
                     "value": 0
@@ -451,7 +447,7 @@
                     "unit": "currency/kWh",
                     "value": 0
                 },
-                "crate": {
+                "c_rate": {
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
@@ -475,22 +471,10 @@
                 "opex_var": {
                     "unit": "currency/kWh",
                     "value": 0
-                },
-                "soc_initial": {
-                    "unit": "None or factor",
-                    "value": NaN
-                },
-                "soc_max": {
-                    "unit": "factor",
-                    "value": NaN
-                },
-                "soc_min": {
-                    "unit": "factor",
-                    "value": NaN
                 },
                 "unit": "kW"
             },
-            "discharging_power": {
+            "output power": {
                 "age_installed": {
                     "unit": "year",
                     "value": 0
@@ -503,7 +487,7 @@
                     "unit": "currency/kWh",
                     "value": 0
                 },
-                "crate": {
+                "c_rate": {
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
@@ -527,18 +511,6 @@
                 "opex_var": {
                     "unit": "currency/kWh",
                     "value": 0
-                },
-                "soc_initial": {
-                    "unit": "None or factor",
-                    "value": NaN
-                },
-                "soc_max": {
-                    "unit": "factor",
-                    "value": NaN
-                },
-                "soc_min": {
-                    "unit": "factor",
-                    "value": NaN
                 },
                 "unit": "kW"
             },
@@ -550,7 +522,7 @@
                 "value": true
             },
             "outflow_direction": "ESS Li-Ion",
-            "storage_filename": "storage01.csv",
+            "storage_filename": "storage_01.csv",
             "type_oemof": "storage"
         }
     },
@@ -648,33 +620,32 @@
         "scenario_name": "Warehouse 14"
     },
     "simulation_settings": {
-        "display_output": "-debug",
         "evaluated_period": {
             "unit": "days",
-            "value": 365
+            "value": 2
         },
-        "input_file_name": "test_input_file_v1.xlsx",
         "label": "simulation_settings",
         "oemof_file_name": "MVS_results.oemof",
         "output_lp_file": {
             "unit": "bool",
-            "value": "False"
+            "value": false
         },
-        "overwrite": "True",
-        "path_input_file": "./inputs/test_input_file_v1.xlsx",
-        "path_input_folder": "./inputs/",
-        "path_input_sequences": "./inputs/sequences/",
-        "path_output_folder": "./MVS_outputs",
-        "path_output_folder_inputs": "./MVS_outputs/inputs/",
-        "restore_from_oemof_file": "True",
+        "display_nx_graph": {
+            "unit": "bool",
+            "value": false
+        },
+        "store_nx_graph": {
+            "unit": "bool",
+            "value": true
+        },
+        "restore_from_oemof_file": {
+            "unit": "bool",
+            "value": false
+        },
         "start_date": "2018-01-01 00:00:00",
         "store_oemof_results": {
             "unit": "bool",
-            "value": "False"
-        },
-        "plot_nx_graph": {
-            "unit": "bool",
-            "value": "False"
+            "value": true
         },
         "timestep": {
             "unit": "minutes",

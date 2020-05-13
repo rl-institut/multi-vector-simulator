@@ -1,0 +1,11 @@
+,unit,col1
+param_str,str,one
+param_factor,factor,1.04
+param_cur,currency/kWh,18.9
+param_bool1,bool,True
+param_bool2,bool,true
+param_bool3,bool,False
+param_bool4,bool,false
+param_bool5,bool,1
+param_bool6,bool,0
+param_year,year,8

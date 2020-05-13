@@ -26,6 +26,9 @@ REQUIRED_CSV_FILES = (
     "energyProviders",
     "energyConsumption",
 )
+
+# allowed symbols for separating values in .csv files
+CSV_SEPARATORS = (",", ";", "&")
 # name of the folder containing timeseries described by .csv files
 TIME_SERIES = "time_series"
 # name of the folder containing the output of the simulation
@@ -43,4 +46,133 @@ USER_INPUT_ARGUMENTS = (
     "input_type" "path_input_sequences",
     "overwrite",
     "display_output",
+)
+
+DEFAULT_MAIN_KWARGS = dict(
+    overwrite=False,
+    input_type=JSON_EXT,
+    path_input_folder=DEFAULT_INPUT_PATH,
+    path_output_folder=DEFAULT_OUTPUT_PATH,
+    display_output="info",
+    lp_file_output=False,
+)
+# list of csv filename which must be present within the CSV_ELEMENTS folder with the parameters
+# associated to each of these filenames
+REQUIRED_CSV_PARAMETERS = {
+    "energyConsumption": [
+        "dsm",
+        "file_name",
+        "label",
+        "type_asset",
+        "type_oemof",
+        "energyVector",
+        "inflow_direction",
+        "unit",
+    ],
+    "energyConversion": [
+        "age_installed",
+        "capex_fix",
+        "capex_var",
+        "efficiency",
+        "inflow_direction",
+        "installedCap",
+        "label",
+        "lifetime",
+        "opex_fix",
+        "opex_var",
+        "optimizeCap",
+        "outflow_direction",
+        "type_oemof",
+        "energyVector",
+        "unit",
+    ],
+    "energyStorage": [
+        "inflow_direction",
+        "label",
+        "optimizeCap",
+        "outflow_direction",
+        "type_oemof",
+        "storage_filename",
+        "energyVector",
+    ],
+    "energyProduction": [
+        "age_installed",
+        "capex_fix",
+        "capex_var",
+        "file_name",
+        "installedCap",
+        "label",
+        "lifetime",
+        "opex_fix",
+        "opex_var",
+        "optimizeCap",
+        "outflow_direction",
+        "type_oemof",
+        "unit",
+        "energyVector",
+    ],
+    "energyProviders": [
+        "energy_price",
+        "feedin_tariff",
+        "inflow_direction",
+        "label",
+        "optimizeCap",
+        "outflow_direction",
+        "peak_demand_pricing",
+        "peak_demand_pricing_period",
+        "type_oemof",
+        "energyVector",
+    ],
+    "fixcost": [
+        "age_installed",
+        "capex_fix",
+        "capex_var",
+        "label",
+        "lifetime",
+        "opex_fix",
+        "opex_var",
+    ],
+    "simulation_settings": [
+        "evaluated_period",
+        "label",
+        "oemof_file_name",
+        "output_lp_file",
+        "restore_from_oemof_file",
+        "display_nx_graph",
+        "store_nx_graph",
+        "start_date",
+        "store_oemof_results",
+        "timestep",
+    ],
+    "project_data": [
+        "country",
+        "label",
+        "latitude",
+        "longitude",
+        "project_id",
+        "project_name",
+        "scenario_id",
+        "scenario_name",
+    ],
+    "economic_data": [
+        "currency",
+        "discount_factor",
+        "label",
+        "project_duration",
+        "tax",
+    ],
+}
+
+# list of csv filename which must be present within the CSV_ELEMENTS folder
+REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
+
+KPI_SCALARS = (
+    "annuity_om",
+    "annuity_total",
+    "costs_investment",
+    "costs_om",
+    "costs_opex_fix",
+    "costs_opex_var",
+    "costs_total",
+    "costs_upfront",
 )
