@@ -28,6 +28,10 @@ On **Windows** there can be issues installing xlrd. This could solve your troubl
 3. Copy the file to main directory of the project on your laptop
 4. Install it manually writing pip install xlrd-1.2.0-py2.py3-none-any.whl
 
+Python package "wkhtmltopdf"
+############################
+
+There can be issues installing ´wkhtmltopdf´. Solution can be found on the packages documentation here: https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf
 
 cbc-solver
 ##########
