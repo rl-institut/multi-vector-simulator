@@ -180,3 +180,12 @@ KPI_SCALARS = (
     "costs_total",
     "costs_upfront",
 )
+
+# names for plots in json
+PATHS_TO_PLOTS = "paths_to_plots"
+PLOTS_DEMANDS = "performance"
+PLOTS_RESOURCES = "resources"
+PLOTS_NX = "nx"
+PLOTS_PERFORMANCE = "demands"
+PLOTS_COSTS = "costs"
+PLOTS_BUSSES = "flows_on_busses"
