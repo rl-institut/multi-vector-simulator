@@ -582,7 +582,7 @@ def create_app(results_json):
                                 ),
                                 width="1500px",
                             )
-                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_BUSSES]
+                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_RESOURCES]
                         ]
                     ),
                 ],
@@ -680,7 +680,7 @@ def create_app(results_json):
                                 ),
                                 width="1500px",
                             )
-                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_DEMANDS]
+                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_BUSSES]
                             + results_json[PATHS_TO_PLOTS][PLOTS_PERFORMANCE]
                         ]
                     ),
