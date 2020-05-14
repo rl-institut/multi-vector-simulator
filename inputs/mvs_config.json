@@ -296,7 +296,7 @@
             },
             "maximumCap": {
                 "unit": " kWp",
-                "value": 1000
+                "value": null
             },
             "opex_fix": {
                 "unit": "currency/unit/year",

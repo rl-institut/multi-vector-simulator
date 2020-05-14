@@ -4,7 +4,7 @@ capex_fix,currency,10000
 capex_var,currency/unit,7200
 file_name,str,pv_gen_merra2_2014_eff1_tilt40_az180.csv
 installedCap,kWp,1500
-maximumCap, kWp, 1000
+maximumCap, kWp,None
 label,str,PV plant (mono)
 lifetime,year,30
 opex_fix,currency/unit/year,80
