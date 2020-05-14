@@ -327,76 +327,33 @@ class TestSinkComponent:
 
 
 class TestSourceComponent:
-    # todo: only single output busses...
-    #  We should actually not allow multiple output busses, probably - because a pv would then feed in twice as much as solar_gen_specific for example, see issue #121
+
     ## non dispatchable
-    def test_source_non_dispatchable_optimize_cap_multiple_output_busses(self):
+    def test_source_non_dispatchable_optimize_cap(self):
         pass
 
-    def test_source_non_dispatchable_optimize_cap_single_output_bus(self):
-        pass
-
-    def test_source_non_dispatchable_fix_cap_multiple_output_busses(self):
-        pass
-
-    def test_source_non_dispatchable_fix_cap_single_output_bus(self):
+    def test_source_non_dispatchable_fix_cap(self):
         pass
 
     ## dispatchable
-    def test_source_dispatchable_optimize_cap_normalized_timeseries_multiple_output_busses(
+    def test_source_dispatchable_optimize_cap_normalized_timeseries(self):
+        pass
+
+    def test_source_dispatchable_optimize_cap_timeseries_not_normalized_timeseries(
         self,
     ):
         pass
 
-    def test_source_dispatchable_optimize_cap_normalized_timeseries_single_output_bus(
-        self,
-    ):
+    def test_source_dispatchable_optimize_cap_without_timeseries(self):
         pass
 
-    def test_source_dispatchable_optimize_cap_timeseries_not_normalized_multiple_output_busses(
-        self,
-    ):
+    def test_source_dispatchable_fix_cap_normalized_timeseries(self):
         pass
 
-    def test_source_dispatchable_optimize_cap_timeseries_not_normalized_single_output_bus(
-        self,
-    ):
+    def test_source_dispatchable_fix_cap_timeseries_not_normalized_timeseries(self):
         pass
 
-    def test_source_dispatchable_optimize_cap_without_timeseries_multiple_output_busses(
-        self,
-    ):
-        pass
-
-    def test_source_dispatchable_optimize_cap_without_timeseries_single_output_bus(
-        self,
-    ):
-        pass
-
-    def test_source_dispatchable_fix_cap_normalized_timeseries_multiple_output_busses(
-        self,
-    ):
-        pass
-
-    def test_source_dispatchable_fix_cap_normalized_timeseries_single_output_bus(self):
-        pass
-
-    def test_source_dispatchable_fix_cap_timeseries_not_normalized_multiple_output_busses(
-        self,
-    ):
-        pass
-
-    def test_source_dispatchable_fix_cap_timeseries_not_normalized_single_output_bus(
-        self,
-    ):
-        pass
-
-    def test_source_dispatchable_fix_cap_without_timeseries_multiple_output_busses(
-        self,
-    ):
-        pass
-
-    def test_source_dispatchable_fix_cap_without_timeseries_single_output_bus(self):
+    def test_source_dispatchable_fix_cap_without_timeseries(self):
         pass
 
 
