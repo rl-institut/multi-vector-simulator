@@ -335,11 +335,11 @@
             "outflow_direction": "Electricity (DSO)",
             "peak_demand_pricing": {
                 "unit": "currency/kW",
-                "value": 60
+                "value": 0
             },
             "peak_demand_pricing_period": {
                 "unit": "times per year (1,2,3,4,6,12)",
-                "value": 2
+                "value": 1
             },
             "type_oemof": "source"
         }
