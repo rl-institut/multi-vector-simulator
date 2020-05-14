@@ -4,7 +4,15 @@ import numpy as np
 import pandas as pd
 
 from src.constants import CSV_FNAME, INPUTS_COPY
-from src.constants import PLOTS_BUSSES, PATHS_TO_PLOTS, PLOTS_DEMANDS, PLOTS_RESOURCES, PLOTS_NX, PLOTS_PERFORMANCE, PLOTS_COSTS
+from src.constants import (
+    PLOTS_BUSSES,
+    PATHS_TO_PLOTS,
+    PLOTS_DEMANDS,
+    PLOTS_RESOURCES,
+    PLOTS_NX,
+    PLOTS_PERFORMANCE,
+    PLOTS_COSTS,
+)
 
 """
 This module is used to open a json file and parse it as a dict all input parameters for the energy 
@@ -110,5 +118,16 @@ def load_json(
             ),
         )
 
-    dict_values.update({PATHS_TO_PLOTS: {PLOTS_BUSSES: [], PLOTS_DEMANDS: [], PLOTS_RESOURCES: [], PLOTS_NX: [], PLOTS_PERFORMANCE: [], PLOTS_COSTS: []}})
+    dict_values.update(
+        {
+            PATHS_TO_PLOTS: {
+                PLOTS_BUSSES: [],
+                PLOTS_DEMANDS: [],
+                PLOTS_RESOURCES: [],
+                PLOTS_NX: [],
+                PLOTS_PERFORMANCE: [],
+                PLOTS_COSTS: [],
+            }
+        }
+    )
     return dict_values
