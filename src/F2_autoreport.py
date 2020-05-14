@@ -155,18 +155,13 @@ def create_app(results_json):
 
     # Determining the sectors which were simulated
 
-    with open(os.path.join(path_output_folder, "json_input_processed.json")) as f:
-        data = json.load(f)
-    sectors = list(data["project_data"]["sectors"].keys())
+    sectors = list(results_json["project_data"]["sectors"].keys())
     sec_list = """"""
     for sec in sectors:
         sec_list += "\n" + f"\u2022 {sec.upper()}"
 
     # Creating a dataframe for the demands
-    with open(os.path.join(path_output_folder, "json_with_results.json")) as gf:
-        data1 = json.load(gf)
-
-    demands = data1["energyConsumption"]
+    demands = results_json["energyConsumption"]
 
     del demands["DSO_feedin"]
     del demands["Electricity excess"]
@@ -198,11 +193,8 @@ def create_app(results_json):
 
     # Creating a DF for the components table
 
-    with open(os.path.join(path_output_folder, "json_input_processed.json")) as bf:
-        data2 = json.load(bf)
-
-    components1 = data2["energyProduction"]
-    components2 = data2["energyConversion"]
+    components1 = results_json["energyProduction"]
+    components2 = results_json["energyConversion"]
 
     comp1_keys = list(components1.keys())
     comp2_keys = list(components2.keys())
