@@ -18,6 +18,7 @@ import logging
 
 import pandas as pd
 import numpy as np
+import src.B0_data_input_json as B0
 import src.F0_output as F0
 
 from .constants import TEST_REPO_PATH
@@ -61,14 +62,29 @@ BUS = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series
 
 
 class TestFileCreation:
-    """ """
-
     def setup_class(self):
         """ """
         shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
         os.mkdir(OUTPUT_PATH)
 
-    def test_store_barchart_for_capacities(self):
+    def test_store_barchart_for_capacities_no_additional_capacities(self):
+        """ """
+        dict_scalar_capacities = {
+            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            "project_data": {
+                "project_name": "a_project",
+                "scenario_name": "a_scenario",
+            },
+            "kpi": {
+                "scalar_matrix": pd.DataFrame(
+                    {"label": ["asset_a", "asset_b"], "optimizedAddCap": [0, 0]}
+                )
+            },
+        }
+        show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
+        assert show_optimal_capacities is False
+
+    def test_store_barchart_for_capacities_with_additional_capacities(self):
         """ """
         dict_scalar_capacities = {
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
@@ -82,13 +98,8 @@ class TestFileCreation:
                 )
             },
         }
-        F0.plot_optimized_capacities(dict_scalar_capacities)
-        assert (
-            os.path.exists(
-                os.path.join(OUTPUT_PATH, "optimal_additional_capacities.png")
-            )
-            is True
-        )
+        show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
+        assert show_optimal_capacities is True
 
     def test_store_scalars_to_excel_two_tabs_dict(self):
         """ """
@@ -115,6 +126,10 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
         """ """
         dict_timeseries_test_one_bus = {
+            "project_data": {
+                "project_name": "a_project",
+                "scenario_name": "a_scenario",
+            },
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS},
         }
@@ -124,11 +139,20 @@ class TestFileCreation:
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
             is True
         )
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "a_bus" + " flows.png")) is True
+        assert (
+            os.path.exists(
+                os.path.join(OUTPUT_PATH, "a_bus" + "_flows_" + str(365) + "_days.png")
+            )
+            is True
+        )
 
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         """ """
         dict_timeseries_test_two_busses = {
+            "project_data": {
+                "project_name": "a_project",
+                "scenario_name": "a_scenario",
+            },
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS, "b_bus": BUS},
         }
@@ -137,8 +161,18 @@ class TestFileCreation:
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
             is True
         )
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "a_bus" + " flows.png")) is True
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "b_bus" + " flows.png")) is True
+        assert (
+            os.path.exists(
+                os.path.join(OUTPUT_PATH, "a_bus" + "_flows_" + str(365) + "_days.png")
+            )
+            is True
+        )
+        assert (
+            os.path.exists(
+                os.path.join(OUTPUT_PATH, "b_bus" + "_flows_" + str(365) + "_days.png")
+            )
+            is True
+        )
 
     def test_store_dict_into_json(self):
         """ """
@@ -180,7 +214,10 @@ class TestDictionaryToJsonConversion:
     def test_processing_dict_for_json_export_parse_pandas_DatetimeIndex(self):
         """ """
         expr = F0.convert(JSON_TEST_DICTIONARY["pandas_DatetimeIndex"])
-        assert expr == "date_range"
+        assert (
+            expr
+            == '{"columns":[0],"index":[1577836800000,1577840400000,1577844000000],"data":[[1577836800000],[1577840400000],[1577844000000]]}'
+        )
 
     def test_processing_dict_for_json_export_parse_pandas_Timestamp(self):
         """ """
@@ -190,22 +227,70 @@ class TestDictionaryToJsonConversion:
     def test_processing_dict_for_json_export_parse_pandas_series(self):
         """ """
         expr = F0.convert(JSON_TEST_DICTIONARY["pandas_series"])
-        assert expr == "pandas timeseries"
+        assert (
+            expr
+            == '{"name":null,"index":[1577836800000,1577840400000,1577844000000],"data":[0,1,2]}'
+        )
 
     def test_processing_dict_for_json_export_parse_numpy_array(self):
         """ """
         expr = F0.convert(JSON_TEST_DICTIONARY["numpy_array"])
-        assert expr == "numpy timeseries"
+        assert expr == '{"array": [0, 1, 2]}'
 
     def test_processing_dict_for_json_export_parse_pandas_Dataframe(self):
         """ """
         expr = F0.convert(JSON_TEST_DICTIONARY["pandas_Dataframe"])
-        assert expr == "pandas dataframe"
+        assert (
+            expr == '{"columns":["a","b"],"index":[0,1,2],"data":[[0,0],[1,1],[2,2]]}'
+        )
+
+    def test_processing_dict_for_json_export_parse_pandas_DatetimeIndex(self):
+        """ """
+        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_DatetimeIndex"])
+        assert (
+            expr
+            == '{"columns":[0],"index":[1577836800000,1577840400000,1577844000000],"data":[[1577836800000],[1577840400000],[1577844000000]]}'
+        )
 
     def test_processing_dict_for_json_export_parse_unknown(self):
         """ """
         with pytest.raises(TypeError):
             F0.convert(UNKNOWN_TYPE)
+
+    def teardown_class(self):
+        """ """
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+
+
+class TestLoadDictionaryFromJson:
+    """ """
+
+    def setup_class(self):
+        """ """
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+        os.mkdir(OUTPUT_PATH)
+        self.file_name = "test_json_converter"
+        F0.store_as_json(JSON_TEST_DICTIONARY, OUTPUT_PATH, self.file_name)
+        self.value_dict = B0.load_json(
+            os.path.join(OUTPUT_PATH, self.file_name + ".json")
+        )
+
+    def test_load_json_parse_pandas_series(self):
+        """ """
+        k = "pandas_series"
+        assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
+
+    def test_load_json_parse_numpy_array(self):
+        """ """
+        k = "numpy_array"
+        assert np.array_equal(self.value_dict[k], JSON_TEST_DICTIONARY[k])
+
+    def test_load_json_export_parse_pandas_Dataframe(self):
+        """ """
+        k = "pandas_Dataframe"
+        assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
 
     def teardown_class(self):
         """ """

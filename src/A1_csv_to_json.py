@@ -59,6 +59,12 @@ class CsvParsingError(ValueError):
     pass
 
 
+class WrongStorageColumn(ValueError):
+    """Exception raised for wrong column name in "storage_xx" input file."""
+
+    pass
+
+
 def create_input_json(
     input_directory, pass_back=True,
 ):
@@ -141,7 +147,9 @@ def create_input_json(
         return outfile.name
 
 
-def create_json_from_csv(input_directory, filename, parameters=None, storage=False):
+def create_json_from_csv(
+    input_directory, filename, parameters=None, asset_is_a_storage=False
+):
 
     """
     One csv file is loaded and it's parameters are checked. The csv file is
@@ -161,7 +169,7 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
         extension
     :param parameters: list
         List of parameters names that are required
-    :param storage: bool
+    :param asset_is_a_storage : bool
         default value is False. If the function is called by
         add_storage_components() the
         parameter is set to True
@@ -219,7 +227,7 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
     # check parameters
     missing_parameters = []
     wrong_parameters = []
-    if storage is False:
+    if asset_is_a_storage is False:
         extra = list(set(parameters) ^ set(df.index))
         if len(extra) > 0:
             for i in extra:
@@ -258,7 +266,7 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
             column_dict = {}
             # the storage columns are checked for the right parameters,
             # Nan values that are not needed are deleted
-            if storage == True:
+            if asset_is_a_storage is True:
                 # check if all three columns are available
                 if len(df_copy.columns) < 4 or len(df_copy.columns) > 4:
                     logging.error(
@@ -272,7 +280,7 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                 elif column == "input power" or column == "output power":
                     extra = ["c_rate", "opex_var"]
                 else:
-                    logging.error(
+                    raise WrongStorageColumn(
                         f"The column name {column} in The file {filename}.csv"
                         " is not valid. Please use the column names: "
                         "'storage capacity', 'input power' and "
@@ -281,8 +289,8 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                 column_parameters = parameters + extra
                 # check if required parameters are missing
                 for i in set(column_parameters) - set(df_copy.index):
-                    logging.warning(
-                        f"In file {filename}.csv the parameter {str(i)}"
+                    raise MissingParameterError(
+                        f"In file {filename}.csv the parameter {i}"
                         f" in column {column} is missing."
                     )
                 for i in df_copy.index:
@@ -296,19 +304,24 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                             "soc_max",
                             "soc_min",
                         ]:
-                            logging.warning(
-                                f"The storage parameter {str(i)} of the file "
-                                f"{filename}.csv is not recognized. It will not be "
-                                "considered in the simulation."
+                            warnings.warn(
+                                WrongParameterWarning(
+                                    f"The storage parameter {i} of the file "
+                                    f"{os.path.join(input_directory,filename)}.csv "
+                                    f"is not recognized. It will not be "
+                                    "considered in the simulation."
+                                )
                             )
                             df_copy.loc[[i], [column]] = "NaN"
 
                         elif pd.isnull(df_copy.at[i, column]) is False:
-                            logging.warning(
-                                f"The storage parameter {str(i)} in column "
-                                f" {column} of the file {filename}.csv should "
-                                "be set to NaN. It will not be considered in the "
-                                "simulation"
+                            warnings.warn(
+                                WrongParameterWarning(
+                                    f"The storage parameter {i} in column "
+                                    f" {column} of the file {filename}.csv should "
+                                    "be set to NaN. It will not be considered in the "
+                                    "simulation"
+                                )
                             )
                             df_copy.loc[[i], [column]] = "NaN"
                         else:
@@ -319,13 +332,16 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
                             )
                     # check if all other values have a value unequal to Nan
                     elif pd.isnull(df_copy.at[i, column]) is True:
-                        logging.warning(
-                            f"In file {filename}.csv the parameter {str(i)}"
-                            f" in column {column} is NaN. Please insert a value "
-                            "of 0 or int. For this "
-                            "simulation the value is set to 0 "
-                            "automatically."
+                        warnings.warn(
+                            WrongParameterWarning(
+                                f"In file {filename}.csv the parameter {i}"
+                                f" in column {column} is NaN. Please insert a value "
+                                "of 0 or int. For this "
+                                "simulation the value is set to 0 "
+                                "automatically."
+                            )
                         )
+
                         df_copy.loc[[i], [column]] = 0
                 # delete not required rows in column
                 df = df_copy[df_copy[column].notna()]
@@ -424,7 +440,7 @@ def create_json_from_csv(input_directory, filename, parameters=None, storage=Fal
         "simulation_settings",
     ]:
         return single_dict
-    elif storage is True:
+    elif asset_is_a_storage is True:
         return single_dict
     else:
         single_dict2 = {}
@@ -510,6 +526,6 @@ def add_storage_components(storage_filename, input_directory):
             input_directory,
             filename=storage_filename,
             parameters=parameters,
-            storage=True,
+            asset_is_a_storage=True,
         )
         return single_dict

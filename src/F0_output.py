@@ -5,7 +5,7 @@ import logging
 import matplotlib.pyplot as plt
 import os
 
-import src.F1_plotting as plots
+import src.F1_plotting as F1_plots
 
 r"""
 Module F0 Output
@@ -47,7 +47,7 @@ def evaluate_dict(dict_values):
         logging.info("Aggregating flows for the %s sector.", sector_name)
 
         # Plot flows for one sector for the 14 first days
-        plots.flows(
+        F1_plots.flows(
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
@@ -56,7 +56,7 @@ def evaluate_dict(dict_values):
         )
 
         # Plot flows for one sector for a year
-        plots.flows(
+        F1_plots.flows(
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
@@ -98,10 +98,38 @@ def evaluate_dict(dict_values):
     plot_optimized_capacities(dict_values)
 
     # plot annuity, first-investment and om costs
-    plots.costs(dict_values)
+    plot_piecharts_of_costs(dict_values)
 
     # Write everything to file with multipe tabs
     store_scalars_to_excel(dict_values)
+    return
+
+
+def plot_piecharts_of_costs(dict_values):
+    """
+    Kicks of plotting piecharts of different cost paramameters (ie. annuity and total cost, potentially in the future LCOE)
+    Parameters
+    ----------
+    dict_values : dict
+        all simulation input and output data up to this point
+
+    Returns
+    -------
+    Pie charts for various parameters.
+    """
+
+    # Annuity costs plot (only plot if there are values with cost over 0)
+    F1_plots.evaluate_cost_parameter(dict_values, "annuity_total", "annuity")
+
+    # First-investment costs plot (only plot if there are values with cost over 0)
+    F1_plots.evaluate_cost_parameter(
+        dict_values, "costs_investment", "upfront_investment_costs"
+    )
+
+    # O&M costs plot (only plot if there are values with cost over 0)
+    F1_plots.evaluate_cost_parameter(
+        dict_values, "costs_om", "operation_and_maintenance_costs"
+    )
     return
 
 
@@ -124,14 +152,15 @@ def plot_optimized_capacities(dict_values):
     for element in dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"].values:
         if element > 0:
             show_optimal_capacities = True
-    if show_optimal_capacities:
-        plots.capacities(
+
+    if show_optimal_capacities is True:
+        F1_plots.capacities(
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["kpi"]["scalar_matrix"]["label"],
             dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
         )
-    return
+    return show_optimal_capacities
 
 
 def store_scalars_to_excel(dict_values):
@@ -190,18 +219,13 @@ def store_timeseries_all_busses_to_excel(dict_values):
     ) as open_file:  # doctest: +SKIP
         for bus in dict_values["optimizedFlows"]:
             dict_values["optimizedFlows"][bus].to_excel(open_file, sheet_name=bus)
-            dict_values["optimizedFlows"][bus].plot()
-            plt.savefig(
-                dict_values["simulation_settings"]["path_output_folder"]
-                + "/"
-                + bus
-                + " flows.png",
-                bbox_inches="tight",
+            F1_plots.flows(
+                dict_values["simulation_settings"],
+                dict_values["project_data"],
+                dict_values["optimizedFlows"][bus],
+                bus,
+                365,
             )
-
-            plt.close()
-            plt.clf()
-            plt.cla()
 
     logging.info("Saved flows at busses to: %s.", timeseries_output_file)
     return
@@ -225,16 +249,16 @@ def convert(o):
         answer = int(o)
     # todo this actually drops the date time index, which could be interesting
     elif isinstance(o, pd.DatetimeIndex):
-        answer = "date_range"
+        answer = o.to_frame().to_json(orient="split")
     elif isinstance(o, pd.Timestamp):
         answer = str(o)
     # todo this also drops the timeindex, which is unfortunate.
     elif isinstance(o, pd.Series):
-        answer = "pandas timeseries"
+        answer = o.to_json(orient="split")
     elif isinstance(o, numpy.ndarray):
-        answer = "numpy timeseries"
+        answer = json.dumps({"array": o.tolist()})
     elif isinstance(o, pd.DataFrame):
-        answer = "pandas dataframe"
+        answer = o.to_json(orient="split")
     else:
         raise TypeError(
             "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"

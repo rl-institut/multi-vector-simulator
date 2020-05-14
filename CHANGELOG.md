@@ -20,6 +20,10 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+
+- Description of validation scheme into readthedocs (#306)
+- Flowchart and relative description (#305)
+- License is referenced
 - Pull request template (#198)
 - Issue template (#212)
 - File `troubleshooting.rst` to readthedocs
@@ -36,8 +40,14 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - PLANNED in PR #257: Technical parameters (#223): Energy flows (aggregated) per asset, Renewable share, Degree of autonomy, Degree of sector-coupling
 - Test for the module A1 (#141)
 - Test for the module E3 (#143)
-- Test for the module F0 (#142)
+- Test for the module F0 (#142, #304)
 - Test for the module E0 (#146)
+- Test for module F1 (#157, #297)
+- Benchmark test with only PV and grid (#258)
+- Module F2 for auto-reporting results of MVS simulation (#232)
+- Tests for module C2 (#151)
+- Tests for storage for the module A1 (#299)
+- Benchmark test with only battery and grid (#302)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -49,8 +59,13 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
 - the columns of the storage_xx files are renamed and the specific parameters for each column are checked in A1 (#259)
 - Default input files from "inputs": Changed some parameters (#143) 
-- Seperated functions in F0 to ease testing (#142)
-
+- Separated functions in F0 to ease testing (#142)
+- Moved some functions between F0 and F1, rearranged functions in F1 (#157)
+- Call timeseries plot function for each bus (#278)
+- rename "storage" parameter in A1 and tests_A1 to "asset_is_a_storage"
+- Serialize the DataFrame and arrays into the json_with_results.json (#304)
+- Convert serialized DataFrame and arrays back into these types in the B0.load_json function (#304)
+ 
 ### Removed
 
 ### Fixed
@@ -64,7 +79,12 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Fix specific parameters for each storage column (#259)
 - Overwrite local results when running through brenchmark tests (#260)
 - Allow more than one separator for csv files(#263)
+- fix plotting pie chart for costs, if statement added if no costs are available (#267)
 - Fix long label resulting from total project costs (#270)
+- Bug when the output path had contained an unexisting folder within an unexisting folder it
+ would return an error (#278)
+ - Display SOC (#278)
+ - Automatic update of the test coverage with coveralls.io (#307)
 
 ## [0.2.0] - 2020-03-13
 
@@ -188,4 +208,3 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 
 ### Removed
 - yet another thing
-
