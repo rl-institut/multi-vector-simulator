@@ -28,7 +28,8 @@ def print_pdf(app, path_report_pdf=os.path.join(OUTPUT_FOLDER, "out.pdf")):
     td = threading.Thread(target=app.run_server)
     td.daemon = True
     td.start()
-    time.sleep(2)
+    # TODO change time (seconds) here to be able to visualize the report in the browser
+    time.sleep(10)
     pdfkit.from_url("http://127.0.0.1:8050", path_report_pdf)
     td.join(2)
     # sys.exit()
