@@ -517,7 +517,9 @@ def storage_optimize(model, dict_asset, **kwargs):
     """
     storage = solph.components.GenericStorage(
         label=dict_asset["label"],
-        existing=dict_asset["storage capacity"]["installedCap"]["value"],
+        existing=dict_asset["storage capacity"]["installedCap"][
+            "value"
+        ],  # todo I think this parameter is not used in the GenericStorage
         investment=solph.Investment(
             ep_costs=dict_asset["storage capacity"]["simulation_annuity"]["value"],
             maximum=dict_asset["storage capacity"]["maximumCap"]["value"],

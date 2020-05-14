@@ -36,6 +36,7 @@ def get_busses():
         "Electricity bus": solph.Bus(label="Electricity bus"),
         "Electricity bus 2": solph.Bus(label="Electricity bus 2"),
         "Coal bus": solph.Bus(label="Coal bus"),
+        "Storage bus": solph.Bus(label="Storage bus"),
     }
 
 
@@ -365,13 +366,114 @@ class TestSourceComponent:
 
 
 class TestStorageComponent:
+    @pytest.fixture(autouse=True)
+    def setup_class(self, get_json, get_model, get_busses):
+        """ Sets up class attributes for the tests. """
+        self.dict_values = get_json
+        self.model = get_model
+        self.busses = get_busses
+        self.storages = {}
 
-    # could think about what is definitely necessary for the storage and test whether these attributes were set
     def test_storage_optimize(self):
-        pass
+        dict_asset = self.dict_values["energyStorage"]["storage_optimize"]
+        dict_asset["storage capacity"]["maximumCap"] = {"value": None, "unit": "kWh"}
+        dict_asset["input power"]["maximumCap"] = {"value": None, "unit": "kWh"}
+        dict_asset["output power"]["maximumCap"] = {"value": None, "unit": "kWh"}
+        D1.storage(
+            model=self.model,
+            dict_asset=dict_asset,
+            busses=self.busses,
+            storages=self.storages,
+        )
+
+        # self.storages should contain the storage (key = label, value = storage object)
+        assert dict_asset["label"] in self.storages
+        assert isinstance(
+            self.storages[dict_asset["label"]], solph.components.GenericStorage
+        )
+
+        # check value of `existing`, `investment` and `nominal_value`(`nominal_storage_capacity`)
+        input_bus = self.model.entities[-1].inputs[self.busses["Storage bus"]]
+        output_bus = self.model.entities[-1].outputs[self.busses["Storage bus"]]
+
+        assert input_bus.existing == dict_asset["input power"]["installedCap"]["value"]
+        assert (
+            input_bus.investment.ep_costs
+            == dict_asset["input power"]["simulation_annuity"]["value"]
+        )
+        assert input_bus.nominal_value == None
+
+        assert (
+            output_bus.existing == dict_asset["output power"]["installedCap"]["value"]
+        )
+        assert (
+            output_bus.investment.ep_costs
+            == dict_asset["output power"]["simulation_annuity"]["value"]
+        )
+        assert output_bus.nominal_value == None
+
+        # assert self.model.entities[-1].existing ==  dict_asset["storage capacity"]["installedCap"]["value"]  # todo probably not necessary parameter
+        assert (
+            self.model.entities[-1].investment.ep_costs
+            == dict_asset["storage capacity"]["simulation_annuity"]["value"]
+        )
+        assert self.model.entities[-1].nominal_storage_capacity == None
+
+        # check that invest_relation_input_capacity and invest_relation_output_capacity is added
+        assert (
+            self.model.entities[-1].invest_relation_input_capacity
+            == dict_asset["input power"]["c_rate"]["value"]
+        )
+        assert (
+            self.model.entities[-1].invest_relation_output_capacity
+            == dict_asset["output power"]["c_rate"]["value"]
+        )
 
     def test_storage_fix(self):
-        pass
+        dict_asset = self.dict_values["energyStorage"]["storage_fix"]
+        D1.storage(
+            model=self.model,
+            dict_asset=dict_asset,
+            busses=self.busses,
+            storages=self.storages,
+        )
+
+        # self.storages should contain the storage (key = label, value = storage object)
+        assert dict_asset["label"] in self.storages
+        assert isinstance(
+            self.storages[dict_asset["label"]], solph.components.GenericStorage
+        )
+
+        # check value of `existing`, `investment` and `nominal_value`(`nominal_storage_capacity`)
+        input_bus = self.model.entities[-1].inputs[self.busses["Storage bus"]]
+        output_bus = self.model.entities[-1].outputs[self.busses["Storage bus"]]
+
+        assert hasattr(input_bus, "existing") == False
+        assert input_bus.investment == None
+        assert (
+            input_bus.nominal_value
+            == dict_asset["storage capacity"]["installedCap"]["value"]
+        )
+
+        assert hasattr(output_bus, "existing") == False
+        assert output_bus.investment == None
+        assert (
+            output_bus.nominal_value
+            == dict_asset["input power"]["installedCap"]["value"]
+        )
+
+        assert (
+            hasattr(self.model.entities[-1], "existing") == False
+        )  # todo probably not necessary parameter
+        assert self.model.entities[-1].investment == None
+        assert (
+            self.model.entities[-1].nominal_storage_capacity
+            == dict_asset["output power"]["installedCap"]["value"]
+        )
+
+        # # check that invest_relation_input_capacity and invest_relation_output_capacity is not added
+        assert self.model.entities[-1].invest_relation_input_capacity == None
+        assert self.model.entities[-1].invest_relation_output_capacity == None
 
 
 ### other functionalities

@@ -453,24 +453,11 @@
         }
     },
     "energyStorage": {
-        "storage_01": {
-            "capacity": {
-                "age_installed": {
-                    "unit": "year",
-                    "value": 0
-                },
-                "capex_fix": {
-                    "unit": "currency",
-                    "value": 0.0
-                },
-                "capex_var": {
-                    "unit": "currency/kWh",
-                    "value": 4000
-                },
-                "crate": {
-                    "unit": "factor of total capacity (kWh)",
-                    "value": NaN
-                },
+        "storage_optimize": {
+            "label": "Storage optimize",
+            "input_bus_name": "Storage bus",
+            "output_bus_name": "Storage bus",
+            "storage capacity": {
                 "efficiency": {
                     "unit": "factor",
                     "value": 0.0
@@ -478,19 +465,6 @@
                 "installedCap": {
                     "unit": "kWh",
                     "value": 0.0
-                },
-                "label": "Storage capacity",
-                "lifetime": {
-                    "unit": "year",
-                    "value": 10
-                },
-                "opex_fix": {
-                    "unit": "currency/kWh/year",
-                    "value": 0
-                },
-                "opex_var": {
-                    "unit": "currency/kWh",
-                    "value": 0
                 },
                 "soc_initial": {
                     "unit": "None or factor",
@@ -504,121 +478,119 @@
                     "unit": "factor",
                     "value": 0.2
                 },
-                "unit": "kWh"
+                "simulation_annuity": {
+                    "value": 2.7,
+                    "unit": "currency/unit/simulation period"
+                }
             },
-            "charging_power": {
-                "age_installed": {
-                    "unit": "year",
-                    "value": 0
-                },
-                "capex_fix": {
-                    "unit": "currency",
-                    "value": 0.0
-                },
-                "capex_var": {
-                    "unit": "currency/kWh",
-                    "value": 0
-                },
-                "crate": {
+            "input power": {
+                "c_rate": {
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
                 "efficiency": {
                     "unit": "factor",
-                    "value": 0.9500000000000001
+                    "value": 0.95
                 },
                 "installedCap": {
                     "unit": "kWh",
-                    "value": 0
-                },
-                "label": "discharging_power",
-                "lifetime": {
-                    "unit": "year",
-                    "value": 10
-                },
-                "opex_fix": {
-                    "unit": "currency/kWh/year",
                     "value": 0
                 },
                 "opex_var": {
                     "unit": "currency/kWh",
                     "value": 0
                 },
-                "soc_initial": {
-                    "unit": "None or factor",
-                    "value": NaN
-                },
-                "soc_max": {
-                    "unit": "factor",
-                    "value": NaN
-                },
-                "soc_min": {
-                    "unit": "factor",
-                    "value": NaN
-                },
-                "unit": "kW"
+                "simulation_annuity": {
+                    "value": 0,
+                    "unit": "currency/unit/simulation period"
+                }
             },
-            "discharging_power": {
-                "age_installed": {
-                    "unit": "year",
-                    "value": 0
-                },
-                "capex_fix": {
-                    "unit": "currency",
-                    "value": 0.0
-                },
-                "capex_var": {
-                    "unit": "currency/kWh",
-                    "value": 0
-                },
-                "crate": {
+            "output power": {
+                "c_rate": {
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
                 "efficiency": {
                     "unit": "factor",
-                    "value": 0.9500000000000001
+                    "value": 0.95
                 },
                 "installedCap": {
                     "unit": "kWh",
-                    "value": 0
-                },
-                "label": "discharging_power",
-                "lifetime": {
-                    "unit": "year",
-                    "value": 10
-                },
-                "opex_fix": {
-                    "unit": "currency/kWh/year",
                     "value": 0
                 },
                 "opex_var": {
                     "unit": "currency/kWh",
                     "value": 0
                 },
-                "soc_initial": {
-                    "unit": "None or factor",
-                    "value": NaN
-                },
-                "soc_max": {
-                    "unit": "factor",
-                    "value": NaN
-                },
-                "soc_min": {
-                    "unit": "factor",
-                    "value": NaN
-                },
-                "unit": "kW"
+                "simulation_annuity": {
+                    "value": 0,
+                    "unit": "currency/unit/simulation period"
+                }
             },
-            "energyVector": "Electricity",
-            "inflow_direction": "ESS Li-Ion",
-            "label": "ESS Li-Ion",
             "optimizeCap": {
                 "unit": "bool",
                 "value": true
             },
-            "outflow_direction": "ESS Li-Ion",
-            "storage_filename": "storage01.csv",
+            "type_oemof": "storage"
+        },
+        "storage_fix": {
+            "label": "Storage fix",
+            "input_bus_name": "Storage bus",
+            "output_bus_name": "Storage bus",
+            "storage capacity": {
+                "efficiency": {
+                    "unit": "factor",
+                    "value": 0.0
+                },
+                "installedCap": {
+                    "unit": "kWh",
+                    "value": 0.0
+                },
+                "soc_initial": {
+                    "unit": "None or factor",
+                    "value": null
+                },
+                "soc_max": {
+                    "unit": "factor",
+                    "value": 1.0
+                },
+                "soc_min": {
+                    "unit": "factor",
+                    "value": 0.2
+                }
+            },
+            "input power": {
+                "efficiency": {
+                    "unit": "factor",
+                    "value": 0.95
+                },
+                "installedCap": {
+                    "unit": "kWh",
+                    "value": 0
+                },
+                "opex_var": {
+                    "unit": "currency/kWh",
+                    "value": 0
+                }
+            },
+            "output power": {
+                "efficiency": {
+                    "unit": "factor",
+                    "value": 0.95
+                },
+                "installedCap": {
+                    "unit": "kWh",
+                    "value": 0
+                },
+                "opex_var": {
+                    "unit": "currency/kWh",
+                    "value": 0
+                }
+            },
+            "optimizeCap": {
+                "unit": "bool",
+                "value": false
+            },
             "type_oemof": "storage"
         }
     }
