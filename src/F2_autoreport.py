@@ -197,7 +197,7 @@ def create_app(results_json):
         orient="index",
         columns=["Unit", "Peak Demand", "Mean Demand", "Total Demand per annum"],
     )
-    df_dem.index.name = PLOTS_DEMANDS
+    df_dem.index.name = "Demands"
     df_dem = df_dem.reset_index()
     df_dem = df_dem.round(2)
 
