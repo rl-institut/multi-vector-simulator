@@ -147,43 +147,6 @@ def create_app(results_json):
 
     simDate = time.strftime("%Y-%m-%d")
 
-    # Reading images
-
-    pv_dem_ts = base64.b64encode(
-        open(
-            os.path.join(path_output_folder, "input_timeseries_Habor_kW.png"), "rb"
-        ).read()
-    )
-    pv_inp_ts = base64.b64encode(
-        open(
-            os.path.join(
-                path_output_folder, "input_timeseries_PV plant (" "mono)_kW.png",
-            ),
-            "rb",
-        ).read()
-    )
-    el_flows_14 = base64.b64encode(
-        open(
-            os.path.join(path_output_folder, "Electricity_flows_14_days.png"), "rb"
-        ).read()
-    )
-    el_flows_365 = base64.b64encode(
-        open(
-            os.path.join(path_output_folder, "Electricity_flows_365_days.png"), "rb"
-        ).read()
-    )
-    op_add_caps = base64.b64encode(
-        open(
-            os.path.join(path_output_folder, "optimal_additional_capacities.png"), "rb"
-        ).read()
-    )
-    # image not present anymore, has to be replaced by direct plots anyway
-    # pv_inv_flow = base64.b64encode(
-    #     open(
-    #         os.path.join(path_output_folder, "PV plant (mono) bus flows.png"), "rb"
-    #     ).read()
-    # )
-
     ELAND_LOGO = base64.b64encode(
         open(
             os.path.join(REPO_PATH, "src", "assets", "logo-eland-original.jpg"), "rb"
@@ -588,21 +551,7 @@ def create_app(results_json):
                 className="demandmatter",
                 children=[
                     html.Br(),
-                    html.H4(
-                        "Electricity Demand",
-                        style={
-                            "position": "relative",
-                            "left": "0",
-                            "height": "20%",
-                            "margin": "0mm",
-                            "borderLeft": "20px solid #8c3604",
-                            "background": "#ffffff",
-                            "paddingTop": "1px",
-                            "paddingBottom": "1px",
-                            "paddingLeft": "30px",
-                            "paddingRight": "60px",
-                        },
-                    ),
+                    html.H4("Electricity Demand", className="graph__pre-title",),
                     html.P("Electricity demands that have to be supplied are: "),
                 ],
                 style={"textAlign": "left", "fontSize": "40px", "margin": "30px"},
@@ -611,32 +560,28 @@ def create_app(results_json):
             html.Div(
                 className="timeseriesplots",
                 children=[
-                    html.Img(
-                        src="data:image/png;base64,{}".format(pv_dem_ts.decode()),
-                        width="1500px",
+                    html.Div(
+                        [
+                            html.Img(
+                                src="data:image/png;base64,{}".format(
+                                    base64.b64encode(open(ts, "rb").read()).decode()
+                                ),
+                                width="1500px",
+                            )
+                            for ts in results_json["paths_to_plots"]["demands"]
+                        ]
                     ),
-                    html.Br([]),
-                    html.H4(
-                        "PV System Input Time Series",
-                        style={
-                            "textAlign": "left",
-                            "fontSize": "40px",
-                            "position": "relative",
-                            "left": "0",
-                            "height": "20%",
-                            "margin": "0mm",
-                            "borderLeft": "20px solid #8c3604",
-                            "background": "#ffffff",
-                            "paddingTop": "1px",
-                            "paddingBottom": "1px",
-                            "paddingLeft": "30px",
-                            "paddingRight": "60px",
-                        },
-                    ),
-                    html.Br([]),
-                    html.Img(
-                        src="data:image/png;base64,{}".format(pv_inp_ts.decode()),
-                        width="1500px",
+                    html.H4("Resources", className="graph__pre-title"),
+                    html.Div(
+                        [
+                            html.Img(
+                                src="data:image/png;base64,{}".format(
+                                    base64.b64encode(open(ts, "rb").read()).decode()
+                                ),
+                                width="1500px",
+                            )
+                            for ts in results_json["paths_to_plots"]["flows_on_busses"]
+                        ]
                     ),
                 ],
                 style={"margin": "30px"},
@@ -723,54 +668,24 @@ def create_app(results_json):
                         "a. Flows in the system for a duration of 14 days",
                         style={"marginLeft": "20px"},
                     ),
+                ]
+                + [
+                    html.Div(
+                        [
+                            html.Img(
+                                src="data:image/png;base64,{}".format(
+                                    base64.b64encode(open(ts, "rb").read()).decode()
+                                ),
+                                width="1500px",
+                            )
+                            for ts in results_json["paths_to_plots"]["demands"]
+                            + results_json["paths_to_plots"]["performance"]
+                        ]
+                    ),
                 ],
                 style={"textAlign": "justify", "fontSize": "40px", "margin": "30px"},
             ),
-            html.Img(
-                src="data:image/png;base64,{}".format(el_flows_14.decode()),
-                style={
-                    "display": "block",
-                    "marginLeft": "50px",
-                    "maxWidth": "100%",
-                    "height": "auto",
-                },
-            ),
-            html.P(
-                "b. Flows in the system for the whole year",
-                style={
-                    "marginLeft": "50px",
-                    "textAlign": "justify",
-                    "fontSize": "40px",
-                },
-            ),
-            html.Img(
-                src="data:image/png;base64,{}".format(el_flows_365.decode()),
-                style={
-                    "display": "block",
-                    "marginLeft": "50px",
-                    "maxWidth": "100%",
-                    "height": "auto",
-                },
-            ),
             html.Br(style={"marginBottom": "5px"}),
-            html.Div(
-                className="res_images",
-                children=[
-                    html.Img(
-                        src="data:image/png;base64,{}".format(op_add_caps.decode())
-                    ),
-                    # html.Img(
-                    #     src="data:image/png;base64,{}".format(pv_inv_flow.decode())
-                    # ),
-                ],
-                style={
-                    "display": "block",
-                    "marginLeft": "50px",
-                    "maxWidth": "100%",
-                    "height": "auto",
-                    "marginBottom": "5px",
-                },
-            ),
             html.P(
                 "This results in the following KPI of the dispatch:",
                 style={
@@ -799,6 +714,19 @@ def create_app(results_json):
                 style={"margin": "30px", "textAlign": "justify", "fontSize": "40px",},
             ),
             html.Div(children=[make_dash_data_table(df_costs)]),
+            html.Div(
+                className="blockoftext2",
+                children=[
+                    html.Img(
+                        src="data:image/png;base64,{}".format(
+                            base64.b64encode(open(ts, "rb").read()).decode()
+                        ),
+                        width="1500px",
+                    )
+                    for ts in results_json["paths_to_plots"]["costs"]
+                ],
+                style={"textAlign": "justify", "fontSize": "40px", "margin": "30px"},
+            ),
         ]
     )
     return app
