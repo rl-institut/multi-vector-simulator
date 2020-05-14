@@ -18,6 +18,15 @@ import sys
 import pdfkit
 
 from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
+from src.constants import (
+    PLOTS_BUSSES,
+    PATHS_TO_PLOTS,
+    PLOTS_DEMANDS,
+    PLOTS_RESOURCES,
+    PLOTS_NX,
+    PLOTS_PERFORMANCE,
+    PLOTS_COSTS,
+)
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
@@ -29,7 +38,7 @@ def print_pdf(app, path_report_pdf=os.path.join(OUTPUT_FOLDER, "out.pdf")):
     td.daemon = True
     td.start()
     # TODO change time (seconds) here to be able to visualize the report in the browser
-    time.sleep(10)
+    time.sleep(60)
     pdfkit.from_url("http://127.0.0.1:8050", path_report_pdf)
     td.join(2)
     # sys.exit()
@@ -188,7 +197,7 @@ def create_app(results_json):
         orient="index",
         columns=["Unit", "Peak Demand", "Mean Demand", "Total Demand per annum"],
     )
-    df_dem.index.name = "Demands"
+    df_dem.index.name = PLOTS_DEMANDS
     df_dem = df_dem.reset_index()
     df_dem = df_dem.round(2)
 
@@ -561,7 +570,7 @@ def create_app(results_json):
                                 ),
                                 width="1500px",
                             )
-                            for ts in results_json["paths_to_plots"]["demands"]
+                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_DEMANDS]
                         ]
                     ),
                     html.H4("Resources", className="graph__pre-title"),
@@ -573,7 +582,7 @@ def create_app(results_json):
                                 ),
                                 width="1500px",
                             )
-                            for ts in results_json["paths_to_plots"]["flows_on_busses"]
+                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_BUSSES]
                         ]
                     ),
                 ],
@@ -671,8 +680,8 @@ def create_app(results_json):
                                 ),
                                 width="1500px",
                             )
-                            for ts in results_json["paths_to_plots"]["demands"]
-                            + results_json["paths_to_plots"]["performance"]
+                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_DEMANDS]
+                            + results_json[PATHS_TO_PLOTS][PLOTS_PERFORMANCE]
                         ]
                     ),
                 ],
@@ -716,7 +725,7 @@ def create_app(results_json):
                         ),
                         width="1500px",
                     )
-                    for ts in results_json["paths_to_plots"]["costs"]
+                    for ts in results_json[PATHS_TO_PLOTS][PLOTS_COSTS]
                 ],
                 style={"textAlign": "justify", "fontSize": "40px", "margin": "30px"},
             ),
