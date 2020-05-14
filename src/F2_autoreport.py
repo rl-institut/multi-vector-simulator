@@ -54,7 +54,7 @@ def make_dash_data_table(df):
 
 
 def create_app(results_json):
-    path_output_folder = results_json["simulation_settings"]["path_input_folder"]
+    path_output_folder = results_json["simulation_settings"]["path_output_folder"]
 
     # Foundation JS styling sheets that are to be used to improve the formatting of the web app
     external_scripts = [
