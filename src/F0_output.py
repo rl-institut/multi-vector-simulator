@@ -112,10 +112,7 @@ def evaluate_dict(dict_values):
         "json_with_results",
     )
 
-    app = autoreport.create_app(
-        dict_values["simulation_settings"]["path_input_folder"],
-        dict_values["simulation_settings"]["path_output_folder"],
-    )
+    app = autoreport.create_app(dict_values)
     autoreport.print_pdf(app)
 
 

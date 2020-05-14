@@ -53,7 +53,9 @@ def make_dash_data_table(df):
     )
 
 
-def create_app(path_input_folder, path_output_folder):
+def create_app(results_json):
+    path_output_folder = results_json["simulation_settings"]["path_input_folder"]
+
     # Foundation JS styling sheets that are to be used to improve the formatting of the web app
     external_scripts = [
         {
@@ -83,17 +85,13 @@ def create_app(path_input_folder, path_output_folder):
         "font-inpbox": "#FFFFFF",
     }
     # Reading the relevant user-inputs from the csv files into Pandas dataframes
-
-    dfprojectData = pd.read_csv(os.path.join(path_input_folder, "project_data.csv"))
-    dfeconomicData = pd.read_csv(os.path.join(path_input_folder, "economic_data.csv"))
-    dfsimSettíngs = pd.read_csv(
-        os.path.join(path_input_folder, "simulation_settings.csv")
-    )
+    dfprojectData = pd.DataFrame.from_dict(results_json["project_data"])
+    dfeconomicData = pd.DataFrame.from_dict(results_json["economic_data"]).loc["value"]
 
     # Obtaining the coordinates of the project location
     coordinates = (
-        float(dfprojectData["project_data"][2]),
-        float(dfprojectData["project_data"][3]),
+        float(dfprojectData.latitude),
+        float(dfprojectData.longitude),
     )
 
     # Determining the geographical location of the project
@@ -113,13 +111,13 @@ def create_app(path_input_folder, path_output_folder):
     mapy.save(os.path.join(REPO_PATH, "src", "assets", "proj_map"))
 
     dict_projectdata = {
-        "Country": dfprojectData.at[0, "project_data"],
-        "Project ID": dfprojectData.at[4, "project_data"],
-        "Scenario ID": dfprojectData.at[6, "project_data"],
-        "Currency": dfeconomicData.at[0, "economic_data"],
+        "Country": dfprojectData.country,
+        "Project ID": dfprojectData.project_id,
+        "Scenario ID": dfprojectData.scenario_id,
+        "Currency": dfeconomicData.currency,
         "Project Location": location,
-        "Discount Factor": dfeconomicData.at[1, "economic_data"],
-        "Tax": dfeconomicData.at[4, "economic_data"],
+        "Discount Factor": dfeconomicData.discount_factor,
+        "Tax": dfeconomicData.tax,
     }
 
     df_projectData = pd.DataFrame(
@@ -127,9 +125,11 @@ def create_app(path_input_folder, path_output_folder):
     )
 
     dict_simsettings = {
-        "Evaluated period": dfsimSettíngs.at[0, "simulation_settings"],
-        "Start date": dfsimSettíngs.at[5, "simulation_settings"],
-        "Timestep length": dfsimSettíngs.at[7, "simulation_settings"],
+        "Evaluated period": results_json["simulation_settings"]["evaluated_period"][
+            "value"
+        ],
+        "Start date": results_json["simulation_settings"]["start_date"],
+        "Timestep length": results_json["simulation_settings"]["timestep"]["value"],
     }
 
     df_simsettings = pd.DataFrame(
