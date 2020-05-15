@@ -48,50 +48,6 @@
         }
     },
     "energyConversion": {
-        "diesel_generator": {
-            "age_installed": {
-                "unit": "year",
-                "value": 0
-            },
-            "capex_fix": {
-                "unit": "currency",
-                "value": 0
-            },
-            "capex_var": {
-                "unit": "currency/kW",
-                "value": 600
-            },
-            "efficiency": {
-                "unit": "factor",
-                "value": 0.33
-            },
-            "energyVector": "Electricity",
-            "inflow_direction": "Fuel",
-            "installedCap": {
-                "unit": "kW",
-                "value": 0
-            },
-            "label": "Backup diesel generator",
-            "lifetime": {
-                "unit": "year",
-                "value": 15
-            },
-            "opex_fix": {
-                "unit": "currency/kW/year",
-                "value": 5
-            },
-            "opex_var": {
-                "unit": "currency/kWh",
-                "value": 0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": true
-            },
-            "outflow_direction": "Electricity",
-            "type_oemof": "transformer",
-            "unit": "kW"
-        },
         "solar_inverter_01": {
             "age_installed": {
                 "unit": "year",
@@ -331,16 +287,16 @@
             "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
             "installedCap": {
                 "unit": "kWp",
-                "value": 0
-            },
-            "maximumCap": {
-                "unit": "kWp",
-                "value": 1000
+                "value": 1500
             },
             "label": "PV plant (mono)",
             "lifetime": {
                 "unit": "year",
                 "value": 30
+            },
+            "maximumCap": {
+                "unit": " kWp",
+                "value": null
             },
             "opex_fix": {
                 "unit": "currency/unit/year",
@@ -390,6 +346,94 @@
     },
     "energyStorage": {
         "storage_01": {
+            "energyVector": "Electricity",
+            "inflow_direction": "ESS Li-Ion",
+            "input power": {
+                "age_installed": {
+                    "unit": "year",
+                    "value": 0
+                },
+                "c_rate": {
+                    "unit": "factor of total capacity (kWh)",
+                    "value": 1
+                },
+                "capex_fix": {
+                    "unit": "currency",
+                    "value": 0
+                },
+                "capex_var": {
+                    "unit": "currency/unit",
+                    "value": 0
+                },
+                "efficiency": {
+                    "unit": "factor",
+                    "value": 0.95
+                },
+                "installedCap": {
+                    "unit": "unit",
+                    "value": 0
+                },
+                "label": "input power",
+                "lifetime": {
+                    "unit": "year",
+                    "value": 10
+                },
+                "opex_fix": {
+                    "unit": "currency/unit/year",
+                    "value": 0
+                },
+                "opex_var": {
+                    "unit": "currency/kWh",
+                    "value": 0
+                },
+                "unit": "kW"
+            },
+            "label": "ESS Li-Ion",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "outflow_direction": "ESS Li-Ion",
+            "output power": {
+                "age_installed": {
+                    "unit": "year",
+                    "value": 0
+                },
+                "c_rate": {
+                    "unit": "factor of total capacity (kWh)",
+                    "value": 1
+                },
+                "capex_fix": {
+                    "unit": "currency",
+                    "value": 0
+                },
+                "capex_var": {
+                    "unit": "currency/unit",
+                    "value": 0
+                },
+                "efficiency": {
+                    "unit": "factor",
+                    "value": 0.95
+                },
+                "installedCap": {
+                    "unit": "unit",
+                    "value": 0
+                },
+                "label": "output power",
+                "lifetime": {
+                    "unit": "year",
+                    "value": 10
+                },
+                "opex_fix": {
+                    "unit": "currency/unit/year",
+                    "value": 0
+                },
+                "opex_var": {
+                    "unit": "currency/kWh",
+                    "value": 0
+                },
+                "unit": "kW"
+            },
             "storage capacity": {
                 "age_installed": {
                     "unit": "year",
@@ -397,27 +441,27 @@
                 },
                 "capex_fix": {
                     "unit": "currency",
-                    "value": 0.0
+                    "value": 0
                 },
                 "capex_var": {
-                    "unit": "currency/kWh",
+                    "unit": "currency/unit",
                     "value": 4000
                 },
                 "efficiency": {
                     "unit": "factor",
-                    "value": 0.0
+                    "value": 0
                 },
                 "installedCap": {
-                    "unit": "kWh",
-                    "value": 0.0
+                    "unit": "unit",
+                    "value": 0
                 },
-                "label": "Storage capacity",
+                "label": "storage capacity",
                 "lifetime": {
                     "unit": "year",
                     "value": 10
                 },
                 "opex_fix": {
-                    "unit": "currency/kWh/year",
+                    "unit": "currency/unit/year",
                     "value": 0
                 },
                 "soc_initial": {
@@ -426,7 +470,7 @@
                 },
                 "soc_max": {
                     "unit": "factor",
-                    "value": 1.0
+                    "value": 1
                 },
                 "soc_min": {
                     "unit": "factor",
@@ -434,94 +478,6 @@
                 },
                 "unit": "kWh"
             },
-            "input power": {
-                "age_installed": {
-                    "unit": "year",
-                    "value": 0
-                },
-                "capex_fix": {
-                    "unit": "currency",
-                    "value": 0.0
-                },
-                "capex_var": {
-                    "unit": "currency/kWh",
-                    "value": 0
-                },
-                "c_rate": {
-                    "unit": "factor of total capacity (kWh)",
-                    "value": 1
-                },
-                "efficiency": {
-                    "unit": "factor",
-                    "value": 0.9500000000000001
-                },
-                "installedCap": {
-                    "unit": "kWh",
-                    "value": 0
-                },
-                "label": "discharging_power",
-                "lifetime": {
-                    "unit": "year",
-                    "value": 10
-                },
-                "opex_fix": {
-                    "unit": "currency/kWh/year",
-                    "value": 0
-                },
-                "opex_var": {
-                    "unit": "currency/kWh",
-                    "value": 0
-                },
-                "unit": "kW"
-            },
-            "output power": {
-                "age_installed": {
-                    "unit": "year",
-                    "value": 0
-                },
-                "capex_fix": {
-                    "unit": "currency",
-                    "value": 0.0
-                },
-                "capex_var": {
-                    "unit": "currency/kWh",
-                    "value": 0
-                },
-                "c_rate": {
-                    "unit": "factor of total capacity (kWh)",
-                    "value": 1
-                },
-                "efficiency": {
-                    "unit": "factor",
-                    "value": 0.9500000000000001
-                },
-                "installedCap": {
-                    "unit": "kWh",
-                    "value": 0
-                },
-                "label": "discharging_power",
-                "lifetime": {
-                    "unit": "year",
-                    "value": 10
-                },
-                "opex_fix": {
-                    "unit": "currency/kWh/year",
-                    "value": 0
-                },
-                "opex_var": {
-                    "unit": "currency/kWh",
-                    "value": 0
-                },
-                "unit": "kW"
-            },
-            "energyVector": "Electricity",
-            "inflow_direction": "ESS Li-Ion",
-            "label": "ESS Li-Ion",
-            "optimizeCap": {
-                "unit": "bool",
-                "value": true
-            },
-            "outflow_direction": "ESS Li-Ion",
             "storage_filename": "storage_01.csv",
             "type_oemof": "storage"
         }
@@ -620,6 +576,10 @@
         "scenario_name": "Warehouse 14"
     },
     "simulation_settings": {
+        "display_nx_graph": {
+            "unit": "bool",
+            "value": false
+        },
         "evaluated_period": {
             "unit": "days",
             "value": 2
@@ -630,19 +590,15 @@
             "unit": "bool",
             "value": false
         },
-        "display_nx_graph": {
-            "unit": "bool",
-            "value": false
-        },
-        "store_nx_graph": {
+        "restore_from_oemof_file": {
             "unit": "bool",
             "value": true
         },
-        "restore_from_oemof_file": {
+        "start_date": "2018-01-01 00:00:00",
+        "store_nx_graph": {
             "unit": "bool",
             "value": false
         },
-        "start_date": "2018-01-01 00:00:00",
         "store_oemof_results": {
             "unit": "bool",
             "value": true
