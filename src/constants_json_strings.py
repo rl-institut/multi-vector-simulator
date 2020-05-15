@@ -11,3 +11,6 @@ ENERGY_CONSUMPTION = "energyConsumption"
 ENERGY_PRODUCTION = "energyProduction"
 ENERGY_STORAGE = "energyStorage"
 ENERGY_BUSSES = "energyBusses"
+
+# Parameters
+OEMOF_ASSET_TYPE = "type_oemof"

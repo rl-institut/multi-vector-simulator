@@ -6,7 +6,7 @@ import oemof.outputlib as outputlib
 
 import src.D1_model_components as model_components
 
-from src.constants_json_strings import ENERGY_CONVERSION, ENERGY_CONSUMPTION, ENERGY_PRODUCTION, ENERGY_BUSSES, ENERGY_STORAGE
+from src.constants_json_strings import ENERGY_CONVERSION, ENERGY_CONSUMPTION, ENERGY_PRODUCTION, ENERGY_BUSSES, ENERGY_STORAGE, OEMOF_ASSET_TYPE
 
 """
 Functional requirements of module D0:
@@ -59,7 +59,7 @@ def run_oemof(dict_values):
     }  
 
     for asset in dict_values[ENERGY_CONVERSION]:
-        type = dict_values[ENERGY_CONVERSION][asset]["type_oemof"]
+        type = dict_values[ENERGY_CONVERSION][asset][OEMOF_ASSET_TYPE]
         if type == "transformer":
             model_components.transformer(
                 model, dict_values[ENERGY_CONVERSION][asset], **dict_model
@@ -68,7 +68,7 @@ def run_oemof(dict_values):
             model_building.error_asset_type(asset, type, ENERGY_CONVERSION)
 
     for asset in dict_values[ENERGY_CONSUMPTION]:
-        type = dict_values[ENERGY_CONSUMPTION][asset]["type_oemof"]
+        type = dict_values[ENERGY_CONSUMPTION][asset][OEMOF_ASSET_TYPE]
         if type == "sink":
             model_components.sink(
                 model, dict_values[ENERGY_CONSUMPTION][asset], **dict_model
@@ -78,7 +78,7 @@ def run_oemof(dict_values):
 
     for asset in dict_values[ENERGY_PRODUCTION]:
 
-        type = dict_values[ENERGY_PRODUCTION][asset]["type_oemof"]
+        type = dict_values[ENERGY_PRODUCTION][asset][OEMOF_ASSET_TYPE]
         if type == "source":
             model_components.source(
                 model, dict_values[ENERGY_PRODUCTION][asset], **dict_model
@@ -87,7 +87,7 @@ def run_oemof(dict_values):
             model_building.error_asset_type(asset, type, ENERGY_PRODUCTION)
 
     for asset in dict_values[ENERGY_STORAGE]:
-        type = dict_values[ENERGY_STORAGE][asset]["type_oemof"]
+        type = dict_values[ENERGY_STORAGE][asset][OEMOF_ASSET_TYPE]
         if type == "storage":
             model_components.storage(
                 model, dict_values[ENERGY_STORAGE][asset], **dict_model
