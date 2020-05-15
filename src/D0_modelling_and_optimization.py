@@ -23,6 +23,11 @@ Functional requirements of module D0:
 - add simulation parameters to dict values 
 """
 
+class WrongOemofAssetError(ValueError):
+    """Exception raised for wrong column name in "storage_xx" input file."""
+    pass
+
+
 def run_oemof(dict_values):
     """
     Creates and solves energy system model generated from excel template inputs.
@@ -35,22 +40,9 @@ def run_oemof(dict_values):
     :return: saves and returns oemof simulation results
     """
 
-    # Start clock to determine total simulation time
-    start = timeit.default_timer()
+    start = timer.initalize()
 
-    logging.info("Initializing oemof simulation.")
-    model = solph.EnergySystem(
-        timeindex=dict_values["simulation_settings"]["time_index"]
-    )
-
-    # this dictionary will include all generated oemof objects
-    dict_model = {
-        "busses": {},
-        "sinks": {},
-        "sources": {},
-        "transformers": {},
-        "storages": {},
-    }
+    model, dict_model = model_building.initialize(dict_values)
 
     logging.info("Adding components to energy system model...")
 
@@ -197,9 +189,92 @@ def run_oemof(dict_values):
         "Simulation time: %s minutes.",
         round(dict_values["simulation_results"]["simulation_time"] / 60, 2),
     )
-    logging.info(
-        "Moddeling time: %s minutes.",
-        round(dict_values["simulation_results"]["modelling_time"] / 60, 2),
-    )
+
+    timer.stop(dict_values, start)
 
     return results_meta, results_main
+
+class model_building:
+    def initialize(dict_values):
+        '''
+        Initalization of oemof model
+
+        dict_values: dict
+            dictionary of simulation
+
+        Returns
+        -------
+        oemof energy model (oemof.solph.network.EnergySystem), dict_model which gathers the assets added to this model later.
+        '''
+        logging.info("Initializing oemof simulation.")
+        model = solph.EnergySystem(
+            timeindex=dict_values["simulation_settings"]["time_index"]
+        )
+
+        # this dictionary will include all generated oemof objects
+        dict_model = {
+            "busses": {},
+            "sinks": {},
+            "sources": {},
+            "transformers": {},
+            "storages": {},
+        }
+        return model, dict_model
+
+    def error_asset_type(asset, type, assetGroup):
+        """
+        Raises error is the type of an asset is not as expected for the asset group.
+        asset: str
+            Asset in question
+        type: str
+            Asset type
+        assetGroup: str
+            Asset group
+
+        Returns
+        -------
+        WrongOemofAssetError
+        """
+        raise WrongOemofAssetError(
+            f"Asset {asset} has type {type}, "
+            f"but this type is not an asset type attributed to asset group {assetGroup}"
+            f" for oemof model generation."
+        )
+
+        return
+
+class timer:
+    def initalize():
+        '''
+        Starts a timer
+        Returns
+        -------
+        '''
+        # Start clock to determine total simulation time
+        start = timeit.default_timer()
+        return start
+
+    def stop(dict_values, start):
+        '''
+        Ends timer and adds duration of simulation to dict_values
+        Parameters
+        ----------
+        dict_values: dict
+            Dict of simulation including "simulation_results" key
+        start: timestamp
+            start time of timer
+
+        Returns
+        -------
+        Simulation time in dict_values
+        '''
+        duration = timeit.default_timer() - start
+        dict_values["simulation_results"].update(
+            {"modelling_time": round(duration, 2)}
+        )
+
+        logging.info(
+            "Moddeling time: %s minutes.",
+            round(dict_values["simulation_results"]["modelling_time"] / 60, 2),
+        )
+        return
