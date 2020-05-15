@@ -74,6 +74,10 @@ DICT_KPI = {
 
 
 class TestNetworkx:
+    def setup_class(self):
+        """ """
+        shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
