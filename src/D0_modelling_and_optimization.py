@@ -26,11 +26,11 @@ Functional requirements of module D0:
 """
 
 class WrongOemofAssetForGroupError(ValueError):
-    """Exception raised for wrong column name in "storage_xx" input file."""
+    # Exception raised when an asset group has an asset with an denied oemof type
     pass
 
 class UnknownOemofAssetType(ValueError):
-    """Exception raised for wrong column name in "storage_xx" input file."""
+    # Exception raised in case an asset type is defined for an asset group constants_json_strings but the oemof function is not jet defined (only dev)
     pass
 
 def run_oemof(dict_values):
@@ -189,39 +189,40 @@ class model_building:
 
         # Adding step by step all assets defined within the asset groups
         for asset_group in ACCEPTED_ASSETS_FOR_ASSET_GROUPS:
-            for asset in dict_values[asset_group]:
-                type = dict_values[asset_group][asset][OEMOF_ASSET_TYPE]
-                # Checking if the asset type is one accepted for the asset group (security measure)
-                if type in ACCEPTED_ASSETS_FOR_ASSET_GROUPS[asset_group]:
-                    # if so, then the appropriate function of D1 should be called
-                    if type == OEMOF_TRANSFORMER:
-                        model_components.transformer(
-                            model, dict_values[asset_group][asset], **dict_model
-                        )
-                    elif type == OEMOF_SINK:
-                        model_components.sink(
-                            model, dict_values[asset_group][asset], **dict_model
-                        )
-                    elif type == OEMOF_SOURCE:
-                        model_components.source(
-                            model, dict_values[asset_group][asset], **dict_model
-                        )
-                    elif type == OEMOF_GEN_STORAGE:
-                        model_components.storage(
-                            model, dict_values[asset_group][asset], **dict_model
-                        )
-                    else:
-                        raise UnknownOemofAssetType(
-                            f"Asset {asset} has type {type}, "
-                            f"but this type is not a defined oemof asset type."
-                        )
+            if asset_group in dict_values:
+                for asset in dict_values[asset_group]:
+                    type = dict_values[asset_group][asset][OEMOF_ASSET_TYPE]
+                    # Checking if the asset type is one accepted for the asset group (security measure)
+                    if type in ACCEPTED_ASSETS_FOR_ASSET_GROUPS[asset_group]:
+                        # if so, then the appropriate function of D1 should be called
+                        if type == OEMOF_TRANSFORMER:
+                            model_components.transformer(
+                                model, dict_values[asset_group][asset], **dict_model
+                            )
+                        elif type == OEMOF_SINK:
+                            model_components.sink(
+                                model, dict_values[asset_group][asset], **dict_model
+                            )
+                        elif type == OEMOF_SOURCE:
+                            model_components.source(
+                                model, dict_values[asset_group][asset], **dict_model
+                            )
+                        elif type == OEMOF_GEN_STORAGE:
+                            model_components.storage(
+                                model, dict_values[asset_group][asset], **dict_model
+                            )
+                        else:
+                            raise UnknownOemofAssetType(
+                                f"Asset {asset} has type {type}, "
+                                f"but this type is not a defined oemof asset type."
+                            )
 
-                else:
-                    raise WrongOemofAssetForGroupError(
-                        f"Asset {asset} has type {type}, "
-                        f"but this type is not an asset type attributed to asset group {asset_group}"
-                        f" for oemof model generation."
-                    )
+                    else:
+                        raise WrongOemofAssetForGroupError(
+                            f"Asset {asset} has type {type}, "
+                            f"but this type is not an asset type attributed to asset group {asset_group}"
+                            f" for oemof model generation."
+                        )
 
         logging.debug("All components added.")
         return model
