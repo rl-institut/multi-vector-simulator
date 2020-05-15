@@ -6,6 +6,8 @@ import oemof.outputlib as outputlib
 
 import src.D1_model_components as model_components
 
+from src.constants_json_strings import ENERGY_CONVERSION, ENERGY_CONSUMPTION, ENERGY_PRODUCTION, ENERGY_BUSSES, ENERGY_STORAGE
+
 """
 Functional requirements of module D0:
 - measure time needed to build model
@@ -49,62 +51,49 @@ def run_oemof(dict_values):
     # Check all dict values and if necessary call component
     # "for loop" chosen to raise errors in case entries are not defined
     # other way would be: if key in dict_values: define/call component
-    for bus in dict_values["energyBusses"]:
+    for bus in dict_values[ENERGY_BUSSES]:
         model_components.bus(model, bus, **dict_model)
 
-    def warning_asset_type(asset, type, assetGroup):
-        """
+    ACCEPTED_ASSETS_FOR_MODELGROUPS = {
+        ENERGY_CONVERSION: ["transformer"]
+    }  
 
-        :param asset:
-        :param type:
-        :param assetGroup:
-        :return:
-        """
-        logging.error(
-            "Asset %s has type %s, "
-            "but this type is not an asset type attributed to asset group %s for oemof model generation.",
-            asset,
-            type,
-            assetGroup,
-        )
-        return
-
-    for asset in dict_values["energyConversion"]:
-        type = dict_values["energyConversion"][asset]["type_oemof"]
+    for asset in dict_values[ENERGY_CONVERSION]:
+        type = dict_values[ENERGY_CONVERSION][asset]["type_oemof"]
         if type == "transformer":
             model_components.transformer(
-                model, dict_values["energyConversion"][asset], **dict_model
+                model, dict_values[ENERGY_CONVERSION][asset], **dict_model
             )
         else:
-            warning_asset_type(asset, type, "energyConversion")
+            model_building.error_asset_type(asset, type, ENERGY_CONVERSION)
 
-    for asset in dict_values["energyConsumption"]:
-        type = dict_values["energyConsumption"][asset]["type_oemof"]
+    for asset in dict_values[ENERGY_CONSUMPTION]:
+        type = dict_values[ENERGY_CONSUMPTION][asset]["type_oemof"]
         if type == "sink":
             model_components.sink(
-                model, dict_values["energyConsumption"][asset], **dict_model
+                model, dict_values[ENERGY_CONSUMPTION][asset], **dict_model
             )
         else:
-            warning_asset_type(asset, type, "energyConsumption")
+            model_building.error_asset_type(asset, type, ENERGY_CONSUMPTION)
 
-    for asset in dict_values["energyProduction"]:
+    for asset in dict_values[ENERGY_PRODUCTION]:
 
-        type = dict_values["energyProduction"][asset]["type_oemof"]
+        type = dict_values[ENERGY_PRODUCTION][asset]["type_oemof"]
         if type == "source":
             model_components.source(
-                model, dict_values["energyProduction"][asset], **dict_model
+                model, dict_values[ENERGY_PRODUCTION][asset], **dict_model
             )
         else:
-            warning_asset_type(asset, type, "energyProduction")
+            model_building.error_asset_type(asset, type, ENERGY_PRODUCTION)
 
-    for asset in dict_values["energyStorage"]:
-        type = dict_values["energyStorage"][asset]["type_oemof"]
+    for asset in dict_values[ENERGY_STORAGE]:
+        type = dict_values[ENERGY_STORAGE][asset]["type_oemof"]
         if type == "storage":
             model_components.storage(
-                model, dict_values["energyStorage"][asset], **dict_model
+                model, dict_values[ENERGY_STORAGE][asset], **dict_model
             )
         else:
-            warning_asset_type(asset, type, "energyStorage")
+            model_building.error_asset_type(asset, type, ENERGY_STORAGE)
 
     logging.debug("All components added.")
 
@@ -172,7 +161,6 @@ def run_oemof(dict_values):
             dict_values["simulation_settings"]["path_output_folder"],
         )
 
-    duration = timeit.default_timer() - start
 
     dict_values.update(
         {
@@ -180,7 +168,6 @@ def run_oemof(dict_values):
                 "label": "simulation_results",
                 "objective_value": results_meta["objective"],
                 "simulation_time": results_meta["solver"]["Time"],
-                "modelling_time": duration,
             }
         }
     )
