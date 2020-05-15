@@ -60,7 +60,7 @@ def test_create_input_json_required_fields_are_filled():
     js_file = A1.create_input_json(input_directory=CSV_PATH, pass_back=True)
     js = data_input.load_json(js_file)
     for k in js.keys():
-        assert k in REQUIRED_CSV_FILES + (PATHS_TO_PLOTS)
+        assert k in REQUIRED_CSV_FILES + (PATHS_TO_PLOTS,)
 
 
 def test_create_json_from_csv_file_not_exist_raises_filenotfound_error():
