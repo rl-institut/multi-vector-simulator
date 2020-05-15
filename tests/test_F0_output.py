@@ -13,6 +13,7 @@ import os
 import sys
 import shutil
 import pytest
+import mock
 import argparse
 import logging
 
@@ -21,7 +22,11 @@ import numpy as np
 import src.B0_data_input_json as B0
 import src.F0_output as F0
 
-from .constants import TEST_REPO_PATH
+from .constants import TEST_REPO_PATH, DICT_PLOTS, PDF_REPORT
+from mvs_eland_tool.mvs_eland_tool import main
+import src.A0_initialization as initializing
+
+PARSER = initializing.create_parser()
 
 OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
@@ -62,9 +67,10 @@ BUS = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series
 
 
 class TestFileCreation:
-    def setup_class(self):
+    def setup_method(self):
         """ """
-        shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
         os.mkdir(OUTPUT_PATH)
 
     def test_store_barchart_for_capacities_no_additional_capacities(self):
@@ -81,6 +87,7 @@ class TestFileCreation:
                 )
             },
         }
+        dict_scalar_capacities.update(DICT_PLOTS)
         show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
         assert show_optimal_capacities is False
 
@@ -98,6 +105,7 @@ class TestFileCreation:
                 )
             },
         }
+        dict_scalar_capacities.update(DICT_PLOTS)
         show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
         assert show_optimal_capacities is True
 
@@ -111,7 +119,7 @@ class TestFileCreation:
             },
         }
         F0.store_scalars_to_excel(dict_scalars_two_tabs_dict)
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars" + ".xlsx")) is True
+        assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars.xlsx")) is True
 
     def test_store_scalars_to_excel_two_tabs_no_dict(self):
         """ """
@@ -121,7 +129,7 @@ class TestFileCreation:
         }
 
         F0.store_scalars_to_excel(dict_scalars_two_tabs)
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars" + ".xlsx")) is True
+        assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars.xlsx")) is True
 
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
         """ """
@@ -133,16 +141,14 @@ class TestFileCreation:
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS},
         }
-
+        dict_timeseries_test_one_bus.update(DICT_PLOTS)
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_one_bus)
         assert (
-            os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
+            os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses.xlsx"))
             is True
         )
         assert (
-            os.path.exists(
-                os.path.join(OUTPUT_PATH, "a_bus" + "_flows_" + str(365) + "_days.png")
-            )
+            os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
             is True
         )
 
@@ -156,21 +162,18 @@ class TestFileCreation:
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS, "b_bus": BUS},
         }
+        dict_timeseries_test_two_busses.update(DICT_PLOTS)
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
         assert (
-            os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
+            os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses.xlsx"))
             is True
         )
         assert (
-            os.path.exists(
-                os.path.join(OUTPUT_PATH, "a_bus" + "_flows_" + str(365) + "_days.png")
-            )
+            os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
             is True
         )
         assert (
-            os.path.exists(
-                os.path.join(OUTPUT_PATH, "b_bus" + "_flows_" + str(365) + "_days.png")
-            )
+            os.path.exists(os.path.join(OUTPUT_PATH, "b_bus_flows_365_days.png"))
             is True
         )
 
@@ -180,7 +183,20 @@ class TestFileCreation:
         F0.store_as_json(JSON_TEST_DICTIONARY, OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
-    def teardown_class(self):
+    @pytest.mark.skipif(
+        "tests/{}".format(os.path.basename(__file__)) not in sys.argv,
+        reason="lengthy test",
+    )
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-o", OUTPUT_PATH, "-f", "-pdf"]),
+    )
+    def test_generate_pdf_report(self, m_args):
+        """Run the simulation with -pdf option to make sure the pdf file is generated """
+        main()
+        assert os.path.exists(os.path.join(OUTPUT_PATH, PDF_REPORT)) is True
+
+    def teardown_method(self):
         """ """
         if os.path.exists(OUTPUT_PATH):
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)

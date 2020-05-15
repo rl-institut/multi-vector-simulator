@@ -111,6 +111,7 @@ def run_oemof(dict_values):
         from src.F1_plotting import draw_graph
 
         draw_graph(
+            dict_values,
             model,
             node_color={},
             show_plot=dict_values["simulation_settings"]["display_nx_graph"]["value"],

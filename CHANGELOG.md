@@ -42,12 +42,13 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for the module E3 (#143)
 - Test for the module F0 (#142, #304)
 - Test for the module E0 (#146)
-- Test for module F1 (#157, #297)
+- Test for module F1 (#157, #297, #284)
 - Benchmark test with only PV and grid (#258)
 - Module F2 for auto-reporting results of MVS simulation (#232)
 - Tests for module C2 (#151)
 - Tests for storage for the module A1 (#299)
 - Benchmark test with only battery and grid (#302)
+- Possibility to save the report generated in F2 as a pdf (#284)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
