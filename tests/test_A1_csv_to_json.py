@@ -4,8 +4,7 @@ import pytest
 import src.A1_csv_to_json as A1
 import src.B0_data_input_json as data_input
 
-from .constants import CSV_PATH, CSV_FNAME, DUMMY_CSV_PATH, REQUIRED_CSV_FILES
-
+from .constants import CSV_PATH, CSV_FNAME, DUMMY_CSV_PATH, REQUIRED_CSV_FILES, PATHS_TO_PLOTS
 
 CSV_PARAMETERS = ["param1", "param2"]
 
@@ -55,12 +54,11 @@ def test_create_input_json_raises_FileNotFoundError_if_missing_required_csv_file
     with pytest.raises(FileNotFoundError):
         A1.create_input_json(input_directory=DUMMY_CSV_PATH)
 
-
 def test_create_input_json_required_fields_are_filled():
     js_file = A1.create_input_json(input_directory=CSV_PATH, pass_back=True)
     js = data_input.load_json(js_file)
     for k in js.keys():
-        assert k in REQUIRED_CSV_FILES
+        assert k in REQUIRED_CSV_FILES + PATHS_TO_PLOTS
 
 
 def test_create_json_from_csv_file_not_exist_raises_filenotfound_error():
