@@ -114,7 +114,7 @@ class TestFileCreation:
             },
         }
         F0.store_scalars_to_excel(dict_scalars_two_tabs_dict)
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars" + ".xlsx")) is True
+        assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars.xlsx")) is True
 
     def test_store_scalars_to_excel_two_tabs_no_dict(self):
         """ """
@@ -124,7 +124,7 @@ class TestFileCreation:
         }
 
         F0.store_scalars_to_excel(dict_scalars_two_tabs)
-        assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars" + ".xlsx")) is True
+        assert os.path.exists(os.path.join(OUTPUT_PATH, "scalars.xlsx")) is True
 
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
         """ """
@@ -139,13 +139,11 @@ class TestFileCreation:
         dict_timeseries_test_one_bus.update(DICT_PLOTS)
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_one_bus)
         assert (
-            os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
+            os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses.xlsx"))
             is True
         )
         assert (
-            os.path.exists(
-                os.path.join(OUTPUT_PATH, "a_bus" + "_flows_" + str(365) + "_days.png")
-            )
+            os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
             is True
         )
 
@@ -162,19 +160,15 @@ class TestFileCreation:
         dict_timeseries_test_two_busses.update(DICT_PLOTS)
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
         assert (
-            os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
+            os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses.xlsx"))
             is True
         )
         assert (
-            os.path.exists(
-                os.path.join(OUTPUT_PATH, "a_bus" + "_flows_" + str(365) + "_days.png")
-            )
+            os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
             is True
         )
         assert (
-            os.path.exists(
-                os.path.join(OUTPUT_PATH, "b_bus" + "_flows_" + str(365) + "_days.png")
-            )
+            os.path.exists(os.path.join(OUTPUT_PATH, "b_bus_flows_365_days.png"))
             is True
         )
 
