@@ -160,11 +160,21 @@ class TestProcessUserArguments:
             ["-i", test_in_path, "-o", test_out_path, "-pdf"]
         ),
     )
-    def test_if_path_output_folder_recursive_create_full_path(self, m_args):
+    def test_if_pdf_opt_the_key_path_pdf_report_exists_in_user_inputs(self, m_args):
         user_inputs = initializing.process_user_arguments()
         assert user_inputs["path_pdf_report"] == os.path.join(
             self.test_out_path, PDF_REPORT
         )
+
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-i", test_in_path, "-o", test_out_path]),
+    )
+    def test_if_no_pdf_opt_the_key_path_pdf_report_does_not_exist_in_user_inputs(
+        self, m_args
+    ):
+        user_inputs = initializing.process_user_arguments()
+        assert "path_pdf_report" not in user_inputs.keys()
 
     def teardown_method(self):
         if os.path.exists(self.test_out_path):

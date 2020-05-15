@@ -13,6 +13,7 @@ import os
 import sys
 import shutil
 import pytest
+import mock
 import argparse
 import logging
 
@@ -21,7 +22,11 @@ import numpy as np
 import src.B0_data_input_json as B0
 import src.F0_output as F0
 
-from .constants import TEST_REPO_PATH, DICT_PLOTS
+from .constants import TEST_REPO_PATH, DICT_PLOTS, PDF_REPORT
+from mvs_eland_tool.mvs_eland_tool import main
+import src.A0_initialization as initializing
+
+PARSER = initializing.create_parser()
 
 OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
@@ -49,7 +54,6 @@ UNKNOWN_TYPE = np.float32(SCALAR / 10)
 
 BUS = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series})
 
-
 # def test_evaluate_result_dictionary():
 #    assert 0 == 0
 
@@ -63,9 +67,10 @@ BUS = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series
 
 
 class TestFileCreation:
-    def setup_class(self):
+    def setup_method(self):
         """ """
-        shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
         os.mkdir(OUTPUT_PATH)
 
     def test_store_barchart_for_capacities_no_additional_capacities(self):
@@ -178,7 +183,20 @@ class TestFileCreation:
         F0.store_as_json(JSON_TEST_DICTIONARY, OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
-    def teardown_class(self):
+    @pytest.mark.skipif(
+        "tests/{}".format(os.path.basename(__file__)) not in sys.argv,
+        reason="lengthy test",
+    )
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-o", OUTPUT_PATH, "-f", "-pdf"]),
+    )
+    def test_generate_pdf_report(self, m_args):
+        """Run the simulation with -pdf option to make sure the pdf file is generated """
+        main()
+        assert os.path.exists(os.path.join(OUTPUT_PATH, PDF_REPORT)) is True
+
+    def teardown_method(self):
         """ """
         if os.path.exists(OUTPUT_PATH):
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
