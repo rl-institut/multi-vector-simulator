@@ -151,7 +151,9 @@ def main(**kwargs):
     evaluation.evaluate_dict(dict_values, results_main, results_meta)
 
     logging.debug("Accessing script: F0_outputs")
-    output_processing.evaluate_dict(dict_values)
+    output_processing.evaluate_dict(
+        dict_values, path_pdf_report=user_input.get("path_pdf_report", None)
+    )
     return 1
 
 

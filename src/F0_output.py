@@ -23,13 +23,15 @@ The model F0 output defines all functions that store evaluation results to file.
 """
 
 
-def evaluate_dict(dict_values):
+def evaluate_dict(dict_values, path_pdf_report=None):
     """This is the main function of F0. It calls all functions that prepare the simulation output, ie. Storing all simulation output into excellent files, bar charts, and graphs.
 
     Parameters
     ----------
     dict_values :
         dict Of all input and output parameters up to F0
+    path_pdf_report : (str)
+        if provided, generate a pdf report of the simulation to the given path
 
     Returns
     -------
@@ -112,8 +114,13 @@ def evaluate_dict(dict_values):
         "json_with_results",
     )
 
-    app = autoreport.create_app(dict_values)
-    autoreport.print_pdf(app)
+    # generate a pdf report
+    if path_pdf_report is not None:
+        app = autoreport.create_app(dict_values)
+        autoreport.print_pdf(app, path_pdf_report=path_pdf_report)
+        logging.info(
+            "Generating PDF report of the simulation: {}".format(path_pdf_report)
+        )
 
 
 def plot_piecharts_of_costs(dict_values):

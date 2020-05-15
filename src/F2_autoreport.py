@@ -11,6 +11,7 @@ import base64
 import git
 import folium
 import os
+
 # Imports for generating pdf automatically
 import threading
 import pdfkit
