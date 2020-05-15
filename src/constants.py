@@ -38,7 +38,6 @@ INPUTS_COPY = INPUT_FOLDER
 # name of the automatically generated pdf report
 PDF_REPORT = "simulation_report.pdf"
 
-
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)

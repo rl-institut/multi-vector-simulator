@@ -6,15 +6,13 @@ import dash_html_components as html
 import time
 import pandas as pd
 import reverse_geocoder as rg
-import json
 import dash_table
 import base64
 import git
 import folium
 import os
-
+# Imports for generating pdf automatically
 import threading
-import sys
 import pdfkit
 
 from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
@@ -32,16 +30,15 @@ OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
 
 
-def print_pdf(app, path_report_pdf=os.path.join(OUTPUT_FOLDER, "out.pdf")):
+def print_pdf(app, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
     """Run the dash app in a thread an print a pdf before exiting"""
     td = threading.Thread(target=app.run_server)
     td.daemon = True
     td.start()
     # TODO change time (seconds) here to be able to visualize the report in the browser
-    time.sleep(60)
-    pdfkit.from_url("http://127.0.0.1:8050", path_report_pdf)
+    # time.sleep(5)
+    pdfkit.from_url("http://127.0.0.1:8050", path_pdf_report)
     td.join(2)
-    # sys.exit()
 
 
 def make_dash_data_table(df):
@@ -735,6 +732,6 @@ def create_app(results_json):
 
 
 if __name__ == "__main__":
-    app = create_app(CSV_FOLDER, OUTPUT_FOLDER)
+    test_app = create_app(CSV_FOLDER, OUTPUT_FOLDER)
     # app.run_server(debug=True)
-    print_pdf(app)
+    print_pdf(test_app)
