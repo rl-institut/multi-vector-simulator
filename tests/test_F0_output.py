@@ -49,6 +49,27 @@ UNKNOWN_TYPE = np.float32(SCALAR / 10)
 
 BUS = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series})
 
+from src.constants import (
+    PLOTS_BUSSES,
+    PATHS_TO_PLOTS,
+    PLOTS_DEMANDS,
+    PLOTS_RESOURCES,
+    PLOTS_NX,
+    PLOTS_PERFORMANCE,
+    PLOTS_COSTS,
+)
+
+dict_plots = {
+    PATHS_TO_PLOTS: {
+        PLOTS_BUSSES: [],
+        PLOTS_DEMANDS: [],
+        PLOTS_RESOURCES: [],
+        PLOTS_NX: [],
+        PLOTS_PERFORMANCE: [],
+        PLOTS_COSTS: [],
+    }
+}
+
 # def test_evaluate_result_dictionary():
 #    assert 0 == 0
 
@@ -70,6 +91,7 @@ class TestFileCreation:
     def test_store_barchart_for_capacities_no_additional_capacities(self):
         """ """
         dict_scalar_capacities = {
+            PATHS_TO_PLOTS: dict_plots[PATHS_TO_PLOTS],
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "project_data": {
                 "project_name": "a_project",
@@ -87,6 +109,7 @@ class TestFileCreation:
     def test_store_barchart_for_capacities_with_additional_capacities(self):
         """ """
         dict_scalar_capacities = {
+            PATHS_TO_PLOTS: dict_plots[PATHS_TO_PLOTS],
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "project_data": {
                 "project_name": "a_project",
@@ -126,6 +149,7 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
         """ """
         dict_timeseries_test_one_bus = {
+            PATHS_TO_PLOTS: dict_plots[PATHS_TO_PLOTS],
             "project_data": {
                 "project_name": "a_project",
                 "scenario_name": "a_scenario",
@@ -149,6 +173,7 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         """ """
         dict_timeseries_test_two_busses = {
+            PATHS_TO_PLOTS: dict_plots[PATHS_TO_PLOTS],
             "project_data": {
                 "project_name": "a_project",
                 "scenario_name": "a_scenario",
