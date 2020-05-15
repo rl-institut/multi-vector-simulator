@@ -6,7 +6,7 @@ import oemof.outputlib as outputlib
 
 import src.D1_model_components as model_components
 
-from src.constants_json_strings import ENERGY_CONVERSION, ENERGY_CONSUMPTION, ENERGY_PRODUCTION, ENERGY_BUSSES, ENERGY_STORAGE, OEMOF_ASSET_TYPE
+from src.constants_json_strings import ENERGY_BUSSES, OEMOF_ASSET_TYPE, ACCEPTED_ASSETS_FOR_ASSET_GROUPS, OEMOF_GEN_STORAGE, OEMOF_SINK, OEMOF_SOURCE, OEMOF_TRANSFORMER
 
 """
 Functional requirements of module D0:
@@ -25,10 +25,13 @@ Functional requirements of module D0:
 - add simulation parameters to dict values 
 """
 
-class WrongOemofAssetError(ValueError):
+class WrongOemofAssetForGroupError(ValueError):
     """Exception raised for wrong column name in "storage_xx" input file."""
     pass
 
+class UnknownOemofAssetType(ValueError):
+    """Exception raised for wrong column name in "storage_xx" input file."""
+    pass
 
 def run_oemof(dict_values):
     """
@@ -46,56 +49,7 @@ def run_oemof(dict_values):
 
     model, dict_model = model_building.initialize(dict_values)
 
-    logging.info("Adding components to energy system model...")
-
-    # Check all dict values and if necessary call component
-    # "for loop" chosen to raise errors in case entries are not defined
-    # other way would be: if key in dict_values: define/call component
-    for bus in dict_values[ENERGY_BUSSES]:
-        model_components.bus(model, bus, **dict_model)
-
-    ACCEPTED_ASSETS_FOR_MODELGROUPS = {
-        ENERGY_CONVERSION: ["transformer"]
-    }  
-
-    for asset in dict_values[ENERGY_CONVERSION]:
-        type = dict_values[ENERGY_CONVERSION][asset][OEMOF_ASSET_TYPE]
-        if type == "transformer":
-            model_components.transformer(
-                model, dict_values[ENERGY_CONVERSION][asset], **dict_model
-            )
-        else:
-            model_building.error_asset_type(asset, type, ENERGY_CONVERSION)
-
-    for asset in dict_values[ENERGY_CONSUMPTION]:
-        type = dict_values[ENERGY_CONSUMPTION][asset][OEMOF_ASSET_TYPE]
-        if type == "sink":
-            model_components.sink(
-                model, dict_values[ENERGY_CONSUMPTION][asset], **dict_model
-            )
-        else:
-            model_building.error_asset_type(asset, type, ENERGY_CONSUMPTION)
-
-    for asset in dict_values[ENERGY_PRODUCTION]:
-
-        type = dict_values[ENERGY_PRODUCTION][asset][OEMOF_ASSET_TYPE]
-        if type == "source":
-            model_components.source(
-                model, dict_values[ENERGY_PRODUCTION][asset], **dict_model
-            )
-        else:
-            model_building.error_asset_type(asset, type, ENERGY_PRODUCTION)
-
-    for asset in dict_values[ENERGY_STORAGE]:
-        type = dict_values[ENERGY_STORAGE][asset][OEMOF_ASSET_TYPE]
-        if type == "storage":
-            model_components.storage(
-                model, dict_values[ENERGY_STORAGE][asset], **dict_model
-            )
-        else:
-            model_building.error_asset_type(asset, type, ENERGY_STORAGE)
-
-    logging.debug("All components added.")
+    model = model_building.adding_assets_to_energysystem_model(dict_values, dict_model, model)
 
     if (
         dict_values["simulation_settings"]["display_nx_graph"]["value"] == True
@@ -208,27 +162,69 @@ class model_building:
         }
         return model, dict_model
 
-    def error_asset_type(asset, type, assetGroup):
-        """
-        Raises error is the type of an asset is not as expected for the asset group.
-        asset: str
-            Asset in question
-        type: str
-            Asset type
-        assetGroup: str
-            Asset group
+
+    def adding_assets_to_energysystem_model(dict_values, dict_model, model):
+        '''
+
+        Parameters
+        ----------
+        dict_values: dict
+            dict of simulation data
+
+        model: oemof.solph.network.EnergySystem
+            Model of oemof energy system
+
+        dict_model:
+            Updated list of assets in the oemof energy system model
 
         Returns
         -------
-        WrongOemofAssetError
-        """
-        raise WrongOemofAssetError(
-            f"Asset {asset} has type {type}, "
-            f"but this type is not an asset type attributed to asset group {assetGroup}"
-            f" for oemof model generation."
-        )
 
-        return
+        '''
+        logging.info("Adding components to oemof energy system model...")
+
+        # Busses have to be defined first
+        for bus in dict_values[ENERGY_BUSSES]:
+            model_components.bus(model, bus, **dict_model)
+
+        # Adding step by step all assets defined within the asset groups
+        for asset_group in ACCEPTED_ASSETS_FOR_ASSET_GROUPS:
+            for asset in dict_values[asset_group]:
+                type = dict_values[asset_group][asset][OEMOF_ASSET_TYPE]
+                # Checking if the asset type is one accepted for the asset group (security measure)
+                if type in ACCEPTED_ASSETS_FOR_ASSET_GROUPS[asset_group]:
+                    # if so, then the appropriate function of D1 should be called
+                    if type == OEMOF_TRANSFORMER:
+                        model_components.transformer(
+                            model, dict_values[asset_group][asset], **dict_model
+                        )
+                    elif type == OEMOF_SINK:
+                        model_components.sink(
+                            model, dict_values[asset_group][asset], **dict_model
+                        )
+                    elif type == OEMOF_SOURCE:
+                        model_components.source(
+                            model, dict_values[asset_group][asset], **dict_model
+                        )
+                    elif type == OEMOF_GEN_STORAGE:
+                        model_components.storage(
+                            model, dict_values[asset_group][asset], **dict_model
+                        )
+                    else:
+                        raise UnknownOemofAssetType(
+                            f"Asset {asset} has type {type}, "
+                            f"but this type is not a defined oemof asset type."
+                        )
+
+                else:
+                    raise WrongOemofAssetForGroupError(
+                        f"Asset {asset} has type {type}, "
+                        f"but this type is not an asset type attributed to asset group {asset_group}"
+                        f" for oemof model generation."
+                    )
+
+        logging.debug("All components added.")
+        return model
 
 class timer:
     def initalize():
