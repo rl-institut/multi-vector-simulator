@@ -21,7 +21,7 @@ import numpy as np
 import src.B0_data_input_json as B0
 import src.F0_output as F0
 
-from .constants import TEST_REPO_PATH
+from .constants import TEST_REPO_PATH, DICT_PLOTS
 
 OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
@@ -49,26 +49,6 @@ UNKNOWN_TYPE = np.float32(SCALAR / 10)
 
 BUS = pd.DataFrame({"timeseries 1": pandas_Series, "timeseries 2": pandas_Series})
 
-from src.constants import (
-    PLOTS_BUSSES,
-    PATHS_TO_PLOTS,
-    PLOTS_DEMANDS,
-    PLOTS_RESOURCES,
-    PLOTS_NX,
-    PLOTS_PERFORMANCE,
-    PLOTS_COSTS,
-)
-
-dict_plots = {
-    PATHS_TO_PLOTS: {
-        PLOTS_BUSSES: [],
-        PLOTS_DEMANDS: [],
-        PLOTS_RESOURCES: [],
-        PLOTS_NX: [],
-        PLOTS_PERFORMANCE: [],
-        PLOTS_COSTS: [],
-    }
-}
 
 # def test_evaluate_result_dictionary():
 #    assert 0 == 0
@@ -91,7 +71,6 @@ class TestFileCreation:
     def test_store_barchart_for_capacities_no_additional_capacities(self):
         """ """
         dict_scalar_capacities = {
-            PATHS_TO_PLOTS: dict_plots[PATHS_TO_PLOTS],
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "project_data": {
                 "project_name": "a_project",
@@ -103,13 +82,13 @@ class TestFileCreation:
                 )
             },
         }
+        dict_scalar_capacities.update(DICT_PLOTS)
         show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
         assert show_optimal_capacities is False
 
     def test_store_barchart_for_capacities_with_additional_capacities(self):
         """ """
         dict_scalar_capacities = {
-            PATHS_TO_PLOTS: dict_plots[PATHS_TO_PLOTS],
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "project_data": {
                 "project_name": "a_project",
@@ -121,6 +100,7 @@ class TestFileCreation:
                 )
             },
         }
+        dict_scalar_capacities.update(DICT_PLOTS)
         show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
         assert show_optimal_capacities is True
 
@@ -149,7 +129,6 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
         """ """
         dict_timeseries_test_one_bus = {
-            PATHS_TO_PLOTS: dict_plots[PATHS_TO_PLOTS],
             "project_data": {
                 "project_name": "a_project",
                 "scenario_name": "a_scenario",
@@ -157,7 +136,7 @@ class TestFileCreation:
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS},
         }
-
+        dict_timeseries_test_one_bus.update(DICT_PLOTS)
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_one_bus)
         assert (
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
@@ -173,7 +152,6 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         """ """
         dict_timeseries_test_two_busses = {
-            PATHS_TO_PLOTS: dict_plots[PATHS_TO_PLOTS],
             "project_data": {
                 "project_name": "a_project",
                 "scenario_name": "a_scenario",
@@ -181,6 +159,7 @@ class TestFileCreation:
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS, "b_bus": BUS},
         }
+        dict_timeseries_test_two_busses.update(DICT_PLOTS)
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
         assert (
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses" + ".xlsx"))
