@@ -5,6 +5,7 @@ import oemof.outputlib as outputlib
 
 
 import src.D1_model_components as model_components
+import src.D2_model_constraints as D2
 
 
 def run_oemof(dict_values):
@@ -126,6 +127,7 @@ def run_oemof(dict_values):
 
     logging.info("Adding constraints to oemof model...")
     # todo include constraints
+    D2.modelling_constraints()
     """
     Stability constraint
     include constraint linking two converters (ie "in/out")
