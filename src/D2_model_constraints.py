@@ -6,6 +6,8 @@ Future constraints are discussed in issue #133 (https://github.com/rl-institut/m
 
 constraints should be tested in-code (examples) and by comparing the lp file generated.
 """
+import logging
 
 def modelling_constraints():
+    logging.info("No modelling constraint to be introduced.")
     return
