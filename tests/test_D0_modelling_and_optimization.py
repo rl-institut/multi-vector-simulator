@@ -76,40 +76,47 @@ def test_networkx_graph_requested_display_and_store_nx_graph_true():
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
         )
 
-'''
-def test_if_oemof_results_are_stored_to_file_if_setting_true(self):
-   assert 1 == 0
-   
-def test_if_lp_file_is_stored_to_file_if_setting_true(self):
-   assert 1 == 0
-   
-def test_if_simulation_parameters_added_to_dict(self):
-   assert 1 == 0
-   
-def test_if_result_data_for_E0_in_correct_format(self):
-   assert 1 == 0
 
-def test_if_constraint_settings_add_constraints(self):
-   assert 1 == 0
-   
-def test_if_all_assets_added_to_dict_oemof_components(self):
-   assert 1 == 0
+import oemof.solph as solph
+path_lp_file = os.path.join(dict_values["simulation_settings"]["path_output_folder"], "lp_file.lp")
+def test_if_lp_file_is_stored_to_file_if_output_lp_file_true():
+    model, dict_model = D0.model_building.initialize(dict_values)
+    print(dict_values["simulation_settings"]["time_index"])
+    model = D0.model_building.adding_assets_to_energysystem_model(dict_values, dict_model, model)
+    local_energy_system = solph.Model(model)
+    dict_values["simulation_settings"]["output_lp_file"].update({"value": True})
+    D0.model_building.store_lp_file(dict_values, local_energy_system)
+    assert (
+            os.path.exists(path_lp_file) is True
+    )
 
-def test_if_energy_conversion_assets_added(self):
-   assert 1 == 0
+def test_if_lp_file_is_stored_to_file_if_output_lp_file_false():
+    model, dict_model = D0.model_building.initialize(dict_values)
+    model = D0.model_building.adding_assets_to_energysystem_model(dict_values, dict_model, model)
+    local_energy_system = solph.Model(model)
+    dict_values["simulation_settings"]["output_lp_file"].update({"value": False})
+    D0.model_building.store_lp_file(dict_values, local_energy_system)
+    assert (
+            os.path.exists(path_lp_file) is False
+    )
 
-def test_if_energy_production_assets_added(self):
-   assert 1 == 0
-   
-def test_if_energy_provider_assets_added(self):
-   assert 1 == 0    
+path_oemof_file = os.path.join(TEST_OUTPUT_PATH, "oemof_simulation_results.oemof")
 
-def test_if_energy_system_model_generated_by_oemof(self):
-   assert 1 == 0
-   
-def test_if_energy_storage_assets_added(self):
-   assert 1 == 0
-   
-def test_if_energy_busses_added(self):
-   assert 1 == 0
-'''
+def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_true(self):
+    dict_values["simulation_settings"]["output_lp_file"].update({"value": False})
+    D0.run_oemof(dict_values)
+    assert (
+            os.path.exists(path_oemof_file) is True
+    )
+
+def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false(self):
+    dict_values["simulation_settings"]["output_lp_file"].update({"value": False})
+    D0.run_oemof(dict_values)
+    assert (
+            os.path.exists(path_oemof_file) is False
+    )
+
+def test_if_simulation_results_added_to_dict_values():
+    D0.run_oemof(dict_values)
+    for k in ("label", "objective_value", "simulation_time"):
+        assert k in dict_values["simulation_results"] is True
