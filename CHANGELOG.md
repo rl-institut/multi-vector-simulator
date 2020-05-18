@@ -69,6 +69,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - The input from the csv files produce the same json than the json file (#286)
  
 ### Removed
+- Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´ (#150), as well as from all input files etc. The name is hardcoded now.
 
 ### Fixed
 - Rename "boolean" to "bool" in example json file (#214)
