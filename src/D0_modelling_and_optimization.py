@@ -2,7 +2,7 @@ import timeit
 import logging
 import oemof.solph as solph
 import oemof.outputlib as outputlib
-
+import os
 
 import src.D1_model_components as model_components
 
@@ -58,56 +58,11 @@ def run_oemof(dict_values):
 
     model_building.add_constraints()
 
-    if dict_values["simulation_settings"]["output_lp_file"]["value"] == True:
-        logging.debug("Saving to lp-file.")
-        local_energy_system.write(
-            dict_values["simulation_settings"]["path_output_folder"] + "/lp_file.lp",
-            io_options={"symbolic_solver_labels": True},
-        )
+    model_building.store_lp_file(dict_values, local_energy_system)
 
-    logging.info("Starting simulation.")
-    local_energy_system.solve(
-        solver="cbc",
-        solve_kwargs={
-            "tee": False
-        },  # if tee_switch is true solver messages will be displayed
-        cmdline_options={"ratioGap": str(0.03)},
-    )  # ratioGap allowedGap mipgap
-    logging.info("Problem solved.")
+    model, results_main, results_meta = model_building.simulating(dict_values, model, local_energy_system)
 
-    # add results to the energy system to make it possible to store them.
-    results_main = outputlib.processing.results(local_energy_system)
-    results_meta = outputlib.processing.meta_results(local_energy_system)
-
-    model.results["main"] = results_main
-    model.results["meta"] = results_meta
-
-    # store energy system with results
-    if dict_values["simulation_settings"]["store_oemof_results"]["value"] == True:
-        model.dump(
-            dpath=dict_values["simulation_settings"]["path_output_folder"],
-            filename=dict_values["simulation_settings"]["oemof_file_name"],
-        )
-        logging.debug(
-            "Stored results in %s/MVS_results.oemof.",
-            dict_values["simulation_settings"]["path_output_folder"],
-        )
-
-
-    dict_values.update(
-        {
-            "simulation_results": {
-                "label": "simulation_results",
-                "objective_value": results_meta["objective"],
-                "simulation_time": results_meta["solver"]["Time"],
-            }
-        }
-    )
-
-    logging.info(
-        "Simulation time: %s minutes.",
-        round(dict_values["simulation_results"]["simulation_time"] / 60, 2),
-    )
+    model_building.store_oemof_results(dict_values, model)
 
     timer.stop(dict_values, start)
 
@@ -232,6 +187,62 @@ class model_building:
         Minimal renewable share constraint
         """
         logging.debug("All constraints added.")
+        return
+
+    def store_lp_file(dict_values, local_energy_system):
+        path_lp_file = os.path.join(dict_values["simulation_settings"]["path_output_folder"], "lp_file.lp")
+        if dict_values["simulation_settings"]["output_lp_file"]["value"] == True:
+            logging.debug("Saving to lp-file.")
+            local_energy_system.write(
+                path_lp_file,
+                io_options={"symbolic_solver_labels": True},
+            )
+        return
+
+    def simulating(dict_values, model, local_energy_system):
+        logging.info("Starting simulation.")
+        local_energy_system.solve(
+            solver="cbc",
+            solve_kwargs={
+                "tee": False
+            },  # if tee_switch is true solver messages will be displayed
+            cmdline_options={"ratioGap": str(0.03)},
+        )  # ratioGap allowedGap mipgap
+        logging.info("Problem solved.")
+
+        # add results to the energy system to make it possible to store them.
+        results_main = outputlib.processing.results(local_energy_system)
+        results_meta = outputlib.processing.meta_results(local_energy_system)
+
+        model.results["main"] = results_main
+        model.results["meta"] = results_meta
+
+        dict_values.update(
+            {
+                "simulation_results": {
+                    "label": "simulation_results",
+                    "objective_value": results_meta["objective"],
+                    "simulation_time": round(results_meta["solver"]["Time"], 2),
+                }
+            }
+        )
+        logging.info(
+            "Simulation time: %s minutes.",
+            round(dict_values["simulation_results"]["simulation_time"] / 60, 2),
+        )
+        return model, results_main, results_main
+
+    def store_oemof_results(dict_values, model):
+        # store energy system with results
+        if dict_values["simulation_settings"]["store_oemof_results"]["value"] == True:
+            model.dump(
+                dpath=dict_values["simulation_settings"]["path_output_folder"],
+                filename="oemof_simulation_results.oemof",
+            )
+            logging.debug(
+                "Stored results in %s/MVS_results.oemof.",
+                dict_values["simulation_settings"]["path_output_folder"],
+            )
         return
 
 class timer:
