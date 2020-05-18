@@ -1,0 +1,14 @@
+.graph__pre-title{
+    textAlign: left,
+    fontSize: 40px,
+    position: relative,
+    left: 0,
+    height: 20%,
+    margin: 0mm,
+    borderLeft: 20px solid #8c3604,
+    background: #ffffff,
+    paddingTop: 1px,
+    paddingBottom: 1px,
+    paddingLeft: 30px,
+    paddingRight: 60px,
+}

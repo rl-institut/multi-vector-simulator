@@ -1,0 +1,8 @@
+,unit
+age_installed,year
+capex_fix,currency
+capex_var,currency
+label,str
+lifetime,year
+opex_fix,currency/year
+opex_var,currency/kWh

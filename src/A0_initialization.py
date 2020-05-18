@@ -41,6 +41,8 @@ from src.constants import (
     CSV_EXT,
     CSV_ELEMENTS,
     INPUTS_COPY,
+    DEFAULT_MAIN_KWARGS,
+    PDF_REPORT,
 )
 
 from oemof.tools import logger
@@ -98,6 +100,15 @@ def create_parser():
         default=False,
         type=bool,
     )
+    parser.add_argument(
+        "-pdf",
+        dest="pdf_report",
+        help="generate a pdf report of the simulation if True (default: False)",
+        nargs="?",
+        const=True,
+        default=False,
+        type=bool,
+    )
     return parser
 
 
@@ -127,17 +138,19 @@ def check_input_folder(path_input_folder, input_type):
             raise (
                 FileNotFoundError(
                     "Missing input json file!\n"
-                    "The input json file '{}' can not be found.\n"
-                    "Operation terminated.".format(JSON_FNAME)
+                    "The input json file '{}' in path '{}' can not be found.\n"
+                    "Operation terminated.".format(JSON_FNAME, path_input_folder)
                 )
             )
         json_files = [f for f in os.listdir(path_input_folder) if f.endswith(JSON_EXT)]
         if len(json_files) > 1:
             raise (
                 FileExistsError(
-                    "Two many json files in input folder ({})!\n"
+                    "Two many json files ({}) in input folder '{}'!\n"
                     "Only the input json file '{}' should be present.\n"
-                    "Operation terminated.".format(", ".join(json_files), JSON_FNAME)
+                    "Operation terminated.".format(
+                        ", ".join(json_files), path_input_folder, JSON_FNAME
+                    )
                 )
             )
     elif input_type == CSV_EXT:
@@ -146,8 +159,8 @@ def check_input_folder(path_input_folder, input_type):
             raise (
                 FileNotFoundError(
                     "Missing folder for csv inputs! "
-                    "The input csv folder '{}' can not be found.\n"
-                    "Operation terminated.".format(CSV_ELEMENTS)
+                    "The input csv folder '{}' can not be found in the input path '{}'.\n"
+                    "Operation terminated.".format(CSV_ELEMENTS, path_input_folder)
                 )
             )
 
@@ -193,13 +206,13 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
             shutil.rmtree(path_output_folder, ignore_errors=True)
 
             logging.info("Creating output folder " + path_output_folder)
-            os.mkdir(path_output_folder)
+            os.makedirs(path_output_folder)
 
             logging.info('Creating folder "inputs" in output folder.')
             shutil.copytree(path_input_folder, path_output_folder_inputs)
     else:
         logging.info("Creating output folder " + path_output_folder)
-        os.mkdir(path_output_folder)
+        os.makedirs(path_output_folder)
 
         logging.info('Creating folder "inputs" in output folder.')
         shutil.copytree(path_input_folder, path_output_folder_inputs)
@@ -210,6 +223,7 @@ def process_user_arguments(
     input_type=None,
     path_output_folder=None,
     overwrite=None,
+    pdf_report=None,
     display_output=None,
     lp_file_output=False,
     welcome_text=None,
@@ -227,6 +241,8 @@ def process_user_arguments(
         Must not exist before
     :param overwrite:
         (Optional) Can force tool to replace existing output folder (command line "-f")
+    :param pdf_report:
+        (Optional) Can generate an automatic pdf report of the simulation's results (Command line "-pdf")
     :param display_output:
         (Optional) Determines which messages are used for terminal output (command line "-log")
             "debug": All logging messages
@@ -246,21 +262,31 @@ def process_user_arguments(
     parser = create_parser()
     args = vars(parser.parse_args())
 
-    # Give priority from kwargs over command line arguments
+    # Give priority from user input kwargs over command line arguments
+    # However the command line arguments have priority over default kwargs
     if path_input_folder is None:
-        path_input_folder = args.get("path_input_folder")
+        path_input_folder = args.get(
+            "path_input_folder", DEFAULT_MAIN_KWARGS["path_input_folder"]
+        )
 
     if input_type is None:
-        input_type = args.get("input_type")
+        input_type = args.get("input_type", DEFAULT_MAIN_KWARGS["input_type"])
 
     if path_output_folder is None:
-        path_output_folder = args.get("path_output_folder")
+        path_output_folder = args.get(
+            "path_output_folder", DEFAULT_MAIN_KWARGS["path_output_folder"]
+        )
 
     if overwrite is None:
-        overwrite = args.get("overwrite")
+        overwrite = args.get("overwrite", DEFAULT_MAIN_KWARGS["overwrite"])
+
+    if pdf_report is None:
+        pdf_report = args.get("pdf_report", DEFAULT_MAIN_KWARGS["pdf_report"])
 
     if display_output is None:
-        display_output = args.get("display_output")
+        display_output = args.get(
+            "display_output", DEFAULT_MAIN_KWARGS["display_output"]
+        )
 
     path_input_file = check_input_folder(path_input_folder, input_type)
     check_output_folder(path_input_folder, path_output_folder, overwrite)
@@ -275,6 +301,11 @@ def process_user_arguments(
         "display_output": display_output,
         "lp_file_output": lp_file_output,
     }
+
+    if pdf_report is True:
+        user_input.update(
+            {"path_pdf_report": os.path.join(path_output_folder, PDF_REPORT)}
+        )
 
     if display_output == "debug":
         screen_level = logging.DEBUG

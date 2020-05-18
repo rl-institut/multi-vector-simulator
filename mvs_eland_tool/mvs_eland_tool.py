@@ -40,7 +40,7 @@ import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
 import src.F0_output as output_processing
 
-from src.constants import CSV_ELEMENTS, CSV_FNAME, CSV_EXT
+from src.constants import CSV_ELEMENTS, CSV_FNAME, CSV_EXT, DEFAULT_MAIN_KWARGS
 
 
 def main(**kwargs):
@@ -53,6 +53,9 @@ def main(**kwargs):
     overwrite : bool, optional
         Determines whether to replace existing results in `path_output_folder`
         with the results of the current simulation (True) or not (False).
+        Default: False.
+    pdf_report: cool, optional
+        Can generate an automatic pdf report of the simulation's results (True) or not (False)
         Default: False.
     input_type : str, optional
         Defines whether the input is taken from the `mvs_config.json` file
@@ -73,6 +76,7 @@ def main(**kwargs):
         Default: False.
 
     """
+
     version = (
         "0.2.0"  # update_me Versioning scheme: Major release.Minor release.Patches
     )
@@ -102,11 +106,13 @@ def main(**kwargs):
     #    # todo: is user input completely used?
     #    dict_values = data_input.load_json(user_input["path_input_file"])
 
+    move_copy_config_file = False
+
     if user_input["input_type"] == CSV_EXT:
         logging.debug("Accessing script: A1_csv_to_json")
+        move_copy_config_file = True
         load_data_from_csv.create_input_json(
-            input_directory=os.path.join(user_input["path_input_folder"], CSV_ELEMENTS),
-            output_filename=CSV_FNAME,
+            input_directory=os.path.join(user_input["path_input_folder"], CSV_ELEMENTS)
         )
 
     logging.debug("Accessing script: B0_data_input_json")
@@ -114,6 +120,7 @@ def main(**kwargs):
         user_input["path_input_file"],
         path_input_folder=user_input["path_input_folder"],
         path_output_folder=user_input["path_output_folder"],
+        move_copy=move_copy_config_file,
     )
 
     print("")
@@ -144,7 +151,9 @@ def main(**kwargs):
     evaluation.evaluate_dict(dict_values, results_main, results_meta)
 
     logging.debug("Accessing script: F0_outputs")
-    output_processing.evaluate_dict(dict_values)
+    output_processing.evaluate_dict(
+        dict_values, path_pdf_report=user_input.get("path_pdf_report", None)
+    )
     return 1
 
 
