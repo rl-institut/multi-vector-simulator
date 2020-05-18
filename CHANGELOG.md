@@ -20,7 +20,6 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
-
 - Description of validation scheme into readthedocs (#306)
 - Flowchart and relative description (#305)
 - License is referenced
@@ -45,6 +44,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for module F1 (#157, #297, #284)
 - Benchmark test with only PV and grid (#258)
 - Module F2 for auto-reporting results of MVS simulation (#232)
+- Json entries including paths to all plotted graphs (#232)
 - Tests for module C2 (#151)
 - Tests for storage for the module A1 (#299)
 - Benchmark test with only battery and grid (#302)
@@ -89,6 +89,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
  would return an error (#278)
  - Display SOC (#278)
  - Automatic update of the test coverage with coveralls.io (#307)
+- Logging message for maximumCap value (#310)
 
 ## [0.2.0] - 2020-03-13
 
