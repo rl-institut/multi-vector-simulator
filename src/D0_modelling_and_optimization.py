@@ -7,6 +7,7 @@ import oemof.outputlib as outputlib
 import src.D1_model_components as model_components
 import src.D2_model_constraints as D2
 
+
 def run_oemof(dict_values):
     """
     Creates and solves energy system model generated from excel template inputs.

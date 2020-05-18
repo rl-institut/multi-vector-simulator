@@ -8,6 +8,7 @@ constraints should be tested in-code (examples) and by comparing the lp file gen
 """
 import logging
 
+
 def modelling_constraints():
     logging.info("No modelling constraint to be introduced.")
     return
