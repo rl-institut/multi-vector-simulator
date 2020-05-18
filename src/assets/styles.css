@@ -1,14 +1,117 @@
-.graph__pre-title{
-    textAlign: left,
-    fontSize: 40px,
-    position: relative,
-    left: 0,
-    height: 20%,
-    margin: 0mm,
-    borderLeft: 20px solid #8c3604,
-    background: #ffffff,
-    paddingTop: 1px,
-    paddingBottom: 1px,
-    paddingLeft: 30px,
-    paddingRight: 60px,
-}
+.graph__pre-title {
+    textAlign: left;
+    fontSize: 40px;
+    position: relative;
+    left: 0;
+    height: 20%;
+    margin: 0mm;
+    borderLeft: 20px solid #8c3604;
+    background: #ffffff;
+    paddingTop: 1px;
+    paddingBottom: 1px;
+    paddingLeft: 30px;
+    paddingRight: 60px;
+    }
+
+.header_title_logo {
+    textAlign: center;
+    color: #000000;
+    borderStyle: solid;
+    borderWidth: thin;
+    padding: 10px;
+    margin: 30px;
+    fontSize: 225%
+    }
+
+.projdataheading {
+    position: relative;
+    left: 0;
+    height: 20%;
+    margin: 0mm;
+    borderLeft: 20px solid #8c3604;
+    background: #ffffff;
+    paddingTop: 1px;
+    paddingBottom: 1px;
+    paddingLeft: 30px;
+    paddingRight: 60px;
+    }
+
+.imp-info {
+    textAlign: right;
+    padding: 5px;
+    fontSize: 22px;
+    margin: 30px;
+    }
+
+.imp_info2 {
+    textAlign: left;
+    fontSize: 40px;
+    margin: 30px;
+    }
+    
+.blockoftext1 {
+    textAlign: justify;
+    fontSize: 40px;
+    margin: 30px;
+    }
+    
+.inpdatabox {
+    textAlign: center;
+    borderStyle: solid;
+    borderWidth: thin;
+    padding: 0.5px;
+    margin: 30px;
+    fontSize: 250%;
+    width: 3000px;
+    margin-left: auto;
+    margin-right: auto;
+    background: #03034f;
+    color: #FFFFFF;
+    verticalAlign: middle;
+    }
+
+.blockoftext2 {
+    textAlign: justify;
+    fontSize: 40px;
+    margin: 30px;
+    }
+
+.simresultsbox {
+    textAlign: center;
+    borderStyle: solid;
+    borderWidth: thin;
+    padding: 0.5px;
+    margin: 30px;
+    fontSize: 250%;
+    width: 3000px;
+    margin-left: auto;
+    margin-right: auto;
+    background: #03034f;
+    color: #FFFFFF;
+    verticalAlign: middle;
+    }
+
+.demandmatter {
+    textAlign: left;
+    fontSize: 40px;
+    margin: 30px;
+    }
+
+.heading1 {
+    textAlign: left;
+    margin: 30px;
+    fontSize: 60px;
+    color: #8c3604;
+    }
+
+.horizontal_line {
+    color: #000000;
+    margin: 30px;
+    }
+
+.projdata { 
+    width: 48%;
+    margin: 30px;
+    fontSize: 40px;
+    }
+
