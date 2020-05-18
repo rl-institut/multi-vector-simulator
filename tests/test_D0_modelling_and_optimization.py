@@ -3,7 +3,11 @@ import pytest
 
 # this test should be ensured by the benchmark tests itself.
 #def test_if_oemof_simulation_runs_through(self):
-
+import os
+import json
+json_path = os.path.join("tests", "test_data", "test_data_for_D0.json")
+with open(json_path) as json_file:
+    dict_values = json.load(json_file)
 
 def test_if_model_building_time_measured_and_stored():
     dict_values = {"simulation_results": {}}
@@ -20,42 +24,65 @@ START_TIME = "2020-01-01 00:00"
 PERIODS = 3
 pandas_DatetimeIndex = pd.date_range(start=START_TIME, periods=PERIODS, freq="60min")
 
-dict_values = {"simulation_settings": {"time_index": pandas_DatetimeIndex},
-               ENERGY_BUSSES: "bus"}
+dict_values_minimal = {"simulation_settings": {"time_index": pandas_DatetimeIndex},
+                       ENERGY_BUSSES: "bus"}
 
 def test_energysystem_initialized():
-    model, dict_model = D0.model_building.initialize(dict_values)
-    for k in ("busses","sinks", "sources", "transformers", "storages"):
+    model, dict_model = D0.model_building.initialize(dict_values_minimal)
+    for k in ("busses", "sinks", "sources", "transformers", "storages"):
         assert k in dict_model.keys()
     assert isinstance(model, oemof.solph.network.EnergySystem)
 
 
+def test_oemof_adding_assets_from_dict_values_passes():
+    model, dict_model = D0.model_building.initialize(dict_values)
+    D0.model_building.adding_assets_to_energysystem_model(dict_values, dict_model, model)
+    assert 1 == 1
+
+def test_error_raise_WrongOemofAssetForGroupError_if_oemof_asset_type_not_accepted_for_asset_group():
+    model, dict_model = D0.model_building.initialize(dict_values_minimal)
+    dict_test = {ENERGY_CONSUMPTION: {"asset": {OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER}}}
+    dict_test.update(dict_values_minimal)
+    with pytest.raises(D0.WrongOemofAssetForGroupError):
+        D0.model_building.adding_assets_to_energysystem_model(dict_test, dict_model, model)
+
+from src.constants_json_strings import ACCEPTED_ASSETS_FOR_ASSET_GROUPS
+def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0():
+    model, dict_model = D0.model_building.initialize(dict_values_minimal)
+    dict_test = {ENERGY_CONSUMPTION: {"asset": {OEMOF_ASSET_TYPE: "unknown_type"}}}
+    dict_test.update(dict_values_minimal)
+    ACCEPTED_ASSETS_FOR_ASSET_GROUPS[ENERGY_CONSUMPTION].append("unknown_type")
+    with pytest.raises(D0.UnknownOemofAssetType):
+        D0.model_building.adding_assets_to_energysystem_model(dict_test, dict_model, model, **ACCEPTED_ASSETS_FOR_ASSET_GROUPS)
+
+from tests.constants import TEST_REPO_PATH
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
+
+def test_networkx_graph_requested_store_nx_graph_true():
+    model, dict_model = D0.model_building.initialize(dict_values)
+    D0.model_building.adding_assets_to_energysystem_model(dict_values, dict_model, model)
+    dict_values["simulation_settings"]["store_nx_graph"].update({"value": True})
+    D0.model_building.plot_networkx_graph(dict_values, model)
+    assert (
+            os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
+        )
+
+def test_networkx_graph_requested_display_and_store_nx_graph_true():
+    model, dict_model = D0.model_building.initialize(dict_values)
+    D0.model_building.adding_assets_to_energysystem_model(dict_values, dict_model, model)
+    dict_values["simulation_settings"]["store_nx_graph"].update({"value": False})
+    D0.model_building.plot_networkx_graph(dict_values, model)
+    assert (
+            os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
+        )
+
 '''
-
-def test_error_raise_if_oemof_asset_type_accepted_for_asset_group():
-    model, dict_model = D0.model_building.initialize(dict_values)
-    dict_test = {ENERGY_CONSUMPTION: {"Asset": {OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER}}}
-    dict_test.update(dict_values)
-    with pytest.raises(ValueError):
-        D0.model_building.adding_assets_to_energysystem_model(dict_values, dict_model, model)
-
-def test_error_raise_if_oemof_asset_type_not_defined():
-    model, dict_model = D0.model_building.initialize(dict_values)
-    dict_test = {ENERGY_CONSUMPTION: {"Asset": {OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER}}}
-    dict_test.update(dict_values)
-    with pytest.raises(ValueError):
-        D0.model_building.adding_assets_to_energysystem_model(dict_values, dict_model, model)
-
-
 def test_if_oemof_results_are_stored_to_file_if_setting_true(self):
    assert 1 == 0
    
 def test_if_lp_file_is_stored_to_file_if_setting_true(self):
    assert 1 == 0
    
-def test_if_networkx_graph_function_called(self):
-   assert 1 == 0
-
 def test_if_simulation_parameters_added_to_dict(self):
    assert 1 == 0
    
