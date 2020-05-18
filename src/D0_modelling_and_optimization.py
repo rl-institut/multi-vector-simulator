@@ -7,7 +7,6 @@ import oemof.outputlib as outputlib
 import src.D1_model_components as model_components
 
 from src.constants_json_strings import ENERGY_BUSSES, OEMOF_ASSET_TYPE, ACCEPTED_ASSETS_FOR_ASSET_GROUPS, OEMOF_GEN_STORAGE, OEMOF_SINK, OEMOF_SOURCE, OEMOF_TRANSFORMER
-
 """
 Functional requirements of module D0:
 - measure time needed to build model
@@ -51,35 +50,13 @@ def run_oemof(dict_values):
 
     model = model_building.adding_assets_to_energysystem_model(dict_values, dict_model, model)
 
-    if (
-        dict_values["simulation_settings"]["display_nx_graph"]["value"] == True
-        or dict_values["simulation_settings"]["store_nx_graph"]["value"] is True
-    ):
-
-        from src.F1_plotting import draw_graph
-
-        draw_graph(
-            dict_values,
-            model,
-            node_color={},
-            show_plot=dict_values["simulation_settings"]["display_nx_graph"]["value"],
-            save_plot=dict_values["simulation_settings"]["store_nx_graph"]["value"],
-            user_input=dict_values["simulation_settings"],
-        )
-        logging.debug("Created networkx graph of the energy system.")
+    model_building.plot_networkx_graph(dict_values, model)
 
     logging.debug("Creating oemof model based on created components and busses...")
     local_energy_system = solph.Model(model)
     logging.debug("Created oemof model based on created components and busses.")
 
-    logging.info("Adding constraints to oemof model...")
-    # todo include constraints
-    """
-    Stability constraint
-    include constraint linking two converters (ie "in/out")
-    Minimal renewable share constraint
-    """
-    logging.debug("All constraints added.")
+    model_building.add_constraints()
 
     if dict_values["simulation_settings"]["output_lp_file"]["value"] == True:
         logging.debug("Saving to lp-file.")
@@ -161,10 +138,11 @@ class model_building:
             "transformers": {},
             "storages": {},
         }
+
         return model, dict_model
 
 
-    def adding_assets_to_energysystem_model(dict_values, dict_model, model):
+    def adding_assets_to_energysystem_model(dict_values, dict_model, model, **kwargs):
         '''
 
         Parameters
@@ -227,6 +205,34 @@ class model_building:
 
         logging.debug("All components added.")
         return model
+
+    def plot_networkx_graph(dict_values, model):
+        if (
+                dict_values["simulation_settings"]["display_nx_graph"]["value"] == True
+                or dict_values["simulation_settings"]["store_nx_graph"]["value"] is True
+        ):
+            from src.F1_plotting import draw_graph
+
+            draw_graph(
+                dict_values,
+                model,
+                node_color={},
+                show_plot=dict_values["simulation_settings"]["display_nx_graph"]["value"],
+                save_plot=dict_values["simulation_settings"]["store_nx_graph"]["value"],
+                user_input=dict_values["simulation_settings"],
+            )
+            logging.debug("Created networkx graph of the energy system.")
+        return
+
+    def add_constraints():
+        logging.info("Adding constraints to oemof model...")
+        """
+        Stability constraint
+        include constraint linking two converters (ie "in/out")
+        Minimal renewable share constraint
+        """
+        logging.debug("All constraints added.")
+        return
 
 class timer:
     def initalize():
