@@ -35,6 +35,8 @@ TIME_SERIES = "time_series"
 OUTPUT_FOLDER = "MVS_outputs"
 # name of the folder containing the copied content of the input folder within the output folder
 INPUTS_COPY = INPUT_FOLDER
+# name of the automatically generated pdf report
+PDF_REPORT = "simulation_report.pdf"
 
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
@@ -50,6 +52,7 @@ USER_INPUT_ARGUMENTS = (
 
 DEFAULT_MAIN_KWARGS = dict(
     overwrite=False,
+    pdf_report=False,
     input_type=JSON_EXT,
     path_input_folder=DEFAULT_INPUT_PATH,
     path_output_folder=DEFAULT_OUTPUT_PATH,
@@ -176,3 +179,25 @@ KPI_SCALARS = (
     "costs_total",
     "costs_upfront",
 )
+
+# key of the dict containing generated plots filesnames in results_json file
+PATHS_TO_PLOTS = "paths_to_plots"
+# keys' names of dict containing generated plots filenames
+PLOTS_DEMANDS = "demands"
+PLOTS_RESOURCES = "resources"
+PLOTS_NX = "nx"
+PLOTS_PERFORMANCE = "performance"
+PLOTS_COSTS = "costs"
+PLOTS_BUSSES = "flows_on_busses"
+
+# structure of the dict containing generated plots filenames in results_json file
+DICT_PLOTS = {
+    PATHS_TO_PLOTS: {
+        PLOTS_BUSSES: [],
+        PLOTS_DEMANDS: [],
+        PLOTS_RESOURCES: [],
+        PLOTS_NX: [],
+        PLOTS_PERFORMANCE: [],
+        PLOTS_COSTS: [],
+    }
+}

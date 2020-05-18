@@ -22,6 +22,7 @@ from src.constants import (
     CSV_EXT,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
+    PDF_REPORT,
 )
 
 
@@ -153,6 +154,28 @@ class TestProcessUserArguments:
         initializing.process_user_arguments()
         assert os.path.exists(os.path.join(self.test_out_path, "recursive_folder"))
 
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            ["-i", test_in_path, "-o", test_out_path, "-pdf"]
+        ),
+    )
+    def test_if_pdf_opt_the_key_path_pdf_report_exists_in_user_inputs(self, m_args):
+        user_inputs = initializing.process_user_arguments()
+        assert user_inputs["path_pdf_report"] == os.path.join(
+            self.test_out_path, PDF_REPORT
+        )
+
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-i", test_in_path, "-o", test_out_path]),
+    )
+    def test_if_no_pdf_opt_the_key_path_pdf_report_does_not_exist_in_user_inputs(
+        self, m_args
+    ):
+        user_inputs = initializing.process_user_arguments()
+        assert "path_pdf_report" not in user_inputs.keys()
+
     def teardown_method(self):
         if os.path.exists(self.test_out_path):
             shutil.rmtree(self.test_out_path, ignore_errors=True)
@@ -221,6 +244,14 @@ class TestCommandLineInput:
     def test_overwrite_activation(self):
         parsed = self.parser.parse_args(["-f"])
         assert parsed.overwrite is True
+
+    def test_pdf_report_false_by_default(self):
+        parsed = self.parser.parse_args([])
+        assert parsed.pdf_report is False
+
+    def test_pdf_report_activation(self):
+        parsed = self.parser.parse_args(["-pdf"])
+        assert parsed.pdf_report is True
 
     def test_log_assignation(self):
         parsed = self.parser.parse_args(["-log", "debug"])
