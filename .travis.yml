@@ -6,6 +6,7 @@ python:
 # To install packages which are not on pip
 before_install:
   - sudo apt-get install coinor-cbc
+  - sudo apt-get install graphviz
 #addons:
 #  apt:
 #    update: true
@@ -22,7 +23,11 @@ script:
   - coverage run -m pytest
 
 after_success:
-  - COVERALLS_REPO_TOKEN=${{ secrets.coverage_token }} coveralls
+  - coverage report -m
+  - coveralls
+
+env:
+  - COVERALLS_REPO_TOKEN=${{ secrets.coverage_token }}
 #  - pylint */*.py
 #jobs:
 #  include:
