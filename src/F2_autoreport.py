@@ -65,24 +65,6 @@ def make_dash_data_table(df):
 def create_app(results_json):
     path_output_folder = results_json["simulation_settings"]["path_output_folder"]
 
-    # # Foundation JS styling sheets that are to be used later on to improve the formatting of the web app
-    # external_scripts = [
-    #     {
-    #         "src": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/js/foundation.min.js",
-    #         "integrity": "sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=",
-    #         "crossorigin": "anonymous",
-    #     }
-    # ]
-    #
-    # external_stylesheets = [
-    #     {
-    #         "href": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/css/foundation.min.css",
-    #         "rel": "stylesheet",
-    #         "integrity": "sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I",
-    #         "crossorigin": "anonymous",
-    #     }
-    # ]
-
     # Initialize the app
     app = dash.Dash(__name__)
 
