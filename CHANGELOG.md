@@ -50,6 +50,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Benchmark test with only battery and grid (#302)
 - Possibility to save the report generated in F2 as a pdf (#284)
 - Test for module D2 (#147)
+- Possibility to run benchmark tests selectively and make sure they are all run on master branch
+ (#320)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
