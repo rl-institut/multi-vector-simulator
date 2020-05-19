@@ -65,23 +65,23 @@ def make_dash_data_table(df):
 def create_app(results_json):
     path_output_folder = results_json["simulation_settings"]["path_output_folder"]
 
-    # Foundation JS styling sheets that are to be used to improve the formatting of the web app
-    external_scripts = [
-        {
-            "src": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/js/foundation.min.js",
-            "integrity": "sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=",
-            "crossorigin": "anonymous",
-        }
-    ]
-
-    external_stylesheets = [
-        {
-            "href": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/css/foundation.min.css",
-            "rel": "stylesheet",
-            "integrity": "sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I",
-            "crossorigin": "anonymous",
-        }
-    ]
+    # # Foundation JS styling sheets that are to be used later on to improve the formatting of the web app
+    # external_scripts = [
+    #     {
+    #         "src": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/js/foundation.min.js",
+    #         "integrity": "sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=",
+    #         "crossorigin": "anonymous",
+    #     }
+    # ]
+    #
+    # external_stylesheets = [
+    #     {
+    #         "href": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/css/foundation.min.css",
+    #         "rel": "stylesheet",
+    #         "integrity": "sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I",
+    #         "crossorigin": "anonymous",
+    #     }
+    # ]
 
     # Initialize the app
     app = dash.Dash(__name__)
@@ -93,7 +93,7 @@ def create_app(results_json):
         "inp-box": "#03034f",
         "font-inpbox": "#FFFFFF",
     }
-    # Reading the relevant user-inputs from the csv files into Pandas dataframes
+    # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
     dfprojectData = pd.DataFrame.from_dict(results_json["project_data"])
     dfeconomicData = pd.DataFrame.from_dict(results_json["economic_data"]).loc["value"]
 
@@ -118,6 +118,7 @@ def create_app(results_json):
         icon=folium.Icon(color="red", icon="glyphicon glyphicon-flash"),
     ).add_to(mapy)
     mapy.save(os.path.join(REPO_PATH, "src", "assets", "proj_map"))
+
 
     dict_projectdata = {
         "Country": dfprojectData.country,
@@ -304,7 +305,7 @@ def create_app(results_json):
                 ]
             ),
             html.Div(
-                className="imp-info",
+                className="imp_info",
                 children=[
                     html.P(f"MVS Release: {releaseDesign}"),
                     html.P(f"Branch-id: {branchID}"),
@@ -334,7 +335,7 @@ def create_app(results_json):
                 ]
             ),
             html.Div(
-                className="blockoftext1",
+                className="blockoftext",
                 children=[
                     html.Div(
                         [
@@ -351,7 +352,7 @@ def create_app(results_json):
             ),
             html.Br([]),
             html.Div(
-                className="inpdatabox",
+                className="inputs_simresults_box",
                 children=[html.H2("Input Data")],
             ),
             html.Br([]),
@@ -366,7 +367,7 @@ def create_app(results_json):
                 ],
             ),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                     html.P(
                         "The most important simulation data will be presented below. "
@@ -445,7 +446,7 @@ def create_app(results_json):
                 ],
             ),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                     html.P(
                         "The simulation was performed for the energy system "
@@ -504,7 +505,7 @@ def create_app(results_json):
                 ],
             ),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                     html.P(
                         "The energy system is comprised of the following components:"
@@ -514,7 +515,7 @@ def create_app(results_json):
             html.Div(children=[make_dash_data_table(df_comp)]),
             html.Br([]),
             html.Div(
-                className="simresultsbox",
+                className="inputs_simresults_box",
                 children=[html.H2("SIMULATION RESULTS")]
             ),
             html.Br([]),
@@ -528,7 +529,7 @@ def create_app(results_json):
                 ],
             ),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                     html.P(
                         "The capacity optimization of components that were to be used resulted in:"
@@ -537,7 +538,7 @@ def create_app(results_json):
             ),
             html.Div(children=[make_dash_data_table(df_scalars)]),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                              html.P(
                                  "With this, the demands are met with the following dispatch schedules:"
@@ -580,13 +581,13 @@ def create_app(results_json):
                     html.Hr(className="horizontal_line"),
                 ],
             ),
-            html.P(className="blockoftext2",
+            html.P(className="blockoftext",
                    children=[
                        "The following installation and operation costs result from capacity and dispatch optimization:"]
                    ),
             html.Div(children=[make_dash_data_table(df_costs)]),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                     html.Img(
                         src="data:image/png;base64,{}".format(
