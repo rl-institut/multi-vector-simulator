@@ -5,9 +5,11 @@ import pytest
 #def test_if_oemof_simulation_runs_through(self):
 import os
 import json
+from src.B0_data_input_json import load_json
+
 json_path = os.path.join("tests", "test_data", "test_data_for_D0.json")
-with open(json_path) as json_file:
-    dict_values = json.load(json_file)
+
+dict_values = load_json(json_path)
 
 def test_if_model_building_time_measured_and_stored():
     dict_values = {"simulation_results": {}}
