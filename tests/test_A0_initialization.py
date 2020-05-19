@@ -10,15 +10,14 @@ from mvs_eland_tool.mvs_eland_tool import main
 
 import src.A0_initialization as initializing
 
-from src.constants import (
-    REPO_PATH,
+from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
+    TEST_REPO_PATH,
     CSV_ELEMENTS,
     INPUTS_COPY,
-    INPUT_FOLDER,
-    OUTPUT_FOLDER,
     JSON_FNAME,
+    JSON_PATH,
     JSON_EXT,
     CSV_FNAME,
     CSV_EXT,
@@ -189,14 +188,14 @@ def test_check_input_path_posix():
     """Verify the code works on both windows and linux path systems"""
     if os.name == "posix":
         folder = initializing.check_input_folder(
-            "{}/tests/inputs/".format(REPO_PATH), JSON_EXT
+            "{}/inputs/".format(TEST_REPO_PATH), JSON_EXT
         )
     else:
         folder = initializing.check_input_folder(
-            "{}\\tests\\inputs\\".format(REPO_PATH), JSON_EXT
+            "{}\\inputs\\".format(TEST_REPO_PATH), JSON_EXT
         )
 
-    assert folder == os.path.join(REPO_PATH, "tests", "inputs", JSON_FNAME)
+    assert folder == os.path.join(JSON_PATH)
 
 
 TEST_OUTPUT_PATH = os.path.join(".", "tests", "other")
