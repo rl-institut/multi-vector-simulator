@@ -12,6 +12,8 @@ import src.A0_initialization as initializing
 
 from src.constants import (
     REPO_PATH,
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
     CSV_ELEMENTS,
     INPUTS_COPY,
     INPUT_FOLDER,
@@ -269,7 +271,9 @@ class TestCommandLineInput:
     # this ensure that the test is only ran if explicitly executed,
     # ie not when the `pytest` command alone it called
     @pytest.mark.skipif(
-        "tests/test_A0_initialization.py" not in sys.argv, reason="requires python3.3"
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
