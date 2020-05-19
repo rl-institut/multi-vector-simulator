@@ -22,7 +22,13 @@ import numpy as np
 import src.B0_data_input_json as B0
 import src.F0_output as F0
 
-from .constants import TEST_REPO_PATH, DICT_PLOTS, PDF_REPORT
+from .constants import (
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
+    TEST_REPO_PATH,
+    DICT_PLOTS,
+    PDF_REPORT,
+)
 from mvs_eland_tool.mvs_eland_tool import main
 import src.A0_initialization as initializing
 
@@ -184,8 +190,9 @@ class TestFileCreation:
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
     @pytest.mark.skipif(
-        "tests/{}".format(os.path.basename(__file__)) not in sys.argv,
-        reason="lengthy test",
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
