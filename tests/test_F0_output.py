@@ -31,7 +31,7 @@ from .constants import (
     TYPE_DATETIMEINDEX,
     TYPE_DATAFRAME,
     TYPE_SERIES,
-    TYPE_TIMESTAMP
+    TYPE_TIMESTAMP,
 )
 from mvs_eland_tool.mvs_eland_tool import main
 import src.A0_initialization as initializing
@@ -250,7 +250,7 @@ class TestDictionaryToJsonConversion:
     def test_processing_dict_for_json_export_parse_pandas_Timestamp(self):
         """ """
         expr = F0.convert(JSON_TEST_DICTIONARY["pandas_Timestamp"])
-        assert (expr == TYPE_TIMESTAMP + "2020-01-01 00:00:00")
+        assert expr == TYPE_TIMESTAMP + "2020-01-01 00:00:00"
 
     def test_processing_dict_for_json_export_parse_pandas_series(self):
         """ """

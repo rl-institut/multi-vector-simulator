@@ -20,7 +20,7 @@ from src.constants import (
     TYPE_DATETIMEINDEX,
     TYPE_DATAFRAME,
     TYPE_SERIES,
-    TYPE_TIMESTAMP
+    TYPE_TIMESTAMP,
 )
 
 TESTS_ON_MASTER = "master"
