@@ -17,6 +17,10 @@ from src.constants import (
     KPI_SCALARS,
     PDF_REPORT,
     DICT_PLOTS,
+    TYPE_DATETIMEINDEX,
+    TYPE_DATAFRAME,
+    TYPE_SERIES,
+    TYPE_TIMESTAMP
 )
 
 TESTS_ON_MASTER = "master"
