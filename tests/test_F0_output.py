@@ -315,6 +315,16 @@ class TestLoadDictionaryFromJson:
         k = "pandas_Dataframe"
         assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
 
+    def test_load_json_export_parse_pandas_DatatimeIndex(self):
+        """ """
+        k = "pandas_DatetimeIndex"
+        assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
+
+    def test_load_json_export_parse_pandas_Timestamp(self):
+        """ """
+        k = "pandas_Timestamp"
+        assert self.value_dict[k] == JSON_TEST_DICTIONARY[k]
+
     def teardown_class(self):
         """ """
         if os.path.exists(OUTPUT_PATH):
