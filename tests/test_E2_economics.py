@@ -67,6 +67,15 @@ def setup_module(m_args):
     with open(DICT_ASSET_AFTER, "wb") as handle:
         pickle.dump(dict_asset, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+import src.E2_economics as E2
+
+def test_all_cost_info_parameters_added_to_dict_values():
+    dict_asset = {}
+    dict_economic = {}
+    E2.economics.get_costs(dict_asset, dict_economic)
+    for k in (""):
+        assert k in dict_asset
+
 
 def test_get_costs():
     with open(DICT_ASSET_BEFORE, "rb") as handle:
