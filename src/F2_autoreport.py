@@ -43,7 +43,6 @@ def print_pdf(app, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
     td.join(2)
 
 
-
 def make_dash_data_table(df):
     """Function that creates a Dash DataTable from a Pandas dataframe"""
     return dash_table.DataTable(
@@ -61,6 +60,7 @@ def make_dash_data_table(df):
         style_header={"fontWeight": "bold", "color": "#8c3604"},
         style_table={"margin": "30px", "fontSize": "40px"},
     )
+
 
 def create_app(results_json):
     path_output_folder = results_json["simulation_settings"]["path_output_folder"]
@@ -118,7 +118,6 @@ def create_app(results_json):
         icon=folium.Icon(color="red", icon="glyphicon glyphicon-flash"),
     ).add_to(mapy)
     mapy.save(os.path.join(REPO_PATH, "src", "assets", "proj_map"))
-
 
     dict_projectdata = {
         "Country": dfprojectData.country,
@@ -302,7 +301,7 @@ def create_app(results_json):
                         width="370px",
                     ),
                     html.H1("MULTI VECTOR SIMULATION - REPORT SHEET"),
-                ]
+                ],
             ),
             html.Div(
                 className="imp_info",
@@ -310,7 +309,7 @@ def create_app(results_json):
                     html.P(f"MVS Release: {releaseDesign}"),
                     html.P(f"Branch-id: {branchID}"),
                     html.P(f"Simulation date: {simDate}"),
-                ]
+                ],
             ),
             html.Div(
                 className="imp_info2",
@@ -332,7 +331,7 @@ def create_app(results_json):
                             f"{scenarioName}",
                         ]
                     ),
-                ]
+                ],
             ),
             html.Div(
                 className="blockoftext",
@@ -348,21 +347,17 @@ def create_app(results_json):
                             "Reiner Lemoine Institute and utilizes the OEMOF framework.",
                         ]
                     )
-                ]
+                ],
             ),
             html.Br([]),
             html.Div(
-                className="inputs_simresults_box",
-                children=[html.H2("Input Data")],
+                className="inputs_simresults_box", children=[html.H2("Input Data")],
             ),
             html.Br([]),
             html.Div(
                 className="heading1",
                 children=[
-                    html.H2(
-                        "Project Data",
-                        className="heading1",
-                    ),
+                    html.H2("Project Data", className="heading1",),
                     html.Hr(className="horizontal_line"),
                 ],
             ),
@@ -380,10 +375,7 @@ def create_app(results_json):
                 [
                     html.Div(
                         [
-                            html.H4(
-                                ["Project Location"],
-                                className="projdataheading"
-                            ),
+                            html.H4(["Project Location"], className="projdataheading"),
                             html.Iframe(
                                 srcDoc=open(
                                     os.path.join(
@@ -403,8 +395,7 @@ def create_app(results_json):
                                 [
                                     html.Br([]),
                                     html.H4(
-                                        ["Project Data"],
-                                        className="projdataheading"
+                                        ["Project Data"], className="projdataheading"
                                     ),
                                     html.Div(
                                         className="tableplay",
@@ -422,14 +413,14 @@ def create_app(results_json):
                                     html.Br([]),
                                     html.H4(
                                         ["Simulation Settings"],
-                                        className="projdataheading"
+                                        className="projdataheading",
                                     ),
                                     html.Div(
                                         className="tableplay",
                                         children=[make_dash_data_table(df_simsettings)],
                                     ),
                                 ],
-                                className="projdata"
+                                className="projdata",
                             )
                         ]
                     ),
@@ -439,9 +430,7 @@ def create_app(results_json):
             html.Div(
                 className="heading1",
                 children=[
-                    html.H2(
-                        "Energy Demand"
-                    ),
+                    html.H2("Energy Demand"),
                     html.Hr(className="horizontal_line"),
                 ],
             ),
@@ -453,15 +442,15 @@ def create_app(results_json):
                         "covering the following sectors:"
                     ),
                     html.P(f"{sec_list}"),
-                ]
+                ],
             ),
             html.Div(
                 className="demandmatter",
                 children=[
                     html.Br(),
-                    html.H4("Electricity Demand", className="graph__pre-title", ),
+                    html.H4("Electricity Demand", className="graph__pre-title",),
                     html.P("Electricity demands that have to be supplied are: "),
-                ]
+                ],
             ),
             html.Div(children=[make_dash_data_table(df_dem)]),
             html.Div(
@@ -498,9 +487,7 @@ def create_app(results_json):
             html.Div(
                 className="heading1",
                 children=[
-                    html.H2(
-                        "Energy System Components"
-                    ),
+                    html.H2("Energy System Components"),
                     html.Hr(className="horizontal_line"),
                 ],
             ),
@@ -510,21 +497,19 @@ def create_app(results_json):
                     html.P(
                         "The energy system is comprised of the following components:"
                     )
-                ]
+                ],
             ),
             html.Div(children=[make_dash_data_table(df_comp)]),
             html.Br([]),
             html.Div(
                 className="inputs_simresults_box",
-                children=[html.H2("SIMULATION RESULTS")]
+                children=[html.H2("SIMULATION RESULTS")],
             ),
             html.Br([]),
             html.Div(
                 className="heading1",
                 children=[
-                    html.H2(
-                        "Dispatch & Energy Flows"
-                    ),
+                    html.H2("Dispatch & Energy Flows"),
                     html.Hr(className="horizontal_line"),
                 ],
             ),
@@ -534,34 +519,34 @@ def create_app(results_json):
                     html.P(
                         "The capacity optimization of components that were to be used resulted in:"
                     )
-                ]
+                ],
             ),
             html.Div(children=[make_dash_data_table(df_scalars)]),
             html.Div(
                 className="blockoftext",
                 children=[
-                             html.P(
-                                 "With this, the demands are met with the following dispatch schedules:"
-                             ),
-                             html.P(
-                                 "a. Flows in the system for a duration of 14 days",
-                                 style={"marginLeft": "20px"},
-                             ),
-                         ]
-                         + [
-                             html.Div(
-                                 [
-                                     html.Img(
-                                         src="data:image/png;base64,{}".format(
-                                             base64.b64encode(open(ts, "rb").read()).decode()
-                                         ),
-                                         width="1500px",
-                                     )
-                                     for ts in results_json[PATHS_TO_PLOTS][PLOTS_BUSSES]
-                                               + results_json[PATHS_TO_PLOTS][PLOTS_PERFORMANCE]
-                                 ]
-                             ),
-                         ]
+                    html.P(
+                        "With this, the demands are met with the following dispatch schedules:"
+                    ),
+                    html.P(
+                        "a. Flows in the system for a duration of 14 days",
+                        style={"marginLeft": "20px"},
+                    ),
+                ]
+                + [
+                    html.Div(
+                        [
+                            html.Img(
+                                src="data:image/png;base64,{}".format(
+                                    base64.b64encode(open(ts, "rb").read()).decode()
+                                ),
+                                width="1500px",
+                            )
+                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_BUSSES]
+                            + results_json[PATHS_TO_PLOTS][PLOTS_PERFORMANCE]
+                        ]
+                    ),
+                ],
             ),
             html.Br(style={"marginBottom": "5px"}),
             html.P(
@@ -575,16 +560,16 @@ def create_app(results_json):
             html.Div(
                 className="heading1",
                 children=[
-                    html.H2(
-                        "Economic Evaluation"
-                    ),
+                    html.H2("Economic Evaluation"),
                     html.Hr(className="horizontal_line"),
                 ],
             ),
-            html.P(className="blockoftext",
-                   children=[
-                       "The following installation and operation costs result from capacity and dispatch optimization:"]
-                   ),
+            html.P(
+                className="blockoftext",
+                children=[
+                    "The following installation and operation costs result from capacity and dispatch optimization:"
+                ],
+            ),
             html.Div(children=[make_dash_data_table(df_costs)]),
             html.Div(
                 className="blockoftext",
@@ -606,7 +591,10 @@ def create_app(results_json):
 if __name__ == "__main__":
     from src.constants import REPO_PATH, OUTPUT_FOLDER
     from src.B0_data_input_json import load_json
-    dict_values = load_json(os.path.join(REPO_PATH, OUTPUT_FOLDER, "json_with_results.json"))
+
+    dict_values = load_json(
+        os.path.join(REPO_PATH, OUTPUT_FOLDER, "json_with_results.json")
+    )
 
     test_app = create_app(dict_values)
     # app.run_server(debug=True)
