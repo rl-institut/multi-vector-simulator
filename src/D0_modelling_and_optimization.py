@@ -7,7 +7,16 @@ import os
 import src.D1_model_components as model_components
 import src.D2_model_constraints as D2
 
-from src.constants_json_strings import ENERGY_BUSSES, OEMOF_ASSET_TYPE, ACCEPTED_ASSETS_FOR_ASSET_GROUPS, OEMOF_GEN_STORAGE, OEMOF_SINK, OEMOF_SOURCE, OEMOF_TRANSFORMER
+from src.constants_json_strings import (
+    ENERGY_BUSSES,
+    OEMOF_ASSET_TYPE,
+    ACCEPTED_ASSETS_FOR_ASSET_GROUPS,
+    OEMOF_GEN_STORAGE,
+    OEMOF_SINK,
+    OEMOF_SOURCE,
+    OEMOF_TRANSFORMER,
+)
+
 """
 Functional requirements of module D0:
 - measure time needed to build model
@@ -25,13 +34,16 @@ Functional requirements of module D0:
 - add simulation parameters to dict values 
 """
 
+
 class WrongOemofAssetForGroupError(ValueError):
     # Exception raised when an asset group has an asset with an denied oemof type
     pass
 
+
 class UnknownOemofAssetType(ValueError):
     # Exception raised in case an asset type is defined for an asset group constants_json_strings but the oemof function is not jet defined (only dev)
     pass
+
 
 def run_oemof(dict_values):
     """
@@ -49,7 +61,9 @@ def run_oemof(dict_values):
 
     model, dict_model = model_building.initialize(dict_values)
 
-    model = model_building.adding_assets_to_energysystem_model(dict_values, dict_model, model)
+    model = model_building.adding_assets_to_energysystem_model(
+        dict_values, dict_model, model
+    )
 
     model_building.plot_networkx_graph(dict_values, model)
 
@@ -61,7 +75,9 @@ def run_oemof(dict_values):
 
     model_building.store_lp_file(dict_values, local_energy_system)
 
-    model, results_main, results_meta = model_building.simulating(dict_values, model, local_energy_system)
+    model, results_main, results_meta = model_building.simulating(
+        dict_values, model, local_energy_system
+    )
 
     model_building.store_oemof_results(dict_values, model)
 
@@ -69,9 +85,10 @@ def run_oemof(dict_values):
 
     return results_meta, results_main
 
+
 class model_building:
     def initialize(dict_values):
-        '''
+        """
         Initalization of oemof model
 
         dict_values: dict
@@ -80,7 +97,7 @@ class model_building:
         Returns
         -------
         oemof energy model (oemof.solph.network.EnergySystem), dict_model which gathers the assets added to this model later.
-        '''
+        """
         logging.info("Initializing oemof simulation.")
         model = solph.EnergySystem(
             timeindex=dict_values["simulation_settings"]["time_index"]
@@ -97,9 +114,8 @@ class model_building:
 
         return model, dict_model
 
-
     def adding_assets_to_energysystem_model(dict_values, dict_model, model, **kwargs):
-        '''
+        """
 
         Parameters
         ----------
@@ -115,7 +131,7 @@ class model_building:
         Returns
         -------
 
-        '''
+        """
         logging.info("Adding components to oemof energy system model...")
 
         # Busses have to be defined first
@@ -164,8 +180,8 @@ class model_building:
 
     def plot_networkx_graph(dict_values, model):
         if (
-                dict_values["simulation_settings"]["display_nx_graph"]["value"] == True
-                or dict_values["simulation_settings"]["store_nx_graph"]["value"] is True
+            dict_values["simulation_settings"]["display_nx_graph"]["value"] == True
+            or dict_values["simulation_settings"]["store_nx_graph"]["value"] is True
         ):
             from src.F1_plotting import draw_graph
 
@@ -173,7 +189,9 @@ class model_building:
                 dict_values,
                 model,
                 node_color={},
-                show_plot=dict_values["simulation_settings"]["display_nx_graph"]["value"],
+                show_plot=dict_values["simulation_settings"]["display_nx_graph"][
+                    "value"
+                ],
                 save_plot=dict_values["simulation_settings"]["store_nx_graph"]["value"],
                 user_input=dict_values["simulation_settings"],
             )
@@ -191,12 +209,13 @@ class model_building:
         return
 
     def store_lp_file(dict_values, local_energy_system):
-        path_lp_file = os.path.join(dict_values["simulation_settings"]["path_output_folder"], "lp_file.lp")
+        path_lp_file = os.path.join(
+            dict_values["simulation_settings"]["path_output_folder"], "lp_file.lp"
+        )
         if dict_values["simulation_settings"]["output_lp_file"]["value"] == True:
             logging.debug("Saving to lp-file.")
             local_energy_system.write(
-                path_lp_file,
-                io_options={"symbolic_solver_labels": True},
+                path_lp_file, io_options={"symbolic_solver_labels": True},
             )
         return
 
@@ -246,19 +265,20 @@ class model_building:
             )
         return
 
+
 class timer:
     def initalize():
-        '''
+        """
         Starts a timer
         Returns
         -------
-        '''
+        """
         # Start clock to determine total simulation time
         start = timeit.default_timer()
         return start
 
     def stop(dict_values, start):
-        '''
+        """
         Ends timer and adds duration of simulation to dict_values
         Parameters
         ----------
@@ -270,11 +290,9 @@ class timer:
         Returns
         -------
         Simulation time in dict_values
-        '''
+        """
         duration = timeit.default_timer() - start
-        dict_values["simulation_results"].update(
-            {"modelling_time": round(duration, 2)}
-        )
+        dict_values["simulation_results"].update({"modelling_time": round(duration, 2)})
 
         logging.info(
             "Moddeling time: %s minutes.",
