@@ -71,7 +71,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Convert serialized DataFrame and arrays back into these types in the B0.load_json function
  (#304, #322)
 - The input from the csv files produce the same json than the json file (#286)
- 
+ - Move the CSS styling code to a style sheet (#317)
 ### Removed
 
 ### Fixed
@@ -92,6 +92,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
  - Display SOC (#278)
  - Automatic update of the test coverage with coveralls.io (#307)
 - Logging message for maximumCap value (#310)
+- Create_app function in F0 for standalone execution (#317)
 
 ## [0.2.0] - 2020-03-13
 
