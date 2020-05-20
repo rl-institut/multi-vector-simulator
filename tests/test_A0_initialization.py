@@ -10,18 +10,20 @@ from mvs_eland_tool.mvs_eland_tool import main
 
 import src.A0_initialization as initializing
 
-from src.constants import (
-    REPO_PATH,
+from .constants import (
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
+    TEST_REPO_PATH,
     CSV_ELEMENTS,
     INPUTS_COPY,
-    INPUT_FOLDER,
-    OUTPUT_FOLDER,
     JSON_FNAME,
+    JSON_PATH,
     JSON_EXT,
     CSV_FNAME,
     CSV_EXT,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
+    PDF_REPORT,
 )
 
 
@@ -137,6 +139,44 @@ class TestProcessUserArguments:
         initializing.process_user_arguments()
         assert os.path.exists(some_file) is False
 
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            [
+                "-i",
+                test_in_path,
+                "-f",
+                "-o",
+                os.path.join(test_out_path, "recursive_folder"),
+            ]
+        ),
+    )
+    def test_if_path_output_folder_recursive_create_full_path(self, m_args):
+        initializing.process_user_arguments()
+        assert os.path.exists(os.path.join(self.test_out_path, "recursive_folder"))
+
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            ["-i", test_in_path, "-o", test_out_path, "-pdf"]
+        ),
+    )
+    def test_if_pdf_opt_the_key_path_pdf_report_exists_in_user_inputs(self, m_args):
+        user_inputs = initializing.process_user_arguments()
+        assert user_inputs["path_pdf_report"] == os.path.join(
+            self.test_out_path, PDF_REPORT
+        )
+
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-i", test_in_path, "-o", test_out_path]),
+    )
+    def test_if_no_pdf_opt_the_key_path_pdf_report_does_not_exist_in_user_inputs(
+        self, m_args
+    ):
+        user_inputs = initializing.process_user_arguments()
+        assert "path_pdf_report" not in user_inputs.keys()
+
     def teardown_method(self):
         if os.path.exists(self.test_out_path):
             shutil.rmtree(self.test_out_path, ignore_errors=True)
@@ -148,14 +188,14 @@ def test_check_input_path_posix():
     """Verify the code works on both windows and linux path systems"""
     if os.name == "posix":
         folder = initializing.check_input_folder(
-            "{}/tests/inputs/".format(REPO_PATH), JSON_EXT
+            "{}/inputs/".format(TEST_REPO_PATH), JSON_EXT
         )
     else:
         folder = initializing.check_input_folder(
-            "{}\\tests\\inputs\\".format(REPO_PATH), JSON_EXT
+            "{}\\inputs\\".format(TEST_REPO_PATH), JSON_EXT
         )
 
-    assert folder == os.path.join(REPO_PATH, "tests", "inputs", JSON_FNAME)
+    assert folder == os.path.join(JSON_PATH)
 
 
 TEST_OUTPUT_PATH = os.path.join(".", "tests", "other")
@@ -206,6 +246,14 @@ class TestCommandLineInput:
         parsed = self.parser.parse_args(["-f"])
         assert parsed.overwrite is True
 
+    def test_pdf_report_false_by_default(self):
+        parsed = self.parser.parse_args([])
+        assert parsed.pdf_report is False
+
+    def test_pdf_report_activation(self):
+        parsed = self.parser.parse_args(["-pdf"])
+        assert parsed.pdf_report is True
+
     def test_log_assignation(self):
         parsed = self.parser.parse_args(["-log", "debug"])
         assert parsed.display_output == "debug"
@@ -222,7 +270,9 @@ class TestCommandLineInput:
     # this ensure that the test is only ran if explicitly executed,
     # ie not when the `pytest` command alone it called
     @pytest.mark.skipif(
-        "tests/test_A0_initialization.py" not in sys.argv, reason="requires python3.3"
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",

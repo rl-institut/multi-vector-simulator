@@ -5,6 +5,7 @@ import oemof.outputlib as outputlib
 
 
 import src.D1_model_components as model_components
+import src.D2_model_constraints as D2
 
 
 def run_oemof(dict_values):
@@ -111,6 +112,7 @@ def run_oemof(dict_values):
         from src.F1_plotting import draw_graph
 
         draw_graph(
+            dict_values,
             model,
             node_color={},
             show_plot=dict_values["simulation_settings"]["display_nx_graph"]["value"],
@@ -125,6 +127,7 @@ def run_oemof(dict_values):
 
     logging.info("Adding constraints to oemof model...")
     # todo include constraints
+    D2.modelling_constraints()
     """
     Stability constraint
     include constraint linking two converters (ie "in/out")
@@ -189,4 +192,4 @@ def run_oemof(dict_values):
         round(dict_values["simulation_results"]["modelling_time"] / 60, 2),
     )
 
-    return results_meta, results_main  # , dict_model
+    return results_meta, results_main
