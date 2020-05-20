@@ -50,11 +50,16 @@ def run_oemof(dict_values):
     Creates and solves energy system model generated from excel template inputs.
     Each component is included by calling its constructor function in D1_model_components.
 
-    :param dict values: Includes all dictionary values describing the whole project, including costs,
-                        technical parameters and components. In C0_data_processing, each component was attributed
-                        with a certain in/output bus.
+    Parameters
+    ----------
+    dict values: dict
+        Includes all dictionary values describing the whole project, including costs,
+        technical parameters and components. In C0_data_processing, each component was attributed
+        with a certain in/output bus.
 
-    :return: saves and returns oemof simulation results
+    Returns
+    -------
+    saves and returns oemof simulation results
     """
 
     start = timer.initalize()
@@ -91,6 +96,8 @@ class model_building:
         """
         Initalization of oemof model
 
+        Parameters
+        ----------
         dict_values: dict
             dictionary of simulation
 
@@ -122,11 +129,11 @@ class model_building:
         dict_values: dict
             dict of simulation data
 
-        model: oemof.solph.network.EnergySystem
-            Model of oemof energy system
-
         dict_model:
             Updated list of assets in the oemof energy system model
+
+        model: oemof.solph.network.EnergySystem
+            Model of oemof energy system
 
         Returns
         -------
@@ -179,6 +186,21 @@ class model_building:
         return model
 
     def plot_networkx_graph(dict_values, model):
+        """
+        Plots a networkx graph of the energy system if that graph is to be displayed or stored.
+
+        Parameters
+        ----------
+        dict_values: dict
+            All simulation inputs
+
+        model: object
+            oemof-solph object for energy system model
+
+        Returns
+        -------
+        None
+        """
         if (
             dict_values["simulation_settings"]["display_nx_graph"]["value"] == True
             or dict_values["simulation_settings"]["store_nx_graph"]["value"] is True
@@ -199,6 +221,13 @@ class model_building:
         return
 
     def add_constraints():
+        """
+        Adding constraints to the existing oemof/pyomo energy model. Currently, there are no existing constraints.
+
+        Returns
+        -------
+        None
+        """
         logging.info("Adding constraints to oemof model...")
         """
         Stability constraint
@@ -209,6 +238,21 @@ class model_building:
         return
 
     def store_lp_file(dict_values, local_energy_system):
+        """
+        Stores linear equation system generated with pyomo as an "lp file".
+
+        Parameters
+        ----------
+        dict_values: dict
+            All simulation input data
+
+        local_energy_system: object
+            pyomo object including all constraints of the energy system
+
+        Returns
+        -------
+        Nothing.
+        """
         path_lp_file = os.path.join(
             dict_values["simulation_settings"]["path_output_folder"], "lp_file.lp"
         )
@@ -220,6 +264,24 @@ class model_building:
         return
 
     def simulating(dict_values, model, local_energy_system):
+        """
+        Initiates the oemof-solph simulation, accesses results and writes main results into dict
+
+        Parameters
+        ----------
+        dict_values: dict
+            All simulation inputs
+
+        model: object
+            oemof-solph object for energy system model
+
+        local_energy_system: object
+            pyomo object storing all constraints of the energy system model
+
+        Returns
+        -------
+        Updated model with results, main results (flows, assets) and meta results (simulation)
+        """
         logging.info("Starting simulation.")
         local_energy_system.solve(
             solver="cbc",
@@ -253,6 +315,21 @@ class model_building:
         return model, results_main, results_main
 
     def store_oemof_results(dict_values, model):
+        """
+        Stores oemof results to file ("oemof_simulation_results.oemof") if setting store_oemof_results is True.
+
+        Parameters
+        ----------
+        dict_values: dict
+            all simulation inputs
+
+        model: object
+            oemof object for energy system model
+
+        Returns
+        -------
+        None
+        """
         # store energy system with results
         if dict_values["simulation_settings"]["store_oemof_results"]["value"] == True:
             model.dump(
