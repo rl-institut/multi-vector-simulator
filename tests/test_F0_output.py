@@ -46,7 +46,9 @@ VALUES = [0, 1, 2]
 
 pandas_DatetimeIndex = pd.date_range(start=START_TIME, periods=PERIODS, freq="60min")
 pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
-pandas_Series_tuple_name = pd.Series(VALUES, index=pandas_DatetimeIndex, name=(("A", "B"), "flow"))
+pandas_Series_tuple_name = pd.Series(
+    VALUES, index=pandas_DatetimeIndex, name=(("A", "B"), "flow")
+)
 pandas_Dataframe = pd.DataFrame({"a": VALUES, "b": VALUES})
 SCALAR = 2
 
