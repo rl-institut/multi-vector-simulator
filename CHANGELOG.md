@@ -48,6 +48,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Tests for module C2 (#151)
 - Tests for storage for the module A1 (#299)
 - Benchmark test with only battery and grid (#302)
+- Tests for the module D1 (still - partly - open: transformers, sources. finished: sinks, storages, other functions) (#149)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
