@@ -121,4 +121,4 @@ def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false(self):
 def test_if_simulation_results_added_to_dict_values():
     D0.run_oemof(dict_values)
     for k in ("label", "objective_value", "simulation_time"):
-        assert k in dict_values["simulation_results"] is True
+        assert (k in dict_values["simulation_results"].keys())
