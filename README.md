@@ -118,6 +118,15 @@ Edit the csv files (or, for devs, the json file) and run the `main()` function. 
 - `display_output` (str): Sets the level of displayed logging messages. Options: "debug", "info", "warning", "error". Default: "info".
 - `lp_file_output` (bool): Specifies whether linear equation system generated is saved as lp file. Default: False.
 
+## Generate report
+
+To generate a report (only in browser for now), run the following command **after** a simulation
+ ran:
+ 
+`python mvs_report.py`
+
+the report should appear in your browser (at http://127.0.0.1:8050) as a Plotly Dash app.
+
 ## Contributing
 
 If you want to contribute to this project, please read [CONTRIBUTING.md](https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md). For less experienced github users we propose a workflow [HERE](https://github.com/rl-institut/mvs_eland/wiki/Examplary-Workflow).
