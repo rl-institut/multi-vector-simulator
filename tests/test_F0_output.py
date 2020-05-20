@@ -46,6 +46,7 @@ VALUES = [0, 1, 2]
 
 pandas_DatetimeIndex = pd.date_range(start=START_TIME, periods=PERIODS, freq="60min")
 pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
+pandas_Series_tuple_name = pd.Series(VALUES, index=pandas_DatetimeIndex, name=(("A", "B"), "flow"))
 pandas_Dataframe = pd.DataFrame({"a": VALUES, "b": VALUES})
 SCALAR = 2
 
@@ -56,6 +57,7 @@ JSON_TEST_DICTIONARY = {
     "pandas_DatetimeIndex": pandas_DatetimeIndex,
     "pandas_Timestamp": pd.Timestamp(START_TIME),
     "pandas_series": pandas_Series,
+    "pandas_series_tuple_name": pandas_Series_tuple_name,
     "numpy_array": np.array(VALUES),
     "pandas_Dataframe": pandas_Dataframe,
 }
@@ -303,6 +305,11 @@ class TestLoadDictionaryFromJson:
     def test_load_json_parse_pandas_series(self):
         """ """
         k = "pandas_series"
+        assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
+
+    def test_load_json_parse_pandas_series_tuple_name(self):
+        """ """
+        k = "pandas_series_tuple_name"
         assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
 
     def test_load_json_parse_numpy_array(self):
