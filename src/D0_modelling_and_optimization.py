@@ -5,6 +5,7 @@ import oemof.outputlib as outputlib
 import os
 
 import src.D1_model_components as model_components
+import src.D2_model_constraints as D2
 
 from src.constants_json_strings import ENERGY_BUSSES, OEMOF_ASSET_TYPE, ACCEPTED_ASSETS_FOR_ASSET_GROUPS, OEMOF_GEN_STORAGE, OEMOF_SINK, OEMOF_SOURCE, OEMOF_TRANSFORMER
 """

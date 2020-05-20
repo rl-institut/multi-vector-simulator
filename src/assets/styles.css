@@ -1,14 +1,107 @@
-.graph__pre-title{
-    textAlign: left,
-    fontSize: 40px,
-    position: relative,
-    left: 0,
-    height: 20%,
-    margin: 0mm,
-    borderLeft: 20px solid #8c3604,
-    background: #ffffff,
-    paddingTop: 1px,
-    paddingBottom: 1px,
-    paddingLeft: 30px,
-    paddingRight: 60px,
-}
+/* Styling for the pre-titles of the graphs */
+.graph__pre-title {
+    textAlign: left;
+    fontSize: 40px;
+    position: relative;
+    left: 0;
+    height: 20%;
+    margin: 0mm;
+    borderLeft: 20px solid #8c3604;
+    background: #ffffff;
+    paddingTop: 1px;
+    paddingBottom: 1px;
+    paddingLeft: 30px;
+    paddingRight: 60px;
+    }
+
+/* Styling for the E-lands logo and the title of the report */
+.header_title_logo {
+    textAlign: center;
+    color: #000000;
+    borderStyle: solid;
+    borderWidth: thin;
+    padding: 10px;
+    margin: 30px;
+    fontSize: 225%
+    }
+
+/* Styles for subheadings in the report */
+.projdataheading {
+    position: relative;
+    left: 0;
+    height: 20%;
+    margin: 0mm;
+    borderLeft: 20px solid #8c3604;
+    background: #ffffff;
+    paddingTop: 1px;
+    paddingBottom: 1px;
+    paddingLeft: 30px;
+    paddingRight: 60px;
+    }
+
+/* Styling for important information under the title, such as version, date, etc. */
+.imp_info {
+    textAlign: right;
+    padding: 5px;
+    fontSize: 22px;
+    margin: 30px;
+    }
+
+/* Styling for important information like project and scenario names */
+.imp_info2 {
+    textAlign: left;
+    fontSize: 40px;
+    margin: 30px;
+    }
+
+/* Styling for blocks of texts or paragraphs  */
+.blockoftext {
+    textAlign: justify;
+    fontSize: 40px;
+    margin: 30px;
+    }
+
+/* Creates blue containers around some headings */
+.inputs_simresults_box {
+    textAlign: center;
+    borderStyle: solid;
+    borderWidth: thin;
+    padding: 0.5px;
+    margin: 30px;
+    fontSize: 250%;
+    width: 3000px;
+    margin-left: auto;
+    margin-right: auto;
+    background: #03034f;
+    color: #FFFFFF;
+    verticalAlign: middle;
+    }
+
+/* Styling for the demand data section of the report */
+.demandmatter {
+    textAlign: left;
+    fontSize: 40px;
+    margin: 30px;
+    }
+
+/* Provides style for headings of each segment of the report */
+.heading1 {
+    textAlign: left;
+    margin: 30px;
+    fontSize: 60px;
+    color: #8c3604;
+    }
+
+/* Creates a headine underline */
+.horizontal_line {
+    color: #000000;
+    margin: 30px;
+    }
+
+/* Styling for the section containing the project data */
+.projdata { 
+    width: 48%;
+    margin: 30px;
+    fontSize: 40px;
+    }
+

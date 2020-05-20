@@ -1,5 +1,6 @@
 import os
 import shutil
+import pytest
 import mock
 import pandas as pd
 import logging
@@ -8,7 +9,9 @@ import mvs_eland_tool.mvs_eland_tool as mvs_eland_tool
 import src.A0_initialization as initializing
 
 import src.F1_plotting as F1
-from tests.constants import (
+from .constants import (
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
     TEST_REPO_PATH,
     DUMMY_CSV_PATH,
     INPUT_FOLDER,
@@ -78,6 +81,11 @@ class TestNetworkx:
         """ """
         shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
 
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
@@ -90,6 +98,11 @@ class TestNetworkx:
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
         )
 
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(

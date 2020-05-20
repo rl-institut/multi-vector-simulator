@@ -16,6 +16,7 @@ import os
 import threading
 import pdfkit
 
+from src.B0_data_input_json import load_json
 from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
 from src.constants import (
     PLOTS_BUSSES,
@@ -64,24 +65,6 @@ def make_dash_data_table(df):
 def create_app(results_json):
     path_output_folder = results_json["simulation_settings"]["path_output_folder"]
 
-    # Foundation JS styling sheets that are to be used to improve the formatting of the web app
-    external_scripts = [
-        {
-            "src": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/js/foundation.min.js",
-            "integrity": "sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=",
-            "crossorigin": "anonymous",
-        }
-    ]
-
-    external_stylesheets = [
-        {
-            "href": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/css/foundation.min.css",
-            "rel": "stylesheet",
-            "integrity": "sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I",
-            "crossorigin": "anonymous",
-        }
-    ]
-
     # Initialize the app
     app = dash.Dash(__name__)
 
@@ -92,7 +75,7 @@ def create_app(results_json):
         "inp-box": "#03034f",
         "font-inpbox": "#FFFFFF",
     }
-    # Reading the relevant user-inputs from the csv files into Pandas dataframes
+    # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
     dfprojectData = pd.DataFrame.from_dict(results_json["project_data"])
     dfeconomicData = pd.DataFrame.from_dict(results_json["economic_data"]).loc["value"]
 
@@ -301,29 +284,14 @@ def create_app(results_json):
                     ),
                     html.H1("MULTI VECTOR SIMULATION - REPORT SHEET"),
                 ],
-                style={
-                    "textAlign": "center",
-                    "color": colors["text-head"],
-                    "borderStyle": "solid",
-                    "borderWidth": "thin",
-                    "padding": "10px",
-                    "margin": "30px",
-                    "fontSize": "225%",
-                },
             ),
             html.Div(
-                className="imp-info",
+                className="imp_info",
                 children=[
                     html.P(f"MVS Release: {releaseDesign}"),
                     html.P(f"Branch-id: {branchID}"),
                     html.P(f"Simulation date: {simDate}"),
                 ],
-                style={
-                    "textAlign": "right",
-                    "padding": "5px",
-                    "fontSize": "22px",
-                    "margin": "30px",
-                },
             ),
             html.Div(
                 className="imp_info2",
@@ -346,10 +314,9 @@ def create_app(results_json):
                         ]
                     ),
                 ],
-                style={"textAlign": "left", "fontSize": "40px", "margin": "30px"},
             ),
             html.Div(
-                className="blockoftext1",
+                className="blockoftext",
                 children=[
                     html.Div(
                         [
@@ -363,55 +330,26 @@ def create_app(results_json):
                         ]
                     )
                 ],
-                style={"textAlign": "justify", "fontSize": "40px", "margin": "30px"},
             ),
             html.Br([]),
             html.Div(
-                className="inpdatabox",
-                children=[html.H2("Input Data")],
-                style={
-                    "textAlign": "center",
-                    "borderStyle": "solid",
-                    "borderWidth": "thin",
-                    "padding": "0.5px",
-                    "margin": "30px",
-                    "fontSize": "250%",
-                    "width": "3000px",
-                    "margin-left": "auto",
-                    "margin-right": "auto",
-                    "background": colors["inp-box"],
-                    "color": colors["font-inpbox"],
-                    "verticalAlign": "middle",
-                },
+                className="inputs_simresults_box", children=[html.H2("Input Data")],
             ),
             html.Br([]),
             html.Div(
                 className="heading1",
                 children=[
-                    html.H2(
-                        "Project Data",
-                        style={
-                            "textAlign": "left",
-                            "margin": "30px",
-                            "fontSize": "60px",
-                            "color": "#8c3604",
-                        },
-                    ),
-                    html.Hr(style={"color": "#000000", "margin": "30px",}),
+                    html.H2("Project Data", className="heading1",),
+                    html.Hr(className="horizontal_line"),
                 ],
             ),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                     html.P(
                         "The most important simulation data will be presented below. "
                         "Detailed settings, costs, and technological parameters can "
-                        "be found in the appendix.",
-                        style={
-                            "textAlign": "justify",
-                            "fontSize": "40px",
-                            "margin": "30px",
-                        },
+                        "be found in the appendix."
                     )
                 ],
             ),
@@ -419,22 +357,7 @@ def create_app(results_json):
                 [
                     html.Div(
                         [
-                            html.H4(
-                                ["Project Location"],
-                                className="projdataheading",
-                                style={
-                                    "position": "relative",
-                                    "left": "0",
-                                    "height": "20%",
-                                    "borderLeft": "20px solid #8c3604",
-                                    "background": "#ffffff",
-                                    "paddingTop": "1px",
-                                    "paddingBottom": "1px",
-                                    "paddingLeft": "30px",
-                                    "paddingRight": "60px",
-                                    "fontSize": "40px",
-                                },
-                            ),
+                            html.H4(["Project Location"], className="projdataheading"),
                             html.Iframe(
                                 srcDoc=open(
                                     os.path.join(
@@ -454,20 +377,7 @@ def create_app(results_json):
                                 [
                                     html.Br([]),
                                     html.H4(
-                                        ["Project Data"],
-                                        className="projdataheading",
-                                        style={
-                                            "position": "relative",
-                                            "left": "0",
-                                            "height": "20%",
-                                            "margin": "0mm",
-                                            "borderLeft": "20px solid #8c3604",
-                                            "background": "#ffffff",
-                                            "paddingTop": "1px",
-                                            "paddingBottom": "1px",
-                                            "paddingLeft": "30px",
-                                            "paddingRight": "60px",
-                                        },
+                                        ["Project Data"], className="projdataheading"
                                     ),
                                     html.Div(
                                         className="tableplay",
@@ -475,11 +385,6 @@ def create_app(results_json):
                                     ),
                                 ],
                                 className="projdata",
-                                style={
-                                    "width": "48%",
-                                    "margin": "30px",
-                                    "fontSize": "40px",
-                                },
                             )
                         ]
                     ),
@@ -491,18 +396,6 @@ def create_app(results_json):
                                     html.H4(
                                         ["Simulation Settings"],
                                         className="projdataheading",
-                                        style={
-                                            "position": "relative",
-                                            "left": "0",
-                                            "height": "20%",
-                                            "margin": "0mm",
-                                            "borderLeft": "20px solid #8c3604",
-                                            "background": "#ffffff",
-                                            "paddingTop": "1px",
-                                            "paddingBottom": "1px",
-                                            "paddingLeft": "30px",
-                                            "paddingRight": "60px",
-                                        },
                                     ),
                                     html.Div(
                                         className="tableplay",
@@ -510,11 +403,6 @@ def create_app(results_json):
                                     ),
                                 ],
                                 className="projdata",
-                                style={
-                                    "width": "48%",
-                                    "margin": "30px",
-                                    "fontSize": "40px",
-                                },
                             )
                         ]
                     ),
@@ -524,20 +412,12 @@ def create_app(results_json):
             html.Div(
                 className="heading1",
                 children=[
-                    html.H2(
-                        "Energy Demand",
-                        style={
-                            "textAlign": "left",
-                            "margin": "30px",
-                            "fontSize": "60px",
-                            "color": "#8c3604",
-                        },
-                    ),
-                    html.Hr(style={"color": "#000000", "margin": "30px",}),
+                    html.H2("Energy Demand"),
+                    html.Hr(className="horizontal_line"),
                 ],
             ),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                     html.P(
                         "The simulation was performed for the energy system "
@@ -545,7 +425,6 @@ def create_app(results_json):
                     ),
                     html.P(f"{sec_list}"),
                 ],
-                style={"textAlign": "justify", "fontSize": "40px", "margin": "30px"},
             ),
             html.Div(
                 className="demandmatter",
@@ -554,7 +433,6 @@ def create_app(results_json):
                     html.H4("Electricity Demand", className="graph__pre-title",),
                     html.P("Electricity demands that have to be supplied are: "),
                 ],
-                style={"textAlign": "left", "fontSize": "40px", "margin": "30px"},
             ),
             html.Div(children=[make_dash_data_table(df_dem)]),
             html.Div(
@@ -591,75 +469,43 @@ def create_app(results_json):
             html.Div(
                 className="heading1",
                 children=[
-                    html.H2(
-                        "Energy System Components",
-                        style={
-                            "textAlign": "left",
-                            "margin": "30px",
-                            "fontSize": "60px",
-                            "color": "#8c3604",
-                        },
-                    ),
-                    html.Hr(style={"color": "#000000", "margin": "30px",}),
+                    html.H2("Energy System Components"),
+                    html.Hr(className="horizontal_line"),
                 ],
             ),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                     html.P(
                         "The energy system is comprised of the following components:"
                     )
                 ],
-                style={"textAlign": "justify", "fontSize": "40px", "margin": "30px"},
             ),
             html.Div(children=[make_dash_data_table(df_comp)]),
             html.Br([]),
             html.Div(
-                className="simresultsbox",
+                className="inputs_simresults_box",
                 children=[html.H2("SIMULATION RESULTS")],
-                style={
-                    "textAlign": "center",
-                    "borderStyle": "solid",
-                    "borderWidth": "thin",
-                    "padding": "0.5px",
-                    "margin": "30px",
-                    "fontSize": "250%",
-                    "width": "3000px",
-                    "margin-left": "auto",
-                    "margin-right": "auto",
-                    "background": colors["inp-box"],
-                    "color": colors["font-inpbox"],
-                    "verticalAlign": "middle",
-                },
             ),
             html.Br([]),
             html.Div(
                 className="heading1",
                 children=[
-                    html.H2(
-                        "Dispatch & Energy Flows",
-                        style={
-                            "textAlign": "left",
-                            "margin": "30px",
-                            "fontSize": "60px",
-                            "color": "#8c3604",
-                        },
-                    ),
-                    html.Hr(style={"color": "#000000", "margin": "30px",}),
+                    html.H2("Dispatch & Energy Flows"),
+                    html.Hr(className="horizontal_line"),
                 ],
             ),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                     html.P(
                         "The capacity optimization of components that were to be used resulted in:"
                     )
                 ],
-                style={"textAlign": "justify", "fontSize": "40px", "margin": "30px"},
             ),
             html.Div(children=[make_dash_data_table(df_scalars)]),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                     html.P(
                         "With this, the demands are met with the following dispatch schedules:"
@@ -683,7 +529,6 @@ def create_app(results_json):
                         ]
                     ),
                 ],
-                style={"textAlign": "justify", "fontSize": "40px", "margin": "30px"},
             ),
             html.Br(style={"marginBottom": "5px"}),
             html.P(
@@ -697,25 +542,19 @@ def create_app(results_json):
             html.Div(
                 className="heading1",
                 children=[
-                    html.H2(
-                        "Economic Evaluation",
-                        style={
-                            "textAlign": "left",
-                            "margin": "30px",
-                            "fontSize": "60px",
-                            "color": "#8c3604",
-                        },
-                    ),
-                    html.Hr(style={"color": "#000000", "margin": "30px",}),
+                    html.H2("Economic Evaluation"),
+                    html.Hr(className="horizontal_line"),
                 ],
             ),
             html.P(
-                "The following installation and operation costs result from capacity and dispatch optimization:",
-                style={"margin": "30px", "textAlign": "justify", "fontSize": "40px",},
+                className="blockoftext",
+                children=[
+                    "The following installation and operation costs result from capacity and dispatch optimization:"
+                ],
             ),
             html.Div(children=[make_dash_data_table(df_costs)]),
             html.Div(
-                className="blockoftext2",
+                className="blockoftext",
                 children=[
                     html.Img(
                         src="data:image/png;base64,{}".format(
@@ -725,7 +564,6 @@ def create_app(results_json):
                     )
                     for ts in results_json[PATHS_TO_PLOTS][PLOTS_COSTS]
                 ],
-                style={"textAlign": "justify", "fontSize": "40px", "margin": "30px"},
             ),
         ]
     )
@@ -733,6 +571,14 @@ def create_app(results_json):
 
 
 if __name__ == "__main__":
-    test_app = create_app(CSV_FOLDER, OUTPUT_FOLDER)
+    from src.constants import REPO_PATH, OUTPUT_FOLDER
+    from src.B0_data_input_json import load_json
+
+    dict_values = load_json(
+        os.path.join(REPO_PATH, OUTPUT_FOLDER, "json_with_results.json")
+    )
+
+    test_app = create_app(dict_values)
     # app.run_server(debug=True)
-    print_pdf(test_app)
+    test_app.run_server(debug=True)
+    # print_pdf(test_app)
