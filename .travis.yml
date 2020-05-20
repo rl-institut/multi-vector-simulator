@@ -26,8 +26,17 @@ after_success:
   - coverage report -m
   - coveralls
 
-env:
-  - COVERALLS_REPO_TOKEN=${{ secrets.coverage_token }}
+#env:
+#  - EXECUTE_TESTS_ON=skip
+
+jobs:
+  include:
+    - if: branch IN (master)
+      env: COVERALLS_REPO_TOKEN=${{ secrets.coverage_token }} EXECUTE_TESTS_ON=master
+    - if: branch IN (dev)
+      env: COVERALLS_REPO_TOKEN=${{ secrets.coverage_token }} EXECUTE_TESTS_ON=dev
+    - if: branch NOT IN (master, dev)
+      env: EXECUTE_TESTS_ON=skip
 #  - pylint */*.py
 #jobs:
 #  include:

@@ -42,12 +42,17 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for the module E3 (#143)
 - Test for the module F0 (#142, #304)
 - Test for the module E0 (#146)
-- Test for module F1 (#157, #297)
+- Test for module F1 (#157, #297, #284)
 - Benchmark test with only PV and grid (#258)
 - Module F2 for auto-reporting results of MVS simulation (#232)
+- Json entries including paths to all plotted graphs (#232)
 - Tests for module C2 (#151)
 - Tests for storage for the module A1 (#299)
 - Benchmark test with only battery and grid (#302)
+- Possibility to save the report generated in F2 as a pdf (#284)
+- Test for module D2 (#147)
+- Possibility to run benchmark tests selectively and make sure they are all run on master branch
+ (#320)
 - Tests for the module D1 (still - partly - open: transformers, sources. finished: sinks, storages, other functions) (#149)
 
 ### Changed
@@ -65,8 +70,10 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Call timeseries plot function for each bus (#278)
 - rename "storage" parameter in A1 and tests_A1 to "asset_is_a_storage"
 - Serialize the DataFrame and arrays into the json_with_results.json (#304)
-- Convert serialized DataFrame and arrays back into these types in the B0.load_json function (#304)
- 
+- Convert serialized DataFrame and arrays back into these types in the B0.load_json function
+ (#304, #322)
+- The input from the csv files produce the same json than the json file (#286)
+ - Move the CSS styling code to a style sheet (#317)
 ### Removed
 
 ### Fixed
@@ -86,6 +93,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
  would return an error (#278)
  - Display SOC (#278)
  - Automatic update of the test coverage with coveralls.io (#307)
+- Logging message for maximumCap value (#310)
+- Create_app function in F0 for standalone execution (#317)
 
 ## [0.2.0] - 2020-03-13
 

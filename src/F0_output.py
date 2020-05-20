@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import os
 
 import src.F1_plotting as F1_plots
+import src.F2_autoreport as autoreport
+
+from .constants import TYPE_DATETIMEINDEX, TYPE_SERIES, TYPE_DATAFRAME, TYPE_TIMESTAMP
 
 r"""
 Module F0 Output
@@ -22,13 +25,15 @@ The model F0 output defines all functions that store evaluation results to file.
 """
 
 
-def evaluate_dict(dict_values):
+def evaluate_dict(dict_values, path_pdf_report=None):
     """This is the main function of F0. It calls all functions that prepare the simulation output, ie. Storing all simulation output into excellent files, bar charts, and graphs.
 
     Parameters
     ----------
     dict_values :
         dict Of all input and output parameters up to F0
+    path_pdf_report : (str)
+        if provided, generate a pdf report of the simulation to the given path
 
     Returns
     -------
@@ -48,6 +53,7 @@ def evaluate_dict(dict_values):
 
         # Plot flows for one sector for the 14 first days
         F1_plots.flows(
+            dict_values,
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
@@ -57,6 +63,7 @@ def evaluate_dict(dict_values):
 
         # Plot flows for one sector for a year
         F1_plots.flows(
+            dict_values,
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
@@ -102,7 +109,20 @@ def evaluate_dict(dict_values):
 
     # Write everything to file with multipe tabs
     store_scalars_to_excel(dict_values)
-    return
+
+    store_as_json(
+        dict_values,
+        dict_values["simulation_settings"]["path_output_folder"],
+        "json_with_results",
+    )
+
+    # generate a pdf report
+    if path_pdf_report is not None:
+        app = autoreport.create_app(dict_values)
+        autoreport.print_pdf(app, path_pdf_report=path_pdf_report)
+        logging.info(
+            "Generating PDF report of the simulation: {}".format(path_pdf_report)
+        )
 
 
 def plot_piecharts_of_costs(dict_values):
@@ -155,6 +175,7 @@ def plot_optimized_capacities(dict_values):
 
     if show_optimal_capacities is True:
         F1_plots.capacities(
+            dict_values,
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["kpi"]["scalar_matrix"]["label"],
@@ -220,6 +241,7 @@ def store_timeseries_all_busses_to_excel(dict_values):
         for bus in dict_values["optimizedFlows"]:
             dict_values["optimizedFlows"][bus].to_excel(open_file, sheet_name=bus)
             F1_plots.flows(
+                dict_values,
                 dict_values["simulation_settings"],
                 dict_values["project_data"],
                 dict_values["optimizedFlows"][bus],
@@ -250,15 +272,19 @@ def convert(o):
     # todo this actually drops the date time index, which could be interesting
     elif isinstance(o, pd.DatetimeIndex):
         answer = o.to_frame().to_json(orient="split")
+        answer = "{}{}".format(TYPE_DATETIMEINDEX, answer)
     elif isinstance(o, pd.Timestamp):
         answer = str(o)
+        answer = "{}{}".format(TYPE_TIMESTAMP, answer)
     # todo this also drops the timeindex, which is unfortunate.
     elif isinstance(o, pd.Series):
         answer = o.to_json(orient="split")
+        answer = "{}{}".format(TYPE_SERIES, answer)
     elif isinstance(o, numpy.ndarray):
         answer = json.dumps({"array": o.tolist()})
     elif isinstance(o, pd.DataFrame):
         answer = o.to_json(orient="split")
+        answer = "{}{}".format(TYPE_DATAFRAME, answer)
     else:
         raise TypeError(
             "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"

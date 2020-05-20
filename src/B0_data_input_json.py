@@ -3,7 +3,16 @@ import json
 import numpy as np
 import pandas as pd
 
-from src.constants import CSV_FNAME, INPUTS_COPY
+from src.constants import (
+    CSV_FNAME,
+    INPUTS_COPY,
+    PATHS_TO_PLOTS,
+    DICT_PLOTS,
+    TYPE_DATETIMEINDEX,
+    TYPE_SERIES,
+    TYPE_DATAFRAME,
+    TYPE_TIMESTAMP,
+)
 
 """
 This module is used to open a json file and parse it as a dict all input parameters for the energy 
@@ -44,12 +53,24 @@ def convert_special_types(a_dict, prev_key=None):
         # pandas.Series, pandas.DatetimeIndex, pandas.DataFrame, numpy.array
         answer = a_dict
         if isinstance(a_dict, str):
-            if "index" in a_dict and "column" in a_dict:
-                # pandas.DatetimeIndex or pandas.DataFrame
+            if TYPE_DATAFRAME in a_dict:
+                a_dict = a_dict.replace(TYPE_DATAFRAME, "")
+                # pandas.DataFrame
                 answer = pd.read_json(a_dict, orient="split")
-            elif "index" in a_dict and "name" in a_dict:
+            elif TYPE_DATETIMEINDEX in a_dict:
+                # pandas.DatetimeIndex
+                a_dict = a_dict.replace(TYPE_DATETIMEINDEX, "")
+                answer = pd.read_json(a_dict, orient="split")
+                answer = pd.to_datetime(answer.index)
+                answer.freq = answer.inferred_freq
+            elif TYPE_SERIES in a_dict:
                 # pandas.Series
+                a_dict = a_dict.replace(TYPE_SERIES, "")
                 answer = pd.read_json(a_dict, orient="split", typ="series")
+
+            elif TYPE_TIMESTAMP in a_dict:
+                a_dict = a_dict.replace(TYPE_TIMESTAMP, "")
+                answer = pd.Timestamp(a_dict)
             elif "array" in a_dict:
                 # numpy.array
                 answer = np.array(json.loads(a_dict)["array"])
@@ -109,4 +130,7 @@ def load_json(
             ),
         )
 
+    # add default value if the field PATHS_TO_PLOTS is not already present
+    if PATHS_TO_PLOTS not in dict_values:
+        dict_values.update(DICT_PLOTS)
     return dict_values
