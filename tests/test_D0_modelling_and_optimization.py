@@ -1,16 +1,25 @@
 import src.D0_modelling_and_optimization as D0
 import pytest
-
-# this test should be ensured by the benchmark tests itself.
-# def test_if_oemof_simulation_runs_through(self):
 import os
-import json
 from src.B0_data_input_json import load_json
 
 json_path = os.path.join("tests", "test_data", "test_data_for_D0.json")
 
 dict_values = load_json(json_path)
 
+from tests.constants import TEST_REPO_PATH
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
+dict_values["simulation_settings"].update({"path_output_folder": TEST_OUTPUT_PATH})
+
+# Necessary as
+import shutil
+def setup_function():
+    if os.path.exists(TEST_OUTPUT_PATH):
+        shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    os.mkdir(TEST_OUTPUT_PATH)
+
+def teardown_function():
+    shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
 
 def test_if_model_building_time_measured_and_stored():
     dict_values = {"simulation_results": {}}
@@ -66,7 +75,6 @@ def test_error_raise_WrongOemofAssetForGroupError_if_oemof_asset_type_not_accept
 
 from src.constants_json_strings import ACCEPTED_ASSETS_FOR_ASSET_GROUPS
 
-
 def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0():
     model, dict_model = D0.model_building.initialize(dict_values_minimal)
     dict_test = {ENERGY_CONSUMPTION: {"asset": {OEMOF_ASSET_TYPE: "unknown_type"}}}
@@ -78,10 +86,7 @@ def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0
         )
 
 
-from tests.constants import TEST_REPO_PATH
-
-TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
-
+path_networkx = os.path.join(TEST_OUTPUT_PATH, "network_graph.png")
 
 def test_networkx_graph_requested_store_nx_graph_true():
     model, dict_model = D0.model_building.initialize(dict_values)
@@ -90,23 +95,22 @@ def test_networkx_graph_requested_store_nx_graph_true():
     )
     dict_values["simulation_settings"]["store_nx_graph"].update({"value": True})
     D0.model_building.plot_networkx_graph(dict_values, model)
-    assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
+    assert os.path.exists(path_networkx) is True
 
 
-def test_networkx_graph_requested_display_and_store_nx_graph_true():
+def test_networkx_graph_requested_store_nx_graph_false():
     model, dict_model = D0.model_building.initialize(dict_values)
     D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
     dict_values["simulation_settings"]["store_nx_graph"].update({"value": False})
     D0.model_building.plot_networkx_graph(dict_values, model)
-    assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
+    assert os.path.exists(path_networkx) is False
 
 
 import oemof.solph as solph
 
-path_lp_file = os.path.join(
-    dict_values["simulation_settings"]["path_output_folder"], "lp_file.lp"
+path_lp_file = os.path.join(TEST_OUTPUT_PATH, "lp_file.lp"
 )
 
 
@@ -134,15 +138,14 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_false():
 
 path_oemof_file = os.path.join(TEST_OUTPUT_PATH, "oemof_simulation_results.oemof")
 
-
-def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_true(self):
-    dict_values["simulation_settings"]["output_lp_file"].update({"value": False})
+def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_true():
+    dict_values["simulation_settings"]["store_oemof_results"].update({"value": True})
     D0.run_oemof(dict_values)
     assert os.path.exists(path_oemof_file) is True
 
 
-def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false(self):
-    dict_values["simulation_settings"]["output_lp_file"].update({"value": False})
+def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false():
+    dict_values["simulation_settings"]["store_oemof_results"].update({"value": False})
     D0.run_oemof(dict_values)
     assert os.path.exists(path_oemof_file) is False
 
