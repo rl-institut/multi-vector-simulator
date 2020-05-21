@@ -52,6 +52,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for module D2 (#147)
 - Possibility to run benchmark tests selectively and make sure they are all run on master branch
  (#320)
+- Test function names for E1 (#145)
 - Possibility to deploy the report of the results in a browser (#323)
 
 ### Changed
