@@ -15,6 +15,7 @@ import os
 # Imports for generating pdf automatically
 import threading
 import pdfkit
+import webbrowser
 
 from src.B0_data_input_json import load_json
 from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
@@ -41,6 +42,15 @@ def print_pdf(app, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
     # time.sleep(5)
     pdfkit.from_url("http://127.0.0.1:8050", path_pdf_report)
     td.join(2)
+
+
+def open_in_browser(app, timeout=600):
+    """Run the dash app in a thread an open a browser window"""
+    td = threading.Thread(target=app.run_server)
+    td.daemon = True
+    td.start()
+    webbrowser.open("http://127.0.0.1:8050", new=1)
+    td.join(timeout)
 
 
 def make_dash_data_table(df):
@@ -579,6 +589,4 @@ if __name__ == "__main__":
     )
 
     test_app = create_app(dict_values)
-    # app.run_server(debug=True)
-    test_app.run_server(debug=True)
-    # print_pdf(test_app)
+    open_in_browser(test_app)
