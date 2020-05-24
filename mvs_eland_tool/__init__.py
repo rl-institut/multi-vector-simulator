@@ -3,3 +3,4 @@ version_date = "2020-03-13"  # update_me Update date
 
 
 from mvs_eland_tool.local_deploy import main as main
+from mvs_eland_tool.server_deploy import main as run_simulation
