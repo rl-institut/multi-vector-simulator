@@ -1,0 +1,1 @@
+from mvs_eland_tool.local_deploy import main as main
