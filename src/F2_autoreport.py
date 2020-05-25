@@ -248,20 +248,13 @@ def create_app(results_json):
 
     # Creating a Pandas dataframe for the components optimization results table
 
-    df_scalars = pd.read_excel(
-        os.path.join(path_output_folder, "scalars.xlsx"), sheet_name="scalar_matrix"
-    )
-    df_scalars = df_scalars.drop(
-        ["Unnamed: 0", "total_flow", "peak_flow", "average_flow"], axis=1
-    )
-    df_scalars = df_scalars.rename(
-        columns={
-            "label": "Component/Parameter",
-            "optimizedAddCap": "CAP",
-            "annual_total_flow": "Aggregated Flow",
-        }
-    )
-    df_scalars = df_scalars.round(2)
+    df_scalar_matrix = results_json['kpi']['scalar_matrix']
+    df_scalar_matrix = df_scalar_matrix.reset_index()
+    df_scalar_matrix = df_scalar_matrix.drop(['index', 'total_flow', 'peak_flow', 'average_flow'], axis=1)
+    df_scalar_matrix = df_scalar_matrix.rename(columns={"label": "Component/Parameter",
+                                                        "optimizedAddCap": "CAP",
+                                                        "annual_total_flow": "Aggregated Flow"})
+    df_scalar_matrix = df_scalar_matrix.round(2)
 
     # Creating a Pandas dataframe for the costs' results
 
@@ -513,7 +506,7 @@ def create_app(results_json):
                     )
                 ],
             ),
-            html.Div(children=[make_dash_data_table(df_scalars)]),
+            html.Div(children=[make_dash_data_table(df_scalar_matrix)]),
             html.Div(
                 className="blockoftext",
                 children=[
