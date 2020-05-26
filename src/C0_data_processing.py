@@ -876,6 +876,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
 
     return
 
+
 def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     """
 
@@ -931,7 +932,10 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             "simulation_annuity": {
-                "value":  economics.simulation_annuity(dict_asset["annuity_capex_opex_var"]["value"], settings["evaluated_period"]["value"]),
+                "value": economics.simulation_annuity(
+                    dict_asset["annuity_capex_opex_var"]["value"],
+                    settings["evaluated_period"]["value"],
+                ),
                 "unit": "currency/unit/simulation period",
             }
         }
@@ -939,18 +943,26 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
     return
 
+
 def complete_missing_cost_data(dict_asset):
-    #todo check if this can be deleted
+    # todo check if this can be deleted
     if "capex_var" not in dict_asset:
         dict_asset.update({"capex_var": 0})
-        logging.error('Dictionary of asset %s is incomplete, as capex_var is missing.', dict_asset['label'])
+        logging.error(
+            "Dictionary of asset %s is incomplete, as capex_var is missing.",
+            dict_asset["label"],
+        )
     if "opex_fix" not in dict_asset:
         dict_asset.update({"opex_fix": 0})
-        logging.error('Dictionary of asset %s is incomplete, as opex_fix is missing.', dict_asset['label'])
+        logging.error(
+            "Dictionary of asset %s is incomplete, as opex_fix is missing.",
+            dict_asset["label"],
+        )
     return
 
+
 def determine_lifetime_opex_var(dict_asset, economic_data):
-    '''
+    """
     #todo I am not sure that this makes sense. is this used in d0?
     Parameters
     ----------
@@ -960,8 +972,10 @@ def determine_lifetime_opex_var(dict_asset, economic_data):
     Returns
     -------
 
-    '''
-    if isinstance(dict_asset["opex_var"]["value"], float) or isinstance(dict_asset["opex_var"]["value"], int):
+    """
+    if isinstance(dict_asset["opex_var"]["value"], float) or isinstance(
+        dict_asset["opex_var"]["value"], int
+    ):
         lifetime_opex_var = get_lifetime_opex_var_one_value(dict_asset, economic_data)
 
     elif isinstance(dict_asset["opex_var"]["value"], list):
@@ -971,37 +985,36 @@ def determine_lifetime_opex_var(dict_asset, economic_data):
         lifetime_opex_var = get_lifetime_opex_var_timeseries(dict_asset, economic_data)
 
     else:
-        raise ValueError(f'Type of opex_var neither int, float, list or pd.Series, but of type {dict_asset["opex_var"]["value"]}. Is type correct?')
+        raise ValueError(
+            f'Type of opex_var neither int, float, list or pd.Series, but of type {dict_asset["opex_var"]["value"]}. Is type correct?'
+        )
 
-    dict_asset.update(
-        {
-            "lifetime_opex_var": {
-                "value": lifetime_opex_var,
-                "unit": "?",
-            }
-        }
-    )
+    dict_asset.update({"lifetime_opex_var": {"value": lifetime_opex_var, "unit": "?",}})
     return
 
+
 def get_lifetime_opex_var_one_value(dict_asset, economic_data):
-    '''
+    """
     opex_var can be a fix value
     Returns
     -------
 
-    '''
-    lifetime_opex_var = dict_asset["opex_var"]["value"] * economic_data["annuity_factor"]["value"]
+    """
+    lifetime_opex_var = (
+        dict_asset["opex_var"]["value"] * economic_data["annuity_factor"]["value"]
+    )
     return lifetime_opex_var
 
+
 def get_lifetime_opex_var_list(dict_asset, economic_data):
-    '''
+    """
     opex_var can be a list, for example if there are two input flows to a component, eg. water and electricity.
     Their ratio for providing cooling in kWh therm is fix. There should be a lifetime_opex_var for each of them.
 
     Returns
     -------
 
-    '''
+    """
 
     # if multiple busses are provided, it takes the first opex_var (corresponding to the first bus)
 
@@ -1014,19 +1027,22 @@ def get_lifetime_opex_var_list(dict_asset, economic_data):
     lifetime_opex_var = opex_var * economic_data["annuity_factor"]["value"]
     return lifetime_opex_var
 
+
 def get_lifetime_opex_var_timeseries(dict_asset, economic_data):
-    '''
+    """
     opex_var can be a timeseries, eg. in case that there is an hourly pricing
     Returns
     -------
 
-    '''
+    """
     # take average value of opex_var if it is a timeseries
 
     opex_var = sum(dict_asset["opex_var"]["value"]) / len(
         dict_asset["opex_var"]["value"]
     )
-    lifetime_opex_var = dict_asset["opex_var"]["value"] * economic_data["annuity_factor"]["value"]
+    lifetime_opex_var = (
+        dict_asset["opex_var"]["value"] * economic_data["annuity_factor"]["value"]
+    )
     return lifetime_opex_var
 
 

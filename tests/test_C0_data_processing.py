@@ -7,14 +7,15 @@ def test_retrieve_datetimeindex_for_simulation():
     simulation_settings = {
         "start_date": "2020-01-01",
         "evaluated_period": {"value": 1},
-        "timestep": {"value": 60}
+        "timestep": {"value": 60},
     }
     C2.simulation_settings(simulation_settings)
-    for k in ("start_date", "end_date","time_index"):
+    for k in ("start_date", "end_date", "time_index"):
         assert k in simulation_settings.keys()
     assert simulation_settings["start_date"] == pd.Timestamp("2020-01-01 00:00:00")
-    assert simulation_settings["end_date"] ==  pd.Timestamp("2020-01-01 23:00:00")
+    assert simulation_settings["end_date"] == pd.Timestamp("2020-01-01 23:00:00")
     assert simulation_settings["periods"] == 24
+
 
 def test_adding_economic_parameters_C2():
     economic_parameters = {
@@ -26,11 +27,13 @@ def test_adding_economic_parameters_C2():
     for k in ("annuity_factor", "crf"):
         assert k in economic_parameters.keys()
 
+
 def test_complete_missing_cost_data_opex_fix():
     dict_asset = {"label": "a_label"}
     C2.complete_missing_cost_data(dict_asset)
     assert "opex_fix" in dict_asset.keys()
     assert dict_asset["opex_fix"] == 0
+
 
 def test_complete_missing_cost_data_capex_var():
     dict_asset = {"label": "a_label"}
@@ -38,33 +41,48 @@ def test_complete_missing_cost_data_capex_var():
     assert "capex_var" in dict_asset.keys()
     assert dict_asset["capex_var"] == 0
 
+
 settings = {"evaluated_period": {"value": 365}}
 
-economic_data = {"project_duration": {"value": 20},
-                 "annuity_factor": {"value": 1},
-                 "crf": {"value": 1},
-                 "discount_factor": {"value": 0},
-                 "tax": {"value": 0}}
+economic_data = {
+    "project_duration": {"value": 20},
+    "annuity_factor": {"value": 1},
+    "crf": {"value": 1},
+    "discount_factor": {"value": 0},
+    "tax": {"value": 0},
+}
 
-dict_asset = {"opex_fix": {"value": 1, "unit": "a_unit"},
-              "crf": {"value": 1},
-              "capex_var": {"value": 1, "unit": "a_unit"},
-              "opex_var": {"value": 1},
-              "capex_fix": {"value": 1},
-              "lifetime": {"value": 20},
-              "unit": "a_unit"}
+dict_asset = {
+    "opex_fix": {"value": 1, "unit": "a_unit"},
+    "crf": {"value": 1},
+    "capex_var": {"value": 1, "unit": "a_unit"},
+    "opex_var": {"value": 1},
+    "capex_fix": {"value": 1},
+    "lifetime": {"value": 20},
+    "unit": "a_unit",
+}
+
 
 def test_evaluate_lifetime_costs_adds_all_parameters():
     C2.evaluate_lifetime_costs(settings, economic_data, dict_asset)
-    for k in ("lifetime_capex_var", "annuity_capex_opex_var", "lifetime_opex_fix", "lifetime_opex_var", "simulation_annuity"):
+    for k in (
+        "lifetime_capex_var",
+        "annuity_capex_opex_var",
+        "lifetime_opex_fix",
+        "lifetime_opex_var",
+        "simulation_annuity",
+    ):
         assert k in dict_asset.keys()
+
 
 def test_determine_lifetime_opex_var_as_int():
     dict_asset = {"opex_var": {"value": 1}}
     C2.determine_lifetime_opex_var(dict_asset, economic_data)
     assert "lifetime_opex_var" in dict_asset.keys()
-    assert isinstance(dict_asset["lifetime_opex_var"]["value"], float) \
-           or isinstance(dict_asset["lifetime_opex_var"]["value"], int)
+    assert isinstance(dict_asset["lifetime_opex_var"]["value"], float) or isinstance(
+        dict_asset["lifetime_opex_var"]["value"], int
+    )
+
 
 def test_determine_lifetime_opex_var_as_float():
     dict_asset = {"opex_var": {"value": 1.5}}
@@ -74,11 +92,11 @@ def test_determine_lifetime_opex_var_as_float():
 
 
 def test_determine_lifetime_opex_var_as_list():
-    dict_asset = {"opex_var": {"value": [1.0,1.0]}}
+    dict_asset = {"opex_var": {"value": [1.0, 1.0]}}
     C2.determine_lifetime_opex_var(dict_asset, economic_data)
     assert "lifetime_opex_var" in dict_asset.keys()
     assert isinstance(dict_asset["lifetime_opex_var"]["value"], float)
-    #todo this should be here some time, shouldnt it? assert isinstance(dict_asset["lifetime_opex_var"]["value"], list)
+    # todo this should be here some time, shouldnt it? assert isinstance(dict_asset["lifetime_opex_var"]["value"], list)
 
 
 START_TIME = "2020-01-01 00:00"
@@ -87,6 +105,7 @@ VALUES = [0, 1, 2]
 
 pandas_DatetimeIndex = pd.date_range(start=START_TIME, periods=PERIODS, freq="60min")
 pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
+
 
 def test_determine_lifetime_opex_var_as_timeseries():
     dict_asset = {"opex_var": {"value": pandas_Series}}
@@ -100,7 +119,8 @@ def test_determine_lifetime_opex_var_is_other():
     with pytest.raises(ValueError):
         C2.determine_lifetime_opex_var(dict_asset, economic_data)
 
-'''
+
+"""
 
 
 def test_asess_energyVectors_and_add_to_project_data():
@@ -181,4 +201,4 @@ def test_defined_energyBusses_complete():
 
 def test_verification_executing_C1():
     assert 1 == 0
-'''
+"""
