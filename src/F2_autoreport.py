@@ -248,37 +248,53 @@ def create_app(results_json):
 
     # Creating a Pandas dataframe for the components optimization results table
 
-    df_scalars = pd.read_excel(
-        os.path.join(path_output_folder, "scalars.xlsx"), sheet_name="scalar_matrix"
+    # Read in the scalar matrix as pandas dataframe
+    df_scalar_matrix = results_json["kpi"]["scalar_matrix"]
+
+    # Changing the index to a sequence of 0,1,2...
+    df_scalar_matrix = df_scalar_matrix.reset_index()
+
+    # Dropping irrelevant columns from the dataframe
+    df_scalar_matrix = df_scalar_matrix.drop(
+        ["index", "total_flow", "peak_flow", "average_flow"], axis=1
     )
-    df_scalars = df_scalars.drop(
-        ["Unnamed: 0", "total_flow", "peak_flow", "average_flow"], axis=1
-    )
-    df_scalars = df_scalars.rename(
+
+    # Renaming the columns
+    df_scalar_matrix = df_scalar_matrix.rename(
         columns={
             "label": "Component/Parameter",
             "optimizedAddCap": "CAP",
             "annual_total_flow": "Aggregated Flow",
         }
     )
-    df_scalars = df_scalars.round(2)
+    # Rounding the numeric values to two significant digits
+    df_scalar_matrix = df_scalar_matrix.round(2)
 
     # Creating a Pandas dataframe for the costs' results
 
-    df_costs1 = pd.read_excel(
-        os.path.join(path_output_folder, "scalars.xlsx"), sheet_name="cost_matrix"
+    # Read in the cost matrix as a pandas dataframe
+    df_cost_matrix = results_json["kpi"]["cost_matrix"]
+
+    # Changing the index to a sequence of 0,1,2...
+    df_cost_matrix = df_cost_matrix.reset_index()
+
+    # Drop some irrelevant columns from the dataframe
+    df_cost_matrix = df_cost_matrix.drop(
+        ["index", "costs_om", "costs_investment", "costs_opex_var", "costs_opex_fix"],
+        axis=1,
     )
-    df_costs1 = df_costs1.round(2)
-    df_costs = df_costs1[
-        ["label", "costs_total", "costs_upfront", "annuity_total", "annuity_om"]
-    ].copy()
-    df_costs = df_costs.rename(
+
+    # Rename some of the column names
+    df_cost_matrix = df_cost_matrix.rename(
         columns={
             "label": "Component",
             "costs_total": "CAP",
             "costs_upfront": "Upfront Investment Costs",
         }
     )
+
+    # Round the numeric values to two significant digits
+    df_cost_matrix = df_cost_matrix.round(2)
 
     # Header section with logo and the title of the report, and CSS styling. Work in progress...
 
@@ -513,7 +529,7 @@ def create_app(results_json):
                     )
                 ],
             ),
-            html.Div(children=[make_dash_data_table(df_scalars)]),
+            html.Div(children=[make_dash_data_table(df_scalar_matrix)]),
             html.Div(
                 className="blockoftext",
                 children=[
@@ -562,7 +578,7 @@ def create_app(results_json):
                     "The following installation and operation costs result from capacity and dispatch optimization:"
                 ],
             ),
-            html.Div(children=[make_dash_data_table(df_costs)]),
+            html.Div(children=[make_dash_data_table(df_cost_matrix)]),
             html.Div(
                 className="blockoftext",
                 children=[

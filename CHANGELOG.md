@@ -75,7 +75,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
  (#304, #322, #326)
 - The input from the csv files produce the same json than the json file (#286)
  - Move the CSS styling code to a style sheet (#317)
-
+ - Change the input data for creating the dataframes for generating the optimization and costs' tables from xlsx file to json (#317) 
+ 
 ### Removed
 - Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´ (#150), as well as from all input files etc. The name is hardcoded now.
 
