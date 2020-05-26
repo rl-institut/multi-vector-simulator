@@ -132,7 +132,7 @@ def main(**kwargs):
     results_meta, results_main = modelling.run_oemof(dict_values)
     """
     if dict_values['simulation_settings']['restore_from_oemof_file'] == True:
-        if os.path.isfile(dict_values['simulation_settings']['path_output_folder'] + '/' + dict_values['simulation_settings']['oemof_file_name'])== False:
+        if os.path.isfile(dict_values['simulation_settings']['path_output_folder'] + '/' + "oemof_simulation_results.oemof)== False:
             print('')
             logging.debug('Accessing script: D0_modelling_and_optimization')
             results_meta, results_main = modelling.run_oemof(dict_values)
@@ -141,7 +141,7 @@ def main(**kwargs):
             import oemof.solph as solph
             model = solph.EnergySystem()
             model.restore(dpath=dict_values['simulation_settings']['path_output_folder'],
-                                  filename=dict_values['simulation_settings']['oemof_file_name'])
+                                  filename="oemof_simulation_results.oemof"])
             results_main = model.results['main']
             results_meta = model.results['meta']
 

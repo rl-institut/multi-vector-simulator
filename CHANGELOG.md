@@ -52,8 +52,9 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for module D2 (#147)
 - Possibility to run benchmark tests selectively and make sure they are all run on master branch
  (#320)
-- Test function names for E1 (#145)
+ - Test function names for E1 (#145)
 - Possibility to deploy the report of the results in a browser (#323)
+- Test for the module D0 (#150)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -75,7 +76,9 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - The input from the csv files produce the same json than the json file (#286)
  - Move the CSS styling code to a style sheet (#317)
  - Change the input data for creating the dataframes for generating the optimization and costs' tables from xlsx file to json (#317) 
+ 
 ### Removed
+- Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´ (#150), as well as from all input files etc. The name is hardcoded now.
 
 ### Fixed
 - Rename "boolean" to "bool" in example json file (#214)
