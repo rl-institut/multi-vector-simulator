@@ -138,7 +138,6 @@ REQUIRED_CSV_PARAMETERS = {
     "simulation_settings": [
         "evaluated_period",
         "label",
-        "oemof_file_name",
         "output_lp_file",
         "restore_from_oemof_file",
         "display_nx_graph",

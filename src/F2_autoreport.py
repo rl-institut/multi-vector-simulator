@@ -15,6 +15,7 @@ import os
 # Imports for generating pdf automatically
 import threading
 import pdfkit
+import webbrowser
 
 from src.B0_data_input_json import load_json
 from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
@@ -41,6 +42,15 @@ def print_pdf(app, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
     # time.sleep(5)
     pdfkit.from_url("http://127.0.0.1:8050", path_pdf_report)
     td.join(2)
+
+
+def open_in_browser(app, timeout=600):
+    """Run the dash app in a thread an open a browser window"""
+    td = threading.Thread(target=app.run_server)
+    td.daemon = True
+    td.start()
+    webbrowser.open("http://127.0.0.1:8050", new=1)
+    td.join(timeout)
 
 
 def make_dash_data_table(df):
@@ -238,37 +248,53 @@ def create_app(results_json):
 
     # Creating a Pandas dataframe for the components optimization results table
 
-    df_scalars = pd.read_excel(
-        os.path.join(path_output_folder, "scalars.xlsx"), sheet_name="scalar_matrix"
+    # Read in the scalar matrix as pandas dataframe
+    df_scalar_matrix = results_json["kpi"]["scalar_matrix"]
+
+    # Changing the index to a sequence of 0,1,2...
+    df_scalar_matrix = df_scalar_matrix.reset_index()
+
+    # Dropping irrelevant columns from the dataframe
+    df_scalar_matrix = df_scalar_matrix.drop(
+        ["index", "total_flow", "peak_flow", "average_flow"], axis=1
     )
-    df_scalars = df_scalars.drop(
-        ["Unnamed: 0", "total_flow", "peak_flow", "average_flow"], axis=1
-    )
-    df_scalars = df_scalars.rename(
+
+    # Renaming the columns
+    df_scalar_matrix = df_scalar_matrix.rename(
         columns={
             "label": "Component/Parameter",
             "optimizedAddCap": "CAP",
             "annual_total_flow": "Aggregated Flow",
         }
     )
-    df_scalars = df_scalars.round(2)
+    # Rounding the numeric values to two significant digits
+    df_scalar_matrix = df_scalar_matrix.round(2)
 
     # Creating a Pandas dataframe for the costs' results
 
-    df_costs1 = pd.read_excel(
-        os.path.join(path_output_folder, "scalars.xlsx"), sheet_name="cost_matrix"
+    # Read in the cost matrix as a pandas dataframe
+    df_cost_matrix = results_json["kpi"]["cost_matrix"]
+
+    # Changing the index to a sequence of 0,1,2...
+    df_cost_matrix = df_cost_matrix.reset_index()
+
+    # Drop some irrelevant columns from the dataframe
+    df_cost_matrix = df_cost_matrix.drop(
+        ["index", "costs_om", "costs_investment", "costs_opex_var", "costs_opex_fix"],
+        axis=1,
     )
-    df_costs1 = df_costs1.round(2)
-    df_costs = df_costs1[
-        ["label", "costs_total", "costs_upfront", "annuity_total", "annuity_om"]
-    ].copy()
-    df_costs = df_costs.rename(
+
+    # Rename some of the column names
+    df_cost_matrix = df_cost_matrix.rename(
         columns={
             "label": "Component",
             "costs_total": "CAP",
             "costs_upfront": "Upfront Investment Costs",
         }
     )
+
+    # Round the numeric values to two significant digits
+    df_cost_matrix = df_cost_matrix.round(2)
 
     # Header section with logo and the title of the report, and CSS styling. Work in progress...
 
@@ -503,7 +529,7 @@ def create_app(results_json):
                     )
                 ],
             ),
-            html.Div(children=[make_dash_data_table(df_scalars)]),
+            html.Div(children=[make_dash_data_table(df_scalar_matrix)]),
             html.Div(
                 className="blockoftext",
                 children=[
@@ -552,7 +578,7 @@ def create_app(results_json):
                     "The following installation and operation costs result from capacity and dispatch optimization:"
                 ],
             ),
-            html.Div(children=[make_dash_data_table(df_costs)]),
+            html.Div(children=[make_dash_data_table(df_cost_matrix)]),
             html.Div(
                 className="blockoftext",
                 children=[
@@ -579,6 +605,4 @@ if __name__ == "__main__":
     )
 
     test_app = create_app(dict_values)
-    # app.run_server(debug=True)
-    test_app.run_server(debug=True)
-    # print_pdf(test_app)
+    open_in_browser(test_app)

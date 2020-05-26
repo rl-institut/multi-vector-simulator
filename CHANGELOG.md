@@ -54,6 +54,9 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Possibility to run benchmark tests selectively and make sure they are all run on master branch
  (#320)
 - Tests for the module D1 (still - partly - open: transformers, sources. finished: sinks, storages, other functions) (#149)
+ - Test function names for E1 (#145)
+- Possibility to deploy the report of the results in a browser (#323)
+- Test for the module D0 (#150)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -71,10 +74,13 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - rename "storage" parameter in A1 and tests_A1 to "asset_is_a_storage"
 - Serialize the DataFrame and arrays into the json_with_results.json (#304)
 - Convert serialized DataFrame and arrays back into these types in the B0.load_json function
- (#304, #322)
+ (#304, #322, #326)
 - The input from the csv files produce the same json than the json file (#286)
  - Move the CSS styling code to a style sheet (#317)
+ - Change the input data for creating the dataframes for generating the optimization and costs' tables from xlsx file to json (#317) 
+ 
 ### Removed
+- Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´ (#150), as well as from all input files etc. The name is hardcoded now.
 
 ### Fixed
 - Rename "boolean" to "bool" in example json file (#214)
