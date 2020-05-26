@@ -46,6 +46,7 @@ def test_add_costs_and_total():
         dict_asset, "new_cost", new_cost, current_costs
     )
     assert total_costs == new_cost + current_costs
+    assert "new_cost" in dict_asset
 
 
 def test_all_list_in_dict():
