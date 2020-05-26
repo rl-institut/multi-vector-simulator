@@ -20,6 +20,7 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+
 - Description of validation scheme into readthedocs (#306)
 - Flowchart and relative description (#305)
 - License is referenced
@@ -52,6 +53,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for module D2 (#147)
 - Possibility to run benchmark tests selectively and make sure they are all run on master branch
  (#320)
+- Tests for the module D1 (still - partly - open: transformers, sources. finished: sinks, storages, other functions) (#149)
  - Test function names for E1 (#145)
 - Possibility to deploy the report of the results in a browser (#323)
 - Test for the module D0 (#150)
