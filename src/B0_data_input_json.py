@@ -3,15 +3,15 @@ import json
 import numpy as np
 import pandas as pd
 
-from src.constants import CSV_FNAME, INPUTS_COPY
 from src.constants import (
-    PLOTS_BUSSES,
+    CSV_FNAME,
+    INPUTS_COPY,
     PATHS_TO_PLOTS,
-    PLOTS_DEMANDS,
-    PLOTS_RESOURCES,
-    PLOTS_NX,
-    PLOTS_PERFORMANCE,
-    PLOTS_COSTS,
+    DICT_PLOTS,
+    TYPE_DATETIMEINDEX,
+    TYPE_SERIES,
+    TYPE_DATAFRAME,
+    TYPE_TIMESTAMP,
 )
 
 """
@@ -53,12 +53,38 @@ def convert_special_types(a_dict, prev_key=None):
         # pandas.Series, pandas.DatetimeIndex, pandas.DataFrame, numpy.array
         answer = a_dict
         if isinstance(a_dict, str):
-            if "index" in a_dict and "column" in a_dict:
-                # pandas.DatetimeIndex or pandas.DataFrame
+            if TYPE_DATAFRAME in a_dict:
+                a_dict = a_dict.replace(TYPE_DATAFRAME, "")
+                # pandas.DataFrame
                 answer = pd.read_json(a_dict, orient="split")
-            elif "index" in a_dict and "name" in a_dict:
+            elif TYPE_DATETIMEINDEX in a_dict:
+                # pandas.DatetimeIndex
+                a_dict = a_dict.replace(TYPE_DATETIMEINDEX, "")
+                answer = pd.read_json(a_dict, orient="split")
+                answer = pd.to_datetime(answer.index)
+                answer.freq = answer.inferred_freq
+            elif TYPE_SERIES in a_dict:
                 # pandas.Series
+                a_dict = a_dict.replace(TYPE_SERIES, "")
+                # extract the name of the series in case it was a tuple
+                a_dict = json.loads(a_dict)
+                name = a_dict.pop("name")
+
+                # reconvert the dict to a json for conversion to pandas Series
+                a_dict = json.dumps(a_dict)
                 answer = pd.read_json(a_dict, orient="split", typ="series")
+
+                # if the name was a tuple it was converted to a list via json serialization
+                if isinstance(name, list):
+                    name[0] = tuple(name[0])
+                    name = tuple(name)
+
+                if name is not None:
+                    answer.name = name
+
+            elif TYPE_TIMESTAMP in a_dict:
+                a_dict = a_dict.replace(TYPE_TIMESTAMP, "")
+                answer = pd.Timestamp(a_dict)
             elif "array" in a_dict:
                 # numpy.array
                 answer = np.array(json.loads(a_dict)["array"])
@@ -118,16 +144,7 @@ def load_json(
             ),
         )
 
-    dict_values.update(
-        {
-            PATHS_TO_PLOTS: {
-                PLOTS_BUSSES: [],
-                PLOTS_DEMANDS: [],
-                PLOTS_RESOURCES: [],
-                PLOTS_NX: [],
-                PLOTS_PERFORMANCE: [],
-                PLOTS_COSTS: [],
-            }
-        }
-    )
+    # add default value if the field PATHS_TO_PLOTS is not already present
+    if PATHS_TO_PLOTS not in dict_values:
+        dict_values.update(DICT_PLOTS)
     return dict_values

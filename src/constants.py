@@ -138,7 +138,6 @@ REQUIRED_CSV_PARAMETERS = {
     "simulation_settings": [
         "evaluated_period",
         "label",
-        "oemof_file_name",
         "output_lp_file",
         "restore_from_oemof_file",
         "display_nx_graph",
@@ -168,6 +167,12 @@ REQUIRED_CSV_PARAMETERS = {
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
+
+# possible type of variable stored into the json file
+TYPE_DATETIMEINDEX = "pandas_DatetimeIndex:"
+TYPE_SERIES = "pandas_Series:"
+TYPE_DATAFRAME = "pandas_Dataframe:"
+TYPE_TIMESTAMP = "pandas_Timestamp:"
 
 KPI_SCALARS = (
     "annuity_om",

@@ -21,7 +21,7 @@
             "energyVector": "Electricity",
             "file_name": "demand_harbor.csv",
             "inflow_direction": "Electricity",
-            "label": "Habor",
+            "label": "Harbor",
             "type_asset": "demand",
             "type_oemof": "sink",
             "unit": "kW"
@@ -625,7 +625,6 @@
             "value": 2
         },
         "label": "simulation_settings",
-        "oemof_file_name": "MVS_results.oemof",
         "output_lp_file": {
             "unit": "bool",
             "value": false
