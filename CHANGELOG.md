@@ -52,6 +52,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for module D2 (#147)
 - Possibility to run benchmark tests selectively and make sure they are all run on master branch
  (#320)
+ - Test function names for E1 (#145)
+- Possibility to deploy the report of the results in a browser (#323)
 - Test for the module D0 (#150)
 
 ### Changed
@@ -70,7 +72,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - rename "storage" parameter in A1 and tests_A1 to "asset_is_a_storage"
 - Serialize the DataFrame and arrays into the json_with_results.json (#304)
 - Convert serialized DataFrame and arrays back into these types in the B0.load_json function
- (#304, #322)
+ (#304, #322, #326)
 - The input from the csv files produce the same json than the json file (#286)
  - Move the CSS styling code to a style sheet (#317)
 

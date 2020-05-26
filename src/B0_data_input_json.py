@@ -66,7 +66,21 @@ def convert_special_types(a_dict, prev_key=None):
             elif TYPE_SERIES in a_dict:
                 # pandas.Series
                 a_dict = a_dict.replace(TYPE_SERIES, "")
+                # extract the name of the series in case it was a tuple
+                a_dict = json.loads(a_dict)
+                name = a_dict.pop("name")
+
+                # reconvert the dict to a json for conversion to pandas Series
+                a_dict = json.dumps(a_dict)
                 answer = pd.read_json(a_dict, orient="split", typ="series")
+
+                # if the name was a tuple it was converted to a list via json serialization
+                if isinstance(name, list):
+                    name[0] = tuple(name[0])
+                    name = tuple(name)
+
+                if name is not None:
+                    answer.name = name
 
             elif TYPE_TIMESTAMP in a_dict:
                 a_dict = a_dict.replace(TYPE_TIMESTAMP, "")
