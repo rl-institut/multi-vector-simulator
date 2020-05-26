@@ -1,12 +1,15 @@
+import os
+import json
 import pytest
 from pandas.util.testing import assert_series_equal
 import pandas as pd
-import json
 import oemof.solph as solph
 
 # internal imports
 import src.D1_model_components as D1
-from tests.constants import D1_JSON
+from tests.constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
+
+D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D1.json",)
 
 # fixtures that help creating variables and data needed for the tests
 @pytest.fixture()

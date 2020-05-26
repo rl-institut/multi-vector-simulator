@@ -38,13 +38,5 @@ JSON_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER, JSON_FNAME)
 # path of the file created automatically by
 JSON_CSV_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER, CSV_ELEMENTS, CSV_FNAME)
 
-
-# json file for specific D1 tests
-D1_JSON = os.path.join(
-    TEST_REPO_PATH,
-    TEST_INPUT_DIRECTORY,
-    SPECIFIC_TEST_INPUT_DIRECTORY,
-    "mvs_config_for_D1_tests.json",
-)
 # folder to store input directory for tests
 TEST_INPUT_DIRECTORY = "test_data"
