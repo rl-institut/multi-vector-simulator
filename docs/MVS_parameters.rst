@@ -38,8 +38,6 @@ simulation_settings.csv
 
 **evaluated_period**: The number of days for which the simulation is to be run.
 
-**oemof_file_name**: The name of the OEMOF file in which the simulation results are stored. 
-
 **output_lp_file**: Acceptable values are either True or False. Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user to peer ‘under the hood’ to understand how the program optimizes for the solution.
 
 **restore_from_oemof_file**: [Developer setting] Allows the developer to check the OEMOF file where the results are stored and edit the simulation parameters in it. (not integrated yet!)
