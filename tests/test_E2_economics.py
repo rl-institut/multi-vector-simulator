@@ -20,7 +20,7 @@ dict_economic = {
 
 def test_all_cost_info_parameters_added_to_dict_values():
 
-    E2.economics.get_costs(dict_asset, dict_economic)
+    E2.get_costs(dict_asset, dict_economic)
     for k in (
         "costs_opex_var",
         "costs_opex_fix",
@@ -35,7 +35,9 @@ def test_all_cost_info_parameters_added_to_dict_values():
 def test_add_costs_and_total():
     current_costs = 10000
     new_cost = 5000
-    total_costs = E2.add_costs_and_total(dict_asset, "new_cost", new_cost, current_costs)
+    total_costs = E2.add_costs_and_total(
+        dict_asset, "new_cost", new_cost, current_costs
+    )
     assert total_costs == new_cost + current_costs
 
 
