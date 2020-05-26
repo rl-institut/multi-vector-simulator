@@ -127,3 +127,22 @@ def fuel_price_present_value(economics,):
             cash_flow_fuel_l += fuel_price_i / (1 + economics["wacc"]) ** (i)
             fuel_price_i = fuel_price_i * (1 + economics["fuel_price_change_annual"])
         economics.update({"price_fuel": cash_flow_fuel_l * economics["crf"]})
+
+def simulation_annuity(annuity, days):
+    '''
+    Scaling annuity to timeframe
+    Updating all annuities above to annuities "for the timeframe", so that optimization is based on more adequate
+    costs. Includes project_cost_annuity, distribution_grid_cost_annuity, maingrid_extension_cost_annuity for
+    consistency eventhough these are not used in optimization.
+
+    Parameters
+    ----------
+    annuity
+    days
+
+    Returns
+    -------
+
+    '''
+    simulation_annuity = annuity / 365 * days
+    return simulation_annuity
