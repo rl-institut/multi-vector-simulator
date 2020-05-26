@@ -13,6 +13,7 @@ from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
+    TEST_INPUT_DIRECTORY,
     DUMMY_CSV_PATH,
     INPUT_FOLDER,
     CSV_ELEMENTS,
@@ -45,10 +46,14 @@ INTERVAL = 2
 OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
 PARSER = initializing.create_parser()
-TEST_INPUT_PATH_NX_TRUE = os.path.join(TEST_REPO_PATH, "inputs_F1_plot_nx_true")
+TEST_INPUT_PATH_NX_TRUE = os.path.join(
+    TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_F1_plot_nx_true"
+)
 TEST_JSON_PATH_NX_TRUE = os.path.join(TEST_INPUT_PATH_NX_TRUE, CSV_ELEMENTS, CSV_FNAME)
 
-TEST_INPUT_PATH_NX_FALSE = os.path.join(TEST_REPO_PATH, "inputs_F1_plot_nx_false")
+TEST_INPUT_PATH_NX_FALSE = os.path.join(
+    TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_F1_plot_nx_false"
+)
 TEST_JSON_PATH_NX_FALSE = os.path.join(
     TEST_INPUT_PATH_NX_FALSE, CSV_ELEMENTS, CSV_FNAME
 )
