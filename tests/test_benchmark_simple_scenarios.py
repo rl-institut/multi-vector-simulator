@@ -12,12 +12,17 @@ import mock
 import pytest
 import pandas as pd
 
-from .constants import TEST_REPO_PATH, JSON_EXT, CSV_EXT
+from .constants import (
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
+    TEST_REPO_PATH,
+    JSON_EXT,
+    CSV_EXT,
+)
 from mvs_eland_tool.mvs_eland_tool import main
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
-fname = os.path.basename(__file__)
 
 
 class TestACElectricityBus:
@@ -29,7 +34,9 @@ class TestACElectricityBus:
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
     # alone is called
     @pytest.mark.skipif(
-        "tests/{}".format(fname) not in sys.argv, reason="requires python3.3"
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AB_grid_pv(self, margs):
@@ -55,7 +62,9 @@ class TestACElectricityBus:
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
     # alone is called
     @pytest.mark.skipif(
-        "tests/{}".format(fname) not in sys.argv, reason="requires python3.3"
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AE_grid_battery(self, margs):
