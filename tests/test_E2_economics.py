@@ -18,8 +18,11 @@ dict_economic = {
 }
 
 
-def test_all_cost_info_parameters_added_to_dict_values():
+def test_all_cost_info_parameters_added_to_dict_asset():
+    """
 
+    Tests whether the function get_costs is adding all the calculated costs to dict_asset
+    """
     E2.get_costs(dict_asset, dict_economic)
     for k in (
         "costs_opex_var",
@@ -33,6 +36,10 @@ def test_all_cost_info_parameters_added_to_dict_values():
 
 
 def test_add_costs_and_total():
+    """
+
+    Tests if new costs are adding to current costs correctly and if dict_asset is being updated accordingly
+    """
     current_costs = 10000
     new_cost = 5000
     total_costs = E2.add_costs_and_total(
@@ -42,6 +49,10 @@ def test_add_costs_and_total():
 
 
 def test_all_list_in_dict():
+    """
+
+    Tests whether looking for list items in dict_asset is plausible
+    """
     list_true = ["annual_total_flow", "optimizedAddCap"]
     boolean = E2.all_list_in_dict(dict_asset, list_true)
     assert boolean == True
