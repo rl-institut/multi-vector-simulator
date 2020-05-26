@@ -33,10 +33,10 @@ def test_all_cost_info_parameters_added_to_dict_values():
 
 
 def test_add_costs_and_total():
-    total_costs = 10000
+    current_costs = 10000
     new_cost = 5000
-    total_costs = E2.add_costs_and_total(dict_asset, "new_cost", new_cost, total_costs)
-    assert total_costs == new_cost + total_costs
+    total_costs = E2.add_costs_and_total(dict_asset, "new_cost", new_cost, current_costs)
+    assert total_costs == new_cost + current_costs
 
 
 def test_all_list_in_dict():
