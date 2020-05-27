@@ -1234,6 +1234,7 @@
                 "unit": "year",
                 "value": 30
             },
+            "renewable_share": {"value":  0.1},
             "lifetime_capex_var": {
                 "unit": "currency/unit",
                 "value": 0.0
@@ -1335,6 +1336,7 @@
                 "unit": "currency",
                 "value": 18564045.754825726
             },
+            "renewable_share": {"value":  0.1},
             "costs_upfront": {
                 "value": 521.97917
             },
