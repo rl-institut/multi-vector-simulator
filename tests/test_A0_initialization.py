@@ -6,7 +6,7 @@ import mock
 import argparse
 import logging
 
-from mvs_eland_tool.mvs_eland_tool import main
+from mvs_eland_tool import main
 
 import src.A0_initialization as initializing
 

@@ -58,6 +58,8 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Test for the module D0 (#150)
 - Some test for module C0 (#148)
 - Technical parameters (#223, #257): Energy flows (aggregated) per asset, Renewable share
+- A main() function to be used by a server which only accepts json variable and returns json
+ variable (not saving to a file) (#327)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -79,6 +81,9 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - The input from the csv files produce the same json than the json file (#286)
  - Move the CSS styling code to a style sheet (#317)
  - Change the input data for creating the dataframes for generating the optimization and costs' tables from xlsx file to json (#317) 
+ - Rename mvs_eland_tool/mvs_eland_tool.py --> mvs_eland_tool/local_deploy.py (#327)
+ - Now main (local use) and run_simulation (server use) are available in mvs_eland_tool package
+  (#327)
  
 ### Removed
 - Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´ (#150), as well as from all input files etc. The name is hardcoded now.
@@ -102,6 +107,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
  - Automatic update of the test coverage with coveralls.io (#307)
 - Logging message for maximumCap value (#310)
 - Create_app function in F0 for standalone execution (#317)
+- Crashing evaluation when `evaluated_period < 365/peak_demand_pricing_periods` (#331) by raising an error
 
 ## [0.2.0] - 2020-03-13
 
@@ -225,4 +231,3 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 
 ### Removed
 - yet another thing
-
