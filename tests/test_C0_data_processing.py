@@ -121,10 +121,13 @@ def test_determine_lifetime_opex_var_is_other():
 
 
 def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear():
-    dict_test = {"energyProviders": {"a_dso": {"peak_demand_pricing_period": {"value": 2}}},
-                 "simulation_settings": {"evaluated_period": {"value": 30}}}
+    dict_test = {
+        "energyProviders": {"a_dso": {"peak_demand_pricing_period": {"value": 2}}},
+        "simulation_settings": {"evaluated_period": {"value": 30}},
+    }
     with pytest.raises(ValueError):
         C0.define_dso_sinks_and_sources(dict_test, "a_dso")
+
 
 """
 
