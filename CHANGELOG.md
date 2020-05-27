@@ -107,6 +107,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
  - Automatic update of the test coverage with coveralls.io (#307)
 - Logging message for maximumCap value (#310)
 - Create_app function in F0 for standalone execution (#317)
+- Crashing evaluation when `evaluated_period < 365/peak_demand_pricing_periods` (#331) by raising an error
 
 ## [0.2.0] - 2020-03-13
 
