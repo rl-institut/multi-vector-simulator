@@ -135,8 +135,6 @@ def get_costs(dict_asset, economic_data):
                 },
             }
         )
-        print("output")
-        print(dict_asset)
     return
 
 
