@@ -221,21 +221,21 @@ class TestTechnicalParameters:
         """ """
         tot_res = 100
         tot_non_res = 0
-        renewable_share = E3.renewable_share_equation(tot_res, tot_non_res)
+        renewable_share = E3.equation_renewable_share(tot_res, tot_non_res)
         assert renewable_share == tot_res / (tot_res + tot_non_res)
 
     def test_renewable_share_equation_is_0(self):
         """ """
         tot_res = 0
         tot_non_res = 100
-        renewable_share = E3.renewable_share_equation(tot_res, tot_non_res)
+        renewable_share = E3.equation_renewable_share(tot_res, tot_non_res)
         assert renewable_share == tot_res / (tot_res + tot_non_res)
 
     def test_renewable_share_equation_below_1(self):
         """ """
         tot_res = 20
         tot_non_res = 100
-        renewable_share = E3.renewable_share_equation(tot_res, tot_non_res)
+        renewable_share = E3.equation_renewable_share(tot_res, tot_non_res)
         assert renewable_share == tot_res / (tot_res + tot_non_res)
 
     def test_degree_of_autonomy_below_1(self):
