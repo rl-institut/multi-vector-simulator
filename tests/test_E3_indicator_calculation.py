@@ -30,8 +30,8 @@ dict_scalars = {
 scalars_expected = {"cost": numbers[1] + numbers[3], "annuity": numbers[0] + numbers[2]}
 
 # for this test_total_renewable_and_non_renewable_origin_of_each_sector test
-with open(os.path.join("tests", "test_data", "test_json_for_E3.json")) as json_file:
-    dict_renewable_energy_use = json.load(json_file)
+from src.B0_data_input_json import load_json
+dict_renewable_energy_use = load_json(os.path.join("tests", "test_data", "test_json_for_E3.json"))
 
 flow_small = 50
 flow_medium = 100

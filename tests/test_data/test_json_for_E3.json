@@ -96,7 +96,6 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "flow": "pandas timeseries",
             "input_bus_name": "Electricity (DSO) bus",
             "input_direction": "Electricity (DSO)",
             "installedCap": {
@@ -194,7 +193,6 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "flow": "pandas timeseries",
             "input_bus_name": "Electricity bus",
             "input_direction": "Electricity",
             "installedCap": {
@@ -295,7 +293,6 @@
             "dsm": "False",
             "energyVector": "Electricity",
             "file_name": "demand_habor.csv",
-            "flow": "pandas timeseries",
             "inflow_direction": "Electricity",
             "input_bus_name": "Electricity bus",
             "installedCap": {
@@ -343,7 +340,6 @@
                 "unit": "currency/unit/simulation period",
                 "value": 0.0
             },
-            "timeseries": "pandas timeseries",
             "timeseries_average": {
                 "unit": "kW/h",
                 "value": 142.44250000000002
@@ -410,7 +406,6 @@
             "dsm": "False",
             "energyVector": "Electricity",
             "file_name": "demand_remaining.csv",
-            "flow": "pandas timeseries",
             "inflow_direction": "Electricity",
             "input_bus_name": "Electricity bus",
             "installedCap": {
@@ -458,7 +453,6 @@
                 "unit": "currency/unit/simulation period",
                 "value": 0.0
             },
-            "timeseries": "pandas timeseries",
             "timeseries_average": {
                 "unit": "kW/h",
                 "value": 0.0
@@ -525,7 +519,6 @@
             "dsm": "False",
             "energyVector": "Electricity",
             "file_name": "demand_shore_power.csv",
-            "flow": "pandas timeseries",
             "inflow_direction": "Electricity",
             "input_bus_name": "Electricity bus",
             "installedCap": {
@@ -573,7 +566,6 @@
                 "unit": "currency/unit/simulation period",
                 "value": 0.0
             },
-            "timeseries": "pandas timeseries",
             "timeseries_average": {
                 "unit": "kW/h",
                 "value": 131.25
@@ -648,7 +640,6 @@
                 "value": 1.0
             },
             "energyVector": "Electricity",
-            "flow": "pandas timeseries",
             "inflow_direction": "PV plant (mono)",
             "input_bus_name": "PV plant (mono) bus",
             "installedCap": {
@@ -767,7 +758,6 @@
                 "value": 1
             },
             "energyVector": "Electricity",
-            "flow": "pandas timeseries",
             "inflow_direction": "Electricity",
             "input_bus_name": "Electricity bus",
             "installedCap": {
@@ -886,7 +876,6 @@
                 "value": 1
             },
             "energyVector": "Electricity",
-            "flow": "pandas timeseries",
             "inflow_direction": "ESS Li-Ion",
             "input_bus_name": "ESS Li-Ion bus",
             "installedCap": {
@@ -999,7 +988,6 @@
                 "value": 0.96
             },
             "energyVector": "Electricity",
-            "flow": "pandas timeseries",
             "inflow_direction": "Electricity (DSO)",
             "input_bus_name": "Electricity (DSO) bus",
             "installedCap": {
@@ -1112,7 +1100,6 @@
                 "value": 0.96
             },
             "energyVector": "Electricity",
-            "flow": "pandas timeseries",
             "inflow_direction": "Electricity",
             "input_bus_name": "Electricity bus",
             "installedCap": {
@@ -1225,7 +1212,6 @@
                 "value": 521.97917
             },
             "dispatchable": true,
-            "flow": "pandas timeseries",
             "installedCap": {
                 "unit": "unit",
                 "value": 0.0
@@ -1277,8 +1263,6 @@
                 "unit": "currency/unit/simulation period",
                 "value": 0.3287671232876712
             },
-            "timeseries": "pandas timeseries",
-            "timeseries_normalized": "pandas timeseries",
             "timeseries_peak": {
                 "unit": "kW",
                 "value": 1.0
@@ -1334,7 +1318,6 @@
                 "value": 0.0
             },
             "dispatchable": true,
-            "flow": "pandas timeseries",
             "installedCap": {
                 "unit": "unit",
                 "value": 0.0
@@ -1386,8 +1369,6 @@
                 "unit": "currency/unit/simulation period",
                 "value": 0.3287671232876712
             },
-            "timeseries": "pandas timeseries",
-            "timeseries_normalized": "pandas timeseries",
             "timeseries_peak": {
                 "unit": "kW",
                 "value": 1.0
@@ -1448,7 +1429,6 @@
             },
             "energyVector": "Electricity",
             "file_name": "pv_gen_merra2_2014_eff1_tilt40_az180.csv",
-            "flow": "pandas timeseries",
             "installedCap": {
                 "unit": "kWp",
                 "value": 1500
@@ -1504,12 +1484,10 @@
                 "unit": "currency/unit/simulation period",
                 "value": 3.3045050012511776
             },
-            "timeseries": "pandas timeseries",
             "timeseries_average": {
                 "unit": "kWp/h",
                 "value": 0.001729166666666667
             },
-            "timeseries_normalized": "pandas timeseries",
             "timeseries_peak": {
                 "unit": "kWp/h",
                 "value": 0.022000000000000002
@@ -1592,6 +1570,7 @@
                 "unit": "times per year (1,2,3,4,6,12)",
                 "value": 2
             },
+            "renewable_share": {"value":  0.5},
             "simulation_annuity": {
                 "unit": "currency/unit/simulation period",
                 "value": 0.0
@@ -1659,7 +1638,6 @@
                     "unit": "factor",
                     "value": 0.95
                 },
-                "flow": "pandas timeseries",
                 "installedCap": {
                     "unit": "unit",
                     "value": 0
@@ -1777,7 +1755,6 @@
                     "unit": "factor",
                     "value": 0.95
                 },
-                "flow": "pandas timeseries",
                 "installedCap": {
                     "unit": "unit",
                     "value": 0
@@ -1885,7 +1862,6 @@
                     "unit": "factor",
                     "value": 0
                 },
-                "flow": "pandas timeseries",
                 "installedCap": {
                     "unit": "unit",
                     "value": 0
@@ -1954,7 +1930,6 @@
                 "unit": "kWh"
             },
             "storage_filename": "storage_01.csv",
-            "timeseries_soc": "pandas timeseries",
             "type_oemof": "storage"
         }
     },
@@ -2042,8 +2017,6 @@
         }
     },
     "kpi": {
-        "cost_matrix": "pandas dataframe",
-        "scalar_matrix": "pandas dataframe",
         "scalars": {
             "annuity_om": 1499938.54592,
             "annuity_total": 1499976.46714,
@@ -2054,13 +2027,7 @@
             "costs_total": 20646922.80138,
             "costs_upfront": 521.97917
         }
-    },
-    "optimizedFlows": {
-        "ESS Li-Ion bus": "pandas dataframe",
-        "Electricity (DSO) bus": "pandas dataframe",
-        "Electricity bus": "pandas dataframe",
-        "PV plant (mono) bus": "pandas dataframe"
-    },
+    }
  ,   "project_data": {
         "country": "Norway",
         "label": "project_data",
