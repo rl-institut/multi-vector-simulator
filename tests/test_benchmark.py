@@ -11,11 +11,18 @@ import shutil
 import mock
 import pytest
 
-from .constants import TEST_REPO_PATH, JSON_EXT, CSV_EXT
+from .constants import (
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
+    TESTS_ON_DEV,
+    TEST_REPO_PATH,
+    JSON_EXT,
+    CSV_EXT,
+)
 from mvs_eland_tool.mvs_eland_tool import main
 
+
 OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs_simulation")
-fname = os.path.basename(__file__)
 
 
 class TestSimulation:
@@ -26,7 +33,9 @@ class TestSimulation:
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
     # alone it called
     @pytest.mark.skipif(
-        "tests/{}".format(fname) not in sys.argv, reason="requires python3.3"
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER, TESTS_ON_DEV),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_run_smoothly_json(self, mock_args):
@@ -36,7 +45,9 @@ class TestSimulation:
         assert 1 == 1
 
     @pytest.mark.skipif(
-        "tests/{}".format(fname) not in sys.argv, reason="requires python3.3"
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_run_smoothly_csv(self, mock_args):

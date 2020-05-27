@@ -20,6 +20,10 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+
+- Description of validation scheme into readthedocs (#306)
+- Flowchart and relative description (#305)
+- License is referenced
 - Pull request template (#198)
 - Issue template (#212)
 - File `troubleshooting.rst` to readthedocs
@@ -33,6 +37,26 @@ Here is a template for new release sections
 tipps for module building, and hint that units in the MVS are not checked (PR #229)
 - Images for `simulating_with_the_mvs.rst`: images/energy_system.png, images/energy_system_model.png, images/folder_structure_inputs.png
 - Tables for `simulating_with_the_mvs.rst`: tables/example_multiple_inputs_energyConversion.csv, tables/example_scalar_as_timeseries_energyConversion.csv
+- PLANNED in PR #257: Technical parameters (#223): Energy flows (aggregated) per asset, Renewable share, Degree of autonomy, Degree of sector-coupling
+- Test for the module A1 (#141)
+- Test for the module E3 (#143)
+- Test for the module F0 (#142, #304)
+- Test for the module E0 (#146)
+- Test for module F1 (#157, #297, #284)
+- Benchmark test with only PV and grid (#258)
+- Module F2 for auto-reporting results of MVS simulation (#232)
+- Json entries including paths to all plotted graphs (#232)
+- Tests for module C2 (#151)
+- Tests for storage for the module A1 (#299)
+- Benchmark test with only battery and grid (#302)
+- Possibility to save the report generated in F2 as a pdf (#284)
+- Test for module D2 (#147)
+- Possibility to run benchmark tests selectively and make sure they are all run on master branch
+ (#320)
+- Tests for the module D1 (still - partly - open: transformers, sources. finished: sinks, storages, other functions) (#149)
+ - Test function names for E1 (#145)
+- Possibility to deploy the report of the results in a browser (#323)
+- Test for the module D0 (#150)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
@@ -43,8 +67,20 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Renamed `plot_nx_graph` to `display_nx_graph` and added `store_nx_graph` (#242)
 - variables `required_files_list` and `ALLOWED_FILES` have been replaced by `REQUIRED_FILES` (#251)
 - the columns of the storage_xx files are renamed and the specific parameters for each column are checked in A1 (#259)
-
+- Default input files from "inputs": Changed some parameters (#143) 
+- Separated functions in F0 to ease testing (#142)
+- Moved some functions between F0 and F1, rearranged functions in F1 (#157)
+- Call timeseries plot function for each bus (#278)
+- rename "storage" parameter in A1 and tests_A1 to "asset_is_a_storage"
+- Serialize the DataFrame and arrays into the json_with_results.json (#304)
+- Convert serialized DataFrame and arrays back into these types in the B0.load_json function
+ (#304, #322, #326)
+- The input from the csv files produce the same json than the json file (#286)
+ - Move the CSS styling code to a style sheet (#317)
+ - Change the input data for creating the dataframes for generating the optimization and costs' tables from xlsx file to json (#317) 
+ 
 ### Removed
+- Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´ (#150), as well as from all input files etc. The name is hardcoded now.
 
 ### Fixed
 - Rename "boolean" to "bool" in example json file (#214)
@@ -57,7 +93,14 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Fix specific parameters for each storage column (#259)
 - Overwrite local results when running through brenchmark tests (#260)
 - Allow more than one separator for csv files(#263)
-
+- fix plotting pie chart for costs, if statement added if no costs are available (#267)
+- Fix long label resulting from total project costs (#270)
+- Bug when the output path had contained an unexisting folder within an unexisting folder it
+ would return an error (#278)
+ - Display SOC (#278)
+ - Automatic update of the test coverage with coveralls.io (#307)
+- Logging message for maximumCap value (#310)
+- Create_app function in F0 for standalone execution (#317)
 
 ## [0.2.0] - 2020-03-13
 
@@ -80,11 +123,11 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Terminal commands (#135)
 - PR request template (open/done/not applicable) (#205)
 - URL of coverall badge (#265) 
+- Function converting json to dict (#142)
 
 ### Removed
 - Function welcome from module A0 (#138)
 - Parameters `input_file_name`, `overwrite`, `path_input_file`, `path_input_folder`, `path_input_sequences`, `path_output_folder`, `path_output_folder_inputs` from `simulation_settings.csv` (#178)
-
 
 ### Fixed
 - Input directory of csv files specified by user is handed to `load_data_from_csv.create_input_json()` (#112)

@@ -1,13 +1,10 @@
 ,unit,simulation_settings
-display_output,str,-debug
-evaluated_period,days,365
+evaluated_period,days,2
 label,str,simulation_settings
-oemof_file_name,str,MVS_results.oemof
-output_lp_file,str,False
-overwrite,str,True
-path_input_folder,str,./inputs/
-path_output_folder,str,./MVS_outputs
-restore_from_oemof_file,str,True
+output_lp_file,bool,False
+restore_from_oemof_file,bool,True
 start_date,str,2018-01-01 00:00:00
-store_oemof_results,str,True
+store_oemof_results,bool,True
 timestep,minutes,60
+display_nx_graph,bool,False
+store_nx_graph,bool,False

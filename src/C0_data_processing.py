@@ -9,6 +9,7 @@ import logging
 logging.getLogger("matplotlib.font_manager").disabled = True
 
 from src.constants import INPUTS_COPY, TIME_SERIES
+from src.constants import PATHS_TO_PLOTS, PLOTS_DEMANDS, PLOTS_RESOURCES
 
 import src.C1_verification as verify
 import src.C2_economic_functions as economics
@@ -36,7 +37,11 @@ def all(dict_values):
     # Adds costs to each asset and sub-asset
     process_all_assets(dict_values)
 
-    output.store_as_json(dict_values, "json_input_processed")
+    output.store_as_json(
+        dict_values,
+        dict_values["simulation_settings"]["path_output_folder"],
+        "json_input_processed",
+    )
     return
 
 
@@ -222,6 +227,7 @@ def energyConversion(dict_values, group):
         # in case there is only one parameter provided (input bus and one output bus)
         if isinstance(dict_values[group][asset]["efficiency"]["value"], dict):
             receive_timeseries_from_csv(
+                dict_values,
                 dict_values["simulation_settings"],
                 dict_values[group][asset],
                 "efficiency",
@@ -257,7 +263,10 @@ def energyProduction(dict_values, group):
 
         if "file_name" in dict_values[group][asset]:
             receive_timeseries_from_csv(
-                dict_values["simulation_settings"], dict_values[group][asset], "input",
+                dict_values,
+                dict_values["simulation_settings"],
+                dict_values[group][asset],
+                "input",
             )
         # check if maximumCap exists and add it to dict_values
         add_maximum_cap(dict_values, group, asset)
@@ -289,6 +298,7 @@ def energyStorage(dict_values, group):
                     dict_values[group][asset][subasset][parameter]["value"], dict
                 ):
                     receive_timeseries_from_csv(
+                        dict_values,
                         dict_values["simulation_settings"],
                         dict_values[group][asset][subasset],
                         parameter,
@@ -367,7 +377,11 @@ def energyConsumption(dict_values, group):
 
         if "file_name" in dict_values[group][asset]:
             receive_timeseries_from_csv(
-                dict_values["simulation_settings"], dict_values[group][asset], "input",
+                dict_values,
+                dict_values["simulation_settings"],
+                dict_values[group][asset],
+                "input",
+                is_demand_profile=True,
             )
     return
 
@@ -386,7 +400,7 @@ def define_missing_cost_data(dict_values, dict_asset):
     if "opex_var" in dict_asset:
         if isinstance(dict_asset["opex_var"]["value"], dict):
             receive_timeseries_from_csv(
-                dict_values["simulation_settings"], dict_asset, "opex_var"
+                dict_values, dict_values["simulation_settings"], dict_asset, "opex_var"
             )
         elif isinstance(dict_asset["opex_var"]["value"], list):
             treat_multiple_flows(dict_asset, dict_values, "opex_var")
@@ -530,7 +544,10 @@ def define_dso_sinks_and_sources(dict_values, dso):
     dict_asset = dict_values["energyProviders"][dso]
     if isinstance(dict_asset["peak_demand_pricing"]["value"], dict):
         receive_timeseries_from_csv(
-            dict_values["simulation_settings"], dict_asset, "peak_demand_pricing"
+            dict_values,
+            dict_values["simulation_settings"],
+            dict_asset,
+            "peak_demand_pricing",
         )
 
     peak_demand_pricing = dict_values["energyProviders"][dso]["peak_demand_pricing"][
@@ -673,7 +690,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
             }
         )
         receive_timeseries_from_csv(
-            dict_values["simulation_settings"], source, "opex_var"
+            dict_values, dict_values["simulation_settings"], source, "opex_var"
         )
     else:
         source.update({"opex_var": {"value": price["value"], "unit": price["unit"]}})
@@ -797,7 +814,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
             }
         )
         receive_timeseries_from_csv(
-            dict_values["simulation_settings"], sink, "opex_var"
+            dict_values, dict_values["simulation_settings"], sink, "opex_var"
         )
         if (
             asset_name[-6:] == "feedin"
@@ -943,7 +960,9 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
 # so additional values like peak, total or average must be calculated. Any other type does not need this additional info.
-def receive_timeseries_from_csv(settings, dict_asset, type):
+def receive_timeseries_from_csv(
+    dict_values, settings, dict_asset, type, is_demand_profile=False
+):
     """
 
     :param settings:
@@ -1062,11 +1081,21 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
     # plot all timeseries that are red into simulation input
     try:
         plot_input_timeseries(
-            settings, dict_asset["timeseries"], dict_asset["label"], header
+            dict_values,
+            settings,
+            dict_asset["timeseries"],
+            dict_asset["label"],
+            header,
+            is_demand_profile,
         )
     except:
         plot_input_timeseries(
-            settings, dict_asset[type]["value"], dict_asset["label"], header
+            dict_values,
+            settings,
+            dict_asset[type]["value"],
+            dict_asset["label"],
+            header,
+            is_demand_profile,
         )
 
     # copy input files
@@ -1077,7 +1106,9 @@ def receive_timeseries_from_csv(settings, dict_asset, type):
     return
 
 
-def plot_input_timeseries(user_input, timeseries, asset_name, column_head):
+def plot_input_timeseries(
+    dict_values, user_input, timeseries, asset_name, column_head, is_demand_profile
+):
     logging.info("Creating plots for asset %s's parameter %s", asset_name, column_head)
     fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
     axes_mg = axes
@@ -1086,18 +1117,18 @@ def plot_input_timeseries(user_input, timeseries, asset_name, column_head):
         title=asset_name, ax=axes_mg, drawstyle="steps-mid",
     )
     axes_mg.set(xlabel="Time", ylabel=column_head)
-
-    plt.savefig(
-        user_input["path_output_folder"]
-        + "/"
-        + "input_timeseries_"
-        + asset_name
-        + "_"
-        + column_head
-        + ".png",
-        bbox_inches="tight",
+    path = os.path.join(
+        user_input["path_output_folder"],
+        "input_timeseries_" + asset_name + "_" + column_head + ".png",
     )
-    # plt.show()
+    if is_demand_profile is True:
+        dict_values[PATHS_TO_PLOTS][PLOTS_DEMANDS] += [str(path)]
+    else:
+        dict_values[PATHS_TO_PLOTS][PLOTS_RESOURCES] += [str(path)]
+    plt.savefig(
+        path, bbox_inches="tight",
+    )
+
     plt.close()
     plt.clf()
     plt.cla()
@@ -1213,9 +1244,7 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
                     f"The stated maximumCap in {group} {asset} is smaller than the "
                     "installedCap. Please enter a greater maximumCap."
                     "For this simulation, the maximumCap will be "
-                    "disregarded and not be used in the simulation",
-                    group,
-                    asset,
+                    "disregarded and not be used in the simulation"
                 )
                 dict["maximumCap"]["value"] = None
             # check if maximumCao is 0

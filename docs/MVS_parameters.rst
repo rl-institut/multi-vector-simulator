@@ -38,8 +38,6 @@ simulation_settings.csv
 
 **evaluated_period**: The number of days for which the simulation is to be run.
 
-**oemof_file_name**: The name of the OEMOF file in which the simulation results are stored. 
-
 **output_lp_file**: Acceptable values are either True or False. Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user to peer ‘under the hood’ to understand how the program optimizes for the solution.
 
 **restore_from_oemof_file**: [Developer setting] Allows the developer to check the OEMOF file where the results are stored and edit the simulation parameters in it. (not integrated yet!)
@@ -129,7 +127,8 @@ energyStorage.csv
 storage_xx.csv
 --------------
 **c_rate**: C-rate is the rate at which the storage can charge or discharge relative to the nominal capacity of the storage.
-A c-rate of 1 implies that the battery can discharge or charge completely in a single timestep. Only the columns "input power" and "output power" require a value, in column "storage capacity" crate should be set to NaN.
+A c-rate of 1 implies that the battery can discharge or charge completely in a single timestep.
+Only the columns "input power" and "output power" require a value, in column "storage capacity" c_rate should be set to NaN.
 
 **soc_initial**: The level of charge (as a factor of the actual capacity)  in the storage in the zeroth timestep. Acceptable values are either None or the factor. Only the column "storage capacity" require a value, in column "input power" and "output power" soc_initial should be set to NaN.
 

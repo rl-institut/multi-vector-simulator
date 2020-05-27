@@ -54,6 +54,9 @@ def main(**kwargs):
         Determines whether to replace existing results in `path_output_folder`
         with the results of the current simulation (True) or not (False).
         Default: False.
+    pdf_report: cool, optional
+        Can generate an automatic pdf report of the simulation's results (True) or not (False)
+        Default: False.
     input_type : str, optional
         Defines whether the input is taken from the `mvs_config.json` file
         ("json") or from csv files ('csv') located within
@@ -109,8 +112,7 @@ def main(**kwargs):
         logging.debug("Accessing script: A1_csv_to_json")
         move_copy_config_file = True
         load_data_from_csv.create_input_json(
-            input_directory=os.path.join(user_input["path_input_folder"], CSV_ELEMENTS),
-            output_filename=CSV_FNAME,
+            input_directory=os.path.join(user_input["path_input_folder"], CSV_ELEMENTS)
         )
 
     logging.debug("Accessing script: B0_data_input_json")
@@ -130,7 +132,7 @@ def main(**kwargs):
     results_meta, results_main = modelling.run_oemof(dict_values)
     """
     if dict_values['simulation_settings']['restore_from_oemof_file'] == True:
-        if os.path.isfile(dict_values['simulation_settings']['path_output_folder'] + '/' + dict_values['simulation_settings']['oemof_file_name'])== False:
+        if os.path.isfile(dict_values['simulation_settings']['path_output_folder'] + '/' + "oemof_simulation_results.oemof)== False:
             print('')
             logging.debug('Accessing script: D0_modelling_and_optimization')
             results_meta, results_main = modelling.run_oemof(dict_values)
@@ -139,7 +141,7 @@ def main(**kwargs):
             import oemof.solph as solph
             model = solph.EnergySystem()
             model.restore(dpath=dict_values['simulation_settings']['path_output_folder'],
-                                  filename=dict_values['simulation_settings']['oemof_file_name'])
+                                  filename="oemof_simulation_results.oemof"])
             results_main = model.results['main']
             results_meta = model.results['meta']
 
@@ -149,7 +151,9 @@ def main(**kwargs):
     evaluation.evaluate_dict(dict_values, results_main, results_meta)
 
     logging.debug("Accessing script: F0_outputs")
-    output_processing.evaluate_dict(dict_values)
+    output_processing.evaluate_dict(
+        dict_values, path_pdf_report=user_input.get("path_pdf_report", None)
+    )
     return 1
 
 

@@ -3,11 +3,45 @@ import numpy
 import pandas as pd
 import logging
 import matplotlib.pyplot as plt
+import os
 
-import src.F1_plotting as plots
+import src.F1_plotting as F1_plots
+import src.F2_autoreport as autoreport
+
+from .constants import TYPE_DATETIMEINDEX, TYPE_SERIES, TYPE_DATAFRAME, TYPE_TIMESTAMP
+
+r"""
+Module F0 Output
+================
+The model F0 output defines all functions that store evaluation results to file.
+- Aggregate demand profiles to a total demand profile
+- Plot all energy flows for both 14 and 365 days for each energy bus
+- Store timeseries of all energy flows to excel (one sheet = one energy bus)
+- Execute function: plot optimised capacities as a barchart (F1)
+- Execute function: plot all annuities as a barchart (F1)
+- Store scalars/KPI to excel
+- Process dictionary so that it can be stored to Json
+- Store dictionary to Json
+"""
 
 
-def evaluate_dict(dict_values):
+def evaluate_dict(dict_values, path_pdf_report=None):
+    """This is the main function of F0. It calls all functions that prepare the simulation output, ie. Storing all simulation output into excellent files, bar charts, and graphs.
+
+    Parameters
+    ----------
+    dict_values :
+        dict Of all input and output parameters up to F0
+    path_pdf_report : (str)
+        if provided, generate a pdf report of the simulation to the given path
+
+    Returns
+    -------
+    type
+        NA
+
+    """
+
     logging.info(
         "Summarizing simulation results to results_timeseries and results_scalars_assets."
     )
@@ -18,7 +52,8 @@ def evaluate_dict(dict_values):
         logging.info("Aggregating flows for the %s sector.", sector_name)
 
         # Plot flows for one sector for the 14 first days
-        plots.flows(
+        F1_plots.flows(
+            dict_values,
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
@@ -27,7 +62,8 @@ def evaluate_dict(dict_values):
         )
 
         # Plot flows for one sector for a year
-        plots.flows(
+        F1_plots.flows(
+            dict_values,
             dict_values["simulation_settings"],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
@@ -66,22 +102,102 @@ def evaluate_dict(dict_values):
     store_timeseries_all_busses_to_excel(dict_values)
 
     # plot optimal capacities if there are optimized assets
+    plot_optimized_capacities(dict_values)
+
+    # plot annuity, first-investment and om costs
+    plot_piecharts_of_costs(dict_values)
+
+    # Write everything to file with multipe tabs
+    store_scalars_to_excel(dict_values)
+
+    store_as_json(
+        dict_values,
+        dict_values["simulation_settings"]["path_output_folder"],
+        "json_with_results",
+    )
+
+    # generate a pdf report
+    if path_pdf_report is not None:
+        app = autoreport.create_app(dict_values)
+        autoreport.print_pdf(app, path_pdf_report=path_pdf_report)
+        logging.info(
+            "Generating PDF report of the simulation: {}".format(path_pdf_report)
+        )
+
+
+def plot_piecharts_of_costs(dict_values):
+    """
+    Kicks of plotting piecharts of different cost paramameters (ie. annuity and total cost, potentially in the future LCOE)
+    Parameters
+    ----------
+    dict_values : dict
+        all simulation input and output data up to this point
+
+    Returns
+    -------
+    Pie charts for various parameters.
+    """
+
+    # Annuity costs plot (only plot if there are values with cost over 0)
+    F1_plots.evaluate_cost_parameter(dict_values, "annuity_total", "annuity")
+
+    # First-investment costs plot (only plot if there are values with cost over 0)
+    F1_plots.evaluate_cost_parameter(
+        dict_values, "costs_investment", "upfront_investment_costs"
+    )
+
+    # O&M costs plot (only plot if there are values with cost over 0)
+    F1_plots.evaluate_cost_parameter(
+        dict_values, "costs_om", "operation_and_maintenance_costs"
+    )
+    return
+
+
+def plot_optimized_capacities(dict_values):
+    """This function determinants whether or not any capacities are added to the optimal system and calls the function plotting those capacities as a bar chart.
+
+    Parameters
+    ----------
+    dict_values :
+        dict Of all input and output parameters up to F0
+
+    Returns
+    -------
+    type
+        Bar chart of capacities
+
+    """
+
     show_optimal_capacities = False
     for element in dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"].values:
         if element > 0:
             show_optimal_capacities = True
-    if show_optimal_capacities:
-        plots.capacities(
+
+    if show_optimal_capacities is True:
+        F1_plots.capacities(
+            dict_values,
             dict_values["simulation_settings"],
             dict_values["project_data"],
-            dict_values["kpi"]["cost_matrix"]["label"],
+            dict_values["kpi"]["scalar_matrix"]["label"],
             dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
         )
+    return show_optimal_capacities
 
-    # plot annuity, first-investment and om costs
-    plots.costs(dict_values)
 
-    # Write everything to file with multipe tabs
+def store_scalars_to_excel(dict_values):
+    """All output data that is a scalar is storage to an excellent file tab. This could for example be economical data or technical data.
+
+    Parameters
+    ----------
+    dict_values :
+        dict Of all input and output parameters up to F0
+
+    Returns
+    -------
+    type
+        Excel file with scalar data
+
+    """
     results_scalar_output_file = "/scalars" + ".xlsx"
     with pd.ExcelWriter(
         dict_values["simulation_settings"]["path_output_folder"]
@@ -103,12 +219,20 @@ def evaluate_dict(dict_values):
 
 
 def store_timeseries_all_busses_to_excel(dict_values):
+    """This function plots the energy flows of each single bus and the energy system and saves it as PNG and additionally as a tab and an Excel sheet.
+
+    Parameters
+    ----------
+    dict_values :
+        dict Of all input and output parameters up to F0
+
+    Returns
+    -------
+    type
+        Plots and excel with all timeseries of each bus
+
     """
 
-    :param dict_values:
-    :return:
-    """
-    # todo this should be moved to f0_output
     timeseries_output_file = "/timeseries_all_busses" + ".xlsx"
     with pd.ExcelWriter(
         dict_values["simulation_settings"]["path_output_folder"]
@@ -116,62 +240,81 @@ def store_timeseries_all_busses_to_excel(dict_values):
     ) as open_file:  # doctest: +SKIP
         for bus in dict_values["optimizedFlows"]:
             dict_values["optimizedFlows"][bus].to_excel(open_file, sheet_name=bus)
-            dict_values["optimizedFlows"][bus].plot()
-            plt.savefig(
-                dict_values["simulation_settings"]["path_output_folder"]
-                + "/"
-                + bus
-                + " flows.png",
-                bbox_inches="tight",
+            F1_plots.flows(
+                dict_values,
+                dict_values["simulation_settings"],
+                dict_values["project_data"],
+                dict_values["optimizedFlows"][bus],
+                bus,
+                365,
             )
-            # if bus == 'Electricity (LES) bus' or bus == 'Electricity (DSO) bus':
-            #    plt.show()
-            plt.close()
-            plt.clf()
-            plt.cla()
 
     logging.info("Saved flows at busses to: %s.", timeseries_output_file)
     return
 
 
-def store_as_json(dict_values, file_name):
-    """
+def convert(o):
+    """This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
 
-    :param dict_values:
-    :param file_name:
-    :return:
-    """
+    Parameters
+    ----------
+    o :
+        Any type. Object to be converted to json-storable value.
 
-    # This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
-    def convert(o):
-        if isinstance(o, numpy.int64):
-            return int(o)
-        # todo this actually drops the date time index, which could be interesting
-        if isinstance(o, pd.DatetimeIndex):
-            return "date_range"
-        if isinstance(o, pd.datetime):
-            return str(o)
-        # todo this also drops the timeindex, which is unfortunate.
-        if isinstance(o, pd.Series):
-            return "pandas timeseries"  # o.values
-        if isinstance(o, numpy.ndarray):
-            return "numpy timeseries"  # o.tolist()
-        if isinstance(o, pd.DataFrame):
-            return "pandas dataframe"  # o.to_json(orient='records')
-        logging.error(
+    Returns
+    -------
+    type
+        json-storable value.
+
+    """
+    if isinstance(o, numpy.int64):
+        answer = int(o)
+    # todo this actually drops the date time index, which could be interesting
+    elif isinstance(o, pd.DatetimeIndex):
+        answer = o.to_frame().to_json(orient="split")
+        answer = "{}{}".format(TYPE_DATETIMEINDEX, answer)
+    elif isinstance(o, pd.Timestamp):
+        answer = str(o)
+        answer = "{}{}".format(TYPE_TIMESTAMP, answer)
+    # todo this also drops the timeindex, which is unfortunate.
+    elif isinstance(o, pd.Series):
+        answer = o.to_json(orient="split")
+        answer = "{}{}".format(TYPE_SERIES, answer)
+    elif isinstance(o, numpy.ndarray):
+        answer = json.dumps({"array": o.tolist()})
+    elif isinstance(o, pd.DataFrame):
+        answer = o.to_json(orient="split")
+        answer = "{}{}".format(TYPE_DATAFRAME, answer)
+    else:
+        raise TypeError(
             "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"
-            "Type: " + str(type(o)) + " \n"
+            "Type: " + str(type(o)) + " \n "
             "Value(s): " + str(o) + "\n"
             "Please edit function CO_data_processing.dataprocessing.store_as_json."
         )
-        raise TypeError
 
-    file_path = (
-        dict_values["simulation_settings"]["path_output_folder"]
-        + "/"
-        + file_name
-        + ".json"
-    )
+    return answer
+
+
+def store_as_json(dict_values, output_folder, file_name):
+    """Stores are dictionary as a Json file and converts all values that are incompatible with the Json format
+
+    Parameters
+    ----------
+    dict_values :
+        dict to be stored as json
+    output_folder :
+        Folder into which json should be stored
+    file_name :
+        Name of the file the json should be stored as
+
+    Returns
+    -------
+    type
+        Stored json file
+
+    """
+    file_path = os.path.abspath(os.path.join(output_folder, file_name + ".json"))
     myfile = open(file_path, "w")
     json_data = json.dumps(
         dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4

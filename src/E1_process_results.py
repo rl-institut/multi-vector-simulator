@@ -1,19 +1,45 @@
+r"""
+Module E1 process results
+-------------------------
+Module E1 processes the oemof results.
+- receive time series per bus for all assets
+- write time series to dictionary
+- get optimal capacity of optimized assets
+- add the evaluation of time series
+
+"""
+
 import logging
 import pandas as pd
 
 
 def get_timeseries_per_bus(dict_values, bus_data):
-    """
-    Reads simulation results of all busses.
-    :param dict_values:
-    :param bus_data:
-    :return:
+    r"""
+    Reads simulation results of all busses and stores time series.
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+    bus_data : dict
+        Contains information about all busses in a nested dict.
+        1st level keys: bus names;
+        2nd level keys:
+            'scalars': (pd.Series) (does not exist in all dicts)
+            'sequences': (pd.DataFrame) - contains flows between components and busses
+
+    Returns
+    -------
+    Indirectly updated `dict_values` with 'optimizedFlows' - one data frame for each bus.
+
     """
     bus_data_timeseries = {}
     for bus in bus_data.keys():
         bus_data_timeseries.update(
             {bus: pd.DataFrame(index=dict_values["simulation_settings"]["time_index"])}
         )
+
+        # obtain flows that flow into the bus
         to_bus = {
             key[0][0]: key
             for key in bus_data[bus]["sequences"].keys()
@@ -22,6 +48,7 @@ def get_timeseries_per_bus(dict_values, bus_data):
         for asset in to_bus:
             bus_data_timeseries[bus][asset] = bus_data[bus]["sequences"][to_bus[asset]]
 
+        # obtain flows that flow out of the bus
         from_bus = {
             key[0][1]: key
             for key in bus_data[bus]["sequences"].keys()
@@ -36,25 +63,28 @@ def get_timeseries_per_bus(dict_values, bus_data):
     return
 
 
-def write_bus_timeseries_to_dict_values(dict_asset):
-    """
-
-    :param dict_asset:
-    :return:
-    """
-    logging.debug(
-        "Accessing oemof simulation results for asset %s", dict_asset["label"]
-    )
-    return
-
-
 def get_storage_results(settings, storage_bus, dict_asset):
-    """
+    r"""
+    Reads storage results of simulation and stores them in `dict_asset`.
 
-    :param settings:
-    :param storage_bus:
-    :param dict_asset:
-    :return:
+    Parameters
+    ----------
+    settings : dict
+        Contains simulation settings from `simulation_settings.csv` with
+        additional information like the amount of time steps simulated in the
+        optimization ('periods').
+    storage_bus : dict
+        Contains information about the storage bus. Information about the scalars
+        like investment or initial capacity in key 'scalars' (pd.Series) and the
+        flows between the component and the busses in key 'sequences' (pd.DataFrame).
+    dict_asset : dict
+        Contains information about the storage like capacity, charging power, etc.
+
+    Returns
+    -------
+    Indirectly updates `dict_asset` with simulation results concerning the
+    storage.
+
     """
     power_charge = storage_bus["sequences"][
         ((dict_asset["input_bus_name"], dict_asset["label"]), "flow")
@@ -146,7 +176,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 }
             )
 
-    dict_asset.update(
+    dict_asset.update(  # todo: this could be a separate function for testing.
         {
             "timeseries_soc": dict_asset["storage capacity"]["flow"]
             / (
@@ -159,12 +189,28 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
 
 def get_results(settings, bus_data, dict_asset):
-    """
+    r"""
+    Reads results of the asset defined in `dict_asset` and stores them in `dict_asset`.
 
-    :param settings:
-    :param bus_data:
-    :param dict_asset:
-    :return:
+    Parameters
+    ----------
+    settings : dict
+        Contains simulation settings from `simulation_settings.csv` with
+        additional information like the amount of time steps simulated in the
+        optimization ('periods').
+    bus_data : dict
+        Contains information about all busses in a nested dict.
+        1st level keys: bus names;
+        2nd level keys:
+            'scalars': (pd.Series) (does not exist in all dicts)
+            'sequences': (pd.DataFrame) - contains flows between components and busses
+    dict_asset : dict
+        Contains information about the asset.
+
+    Returns
+    -------
+    Indirectly updates `dict_asset` with results.
+
     """
     # Check if the component has multiple input or output busses
     if "input_bus_name" in dict_asset:
@@ -220,13 +266,33 @@ def get_results(settings, bus_data, dict_asset):
 
 
 def get_optimal_cap(bus, dict_asset, bus_name, direction):
-    """
+    r"""
+    Retrieves optimized capacity of asset specified in `dict_asset`.
 
-    :param bus:
-    :param dict_asset:
-    :param bus_name:
-    :param direction:
-    :return:
+    Parameters
+    ----------
+    bus : dict
+        Contains information about the busses linked to the asset specified in
+        `dict_asset`. Information about the scalars like investment or initial
+        capacity in key 'scalars' (pd.Series) and the flows between the
+        component and the busses in key 'sequences' (pd.DataFrame).
+    dict_asset : dict
+        Contains information about the asset.
+    bus_name : str
+        Name of `bus`.
+    direction : str
+        Direction of flow. Options: 'input', 'output'.
+
+    possible todos
+    --------------
+    * direction as optimal parameter or with default value None (direction is
+        not needed if 'optimizeCap' is not in `dict_asset` or if it's value is False
+
+    Returns
+    -------
+    Indirectly updated `dict_asset` with optimal capacity to be added
+    ('optimizedAddCap').
+
     """
     if "optimizeCap" in dict_asset:
         if dict_asset["optimizeCap"]["value"] == True:
@@ -239,8 +305,8 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                     ((dict_asset["label"], bus_name), "invest")
                 ]
             else:
-                logging.error(
-                    "Function get_optimal_cap has invalid value of parameter direction."
+                raise ValueError(
+                    f"`direction` should be 'input' or 'output' but is {direction}."
                 )
 
             if "timeseries_peak" in dict_asset:
@@ -283,14 +349,34 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
 
 
 def get_flow(settings, bus, dict_asset, bus_name, direction):
-    """
+    r"""
+    Adds flow of `bus` and total flow amongst other information to `dict_asset`.
 
-    :param settings:
-    :param bus:
-    :param dict_asset:
-    :param bus_name:
-    :param direction:
-    :return:
+    Depending on `direction` the input or the output flow is used.
+
+    Parameters
+    ----------
+    settings : dict
+        Contains simulation settings from `simulation_settings.csv` with
+        additional information like the amount of time steps simulated in the
+        optimization ('periods').
+    bus : dict
+        Contains information about a specific bus. Information about the scalars, if they exist,
+            like investment or initial capacity in key 'scalars' (pd.Series) and the
+            flows between the component and the bus(ses) in key 'sequences' (pd.DataFrame).
+    dict_asset : dict
+        Contains information about the asset.
+    bus_name : str
+        Name of `bus`.
+    direction : str
+        Direction of flow. Options: 'input', 'output'.
+
+    Returns
+    -------
+    Indirectly updates `dict_asset` with the flow of `bus`, the total flow, the annual
+    total flow, the maximum of the flow ('peak_flow') and the average value of
+    the flow ('average_flow').
+
     """
     if direction == "input":
         flow = bus["sequences"][((bus_name, dict_asset["label"]), "flow")]
@@ -298,7 +384,9 @@ def get_flow(settings, bus, dict_asset, bus_name, direction):
         flow = bus["sequences"][((dict_asset["label"], bus_name), "flow")]
 
     else:
-        logging.warning('Value %s not "input" or "output"!', direction)
+        raise ValueError(
+            f"`direction` should be 'input' or 'output' but is {direction}."
+        )
     add_info_flows(settings, dict_asset, flow)
 
     logging.debug(
@@ -310,12 +398,26 @@ def get_flow(settings, bus, dict_asset, bus_name, direction):
 
 
 def add_info_flows(settings, dict_asset, flow):
-    """
+    r"""
+    Adds `flow` and total flow amongst other information to `dict_asset`.
 
-    :param settings:
-    :param dict_asset:
-    :param flow:
-    :return:
+    Parameters
+    ----------
+    settings : dict
+        Contains simulation settings from `simulation_settings.csv` with
+        additional information like the amount of time steps simulated in the
+        optimization ('periods').
+    dict_asset : dict
+        Contains information about the asset `flow` belongs to.
+    flow : pd.Series
+        Time series of the flow.
+
+    Returns
+    -------
+    Indirectly updates `dict_asset` with the `flow`, the total flow, the annual
+    total flow, the maximum of the flow ('peak_flow') and the average value of
+    the flow ('average_flow').
+
     """
     total_flow = sum(flow)
     dict_asset.update(
