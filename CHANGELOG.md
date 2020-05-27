@@ -60,6 +60,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Technical parameters (#223, #257): Energy flows (aggregated) per asset, Renewable share
 - A main() function to be used by a server which only accepts json variable and returns json
  variable (not saving to a file) (#327)
+- Some tests for E2 (#144)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
