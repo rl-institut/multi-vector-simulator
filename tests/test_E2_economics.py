@@ -48,7 +48,8 @@ def test_all_list_in_dict_passes_as_all_keys_included():
     list_true = ["annual_total_flow", "optimizedAddCap"]
     boolean = E2.all_list_in_dict(dict_asset, list_true)
     assert boolean == True
-    
+
+
 def test_all_list_in_dict_fails_due_to_not_included_keys():
     """Tests whether looking for list items in dict_asset is plausible."""
     list_false = ["flow", "optimizedAddCap"]

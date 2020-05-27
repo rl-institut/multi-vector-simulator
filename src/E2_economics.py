@@ -19,6 +19,7 @@ The module processes the simulation results regarding economic parameters:
 - calculate levelised cost of energy carriers (electricity, H2, heat)
 """
 
+
 def get_costs(dict_asset, economic_data):
     if isinstance(dict_asset, dict) and not (
         dict_asset["label"]
