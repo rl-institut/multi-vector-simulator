@@ -15,6 +15,30 @@ import src.C1_verification as verify
 import src.C2_economic_functions as economics
 import src.F0_output as output
 
+"""
+Module C0 prepares the data red from csv or json for simulation, ie. pre-processes it. 
+- Verify input values with C1
+- Identify energyVectors and write them to project_data/sectors
+- Create a sink for each energyVector (this actually might be changed in the future - create an excess sink for each bus?)
+- Process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
+- Add economic parameters to json with C2
+- Calculate "simulation annuity" used in oemof model
+- Add demand sinks to energyVectors (this should actually be changed and demand sinks should be added to bus relative to input_direction, also see issue #179)
+- Translate input_directions/output_directions to bus names
+- Add missing cost data to automatically generated objects (eg. DSO transformers)
+- Read timeseries of assets and store into json (differ between one-column csv, multi-column csv)
+- Read timeseries for parameter of an asset, eg. efficiency
+- Parse list of inputs/outputs, eg. for chp
+- Define dso sinks, soures, transformer stations (this will be changed due to bug #119), also for peak demand pricing
+- Add a source if a conversion object is connected to a new input_direction (bug #186)
+- Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
+"""
+
+
+class PeakDemandPricingPeriodsOnlyForYear(ValueError):
+    # Exception raised when there is a number of peak demand pricing periods considered while no year is simulated.
+    pass
+
 
 def all(dict_values):
     """
@@ -532,6 +556,18 @@ def define_dso_sinks_and_sources(dict_values, dso):
     number_of_pricing_periods = dict_values["energyProviders"][dso][
         "peak_demand_pricing_period"
     ]["value"]
+
+    # check number of pricing periods - if >1 the simulation has to cover a whole year!
+    if number_of_pricing_periods > 1:
+        if dict_values["simulation_settings"]["evaluated_period"]["value"] != 365:
+            raise PeakDemandPricingPeriodsOnlyForYear(
+                f"For taking peak demand pricing periods > 1 into account,"
+                f"the evaluation period has to be 365 days."
+                f"\n Message for dev: This is not technically true, "
+                f"as the evaluation period has to approximately be "
+                f"larger than 365/peak demand pricing periods (see #331)."
+            )
+
     # defines the evaluation period
     months_in_a_period = 12 / number_of_pricing_periods
     logging.info(
@@ -866,37 +902,16 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     :param dict_asset:
     :return:
     """
-    if "capex_var" not in dict_asset:
-        dict_asset.update({"capex_var": 0})
-    if "opex_fix" not in dict_asset:
-        dict_asset.update({"opex_fix": 0})
 
-    opex_fix = dict_asset["opex_fix"]["value"]
-    capex_var = dict_asset["capex_var"]["value"]
-    # take average value of opex_var if it is a timeseries
-    if isinstance(dict_asset["opex_var"]["value"], float) or isinstance(
-        dict_asset["opex_var"]["value"], int
-    ):
-        opex_var = dict_asset["opex_var"]["value"]
+    complete_missing_cost_data(dict_asset)
 
-    # if multiple busses are provided, it takes the first opex_var (corresponding to the first bus)
-    # to calculate the lifetime_opex_var
-    elif isinstance(dict_asset["opex_var"]["value"], list):
-        first_value = dict_asset["opex_var"]["value"][0]
-        if isinstance(first_value, float) or isinstance(first_value, int):
-            opex_var = first_value
-        else:
-            opex_var = sum(first_value) / len(first_value)
-    else:
-        opex_var = sum(dict_asset["opex_var"]["value"]) / len(
-            dict_asset["opex_var"]["value"]
-        )
+    determine_lifetime_opex_var(dict_asset, economic_data)
 
     dict_asset.update(
         {
             "lifetime_capex_var": {
                 "value": economics.capex_from_investment(
-                    capex_var,
+                    dict_asset["capex_var"]["value"],
                     dict_asset["lifetime"]["value"],
                     economic_data["project_duration"]["value"],
                     economic_data["discount_factor"]["value"],
@@ -915,7 +930,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                     dict_asset["lifetime_capex_var"]["value"],
                     economic_data["crf"]["value"],
                 )
-                + opex_fix,  # changes from opex_var
+                + dict_asset["opex_fix"]["value"],  # changes from opex_var
                 "unit": dict_asset["lifetime_capex_var"]["unit"] + "/a",
             }
         }
@@ -933,29 +948,119 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
     dict_asset.update(
         {
-            "lifetime_opex_var": {
-                "value": opex_var * economic_data["annuity_factor"]["value"],
-                "unit": "?",
-            }
-        }
-    )
-
-    # Scaling annuity to timeframe
-    # Updating all annuities above to annuities "for the timeframe", so that optimization is based on more adequate
-    # costs. Includes project_cost_annuity, distribution_grid_cost_annuity, maingrid_extension_cost_annuity for
-    # consistency eventhough these are not used in optimization.
-    dict_asset.update(
-        {
             "simulation_annuity": {
-                "value": dict_asset["annuity_capex_opex_var"]["value"]
-                / 365
-                * settings["evaluated_period"]["value"],
+                "value": economics.simulation_annuity(
+                    dict_asset["annuity_capex_opex_var"]["value"],
+                    settings["evaluated_period"]["value"],
+                ),
                 "unit": "currency/unit/simulation period",
             }
         }
     )
 
     return
+
+
+def complete_missing_cost_data(dict_asset):
+    # todo check if this can be deleted
+    if "capex_var" not in dict_asset:
+        dict_asset.update({"capex_var": 0})
+        logging.error(
+            "Dictionary of asset %s is incomplete, as capex_var is missing.",
+            dict_asset["label"],
+        )
+    if "opex_fix" not in dict_asset:
+        dict_asset.update({"opex_fix": 0})
+        logging.error(
+            "Dictionary of asset %s is incomplete, as opex_fix is missing.",
+            dict_asset["label"],
+        )
+    return
+
+
+def determine_lifetime_opex_var(dict_asset, economic_data):
+    """
+    #todo I am not sure that this makes sense. is this used in d0?
+    Parameters
+    ----------
+    dict_asset
+    economic_data
+
+    Returns
+    -------
+
+    """
+    if isinstance(dict_asset["opex_var"]["value"], float) or isinstance(
+        dict_asset["opex_var"]["value"], int
+    ):
+        lifetime_opex_var = get_lifetime_opex_var_one_value(dict_asset, economic_data)
+
+    elif isinstance(dict_asset["opex_var"]["value"], list):
+        lifetime_opex_var = get_lifetime_opex_var_list(dict_asset, economic_data)
+
+    elif isinstance(dict_asset["opex_var"]["value"], pd.Series):
+        lifetime_opex_var = get_lifetime_opex_var_timeseries(dict_asset, economic_data)
+
+    else:
+        raise ValueError(
+            f'Type of opex_var neither int, float, list or pd.Series, but of type {dict_asset["opex_var"]["value"]}. Is type correct?'
+        )
+
+    dict_asset.update({"lifetime_opex_var": {"value": lifetime_opex_var, "unit": "?",}})
+    return
+
+
+def get_lifetime_opex_var_one_value(dict_asset, economic_data):
+    """
+    opex_var can be a fix value
+    Returns
+    -------
+
+    """
+    lifetime_opex_var = (
+        dict_asset["opex_var"]["value"] * economic_data["annuity_factor"]["value"]
+    )
+    return lifetime_opex_var
+
+
+def get_lifetime_opex_var_list(dict_asset, economic_data):
+    """
+    opex_var can be a list, for example if there are two input flows to a component, eg. water and electricity.
+    Their ratio for providing cooling in kWh therm is fix. There should be a lifetime_opex_var for each of them.
+
+    Returns
+    -------
+
+    """
+
+    # if multiple busses are provided, it takes the first opex_var (corresponding to the first bus)
+
+    first_value = dict_asset["opex_var"]["value"][0]
+    if isinstance(first_value, float) or isinstance(first_value, int):
+        opex_var = first_value
+    else:
+        opex_var = sum(first_value) / len(first_value)
+
+    lifetime_opex_var = opex_var * economic_data["annuity_factor"]["value"]
+    return lifetime_opex_var
+
+
+def get_lifetime_opex_var_timeseries(dict_asset, economic_data):
+    """
+    opex_var can be a timeseries, eg. in case that there is an hourly pricing
+    Returns
+    -------
+
+    """
+    # take average value of opex_var if it is a timeseries
+
+    opex_var = sum(dict_asset["opex_var"]["value"]) / len(
+        dict_asset["opex_var"]["value"]
+    )
+    lifetime_opex_var = (
+        dict_asset["opex_var"]["value"] * economic_data["annuity_factor"]["value"]
+    )
+    return lifetime_opex_var
 
 
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,

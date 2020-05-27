@@ -33,7 +33,7 @@ from .constants import (
     TYPE_SERIES,
     TYPE_TIMESTAMP,
 )
-from mvs_eland_tool.mvs_eland_tool import main
+from mvs_eland_tool import main
 import src.A0_initialization as initializing
 
 PARSER = initializing.create_parser()

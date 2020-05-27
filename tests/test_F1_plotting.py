@@ -5,7 +5,7 @@ import mock
 import pandas as pd
 import logging
 
-import mvs_eland_tool.mvs_eland_tool as mvs_eland_tool
+from mvs_eland_tool import main
 import src.A0_initialization as initializing
 
 import src.F1_plotting as F1
@@ -98,7 +98,7 @@ class TestNetworkx:
         ),
     )
     def test_if_networkx_graph_is_stored_save_plot_true(self, m_args):
-        mvs_eland_tool.main()
+        main()
         assert (
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
         )
@@ -123,7 +123,7 @@ class TestNetworkx:
         ),
     )
     def test_if_networkx_graph_is_stored_save_plot_false(self, m_args):
-        mvs_eland_tool.main()
+        main()
         assert (
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
         )

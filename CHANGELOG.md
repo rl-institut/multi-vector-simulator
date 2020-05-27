@@ -46,7 +46,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Benchmark test with only PV and grid (#258)
 - Module F2 for auto-reporting results of MVS simulation (#232)
 - Json entries including paths to all plotted graphs (#232)
-- Tests for module C2 (#151)
+- Test for module C2 (#151)
 - Tests for storage for the module A1 (#299)
 - Benchmark test with only battery and grid (#302)
 - Possibility to save the report generated in F2 as a pdf (#284)
@@ -57,6 +57,9 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
  - Test function names for E1 (#145)
 - Possibility to deploy the report of the results in a browser (#323)
 - Test for the module D0 (#150)
+- Some test for module C0 (#148)
+- A main() function to be used by a server which only accepts json variable and returns json
+ variable (not saving to a file) (#327)
 - Some tests for E2 (#144)
 
 ### Changed
@@ -79,6 +82,9 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - The input from the csv files produce the same json than the json file (#286)
  - Move the CSS styling code to a style sheet (#317)
  - Change the input data for creating the dataframes for generating the optimization and costs' tables from xlsx file to json (#317) 
+ - Rename mvs_eland_tool/mvs_eland_tool.py --> mvs_eland_tool/local_deploy.py (#327)
+ - Now main (local use) and run_simulation (server use) are available in mvs_eland_tool package
+  (#327)
  
 ### Removed
 - Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´ (#150), as well as from all input files etc. The name is hardcoded now.
@@ -102,6 +108,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
  - Automatic update of the test coverage with coveralls.io (#307)
 - Logging message for maximumCap value (#310)
 - Create_app function in F0 for standalone execution (#317)
+- Crashing evaluation when `evaluated_period < 365/peak_demand_pricing_periods` (#331) by raising an error
 
 ## [0.2.0] - 2020-03-13
 

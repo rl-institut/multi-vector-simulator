@@ -296,32 +296,39 @@ def convert(o):
     return answer
 
 
-def store_as_json(dict_values, output_folder, file_name):
-    """Stores are dictionary as a Json file and converts all values that are incompatible with the Json format
+def store_as_json(dict_values, output_folder=None, file_name=None):
+    """Converts dict_values to JSON format and saves dict_values as a JSON file or return json
 
     Parameters
     ----------
-    dict_values :
+    dict_values : (dict)
         dict to be stored as json
-    output_folder :
+    output_folder : (path)
         Folder into which json should be stored
-    file_name :
+        Default None
+    file_name : (str)
         Name of the file the json should be stored as
+        Default None
 
     Returns
     -------
-    type
-        Stored json file
-
+    If file_name is provided, the json variable converted from the dict_values is saved under
+    this file_name, otherwise the json variable is returned
     """
-    file_path = os.path.abspath(os.path.join(output_folder, file_name + ".json"))
-    myfile = open(file_path, "w")
     json_data = json.dumps(
         dict_values, skipkeys=True, sort_keys=True, default=convert, indent=4
     )
-    myfile.write(json_data)
-    myfile.close()
-    logging.info(
-        "Converted and stored processed simulation data to json: %s", file_path
-    )
-    return
+    if file_name is not None:
+        file_path = os.path.abspath(os.path.join(output_folder, file_name + ".json"))
+        myfile = open(file_path, "w")
+
+        myfile.write(json_data)
+        myfile.close()
+        logging.info(
+            "Converted and stored processed simulation data to json: %s", file_path
+        )
+        answer = file_path
+    else:
+        answer = json_data
+
+    return answer
