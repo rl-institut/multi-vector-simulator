@@ -80,6 +80,7 @@ dict_weighting_two_sectors = {
 
 class TestGeneralEvaluation:
     """ """
+
     def test_totalling_scalars_values(self):
         """ """
         E3.all_totals(dict_scalars)
@@ -164,6 +165,7 @@ class TestGeneralEvaluation:
 
 class TestTechnicalParameters:
     """ """
+
     def test_weighting_for_sector_coupled_kpi_unknown_sector(self):
         """ """
         with pytest.raises(ValueError):

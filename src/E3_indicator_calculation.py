@@ -43,6 +43,7 @@ def all_totals(dict_values):
             )
     return
 
+
 def total_demand_each_sector(dict_values):
     """
 
@@ -133,6 +134,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
         weighting_for_sector_coupled_kpi(dict_values, sector_specific_kpi)
     return
 
+
 def renewable_share(dict_values):
     """Determination of renewable share of one sector
 
@@ -159,7 +161,8 @@ def renewable_share(dict_values):
             "Total non-renewable energy use"
         ][sector]
         dict_renewable_share.update(
-            {sector: equation_renewable_share(total_res, total_non_res)})
+            {sector: equation_renewable_share(total_res, total_non_res)}
+        )
     dict_values[KPI_DICT][KPI_UNCOUPLED_DICT].update({kpi_name: dict_renewable_share})
 
     total_res = dict_values[KPI_DICT][KPI_SCALARS_DICT]["Total renewable energy use"]
@@ -170,6 +173,7 @@ def renewable_share(dict_values):
         {kpi_name: equation_renewable_share(total_res, total_non_res)}
     )
     return
+
 
 def equation_renewable_share(total_res, total_non_res):
     """Calculates the renewable share
@@ -206,8 +210,10 @@ def equation_renewable_share(total_res, total_non_res):
     renewable_share = total_res / (total_non_res + total_res)
     return renewable_share
 
+
 def equation_degree_of_autonomy():
     return degree_of_autonomy
+
 
 def assert_aggregated_flows_of_energy_conversion_equivalent(dict_values):
     """
@@ -231,15 +237,22 @@ def assert_aggregated_flows_of_energy_conversion_equivalent(dict_values):
     total_flow_of_energy_conversion_equivalent = 0
     for asset in dict_values["energyConversion"]:
         sector = dict_values["energyConversion"][asset]["energyVector"]
-        total_flow_of_energy_conversion_equivalent += dict_values["energyConversion"][asset]["total_aggregated_flow"] \
-                                     * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector]["value"]
+        total_flow_of_energy_conversion_equivalent += (
+            dict_values["energyConversion"][asset]["total_aggregated_flow"]
+            * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector]["value"]
+        )
 
     dict_values[KPI_DICT][KPI_SCALARS_DICT].update(
-        {"total_energy_conversion_flow": total_flow_of_energy_conversion_equivalent} # needs units!
+        {
+            "total_energy_conversion_flow": total_flow_of_energy_conversion_equivalent
+        }  # needs units!
     )
     return total_flow_of_energy_conversion_equivalent
 
-def equation_degree_of_sector_coupling(total_flow_of_energy_conversion_equivalent,total_demand_equivalent):
+
+def equation_degree_of_sector_coupling(
+    total_flow_of_energy_conversion_equivalent, total_demand_equivalent
+):
     """
     Calculates degree of sector coupling.
 
@@ -261,20 +274,27 @@ def equation_degree_of_sector_coupling(total_flow_of_energy_conversion_equivalen
         with i,j \epsilon [Electricity,H2…]
 
     """
-    degree_of_sector_coupling = total_flow_of_energy_conversion_equivalent/total_demand_equivalent
+    degree_of_sector_coupling = (
+        total_flow_of_energy_conversion_equivalent / total_demand_equivalent
+    )
     return degree_of_sector_coupling
+
 
 def equation_onsite_energy_fraction():
     return onsite_energy_fraction
 
+
 def equation_onsite_energy_matching():
     return onsite_energy_matching
+
 
 def equation_co2_emissions(dict_values):
     co2_emissions = 0
     for asset in dict_values["energyProduction"]:
-        co2_emissions += dict_values["energyProduction"][asset]["total_aggregated_flow"]["value"]\
-                         * dict_values["energyProduction"][asset]["emissionFactor"]["value"]
+        co2_emissions += (
+            dict_values["energyProduction"][asset]["total_aggregated_flow"]["value"]
+            * dict_values["energyProduction"][asset]["emissionFactor"]["value"]
+        )
     return co2_emissions
 
 
