@@ -74,8 +74,14 @@ def evaluate_dict(dict_values, results_main, results_meta):
     # Evaluate timeseries and store to a large DataFrame for each bus:
     process_results.get_timeseries_per_bus(dict_values, bus_data)
 
-    # Store all information related to storages in bus_data, as storage capacity acts as a bus
+    output.store_as_json(
+        dict_values,
+        dict_values["simulation_settings"]["path_output_folder"],
+        "json_with_results_preliminary",
+    )
 
+
+    # Store all information related to storages in bus_data, as storage capacity acts as a bus
     for storage in dict_values["energyStorage"]:
         bus_data.update(
             {
