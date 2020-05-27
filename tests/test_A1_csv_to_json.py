@@ -5,7 +5,7 @@ import src.A1_csv_to_json as A1
 import src.B0_data_input_json as data_input
 
 from .constants import CSV_PATH, CSV_FNAME, DUMMY_CSV_PATH, REQUIRED_CSV_FILES
-
+from src.constants import PATHS_TO_PLOTS
 
 CSV_PARAMETERS = ["param1", "param2"]
 
@@ -60,7 +60,7 @@ def test_create_input_json_required_fields_are_filled():
     js_file = A1.create_input_json(input_directory=CSV_PATH, pass_back=True)
     js = data_input.load_json(js_file)
     for k in js.keys():
-        assert k in REQUIRED_CSV_FILES
+        assert k in REQUIRED_CSV_FILES + (PATHS_TO_PLOTS,)
 
 
 def test_create_json_from_csv_file_not_exist_raises_filenotfound_error():
@@ -72,14 +72,14 @@ def test_create_json_from_csv_file_not_exist_raises_filenotfound_error():
 
 def test_create_json_from_csv_with_comma_separated_csv():
     d = A1.create_json_from_csv(
-        DUMMY_CSV_PATH, "csv_comma", CSV_PARAMETERS, storage=False
+        DUMMY_CSV_PATH, "csv_comma", CSV_PARAMETERS, asset_is_a_storage=False
     )
     assert d == {"csv_comma": CSV_EXAMPLE}
 
 
 def test_create_json_from_csv_with_semicolon_separated_csv():
     d = A1.create_json_from_csv(
-        DUMMY_CSV_PATH, "csv_semicolon", CSV_PARAMETERS, storage=False
+        DUMMY_CSV_PATH, "csv_semicolon", CSV_PARAMETERS, asset_is_a_storage=False
     )
 
     assert d == {"csv_semicolon": CSV_EXAMPLE}
@@ -87,7 +87,7 @@ def test_create_json_from_csv_with_semicolon_separated_csv():
 
 def test_create_json_from_csv_with_ampersand_separated_csv():
     d = A1.create_json_from_csv(
-        DUMMY_CSV_PATH, "csv_ampersand", CSV_PARAMETERS, storage=False
+        DUMMY_CSV_PATH, "csv_ampersand", CSV_PARAMETERS, asset_is_a_storage=False
     )
 
     assert d == {"csv_ampersand": CSV_EXAMPLE}
@@ -97,7 +97,10 @@ def test_create_json_from_csv_with_unknown_separator_for_csv_raises_CsvParsingEr
 
     with pytest.raises(A1.CsvParsingError):
         A1.create_json_from_csv(
-            DUMMY_CSV_PATH, "csv_unknown_separator", CSV_PARAMETERS, storage=False
+            DUMMY_CSV_PATH,
+            "csv_unknown_separator",
+            CSV_PARAMETERS,
+            asset_is_a_storage=False,
         )
 
 
@@ -105,18 +108,18 @@ def test_create_json_from_csv_without_providing_parameters_raises_MissingParamet
 
     with pytest.raises(A1.MissingParameterError):
         A1.create_json_from_csv(
-            DUMMY_CSV_PATH, "csv_comma", parameters=[], storage=False
+            DUMMY_CSV_PATH, "csv_comma", parameters=[], asset_is_a_storage=False
         )
 
 
-def test_create_json_from_csv_with_uncomplete_parameters_raises_MissingParameterError():
+def test_create_json_from_csv_with_uncomplete_parameters_raises_WrongParameterWarning():
 
     with pytest.raises(A1.MissingParameterError):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_comma",
             parameters=["param1", "param2", "param3"],
-            storage=False,
+            asset_is_a_storage=False,
         )
 
 
@@ -127,7 +130,7 @@ def test_create_json_from_csv_with_wrong_parameters_raises_WrongParameterWarning
             DUMMY_CSV_PATH,
             "csv_wrong_parameter",
             parameters=["param1", "param2"],
-            storage=False,
+            asset_is_a_storage=False,
         )
 
 
@@ -137,7 +140,7 @@ def test_create_json_from_csv_ignore_extra_parameters_in_csv():
         DUMMY_CSV_PATH,
         "csv_wrong_parameter",
         parameters=["param1", "param2"],
-        storage=False,
+        asset_is_a_storage=False,
     )
     assert d == {"csv_wrong_parameter": CSV_EXAMPLE}
 
@@ -145,7 +148,10 @@ def test_create_json_from_csv_ignore_extra_parameters_in_csv():
 def test_create_json_from_csv_for_time_series():
 
     d = A1.create_json_from_csv(
-        DUMMY_CSV_PATH, "csv_timeseries", parameters=["param1"], storage=False,
+        DUMMY_CSV_PATH,
+        "csv_timeseries",
+        parameters=["param1"],
+        asset_is_a_storage=False,
     )
     for k, v in d["csv_timeseries"]["col1"].items():
         assert v == CSV_TIMESERIES[k]
@@ -157,7 +163,7 @@ def test_create_json_from_csv_for_list():
         DUMMY_CSV_PATH,
         "csv_list",
         parameters=["param1", "param2", "param3", "param4", "param5"],
-        storage=False,
+        asset_is_a_storage=False,
     )
     for k, v in d["csv_list"]["col1"].items():
         assert v == CSV_LIST[k]
@@ -180,10 +186,63 @@ def test_conversion():
             "param_bool6",
             "param_year",
         ],
-        storage=False,
+        asset_is_a_storage=False,
     )
     for k, v in d["csv_type"]["col1"].items():
         assert v == CONVERSION_TYPE[k]
+
+
+def test_create_json_from_csv_storage_raises_WrongParameterWarning():
+
+    with pytest.warns(A1.WrongParameterWarning):
+        A1.create_json_from_csv(
+            DUMMY_CSV_PATH,
+            "csv_storage_wrong_parameter",
+            parameters=["age_installed", "capex_fix"],
+            asset_is_a_storage=True,
+        )
+
+
+def test_create_json_from_csv_storage_raises_MissingParameterError():
+
+    with pytest.raises(A1.MissingParameterError):
+        A1.create_json_from_csv(
+            DUMMY_CSV_PATH,
+            "csv_storage_wrong_parameter",
+            parameters=[
+                "age_installed",
+                "capex_fix",
+                "c_rate",
+                "opex_var",
+                "soc_initial",
+                "soc_max",
+                "soc_min",
+                "installedCap",
+            ],
+            asset_is_a_storage=True,
+        )
+
+
+def test_create_json_from_csv_storage_raises_WrongParameterWarning_for_wrong_values():
+
+    with pytest.warns(A1.WrongParameterWarning):
+        A1.create_json_from_csv(
+            DUMMY_CSV_PATH,
+            "csv_storage_wrong_values",
+            parameters=["age_installed", "capex_fix"],
+            asset_is_a_storage=True,
+        )
+
+
+def test_create_json_from_csv_storage_raises_WrongStorageColumn():
+
+    with pytest.raises(A1.WrongStorageColumn):
+        A1.create_json_from_csv(
+            DUMMY_CSV_PATH,
+            "csv_storage_wrong_column_name",
+            parameters=["age_installed", "capex_fix"],
+            asset_is_a_storage=True,
+        )
 
 
 def teardown_function():

@@ -1,5 +1,6 @@
 import os
 import shutil
+import pytest
 import mock
 import pandas as pd
 import logging
@@ -8,13 +9,36 @@ import mvs_eland_tool.mvs_eland_tool as mvs_eland_tool
 import src.A0_initialization as initializing
 
 import src.F1_plotting as F1
-from tests.constants import (
+from .constants import (
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
     TEST_REPO_PATH,
+    TEST_INPUT_DIRECTORY,
     DUMMY_CSV_PATH,
     INPUT_FOLDER,
     CSV_ELEMENTS,
     CSV_FNAME,
 )
+from src.constants import (
+    PLOTS_BUSSES,
+    PATHS_TO_PLOTS,
+    PLOTS_DEMANDS,
+    PLOTS_RESOURCES,
+    PLOTS_NX,
+    PLOTS_PERFORMANCE,
+    PLOTS_COSTS,
+)
+
+dict_values = {
+    PATHS_TO_PLOTS: {
+        PLOTS_BUSSES: [],
+        PLOTS_DEMANDS: [],
+        PLOTS_RESOURCES: [],
+        PLOTS_NX: [],
+        PLOTS_PERFORMANCE: [],
+        PLOTS_COSTS: [],
+    }
+}
 
 SECTOR = "Electricity"
 INTERVAL = 2
@@ -22,10 +46,14 @@ INTERVAL = 2
 OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
 PARSER = initializing.create_parser()
-TEST_INPUT_PATH_NX_TRUE = os.path.join(TEST_REPO_PATH, "inputs_F1_plot_nx_true")
+TEST_INPUT_PATH_NX_TRUE = os.path.join(
+    TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_F1_plot_nx_true"
+)
 TEST_JSON_PATH_NX_TRUE = os.path.join(TEST_INPUT_PATH_NX_TRUE, CSV_ELEMENTS, CSV_FNAME)
 
-TEST_INPUT_PATH_NX_FALSE = os.path.join(TEST_REPO_PATH, "inputs_F1_plot_nx_false")
+TEST_INPUT_PATH_NX_FALSE = os.path.join(
+    TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_F1_plot_nx_false"
+)
 TEST_JSON_PATH_NX_FALSE = os.path.join(
     TEST_INPUT_PATH_NX_FALSE, CSV_ELEMENTS, CSV_FNAME
 )
@@ -54,6 +82,15 @@ DICT_KPI = {
 
 
 class TestNetworkx:
+    def setup_class(self):
+        """ """
+        shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
@@ -66,6 +103,11 @@ class TestNetworkx:
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
         )
 
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
@@ -98,7 +140,9 @@ class TestFileCreation:
         os.mkdir(OUTPUT_PATH)
 
     def test_if_plot_of_all_energy_flows_for_all_sectors_are_stored_for_14_days(self):
-        F1.flows(USER_INPUT, PROJECT_DATA, RESULTS_TIMESERIES, SECTOR, INTERVAL)
+        F1.flows(
+            dict_values, USER_INPUT, PROJECT_DATA, RESULTS_TIMESERIES, SECTOR, INTERVAL
+        )
         assert (
             os.path.exists(
                 os.path.join(
@@ -112,8 +156,15 @@ class TestFileCreation:
         costs = pd.DataFrame({"cost1": 0.2, "cost2": 0.8}, index=[0, 1])
         label = "a_label"
         title = "a_title"
-        F1.plot_a_piechart(USER_INPUT, "filename", costs, label, title)
+        F1.plot_a_piechart(dict_values, USER_INPUT, "filename", costs, label, title)
         assert os.path.exists(os.path.join(OUTPUT_PATH, "filename.png")) is True
+
+    def test_if_pie_charts_of_empty_costs_is_created(self):
+        costs = pd.DataFrame({"cost1": None, "cost2": None}, index=[])
+        label = "a_label"
+        title = "a_title"
+        F1.plot_a_piechart(dict_values, USER_INPUT, "filename1", costs, label, title)
+        assert os.path.exists(os.path.join(OUTPUT_PATH, "filename1.png")) is False
 
     def test_determine_if_plotting_necessary_True(self):
         PARAMETER_VALUES = [2, 3, 0]
@@ -181,6 +232,7 @@ class TestFileCreation:
     def test_store_barchart_for_capacities(self):
         """ """
         F1.capacities(
+            dict_values,
             USER_INPUT,
             PROJECT_DATA,
             DICT_KPI["kpi"]["scalar_matrix"]["label"],

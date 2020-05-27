@@ -155,11 +155,6 @@ def evaluate_dict(dict_values, results_main, results_meta):
     indicators.renewable_share(dict_values)
 
     logging.info("Evaluating optimized capacities and dispatch.")
-    output.store_as_json(
-        dict_values,
-        dict_values["simulation_settings"]["path_output_folder"],
-        "json_with_results",
-    )
     return
 
 

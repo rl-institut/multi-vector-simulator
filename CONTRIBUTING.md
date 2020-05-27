@@ -57,6 +57,11 @@ python setup.py develop
 ```
 Otherwise your changes will not be perceived by the tests unless you run `python setup.py install` each time.
 
+```bash
+pip install -e .
+```
+should work as well.
+
 Please run the tests locally before pushing your feature to the developer branch. You do that by running:
 ```bash
 pytest
@@ -67,12 +72,19 @@ If a test fails, it is only due to what you changed (the test must passed before
   test names and error messages are there to help you find the error, please read them to try to
    debug yourself before seeking assistance :)
 
-Some test take more time to run (run a simulation) and were therefore disabled by default. it is
- nevertheless important that you run a simulation test before you ask a review, to make sure the
-  code still works
+Some test take more time to run (run a simulation) and were therefore disabled by default. It is
+ nevertheless important that you run a simulation test before you ask a review, or whenever you
+  are ready to merge, to make sure the
+  code still works.
  ```bash
-pytest tests/test_benchmark.py
+EXECUTE_TESTS_ON=dev pytest
 ```
+will execute only the main simulation once to make sure it runs smoothly, whereas
+ ```bash
+EXECUTE_TESTS_ON=master pytest
+```
+will execute *all* benchmark tests (it takes thus a longer time to run)
+
 
 #### Step 4: Submit a pull request (PR)
 
