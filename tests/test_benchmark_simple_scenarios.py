@@ -19,7 +19,7 @@ from .constants import (
     JSON_EXT,
     CSV_EXT,
 )
-from mvs_eland_tool.mvs_eland_tool import main
+from mvs_eland_tool import main
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")

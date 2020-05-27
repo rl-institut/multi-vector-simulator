@@ -42,6 +42,8 @@ import src.F0_output as output_processing
 
 from src.constants import CSV_ELEMENTS, CSV_FNAME, CSV_EXT, DEFAULT_MAIN_KWARGS
 
+from mvs_eland_tool import version, version_date
+
 
 def main(**kwargs):
     # Display welcome text
@@ -54,7 +56,7 @@ def main(**kwargs):
         Determines whether to replace existing results in `path_output_folder`
         with the results of the current simulation (True) or not (False).
         Default: False.
-    pdf_report: cool, optional
+    pdf_report: bool, optional
         Can generate an automatic pdf report of the simulation's results (True) or not (False)
         Default: False.
     input_type : str, optional
@@ -77,17 +79,12 @@ def main(**kwargs):
 
     """
 
-    version = (
-        "0.2.0"  # update_me Versioning scheme: Major release.Minor release.Patches
-    )
-    date = "2020-03-13"  # update_me Update date
-
     welcome_text = (
         "\n \n Multi-Vector Simulation Tool (MVS) V"
         + version
         + " "
         + "\n Version: "
-        + date
+        + version_date
         + " "
         + '\n Part of the toolbox of H2020 project "E-LAND", '
         + "Integrated multi-vector management system for Energy isLANDs"
