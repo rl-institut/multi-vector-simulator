@@ -34,6 +34,10 @@ Module C0 prepares the data red from csv or json for simulation, ie. pre-process
 - Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
 """
 
+class PeakDemandPricingPeriodsOnlyForYear(ValueError):
+    # Exception raised when there is a number of peak demand pricing periods considered while no year is simulated.
+    pass
+
 
 def all(dict_values):
     """
@@ -539,7 +543,6 @@ def update_bus(dict_values, bus, asset, asset_label):
     logging.debug("Added asset %s to bus %s", asset_label, bus_label)
     return
 
-
 def define_dso_sinks_and_sources(dict_values, dso):
     """
 
@@ -551,6 +554,17 @@ def define_dso_sinks_and_sources(dict_values, dso):
     number_of_pricing_periods = dict_values["energyProviders"][dso][
         "peak_demand_pricing_period"
     ]["value"]
+
+    # check number of pricing periods - if >1 the simulation has to cover a whole year!
+    if number_of_pricing_periods > 1:
+        if dict_values["simulation_settings"]["evaluated_period"]["value"] != 365:
+            raise PeakDemandPricingPeriodsOnlyForYear(
+                f"For taking peak demand pricing periods > 1 into account,"
+                f"the evaluation period has to be 365 days."
+                f"\n Message for dev: This is not technically true, "
+                f"as the evaluation period has to approximately be "
+                f"larger than 365/peak demand pricing periods (see #331).")
+
     # defines the evaluation period
     months_in_a_period = 12 / number_of_pricing_periods
     logging.info(
