@@ -301,12 +301,6 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                     ((bus_name, dict_asset["label"]), "invest")
                 ]
             elif direction == "output":
-                if dict_asset["label"] == "DSO_consumption_period_2 source":
-                    print(dict_asset)
-                    print(bus_name)
-                    print(bus.keys())
-                    print(bus["scalars"].keys())
-                    print(bus["scalars"][((dict_asset["label"], bus_name), "invest")])
                 optimal_capacity = bus["scalars"][
                     ((dict_asset["label"], bus_name), "invest")
                 ]

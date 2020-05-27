@@ -6,7 +6,6 @@ import pandas as pd
 import src.E1_process_results as process_results
 import src.E2_economics as economics
 import src.E3_indicator_calculation as indicators
-import src.F0_output as output
 
 r"""
 Module E0 evaluation
@@ -73,12 +72,6 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     # Evaluate timeseries and store to a large DataFrame for each bus:
     process_results.get_timeseries_per_bus(dict_values, bus_data)
-
-    output.store_as_json(
-        dict_values,
-        dict_values["simulation_settings"]["path_output_folder"],
-        "json_with_results_preliminary",
-    )
 
     # Store all information related to storages in bus_data, as storage capacity acts as a bus
     for storage in dict_values["energyStorage"]:
