@@ -57,6 +57,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
  - Test function names for E1 (#145)
 - Possibility to deploy the report of the results in a browser (#323)
 - Test for the module D0 (#150)
+- Some tests for E2 (#144)
 
 ### Changed
 - Shore power randomization improved + amount of available docks can be chosen (#202)
