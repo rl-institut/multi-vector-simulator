@@ -80,7 +80,6 @@ def evaluate_dict(dict_values, results_main, results_meta):
         "json_with_results_preliminary",
     )
 
-
     # Store all information related to storages in bus_data, as storage capacity acts as a bus
     for storage in dict_values["energyStorage"]:
         bus_data.update(
