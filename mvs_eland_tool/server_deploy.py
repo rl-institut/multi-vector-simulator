@@ -4,6 +4,9 @@ This is the main file of the tool "Multi-vector simulation tool".
 Tool structure:
 
 (parent)    mvs_eland_tool.py
+
+(child)    constants.py
+
 (child)     --A0_initialization.py
 
 (child)      --B0_data_input.py
@@ -16,11 +19,14 @@ Tool structure:
 (child sub)    --D1_model_components.py
 (child sub)    --D2_model_constraints.py
 
-(child)     --F0_output.py
+(child)     --E0_evaluation.py
 (child sub)    --E1_process_results.py
 (child sub)    --E2_verification_of_constraints.py
-(child sub)    --E3_indicator_calculation.py
+(child sub)    --E4_verification_of_constraints.py
 
+(child)    --F0_output.py
+(child sub)    --F1_plotting.py
+(child sub)    --F2_autoreport.py
 patent:     Main file, all children connected through parent
 child:      Child file, one of the main functions of the tool.
             Internal processes, feeds output back to parent
