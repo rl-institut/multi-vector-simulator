@@ -209,7 +209,7 @@ class TestPDFReportCreation:
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
 
     @pytest.mark.skipif(
-        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        EXECUTE_TESTS_ON not in ("pdf_report"),
         reason="Benchmark test deactivated, set env variable "
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
