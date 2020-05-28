@@ -1,25 +1,40 @@
-import os, sys
+"""
+Module C1 is used to validate the input data compiled in A1 or read in B0.
+
+In A1/B0, the input parameters were parsed to str/bool/float/int. This module
+tests whether the parameters are in correct value ranges:
+- Display error message when wrong type
+- Display error message when outside defined range
+
+"""
+
 import logging
+import os
+
 import pandas as pd
+
 
 # web-application: valid input directly connected to cell-input
 
 
 def lookup_file(file_path, name):
     """
+    Checks whether file specified in `file_path` exists.
 
-    :param file_path:
-    :param name:
+    If it does not exist, a FileNotFoundError is raised.
+
+    :param file_path: File name including path of file that is checked.
+    :param name: Something referring to which component the file belongs. In
+    :func:`~.CO_data_processing.get_timeseries_multiple_flows` the label of the
+    asset is used.
     :return:
     """
     if os.path.isfile(file_path) == False:
-        logging.critical(
-            "Missing file! "
-            "\n The timeseries file %s of asset %s can not be found. Operation terminated.",
-            file_path,
-            name,
+        msg = (
+            f"Missing file! The timeseries file '{file_path}' \nof asset "
+            + f"{name} can not be found. Operation terminated."
         )
-        sys.exit()
+        raise FileNotFoundError(msg)
     return
 
 
@@ -76,6 +91,10 @@ def check_input_values(dict_values):
 
 def all_valid_intervals(name, value, title):
     """
+    Checks whether `value` of `name` is valid.
+
+    Checks include the expected type and the expected range a parameter is
+    supposed to be inside.
 
     :param name:
     :param value:
@@ -112,6 +131,7 @@ def all_valid_intervals(name, value, title):
         "lifetime": ["largerzero", "any"],
         "age_installed": [0, "any"],
         "installedCap": [0, "any"],
+        "maximumCap": [0, "any", None],
         "soc_min": [0, 1],
         "soc_max": [0, 1],
         "soc_initial": [0, 1],

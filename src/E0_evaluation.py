@@ -1,21 +1,38 @@
 import logging
+
 import oemof.outputlib as outputlib
 import pandas as pd
-
 
 import src.E1_process_results as process_results
 import src.E2_economics as economics
 import src.E3_indicator_calculation as indicators
-import src.F0_output as output
+
+r"""
+Module E0 evaluation
+====================
+
+Module E0 evaluates the oemof results and calculates the KPI
+- define dictionary entry for kpi matrix
+- define dictionary entry for cost matrix
+- store all results to matrix
+"""
 
 
 def evaluate_dict(dict_values, results_main, results_meta):
     """
 
-    :param dict_values:
-    :param results_main:
-    :param results_meta:
-    :return:
+    Parameters
+    ----------
+    dict_values: dict
+        simulation parameters
+    results_main: DataFrame
+        oemof simulation results as output by outputlib.processing.results()
+    results_meta: DataFrame
+        oemof simulation meta information as output by outputlib.processing.meta_results()
+
+    Returns
+    -------
+
     """
     dict_values.update(
         {
@@ -57,7 +74,6 @@ def evaluate_dict(dict_values, results_main, results_meta):
     process_results.get_timeseries_per_bus(dict_values, bus_data)
 
     # Store all information related to storages in bus_data, as storage capacity acts as a bus
-
     for storage in dict_values["energyStorage"]:
         bus_data.update(
             {
@@ -73,7 +89,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         )
 
         # hardcoded list of names in storage_01.csv
-        for storage_item in ["capacity", "charging_power", "discharging_power"]:
+        for storage_item in ["storage capacity", "input power", "output power"]:
             economics.get_costs(
                 dict_values["energyStorage"][storage][storage_item],
                 dict_values["economic_data"],
@@ -95,15 +111,15 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + " ("
                 + str(
                     round(
-                        dict_values["energyStorage"][storage]["capacity"][
+                        dict_values["energyStorage"][storage]["storage capacity"][
                             "optimizedAddCap"
                         ]["value"],
                         1,
                     )
                 )
-                + dict_values["energyStorage"][storage]["capacity"]["optimizedAddCap"][
-                    "unit"
-                ]
+                + dict_values["energyStorage"][storage]["storage capacity"][
+                    "optimizedAddCap"
+                ]["unit"]
                 + ") SOC"
             )
 
@@ -132,17 +148,25 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     indicators.all_totals(dict_values)
 
+    # Processing further KPI
+    indicators.total_renewable_and_non_renewable_energy_origin(dict_values)
+    indicators.renewable_share(dict_values)
+
     logging.info("Evaluating optimized capacities and dispatch.")
-    output.store_as_json(dict_values, "json_with_results")
     return
 
 
 def store_result_matrix(dict_kpi, dict_asset):
     """Storing results to vector and then result matrix for saving it in csv.
 
-    :param dict_kpi:
-    :param dict_asset:
-    :return:
+    Parameters
+    ----------
+    dict_kpi
+    dict_asset
+
+    Returns
+    -------
+
     """
 
     round_to_comma = 5

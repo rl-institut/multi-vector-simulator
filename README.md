@@ -2,7 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/mvs-eland/badge/?version=latest)](https://mvs-eland.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.com/rl-institut/mvs_eland.svg?branch=dev)](https://travis-ci.com/rl-institut/mvs_eland)
-[![Coverage Status](https://coveralls.io/repos/github/rl-institut/mvs_eland/badge.svg?branch=dev)](https://coveralls.io/github/rl-institut/mvs_eland?branch=dev)
+[![Coverage Status](https://coveralls.io/repos/github/rl-institut/mvs_eland/badge.svg)](https://coveralls.io/github/rl-institut/mvs_eland)
 
 Rights: [Reiner Lemoine Institut (Berlin)](https://reiner-lemoine-institut.de/)
 
@@ -94,10 +94,10 @@ To run the MVS with custom inputs you have several options:
 
 Edit the json input file (or csv files) and run
 
-    `python mvs_tool.py -i path_input_file -ext json -o path_output_folder`
+  `python mvs_tool.py -i path_input_folder -ext json -o path_output_folder`
 
 With 
-`path_input_file`: path to json input file,
+`path_input_folder`: path to folder with input data,
 
 `ext`: json for using a json file and csv for using csv files
 
@@ -115,7 +115,17 @@ Edit the csv files (or, for devs, the json file) and run the `main()` function. 
 - `input_type` (str): Defines whether the input is taken from the `mvs_config.json` file ("json") or from csv files ('csv') located within <path_input_folder>/csv_elements/. Default: `json`.
 - `path_input_folder` (str): The path to the directory where the input CSVs/JSON files are located. Default: `inputs/`.
 - `path_output_folder` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands. Default: `MVS_outputs/`.
+- `display_output` (str): Sets the level of displayed logging messages. Options: "debug", "info", "warning", "error". Default: "info".
+- `lp_file_output` (bool): Specifies whether linear equation system generated is saved as lp file. Default: False.
 
+## Generate report
+
+To generate a report (only in browser for now), run the following command **after** a simulation
+ ran:
+ 
+`python mvs_report.py`
+
+the report should appear in your browser (at http://127.0.0.1:8050) as a Plotly Dash app.
 
 ## Contributing
 

@@ -1,0 +1,16 @@
+,unit
+age_installed,year
+capex_fix,currency
+capex_var,currency/unit
+file_name
+installedCap,kWp
+maximumCap, kWp
+label,str
+lifetime,year
+opex_fix,currency/unit/year
+opex_var,currency/kWh
+optimizeCap,bool
+outflow_direction,str
+type_oemof,str
+unit,str
+energyVector,str

@@ -1,53 +1,84 @@
 import os
+import shutil
 
-from .constants import REPO_PATH
+import mock
 
+import src.A0_initialization as initializing
 import src.A1_csv_to_json as load_data_from_csv
 import src.B0_data_input_json as data_input
-from src.A1_csv_to_json import ALLOWED_FILES
-
-elements = os.path.join(REPO_PATH, "tests", "inputs", "csv")
-
-
-def test_create_input_json_required_fields_are_filled():
-    pass
-    #
-    # js_file = load_data_from_csv.create_input_json(
-    #     input_directory=elements, output_filename="test_example_field.json"
-    # )
-    # js = data_input.load_json(js_file)
-    # for k in js.keys():
-    #     assert k in ALLOWED_FILES
+from .constants import (
+    JSON_PATH,
+    CSV_PATH,
+    CSV_FNAME,
+    CSV_ELEMENTS,
+    JSON_CSV_PATH,
+    CSV_EXT,
+)
 
 
 def test_load_json_overwrite_output_folder_from_json():
-    pass
-    # dict_values = data_input.load_json(
-    #     os.path.join(elements, "test_example_create.json"), path_output_folder="test"
-    # )
-    # assert dict_values["simulation_settings"]["path_output_folder"] == "test"
-    # assert dict_values["simulation_settings"][
-    #     "path_output_folder_inputs"
-    # ] == os.path.join("test", "inputs")
+    dict_values = data_input.load_json(JSON_PATH, path_output_folder="test")
+    assert dict_values["simulation_settings"]["path_output_folder"] == "test"
+    assert dict_values["simulation_settings"][
+        "path_output_folder_inputs"
+    ] == os.path.join("test", "inputs")
 
 
 def test_load_json_overwrite_input_folder_from_json():
-    pass
-    # dict_values = data_input.load_json(
-    #     os.path.join(elements, "test_example_create.json"), path_input_folder="test"
-    # )
-    # assert dict_values["simulation_settings"]["path_input_folder"] == "test"
+    dict_values = data_input.load_json(JSON_PATH, path_input_folder="test")
+    assert dict_values["simulation_settings"]["path_input_folder"] == "test"
 
 
-def test_create_json_from_csv_file_not_exist():
-    pass
+PARSER = initializing.create_parser()
 
 
-def test_create_json_from_csv_correct_output():
-    pass
+class TestTemporaryJsonFileDisposal:
 
+    test_in_path = os.path.join("tests", "inputs")
+    test_out_path = os.path.join(".", "tests", "MVS_outputs")
 
-def teardown_module():
-    pass
-    # os.remove(os.path.join(elements, "test_example_create.json"))
-    # os.remove(os.path.join(elements, "test_example_field.json"))
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            ["-i", test_in_path, "-o", test_out_path, "-ext", CSV_EXT]
+        ),
+    )
+    def test_load_json_removes_json_file_from_inputs_folder(self, m_args):
+        initializing.process_user_arguments()
+
+        load_data_from_csv.create_input_json(input_directory=CSV_PATH, pass_back=True)
+        dict_values = data_input.load_json(
+            JSON_CSV_PATH, path_output_folder=self.test_out_path, move_copy=True
+        )
+
+        assert os.path.exists(os.path.join(CSV_PATH, CSV_ELEMENTS, CSV_FNAME,)) is False
+
+        assert os.path.exists(os.path.join(CSV_PATH, CSV_FNAME,)) is False
+
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            ["-i", test_in_path, "-o", test_out_path, "-ext", CSV_EXT]
+        ),
+    )
+    def test_load_json_copies_json_file_to_output_folder(self, m_args):
+        initializing.process_user_arguments()
+
+        load_data_from_csv.create_input_json(input_directory=CSV_PATH, pass_back=True)
+        dict_values = data_input.load_json(
+            JSON_CSV_PATH, path_output_folder=self.test_out_path, move_copy=True
+        )
+
+        assert (
+            os.path.exists(
+                os.path.join(
+                    dict_values["simulation_settings"]["path_output_folder_inputs"],
+                    CSV_FNAME,
+                )
+            )
+            is True
+        )
+
+    def teardown_method(self):
+        if os.path.exists(self.test_out_path):
+            shutil.rmtree(self.test_out_path, ignore_errors=True)

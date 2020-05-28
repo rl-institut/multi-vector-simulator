@@ -2,7 +2,7 @@
 Module A0_initialization defines functions to parse user inputs to the MVS simulation.
     - Display welcome message with current version number
     - Parse command line arguments and set default values for MVS parameters if not provided
-    - Check that all necessary files and folder exists
+    - Check that all necessary files and folder exist
     - Create output directory
     - Define screen logging depth
 
@@ -17,7 +17,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -i [PATH_INPUT_FOLDER]
                         path to the input folder
-  -ext [{json,csv}]     type (json or csv) of the input files (default: 'json'
+  -ext [{json,csv}]     type (json or csv) of the input files (default: 'json')
   -o [PATH_OUTPUT_FOLDER]
                         path to the output folder for the simulation's results
   -log [{debug,info,error,warning}]
@@ -26,10 +26,12 @@ optional arguments:
 
 """
 
+import argparse
+import logging
 import os
 import shutil
-import logging
-import argparse
+
+from oemof.tools import logger
 
 from src.constants import (
     REPO_PATH,
@@ -41,9 +43,9 @@ from src.constants import (
     CSV_EXT,
     CSV_ELEMENTS,
     INPUTS_COPY,
+    DEFAULT_MAIN_KWARGS,
+    PDF_REPORT,
 )
-
-from oemof.tools import logger
 
 
 def create_parser():
@@ -98,6 +100,15 @@ def create_parser():
         default=False,
         type=bool,
     )
+    parser.add_argument(
+        "-pdf",
+        dest="pdf_report",
+        help="generate a pdf report of the simulation if True (default: False)",
+        nargs="?",
+        const=True,
+        default=False,
+        type=bool,
+    )
     return parser
 
 
@@ -127,17 +138,19 @@ def check_input_folder(path_input_folder, input_type):
             raise (
                 FileNotFoundError(
                     "Missing input json file!\n"
-                    "The input json file '{}' can not be found.\n"
-                    "Operation terminated.".format(JSON_FNAME)
+                    "The input json file '{}' in path '{}' can not be found.\n"
+                    "Operation terminated.".format(JSON_FNAME, path_input_folder)
                 )
             )
         json_files = [f for f in os.listdir(path_input_folder) if f.endswith(JSON_EXT)]
         if len(json_files) > 1:
             raise (
                 FileExistsError(
-                    "Two many json files in input folder ({})!\n"
+                    "Two many json files ({}) in input folder '{}'!\n"
                     "Only the input json file '{}' should be present.\n"
-                    "Operation terminated.".format(", ".join(json_files), JSON_FNAME)
+                    "Operation terminated.".format(
+                        ", ".join(json_files), path_input_folder, JSON_FNAME
+                    )
                 )
             )
     elif input_type == CSV_EXT:
@@ -146,8 +159,8 @@ def check_input_folder(path_input_folder, input_type):
             raise (
                 FileNotFoundError(
                     "Missing folder for csv inputs! "
-                    "The input csv folder '{}' can not be found.\n"
-                    "Operation terminated.".format(CSV_ELEMENTS)
+                    "The input csv folder '{}' can not be found in the input path '{}'.\n"
+                    "Operation terminated.".format(CSV_ELEMENTS, path_input_folder)
                 )
             )
 
@@ -180,8 +193,11 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
         if overwrite is False:
             raise (
                 FileExistsError(
-                    "Output folder {} already exists and should not be overwritten. "
-                    "Please choose other folder.".format(path_output_folder)
+                    "Output folder {} already exists. "
+                    "If you want to overwrite the folder, please choose the force option -f when executing the MVS. "
+                    "Otherwise, provide a name to a new output folder with option -o.".format(
+                        path_output_folder
+                    )
                 )
             )
         else:
@@ -190,13 +206,13 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
             shutil.rmtree(path_output_folder, ignore_errors=True)
 
             logging.info("Creating output folder " + path_output_folder)
-            os.mkdir(path_output_folder)
+            os.makedirs(path_output_folder)
 
             logging.info('Creating folder "inputs" in output folder.')
             shutil.copytree(path_input_folder, path_output_folder_inputs)
     else:
         logging.info("Creating output folder " + path_output_folder)
-        os.mkdir(path_output_folder)
+        os.makedirs(path_output_folder)
 
         logging.info('Creating folder "inputs" in output folder.')
         shutil.copytree(path_input_folder, path_output_folder_inputs)
@@ -207,6 +223,7 @@ def process_user_arguments(
     input_type=None,
     path_output_folder=None,
     overwrite=None,
+    pdf_report=None,
     display_output=None,
     lp_file_output=False,
     welcome_text=None,
@@ -216,14 +233,16 @@ def process_user_arguments(
     they will overwrite the command line arguments.
 
     :param path_input_folder:
-        Descripes path to inputs folder (command line "-i")
+        Describes path to inputs folder (command line "-i")
     :param input_type:
-        Descripes type of input to expect (command line "-ext")
+        Describes type of input to expect (command line "-ext")
     :param path_output_folder:
         Describes path to folder to be used for terminal output (command line "-o")
         Must not exist before
     :param overwrite:
         (Optional) Can force tool to replace existing output folder (command line "-f")
+    :param pdf_report:
+        (Optional) Can generate an automatic pdf report of the simulation's results (Command line "-pdf")
     :param display_output:
         (Optional) Determines which messages are used for terminal output (command line "-log")
             "debug": All logging messages
@@ -243,21 +262,31 @@ def process_user_arguments(
     parser = create_parser()
     args = vars(parser.parse_args())
 
-    # Give priority from kwargs over command line arguments
+    # Give priority from user input kwargs over command line arguments
+    # However the command line arguments have priority over default kwargs
     if path_input_folder is None:
-        path_input_folder = args.get("path_input_folder")
+        path_input_folder = args.get(
+            "path_input_folder", DEFAULT_MAIN_KWARGS["path_input_folder"]
+        )
 
     if input_type is None:
-        input_type = args.get("input_type")
+        input_type = args.get("input_type", DEFAULT_MAIN_KWARGS["input_type"])
 
     if path_output_folder is None:
-        path_output_folder = args.get("path_output_folder")
+        path_output_folder = args.get(
+            "path_output_folder", DEFAULT_MAIN_KWARGS["path_output_folder"]
+        )
 
     if overwrite is None:
-        overwrite = args.get("overwrite")
+        overwrite = args.get("overwrite", DEFAULT_MAIN_KWARGS["overwrite"])
+
+    if pdf_report is None:
+        pdf_report = args.get("pdf_report", DEFAULT_MAIN_KWARGS["pdf_report"])
 
     if display_output is None:
-        display_output = args.get("display_output")
+        display_output = args.get(
+            "display_output", DEFAULT_MAIN_KWARGS["display_output"]
+        )
 
     path_input_file = check_input_folder(path_input_folder, input_type)
     check_output_folder(path_input_folder, path_output_folder, overwrite)
@@ -273,6 +302,11 @@ def process_user_arguments(
         "lp_file_output": lp_file_output,
     }
 
+    if pdf_report is True:
+        user_input.update(
+            {"path_pdf_report": os.path.join(path_output_folder, PDF_REPORT)}
+        )
+
     if display_output == "debug":
         screen_level = logging.DEBUG
     elif display_output == "info":
@@ -287,7 +321,7 @@ def process_user_arguments(
     # Define logging settings and path for saving log
     logger.define_logging(
         logpath=path_output_folder,
-        logfile="mvst_logfile.log",
+        logfile="mvs_logfile.log",
         file_level=logging.DEBUG,
         screen_level=screen_level,
     )
