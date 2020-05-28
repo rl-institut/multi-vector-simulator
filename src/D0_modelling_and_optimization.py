@@ -1,12 +1,11 @@
-import timeit
 import logging
-import oemof.solph as solph
-import oemof.outputlib as outputlib
 import os
+import timeit
+
+import oemof.outputlib as outputlib
+import oemof.solph as solph
 
 import src.D1_model_components as model_components
-import src.D2_model_constraints as D2
-
 from src.constants_json_strings import (
     ENERGY_BUSSES,
     OEMOF_ASSET_TYPE,

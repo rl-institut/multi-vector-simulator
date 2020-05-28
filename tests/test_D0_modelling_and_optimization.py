@@ -1,6 +1,8 @@
-import src.D0_modelling_and_optimization as D0
-import pytest
 import os
+
+import pytest
+
+import src.D0_modelling_and_optimization as D0
 from src.B0_data_input_json import load_json
 
 json_path = os.path.join("tests", "test_data", "test_data_for_D0.json")

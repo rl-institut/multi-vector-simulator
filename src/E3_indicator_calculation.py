@@ -10,8 +10,6 @@ In module E3 the technical KPI are evaluated:
 - calculate degree of autonomy me
 - calculate degree of sector coupling
 """
-import logging
-import pandas as pd
 
 from src.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
 from src.constants import (

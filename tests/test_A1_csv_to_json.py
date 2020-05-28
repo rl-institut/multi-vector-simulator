@@ -1,11 +1,11 @@
 import os
+
 import pytest
 
 import src.A1_csv_to_json as A1
 import src.B0_data_input_json as data_input
-
-from .constants import CSV_PATH, CSV_FNAME, DUMMY_CSV_PATH, REQUIRED_CSV_FILES
 from src.constants import PATHS_TO_PLOTS
+from .constants import CSV_PATH, CSV_FNAME, DUMMY_CSV_PATH, REQUIRED_CSV_FILES
 
 CSV_PARAMETERS = ["param1", "param2"]
 

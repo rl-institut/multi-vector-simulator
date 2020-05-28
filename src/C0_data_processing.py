@@ -1,10 +1,10 @@
+import logging
 import os
-import sys
 import shutil
-import logging
-import pandas as pd
+import sys
+
 import matplotlib.pyplot as plt
-import logging
+import pandas as pd
 
 logging.getLogger("matplotlib.font_manager").disabled = True
 

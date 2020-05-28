@@ -1,9 +1,10 @@
-import os
 import json
+import os
+
+import oemof.solph as solph
+import pandas as pd
 import pytest
 from pandas.util.testing import assert_series_equal
-import pandas as pd
-import oemof.solph as solph
 
 # internal imports
 import src.D1_model_components as D1

@@ -11,18 +11,17 @@
 
 import copy
 import os
-import sys
 import shutil
-import pytest
-import mock
-import argparse
-import logging
 
-import pandas as pd
+import mock
 import numpy as np
+import pandas as pd
+import pytest
+
+import src.A0_initialization as initializing
 import src.B0_data_input_json as B0
 import src.F0_output as F0
-
+from mvs_eland_tool import main
 from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
@@ -34,8 +33,6 @@ from .constants import (
     TYPE_SERIES,
     TYPE_TIMESTAMP,
 )
-from mvs_eland_tool import main
-import src.A0_initialization as initializing
 
 PARSER = initializing.create_parser()
 

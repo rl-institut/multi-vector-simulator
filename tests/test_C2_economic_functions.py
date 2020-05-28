@@ -1,5 +1,6 @@
-import src.C2_economic_functions as e_functions
 from pytest import approx
+
+import src.C2_economic_functions as e_functions
 
 project_life = 20
 wacc = 0.1

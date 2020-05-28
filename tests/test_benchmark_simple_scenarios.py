@@ -4,22 +4,21 @@ In this module the tests run over whole simulation from main, not just single fu
 What should differ between the different functions is the input file
 
 """
-import os
-import sys
 import argparse
+import os
 import shutil
-import mock
-import pytest
-import pandas as pd
 
+import mock
+import pandas as pd
+import pytest
+
+from mvs_eland_tool import main
 from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
-    JSON_EXT,
     CSV_EXT,
 )
-from mvs_eland_tool import main
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")

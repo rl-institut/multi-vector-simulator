@@ -1,15 +1,11 @@
 import os
-import sys
 import shutil
-import pytest
-import mock
-import argparse
-import logging
 
-from mvs_eland_tool import main
+import mock
+import pytest
 
 import src.A0_initialization as initializing
-
+from mvs_eland_tool import main
 from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
@@ -25,7 +21,6 @@ from .constants import (
     DEFAULT_OUTPUT_PATH,
     PDF_REPORT,
 )
-
 
 PARSER = initializing.create_parser()
 

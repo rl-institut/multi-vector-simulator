@@ -1,24 +1,13 @@
 import os
 import shutil
-import pytest
+
 import mock
 import pandas as pd
-import logging
+import pytest
 
-from mvs_eland_tool import main
 import src.A0_initialization as initializing
-
 import src.F1_plotting as F1
-from .constants import (
-    EXECUTE_TESTS_ON,
-    TESTS_ON_MASTER,
-    TEST_REPO_PATH,
-    TEST_INPUT_DIRECTORY,
-    DUMMY_CSV_PATH,
-    INPUT_FOLDER,
-    CSV_ELEMENTS,
-    CSV_FNAME,
-)
+from mvs_eland_tool import main
 from src.constants import (
     PLOTS_BUSSES,
     PATHS_TO_PLOTS,
@@ -27,6 +16,15 @@ from src.constants import (
     PLOTS_NX,
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
+)
+from .constants import (
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
+    TEST_REPO_PATH,
+    TEST_INPUT_DIRECTORY,
+    DUMMY_CSV_PATH,
+    CSV_ELEMENTS,
+    CSV_FNAME,
 )
 
 dict_values = {

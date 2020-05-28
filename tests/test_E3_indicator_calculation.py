@@ -1,16 +1,16 @@
 import os
-import json
+
 import pandas as pd
 import pytest
 
 import src.E3_indicator_calculation as E3
+from src.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
 from src.constants import (
     KPI_DICT,
     KPI_SCALARS_DICT,
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
 )
-from src.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
 
 numbers = [10, 15, 20, 25]
 

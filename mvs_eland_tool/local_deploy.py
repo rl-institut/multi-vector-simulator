@@ -30,8 +30,6 @@ child-sub:  Sub-child function, feeds only back to child functions
 import logging
 import os
 
-# Loading all child functions
-
 import src.A0_initialization as initializing
 import src.A1_csv_to_json as load_data_from_csv
 import src.B0_data_input_json as data_input
@@ -39,10 +37,8 @@ import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
 import src.F0_output as output_processing
-
-from src.constants import CSV_ELEMENTS, CSV_FNAME, CSV_EXT, DEFAULT_MAIN_KWARGS
-
 from mvs_eland_tool import version, version_date
+from src.constants import CSV_ELEMENTS, CSV_EXT
 
 
 def main(**kwargs):
