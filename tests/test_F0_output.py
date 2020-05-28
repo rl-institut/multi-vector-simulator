@@ -9,6 +9,7 @@
 - Store dictionary to Json
 """
 
+import copy
 import os
 import sys
 import shutil
@@ -101,7 +102,7 @@ class TestFileCreation:
                 )
             },
         }
-        dict_scalar_capacities.update(DICT_PLOTS)
+        dict_scalar_capacities.update(copy.deepcopy(DICT_PLOTS))
         show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
         assert show_optimal_capacities is False
 
@@ -119,7 +120,7 @@ class TestFileCreation:
                 )
             },
         }
-        dict_scalar_capacities.update(DICT_PLOTS)
+        dict_scalar_capacities.update(copy.deepcopy(DICT_PLOTS))
         show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
         assert show_optimal_capacities is True
 
@@ -155,7 +156,7 @@ class TestFileCreation:
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS},
         }
-        dict_timeseries_test_one_bus.update(DICT_PLOTS)
+        dict_timeseries_test_one_bus.update(copy.deepcopy(DICT_PLOTS))
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_one_bus)
         assert (
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses.xlsx"))
@@ -176,7 +177,8 @@ class TestFileCreation:
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS, "b_bus": BUS},
         }
-        dict_timeseries_test_two_busses.update(DICT_PLOTS)
+        print(DICT_PLOTS)
+        dict_timeseries_test_two_busses.update(copy.deepcopy(DICT_PLOTS))
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
         assert (
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses.xlsx"))
