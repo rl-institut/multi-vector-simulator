@@ -174,6 +174,23 @@ TYPE_SERIES = "pandas_Series:"
 TYPE_DATAFRAME = "pandas_Dataframe:"
 TYPE_TIMESTAMP = "pandas_Timestamp:"
 
+DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
+    "Electricity": {"unit": "kWh_eleq/kWh_el", "value": 1},
+    "H2": {"unit": "kWh_eleq/kgH2", "value": 32.87},
+}
+
+# Names for KPI output
+
+KPI_DICT = "kpi"
+
+KPI_SCALARS_DICT = "scalars"
+
+KPI_UNCOUPLED_DICT = "KPI individual sectors"
+
+KPI_COST_MATRIX = "cost_matrix"
+
+# KPI_FLOW_MATRIX
+
 KPI_SCALARS = (
     "annuity_om",
     "annuity_total",

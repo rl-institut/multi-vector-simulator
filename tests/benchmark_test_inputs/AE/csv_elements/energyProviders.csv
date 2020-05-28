@@ -9,3 +9,4 @@ peak_demand_pricing,currency/kW,0
 peak_demand_pricing_period,"times per year (1,2,3,4,6,12)",1
 type_oemof,str,source
 energyVector,str,Electricity
+renewable_share,factor,0.1
