@@ -197,6 +197,18 @@ class TestFileCreation:
         F0.store_as_json(JSON_TEST_DICTIONARY, OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
+    def teardown_method(self):
+        """ """
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+
+
+class TestPDFReportCreation:
+    def setup_method(self):
+        """ """
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
         reason="Benchmark test deactivated, set env variable "
@@ -204,7 +216,7 @@ class TestFileCreation:
     )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
-        return_value=PARSER.parse_args(["-o", OUTPUT_PATH, "-f", "-pdf"]),
+        return_value=PARSER.parse_args(["-o", OUTPUT_PATH, "-pdf"]),
     )
     def test_generate_pdf_report(self, m_args):
         """Run the simulation with -pdf option to make sure the pdf file is generated """
