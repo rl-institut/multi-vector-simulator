@@ -1,5 +1,6 @@
 import os
 import json
+import copy
 import numpy as np
 import pandas as pd
 
@@ -146,5 +147,5 @@ def load_json(
 
     # add default value if the field PATHS_TO_PLOTS is not already present
     if PATHS_TO_PLOTS not in dict_values:
-        dict_values.update(DICT_PLOTS)
+        dict_values.update(copy.deepcopy(DICT_PLOTS))
     return dict_values
