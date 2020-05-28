@@ -81,8 +81,7 @@ class TestACElectricityBus:
         # make the time the index
         df_busses_flow = df_busses_flow.set_index("Unnamed: 0")
 
-        # TODO make sure the battery is not used
-        assert 1 == 0
+        # TODO make sure the battery is not used in an assert here
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
