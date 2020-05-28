@@ -341,6 +341,10 @@
                 "unit": "times per year (1,2,3,4,6,12)",
                 "value": 1
             },
+            "renewable_share": {
+                "unit": "factor",
+                "value": 0.1
+            },
             "type_oemof": "source"
         }
     },
