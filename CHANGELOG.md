@@ -20,6 +20,16 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+
+### Removed
+
+
+## [0.2.1] - 2020-05-28
+
+### Added
 - Tests for the module B0 (#140, #255)
 - Tests for the module A1 (#141)
 - Tests for the module E3 (#143)
