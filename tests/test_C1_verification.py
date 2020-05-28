@@ -1,8 +1,7 @@
-import os
 import pytest
 
-from .constants import JSON_PATH
 import src.C1_verification as C1
+from .constants import JSON_PATH
 
 
 def test_lookup_file_existing_file():

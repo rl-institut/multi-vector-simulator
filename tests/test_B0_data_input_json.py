@@ -1,21 +1,19 @@
 import os
 import shutil
+
 import mock
 
+import src.A0_initialization as initializing
+import src.A1_csv_to_json as load_data_from_csv
+import src.B0_data_input_json as data_input
 from .constants import (
-    TEST_REPO_PATH,
     JSON_PATH,
     CSV_PATH,
     CSV_FNAME,
     CSV_ELEMENTS,
     JSON_CSV_PATH,
-    INPUTS_COPY,
     CSV_EXT,
 )
-
-import src.A0_initialization as initializing
-import src.A1_csv_to_json as load_data_from_csv
-import src.B0_data_input_json as data_input
 
 
 def test_load_json_overwrite_output_folder_from_json():

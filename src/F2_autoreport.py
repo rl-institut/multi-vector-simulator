@@ -1,33 +1,32 @@
 # This script generates a report of the simulation automatically, with all the important data.
 
-# Importing necessary packages
-import dash
-import dash_html_components as html
-import time
-import pandas as pd
-import reverse_geocoder as rg
-import dash_table
 import base64
-import git
-import folium
 import os
 
 # Imports for generating pdf automatically
 import threading
-import pdfkit
+import time
 import webbrowser
 
-from src.B0_data_input_json import load_json
-from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
+# Importing necessary packages
+import dash
+import dash_html_components as html
+import dash_table
+import folium
+import git
+import pandas as pd
+import pdfkit
+import reverse_geocoder as rg
+
 from src.constants import (
     PLOTS_BUSSES,
     PATHS_TO_PLOTS,
     PLOTS_DEMANDS,
     PLOTS_RESOURCES,
-    PLOTS_NX,
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
 )
+from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)

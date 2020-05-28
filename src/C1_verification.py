@@ -8,9 +8,11 @@ tests whether the parameters are in correct value ranges:
 
 """
 
-import os, sys
 import logging
+import os
+
 import pandas as pd
+
 
 # web-application: valid input directly connected to cell-input
 

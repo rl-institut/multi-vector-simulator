@@ -1,12 +1,12 @@
-import pandas as pd
-import matplotlib.pyplot as plt
 import logging
 import os
+
+import matplotlib.pyplot as plt
+import pandas as pd
+
 from src.constants import (
     PATHS_TO_PLOTS,
     PLOTS_BUSSES,
-    PLOTS_DEMANDS,
-    PLOTS_RESOURCES,
     PLOTS_NX,
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,

@@ -26,10 +26,12 @@ optional arguments:
 
 """
 
+import argparse
+import logging
 import os
 import shutil
-import logging
-import argparse
+
+from oemof.tools import logger
 
 from src.constants import (
     REPO_PATH,
@@ -44,8 +46,6 @@ from src.constants import (
     DEFAULT_MAIN_KWARGS,
     PDF_REPORT,
 )
-
-from oemof.tools import logger
 
 
 def create_parser():

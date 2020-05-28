@@ -10,6 +10,7 @@ Module E1 processes the oemof results.
 """
 
 import logging
+
 import pandas as pd
 
 

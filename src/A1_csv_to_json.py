@@ -27,10 +27,11 @@ Functions of this module (that need to be tested)
 - parse data from csv according to intended types - string, boolean, float, int, dict, list!
 """
 
-import os
 import json
 import logging
+import os
 import warnings
+
 import pandas as pd
 
 from src.constants import (

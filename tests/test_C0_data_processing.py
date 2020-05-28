@@ -1,6 +1,8 @@
 import pandas as pd
-import src.C0_data_processing as C0
 import pytest
+
+import src.C0_data_processing as C0
+
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 def test_retrieve_datetimeindex_for_simulation():

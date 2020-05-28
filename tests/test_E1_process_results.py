@@ -1,6 +1,3 @@
-import os
-import pytest
-
 # from .constants import JSON_PATH
 import src.E1_process_results as E1
 

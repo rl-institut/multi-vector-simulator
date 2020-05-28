@@ -1,13 +1,12 @@
 import json
+import logging
+import os
+
 import numpy
 import pandas as pd
-import logging
-import matplotlib.pyplot as plt
-import os
 
 import src.F1_plotting as F1_plots
 import src.F2_autoreport as autoreport
-
 from .constants import TYPE_DATETIMEINDEX, TYPE_SERIES, TYPE_DATAFRAME, TYPE_TIMESTAMP
 
 r"""

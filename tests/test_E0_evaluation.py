@@ -1,7 +1,8 @@
-import pickle
-import os
-import shutil
 import logging
+import os
+import pickle
+import shutil
+
 import mock
 import pandas as pd
 
@@ -10,7 +11,6 @@ import src.B0_data_input_json as data_input
 import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
-
 from .constants import TEST_REPO_PATH, INPUT_FOLDER, KPI_SCALARS
 
 PARSER = initializing.create_parser()
