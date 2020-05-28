@@ -39,7 +39,7 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Tables for `simulating_with_the_mvs.rst`: tables/example_multiple_inputs_energyConversion.csv, tables/example_scalar_as_timeseries_energyConversion.csv
 - Test for the module A1 (#141)
 - Test for the module E3 (#143)
-- Test for the module F0 (#142, #304)
+- Test for the module F0 (#142, #304, #335)
 - Test for the module E0 (#146)
 - Test for module F1 (#157, #297, #284)
 - Benchmark test with only PV and grid (#258)
@@ -109,7 +109,6 @@ tipps for module building, and hint that units in the MVS are not checked (PR #2
 - Logging message for maximumCap value (#310)
 - Create_app function in F0 for standalone execution (#317)
 - Crashing evaluation when `evaluated_period < 365/peak_demand_pricing_periods` (#331) by raising an error
-
 ## [0.2.0] - 2020-03-13
 
 ### Added
