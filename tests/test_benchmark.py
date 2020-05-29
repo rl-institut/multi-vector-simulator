@@ -5,7 +5,6 @@ What should differ between the different functions is the input file
 
 """
 import argparse
-import json
 import os
 import shutil
 
