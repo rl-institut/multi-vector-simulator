@@ -20,9 +20,10 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+- Test for re-running a simulation with `json_input_processed.json` file (#343)
 
 ### Changed
-
+- Test input files (#343)
 
 ### Removed
 
