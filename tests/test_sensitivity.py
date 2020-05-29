@@ -73,3 +73,41 @@ def get_nested_value(dct, keys):
         raise TypeError("The argument 'keys' from get_nested_value() should be a tuple")
     return answer
 
+
+def split_nested_path(path):
+    r"""Separate a single-string path in a nested dict in a list of keys
+
+
+    Parameters
+    ----------
+    path: str or tuple
+        path within a nested dict which is expressed as a str of a succession of keys separated by
+        a `.` or a `,`. The order of keys is to be read from left to right.
+
+    Returns
+    -------
+    Tuple containing the succession of keys which lead to the value within the nested dict
+
+    """
+    SEPARATORS = (".", ",")
+    keys_list = None
+    if isinstance(path, str):
+        separator_count = 0
+        keys_separator = None
+        for separator in SEPARATORS:
+            if separator in path:
+                if path.count(separator) > 0:
+                    if separator_count > 0:
+                        raise ValueError(
+                            f"The separator of the nested dict's path is not unique"
+                        )
+                    separator_count = path.count(separator)
+                    keys_separator = separator
+        if keys_separator is not None:
+            keys_list = tuple(path.split(keys_separator))
+    elif isinstance(path, tuple):
+        keys_list = path
+    else:
+        raise TypeError("The argument path is not str type")
+
+    return keys_list
