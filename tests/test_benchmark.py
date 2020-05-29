@@ -81,8 +81,7 @@ class TestLocalSimulation:
 
 class TestServerSimulation:
     def setup_class(self):
-        with open(os.path.join(RERUN_PATH, JSON_FNAME)) as fp:
-            self.input_json = load_json(fp)
+        self.input_json = load_json(os.path.join(RERUN_PATH, JSON_FNAME))
 
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
     # alone it called
