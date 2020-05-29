@@ -111,3 +111,68 @@ def split_nested_path(path):
         raise TypeError("The argument path is not str type")
 
     return keys_list
+
+
+def single_param_variation_analysis(
+    param_values, json_input, json_path_to_param_value, json_path_to_output_value=None
+):
+    r"""Run mvs simulations by varying one of the input parameters ta access output's sensitivity
+
+    Parameters
+    ----------
+    param_values: list of values (type can vary)
+    json_input: path or dict
+        input parameters for the mvs_eland simulation
+    json_path_to_param_value: tuple or str
+        succession of keys which lead the value of the parameter to vary in the json_input dict
+        potentially nested structure. The order of keys is to be read from left to right. In the
+        case of str, each key should be separated by a `.` or a `,`.
+    json_path_to_output_value: tuple or str, optional
+        succession of keys which lead the value of an output parameter of interest in the json
+        dict of the simulation's output. The order of keys is to be read from left to right. In the
+        case of str, each key should be separated by a `.` or a `,`.
+
+    Returns
+    -------
+    The simulation output json matched to the list of variied parameter values
+    """
+
+    if isinstance(json_input, str):
+        # load the file if it is a path
+        with open(json_input) as fp:
+            simulation_input = load_json(json_input)
+    elif isinstance(json_input, dict):
+        # this is already a json variable
+        simulation_input = json_input
+    else:
+        simulation_input = None
+        logging.error(
+            f"Simulation input `{json_input}` is neither a file path, nor a json dict. "
+            f"It can therefor not be processed."
+        )
+    param_path_tuple = split_nested_path(json_path_to_param_value)
+    answer = []
+    if simulation_input is not None:
+        for param_val in param_values:
+            # modify the value of the parameter before running a new simulation
+            modified_input = set_nested_value(
+                simulation_input, param_val, param_path_tuple
+            )
+            # run a simulation with next value of the variable parameter
+            sim_output_json = run_simulation(modified_input, display_output="error")
+
+            if json_path_to_output_value is None:
+                answer.append(sim_output_json)
+            else:
+                # TODO specific output params
+                pass
+
+    return {"parameters": param_values, "outputs": answer}
+
+
+if __name__ == "__main__":
+    single_param_variation_analysis(
+        [1, 2, 3, 4, 5, 6, 7],
+        JSON_PATH,
+        ("simulation_settings", "evaluated_period", "value"),
+    )
