@@ -42,6 +42,7 @@ class TestLocalSimulation:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_run_smoothly_json(self, mock_args):
+        """Check that default local simulation with json option runs without errors"""
         main(input_type=JSON_EXT, path_output_folder=OUTPUT_PATH)
         # TODO: find typical output values to write better test, currently it only test that main() run
         # TODO: without crashing, but does not test if the output make sense
@@ -54,6 +55,7 @@ class TestLocalSimulation:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_run_smoothly_csv(self, mock_args):
+        """Check that default local simulation with csv option runs without errors"""
         main(input_type=CSV_EXT, path_output_folder=OUTPUT_PATH)
         assert 1 == 1
 
@@ -64,6 +66,7 @@ class TestLocalSimulation:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_re_run_smoothly_json(self, mock_args):
+        """Use the file json_input_processed.json, produced by a simulation, as input itself"""
         main(
             path_input_folder=RERUN_PATH,
             input_type=JSON_EXT,
@@ -89,5 +92,6 @@ class TestServerSimulation:
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     def test_run_smoothly_json(self):
+        """Check that default server simulation with csv option runs without errors"""
         run_simulation(self.input_json)
         assert 1 == 1
