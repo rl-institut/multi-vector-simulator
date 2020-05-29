@@ -173,6 +173,6 @@ def single_param_variation_analysis(
 if __name__ == "__main__":
     single_param_variation_analysis(
         [1, 2, 3, 4, 5, 6, 7],
-        JSON_PATH,
+        os.path.join(TEST_REPO_PATH, "benchmark_test_inputs", "rerun", "mvs_config.json"),
         ("simulation_settings", "evaluated_period", "value"),
     )
