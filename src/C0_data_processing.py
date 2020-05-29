@@ -195,33 +195,22 @@ def process_all_assets(dict_values):
     # process all energyAssets:
     # Attention! Order of asset_groups important. for energyProviders/energyConversion sinks and sources
     # might be defined that have to be processed in energyProduction/energyConsumption
-    asset_group_list = [
-        "energyProviders",
-        "energyConversion",
-        "energyStorage",
-        "energyProduction",
-        "energyConsumption",
-    ]
+    asset_group_list = {
+        "energyProviders": energyProviders,
+        "energyConversion": energyConversion,
+        "energyStorage": energyStorage,
+        "energyProduction": energyProduction,
+        "energyConsumption": energyConsumption,
+    }
 
-    for asset_group in asset_group_list:
+    for asset_group, asset_function in asset_group_list.items():
         logging.info("Pre-processing all assets in asset group %s.", asset_group)
         if asset_group != "energyProviders":
             # Populates dict_values['energyBusses'] with assets
             update_busses_in_out_direction(dict_values, dict_values[asset_group])
-        if asset_group == "energyConversion":
-            energyConversion(dict_values, asset_group)
-        elif asset_group == "energyProduction":
-            energyProduction(dict_values, asset_group)
-        elif asset_group == "energyStorage":
-            energyStorage(dict_values, asset_group)
-        elif asset_group == "energyProviders":
-            energyProviders(dict_values, asset_group)
-        elif asset_group == "energyConsumption":
-            energyConsumption(dict_values, asset_group)
-        else:
-            logging.error(
-                "Coding error. Asset group list item %s not known.", asset_group
-            )
+
+        asset_function(dict_values, asset_group)
+
         logging.debug(
             "Finished pre-processing all assets in asset group %s.", asset_group
         )
