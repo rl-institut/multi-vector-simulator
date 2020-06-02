@@ -11,7 +11,7 @@ from src.constants import (
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
 )
-from src.constants_json_strings import ENERGY_PRODUCTION
+from src.constants_json_strings import ENERGY_PRODUCTION, ENERGY_PROVIDERS
 
 numbers = [10, 15, 20, 25]
 
@@ -49,7 +49,7 @@ dict_renewable_energy_use[ENERGY_PRODUCTION]["DSO_consumption_period_2"]["total_
 dict_renewable_energy_use[ENERGY_PRODUCTION]["pv_plant_01"]["total_flow"][
     "value"
 ] = flow_medium
-dict_renewable_energy_use["energyProviders"]["DSO"]["renewable_share"][
+dict_renewable_energy_use[ENERGY_PROVIDERS]["DSO"]["renewable_share"][
     "value"
 ] = renewable_share_dso
 exp_res = flow_medium + (flow_small * 2 * renewable_share_dso)

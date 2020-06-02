@@ -6,6 +6,7 @@ from src.constants_json_strings import (
     ENERGY_CONSUMPTION,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
+    ENERGY_PROVIDERS,
     OEMOF_ASSET_TYPE,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
@@ -36,7 +37,7 @@ REQUIRED_CSV_FILES = (
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
-    "energyProviders",
+    ENERGY_PROVIDERS,
     ENERGY_CONSUMPTION,
 )
 
@@ -127,7 +128,7 @@ REQUIRED_CSV_PARAMETERS = {
         UNIT,
         "energyVector",
     ],
-    "energyProviders": [
+    ENERGY_PROVIDERS: [
         "energy_price",
         "feedin_tariff",
         "inflow_direction",

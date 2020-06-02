@@ -18,7 +18,12 @@ from src.constants import (
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
 )
-from src.constants_json_strings import VALUE, ENERGY_CONVERSION, ENERGY_PRODUCTION
+from src.constants_json_strings import (
+    VALUE,
+    ENERGY_CONVERSION,
+    ENERGY_PRODUCTION,
+    ENERGY_PROVIDERS,
+)
 
 
 def all_totals(dict_values):
@@ -99,19 +104,19 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
         }
     )
 
-    for DSO in dict_values["energyProviders"]:
-        sector = dict_values["energyProviders"][DSO]["energyVector"]
-        for DSO_source in dict_values["energyProviders"][DSO][
+    for DSO in dict_values[ENERGY_PROVIDERS]:
+        sector = dict_values[ENERGY_PROVIDERS][DSO]["energyVector"]
+        for DSO_source in dict_values[ENERGY_PROVIDERS][DSO][
             "connected_consumption_sources"
         ]:
             renewable_origin[sector] += (
                 dict_values[ENERGY_PRODUCTION][DSO_source]["total_flow"][VALUE]
-                * dict_values["energyProviders"][DSO]["renewable_share"][VALUE]
+                * dict_values[ENERGY_PROVIDERS][DSO]["renewable_share"][VALUE]
             )
             non_renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][DSO_source][
                 "total_flow"
             ][VALUE] * (
-                1 - dict_values["energyProviders"][DSO]["renewable_share"][VALUE]
+                1 - dict_values[ENERGY_PROVIDERS][DSO]["renewable_share"][VALUE]
             )
 
     dict_values[KPI_DICT][KPI_UNCOUPLED_DICT].update(

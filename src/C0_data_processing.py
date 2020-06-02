@@ -19,6 +19,7 @@ from src.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
     ENERGY_BUSSES,
+    ENERGY_PROVIDERS,
     OEMOF_SOURCE,
     OEMOF_SINK,
     OEMOF_ASSET_TYPE,
@@ -213,7 +214,7 @@ def process_all_assets(dict_values):
     # Attention! Order of asset_groups important. for energyProviders/energyConversion sinks and sources
     # might be defined that have to be processed in energyProduction/energyConsumption
     asset_group_list = {
-        "energyProviders": energyProviders,
+        ENERGY_PROVIDERS: energyProviders,
         ENERGY_CONVERSION: energyConversion,
         ENERGY_STORAGE: energyStorage,
         ENERGY_PRODUCTION: energyProduction,
@@ -222,7 +223,7 @@ def process_all_assets(dict_values):
 
     for asset_group, asset_function in asset_group_list.items():
         logging.info("Pre-processing all assets in asset group %s.", asset_group)
-        if asset_group != "energyProviders":
+        if asset_group != ENERGY_PROVIDERS:
             # Populates dict_values['energyBusses'] with assets
             update_busses_in_out_direction(dict_values, dict_values[asset_group])
 
@@ -556,7 +557,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
     :return:
     """
     # define to shorten code
-    number_of_pricing_periods = dict_values["energyProviders"][dso][
+    number_of_pricing_periods = dict_values[ENERGY_PROVIDERS][dso][
         "peak_demand_pricing_period"
     ]["value"]
 
@@ -580,7 +581,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         months_in_a_period,
     )
 
-    dict_asset = dict_values["energyProviders"][dso]
+    dict_asset = dict_values[ENERGY_PROVIDERS][dso]
     if isinstance(dict_asset["peak_demand_pricing"]["value"], dict):
         receive_timeseries_from_csv(
             dict_values,
@@ -589,7 +590,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
             "peak_demand_pricing",
         )
 
-    peak_demand_pricing = dict_values["energyProviders"][dso]["peak_demand_pricing"][
+    peak_demand_pricing = dict_values[ENERGY_PROVIDERS][dso]["peak_demand_pricing"][
         "value"
     ]
     if isinstance(peak_demand_pricing, float) or isinstance(peak_demand_pricing, int):
@@ -608,7 +609,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         )
 
     peak_demand_pricing = {
-        "value": dict_values["energyProviders"][dso]["peak_demand_pricing"]["value"],
+        "value": dict_values[ENERGY_PROVIDERS][dso]["peak_demand_pricing"]["value"],
         UNIT: "currency/kWpeak",
     }
 
@@ -621,8 +622,8 @@ def define_dso_sinks_and_sources(dict_values, dso):
         define_source(
             dict_values,
             dso + "_consumption",
-            dict_values["energyProviders"][dso]["energy_price"],
-            dict_values["energyProviders"][dso]["outflow_direction"],
+            dict_values[ENERGY_PROVIDERS][dso]["energy_price"],
+            dict_values[ENERGY_PROVIDERS][dso]["outflow_direction"],
             timeseries,
             opex_fix=peak_demand_pricing,
         )
@@ -647,8 +648,8 @@ def define_dso_sinks_and_sources(dict_values, dso):
             define_source(
                 dict_values,
                 dso_source_name,
-                dict_values["energyProviders"][dso]["energy_price"],
-                dict_values["energyProviders"][dso]["outflow_direction"],
+                dict_values[ENERGY_PROVIDERS][dso]["energy_price"],
+                dict_values[ENERGY_PROVIDERS][dso]["outflow_direction"],
                 timeseries,
                 opex_fix=peak_demand_pricing,
             )
@@ -657,12 +658,12 @@ def define_dso_sinks_and_sources(dict_values, dso):
     define_sink(
         dict_values,
         dso + "_feedin",
-        dict_values["energyProviders"][dso]["feedin_tariff"],
-        dict_values["energyProviders"][dso]["inflow_direction"],
+        dict_values[ENERGY_PROVIDERS][dso]["feedin_tariff"],
+        dict_values[ENERGY_PROVIDERS][dso]["inflow_direction"],
         capex_var={"value": 0, UNIT: "currency/kW"},
     )
 
-    dict_values["energyProviders"][dso].update(
+    dict_values[ENERGY_PROVIDERS][dso].update(
         {
             "connected_consumption_sources": list_of_dso_energyProduction_assets,
             "connected_feedin_sink": dso + "_feedin",

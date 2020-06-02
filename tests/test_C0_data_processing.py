@@ -2,7 +2,13 @@ import pandas as pd
 import pytest
 
 import src.C0_data_processing as C0
-from src.constants_json_strings import UNIT, PROJECT_DURATION, DISCOUNTFACTOR, TAX
+from src.constants_json_strings import (
+    UNIT,
+    ENERGY_PROVIDERS,
+    PROJECT_DURATION,
+    DISCOUNTFACTOR,
+    TAX,
+)
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 def test_retrieve_datetimeindex_for_simulation():
@@ -124,7 +130,7 @@ def test_determine_lifetime_opex_var_is_other():
 
 def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear():
     dict_test = {
-        "energyProviders": {"a_dso": {"peak_demand_pricing_period": {"value": 2}}},
+        ENERGY_PROVIDERS: {"a_dso": {"peak_demand_pricing_period": {"value": 2}}},
         "simulation_settings": {"evaluated_period": {"value": 30}},
     }
     with pytest.raises(ValueError):
