@@ -19,6 +19,9 @@ from src.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
     ENERGY_BUSSES,
+    OEMOF_SOURCE,
+    OEMOF_SINK,
+    OEMOF_ASSET_TYPE
 )
 
 
@@ -689,7 +692,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
         output_bus_name = bus_suffix(output_bus)
 
     source = {
-        "type_oemof": "source",
+        OEMOF_ASSET_TYPE: OEMOF_SOURCE,
         "label": asset_name + " source",
         "output_direction": output_bus,
         "output_bus_name": output_bus_name,
@@ -815,7 +818,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
 
     # create a dictionary for the sink
     sink = {
-        "type_oemof": "sink",
+        OEMOF_ASSET_TYPE: OEMOF_SINK,
         "label": asset_name + "_sink",
         "input_direction": input_bus,
         "input_bus_name": input_bus_name,

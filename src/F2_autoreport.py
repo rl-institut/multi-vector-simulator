@@ -32,6 +32,7 @@ from src.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
     ENERGY_PRODUCTION,
+    OEMOF_ASSET_TYPE,
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -211,7 +212,7 @@ def create_app(results_json):
         components.update(
             {
                 comps: [
-                    components1[comps]["type_oemof"],
+                    components1[comps][OEMOF_ASSET_TYPE],
                     components1[comps][UNIT],
                     components1[comps]["installedCap"]["value"],
                     components1[comps]["optimizeCap"]["value"],
@@ -222,7 +223,7 @@ def create_app(results_json):
         components.update(
             {
                 comps: [
-                    components2[comps]["type_oemof"],
+                    components2[comps][OEMOF_ASSET_TYPE],
                     components2[comps]["energyVector"],
                     components2[comps][UNIT],
                     components2[comps]["installedCap"]["value"],

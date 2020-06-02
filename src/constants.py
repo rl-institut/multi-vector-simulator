@@ -4,9 +4,9 @@ from src.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
-    ENERGY_BUSSES,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
+    OEMOF_ASSET_TYPE
 )
 
 
@@ -77,7 +77,7 @@ REQUIRED_CSV_PARAMETERS = {
         "file_name",
         "label",
         "type_asset",
-        "type_oemof",
+        OEMOF_ASSET_TYPE,
         "energyVector",
         "inflow_direction",
         UNIT,
@@ -95,7 +95,7 @@ REQUIRED_CSV_PARAMETERS = {
         "opex_var",
         "optimizeCap",
         "outflow_direction",
-        "type_oemof",
+        OEMOF_ASSET_TYPE,
         "energyVector",
         UNIT,
     ],
@@ -104,7 +104,7 @@ REQUIRED_CSV_PARAMETERS = {
         "label",
         "optimizeCap",
         "outflow_direction",
-        "type_oemof",
+        OEMOF_ASSET_TYPE,
         "storage_filename",
         "energyVector",
     ],
@@ -120,7 +120,7 @@ REQUIRED_CSV_PARAMETERS = {
         "opex_var",
         "optimizeCap",
         "outflow_direction",
-        "type_oemof",
+        OEMOF_ASSET_TYPE,
         UNIT,
         "energyVector",
     ],
@@ -133,7 +133,7 @@ REQUIRED_CSV_PARAMETERS = {
         "outflow_direction",
         "peak_demand_pricing",
         "peak_demand_pricing_period",
-        "type_oemof",
+        OEMOF_ASSET_TYPE,
         "energyVector",
     ],
     "fixcost": [
