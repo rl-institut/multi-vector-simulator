@@ -11,7 +11,12 @@ logging.getLogger("matplotlib.font_manager").disabled = True
 from src.constants import INPUTS_COPY, TIME_SERIES
 from src.constants import PATHS_TO_PLOTS, PLOTS_DEMANDS, PLOTS_RESOURCES
 
-from src.constants_json_strings import UNIT, VALUE, ENERGY_CONVERSION
+from src.constants_json_strings import (
+    UNIT,
+    VALUE,
+    ENERGY_CONVERSION,
+    ENERGY_CONSUMPTION,
+)
 
 
 import src.C1_verification as verify
@@ -203,7 +208,7 @@ def process_all_assets(dict_values):
         ENERGY_CONVERSION: energyConversion,
         "energyStorage": energyStorage,
         "energyProduction": energyProduction,
-        "energyConsumption": energyConsumption,
+        ENERGY_CONSUMPTION: energyConsumption,
     }
 
     for asset_group, asset_function in asset_group_list.items():
@@ -884,7 +889,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         sink.update({"optimizeCap": {"value": False, UNIT: "bool"}})
 
     # update dictionary
-    dict_values["energyConsumption"].update({asset_name: sink})
+    dict_values[ENERGY_CONSUMPTION].update({asset_name: sink})
 
     # If multiple input busses exist
     if isinstance(input_bus, list):

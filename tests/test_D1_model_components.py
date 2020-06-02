@@ -9,7 +9,7 @@ from pandas.util.testing import assert_series_equal
 # internal imports
 import src.D1_model_components as D1
 from tests.constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
-from src.constants_json_strings import UNIT, ENERGY_CONVERSION
+from src.constants_json_strings import UNIT, ENERGY_CONVERSION, ENERGY_CONSUMPTION
 
 D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D1.json",)
 
@@ -273,7 +273,7 @@ class TestSinkComponent:
                 )
 
     def test_sink_non_dispatchable_single_input_bus(self):
-        dict_asset = self.dict_values["energyConsumption"]["non_dispatchable_single"]
+        dict_asset = self.dict_values[ENERGY_CONSUMPTION]["non_dispatchable_single"]
         dict_asset["timeseries"] = self.time_series
 
         D1.sink_non_dispatchable(
@@ -288,7 +288,7 @@ class TestSinkComponent:
         )
 
     def test_sink_non_dispatchable_multiple_input_busses(self):
-        dict_asset = self.dict_values["energyConsumption"]["non_dispatchable_multiple"]
+        dict_asset = self.dict_values[ENERGY_CONSUMPTION]["non_dispatchable_multiple"]
         dict_asset["timeseries"] = self.time_series
 
         D1.sink_non_dispatchable(
@@ -303,7 +303,7 @@ class TestSinkComponent:
         )
 
     def test_sink_dispatchable_single_input_bus(self):
-        dict_asset = self.dict_values["energyConsumption"]["dispatchable_single"]
+        dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_single"]
 
         D1.sink_dispatchable(
             model=self.model,
@@ -317,7 +317,7 @@ class TestSinkComponent:
         )
 
     def test_sink_dispatchable_multiple_input_busses(self):
-        dict_asset = self.dict_values["energyConsumption"]["dispatchable_multiple"]
+        dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_multiple"]
 
         D1.sink_dispatchable(
             model=self.model,

@@ -83,12 +83,12 @@ def evaluate_dict(dict_values, path_pdf_report=None):
         )
 
         # Add demands (exclude excess)
-        for asset in dict_values["energyConsumption"]:
+        for asset in dict_values[ENERGY_CONSUMPTION]:
             # key "energyVector" not included in excess sinks, ie. this filters them out from demand.
-            if "energyVector" in dict_values["energyConsumption"][asset].keys() \
-                    and dict_values["energyConsumption"][asset]["energyVector"] == sector_name:
+            if "energyVector" in dict_values[ENERGY_CONSUMPTION][asset].keys() \
+                    and dict_values[ENERGY_CONSUMPTION][asset]["energyVector"] == sector_name:
                 total_demand = (
-                    total_demand + dict_values["energyConsumption"][asset]["flow"]
+                    total_demand + dict_values[ENERGY_CONSUMPTION][asset]["flow"]
                 )
 
         # todo this should actually link to C0: helpers.bus_suffix

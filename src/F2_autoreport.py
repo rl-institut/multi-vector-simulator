@@ -27,8 +27,7 @@ from src.constants import (
     PLOTS_COSTS,
 )
 from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
-
-from src.constants_json_strings import UNIT, ENERGY_CONVERSION
+from src.constants_json_strings import UNIT, ENERGY_CONVERSION, ENERGY_CONSUMPTION
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
@@ -163,7 +162,7 @@ def create_app(results_json):
         sec_list += "\n" + f"\u2022 {sec.upper()}"
 
     # Creating a dataframe for the demands
-    demands = results_json["energyConsumption"]
+    demands = results_json[ENERGY_CONSUMPTION]
 
     del demands["DSO_feedin"]
     del demands["Electricity excess"]

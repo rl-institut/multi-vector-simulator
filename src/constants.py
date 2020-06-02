@@ -23,11 +23,11 @@ REQUIRED_CSV_FILES = (
     "simulation_settings",
     "project_data",
     "economic_data",
-    ENERGY_CONVERSION ,
+    ENERGY_CONVERSION,
     "energyProduction",
     "energyStorage",
     "energyProviders",
-    "energyConsumption",
+    ENERGY_CONSUMPTION,
 )
 
 # allowed symbols for separating values in .csv files
@@ -65,7 +65,7 @@ DEFAULT_MAIN_KWARGS = dict(
 # list of csv filename which must be present within the CSV_ELEMENTS folder with the parameters
 # associated to each of these filenames
 REQUIRED_CSV_PARAMETERS = {
-    "energyConsumption": [
+    ENERGY_CONSUMPTION: [
         "dsm",
         "file_name",
         "label",
@@ -75,7 +75,7 @@ REQUIRED_CSV_PARAMETERS = {
         "inflow_direction",
         UNIT,
     ],
-    ENERGY_CONVERSION : [
+    ENERGY_CONVERSION: [
         "age_installed",
         "capex_fix",
         "capex_var",
