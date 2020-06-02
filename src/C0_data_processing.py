@@ -37,6 +37,9 @@ from src.constants_json_strings import (
     LABEL,
     CURR,
     SECTORS,
+    INFLOW_DIRECTION,
+    OUTFLOW_DIRECTION,
+    ENERGY_VECTOR,
 )
 
 
@@ -115,9 +118,9 @@ def identify_energy_vectors(dict_values):
         for level2 in dict_values[level1].keys():
             if (
                 isinstance(dict_values[level1][level2], dict)
-                and "energyVector" in dict_values[level1][level2].keys()
+                and ENERGY_VECTOR in dict_values[level1][level2].keys()
             ):
-                energy_vector_name = dict_values[level1][level2]["energyVector"]
+                energy_vector_name = dict_values[level1][level2][ENERGY_VECTOR]
                 if energy_vector_name not in dict_of_sectors.keys():
                     dict_of_sectors.update(
                         {energy_vector_name: energy_vector_name.replace("_", " ")}
@@ -356,16 +359,12 @@ def energyStorage(dict_values, group):
 
         # define input and output bus names
         dict_values[group][asset].update(
-            {
-                "input_bus_name": bus_suffix(
-                    dict_values[group][asset]["inflow_direction"]
-                )
-            }
+            {"input_bus_name": bus_suffix(dict_values[group][asset][INFLOW_DIRECTION])}
         )
         dict_values[group][asset].update(
             {
                 "output_bus_name": bus_suffix(
-                    dict_values[group][asset]["outflow_direction"]
+                    dict_values[group][asset][OUTFLOW_DIRECTION]
                 )
             }
         )
@@ -410,11 +409,7 @@ def energyConsumption(dict_values, group):
         )
         if "input_bus_name" not in dict_values[group][asset]:
             dict_values[group][asset].update(
-                {
-                    "input_bus_name": bus_suffix(
-                        dict_values[group][asset]["energyVector"]
-                    )
-                }
+                {"input_bus_name": bus_suffix(dict_values[group][asset][ENERGY_VECTOR])}
             )
 
         if "file_name" in dict_values[group][asset]:
@@ -503,8 +498,8 @@ def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
     # checks for all assets of an group
     for asset in asset_group:
         # the bus that is connected to the inflow
-        if "inflow_direction" in asset_group[asset]:
-            bus = asset_group[asset]["inflow_direction"]
+        if INFLOW_DIRECTION in asset_group[asset]:
+            bus = asset_group[asset][INFLOW_DIRECTION]
             if isinstance(bus, list):
                 bus_list = []
                 for subbus in bus:
@@ -515,8 +510,8 @@ def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
                 asset_group[asset].update({"input_bus_name": bus_suffix(bus)})
                 update_bus(dict_values, bus, asset, asset_group[asset][LABEL])
         # the bus that is connected to the outflow
-        if "outflow_direction" in asset_group[asset]:
-            bus = asset_group[asset]["outflow_direction"]
+        if OUTFLOW_DIRECTION in asset_group[asset]:
+            bus = asset_group[asset][OUTFLOW_DIRECTION]
             if isinstance(bus, list):
                 bus_list = []
                 for subbus in bus:
@@ -632,7 +627,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
             dict_values,
             dso + "_consumption",
             dict_values[ENERGY_PROVIDERS][dso]["energy_price"],
-            dict_values[ENERGY_PROVIDERS][dso]["outflow_direction"],
+            dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION],
             timeseries,
             opex_fix=peak_demand_pricing,
         )
@@ -657,7 +652,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
                 dict_values,
                 dso_source_name,
                 dict_values[ENERGY_PROVIDERS][dso]["energy_price"],
-                dict_values[ENERGY_PROVIDERS][dso]["outflow_direction"],
+                dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION],
                 timeseries,
                 opex_fix=peak_demand_pricing,
             )
@@ -667,7 +662,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         dict_values,
         dso + "_feedin",
         dict_values[ENERGY_PROVIDERS][dso]["feedin_tariff"],
-        dict_values[ENERGY_PROVIDERS][dso]["inflow_direction"],
+        dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
         capex_var={"value": 0, UNIT: "currency/kW"},
     )
 

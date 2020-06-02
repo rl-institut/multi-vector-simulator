@@ -19,6 +19,9 @@ ECONOMIC_DATA = "economic_data"
 PROJECT_DATA = "project_data"
 # Parameters
 SECTORS = "sectors"
+OUTFLOW_DIRECTION = "outflow_direction"
+INFLOW_DIRECTION = "inflow_direction"
+ENERGY_VECTOR = "energyVector"
 OEMOF_ASSET_TYPE = "type_oemof"
 # Allowed types
 OEMOF_TRANSFORMER = "transformer"

@@ -15,6 +15,7 @@ from src.constants import (
     SIMULATION_SETTINGS,
     PROJECT_DATA,
     SECTORS,
+    ENERGY_VECTOR,
 )
 
 r"""
@@ -93,8 +94,8 @@ def evaluate_dict(dict_values, path_pdf_report=None):
         # Add demands (exclude excess)
         for asset in dict_values[ENERGY_CONSUMPTION]:
             # key "energyVector" not included in excess sinks, ie. this filters them out from demand.
-            if "energyVector" in dict_values[ENERGY_CONSUMPTION][asset].keys() \
-                    and dict_values[ENERGY_CONSUMPTION][asset]["energyVector"] == sector_name:
+            if ENERGY_VECTOR in dict_values[ENERGY_CONSUMPTION][asset].keys() \
+                    and dict_values[ENERGY_CONSUMPTION][asset][ENERGY_VECTOR] == sector_name:
                 total_demand = (
                     total_demand + dict_values[ENERGY_CONSUMPTION][asset]["flow"]
                 )

@@ -41,6 +41,8 @@ from src.constants_json_strings import (
     OEMOF_ASSET_TYPE,
     LABEL,
     SECTORS,
+    VALUE,
+    ENERGY_VECTOR,
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -232,7 +234,7 @@ def create_app(results_json):
             {
                 comps: [
                     components2[comps][OEMOF_ASSET_TYPE],
-                    components2[comps]["energyVector"],
+                    components2[comps][ENERGY_VECTOR],
                     components2[comps][UNIT],
                     components2[comps]["installedCap"]["value"],
                     components2[comps]["optimizeCap"]["value"],

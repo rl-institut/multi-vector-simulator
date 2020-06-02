@@ -25,6 +25,7 @@ from src.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_PROVIDERS,
     SECTORS,
+    ENERGY_VECTOR,
 )
 
 
@@ -89,7 +90,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
 
     for asset in dict_values[ENERGY_PRODUCTION]:
         if "renewableAsset" in dict_values[ENERGY_PRODUCTION][asset]:
-            sector = dict_values[ENERGY_PRODUCTION][asset]["energyVector"]
+            sector = dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
             if dict_values[ENERGY_PRODUCTION][asset]["renewableAsset"][VALUE] is True:
                 renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][asset][
                     "total_flow"
@@ -107,7 +108,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
     )
 
     for DSO in dict_values[ENERGY_PROVIDERS]:
-        sector = dict_values[ENERGY_PROVIDERS][DSO]["energyVector"]
+        sector = dict_values[ENERGY_PROVIDERS][DSO][ENERGY_VECTOR]
         for DSO_source in dict_values[ENERGY_PROVIDERS][DSO][
             "connected_consumption_sources"
         ]:
@@ -239,7 +240,7 @@ def assert_aggregated_flows_of_energy_conversion_equivalent(dict_values):
     """
     total_flow_of_energy_conversion_equivalent = 0
     for asset in dict_values[ENERGY_CONVERSION]:
-        sector = dict_values[ENERGY_CONVERSION][asset]["energyVector"]
+        sector = dict_values[ENERGY_CONVERSION][asset][ENERGY_VECTOR]
         total_flow_of_energy_conversion_equivalent += (
             dict_values[ENERGY_CONVERSION][asset]["total_aggregated_flow"]
             * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector][VALUE]
