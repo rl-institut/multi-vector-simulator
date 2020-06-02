@@ -24,7 +24,7 @@ REQUIRED_CSV_FILES = (
     "project_data",
     "economic_data",
     ENERGY_CONVERSION,
-    "energyProduction",
+    ENERGY_PRODUCTION,
     "energyStorage",
     "energyProviders",
     ENERGY_CONSUMPTION,
@@ -101,7 +101,7 @@ REQUIRED_CSV_PARAMETERS = {
         "storage_filename",
         "energyVector",
     ],
-    "energyProduction": [
+    ENERGY_PRODUCTION: [
         "age_installed",
         "capex_fix",
         "capex_var",

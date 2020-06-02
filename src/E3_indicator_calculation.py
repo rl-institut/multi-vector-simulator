@@ -18,7 +18,7 @@ from src.constants import (
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
 )
-from src.constants_json_strings import VALUE, ENERGY_CONVERSION
+from src.constants_json_strings import VALUE, ENERGY_CONVERSION, ENERGY_PRODUCTION
 
 
 def all_totals(dict_values):
@@ -80,15 +80,15 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
         renewable_origin.update({sector: 0})
         non_renewable_origin.update({sector: 0})
 
-    for asset in dict_values["energyProduction"]:
-        if "renewableAsset" in dict_values["energyProduction"][asset]:
-            sector = dict_values["energyProduction"][asset]["energyVector"]
-            if dict_values["energyProduction"][asset]["renewableAsset"][VALUE] is True:
-                renewable_origin[sector] += dict_values["energyProduction"][asset][
+    for asset in dict_values[ENERGY_PRODUCTION]:
+        if "renewableAsset" in dict_values[ENERGY_PRODUCTION][asset]:
+            sector = dict_values[ENERGY_PRODUCTION][asset]["energyVector"]
+            if dict_values[ENERGY_PRODUCTION][asset]["renewableAsset"][VALUE] is True:
+                renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][asset][
                     "total_flow"
                 ]["value"]
             else:
-                non_renewable_origin[sector] += dict_values["energyProduction"][asset][
+                non_renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][asset][
                     "total_flow"
                 ]["value"]
 
@@ -105,10 +105,10 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
             "connected_consumption_sources"
         ]:
             renewable_origin[sector] += (
-                dict_values["energyProduction"][DSO_source]["total_flow"]["value"]
+                dict_values[ENERGY_PRODUCTION][DSO_source]["total_flow"]["value"]
                 * dict_values["energyProviders"][DSO]["renewable_share"]["value"]
             )
-            non_renewable_origin[sector] += dict_values["energyProduction"][DSO_source][
+            non_renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][DSO_source][
                 "total_flow"
             ]["value"] * (
                 1 - dict_values["energyProviders"][DSO]["renewable_share"]["value"]
@@ -286,10 +286,10 @@ def equation_onsite_energy_matching():
 
 def equation_co2_emissions(dict_values):
     co2_emissions = 0
-    for asset in dict_values["energyProduction"]:
+    for asset in dict_values[ENERGY_PRODUCTION]:
         co2_emissions += (
-            dict_values["energyProduction"][asset]["total_aggregated_flow"]["value"]
-            * dict_values["energyProduction"][asset]["emissionFactor"]["value"]
+            dict_values[ENERGY_PRODUCTION][asset]["total_aggregated_flow"]["value"]
+            * dict_values[ENERGY_PRODUCTION][asset]["emissionFactor"]["value"]
         )
     return co2_emissions
 

@@ -16,7 +16,8 @@ from src.constants_json_strings import (
     VALUE,
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
-ENERGY_BUSSES,
+    ENERGY_PRODUCTION,
+    ENERGY_BUSSES,
 )
 
 
@@ -208,7 +209,7 @@ def process_all_assets(dict_values):
         "energyProviders": energyProviders,
         ENERGY_CONVERSION: energyConversion,
         "energyStorage": energyStorage,
-        "energyProduction": energyProduction,
+        ENERGY_PRODUCTION: energyProduction,
         ENERGY_CONSUMPTION: energyConsumption,
     }
 
@@ -779,7 +780,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     source.update({"maximumCap": {"value": None, UNIT: "kWp"}})
 
     # update dictionary
-    dict_values["energyProduction"].update({asset_name: source})
+    dict_values[ENERGY_PRODUCTION].update({asset_name: source})
 
     # create new input bus if non-existent before. Check if multiple busses are provided
     if isinstance(output_bus, list):

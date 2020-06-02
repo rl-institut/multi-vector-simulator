@@ -27,7 +27,12 @@ from src.constants import (
     PLOTS_COSTS,
 )
 from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
-from src.constants_json_strings import UNIT, ENERGY_CONVERSION, ENERGY_CONSUMPTION
+from src.constants_json_strings import (
+    UNIT,
+    ENERGY_CONVERSION,
+    ENERGY_CONSUMPTION,
+    ENERGY_PRODUCTION,
+)
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
@@ -194,7 +199,7 @@ def create_app(results_json):
 
     # Creating a DF for the components table
 
-    components1 = results_json["energyProduction"]
+    components1 = results_json[ENERGY_PRODUCTION]
     components2 = results_json[ENERGY_CONVERSION]
 
     comp1_keys = list(components1.keys())

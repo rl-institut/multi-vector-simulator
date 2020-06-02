@@ -3,7 +3,13 @@ import logging
 import oemof.outputlib as outputlib
 import pandas as pd
 
-from src.constants_json_strings import UNIT, ENERGY_CONVERSION, ENERGY_CONSUMPTION, ENERGY_BUSSES
+from src.constants_json_strings import (
+    UNIT,
+    ENERGY_CONVERSION,
+    ENERGY_CONSUMPTION,
+    ENERGY_PRODUCTION,
+    ENERGY_BUSSES,
+)
 
 import src.E1_process_results as process_results
 import src.E2_economics as economics
@@ -140,7 +146,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         )
         store_result_matrix(dict_values["kpi"], dict_values[ENERGY_CONVERSION][asset])
 
-    for group in ["energyProduction", ENERGY_CONSUMPTION]:
+    for group in [ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:
             process_results.get_results(
                 dict_values["simulation_settings"], bus_data, dict_values[group][asset],
