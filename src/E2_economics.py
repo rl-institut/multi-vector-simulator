@@ -1,5 +1,5 @@
 import logging
-from src.constants_json_strings import (UNIT)
+from src.constants_json_strings import (UNIT, VALUE)
 
 r"""
 Module E3 economic processing
@@ -41,13 +41,13 @@ def get_costs(dict_asset, economic_data):
                 dict_asset, ["lifetime_capex_var", "capex_fix", "optimizedAddCap"]
             )
             == True
-            and dict_asset["optimizedAddCap"]["value"] > 0
+            and dict_asset["optimizedAddCap"][VALUE] > 0
         ):
             # total investments including fix prices
             costs_investment = (
-                dict_asset["optimizedAddCap"]["value"]
-                * dict_asset["lifetime_capex_var"]["value"]
-                + dict_asset["capex_fix"]["value"]
+                dict_asset["optimizedAddCap"][VALUE]
+                * dict_asset["lifetime_capex_var"][VALUE]
+                + dict_asset["capex_fix"][VALUE]
             )
             costs_total = add_costs_and_total(
                 dict_asset, "costs_investment", costs_investment, costs_total
@@ -56,13 +56,13 @@ def get_costs(dict_asset, economic_data):
         if (
             all_list_in_dict(dict_asset, ["capex_var", "capex_fix", "optimizedAddCap"])
             == True
-            and dict_asset["optimizedAddCap"]["value"] > 0
+            and dict_asset["optimizedAddCap"][VALUE] > 0
         ):
             # investments including fix prices, only upfront costs at t=0
             costs_upfront = (
-                dict_asset["optimizedAddCap"]["value"]
-                + dict_asset["capex_var"]["value"]
-                + dict_asset["capex_fix"]["value"]
+                dict_asset["optimizedAddCap"][VALUE]
+                + dict_asset["capex_var"][VALUE]
+                + dict_asset["capex_fix"][VALUE]
             )
             costs_total = add_costs_and_total(
                 dict_asset, "costs_upfront", costs_upfront, costs_total
@@ -73,8 +73,8 @@ def get_costs(dict_asset, economic_data):
             == True
         ):
             costs_opex_var = (
-                dict_asset["lifetime_opex_var"]["value"]
-                * dict_asset["annual_total_flow"]["value"]
+                dict_asset["lifetime_opex_var"][VALUE]
+                * dict_asset["annual_total_flow"][VALUE]
             )
             costs_total = add_costs_and_total(
                 dict_asset, "costs_opex_var", costs_opex_var, costs_total
@@ -86,7 +86,7 @@ def get_costs(dict_asset, economic_data):
         # todo actually, price is probably not the label, but opex_var
         if all_list_in_dict(dict_asset, ["price", "annual_total_flow"]) == True:
             costs_energy = (
-                dict_asset["price"]["value"] * dict_asset["annual_total_flow"]["value"]
+                dict_asset["price"][VALUE] * dict_asset["annual_total_flow"][VALUE]
             )
             cost_om = add_costs_and_total(
                 dict_asset, "costs_energy", costs_energy, cost_om
@@ -104,11 +104,11 @@ def get_costs(dict_asset, economic_data):
             )
             == True
         ):
-            cap = dict_asset["installedCap"]["value"]
+            cap = dict_asset["installedCap"][VALUE]
             if "optimizedAddCap" in dict_asset:
-                cap += dict_asset["optimizedAddCap"]["value"]
+                cap += dict_asset["optimizedAddCap"][VALUE]
 
-            costs_opex_fix = dict_asset["lifetime_opex_fix"]["value"] * cap
+            costs_opex_fix = dict_asset["lifetime_opex_fix"][VALUE] * cap
             costs_total = add_costs_and_total(
                 dict_asset, "costs_opex_fix", costs_opex_fix, costs_total
             )
@@ -118,21 +118,21 @@ def get_costs(dict_asset, economic_data):
 
         dict_asset.update(
             {
-                "costs_total": {"value": costs_total, UNIT: "currency"},
-                "costs_om": {"value": cost_om, UNIT: "currency"},
+                "costs_total": {VALUE: costs_total, UNIT: "currency"},
+                "costs_om": {VALUE: cost_om, UNIT: "currency"},
             }
         )
 
         dict_asset.update(
             {
                 "annuity_total": {
-                    "value": dict_asset["costs_total"]["value"]
-                    * economic_data["crf"]["value"],
+                    VALUE: dict_asset["costs_total"][VALUE]
+                    * economic_data["crf"][VALUE],
                     UNIT: "currency/year",
                 },
                 "annuity_om": {
-                    "value": dict_asset["costs_om"]["value"]
-                    * economic_data["crf"]["value"],
+                    VALUE: dict_asset["costs_om"][VALUE]
+                    * economic_data["crf"][VALUE],
                     UNIT: "currency/year",
                 },
             }
@@ -142,7 +142,7 @@ def get_costs(dict_asset, economic_data):
 
 def add_costs_and_total(dict_asset, name, value, total_costs):
     total_costs += value
-    dict_asset.update({name: {"value": value}})
+    dict_asset.update({name: {VALUE: value}})
     return total_costs
 
 

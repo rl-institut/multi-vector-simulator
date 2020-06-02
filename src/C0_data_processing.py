@@ -11,7 +11,7 @@ logging.getLogger("matplotlib.font_manager").disabled = True
 from src.constants import INPUTS_COPY, TIME_SERIES
 from src.constants import PATHS_TO_PLOTS, PLOTS_DEMANDS, PLOTS_RESOURCES
 
-from src.constants_json_strings import (UNIT)
+from src.constants_json_strings import (UNIT, VALUE)
 
 
 import src.C1_verification as verify
@@ -121,7 +121,7 @@ def simulation_settings(simulation_settings):
         {
             "end_date": simulation_settings["start_date"]
             + pd.DateOffset(
-                days=simulation_settings["evaluated_period"]["value"], hours=-1
+                days=simulation_settings["evaluated_period"][VALUE], hours=-1
             )
         }
     )
@@ -131,7 +131,7 @@ def simulation_settings(simulation_settings):
             "time_index": pd.date_range(
                 start=simulation_settings["start_date"],
                 end=simulation_settings["end_date"],
-                freq=str(simulation_settings["timestep"]["value"]) + "min",
+                freq=str(simulation_settings["timestep"][VALUE]) + "min",
             )
         }
     )

@@ -18,7 +18,7 @@ from src.constants import (
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
 )
-
+from src.constants_json_strings import VALUE
 
 def all_totals(dict_values):
     """Calculate sum of all cost parameters
@@ -83,7 +83,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
         if "renewableAsset" in dict_values["energyProduction"][asset]:
             sector = dict_values["energyProduction"][asset]["energyVector"]
             if (
-                dict_values["energyProduction"][asset]["renewableAsset"]["value"]
+                dict_values["energyProduction"][asset]["renewableAsset"][VALUE]
                 is True
             ):
                 renewable_origin[sector] += dict_values["energyProduction"][asset][
