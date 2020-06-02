@@ -16,6 +16,7 @@ from src.constants_json_strings import (
     VALUE,
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
+ENERGY_BUSSES,
 )
 
 
@@ -462,11 +463,11 @@ def define_busses(dict_values):
     :return:
     """
     # create new group of assets: busses
-    dict_values.update({"energyBusses": {}})
+    dict_values.update({ENERGY_BUSSES: {}})
 
     # defines energy busses of sectors
     for sector in dict_values["project_data"]["sectors"]:
-        dict_values["energyBusses"].update(
+        dict_values[ENERGY_BUSSES].update(
             {bus_suffix(dict_values["project_data"]["sectors"][sector]): {}}
         )
     # defines busses accessed by conversion assets
@@ -532,12 +533,12 @@ def update_bus(dict_values, bus, asset, asset_label):
     :return:
     """
     bus_label = bus_suffix(bus)
-    if bus_label not in dict_values["energyBusses"]:
+    if bus_label not in dict_values[ENERGY_BUSSES]:
         # add bus to asset group energyBusses
-        dict_values["energyBusses"].update({bus_label: {}})
+        dict_values[ENERGY_BUSSES].update({bus_label: {}})
 
     # Asset should added to respective bus
-    dict_values["energyBusses"][bus_label].update({asset: asset_label})
+    dict_values[ENERGY_BUSSES][bus_label].update({asset: asset_label})
     logging.debug("Added asset %s to bus %s", asset_label, bus_label)
     return
 
