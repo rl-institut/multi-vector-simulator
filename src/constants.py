@@ -6,7 +6,7 @@ from src.constants_json_strings import (
     ENERGY_CONSUMPTION,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
-    OEMOF_ASSET_TYPE
+    OEMOF_ASSET_TYPE,
 )
 
 

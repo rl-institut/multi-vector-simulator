@@ -21,7 +21,7 @@ from src.constants_json_strings import (
     ENERGY_BUSSES,
     OEMOF_SOURCE,
     OEMOF_SINK,
-    OEMOF_ASSET_TYPE
+    OEMOF_ASSET_TYPE,
 )
 
 

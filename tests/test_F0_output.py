@@ -21,6 +21,7 @@ import pytest
 import src.A0_initialization as initializing
 import src.B0_data_input_json as B0
 import src.F0_output as F0
+from src.constants_json_strings import LABEL
 from mvs_eland_tool import main
 from .constants import (
     EXECUTE_TESTS_ON,
@@ -95,7 +96,7 @@ class TestFileCreation:
             },
             "kpi": {
                 "scalar_matrix": pd.DataFrame(
-                    {"label": ["asset_a", "asset_b"], "optimizedAddCap": [0, 0]}
+                    {LABEL: ["asset_a", "asset_b"], "optimizedAddCap": [0, 0]}
                 )
             },
         }
@@ -113,7 +114,7 @@ class TestFileCreation:
             },
             "kpi": {
                 "scalar_matrix": pd.DataFrame(
-                    {"label": ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
+                    {LABEL: ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
                 )
             },
         }
