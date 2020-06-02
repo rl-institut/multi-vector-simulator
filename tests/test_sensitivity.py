@@ -5,12 +5,13 @@ What should differ between the different functions is the input file
 
 """
 import copy
+import json
 import logging
 import os
 
 from mvs_eland_tool import run_simulation
-from src.B0_data_input_json import load_json
-from tests.constants import JSON_PATH, TEST_REPO_PATH
+from src.B0_data_input_json import load_json, convert_special_types
+from tests.constants import TEST_REPO_PATH
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs_simulation")
 
@@ -110,7 +111,7 @@ def split_nested_path(path):
     else:
         raise TypeError("The argument path is not str type")
 
-    return keys_list
+    return tuple(keys_list)
 
 
 def single_param_variation_analysis(
@@ -127,10 +128,10 @@ def single_param_variation_analysis(
         succession of keys which lead the value of the parameter to vary in the json_input dict
         potentially nested structure. The order of keys is to be read from left to right. In the
         case of str, each key should be separated by a `.` or a `,`.
-    json_path_to_output_value: tuple or str, optional
-        succession of keys which lead the value of an output parameter of interest in the json
-        dict of the simulation's output. The order of keys is to be read from left to right. In the
-        case of str, each key should be separated by a `.` or a `,`.
+    json_path_to_output_value: tuple of tuple or str, optional
+        collection of succession of keys which lead the value of an output parameter of interest in
+        the json dict of the simulation's output. The order of keys is to be read from left to
+        right. In the case of str, each key should be separated by a `.` or a `,`.
 
     Returns
     -------
@@ -158,21 +159,40 @@ def single_param_variation_analysis(
             modified_input = set_nested_value(
                 simulation_input, param_val, param_path_tuple
             )
-            # run a simulation with next value of the variable parameter
-            sim_output_json = run_simulation(modified_input, display_output="error")
+            # run a simulation with next value of the variable parameter and convert the result to
+            # mvs special json type
+            sim_output_json = convert_special_types(
+                json.loads(run_simulation(modified_input, display_output="error"))
+            )
 
             if json_path_to_output_value is None:
                 answer.append(sim_output_json)
             else:
-                # TODO specific output params
-                pass
+                output_parameters = {}
+                # for each of the output parameter path, add the value located under this path in
+                # the final json dict, that could also be applied to the full json dict as
+                # post-processing
+                for output_param in json_path_to_output_value:
+                    output_param = split_nested_path(output_param)
+                    output_parameters[output_param] = get_nested_value(
+                        sim_output_json, output_param
+                    )
+                answer.append(output_parameters)
 
     return {"parameters": param_values, "outputs": answer}
 
 
 if __name__ == "__main__":
-    single_param_variation_analysis(
-        [1, 2, 3, 4, 5, 6, 7],
-        os.path.join(TEST_REPO_PATH, "benchmark_test_inputs", "rerun", "mvs_config.json"),
-        ("simulation_settings", "evaluated_period", "value"),
+    print(
+        single_param_variation_analysis(
+            [1, 2, 3],
+            os.path.join(
+                TEST_REPO_PATH, "benchmark_test_inputs", "rerun", "mvs_config.json"
+            ),
+            ("simulation_settings", "evaluated_period", "value"),
+            json_path_to_output_value=(
+                ("energyStorage", "storage_01", "input power", "flow"),
+                ("kpi", "KPI individual sectors", "Renewable share", "Electricity"),
+            ),
+        )
     )
