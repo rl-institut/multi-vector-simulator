@@ -7,6 +7,9 @@ from src.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
     OEMOF_ASSET_TYPE,
+    PROJECT_DURATION,
+    DISCOUNTFACTOR,
+    TAX,
 )
 
 
@@ -166,13 +169,7 @@ REQUIRED_CSV_PARAMETERS = {
         "scenario_id",
         "scenario_name",
     ],
-    "economic_data": [
-        "currency",
-        "discount_factor",
-        "label",
-        "project_duration",
-        "tax",
-    ],
+    "economic_data": ["currency", DISCOUNTFACTOR, "label", PROJECT_DURATION, TAX,],
 }
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder

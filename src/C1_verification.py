@@ -12,7 +12,7 @@ import logging
 import os
 
 import pandas as pd
-
+from src.constants_json_strings import PROJECT_DURATION, DISCOUNTFACTOR, TAX
 
 # web-application: valid input directly connected to cell-input
 
@@ -145,9 +145,9 @@ def all_valid_intervals(name, value, title):
         "capex_var": [0, "any"],
         "opex_fix": [0, "any"],
         "opex_var": [0, "any"],
-        "discount_factor": [0, 1],
-        "project_duration": ["largerzero", "any"],
-        "tax": [0, 1],
+        DISCOUNTFACTOR: [0, 1],
+        PROJECT_DURATION: ["largerzero", "any"],
+        TAX: [0, 1],
     }
 
     if name in valid_type_int:

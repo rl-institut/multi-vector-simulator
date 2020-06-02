@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 
 import src.C0_data_processing as C0
-from src.constants_json_strings import UNIT
+from src.constants_json_strings import UNIT, PROJECT_DURATION, DISCOUNTFACTOR, TAX
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 def test_retrieve_datetimeindex_for_simulation():
@@ -21,8 +21,8 @@ def test_retrieve_datetimeindex_for_simulation():
 
 def test_adding_economic_parameters_C2():
     economic_parameters = {
-        "project_duration": {"value": 20},
-        "discount_factor": {"value": 0.15},
+        PROJECT_DURATION: {"value": 20},
+        DISCOUNTFACTOR: {"value": 0.15},
     }
     C0.economic_parameters(economic_parameters)
     # the actual value of the annuity factor should have been checked in C2
@@ -47,11 +47,11 @@ def test_complete_missing_cost_data_capex_var():
 settings = {"evaluated_period": {"value": 365}}
 
 economic_data = {
-    "project_duration": {"value": 20},
+    PROJECT_DURATION: {"value": 20},
     "annuity_factor": {"value": 1},
     "crf": {"value": 1},
-    "discount_factor": {"value": 0},
-    "tax": {"value": 0},
+    DISCOUNTFACTOR: {"value": 0},
+    TAX: {"value": 0},
 }
 
 dict_asset = {

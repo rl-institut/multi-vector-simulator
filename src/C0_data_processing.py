@@ -22,6 +22,9 @@ from src.constants_json_strings import (
     OEMOF_SOURCE,
     OEMOF_SINK,
     OEMOF_ASSET_TYPE,
+    PROJECT_DURATION,
+    DISCOUNTFACTOR,
+    TAX,
 )
 
 
@@ -162,8 +165,8 @@ def economic_parameters(economic_parameters):
         {
             "annuity_factor": {
                 "value": economics.annuity_factor(
-                    economic_parameters["project_duration"]["value"],
-                    economic_parameters["discount_factor"]["value"],
+                    economic_parameters[PROJECT_DURATION]["value"],
+                    economic_parameters[DISCOUNTFACTOR]["value"],
                 ),
                 UNIT: "?",
             }
@@ -174,8 +177,8 @@ def economic_parameters(economic_parameters):
         {
             "crf": {
                 "value": economics.crf(
-                    economic_parameters["project_duration"]["value"],
-                    economic_parameters["discount_factor"]["value"],
+                    economic_parameters[PROJECT_DURATION]["value"],
+                    economic_parameters[DISCOUNTFACTOR]["value"],
                 ),
                 UNIT: "?",
             }
@@ -442,10 +445,7 @@ def define_missing_cost_data(dict_values, dict_asset):
         "capex_var": {"value": 0, UNIT: "currency/unit"},
         "opex_fix": {"value": 0, UNIT: "currency/year"},
         "opex_var": {"value": 0, UNIT: "currency/unit/year"},
-        "lifetime": {
-            "value": economic_data["project_duration"]["value"],
-            UNIT: "year",
-        },
+        "lifetime": {"value": economic_data[PROJECT_DURATION]["value"], UNIT: "year",},
     }
 
     # checks that an asset has all cost parameters needed for evaluation.
@@ -700,7 +700,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
         "timeseries": timeseries,
         # "opex_var": {"value": price, UNIT: "currency/unit"},
         "lifetime": {
-            "value": dict_values["economic_data"]["project_duration"]["value"],
+            "value": dict_values["economic_data"][PROJECT_DURATION]["value"],
             UNIT: "year",
         },
     }
@@ -824,7 +824,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         "input_bus_name": input_bus_name,
         # "opex_var": {"value": price, UNIT: "currency/kWh"},
         "lifetime": {
-            "value": dict_values["economic_data"]["project_duration"]["value"],
+            "value": dict_values["economic_data"][PROJECT_DURATION]["value"],
             UNIT: "year",
         },
     }
@@ -927,9 +927,9 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                 "value": economics.capex_from_investment(
                     dict_asset["capex_var"]["value"],
                     dict_asset["lifetime"]["value"],
-                    economic_data["project_duration"]["value"],
-                    economic_data["discount_factor"]["value"],
-                    economic_data["tax"]["value"],
+                    economic_data[PROJECT_DURATION]["value"],
+                    economic_data[DISCOUNTFACTOR]["value"],
+                    economic_data[TAX]["value"],
                 ),
                 UNIT: dict_asset["capex_var"][UNIT],
             }
