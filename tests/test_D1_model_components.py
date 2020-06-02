@@ -9,7 +9,7 @@ from pandas.util.testing import assert_series_equal
 # internal imports
 import src.D1_model_components as D1
 from tests.constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
-from src.constants_json_strings import (UNIT)
+from src.constants_json_strings import UNIT, ENERGY_CONVERSION
 
 D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D1.json",)
 
@@ -98,7 +98,7 @@ class TestTransformerComponent:
             raise ValueError(f"`optimize` should be True/False but is '{optimize}'")
 
     def test_transformer_optimize_cap_single_busses(self):
-        dict_asset = self.dict_values["energyConversion"][
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_optimize_single_busses"
         ]
 
@@ -119,7 +119,7 @@ class TestTransformerComponent:
         )
 
     def test_transformer_optimize_cap_multiple_input_busses(self):
-        dict_asset = self.dict_values["energyConversion"][
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_optimize_multiple_input_busses"
         ]
 
@@ -143,7 +143,7 @@ class TestTransformerComponent:
         pass
 
     def test_transformer_fix_cap_single_busses(self):  ## todo done
-        dict_asset = self.dict_values["energyConversion"][
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_single_busses"
         ]
 
@@ -165,7 +165,7 @@ class TestTransformerComponent:
 
     def test_transformer_fix_cap_multiple_input_busses(self,):
         ## todo fix after decision on busses see todo in func above
-        # dict_asset = self.dict_values["energyConversion"][
+        # dict_asset = self.dict_values[ENERGY_CONVERSION ][
         #     "transformer_fix_multiple_input_busses"
         # ]
         #
@@ -512,7 +512,7 @@ def test_check_optimize_cap_raise_error(get_json, get_model, get_busses):
     dict_values = get_json
     model = get_model
     busses = get_busses
-    test_asset = dict_values["energyConversion"]["test_asset_for_error_raising"]
+    test_asset = dict_values[ENERGY_CONVERSION]["test_asset_for_error_raising"]
     test_asset["optimizeCap"]["value"] = "wrong value"
 
     msg = f"Input error! 'optimize_cap' of asset {test_asset['label']}"

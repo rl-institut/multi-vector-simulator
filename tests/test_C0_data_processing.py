@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 
 import src.C0_data_processing as C0
-from src.constants_json_strings import (UNIT)
+from src.constants_json_strings import UNIT
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 def test_retrieve_datetimeindex_for_simulation():

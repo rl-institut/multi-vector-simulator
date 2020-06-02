@@ -18,7 +18,8 @@ from src.constants import (
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
 )
-from src.constants_json_strings import VALUE
+from src.constants_json_strings import VALUE, ENERGY_CONVERSION
+
 
 def all_totals(dict_values):
     """Calculate sum of all cost parameters
@@ -82,10 +83,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
     for asset in dict_values["energyProduction"]:
         if "renewableAsset" in dict_values["energyProduction"][asset]:
             sector = dict_values["energyProduction"][asset]["energyVector"]
-            if (
-                dict_values["energyProduction"][asset]["renewableAsset"][VALUE]
-                is True
-            ):
+            if dict_values["energyProduction"][asset]["renewableAsset"][VALUE] is True:
                 renewable_origin[sector] += dict_values["energyProduction"][asset][
                     "total_flow"
                 ]["value"]
@@ -233,10 +231,10 @@ def assert_aggregated_flows_of_energy_conversion_equivalent(dict_values):
 
     """
     total_flow_of_energy_conversion_equivalent = 0
-    for asset in dict_values["energyConversion"]:
-        sector = dict_values["energyConversion"][asset]["energyVector"]
+    for asset in dict_values[ENERGY_CONVERSION]:
+        sector = dict_values[ENERGY_CONVERSION][asset]["energyVector"]
         total_flow_of_energy_conversion_equivalent += (
-            dict_values["energyConversion"][asset]["total_aggregated_flow"]
+            dict_values[ENERGY_CONVERSION][asset]["total_aggregated_flow"]
             * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector]["value"]
         )
 

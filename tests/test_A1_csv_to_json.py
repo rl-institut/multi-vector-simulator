@@ -7,7 +7,7 @@ import src.B0_data_input_json as data_input
 from src.constants import PATHS_TO_PLOTS
 from .constants import CSV_PATH, CSV_FNAME, DUMMY_CSV_PATH, REQUIRED_CSV_FILES
 
-from src.constants_json_strings import (UNIT, VALUE)
+from src.constants_json_strings import UNIT, VALUE
 
 CSV_PARAMETERS = ["param1", "param2"]
 

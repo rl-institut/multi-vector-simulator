@@ -41,7 +41,8 @@ from src.constants import (
     REQUIRED_CSV_PARAMETERS,
 )
 
-from src.constants_json_strings import (UNIT)
+from src.constants_json_strings import UNIT
+
 
 class MissingParameterError(ValueError):
     """Exception raised for missing parameters of a csv input file."""

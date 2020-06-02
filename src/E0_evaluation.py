@@ -3,7 +3,7 @@ import logging
 import oemof.outputlib as outputlib
 import pandas as pd
 
-from src.constants_json_strings import (UNIT)
+from src.constants_json_strings import UNIT, ENERGY_CONVERSION
 
 import src.E1_process_results as process_results
 import src.E2_economics as economics
@@ -129,16 +129,16 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 "energyStorage"
             ][storage]["timeseries_soc"]
 
-    for asset in dict_values["energyConversion"]:
+    for asset in dict_values[ENERGY_CONVERSION]:
         process_results.get_results(
             dict_values["simulation_settings"],
             bus_data,
-            dict_values["energyConversion"][asset],
+            dict_values[ENERGY_CONVERSION][asset],
         )
         economics.get_costs(
-            dict_values["energyConversion"][asset], dict_values["economic_data"]
+            dict_values[ENERGY_CONVERSION][asset], dict_values["economic_data"]
         )
-        store_result_matrix(dict_values["kpi"], dict_values["energyConversion"][asset])
+        store_result_matrix(dict_values["kpi"], dict_values[ENERGY_CONVERSION][asset])
 
     for group in ["energyProduction", "energyConsumption"]:
         for asset in dict_values[group]:

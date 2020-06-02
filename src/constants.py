@@ -23,7 +23,7 @@ REQUIRED_CSV_FILES = (
     "simulation_settings",
     "project_data",
     "economic_data",
-    "energyConversion",
+    ENERGY_CONVERSION ,
     "energyProduction",
     "energyStorage",
     "energyProviders",
@@ -75,7 +75,7 @@ REQUIRED_CSV_PARAMETERS = {
         "inflow_direction",
         UNIT,
     ],
-    "energyConversion": [
+    ENERGY_CONVERSION : [
         "age_installed",
         "capex_fix",
         "capex_var",

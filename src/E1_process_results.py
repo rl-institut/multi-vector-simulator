@@ -8,7 +8,7 @@ Module E1 processes the oemof results.
 - add the evaluation of time series
 
 """
-from src.constants_json_strings import (UNIT)
+from src.constants_json_strings import UNIT
 
 import logging
 
@@ -343,9 +343,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                 optimal_capacity,
             )
         else:
-            dict_asset.update(
-                {"optimizedAddCap": {"value": 0, UNIT: dict_asset[UNIT]}}
-            )
+            dict_asset.update({"optimizedAddCap": {"value": 0, UNIT: dict_asset[UNIT]}})
 
     return
 

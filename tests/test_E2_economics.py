@@ -1,5 +1,5 @@
 import src.E2_economics as E2
-from src.constants_json_strings import (UNIT)
+from src.constants_json_strings import UNIT
 
 dict_asset = {
     "label": "DSO_feedin_sink",

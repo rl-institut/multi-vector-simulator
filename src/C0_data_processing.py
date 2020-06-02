@@ -11,7 +11,7 @@ logging.getLogger("matplotlib.font_manager").disabled = True
 from src.constants import INPUTS_COPY, TIME_SERIES
 from src.constants import PATHS_TO_PLOTS, PLOTS_DEMANDS, PLOTS_RESOURCES
 
-from src.constants_json_strings import (UNIT, VALUE)
+from src.constants_json_strings import UNIT, VALUE, ENERGY_CONVERSION
 
 
 import src.C1_verification as verify
@@ -200,7 +200,7 @@ def process_all_assets(dict_values):
     # might be defined that have to be processed in energyProduction/energyConsumption
     asset_group_list = {
         "energyProviders": energyProviders,
-        "energyConversion": energyConversion,
+        ENERGY_CONVERSION: energyConversion,
         "energyStorage": energyStorage,
         "energyProduction": energyProduction,
         "energyConsumption": energyConsumption,
@@ -465,7 +465,7 @@ def define_busses(dict_values):
             {bus_suffix(dict_values["project_data"]["sectors"][sector]): {}}
         )
     # defines busses accessed by conversion assets
-    update_busses_in_out_direction(dict_values, dict_values["energyConversion"])
+    update_busses_in_out_direction(dict_values, dict_values[ENERGY_CONVERSION])
     return
 
 
