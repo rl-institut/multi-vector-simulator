@@ -24,6 +24,7 @@ Here is a template for new release sections
 
 ### Changed
 - Test input files (#343)
+- All parameters of the json/csv input files are now called by a constant variable (CRATE) instead of string ("crate") (#137)
 
 ### Removed
 
