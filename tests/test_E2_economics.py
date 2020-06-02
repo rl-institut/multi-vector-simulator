@@ -1,20 +1,21 @@
 import src.E2_economics as E2
+from src.constants_json_strings import (UNIT)
 
 dict_asset = {
     "label": "DSO_feedin_sink",
-    "opex_var": {"value": -0.4, "unit": "currency/kWh"},
-    "capex_var": {"value": 0, "unit": "currency/kW"},
-    "installedCap": {"value": 0.0, "unit": "unit"},
-    "capex_fix": {"value": 0, "unit": "currency"},
-    "lifetime_capex_var": {"value": 0.0, "unit": "currency/kW"},
-    "lifetime_opex_fix": {"value": 0.0, "unit": "currency/ye"},
-    "lifetime_opex_var": {"value": -5.505932460595773, "unit": "?"},
-    "annual_total_flow": {"value": 0.0, "unit": "kWh"},
-    "optimizedAddCap": {"value": 0, "unit": "?"},
+    "opex_var": {"value": -0.4, UNIT: "currency/kWh"},
+    "capex_var": {"value": 0, UNIT: "currency/kW"},
+    "installedCap": {"value": 0.0, UNIT: UNIT},
+    "capex_fix": {"value": 0, UNIT: "currency"},
+    "lifetime_capex_var": {"value": 0.0, UNIT: "currency/kW"},
+    "lifetime_opex_fix": {"value": 0.0, UNIT: "currency/ye"},
+    "lifetime_opex_var": {"value": -5.505932460595773, UNIT: "?"},
+    "annual_total_flow": {"value": 0.0, UNIT: "kWh"},
+    "optimizedAddCap": {"value": 0, UNIT: "?"},
 }
 
 dict_economic = {
-    "crf": {"value": 0.07264891149004721, "unit": "?"},
+    "crf": {"value": 0.07264891149004721, UNIT: "?"},
 }
 
 

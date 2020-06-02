@@ -1,5 +1,8 @@
 import os
 
+from src.constants_json_strings import (UNIT)
+
+
 # path to the root of this repository (assumes this file is in src folder)
 REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # name of the input folder
@@ -70,7 +73,7 @@ REQUIRED_CSV_PARAMETERS = {
         "type_oemof",
         "energyVector",
         "inflow_direction",
-        "unit",
+        UNIT,
     ],
     "energyConversion": [
         "age_installed",
@@ -87,7 +90,7 @@ REQUIRED_CSV_PARAMETERS = {
         "outflow_direction",
         "type_oemof",
         "energyVector",
-        "unit",
+        UNIT,
     ],
     "energyStorage": [
         "inflow_direction",
@@ -111,7 +114,7 @@ REQUIRED_CSV_PARAMETERS = {
         "optimizeCap",
         "outflow_direction",
         "type_oemof",
-        "unit",
+        UNIT,
         "energyVector",
     ],
     "energyProviders": [
@@ -175,8 +178,8 @@ TYPE_DATAFRAME = "pandas_Dataframe:"
 TYPE_TIMESTAMP = "pandas_Timestamp:"
 
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
-    "Electricity": {"unit": "kWh_eleq/kWh_el", "value": 1},
-    "H2": {"unit": "kWh_eleq/kgH2", "value": 32.87},
+    "Electricity": {UNIT: "kWh_eleq/kWh_el", "value": 1},
+    "H2": {UNIT: "kWh_eleq/kgH2", "value": 32.87},
 }
 
 # Names for KPI output

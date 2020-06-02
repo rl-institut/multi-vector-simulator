@@ -8,6 +8,7 @@ Module E1 processes the oemof results.
 - add the evaluation of time series
 
 """
+from src.constants_json_strings import (UNIT)
 
 import logging
 
@@ -109,7 +110,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 {
                     "optimizedAddCap": {
                         "value": power_charge,
-                        "unit": dict_asset["input power"]["unit"],
+                        UNIT: dict_asset["input power"][UNIT],
                     }
                 }
             )
@@ -126,7 +127,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 {
                     "optimizedAddCap": {
                         "value": power_discharge,
-                        "unit": dict_asset["output power"]["unit"],
+                        UNIT: dict_asset["output power"][UNIT],
                     }
                 }
             )
@@ -141,7 +142,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 {
                     "optimizedAddCap": {
                         "value": capacity,
-                        "unit": dict_asset["storage capacity"]["unit"],
+                        UNIT: dict_asset["storage capacity"][UNIT],
                     }
                 }
             )
@@ -156,7 +157,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 {
                     "optimizedAddCap": {
                         "value": 0,
-                        "unit": dict_asset["storage capacity"]["unit"],
+                        UNIT: dict_asset["storage capacity"][UNIT],
                     }
                 }
             )
@@ -164,7 +165,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 {
                     "optimizedAddCap": {
                         "value": 0,
-                        "unit": dict_asset["storage capacity"]["unit"],
+                        UNIT: dict_asset["storage capacity"][UNIT],
                     }
                 }
             )
@@ -172,7 +173,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 {
                     "optimizedAddCap": {
                         "value": 0,
-                        "unit": dict_asset["storage capacity"]["unit"],
+                        UNIT: dict_asset["storage capacity"][UNIT],
                     }
                 }
             )
@@ -317,7 +318,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                             "optimizedAddCap": {
                                 "value": optimal_capacity
                                 / dict_asset["timeseries_peak"]["value"],
-                                "unit": dict_asset["unit"],
+                                UNIT: dict_asset[UNIT],
                             }
                         }
                     )
@@ -332,7 +333,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                     {
                         "optimizedAddCap": {
                             "value": optimal_capacity,
-                            "unit": dict_asset["unit"],
+                            UNIT: dict_asset[UNIT],
                         }
                     }
                 )
@@ -343,7 +344,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
             )
         else:
             dict_asset.update(
-                {"optimizedAddCap": {"value": 0, "unit": dict_asset["unit"]}}
+                {"optimizedAddCap": {"value": 0, UNIT: dict_asset[UNIT]}}
             )
 
     return
@@ -424,13 +425,13 @@ def add_info_flows(settings, dict_asset, flow):
     dict_asset.update(
         {
             "flow": flow,
-            "total_flow": {"value": total_flow, "unit": "kWh"},
+            "total_flow": {"value": total_flow, UNIT: "kWh"},
             "annual_total_flow": {
                 "value": total_flow * 365 / settings["evaluated_period"]["value"],
-                "unit": "kWh",
+                UNIT: "kWh",
             },
-            "peak_flow": {"value": max(flow), "unit": "kW"},
-            "average_flow": {"value": total_flow / len(flow), "unit": "kW"},
+            "peak_flow": {"value": max(flow), UNIT: "kW"},
+            "average_flow": {"value": total_flow / len(flow), UNIT: "kW"},
         }
     )
     return

@@ -7,35 +7,37 @@ import src.B0_data_input_json as data_input
 from src.constants import PATHS_TO_PLOTS
 from .constants import CSV_PATH, CSV_FNAME, DUMMY_CSV_PATH, REQUIRED_CSV_FILES
 
+from src.constants_json_strings import (UNIT)
+
 CSV_PARAMETERS = ["param1", "param2"]
 
-CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {"value": 21, "unit": "factor"}}}
+CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {"value": 21, UNIT: "factor"}}}
 CSV_TIMESERIES = {
     "param1": {
         "value": {"file_name": "test_time_series.csv", "header": "power"},
-        "unit": "kW",
+        UNIT: "kW",
     }
 }
 
 CSV_LIST = {
     "param1": ["one", "two"],
-    "param2": {"unit": "factor", "value": [1.02, 3.04]},
-    "param3": {"unit": "currency/kWh", "value": [0.2, 0.7]},
-    "param4": {"unit": "bool", "value": [True, False, True]},
-    "param5": {"unit": "year", "value": [2, 7]},
+    "param2": {UNIT: "factor", "value": [1.02, 3.04]},
+    "param3": {UNIT: "currency/kWh", "value": [0.2, 0.7]},
+    "param4": {UNIT: "bool", "value": [True, False, True]},
+    "param5": {UNIT: "year", "value": [2, 7]},
 }
 
 CONVERSION_TYPE = {
     "param_str": "one",
-    "param_factor": {"unit": "factor", "value": 1.04},
-    "param_cur": {"unit": "currency/kWh", "value": 18.9},
-    "param_bool1": {"unit": "bool", "value": True},
-    "param_bool2": {"unit": "bool", "value": True},
-    "param_bool3": {"unit": "bool", "value": False},
-    "param_bool4": {"unit": "bool", "value": False},
-    "param_bool5": {"unit": "bool", "value": True},
-    "param_bool6": {"unit": "bool", "value": False},
-    "param_year": {"unit": "year", "value": 8},
+    "param_factor": {UNIT: "factor", "value": 1.04},
+    "param_cur": {UNIT: "currency/kWh", "value": 18.9},
+    "param_bool1": {UNIT: "bool", "value": True},
+    "param_bool2": {UNIT: "bool", "value": True},
+    "param_bool3": {UNIT: "bool", "value": False},
+    "param_bool4": {UNIT: "bool", "value": False},
+    "param_bool5": {UNIT: "bool", "value": True},
+    "param_bool6": {UNIT: "bool", "value": False},
+    "param_year": {UNIT: "year", "value": 8},
 }
 
 

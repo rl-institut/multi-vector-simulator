@@ -1,4 +1,5 @@
 import logging
+from src.constants_json_strings import (UNIT)
 
 r"""
 Module E3 economic processing
@@ -117,8 +118,8 @@ def get_costs(dict_asset, economic_data):
 
         dict_asset.update(
             {
-                "costs_total": {"value": costs_total, "unit": "currency"},
-                "costs_om": {"value": cost_om, "unit": "currency"},
+                "costs_total": {"value": costs_total, UNIT: "currency"},
+                "costs_om": {"value": cost_om, UNIT: "currency"},
             }
         )
 
@@ -127,12 +128,12 @@ def get_costs(dict_asset, economic_data):
                 "annuity_total": {
                     "value": dict_asset["costs_total"]["value"]
                     * economic_data["crf"]["value"],
-                    "unit": "currency/year",
+                    UNIT: "currency/year",
                 },
                 "annuity_om": {
                     "value": dict_asset["costs_om"]["value"]
                     * economic_data["crf"]["value"],
-                    "unit": "currency/year",
+                    UNIT: "currency/year",
                 },
             }
         )

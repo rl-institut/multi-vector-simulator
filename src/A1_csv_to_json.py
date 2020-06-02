@@ -41,6 +41,7 @@ from src.constants import (
     REQUIRED_CSV_PARAMETERS,
 )
 
+from src.constants_json_strings import (UNIT)
 
 class MissingParameterError(ValueError):
     """Exception raised for missing parameters of a csv input file."""
@@ -271,7 +272,7 @@ def create_json_from_csv(
         )
     df_copy = df.copy()
     for column in df_copy:
-        if column != "unit":
+        if column != UNIT:
             column_dict = {}
             # the storage columns are checked for the right parameters,
             # Nan values that are not needed are deleted
@@ -397,7 +398,7 @@ def create_json_from_csv(
                                 asset=column,
                                 filename=filename,
                             )
-                            if row["unit"] != "str":
+                            if row[UNIT] != "str":
                                 if "value" in column_dict[param]:
                                     # if wrapped in list is a scalar
                                     value_list[item] = column_dict[param]["value"]
@@ -409,9 +410,9 @@ def create_json_from_csv(
                                 # if wrapped in list is a string
                                 value_list[item] = column_dict[param]
 
-                        if row["unit"] != "str":
+                        if row[UNIT] != "str":
                             column_dict.update(
-                                {param: {"value": value_list, "unit": row["unit"]}}
+                                {param: {"value": value_list, UNIT: row[UNIT]}}
                             )
                         else:
                             column_dict.update({param: value_list})
@@ -475,11 +476,11 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                 f"Parameter {param} of asset {asset} is defined as a timeseries."
             )
 
-    elif row["unit"] == "str":
+    elif row[UNIT] == "str":
         asset_dict.update({param: value})
 
     else:
-        if row["unit"] == "bool":
+        if row[UNIT] == "bool":
             if value in ["True", "true", "T", "t", "1"]:
                 value = True
             elif value in ["False", "false", "F", "f", "0"]:
@@ -498,7 +499,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                 except:
                     value = float(value)
 
-        asset_dict.update({param: {"value": value, "unit": row["unit"]}})
+        asset_dict.update({param: {"value": value, UNIT: row[UNIT]}})
     return asset_dict
 
 
@@ -529,7 +530,7 @@ def add_storage_components(storage_filename, input_directory):
             "label",
             "lifetime",
             "opex_fix",
-            "unit",
+            UNIT,
         ]
         single_dict = create_json_from_csv(
             input_directory,

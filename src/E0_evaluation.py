@@ -3,6 +3,8 @@ import logging
 import oemof.outputlib as outputlib
 import pandas as pd
 
+from src.constants_json_strings import (UNIT)
+
 import src.E1_process_results as process_results
 import src.E2_economics as economics
 import src.E3_indicator_calculation as indicators
@@ -119,7 +121,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 )
                 + dict_values["energyStorage"][storage]["storage capacity"][
                     "optimizedAddCap"
-                ]["unit"]
+                ][UNIT]
                 + ") SOC"
             )
 

@@ -28,3 +28,14 @@ ACCEPTED_ASSETS_FOR_ASSET_GROUPS = {
     ENERGY_PRODUCTION: [OEMOF_SOURCE],
     ENERGY_CONSUMPTION: [OEMOF_SINK],
 }
+
+# Central constant variables
+UNIT = "unit"
+VALUE = "value"
+
+# Parameter strings in json and csv files
+CURR = "currency"
+DISCOUNTFACTOR = "discount_factor"
+LABEL = "label"
+PROJECT_DURATION = "project_duration"
+TAX = "tax"

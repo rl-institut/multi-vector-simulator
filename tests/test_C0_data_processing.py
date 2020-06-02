@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 
 import src.C0_data_processing as C0
-
+from src.constants_json_strings import (UNIT)
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 def test_retrieve_datetimeindex_for_simulation():
@@ -55,13 +55,13 @@ economic_data = {
 }
 
 dict_asset = {
-    "opex_fix": {"value": 1, "unit": "a_unit"},
+    "opex_fix": {"value": 1, UNIT: "a_unit"},
     "crf": {"value": 1},
-    "capex_var": {"value": 1, "unit": "a_unit"},
+    "capex_var": {"value": 1, UNIT: "a_unit"},
     "opex_var": {"value": 1},
     "capex_fix": {"value": 1},
     "lifetime": {"value": 20},
-    "unit": "a_unit",
+    UNIT: "a_unit",
 }
 
 

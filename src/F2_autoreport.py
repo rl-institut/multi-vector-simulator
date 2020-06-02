@@ -28,6 +28,8 @@ from src.constants import (
 )
 from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
 
+from src.constants_json_strings import (UNIT)
+
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
 
@@ -174,7 +176,7 @@ def create_app(results_json):
         demand_data.update(
             {
                 dem: [
-                    demands[dem]["unit"],
+                    demands[dem][UNIT],
                     demands[dem]["timeseries_peak"]["value"],
                     demands[dem]["timeseries_average"]["value"],
                     demands[dem]["timeseries_total"]["value"],
@@ -185,7 +187,7 @@ def create_app(results_json):
     df_dem = pd.DataFrame.from_dict(
         demand_data,
         orient="index",
-        columns=["Unit", "Peak Demand", "Mean Demand", "Total Demand per annum"],
+        columns=[UNIT, "Peak Demand", "Mean Demand", "Total Demand per annum"],
     )
     df_dem.index.name = "Demands"
     df_dem = df_dem.reset_index()
@@ -206,7 +208,7 @@ def create_app(results_json):
             {
                 comps: [
                     components1[comps]["type_oemof"],
-                    components1[comps]["unit"],
+                    components1[comps][UNIT],
                     components1[comps]["installedCap"]["value"],
                     components1[comps]["optimizeCap"]["value"],
                 ]
@@ -218,7 +220,7 @@ def create_app(results_json):
                 comps: [
                     components2[comps]["type_oemof"],
                     components2[comps]["energyVector"],
-                    components2[comps]["unit"],
+                    components2[comps][UNIT],
                     components2[comps]["installedCap"]["value"],
                     components2[comps]["optimizeCap"]["value"],
                 ]
@@ -231,7 +233,7 @@ def create_app(results_json):
         columns=[
             "Type of Component",
             "Energy Vector",
-            "Unit",
+            UNIT,
             "Installed Capcity",
             "Optimization",
         ],
