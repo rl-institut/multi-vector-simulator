@@ -12,7 +12,13 @@ import logging
 import os
 
 import pandas as pd
-from src.constants_json_strings import PROJECT_DURATION, DISCOUNTFACTOR, TAX, LABEL
+from src.constants_json_strings import (
+    PROJECT_DURATION,
+    DISCOUNTFACTOR,
+    TAX,
+    LABEL,
+    CURR,
+)
 
 # web-application: valid input directly connected to cell-input
 
@@ -109,7 +115,7 @@ def all_valid_intervals(name, value, title):
         "type",
         "file_name",
         LABEL,
-        "currency",
+        CURR,
         "path_output_folder",
         "display_output",
         "path_input_file",

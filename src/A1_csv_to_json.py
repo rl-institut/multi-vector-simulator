@@ -40,10 +40,11 @@ from src.constants import (
     CSV_SEPARATORS,
     REQUIRED_CSV_FILES,
     REQUIRED_CSV_PARAMETERS,
+    SIMULATION_SETTINGS,
+    ECONOMIC_DATA,
 )
 
-from src.constants_json_strings import UNIT
-from src.constants_json_strings import ENERGY_STORAGE
+from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
 
 class MissingParameterError(ValueError):
@@ -448,9 +449,9 @@ def create_json_from_csv(
 
     # add exception for single dicts
     if filename in [
-        "economic_data",
+        ECONOMIC_DATA,
         "project_data",
-        "simulation_settings",
+        SIMULATION_SETTINGS,
     ]:
         return single_dict
     elif asset_is_a_storage is True:

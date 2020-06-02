@@ -8,6 +8,7 @@ import pytest
 import src.A0_initialization as initializing
 import src.F1_plotting as F1
 from mvs_eland_tool import main
+from src.constants_json_strings import LABEL
 from src.constants import (
     PLOTS_BUSSES,
     PATHS_TO_PLOTS,
@@ -73,7 +74,7 @@ RESULTS_TIMESERIES = pd.read_csv(
 DICT_KPI = {
     "kpi": {
         "scalar_matrix": pd.DataFrame(
-            {"label": ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
+            {LABEL: ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
         )
     },
 }
@@ -233,7 +234,7 @@ class TestFileCreation:
             dict_values,
             USER_INPUT,
             PROJECT_DATA,
-            DICT_KPI["kpi"]["scalar_matrix"]["label"],
+            DICT_KPI["kpi"]["scalar_matrix"][LABEL],
             DICT_KPI["kpi"]["scalar_matrix"]["optimizedAddCap"],
         )
 

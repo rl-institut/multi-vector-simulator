@@ -15,6 +15,7 @@ from src.constants import (
     PLOTS_DEMANDS,
     PLOTS_RESOURCES,
     SIMULATION_SETTINGS,
+    ECONOMIC_DATA,
 )
 
 from src.constants_json_strings import (
@@ -33,6 +34,7 @@ from src.constants_json_strings import (
     DISCOUNTFACTOR,
     TAX,
     LABEL,
+    CURR,
 )
 
 
@@ -75,7 +77,7 @@ def all(dict_values):
 
     """
     simulation_settings(dict_values[SIMULATION_SETTINGS])
-    economic_parameters(dict_values["economic_data"])
+    economic_parameters(dict_values[ECONOMIC_DATA])
     identify_energy_vectors(dict_values)
 
     ## Verify inputs
@@ -256,7 +258,7 @@ def energyConversion(dict_values, group):
         define_missing_cost_data(dict_values, dict_values[group][asset])
         evaluate_lifetime_costs(
             dict_values[SIMULATION_SETTINGS],
-            dict_values["economic_data"],
+            dict_values[ECONOMIC_DATA],
             dict_values[group][asset],
         )
         # check if maximumCap exists and add it to dict_values
@@ -295,7 +297,7 @@ def energyProduction(dict_values, group):
         define_missing_cost_data(dict_values, dict_values[group][asset])
         evaluate_lifetime_costs(
             dict_values[SIMULATION_SETTINGS],
-            dict_values["economic_data"],
+            dict_values[ECONOMIC_DATA],
             dict_values[group][asset],
         )
 
@@ -326,7 +328,7 @@ def energyStorage(dict_values, group):
             )
             evaluate_lifetime_costs(
                 dict_values[SIMULATION_SETTINGS],
-                dict_values["economic_data"],
+                dict_values[ECONOMIC_DATA],
                 dict_values[group][asset][subasset],
             )
 
@@ -384,7 +386,7 @@ def energyProviders(dict_values, group):
         define_missing_cost_data(dict_values, dict_values[group][asset])
         evaluate_lifetime_costs(
             dict_values[SIMULATION_SETTINGS],
-            dict_values["economic_data"],
+            dict_values[ECONOMIC_DATA],
             dict_values[group][asset],
         )
     return
@@ -401,7 +403,7 @@ def energyConsumption(dict_values, group):
         define_missing_cost_data(dict_values, dict_values[group][asset])
         evaluate_lifetime_costs(
             dict_values[SIMULATION_SETTINGS],
-            dict_values["economic_data"],
+            dict_values[ECONOMIC_DATA],
             dict_values[group][asset],
         )
         if "input_bus_name" not in dict_values[group][asset]:
@@ -443,13 +445,13 @@ def define_missing_cost_data(dict_values, dict_asset):
         elif isinstance(dict_asset["opex_var"]["value"], list):
             treat_multiple_flows(dict_asset, dict_values, "opex_var")
 
-    economic_data = dict_values["economic_data"]
+    economic_data = dict_values[ECONOMIC_DATA]
 
     basic_costs = {
         "optimizeCap": {"value": False, UNIT: "bool"},
         UNIT: "?",
         "installedCap": {"value": 0.0, UNIT: UNIT},
-        "capex_fix": {"value": 0, UNIT: "currency"},
+        "capex_fix": {"value": 0, UNIT: CURR},
         "capex_var": {"value": 0, UNIT: "currency/unit"},
         "opex_fix": {"value": 0, UNIT: "currency/year"},
         "opex_var": {"value": 0, UNIT: "currency/unit/year"},
@@ -605,14 +607,14 @@ def define_dso_sinks_and_sources(dict_values, dso):
             "The peak demand pricing price of %s %s is set as capex_var of "
             "the sources of grid energy.",
             peak_demand_pricing,
-            dict_values["economic_data"]["currency"],
+            dict_values[ECONOMIC_DATA][CURR],
         )
     else:
         logging.debug(
             "The peak demand pricing price of %s %s is set as capex_var of "
             "the sources of grid energy.",
             sum(peak_demand_pricing) / len(peak_demand_pricing),
-            dict_values["economic_data"]["currency"],
+            dict_values[ECONOMIC_DATA][CURR],
         )
 
     peak_demand_pricing = {
@@ -705,7 +707,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
         "timeseries": timeseries,
         # "opex_var": {"value": price, UNIT: "currency/unit"},
         "lifetime": {
-            "value": dict_values["economic_data"][PROJECT_DURATION]["value"],
+            "value": dict_values[ECONOMIC_DATA][PROJECT_DURATION]["value"],
             UNIT: "year",
         },
     }
@@ -829,7 +831,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         "input_bus_name": input_bus_name,
         # "opex_var": {"value": price, UNIT: "currency/kWh"},
         "lifetime": {
-            "value": dict_values["economic_data"][PROJECT_DURATION]["value"],
+            "value": dict_values[ECONOMIC_DATA][PROJECT_DURATION]["value"],
             UNIT: "year",
         },
     }

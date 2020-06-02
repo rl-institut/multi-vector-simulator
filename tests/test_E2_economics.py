@@ -1,12 +1,12 @@
 import src.E2_economics as E2
-from src.constants_json_strings import UNIT
+from src.constants_json_strings import UNIT, CURR
 
 dict_asset = {
     "label": "DSO_feedin_sink",
     "opex_var": {"value": -0.4, UNIT: "currency/kWh"},
     "capex_var": {"value": 0, UNIT: "currency/kW"},
     "installedCap": {"value": 0.0, UNIT: UNIT},
-    "capex_fix": {"value": 0, UNIT: "currency"},
+    "capex_fix": {"value": 0, UNIT: CURR},
     "lifetime_capex_var": {"value": 0.0, UNIT: "currency/kW"},
     "lifetime_opex_fix": {"value": 0.0, UNIT: "currency/ye"},
     "lifetime_opex_var": {"value": -5.505932460595773, UNIT: "?"},

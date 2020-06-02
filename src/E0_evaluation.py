@@ -12,6 +12,8 @@ from src.constants_json_strings import (
     ENERGY_BUSSES,
     VALUE,
     SIMULATION_SETTINGS,
+    ECONOMIC_DATA,
+    LABEL,
 )
 
 import src.E1_process_results as process_results
@@ -50,7 +52,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
             "kpi": {
                 "cost_matrix": pd.DataFrame(
                     columns=[
-                        "label",
+                        LABEL,
                         "costs_total",
                         "costs_om",
                         "costs_investment",
@@ -63,7 +65,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 ),
                 "scalar_matrix": pd.DataFrame(
                     columns=[
-                        "label",
+                        LABEL,
                         "optimizedAddCap",
                         "total_flow",
                         "annual_total_flow",
@@ -88,14 +90,14 @@ def evaluate_dict(dict_values, results_main, results_meta):
     for storage in dict_values[ENERGY_STORAGE]:
         bus_data.update(
             {
-                dict_values[ENERGY_STORAGE][storage]["label"]: outputlib.views.node(
-                    results_main, dict_values[ENERGY_STORAGE][storage]["label"],
+                dict_values[ENERGY_STORAGE][storage][LABEL]: outputlib.views.node(
+                    results_main, dict_values[ENERGY_STORAGE][storage][LABEL],
                 )
             }
         )
         process_results.get_storage_results(
             dict_values[SIMULATION_SETTINGS],
-            bus_data[dict_values[ENERGY_STORAGE][storage]["label"]],
+            bus_data[dict_values[ENERGY_STORAGE][storage][LABEL]],
             dict_values[ENERGY_STORAGE][storage],
         )
 
@@ -103,7 +105,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         for storage_item in ["storage capacity", "input power", "output power"]:
             economics.get_costs(
                 dict_values[ENERGY_STORAGE][storage][storage_item],
-                dict_values["economic_data"],
+                dict_values[ECONOMIC_DATA],
             )
             store_result_matrix(
                 dict_values["kpi"], dict_values[ENERGY_STORAGE][storage][storage_item]
@@ -118,7 +120,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         ):
             bus_name = dict_values[ENERGY_STORAGE][storage]["input_bus_name"]
             timeseries_name = (
-                dict_values[ENERGY_STORAGE][storage]["label"]
+                dict_values[ENERGY_STORAGE][storage][LABEL]
                 + " ("
                 + str(
                     round(
@@ -145,7 +147,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
             dict_values[ENERGY_CONVERSION][asset],
         )
         economics.get_costs(
-            dict_values[ENERGY_CONVERSION][asset], dict_values["economic_data"]
+            dict_values[ENERGY_CONVERSION][asset], dict_values[ECONOMIC_DATA]
         )
         store_result_matrix(dict_values["kpi"], dict_values[ENERGY_CONVERSION][asset])
 
@@ -154,7 +156,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
             process_results.get_results(
                 dict_values[SIMULATION_SETTINGS], bus_data, dict_values[group][asset],
             )
-            economics.get_costs(dict_values[group][asset], dict_values["economic_data"])
+            economics.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
             store_result_matrix(dict_values["kpi"], dict_values[group][asset])
 
     indicators.all_totals(dict_values)

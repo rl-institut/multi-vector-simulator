@@ -13,6 +13,7 @@ from src.constants_json_strings import (
     OEMOF_TRANSFORMER,
     OEMOF_ASSET_TYPE,
     LABEL,
+    VALUE,
 )
 from src.constants_json_strings import SIMULATION_SETTINGS
 from tests.constants import TEST_REPO_PATH
@@ -100,7 +101,7 @@ def test_networkx_graph_requested_store_nx_graph_true():
     D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    dict_values[SIMULATION_SETTINGS]["store_nx_graph"].update({"value": True})
+    dict_values[SIMULATION_SETTINGS]["store_nx_graph"].update({VALUE: True})
     D0.model_building.plot_networkx_graph(dict_values, model)
     assert os.path.exists(path_networkx) is True
 
@@ -110,7 +111,7 @@ def test_networkx_graph_requested_store_nx_graph_false():
     D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    dict_values[SIMULATION_SETTINGS]["store_nx_graph"].update({"value": False})
+    dict_values[SIMULATION_SETTINGS]["store_nx_graph"].update({VALUE: False})
     D0.model_building.plot_networkx_graph(dict_values, model)
     assert os.path.exists(path_networkx) is False
 
@@ -126,7 +127,7 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_true():
         dict_values, dict_model, model
     )
     local_energy_system = solph.Model(model)
-    dict_values[SIMULATION_SETTINGS]["output_lp_file"].update({"value": True})
+    dict_values[SIMULATION_SETTINGS]["output_lp_file"].update({VALUE: True})
     D0.model_building.store_lp_file(dict_values, local_energy_system)
     assert os.path.exists(path_lp_file) is True
 
@@ -137,7 +138,7 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_false():
         dict_values, dict_model, model
     )
     local_energy_system = solph.Model(model)
-    dict_values[SIMULATION_SETTINGS]["output_lp_file"].update({"value": False})
+    dict_values[SIMULATION_SETTINGS]["output_lp_file"].update({VALUE: False})
     D0.model_building.store_lp_file(dict_values, local_energy_system)
     assert os.path.exists(path_lp_file) is False
 
@@ -146,13 +147,13 @@ path_oemof_file = os.path.join(TEST_OUTPUT_PATH, "oemof_simulation_results.oemof
 
 
 def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_true():
-    dict_values[SIMULATION_SETTINGS]["store_oemof_results"].update({"value": True})
+    dict_values[SIMULATION_SETTINGS]["store_oemof_results"].update({VALUE: True})
     D0.run_oemof(dict_values)
     assert os.path.exists(path_oemof_file) is True
 
 
 def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false():
-    dict_values["simulation_settings"]["store_oemof_results"].update({"value": False})
+    dict_values["simulation_settings"]["store_oemof_results"].update({VALUE: False})
     D0.run_oemof(dict_values)
     assert os.path.exists(path_oemof_file) is False
 

@@ -29,6 +29,7 @@ from src.constants import (
     OUTPUT_FOLDER,
     INPUTS_COPY,
     CSV_ELEMENTS,
+    ECONOMIC_DATA,
 )
 
 from src.constants_json_strings import (
@@ -98,7 +99,7 @@ def create_app(results_json):
     }
     # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
     dfprojectData = pd.DataFrame.from_dict(results_json["project_data"])
-    dfeconomicData = pd.DataFrame.from_dict(results_json["economic_data"]).loc["value"]
+    dfeconomicData = pd.DataFrame.from_dict(results_json[ECONOMIC_DATA]).loc["value"]
 
     # Obtaining the coordinates of the project location
     coordinates = (

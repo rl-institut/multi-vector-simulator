@@ -16,6 +16,7 @@ from src.constants_json_strings import (
     OEMOF_TRANSFORMER,
     VALUE,
     SIMULATION_SETTINGS,
+    LABEL,
 )
 
 """
@@ -301,7 +302,7 @@ class model_building:
         dict_values.update(
             {
                 "simulation_results": {
-                    "label": "simulation_results",
+                    LABEL: "simulation_results",
                     "objective_value": results_meta["objective"],
                     "simulation_time": round(results_meta["solver"]["Time"], 2),
                 }

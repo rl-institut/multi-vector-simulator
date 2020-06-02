@@ -8,7 +8,7 @@ Module E1 processes the oemof results.
 - add the evaluation of time series
 
 """
-from src.constants_json_strings import UNIT, SIMULATION_SETTINGS
+from src.constants_json_strings import UNIT, SIMULATION_SETTINGS, VALUE
 
 import logging
 
@@ -102,7 +102,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     add_info_flows(settings, dict_asset["storage capacity"], capacity)
 
     if "optimizeCap" in dict_asset:
-        if dict_asset["optimizeCap"]["value"] == True:
+        if dict_asset["optimizeCap"][VALUE] == True:
             power_charge = storage_bus["scalars"][
                 ((dict_asset["input_bus_name"], dict_asset["label"]), "invest")
             ]

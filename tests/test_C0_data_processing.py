@@ -8,14 +8,16 @@ from src.constants_json_strings import (
     PROJECT_DURATION,
     DISCOUNTFACTOR,
     TAX,
+    VALUE,
+    CURR,
 )
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 def test_retrieve_datetimeindex_for_simulation():
     simulation_settings = {
         "start_date": "2020-01-01",
-        "evaluated_period": {"value": 1},
-        "timestep": {"value": 60},
+        "evaluated_period": {VALUE: 1},
+        "timestep": {VALUE: 60},
     }
     C0.simulation_settings(simulation_settings)
     for k in ("start_date", "end_date", "time_index"):
@@ -27,8 +29,8 @@ def test_retrieve_datetimeindex_for_simulation():
 
 def test_adding_economic_parameters_C2():
     economic_parameters = {
-        PROJECT_DURATION: {"value": 20},
-        DISCOUNTFACTOR: {"value": 0.15},
+        PROJECT_DURATION: {VALUE: 20},
+        DISCOUNTFACTOR: {VALUE: 0.15},
     }
     C0.economic_parameters(economic_parameters)
     # the actual value of the annuity factor should have been checked in C2
@@ -50,12 +52,12 @@ def test_complete_missing_cost_data_capex_var():
     assert dict_asset["capex_var"] == 0
 
 
-settings = {"evaluated_period": {"value": 365}}
+settings = {"evaluated_period": {VALUE: 365}}
 
 economic_data = {
-    PROJECT_DURATION: {"value": 20},
-    "annuity_factor": {"value": 1},
-    "crf": {"value": 1},
+    PROJECT_DURATION: {VALUE: 20},
+    "annuity_factor": {VALUE: 1},
+    "crf": {VALUE: 1},
     DISCOUNTFACTOR: {"value": 0},
     TAX: {"value": 0},
 }

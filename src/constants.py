@@ -13,6 +13,9 @@ from src.constants_json_strings import (
     TAX,
     LABEL,
     SIMULATION_SETTINGS,
+    ECONOMIC_DATA,
+    FIX_COST,
+    CURR,
 )
 
 
@@ -32,10 +35,10 @@ JSON_FNAME = "mvs_config.json"
 CSV_FNAME = "mvs_csv_config.json"
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = (
-    "fixcost",
+    FIX_COST,
     SIMULATION_SETTINGS,
     "project_data",
-    "economic_data",
+    ECONOMIC_DATA,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
@@ -142,7 +145,7 @@ REQUIRED_CSV_PARAMETERS = {
         OEMOF_ASSET_TYPE,
         "energyVector",
     ],
-    "fixcost": [
+    FIX_COST: [
         "age_installed",
         "capex_fix",
         "capex_var",
@@ -172,7 +175,7 @@ REQUIRED_CSV_PARAMETERS = {
         "scenario_id",
         "scenario_name",
     ],
-    "economic_data": ["currency", DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX,],
+    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX,],
 }
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder

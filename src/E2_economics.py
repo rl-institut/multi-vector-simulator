@@ -1,5 +1,5 @@
 import logging
-from src.constants_json_strings import UNIT, VALUE
+from src.constants_json_strings import UNIT, VALUE, ECONOMIC_DATA, CURR
 
 r"""
 Module E3 economic processing
@@ -26,7 +26,7 @@ def get_costs(dict_asset, economic_data):
         dict_asset["label"]
         in [
             "settings",
-            "economic_data",
+            ECONOMIC_DATA,
             "electricity_demand",
             "simulation_settings",
             "simulation_results",
@@ -118,8 +118,8 @@ def get_costs(dict_asset, economic_data):
 
         dict_asset.update(
             {
-                "costs_total": {VALUE: costs_total, UNIT: "currency"},
-                "costs_om": {VALUE: cost_om, UNIT: "currency"},
+                "costs_total": {VALUE: costs_total, UNIT: CURR},
+                "costs_om": {VALUE: cost_om, UNIT: CURR},
             }
         )
 

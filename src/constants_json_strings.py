@@ -14,7 +14,8 @@ ENERGY_BUSSES = "energyBusses"
 
 ENERGY_PROVIDERS = "energyProviders"
 SIMULATION_SETTINGS = "simulation_settings"
-
+FIX_COST = "fixcost"
+ECONOMIC_DATA = "economic_data"
 # Parameters
 OEMOF_ASSET_TYPE = "type_oemof"
 # Allowed types
