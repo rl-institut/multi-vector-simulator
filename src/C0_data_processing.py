@@ -17,6 +17,7 @@ from src.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
     ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
     ENERGY_BUSSES,
 )
 
@@ -208,7 +209,7 @@ def process_all_assets(dict_values):
     asset_group_list = {
         "energyProviders": energyProviders,
         ENERGY_CONVERSION: energyConversion,
-        "energyStorage": energyStorage,
+        ENERGY_STORAGE: energyStorage,
         ENERGY_PRODUCTION: energyProduction,
         ENERGY_CONSUMPTION: energyConsumption,
     }

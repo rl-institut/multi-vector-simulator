@@ -1,6 +1,13 @@
 import os
 
-from src.constants_json_strings import (UNIT)
+from src.constants_json_strings import (
+    UNIT,
+    ENERGY_CONVERSION,
+    ENERGY_CONSUMPTION,
+    ENERGY_BUSSES,
+    ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
+)
 
 
 # path to the root of this repository (assumes this file is in src folder)
@@ -25,7 +32,7 @@ REQUIRED_CSV_FILES = (
     "economic_data",
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
-    "energyStorage",
+    ENERGY_STORAGE,
     "energyProviders",
     ENERGY_CONSUMPTION,
 )
@@ -92,7 +99,7 @@ REQUIRED_CSV_PARAMETERS = {
         "energyVector",
         UNIT,
     ],
-    "energyStorage": [
+    ENERGY_STORAGE: [
         "inflow_direction",
         "label",
         "optimizeCap",

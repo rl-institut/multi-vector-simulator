@@ -9,7 +9,12 @@ from pandas.util.testing import assert_series_equal
 # internal imports
 import src.D1_model_components as D1
 from tests.constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
-from src.constants_json_strings import UNIT, ENERGY_CONVERSION, ENERGY_CONSUMPTION
+from src.constants_json_strings import (
+    UNIT,
+    ENERGY_CONVERSION,
+    ENERGY_CONSUMPTION,
+    ENERGY_STORAGE,
+)
 
 D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D1.json",)
 
@@ -372,7 +377,7 @@ class TestStorageComponent:
         self.storages = {}
 
     def test_storage_optimize(self):
-        dict_asset = self.dict_values["energyStorage"]["storage_optimize"]
+        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_optimize"]
         dict_asset["storage capacity"]["maximumCap"] = {"value": None, UNIT: "kWh"}
         dict_asset["input power"]["maximumCap"] = {"value": None, UNIT: "kWh"}
         dict_asset["output power"]["maximumCap"] = {"value": None, UNIT: "kWh"}
@@ -427,7 +432,7 @@ class TestStorageComponent:
         )
 
     def test_storage_fix(self):
-        dict_asset = self.dict_values["energyStorage"]["storage_fix"]
+        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_fix"]
         D1.storage(
             model=self.model,
             dict_asset=dict_asset,

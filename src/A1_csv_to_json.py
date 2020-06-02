@@ -42,6 +42,7 @@ from src.constants import (
 )
 
 from src.constants_json_strings import UNIT
+from src.constants_json_strings import ENERGY_STORAGE
 
 
 class MissingParameterError(ValueError):
@@ -432,7 +433,7 @@ def create_json_from_csv(
 
             single_dict.update({column: column_dict})
             # add exception for energyStorage
-            if filename == "energyStorage":
+            if filename == ENERGY_STORAGE:
                 storage_dict = add_storage_components(
                     df.loc["storage_filename"][column][:-4], input_directory
                 )

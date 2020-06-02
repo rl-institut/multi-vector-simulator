@@ -8,6 +8,7 @@ from src.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
     ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
     ENERGY_BUSSES,
 )
 
@@ -82,57 +83,57 @@ def evaluate_dict(dict_values, results_main, results_meta):
     process_results.get_timeseries_per_bus(dict_values, bus_data)
 
     # Store all information related to storages in bus_data, as storage capacity acts as a bus
-    for storage in dict_values["energyStorage"]:
+    for storage in dict_values[ENERGY_STORAGE]:
         bus_data.update(
             {
-                dict_values["energyStorage"][storage]["label"]: outputlib.views.node(
-                    results_main, dict_values["energyStorage"][storage]["label"],
+                dict_values[ENERGY_STORAGE][storage]["label"]: outputlib.views.node(
+                    results_main, dict_values[ENERGY_STORAGE][storage]["label"],
                 )
             }
         )
         process_results.get_storage_results(
             dict_values["simulation_settings"],
-            bus_data[dict_values["energyStorage"][storage]["label"]],
-            dict_values["energyStorage"][storage],
+            bus_data[dict_values[ENERGY_STORAGE][storage]["label"]],
+            dict_values[ENERGY_STORAGE][storage],
         )
 
         # hardcoded list of names in storage_01.csv
         for storage_item in ["storage capacity", "input power", "output power"]:
             economics.get_costs(
-                dict_values["energyStorage"][storage][storage_item],
+                dict_values[ENERGY_STORAGE][storage][storage_item],
                 dict_values["economic_data"],
             )
             store_result_matrix(
-                dict_values["kpi"], dict_values["energyStorage"][storage][storage_item]
+                dict_values["kpi"], dict_values[ENERGY_STORAGE][storage][storage_item]
             )
 
         if (
-            dict_values["energyStorage"][storage]["input_bus_name"]
+            dict_values[ENERGY_STORAGE][storage]["input_bus_name"]
             in dict_values["optimizedFlows"].keys()
         ) or (
-            dict_values["energyStorage"][storage]["output_bus_name"]
+            dict_values[ENERGY_STORAGE][storage]["output_bus_name"]
             in dict_values["optimizedFlows"].keys()
         ):
-            bus_name = dict_values["energyStorage"][storage]["input_bus_name"]
+            bus_name = dict_values[ENERGY_STORAGE][storage]["input_bus_name"]
             timeseries_name = (
-                dict_values["energyStorage"][storage]["label"]
+                dict_values[ENERGY_STORAGE][storage]["label"]
                 + " ("
                 + str(
                     round(
-                        dict_values["energyStorage"][storage]["storage capacity"][
+                        dict_values[ENERGY_STORAGE][storage]["storage capacity"][
                             "optimizedAddCap"
                         ]["value"],
                         1,
                     )
                 )
-                + dict_values["energyStorage"][storage]["storage capacity"][
+                + dict_values[ENERGY_STORAGE][storage]["storage capacity"][
                     "optimizedAddCap"
                 ][UNIT]
                 + ") SOC"
             )
 
             dict_values["optimizedFlows"][bus_name][timeseries_name] = dict_values[
-                "energyStorage"
+                ENERGY_STORAGE
             ][storage]["timeseries_soc"]
 
     for asset in dict_values[ENERGY_CONVERSION]:
