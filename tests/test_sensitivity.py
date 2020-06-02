@@ -28,9 +28,15 @@ def set_nested_value(dct, value, keys):
     keys: tuple
         Tuple containing the succession of keys which lead to the value within the nested dict
 
-    Returns"
+    Returns
     -------
     The value under the path within the (potentially nested) dict
+
+    Example
+    -------
+    >>> dct = dict(a=dict(a1=1, a2=2),b=dict(b1=dict(b11=11,b12=dict(b121=121))))
+    >>> print(set_nested_value(dct, 400,("b", "b1", "b12","b121")))
+    {'a': {'a1': 1, 'a2': 2}, 'b': {'b1': {'b11': 11, 'b12': {'b121': 400}}}}
     """
     if isinstance(keys, tuple) is True:
         answer = copy.deepcopy(dct)
@@ -60,6 +66,12 @@ def get_nested_value(dct, keys):
     Returns
     -------
     The value under the path within the (potentially nested) dict
+
+    Example
+    -------
+    >>> dct = dict(a=dict(a1=1, a2=2),b=dict(b1=dict(b11=11,b12=dict(b121=121))))
+    >>> print(get_nested_value(dct, ("b", "b1", "b12","b121")))
+    121
     """
     if isinstance(keys, tuple) is True:
         if len(keys) > 1:
@@ -149,7 +161,7 @@ def single_param_variation_analysis(
         simulation_input = None
         logging.error(
             f"Simulation input `{json_input}` is neither a file path, nor a json dict. "
-            f"It can therefor not be processed."
+            f"It can therefore not be processed."
         )
     param_path_tuple = split_nested_path(json_path_to_param_value)
     answer = []
