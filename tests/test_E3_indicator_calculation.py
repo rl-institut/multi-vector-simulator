@@ -10,8 +10,15 @@ from src.constants import (
     KPI_SCALARS_DICT,
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
+    PROJECT_DATA,
 )
-from src.constants_json_strings import ENERGY_PRODUCTION, ENERGY_PROVIDERS, LABEL, VALUE
+from src.constants_json_strings import (
+    ENERGY_PRODUCTION,
+    ENERGY_PROVIDERS,
+    LABEL,
+    VALUE,
+    SECTORS,
+)
 
 numbers = [10, 15, 20, 25]
 
@@ -58,7 +65,7 @@ exp_non_res = flow_small * 2 * (1 - renewable_share_dso)
 # for weighting_for_sector_coupled_kpi
 a_kpi_name = "renewable share"
 dict_weighting_unknown_sector = {
-    "project_data": {"sectors": {"Heat": "He"}},
+    PROJECT_DATA: {SECTORS: {"Heat": "He"}},
     KPI_DICT: {
         KPI_UNCOUPLED_DICT: {a_kpi_name: {"Heat": numbers[0]}},
         KPI_SCALARS_DICT: {},
@@ -66,7 +73,7 @@ dict_weighting_unknown_sector = {
 }
 
 dict_weighting_one_sector = {
-    "project_data": {"sectors": {"Electricity": "E"}},
+    PROJECT_DATA: {SECTORS: {"Electricity": "E"}},
     KPI_DICT: {
         KPI_UNCOUPLED_DICT: {a_kpi_name: {"Electricity": numbers[1]}},
         KPI_SCALARS_DICT: {},
@@ -74,7 +81,7 @@ dict_weighting_one_sector = {
 }
 
 dict_weighting_two_sectors = {
-    "project_data": {"sectors": {"Electricity": "E", "H2": "H"}},
+    PROJECT_DATA: {SECTORS: {"Electricity": "E", "H2": "H"}},
     KPI_DICT: {
         KPI_UNCOUPLED_DICT: {a_kpi_name: {"Electricity": numbers[1], "H2": numbers[2]}},
         KPI_SCALARS_DICT: {},

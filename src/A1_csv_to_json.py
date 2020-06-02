@@ -34,7 +34,7 @@ import warnings
 
 import pandas as pd
 
-from src.constants_json_strings import LABEL
+from src.constants_json_strings import LABEL, SECTORS
 from src.constants import (
     CSV_FNAME,
     CSV_SEPARATORS,
@@ -42,6 +42,7 @@ from src.constants import (
     REQUIRED_CSV_PARAMETERS,
     SIMULATION_SETTINGS,
     ECONOMIC_DATA,
+    PROJECT_DATA,
 )
 
 from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
@@ -450,7 +451,7 @@ def create_json_from_csv(
     # add exception for single dicts
     if filename in [
         ECONOMIC_DATA,
-        "project_data",
+        PROJECT_DATA,
         SIMULATION_SETTINGS,
     ]:
         return single_dict

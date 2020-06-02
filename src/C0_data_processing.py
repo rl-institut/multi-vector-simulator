@@ -16,6 +16,7 @@ from src.constants import (
     PLOTS_RESOURCES,
     SIMULATION_SETTINGS,
     ECONOMIC_DATA,
+    PROJECT_DATA,
 )
 
 from src.constants_json_strings import (
@@ -35,6 +36,7 @@ from src.constants_json_strings import (
     TAX,
     LABEL,
     CURR,
+    SECTORS,
 )
 
 
@@ -122,7 +124,7 @@ def identify_energy_vectors(dict_values):
                     )
                     names_of_sectors = names_of_sectors + energy_vector_name + ", "
 
-    dict_values["project_data"].update({"sectors": dict_of_sectors})
+    dict_values[PROJECT_DATA].update({SECTORS: dict_of_sectors})
     logging.info(
         "The energy system modelled includes following energy vectors / sectors: %s",
         names_of_sectors[:-2],
@@ -207,16 +209,16 @@ def process_all_assets(dict_values):
     define_busses(dict_values)
 
     # Define all excess sinks for sectors
-    for sector in dict_values["project_data"]["sectors"]:
+    for sector in dict_values[PROJECT_DATA][SECTORS]:
         define_sink(
             dict_values,
-            dict_values["project_data"]["sectors"][sector] + " excess",
+            dict_values[PROJECT_DATA][SECTORS][sector] + " excess",
             {"value": 0, UNIT: "currency/kWh"},
-            dict_values["project_data"]["sectors"][sector],
+            dict_values[PROJECT_DATA][SECTORS][sector],
         )
         logging.debug(
             "Created excess sink for sector %s",
-            dict_values["project_data"]["sectors"][sector],
+            dict_values[PROJECT_DATA][SECTORS][sector],
         )
 
     # process all energyAssets:
@@ -481,9 +483,9 @@ def define_busses(dict_values):
     dict_values.update({ENERGY_BUSSES: {}})
 
     # defines energy busses of sectors
-    for sector in dict_values["project_data"]["sectors"]:
+    for sector in dict_values[PROJECT_DATA][SECTORS]:
         dict_values[ENERGY_BUSSES].update(
-            {bus_suffix(dict_values["project_data"]["sectors"][sector]): {}}
+            {bus_suffix(dict_values[PROJECT_DATA][SECTORS][sector]): {}}
         )
     # defines busses accessed by conversion assets
     update_busses_in_out_direction(dict_values, dict_values[ENERGY_CONVERSION])

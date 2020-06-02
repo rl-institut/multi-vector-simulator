@@ -14,8 +14,10 @@ from src.constants_json_strings import (
     LABEL,
     SIMULATION_SETTINGS,
     ECONOMIC_DATA,
+    PROJECT_DATA,
     FIX_COST,
     CURR,
+    SECTORS,
 )
 
 
@@ -37,7 +39,7 @@ CSV_FNAME = "mvs_csv_config.json"
 REQUIRED_CSV_FILES = (
     FIX_COST,
     SIMULATION_SETTINGS,
-    "project_data",
+    PROJECT_DATA,
     ECONOMIC_DATA,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
@@ -165,7 +167,7 @@ REQUIRED_CSV_PARAMETERS = {
         "store_oemof_results",
         "timestep",
     ],
-    "project_data": [
+    PROJECT_DATA: [
         "country",
         LABEL,
         "latitude",

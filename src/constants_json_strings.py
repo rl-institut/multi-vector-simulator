@@ -16,7 +16,9 @@ ENERGY_PROVIDERS = "energyProviders"
 SIMULATION_SETTINGS = "simulation_settings"
 FIX_COST = "fixcost"
 ECONOMIC_DATA = "economic_data"
+PROJECT_DATA = "project_data"
 # Parameters
+SECTORS = "sectors"
 OEMOF_ASSET_TYPE = "type_oemof"
 # Allowed types
 OEMOF_TRANSFORMER = "transformer"

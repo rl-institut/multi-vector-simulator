@@ -30,6 +30,7 @@ from src.constants import (
     INPUTS_COPY,
     CSV_ELEMENTS,
     ECONOMIC_DATA,
+    PROJECT_DATA,
 )
 
 from src.constants_json_strings import (
@@ -39,6 +40,7 @@ from src.constants_json_strings import (
     ENERGY_PRODUCTION,
     OEMOF_ASSET_TYPE,
     LABEL,
+    SECTORS,
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -98,8 +100,8 @@ def create_app(results_json):
         "font-inpbox": "#FFFFFF",
     }
     # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
-    dfprojectData = pd.DataFrame.from_dict(results_json["project_data"])
-    dfeconomicData = pd.DataFrame.from_dict(results_json[ECONOMIC_DATA]).loc["value"]
+    dfprojectData = pd.DataFrame.from_dict(results_json[PROJECT_DATA])
+    dfeconomicData = pd.DataFrame.from_dict(results_json[ECONOMIC_DATA]).loc[VALUE]
 
     # Obtaining the coordinates of the project location
     coordinates = (
@@ -168,7 +170,7 @@ def create_app(results_json):
 
     # Determining the sectors which were simulated
 
-    sectors = list(results_json["project_data"]["sectors"].keys())
+    sectors = list(results_json[PROJECT_DATA][SECTORS].keys())
     sec_list = """"""
     for sec in sectors:
         sec_list += "\n" + f"\u2022 {sec.upper()}"

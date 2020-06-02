@@ -13,6 +13,8 @@ from src.constants import (
     TYPE_DATAFRAME,
     TYPE_TIMESTAMP,
     SIMULATION_SETTINGS,
+    PROJECT_DATA,
+    SECTORS,
 )
 
 r"""
@@ -51,8 +53,8 @@ def evaluate_dict(dict_values, path_pdf_report=None):
         "Summarizing simulation results to results_timeseries and results_scalars_assets."
     )
 
-    for sector in dict_values["project_data"]["sectors"]:
-        sector_name = dict_values["project_data"]["sectors"][sector]
+    for sector in dict_values[PROJECT_DATA][SECTORS]:
+        sector_name = dict_values[PROJECT_DATA][SECTORS][sector]
 
         logging.info("Aggregating flows for the %s sector.", sector_name)
 
@@ -60,7 +62,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
         F1_plots.flows(
             dict_values,
             dict_values[SIMULATION_SETTINGS],
-            dict_values["project_data"],
+            dict_values[PROJECT_DATA],
             dict_values["optimizedFlows"][sector_name + " bus"],
             sector,
             14,
@@ -70,7 +72,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
         F1_plots.flows(
             dict_values,
             dict_values[SIMULATION_SETTINGS],
-            dict_values["project_data"],
+            dict_values[PROJECT_DATA],
             dict_values["optimizedFlows"][sector_name + " bus"],
             sector,
             365,
@@ -182,7 +184,7 @@ def plot_optimized_capacities(dict_values):
         F1_plots.capacities(
             dict_values,
             dict_values[SIMULATION_SETTINGS],
-            dict_values["project_data"],
+            dict_values[PROJECT_DATA],
             dict_values["kpi"]["scalar_matrix"]["label"],
             dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
         )
@@ -247,7 +249,7 @@ def store_timeseries_all_busses_to_excel(dict_values):
             F1_plots.flows(
                 dict_values,
                 dict_values[SIMULATION_SETTINGS],
-                dict_values["project_data"],
+                dict_values[PROJECT_DATA],
                 dict_values["optimizedFlows"][bus],
                 bus,
                 365,

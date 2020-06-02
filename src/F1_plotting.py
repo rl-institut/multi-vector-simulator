@@ -10,6 +10,7 @@ from src.constants import (
     PLOTS_NX,
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
+    PROJECT_DATA,
 )
 
 r"""
@@ -208,9 +209,9 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
             + " costs ("
             + str(round(total, 2))
             + "$): "
-            + dict_values["project_data"]["project_name"]
+            + dict_values[PROJECT_DATA]["project_name"]
             + ", "
-            + dict_values["project_data"]["scenario_name"]
+            + dict_values[PROJECT_DATA]["scenario_name"]
         )
 
         plot_a_piechart(
@@ -237,9 +238,9 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
                 + "% of "
                 + str(round(total, 2))
                 + "$): "
-                + dict_values["project_data"]["project_name"]
+                + dict_values[PROJECT_DATA]["project_name"]
                 + ", "
-                + dict_values["project_data"]["scenario_name"]
+                + dict_values[PROJECT_DATA]["scenario_name"]
             )
 
             plot_a_piechart(

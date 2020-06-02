@@ -21,7 +21,7 @@ import pytest
 import src.A0_initialization as initializing
 import src.B0_data_input_json as B0
 import src.F0_output as F0
-from src.constants_json_strings import LABEL
+from src.constants_json_strings import LABEL, PROJECT_DATA, SECTORS
 from mvs_eland_tool import main
 from .constants import (
     EXECUTE_TESTS_ON,
@@ -90,10 +90,7 @@ class TestFileCreation:
         """ """
         dict_scalar_capacities = {
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
-            "project_data": {
-                "project_name": "a_project",
-                "scenario_name": "a_scenario",
-            },
+            PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
             "kpi": {
                 "scalar_matrix": pd.DataFrame(
                     {LABEL: ["asset_a", "asset_b"], "optimizedAddCap": [0, 0]}
@@ -108,10 +105,7 @@ class TestFileCreation:
         """ """
         dict_scalar_capacities = {
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
-            "project_data": {
-                "project_name": "a_project",
-                "scenario_name": "a_scenario",
-            },
+            PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
             "kpi": {
                 "scalar_matrix": pd.DataFrame(
                     {LABEL: ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
@@ -147,10 +141,7 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
         """ """
         dict_timeseries_test_one_bus = {
-            "project_data": {
-                "project_name": "a_project",
-                "scenario_name": "a_scenario",
-            },
+            PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS},
         }
@@ -168,10 +159,7 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         """ """
         dict_timeseries_test_two_busses = {
-            "project_data": {
-                "project_name": "a_project",
-                "scenario_name": "a_scenario",
-            },
+            PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
             "simulation_settings": {"path_output_folder": OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS, "b_bus": BUS},
         }

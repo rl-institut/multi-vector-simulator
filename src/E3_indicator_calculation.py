@@ -17,12 +17,14 @@ from src.constants import (
     KPI_SCALARS_DICT,
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
+    PROJECT_DATA,
 )
 from src.constants_json_strings import (
     VALUE,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
     ENERGY_PROVIDERS,
+    SECTORS,
 )
 
 
@@ -81,7 +83,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
 
     renewable_origin = {}
     non_renewable_origin = {}
-    for sector in dict_values["project_data"]["sectors"]:
+    for sector in dict_values[PROJECT_DATA][SECTORS]:
         renewable_origin.update({sector: 0})
         non_renewable_origin.update({sector: 0})
 
@@ -154,7 +156,7 @@ def renewable_share(dict_values):
     """
     kpi_name = "Renewable share"
     dict_renewable_share = {}
-    for sector in dict_values["project_data"]["sectors"]:
+    for sector in dict_values[PROJECT_DATA][SECTORS]:
         total_res = dict_values[KPI_DICT][KPI_UNCOUPLED_DICT][
             "Total renewable energy use"
         ][sector]
@@ -317,7 +319,7 @@ def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
     """
     energy_equivalent = 0
 
-    for sector in dict_values["project_data"]["sectors"]:
+    for sector in dict_values[PROJECT_DATA][SECTORS]:
         if sector in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
             energy_equivalent += (
                 dict_values[KPI_DICT][KPI_UNCOUPLED_DICT][kpi_name][sector]

@@ -9,7 +9,7 @@ from src.constants_json_strings import (
     DISCOUNTFACTOR,
     TAX,
     VALUE,
-    CURR,
+    SECTORS,
 )
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
@@ -145,7 +145,7 @@ def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear
 def test_asess_energyVectors_and_add_to_project_data():
     C2.identify_energy_vectors(dict_values)
     assert 1 == 0
-    # assert "sector" in dict_values["project_data"].keys()
+    # assert "sector" in dict_values[PROJECT_DATA].keys()
 
 #Create a sink for each energyVector (this actually might be changed in the future - create an excess sink for each bus?)
 def test_create_excess_sinks_for_each_energyVector():
