@@ -86,11 +86,11 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
             if dict_values[ENERGY_PRODUCTION][asset]["renewableAsset"][VALUE] is True:
                 renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][asset][
                     "total_flow"
-                ]["value"]
+                ][VALUE]
             else:
                 non_renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][asset][
                     "total_flow"
-                ]["value"]
+                ][VALUE]
 
     dict_values[KPI_DICT][KPI_UNCOUPLED_DICT].update(
         {
@@ -105,13 +105,13 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
             "connected_consumption_sources"
         ]:
             renewable_origin[sector] += (
-                dict_values[ENERGY_PRODUCTION][DSO_source]["total_flow"]["value"]
-                * dict_values["energyProviders"][DSO]["renewable_share"]["value"]
+                dict_values[ENERGY_PRODUCTION][DSO_source]["total_flow"][VALUE]
+                * dict_values["energyProviders"][DSO]["renewable_share"][VALUE]
             )
             non_renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][DSO_source][
                 "total_flow"
-            ]["value"] * (
-                1 - dict_values["energyProviders"][DSO]["renewable_share"]["value"]
+            ][VALUE] * (
+                1 - dict_values["energyProviders"][DSO]["renewable_share"][VALUE]
             )
 
     dict_values[KPI_DICT][KPI_UNCOUPLED_DICT].update(
@@ -235,7 +235,7 @@ def assert_aggregated_flows_of_energy_conversion_equivalent(dict_values):
         sector = dict_values[ENERGY_CONVERSION][asset]["energyVector"]
         total_flow_of_energy_conversion_equivalent += (
             dict_values[ENERGY_CONVERSION][asset]["total_aggregated_flow"]
-            * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector]["value"]
+            * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector][VALUE]
         )
 
     dict_values[KPI_DICT][KPI_SCALARS_DICT].update(
@@ -288,8 +288,8 @@ def equation_co2_emissions(dict_values):
     co2_emissions = 0
     for asset in dict_values[ENERGY_PRODUCTION]:
         co2_emissions += (
-            dict_values[ENERGY_PRODUCTION][asset]["total_aggregated_flow"]["value"]
-            * dict_values[ENERGY_PRODUCTION][asset]["emissionFactor"]["value"]
+            dict_values[ENERGY_PRODUCTION][asset]["total_aggregated_flow"][VALUE]
+            * dict_values[ENERGY_PRODUCTION][asset]["emissionFactor"][VALUE]
         )
     return co2_emissions
 
@@ -316,7 +316,7 @@ def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
         if sector in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
             energy_equivalent += (
                 dict_values[KPI_DICT][KPI_UNCOUPLED_DICT][kpi_name][sector]
-                * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector]["value"]
+                * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector][VALUE]
             )
         else:
             raise ValueError(

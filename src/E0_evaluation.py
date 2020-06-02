@@ -10,6 +10,7 @@ from src.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
     ENERGY_BUSSES,
+    VALUE,
 )
 
 import src.E1_process_results as process_results
@@ -122,7 +123,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
                     round(
                         dict_values[ENERGY_STORAGE][storage]["storage capacity"][
                             "optimizedAddCap"
-                        ]["value"],
+                        ][VALUE],
                         1,
                     )
                 )
@@ -189,7 +190,7 @@ def store_result_matrix(dict_kpi, dict_asset):
                     asset_result_dict.update({key: dict_asset[key]})
                 else:
                     asset_result_dict.update(
-                        {key: round(dict_asset[key]["value"], round_to_comma)}
+                        {key: round(dict_asset[key][VALUE], round_to_comma)}
                     )
 
         asset_result_df = pd.DataFrame([asset_result_dict])
