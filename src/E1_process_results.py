@@ -8,7 +8,7 @@ Module E1 processes the oemof results.
 - add the evaluation of time series
 
 """
-from src.constants_json_strings import UNIT
+from src.constants_json_strings import UNIT, SIMULATION_SETTINGS
 
 import logging
 
@@ -38,7 +38,7 @@ def get_timeseries_per_bus(dict_values, bus_data):
     bus_data_timeseries = {}
     for bus in bus_data.keys():
         bus_data_timeseries.update(
-            {bus: pd.DataFrame(index=dict_values["simulation_settings"]["time_index"])}
+            {bus: pd.DataFrame(index=dict_values[SIMULATION_SETTINGS]["time_index"])}
         )
 
         # obtain flows that flow into the bus

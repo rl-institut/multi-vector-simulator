@@ -15,6 +15,7 @@ from src.constants_json_strings import (
     OEMOF_SOURCE,
     OEMOF_TRANSFORMER,
     VALUE,
+    SIMULATION_SETTINGS,
 )
 
 """
@@ -107,7 +108,7 @@ class model_building:
         """
         logging.info("Initializing oemof simulation.")
         model = solph.EnergySystem(
-            timeindex=dict_values["simulation_settings"]["time_index"]
+            timeindex=dict_values[SIMULATION_SETTINGS]["time_index"]
         )
 
         # this dictionary will include all generated oemof objects
@@ -202,8 +203,8 @@ class model_building:
         None
         """
         if (
-            dict_values["simulation_settings"]["display_nx_graph"][VALUE] == True
-            or dict_values["simulation_settings"]["store_nx_graph"][VALUE] is True
+            dict_values[SIMULATION_SETTINGS]["display_nx_graph"][VALUE] == True
+            or dict_values[SIMULATION_SETTINGS]["store_nx_graph"][VALUE] is True
         ):
             from src.F1_plotting import draw_graph
 
@@ -211,9 +212,9 @@ class model_building:
                 dict_values,
                 model,
                 node_color={},
-                show_plot=dict_values["simulation_settings"]["display_nx_graph"][VALUE],
-                save_plot=dict_values["simulation_settings"]["store_nx_graph"][VALUE],
-                user_input=dict_values["simulation_settings"],
+                show_plot=dict_values[SIMULATION_SETTINGS]["display_nx_graph"][VALUE],
+                save_plot=dict_values[SIMULATION_SETTINGS]["store_nx_graph"][VALUE],
+                user_input=dict_values[SIMULATION_SETTINGS],
             )
             logging.debug("Created networkx graph of the energy system.")
         return
@@ -252,9 +253,9 @@ class model_building:
         Nothing.
         """
         path_lp_file = os.path.join(
-            dict_values["simulation_settings"]["path_output_folder"], "lp_file.lp"
+            dict_values[SIMULATION_SETTINGS]["path_output_folder"], "lp_file.lp"
         )
-        if dict_values["simulation_settings"]["output_lp_file"][VALUE] == True:
+        if dict_values[SIMULATION_SETTINGS]["output_lp_file"][VALUE] == True:
             logging.debug("Saving to lp-file.")
             local_energy_system.write(
                 path_lp_file, io_options={"symbolic_solver_labels": True},
@@ -329,14 +330,14 @@ class model_building:
         None
         """
         # store energy system with results
-        if dict_values["simulation_settings"]["store_oemof_results"][VALUE] == True:
+        if dict_values[SIMULATION_SETTINGS]["store_oemof_results"][VALUE] == True:
             model.dump(
-                dpath=dict_values["simulation_settings"]["path_output_folder"],
+                dpath=dict_values[SIMULATION_SETTINGS]["path_output_folder"],
                 filename="oemof_simulation_results.oemof",
             )
             logging.debug(
                 "Stored results in %s/MVS_results.oemof.",
-                dict_values["simulation_settings"]["path_output_folder"],
+                dict_values[SIMULATION_SETTINGS]["path_output_folder"],
             )
         return
 

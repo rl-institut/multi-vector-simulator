@@ -11,6 +11,8 @@ from src.constants_json_strings import (
     PROJECT_DURATION,
     DISCOUNTFACTOR,
     TAX,
+    LABEL,
+    SIMULATION_SETTINGS,
 )
 
 
@@ -31,7 +33,7 @@ CSV_FNAME = "mvs_csv_config.json"
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = (
     "fixcost",
-    "simulation_settings",
+    SIMULATION_SETTINGS,
     "project_data",
     "economic_data",
     ENERGY_CONVERSION,
@@ -79,7 +81,7 @@ REQUIRED_CSV_PARAMETERS = {
     ENERGY_CONSUMPTION: [
         "dsm",
         "file_name",
-        "label",
+        LABEL,
         "type_asset",
         OEMOF_ASSET_TYPE,
         "energyVector",
@@ -93,7 +95,7 @@ REQUIRED_CSV_PARAMETERS = {
         "efficiency",
         "inflow_direction",
         "installedCap",
-        "label",
+        LABEL,
         "lifetime",
         "opex_fix",
         "opex_var",
@@ -105,7 +107,7 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     ENERGY_STORAGE: [
         "inflow_direction",
-        "label",
+        LABEL,
         "optimizeCap",
         "outflow_direction",
         OEMOF_ASSET_TYPE,
@@ -118,7 +120,7 @@ REQUIRED_CSV_PARAMETERS = {
         "capex_var",
         "file_name",
         "installedCap",
-        "label",
+        LABEL,
         "lifetime",
         "opex_fix",
         "opex_var",
@@ -132,7 +134,7 @@ REQUIRED_CSV_PARAMETERS = {
         "energy_price",
         "feedin_tariff",
         "inflow_direction",
-        "label",
+        LABEL,
         "optimizeCap",
         "outflow_direction",
         "peak_demand_pricing",
@@ -144,14 +146,14 @@ REQUIRED_CSV_PARAMETERS = {
         "age_installed",
         "capex_fix",
         "capex_var",
-        "label",
+        LABEL,
         "lifetime",
         "opex_fix",
         "opex_var",
     ],
-    "simulation_settings": [
+    SIMULATION_SETTINGS: [
         "evaluated_period",
-        "label",
+        LABEL,
         "output_lp_file",
         "restore_from_oemof_file",
         "display_nx_graph",
@@ -162,7 +164,7 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     "project_data": [
         "country",
-        "label",
+        LABEL,
         "latitude",
         "longitude",
         "project_id",
@@ -170,7 +172,7 @@ REQUIRED_CSV_PARAMETERS = {
         "scenario_id",
         "scenario_name",
     ],
-    "economic_data": ["currency", DISCOUNTFACTOR, "label", PROJECT_DURATION, TAX,],
+    "economic_data": ["currency", DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX,],
 }
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder

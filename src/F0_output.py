@@ -7,7 +7,13 @@ import pandas as pd
 
 import src.F1_plotting as F1_plots
 import src.F2_autoreport as autoreport
-from .constants import TYPE_DATETIMEINDEX, TYPE_SERIES, TYPE_DATAFRAME, TYPE_TIMESTAMP
+from src.constants import (
+    TYPE_DATETIMEINDEX,
+    TYPE_SERIES,
+    TYPE_DATAFRAME,
+    TYPE_TIMESTAMP,
+    SIMULATION_SETTINGS,
+)
 
 r"""
 Module F0 Output
@@ -53,7 +59,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
         # Plot flows for one sector for the 14 first days
         F1_plots.flows(
             dict_values,
-            dict_values["simulation_settings"],
+            dict_values[SIMULATION_SETTINGS],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
             sector,
@@ -63,7 +69,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
         # Plot flows for one sector for a year
         F1_plots.flows(
             dict_values,
-            dict_values["simulation_settings"],
+            dict_values[SIMULATION_SETTINGS],
             dict_values["project_data"],
             dict_values["optimizedFlows"][sector_name + " bus"],
             sector,
@@ -78,8 +84,8 @@ def evaluate_dict(dict_values, path_pdf_report=None):
 
         # Initialize
         total_demand = pd.Series(
-            [0 for i in dict_values["simulation_settings"]["time_index"]],
-            index=dict_values["simulation_settings"]["time_index"],
+            [0 for i in dict_values[SIMULATION_SETTINGS]["time_index"]],
+            index=dict_values[SIMULATION_SETTINGS]["time_index"],
         )
 
         # Add demands (exclude excess)
@@ -111,7 +117,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
 
     store_as_json(
         dict_values,
-        dict_values["simulation_settings"]["path_output_folder"],
+        dict_values[SIMULATION_SETTINGS]["path_output_folder"],
         "json_with_results",
     )
 
@@ -175,7 +181,7 @@ def plot_optimized_capacities(dict_values):
     if show_optimal_capacities is True:
         F1_plots.capacities(
             dict_values,
-            dict_values["simulation_settings"],
+            dict_values[SIMULATION_SETTINGS],
             dict_values["project_data"],
             dict_values["kpi"]["scalar_matrix"]["label"],
             dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
@@ -199,7 +205,7 @@ def store_scalars_to_excel(dict_values):
     """
     results_scalar_output_file = "/scalars" + ".xlsx"
     with pd.ExcelWriter(
-        dict_values["simulation_settings"]["path_output_folder"]
+        dict_values[SIMULATION_SETTINGS]["path_output_folder"]
         + results_scalar_output_file
     ) as open_file:  # doctest: +SKIP
         for kpi_set in dict_values["kpi"]:
@@ -234,14 +240,13 @@ def store_timeseries_all_busses_to_excel(dict_values):
 
     timeseries_output_file = "/timeseries_all_busses" + ".xlsx"
     with pd.ExcelWriter(
-        dict_values["simulation_settings"]["path_output_folder"]
-        + timeseries_output_file
+        dict_values[SIMULATION_SETTINGS]["path_output_folder"] + timeseries_output_file
     ) as open_file:  # doctest: +SKIP
         for bus in dict_values["optimizedFlows"]:
             dict_values["optimizedFlows"][bus].to_excel(open_file, sheet_name=bus)
             F1_plots.flows(
                 dict_values,
-                dict_values["simulation_settings"],
+                dict_values[SIMULATION_SETTINGS],
                 dict_values["project_data"],
                 dict_values["optimizedFlows"][bus],
                 bus,

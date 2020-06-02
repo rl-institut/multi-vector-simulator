@@ -25,14 +25,19 @@ from src.constants import (
     PLOTS_RESOURCES,
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
+    REPO_PATH,
+    OUTPUT_FOLDER,
+    INPUTS_COPY,
+    CSV_ELEMENTS,
 )
-from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
+
 from src.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
     ENERGY_PRODUCTION,
     OEMOF_ASSET_TYPE,
+    LABEL,
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -268,7 +273,7 @@ def create_app(results_json):
     # Renaming the columns
     df_scalar_matrix = df_scalar_matrix.rename(
         columns={
-            "label": "Component/Parameter",
+            LABEL: "Component/Parameter",
             "optimizedAddCap": "CAP",
             "annual_total_flow": "Aggregated Flow",
         }
@@ -293,7 +298,7 @@ def create_app(results_json):
     # Rename some of the column names
     df_cost_matrix = df_cost_matrix.rename(
         columns={
-            "label": "Component",
+            LABEL: "Component",
             "costs_total": "CAP",
             "costs_upfront": "Upfront Investment Costs",
         }

@@ -13,6 +13,7 @@ ENERGY_STORAGE = "energyStorage"
 ENERGY_BUSSES = "energyBusses"
 
 ENERGY_PROVIDERS = "energyProviders"
+SIMULATION_SETTINGS = "simulation_settings"
 
 # Parameters
 OEMOF_ASSET_TYPE = "type_oemof"

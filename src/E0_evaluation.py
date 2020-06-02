@@ -11,6 +11,7 @@ from src.constants_json_strings import (
     ENERGY_STORAGE,
     ENERGY_BUSSES,
     VALUE,
+    SIMULATION_SETTINGS,
 )
 
 import src.E1_process_results as process_results
@@ -93,7 +94,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
             }
         )
         process_results.get_storage_results(
-            dict_values["simulation_settings"],
+            dict_values[SIMULATION_SETTINGS],
             bus_data[dict_values[ENERGY_STORAGE][storage]["label"]],
             dict_values[ENERGY_STORAGE][storage],
         )
@@ -139,7 +140,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     for asset in dict_values[ENERGY_CONVERSION]:
         process_results.get_results(
-            dict_values["simulation_settings"],
+            dict_values[SIMULATION_SETTINGS],
             bus_data,
             dict_values[ENERGY_CONVERSION][asset],
         )
@@ -151,7 +152,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     for group in [ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:
             process_results.get_results(
-                dict_values["simulation_settings"], bus_data, dict_values[group][asset],
+                dict_values[SIMULATION_SETTINGS], bus_data, dict_values[group][asset],
             )
             economics.get_costs(dict_values[group][asset], dict_values["economic_data"])
             store_result_matrix(dict_values["kpi"], dict_values[group][asset])

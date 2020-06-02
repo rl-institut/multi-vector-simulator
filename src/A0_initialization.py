@@ -33,6 +33,7 @@ import shutil
 
 from oemof.tools import logger
 
+from src.constants_json_strings import LABEL
 from src.constants import (
     REPO_PATH,
     DEFAULT_INPUT_PATH,
@@ -45,6 +46,7 @@ from src.constants import (
     INPUTS_COPY,
     DEFAULT_MAIN_KWARGS,
     PDF_REPORT,
+    SIMULATION_SETTINGS,
 )
 
 
@@ -292,7 +294,7 @@ def process_user_arguments(
     check_output_folder(path_input_folder, path_output_folder, overwrite)
 
     user_input = {
-        "label": "simulation_settings",
+        LABEL: SIMULATION_SETTINGS,
         "path_input_folder": path_input_folder,
         "input_type": input_type,
         "path_input_file": path_input_file,

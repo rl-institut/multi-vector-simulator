@@ -1,21 +1,28 @@
 import os
+import shutil
 
+import oemof.solph
+import pandas as pd
 import pytest
 
 import src.D0_modelling_and_optimization as D0
 from src.B0_data_input_json import load_json
+from src.constants_json_strings import (
+    ENERGY_BUSSES,
+    ENERGY_CONSUMPTION,
+    OEMOF_TRANSFORMER,
+    OEMOF_ASSET_TYPE,
+    LABEL,
+)
+from src.constants_json_strings import SIMULATION_SETTINGS
+from tests.constants import TEST_REPO_PATH
 
 json_path = os.path.join("tests", "test_data", "test_data_for_D0.json")
 
 dict_values = load_json(json_path)
 
-from tests.constants import TEST_REPO_PATH
-
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
-dict_values["simulation_settings"].update({"path_output_folder": TEST_OUTPUT_PATH})
-
-# Necessary as
-import shutil
+dict_values[SIMULATION_SETTINGS].update({"path_output_folder": TEST_OUTPUT_PATH})
 
 
 def setup_function():
@@ -36,21 +43,12 @@ def test_if_model_building_time_measured_and_stored():
     assert isinstance(dict_values["simulation_results"]["modelling_time"], float)
 
 
-import pandas as pd
-import oemof.solph
-from src.constants_json_strings import (
-    ENERGY_BUSSES,
-    ENERGY_CONSUMPTION,
-    OEMOF_TRANSFORMER,
-    OEMOF_ASSET_TYPE,
-)
-
 START_TIME = "2020-01-01 00:00"
 PERIODS = 3
 pandas_DatetimeIndex = pd.date_range(start=START_TIME, periods=PERIODS, freq="60min")
 
 dict_values_minimal = {
-    "simulation_settings": {"time_index": pandas_DatetimeIndex},
+    SIMULATION_SETTINGS: {"time_index": pandas_DatetimeIndex},
     ENERGY_BUSSES: "bus",
 }
 
@@ -102,7 +100,7 @@ def test_networkx_graph_requested_store_nx_graph_true():
     D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    dict_values["simulation_settings"]["store_nx_graph"].update({"value": True})
+    dict_values[SIMULATION_SETTINGS]["store_nx_graph"].update({"value": True})
     D0.model_building.plot_networkx_graph(dict_values, model)
     assert os.path.exists(path_networkx) is True
 
@@ -112,7 +110,7 @@ def test_networkx_graph_requested_store_nx_graph_false():
     D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    dict_values["simulation_settings"]["store_nx_graph"].update({"value": False})
+    dict_values[SIMULATION_SETTINGS]["store_nx_graph"].update({"value": False})
     D0.model_building.plot_networkx_graph(dict_values, model)
     assert os.path.exists(path_networkx) is False
 
@@ -128,7 +126,7 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_true():
         dict_values, dict_model, model
     )
     local_energy_system = solph.Model(model)
-    dict_values["simulation_settings"]["output_lp_file"].update({"value": True})
+    dict_values[SIMULATION_SETTINGS]["output_lp_file"].update({"value": True})
     D0.model_building.store_lp_file(dict_values, local_energy_system)
     assert os.path.exists(path_lp_file) is True
 
@@ -139,7 +137,7 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_false():
         dict_values, dict_model, model
     )
     local_energy_system = solph.Model(model)
-    dict_values["simulation_settings"]["output_lp_file"].update({"value": False})
+    dict_values[SIMULATION_SETTINGS]["output_lp_file"].update({"value": False})
     D0.model_building.store_lp_file(dict_values, local_energy_system)
     assert os.path.exists(path_lp_file) is False
 
@@ -148,7 +146,7 @@ path_oemof_file = os.path.join(TEST_OUTPUT_PATH, "oemof_simulation_results.oemof
 
 
 def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_true():
-    dict_values["simulation_settings"]["store_oemof_results"].update({"value": True})
+    dict_values[SIMULATION_SETTINGS]["store_oemof_results"].update({"value": True})
     D0.run_oemof(dict_values)
     assert os.path.exists(path_oemof_file) is True
 
@@ -161,5 +159,5 @@ def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false():
 
 def test_if_simulation_results_added_to_dict_values():
     D0.run_oemof(dict_values)
-    for k in ("label", "objective_value", "simulation_time"):
+    for k in (LABEL, "objective_value", "simulation_time"):
         assert k in dict_values["simulation_results"].keys()

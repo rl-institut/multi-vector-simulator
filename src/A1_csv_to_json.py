@@ -34,6 +34,7 @@ import warnings
 
 import pandas as pd
 
+from src.constants_json_strings import LABEL
 from src.constants import (
     CSV_FNAME,
     CSV_SEPARATORS,
@@ -359,7 +360,7 @@ def create_json_from_csv(
                 df = df_copy[df_copy[column].notna()]
 
             for param, row in df.iterrows():
-                if param == "label":
+                if param == LABEL:
                     asset_name_string = asset_name_string + row[column] + ", "
 
                 # Find type of input value (csv file is read into df as an object)

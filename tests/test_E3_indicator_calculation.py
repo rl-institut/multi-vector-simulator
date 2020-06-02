@@ -4,14 +4,14 @@ import pandas as pd
 import pytest
 
 import src.E3_indicator_calculation as E3
-from src.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
 from src.constants import (
+    DEFAULT_WEIGHTS_ENERGY_CARRIERS,
     KPI_DICT,
     KPI_SCALARS_DICT,
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
 )
-from src.constants_json_strings import ENERGY_PRODUCTION, ENERGY_PROVIDERS
+from src.constants_json_strings import ENERGY_PRODUCTION, ENERGY_PROVIDERS, LABEL
 
 numbers = [10, 15, 20, 25]
 
@@ -20,7 +20,7 @@ dict_scalars = {
     KPI_DICT: {
         KPI_COST_MATRIX: pd.DataFrame(
             {
-                "label": ["asset_1", "asset_2"],
+                LABEL: ["asset_1", "asset_2"],
                 "cost": [numbers[1], numbers[3]],
                 "annuity": [numbers[0], numbers[2]],
             }
