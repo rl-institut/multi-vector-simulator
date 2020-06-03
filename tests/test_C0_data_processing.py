@@ -2,6 +2,7 @@ import pandas as pd
 import pytest
 
 import src.C0_data_processing as C0
+
 from src.constants_json_strings import (
     UNIT,
     ENERGY_PROVIDERS,
@@ -30,7 +31,7 @@ from src.constants_json_strings import (
     LIFETIME_OPEX_FIX,
     LIFETIME_OPEX_VAR,
 )
-
+from .constants import TYPE_STR
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 def test_retrieve_datetimeindex_for_simulation():
@@ -145,7 +146,7 @@ def test_determine_lifetime_opex_var_as_timeseries():
 
 
 def test_determine_lifetime_opex_var_is_other():
-    dict_asset = {OPEX_VAR: {VALUE: "str"}}
+    dict_asset = {OPEX_VAR: {VALUE: TYPE_STR}}
     with pytest.raises(ValueError):
         C0.determine_lifetime_opex_var(dict_asset, economic_data)
 

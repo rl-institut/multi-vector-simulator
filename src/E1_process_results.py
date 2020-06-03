@@ -12,6 +12,7 @@ import logging
 
 import pandas as pd
 
+from src.constants import TYPE_NONE
 from src.constants_json_strings import (
     UNIT,
     SIMULATION_SETTINGS,
@@ -115,7 +116,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     ]
     add_info_flows(settings, dict_asset[OUTPUT_POWER], power_discharge)
 
-    capacity = storage_bus["sequences"][((dict_asset[LABEL], "None"), "capacity")]
+    capacity = storage_bus["sequences"][((dict_asset[LABEL], TYPE_NONE), "capacity")]
     add_info_flows(settings, dict_asset[STORAGE_CAPACITY], capacity)
 
     if OPTIMIZE_CAP in dict_asset:
@@ -154,7 +155,9 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_discharge,
             )
 
-            capacity = storage_bus["scalars"][((dict_asset[LABEL], "None"), "invest")]
+            capacity = storage_bus["scalars"][
+                ((dict_asset[LABEL], TYPE_NONE), "invest")
+            ]
             dict_asset[STORAGE_CAPACITY].update(
                 {
                     OPTIMIZED_ADD_CAP: {

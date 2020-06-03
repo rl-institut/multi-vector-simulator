@@ -178,6 +178,9 @@ TYPE_DATETIMEINDEX = "pandas_DatetimeIndex:"
 TYPE_SERIES = "pandas_Series:"
 TYPE_DATAFRAME = "pandas_Dataframe:"
 TYPE_TIMESTAMP = "pandas_Timestamp:"
+TYPE_BOOL = "bool"
+TYPE_STR = "str"
+TYPE_NONE = "None"
 
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
     "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1},

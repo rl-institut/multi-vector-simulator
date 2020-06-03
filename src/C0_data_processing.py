@@ -14,11 +14,9 @@ from src.constants import (
     PATHS_TO_PLOTS,
     PLOTS_DEMANDS,
     PLOTS_RESOURCES,
-    SIMULATION_SETTINGS,
-    ECONOMIC_DATA,
-    PROJECT_DATA,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
+    TYPE_BOOL,
 )
 
 from src.constants_json_strings import *
@@ -420,7 +418,7 @@ def define_missing_cost_data(dict_values, dict_asset):
     economic_data = dict_values[ECONOMIC_DATA]
 
     basic_costs = {
-        OPTIMIZE_CAP: {VALUE: False, UNIT: "bool"},
+        OPTIMIZE_CAP: {VALUE: False, UNIT: TYPE_BOOL},
         UNIT: "?",
         INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
         CAPEX_FIX: {VALUE: 0, UNIT: CURR},
@@ -734,7 +732,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
 
         source.update(
             {
-                OPTIMIZE_CAP: {VALUE: True, UNIT: "bool"},
+                OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
                 TIMESERIES_PEAK: {VALUE: max(timeseries), UNIT: "kW"},
                 # todo if we have normalized timeseries hiere, the capex/opex (simulation) have changed, too
                 TIMESERIES_NORMALIZED: timeseries / max(timeseries),
@@ -755,7 +753,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                 source[OPEX_VAR][VALUE],
             )
     else:
-        source.update({OPTIMIZE_CAP: {VALUE: False, UNIT: "bool"}})
+        source.update({OPTIMIZE_CAP: {VALUE: False, UNIT: TYPE_BOOL}})
 
     # add the parameter MAXIMUM_CAP to DSO source
     source.update({MAXIMUM_CAP: {VALUE: None, UNIT: "kWp"}})
@@ -856,14 +854,17 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
 
     if CAPEX_VAR in kwargs:
         sink.update(
-            {CAPEX_VAR: kwargs[CAPEX_VAR], OPTIMIZE_CAP: {VALUE: True, UNIT: "bool"},}
+            {
+                CAPEX_VAR: kwargs[CAPEX_VAR],
+                OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
+            }
         )
     if OPEX_FIX in kwargs:
         sink.update(
-            {OPEX_FIX: kwargs[OPEX_FIX], OPTIMIZE_CAP: {VALUE: True, UNIT: "bool"},}
+            {OPEX_FIX: kwargs[OPEX_FIX], OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},}
         )
     else:
-        sink.update({OPTIMIZE_CAP: {VALUE: False, UNIT: "bool"}})
+        sink.update({OPTIMIZE_CAP: {VALUE: False, UNIT: TYPE_BOOL}})
 
     # update dictionary
     dict_values[ENERGY_CONSUMPTION].update({asset_name: sink})

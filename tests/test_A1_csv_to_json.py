@@ -23,6 +23,7 @@ from .constants import (
     DUMMY_CSV_PATH,
     REQUIRED_CSV_FILES,
     PATHS_TO_PLOTS,
+    TYPE_BOOL,
 )
 
 CSV_PARAMETERS = ["param1", "param2"]
@@ -39,7 +40,7 @@ CSV_LIST = {
     "param1": ["one", "two"],
     "param2": {UNIT: "factor", VALUE: [1.02, 3.04]},
     "param3": {UNIT: "currency/kWh", VALUE: [0.2, 0.7]},
-    "param4": {UNIT: "bool", VALUE: [True, False, True]},
+    "param4": {UNIT: TYPE_BOOL, VALUE: [True, False, True]},
     "param5": {UNIT: "year", VALUE: [2, 7]},
 }
 
@@ -47,12 +48,12 @@ CONVERSION_TYPE = {
     "param_str": "one",
     "param_factor": {UNIT: "factor", VALUE: 1.04},
     "param_cur": {UNIT: "currency/kWh", VALUE: 18.9},
-    "param_bool1": {UNIT: "bool", VALUE: True},
-    "param_bool2": {UNIT: "bool", VALUE: True},
-    "param_bool3": {UNIT: "bool", VALUE: False},
-    "param_bool4": {UNIT: "bool", VALUE: False},
-    "param_bool5": {UNIT: "bool", VALUE: True},
-    "param_bool6": {UNIT: "bool", VALUE: False},
+    "param_bool1": {UNIT: TYPE_BOOL, VALUE: True},
+    "param_bool2": {UNIT: TYPE_BOOL, VALUE: True},
+    "param_bool3": {UNIT: TYPE_BOOL, VALUE: False},
+    "param_bool4": {UNIT: TYPE_BOOL, VALUE: False},
+    "param_bool5": {UNIT: TYPE_BOOL, VALUE: True},
+    "param_bool6": {UNIT: TYPE_BOOL, VALUE: False},
     "param_year": {UNIT: "year", VALUE: 8},
 }
 

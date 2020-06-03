@@ -28,6 +28,9 @@ from src.constants import (
     TYPE_DATAFRAME,
     TYPE_SERIES,
     TYPE_TIMESTAMP,
+    TYPE_BOOL,
+    TYPE_STR,
+    TYPE_NONE,
     PATHS_TO_PLOTS,
 )
 

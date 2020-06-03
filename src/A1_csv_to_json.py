@@ -43,6 +43,9 @@ from src.constants import (
     ECONOMIC_DATA,
     PROJECT_DATA,
     STORAGE_FILENAME,
+    TYPE_BOOL,
+    TYPE_STR,
+    TYPE_NONE,
 )
 from src.constants_json_strings import (
     LABEL,
@@ -422,7 +425,7 @@ def create_json_from_csv(
                                 asset=column,
                                 filename=filename,
                             )
-                            if row[UNIT] != "str":
+                            if row[UNIT] != TYPE_STR:
                                 if VALUE in column_dict[param]:
                                     # if wrapped in list is a scalar
                                     value_list[item] = column_dict[param][VALUE]
@@ -434,7 +437,7 @@ def create_json_from_csv(
                                 # if wrapped in list is a string
                                 value_list[item] = column_dict[param]
 
-                        if row[UNIT] != "str":
+                        if row[UNIT] != TYPE_STR:
                             column_dict.update(
                                 {param: {VALUE: value_list, UNIT: row[UNIT]}}
                             )
@@ -500,11 +503,11 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                 f"Parameter {param} of asset {asset} is defined as a timeseries."
             )
 
-    elif row[UNIT] == "str":
+    elif row[UNIT] == TYPE_STR:
         asset_dict.update({param: value})
 
     else:
-        if row[UNIT] == "bool":
+        if row[UNIT] == TYPE_BOOL:
             if value in ["True", "true", "T", "t", "1"]:
                 value = True
             elif value in ["False", "false", "F", "f", "0"]:
@@ -515,7 +518,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                     "(True/T/true or False/F/false)."
                 )
         else:
-            if value == "None":
+            if value == TYPE_NONE:
                 value = None
             else:
                 try:

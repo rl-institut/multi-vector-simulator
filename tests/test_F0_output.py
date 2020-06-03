@@ -37,6 +37,8 @@ from .constants import (
     TYPE_DATAFRAME,
     TYPE_SERIES,
     TYPE_TIMESTAMP,
+    TYPE_BOOL,
+    TYPE_STR,
     PATH_OUTPUT_FOLDER,
 )
 
@@ -57,8 +59,8 @@ pandas_Dataframe = pd.DataFrame({"a": VALUES, "b": VALUES})
 SCALAR = 2
 
 JSON_TEST_DICTIONARY = {
-    "bool": True,
-    "str": "str",
+    TYPE_BOOL: True,
+    TYPE_STR: "str",
     "numpy_int64": np.int64(SCALAR),
     "pandas_DatetimeIndex": pandas_DatetimeIndex,
     "pandas_Timestamp": pd.Timestamp(START_TIME),
@@ -233,13 +235,13 @@ class TestDictionaryToJsonConversion:
     def test_processing_dict_for_json_export_parse_bool(self):
         """ """
         file_name = "test_json_bool"
-        F0.store_as_json(JSON_TEST_DICTIONARY["bool"], OUTPUT_PATH, file_name)
+        F0.store_as_json(JSON_TEST_DICTIONARY[TYPE_BOOL], OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
     def test_processing_dict_for_json_export_parse_str(self):
         """ """
         file_name = "test_json_str"
-        F0.store_as_json(JSON_TEST_DICTIONARY["str"], OUTPUT_PATH, file_name)
+        F0.store_as_json(JSON_TEST_DICTIONARY[TYPE_STR], OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
     def test_processing_dict_for_json_export_parse_numpy_int64(self):
