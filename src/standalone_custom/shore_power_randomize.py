@@ -47,7 +47,7 @@ def randomize_shore_power(
 
     for column in shore_power.columns:
         correct_combination = False
-        while correct_combination != True:
+        while correct_combination is False:
             logging.info(f"Get shore power times for ship type: {column}")
             # Get random time steps from time series
             time_of_events = (

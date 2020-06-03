@@ -1142,7 +1142,7 @@ def receive_timeseries_from_csv(
             }
         )
 
-        if dict_asset[OPTIMIZE_CAP][VALUE] == True:
+        if dict_asset[OPTIMIZE_CAP][VALUE] is True:
             logging.debug("Normalizing timeseries of %s.", dict_asset[LABEL])
             dict_asset.update(
                 {

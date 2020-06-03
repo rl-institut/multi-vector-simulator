@@ -120,7 +120,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     add_info_flows(settings, dict_asset[STORAGE_CAPACITY], capacity)
 
     if OPTIMIZE_CAP in dict_asset:
-        if dict_asset[OPTIMIZE_CAP][VALUE] == True:
+        if dict_asset[OPTIMIZE_CAP][VALUE] is True:
             power_charge = storage_bus["scalars"][
                 ((dict_asset[INPUT_BUS_NAME], dict_asset[LABEL]), "invest")
             ]
@@ -317,7 +317,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
 
     """
     if OPTIMIZE_CAP in dict_asset:
-        if dict_asset[OPTIMIZE_CAP][VALUE] == True:
+        if dict_asset[OPTIMIZE_CAP][VALUE] is True:
             if direction == "input":
                 optimal_capacity = bus["scalars"][
                     ((bus_name, dict_asset[LABEL]), "invest")

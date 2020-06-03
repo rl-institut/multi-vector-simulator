@@ -258,7 +258,7 @@ class model_building:
         path_lp_file = os.path.join(
             dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], "lp_file.lp"
         )
-        if dict_values[SIMULATION_SETTINGS]["output_lp_file"][VALUE] == True:
+        if dict_values[SIMULATION_SETTINGS]["output_lp_file"][VALUE] is True:
             logging.debug("Saving to lp-file.")
             local_energy_system.write(
                 path_lp_file, io_options={"symbolic_solver_labels": True},
@@ -333,7 +333,7 @@ class model_building:
         None
         """
         # store energy system with results
-        if dict_values[SIMULATION_SETTINGS]["store_oemof_results"][VALUE] == True:
+        if dict_values[SIMULATION_SETTINGS]["store_oemof_results"][VALUE] is True:
             model.dump(
                 dpath=dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
                 filename="oemof_simulation_results.oemof",

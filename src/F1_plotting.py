@@ -336,7 +336,7 @@ def recalculate_distribution_of_rest_costs(costs_perc_grouped_pandas):
             plot_minor_costs_pie = True
             major = asset
 
-    if plot_minor_costs_pie == True:
+    if plot_minor_costs_pie is True:
         costs_perc_grouped_pandas = costs_perc_grouped_pandas.drop([major])
         rest = costs_perc_grouped_pandas.values.sum()
         costs_perc_grouped_minor = pd.Series(
@@ -379,7 +379,7 @@ def plot_a_piechart(dict_values, settings, file_name, costs, label, title):
     Pie chart of a dataset
 
     """
-    if costs.empty == False:
+    if costs.empty is False:
         logging.info("Creating pie-chart for total " + label)
         costs.plot.pie(
             title=title, autopct="%1.1f%%", subplots=True,

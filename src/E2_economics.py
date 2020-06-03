@@ -57,7 +57,7 @@ def get_costs(dict_asset, economic_data):
             all_list_in_dict(
                 dict_asset, [LIFETIME_CAPEX_VAR, CAPEX_FIX, OPTIMIZED_ADD_CAP]
             )
-            == True
+            is True
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
         ):
             # total investments including fix prices
@@ -72,7 +72,7 @@ def get_costs(dict_asset, economic_data):
 
         if (
             all_list_in_dict(dict_asset, [CAPEX_VAR, CAPEX_FIX, OPTIMIZED_ADD_CAP])
-            == True
+            is True
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
         ):
             # investments including fix prices, only upfront costs at t=0
@@ -85,7 +85,7 @@ def get_costs(dict_asset, economic_data):
                 dict_asset, "costs_upfront", costs_upfront, costs_total
             )
 
-        if all_list_in_dict(dict_asset, [ANNUAL_TOTAL_FLOW, LIFETIME_OPEX_VAR]) == True:
+        if all_list_in_dict(dict_asset, [ANNUAL_TOTAL_FLOW, LIFETIME_OPEX_VAR]) is True:
             costs_opex_var = (
                 dict_asset[LIFETIME_OPEX_VAR][VALUE]
                 * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]
@@ -98,7 +98,7 @@ def get_costs(dict_asset, economic_data):
             )
 
         # todo actually, price is probably not the label, but opex_var
-        if all_list_in_dict(dict_asset, ["price", ANNUAL_TOTAL_FLOW]) == True:
+        if all_list_in_dict(dict_asset, ["price", ANNUAL_TOTAL_FLOW]) is True:
             costs_energy = (
                 dict_asset["price"][VALUE] * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]
             )
@@ -116,7 +116,7 @@ def get_costs(dict_asset, economic_data):
                     OPTIMIZED_ADD_CAP,
                 ],
             )
-            == True
+            is True
         ):
             cap = dict_asset[INSTALLED_CAP][VALUE]
             if OPTIMIZED_ADD_CAP in dict_asset:
@@ -159,5 +159,5 @@ def add_costs_and_total(dict_asset, name, value, total_costs):
 
 
 def all_list_in_dict(dict_asset, list):
-    boolean = all([name in dict_asset for name in list]) == True
+    boolean = all([name in dict_asset for name in list]) is True
     return boolean

@@ -216,7 +216,7 @@ def source(model, dict_asset, **kwargs):
         see issue #121
 
     """
-    if "dispatchable" in dict_asset and dict_asset["dispatchable"] == True:
+    if "dispatchable" in dict_asset and dict_asset["dispatchable"] is True:
         check_optimize_cap(
             model,
             dict_asset,
@@ -275,7 +275,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
     Indirectly updated `model` and dict of asset in `kwargs` with the component object.
 
     """
-    if dict_asset[OPTIMIZE_CAP][VALUE] == False:
+    if dict_asset[OPTIMIZE_CAP][VALUE] is False:
         func_constant(model, dict_asset, **kwargs)
         logging.debug(
             "Defined asset %s as %s (fix capacity)",
@@ -283,7 +283,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
             dict_asset["type_oemof"],
         )
 
-    elif dict_asset[OPTIMIZE_CAP][VALUE] == True:
+    elif dict_asset[OPTIMIZE_CAP][VALUE] is True:
         func_optimize(model, dict_asset, **kwargs)
         logging.debug(
             "Defined asset %s as %s (to be optimized)",

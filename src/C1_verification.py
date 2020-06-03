@@ -59,7 +59,7 @@ def lookup_file(file_path, name):
     asset is used.
     :return:
     """
-    if os.path.isfile(file_path) == False:
+    if os.path.isfile(file_path) is False:
         msg = (
             f"Missing file! The timeseries file '{file_path}' \nof asset "
             + f"{name} can not be found. Operation terminated."
@@ -213,14 +213,14 @@ def all_valid_intervals(name, value, title):
             )
 
     elif name in valid_binary:
-        if not (value == True or value == False):
+        if not (value is True or value is False):
             logging.error(
                 "Input error! Value %s/%s is neither True nor False.", name, title
             )
 
     elif name in valid_intervals:
         if name == SOC_INITIAL:
-            if value != None:
+            if value is not None:
                 if not (0 <= value and value <= 1):
                     logging.error(
                         "Input error! Value %s/%s should be None, or between 0 and 1.",
