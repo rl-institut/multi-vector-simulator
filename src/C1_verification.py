@@ -33,6 +33,8 @@ from src.constants_json_strings import (
     INSTALLED_CAP,
     FILENAME,
     EFFICIENCY,
+    EVALUATED_PERIOD,
+    START_DATE,
 )
 
 # web-application: valid input directly connected to cell-input
@@ -138,9 +140,9 @@ def all_valid_intervals(name, value, title):
         "sector",
     ]
 
-    valid_type_int = ["evaluated_period", "time_step", "periods"]
+    valid_type_int = [EVALUATED_PERIOD, "time_step", "periods"]
 
-    valid_type_timestamp = ["start_date"]
+    valid_type_timestamp = [START_DATE]
 
     valid_type_index = ["index"]
 

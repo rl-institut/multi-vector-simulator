@@ -15,6 +15,8 @@ from src.constants_json_strings import (
     LABEL,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
+    EVALUATED_PERIOD,
+    TIMESTEP,
 )
 
 import logging
@@ -432,7 +434,7 @@ def add_info_flows(settings, dict_asset, flow):
             "flow": flow,
             "total_flow": {VALUE: total_flow, UNIT: "kWh"},
             "annual_total_flow": {
-                VALUE: total_flow * 365 / settings["evaluated_period"][VALUE],
+                VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
                 UNIT: "kWh",
             },
             "peak_flow": {VALUE: max(flow), UNIT: "kW"},

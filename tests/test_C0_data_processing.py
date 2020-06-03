@@ -16,20 +16,25 @@ from src.constants_json_strings import (
     CAPEX_VAR,
     LIFETIME,
     SIMULATION_SETTINGS,
+    PEAK_DEMAND_PRICING_PERIOD,
+    EVALUATED_PERIOD,
+    START_DATE,
+    END_DATE,
+    TIMESTEP,
 )
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 def test_retrieve_datetimeindex_for_simulation():
     simulation_settings = {
-        "start_date": "2020-01-01",
-        "evaluated_period": {VALUE: 1},
-        "timestep": {VALUE: 60},
+        START_DATE: "2020-01-01",
+        EVALUATED_PERIOD: {VALUE: 1},
+        TIMESTEP: {VALUE: 60},
     }
     C0.simulation_settings(simulation_settings)
-    for k in ("start_date", "end_date", "time_index"):
+    for k in (START_DATE, END_DATE, "time_index"):
         assert k in simulation_settings.keys()
-    assert simulation_settings["start_date"] == pd.Timestamp("2020-01-01 00:00:00")
-    assert simulation_settings["end_date"] == pd.Timestamp("2020-01-01 23:00:00")
+    assert simulation_settings[START_DATE] == pd.Timestamp("2020-01-01 00:00:00")
+    assert simulation_settings[END_DATE] == pd.Timestamp("2020-01-01 23:00:00")
     assert simulation_settings["periods"] == 24
 
 
@@ -58,7 +63,7 @@ def test_complete_missing_cost_data_capex_var():
     assert dict_asset[CAPEX_VAR] == 0
 
 
-settings = {"evaluated_period": {VALUE: 365}}
+settings = {EVALUATED_PERIOD: {VALUE: 365}}
 
 economic_data = {
     PROJECT_DURATION: {VALUE: 20},
@@ -138,8 +143,8 @@ def test_determine_lifetime_opex_var_is_other():
 
 def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear():
     dict_test = {
-        ENERGY_PROVIDERS: {"a_dso": {"peak_demand_pricing_period": {VALUE: 2}}},
-        SIMULATION_SETTINGS: {"evaluated_period": {VALUE: 30}},
+        ENERGY_PROVIDERS: {"a_dso": {PEAK_DEMAND_PRICING_PERIOD: {VALUE: 2}}},
+        SIMULATION_SETTINGS: {EVALUATED_PERIOD: {VALUE: 30}},
     }
     with pytest.raises(ValueError):
         C0.define_dso_sinks_and_sources(dict_test, "a_dso")

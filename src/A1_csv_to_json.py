@@ -53,6 +53,7 @@ from src.constants import (
     SIMULATION_SETTINGS,
     ECONOMIC_DATA,
     PROJECT_DATA,
+    STORAGE_FILENAME,
 )
 
 from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
@@ -448,7 +449,7 @@ def create_json_from_csv(
             # add exception for energyStorage
             if filename == ENERGY_STORAGE:
                 storage_dict = add_storage_components(
-                    df.loc["storage_filename"][column][:-4], input_directory
+                    df.loc[STORAGE_FILENAME][column][:-4], input_directory
                 )
                 single_dict[column].update(storage_dict)
 

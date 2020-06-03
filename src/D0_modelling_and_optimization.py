@@ -205,7 +205,7 @@ class model_building:
         None
         """
         if (
-            dict_values[SIMULATION_SETTINGS]["display_nx_graph"][VALUE] == True
+            dict_values[SIMULATION_SETTINGS]["display_nx_graph"][VALUE] is True
             or dict_values[SIMULATION_SETTINGS]["store_nx_graph"][VALUE] is True
         ):
             from src.F1_plotting import draw_graph

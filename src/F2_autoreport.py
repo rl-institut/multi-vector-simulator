@@ -46,6 +46,9 @@ from src.constants_json_strings import (
     ENERGY_VECTOR,
     OPTIMIZE_CAP,
     SIMULATION_SETTINGS,
+    EVALUATED_PERIOD,
+    START_DATE,
+    TIMESTEP,
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -145,11 +148,9 @@ def create_app(results_json):
     )
 
     dict_simsettings = {
-        "Evaluated period": results_json[SIMULATION_SETTINGS]["evaluated_period"][
-            VALUE
-        ],
-        "Start date": results_json[SIMULATION_SETTINGS]["start_date"],
-        "Timestep length": results_json[SIMULATION_SETTINGS]["timestep"][VALUE],
+        "Evaluated period": results_json[SIMULATION_SETTINGS][EVALUATED_PERIOD][VALUE],
+        "Start date": results_json[SIMULATION_SETTINGS][START_DATE],
+        "Timestep length": results_json[SIMULATION_SETTINGS][TIMESTEP][VALUE],
     }
 
     df_simsettings = pd.DataFrame(

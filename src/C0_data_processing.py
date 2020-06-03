@@ -17,12 +17,8 @@ from src.constants import (
     SIMULATION_SETTINGS,
     ECONOMIC_DATA,
     PROJECT_DATA,
-    PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
-    INPUT_TYPE,
-    OVERWRITE,
-    DISPLAY_OUTPUT,
 )
 
 from src.constants_json_strings import (
@@ -55,6 +51,12 @@ from src.constants_json_strings import (
     INSTALLED_CAP,
     FILENAME,
     EFFICIENCY,
+    PEAK_DEMAND_PRICING,
+    PEAK_DEMAND_PRICING_PERIOD,
+    EVALUATED_PERIOD,
+    START_DATE,
+    END_DATE,
+    TIMESTEP,
 )
 
 
@@ -159,23 +161,21 @@ def simulation_settings(simulation_settings):
     Update simulation_settings by start date, end date, timeindex, and number of simulation periods
     """
     simulation_settings.update(
-        {"start_date": pd.to_datetime(simulation_settings["start_date"])}
+        {START_DATE: pd.to_datetime(simulation_settings[START_DATE])}
     )
     simulation_settings.update(
         {
-            "end_date": simulation_settings["start_date"]
-            + pd.DateOffset(
-                days=simulation_settings["evaluated_period"][VALUE], hours=-1
-            )
+            END_DATE: simulation_settings[START_DATE]
+            + pd.DateOffset(days=simulation_settings[EVALUATED_PERIOD][VALUE], hours=-1)
         }
     )
     # create time index used for initializing oemof simulation
     simulation_settings.update(
         {
             "time_index": pd.date_range(
-                start=simulation_settings["start_date"],
-                end=simulation_settings["end_date"],
-                freq=str(simulation_settings["timestep"][VALUE]) + "min",
+                start=simulation_settings[START_DATE],
+                end=simulation_settings[END_DATE],
+                freq=str(simulation_settings[TIMESTEP][VALUE]) + "min",
             )
         }
     )
@@ -579,12 +579,12 @@ def define_dso_sinks_and_sources(dict_values, dso):
     """
     # define to shorten code
     number_of_pricing_periods = dict_values[ENERGY_PROVIDERS][dso][
-        "peak_demand_pricing_period"
+        PEAK_DEMAND_PRICING_PERIOD
     ][VALUE]
 
     # check number of pricing periods - if >1 the simulation has to cover a whole year!
     if number_of_pricing_periods > 1:
-        if dict_values[SIMULATION_SETTINGS]["evaluated_period"][VALUE] != 365:
+        if dict_values[SIMULATION_SETTINGS][EVALUATED_PERIOD][VALUE] != 365:
             raise PeakDemandPricingPeriodsOnlyForYear(
                 f"For taking peak demand pricing periods > 1 into account,"
                 f"the evaluation period has to be 365 days."
@@ -603,17 +603,15 @@ def define_dso_sinks_and_sources(dict_values, dso):
     )
 
     dict_asset = dict_values[ENERGY_PROVIDERS][dso]
-    if isinstance(dict_asset["peak_demand_pricing"][VALUE], dict):
+    if isinstance(dict_asset[PEAK_DEMAND_PRICING][VALUE], dict):
         receive_timeseries_from_csv(
             dict_values,
             dict_values[SIMULATION_SETTINGS],
             dict_asset,
-            "peak_demand_pricing",
+            PEAK_DEMAND_PRICING,
         )
 
-    peak_demand_pricing = dict_values[ENERGY_PROVIDERS][dso]["peak_demand_pricing"][
-        VALUE
-    ]
+    peak_demand_pricing = dict_values[ENERGY_PROVIDERS][dso][PEAK_DEMAND_PRICING][VALUE]
     if isinstance(peak_demand_pricing, float) or isinstance(peak_demand_pricing, int):
         logging.debug(
             "The peak demand pricing price of %s %s is set as capex_var of "
@@ -630,7 +628,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         )
 
     peak_demand_pricing = {
-        VALUE: dict_values[ENERGY_PROVIDERS][dso]["peak_demand_pricing"][VALUE],
+        VALUE: dict_values[ENERGY_PROVIDERS][dso][PEAK_DEMAND_PRICING][VALUE],
         UNIT: "currency/kWpeak",
     }
 
@@ -654,11 +652,11 @@ def define_dso_sinks_and_sources(dict_values, dso):
                 0, index=dict_values[SIMULATION_SETTINGS]["time_index"]
             )
             time_period = pd.date_range(
-                start=dict_values[SIMULATION_SETTINGS]["start_date"]
+                start=dict_values[SIMULATION_SETTINGS][START_DATE]
                 + pd.DateOffset(months=(pricing_period - 1) * months_in_a_period),
-                end=dict_values[SIMULATION_SETTINGS]["start_date"]
+                end=dict_values[SIMULATION_SETTINGS][START_DATE]
                 + pd.DateOffset(months=pricing_period * months_in_a_period, hours=-1),
-                freq=str(dict_values[SIMULATION_SETTINGS]["timestep"][VALUE]) + "min",
+                freq=str(dict_values[SIMULATION_SETTINGS][TIMESTEP][VALUE]) + "min",
             )
 
             timeseries = timeseries.add(pd.Series(1, index=time_period), fill_value=0)
@@ -978,7 +976,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
             "simulation_annuity": {
                 VALUE: economics.simulation_annuity(
                     dict_asset["annuity_capex_opex_var"][VALUE],
-                    settings["evaluated_period"][VALUE],
+                    settings[EVALUATED_PERIOD][VALUE],
                 ),
                 UNIT: "currency/unit/simulation period",
             }

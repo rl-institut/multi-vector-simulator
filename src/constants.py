@@ -1,38 +1,6 @@
 import os
 
-from src.constants_json_strings import (
-    UNIT,
-    ENERGY_CONVERSION,
-    ENERGY_CONSUMPTION,
-    ENERGY_PRODUCTION,
-    ENERGY_STORAGE,
-    ENERGY_PROVIDERS,
-    OEMOF_ASSET_TYPE,
-    PROJECT_DURATION,
-    DISCOUNTFACTOR,
-    TAX,
-    LABEL,
-    VALUE,
-    SIMULATION_SETTINGS,
-    ECONOMIC_DATA,
-    PROJECT_DATA,
-    FIX_COST,
-    CURR,
-    SECTORS,
-    INFLOW_DIRECTION,
-    OUTFLOW_DIRECTION,
-    ENERGY_VECTOR,
-    OPTIMIZE_CAP,
-    INSTALLED_CAP,
-    OPEX_VAR,
-    OPEX_FIX,
-    CAPEX_FIX,
-    CAPEX_VAR,
-    AGE_INSTALLED,
-    LIFETIME,
-    FILENAME,
-    EFFICIENCY,
-)
+from src.constants_json_strings import *
 
 
 # path to the root of this repository (assumes this file is in src folder)
@@ -138,7 +106,7 @@ REQUIRED_CSV_PARAMETERS = {
         OPTIMIZE_CAP,
         OUTFLOW_DIRECTION,
         OEMOF_ASSET_TYPE,
-        "storage_filename",
+        STORAGE_FILENAME,
         ENERGY_VECTOR,
     ],
     ENERGY_PRODUCTION: [
@@ -164,8 +132,8 @@ REQUIRED_CSV_PARAMETERS = {
         LABEL,
         OPTIMIZE_CAP,
         OUTFLOW_DIRECTION,
-        "peak_demand_pricing",
-        "peak_demand_pricing_period",
+        PEAK_DEMAND_PRICING,
+        PEAK_DEMAND_PRICING_PERIOD,
         OEMOF_ASSET_TYPE,
         ENERGY_VECTOR,
     ],
@@ -179,15 +147,15 @@ REQUIRED_CSV_PARAMETERS = {
         OPEX_VAR,
     ],
     SIMULATION_SETTINGS: [
-        "evaluated_period",
+        EVALUATED_PERIOD,
         LABEL,
         "output_lp_file",
         "restore_from_oemof_file",
         "display_nx_graph",
         "store_nx_graph",
-        "start_date",
+        START_DATE,
         "store_oemof_results",
-        "timestep",
+        TIMESTEP,
     ],
     PROJECT_DATA: [
         "country",
