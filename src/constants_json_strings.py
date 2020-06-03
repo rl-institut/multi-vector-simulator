@@ -49,6 +49,8 @@ LABEL = "label"
 PROJECT_DURATION = "project_duration"
 TAX = "tax"
 
+OPTIMIZE_CAP = "optimizeCap"
+
 CAPEX_FIX = "capex_fix"
 CAPEX_VAR = "capex_var"
 OPEX_FIX = "opex_fix"

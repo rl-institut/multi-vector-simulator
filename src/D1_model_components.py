@@ -13,14 +13,7 @@ Module D1 includes all functions that are required to build an oemof model with 
 import logging
 
 import oemof.solph as solph
-from src.constants_json_strings import (
-    VALUE,
-    LABEL,
-    OPEX_VAR,
-    OPEX_FIX,
-    CAPEX_FIX,
-    CAPEX_VAR,
-)
+from src.constants_json_strings import VALUE, LABEL, OPEX_VAR, OPTIMIZE_CAP
 
 
 def transformer(model, dict_asset, **kwargs):
@@ -260,7 +253,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
     Indirectly updated `model` and dict of asset in `kwargs` with the component object.
 
     """
-    if dict_asset["optimizeCap"][VALUE] == False:
+    if dict_asset[OPTIMIZE_CAP][VALUE] == False:
         func_constant(model, dict_asset, **kwargs)
         logging.debug(
             "Defined asset %s as %s (fix capacity)",
@@ -268,7 +261,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
             dict_asset["type_oemof"],
         )
 
-    elif dict_asset["optimizeCap"][VALUE] == True:
+    elif dict_asset[OPTIMIZE_CAP][VALUE] == True:
         func_optimize(model, dict_asset, **kwargs)
         logging.debug(
             "Defined asset %s as %s (to be optimized)",

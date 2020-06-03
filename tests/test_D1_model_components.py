@@ -16,6 +16,7 @@ from src.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
     ENERGY_STORAGE,
+    OPTIMIZE_CAP,
 )
 
 D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D1.json",)
@@ -517,7 +518,7 @@ def test_check_optimize_cap_raise_error(get_json, get_model, get_busses):
     model = get_model
     busses = get_busses
     test_asset = dict_values[ENERGY_CONVERSION]["test_asset_for_error_raising"]
-    test_asset["optimizeCap"][VALUE] = "wrong value"
+    test_asset[OPTIMIZE_CAP][VALUE] = "wrong value"
 
     msg = f"Input error! 'optimize_cap' of asset {test_asset['label']}"
     with pytest.raises(ValueError, match=msg):
