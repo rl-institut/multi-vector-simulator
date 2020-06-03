@@ -88,8 +88,8 @@ def evaluate_dict(dict_values, path_pdf_report=None):
 
         # Initialize
         total_demand = pd.Series(
-            [0 for i in dict_values[SIMULATION_SETTINGS]["time_index"]],
-            index=dict_values[SIMULATION_SETTINGS]["time_index"],
+            [0 for i in dict_values[SIMULATION_SETTINGS][TIME_INDEX]],
+            index=dict_values[SIMULATION_SETTINGS][TIME_INDEX],
         )
 
         # Add demands (exclude excess)

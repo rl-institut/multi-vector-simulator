@@ -23,6 +23,10 @@ from src.constants_json_strings import (
     INPUT_POWER,
     OUTPUT_POWER,
     STORAGE_CAPACITY,
+    TIME_INDEX,
+    TIMESERIES_PEAK,
+    INPUT_BUS_NAME,
+    OUTPUT_BUS_NAME,
 )
 
 
@@ -49,7 +53,7 @@ def get_timeseries_per_bus(dict_values, bus_data):
     bus_data_timeseries = {}
     for bus in bus_data.keys():
         bus_data_timeseries.update(
-            {bus: pd.DataFrame(index=dict_values[SIMULATION_SETTINGS]["time_index"])}
+            {bus: pd.DataFrame(index=dict_values[SIMULATION_SETTINGS][TIME_INDEX])}
         )
 
         # obtain flows that flow into the bus
@@ -100,12 +104,12 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
     """
     power_charge = storage_bus["sequences"][
-        ((dict_asset["input_bus_name"], dict_asset[LABEL]), "flow")
+        ((dict_asset[INPUT_BUS_NAME], dict_asset[LABEL]), "flow")
     ]
     add_info_flows(settings, dict_asset[INPUT_POWER], power_charge)
 
     power_discharge = storage_bus["sequences"][
-        ((dict_asset[LABEL], dict_asset["output_bus_name"]), "flow")
+        ((dict_asset[LABEL], dict_asset[OUTPUT_BUS_NAME]), "flow")
     ]
     add_info_flows(settings, dict_asset[OUTPUT_POWER], power_discharge)
 
@@ -115,7 +119,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     if OPTIMIZE_CAP in dict_asset:
         if dict_asset[OPTIMIZE_CAP][VALUE] == True:
             power_charge = storage_bus["scalars"][
-                ((dict_asset["input_bus_name"], dict_asset[LABEL]), "invest")
+                ((dict_asset[INPUT_BUS_NAME], dict_asset[LABEL]), "invest")
             ]
             dict_asset[INPUT_POWER].update(
                 {
@@ -132,7 +136,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
             )
 
             power_discharge = storage_bus["scalars"][
-                ((dict_asset[LABEL], dict_asset["output_bus_name"]), "invest")
+                ((dict_asset[LABEL], dict_asset[OUTPUT_BUS_NAME]), "invest")
             ]
             dict_asset[OUTPUT_POWER].update(
                 {
@@ -226,8 +230,8 @@ def get_results(settings, bus_data, dict_asset):
 
     """
     # Check if the component has multiple input or output busses
-    if "input_bus_name" in dict_asset:
-        input_name = dict_asset["input_bus_name"]
+    if INPUT_BUS_NAME in dict_asset:
+        input_name = dict_asset[INPUT_BUS_NAME]
         if not isinstance(input_name, list):
             get_flow(
                 settings,
@@ -240,8 +244,8 @@ def get_results(settings, bus_data, dict_asset):
             for bus in input_name:
                 get_flow(settings, bus_data[bus], dict_asset, bus, direction="input")
 
-    if "output_bus_name" in dict_asset:
-        output_name = dict_asset["output_bus_name"]
+    if OUTPUT_BUS_NAME in dict_asset:
+        output_name = dict_asset[OUTPUT_BUS_NAME]
         if not isinstance(output_name, list):
             get_flow(
                 settings,
@@ -255,21 +259,21 @@ def get_results(settings, bus_data, dict_asset):
                 get_flow(settings, bus_data[bus], dict_asset, bus, direction="output")
 
     # definie capacities. Check if the component has multiple input or output busses
-    if "output_bus_name" in dict_asset and "input_bus_name" in dict_asset:
+    if OUTPUT_BUS_NAME in dict_asset and INPUT_BUS_NAME in dict_asset:
         if not isinstance(output_name, list):
             get_optimal_cap(bus_data[output_name], dict_asset, output_name, "output")
         else:
             for bus in output_name:
                 get_optimal_cap(bus_data[bus], dict_asset, bus, "output")
 
-    elif "input_bus_name" in dict_asset:
+    elif INPUT_BUS_NAME in dict_asset:
         if not isinstance(input_name, list):
             get_optimal_cap(bus_data[input_name], dict_asset, input_name, "input")
         else:
             for bus in input_name:
                 get_optimal_cap(bus_data[bus], dict_asset, bus, "input")
 
-    elif "output_bus_name" in dict_asset:
+    elif OUTPUT_BUS_NAME in dict_asset:
         if not isinstance(output_name, list):
             get_optimal_cap(bus_data[output_name], dict_asset, output_name, "output")
         else:
@@ -322,13 +326,13 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                     f"`direction` should be 'input' or 'output' but is {direction}."
                 )
 
-            if "timeseries_peak" in dict_asset:
-                if dict_asset["timeseries_peak"][VALUE] > 0:
+            if TIMESERIES_PEAK in dict_asset:
+                if dict_asset[TIMESERIES_PEAK][VALUE] > 0:
                     dict_asset.update(
                         {
                             "optimizedAddCap": {
                                 VALUE: optimal_capacity
-                                / dict_asset["timeseries_peak"][VALUE],
+                                / dict_asset[TIMESERIES_PEAK][VALUE],
                                 UNIT: dict_asset[UNIT],
                             }
                         }

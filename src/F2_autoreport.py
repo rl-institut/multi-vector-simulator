@@ -48,6 +48,7 @@ from src.constants_json_strings import (
     EVALUATED_PERIOD,
     START_DATE,
     TIMESTEP,
+    TIMESERIES_PEAK,
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -195,7 +196,7 @@ def create_app(results_json):
             {
                 dem: [
                     demands[dem][UNIT],
-                    demands[dem]["timeseries_peak"][VALUE],
+                    demands[dem][TIMESERIES_PEAK][VALUE],
                     demands[dem]["timeseries_average"][VALUE],
                     demands[dem]["timeseries_total"][VALUE],
                 ]

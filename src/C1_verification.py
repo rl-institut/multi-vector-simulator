@@ -39,6 +39,7 @@ from src.constants_json_strings import (
     SOC_INITIAL,
     SOC_MAX,
     SOC_MIN,
+    FEEDIN_TARIFF,
 )
 
 
@@ -168,7 +169,7 @@ def all_valid_intervals(name, value, title):
         "electricity_cost_fix_annual": [0, "any"],
         "electricity_price_var_kWh": [0, "any"],
         "electricity_price_var_kW_monthly": [0, "any"],
-        "feedin_tariff": [0, "any"],
+        FEEDIN_TARIFF: [0, "any"],
         CAPEX_FIX: [0, "any"],
         CAPEX_VAR: [0, "any"],
         OPEX_FIX: [0, "any"],

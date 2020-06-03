@@ -15,6 +15,7 @@ from src.constants_json_strings import (
     LABEL,
     VALUE,
     SIMULATION_SETTINGS,
+    TIME_INDEX,
 )
 from .constants import (
     TEST_REPO_PATH,
@@ -52,7 +53,7 @@ PERIODS = 3
 pandas_DatetimeIndex = pd.date_range(start=START_TIME, periods=PERIODS, freq="60min")
 
 dict_values_minimal = {
-    SIMULATION_SETTINGS: {"time_index": pandas_DatetimeIndex},
+    SIMULATION_SETTINGS: {TIME_INDEX: pandas_DatetimeIndex},
     ENERGY_BUSSES: "bus",
 }
 

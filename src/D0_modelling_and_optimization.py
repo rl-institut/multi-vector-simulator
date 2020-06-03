@@ -18,6 +18,7 @@ from src.constants_json_strings import (
     VALUE,
     SIMULATION_SETTINGS,
     LABEL,
+    TIME_INDEX,
 )
 
 """
@@ -110,7 +111,7 @@ class model_building:
         """
         logging.info("Initializing oemof simulation.")
         model = solph.EnergySystem(
-            timeindex=dict_values[SIMULATION_SETTINGS]["time_index"]
+            timeindex=dict_values[SIMULATION_SETTINGS][TIME_INDEX]
         )
 
         # this dictionary will include all generated oemof objects

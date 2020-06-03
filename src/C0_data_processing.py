@@ -21,50 +21,7 @@ from src.constants import (
     PATH_OUTPUT_FOLDER,
 )
 
-from src.constants_json_strings import (
-    UNIT,
-    VALUE,
-    ENERGY_CONVERSION,
-    ENERGY_CONSUMPTION,
-    ENERGY_PRODUCTION,
-    ENERGY_STORAGE,
-    ENERGY_BUSSES,
-    ENERGY_PROVIDERS,
-    OEMOF_SOURCE,
-    OEMOF_SINK,
-    OEMOF_ASSET_TYPE,
-    PROJECT_DURATION,
-    DISCOUNTFACTOR,
-    TAX,
-    LABEL,
-    CURR,
-    SECTORS,
-    INFLOW_DIRECTION,
-    OUTFLOW_DIRECTION,
-    ENERGY_VECTOR,
-    OPEX_VAR,
-    OPEX_FIX,
-    CAPEX_FIX,
-    CAPEX_VAR,
-    OPTIMIZE_CAP,
-    LIFETIME,
-    INSTALLED_CAP,
-    FILENAME,
-    EFFICIENCY,
-    PEAK_DEMAND_PRICING,
-    PEAK_DEMAND_PRICING_PERIOD,
-    EVALUATED_PERIOD,
-    START_DATE,
-    END_DATE,
-    TIMESTEP,
-    INPUT_POWER,
-    OUTPUT_POWER,
-    C_RATE,
-    SOC_INITIAL,
-    SOC_MAX,
-    SOC_MIN,
-    STORAGE_CAPACITY,
-)
+from src.constants_json_strings import *
 
 
 import src.C1_verification as verify
@@ -179,7 +136,7 @@ def simulation_settings(simulation_settings):
     # create time index used for initializing oemof simulation
     simulation_settings.update(
         {
-            "time_index": pd.date_range(
+            TIME_INDEX: pd.date_range(
                 start=simulation_settings[START_DATE],
                 end=simulation_settings[END_DATE],
                 freq=str(simulation_settings[TIMESTEP][VALUE]) + "min",
@@ -187,7 +144,7 @@ def simulation_settings(simulation_settings):
         }
     )
 
-    simulation_settings.update({"periods": len(simulation_settings["time_index"])})
+    simulation_settings.update({"periods": len(simulation_settings[TIME_INDEX])})
     return simulation_settings
 
 
@@ -200,7 +157,7 @@ def economic_parameters(economic_parameters):
 
     economic_parameters.update(
         {
-            "annuity_factor": {
+            ANNUITY_FACTOR: {
                 VALUE: economics.annuity_factor(
                     economic_parameters[PROJECT_DURATION][VALUE],
                     economic_parameters[DISCOUNTFACTOR][VALUE],
@@ -381,14 +338,10 @@ def energyStorage(dict_values, group):
 
         # define input and output bus names
         dict_values[group][asset].update(
-            {"input_bus_name": bus_suffix(dict_values[group][asset][INFLOW_DIRECTION])}
+            {INPUT_BUS_NAME: bus_suffix(dict_values[group][asset][INFLOW_DIRECTION])}
         )
         dict_values[group][asset].update(
-            {
-                "output_bus_name": bus_suffix(
-                    dict_values[group][asset][OUTFLOW_DIRECTION]
-                )
-            }
+            {OUTPUT_BUS_NAME: bus_suffix(dict_values[group][asset][OUTFLOW_DIRECTION])}
         )
     return
 
@@ -429,9 +382,9 @@ def energyConsumption(dict_values, group):
             dict_values[ECONOMIC_DATA],
             dict_values[group][asset],
         )
-        if "input_bus_name" not in dict_values[group][asset]:
+        if INPUT_BUS_NAME not in dict_values[group][asset]:
             dict_values[group][asset].update(
-                {"input_bus_name": bus_suffix(dict_values[group][asset][ENERGY_VECTOR])}
+                {INPUT_BUS_NAME: bus_suffix(dict_values[group][asset][ENERGY_VECTOR])}
             )
 
         if FILENAME in dict_values[group][asset]:
@@ -527,9 +480,9 @@ def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
                 for subbus in bus:
                     bus_list.append(bus_suffix(subbus))
                     update_bus(dict_values, subbus, asset, asset_group[asset][LABEL])
-                asset_group[asset].update({"input_bus_name": bus_list})
+                asset_group[asset].update({INPUT_BUS_NAME: bus_list})
             else:
-                asset_group[asset].update({"input_bus_name": bus_suffix(bus)})
+                asset_group[asset].update({INPUT_BUS_NAME: bus_suffix(bus)})
                 update_bus(dict_values, bus, asset, asset_group[asset][LABEL])
         # the bus that is connected to the outflow
         if OUTFLOW_DIRECTION in asset_group[asset]:
@@ -539,9 +492,9 @@ def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
                 for subbus in bus:
                     bus_list.append(bus_suffix(subbus))
                     update_bus(dict_values, subbus, asset, asset_group[asset][LABEL])
-                asset_group[asset].update({"output_bus_name": bus_list})
+                asset_group[asset].update({OUTPUT_BUS_NAME: bus_list})
             else:
-                asset_group[asset].update({"output_bus_name": bus_suffix(bus)})
+                asset_group[asset].update({OUTPUT_BUS_NAME: bus_suffix(bus)})
                 update_bus(dict_values, bus, asset, asset_group[asset][LABEL])
 
     return
@@ -642,11 +595,11 @@ def define_dso_sinks_and_sources(dict_values, dso):
     list_of_dso_energyProduction_assets = []
     if number_of_pricing_periods == 1:
         # if only one period: avoid suffix dso+'_consumption_period_1"
-        timeseries = pd.Series(1, index=dict_values[SIMULATION_SETTINGS]["time_index"])
+        timeseries = pd.Series(1, index=dict_values[SIMULATION_SETTINGS][TIME_INDEX])
         define_source(
             dict_values,
             dso + "_consumption",
-            dict_values[ENERGY_PROVIDERS][dso]["energy_price"],
+            dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
             dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION],
             timeseries,
             opex_fix=peak_demand_pricing,
@@ -656,7 +609,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         # define one source for each pricing period
         for pricing_period in range(1, number_of_pricing_periods + 1):
             timeseries = pd.Series(
-                0, index=dict_values[SIMULATION_SETTINGS]["time_index"]
+                0, index=dict_values[SIMULATION_SETTINGS][TIME_INDEX]
             )
             time_period = pd.date_range(
                 start=dict_values[SIMULATION_SETTINGS][START_DATE]
@@ -671,7 +624,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
             define_source(
                 dict_values,
                 dso_source_name,
-                dict_values[ENERGY_PROVIDERS][dso]["energy_price"],
+                dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
                 dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION],
                 timeseries,
                 opex_fix=peak_demand_pricing,
@@ -681,7 +634,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
     define_sink(
         dict_values,
         dso + "_feedin",
-        dict_values[ENERGY_PROVIDERS][dso]["feedin_tariff"],
+        dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
         dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
         capex_var={VALUE: 0, UNIT: "currency/kW"},
     )
@@ -719,9 +672,9 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
         OEMOF_ASSET_TYPE: OEMOF_SOURCE,
         LABEL: asset_name + " source",
         "output_direction": output_bus,
-        "output_bus_name": output_bus_name,
+        OUTPUT_BUS_NAME: output_bus_name,
         "dispatchable": True,
-        "timeseries": timeseries,
+        TIMESERIES: timeseries,
         # OPEX_VAR: {VALUE: price, UNIT: "currency/unit"},
         LIFETIME: {
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
@@ -782,9 +735,9 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
         source.update(
             {
                 OPTIMIZE_CAP: {VALUE: True, UNIT: "bool"},
-                "timeseries_peak": {VALUE: max(timeseries), UNIT: "kW"},
+                TIMESERIES_PEAK: {VALUE: max(timeseries), UNIT: "kW"},
                 # todo if we have normalized timeseries hiere, the capex/opex (simulation) have changed, too
-                "timeseries_normalized": timeseries / max(timeseries),
+                TIMESERIES_NORMALIZED: timeseries / max(timeseries),
             }
         )
         if type(source[OPEX_VAR][VALUE]) == pd.Series:
@@ -845,7 +798,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         OEMOF_ASSET_TYPE: OEMOF_SINK,
         LABEL: asset_name + "_sink",
         "input_direction": input_bus,
-        "input_bus_name": input_bus_name,
+        INPUT_BUS_NAME: input_bus_name,
         # OPEX_VAR: {VALUE: price, UNIT: "currency/kWh"},
         LIFETIME: {
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
@@ -972,7 +925,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         {
             "lifetime_opex_fix": {
                 VALUE: dict_asset[OPEX_FIX][VALUE]
-                * economic_data["annuity_factor"][VALUE],
+                * economic_data[ANNUITY_FACTOR][VALUE],
                 UNIT: dict_asset[OPEX_FIX][UNIT][:-2],
             }
         }
@@ -1050,7 +1003,7 @@ def get_lifetime_opex_var_one_value(dict_asset, economic_data):
 
     """
     lifetime_opex_var = (
-        dict_asset[OPEX_VAR][VALUE] * economic_data["annuity_factor"][VALUE]
+        dict_asset[OPEX_VAR][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
     return lifetime_opex_var
 
@@ -1073,7 +1026,7 @@ def get_lifetime_opex_var_list(dict_asset, economic_data):
     else:
         opex_var = sum(first_value) / len(first_value)
 
-    lifetime_opex_var = opex_var * economic_data["annuity_factor"][VALUE]
+    lifetime_opex_var = opex_var * economic_data[ANNUITY_FACTOR][VALUE]
     return lifetime_opex_var
 
 
@@ -1088,7 +1041,7 @@ def get_lifetime_opex_var_timeseries(dict_asset, economic_data):
 
     opex_var = sum(dict_asset[OPEX_VAR][VALUE]) / len(dict_asset[OPEX_VAR][VALUE])
     lifetime_opex_var = (
-        dict_asset[OPEX_VAR][VALUE] * economic_data["annuity_factor"][VALUE]
+        dict_asset[OPEX_VAR][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
     return lifetime_opex_var
 
@@ -1131,15 +1084,15 @@ def receive_timeseries_from_csv(
         if type == "input":
             dict_asset.update(
                 {
-                    "timeseries": pd.Series(
-                        data_set[header].values, index=settings["time_index"]
+                    TIMESERIES: pd.Series(
+                        data_set[header].values, index=settings[TIME_INDEX]
                     )
                 }
             )
         else:
             dict_asset[type]["value_info"] = dict_asset[type][VALUE]
             dict_asset[type][VALUE] = pd.Series(
-                data_set[header].values, index=settings["time_index"]
+                data_set[header].values, index=settings[TIME_INDEX]
             )
 
         logging.debug("Added timeseries of %s (%s).", dict_asset[LABEL], file_path)
@@ -1147,17 +1100,17 @@ def receive_timeseries_from_csv(
         if type == "input":
             dict_asset.update(
                 {
-                    "timeseries": pd.Series(
-                        data_set[header][0 : len(settings["time_index"])].values,
-                        index=settings["time_index"],
+                    TIMESERIES: pd.Series(
+                        data_set[header][0 : len(settings[TIME_INDEX])].values,
+                        index=settings[TIME_INDEX],
                     )
                 }
             )
         else:
             dict_asset[type]["value_info"] = dict_asset[type][VALUE]
             dict_asset[type][VALUE] = pd.Series(
-                data_set[header][0 : len(settings["time_index"])].values,
-                index=settings["time_index"],
+                data_set[header][0 : len(settings[TIME_INDEX])].values,
+                index=settings[TIME_INDEX],
             )
 
         logging.info(
@@ -1180,11 +1133,10 @@ def receive_timeseries_from_csv(
     if type == "input":
         dict_asset.update(
             {
-                "timeseries_peak": {VALUE: max(dict_asset["timeseries"]), UNIT: unit,},
-                "timeseries_total": {VALUE: sum(dict_asset["timeseries"]), UNIT: unit,},
+                TIMESERIES_PEAK: {VALUE: max(dict_asset[TIMESERIES]), UNIT: unit,},
+                "timeseries_total": {VALUE: sum(dict_asset[TIMESERIES]), UNIT: unit,},
                 "timeseries_average": {
-                    VALUE: sum(dict_asset["timeseries"])
-                    / len(dict_asset["timeseries"]),
+                    VALUE: sum(dict_asset[TIMESERIES]) / len(dict_asset[TIMESERIES]),
                     UNIT: unit,
                 },
             }
@@ -1194,17 +1146,17 @@ def receive_timeseries_from_csv(
             logging.debug("Normalizing timeseries of %s.", dict_asset[LABEL])
             dict_asset.update(
                 {
-                    "timeseries_normalized": dict_asset["timeseries"]
-                    / dict_asset["timeseries_peak"][VALUE]
+                    TIMESERIES_NORMALIZED: dict_asset[TIMESERIES]
+                    / dict_asset[TIMESERIES_PEAK][VALUE]
                 }
             )
             # just to be sure!
-            if any(dict_asset["timeseries_normalized"].values) > 1:
+            if any(dict_asset[TIMESERIES_NORMALIZED].values) > 1:
                 logging.warning(
                     "Error, %s timeseries not normalized, greater than 1.",
                     dict_asset[LABEL],
                 )
-            if any(dict_asset["timeseries_normalized"].values) < 0:
+            if any(dict_asset[TIMESERIES_NORMALIZED].values) < 0:
                 logging.warning("Error, %s timeseries negative.", dict_asset[LABEL])
 
     # plot all timeseries that are red into simulation input
@@ -1212,7 +1164,7 @@ def receive_timeseries_from_csv(
         plot_input_timeseries(
             dict_values,
             settings,
-            dict_asset["timeseries"],
+            dict_asset[TIMESERIES],
             dict_asset[LABEL],
             header,
             is_demand_profile,
@@ -1326,11 +1278,11 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
 
     data_set = pd.read_csv(file_path, sep=",")
     if len(data_set.index) == settings["periods"]:
-        return pd.Series(data_set[header].values, index=settings["time_index"])
+        return pd.Series(data_set[header].values, index=settings[TIME_INDEX])
     elif len(data_set.index) >= settings["periods"]:
         return pd.Series(
-            data_set[header][0 : len(settings["time_index"])].values,
-            index=settings["time_index"],
+            data_set[header][0 : len(settings[TIME_INDEX])].values,
+            index=settings[TIME_INDEX],
         )
     elif len(data_set.index) <= settings["periods"]:
         logging.critical(

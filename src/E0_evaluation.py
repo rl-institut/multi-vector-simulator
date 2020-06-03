@@ -20,6 +20,8 @@ from src.constants_json_strings import (
     INPUT_POWER,
     OUTPUT_POWER,
     STORAGE_CAPACITY,
+    INPUT_BUS_NAME,
+    OUTPUT_BUS_NAME,
 )
 
 r"""
@@ -114,13 +116,13 @@ def evaluate_dict(dict_values, results_main, results_meta):
             )
 
         if (
-            dict_values[ENERGY_STORAGE][storage]["input_bus_name"]
+            dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
             in dict_values["optimizedFlows"].keys()
         ) or (
-            dict_values[ENERGY_STORAGE][storage]["output_bus_name"]
+            dict_values[ENERGY_STORAGE][storage][OUTPUT_BUS_NAME]
             in dict_values["optimizedFlows"].keys()
         ):
-            bus_name = dict_values[ENERGY_STORAGE][storage]["input_bus_name"]
+            bus_name = dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
             timeseries_name = (
                 dict_values[ENERGY_STORAGE][storage][LABEL]
                 + " ("

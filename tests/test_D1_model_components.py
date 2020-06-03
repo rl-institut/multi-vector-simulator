@@ -22,6 +22,9 @@ from src.constants_json_strings import (
     OUTPUT_POWER,
     C_RATE,
     STORAGE_CAPACITY,
+    TIMESERIES,
+    INPUT_BUS_NAME,
+    OUTPUT_BUS_NAME,
 )
 from .constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
@@ -94,7 +97,7 @@ class TestTransformerComponent:
         # values are expected to be different depending on whether capacity is optimized or not
         if optimize == True:
             output_bus = self.model.entities[-1].outputs.data[
-                self.busses[dict_asset["output_bus_name"]]
+                self.busses[dict_asset[OUTPUT_BUS_NAME]]
             ]
             assert isinstance(
                 output_bus.investment, solph.options.Investment
@@ -103,7 +106,7 @@ class TestTransformerComponent:
             assert output_bus.nominal_value == None
         elif optimize == False:
             output_bus = self.model.entities[-1].outputs.data[
-                self.busses[dict_asset["output_bus_name"]]
+                self.busses[dict_asset[OUTPUT_BUS_NAME]]
             ]
             assert output_bus.investment == None
             assert hasattr(output_bus, "existing") == False
@@ -260,11 +263,11 @@ class TestSinkComponent:
         # foreach input bus - these values are expected to be different
         # depending on `dispatchable`
         if amount_inputs == 1:
-            input_bus_names = [dict_asset["input_bus_name"]]
+            input_bus_names = [dict_asset[INPUT_BUS_NAME]]
             if dispatchable == True:
                 opex_var = [dict_asset[OPEX_VAR][VALUE]]
         elif amount_inputs > 1:
-            input_bus_names = dict_asset["input_bus_name"]
+            input_bus_names = dict_asset[INPUT_BUS_NAME]
             if dispatchable == True:
                 opex_var = dict_asset[OPEX_VAR][VALUE]
         else:
@@ -273,7 +276,7 @@ class TestSinkComponent:
             input_bus = self.model.entities[-1].inputs[self.busses[input_bus_name]]
             if dispatchable == False:
                 assert input_bus.fixed == True
-                assert_series_equal(input_bus.actual_value, dict_asset["timeseries"])
+                assert_series_equal(input_bus.actual_value, dict_asset[TIMESERIES])
                 assert (
                     input_bus.variable_costs.default == 0
                 )  # this only is a real check if opex_var is not 0
@@ -288,7 +291,7 @@ class TestSinkComponent:
 
     def test_sink_non_dispatchable_single_input_bus(self):
         dict_asset = self.dict_values[ENERGY_CONSUMPTION]["non_dispatchable_single"]
-        dict_asset["timeseries"] = self.time_series
+        dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
             model=self.model,
@@ -303,7 +306,7 @@ class TestSinkComponent:
 
     def test_sink_non_dispatchable_multiple_input_busses(self):
         dict_asset = self.dict_values[ENERGY_CONSUMPTION]["non_dispatchable_multiple"]
-        dict_asset["timeseries"] = self.time_series
+        dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
             model=self.model,

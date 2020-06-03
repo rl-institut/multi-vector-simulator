@@ -126,8 +126,8 @@ REQUIRED_CSV_PARAMETERS = {
         ENERGY_VECTOR,
     ],
     ENERGY_PROVIDERS: [
-        "energy_price",
-        "feedin_tariff",
+        ENERGY_PRICE,
+        FEEDIN_TARIFF,
         INFLOW_DIRECTION,
         LABEL,
         OPTIMIZE_CAP,

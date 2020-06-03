@@ -21,6 +21,8 @@ from src.constants_json_strings import (
     START_DATE,
     END_DATE,
     TIMESTEP,
+    TIME_INDEX,
+    ANNUITY_FACTOR,
 )
 
 
@@ -32,7 +34,7 @@ def test_retrieve_datetimeindex_for_simulation():
         TIMESTEP: {VALUE: 60},
     }
     C0.simulation_settings(simulation_settings)
-    for k in (START_DATE, END_DATE, "time_index"):
+    for k in (START_DATE, END_DATE, TIME_INDEX):
         assert k in simulation_settings.keys()
     assert simulation_settings[START_DATE] == pd.Timestamp("2020-01-01 00:00:00")
     assert simulation_settings[END_DATE] == pd.Timestamp("2020-01-01 23:00:00")
@@ -46,7 +48,7 @@ def test_adding_economic_parameters_C2():
     }
     C0.economic_parameters(economic_parameters)
     # the actual value of the annuity factor should have been checked in C2
-    for k in ("annuity_factor", "crf"):
+    for k in (ANNUITY_FACTOR, "crf"):
         assert k in economic_parameters.keys()
 
 
@@ -68,7 +70,7 @@ settings = {EVALUATED_PERIOD: {VALUE: 365}}
 
 economic_data = {
     PROJECT_DURATION: {VALUE: 20},
-    "annuity_factor": {VALUE: 1},
+    ANNUITY_FACTOR: {VALUE: 1},
     "crf": {VALUE: 1},
     DISCOUNTFACTOR: {VALUE: 0},
     TAX: {VALUE: 0},
