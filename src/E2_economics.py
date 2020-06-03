@@ -1,5 +1,15 @@
 import logging
-from src.constants_json_strings import UNIT, VALUE, ECONOMIC_DATA, CURR
+from src.constants_json_strings import (
+    UNIT,
+    VALUE,
+    ECONOMIC_DATA,
+    CURR,
+    LABEL,
+    OPEX_VAR,
+    OPEX_FIX,
+    CAPEX_FIX,
+    CAPEX_VAR,
+)
 
 r"""
 Module E3 economic processing
@@ -23,7 +33,7 @@ The module processes the simulation results regarding economic parameters:
 
 def get_costs(dict_asset, economic_data):
     if isinstance(dict_asset, dict) and not (
-        dict_asset["label"]
+        dict_asset[LABEL]
         in [
             "settings",
             ECONOMIC_DATA,
@@ -32,13 +42,13 @@ def get_costs(dict_asset, economic_data):
             "simulation_results",
         ]
     ):
-        logging.debug("Calculating costs of asset %s", dict_asset["label"])
+        logging.debug("Calculating costs of asset %s", dict_asset[LABEL])
         costs_total = 0
         cost_om = 0
         # Calculation of connected parameters:
         if (
             all_list_in_dict(
-                dict_asset, ["lifetime_capex_var", "capex_fix", "optimizedAddCap"]
+                dict_asset, ["lifetime_capex_var", CAPEX_FIX, "optimizedAddCap"]
             )
             == True
             and dict_asset["optimizedAddCap"][VALUE] > 0
@@ -47,22 +57,22 @@ def get_costs(dict_asset, economic_data):
             costs_investment = (
                 dict_asset["optimizedAddCap"][VALUE]
                 * dict_asset["lifetime_capex_var"][VALUE]
-                + dict_asset["capex_fix"][VALUE]
+                + dict_asset[CAPEX_FIX][VALUE]
             )
             costs_total = add_costs_and_total(
                 dict_asset, "costs_investment", costs_investment, costs_total
             )
 
         if (
-            all_list_in_dict(dict_asset, ["capex_var", "capex_fix", "optimizedAddCap"])
+            all_list_in_dict(dict_asset, [CAPEX_VAR, CAPEX_FIX, "optimizedAddCap"])
             == True
             and dict_asset["optimizedAddCap"][VALUE] > 0
         ):
             # investments including fix prices, only upfront costs at t=0
             costs_upfront = (
                 dict_asset["optimizedAddCap"][VALUE]
-                + dict_asset["capex_var"][VALUE]
-                + dict_asset["capex_fix"][VALUE]
+                + dict_asset[CAPEX_VAR][VALUE]
+                + dict_asset[CAPEX_FIX][VALUE]
             )
             costs_total = add_costs_and_total(
                 dict_asset, "costs_upfront", costs_upfront, costs_total

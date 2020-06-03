@@ -9,7 +9,12 @@ from src.constants_json_strings import (
     DISCOUNTFACTOR,
     TAX,
     VALUE,
+    LABEL,
     SECTORS,
+    OPEX_VAR,
+    OPEX_FIX,
+    CAPEX_FIX,
+    CAPEX_VAR,
 )
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
@@ -39,17 +44,17 @@ def test_adding_economic_parameters_C2():
 
 
 def test_complete_missing_cost_data_opex_fix():
-    dict_asset = {"label": "a_label"}
+    dict_asset = {LABEL: "a_label"}
     C0.complete_missing_cost_data(dict_asset)
-    assert "opex_fix" in dict_asset.keys()
-    assert dict_asset["opex_fix"] == 0
+    assert OPEX_FIX in dict_asset.keys()
+    assert dict_asset[OPEX_FIX] == 0
 
 
 def test_complete_missing_cost_data_capex_var():
-    dict_asset = {"label": "a_label"}
+    dict_asset = {LABEL: "a_label"}
     C0.complete_missing_cost_data(dict_asset)
-    assert "capex_var" in dict_asset.keys()
-    assert dict_asset["capex_var"] == 0
+    assert CAPEX_VAR in dict_asset.keys()
+    assert dict_asset[CAPEX_VAR] == 0
 
 
 settings = {"evaluated_period": {VALUE: 365}}
@@ -58,17 +63,17 @@ economic_data = {
     PROJECT_DURATION: {VALUE: 20},
     "annuity_factor": {VALUE: 1},
     "crf": {VALUE: 1},
-    DISCOUNTFACTOR: {"value": 0},
-    TAX: {"value": 0},
+    DISCOUNTFACTOR: {VALUE: 0},
+    TAX: {VALUE: 0},
 }
 
 dict_asset = {
-    "opex_fix": {"value": 1, UNIT: "a_unit"},
-    "crf": {"value": 1},
-    "capex_var": {"value": 1, UNIT: "a_unit"},
-    "opex_var": {"value": 1},
-    "capex_fix": {"value": 1},
-    "lifetime": {"value": 20},
+    OPEX_FIX: {VALUE: 1, UNIT: "a_unit"},
+    "crf": {VALUE: 1},
+    CAPEX_VAR: {VALUE: 1, UNIT: "a_unit"},
+    OPEX_VAR: {VALUE: 1},
+    CAPEX_FIX: {VALUE: 1},
+    "lifetime": {VALUE: 20},
     UNIT: "a_unit",
 }
 
@@ -86,27 +91,27 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
 
 
 def test_determine_lifetime_opex_var_as_int():
-    dict_asset = {"opex_var": {"value": 1}}
+    dict_asset = {OPEX_VAR: {VALUE: 1}}
     C0.determine_lifetime_opex_var(dict_asset, economic_data)
     assert "lifetime_opex_var" in dict_asset.keys()
-    assert isinstance(dict_asset["lifetime_opex_var"]["value"], float) or isinstance(
-        dict_asset["lifetime_opex_var"]["value"], int
+    assert isinstance(dict_asset["lifetime_opex_var"][VALUE], float) or isinstance(
+        dict_asset["lifetime_opex_var"][VALUE], int
     )
 
 
 def test_determine_lifetime_opex_var_as_float():
-    dict_asset = {"opex_var": {"value": 1.5}}
+    dict_asset = {OPEX_VAR: {VALUE: 1.5}}
     C0.determine_lifetime_opex_var(dict_asset, economic_data)
     assert "lifetime_opex_var" in dict_asset.keys()
-    assert isinstance(dict_asset["lifetime_opex_var"]["value"], float)
+    assert isinstance(dict_asset["lifetime_opex_var"][VALUE], float)
 
 
 def test_determine_lifetime_opex_var_as_list():
-    dict_asset = {"opex_var": {"value": [1.0, 1.0]}}
+    dict_asset = {OPEX_VAR: {VALUE: [1.0, 1.0]}}
     C0.determine_lifetime_opex_var(dict_asset, economic_data)
     assert "lifetime_opex_var" in dict_asset.keys()
-    assert isinstance(dict_asset["lifetime_opex_var"]["value"], float)
-    # todo this should be here some time, shouldnt it? assert isinstance(dict_asset["lifetime_opex_var"]["value"], list)
+    assert isinstance(dict_asset["lifetime_opex_var"][VALUE], float)
+    # todo this should be here some time, shouldnt it? assert isinstance(dict_asset["lifetime_opex_var"][VALUE], list)
 
 
 START_TIME = "2020-01-01 00:00"
@@ -118,22 +123,22 @@ pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
 
 
 def test_determine_lifetime_opex_var_as_timeseries():
-    dict_asset = {"opex_var": {"value": pandas_Series}}
+    dict_asset = {OPEX_VAR: {VALUE: pandas_Series}}
     C0.determine_lifetime_opex_var(dict_asset, economic_data)
     assert "lifetime_opex_var" in dict_asset.keys()
-    assert isinstance(dict_asset["lifetime_opex_var"]["value"], pd.Series)
+    assert isinstance(dict_asset["lifetime_opex_var"][VALUE], pd.Series)
 
 
 def test_determine_lifetime_opex_var_is_other():
-    dict_asset = {"opex_var": {"value": "str"}}
+    dict_asset = {OPEX_VAR: {VALUE: "str"}}
     with pytest.raises(ValueError):
         C0.determine_lifetime_opex_var(dict_asset, economic_data)
 
 
 def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear():
     dict_test = {
-        ENERGY_PROVIDERS: {"a_dso": {"peak_demand_pricing_period": {"value": 2}}},
-        "simulation_settings": {"evaluated_period": {"value": 30}},
+        ENERGY_PROVIDERS: {"a_dso": {"peak_demand_pricing_period": {VALUE: 2}}},
+        "simulation_settings": {"evaluated_period": {VALUE: 30}},
     }
     with pytest.raises(ValueError):
         C0.define_dso_sinks_and_sources(dict_test, "a_dso")

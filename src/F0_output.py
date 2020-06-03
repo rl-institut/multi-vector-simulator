@@ -16,6 +16,7 @@ from src.constants import (
     PROJECT_DATA,
     SECTORS,
     ENERGY_VECTOR,
+    LABEL,
 )
 
 r"""
@@ -186,7 +187,7 @@ def plot_optimized_capacities(dict_values):
             dict_values,
             dict_values[SIMULATION_SETTINGS],
             dict_values[PROJECT_DATA],
-            dict_values["kpi"]["scalar_matrix"]["label"],
+            dict_values["kpi"]["scalar_matrix"][LABEL],
             dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
         )
     return show_optimal_capacities

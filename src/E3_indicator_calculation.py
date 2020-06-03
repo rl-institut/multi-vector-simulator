@@ -21,6 +21,7 @@ from src.constants import (
 )
 from src.constants_json_strings import (
     VALUE,
+    LABEL,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
     ENERGY_PROVIDERS,
@@ -44,7 +45,7 @@ def all_totals(dict_values):
 
     """
     for column in dict_values[KPI_DICT][KPI_COST_MATRIX].columns:
-        if column != "label":
+        if column != LABEL:
             dict_values[KPI_DICT][KPI_SCALARS_DICT].update(
                 {column: dict_values[KPI_DICT][KPI_COST_MATRIX][column].sum()}
             )

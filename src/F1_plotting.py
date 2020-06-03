@@ -11,6 +11,7 @@ from src.constants import (
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
     PROJECT_DATA,
+    LABEL,
 )
 
 r"""
@@ -199,7 +200,7 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
 
         costs_perc_grouped, total = group_costs(
             dict_values["kpi"]["cost_matrix"][parameter],
-            dict_values["kpi"]["cost_matrix"]["label"],
+            dict_values["kpi"]["cost_matrix"][LABEL],
         )
 
         costs_perc_grouped_pandas = pd.Series(costs_perc_grouped)

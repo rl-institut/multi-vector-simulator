@@ -1,21 +1,29 @@
 import src.E2_economics as E2
-from src.constants_json_strings import UNIT, CURR
+from src.constants_json_strings import (
+    UNIT,
+    CURR,
+    CAPEX_FIX,
+    CAPEX_VAR,
+    OPEX_VAR,
+    VALUE,
+    LABEL,
+)
 
 dict_asset = {
-    "label": "DSO_feedin_sink",
-    "opex_var": {"value": -0.4, UNIT: "currency/kWh"},
-    "capex_var": {"value": 0, UNIT: "currency/kW"},
-    "installedCap": {"value": 0.0, UNIT: UNIT},
-    "capex_fix": {"value": 0, UNIT: CURR},
-    "lifetime_capex_var": {"value": 0.0, UNIT: "currency/kW"},
-    "lifetime_opex_fix": {"value": 0.0, UNIT: "currency/ye"},
-    "lifetime_opex_var": {"value": -5.505932460595773, UNIT: "?"},
-    "annual_total_flow": {"value": 0.0, UNIT: "kWh"},
-    "optimizedAddCap": {"value": 0, UNIT: "?"},
+    LABEL: "DSO_feedin_sink",
+    OPEX_VAR: {VALUE: -0.4, UNIT: "currency/kWh"},
+    CAPEX_VAR: {VALUE: 0, UNIT: "currency/kW"},
+    "installedCap": {VALUE: 0.0, UNIT: UNIT},
+    CAPEX_FIX: {VALUE: 0, UNIT: CURR},
+    "lifetime_capex_var": {VALUE: 0.0, UNIT: "currency/kW"},
+    "lifetime_opex_fix": {VALUE: 0.0, UNIT: "currency/ye"},
+    "lifetime_opex_var": {VALUE: -5.505932460595773, UNIT: "?"},
+    "annual_total_flow": {VALUE: 0.0, UNIT: "kWh"},
+    "optimizedAddCap": {VALUE: 0, UNIT: "?"},
 }
 
 dict_economic = {
-    "crf": {"value": 0.07264891149004721, UNIT: "?"},
+    "crf": {VALUE: 0.07264891149004721, UNIT: "?"},
 }
 
 
@@ -48,11 +56,11 @@ def test_all_list_in_dict_passes_as_all_keys_included():
     """Tests whether looking for list items in dict_asset is plausible."""
     list_true = ["annual_total_flow", "optimizedAddCap"]
     boolean = E2.all_list_in_dict(dict_asset, list_true)
-    assert boolean == True
+    assert boolean is True
 
 
 def test_all_list_in_dict_fails_due_to_not_included_keys():
     """Tests whether looking for list items in dict_asset is plausible."""
     list_false = ["flow", "optimizedAddCap"]
     boolean = E2.all_list_in_dict(dict_asset, list_false)
-    assert boolean == False
+    assert boolean is False

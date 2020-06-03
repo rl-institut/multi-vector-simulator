@@ -40,6 +40,10 @@ from src.constants_json_strings import (
     INFLOW_DIRECTION,
     OUTFLOW_DIRECTION,
     ENERGY_VECTOR,
+    OPEX_VAR,
+    OPEX_FIX,
+    CAPEX_FIX,
+    CAPEX_VAR,
 )
 
 
@@ -179,9 +183,9 @@ def economic_parameters(economic_parameters):
     economic_parameters.update(
         {
             "annuity_factor": {
-                "value": economics.annuity_factor(
-                    economic_parameters[PROJECT_DURATION]["value"],
-                    economic_parameters[DISCOUNTFACTOR]["value"],
+                VALUE: economics.annuity_factor(
+                    economic_parameters[PROJECT_DURATION][VALUE],
+                    economic_parameters[DISCOUNTFACTOR][VALUE],
                 ),
                 UNIT: "?",
             }
@@ -191,9 +195,9 @@ def economic_parameters(economic_parameters):
     economic_parameters.update(
         {
             "crf": {
-                "value": economics.crf(
-                    economic_parameters[PROJECT_DURATION]["value"],
-                    economic_parameters[DISCOUNTFACTOR]["value"],
+                VALUE: economics.crf(
+                    economic_parameters[PROJECT_DURATION][VALUE],
+                    economic_parameters[DISCOUNTFACTOR][VALUE],
                 ),
                 UNIT: "?",
             }
@@ -216,7 +220,7 @@ def process_all_assets(dict_values):
         define_sink(
             dict_values,
             dict_values[PROJECT_DATA][SECTORS][sector] + " excess",
-            {"value": 0, UNIT: "currency/kWh"},
+            {VALUE: 0, UNIT: "currency/kWh"},
             dict_values[PROJECT_DATA][SECTORS][sector],
         )
         logging.debug(
@@ -270,7 +274,7 @@ def energyConversion(dict_values, group):
         add_maximum_cap(dict_values=dict_values, group=group, asset=asset)
 
         # in case there is only one parameter provided (input bus and one output bus)
-        if isinstance(dict_values[group][asset]["efficiency"]["value"], dict):
+        if isinstance(dict_values[group][asset]["efficiency"][VALUE], dict):
             receive_timeseries_from_csv(
                 dict_values,
                 dict_values[SIMULATION_SETTINGS],
@@ -279,7 +283,7 @@ def energyConversion(dict_values, group):
             )
         # in case there is more than one parameter provided (either (A) n input busses and 1 output bus or (B) 1 input bus and n output busses)
         # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
-        elif isinstance(dict_values[group][asset]["efficiency"]["value"], list):
+        elif isinstance(dict_values[group][asset]["efficiency"][VALUE], list):
             treat_multiple_flows(dict_values[group][asset], dict_values, "efficiency")
 
             # same distinction of values provided with dictionaries (one input and one output) or list (multiple).
@@ -340,7 +344,7 @@ def energyStorage(dict_values, group):
             # check if parameters are provided as timeseries
             for parameter in ["efficiency", "soc_min", "soc_max"]:
                 if parameter in dict_values[group][asset][subasset] and isinstance(
-                    dict_values[group][asset][subasset][parameter]["value"], dict
+                    dict_values[group][asset][subasset][parameter][VALUE], dict
                 ):
                     receive_timeseries_from_csv(
                         dict_values,
@@ -349,7 +353,7 @@ def energyStorage(dict_values, group):
                         parameter,
                     )
                 elif parameter in dict_values[group][asset][subasset] and isinstance(
-                    dict_values[group][asset][subasset][parameter]["value"], list
+                    dict_values[group][asset][subasset][parameter][VALUE], list
                 ):
                     treat_multiple_flows(
                         dict_values[group][asset][subasset], dict_values, parameter
@@ -434,25 +438,25 @@ def define_missing_cost_data(dict_values, dict_asset):
     # read timeseries with filename provided for variable costs.
     # if multiple opex_var are given for multiple busses, it checks if any v
     # alue is a timeseries
-    if "opex_var" in dict_asset:
-        if isinstance(dict_asset["opex_var"]["value"], dict):
+    if OPEX_VAR in dict_asset:
+        if isinstance(dict_asset[OPEX_VAR][VALUE], dict):
             receive_timeseries_from_csv(
-                dict_values, dict_values[SIMULATION_SETTINGS], dict_asset, "opex_var"
+                dict_values, dict_values[SIMULATION_SETTINGS], dict_asset, OPEX_VAR
             )
-        elif isinstance(dict_asset["opex_var"]["value"], list):
-            treat_multiple_flows(dict_asset, dict_values, "opex_var")
+        elif isinstance(dict_asset[OPEX_VAR][VALUE], list):
+            treat_multiple_flows(dict_asset, dict_values, OPEX_VAR)
 
     economic_data = dict_values[ECONOMIC_DATA]
 
     basic_costs = {
-        "optimizeCap": {"value": False, UNIT: "bool"},
+        "optimizeCap": {VALUE: False, UNIT: "bool"},
         UNIT: "?",
-        "installedCap": {"value": 0.0, UNIT: UNIT},
-        "capex_fix": {"value": 0, UNIT: CURR},
-        "capex_var": {"value": 0, UNIT: "currency/unit"},
-        "opex_fix": {"value": 0, UNIT: "currency/year"},
-        "opex_var": {"value": 0, UNIT: "currency/unit/year"},
-        "lifetime": {"value": economic_data[PROJECT_DURATION]["value"], UNIT: "year",},
+        "installedCap": {VALUE: 0.0, UNIT: UNIT},
+        CAPEX_FIX: {VALUE: 0, UNIT: CURR},
+        CAPEX_VAR: {VALUE: 0, UNIT: "currency/unit"},
+        OPEX_FIX: {VALUE: 0, UNIT: "currency/year"},
+        OPEX_VAR: {VALUE: 0, UNIT: "currency/unit/year"},
+        "lifetime": {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: "year",},
     }
 
     # checks that an asset has all cost parameters needed for evaluation.
@@ -565,11 +569,11 @@ def define_dso_sinks_and_sources(dict_values, dso):
     # define to shorten code
     number_of_pricing_periods = dict_values[ENERGY_PROVIDERS][dso][
         "peak_demand_pricing_period"
-    ]["value"]
+    ][VALUE]
 
     # check number of pricing periods - if >1 the simulation has to cover a whole year!
     if number_of_pricing_periods > 1:
-        if dict_values[SIMULATION_SETTINGS]["evaluated_period"]["value"] != 365:
+        if dict_values[SIMULATION_SETTINGS]["evaluated_period"][VALUE] != 365:
             raise PeakDemandPricingPeriodsOnlyForYear(
                 f"For taking peak demand pricing periods > 1 into account,"
                 f"the evaluation period has to be 365 days."
@@ -588,7 +592,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
     )
 
     dict_asset = dict_values[ENERGY_PROVIDERS][dso]
-    if isinstance(dict_asset["peak_demand_pricing"]["value"], dict):
+    if isinstance(dict_asset["peak_demand_pricing"][VALUE], dict):
         receive_timeseries_from_csv(
             dict_values,
             dict_values[SIMULATION_SETTINGS],
@@ -597,7 +601,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         )
 
     peak_demand_pricing = dict_values[ENERGY_PROVIDERS][dso]["peak_demand_pricing"][
-        "value"
+        VALUE
     ]
     if isinstance(peak_demand_pricing, float) or isinstance(peak_demand_pricing, int):
         logging.debug(
@@ -615,7 +619,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         )
 
     peak_demand_pricing = {
-        "value": dict_values[ENERGY_PROVIDERS][dso]["peak_demand_pricing"]["value"],
+        VALUE: dict_values[ENERGY_PROVIDERS][dso]["peak_demand_pricing"][VALUE],
         UNIT: "currency/kWpeak",
     }
 
@@ -643,7 +647,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
                 + pd.DateOffset(months=(pricing_period - 1) * months_in_a_period),
                 end=dict_values[SIMULATION_SETTINGS]["start_date"]
                 + pd.DateOffset(months=pricing_period * months_in_a_period, hours=-1),
-                freq=str(dict_values[SIMULATION_SETTINGS]["timestep"]["value"]) + "min",
+                freq=str(dict_values[SIMULATION_SETTINGS]["timestep"][VALUE]) + "min",
             )
 
             timeseries = timeseries.add(pd.Series(1, index=time_period), fill_value=0)
@@ -663,7 +667,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         dso + "_feedin",
         dict_values[ENERGY_PROVIDERS][dso]["feedin_tariff"],
         dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
-        capex_var={"value": 0, UNIT: "currency/kW"},
+        capex_var={VALUE: 0, UNIT: "currency/kW"},
     )
 
     dict_values[ENERGY_PROVIDERS][dso].update(
@@ -702,9 +706,9 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
         "output_bus_name": output_bus_name,
         "dispatchable": True,
         "timeseries": timeseries,
-        # "opex_var": {"value": price, UNIT: "currency/unit"},
+        # OPEX_VAR: {VALUE: price, UNIT: "currency/unit"},
         "lifetime": {
-            "value": dict_values[ECONOMIC_DATA][PROJECT_DURATION]["value"],
+            VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
             UNIT: "year",
         },
     }
@@ -712,12 +716,12 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     # check if multiple busses are provided
     # for each bus, read time series for opex_var if a file name has been
     # provided in energy price
-    if isinstance(price["value"], list):
-        source.update({"opex_var": {"value": [], UNIT: price[UNIT]}})
+    if isinstance(price[VALUE], list):
+        source.update({OPEX_VAR: {VALUE: [], UNIT: price[UNIT]}})
         values_info = []
-        for element in price["value"]:
+        for element in price[VALUE]:
             if isinstance(element, dict):
-                source["opex_var"]["value"].append(
+                source[OPEX_VAR][VALUE].append(
                     get_timeseries_multiple_flows(
                         dict_values[SIMULATION_SETTINGS],
                         source,
@@ -727,65 +731,65 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                 )
                 values_info.append(element)
             else:
-                source["opex_var"]["value"].append(element)
+                source[OPEX_VAR][VALUE].append(element)
         if len(values_info) > 0:
-            source["opex_var"]["values_info"] = values_info
+            source[OPEX_VAR]["values_info"] = values_info
 
-    elif isinstance(price["value"], dict):
+    elif isinstance(price[VALUE], dict):
         source.update(
             {
-                "opex_var": {
-                    "value": {
-                        "file_name": price["value"]["file_name"],
-                        "header": price["value"]["header"],
+                OPEX_VAR: {
+                    VALUE: {
+                        "file_name": price[VALUE]["file_name"],
+                        "header": price[VALUE]["header"],
                     },
                     UNIT: price[UNIT],
                 }
             }
         )
         receive_timeseries_from_csv(
-            dict_values, dict_values[SIMULATION_SETTINGS], source, "opex_var"
+            dict_values, dict_values[SIMULATION_SETTINGS], source, OPEX_VAR
         )
     else:
-        source.update({"opex_var": {"value": price["value"], UNIT: price[UNIT]}})
+        source.update({OPEX_VAR: {VALUE: price[VALUE], UNIT: price[UNIT]}})
 
     logging.debug(
         "Asset %s: sum of timeseries = %s", asset_name, sum(timeseries.values)
     )
 
-    if "opex_fix" in kwargs or "capex_var" in kwargs:
-        if "opex_fix" in kwargs:
-            source.update({"opex_fix": kwargs["opex_fix"]})
+    if OPEX_FIX in kwargs or CAPEX_VAR in kwargs:
+        if OPEX_FIX in kwargs:
+            source.update({OPEX_FIX: kwargs[OPEX_FIX]})
         else:
-            source.update({"capex_var": kwargs["capex_var"]})
+            source.update({CAPEX_VAR: kwargs[CAPEX_VAR]})
 
         source.update(
             {
-                "optimizeCap": {"value": True, UNIT: "bool"},
-                "timeseries_peak": {"value": max(timeseries), UNIT: "kW"},
+                "optimizeCap": {VALUE: True, UNIT: "bool"},
+                "timeseries_peak": {VALUE: max(timeseries), UNIT: "kW"},
                 # todo if we have normalized timeseries hiere, the capex/opex (simulation) have changed, too
                 "timeseries_normalized": timeseries / max(timeseries),
             }
         )
-        if type(source["opex_var"]["value"]) == pd.Series:
+        if type(source[OPEX_VAR][VALUE]) == pd.Series:
             logging.warning(
                 "Attention! %s is created, with a price defined as a timeseries (average: %s). "
                 "If this is DSO supply, this could be improved. Please refer to Issue #23.",
                 source[LABEL],
-                source["opex_var"]["value"].mean(),
+                source[OPEX_VAR][VALUE].mean(),
             )
         else:
             logging.warning(
                 "Attention! %s is created, with a price of %s."
                 "If this is DSO supply, this could be improved. Please refer to Issue #23. ",
                 source[LABEL],
-                source["opex_var"]["value"],
+                source[OPEX_VAR][VALUE],
             )
     else:
-        source.update({"optimizeCap": {"value": False, UNIT: "bool"}})
+        source.update({"optimizeCap": {VALUE: False, UNIT: "bool"}})
 
     # add the parameter "maximumCap" to DSO source
-    source.update({"maximumCap": {"value": None, UNIT: "kWp"}})
+    source.update({"maximumCap": {VALUE: None, UNIT: "kWp"}})
 
     # update dictionary
     dict_values[ENERGY_PRODUCTION].update({asset_name: source})
@@ -826,19 +830,19 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         LABEL: asset_name + "_sink",
         "input_direction": input_bus,
         "input_bus_name": input_bus_name,
-        # "opex_var": {"value": price, UNIT: "currency/kWh"},
+        # OPEX_VAR: {VALUE: price, UNIT: "currency/kWh"},
         "lifetime": {
-            "value": dict_values[ECONOMIC_DATA][PROJECT_DURATION]["value"],
+            VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
             UNIT: "year",
         },
     }
 
     # check if multiple busses are provided
     # for each bus, read time series for opex_var if a file name has been provided in feedin tariff
-    if isinstance(price["value"], list):
-        sink.update({"opex_var": {"value": [], UNIT: price[UNIT]}})
+    if isinstance(price[VALUE], list):
+        sink.update({OPEX_VAR: {VALUE: [], UNIT: price[UNIT]}})
         values_info = []
-        for element in price["value"]:
+        for element in price[VALUE]:
             if isinstance(element, dict):
                 timeseries = get_timeseries_multiple_flows(
                     dict_values[SIMULATION_SETTINGS],
@@ -847,56 +851,50 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
                     element["header"],
                 )
                 if asset_name[-6:] == "feedin":
-                    sink["opex_var"]["value"].append([-i for i in timeseries])
+                    sink[OPEX_VAR][VALUE].append([-i for i in timeseries])
                 else:
-                    sink["opex_var"]["value"].append(timeseries)
+                    sink[OPEX_VAR][VALUE].append(timeseries)
             else:
-                sink["opex_var"]["value"].append(element)
+                sink[OPEX_VAR][VALUE].append(element)
         if len(values_info) > 0:
-            sink["opex_var"]["values_info"] = values_info
+            sink[OPEX_VAR]["values_info"] = values_info
 
-    elif isinstance(price["value"], dict):
+    elif isinstance(price[VALUE], dict):
         sink.update(
             {
-                "opex_var": {
-                    "value": {
-                        "file_name": price["value"]["file_name"],
-                        "header": price["value"]["header"],
+                OPEX_VAR: {
+                    VALUE: {
+                        "file_name": price[VALUE]["file_name"],
+                        "header": price[VALUE]["header"],
                     },
                     UNIT: price[UNIT],
                 }
             }
         )
         receive_timeseries_from_csv(
-            dict_values, dict_values[SIMULATION_SETTINGS], sink, "opex_var"
+            dict_values, dict_values[SIMULATION_SETTINGS], sink, OPEX_VAR
         )
         if (
             asset_name[-6:] == "feedin"
         ):  # change into negative value if this is a feedin sink
-            sink["opex_var"].update({"value": [-i for i in sink["opex_var"]["value"]]})
+            sink[OPEX_VAR].update({VALUE: [-i for i in sink[OPEX_VAR][VALUE]]})
     else:
         if asset_name[-6:] == "feedin":
-            value = -price["value"]
+            value = -price[VALUE]
         else:
-            value = price["value"]
-        sink.update({"opex_var": {"value": value, UNIT: price[UNIT]}})
+            value = price[VALUE]
+        sink.update({OPEX_VAR: {VALUE: value, UNIT: price[UNIT]}})
 
-    if "capex_var" in kwargs:
+    if CAPEX_VAR in kwargs:
         sink.update(
-            {
-                "capex_var": kwargs["capex_var"],
-                "optimizeCap": {"value": True, UNIT: "bool"},
-            }
+            {CAPEX_VAR: kwargs[CAPEX_VAR], "optimizeCap": {VALUE: True, UNIT: "bool"},}
         )
-    if "opex_fix" in kwargs:
+    if OPEX_FIX in kwargs:
         sink.update(
-            {
-                "opex_fix": kwargs["opex_fix"],
-                "optimizeCap": {"value": True, UNIT: "bool"},
-            }
+            {OPEX_FIX: kwargs[OPEX_FIX], "optimizeCap": {VALUE: True, UNIT: "bool"},}
         )
     else:
-        sink.update({"optimizeCap": {"value": False, UNIT: "bool"}})
+        sink.update({"optimizeCap": {VALUE: False, UNIT: "bool"}})
 
     # update dictionary
     dict_values[ENERGY_CONSUMPTION].update({asset_name: sink})
@@ -928,14 +926,14 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             "lifetime_capex_var": {
-                "value": economics.capex_from_investment(
-                    dict_asset["capex_var"]["value"],
-                    dict_asset["lifetime"]["value"],
-                    economic_data[PROJECT_DURATION]["value"],
-                    economic_data[DISCOUNTFACTOR]["value"],
-                    economic_data[TAX]["value"],
+                VALUE: economics.capex_from_investment(
+                    dict_asset[CAPEX_VAR][VALUE],
+                    dict_asset["lifetime"][VALUE],
+                    economic_data[PROJECT_DURATION][VALUE],
+                    economic_data[DISCOUNTFACTOR][VALUE],
+                    economic_data[TAX][VALUE],
                 ),
-                UNIT: dict_asset["capex_var"][UNIT],
+                UNIT: dict_asset[CAPEX_VAR][UNIT],
             }
         }
     )
@@ -944,11 +942,11 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             "annuity_capex_opex_var": {
-                "value": economics.annuity(
-                    dict_asset["lifetime_capex_var"]["value"],
-                    economic_data["crf"]["value"],
+                VALUE: economics.annuity(
+                    dict_asset["lifetime_capex_var"][VALUE],
+                    economic_data["crf"][VALUE],
                 )
-                + dict_asset["opex_fix"]["value"],  # changes from opex_var
+                + dict_asset[OPEX_FIX][VALUE],  # changes from opex_var
                 UNIT: dict_asset["lifetime_capex_var"][UNIT] + "/a",
             }
         }
@@ -957,9 +955,9 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             "lifetime_opex_fix": {
-                "value": dict_asset["opex_fix"]["value"]
-                * economic_data["annuity_factor"]["value"],
-                UNIT: dict_asset["opex_fix"][UNIT][:-2],
+                VALUE: dict_asset[OPEX_FIX][VALUE]
+                * economic_data["annuity_factor"][VALUE],
+                UNIT: dict_asset[OPEX_FIX][UNIT][:-2],
             }
         }
     )
@@ -967,9 +965,9 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             "simulation_annuity": {
-                "value": economics.simulation_annuity(
-                    dict_asset["annuity_capex_opex_var"]["value"],
-                    settings["evaluated_period"]["value"],
+                VALUE: economics.simulation_annuity(
+                    dict_asset["annuity_capex_opex_var"][VALUE],
+                    settings["evaluated_period"][VALUE],
                 ),
                 UNIT: "currency/unit/simulation period",
             }
@@ -981,14 +979,14 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
 def complete_missing_cost_data(dict_asset):
     # todo check if this can be deleted
-    if "capex_var" not in dict_asset:
-        dict_asset.update({"capex_var": 0})
+    if CAPEX_VAR not in dict_asset:
+        dict_asset.update({CAPEX_VAR: 0})
         logging.error(
             "Dictionary of asset %s is incomplete, as capex_var is missing.",
             dict_asset[LABEL],
         )
-    if "opex_fix" not in dict_asset:
-        dict_asset.update({"opex_fix": 0})
+    if OPEX_FIX not in dict_asset:
+        dict_asset.update({OPEX_FIX: 0})
         logging.error(
             "Dictionary of asset %s is incomplete, as opex_fix is missing.",
             dict_asset[LABEL],
@@ -1008,23 +1006,23 @@ def determine_lifetime_opex_var(dict_asset, economic_data):
     -------
 
     """
-    if isinstance(dict_asset["opex_var"]["value"], float) or isinstance(
-        dict_asset["opex_var"]["value"], int
+    if isinstance(dict_asset[OPEX_VAR][VALUE], float) or isinstance(
+        dict_asset["opex_var"][VALUE], int
     ):
         lifetime_opex_var = get_lifetime_opex_var_one_value(dict_asset, economic_data)
 
-    elif isinstance(dict_asset["opex_var"]["value"], list):
+    elif isinstance(dict_asset["opex_var"][VALUE], list):
         lifetime_opex_var = get_lifetime_opex_var_list(dict_asset, economic_data)
 
-    elif isinstance(dict_asset["opex_var"]["value"], pd.Series):
+    elif isinstance(dict_asset["opex_var"][VALUE], pd.Series):
         lifetime_opex_var = get_lifetime_opex_var_timeseries(dict_asset, economic_data)
 
     else:
         raise ValueError(
-            f'Type of opex_var neither int, float, list or pd.Series, but of type {dict_asset["opex_var"]["value"]}. Is type correct?'
+            f'Type of opex_var neither int, float, list or pd.Series, but of type {dict_asset["opex_var"][VALUE]}. Is type correct?'
         )
 
-    dict_asset.update({"lifetime_opex_var": {"value": lifetime_opex_var, UNIT: "?",}})
+    dict_asset.update({"lifetime_opex_var": {VALUE: lifetime_opex_var, UNIT: "?",}})
     return
 
 
@@ -1036,7 +1034,7 @@ def get_lifetime_opex_var_one_value(dict_asset, economic_data):
 
     """
     lifetime_opex_var = (
-        dict_asset["opex_var"]["value"] * economic_data["annuity_factor"]["value"]
+        dict_asset["opex_var"][VALUE] * economic_data["annuity_factor"][VALUE]
     )
     return lifetime_opex_var
 
@@ -1053,13 +1051,13 @@ def get_lifetime_opex_var_list(dict_asset, economic_data):
 
     # if multiple busses are provided, it takes the first opex_var (corresponding to the first bus)
 
-    first_value = dict_asset["opex_var"]["value"][0]
+    first_value = dict_asset["opex_var"][VALUE][0]
     if isinstance(first_value, float) or isinstance(first_value, int):
         opex_var = first_value
     else:
         opex_var = sum(first_value) / len(first_value)
 
-    lifetime_opex_var = opex_var * economic_data["annuity_factor"]["value"]
+    lifetime_opex_var = opex_var * economic_data["annuity_factor"][VALUE]
     return lifetime_opex_var
 
 
@@ -1072,11 +1070,9 @@ def get_lifetime_opex_var_timeseries(dict_asset, economic_data):
     """
     # take average value of opex_var if it is a timeseries
 
-    opex_var = sum(dict_asset["opex_var"]["value"]) / len(
-        dict_asset["opex_var"]["value"]
-    )
+    opex_var = sum(dict_asset["opex_var"][VALUE]) / len(dict_asset["opex_var"][VALUE])
     lifetime_opex_var = (
-        dict_asset["opex_var"]["value"] * economic_data["annuity_factor"]["value"]
+        dict_asset["opex_var"][VALUE] * economic_data["annuity_factor"][VALUE]
     )
     return lifetime_opex_var
 
@@ -1103,8 +1099,8 @@ def receive_timeseries_from_csv(
         file_name = dict_asset["file_name"]
         unit = dict_asset[UNIT] + "/h"
     else:
-        file_name = dict_asset[type]["value"]["file_name"]
-        header = dict_asset[type]["value"]["header"]
+        file_name = dict_asset[type][VALUE]["file_name"]
+        header = dict_asset[type][VALUE]["header"]
         unit = dict_asset[type][UNIT]
 
     file_path = os.path.join(settings["path_input_folder"], TIME_SERIES, file_name)
@@ -1125,8 +1121,8 @@ def receive_timeseries_from_csv(
                 }
             )
         else:
-            dict_asset[type]["value_info"] = dict_asset[type]["value"]
-            dict_asset[type]["value"] = pd.Series(
+            dict_asset[type]["value_info"] = dict_asset[type][VALUE]
+            dict_asset[type][VALUE] = pd.Series(
                 data_set[header].values, index=settings["time_index"]
             )
 
@@ -1142,8 +1138,8 @@ def receive_timeseries_from_csv(
                 }
             )
         else:
-            dict_asset[type]["value_info"] = dict_asset[type]["value"]
-            dict_asset[type]["value"] = pd.Series(
+            dict_asset[type]["value_info"] = dict_asset[type][VALUE]
+            dict_asset[type][VALUE] = pd.Series(
                 data_set[header][0 : len(settings["time_index"])].values,
                 index=settings["time_index"],
             )
@@ -1168,28 +1164,22 @@ def receive_timeseries_from_csv(
     if type == "input":
         dict_asset.update(
             {
-                "timeseries_peak": {
-                    "value": max(dict_asset["timeseries"]),
-                    UNIT: unit,
-                },
-                "timeseries_total": {
-                    "value": sum(dict_asset["timeseries"]),
-                    UNIT: unit,
-                },
+                "timeseries_peak": {VALUE: max(dict_asset["timeseries"]), UNIT: unit,},
+                "timeseries_total": {VALUE: sum(dict_asset["timeseries"]), UNIT: unit,},
                 "timeseries_average": {
-                    "value": sum(dict_asset["timeseries"])
+                    VALUE: sum(dict_asset["timeseries"])
                     / len(dict_asset["timeseries"]),
                     UNIT: unit,
                 },
             }
         )
 
-        if dict_asset["optimizeCap"]["value"] == True:
+        if dict_asset["optimizeCap"][VALUE] == True:
             logging.debug("Normalizing timeseries of %s.", dict_asset[LABEL])
             dict_asset.update(
                 {
                     "timeseries_normalized": dict_asset["timeseries"]
-                    / dict_asset["timeseries_peak"]["value"]
+                    / dict_asset["timeseries_peak"][VALUE]
                 }
             )
             # just to be sure!
@@ -1215,7 +1205,7 @@ def receive_timeseries_from_csv(
         plot_input_timeseries(
             dict_values,
             settings,
-            dict_asset[type]["value"],
+            dict_asset[type][VALUE],
             dict_asset[LABEL],
             header,
             is_demand_profile,
@@ -1277,7 +1267,7 @@ def treat_multiple_flows(dict_asset, dict_values, parameter):
     values_info = (
         []
     )  # filenames and headers will be stored to allow keeping track of the timeseries generation
-    for element in dict_asset[parameter]["value"]:
+    for element in dict_asset[parameter][VALUE]:
         if isinstance(element, dict):
             updated_values.append(
                 get_timeseries_multiple_flows(
@@ -1290,7 +1280,7 @@ def treat_multiple_flows(dict_asset, dict_values, parameter):
             values_info.append(element)
         else:
             updated_values.append(element)
-    dict_asset[parameter]["value"] = updated_values
+    dict_asset[parameter][VALUE] = updated_values
     if len(values_info) > 0:
         dict_asset[parameter].update({"values_info": values_info})
 
@@ -1360,8 +1350,8 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
         dict = dict_values[group][asset][subasset]
     if "maximumCap" in dict:
         # check if maximumCap is greater that installedCap
-        if dict["maximumCap"]["value"] is not None:
-            if dict["maximumCap"]["value"] < dict["installedCap"]["value"]:
+        if dict["maximumCap"][VALUE] is not None:
+            if dict["maximumCap"][VALUE] < dict["installedCap"][VALUE]:
 
                 logging.warning(
                     f"The stated maximumCap in {group} {asset} is smaller than the "
@@ -1369,14 +1359,14 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
                     "For this simulation, the maximumCap will be "
                     "disregarded and not be used in the simulation"
                 )
-                dict["maximumCap"]["value"] = None
+                dict["maximumCap"][VALUE] = None
             # check if maximumCao is 0
-            elif dict["maximumCap"]["value"] == 0:
+            elif dict["maximumCap"][VALUE] == 0:
                 logging.warning(
                     f"The stated maximumCap of zero in {group} {asset} is invalid."
                     "For this simulation, the maximumCap will be "
                     "disregarded and not be used in the simulation."
                 )
-                dict["maximumCap"]["value"] = None
+                dict["maximumCap"][VALUE] = None
     else:
-        dict.update({"maximumCap": {"value": None, UNIT: dict[UNIT]}})
+        dict.update({"maximumCap": {VALUE: None, UNIT: dict[UNIT]}})

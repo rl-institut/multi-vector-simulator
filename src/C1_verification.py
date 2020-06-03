@@ -18,6 +18,10 @@ from src.constants_json_strings import (
     TAX,
     LABEL,
     CURR,
+    OPEX_VAR,
+    OPEX_FIX,
+    CAPEX_FIX,
+    CAPEX_VAR,
 )
 
 # web-application: valid input directly connected to cell-input
@@ -147,10 +151,10 @@ def all_valid_intervals(name, value, title):
         "electricity_price_var_kWh": [0, "any"],
         "electricity_price_var_kW_monthly": [0, "any"],
         "feedin_tariff": [0, "any"],
-        "capex_fix": [0, "any"],
-        "capex_var": [0, "any"],
-        "opex_fix": [0, "any"],
-        "opex_var": [0, "any"],
+        CAPEX_FIX: [0, "any"],
+        CAPEX_VAR: [0, "any"],
+        OPEX_FIX: [0, "any"],
+        OPEX_VAR: [0, "any"],
         DISCOUNTFACTOR: [0, 1],
         PROJECT_DURATION: ["largerzero", "any"],
         TAX: [0, 1],

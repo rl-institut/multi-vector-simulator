@@ -143,10 +143,10 @@ def create_app(results_json):
 
     dict_simsettings = {
         "Evaluated period": results_json["simulation_settings"]["evaluated_period"][
-            "value"
+            VALUE
         ],
         "Start date": results_json["simulation_settings"]["start_date"],
-        "Timestep length": results_json["simulation_settings"]["timestep"]["value"],
+        "Timestep length": results_json["simulation_settings"]["timestep"][VALUE],
     }
 
     df_simsettings = pd.DataFrame(
@@ -192,9 +192,9 @@ def create_app(results_json):
             {
                 dem: [
                     demands[dem][UNIT],
-                    demands[dem]["timeseries_peak"]["value"],
-                    demands[dem]["timeseries_average"]["value"],
-                    demands[dem]["timeseries_total"]["value"],
+                    demands[dem]["timeseries_peak"][VALUE],
+                    demands[dem]["timeseries_average"][VALUE],
+                    demands[dem]["timeseries_total"][VALUE],
                 ]
             }
         )
@@ -224,8 +224,8 @@ def create_app(results_json):
                 comps: [
                     components1[comps][OEMOF_ASSET_TYPE],
                     components1[comps][UNIT],
-                    components1[comps]["installedCap"]["value"],
-                    components1[comps]["optimizeCap"]["value"],
+                    components1[comps]["installedCap"][VALUE],
+                    components1[comps]["optimizeCap"][VALUE],
                 ]
             }
         )
@@ -236,8 +236,8 @@ def create_app(results_json):
                     components2[comps][OEMOF_ASSET_TYPE],
                     components2[comps][ENERGY_VECTOR],
                     components2[comps][UNIT],
-                    components2[comps]["installedCap"]["value"],
-                    components2[comps]["optimizeCap"]["value"],
+                    components2[comps]["installedCap"][VALUE],
+                    components2[comps]["optimizeCap"][VALUE],
                 ]
             }
         )

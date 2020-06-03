@@ -48,3 +48,8 @@ DISCOUNTFACTOR = "discount_factor"
 LABEL = "label"
 PROJECT_DURATION = "project_duration"
 TAX = "tax"
+
+CAPEX_FIX = "capex_fix"
+CAPEX_VAR = "capex_var"
+OPEX_FIX = "opex_fix"
+OPEX_VAR = "opex_var"

@@ -12,6 +12,7 @@ from src.constants_json_strings import (
     DISCOUNTFACTOR,
     TAX,
     LABEL,
+    VALUE,
     SIMULATION_SETTINGS,
     ECONOMIC_DATA,
     PROJECT_DATA,
@@ -21,6 +22,10 @@ from src.constants_json_strings import (
     INFLOW_DIRECTION,
     OUTFLOW_DIRECTION,
     ENERGY_VECTOR,
+    OPEX_VAR,
+    OPEX_FIX,
+    CAPEX_FIX,
+    CAPEX_VAR,
 )
 
 
@@ -98,15 +103,15 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     ENERGY_CONVERSION: [
         "age_installed",
-        "capex_fix",
-        "capex_var",
+        CAPEX_FIX,
+        CAPEX_VAR,
         "efficiency",
         INFLOW_DIRECTION,
         "installedCap",
         LABEL,
         "lifetime",
-        "opex_fix",
-        "opex_var",
+        OPEX_FIX,
+        OPEX_VAR,
         "optimizeCap",
         OUTFLOW_DIRECTION,
         OEMOF_ASSET_TYPE,
@@ -124,14 +129,14 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     ENERGY_PRODUCTION: [
         "age_installed",
-        "capex_fix",
-        "capex_var",
+        CAPEX_FIX,
+        CAPEX_VAR,
         "file_name",
         "installedCap",
         LABEL,
         "lifetime",
-        "opex_fix",
-        "opex_var",
+        OPEX_FIX,
+        OPEX_VAR,
         "optimizeCap",
         OUTFLOW_DIRECTION,
         OEMOF_ASSET_TYPE,
@@ -152,12 +157,12 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     FIX_COST: [
         "age_installed",
-        "capex_fix",
-        "capex_var",
+        CAPEX_FIX,
+        CAPEX_VAR,
         LABEL,
         "lifetime",
-        "opex_fix",
-        "opex_var",
+        OPEX_FIX,
+        OPEX_VAR,
     ],
     SIMULATION_SETTINGS: [
         "evaluated_period",
@@ -193,8 +198,8 @@ TYPE_DATAFRAME = "pandas_Dataframe:"
 TYPE_TIMESTAMP = "pandas_Timestamp:"
 
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
-    "Electricity": {UNIT: "kWh_eleq/kWh_el", "value": 1},
-    "H2": {UNIT: "kWh_eleq/kgH2", "value": 32.87},
+    "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1},
+    "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87},
 }
 
 # Names for KPI output

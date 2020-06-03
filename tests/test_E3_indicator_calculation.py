@@ -204,7 +204,7 @@ class TestTechnicalParameters:
     def test_weighting_for_sector_coupled_kpi_multiple_sectors(self):
         """ """
         E3.weighting_for_sector_coupled_kpi(dict_weighting_two_sectors, a_kpi_name)
-        exp = numbers[1] + numbers[2] * DEFAULT_WEIGHTS_ENERGY_CARRIERS["H2"]["value"]
+        exp = numbers[1] + numbers[2] * DEFAULT_WEIGHTS_ENERGY_CARRIERS["H2"][VALUE]
         assert a_kpi_name in dict_weighting_two_sectors[KPI_DICT][KPI_SCALARS_DICT]
         assert dict_weighting_two_sectors[KPI_DICT][KPI_SCALARS_DICT][a_kpi_name] == exp
 

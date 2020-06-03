@@ -34,7 +34,7 @@ import warnings
 
 import pandas as pd
 
-from src.constants_json_strings import LABEL, SECTORS
+from src.constants_json_strings import LABEL, OPEX_VAR, OPEX_FIX, CAPEX_FIX, CAPEX_VAR
 from src.constants import (
     CSV_FNAME,
     CSV_SEPARATORS,
@@ -293,7 +293,7 @@ def create_json_from_csv(
                 if column == "storage capacity":
                     extra = ["soc_initial", "soc_max", "soc_min"]
                 elif column == "input power" or column == "output power":
-                    extra = ["c_rate", "opex_var"]
+                    extra = ["c_rate", OPEX_VAR]
                 else:
                     raise WrongStorageColumn(
                         f"The column name {column} in The file {filename}.csv"
@@ -314,7 +314,7 @@ def create_json_from_csv(
                         # if not, set them to Nan
                         if i not in [
                             "c_rate",
-                            "opex_var",
+                            OPEX_VAR,
                             "soc_initial",
                             "soc_max",
                             "soc_min",
@@ -404,9 +404,9 @@ def create_json_from_csv(
                                 filename=filename,
                             )
                             if row[UNIT] != "str":
-                                if "value" in column_dict[param]:
+                                if VALUE in column_dict[param]:
                                     # if wrapped in list is a scalar
-                                    value_list[item] = column_dict[param]["value"]
+                                    value_list[item] = column_dict[param][VALUE]
                                 else:
                                     # if wrapped in list is a dictionary (ie. timeseries)
                                     value_list[item] = column_dict[param]
@@ -417,7 +417,7 @@ def create_json_from_csv(
 
                         if row[UNIT] != "str":
                             column_dict.update(
-                                {param: {"value": value_list, UNIT: row[UNIT]}}
+                                {param: {VALUE: value_list, UNIT: row[UNIT]}}
                             )
                         else:
                             column_dict.update({param: value_list})
@@ -504,7 +504,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                 except:
                     value = float(value)
 
-        asset_dict.update({param: {"value": value, UNIT: row[UNIT]}})
+        asset_dict.update({param: {VALUE: value, UNIT: row[UNIT]}})
     return asset_dict
 
 
@@ -528,13 +528,13 @@ def add_storage_components(storage_filename, input_directory):
         # hardcoded parameterlist of common parameters in all columns
         parameters = [
             "age_installed",
-            "capex_fix",
-            "capex_var",
+            CAPEX_FIX,
+            CAPEX_VAR,
             "efficiency",
             "installedCap",
-            "label",
+            LABEL,
             "lifetime",
-            "opex_fix",
+            OPEX_FIX,
             UNIT,
         ]
         single_dict = create_json_from_csv(
