@@ -47,6 +47,7 @@ DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 PATH_INPUT_FILE = "path_input_file"
 PATH_INPUT_FOLDER = "path_input_folder"
 PATH_OUTPUT_FOLDER = "path_output_folder"
+PATH_OUTPUT_FOLDER_INPUTS = "path_output_folder_inputs"
 INPUT_TYPE = "input_type"
 OVERWRITE = "overwrite"
 DISPLAY_OUTPUT = "display_output"

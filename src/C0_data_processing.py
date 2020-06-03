@@ -57,6 +57,13 @@ from src.constants_json_strings import (
     START_DATE,
     END_DATE,
     TIMESTEP,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    C_RATE,
+    SOC_INITIAL,
+    SOC_MAX,
+    SOC_MIN,
+    STORAGE_CAPACITY,
 )
 
 
@@ -342,7 +349,7 @@ def energyStorage(dict_values, group):
     :return:
     """
     for asset in dict_values[group]:
-        for subasset in ["storage capacity", "input power", "output power"]:
+        for subasset in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
             define_missing_cost_data(
                 dict_values, dict_values[group][asset][subasset],
             )
@@ -353,7 +360,7 @@ def energyStorage(dict_values, group):
             )
 
             # check if parameters are provided as timeseries
-            for parameter in [EFFICIENCY, "soc_min", "soc_max"]:
+            for parameter in [EFFICIENCY, SOC_MIN, SOC_MAX]:
                 if parameter in dict_values[group][asset][subasset] and isinstance(
                     dict_values[group][asset][subasset][parameter][VALUE], dict
                 ):
@@ -1016,19 +1023,19 @@ def determine_lifetime_opex_var(dict_asset, economic_data):
 
     """
     if isinstance(dict_asset[OPEX_VAR][VALUE], float) or isinstance(
-        dict_asset["opex_var"][VALUE], int
+        dict_asset[OPEX_VAR][VALUE], int
     ):
         lifetime_opex_var = get_lifetime_opex_var_one_value(dict_asset, economic_data)
 
-    elif isinstance(dict_asset["opex_var"][VALUE], list):
+    elif isinstance(dict_asset[OPEX_VAR][VALUE], list):
         lifetime_opex_var = get_lifetime_opex_var_list(dict_asset, economic_data)
 
-    elif isinstance(dict_asset["opex_var"][VALUE], pd.Series):
+    elif isinstance(dict_asset[OPEX_VAR][VALUE], pd.Series):
         lifetime_opex_var = get_lifetime_opex_var_timeseries(dict_asset, economic_data)
 
     else:
         raise ValueError(
-            f'Type of opex_var neither int, float, list or pd.Series, but of type {dict_asset["opex_var"][VALUE]}. Is type correct?'
+            f"Type of opex_var neither int, float, list or pd.Series, but of type {dict_asset[OPEX_VAR][VALUE]}. Is type correct?"
         )
 
     dict_asset.update({"lifetime_opex_var": {VALUE: lifetime_opex_var, UNIT: "?",}})
@@ -1043,7 +1050,7 @@ def get_lifetime_opex_var_one_value(dict_asset, economic_data):
 
     """
     lifetime_opex_var = (
-        dict_asset["opex_var"][VALUE] * economic_data["annuity_factor"][VALUE]
+        dict_asset[OPEX_VAR][VALUE] * economic_data["annuity_factor"][VALUE]
     )
     return lifetime_opex_var
 
@@ -1060,7 +1067,7 @@ def get_lifetime_opex_var_list(dict_asset, economic_data):
 
     # if multiple busses are provided, it takes the first opex_var (corresponding to the first bus)
 
-    first_value = dict_asset["opex_var"][VALUE][0]
+    first_value = dict_asset[OPEX_VAR][VALUE][0]
     if isinstance(first_value, float) or isinstance(first_value, int):
         opex_var = first_value
     else:
@@ -1079,9 +1086,9 @@ def get_lifetime_opex_var_timeseries(dict_asset, economic_data):
     """
     # take average value of opex_var if it is a timeseries
 
-    opex_var = sum(dict_asset["opex_var"][VALUE]) / len(dict_asset["opex_var"][VALUE])
+    opex_var = sum(dict_asset[OPEX_VAR][VALUE]) / len(dict_asset[OPEX_VAR][VALUE])
     lifetime_opex_var = (
-        dict_asset["opex_var"][VALUE] * economic_data["annuity_factor"][VALUE]
+        dict_asset[OPEX_VAR][VALUE] * economic_data["annuity_factor"][VALUE]
     )
     return lifetime_opex_var
 

@@ -54,6 +54,14 @@ from src.constants_json_strings import (
     LIFETIME,
     INSTALLED_CAP,
     EFFICIENCY,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    C_RATE,
+    OPEX_VAR,
+    SOC_INITIAL,
+    SOC_MAX,
+    SOC_MIN,
+    STORAGE_CAPACITY,
 )
 from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
@@ -300,10 +308,10 @@ def create_json_from_csv(
                         "columns."
                     )
                 # add column specific parameters
-                if column == "storage capacity":
-                    extra = ["soc_initial", "soc_max", "soc_min"]
-                elif column == "input power" or column == "output power":
-                    extra = ["c_rate", OPEX_VAR]
+                if column == STORAGE_CAPACITY:
+                    extra = [SOC_INITIAL, SOC_MAX, SOC_MIN]
+                elif column == INPUT_POWER or column == OUTPUT_POWER:
+                    extra = [C_RATE, OPEX_VAR]
                 else:
                     raise WrongStorageColumn(
                         f"The column name {column} in The file {filename}.csv"
@@ -323,11 +331,11 @@ def create_json_from_csv(
                         # check if not required parameters are set to Nan and
                         # if not, set them to Nan
                         if i not in [
-                            "c_rate",
+                            C_RATE,
                             OPEX_VAR,
-                            "soc_initial",
-                            "soc_max",
-                            "soc_min",
+                            SOC_INITIAL,
+                            SOC_MAX,
+                            SOC_MIN,
                         ]:
                             warnings.warn(
                                 WrongParameterWarning(

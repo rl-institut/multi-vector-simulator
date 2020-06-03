@@ -15,8 +15,13 @@ from src.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
     ENERGY_STORAGE,
+    OPEX_VAR,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    C_RATE,
+    STORAGE_CAPACITY,
 )
 from .constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
@@ -257,11 +262,11 @@ class TestSinkComponent:
         if amount_inputs == 1:
             input_bus_names = [dict_asset["input_bus_name"]]
             if dispatchable == True:
-                opex_var = [dict_asset["opex_var"][VALUE]]
+                opex_var = [dict_asset[OPEX_VAR][VALUE]]
         elif amount_inputs > 1:
             input_bus_names = dict_asset["input_bus_name"]
             if dispatchable == True:
-                opex_var = dict_asset["opex_var"][VALUE]
+                opex_var = dict_asset[OPEX_VAR][VALUE]
         else:
             raise ValueError("`amount_inputs` should be int but not zero.")
         for input_bus_name, i in zip(input_bus_names, range(len(input_bus_names))):
@@ -382,9 +387,9 @@ class TestStorageComponent:
 
     def test_storage_optimize(self):
         dict_asset = self.dict_values[ENERGY_STORAGE]["storage_optimize"]
-        dict_asset["storage capacity"]["maximumCap"] = {VALUE: None, UNIT: "kWh"}
-        dict_asset["input power"]["maximumCap"] = {VALUE: None, UNIT: "kWh"}
-        dict_asset["output power"]["maximumCap"] = {VALUE: None, UNIT: "kWh"}
+        dict_asset[STORAGE_CAPACITY]["maximumCap"] = {VALUE: None, UNIT: "kWh"}
+        dict_asset[INPUT_POWER]["maximumCap"] = {VALUE: None, UNIT: "kWh"}
+        dict_asset[OUTPUT_POWER]["maximumCap"] = {VALUE: None, UNIT: "kWh"}
         D1.storage(
             model=self.model,
             dict_asset=dict_asset,
@@ -402,35 +407,35 @@ class TestStorageComponent:
         input_bus = self.model.entities[-1].inputs[self.busses["Storage bus"]]
         output_bus = self.model.entities[-1].outputs[self.busses["Storage bus"]]
 
-        assert input_bus.existing == dict_asset["input power"][INSTALLED_CAP][VALUE]
+        assert input_bus.existing == dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE]
         assert (
             input_bus.investment.ep_costs
-            == dict_asset["input power"]["simulation_annuity"][VALUE]
+            == dict_asset[INPUT_POWER]["simulation_annuity"][VALUE]
         )
         assert input_bus.nominal_value == None
 
-        assert output_bus.existing == dict_asset["output power"][INSTALLED_CAP][VALUE]
+        assert output_bus.existing == dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE]
         assert (
             output_bus.investment.ep_costs
-            == dict_asset["output power"]["simulation_annuity"][VALUE]
+            == dict_asset[OUTPUT_POWER]["simulation_annuity"][VALUE]
         )
         assert output_bus.nominal_value == None
 
-        # assert self.model.entities[-1].existing ==  dict_asset["storage capacity"][INSTALLED_CAP][VALUE]  # todo probably not necessary parameter
+        # assert self.model.entities[-1].existing ==  dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]  # todo probably not necessary parameter
         assert (
             self.model.entities[-1].investment.ep_costs
-            == dict_asset["storage capacity"]["simulation_annuity"][VALUE]
+            == dict_asset[STORAGE_CAPACITY]["simulation_annuity"][VALUE]
         )
         assert self.model.entities[-1].nominal_storage_capacity == None
 
         # check that invest_relation_input_capacity and invest_relation_output_capacity is added
         assert (
             self.model.entities[-1].invest_relation_input_capacity
-            == dict_asset["input power"]["c_rate"][VALUE]
+            == dict_asset[INPUT_POWER][C_RATE][VALUE]
         )
         assert (
             self.model.entities[-1].invest_relation_output_capacity
-            == dict_asset["output power"]["c_rate"][VALUE]
+            == dict_asset[OUTPUT_POWER][C_RATE][VALUE]
         )
 
     def test_storage_fix(self):
@@ -456,14 +461,12 @@ class TestStorageComponent:
         assert input_bus.investment == None
         assert (
             input_bus.nominal_value
-            == dict_asset["storage capacity"][INSTALLED_CAP][VALUE]
+            == dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
         )
 
         assert hasattr(output_bus, "existing") == False
         assert output_bus.investment == None
-        assert (
-            output_bus.nominal_value == dict_asset["input power"][INSTALLED_CAP][VALUE]
-        )
+        assert output_bus.nominal_value == dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE]
 
         assert (
             hasattr(self.model.entities[-1], "existing") == False
@@ -471,7 +474,7 @@ class TestStorageComponent:
         assert self.model.entities[-1].investment == None
         assert (
             self.model.entities[-1].nominal_storage_capacity
-            == dict_asset["output power"][INSTALLED_CAP][VALUE]
+            == dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE]
         )
 
         # # check that invest_relation_input_capacity and invest_relation_output_capacity is not added

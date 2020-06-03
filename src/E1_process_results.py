@@ -20,6 +20,9 @@ from src.constants_json_strings import (
     OPTIMIZE_CAP,
     INSTALLED_CAP,
     EVALUATED_PERIOD,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    STORAGE_CAPACITY,
 )
 
 
@@ -99,99 +102,99 @@ def get_storage_results(settings, storage_bus, dict_asset):
     power_charge = storage_bus["sequences"][
         ((dict_asset["input_bus_name"], dict_asset[LABEL]), "flow")
     ]
-    add_info_flows(settings, dict_asset["input power"], power_charge)
+    add_info_flows(settings, dict_asset[INPUT_POWER], power_charge)
 
     power_discharge = storage_bus["sequences"][
         ((dict_asset[LABEL], dict_asset["output_bus_name"]), "flow")
     ]
-    add_info_flows(settings, dict_asset["output power"], power_discharge)
+    add_info_flows(settings, dict_asset[OUTPUT_POWER], power_discharge)
 
     capacity = storage_bus["sequences"][((dict_asset[LABEL], "None"), "capacity")]
-    add_info_flows(settings, dict_asset["storage capacity"], capacity)
+    add_info_flows(settings, dict_asset[STORAGE_CAPACITY], capacity)
 
     if OPTIMIZE_CAP in dict_asset:
         if dict_asset[OPTIMIZE_CAP][VALUE] == True:
             power_charge = storage_bus["scalars"][
                 ((dict_asset["input_bus_name"], dict_asset[LABEL]), "invest")
             ]
-            dict_asset["input power"].update(
+            dict_asset[INPUT_POWER].update(
                 {
                     "optimizedAddCap": {
                         VALUE: power_charge,
-                        UNIT: dict_asset["input power"][UNIT],
+                        UNIT: dict_asset[INPUT_POWER][UNIT],
                     }
                 }
             )
             logging.debug(
                 "Accessed optimized capacity of asset %s: %s",
-                dict_asset["input power"][LABEL],
+                dict_asset[INPUT_POWER][LABEL],
                 power_charge,
             )
 
             power_discharge = storage_bus["scalars"][
                 ((dict_asset[LABEL], dict_asset["output_bus_name"]), "invest")
             ]
-            dict_asset["output power"].update(
+            dict_asset[OUTPUT_POWER].update(
                 {
                     "optimizedAddCap": {
                         VALUE: power_discharge,
-                        UNIT: dict_asset["output power"][UNIT],
+                        UNIT: dict_asset[OUTPUT_POWER][UNIT],
                     }
                 }
             )
             logging.debug(
                 "Accessed optimized capacity of asset %s: %s",
-                dict_asset["output power"][LABEL],
+                dict_asset[OUTPUT_POWER][LABEL],
                 power_discharge,
             )
 
             capacity = storage_bus["scalars"][((dict_asset[LABEL], "None"), "invest")]
-            dict_asset["storage capacity"].update(
+            dict_asset[STORAGE_CAPACITY].update(
                 {
                     "optimizedAddCap": {
                         VALUE: capacity,
-                        UNIT: dict_asset["storage capacity"][UNIT],
+                        UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
                 }
             )
             logging.debug(
                 "Accessed optimized capacity of asset %s: %s",
-                dict_asset["storage capacity"][LABEL],
+                dict_asset[STORAGE_CAPACITY][LABEL],
                 capacity,
             )
 
         else:
-            dict_asset["input power"].update(
+            dict_asset[INPUT_POWER].update(
                 {
                     "optimizedAddCap": {
                         VALUE: 0,
-                        UNIT: dict_asset["storage capacity"][UNIT],
+                        UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
                 }
             )
-            dict_asset["output power"].update(
+            dict_asset[OUTPUT_POWER].update(
                 {
                     "optimizedAddCap": {
                         VALUE: 0,
-                        UNIT: dict_asset["storage capacity"][UNIT],
+                        UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
                 }
             )
-            dict_asset["storage capacity"].update(
+            dict_asset[STORAGE_CAPACITY].update(
                 {
                     "optimizedAddCap": {
                         VALUE: 0,
-                        UNIT: dict_asset["storage capacity"][UNIT],
+                        UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
                 }
             )
 
     dict_asset.update(  # todo: this could be a separate function for testing.
         {
-            "timeseries_soc": dict_asset["storage capacity"]["flow"]
+            "timeseries_soc": dict_asset[STORAGE_CAPACITY]["flow"]
             / (
-                dict_asset["storage capacity"][INSTALLED_CAP][VALUE]
-                + dict_asset["storage capacity"]["optimizedAddCap"][VALUE]
+                dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
+                + dict_asset[STORAGE_CAPACITY]["optimizedAddCap"][VALUE]
             )
         }
     )

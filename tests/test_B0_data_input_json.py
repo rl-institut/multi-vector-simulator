@@ -16,15 +16,16 @@ from .constants import (
     CSV_EXT,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
+    PATH_OUTPUT_FOLDER_INPUTS,
 )
 
 
 def test_load_json_overwrite_output_folder_from_json():
     dict_values = data_input.load_json(JSON_PATH, path_output_folder="test")
     assert dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER] == "test"
-    assert dict_values[SIMULATION_SETTINGS][
-        "path_output_folder_inputs"
-    ] == os.path.join("test", "inputs")
+    assert dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER_INPUTS] == os.path.join(
+        "test", "inputs"
+    )
 
 
 def test_load_json_overwrite_input_folder_from_json():
@@ -75,7 +76,7 @@ class TestTemporaryJsonFileDisposal:
         assert (
             os.path.exists(
                 os.path.join(
-                    dict_values[SIMULATION_SETTINGS]["path_output_folder_inputs"],
+                    dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER_INPUTS],
                     CSV_FNAME,
                 )
             )

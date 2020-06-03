@@ -17,6 +17,9 @@ from src.constants_json_strings import (
     SIMULATION_SETTINGS,
     ECONOMIC_DATA,
     LABEL,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    STORAGE_CAPACITY,
 )
 
 r"""
@@ -101,7 +104,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         )
 
         # hardcoded list of names in storage_01.csv
-        for storage_item in ["storage capacity", "input power", "output power"]:
+        for storage_item in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
             economics.get_costs(
                 dict_values[ENERGY_STORAGE][storage][storage_item],
                 dict_values[ECONOMIC_DATA],
@@ -123,13 +126,13 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + " ("
                 + str(
                     round(
-                        dict_values[ENERGY_STORAGE][storage]["storage capacity"][
+                        dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
                             "optimizedAddCap"
                         ][VALUE],
                         1,
                     )
                 )
-                + dict_values[ENERGY_STORAGE][storage]["storage capacity"][
+                + dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
                     "optimizedAddCap"
                 ][UNIT]
                 + ") SOC"

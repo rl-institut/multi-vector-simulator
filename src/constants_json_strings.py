@@ -34,6 +34,13 @@ OEMOF_SOURCE = "source"
 OEMOF_SINK = "sink"
 # OEMOF_BUSSES = "bus"
 
+C_RATE = "c_rate"
+INPUT_POWER = "input power"
+OUTPUT_POWER = "output power"
+STORAGE_CAPACITY = "storage capacity"
+SOC_INITIAL = "soc_initial"
+SOC_MAX = "soc_max"
+SOC_MIN = "soc_min"
 # Dict generated from above defined strings
 ACCEPTED_ASSETS_FOR_ASSET_GROUPS = {
     ENERGY_CONVERSION: [OEMOF_TRANSFORMER],

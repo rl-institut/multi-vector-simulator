@@ -36,6 +36,9 @@ from src.constants_json_strings import (
     EFFICIENCY,
     EVALUATED_PERIOD,
     START_DATE,
+    SOC_INITIAL,
+    SOC_MAX,
+    SOC_MIN,
 )
 
 
@@ -157,9 +160,9 @@ def all_valid_intervals(name, value, title):
         AGE_INSTALLED: [0, "any"],
         INSTALLED_CAP: [0, "any"],
         "maximumCap": [0, "any", None],
-        "soc_min": [0, 1],
-        "soc_max": [0, 1],
-        "soc_initial": [0, 1],
+        SOC_MIN: [0, 1],
+        SOC_MAX: [0, 1],
+        SOC_INITIAL: [0, 1],
         "crate": [0, 1],
         EFFICIENCY: [0, 1],
         "electricity_cost_fix_annual": [0, "any"],
@@ -214,7 +217,7 @@ def all_valid_intervals(name, value, title):
             )
 
     elif name in valid_intervals:
-        if name == "soc_initial":
+        if name == SOC_INITIAL:
             if value != None:
                 if not (0 <= value and value <= 1):
                     logging.error(

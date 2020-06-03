@@ -12,6 +12,10 @@ from src.constants_json_strings import (
     AGE_INSTALLED,
     INSTALLED_CAP,
     FILENAME,
+    C_RATE,
+    SOC_INITIAL,
+    SOC_MAX,
+    SOC_MIN,
 )
 from .constants import (
     CSV_PATH,
@@ -226,11 +230,11 @@ def test_create_json_from_csv_storage_raises_MissingParameterError():
             parameters=[
                 AGE_INSTALLED,
                 CAPEX_FIX,
-                "c_rate",
+                C_RATE,
                 OPEX_VAR,
-                "soc_initial",
-                "soc_max",
-                "soc_min",
+                SOC_INITIAL,
+                SOC_MAX,
+                SOC_MIN,
                 INSTALLED_CAP,
             ],
             asset_is_a_storage=True,
