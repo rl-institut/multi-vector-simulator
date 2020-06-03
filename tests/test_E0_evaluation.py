@@ -11,7 +11,13 @@ import src.B0_data_input_json as data_input
 import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
-from src.constants_json_strings import KPI, KPI_SCALARS
+from src.constants_json_strings import (
+    KPI,
+    KPI_SCALARS,
+    KPI_COST_MATRIX,
+    KPI_SCALAR_MATRIX,
+    KPI_SCALARS_DICT,
+)
 from .constants import (
     TEST_REPO_PATH,
     INPUT_FOLDER,
@@ -79,7 +85,7 @@ def test_evaluate_dict_important_fields_in_output_dict():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    for k in ("scalar_matrix", "cost_matrix"):
+    for k in (KPI_SCALAR_MATRIX, KPI_COST_MATRIX):
         assert k in dict_values_after[KPI]
 
 
@@ -88,7 +94,7 @@ def test_evaluate_dict_fields_values_in_output_dict_are_dataframes():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    for k in ("scalar_matrix", "cost_matrix"):
+    for k in (KPI_SCALAR_MATRIX, KPI_COST_MATRIX):
         assert isinstance(dict_values_after[KPI][k], pd.DataFrame)
 
 
@@ -98,9 +104,9 @@ def test_evaluate_check_dict_fields_in_output_dict_under_kpi_scalar_fields():
         dict_values_after = pickle.load(handle)
 
     for k in KPI_SCALARS:
-        assert k in dict_values_after[KPI]["scalars"]
+        assert k in dict_values_after[KPI][KPI_SCALARS_DICT]
 
-    # for k in dict_values_after[KPI]["scalars"]:
+    # for k in dict_values_after[KPI][KPI_SCALARS_DICT]:
     #    assert k in KPI_SCALARS
 
 

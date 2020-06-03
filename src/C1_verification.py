@@ -18,6 +18,7 @@ from src.constants import (
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     DISPLAY_OUTPUT,
+    OVERWRITE,
 )
 from src.constants_json_strings import (
     PROJECT_DURATION,
@@ -159,7 +160,7 @@ def all_valid_intervals(name, value, title):
 
     valid_type_index = ["index"]
 
-    valid_binary = ["optimize_cap", "dsm", "overwrite"]
+    valid_binary = ["optimize_cap", DSM, OVERWRITE]
 
     valid_intervals = {
         LONGITUDE: [-180, 180],

@@ -26,11 +26,20 @@ COUNTRY = "country"
 PROJECT_ID = "project_id"
 SCENARIO_ID = "scenario_id"
 
+DSM = "dsm"
+TYPE_ASSET = "type_asset"
+
 # Names for KPI output
 KPI = "kpi"
 KPI_SCALARS_DICT = "scalars"
 KPI_UNCOUPLED_DICT = "KPI individual sectors"
 KPI_COST_MATRIX = "cost_matrix"
+KPI_SCALAR_MATRIX = "scalar_matrix"
+COST_TOTAL = "cost_total"
+COST_OM = "cost_om"
+COST_INVESTMENT = "cost_investment"
+
+OPTIMIZED_ADD_CAP = "optimizedAddCap"
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (
@@ -65,8 +74,9 @@ CRF = "crf"
 ANNUITY_CAPEX_OPEX_VAR = "annuity_capex_opex_var"
 LIFETIME_OPEX_FIX = "lifetime_opex_fix"
 LIFETIME_OPEX_VAR = "lifetime_opex_var"
+TOTAL_FLOW = "total_flow"
 ANNUAL_TOTAL_FLOW = "annual_total_flow"
-OPTIMIZED_ADD_CAP = "optimizedAddCap"
+
 
 FIX_COST = "fixcost"
 ECONOMIC_DATA = "economic_data"

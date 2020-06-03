@@ -25,6 +25,7 @@ from src.constants_json_strings import (
     KPI_SCALARS_DICT,
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
+    TOTAL_FLOW,
 )
 
 
@@ -92,11 +93,11 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
             sector = dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
             if dict_values[ENERGY_PRODUCTION][asset]["renewableAsset"][VALUE] is True:
                 renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][asset][
-                    "total_flow"
+                    TOTAL_FLOW
                 ][VALUE]
             else:
                 non_renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][asset][
-                    "total_flow"
+                    TOTAL_FLOW
                 ][VALUE]
 
     dict_values[KPI][KPI_UNCOUPLED_DICT].update(
@@ -112,11 +113,11 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
             "connected_consumption_sources"
         ]:
             renewable_origin[sector] += (
-                dict_values[ENERGY_PRODUCTION][DSO_source]["total_flow"][VALUE]
+                dict_values[ENERGY_PRODUCTION][DSO_source][TOTAL_FLOW][VALUE]
                 * dict_values[ENERGY_PROVIDERS][DSO]["renewable_share"][VALUE]
             )
             non_renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][DSO_source][
-                "total_flow"
+                TOTAL_FLOW
             ][VALUE] * (
                 1 - dict_values[ENERGY_PROVIDERS][DSO]["renewable_share"][VALUE]
             )

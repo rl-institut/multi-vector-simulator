@@ -30,6 +30,7 @@ from src.constants_json_strings import (
     PROJECT_NAME,
     SCENARIO_NAME,
     KPI,
+    KPI_SCALAR_MATRIX,
 )
 from .constants import (
     EXECUTE_TESTS_ON,
@@ -102,7 +103,7 @@ class TestFileCreation:
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
             KPI: {
-                "scalar_matrix": pd.DataFrame(
+                KPI_SCALAR_MATRIX: pd.DataFrame(
                     {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [0, 0]}
                 )
             },
@@ -117,7 +118,7 @@ class TestFileCreation:
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
             KPI: {
-                "scalar_matrix": pd.DataFrame(
+                KPI_SCALAR_MATRIX: pd.DataFrame(
                     {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [1, 2]}
                 )
             },

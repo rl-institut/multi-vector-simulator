@@ -30,7 +30,7 @@ from src.constants_json_strings import (
     ANNUITY_CAPEX_OPEX_VAR,
     LIFETIME_OPEX_FIX,
     LIFETIME_OPEX_VAR,
-PERIODS
+    PERIODS,
 )
 from .constants import TYPE_STR
 
@@ -135,7 +135,9 @@ TEST_START_TIME = "2020-01-01 00:00"
 TEST_PERIODS = 3
 VALUES = [0, 1, 2]
 
-pandas_DatetimeIndex = pd.date_range(start=TEST_START_TIME, periods=TEST_PERIODS, freq="60min")
+pandas_DatetimeIndex = pd.date_range(
+    start=TEST_START_TIME, periods=TEST_PERIODS, freq="60min"
+)
 pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
 
 

@@ -23,6 +23,7 @@ from src.constants_json_strings import (
     PROJECT_NAME,
     SCENARIO_NAME,
     KPI,
+    KPI_SCALAR_MATRIX,
 )
 
 
@@ -82,7 +83,7 @@ RESULTS_TIMESERIES = pd.read_csv(
 # data for test_store_barchart_for_capacities
 DICT_KPI = {
     KPI: {
-        "scalar_matrix": pd.DataFrame(
+        KPI_SCALAR_MATRIX: pd.DataFrame(
             {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [1, 2]}
         )
     },
@@ -243,8 +244,8 @@ class TestFileCreation:
             dict_values,
             USER_INPUT,
             PROJECT_DATA,
-            DICT_KPI[KPI]["scalar_matrix"][LABEL],
-            DICT_KPI[KPI]["scalar_matrix"][OPTIMIZED_ADD_CAP],
+            DICT_KPI[KPI][KPI_SCALAR_MATRIX][LABEL],
+            DICT_KPI[KPI][KPI_SCALAR_MATRIX][OPTIMIZED_ADD_CAP],
         )
 
         assert (

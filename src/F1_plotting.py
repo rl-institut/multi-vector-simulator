@@ -19,6 +19,7 @@ from src.constants_json_strings import (
     PROJECT_NAME,
     SCENARIO_NAME,
     KPI,
+    KPI_COST_MATRIX,
 )
 
 r"""
@@ -200,14 +201,14 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
     label = file_name.replace("_", " ")
 
     process_pie_chart = determine_if_plotting_necessary(
-        dict_values[KPI]["cost_matrix"][parameter].values
+        dict_values[KPI][KPI_COST_MATRIX][parameter].values
     )
 
     if process_pie_chart is True:
 
         costs_perc_grouped, total = group_costs(
-            dict_values[KPI]["cost_matrix"][parameter],
-            dict_values[KPI]["cost_matrix"][LABEL],
+            dict_values[KPI][KPI_COST_MATRIX][parameter],
+            dict_values[KPI][KPI_COST_MATRIX][LABEL],
         )
 
         costs_perc_grouped_pandas = pd.Series(costs_perc_grouped)

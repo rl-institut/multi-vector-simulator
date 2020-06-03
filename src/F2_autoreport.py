@@ -21,6 +21,7 @@ import reverse_geocoder as rg
 from src.constants import (
     PLOTS_BUSSES,
     PATHS_TO_PLOTS,
+    PATH_OUTPUT_FOLDER,
     PLOTS_DEMANDS,
     PLOTS_RESOURCES,
     PLOTS_PERFORMANCE,
@@ -52,6 +53,8 @@ from src.constants_json_strings import (
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
     KPI,
+    KPI_SCALAR_MATRIX,
+    KPI_COST_MATRIX,
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -272,14 +275,14 @@ def create_app(results_json):
     # Creating a Pandas dataframe for the components optimization results table
 
     # Read in the scalar matrix as pandas dataframe
-    df_scalar_matrix = results_json[KPI]["scalar_matrix"]
+    df_scalar_matrix = results_json[KPI][KPI_SCALAR_MATRIX]
 
     # Changing the index to a sequence of 0,1,2...
     df_scalar_matrix = df_scalar_matrix.reset_index()
 
     # Dropping irrelevant columns from the dataframe
     df_scalar_matrix = df_scalar_matrix.drop(
-        ["index", "total_flow", "peak_flow", "average_flow"], axis=1
+        ["index", TOTAL_FLOW, "peak_flow", "average_flow"], axis=1
     )
 
     # Renaming the columns
@@ -296,7 +299,7 @@ def create_app(results_json):
     # Creating a Pandas dataframe for the costs' results
 
     # Read in the cost matrix as a pandas dataframe
-    df_cost_matrix = results_json[KPI]["cost_matrix"]
+    df_cost_matrix = results_json[KPI][KPI_COST_MATRIX]
 
     # Changing the index to a sequence of 0,1,2...
     df_cost_matrix = df_cost_matrix.reset_index()

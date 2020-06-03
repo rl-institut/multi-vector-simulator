@@ -18,6 +18,7 @@ from src.constants_json_strings import (
     KPI_SCALARS_DICT,
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
+    TOTAL_FLOW,
 )
 
 numbers = [10, 15, 20, 25]
@@ -47,13 +48,13 @@ dict_renewable_energy_use = load_json(
 flow_small = 50
 flow_medium = 100
 renewable_share_dso = 0.1
-dict_renewable_energy_use[ENERGY_PRODUCTION]["DSO_consumption_period_1"]["total_flow"][
+dict_renewable_energy_use[ENERGY_PRODUCTION]["DSO_consumption_period_1"][TOTAL_FLOW][
     VALUE
 ] = flow_small
-dict_renewable_energy_use[ENERGY_PRODUCTION]["DSO_consumption_period_2"]["total_flow"][
+dict_renewable_energy_use[ENERGY_PRODUCTION]["DSO_consumption_period_2"][TOTAL_FLOW][
     VALUE
 ] = flow_small
-dict_renewable_energy_use[ENERGY_PRODUCTION]["pv_plant_01"]["total_flow"][
+dict_renewable_energy_use[ENERGY_PRODUCTION]["pv_plant_01"][TOTAL_FLOW][
     VALUE
 ] = flow_medium
 dict_renewable_energy_use[ENERGY_PROVIDERS]["DSO"]["renewable_share"][

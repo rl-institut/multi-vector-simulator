@@ -30,6 +30,8 @@ from src.constants_json_strings import (
     OUTPUT_BUS_NAME,
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
+    KPI_SCALARS_DICT,
+    TOTAL_FLOW,
 )
 
 
@@ -121,7 +123,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
     if OPTIMIZE_CAP in dict_asset:
         if dict_asset[OPTIMIZE_CAP][VALUE] is True:
-            power_charge = storage_bus["scalars"][
+            power_charge = storage_bus[KPI_SCALARS_DICT][
                 ((dict_asset[INPUT_BUS_NAME], dict_asset[LABEL]), "invest")
             ]
             dict_asset[INPUT_POWER].update(
@@ -138,7 +140,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_charge,
             )
 
-            power_discharge = storage_bus["scalars"][
+            power_discharge = storage_bus[KPI_SCALARS_DICT][
                 ((dict_asset[LABEL], dict_asset[OUTPUT_BUS_NAME]), "invest")
             ]
             dict_asset[OUTPUT_POWER].update(
@@ -155,7 +157,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_discharge,
             )
 
-            capacity = storage_bus["scalars"][
+            capacity = storage_bus[KPI_SCALARS_DICT][
                 ((dict_asset[LABEL], TYPE_NONE), "invest")
             ]
             dict_asset[STORAGE_CAPACITY].update(
@@ -319,11 +321,11 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
     if OPTIMIZE_CAP in dict_asset:
         if dict_asset[OPTIMIZE_CAP][VALUE] is True:
             if direction == "input":
-                optimal_capacity = bus["scalars"][
+                optimal_capacity = bus[KPI_SCALARS_DICT][
                     ((bus_name, dict_asset[LABEL]), "invest")
                 ]
             elif direction == "output":
-                optimal_capacity = bus["scalars"][
+                optimal_capacity = bus[KPI_SCALARS_DICT][
                     ((dict_asset[LABEL], bus_name), "invest")
                 ]
             else:
@@ -412,7 +414,7 @@ def get_flow(settings, bus, dict_asset, bus_name, direction):
     logging.debug(
         "Accessed simulated timeseries of asset %s (total sum: %s)",
         dict_asset[LABEL],
-        round(dict_asset["total_flow"][VALUE]),
+        round(dict_asset[TOTAL_FLOW][VALUE]),
     )
     return
 
@@ -443,7 +445,7 @@ def add_info_flows(settings, dict_asset, flow):
     dict_asset.update(
         {
             "flow": flow,
-            "total_flow": {VALUE: total_flow, UNIT: "kWh"},
+            TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
             ANNUAL_TOTAL_FLOW: {
                 VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
                 UNIT: "kWh",

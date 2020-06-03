@@ -74,10 +74,10 @@ DEFAULT_MAIN_KWARGS = dict(
 # associated to each of these filenames
 REQUIRED_CSV_PARAMETERS = {
     ENERGY_CONSUMPTION: [
-        "dsm",
+        DSM,
         FILENAME,
         LABEL,
-        "type_asset",
+        TYPE_ASSET,
         OEMOF_ASSET_TYPE,
         ENERGY_VECTOR,
         INFLOW_DIRECTION,

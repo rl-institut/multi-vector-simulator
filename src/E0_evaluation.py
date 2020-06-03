@@ -25,6 +25,10 @@ from src.constants_json_strings import (
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
     KPI,
+    KPI_COST_MATRIX,
+    KPI_SCALAR_MATRIX,
+    KPI_SCALARS_DICT,
+    TOTAL_FLOW,
 )
 
 r"""
@@ -57,7 +61,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     dict_values.update(
         {
             KPI: {
-                "cost_matrix": pd.DataFrame(
+                KPI_COST_MATRIX: pd.DataFrame(
                     columns=[
                         LABEL,
                         "costs_total",
@@ -70,17 +74,17 @@ def evaluate_dict(dict_values, results_main, results_meta):
                         "annuity_om",
                     ]
                 ),
-                "scalar_matrix": pd.DataFrame(
+                KPI_SCALAR_MATRIX: pd.DataFrame(
                     columns=[
                         LABEL,
                         OPTIMIZED_ADD_CAP,
-                        "total_flow",
+                        TOTAL_FLOW,
                         ANNUAL_TOTAL_FLOW,
                         "peak_flow",
                         "average_flow",
                     ]
                 ),
-                "scalars": {},
+                KPI_SCALARS_DICT: {},
             }
         }
     )
@@ -191,7 +195,7 @@ def store_result_matrix(dict_kpi, dict_asset):
 
     round_to_comma = 5
 
-    for kpi_storage in ["cost_matrix", "scalar_matrix"]:
+    for kpi_storage in [KPI_COST_MATRIX, KPI_SCALAR_MATRIX]:
         asset_result_dict = {}
         for key in dict_kpi[kpi_storage].columns.values:
             # Check if called value is in oemof results -> Remember: check if pandas index has certain index: pd.object.index.contains(key)
