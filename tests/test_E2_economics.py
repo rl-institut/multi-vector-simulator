@@ -7,13 +7,14 @@ from src.constants_json_strings import (
     OPEX_VAR,
     VALUE,
     LABEL,
+    INSTALLED_CAP,
 )
 
 dict_asset = {
     LABEL: "DSO_feedin_sink",
     OPEX_VAR: {VALUE: -0.4, UNIT: "currency/kWh"},
     CAPEX_VAR: {VALUE: 0, UNIT: "currency/kW"},
-    "installedCap": {VALUE: 0.0, UNIT: UNIT},
+    INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
     CAPEX_FIX: {VALUE: 0, UNIT: CURR},
     "lifetime_capex_var": {VALUE: 0.0, UNIT: "currency/kW"},
     "lifetime_opex_fix": {VALUE: 0.0, UNIT: "currency/ye"},

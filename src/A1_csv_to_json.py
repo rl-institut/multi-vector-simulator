@@ -34,7 +34,16 @@ import warnings
 
 import pandas as pd
 
-from src.constants_json_strings import LABEL, OPEX_VAR, OPEX_FIX, CAPEX_FIX, CAPEX_VAR
+from src.constants_json_strings import (
+    LABEL,
+    OPEX_VAR,
+    OPEX_FIX,
+    CAPEX_FIX,
+    CAPEX_VAR,
+    AGE_INSTALLED,
+    LIFETIME,
+    INSTALLED_CAP,
+)
 from src.constants import (
     CSV_FNAME,
     CSV_SEPARATORS,
@@ -527,13 +536,13 @@ def add_storage_components(storage_filename, input_directory):
     else:
         # hardcoded parameterlist of common parameters in all columns
         parameters = [
-            "age_installed",
+            AGE_INSTALLED,
             CAPEX_FIX,
             CAPEX_VAR,
             "efficiency",
-            "installedCap",
+            INSTALLED_CAP,
             LABEL,
-            "lifetime",
+            LIFETIME,
             OPEX_FIX,
             UNIT,
         ]

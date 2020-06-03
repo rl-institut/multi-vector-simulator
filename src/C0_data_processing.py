@@ -45,6 +45,8 @@ from src.constants_json_strings import (
     CAPEX_FIX,
     CAPEX_VAR,
     OPTIMIZE_CAP,
+    LIFETIME,
+    INSTALLED_CAP,
 )
 
 
@@ -452,12 +454,12 @@ def define_missing_cost_data(dict_values, dict_asset):
     basic_costs = {
         OPTIMIZE_CAP: {VALUE: False, UNIT: "bool"},
         UNIT: "?",
-        "installedCap": {VALUE: 0.0, UNIT: UNIT},
+        INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
         CAPEX_FIX: {VALUE: 0, UNIT: CURR},
         CAPEX_VAR: {VALUE: 0, UNIT: "currency/unit"},
         OPEX_FIX: {VALUE: 0, UNIT: "currency/year"},
         OPEX_VAR: {VALUE: 0, UNIT: "currency/unit/year"},
-        "lifetime": {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: "year",},
+        LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: "year",},
     }
 
     # checks that an asset has all cost parameters needed for evaluation.
@@ -708,7 +710,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
         "dispatchable": True,
         "timeseries": timeseries,
         # OPEX_VAR: {VALUE: price, UNIT: "currency/unit"},
-        "lifetime": {
+        LIFETIME: {
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
             UNIT: "year",
         },
@@ -832,7 +834,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         "input_direction": input_bus,
         "input_bus_name": input_bus_name,
         # OPEX_VAR: {VALUE: price, UNIT: "currency/kWh"},
-        "lifetime": {
+        LIFETIME: {
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
             UNIT: "year",
         },
@@ -929,7 +931,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
             "lifetime_capex_var": {
                 VALUE: economics.capex_from_investment(
                     dict_asset[CAPEX_VAR][VALUE],
-                    dict_asset["lifetime"][VALUE],
+                    dict_asset[LIFETIME][VALUE],
                     economic_data[PROJECT_DURATION][VALUE],
                     economic_data[DISCOUNTFACTOR][VALUE],
                     economic_data[TAX][VALUE],
@@ -1352,7 +1354,7 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
     if "maximumCap" in dict:
         # check if maximumCap is greater that installedCap
         if dict["maximumCap"][VALUE] is not None:
-            if dict["maximumCap"][VALUE] < dict["installedCap"][VALUE]:
+            if dict["maximumCap"][VALUE] < dict[INSTALLED_CAP][VALUE]:
 
                 logging.warning(
                     f"The stated maximumCap in {group} {asset} is smaller than the "

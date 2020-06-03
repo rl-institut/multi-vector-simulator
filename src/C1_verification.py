@@ -22,6 +22,9 @@ from src.constants_json_strings import (
     OPEX_FIX,
     CAPEX_FIX,
     CAPEX_VAR,
+    AGE_INSTALLED,
+    LIFETIME,
+    INSTALLED_CAP,
 )
 
 # web-application: valid input directly connected to cell-input
@@ -138,9 +141,9 @@ def all_valid_intervals(name, value, title):
     valid_intervals = {
         "longitude": [-180, 180],
         "latitude": [-90, 90],
-        "lifetime": ["largerzero", "any"],
-        "age_installed": [0, "any"],
-        "installedCap": [0, "any"],
+        LIFETIME: ["largerzero", "any"],
+        AGE_INSTALLED: [0, "any"],
+        INSTALLED_CAP: [0, "any"],
         "maximumCap": [0, "any", None],
         "soc_min": [0, 1],
         "soc_max": [0, 1],

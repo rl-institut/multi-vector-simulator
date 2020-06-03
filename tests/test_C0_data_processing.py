@@ -10,11 +10,12 @@ from src.constants_json_strings import (
     TAX,
     VALUE,
     LABEL,
-    SECTORS,
     OPEX_VAR,
     OPEX_FIX,
     CAPEX_FIX,
     CAPEX_VAR,
+    LIFETIME,
+    INSTALLED_CAP,
 )
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
@@ -73,7 +74,7 @@ dict_asset = {
     CAPEX_VAR: {VALUE: 1, UNIT: "a_unit"},
     OPEX_VAR: {VALUE: 1},
     CAPEX_FIX: {VALUE: 1},
-    "lifetime": {VALUE: 20},
+    LIFETIME: {VALUE: 20},
     UNIT: "a_unit",
 }
 

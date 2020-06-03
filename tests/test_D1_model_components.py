@@ -17,6 +17,7 @@ from src.constants_json_strings import (
     ENERGY_CONSUMPTION,
     ENERGY_STORAGE,
     OPTIMIZE_CAP,
+    INSTALLED_CAP,
 )
 
 D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D1.json",)
@@ -93,7 +94,7 @@ class TestTransformerComponent:
             assert isinstance(
                 output_bus.investment, solph.options.Investment
             )  # todo maybe ep costs
-            assert output_bus.existing == dict_asset["installedCap"][VALUE]
+            assert output_bus.existing == dict_asset[INSTALLED_CAP][VALUE]
             assert output_bus.nominal_value == None
         elif optimize == False:
             output_bus = self.model.entities[-1].outputs.data[
@@ -101,7 +102,7 @@ class TestTransformerComponent:
             ]
             assert output_bus.investment == None
             assert hasattr(output_bus, "existing") == False
-            assert output_bus.nominal_value == dict_asset["installedCap"][VALUE]
+            assert output_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
         else:
             raise ValueError(f"`optimize` should be True/False but is '{optimize}'")
 
@@ -401,21 +402,21 @@ class TestStorageComponent:
         input_bus = self.model.entities[-1].inputs[self.busses["Storage bus"]]
         output_bus = self.model.entities[-1].outputs[self.busses["Storage bus"]]
 
-        assert input_bus.existing == dict_asset["input power"]["installedCap"][VALUE]
+        assert input_bus.existing == dict_asset["input power"][INSTALLED_CAP][VALUE]
         assert (
             input_bus.investment.ep_costs
             == dict_asset["input power"]["simulation_annuity"][VALUE]
         )
         assert input_bus.nominal_value == None
 
-        assert output_bus.existing == dict_asset["output power"]["installedCap"][VALUE]
+        assert output_bus.existing == dict_asset["output power"][INSTALLED_CAP][VALUE]
         assert (
             output_bus.investment.ep_costs
             == dict_asset["output power"]["simulation_annuity"][VALUE]
         )
         assert output_bus.nominal_value == None
 
-        # assert self.model.entities[-1].existing ==  dict_asset["storage capacity"]["installedCap"][VALUE]  # todo probably not necessary parameter
+        # assert self.model.entities[-1].existing ==  dict_asset["storage capacity"][INSTALLED_CAP][VALUE]  # todo probably not necessary parameter
         assert (
             self.model.entities[-1].investment.ep_costs
             == dict_asset["storage capacity"]["simulation_annuity"][VALUE]
@@ -455,13 +456,13 @@ class TestStorageComponent:
         assert input_bus.investment == None
         assert (
             input_bus.nominal_value
-            == dict_asset["storage capacity"]["installedCap"][VALUE]
+            == dict_asset["storage capacity"][INSTALLED_CAP][VALUE]
         )
 
         assert hasattr(output_bus, "existing") == False
         assert output_bus.investment == None
         assert (
-            output_bus.nominal_value == dict_asset["input power"]["installedCap"][VALUE]
+            output_bus.nominal_value == dict_asset["input power"][INSTALLED_CAP][VALUE]
         )
 
         assert (
@@ -470,7 +471,7 @@ class TestStorageComponent:
         assert self.model.entities[-1].investment == None
         assert (
             self.model.entities[-1].nominal_storage_capacity
-            == dict_asset["output power"]["installedCap"][VALUE]
+            == dict_asset["output power"][INSTALLED_CAP][VALUE]
         )
 
         # # check that invest_relation_input_capacity and invest_relation_output_capacity is not added

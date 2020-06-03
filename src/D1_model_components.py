@@ -13,7 +13,13 @@ Module D1 includes all functions that are required to build an oemof model with 
 import logging
 
 import oemof.solph as solph
-from src.constants_json_strings import VALUE, LABEL, OPEX_VAR, OPTIMIZE_CAP
+from src.constants_json_strings import (
+    VALUE,
+    LABEL,
+    OPEX_VAR,
+    OPTIMIZE_CAP,
+    INSTALLED_CAP,
+)
 
 
 def transformer(model, dict_asset, **kwargs):
@@ -309,7 +315,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             for bus in dict_asset["input_bus_name"]:
                 variable_costs = dict_asset[OPEX_VAR][VALUE][index]
                 inputs[kwargs["busses"][bus]] = solph.Flow(
-                    nominal_value=dict_asset["installedCap"][VALUE],
+                    nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=variable_costs,
                 )
                 index += 1
@@ -327,7 +333,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             for bus in dict_asset["output_bus_name"]:
                 variable_costs = dict_asset[OPEX_VAR][VALUE][index]
                 outputs[kwargs["busses"][bus]] = solph.Flow(
-                    nominal_value=dict_asset["installedCap"][VALUE],
+                    nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=variable_costs,
                 )
                 index += 1
@@ -341,7 +347,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
         inputs = {kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow()}
         outputs = {
             kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
-                nominal_value=dict_asset["installedCap"][VALUE],
+                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[OPEX_VAR][VALUE],
             )
         }
@@ -385,7 +391,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             for bus in dict_asset["input_bus_name"]:
                 variable_costs = dict_asset[OPEX_VAR][VALUE][index]
                 inputs[kwargs["busses"][bus]] = solph.Flow(
-                    existing=dict_asset["installedCap"][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=variable_costs,
                 )
                 index += 1
@@ -395,7 +401,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                         ep_costs=dict_asset["simulation_annuity"][VALUE],
                         maximum=dict_asset["maximumCap"][VALUE],
                     ),
-                    existing=dict_asset["installedCap"][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=dict_asset[OPEX_VAR][VALUE],
                 )
             }
@@ -416,7 +422,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                         ep_costs=dict_asset["simulation_annuity"][VALUE],
                         maximum=dict_asset["maximumCap"][VALUE],
                     ),
-                    existing=dict_asset["installedCap"][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=variable_costs,
                 )
                 index += 1
@@ -434,7 +440,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                     ep_costs=dict_asset["simulation_annuity"][VALUE],
                     maximum=dict_asset["maximumCap"][VALUE],
                 ),
-                existing=dict_asset["installedCap"][VALUE],
+                existing=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[OPEX_VAR][VALUE],
             )
         }
@@ -469,10 +475,10 @@ def storage_fix(model, dict_asset, **kwargs):
     """
     storage = solph.components.GenericStorage(
         label=dict_asset[LABEL],
-        nominal_storage_capacity=dict_asset["storage capacity"]["installedCap"][VALUE],
+        nominal_storage_capacity=dict_asset["storage capacity"][INSTALLED_CAP][VALUE],
         inputs={
             kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow(
-                nominal_value=dict_asset["input power"]["installedCap"][
+                nominal_value=dict_asset["input power"][INSTALLED_CAP][
                     VALUE
                 ],  # limited through installed capacity, NOT c-rate
                 variable_costs=dict_asset["input power"][OPEX_VAR][VALUE],
@@ -480,7 +486,7 @@ def storage_fix(model, dict_asset, **kwargs):
         },  # maximum charge possible in one timestep
         outputs={
             kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
-                nominal_value=dict_asset["output power"]["installedCap"][
+                nominal_value=dict_asset["output power"][INSTALLED_CAP][
                     VALUE
                 ],  # limited through installed capacity, NOT c-rate #todo actually, if we only have a lithium battery... crate should suffice? i mean, with crate fixed AND fixed power, this is defined two times
                 variable_costs=dict_asset["output power"][OPEX_VAR][VALUE],
@@ -517,7 +523,7 @@ def storage_optimize(model, dict_asset, **kwargs):
     """
     storage = solph.components.GenericStorage(
         label=dict_asset[LABEL],
-        existing=dict_asset["storage capacity"]["installedCap"][
+        existing=dict_asset["storage capacity"][INSTALLED_CAP][
             VALUE
         ],  # todo I think this parameter is not used in the GenericStorage
         investment=solph.Investment(
@@ -526,7 +532,7 @@ def storage_optimize(model, dict_asset, **kwargs):
         ),
         inputs={
             kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow(
-                existing=dict_asset["input power"]["installedCap"][VALUE],
+                existing=dict_asset["input power"][INSTALLED_CAP][VALUE],
                 investment=solph.Investment(
                     ep_costs=dict_asset["input power"]["simulation_annuity"][VALUE],
                     maximum=dict_asset["input power"]["maximumCap"][VALUE],
@@ -536,7 +542,7 @@ def storage_optimize(model, dict_asset, **kwargs):
         },  # maximum charge power
         outputs={
             kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
-                existing=dict_asset["output power"]["installedCap"][VALUE],
+                existing=dict_asset["output power"][INSTALLED_CAP][VALUE],
                 investment=solph.Investment(
                     ep_costs=dict_asset["output power"]["simulation_annuity"][VALUE],
                     maximum=dict_asset["output power"]["maximumCap"][VALUE],
@@ -588,7 +594,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
                 label=dict_asset[LABEL],
                 actual_value=dict_asset["timeseries"],
                 fixed=True,
-                nominal_value=dict_asset["installedCap"][VALUE],
+                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset["opex_var"][0],
             )
             index += 1
@@ -598,7 +604,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
                 label=dict_asset[LABEL],
                 actual_value=dict_asset["timeseries"],
                 fixed=True,
-                nominal_value=dict_asset["installedCap"][VALUE],
+                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset["opex_var"][VALUE],
             )
         }
@@ -630,7 +636,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                 label=dict_asset[LABEL],
                 actual_value=dict_asset["timeseries_normalized"],
                 fixed=True,
-                existing=dict_asset["installedCap"][VALUE],
+                existing=dict_asset[INSTALLED_CAP][VALUE],
                 investment=solph.Investment(
                     ep_costs=dict_asset["simulation_annuity"][VALUE]
                     / dict_asset["timeseries_peak"][VALUE],
@@ -647,7 +653,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                 label=dict_asset[LABEL],
                 actual_value=dict_asset["timeseries_normalized"],
                 fixed=True,
-                existing=dict_asset["installedCap"][VALUE],
+                existing=dict_asset[INSTALLED_CAP][VALUE],
                 investment=solph.Investment(
                     ep_costs=dict_asset["simulation_annuity"][VALUE]
                     / dict_asset["timeseries_peak"][VALUE],
@@ -758,7 +764,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
                 outputs[kwargs["busses"][bus]] = solph.Flow(
                     label=dict_asset[LABEL],
                     max=dict_asset["timeseries_normalized"],
-                    existing=dict_asset["installedCap"][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=dict_asset["opex_var"][VALUE][index],
                 )
                 index += 1
@@ -767,7 +773,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
                 kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
                     label=dict_asset[LABEL],
                     max=dict_asset["timeseries_normalized"],
-                    existing=dict_asset["installedCap"][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=dict_asset["opex_var"][VALUE],
                 )
             }
@@ -784,7 +790,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
             for bus in dict_asset["output_bus_name"]:
                 outputs[kwargs["busses"][bus]] = solph.Flow(
                     label=dict_asset[LABEL],
-                    existing=dict_asset["installedCap"][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=dict_asset["opex_var"][VALUE][index],
                 )
                 index += 1
@@ -792,7 +798,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
             outputs = {
                 kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow(
                     label=dict_asset[LABEL],
-                    existing=dict_asset["installedCap"][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=dict_asset["opex_var"][VALUE],
                 )
             }

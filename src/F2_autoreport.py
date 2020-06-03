@@ -31,6 +31,7 @@ from src.constants import (
     CSV_ELEMENTS,
     ECONOMIC_DATA,
     PROJECT_DATA,
+    INSTALLED_CAP,
 )
 
 from src.constants_json_strings import (
@@ -225,7 +226,7 @@ def create_app(results_json):
                 comps: [
                     components1[comps][OEMOF_ASSET_TYPE],
                     components1[comps][UNIT],
-                    components1[comps]["installedCap"][VALUE],
+                    components1[comps][INSTALLED_CAP][VALUE],
                     components1[comps][OPTIMIZE_CAP][VALUE],
                 ]
             }
@@ -237,7 +238,7 @@ def create_app(results_json):
                     components2[comps][OEMOF_ASSET_TYPE],
                     components2[comps][ENERGY_VECTOR],
                     components2[comps][UNIT],
-                    components2[comps]["installedCap"][VALUE],
+                    components2[comps][INSTALLED_CAP][VALUE],
                     components2[comps][OPTIMIZE_CAP][VALUE],
                 ]
             }

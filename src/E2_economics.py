@@ -9,6 +9,7 @@ from src.constants_json_strings import (
     OPEX_FIX,
     CAPEX_FIX,
     CAPEX_VAR,
+    INSTALLED_CAP,
 )
 
 r"""
@@ -108,13 +109,13 @@ def get_costs(dict_asset, economic_data):
                 [
                     "annual_total_flow",
                     "lifetime_opex_var",
-                    "installedCap",
+                    INSTALLED_CAP,
                     "optimizedAddCap",
                 ],
             )
             == True
         ):
-            cap = dict_asset["installedCap"][VALUE]
+            cap = dict_asset[INSTALLED_CAP][VALUE]
             if "optimizedAddCap" in dict_asset:
                 cap += dict_asset["optimizedAddCap"][VALUE]
 

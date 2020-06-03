@@ -5,7 +5,16 @@ import pytest
 import src.A1_csv_to_json as A1
 import src.B0_data_input_json as data_input
 from src.constants import PATHS_TO_PLOTS
-from src.constants_json_strings import UNIT, VALUE, OPEX_VAR, CAPEX_FIX, LABEL
+from src.constants_json_strings import (
+    UNIT,
+    VALUE,
+    OPEX_VAR,
+    CAPEX_FIX,
+    LABEL,
+    AGE_INSTALLED,
+    LIFETIME,
+    INSTALLED_CAP,
+)
 from .constants import CSV_PATH, CSV_FNAME, DUMMY_CSV_PATH, REQUIRED_CSV_FILES
 
 
@@ -200,7 +209,7 @@ def test_create_json_from_csv_storage_raises_WrongParameterWarning():
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
-            parameters=["age_installed", CAPEX_FIX],
+            parameters=[AGE_INSTALLED, CAPEX_FIX],
             asset_is_a_storage=True,
         )
 
@@ -212,14 +221,14 @@ def test_create_json_from_csv_storage_raises_MissingParameterError():
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
             parameters=[
-                "age_installed",
+                AGE_INSTALLED,
                 CAPEX_FIX,
                 "c_rate",
                 OPEX_VAR,
                 "soc_initial",
                 "soc_max",
                 "soc_min",
-                "installedCap",
+                INSTALLED_CAP,
             ],
             asset_is_a_storage=True,
         )
@@ -231,7 +240,7 @@ def test_create_json_from_csv_storage_raises_WrongParameterWarning_for_wrong_val
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_values",
-            parameters=["age_installed", CAPEX_FIX],
+            parameters=[AGE_INSTALLED, CAPEX_FIX],
             asset_is_a_storage=True,
         )
 
@@ -242,7 +251,7 @@ def test_create_json_from_csv_storage_raises_WrongStorageColumn():
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_column_name",
-            parameters=["age_installed", CAPEX_FIX],
+            parameters=[AGE_INSTALLED, CAPEX_FIX],
             asset_is_a_storage=True,
         )
 

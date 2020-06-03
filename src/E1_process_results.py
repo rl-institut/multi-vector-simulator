@@ -14,6 +14,7 @@ from src.constants_json_strings import (
     VALUE,
     LABEL,
     OPTIMIZE_CAP,
+    INSTALLED_CAP,
 )
 
 import logging
@@ -188,7 +189,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
         {
             "timeseries_soc": dict_asset["storage capacity"]["flow"]
             / (
-                dict_asset["storage capacity"]["installedCap"][VALUE]
+                dict_asset["storage capacity"][INSTALLED_CAP][VALUE]
                 + dict_asset["storage capacity"]["optimizedAddCap"][VALUE]
             )
         }

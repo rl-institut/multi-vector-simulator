@@ -50,7 +50,9 @@ PROJECT_DURATION = "project_duration"
 TAX = "tax"
 
 OPTIMIZE_CAP = "optimizeCap"
-
+INSTALLED_CAP = "installedCap"
+AGE_INSTALLED = "age_installed"
+LIFETIME = "lifetime"
 CAPEX_FIX = "capex_fix"
 CAPEX_VAR = "capex_var"
 OPEX_FIX = "opex_fix"
