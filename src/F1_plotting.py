@@ -12,6 +12,7 @@ from src.constants import (
     PLOTS_COSTS,
     PROJECT_DATA,
     LABEL,
+    PATH_OUTPUT_FOLDER,
 )
 
 r"""
@@ -87,7 +88,7 @@ def flows(dict_values, user_input, project_data, results_timeseries, bus, interv
         axes[1].legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
     path = os.path.join(
-        user_input["path_output_folder"], bus + "_flows_" + str(interval) + "_days.png",
+        user_input[PATH_OUTPUT_FOLDER], bus + "_flows_" + str(interval) + "_days.png",
     )
 
     plt.savefig(
@@ -158,7 +159,7 @@ def capacities(dict_values, user_input, project_data, assets, capacities):
     )
 
     path = os.path.join(
-        user_input["path_output_folder"], "optimal_additional_capacities.png"
+        user_input[PATH_OUTPUT_FOLDER], "optimal_additional_capacities.png"
     )
     plt.savefig(
         path, bbox_inches="tight",
@@ -217,7 +218,7 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
 
         plot_a_piechart(
             dict_values,
-            dict_values["simulation_settings"],
+            dict_values[SIMULATION_SETTINGS],
             file_name,
             costs_perc_grouped_pandas,
             label,
@@ -246,7 +247,7 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
 
             plot_a_piechart(
                 dict_values,
-                dict_values["simulation_settings"],
+                dict_values[SIMULATION_SETTINGS],
                 file_name + "_minor",
                 costs_perc_grouped_minor,
                 label + " (minor)",
@@ -382,7 +383,7 @@ def plot_a_piechart(dict_values, settings, file_name, costs, label, title):
         costs.plot.pie(
             title=title, autopct="%1.1f%%", subplots=True,
         )
-        path = os.path.join(settings["path_output_folder"], file_name + ".png")
+        path = os.path.join(settings[PATH_OUTPUT_FOLDER], file_name + ".png")
         plt.savefig(
             path, bbox_inches="tight",
         )
@@ -477,7 +478,7 @@ def draw_graph(
         fig.show()
 
     if save_plot is True:
-        path = os.path.join(user_input["path_output_folder"], "network_graph.png")
+        path = os.path.join(user_input[PATH_OUTPUT_FOLDER], "network_graph.png")
         dict_values[PATHS_TO_PLOTS][PLOTS_NX] += [str(path)]
 
         fig.savefig(

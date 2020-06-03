@@ -14,16 +14,19 @@ from src.constants_json_strings import (
     OEMOF_ASSET_TYPE,
     LABEL,
     VALUE,
+    SIMULATION_SETTINGS,
 )
-from src.constants_json_strings import SIMULATION_SETTINGS
-from tests.constants import TEST_REPO_PATH
+from .constants import (
+    TEST_REPO_PATH,
+    PATH_OUTPUT_FOLDER,
+)
 
 json_path = os.path.join("tests", "test_data", "test_data_for_D0.json")
 
 dict_values = load_json(json_path)
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
-dict_values[SIMULATION_SETTINGS].update({"path_output_folder": TEST_OUTPUT_PATH})
+dict_values[SIMULATION_SETTINGS].update({PATH_OUTPUT_FOLDER: TEST_OUTPUT_PATH})
 
 
 def setup_function():
@@ -153,7 +156,7 @@ def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_true():
 
 
 def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false():
-    dict_values["simulation_settings"]["store_oemof_results"].update({VALUE: False})
+    dict_values[SIMULATION_SETTINGS]["store_oemof_results"].update({VALUE: False})
     D0.run_oemof(dict_values)
     assert os.path.exists(path_oemof_file) is False
 

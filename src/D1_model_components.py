@@ -19,6 +19,7 @@ from src.constants_json_strings import (
     OPEX_VAR,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
+    EFFICIENCY,
 )
 
 
@@ -321,9 +322,9 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
                 index += 1
             outputs = {kwargs["busses"][dict_asset["output_bus_name"]]: solph.Flow()}
             efficiencies = {}
-            for i in range(len(dict_asset["efficiency"][VALUE])):
+            for i in range(len(dict_asset[EFFICIENCY][VALUE])):
                 efficiencies[kwargs["busses"][dict_asset["input_bus_name"][i]]] = (
-                    1 / dict_asset["efficiency"][VALUE][i]
+                    1 / dict_asset[EFFICIENCY][VALUE][i]
                 )
 
         else:
@@ -338,10 +339,10 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
                 )
                 index += 1
             efficiencies = {}
-            for i in range(len(dict_asset["efficiency"][VALUE])):
+            for i in range(len(dict_asset[EFFICIENCY][VALUE])):
                 efficiencies[
                     kwargs["busses"][dict_asset["output_bus_name"][i]]
-                ] = dict_asset["efficiency"][VALUE][i]
+                ] = dict_asset[EFFICIENCY][VALUE][i]
 
     else:
         inputs = {kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow()}
@@ -352,7 +353,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             )
         }
         efficiencies = {
-            kwargs["busses"][dict_asset["output_bus_name"]]: dict_asset["efficiency"][
+            kwargs["busses"][dict_asset["output_bus_name"]]: dict_asset[EFFICIENCY][
                 VALUE
             ]
         }
@@ -406,9 +407,9 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 )
             }
             efficiencies = {}
-            for i in range(len(dict_asset["efficiency"][VALUE])):
+            for i in range(len(dict_asset[EFFICIENCY][VALUE])):
                 efficiencies[kwargs["busses"][dict_asset["input_bus_name"][i]]] = 1 / (
-                    dict_asset["efficiency"][VALUE][i]
+                    dict_asset[EFFICIENCY][VALUE][i]
                 )
 
         else:
@@ -427,10 +428,10 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 )
                 index += 1
             efficiencies = {}
-            for i in range(len(dict_asset["efficiency"][VALUE])):
+            for i in range(len(dict_asset[EFFICIENCY][VALUE])):
                 efficiencies[
                     kwargs["busses"][dict_asset["output_bus_name"][i]]
-                ] = dict_asset["efficiency"][VALUE][i]
+                ] = dict_asset[EFFICIENCY][VALUE][i]
 
     else:
         inputs = {kwargs["busses"][dict_asset["input_bus_name"]]: solph.Flow()}
@@ -445,7 +446,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             )
         }
         efficiencies = {
-            kwargs["busses"][dict_asset["output_bus_name"]]: dict_asset["efficiency"][
+            kwargs["busses"][dict_asset["output_bus_name"]]: dict_asset[EFFICIENCY][
                 VALUE
             ]
         }
@@ -492,7 +493,7 @@ def storage_fix(model, dict_asset, **kwargs):
                 variable_costs=dict_asset["output power"][OPEX_VAR][VALUE],
             )
         },  # maximum discharge possible in one timestep
-        loss_rate=dict_asset["storage capacity"]["efficiency"][
+        loss_rate=dict_asset["storage capacity"][EFFICIENCY][
             VALUE
         ],  # from timestep to timestep
         min_storage_level=dict_asset["storage capacity"]["soc_min"][VALUE],
@@ -500,10 +501,10 @@ def storage_fix(model, dict_asset, **kwargs):
         initial_storage_level=dict_asset["storage capacity"]["soc_initial"][
             VALUE
         ],  # in terms of SOC
-        inflow_conversion_factor=dict_asset["input power"]["efficiency"][
+        inflow_conversion_factor=dict_asset["input power"][EFFICIENCY][
             VALUE
         ],  # storing efficiency
-        outflow_conversion_factor=dict_asset["output power"]["efficiency"][VALUE],
+        outflow_conversion_factor=dict_asset["output power"][EFFICIENCY][VALUE],
     )  # efficiency of discharge
     model.add(storage)
     kwargs["storages"].update({dict_asset[LABEL]: storage})
@@ -550,7 +551,7 @@ def storage_optimize(model, dict_asset, **kwargs):
                 variable_costs=dict_asset["output power"]["opex_var"][VALUE],
             )
         },  # maximum discharge power
-        loss_rate=dict_asset["storage capacity"]["efficiency"][
+        loss_rate=dict_asset["storage capacity"][EFFICIENCY][
             VALUE
         ],  # from timestep to timestep
         min_storage_level=dict_asset["storage capacity"]["soc_min"][VALUE],
@@ -558,10 +559,10 @@ def storage_optimize(model, dict_asset, **kwargs):
         initial_storage_level=dict_asset["storage capacity"]["soc_initial"][
             VALUE
         ],  # in terms of SOC #implication: balanced = True, ie. start=end
-        inflow_conversion_factor=dict_asset["input power"]["efficiency"][
+        inflow_conversion_factor=dict_asset["input power"][EFFICIENCY][
             VALUE
         ],  # storing efficiency
-        outflow_conversion_factor=dict_asset["output power"]["efficiency"][
+        outflow_conversion_factor=dict_asset["output power"][EFFICIENCY][
             VALUE
         ],  # efficiency of discharge
         invest_relation_input_capacity=dict_asset["input power"]["c_rate"][VALUE],

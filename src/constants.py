@@ -30,6 +30,8 @@ from src.constants_json_strings import (
     CAPEX_VAR,
     AGE_INSTALLED,
     LIFETIME,
+    FILENAME,
+    EFFICIENCY,
 )
 
 
@@ -75,12 +77,20 @@ PDF_REPORT = "simulation_report.pdf"
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 
+PATH_INPUT_FILE = "path_input_file"
+PATH_INPUT_FOLDER = "path_input_folder"
+PATH_OUTPUT_FOLDER = "path_output_folder"
+INPUT_TYPE = "input_type"
+OVERWRITE = "overwrite"
+DISPLAY_OUTPUT = "display_output"
+
 USER_INPUT_ARGUMENTS = (
-    "path_input_file",
-    "path_output_folder",
-    "input_type" "path_input_sequences",
-    "overwrite",
-    "display_output",
+    PATH_INPUT_FILE,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+    INPUT_TYPE,
+    OVERWRITE,
+    DISPLAY_OUTPUT,
 )
 
 DEFAULT_MAIN_KWARGS = dict(
@@ -97,7 +107,7 @@ DEFAULT_MAIN_KWARGS = dict(
 REQUIRED_CSV_PARAMETERS = {
     ENERGY_CONSUMPTION: [
         "dsm",
-        "file_name",
+        FILENAME,
         LABEL,
         "type_asset",
         OEMOF_ASSET_TYPE,
@@ -109,7 +119,7 @@ REQUIRED_CSV_PARAMETERS = {
         AGE_INSTALLED,
         CAPEX_FIX,
         CAPEX_VAR,
-        "efficiency",
+        EFFICIENCY,
         INFLOW_DIRECTION,
         INSTALLED_CAP,
         LABEL,
@@ -135,7 +145,7 @@ REQUIRED_CSV_PARAMETERS = {
         AGE_INSTALLED,
         CAPEX_FIX,
         CAPEX_VAR,
-        "file_name",
+        FILENAME,
         INSTALLED_CAP,
         LABEL,
         LIFETIME,

@@ -10,6 +10,7 @@ from src.constants_json_strings import (
     CAPEX_FIX,
     CAPEX_VAR,
     INSTALLED_CAP,
+    SIMULATION_SETTINGS,
 )
 
 r"""
@@ -39,7 +40,7 @@ def get_costs(dict_asset, economic_data):
             "settings",
             ECONOMIC_DATA,
             "electricity_demand",
-            "simulation_settings",
+            SIMULATION_SETTINGS,
             "simulation_results",
         ]
     ):

@@ -15,8 +15,8 @@ from src.constants import (
     SIMULATION_SETTINGS,
     PROJECT_DATA,
     SECTORS,
-    ENERGY_VECTOR,
     LABEL,
+    PATH_OUTPUT_FOLDER,
 )
 
 r"""
@@ -121,7 +121,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
 
     store_as_json(
         dict_values,
-        dict_values[SIMULATION_SETTINGS]["path_output_folder"],
+        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
         "json_with_results",
     )
 
@@ -209,7 +209,7 @@ def store_scalars_to_excel(dict_values):
     """
     results_scalar_output_file = "/scalars" + ".xlsx"
     with pd.ExcelWriter(
-        dict_values[SIMULATION_SETTINGS]["path_output_folder"]
+        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
         + results_scalar_output_file
     ) as open_file:  # doctest: +SKIP
         for kpi_set in dict_values["kpi"]:
@@ -244,7 +244,7 @@ def store_timeseries_all_busses_to_excel(dict_values):
 
     timeseries_output_file = "/timeseries_all_busses" + ".xlsx"
     with pd.ExcelWriter(
-        dict_values[SIMULATION_SETTINGS]["path_output_folder"] + timeseries_output_file
+        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER] + timeseries_output_file
     ) as open_file:  # doctest: +SKIP
         for bus in dict_values["optimizedFlows"]:
             dict_values["optimizedFlows"][bus].to_excel(open_file, sheet_name=bus)

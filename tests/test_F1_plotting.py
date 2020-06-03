@@ -22,6 +22,7 @@ from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
+    PATH_OUTPUT_FOLDER,
     TEST_INPUT_DIRECTORY,
     DUMMY_CSV_PATH,
     CSV_ELEMENTS,
@@ -60,7 +61,7 @@ TEST_JSON_PATH_NX_FALSE = os.path.join(
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "F1_outputs")
 
 # Data for test_if_plot_of_all_energy_flows_for_all_sectors_are_stored_for_14_days
-USER_INPUT = {"path_output_folder": OUTPUT_PATH}
+USER_INPUT = {PATH_OUTPUT_FOLDER: OUTPUT_PATH}
 PROJECT_DATA = {"project_name": "a_project", "scenario_name": "a_scenario"}
 
 RESULTS_TIMESERIES = pd.read_csv(

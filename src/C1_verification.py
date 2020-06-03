@@ -12,6 +12,12 @@ import logging
 import os
 
 import pandas as pd
+from src.constants import (
+    PATH_INPUT_FILE,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+    DISPLAY_OUTPUT,
+)
 from src.constants_json_strings import (
     PROJECT_DURATION,
     DISCOUNTFACTOR,
@@ -25,6 +31,8 @@ from src.constants_json_strings import (
     AGE_INSTALLED,
     LIFETIME,
     INSTALLED_CAP,
+    FILENAME,
+    EFFICIENCY,
 )
 
 # web-application: valid input directly connected to cell-input
@@ -120,13 +128,13 @@ def all_valid_intervals(name, value, title):
         "country",
         "parent",
         "type",
-        "file_name",
+        FILENAME,
         LABEL,
         CURR,
-        "path_output_folder",
-        "display_output",
-        "path_input_file",
-        "path_input_folder",
+        PATH_OUTPUT_FOLDER,
+        DISPLAY_OUTPUT,
+        PATH_INPUT_FILE,
+        PATH_INPUT_FOLDER,
         "sector",
     ]
 
@@ -149,7 +157,7 @@ def all_valid_intervals(name, value, title):
         "soc_max": [0, 1],
         "soc_initial": [0, 1],
         "crate": [0, 1],
-        "efficiency": [0, 1],
+        EFFICIENCY: [0, 1],
         "electricity_cost_fix_annual": [0, "any"],
         "electricity_price_var_kWh": [0, "any"],
         "electricity_price_var_kW_monthly": [0, "any"],

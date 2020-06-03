@@ -43,6 +43,7 @@ from src.constants_json_strings import (
     AGE_INSTALLED,
     LIFETIME,
     INSTALLED_CAP,
+    EFFICIENCY,
 )
 from src.constants import (
     CSV_FNAME,
@@ -539,7 +540,7 @@ def add_storage_components(storage_filename, input_directory):
             AGE_INSTALLED,
             CAPEX_FIX,
             CAPEX_VAR,
-            "efficiency",
+            EFFICIENCY,
             INSTALLED_CAP,
             LABEL,
             LIFETIME,

@@ -17,6 +17,12 @@ from src.constants import (
     SIMULATION_SETTINGS,
     ECONOMIC_DATA,
     PROJECT_DATA,
+    PATH_INPUT_FILE,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+    INPUT_TYPE,
+    OVERWRITE,
+    DISPLAY_OUTPUT,
 )
 
 from src.constants_json_strings import (
@@ -47,6 +53,8 @@ from src.constants_json_strings import (
     OPTIMIZE_CAP,
     LIFETIME,
     INSTALLED_CAP,
+    FILENAME,
+    EFFICIENCY,
 )
 
 
@@ -102,7 +110,7 @@ def all(dict_values):
 
     output.store_as_json(
         dict_values,
-        dict_values[SIMULATION_SETTINGS]["path_output_folder"],
+        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
         "json_input_processed",
     )
     return
@@ -277,17 +285,17 @@ def energyConversion(dict_values, group):
         add_maximum_cap(dict_values=dict_values, group=group, asset=asset)
 
         # in case there is only one parameter provided (input bus and one output bus)
-        if isinstance(dict_values[group][asset]["efficiency"][VALUE], dict):
+        if isinstance(dict_values[group][asset][EFFICIENCY][VALUE], dict):
             receive_timeseries_from_csv(
                 dict_values,
                 dict_values[SIMULATION_SETTINGS],
                 dict_values[group][asset],
-                "efficiency",
+                EFFICIENCY,
             )
         # in case there is more than one parameter provided (either (A) n input busses and 1 output bus or (B) 1 input bus and n output busses)
         # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
-        elif isinstance(dict_values[group][asset]["efficiency"][VALUE], list):
-            treat_multiple_flows(dict_values[group][asset], dict_values, "efficiency")
+        elif isinstance(dict_values[group][asset][EFFICIENCY][VALUE], list):
+            treat_multiple_flows(dict_values[group][asset], dict_values, EFFICIENCY)
 
             # same distinction of values provided with dictionaries (one input and one output) or list (multiple).
             # They can at turn be scalars, mantained, or timeseries
@@ -313,7 +321,7 @@ def energyProduction(dict_values, group):
             dict_values[group][asset],
         )
 
-        if "file_name" in dict_values[group][asset]:
+        if FILENAME in dict_values[group][asset]:
             receive_timeseries_from_csv(
                 dict_values,
                 dict_values[SIMULATION_SETTINGS],
@@ -345,7 +353,7 @@ def energyStorage(dict_values, group):
             )
 
             # check if parameters are provided as timeseries
-            for parameter in ["efficiency", "soc_min", "soc_max"]:
+            for parameter in [EFFICIENCY, "soc_min", "soc_max"]:
                 if parameter in dict_values[group][asset][subasset] and isinstance(
                     dict_values[group][asset][subasset][parameter][VALUE], dict
                 ):
@@ -419,7 +427,7 @@ def energyConsumption(dict_values, group):
                 {"input_bus_name": bus_suffix(dict_values[group][asset][ENERGY_VECTOR])}
             )
 
-        if "file_name" in dict_values[group][asset]:
+        if FILENAME in dict_values[group][asset]:
             receive_timeseries_from_csv(
                 dict_values,
                 dict_values[SIMULATION_SETTINGS],
@@ -728,7 +736,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                     get_timeseries_multiple_flows(
                         dict_values[SIMULATION_SETTINGS],
                         source,
-                        element["file_name"],
+                        element[FILENAME],
                         element["header"],
                     )
                 )
@@ -743,7 +751,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
             {
                 OPEX_VAR: {
                     VALUE: {
-                        "file_name": price[VALUE]["file_name"],
+                        FILENAME: price[VALUE][FILENAME],
                         "header": price[VALUE]["header"],
                     },
                     UNIT: price[UNIT],
@@ -850,7 +858,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
                 timeseries = get_timeseries_multiple_flows(
                     dict_values[SIMULATION_SETTINGS],
                     sink,
-                    element["file_name"],
+                    element[FILENAME],
                     element["header"],
                 )
                 if asset_name[-6:] == "feedin":
@@ -867,7 +875,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
             {
                 OPEX_VAR: {
                     VALUE: {
-                        "file_name": price[VALUE]["file_name"],
+                        FILENAME: price[VALUE][FILENAME],
                         "header": price[VALUE]["header"],
                     },
                     UNIT: price[UNIT],
@@ -1093,25 +1101,25 @@ def receive_timeseries_from_csv(
     :return:
     """
     if type == "input" and "input" in dict_asset:
-        file_name = dict_asset[type]["file_name"]
+        file_name = dict_asset[type][FILENAME]
         header = dict_asset[type]["header"]
         unit = dict_asset[type][UNIT]
-    elif "file_name" in dict_asset:
+    elif FILENAME in dict_asset:
         # todo this input/file_name thing is a workaround and has to be improved in the future
         # if only filename is given here, then only one column can be in the csv
-        file_name = dict_asset["file_name"]
+        file_name = dict_asset[FILENAME]
         unit = dict_asset[UNIT] + "/h"
     else:
-        file_name = dict_asset[type][VALUE]["file_name"]
+        file_name = dict_asset[type][VALUE][FILENAME]
         header = dict_asset[type][VALUE]["header"]
         unit = dict_asset[type][UNIT]
 
-    file_path = os.path.join(settings["path_input_folder"], TIME_SERIES, file_name)
+    file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
     verify.lookup_file(file_path, dict_asset[LABEL])
 
     data_set = pd.read_csv(file_path, sep=",")
 
-    if "file_name" in dict_asset:
+    if FILENAME in dict_asset:
         header = data_set.columns[0]
 
     if len(data_set.index) == settings["periods"]:
@@ -1216,7 +1224,7 @@ def receive_timeseries_from_csv(
 
     # copy input files
     shutil.copy(
-        file_path, os.path.join(settings["path_output_folder"], INPUTS_COPY, file_name)
+        file_path, os.path.join(settings[PATH_OUTPUT_FOLDER], INPUTS_COPY, file_name)
     )
     logging.debug("Copied timeseries %s to output folder / inputs.", file_path)
     return
@@ -1234,7 +1242,7 @@ def plot_input_timeseries(
     )
     axes_mg.set(xlabel="Time", ylabel=column_head)
     path = os.path.join(
-        user_input["path_output_folder"],
+        user_input[PATH_OUTPUT_FOLDER],
         "input_timeseries_" + asset_name + "_" + column_head + ".png",
     )
     if is_demand_profile is True:
@@ -1276,7 +1284,7 @@ def treat_multiple_flows(dict_asset, dict_values, parameter):
                 get_timeseries_multiple_flows(
                     dict_values[SIMULATION_SETTINGS],
                     dict_asset,
-                    element["file_name"],
+                    element[FILENAME],
                     element["header"],
                 )
             )
@@ -1308,7 +1316,7 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
     -------
 
     """
-    file_path = os.path.join(settings["path_input_folder"], TIME_SERIES, file_name)
+    file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
     verify.lookup_file(file_path, dict_asset[LABEL])
 
     data_set = pd.read_csv(file_path, sep=",")

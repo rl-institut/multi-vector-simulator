@@ -15,7 +15,7 @@ from src.constants_json_strings import (
     CAPEX_FIX,
     CAPEX_VAR,
     LIFETIME,
-    INSTALLED_CAP,
+    SIMULATION_SETTINGS,
 )
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
@@ -139,7 +139,7 @@ def test_determine_lifetime_opex_var_is_other():
 def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear():
     dict_test = {
         ENERGY_PROVIDERS: {"a_dso": {"peak_demand_pricing_period": {VALUE: 2}}},
-        "simulation_settings": {"evaluated_period": {VALUE: 30}},
+        SIMULATION_SETTINGS: {"evaluated_period": {VALUE: 30}},
     }
     with pytest.raises(ValueError):
         C0.define_dso_sinks_and_sources(dict_test, "a_dso")

@@ -11,7 +11,14 @@ import src.B0_data_input_json as data_input
 import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
-from .constants import TEST_REPO_PATH, INPUT_FOLDER, KPI_SCALARS
+from .constants import (
+    TEST_REPO_PATH,
+    INPUT_FOLDER,
+    KPI_SCALARS,
+    PATH_INPUT_FILE,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+)
 
 PARSER = initializing.create_parser()
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
@@ -34,9 +41,9 @@ def setup_module(m_args):
 
     logging.debug("Accessing script: B0_data_input_json")
     dict_values = data_input.load_json(
-        user_input["path_input_file"],
-        path_input_folder=user_input["path_input_folder"],
-        path_output_folder=user_input["path_output_folder"],
+        user_input[PATH_INPUT_FILE],
+        path_input_folder=user_input[PATH_INPUT_FOLDER],
+        path_output_folder=user_input[PATH_OUTPUT_FOLDER],
         move_copy=False,
     )
     logging.debug("Accessing script: C0_data_processing")

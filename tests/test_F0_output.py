@@ -21,7 +21,7 @@ import pytest
 import src.A0_initialization as initializing
 import src.B0_data_input_json as B0
 import src.F0_output as F0
-from src.constants_json_strings import LABEL, PROJECT_DATA, SECTORS
+from src.constants_json_strings import LABEL, PROJECT_DATA, SIMULATION_SETTINGS
 from mvs_eland_tool import main
 from .constants import (
     EXECUTE_TESTS_ON,
@@ -33,6 +33,7 @@ from .constants import (
     TYPE_DATAFRAME,
     TYPE_SERIES,
     TYPE_TIMESTAMP,
+    PATH_OUTPUT_FOLDER,
 )
 
 PARSER = initializing.create_parser()
@@ -89,7 +90,7 @@ class TestFileCreation:
     def test_store_barchart_for_capacities_no_additional_capacities(self):
         """ """
         dict_scalar_capacities = {
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
             "kpi": {
                 "scalar_matrix": pd.DataFrame(
@@ -104,7 +105,7 @@ class TestFileCreation:
     def test_store_barchart_for_capacities_with_additional_capacities(self):
         """ """
         dict_scalar_capacities = {
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
             "kpi": {
                 "scalar_matrix": pd.DataFrame(
@@ -119,7 +120,7 @@ class TestFileCreation:
     def test_store_scalars_to_excel_two_tabs_dict(self):
         """ """
         dict_scalars_two_tabs_dict = {
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             "kpi": {
                 "economic": pandas_Dataframe,
                 "technical": {"param1": 1, "param2": 2},
@@ -131,7 +132,7 @@ class TestFileCreation:
     def test_store_scalars_to_excel_two_tabs_no_dict(self):
         """ """
         dict_scalars_two_tabs = {
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             "kpi": {"economic": pandas_Dataframe, "technical": pandas_Dataframe},
         }
 
@@ -142,7 +143,7 @@ class TestFileCreation:
         """ """
         dict_timeseries_test_one_bus = {
             PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS},
         }
         dict_timeseries_test_one_bus.update(copy.deepcopy(DICT_PLOTS))
@@ -160,7 +161,7 @@ class TestFileCreation:
         """ """
         dict_timeseries_test_two_busses = {
             PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS, "b_bus": BUS},
         }
         print(DICT_PLOTS)

@@ -6,6 +6,7 @@ import oemof.outputlib as outputlib
 import oemof.solph as solph
 
 import src.D1_model_components as model_components
+from src.constants import PATH_OUTPUT_FOLDER
 from src.constants_json_strings import (
     ENERGY_BUSSES,
     OEMOF_ASSET_TYPE,
@@ -254,7 +255,7 @@ class model_building:
         Nothing.
         """
         path_lp_file = os.path.join(
-            dict_values[SIMULATION_SETTINGS]["path_output_folder"], "lp_file.lp"
+            dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], "lp_file.lp"
         )
         if dict_values[SIMULATION_SETTINGS]["output_lp_file"][VALUE] == True:
             logging.debug("Saving to lp-file.")
@@ -333,12 +334,12 @@ class model_building:
         # store energy system with results
         if dict_values[SIMULATION_SETTINGS]["store_oemof_results"][VALUE] == True:
             model.dump(
-                dpath=dict_values[SIMULATION_SETTINGS]["path_output_folder"],
+                dpath=dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
                 filename="oemof_simulation_results.oemof",
             )
             logging.debug(
                 "Stored results in %s/MVS_results.oemof.",
-                dict_values[SIMULATION_SETTINGS]["path_output_folder"],
+                dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
             )
         return
 

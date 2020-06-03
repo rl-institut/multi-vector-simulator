@@ -4,18 +4,23 @@ import pytest
 
 import src.A1_csv_to_json as A1
 import src.B0_data_input_json as data_input
-from src.constants import PATHS_TO_PLOTS
+
 from src.constants_json_strings import (
     UNIT,
     VALUE,
     OPEX_VAR,
     CAPEX_FIX,
-    LABEL,
     AGE_INSTALLED,
-    LIFETIME,
     INSTALLED_CAP,
+    FILENAME,
 )
-from .constants import CSV_PATH, CSV_FNAME, DUMMY_CSV_PATH, REQUIRED_CSV_FILES
+from .constants import (
+    CSV_PATH,
+    CSV_FNAME,
+    DUMMY_CSV_PATH,
+    REQUIRED_CSV_FILES,
+    PATHS_TO_PLOTS,
+)
 
 
 CSV_PARAMETERS = ["param1", "param2"]
@@ -23,7 +28,7 @@ CSV_PARAMETERS = ["param1", "param2"]
 CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {VALUE: 21, UNIT: "factor"}}}
 CSV_TIMESERIES = {
     "param1": {
-        VALUE: {"file_name": "test_time_series.csv", "header": "power"},
+        VALUE: {FILENAME: "test_time_series.csv", "header": "power"},
         UNIT: "kW",
     }
 }

@@ -45,6 +45,7 @@ from src.constants_json_strings import (
     VALUE,
     ENERGY_VECTOR,
     OPTIMIZE_CAP,
+    SIMULATION_SETTINGS,
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -91,7 +92,7 @@ def make_dash_data_table(df):
 
 
 def create_app(results_json):
-    path_output_folder = results_json["simulation_settings"]["path_output_folder"]
+    path_output_folder = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
 
     # Initialize the app
     app = dash.Dash(__name__)
@@ -144,11 +145,11 @@ def create_app(results_json):
     )
 
     dict_simsettings = {
-        "Evaluated period": results_json["simulation_settings"]["evaluated_period"][
+        "Evaluated period": results_json[SIMULATION_SETTINGS]["evaluated_period"][
             VALUE
         ],
-        "Start date": results_json["simulation_settings"]["start_date"],
-        "Timestep length": results_json["simulation_settings"]["timestep"][VALUE],
+        "Start date": results_json[SIMULATION_SETTINGS]["start_date"],
+        "Timestep length": results_json[SIMULATION_SETTINGS]["timestep"][VALUE],
     }
 
     df_simsettings = pd.DataFrame(
