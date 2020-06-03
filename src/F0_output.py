@@ -18,7 +18,7 @@ from src.constants import (
     LABEL,
     PATH_OUTPUT_FOLDER,
 )
-from src.constants_json_strings import OPTIMIZED_ADD_CAP
+from src.constants_json_strings import OPTIMIZED_ADD_CAP, KPI
 
 r"""
 Module F0 Output
@@ -179,7 +179,7 @@ def plot_optimized_capacities(dict_values):
     """
 
     show_optimal_capacities = False
-    for element in dict_values["kpi"]["scalar_matrix"][OPTIMIZED_ADD_CAP].values:
+    for element in dict_values[KPI]["scalar_matrix"][OPTIMIZED_ADD_CAP].values:
         if element > 0:
             show_optimal_capacities = True
 
@@ -188,8 +188,8 @@ def plot_optimized_capacities(dict_values):
             dict_values,
             dict_values[SIMULATION_SETTINGS],
             dict_values[PROJECT_DATA],
-            dict_values["kpi"]["scalar_matrix"][LABEL],
-            dict_values["kpi"]["scalar_matrix"][OPTIMIZED_ADD_CAP],
+            dict_values[KPI]["scalar_matrix"][LABEL],
+            dict_values[KPI]["scalar_matrix"][OPTIMIZED_ADD_CAP],
         )
     return show_optimal_capacities
 
@@ -213,13 +213,13 @@ def store_scalars_to_excel(dict_values):
         dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
         + results_scalar_output_file
     ) as open_file:  # doctest: +SKIP
-        for kpi_set in dict_values["kpi"]:
-            if isinstance(dict_values["kpi"][kpi_set], dict):
-                data = pd.DataFrame([dict_values["kpi"][kpi_set]]).to_excel(
+        for kpi_set in dict_values[KPI]:
+            if isinstance(dict_values[KPI][kpi_set], dict):
+                data = pd.DataFrame([dict_values[KPI][kpi_set]]).to_excel(
                     open_file, sheet_name=kpi_set
                 )
             else:
-                dict_values["kpi"][kpi_set].to_excel(open_file, sheet_name=kpi_set)
+                dict_values[KPI][kpi_set].to_excel(open_file, sheet_name=kpi_set)
             logging.info(
                 "Saved scalar results to: %s, tab %s.",
                 results_scalar_output_file,

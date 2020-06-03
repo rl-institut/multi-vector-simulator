@@ -41,6 +41,12 @@ from src.constants_json_strings import (
     SOC_MIN,
     FEEDIN_TARIFF,
     MAXIMUM_CAP,
+    SCENARIO_NAME,
+    PROJECT_NAME,
+    LONGITUDE,
+    LATITUDE,
+    PERIODS,
+    COUNTRY,
 )
 
 
@@ -132,9 +138,9 @@ def all_valid_intervals(name, value, title):
     :return:
     """
     valid_type_string = [
-        "project_name",
-        "scenario_name",
-        "country",
+        PROJECT_NAME,
+        SCENARIO_NAME,
+        COUNTRY,
         "parent",
         "type",
         FILENAME,
@@ -147,7 +153,7 @@ def all_valid_intervals(name, value, title):
         "sector",
     ]
 
-    valid_type_int = [EVALUATED_PERIOD, "time_step", "periods"]
+    valid_type_int = [EVALUATED_PERIOD, "time_step", PERIODS]
 
     valid_type_timestamp = [START_DATE]
 
@@ -156,8 +162,8 @@ def all_valid_intervals(name, value, title):
     valid_binary = ["optimize_cap", "dsm", "overwrite"]
 
     valid_intervals = {
-        "longitude": [-180, 180],
-        "latitude": [-90, 90],
+        LONGITUDE: [-180, 180],
+        LATITUDE: [-90, 90],
         LIFETIME: ["largerzero", "any"],
         AGE_INSTALLED: [0, "any"],
         INSTALLED_CAP: [0, "any"],

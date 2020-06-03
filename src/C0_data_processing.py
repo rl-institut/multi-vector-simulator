@@ -142,7 +142,7 @@ def simulation_settings(simulation_settings):
         }
     )
 
-    simulation_settings.update({"periods": len(simulation_settings[TIME_INDEX])})
+    simulation_settings.update({PERIODS: len(simulation_settings[TIME_INDEX])})
     return simulation_settings
 
 
@@ -1080,7 +1080,7 @@ def receive_timeseries_from_csv(
     if FILENAME in dict_asset:
         header = data_set.columns[0]
 
-    if len(data_set.index) == settings["periods"]:
+    if len(data_set.index) == settings[PERIODS]:
         if input_type == "input":
             dict_asset.update(
                 {
@@ -1096,7 +1096,7 @@ def receive_timeseries_from_csv(
             )
 
         logging.debug("Added timeseries of %s (%s).", dict_asset[LABEL], file_path)
-    elif len(data_set.index) >= settings["periods"]:
+    elif len(data_set.index) >= settings[PERIODS]:
         if input_type == "input":
             dict_asset.update(
                 {
@@ -1120,7 +1120,7 @@ def receive_timeseries_from_csv(
             file_path,
         )
 
-    elif len(data_set.index) <= settings["periods"]:
+    elif len(data_set.index) <= settings[PERIODS]:
         logging.critical(
             "Input error! "
             "Provided timeseries of %s (%s) shorter then evaluated period. "
@@ -1277,14 +1277,14 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
     verify.lookup_file(file_path, dict_asset[LABEL])
 
     data_set = pd.read_csv(file_path, sep=",")
-    if len(data_set.index) == settings["periods"]:
+    if len(data_set.index) == settings[PERIODS]:
         return pd.Series(data_set[header].values, index=settings[TIME_INDEX])
-    elif len(data_set.index) >= settings["periods"]:
+    elif len(data_set.index) >= settings[PERIODS]:
         return pd.Series(
             data_set[header][0 : len(settings[TIME_INDEX])].values,
             index=settings[TIME_INDEX],
         )
-    elif len(data_set.index) <= settings["periods"]:
+    elif len(data_set.index) <= settings[PERIODS]:
         logging.critical(
             "Input error! "
             "Provided timeseries of %s (%s) shorter then evaluated period. "

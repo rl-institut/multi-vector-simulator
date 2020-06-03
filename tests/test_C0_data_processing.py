@@ -30,6 +30,7 @@ from src.constants_json_strings import (
     ANNUITY_CAPEX_OPEX_VAR,
     LIFETIME_OPEX_FIX,
     LIFETIME_OPEX_VAR,
+PERIODS
 )
 from .constants import TYPE_STR
 
@@ -45,7 +46,7 @@ def test_retrieve_datetimeindex_for_simulation():
         assert k in simulation_settings.keys()
     assert simulation_settings[START_DATE] == pd.Timestamp("2020-01-01 00:00:00")
     assert simulation_settings[END_DATE] == pd.Timestamp("2020-01-01 23:00:00")
-    assert simulation_settings["periods"] == 24
+    assert simulation_settings[PERIODS] == 24
 
 
 def test_adding_economic_parameters_C2():
@@ -130,11 +131,11 @@ def test_determine_lifetime_opex_var_as_list():
     # todo this should be here some time, shouldnt it? assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], list)
 
 
-START_TIME = "2020-01-01 00:00"
-PERIODS = 3
+TEST_START_TIME = "2020-01-01 00:00"
+TEST_PERIODS = 3
 VALUES = [0, 1, 2]
 
-pandas_DatetimeIndex = pd.date_range(start=START_TIME, periods=PERIODS, freq="60min")
+pandas_DatetimeIndex = pd.date_range(start=TEST_START_TIME, periods=TEST_PERIODS, freq="60min")
 pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
 
 

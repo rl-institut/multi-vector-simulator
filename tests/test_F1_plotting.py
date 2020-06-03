@@ -17,7 +17,13 @@ from src.constants import (
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
 )
-from src.constants_json_strings import LABEL, OPTIMIZED_ADD_CAP
+from src.constants_json_strings import (
+    LABEL,
+    OPTIMIZED_ADD_CAP,
+    PROJECT_NAME,
+    SCENARIO_NAME,
+    KPI,
+)
 
 
 from .constants import (
@@ -64,7 +70,7 @@ TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "F1_outputs")
 
 # Data for test_if_plot_of_all_energy_flows_for_all_sectors_are_stored_for_14_days
 USER_INPUT = {PATH_OUTPUT_FOLDER: OUTPUT_PATH}
-PROJECT_DATA = {"project_name": "a_project", "scenario_name": "a_scenario"}
+PROJECT_DATA = {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario"}
 
 RESULTS_TIMESERIES = pd.read_csv(
     os.path.join(DUMMY_CSV_PATH, "plot_data_for_F1.csv"),
@@ -75,7 +81,7 @@ RESULTS_TIMESERIES = pd.read_csv(
 
 # data for test_store_barchart_for_capacities
 DICT_KPI = {
-    "kpi": {
+    KPI: {
         "scalar_matrix": pd.DataFrame(
             {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [1, 2]}
         )
@@ -237,8 +243,8 @@ class TestFileCreation:
             dict_values,
             USER_INPUT,
             PROJECT_DATA,
-            DICT_KPI["kpi"]["scalar_matrix"][LABEL],
-            DICT_KPI["kpi"]["scalar_matrix"][OPTIMIZED_ADD_CAP],
+            DICT_KPI[KPI]["scalar_matrix"][LABEL],
+            DICT_KPI[KPI]["scalar_matrix"][OPTIMIZED_ADD_CAP],
         )
 
         assert (

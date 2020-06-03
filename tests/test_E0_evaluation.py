@@ -11,10 +11,10 @@ import src.B0_data_input_json as data_input
 import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
+from src.constants_json_strings import KPI, KPI_SCALARS
 from .constants import (
     TEST_REPO_PATH,
     INPUT_FOLDER,
-    KPI_SCALARS,
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
@@ -69,7 +69,7 @@ def test_evaluate_dict_append_new_fields():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    for k in ("kpi", "optimizedFlows"):
+    for k in (KPI, "optimizedFlows"):
         assert k not in dict_values_before
         assert k in dict_values_after
 
@@ -80,7 +80,7 @@ def test_evaluate_dict_important_fields_in_output_dict():
         dict_values_after = pickle.load(handle)
 
     for k in ("scalar_matrix", "cost_matrix"):
-        assert k in dict_values_after["kpi"]
+        assert k in dict_values_after[KPI]
 
 
 def test_evaluate_dict_fields_values_in_output_dict_are_dataframes():
@@ -89,7 +89,7 @@ def test_evaluate_dict_fields_values_in_output_dict_are_dataframes():
         dict_values_after = pickle.load(handle)
 
     for k in ("scalar_matrix", "cost_matrix"):
-        assert isinstance(dict_values_after["kpi"][k], pd.DataFrame)
+        assert isinstance(dict_values_after[KPI][k], pd.DataFrame)
 
 
 def test_evaluate_check_dict_fields_in_output_dict_under_kpi_scalar_fields():
@@ -98,9 +98,9 @@ def test_evaluate_check_dict_fields_in_output_dict_under_kpi_scalar_fields():
         dict_values_after = pickle.load(handle)
 
     for k in KPI_SCALARS:
-        assert k in dict_values_after["kpi"]["scalars"]
+        assert k in dict_values_after[KPI]["scalars"]
 
-    # for k in dict_values_after["kpi"]["scalars"]:
+    # for k in dict_values_after[KPI]["scalars"]:
     #    assert k in KPI_SCALARS
 
 

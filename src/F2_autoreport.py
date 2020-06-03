@@ -51,6 +51,7 @@ from src.constants_json_strings import (
     TIMESERIES_PEAK,
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
+    KPI,
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -271,7 +272,7 @@ def create_app(results_json):
     # Creating a Pandas dataframe for the components optimization results table
 
     # Read in the scalar matrix as pandas dataframe
-    df_scalar_matrix = results_json["kpi"]["scalar_matrix"]
+    df_scalar_matrix = results_json[KPI]["scalar_matrix"]
 
     # Changing the index to a sequence of 0,1,2...
     df_scalar_matrix = df_scalar_matrix.reset_index()
@@ -295,7 +296,7 @@ def create_app(results_json):
     # Creating a Pandas dataframe for the costs' results
 
     # Read in the cost matrix as a pandas dataframe
-    df_cost_matrix = results_json["kpi"]["cost_matrix"]
+    df_cost_matrix = results_json[KPI]["cost_matrix"]
 
     # Changing the index to a sequence of 0,1,2...
     df_cost_matrix = df_cost_matrix.reset_index()

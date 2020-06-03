@@ -19,6 +19,10 @@ from src.constants_json_strings import (
     SIMULATION_SETTINGS,
     LABEL,
     TIME_INDEX,
+    DISPLAY_NX_GRAPH,
+    STORE_NX_GRAPH,
+    OUTPUT_LP_FILE,
+    STORE_OEMOF_RESULTS,
 )
 
 """
@@ -206,8 +210,8 @@ class model_building:
         None
         """
         if (
-            dict_values[SIMULATION_SETTINGS]["display_nx_graph"][VALUE] is True
-            or dict_values[SIMULATION_SETTINGS]["store_nx_graph"][VALUE] is True
+            dict_values[SIMULATION_SETTINGS][DISPLAY_NX_GRAPH][VALUE] is True
+            or dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH][VALUE] is True
         ):
             from src.F1_plotting import draw_graph
 
@@ -215,8 +219,8 @@ class model_building:
                 dict_values,
                 model,
                 node_color={},
-                show_plot=dict_values[SIMULATION_SETTINGS]["display_nx_graph"][VALUE],
-                save_plot=dict_values[SIMULATION_SETTINGS]["store_nx_graph"][VALUE],
+                show_plot=dict_values[SIMULATION_SETTINGS][DISPLAY_NX_GRAPH][VALUE],
+                save_plot=dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH][VALUE],
                 user_input=dict_values[SIMULATION_SETTINGS],
             )
             logging.debug("Created networkx graph of the energy system.")
@@ -258,7 +262,7 @@ class model_building:
         path_lp_file = os.path.join(
             dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], "lp_file.lp"
         )
-        if dict_values[SIMULATION_SETTINGS]["output_lp_file"][VALUE] is True:
+        if dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE][VALUE] is True:
             logging.debug("Saving to lp-file.")
             local_energy_system.write(
                 path_lp_file, io_options={"symbolic_solver_labels": True},
@@ -333,7 +337,7 @@ class model_building:
         None
         """
         # store energy system with results
-        if dict_values[SIMULATION_SETTINGS]["store_oemof_results"][VALUE] is True:
+        if dict_values[SIMULATION_SETTINGS][STORE_OEMOF_RESULTS][VALUE] is True:
             model.dump(
                 dpath=dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
                 filename="oemof_simulation_results.oemof",

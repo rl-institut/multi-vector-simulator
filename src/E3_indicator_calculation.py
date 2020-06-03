@@ -12,13 +12,7 @@ In module E3 the technical KPI are evaluated:
 """
 
 from src.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
-from src.constants import (
-    KPI_DICT,
-    KPI_SCALARS_DICT,
-    KPI_UNCOUPLED_DICT,
-    KPI_COST_MATRIX,
-    PROJECT_DATA,
-)
+from src.constants import PROJECT_DATA
 from src.constants_json_strings import (
     VALUE,
     LABEL,
@@ -27,6 +21,10 @@ from src.constants_json_strings import (
     ENERGY_PROVIDERS,
     SECTORS,
     ENERGY_VECTOR,
+    KPI,
+    KPI_SCALARS_DICT,
+    KPI_UNCOUPLED_DICT,
+    KPI_COST_MATRIX,
 )
 
 
@@ -44,10 +42,10 @@ def all_totals(dict_values):
         List of all total cost parameters for the project
 
     """
-    for column in dict_values[KPI_DICT][KPI_COST_MATRIX].columns:
+    for column in dict_values[KPI][KPI_COST_MATRIX].columns:
         if column != LABEL:
-            dict_values[KPI_DICT][KPI_SCALARS_DICT].update(
-                {column: dict_values[KPI_DICT][KPI_COST_MATRIX][column].sum()}
+            dict_values[KPI][KPI_SCALARS_DICT].update(
+                {column: dict_values[KPI][KPI_COST_MATRIX][column].sum()}
             )
     return
 
@@ -81,7 +79,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
         Updated dict_values with total internal/overall renewable and non-renewable energy origin
 
     """
-    dict_values[KPI_DICT].update({KPI_UNCOUPLED_DICT: {}})
+    dict_values[KPI].update({KPI_UNCOUPLED_DICT: {}})
 
     renewable_origin = {}
     non_renewable_origin = {}
@@ -101,7 +99,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
                     "total_flow"
                 ][VALUE]
 
-    dict_values[KPI_DICT][KPI_UNCOUPLED_DICT].update(
+    dict_values[KPI][KPI_UNCOUPLED_DICT].update(
         {
             "Total internal renewable generation": renewable_origin.copy(),
             "Total internal non-renewable generation": non_renewable_origin.copy(),
@@ -123,7 +121,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
                 1 - dict_values[ENERGY_PROVIDERS][DSO]["renewable_share"][VALUE]
             )
 
-    dict_values[KPI_DICT][KPI_UNCOUPLED_DICT].update(
+    dict_values[KPI][KPI_UNCOUPLED_DICT].update(
         {
             "Total renewable energy use": renewable_origin,
             "Total non-renewable energy use": non_renewable_origin,
@@ -159,22 +157,20 @@ def renewable_share(dict_values):
     kpi_name = "Renewable share"
     dict_renewable_share = {}
     for sector in dict_values[PROJECT_DATA][SECTORS]:
-        total_res = dict_values[KPI_DICT][KPI_UNCOUPLED_DICT][
-            "Total renewable energy use"
-        ][sector]
-        total_non_res = dict_values[KPI_DICT][KPI_UNCOUPLED_DICT][
+        total_res = dict_values[KPI][KPI_UNCOUPLED_DICT]["Total renewable energy use"][
+            sector
+        ]
+        total_non_res = dict_values[KPI][KPI_UNCOUPLED_DICT][
             "Total non-renewable energy use"
         ][sector]
         dict_renewable_share.update(
             {sector: equation_renewable_share(total_res, total_non_res)}
         )
-    dict_values[KPI_DICT][KPI_UNCOUPLED_DICT].update({kpi_name: dict_renewable_share})
+    dict_values[KPI][KPI_UNCOUPLED_DICT].update({kpi_name: dict_renewable_share})
 
-    total_res = dict_values[KPI_DICT][KPI_SCALARS_DICT]["Total renewable energy use"]
-    total_non_res = dict_values[KPI_DICT][KPI_SCALARS_DICT][
-        "Total non-renewable energy use"
-    ]
-    dict_values[KPI_DICT][KPI_SCALARS_DICT].update(
+    total_res = dict_values[KPI][KPI_SCALARS_DICT]["Total renewable energy use"]
+    total_non_res = dict_values[KPI][KPI_SCALARS_DICT]["Total non-renewable energy use"]
+    dict_values[KPI][KPI_SCALARS_DICT].update(
         {kpi_name: equation_renewable_share(total_res, total_non_res)}
     )
     return
@@ -247,7 +243,7 @@ def assert_aggregated_flows_of_energy_conversion_equivalent(dict_values):
             * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector][VALUE]
         )
 
-    dict_values[KPI_DICT][KPI_SCALARS_DICT].update(
+    dict_values[KPI][KPI_SCALARS_DICT].update(
         {
             "total_energy_conversion_flow": total_flow_of_energy_conversion_equivalent
         }  # needs units!
@@ -324,7 +320,7 @@ def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
     for sector in dict_values[PROJECT_DATA][SECTORS]:
         if sector in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
             energy_equivalent += (
-                dict_values[KPI_DICT][KPI_UNCOUPLED_DICT][kpi_name][sector]
+                dict_values[KPI][KPI_UNCOUPLED_DICT][kpi_name][sector]
                 * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector][VALUE]
             )
         else:
@@ -333,5 +329,5 @@ def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
                 f"Please add this information to the variable DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py."
             )
 
-        dict_values[KPI_DICT][KPI_SCALARS_DICT].update({kpi_name: energy_equivalent})
+        dict_values[KPI][KPI_SCALARS_DICT].update({kpi_name: energy_equivalent})
     return

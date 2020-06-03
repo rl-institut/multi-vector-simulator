@@ -14,10 +14,43 @@ ENERGY_BUSSES = "energyBusses"
 
 ENERGY_PROVIDERS = "energyProviders"
 SIMULATION_SETTINGS = "simulation_settings"
+DISPLAY_NX_GRAPH = "display_nx_graph"
+STORE_NX_GRAPH = "store_nx_graph"
+OUTPUT_LP_FILE = "output_lp_file"
+STORE_OEMOF_RESULTS = "store_oemof_results"
+PROJECT_NAME = "project_name"
+SCENARIO_NAME = "scenario_name"
+
+RESTORE_FROM_OEMOF_FILE = "restore_from_oemof_file"
+COUNTRY = "country"
+PROJECT_ID = "project_id"
+SCENARIO_ID = "scenario_id"
+
+# Names for KPI output
+KPI = "kpi"
+KPI_SCALARS_DICT = "scalars"
+KPI_UNCOUPLED_DICT = "KPI individual sectors"
+KPI_COST_MATRIX = "cost_matrix"
+
+# KPI_FLOW_MATRIX
+KPI_SCALARS = (
+    "annuity_om",
+    "annuity_total",
+    "costs_investment",
+    "costs_om",
+    "costs_opex_fix",
+    "costs_opex_var",
+    "costs_total",
+    "costs_upfront",
+)
+
 EVALUATED_PERIOD = "evaluated_period"
 START_DATE = "start_date"
 END_DATE = "end_date"
 TIMESTEP = "timestep"
+PERIODS = "periods"
+LONGITUDE = "longitude"
+LATITUDE = "latitude"
 TIME_INDEX = "time_index"
 TIMESERIES = "timeseries"
 TIMESERIES_NORMALIZED = "timeseries_normalized"

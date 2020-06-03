@@ -149,23 +149,23 @@ REQUIRED_CSV_PARAMETERS = {
     SIMULATION_SETTINGS: [
         EVALUATED_PERIOD,
         LABEL,
-        "output_lp_file",
-        "restore_from_oemof_file",
-        "display_nx_graph",
-        "store_nx_graph",
+        OUTPUT_LP_FILE,
+        STORE_OEMOF_RESULTS,
+        DISPLAY_NX_GRAPH,
+        STORE_NX_GRAPH,
         START_DATE,
-        "store_oemof_results",
+        STORE_OEMOF_RESULTS,
         TIMESTEP,
     ],
     PROJECT_DATA: [
-        "country",
+        COUNTRY,
         LABEL,
-        "latitude",
-        "longitude",
-        "project_id",
-        "project_name",
-        "scenario_id",
-        "scenario_name",
+        LATITUDE,
+        LONGITUDE,
+        PROJECT_ID,
+        PROJECT_NAME,
+        SCENARIO_ID,
+        SCENARIO_NAME,
     ],
     ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX,],
 }
@@ -186,29 +186,6 @@ DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
     "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1},
     "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87},
 }
-
-# Names for KPI output
-
-KPI_DICT = "kpi"
-
-KPI_SCALARS_DICT = "scalars"
-
-KPI_UNCOUPLED_DICT = "KPI individual sectors"
-
-KPI_COST_MATRIX = "cost_matrix"
-
-# KPI_FLOW_MATRIX
-
-KPI_SCALARS = (
-    "annuity_om",
-    "annuity_total",
-    "costs_investment",
-    "costs_om",
-    "costs_opex_fix",
-    "costs_opex_var",
-    "costs_total",
-    "costs_upfront",
-)
 
 # key of the dict containing generated plots filesnames in results_json file
 PATHS_TO_PLOTS = "paths_to_plots"

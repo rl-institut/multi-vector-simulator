@@ -27,6 +27,9 @@ from src.constants_json_strings import (
     PROJECT_DATA,
     SIMULATION_SETTINGS,
     OPTIMIZED_ADD_CAP,
+    PROJECT_NAME,
+    SCENARIO_NAME,
+    KPI,
 )
 from .constants import (
     EXECUTE_TESTS_ON,
@@ -97,8 +100,8 @@ class TestFileCreation:
         """ """
         dict_scalar_capacities = {
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
-            PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
-            "kpi": {
+            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
+            KPI: {
                 "scalar_matrix": pd.DataFrame(
                     {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [0, 0]}
                 )
@@ -112,8 +115,8 @@ class TestFileCreation:
         """ """
         dict_scalar_capacities = {
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
-            PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
-            "kpi": {
+            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
+            KPI: {
                 "scalar_matrix": pd.DataFrame(
                     {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [1, 2]}
                 )
@@ -127,7 +130,7 @@ class TestFileCreation:
         """ """
         dict_scalars_two_tabs_dict = {
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
-            "kpi": {
+            KPI: {
                 "economic": pandas_Dataframe,
                 "technical": {"param1": 1, "param2": 2},
             },
@@ -139,7 +142,7 @@ class TestFileCreation:
         """ """
         dict_scalars_two_tabs = {
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
-            "kpi": {"economic": pandas_Dataframe, "technical": pandas_Dataframe},
+            KPI: {"economic": pandas_Dataframe, "technical": pandas_Dataframe},
         }
 
         F0.store_scalars_to_excel(dict_scalars_two_tabs)
@@ -148,7 +151,7 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
         """ """
         dict_timeseries_test_one_bus = {
-            PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
+            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS},
         }
@@ -166,7 +169,7 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         """ """
         dict_timeseries_test_two_busses = {
-            PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
+            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS, "b_bus": BUS},
         }

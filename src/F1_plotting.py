@@ -14,7 +14,12 @@ from src.constants import (
     LABEL,
     PATH_OUTPUT_FOLDER,
 )
-from src.constants_json_strings import SIMULATION_SETTINGS
+from src.constants_json_strings import (
+    SIMULATION_SETTINGS,
+    PROJECT_NAME,
+    SCENARIO_NAME,
+    KPI,
+)
 
 r"""
 Module F1 describes all the functions that create plots.
@@ -70,9 +75,9 @@ def flows(dict_values, user_input, project_data, results_timeseries, bus, interv
     flows_les.plot(
         title=bus
         + " flows in LES: "
-        + project_data["project_name"]
+        + project_data[PROJECT_NAME]
         + ", "
-        + project_data["scenario_name"],
+        + project_data[SCENARIO_NAME],
         ax=axes_mg,
         drawstyle="steps-mid",
     )
@@ -154,9 +159,9 @@ def capacities(dict_values, user_input, project_data, assets, capacities):
         x="items",
         y="capacities",
         title="Optimal additional capacities (kW/kWh/kWp): "
-        + project_data["project_name"]
+        + project_data[PROJECT_NAME]
         + ", "
-        + project_data["scenario_name"],
+        + project_data[SCENARIO_NAME],
     )
 
     path = os.path.join(
@@ -195,14 +200,14 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
     label = file_name.replace("_", " ")
 
     process_pie_chart = determine_if_plotting_necessary(
-        dict_values["kpi"]["cost_matrix"][parameter].values
+        dict_values[KPI]["cost_matrix"][parameter].values
     )
 
     if process_pie_chart is True:
 
         costs_perc_grouped, total = group_costs(
-            dict_values["kpi"]["cost_matrix"][parameter],
-            dict_values["kpi"]["cost_matrix"][LABEL],
+            dict_values[KPI]["cost_matrix"][parameter],
+            dict_values[KPI]["cost_matrix"][LABEL],
         )
 
         costs_perc_grouped_pandas = pd.Series(costs_perc_grouped)
@@ -212,9 +217,9 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
             + " costs ("
             + str(round(total, 2))
             + "$): "
-            + dict_values[PROJECT_DATA]["project_name"]
+            + dict_values[PROJECT_DATA][PROJECT_NAME]
             + ", "
-            + dict_values[PROJECT_DATA]["scenario_name"]
+            + dict_values[PROJECT_DATA][SCENARIO_NAME]
         )
 
         plot_a_piechart(
@@ -241,9 +246,9 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
                 + "% of "
                 + str(round(total, 2))
                 + "$): "
-                + dict_values[PROJECT_DATA]["project_name"]
+                + dict_values[PROJECT_DATA][PROJECT_NAME]
                 + ", "
-                + dict_values[PROJECT_DATA]["scenario_name"]
+                + dict_values[PROJECT_DATA][SCENARIO_NAME]
             )
 
             plot_a_piechart(

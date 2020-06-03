@@ -24,6 +24,7 @@ from src.constants_json_strings import (
     OUTPUT_BUS_NAME,
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
+    KPI,
 )
 
 r"""
@@ -55,7 +56,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     """
     dict_values.update(
         {
-            "kpi": {
+            KPI: {
                 "cost_matrix": pd.DataFrame(
                     columns=[
                         LABEL,
@@ -114,7 +115,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 dict_values[ECONOMIC_DATA],
             )
             store_result_matrix(
-                dict_values["kpi"], dict_values[ENERGY_STORAGE][storage][storage_item]
+                dict_values[KPI], dict_values[ENERGY_STORAGE][storage][storage_item]
             )
 
         if (
@@ -155,7 +156,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         economics.get_costs(
             dict_values[ENERGY_CONVERSION][asset], dict_values[ECONOMIC_DATA]
         )
-        store_result_matrix(dict_values["kpi"], dict_values[ENERGY_CONVERSION][asset])
+        store_result_matrix(dict_values[KPI], dict_values[ENERGY_CONVERSION][asset])
 
     for group in [ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:
@@ -163,7 +164,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 dict_values[SIMULATION_SETTINGS], bus_data, dict_values[group][asset],
             )
             economics.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
-            store_result_matrix(dict_values["kpi"], dict_values[group][asset])
+            store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
     indicators.all_totals(dict_values)
 
