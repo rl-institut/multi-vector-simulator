@@ -3,6 +3,9 @@ import logging
 import oemof.outputlib as outputlib
 import pandas as pd
 
+import src.E1_process_results as process_results
+import src.E2_economics as economics
+import src.E3_indicator_calculation as indicators
 from src.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,
@@ -15,10 +18,6 @@ from src.constants_json_strings import (
     ECONOMIC_DATA,
     LABEL,
 )
-
-import src.E1_process_results as process_results
-import src.E2_economics as economics
-import src.E3_indicator_calculation as indicators
 
 r"""
 Module E0 evaluation

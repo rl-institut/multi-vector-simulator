@@ -1,12 +1,11 @@
 import logging
+
 from src.constants_json_strings import (
     UNIT,
     VALUE,
     ECONOMIC_DATA,
     CURR,
     LABEL,
-    OPEX_VAR,
-    OPEX_FIX,
     CAPEX_FIX,
     CAPEX_VAR,
     INSTALLED_CAP,

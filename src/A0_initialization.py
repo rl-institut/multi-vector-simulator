@@ -33,7 +33,6 @@ import shutil
 
 from oemof.tools import logger
 
-from src.constants_json_strings import LABEL
 from src.constants import (
     REPO_PATH,
     DEFAULT_INPUT_PATH,
@@ -54,6 +53,7 @@ from src.constants import (
     OVERWRITE,
     DISPLAY_OUTPUT,
 )
+from src.constants_json_strings import LABEL
 
 
 def create_parser():

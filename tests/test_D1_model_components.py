@@ -8,7 +8,6 @@ from pandas.util.testing import assert_series_equal
 
 # internal imports
 import src.D1_model_components as D1
-from tests.constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 from src.constants_json_strings import (
     UNIT,
     VALUE,
@@ -19,6 +18,7 @@ from src.constants_json_strings import (
     OPTIMIZE_CAP,
     INSTALLED_CAP,
 )
+from .constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
 D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D1.json",)
 

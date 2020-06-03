@@ -8,6 +8,10 @@ Module E1 processes the oemof results.
 - add the evaluation of time series
 
 """
+import logging
+
+import pandas as pd
+
 from src.constants_json_strings import (
     UNIT,
     SIMULATION_SETTINGS,
@@ -16,12 +20,7 @@ from src.constants_json_strings import (
     OPTIMIZE_CAP,
     INSTALLED_CAP,
     EVALUATED_PERIOD,
-    TIMESTEP,
 )
-
-import logging
-
-import pandas as pd
 
 
 def get_timeseries_per_bus(dict_values, bus_data):

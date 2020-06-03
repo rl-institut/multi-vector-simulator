@@ -21,11 +21,10 @@ import pytest
 import src.A0_initialization as initializing
 import src.B0_data_input_json as B0
 import src.F0_output as F0
-from src.constants_json_strings import LABEL, PROJECT_DATA, SIMULATION_SETTINGS
 from mvs_eland_tool import main
+from src.constants_json_strings import LABEL, PROJECT_DATA, SIMULATION_SETTINGS
 from .constants import (
     EXECUTE_TESTS_ON,
-    TESTS_ON_MASTER,
     TEST_REPO_PATH,
     DICT_PLOTS,
     PDF_REPORT,

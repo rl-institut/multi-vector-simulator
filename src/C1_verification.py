@@ -12,6 +12,7 @@ import logging
 import os
 
 import pandas as pd
+
 from src.constants import (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
@@ -36,6 +37,7 @@ from src.constants_json_strings import (
     EVALUATED_PERIOD,
     START_DATE,
 )
+
 
 # web-application: valid input directly connected to cell-input
 

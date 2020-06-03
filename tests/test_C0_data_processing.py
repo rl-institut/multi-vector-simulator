@@ -23,6 +23,7 @@ from src.constants_json_strings import (
     TIMESTEP,
 )
 
+
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 def test_retrieve_datetimeindex_for_simulation():
     simulation_settings = {

@@ -13,6 +13,7 @@ Module D1 includes all functions that are required to build an oemof model with 
 import logging
 
 import oemof.solph as solph
+
 from src.constants_json_strings import (
     VALUE,
     LABEL,

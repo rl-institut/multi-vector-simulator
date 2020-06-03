@@ -33,7 +33,6 @@ from src.constants import (
     PROJECT_DATA,
     INSTALLED_CAP,
 )
-
 from src.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,

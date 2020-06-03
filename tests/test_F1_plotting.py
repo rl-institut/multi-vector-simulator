@@ -8,7 +8,6 @@ import pytest
 import src.A0_initialization as initializing
 import src.F1_plotting as F1
 from mvs_eland_tool import main
-from src.constants_json_strings import LABEL
 from src.constants import (
     PLOTS_BUSSES,
     PATHS_TO_PLOTS,
@@ -18,6 +17,7 @@ from src.constants import (
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
 )
+from src.constants_json_strings import LABEL
 from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,

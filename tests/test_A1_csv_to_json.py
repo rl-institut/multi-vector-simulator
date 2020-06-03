@@ -4,7 +4,6 @@ import pytest
 
 import src.A1_csv_to_json as A1
 import src.B0_data_input_json as data_input
-
 from src.constants_json_strings import (
     UNIT,
     VALUE,
@@ -21,7 +20,6 @@ from .constants import (
     REQUIRED_CSV_FILES,
     PATHS_TO_PLOTS,
 )
-
 
 CSV_PARAMETERS = ["param1", "param2"]
 
