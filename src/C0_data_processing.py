@@ -1049,7 +1049,7 @@ def get_lifetime_opex_var_timeseries(dict_asset, economic_data):
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
 # so additional values like peak, total or average must be calculated. Any other type does not need this additional info.
 def receive_timeseries_from_csv(
-    dict_values, settings, dict_asset, type, is_demand_profile=False
+    dict_values, settings, dict_asset, input_type, is_demand_profile=False
 ):
     """
 
@@ -1058,19 +1058,19 @@ def receive_timeseries_from_csv(
     :param type:
     :return:
     """
-    if type == "input" and "input" in dict_asset:
-        file_name = dict_asset[type][FILENAME]
-        header = dict_asset[type]["header"]
-        unit = dict_asset[type][UNIT]
+    if input_type == "input" and "input" in dict_asset:
+        file_name = dict_asset[input_type][FILENAME]
+        header = dict_asset[input_type]["header"]
+        unit = dict_asset[input_type][UNIT]
     elif FILENAME in dict_asset:
         # todo this input/file_name thing is a workaround and has to be improved in the future
         # if only filename is given here, then only one column can be in the csv
         file_name = dict_asset[FILENAME]
         unit = dict_asset[UNIT] + "/h"
     else:
-        file_name = dict_asset[type][VALUE][FILENAME]
-        header = dict_asset[type][VALUE]["header"]
-        unit = dict_asset[type][UNIT]
+        file_name = dict_asset[input_type][VALUE][FILENAME]
+        header = dict_asset[input_type][VALUE]["header"]
+        unit = dict_asset[input_type][UNIT]
 
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
     verify.lookup_file(file_path, dict_asset[LABEL])
@@ -1081,7 +1081,7 @@ def receive_timeseries_from_csv(
         header = data_set.columns[0]
 
     if len(data_set.index) == settings["periods"]:
-        if type == "input":
+        if input_type == "input":
             dict_asset.update(
                 {
                     TIMESERIES: pd.Series(
@@ -1090,14 +1090,14 @@ def receive_timeseries_from_csv(
                 }
             )
         else:
-            dict_asset[type]["value_info"] = dict_asset[type][VALUE]
-            dict_asset[type][VALUE] = pd.Series(
+            dict_asset[input_type]["value_info"] = dict_asset[input_type][VALUE]
+            dict_asset[input_type][VALUE] = pd.Series(
                 data_set[header].values, index=settings[TIME_INDEX]
             )
 
         logging.debug("Added timeseries of %s (%s).", dict_asset[LABEL], file_path)
     elif len(data_set.index) >= settings["periods"]:
-        if type == "input":
+        if input_type == "input":
             dict_asset.update(
                 {
                     TIMESERIES: pd.Series(
@@ -1107,8 +1107,8 @@ def receive_timeseries_from_csv(
                 }
             )
         else:
-            dict_asset[type]["value_info"] = dict_asset[type][VALUE]
-            dict_asset[type][VALUE] = pd.Series(
+            dict_asset[input_type]["value_info"] = dict_asset[input_type][VALUE]
+            dict_asset[input_type][VALUE] = pd.Series(
                 data_set[header][0 : len(settings[TIME_INDEX])].values,
                 index=settings[TIME_INDEX],
             )
@@ -1130,7 +1130,7 @@ def receive_timeseries_from_csv(
         )
         sys.exit()
 
-    if type == "input":
+    if input_type == "input":
         dict_asset.update(
             {
                 TIMESERIES_PEAK: {VALUE: max(dict_asset[TIMESERIES]), UNIT: unit,},
@@ -1173,7 +1173,7 @@ def receive_timeseries_from_csv(
         plot_input_timeseries(
             dict_values,
             settings,
-            dict_asset[type][VALUE],
+            dict_asset[input_type][VALUE],
             dict_asset[LABEL],
             header,
             is_demand_profile,
