@@ -40,6 +40,7 @@ from src.constants_json_strings import (
     SOC_MAX,
     SOC_MIN,
     FEEDIN_TARIFF,
+    MAXIMUM_CAP,
 )
 
 
@@ -160,7 +161,7 @@ def all_valid_intervals(name, value, title):
         LIFETIME: ["largerzero", "any"],
         AGE_INSTALLED: [0, "any"],
         INSTALLED_CAP: [0, "any"],
-        "maximumCap": [0, "any", None],
+        MAXIMUM_CAP: [0, "any", None],
         SOC_MIN: [0, 1],
         SOC_MAX: [0, 1],
         SOC_INITIAL: [0, 1],

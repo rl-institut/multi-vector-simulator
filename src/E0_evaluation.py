@@ -22,6 +22,8 @@ from src.constants_json_strings import (
     STORAGE_CAPACITY,
     INPUT_BUS_NAME,
     OUTPUT_BUS_NAME,
+    ANNUAL_TOTAL_FLOW,
+    OPTIMIZED_ADD_CAP,
 )
 
 r"""
@@ -70,9 +72,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 "scalar_matrix": pd.DataFrame(
                     columns=[
                         LABEL,
-                        "optimizedAddCap",
+                        OPTIMIZED_ADD_CAP,
                         "total_flow",
-                        "annual_total_flow",
+                        ANNUAL_TOTAL_FLOW,
                         "peak_flow",
                         "average_flow",
                     ]
@@ -129,13 +131,13 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + str(
                     round(
                         dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
-                            "optimizedAddCap"
+                            OPTIMIZED_ADD_CAP
                         ][VALUE],
                         1,
                     )
                 )
                 + dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
-                    "optimizedAddCap"
+                    OPTIMIZED_ADD_CAP
                 ][UNIT]
                 + ") SOC"
             )

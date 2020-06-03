@@ -17,7 +17,9 @@ from src.constants import (
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
 )
-from src.constants_json_strings import LABEL
+from src.constants_json_strings import LABEL, OPTIMIZED_ADD_CAP
+
+
 from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
@@ -75,7 +77,7 @@ RESULTS_TIMESERIES = pd.read_csv(
 DICT_KPI = {
     "kpi": {
         "scalar_matrix": pd.DataFrame(
-            {LABEL: ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
+            {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [1, 2]}
         )
     },
 }
@@ -236,7 +238,7 @@ class TestFileCreation:
             USER_INPUT,
             PROJECT_DATA,
             DICT_KPI["kpi"]["scalar_matrix"][LABEL],
-            DICT_KPI["kpi"]["scalar_matrix"]["optimizedAddCap"],
+            DICT_KPI["kpi"]["scalar_matrix"][OPTIMIZED_ADD_CAP],
         )
 
         assert (

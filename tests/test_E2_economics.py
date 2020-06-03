@@ -8,6 +8,12 @@ from src.constants_json_strings import (
     VALUE,
     LABEL,
     INSTALLED_CAP,
+    LIFETIME_CAPEX_VAR,
+    CRF,
+    LIFETIME_OPEX_FIX,
+    LIFETIME_OPEX_VAR,
+    ANNUAL_TOTAL_FLOW,
+    OPTIMIZED_ADD_CAP,
 )
 
 dict_asset = {
@@ -16,15 +22,15 @@ dict_asset = {
     CAPEX_VAR: {VALUE: 0, UNIT: "currency/kW"},
     INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
     CAPEX_FIX: {VALUE: 0, UNIT: CURR},
-    "lifetime_capex_var": {VALUE: 0.0, UNIT: "currency/kW"},
-    "lifetime_opex_fix": {VALUE: 0.0, UNIT: "currency/ye"},
-    "lifetime_opex_var": {VALUE: -5.505932460595773, UNIT: "?"},
-    "annual_total_flow": {VALUE: 0.0, UNIT: "kWh"},
-    "optimizedAddCap": {VALUE: 0, UNIT: "?"},
+    LIFETIME_CAPEX_VAR: {VALUE: 0.0, UNIT: "currency/kW"},
+    LIFETIME_OPEX_FIX: {VALUE: 0.0, UNIT: "currency/ye"},
+    LIFETIME_OPEX_VAR: {VALUE: -5.505932460595773, UNIT: "?"},
+    ANNUAL_TOTAL_FLOW: {VALUE: 0.0, UNIT: "kWh"},
+    OPTIMIZED_ADD_CAP: {VALUE: 0, UNIT: "?"},
 }
 
 dict_economic = {
-    "crf": {VALUE: 0.07264891149004721, UNIT: "?"},
+    CRF: {VALUE: 0.07264891149004721, UNIT: "?"},
 }
 
 
@@ -55,13 +61,13 @@ def test_add_costs_and_total():
 
 def test_all_list_in_dict_passes_as_all_keys_included():
     """Tests whether looking for list items in dict_asset is plausible."""
-    list_true = ["annual_total_flow", "optimizedAddCap"]
+    list_true = ["annual_total_flow", OPTIMIZED_ADD_CAP]
     boolean = E2.all_list_in_dict(dict_asset, list_true)
     assert boolean is True
 
 
 def test_all_list_in_dict_fails_due_to_not_included_keys():
     """Tests whether looking for list items in dict_asset is plausible."""
-    list_false = ["flow", "optimizedAddCap"]
+    list_false = ["flow", OPTIMIZED_ADD_CAP]
     boolean = E2.all_list_in_dict(dict_asset, list_false)
     assert boolean is False

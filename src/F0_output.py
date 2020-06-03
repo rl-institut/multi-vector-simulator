@@ -18,6 +18,7 @@ from src.constants import (
     LABEL,
     PATH_OUTPUT_FOLDER,
 )
+from src.constants_json_strings import OPTIMIZED_ADD_CAP
 
 r"""
 Module F0 Output
@@ -178,7 +179,7 @@ def plot_optimized_capacities(dict_values):
     """
 
     show_optimal_capacities = False
-    for element in dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"].values:
+    for element in dict_values["kpi"]["scalar_matrix"][OPTIMIZED_ADD_CAP].values:
         if element > 0:
             show_optimal_capacities = True
 
@@ -188,7 +189,7 @@ def plot_optimized_capacities(dict_values):
             dict_values[SIMULATION_SETTINGS],
             dict_values[PROJECT_DATA],
             dict_values["kpi"]["scalar_matrix"][LABEL],
-            dict_values["kpi"]["scalar_matrix"]["optimizedAddCap"],
+            dict_values["kpi"]["scalar_matrix"][OPTIMIZED_ADD_CAP],
         )
     return show_optimal_capacities
 

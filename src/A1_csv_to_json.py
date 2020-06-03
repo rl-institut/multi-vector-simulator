@@ -62,6 +62,7 @@ from src.constants_json_strings import (
     SOC_MAX,
     SOC_MIN,
     STORAGE_CAPACITY,
+    MAXIMUM_CAP,
 )
 from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
@@ -241,7 +242,7 @@ def create_json_from_csv(
     # TODO in next version: add maximumCap to hardcoded parameter list in constants.py
     # TODO create this as a function, so that in future also new parameters can be added
     list_of_new_parameters = {
-        "maximumCap": "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
+        MAXIMUM_CAP: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
         "renewableAsset": "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
         "renewable_share": "allows defining the renewable share of the DSO supply (Values: Float). ",
     }

@@ -169,7 +169,7 @@ def economic_parameters(economic_parameters):
     # Calculate crf
     economic_parameters.update(
         {
-            "crf": {
+            CRF: {
                 VALUE: economics.crf(
                     economic_parameters[PROJECT_DURATION][VALUE],
                     economic_parameters[DISCOUNTFACTOR][VALUE],
@@ -757,8 +757,8 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     else:
         source.update({OPTIMIZE_CAP: {VALUE: False, UNIT: "bool"}})
 
-    # add the parameter "maximumCap" to DSO source
-    source.update({"maximumCap": {VALUE: None, UNIT: "kWp"}})
+    # add the parameter MAXIMUM_CAP to DSO source
+    source.update({MAXIMUM_CAP: {VALUE: None, UNIT: "kWp"}})
 
     # update dictionary
     dict_values[ENERGY_PRODUCTION].update({asset_name: source})
@@ -894,7 +894,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
     dict_asset.update(
         {
-            "lifetime_capex_var": {
+            LIFETIME_CAPEX_VAR: {
                 VALUE: economics.capex_from_investment(
                     dict_asset[CAPEX_VAR][VALUE],
                     dict_asset[LIFETIME][VALUE],
@@ -910,20 +910,19 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     # Annuities of components including opex AND capex #
     dict_asset.update(
         {
-            "annuity_capex_opex_var": {
+            ANNUITY_CAPEX_OPEX_VAR: {
                 VALUE: economics.annuity(
-                    dict_asset["lifetime_capex_var"][VALUE],
-                    economic_data["crf"][VALUE],
+                    dict_asset[LIFETIME_CAPEX_VAR][VALUE], economic_data[CRF][VALUE],
                 )
                 + dict_asset[OPEX_FIX][VALUE],  # changes from opex_var
-                UNIT: dict_asset["lifetime_capex_var"][UNIT] + "/a",
+                UNIT: dict_asset[LIFETIME_CAPEX_VAR][UNIT] + "/a",
             }
         }
     )
 
     dict_asset.update(
         {
-            "lifetime_opex_fix": {
+            LIFETIME_OPEX_FIX: {
                 VALUE: dict_asset[OPEX_FIX][VALUE]
                 * economic_data[ANNUITY_FACTOR][VALUE],
                 UNIT: dict_asset[OPEX_FIX][UNIT][:-2],
@@ -933,9 +932,9 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
     dict_asset.update(
         {
-            "simulation_annuity": {
+            SIMULATION_ANNUITY: {
                 VALUE: economics.simulation_annuity(
-                    dict_asset["annuity_capex_opex_var"][VALUE],
+                    dict_asset[ANNUITY_CAPEX_OPEX_VAR][VALUE],
                     settings[EVALUATED_PERIOD][VALUE],
                 ),
                 UNIT: "currency/unit/simulation period",
@@ -991,7 +990,7 @@ def determine_lifetime_opex_var(dict_asset, economic_data):
             f"Type of opex_var neither int, float, list or pd.Series, but of type {dict_asset[OPEX_VAR][VALUE]}. Is type correct?"
         )
 
-    dict_asset.update({"lifetime_opex_var": {VALUE: lifetime_opex_var, UNIT: "?",}})
+    dict_asset.update({LIFETIME_OPEX_VAR: {VALUE: lifetime_opex_var, UNIT: "?",}})
     return
 
 
@@ -1316,10 +1315,10 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
         dict = dict_values[group][asset]
     else:
         dict = dict_values[group][asset][subasset]
-    if "maximumCap" in dict:
+    if MAXIMUM_CAP in dict:
         # check if maximumCap is greater that installedCap
-        if dict["maximumCap"][VALUE] is not None:
-            if dict["maximumCap"][VALUE] < dict[INSTALLED_CAP][VALUE]:
+        if dict[MAXIMUM_CAP][VALUE] is not None:
+            if dict[MAXIMUM_CAP][VALUE] < dict[INSTALLED_CAP][VALUE]:
 
                 logging.warning(
                     f"The stated maximumCap in {group} {asset} is smaller than the "
@@ -1327,14 +1326,14 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
                     "For this simulation, the maximumCap will be "
                     "disregarded and not be used in the simulation"
                 )
-                dict["maximumCap"][VALUE] = None
+                dict[MAXIMUM_CAP][VALUE] = None
             # check if maximumCao is 0
-            elif dict["maximumCap"][VALUE] == 0:
+            elif dict[MAXIMUM_CAP][VALUE] == 0:
                 logging.warning(
                     f"The stated maximumCap of zero in {group} {asset} is invalid."
                     "For this simulation, the maximumCap will be "
                     "disregarded and not be used in the simulation."
                 )
-                dict["maximumCap"][VALUE] = None
+                dict[MAXIMUM_CAP][VALUE] = None
     else:
-        dict.update({"maximumCap": {VALUE: None, UNIT: dict[UNIT]}})
+        dict.update({MAXIMUM_CAP: {VALUE: None, UNIT: dict[UNIT]}})

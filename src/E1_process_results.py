@@ -27,6 +27,8 @@ from src.constants_json_strings import (
     TIMESERIES_PEAK,
     INPUT_BUS_NAME,
     OUTPUT_BUS_NAME,
+    ANNUAL_TOTAL_FLOW,
+    OPTIMIZED_ADD_CAP,
 )
 
 
@@ -123,7 +125,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
             ]
             dict_asset[INPUT_POWER].update(
                 {
-                    "optimizedAddCap": {
+                    OPTIMIZED_ADD_CAP: {
                         VALUE: power_charge,
                         UNIT: dict_asset[INPUT_POWER][UNIT],
                     }
@@ -140,7 +142,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
             ]
             dict_asset[OUTPUT_POWER].update(
                 {
-                    "optimizedAddCap": {
+                    OPTIMIZED_ADD_CAP: {
                         VALUE: power_discharge,
                         UNIT: dict_asset[OUTPUT_POWER][UNIT],
                     }
@@ -155,7 +157,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
             capacity = storage_bus["scalars"][((dict_asset[LABEL], "None"), "invest")]
             dict_asset[STORAGE_CAPACITY].update(
                 {
-                    "optimizedAddCap": {
+                    OPTIMIZED_ADD_CAP: {
                         VALUE: capacity,
                         UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
@@ -170,7 +172,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
         else:
             dict_asset[INPUT_POWER].update(
                 {
-                    "optimizedAddCap": {
+                    OPTIMIZED_ADD_CAP: {
                         VALUE: 0,
                         UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
@@ -178,7 +180,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
             )
             dict_asset[OUTPUT_POWER].update(
                 {
-                    "optimizedAddCap": {
+                    OPTIMIZED_ADD_CAP: {
                         VALUE: 0,
                         UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
@@ -186,7 +188,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
             )
             dict_asset[STORAGE_CAPACITY].update(
                 {
-                    "optimizedAddCap": {
+                    OPTIMIZED_ADD_CAP: {
                         VALUE: 0,
                         UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
@@ -198,7 +200,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
             "timeseries_soc": dict_asset[STORAGE_CAPACITY]["flow"]
             / (
                 dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
-                + dict_asset[STORAGE_CAPACITY]["optimizedAddCap"][VALUE]
+                + dict_asset[STORAGE_CAPACITY][OPTIMIZED_ADD_CAP][VALUE]
             )
         }
     )
@@ -330,7 +332,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                 if dict_asset[TIMESERIES_PEAK][VALUE] > 0:
                     dict_asset.update(
                         {
-                            "optimizedAddCap": {
+                            OPTIMIZED_ADD_CAP: {
                                 VALUE: optimal_capacity
                                 / dict_asset[TIMESERIES_PEAK][VALUE],
                                 UNIT: dict_asset[UNIT],
@@ -346,7 +348,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
             else:
                 dict_asset.update(
                     {
-                        "optimizedAddCap": {
+                        OPTIMIZED_ADD_CAP: {
                             VALUE: optimal_capacity,
                             UNIT: dict_asset[UNIT],
                         }
@@ -358,7 +360,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                 optimal_capacity,
             )
         else:
-            dict_asset.update({"optimizedAddCap": {VALUE: 0, UNIT: dict_asset[UNIT]}})
+            dict_asset.update({OPTIMIZED_ADD_CAP: {VALUE: 0, UNIT: dict_asset[UNIT]}})
 
     return
 
@@ -439,7 +441,7 @@ def add_info_flows(settings, dict_asset, flow):
         {
             "flow": flow,
             "total_flow": {VALUE: total_flow, UNIT: "kWh"},
-            "annual_total_flow": {
+            ANNUAL_TOTAL_FLOW: {
                 VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
                 UNIT: "kWh",
             },

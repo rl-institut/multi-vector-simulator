@@ -49,6 +49,8 @@ from src.constants_json_strings import (
     START_DATE,
     TIMESTEP,
     TIMESERIES_PEAK,
+    ANNUAL_TOTAL_FLOW,
+    OPTIMIZED_ADD_CAP,
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -283,8 +285,8 @@ def create_app(results_json):
     df_scalar_matrix = df_scalar_matrix.rename(
         columns={
             LABEL: "Component/Parameter",
-            "optimizedAddCap": "CAP",
-            "annual_total_flow": "Aggregated Flow",
+            OPTIMIZED_ADD_CAP: "CAP",
+            ANNUAL_TOTAL_FLOW: "Aggregated Flow",
         }
     )
     # Rounding the numeric values to two significant digits

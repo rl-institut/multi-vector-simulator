@@ -22,7 +22,12 @@ import src.A0_initialization as initializing
 import src.B0_data_input_json as B0
 import src.F0_output as F0
 from mvs_eland_tool import main
-from src.constants_json_strings import LABEL, PROJECT_DATA, SIMULATION_SETTINGS
+from src.constants_json_strings import (
+    LABEL,
+    PROJECT_DATA,
+    SIMULATION_SETTINGS,
+    OPTIMIZED_ADD_CAP,
+)
 from .constants import (
     EXECUTE_TESTS_ON,
     TEST_REPO_PATH,
@@ -93,7 +98,7 @@ class TestFileCreation:
             PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
             "kpi": {
                 "scalar_matrix": pd.DataFrame(
-                    {LABEL: ["asset_a", "asset_b"], "optimizedAddCap": [0, 0]}
+                    {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [0, 0]}
                 )
             },
         }
@@ -108,7 +113,7 @@ class TestFileCreation:
             PROJECT_DATA: {"project_name": "a_project", "scenario_name": "a_scenario",},
             "kpi": {
                 "scalar_matrix": pd.DataFrame(
-                    {LABEL: ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
+                    {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [1, 2]}
                 )
             },
         }

@@ -23,6 +23,12 @@ from src.constants_json_strings import (
     TIMESTEP,
     TIME_INDEX,
     ANNUITY_FACTOR,
+    SIMULATION_ANNUITY,
+    LIFETIME_CAPEX_VAR,
+    CRF,
+    ANNUITY_CAPEX_OPEX_VAR,
+    LIFETIME_OPEX_FIX,
+    LIFETIME_OPEX_VAR,
 )
 
 
@@ -48,7 +54,7 @@ def test_adding_economic_parameters_C2():
     }
     C0.economic_parameters(economic_parameters)
     # the actual value of the annuity factor should have been checked in C2
-    for k in (ANNUITY_FACTOR, "crf"):
+    for k in (ANNUITY_FACTOR, CRF):
         assert k in economic_parameters.keys()
 
 
@@ -71,14 +77,14 @@ settings = {EVALUATED_PERIOD: {VALUE: 365}}
 economic_data = {
     PROJECT_DURATION: {VALUE: 20},
     ANNUITY_FACTOR: {VALUE: 1},
-    "crf": {VALUE: 1},
+    CRF: {VALUE: 1},
     DISCOUNTFACTOR: {VALUE: 0},
     TAX: {VALUE: 0},
 }
 
 dict_asset = {
     OPEX_FIX: {VALUE: 1, UNIT: "a_unit"},
-    "crf": {VALUE: 1},
+    CRF: {VALUE: 1},
     CAPEX_VAR: {VALUE: 1, UNIT: "a_unit"},
     OPEX_VAR: {VALUE: 1},
     CAPEX_FIX: {VALUE: 1},
@@ -90,11 +96,11 @@ dict_asset = {
 def test_evaluate_lifetime_costs_adds_all_parameters():
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
     for k in (
-        "lifetime_capex_var",
-        "annuity_capex_opex_var",
-        "lifetime_opex_fix",
-        "lifetime_opex_var",
-        "simulation_annuity",
+        LIFETIME_CAPEX_VAR,
+        ANNUITY_CAPEX_OPEX_VAR,
+        LIFETIME_OPEX_FIX,
+        LIFETIME_OPEX_VAR,
+        SIMULATION_ANNUITY,
     ):
         assert k in dict_asset.keys()
 
@@ -102,25 +108,25 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
 def test_determine_lifetime_opex_var_as_int():
     dict_asset = {OPEX_VAR: {VALUE: 1}}
     C0.determine_lifetime_opex_var(dict_asset, economic_data)
-    assert "lifetime_opex_var" in dict_asset.keys()
-    assert isinstance(dict_asset["lifetime_opex_var"][VALUE], float) or isinstance(
-        dict_asset["lifetime_opex_var"][VALUE], int
+    assert LIFETIME_OPEX_VAR in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float) or isinstance(
+        dict_asset[LIFETIME_OPEX_VAR][VALUE], int
     )
 
 
 def test_determine_lifetime_opex_var_as_float():
     dict_asset = {OPEX_VAR: {VALUE: 1.5}}
     C0.determine_lifetime_opex_var(dict_asset, economic_data)
-    assert "lifetime_opex_var" in dict_asset.keys()
-    assert isinstance(dict_asset["lifetime_opex_var"][VALUE], float)
+    assert LIFETIME_OPEX_VAR in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float)
 
 
 def test_determine_lifetime_opex_var_as_list():
     dict_asset = {OPEX_VAR: {VALUE: [1.0, 1.0]}}
     C0.determine_lifetime_opex_var(dict_asset, economic_data)
-    assert "lifetime_opex_var" in dict_asset.keys()
-    assert isinstance(dict_asset["lifetime_opex_var"][VALUE], float)
-    # todo this should be here some time, shouldnt it? assert isinstance(dict_asset["lifetime_opex_var"][VALUE], list)
+    assert LIFETIME_OPEX_VAR in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float)
+    # todo this should be here some time, shouldnt it? assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], list)
 
 
 START_TIME = "2020-01-01 00:00"
@@ -134,8 +140,8 @@ pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
 def test_determine_lifetime_opex_var_as_timeseries():
     dict_asset = {OPEX_VAR: {VALUE: pandas_Series}}
     C0.determine_lifetime_opex_var(dict_asset, economic_data)
-    assert "lifetime_opex_var" in dict_asset.keys()
-    assert isinstance(dict_asset["lifetime_opex_var"][VALUE], pd.Series)
+    assert LIFETIME_OPEX_VAR in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], pd.Series)
 
 
 def test_determine_lifetime_opex_var_is_other():

@@ -25,6 +25,8 @@ from src.constants_json_strings import (
     TIMESERIES,
     INPUT_BUS_NAME,
     OUTPUT_BUS_NAME,
+    SIMULATION_ANNUITY,
+    MAXIMUM_CAP,
 )
 from .constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
@@ -390,9 +392,9 @@ class TestStorageComponent:
 
     def test_storage_optimize(self):
         dict_asset = self.dict_values[ENERGY_STORAGE]["storage_optimize"]
-        dict_asset[STORAGE_CAPACITY]["maximumCap"] = {VALUE: None, UNIT: "kWh"}
-        dict_asset[INPUT_POWER]["maximumCap"] = {VALUE: None, UNIT: "kWh"}
-        dict_asset[OUTPUT_POWER]["maximumCap"] = {VALUE: None, UNIT: "kWh"}
+        dict_asset[STORAGE_CAPACITY][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
+        dict_asset[INPUT_POWER][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
+        dict_asset[OUTPUT_POWER][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
         D1.storage(
             model=self.model,
             dict_asset=dict_asset,
@@ -413,21 +415,21 @@ class TestStorageComponent:
         assert input_bus.existing == dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE]
         assert (
             input_bus.investment.ep_costs
-            == dict_asset[INPUT_POWER]["simulation_annuity"][VALUE]
+            == dict_asset[INPUT_POWER][SIMULATION_ANNUITY][VALUE]
         )
         assert input_bus.nominal_value == None
 
         assert output_bus.existing == dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE]
         assert (
             output_bus.investment.ep_costs
-            == dict_asset[OUTPUT_POWER]["simulation_annuity"][VALUE]
+            == dict_asset[OUTPUT_POWER][SIMULATION_ANNUITY][VALUE]
         )
         assert output_bus.nominal_value == None
 
         # assert self.model.entities[-1].existing ==  dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]  # todo probably not necessary parameter
         assert (
             self.model.entities[-1].investment.ep_costs
-            == dict_asset[STORAGE_CAPACITY]["simulation_annuity"][VALUE]
+            == dict_asset[STORAGE_CAPACITY][SIMULATION_ANNUITY][VALUE]
         )
         assert self.model.entities[-1].nominal_storage_capacity == None
 
