@@ -407,13 +407,13 @@ def define_missing_cost_data(dict_values, dict_asset):
     # read timeseries with filename provided for variable costs.
     # if multiple p_dispatch are given for multiple busses, it checks if any v
     # alue is a timeseries
-    if OPEX_VAR in dict_asset:
-        if isinstance(dict_asset[OPEX_VAR][VALUE], dict):
+    if P_DISPATCH in dict_asset:
+        if isinstance(dict_asset[P_DISPATCH][VALUE], dict):
             receive_timeseries_from_csv(
-                dict_values, dict_values[SIMULATION_SETTINGS], dict_asset, OPEX_VAR
+                dict_values, dict_values[SIMULATION_SETTINGS], dict_asset, P_DISPATCH
             )
-        elif isinstance(dict_asset[OPEX_VAR][VALUE], list):
-            treat_multiple_flows(dict_asset, dict_values, OPEX_VAR)
+        elif isinstance(dict_asset[P_DISPATCH][VALUE], list):
+            treat_multiple_flows(dict_asset, dict_values, P_DISPATCH)
 
     economic_data = dict_values[ECONOMIC_DATA]
 
@@ -424,7 +424,7 @@ def define_missing_cost_data(dict_values, dict_asset):
         C_DEVELOPMENT: {VALUE: 0, UNIT: CURR},
         C_SPECIFIC: {VALUE: 0, UNIT: "currency/unit"},
         C_OM: {VALUE: 0, UNIT: "currency/year"},
-        OPEX_VAR: {VALUE: 0, UNIT: "currency/unit/year"},
+        P_DISPATCH: {VALUE: 0, UNIT: "currency/unit/year"},
         LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: "year",},
     }
 
@@ -684,11 +684,11 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     # for each bus, read time series for p_dispatch if a file name has been
     # provided in energy price
     if isinstance(price[VALUE], list):
-        source.update({OPEX_VAR: {VALUE: [], UNIT: price[UNIT]}})
+        source.update({P_DISPATCH: {VALUE: [], UNIT: price[UNIT]}})
         values_info = []
         for element in price[VALUE]:
             if isinstance(element, dict):
-                source[OPEX_VAR][VALUE].append(
+                source[P_DISPATCH][VALUE].append(
                     get_timeseries_multiple_flows(
                         dict_values[SIMULATION_SETTINGS],
                         source,
@@ -698,14 +698,14 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                 )
                 values_info.append(element)
             else:
-                source[OPEX_VAR][VALUE].append(element)
+                source[P_DISPATCH][VALUE].append(element)
         if len(values_info) > 0:
-            source[OPEX_VAR]["values_info"] = values_info
+            source[P_DISPATCH]["values_info"] = values_info
 
     elif isinstance(price[VALUE], dict):
         source.update(
             {
-                OPEX_VAR: {
+                P_DISPATCH: {
                     VALUE: {
                         FILENAME: price[VALUE][FILENAME],
                         "header": price[VALUE]["header"],
@@ -715,10 +715,10 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
             }
         )
         receive_timeseries_from_csv(
-            dict_values, dict_values[SIMULATION_SETTINGS], source, OPEX_VAR
+            dict_values, dict_values[SIMULATION_SETTINGS], source, P_DISPATCH
         )
     else:
-        source.update({OPEX_VAR: {VALUE: price[VALUE], UNIT: price[UNIT]}})
+        source.update({P_DISPATCH: {VALUE: price[VALUE], UNIT: price[UNIT]}})
 
     logging.debug(
         "Asset %s: sum of timeseries = %s", asset_name, sum(timeseries.values)
@@ -738,19 +738,19 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                 TIMESERIES_NORMALIZED: timeseries / max(timeseries),
             }
         )
-        if type(source[OPEX_VAR][VALUE]) == pd.Series:
+        if type(source[P_DISPATCH][VALUE]) == pd.Series:
             logging.warning(
                 "Attention! %s is created, with a price defined as a timeseries (average: %s). "
                 "If this is DSO supply, this could be improved. Please refer to Issue #23.",
                 source[LABEL],
-                source[OPEX_VAR][VALUE].mean(),
+                source[P_DISPATCH][VALUE].mean(),
             )
         else:
             logging.warning(
                 "Attention! %s is created, with a price of %s."
                 "If this is DSO supply, this could be improved. Please refer to Issue #23. ",
                 source[LABEL],
-                source[OPEX_VAR][VALUE],
+                source[P_DISPATCH][VALUE],
             )
     else:
         source.update({OPTIMIZE_CAP: {VALUE: False, UNIT: TYPE_BOOL}})
@@ -807,7 +807,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
     # check if multiple busses are provided
     # for each bus, read time series for p_dispatch if a file name has been provided in feedin tariff
     if isinstance(price[VALUE], list):
-        sink.update({OPEX_VAR: {VALUE: [], UNIT: price[UNIT]}})
+        sink.update({P_DISPATCH: {VALUE: [], UNIT: price[UNIT]}})
         values_info = []
         for element in price[VALUE]:
             if isinstance(element, dict):
@@ -818,18 +818,18 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
                     element["header"],
                 )
                 if asset_name[-6:] == "feedin":
-                    sink[OPEX_VAR][VALUE].append([-i for i in timeseries])
+                    sink[P_DISPATCH][VALUE].append([-i for i in timeseries])
                 else:
-                    sink[OPEX_VAR][VALUE].append(timeseries)
+                    sink[P_DISPATCH][VALUE].append(timeseries)
             else:
-                sink[OPEX_VAR][VALUE].append(element)
+                sink[P_DISPATCH][VALUE].append(element)
         if len(values_info) > 0:
-            sink[OPEX_VAR]["values_info"] = values_info
+            sink[P_DISPATCH]["values_info"] = values_info
 
     elif isinstance(price[VALUE], dict):
         sink.update(
             {
-                OPEX_VAR: {
+                P_DISPATCH: {
                     VALUE: {
                         FILENAME: price[VALUE][FILENAME],
                         "header": price[VALUE]["header"],
@@ -839,18 +839,18 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
             }
         )
         receive_timeseries_from_csv(
-            dict_values, dict_values[SIMULATION_SETTINGS], sink, OPEX_VAR
+            dict_values, dict_values[SIMULATION_SETTINGS], sink, P_DISPATCH
         )
         if (
             asset_name[-6:] == "feedin"
         ):  # change into negative value if this is a feedin sink
-            sink[OPEX_VAR].update({VALUE: [-i for i in sink[OPEX_VAR][VALUE]]})
+            sink[P_DISPATCH].update({VALUE: [-i for i in sink[P_DISPATCH][VALUE]]})
     else:
         if asset_name[-6:] == "feedin":
             value = -price[VALUE]
         else:
             value = price[VALUE]
-        sink.update({OPEX_VAR: {VALUE: value, UNIT: price[UNIT]}})
+        sink.update({P_DISPATCH: {VALUE: value, UNIT: price[UNIT]}})
 
     if C_SPECIFIC in kwargs:
         sink.update(
@@ -975,20 +975,20 @@ def determine_lifetime_p_dispatch(dict_asset, economic_data):
     -------
 
     """
-    if isinstance(dict_asset[OPEX_VAR][VALUE], float) or isinstance(
-        dict_asset[OPEX_VAR][VALUE], int
+    if isinstance(dict_asset[P_DISPATCH][VALUE], float) or isinstance(
+        dict_asset[P_DISPATCH][VALUE], int
     ):
         lifetime_p_dispatch = get_lifetime_p_dispatch_one_value(dict_asset, economic_data)
 
-    elif isinstance(dict_asset[OPEX_VAR][VALUE], list):
+    elif isinstance(dict_asset[P_DISPATCH][VALUE], list):
         lifetime_p_dispatch = get_lifetime_p_dispatch_list(dict_asset, economic_data)
 
-    elif isinstance(dict_asset[OPEX_VAR][VALUE], pd.Series):
+    elif isinstance(dict_asset[P_DISPATCH][VALUE], pd.Series):
         lifetime_p_dispatch = get_lifetime_p_dispatch_timeseries(dict_asset, economic_data)
 
     else:
         raise ValueError(
-            f"Type of p_dispatch neither int, float, list or pd.Series, but of type {dict_asset[OPEX_VAR][VALUE]}. Is type correct?"
+            f"Type of p_dispatch neither int, float, list or pd.Series, but of type {dict_asset[P_DISPATCH][VALUE]}. Is type correct?"
         )
 
     dict_asset.update({LIFETIME_OPEX_VAR: {VALUE: lifetime_p_dispatch, UNIT: "?",}})
@@ -1003,7 +1003,7 @@ def get_lifetime_p_dispatch_one_value(dict_asset, economic_data):
 
     """
     lifetime_p_dispatch = (
-        dict_asset[OPEX_VAR][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
+            dict_asset[P_DISPATCH][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
     return lifetime_p_dispatch
 
@@ -1020,7 +1020,7 @@ def get_lifetime_p_dispatch_list(dict_asset, economic_data):
 
     # if multiple busses are provided, it takes the first p_dispatch (corresponding to the first bus)
 
-    first_value = dict_asset[OPEX_VAR][VALUE][0]
+    first_value = dict_asset[P_DISPATCH][VALUE][0]
     if isinstance(first_value, float) or isinstance(first_value, int):
         p_dispatch = first_value
     else:
@@ -1039,9 +1039,9 @@ def get_lifetime_p_dispatch_timeseries(dict_asset, economic_data):
     """
     # take average value of p_dispatch if it is a timeseries
 
-    p_dispatch = sum(dict_asset[OPEX_VAR][VALUE]) / len(dict_asset[OPEX_VAR][VALUE])
+    p_dispatch = sum(dict_asset[P_DISPATCH][VALUE]) / len(dict_asset[P_DISPATCH][VALUE])
     lifetime_p_dispatch = (
-        dict_asset[OPEX_VAR][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
+            dict_asset[P_DISPATCH][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
     return lifetime_p_dispatch
 

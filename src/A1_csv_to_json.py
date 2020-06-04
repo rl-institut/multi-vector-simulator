@@ -49,7 +49,7 @@ from src.constants import (
 )
 from src.constants_json_strings import (
     LABEL,
-    OPEX_VAR,
+    P_DISPATCH,
     C_OM,
     C_DEVELOPMENT,
     C_SPECIFIC,
@@ -60,7 +60,7 @@ from src.constants_json_strings import (
     INPUT_POWER,
     OUTPUT_POWER,
     C_RATE,
-    OPEX_VAR,
+    P_DISPATCH,
     SOC_INITIAL,
     SOC_MAX,
     SOC_MIN,
@@ -315,7 +315,7 @@ def create_json_from_csv(
                 if column == STORAGE_CAPACITY:
                     extra = [SOC_INITIAL, SOC_MAX, SOC_MIN]
                 elif column == INPUT_POWER or column == OUTPUT_POWER:
-                    extra = [C_RATE, OPEX_VAR]
+                    extra = [C_RATE, P_DISPATCH]
                 else:
                     raise WrongStorageColumn(
                         f"The column name {column} in The file {filename}.csv"
@@ -336,7 +336,7 @@ def create_json_from_csv(
                         # if not, set them to Nan
                         if i not in [
                             C_RATE,
-                            OPEX_VAR,
+                            P_DISPATCH,
                             SOC_INITIAL,
                             SOC_MAX,
                             SOC_MIN,

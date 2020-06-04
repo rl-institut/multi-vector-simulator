@@ -17,7 +17,7 @@ import oemof.solph as solph
 from src.constants_json_strings import (
     VALUE,
     LABEL,
-    OPEX_VAR,
+    P_DISPATCH,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
     EFFICIENCY,
@@ -329,7 +329,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             inputs = {}
             index = 0
             for bus in dict_asset[INPUT_BUS_NAME]:
-                variable_costs = dict_asset[OPEX_VAR][VALUE][index]
+                variable_costs = dict_asset[P_DISPATCH][VALUE][index]
                 inputs[kwargs["busses"][bus]] = solph.Flow(
                     nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=variable_costs,
@@ -347,7 +347,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             outputs = {}
             index = 0
             for bus in dict_asset[OUTPUT_BUS_NAME]:
-                variable_costs = dict_asset[OPEX_VAR][VALUE][index]
+                variable_costs = dict_asset[P_DISPATCH][VALUE][index]
                 outputs[kwargs["busses"][bus]] = solph.Flow(
                     nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=variable_costs,
@@ -364,7 +364,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
         outputs = {
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                 nominal_value=dict_asset[INSTALLED_CAP][VALUE],
-                variable_costs=dict_asset[OPEX_VAR][VALUE],
+                variable_costs=dict_asset[P_DISPATCH][VALUE],
             )
         }
         efficiencies = {
@@ -403,7 +403,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             inputs = {}
             index = 0
             for bus in dict_asset[INPUT_BUS_NAME]:
-                variable_costs = dict_asset[OPEX_VAR][VALUE][index]
+                variable_costs = dict_asset[P_DISPATCH][VALUE][index]
                 inputs[kwargs["busses"][bus]] = solph.Flow(
                     existing=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=variable_costs,
@@ -416,7 +416,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                         maximum=dict_asset[MAXIMUM_CAP][VALUE],
                     ),
                     existing=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=dict_asset[OPEX_VAR][VALUE],
+                    variable_costs=dict_asset[P_DISPATCH][VALUE],
                 )
             }
             efficiencies = {}
@@ -430,7 +430,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             outputs = {}
             index = 0
             for bus in dict_asset[OUTPUT_BUS_NAME]:
-                variable_costs = dict_asset[OPEX_VAR][VALUE][index]
+                variable_costs = dict_asset[P_DISPATCH][VALUE][index]
                 outputs[kwargs["busses"][bus]] = solph.Flow(
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
@@ -455,7 +455,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                     maximum=dict_asset[MAXIMUM_CAP][VALUE],
                 ),
                 existing=dict_asset[INSTALLED_CAP][VALUE],
-                variable_costs=dict_asset[OPEX_VAR][VALUE],
+                variable_costs=dict_asset[P_DISPATCH][VALUE],
             )
         }
         efficiencies = {
@@ -493,7 +493,7 @@ def storage_fix(model, dict_asset, **kwargs):
                 nominal_value=dict_asset[INPUT_POWER][INSTALLED_CAP][
                     VALUE
                 ],  # limited through installed capacity, NOT c-rate
-                variable_costs=dict_asset[INPUT_POWER][OPEX_VAR][VALUE],
+                variable_costs=dict_asset[INPUT_POWER][P_DISPATCH][VALUE],
             )
         },  # maximum charge possible in one timestep
         outputs={
@@ -501,7 +501,7 @@ def storage_fix(model, dict_asset, **kwargs):
                 nominal_value=dict_asset[OUTPUT_POWER][INSTALLED_CAP][
                     VALUE
                 ],  # limited through installed capacity, NOT c-rate #todo actually, if we only have a lithium battery... crate should suffice? i mean, with crate fixed AND fixed power, this is defined two times
-                variable_costs=dict_asset[OUTPUT_POWER][OPEX_VAR][VALUE],
+                variable_costs=dict_asset[OUTPUT_POWER][P_DISPATCH][VALUE],
             )
         },  # maximum discharge possible in one timestep
         loss_rate=dict_asset[STORAGE_CAPACITY][EFFICIENCY][
@@ -549,7 +549,7 @@ def storage_optimize(model, dict_asset, **kwargs):
                     ep_costs=dict_asset[INPUT_POWER][SIMULATION_ANNUITY][VALUE],
                     maximum=dict_asset[INPUT_POWER][MAXIMUM_CAP][VALUE],
                 ),
-                variable_costs=dict_asset[INPUT_POWER][OPEX_VAR][VALUE],
+                variable_costs=dict_asset[INPUT_POWER][P_DISPATCH][VALUE],
             )
         },  # maximum charge power
         outputs={
@@ -559,7 +559,7 @@ def storage_optimize(model, dict_asset, **kwargs):
                     ep_costs=dict_asset[OUTPUT_POWER][SIMULATION_ANNUITY][VALUE],
                     maximum=dict_asset[OUTPUT_POWER][MAXIMUM_CAP][VALUE],
                 ),
-                variable_costs=dict_asset[OUTPUT_POWER][OPEX_VAR][VALUE],
+                variable_costs=dict_asset[OUTPUT_POWER][P_DISPATCH][VALUE],
             )
         },  # maximum discharge power
         loss_rate=dict_asset[STORAGE_CAPACITY][EFFICIENCY][
@@ -607,7 +607,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
                 actual_value=dict_asset[TIMESERIES],
                 fixed=True,
                 nominal_value=dict_asset[INSTALLED_CAP][VALUE],
-                variable_costs=dict_asset[OPEX_VAR][0],
+                variable_costs=dict_asset[P_DISPATCH][0],
             )
             index += 1
     else:
@@ -617,7 +617,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
                 actual_value=dict_asset[TIMESERIES],
                 fixed=True,
                 nominal_value=dict_asset[INSTALLED_CAP][VALUE],
-                variable_costs=dict_asset[OPEX_VAR][VALUE],
+                variable_costs=dict_asset[P_DISPATCH][VALUE],
             )
         }
 
@@ -654,7 +654,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                     / dict_asset[TIMESERIES_PEAK][VALUE],
                     maximum=dict_asset[MAXIMUM_CAP][VALUE],
                 ),
-                variable_costs=dict_asset[OPEX_VAR][VALUE][index]
+                variable_costs=dict_asset[P_DISPATCH][VALUE][index]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
             )
             index += 1
@@ -671,7 +671,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                     / dict_asset[TIMESERIES_PEAK][VALUE],
                     maximum=dict_asset[MAXIMUM_CAP][VALUE],
                 ),
-                variable_costs=dict_asset[OPEX_VAR][VALUE]
+                variable_costs=dict_asset[P_DISPATCH][VALUE]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
             )
         }
@@ -699,7 +699,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                         / dict_asset[TIMESERIES_PEAK][VALUE],
                         maximum=dict_asset[MAXIMUM_CAP][VALUE],
                     ),
-                    variable_costs=dict_asset[OPEX_VAR][VALUE][0]
+                    variable_costs=dict_asset[P_DISPATCH][VALUE][0]
                     / dict_asset[TIMESERIES_PEAK][VALUE],
                 )
                 index += 1
@@ -713,7 +713,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                         / dict_asset[TIMESERIES_PEAK][VALUE],
                         maximum=dict_asset[MAXIMUM_CAP][VALUE],
                     ),
-                    variable_costs=dict_asset[OPEX_VAR][VALUE]
+                    variable_costs=dict_asset[P_DISPATCH][VALUE]
                     / dict_asset[TIMESERIES_PEAK][VALUE],
                 )
             }
@@ -734,7 +734,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                     ),
-                    variable_costs=dict_asset[OPEX_VAR][VALUE][index],
+                    variable_costs=dict_asset[P_DISPATCH][VALUE][index],
                 )
                 index += 1
         else:
@@ -744,7 +744,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                     ),
-                    variable_costs=dict_asset[OPEX_VAR][VALUE],
+                    variable_costs=dict_asset[P_DISPATCH][VALUE],
                 )
             }
 
@@ -777,7 +777,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
                     label=dict_asset[LABEL],
                     max=dict_asset[TIMESERIES_NORMALIZED],
                     existing=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=dict_asset[OPEX_VAR][VALUE][index],
+                    variable_costs=dict_asset[P_DISPATCH][VALUE][index],
                 )
                 index += 1
         else:
@@ -786,7 +786,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
                     label=dict_asset[LABEL],
                     max=dict_asset[TIMESERIES_NORMALIZED],
                     existing=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=dict_asset[OPEX_VAR][VALUE],
+                    variable_costs=dict_asset[P_DISPATCH][VALUE],
                 )
             }
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
@@ -803,7 +803,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
                 outputs[kwargs["busses"][bus]] = solph.Flow(
                     label=dict_asset[LABEL],
                     existing=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=dict_asset[OPEX_VAR][VALUE][index],
+                    variable_costs=dict_asset[P_DISPATCH][VALUE][index],
                 )
                 index += 1
         else:
@@ -811,7 +811,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
                 kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                     label=dict_asset[LABEL],
                     existing=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=dict_asset[OPEX_VAR][VALUE],
+                    variable_costs=dict_asset[P_DISPATCH][VALUE],
                 )
             }
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
@@ -839,13 +839,13 @@ def sink_dispatchable(model, dict_asset, **kwargs):
         for bus in dict_asset[INPUT_BUS_NAME]:
             inputs[kwargs["busses"][bus]] = solph.Flow(
                 label=dict_asset[LABEL],
-                variable_costs=dict_asset[OPEX_VAR][VALUE][index],
+                variable_costs=dict_asset[P_DISPATCH][VALUE][index],
             )
             index += 1
     else:
         inputs = {
             kwargs["busses"][dict_asset[INPUT_BUS_NAME]]: solph.Flow(
-                label=dict_asset[LABEL], variable_costs=dict_asset[OPEX_VAR][VALUE],
+                label=dict_asset[LABEL], variable_costs=dict_asset[P_DISPATCH][VALUE],
             )
         }
 

@@ -11,7 +11,7 @@ from src.constants_json_strings import (
     TAX,
     VALUE,
     LABEL,
-    OPEX_VAR,
+    P_DISPATCH,
     C_OM,
     C_DEVELOPMENT,
     C_SPECIFIC,
@@ -88,7 +88,7 @@ dict_asset = {
     C_OM: {VALUE: 1, UNIT: "a_unit"},
     CRF: {VALUE: 1},
     C_SPECIFIC: {VALUE: 1, UNIT: "a_unit"},
-    OPEX_VAR: {VALUE: 1},
+    P_DISPATCH: {VALUE: 1},
     C_DEVELOPMENT: {VALUE: 1},
     LIFETIME: {VALUE: 20},
     UNIT: "a_unit",
@@ -108,7 +108,7 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
 
 
 def test_determine_lifetime_p_dispatch_as_int():
-    dict_asset = {OPEX_VAR: {VALUE: 1}}
+    dict_asset = {P_DISPATCH: {VALUE: 1}}
     C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
     assert LIFETIME_OPEX_VAR in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float) or isinstance(
@@ -117,14 +117,14 @@ def test_determine_lifetime_p_dispatch_as_int():
 
 
 def test_determine_lifetime_p_dispatch_as_float():
-    dict_asset = {OPEX_VAR: {VALUE: 1.5}}
+    dict_asset = {P_DISPATCH: {VALUE: 1.5}}
     C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
     assert LIFETIME_OPEX_VAR in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float)
 
 
 def test_determine_lifetime_p_dispatch_as_list():
-    dict_asset = {OPEX_VAR: {VALUE: [1.0, 1.0]}}
+    dict_asset = {P_DISPATCH: {VALUE: [1.0, 1.0]}}
     C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
     assert LIFETIME_OPEX_VAR in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float)
@@ -142,14 +142,14 @@ pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
 
 
 def test_determine_lifetime_p_dispatch_as_timeseries():
-    dict_asset = {OPEX_VAR: {VALUE: pandas_Series}}
+    dict_asset = {P_DISPATCH: {VALUE: pandas_Series}}
     C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
     assert LIFETIME_OPEX_VAR in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], pd.Series)
 
 
 def test_determine_lifetime_p_dispatch_is_other():
-    dict_asset = {OPEX_VAR: {VALUE: TYPE_STR}}
+    dict_asset = {P_DISPATCH: {VALUE: TYPE_STR}}
     with pytest.raises(ValueError):
         C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
 

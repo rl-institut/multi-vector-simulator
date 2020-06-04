@@ -7,7 +7,7 @@ import src.B0_data_input_json as data_input
 from src.constants_json_strings import (
     UNIT,
     VALUE,
-    OPEX_VAR,
+    P_DISPATCH,
     C_DEVELOPMENT,
     AGE_INSTALLED,
     INSTALLED_CAP,
@@ -232,7 +232,7 @@ def test_create_json_from_csv_storage_raises_MissingParameterError():
                 AGE_INSTALLED,
                 C_DEVELOPMENT,
                 C_RATE,
-                OPEX_VAR,
+                P_DISPATCH,
                 SOC_INITIAL,
                 SOC_MAX,
                 SOC_MIN,
