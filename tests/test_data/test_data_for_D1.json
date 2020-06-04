@@ -165,7 +165,7 @@
                 "unit": "year",
                 "value": 0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -209,7 +209,7 @@
                 "unit": "year",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -253,7 +253,7 @@
                 "unit": "year",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -297,7 +297,7 @@
                 "unit": "year",
                 "value": 5
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -341,7 +341,7 @@
                 "unit": "year",
                 "value": 5
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -387,7 +387,7 @@
                 "unit": "year",
                 "value": 0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 10000
             },

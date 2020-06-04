@@ -57,7 +57,7 @@
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0
             },
@@ -112,7 +112,7 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0
             },
@@ -167,7 +167,7 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0
             },
@@ -239,7 +239,7 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0
             },
@@ -311,7 +311,7 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0
             },
@@ -389,7 +389,7 @@
                 "unit": "currency/kW/a",
                 "value": 308.888291865938
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -459,7 +459,7 @@
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -529,7 +529,7 @@
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -599,7 +599,7 @@
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -669,7 +669,7 @@
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -737,7 +737,7 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0
             },
@@ -807,7 +807,7 @@
                 "unit": "currency/unit/a",
                 "value": 603.0721627283399
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 10000
             },
@@ -884,7 +884,7 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0
             },
@@ -969,7 +969,7 @@
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
-                "C_development": {
+                "Cost_development": {
                     "unit": "currency",
                     "value": 0
                 },
@@ -1044,7 +1044,7 @@
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
-                "C_development": {
+                "Cost_development": {
                     "unit": "currency",
                     "value": 0
                 },
@@ -1109,7 +1109,7 @@
                     "unit": "currency/unit/a",
                     "value": 492.87618692134606
                 },
-                "C_development": {
+                "Cost_development": {
                     "unit": "currency",
                     "value": 0
                 },
@@ -1186,7 +1186,7 @@
                 "unit": "year",
                 "value": 10
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -1213,7 +1213,7 @@
                 "unit": "year",
                 "value": 0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0
             },
@@ -1240,7 +1240,7 @@
                 "unit": "year",
                 "value": 0
             },
-            "C_development": {
+            "Cost_development": {
                 "unit": "currency",
                 "value": 0
             },

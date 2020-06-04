@@ -55,7 +55,7 @@ Common Parameters in the CSV/JSON files and in energyConversion.csv:
 
 **age_installed**: The number of years the asset has already been in operation
 
-**C_development**: A fixed cost to implement the asset, eg. planning costs which do not depend on the (optimized) asset capacity (€)
+**Cost_development**: A fixed cost to implement the asset, eg. planning costs which do not depend on the (optimized) asset capacity (€)
 
 **c_specific**: Actual CAPEX of the asset (€/kW), ie. specific investment costs
 
