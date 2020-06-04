@@ -139,6 +139,9 @@ KPI_SCALARS_DICT = "scalars"
 KPI_UNCOUPLED_DICT = "KPI individual sectors"
 KPI_COST_MATRIX = "cost_matrix"
 KPI_SCALAR_MATRIX = "scalar_matrix"
+
+ANNUITY_OM = "annuity_om"
+
 COST_TOTAL = "cost_total"
 COST_OM = "cost_om"
 COST_INVESTMENT = "cost_investment"
@@ -147,13 +150,13 @@ OPTIMIZED_ADD_CAP = "optimizedAddCap"
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (
-    "annuity_om",
+    ANNUITY_OM,
     "annuity_total",
-    "costs_investment",
-    "costs_om",
+    COST_INVESTMENT,
+    COST_OM,
     "costs_opex_fix",
     "costs_opex_var",
-    "costs_total",
+    COST_TOTAL,
     "costs_upfront",
 )
 

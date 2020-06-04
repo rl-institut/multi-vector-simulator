@@ -14,6 +14,7 @@ from src.constants_json_strings import (
     LIFETIME_OPEX_VAR,
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
+ANNUITY_OM
 )
 
 dict_asset = {
@@ -43,7 +44,7 @@ def test_all_cost_info_parameters_added_to_dict_asset():
         "costs_total",
         "costs_om",
         "annuity_total",
-        "annuity_om",
+        ANNUITY_OM,
     ):
         assert k in dict_asset
 

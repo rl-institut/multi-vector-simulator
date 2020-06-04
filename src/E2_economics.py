@@ -16,6 +16,7 @@ from src.constants_json_strings import (
     LIFETIME_OPEX_VAR,
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
+ANNUITY_OM
 )
 
 r"""
@@ -143,7 +144,7 @@ def get_costs(dict_asset, economic_data):
                     VALUE: dict_asset["costs_total"][VALUE] * economic_data[CRF][VALUE],
                     UNIT: "currency/year",
                 },
-                "annuity_om": {
+                ANNUITY_OM: {
                     VALUE: dict_asset["costs_om"][VALUE] * economic_data[CRF][VALUE],
                     UNIT: "currency/year",
                 },
