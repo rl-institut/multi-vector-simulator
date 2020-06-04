@@ -25,6 +25,7 @@ Here is a template for new release sections
 ### Changed
 - Test input files (#343)
 - All parameters of the json/csv input files are now defined by constant variables (i.e, `CRATE="crate"` instead of string `"crate"`) (#346)
+- Use "is" instead of "==" in if clauses for True, False and None (#346)
 
 ### Removed
 
