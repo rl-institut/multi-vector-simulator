@@ -8,7 +8,7 @@ installedCap,kW,1250
 label,str,Transformer station (DSO) consumption
 lifetime,year,30
 cost_om,currency/kW/year,0
-opex_var,currency/kWh,0
+p_dispatch,currency/kWh,0
 optimizeCap,bool,False
 outflow_direction,str,Electricity
 energyVector,str,Electricity

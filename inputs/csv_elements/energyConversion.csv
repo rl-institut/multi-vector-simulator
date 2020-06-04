@@ -8,7 +8,7 @@ installedCap,kW,0.0,0.0,0.0,1250,1250
 label,str,Charge Contoller ESS Li-Ion (charge),Charge Contoller ESS Li-Ion (discharge),Solar inverter (mono),Transformer station (DSO) consumption,Transformer station (DSO) feedin
 lifetime,year,10,10,15,30,30
 cost_om,currency/kW/year,0.0,0.0,0.0,0.0,0.0
-opex_var,currency/kWh,0.0,0.0,0.0,0.0,0.0
+p_dispatch,currency/kWh,0.0,0.0,0.0,0.0,0.0
 optimizeCap,bool,True,True,True,False,False
 outflow_direction,str,ESS Li-Ion,Electricity,Electricity,Electricity,Electricity (DSO)
 energyVector,str,Electricity,Electricity,Electricity,Electricity,Electricity

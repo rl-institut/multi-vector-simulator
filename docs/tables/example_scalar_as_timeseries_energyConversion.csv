@@ -8,7 +8,7 @@ installedCap,kW,0
 label,str,Heat pump
 lifetime,year,20
 cost_om,currency/kW/year,0
-opex_var,currency/kWh,0
+p_dispatch,currency/kWh,0
 optimizeCap,bool,True
 outflow_direction,str,Heat
 energyVector,str,Electricity

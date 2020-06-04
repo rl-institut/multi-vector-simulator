@@ -53,7 +53,7 @@
     },
     "energyConsumption": {
         "DSO_feedin": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
@@ -84,7 +84,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": -5.505932460595773
             },
@@ -92,7 +92,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": -0.4
             },
@@ -108,7 +108,7 @@
             "unit": "?"
         },
         "Electricity excess": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -139,7 +139,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -147,7 +147,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0
             },
@@ -163,7 +163,7 @@
             "unit": "?"
         },
         "demand_01": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -197,7 +197,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -205,7 +205,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -235,7 +235,7 @@
             "unit": "kW"
         },
         "demand_02": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -269,7 +269,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -277,7 +277,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -307,7 +307,7 @@
             "unit": "kW"
         },
         "demand_03": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -341,7 +341,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -349,7 +349,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -385,7 +385,7 @@
                 "unit": "year",
                 "value": 0
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 308.888291865938
             },
@@ -421,7 +421,7 @@
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -433,7 +433,7 @@
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -455,7 +455,7 @@
                 "unit": "year",
                 "value": 0.0
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
@@ -491,7 +491,7 @@
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -503,7 +503,7 @@
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -525,7 +525,7 @@
                 "unit": "year",
                 "value": 0.0
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
@@ -561,7 +561,7 @@
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -573,7 +573,7 @@
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -595,7 +595,7 @@
                 "unit": "year",
                 "value": 5
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
@@ -631,7 +631,7 @@
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -643,7 +643,7 @@
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -665,7 +665,7 @@
                 "unit": "year",
                 "value": 5
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
@@ -701,7 +701,7 @@
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -713,7 +713,7 @@
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -733,7 +733,7 @@
     },
     "energyProduction": {
         "DSO_consumption": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -763,7 +763,7 @@
                 "unit": "currency/kWpe",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 7.433008821804292
             },
@@ -775,7 +775,7 @@
                 "unit": "currency/kWpeak",
                 "value": 0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.54
             },
@@ -803,7 +803,7 @@
                 "unit": "year",
                 "value": 0
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 603.0721627283399
             },
@@ -834,7 +834,7 @@
                 "unit": "currency/unit/ye",
                 "value": 1101.1864921191543
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -846,7 +846,7 @@
                 "unit": "currency/unit/year",
                 "value": 80
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0
             },
@@ -880,7 +880,7 @@
     },
     "energyProviders": {
         "DSO": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_p_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -923,7 +923,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_p_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -931,7 +931,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -969,7 +969,7 @@
                     "unit": "year",
                     "value": 0
                 },
-                "annuity_capex_opex_var": {
+                "annuity_capex_p_dispatch": {
                     "unit": "currency/unit/a",
                     "value": 0.0
                 },
@@ -1006,7 +1006,7 @@
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
-                "lifetime_opex_var": {
+                "lifetime_p_dispatch": {
                     "unit": "?",
                     "value": 0.0
                 },
@@ -1018,7 +1018,7 @@
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "opex_var": {
+                "p_dispatch": {
                     "unit": "currency/kWh",
                     "value": 0
                 },
@@ -1044,7 +1044,7 @@
                     "unit": "year",
                     "value": 0
                 },
-                "annuity_capex_opex_var": {
+                "annuity_capex_p_dispatch": {
                     "unit": "currency/unit/a",
                     "value": 0.0
                 },
@@ -1081,7 +1081,7 @@
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
-                "lifetime_opex_var": {
+                "lifetime_p_dispatch": {
                     "unit": "?",
                     "value": 0.0
                 },
@@ -1093,7 +1093,7 @@
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "opex_var": {
+                "p_dispatch": {
                     "unit": "currency/kWh",
                     "value": 0
                 },
@@ -1113,7 +1113,7 @@
                     "unit": "year",
                     "value": 0
                 },
-                "annuity_capex_opex_var": {
+                "annuity_capex_p_dispatch": {
                     "unit": "currency/unit/a",
                     "value": 492.87618692134606
                 },
@@ -1146,7 +1146,7 @@
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
-                "lifetime_opex_var": {
+                "lifetime_p_dispatch": {
                     "unit": "?",
                     "value": 0.0
                 },
@@ -1158,7 +1158,7 @@
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "opex_var": {
+                "p_dispatch": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
@@ -1211,7 +1211,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0
             }
@@ -1238,7 +1238,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0
             }
@@ -1265,7 +1265,7 @@
                 "unit": "currency/year",
                 "value": 4600
             },
-            "opex_var": {
+            "p_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0
             }

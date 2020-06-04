@@ -107,25 +107,25 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
         assert k in dict_asset.keys()
 
 
-def test_determine_lifetime_opex_var_as_int():
+def test_determine_lifetime_p_dispatch_as_int():
     dict_asset = {OPEX_VAR: {VALUE: 1}}
-    C0.determine_lifetime_opex_var(dict_asset, economic_data)
+    C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
     assert LIFETIME_OPEX_VAR in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float) or isinstance(
         dict_asset[LIFETIME_OPEX_VAR][VALUE], int
     )
 
 
-def test_determine_lifetime_opex_var_as_float():
+def test_determine_lifetime_p_dispatch_as_float():
     dict_asset = {OPEX_VAR: {VALUE: 1.5}}
-    C0.determine_lifetime_opex_var(dict_asset, economic_data)
+    C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
     assert LIFETIME_OPEX_VAR in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float)
 
 
-def test_determine_lifetime_opex_var_as_list():
+def test_determine_lifetime_p_dispatch_as_list():
     dict_asset = {OPEX_VAR: {VALUE: [1.0, 1.0]}}
-    C0.determine_lifetime_opex_var(dict_asset, economic_data)
+    C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
     assert LIFETIME_OPEX_VAR in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float)
     # todo this should be here some time, shouldnt it? assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], list)
@@ -141,17 +141,17 @@ pandas_DatetimeIndex = pd.date_range(
 pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
 
 
-def test_determine_lifetime_opex_var_as_timeseries():
+def test_determine_lifetime_p_dispatch_as_timeseries():
     dict_asset = {OPEX_VAR: {VALUE: pandas_Series}}
-    C0.determine_lifetime_opex_var(dict_asset, economic_data)
+    C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
     assert LIFETIME_OPEX_VAR in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], pd.Series)
 
 
-def test_determine_lifetime_opex_var_is_other():
+def test_determine_lifetime_p_dispatch_is_other():
     dict_asset = {OPEX_VAR: {VALUE: TYPE_STR}}
     with pytest.raises(ValueError):
-        C0.determine_lifetime_opex_var(dict_asset, economic_data)
+        C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
 
 
 def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear():

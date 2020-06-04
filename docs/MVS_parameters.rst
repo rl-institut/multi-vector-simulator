@@ -73,8 +73,8 @@ Common Parameters in the CSV/JSON files and in energyConversion.csv:
 
 **cost_om**: Specific annual OPEX of the asset (€/kW/year)
 
-**opex_var**: Variable cost associated with a flow through/from the asset (€/kWh). In "storage_xx.csv" only the columns "input power" and "output power"
-require a value, in column "storage capacity" opex_var should be set to NaN.
+**p_dispatch**: Variable cost associated with a flow through/from the asset (€/kWh). In "storage_xx.csv" only the columns "input power" and "output power"
+require a value, in column "storage capacity" p_dispatch should be set to NaN.
 
 **optimizeCap**: Permissible values are either True or False; ‘True’ if the user wants to perform capacity optimization for various components
 

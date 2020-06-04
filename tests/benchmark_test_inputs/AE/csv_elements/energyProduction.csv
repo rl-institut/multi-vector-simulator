@@ -8,7 +8,7 @@ maximumCap, kWp
 label,str
 lifetime,year
 cost_om,currency/unit/year
-opex_var,currency/kWh
+p_dispatch,currency/kWh
 optimizeCap,bool
 outflow_direction,str
 type_oemof,str

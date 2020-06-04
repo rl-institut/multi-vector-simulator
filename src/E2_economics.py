@@ -87,18 +87,18 @@ def get_costs(dict_asset, economic_data):
             )
 
         if all_list_in_dict(dict_asset, [ANNUAL_TOTAL_FLOW, LIFETIME_OPEX_VAR]) is True:
-            costs_opex_var = (
+            costs_p_dispatch = (
                 dict_asset[LIFETIME_OPEX_VAR][VALUE]
                 * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]
             )
             costs_total = add_costs_and_total(
-                dict_asset, "costs_opex_var", costs_opex_var, costs_total
+                dict_asset, "costs_p_dispatch", costs_p_dispatch, costs_total
             )
             cost_om = add_costs_and_total(
-                dict_asset, "costs_opex_var", costs_opex_var, cost_om
+                dict_asset, "costs_p_dispatch", costs_p_dispatch, cost_om
             )
 
-        # todo actually, price is probably not the label, but opex_var
+        # todo actually, price is probably not the label, but p_dispatch
         if all_list_in_dict(dict_asset, ["price", ANNUAL_TOTAL_FLOW]) is True:
             costs_energy = (
                 dict_asset["price"][VALUE] * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]

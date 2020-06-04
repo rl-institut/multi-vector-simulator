@@ -5,4 +5,4 @@ cost_specific,currency,0.0,0,0
 label,str,distribution grid infrastructure,"R&D, engineering",Fix project operation
 lifetime,year,30,20,20
 cost_om,currency/year,0,0,4600
-opex_var,currency/kWh,0,0,0
+p_dispatch,currency/kWh,0,0,0

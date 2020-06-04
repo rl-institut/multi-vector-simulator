@@ -8,8 +8,8 @@ installedCap,kWh,0.0,0,0
 label,str,Storage capacity,discharging_power,discharging_power
 lifetime,year,10,10,10
 cost_om,currency/kWh/year,0,0,0
-opex_var,currency/kWh,NaN,0,0
-opex_var,currency/kWh,NaN,0,0
+p_dispatch,currency/kWh,NaN,0,0
+p_dispatch,currency/kWh,NaN,0,0
 soc_initial,None or factor,None,NaN,NaN
 soc_max,factor,1.0,NaN,NaN
 soc_min,factor,0.2,NaN,NaN

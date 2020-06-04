@@ -405,7 +405,7 @@ def define_missing_cost_data(dict_values, dict_asset):
     """
 
     # read timeseries with filename provided for variable costs.
-    # if multiple opex_var are given for multiple busses, it checks if any v
+    # if multiple p_dispatch are given for multiple busses, it checks if any v
     # alue is a timeseries
     if OPEX_VAR in dict_asset:
         if isinstance(dict_asset[OPEX_VAR][VALUE], dict):
@@ -681,7 +681,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     }
 
     # check if multiple busses are provided
-    # for each bus, read time series for opex_var if a file name has been
+    # for each bus, read time series for p_dispatch if a file name has been
     # provided in energy price
     if isinstance(price[VALUE], list):
         source.update({OPEX_VAR: {VALUE: [], UNIT: price[UNIT]}})
@@ -805,7 +805,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
     }
 
     # check if multiple busses are provided
-    # for each bus, read time series for opex_var if a file name has been provided in feedin tariff
+    # for each bus, read time series for p_dispatch if a file name has been provided in feedin tariff
     if isinstance(price[VALUE], list):
         sink.update({OPEX_VAR: {VALUE: [], UNIT: price[UNIT]}})
         values_info = []
@@ -891,7 +891,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
     complete_missing_cost_data(dict_asset)
 
-    determine_lifetime_opex_var(dict_asset, economic_data)
+    determine_lifetime_p_dispatch(dict_asset, economic_data)
 
     dict_asset.update(
         {
@@ -915,7 +915,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                 VALUE: economics.annuity(
                     dict_asset[LIFETIME_CAPEX_VAR][VALUE], economic_data[CRF][VALUE],
                 )
-                + dict_asset[OPEX_FIX][VALUE],  # changes from opex_var
+                + dict_asset[OPEX_FIX][VALUE],  # changes from p_dispatch
                 UNIT: dict_asset[LIFETIME_CAPEX_VAR][UNIT] + "/a",
             }
         }
@@ -963,7 +963,7 @@ def complete_missing_cost_data(dict_asset):
     return
 
 
-def determine_lifetime_opex_var(dict_asset, economic_data):
+def determine_lifetime_p_dispatch(dict_asset, economic_data):
     """
     #todo I am not sure that this makes sense. is this used in d0?
     Parameters
@@ -978,72 +978,72 @@ def determine_lifetime_opex_var(dict_asset, economic_data):
     if isinstance(dict_asset[OPEX_VAR][VALUE], float) or isinstance(
         dict_asset[OPEX_VAR][VALUE], int
     ):
-        lifetime_opex_var = get_lifetime_opex_var_one_value(dict_asset, economic_data)
+        lifetime_p_dispatch = get_lifetime_p_dispatch_one_value(dict_asset, economic_data)
 
     elif isinstance(dict_asset[OPEX_VAR][VALUE], list):
-        lifetime_opex_var = get_lifetime_opex_var_list(dict_asset, economic_data)
+        lifetime_p_dispatch = get_lifetime_p_dispatch_list(dict_asset, economic_data)
 
     elif isinstance(dict_asset[OPEX_VAR][VALUE], pd.Series):
-        lifetime_opex_var = get_lifetime_opex_var_timeseries(dict_asset, economic_data)
+        lifetime_p_dispatch = get_lifetime_p_dispatch_timeseries(dict_asset, economic_data)
 
     else:
         raise ValueError(
-            f"Type of opex_var neither int, float, list or pd.Series, but of type {dict_asset[OPEX_VAR][VALUE]}. Is type correct?"
+            f"Type of p_dispatch neither int, float, list or pd.Series, but of type {dict_asset[OPEX_VAR][VALUE]}. Is type correct?"
         )
 
-    dict_asset.update({LIFETIME_OPEX_VAR: {VALUE: lifetime_opex_var, UNIT: "?",}})
+    dict_asset.update({LIFETIME_OPEX_VAR: {VALUE: lifetime_p_dispatch, UNIT: "?",}})
     return
 
 
-def get_lifetime_opex_var_one_value(dict_asset, economic_data):
+def get_lifetime_p_dispatch_one_value(dict_asset, economic_data):
     """
-    opex_var can be a fix value
+    p_dispatch can be a fix value
     Returns
     -------
 
     """
-    lifetime_opex_var = (
+    lifetime_p_dispatch = (
         dict_asset[OPEX_VAR][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
-    return lifetime_opex_var
+    return lifetime_p_dispatch
 
 
-def get_lifetime_opex_var_list(dict_asset, economic_data):
+def get_lifetime_p_dispatch_list(dict_asset, economic_data):
     """
-    opex_var can be a list, for example if there are two input flows to a component, eg. water and electricity.
-    Their ratio for providing cooling in kWh therm is fix. There should be a lifetime_opex_var for each of them.
+    p_dispatch can be a list, for example if there are two input flows to a component, eg. water and electricity.
+    Their ratio for providing cooling in kWh therm is fix. There should be a lifetime_p_dispatch for each of them.
 
     Returns
     -------
 
     """
 
-    # if multiple busses are provided, it takes the first opex_var (corresponding to the first bus)
+    # if multiple busses are provided, it takes the first p_dispatch (corresponding to the first bus)
 
     first_value = dict_asset[OPEX_VAR][VALUE][0]
     if isinstance(first_value, float) or isinstance(first_value, int):
-        opex_var = first_value
+        p_dispatch = first_value
     else:
-        opex_var = sum(first_value) / len(first_value)
+        p_dispatch = sum(first_value) / len(first_value)
 
-    lifetime_opex_var = opex_var * economic_data[ANNUITY_FACTOR][VALUE]
-    return lifetime_opex_var
+    lifetime_p_dispatch = p_dispatch * economic_data[ANNUITY_FACTOR][VALUE]
+    return lifetime_p_dispatch
 
 
-def get_lifetime_opex_var_timeseries(dict_asset, economic_data):
+def get_lifetime_p_dispatch_timeseries(dict_asset, economic_data):
     """
-    opex_var can be a timeseries, eg. in case that there is an hourly pricing
+    p_dispatch can be a timeseries, eg. in case that there is an hourly pricing
     Returns
     -------
 
     """
-    # take average value of opex_var if it is a timeseries
+    # take average value of p_dispatch if it is a timeseries
 
-    opex_var = sum(dict_asset[OPEX_VAR][VALUE]) / len(dict_asset[OPEX_VAR][VALUE])
-    lifetime_opex_var = (
+    p_dispatch = sum(dict_asset[OPEX_VAR][VALUE]) / len(dict_asset[OPEX_VAR][VALUE])
+    lifetime_p_dispatch = (
         dict_asset[OPEX_VAR][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
-    return lifetime_opex_var
+    return lifetime_p_dispatch
 
 
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,

@@ -149,7 +149,7 @@ The feature was tested for following paramters:
 
 - feedin_tariff
 
-- opex_var
+- p_dispatch
 
 - efficiency
 
@@ -187,7 +187,7 @@ For that, you define one or muliple of the parameters within the list with the a
 If you define an output- or input flow with with a list,
 you also have to define related parameters as a list.
 So, for example, if you define the input direction as a list for an energyConsumption asset,
-you need to define the efficiencies and opex_var costs as a list as well.
+you need to define the efficiencies and p_dispatch costs as a list as well.
 
 You can see an implemented example here, where the heat pump has a time-dependent efficiency:
 

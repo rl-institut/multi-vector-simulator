@@ -8,7 +8,7 @@ maximumCap, kWp,1000
 label,str,PV plant (mono)
 lifetime,year,30
 cost_om,currency/unit/year,0
-opex_var,currency/kWh,0
+p_dispatch,currency/kWh,0
 optimizeCap,bool,False
 outflow_direction,str,Electricity
 type_oemof,str,source

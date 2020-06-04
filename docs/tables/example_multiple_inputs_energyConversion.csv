@@ -8,7 +8,7 @@ installedCap,kW,0
 label,str,Electrolyser
 lifetime,year,20
 cost_om,currency/kW/year,75
-opex_var,currency/kWh,"[0,0.0038]"
+p_dispatch,currency/kWh,"[0,0.0038]"
 optimizeCap,bool,True
 outflow_direction,str,Local H2 grid
 energyVector,str,Electricity

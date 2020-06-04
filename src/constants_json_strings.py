@@ -86,7 +86,7 @@ LIFETIME = "lifetime"
 CAPEX_FIX = "Cost_development"
 CAPEX_VAR = "cost_specific"
 OPEX_FIX = "cost_om"
-OPEX_VAR = "opex_var"
+OPEX_VAR = "p_dispatch"
 OEMOF_ASSET_TYPE = "type_oemof"
 
 # Asset definitions: Providers
@@ -119,7 +119,7 @@ ANNUITY_FACTOR = "annuity_factor"
 SIMULATION_ANNUITY = "simulation_annuity"
 CRF = "crf"
 LIFETIME_OPEX_FIX = "lifetime_cost_om"
-LIFETIME_OPEX_VAR = "lifetime_opex_var"
+LIFETIME_OPEX_VAR = "lifetime_p_dispatch"
 
 # Other Parameters
 SECTORS = "sectors"
@@ -155,7 +155,7 @@ KPI_SCALARS = (
     COST_INVESTMENT,
     COST_OM,
     "costs_cost_om",
-    "costs_opex_var",
+    "costs_p_dispatch",
     COST_TOTAL,
     "costs_upfront",
 )
@@ -164,4 +164,4 @@ KPI_SCALARS = (
 TOTAL_FLOW = "total_flow"
 ANNUAL_TOTAL_FLOW = "annual_total_flow"
 LIFETIME_CAPEX_VAR = "lifetime_cost_specific"
-ANNUITY_CAPEX_OPEX_VAR = "annuity_capex_opex_var"
+ANNUITY_CAPEX_OPEX_VAR = "annuity_capex_p_dispatch"

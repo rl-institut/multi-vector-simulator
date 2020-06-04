@@ -39,7 +39,7 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     """Tests whether the function get_costs is adding all the calculated costs to dict_asset."""
     E2.get_costs(dict_asset, dict_economic)
     for k in (
-        "costs_opex_var",
+        "costs_p_dispatch",
         "costs_cost_om",
         "costs_total",
         "costs_om",
