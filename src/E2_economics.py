@@ -16,7 +16,7 @@ from src.constants_json_strings import (
     LIFETIME_OPEX_VAR,
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
-    ANNUITY_OM
+    ANNUITY_OM,
 )
 
 r"""

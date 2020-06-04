@@ -861,7 +861,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         )
     if C_OM in kwargs:
         sink.update(
-            {C_OM: kwargs[C_OM], OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL}, }
+            {C_OM: kwargs[C_OM], OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},}
         )
     else:
         sink.update({OPTIMIZE_CAP: {VALUE: False, UNIT: TYPE_BOOL}})
@@ -924,8 +924,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             LIFETIME_OPEX_FIX: {
-                VALUE: dict_asset[C_OM][VALUE]
-                * economic_data[ANNUITY_FACTOR][VALUE],
+                VALUE: dict_asset[C_OM][VALUE] * economic_data[ANNUITY_FACTOR][VALUE],
                 UNIT: dict_asset[C_OM][UNIT][:-2],
             }
         }
@@ -978,13 +977,17 @@ def determine_lifetime_p_dispatch(dict_asset, economic_data):
     if isinstance(dict_asset[P_DISPATCH][VALUE], float) or isinstance(
         dict_asset[P_DISPATCH][VALUE], int
     ):
-        lifetime_p_dispatch = get_lifetime_p_dispatch_one_value(dict_asset, economic_data)
+        lifetime_p_dispatch = get_lifetime_p_dispatch_one_value(
+            dict_asset, economic_data
+        )
 
     elif isinstance(dict_asset[P_DISPATCH][VALUE], list):
         lifetime_p_dispatch = get_lifetime_p_dispatch_list(dict_asset, economic_data)
 
     elif isinstance(dict_asset[P_DISPATCH][VALUE], pd.Series):
-        lifetime_p_dispatch = get_lifetime_p_dispatch_timeseries(dict_asset, economic_data)
+        lifetime_p_dispatch = get_lifetime_p_dispatch_timeseries(
+            dict_asset, economic_data
+        )
 
     else:
         raise ValueError(
@@ -1003,7 +1006,7 @@ def get_lifetime_p_dispatch_one_value(dict_asset, economic_data):
 
     """
     lifetime_p_dispatch = (
-            dict_asset[P_DISPATCH][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
+        dict_asset[P_DISPATCH][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
     return lifetime_p_dispatch
 
@@ -1041,7 +1044,7 @@ def get_lifetime_p_dispatch_timeseries(dict_asset, economic_data):
 
     p_dispatch = sum(dict_asset[P_DISPATCH][VALUE]) / len(dict_asset[P_DISPATCH][VALUE])
     lifetime_p_dispatch = (
-            dict_asset[P_DISPATCH][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
+        dict_asset[P_DISPATCH][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
     return lifetime_p_dispatch
 

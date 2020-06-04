@@ -29,7 +29,7 @@ from src.constants_json_strings import (
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
     TOTAL_FLOW,
-ANNUITY_OM,
+    ANNUITY_OM,
 )
 
 r"""
