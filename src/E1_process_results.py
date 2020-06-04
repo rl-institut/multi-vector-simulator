@@ -8,10 +8,31 @@ Module E1 processes the oemof results.
 - add the evaluation of time series
 
 """
-
 import logging
 
 import pandas as pd
+
+from src.constants import TYPE_NONE
+from src.constants_json_strings import (
+    UNIT,
+    SIMULATION_SETTINGS,
+    VALUE,
+    LABEL,
+    OPTIMIZE_CAP,
+    INSTALLED_CAP,
+    EVALUATED_PERIOD,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    STORAGE_CAPACITY,
+    TIME_INDEX,
+    TIMESERIES_PEAK,
+    INPUT_BUS_NAME,
+    OUTPUT_BUS_NAME,
+    ANNUAL_TOTAL_FLOW,
+    OPTIMIZED_ADD_CAP,
+    KPI_SCALARS_DICT,
+    TOTAL_FLOW,
+)
 
 
 def get_timeseries_per_bus(dict_values, bus_data):
@@ -37,7 +58,7 @@ def get_timeseries_per_bus(dict_values, bus_data):
     bus_data_timeseries = {}
     for bus in bus_data.keys():
         bus_data_timeseries.update(
-            {bus: pd.DataFrame(index=dict_values["simulation_settings"]["time_index"])}
+            {bus: pd.DataFrame(index=dict_values[SIMULATION_SETTINGS][TIME_INDEX])}
         )
 
         # obtain flows that flow into the bus
@@ -88,101 +109,103 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
     """
     power_charge = storage_bus["sequences"][
-        ((dict_asset["input_bus_name"], dict_asset["label"]), "flow")
+        ((dict_asset[INPUT_BUS_NAME], dict_asset[LABEL]), "flow")
     ]
-    add_info_flows(settings, dict_asset["input power"], power_charge)
+    add_info_flows(settings, dict_asset[INPUT_POWER], power_charge)
 
     power_discharge = storage_bus["sequences"][
-        ((dict_asset["label"], dict_asset["output_bus_name"]), "flow")
+        ((dict_asset[LABEL], dict_asset[OUTPUT_BUS_NAME]), "flow")
     ]
-    add_info_flows(settings, dict_asset["output power"], power_discharge)
+    add_info_flows(settings, dict_asset[OUTPUT_POWER], power_discharge)
 
-    capacity = storage_bus["sequences"][((dict_asset["label"], "None"), "capacity")]
-    add_info_flows(settings, dict_asset["storage capacity"], capacity)
+    capacity = storage_bus["sequences"][((dict_asset[LABEL], TYPE_NONE), "capacity")]
+    add_info_flows(settings, dict_asset[STORAGE_CAPACITY], capacity)
 
-    if "optimizeCap" in dict_asset:
-        if dict_asset["optimizeCap"]["value"] == True:
-            power_charge = storage_bus["scalars"][
-                ((dict_asset["input_bus_name"], dict_asset["label"]), "invest")
+    if OPTIMIZE_CAP in dict_asset:
+        if dict_asset[OPTIMIZE_CAP][VALUE] is True:
+            power_charge = storage_bus[KPI_SCALARS_DICT][
+                ((dict_asset[INPUT_BUS_NAME], dict_asset[LABEL]), "invest")
             ]
-            dict_asset["input power"].update(
+            dict_asset[INPUT_POWER].update(
                 {
-                    "optimizedAddCap": {
-                        "value": power_charge,
-                        "unit": dict_asset["input power"]["unit"],
+                    OPTIMIZED_ADD_CAP: {
+                        VALUE: power_charge,
+                        UNIT: dict_asset[INPUT_POWER][UNIT],
                     }
                 }
             )
             logging.debug(
                 "Accessed optimized capacity of asset %s: %s",
-                dict_asset["input power"]["label"],
+                dict_asset[INPUT_POWER][LABEL],
                 power_charge,
             )
 
-            power_discharge = storage_bus["scalars"][
-                ((dict_asset["label"], dict_asset["output_bus_name"]), "invest")
+            power_discharge = storage_bus[KPI_SCALARS_DICT][
+                ((dict_asset[LABEL], dict_asset[OUTPUT_BUS_NAME]), "invest")
             ]
-            dict_asset["output power"].update(
+            dict_asset[OUTPUT_POWER].update(
                 {
-                    "optimizedAddCap": {
-                        "value": power_discharge,
-                        "unit": dict_asset["output power"]["unit"],
+                    OPTIMIZED_ADD_CAP: {
+                        VALUE: power_discharge,
+                        UNIT: dict_asset[OUTPUT_POWER][UNIT],
                     }
                 }
             )
             logging.debug(
                 "Accessed optimized capacity of asset %s: %s",
-                dict_asset["output power"]["label"],
+                dict_asset[OUTPUT_POWER][LABEL],
                 power_discharge,
             )
 
-            capacity = storage_bus["scalars"][((dict_asset["label"], "None"), "invest")]
-            dict_asset["storage capacity"].update(
+            capacity = storage_bus[KPI_SCALARS_DICT][
+                ((dict_asset[LABEL], TYPE_NONE), "invest")
+            ]
+            dict_asset[STORAGE_CAPACITY].update(
                 {
-                    "optimizedAddCap": {
-                        "value": capacity,
-                        "unit": dict_asset["storage capacity"]["unit"],
+                    OPTIMIZED_ADD_CAP: {
+                        VALUE: capacity,
+                        UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
                 }
             )
             logging.debug(
                 "Accessed optimized capacity of asset %s: %s",
-                dict_asset["storage capacity"]["label"],
+                dict_asset[STORAGE_CAPACITY][LABEL],
                 capacity,
             )
 
         else:
-            dict_asset["input power"].update(
+            dict_asset[INPUT_POWER].update(
                 {
-                    "optimizedAddCap": {
-                        "value": 0,
-                        "unit": dict_asset["storage capacity"]["unit"],
+                    OPTIMIZED_ADD_CAP: {
+                        VALUE: 0,
+                        UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
                 }
             )
-            dict_asset["output power"].update(
+            dict_asset[OUTPUT_POWER].update(
                 {
-                    "optimizedAddCap": {
-                        "value": 0,
-                        "unit": dict_asset["storage capacity"]["unit"],
+                    OPTIMIZED_ADD_CAP: {
+                        VALUE: 0,
+                        UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
                 }
             )
-            dict_asset["storage capacity"].update(
+            dict_asset[STORAGE_CAPACITY].update(
                 {
-                    "optimizedAddCap": {
-                        "value": 0,
-                        "unit": dict_asset["storage capacity"]["unit"],
+                    OPTIMIZED_ADD_CAP: {
+                        VALUE: 0,
+                        UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
                 }
             )
 
     dict_asset.update(  # todo: this could be a separate function for testing.
         {
-            "timeseries_soc": dict_asset["storage capacity"]["flow"]
+            "timeseries_soc": dict_asset[STORAGE_CAPACITY]["flow"]
             / (
-                dict_asset["storage capacity"]["installedCap"]["value"]
-                + dict_asset["storage capacity"]["optimizedAddCap"]["value"]
+                dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
+                + dict_asset[STORAGE_CAPACITY][OPTIMIZED_ADD_CAP][VALUE]
             )
         }
     )
@@ -214,8 +237,8 @@ def get_results(settings, bus_data, dict_asset):
 
     """
     # Check if the component has multiple input or output busses
-    if "input_bus_name" in dict_asset:
-        input_name = dict_asset["input_bus_name"]
+    if INPUT_BUS_NAME in dict_asset:
+        input_name = dict_asset[INPUT_BUS_NAME]
         if not isinstance(input_name, list):
             get_flow(
                 settings,
@@ -228,8 +251,8 @@ def get_results(settings, bus_data, dict_asset):
             for bus in input_name:
                 get_flow(settings, bus_data[bus], dict_asset, bus, direction="input")
 
-    if "output_bus_name" in dict_asset:
-        output_name = dict_asset["output_bus_name"]
+    if OUTPUT_BUS_NAME in dict_asset:
+        output_name = dict_asset[OUTPUT_BUS_NAME]
         if not isinstance(output_name, list):
             get_flow(
                 settings,
@@ -243,21 +266,21 @@ def get_results(settings, bus_data, dict_asset):
                 get_flow(settings, bus_data[bus], dict_asset, bus, direction="output")
 
     # definie capacities. Check if the component has multiple input or output busses
-    if "output_bus_name" in dict_asset and "input_bus_name" in dict_asset:
+    if OUTPUT_BUS_NAME in dict_asset and INPUT_BUS_NAME in dict_asset:
         if not isinstance(output_name, list):
             get_optimal_cap(bus_data[output_name], dict_asset, output_name, "output")
         else:
             for bus in output_name:
                 get_optimal_cap(bus_data[bus], dict_asset, bus, "output")
 
-    elif "input_bus_name" in dict_asset:
+    elif INPUT_BUS_NAME in dict_asset:
         if not isinstance(input_name, list):
             get_optimal_cap(bus_data[input_name], dict_asset, input_name, "input")
         else:
             for bus in input_name:
                 get_optimal_cap(bus_data[bus], dict_asset, bus, "input")
 
-    elif "output_bus_name" in dict_asset:
+    elif OUTPUT_BUS_NAME in dict_asset:
         if not isinstance(output_name, list):
             get_optimal_cap(bus_data[output_name], dict_asset, output_name, "output")
         else:
@@ -295,56 +318,54 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
     ('optimizedAddCap').
 
     """
-    if "optimizeCap" in dict_asset:
-        if dict_asset["optimizeCap"]["value"] == True:
+    if OPTIMIZE_CAP in dict_asset:
+        if dict_asset[OPTIMIZE_CAP][VALUE] is True:
             if direction == "input":
-                optimal_capacity = bus["scalars"][
-                    ((bus_name, dict_asset["label"]), "invest")
+                optimal_capacity = bus[KPI_SCALARS_DICT][
+                    ((bus_name, dict_asset[LABEL]), "invest")
                 ]
             elif direction == "output":
-                optimal_capacity = bus["scalars"][
-                    ((dict_asset["label"], bus_name), "invest")
+                optimal_capacity = bus[KPI_SCALARS_DICT][
+                    ((dict_asset[LABEL], bus_name), "invest")
                 ]
             else:
                 raise ValueError(
                     f"`direction` should be 'input' or 'output' but is {direction}."
                 )
 
-            if "timeseries_peak" in dict_asset:
-                if dict_asset["timeseries_peak"]["value"] > 0:
+            if TIMESERIES_PEAK in dict_asset:
+                if dict_asset[TIMESERIES_PEAK][VALUE] > 0:
                     dict_asset.update(
                         {
-                            "optimizedAddCap": {
-                                "value": optimal_capacity
-                                / dict_asset["timeseries_peak"]["value"],
-                                "unit": dict_asset["unit"],
+                            OPTIMIZED_ADD_CAP: {
+                                VALUE: optimal_capacity
+                                / dict_asset[TIMESERIES_PEAK][VALUE],
+                                UNIT: dict_asset[UNIT],
                             }
                         }
                     )
                 else:
                     logging.warning(
                         "Time series peak of asset %s negative or zero! Check timeseries. No optimized capacity derived.",
-                        dict_asset["label"],
+                        dict_asset[LABEL],
                     )
                     pass
             else:
                 dict_asset.update(
                     {
-                        "optimizedAddCap": {
-                            "value": optimal_capacity,
-                            "unit": dict_asset["unit"],
+                        OPTIMIZED_ADD_CAP: {
+                            VALUE: optimal_capacity,
+                            UNIT: dict_asset[UNIT],
                         }
                     }
                 )
             logging.debug(
                 "Accessed optimized capacity of asset %s: %s",
-                dict_asset["label"],
+                dict_asset[LABEL],
                 optimal_capacity,
             )
         else:
-            dict_asset.update(
-                {"optimizedAddCap": {"value": 0, "unit": dict_asset["unit"]}}
-            )
+            dict_asset.update({OPTIMIZED_ADD_CAP: {VALUE: 0, UNIT: dict_asset[UNIT]}})
 
     return
 
@@ -380,9 +401,9 @@ def get_flow(settings, bus, dict_asset, bus_name, direction):
 
     """
     if direction == "input":
-        flow = bus["sequences"][((bus_name, dict_asset["label"]), "flow")]
+        flow = bus["sequences"][((bus_name, dict_asset[LABEL]), "flow")]
     elif direction == "output":
-        flow = bus["sequences"][((dict_asset["label"], bus_name), "flow")]
+        flow = bus["sequences"][((dict_asset[LABEL], bus_name), "flow")]
 
     else:
         raise ValueError(
@@ -392,8 +413,8 @@ def get_flow(settings, bus, dict_asset, bus_name, direction):
 
     logging.debug(
         "Accessed simulated timeseries of asset %s (total sum: %s)",
-        dict_asset["label"],
-        round(dict_asset["total_flow"]["value"]),
+        dict_asset[LABEL],
+        round(dict_asset[TOTAL_FLOW][VALUE]),
     )
     return
 
@@ -424,13 +445,13 @@ def add_info_flows(settings, dict_asset, flow):
     dict_asset.update(
         {
             "flow": flow,
-            "total_flow": {"value": total_flow, "unit": "kWh"},
-            "annual_total_flow": {
-                "value": total_flow * 365 / settings["evaluated_period"]["value"],
-                "unit": "kWh",
+            TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
+            ANNUAL_TOTAL_FLOW: {
+                VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
+                UNIT: "kWh",
             },
-            "peak_flow": {"value": max(flow), "unit": "kW"},
-            "average_flow": {"value": total_flow / len(flow), "unit": "kW"},
+            "peak_flow": {VALUE: max(flow), UNIT: "kW"},
+            "average_flow": {VALUE: total_flow / len(flow), UNIT: "kW"},
         }
     )
     return

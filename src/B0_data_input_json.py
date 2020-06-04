@@ -14,6 +14,10 @@ from src.constants import (
     TYPE_SERIES,
     TYPE_DATAFRAME,
     TYPE_TIMESTAMP,
+    SIMULATION_SETTINGS,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+    PATH_OUTPUT_FOLDER_INPUTS,
 )
 
 """
@@ -127,12 +131,12 @@ def load_json(
 
     # The user specified a value
     if path_input_folder is not None:
-        dict_values["simulation_settings"]["path_input_folder"] = path_input_folder
+        dict_values[SIMULATION_SETTINGS][PATH_INPUT_FOLDER] = path_input_folder
 
     # The user specified a value
     if path_output_folder is not None:
-        dict_values["simulation_settings"]["path_output_folder"] = path_output_folder
-        dict_values["simulation_settings"]["path_output_folder_inputs"] = os.path.join(
+        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER] = path_output_folder
+        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER_INPUTS] = os.path.join(
             path_output_folder, INPUTS_COPY
         )
 
@@ -141,8 +145,7 @@ def load_json(
         os.replace(
             path_input_file,
             os.path.join(
-                dict_values["simulation_settings"]["path_output_folder_inputs"],
-                CSV_FNAME,
+                dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER_INPUTS], CSV_FNAME,
             ),
         )
 

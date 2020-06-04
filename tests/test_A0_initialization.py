@@ -20,6 +20,7 @@ from .constants import (
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
     PDF_REPORT,
+    PATH_INPUT_FILE,
 )
 
 PARSER = initializing.create_parser()
@@ -97,7 +98,7 @@ class TestProcessUserArguments:
         os.mkdir(self.fake_input_path)
         os.mkdir(os.path.join(self.fake_input_path, CSV_ELEMENTS))
         user_inputs = initializing.process_user_arguments()
-        assert user_inputs["path_input_file"] == os.path.join(
+        assert user_inputs[PATH_INPUT_FILE] == os.path.join(
             self.fake_input_path, CSV_ELEMENTS, CSV_FNAME
         )
 

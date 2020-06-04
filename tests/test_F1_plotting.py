@@ -17,10 +17,21 @@ from src.constants import (
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
 )
+from src.constants_json_strings import (
+    LABEL,
+    OPTIMIZED_ADD_CAP,
+    PROJECT_NAME,
+    SCENARIO_NAME,
+    KPI,
+    KPI_SCALAR_MATRIX,
+)
+
+
 from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
+    PATH_OUTPUT_FOLDER,
     TEST_INPUT_DIRECTORY,
     DUMMY_CSV_PATH,
     CSV_ELEMENTS,
@@ -59,8 +70,8 @@ TEST_JSON_PATH_NX_FALSE = os.path.join(
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "F1_outputs")
 
 # Data for test_if_plot_of_all_energy_flows_for_all_sectors_are_stored_for_14_days
-USER_INPUT = {"path_output_folder": OUTPUT_PATH}
-PROJECT_DATA = {"project_name": "a_project", "scenario_name": "a_scenario"}
+USER_INPUT = {PATH_OUTPUT_FOLDER: OUTPUT_PATH}
+PROJECT_DATA = {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario"}
 
 RESULTS_TIMESERIES = pd.read_csv(
     os.path.join(DUMMY_CSV_PATH, "plot_data_for_F1.csv"),
@@ -71,9 +82,9 @@ RESULTS_TIMESERIES = pd.read_csv(
 
 # data for test_store_barchart_for_capacities
 DICT_KPI = {
-    "kpi": {
-        "scalar_matrix": pd.DataFrame(
-            {"label": ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
+    KPI: {
+        KPI_SCALAR_MATRIX: pd.DataFrame(
+            {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [1, 2]}
         )
     },
 }
@@ -167,12 +178,12 @@ class TestFileCreation:
     def test_determine_if_plotting_necessary_True(self):
         PARAMETER_VALUES = [2, 3, 0]
         process_pie_chart = F1.determine_if_plotting_necessary(PARAMETER_VALUES)
-        assert process_pie_chart == True
+        assert process_pie_chart is True
 
     def test_determine_if_plotting_necessary_False(self):
         PARAMETER_VALUES = [0, 0, 0]
         process_pie_chart = F1.determine_if_plotting_necessary(PARAMETER_VALUES)
-        assert process_pie_chart == False
+        assert process_pie_chart is False
 
     def test_recalculate_distribution_of_rest_costs_no_major(self):
         COSTS_PERC = pd.Series(
@@ -183,7 +194,7 @@ class TestFileCreation:
             costs_perc_grouped_minor,
             rest,
         ) = F1.recalculate_distribution_of_rest_costs(COSTS_PERC)
-        assert plot_minor_costs_pie == False
+        assert plot_minor_costs_pie is False
 
     def test_recalculate_distribution_of_rest_costs_with_major(self):
         COSTS_PERC = pd.Series(
@@ -195,7 +206,7 @@ class TestFileCreation:
             costs_perc_grouped_minor,
             rest,
         ) = F1.recalculate_distribution_of_rest_costs(COSTS_PERC)
-        assert plot_minor_costs_pie == True
+        assert plot_minor_costs_pie is True
         assert abs(costs_perc_grouped_minor["asset3"] - 0.5) < 0.001
         assert abs(costs_perc_grouped_minor["asset4"] - 0.46) < 0.001
         assert abs(costs_perc_grouped_minor["others"] - 0.04) < 0.001
@@ -233,8 +244,8 @@ class TestFileCreation:
             dict_values,
             USER_INPUT,
             PROJECT_DATA,
-            DICT_KPI["kpi"]["scalar_matrix"]["label"],
-            DICT_KPI["kpi"]["scalar_matrix"]["optimizedAddCap"],
+            DICT_KPI[KPI][KPI_SCALAR_MATRIX][LABEL],
+            DICT_KPI[KPI][KPI_SCALAR_MATRIX][OPTIMIZED_ADD_CAP],
         )
 
         assert (

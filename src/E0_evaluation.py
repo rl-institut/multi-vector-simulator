@@ -6,6 +6,30 @@ import pandas as pd
 import src.E1_process_results as process_results
 import src.E2_economics as economics
 import src.E3_indicator_calculation as indicators
+from src.constants_json_strings import (
+    UNIT,
+    ENERGY_CONVERSION,
+    ENERGY_CONSUMPTION,
+    ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
+    ENERGY_BUSSES,
+    VALUE,
+    SIMULATION_SETTINGS,
+    ECONOMIC_DATA,
+    LABEL,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    STORAGE_CAPACITY,
+    INPUT_BUS_NAME,
+    OUTPUT_BUS_NAME,
+    ANNUAL_TOTAL_FLOW,
+    OPTIMIZED_ADD_CAP,
+    KPI,
+    KPI_COST_MATRIX,
+    KPI_SCALAR_MATRIX,
+    KPI_SCALARS_DICT,
+    TOTAL_FLOW,
+)
 
 r"""
 Module E0 evaluation
@@ -36,10 +60,10 @@ def evaluate_dict(dict_values, results_main, results_meta):
     """
     dict_values.update(
         {
-            "kpi": {
-                "cost_matrix": pd.DataFrame(
+            KPI: {
+                KPI_COST_MATRIX: pd.DataFrame(
                     columns=[
-                        "label",
+                        LABEL,
                         "costs_total",
                         "costs_om",
                         "costs_investment",
@@ -50,23 +74,23 @@ def evaluate_dict(dict_values, results_main, results_meta):
                         "annuity_om",
                     ]
                 ),
-                "scalar_matrix": pd.DataFrame(
+                KPI_SCALAR_MATRIX: pd.DataFrame(
                     columns=[
-                        "label",
-                        "optimizedAddCap",
-                        "total_flow",
-                        "annual_total_flow",
+                        LABEL,
+                        OPTIMIZED_ADD_CAP,
+                        TOTAL_FLOW,
+                        ANNUAL_TOTAL_FLOW,
                         "peak_flow",
                         "average_flow",
                     ]
                 ),
-                "scalars": {},
+                KPI_SCALARS_DICT: {},
             }
         }
     )
     bus_data = {}
     # Store all information related to busses in bus_data
-    for bus in dict_values["energyBusses"]:
+    for bus in dict_values[ENERGY_BUSSES]:
         # Read all energy flows from busses
         bus_data.update({bus: outputlib.views.node(results_main, bus)})
 
@@ -74,77 +98,77 @@ def evaluate_dict(dict_values, results_main, results_meta):
     process_results.get_timeseries_per_bus(dict_values, bus_data)
 
     # Store all information related to storages in bus_data, as storage capacity acts as a bus
-    for storage in dict_values["energyStorage"]:
+    for storage in dict_values[ENERGY_STORAGE]:
         bus_data.update(
             {
-                dict_values["energyStorage"][storage]["label"]: outputlib.views.node(
-                    results_main, dict_values["energyStorage"][storage]["label"],
+                dict_values[ENERGY_STORAGE][storage][LABEL]: outputlib.views.node(
+                    results_main, dict_values[ENERGY_STORAGE][storage][LABEL],
                 )
             }
         )
         process_results.get_storage_results(
-            dict_values["simulation_settings"],
-            bus_data[dict_values["energyStorage"][storage]["label"]],
-            dict_values["energyStorage"][storage],
+            dict_values[SIMULATION_SETTINGS],
+            bus_data[dict_values[ENERGY_STORAGE][storage][LABEL]],
+            dict_values[ENERGY_STORAGE][storage],
         )
 
         # hardcoded list of names in storage_01.csv
-        for storage_item in ["storage capacity", "input power", "output power"]:
+        for storage_item in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
             economics.get_costs(
-                dict_values["energyStorage"][storage][storage_item],
-                dict_values["economic_data"],
+                dict_values[ENERGY_STORAGE][storage][storage_item],
+                dict_values[ECONOMIC_DATA],
             )
             store_result_matrix(
-                dict_values["kpi"], dict_values["energyStorage"][storage][storage_item]
+                dict_values[KPI], dict_values[ENERGY_STORAGE][storage][storage_item]
             )
 
         if (
-            dict_values["energyStorage"][storage]["input_bus_name"]
+            dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
             in dict_values["optimizedFlows"].keys()
         ) or (
-            dict_values["energyStorage"][storage]["output_bus_name"]
+            dict_values[ENERGY_STORAGE][storage][OUTPUT_BUS_NAME]
             in dict_values["optimizedFlows"].keys()
         ):
-            bus_name = dict_values["energyStorage"][storage]["input_bus_name"]
+            bus_name = dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
             timeseries_name = (
-                dict_values["energyStorage"][storage]["label"]
+                dict_values[ENERGY_STORAGE][storage][LABEL]
                 + " ("
                 + str(
                     round(
-                        dict_values["energyStorage"][storage]["storage capacity"][
-                            "optimizedAddCap"
-                        ]["value"],
+                        dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
+                            OPTIMIZED_ADD_CAP
+                        ][VALUE],
                         1,
                     )
                 )
-                + dict_values["energyStorage"][storage]["storage capacity"][
-                    "optimizedAddCap"
-                ]["unit"]
+                + dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
+                    OPTIMIZED_ADD_CAP
+                ][UNIT]
                 + ") SOC"
             )
 
             dict_values["optimizedFlows"][bus_name][timeseries_name] = dict_values[
-                "energyStorage"
+                ENERGY_STORAGE
             ][storage]["timeseries_soc"]
 
-    for asset in dict_values["energyConversion"]:
+    for asset in dict_values[ENERGY_CONVERSION]:
         process_results.get_results(
-            dict_values["simulation_settings"],
+            dict_values[SIMULATION_SETTINGS],
             bus_data,
-            dict_values["energyConversion"][asset],
+            dict_values[ENERGY_CONVERSION][asset],
         )
         economics.get_costs(
-            dict_values["energyConversion"][asset], dict_values["economic_data"]
+            dict_values[ENERGY_CONVERSION][asset], dict_values[ECONOMIC_DATA]
         )
-        store_result_matrix(dict_values["kpi"], dict_values["energyConversion"][asset])
+        store_result_matrix(dict_values[KPI], dict_values[ENERGY_CONVERSION][asset])
 
-    for group in ["energyProduction", "energyConsumption"]:
+    for group in [ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:
             process_results.get_results(
-                dict_values["simulation_settings"], bus_data, dict_values[group][asset],
+                dict_values[SIMULATION_SETTINGS], bus_data, dict_values[group][asset],
             )
-            economics.get_costs(dict_values[group][asset], dict_values["economic_data"])
-            store_result_matrix(dict_values["kpi"], dict_values[group][asset])
+            economics.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
+            store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
     indicators.all_totals(dict_values)
 
@@ -171,7 +195,7 @@ def store_result_matrix(dict_kpi, dict_asset):
 
     round_to_comma = 5
 
-    for kpi_storage in ["cost_matrix", "scalar_matrix"]:
+    for kpi_storage in [KPI_COST_MATRIX, KPI_SCALAR_MATRIX]:
         asset_result_dict = {}
         for key in dict_kpi[kpi_storage].columns.values:
             # Check if called value is in oemof results -> Remember: check if pandas index has certain index: pd.object.index.contains(key)
@@ -180,7 +204,7 @@ def store_result_matrix(dict_kpi, dict_asset):
                     asset_result_dict.update({key: dict_asset[key]})
                 else:
                     asset_result_dict.update(
-                        {key: round(dict_asset[key]["value"], round_to_comma)}
+                        {key: round(dict_asset[key][VALUE], round_to_comma)}
                     )
 
         asset_result_df = pd.DataFrame([asset_result_dict])

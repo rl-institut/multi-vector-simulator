@@ -8,7 +8,27 @@ from pandas.util.testing import assert_series_equal
 
 # internal imports
 import src.D1_model_components as D1
-from tests.constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
+from src.constants_json_strings import (
+    UNIT,
+    VALUE,
+    LABEL,
+    ENERGY_CONVERSION,
+    ENERGY_CONSUMPTION,
+    ENERGY_STORAGE,
+    OPEX_VAR,
+    OPTIMIZE_CAP,
+    INSTALLED_CAP,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    C_RATE,
+    STORAGE_CAPACITY,
+    TIMESERIES,
+    INPUT_BUS_NAME,
+    OUTPUT_BUS_NAME,
+    SIMULATION_ANNUITY,
+    MAXIMUM_CAP,
+)
+from .constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
 D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D1.json",)
 
@@ -69,35 +89,35 @@ class TestTransformerComponent:
 
         """
         # self.transformers should contain the transformer (key = label, value = transformer object)
-        assert dict_asset["label"] in self.transformers
+        assert dict_asset[LABEL] in self.transformers
         assert isinstance(
-            self.transformers[dict_asset["label"]], solph.network.Transformer
+            self.transformers[dict_asset[LABEL]], solph.network.Transformer
         )
 
         # self.models should contain the transformer (indirectly tested)
         # check output bus (`nominal_value`, `investment` and `existing`) these
         # values are expected to be different depending on whether capacity is optimized or not
-        if optimize == True:
+        if optimize is True:
             output_bus = self.model.entities[-1].outputs.data[
-                self.busses[dict_asset["output_bus_name"]]
+                self.busses[dict_asset[OUTPUT_BUS_NAME]]
             ]
             assert isinstance(
                 output_bus.investment, solph.options.Investment
             )  # todo maybe ep costs
-            assert output_bus.existing == dict_asset["installedCap"]["value"]
-            assert output_bus.nominal_value == None
-        elif optimize == False:
+            assert output_bus.existing == dict_asset[INSTALLED_CAP][VALUE]
+            assert output_bus.nominal_value is None
+        elif optimize is False:
             output_bus = self.model.entities[-1].outputs.data[
-                self.busses[dict_asset["output_bus_name"]]
+                self.busses[dict_asset[OUTPUT_BUS_NAME]]
             ]
-            assert output_bus.investment == None
-            assert hasattr(output_bus, "existing") == False
-            assert output_bus.nominal_value == dict_asset["installedCap"]["value"]
+            assert output_bus.investment is None
+            assert hasattr(output_bus, "existing") is False
+            assert output_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
         else:
             raise ValueError(f"`optimize` should be True/False but is '{optimize}'")
 
     def test_transformer_optimize_cap_single_busses(self):
-        dict_asset = self.dict_values["energyConversion"][
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_optimize_single_busses"
         ]
 
@@ -118,7 +138,7 @@ class TestTransformerComponent:
         )
 
     def test_transformer_optimize_cap_multiple_input_busses(self):
-        dict_asset = self.dict_values["energyConversion"][
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_optimize_multiple_input_busses"
         ]
 
@@ -142,7 +162,7 @@ class TestTransformerComponent:
         pass
 
     def test_transformer_fix_cap_single_busses(self):  ## todo done
-        dict_asset = self.dict_values["energyConversion"][
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_single_busses"
         ]
 
@@ -164,7 +184,7 @@ class TestTransformerComponent:
 
     def test_transformer_fix_cap_multiple_input_busses(self,):
         ## todo fix after decision on busses see todo in func above
-        # dict_asset = self.dict_values["energyConversion"][
+        # dict_asset = self.dict_values[ENERGY_CONVERSION ][
         #     "transformer_fix_multiple_input_busses"
         # ]
         #
@@ -234,8 +254,8 @@ class TestSinkComponent:
 
         """
         # self.sinks should contain the sink (key = label, value = sink object)
-        assert dict_asset["label"] in self.sinks
-        assert isinstance(self.sinks[dict_asset["label"]], solph.network.Sink)
+        assert dict_asset[LABEL] in self.sinks
+        assert isinstance(self.sinks[dict_asset[LABEL]], solph.network.Sink)
 
         # check amount of sinks
         assert len([str(i) for i in self.model.entities[-1].inputs]) == amount_inputs
@@ -245,25 +265,25 @@ class TestSinkComponent:
         # foreach input bus - these values are expected to be different
         # depending on `dispatchable`
         if amount_inputs == 1:
-            input_bus_names = [dict_asset["input_bus_name"]]
-            if dispatchable == True:
-                opex_var = [dict_asset["opex_var"]["value"]]
+            input_bus_names = [dict_asset[INPUT_BUS_NAME]]
+            if dispatchable is True:
+                opex_var = [dict_asset[OPEX_VAR][VALUE]]
         elif amount_inputs > 1:
-            input_bus_names = dict_asset["input_bus_name"]
-            if dispatchable == True:
-                opex_var = dict_asset["opex_var"]["value"]
+            input_bus_names = dict_asset[INPUT_BUS_NAME]
+            if dispatchable is True:
+                opex_var = dict_asset[OPEX_VAR][VALUE]
         else:
             raise ValueError("`amount_inputs` should be int but not zero.")
         for input_bus_name, i in zip(input_bus_names, range(len(input_bus_names))):
             input_bus = self.model.entities[-1].inputs[self.busses[input_bus_name]]
-            if dispatchable == False:
-                assert input_bus.fixed == True
-                assert_series_equal(input_bus.actual_value, dict_asset["timeseries"])
+            if dispatchable is False:
+                assert input_bus.fixed is True
+                assert_series_equal(input_bus.actual_value, dict_asset[TIMESERIES])
                 assert (
                     input_bus.variable_costs.default == 0
                 )  # this only is a real check if opex_var is not 0
-            elif dispatchable == True:
-                assert input_bus.fixed == False
+            elif dispatchable is True:
+                assert input_bus.fixed is False
                 assert len(input_bus.actual_value) == 0
                 assert input_bus.variable_costs.default == opex_var[i]
             else:
@@ -272,8 +292,8 @@ class TestSinkComponent:
                 )
 
     def test_sink_non_dispatchable_single_input_bus(self):
-        dict_asset = self.dict_values["energyConsumption"]["non_dispatchable_single"]
-        dict_asset["timeseries"] = self.time_series
+        dict_asset = self.dict_values[ENERGY_CONSUMPTION]["non_dispatchable_single"]
+        dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
             model=self.model,
@@ -287,8 +307,8 @@ class TestSinkComponent:
         )
 
     def test_sink_non_dispatchable_multiple_input_busses(self):
-        dict_asset = self.dict_values["energyConsumption"]["non_dispatchable_multiple"]
-        dict_asset["timeseries"] = self.time_series
+        dict_asset = self.dict_values[ENERGY_CONSUMPTION]["non_dispatchable_multiple"]
+        dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
             model=self.model,
@@ -302,7 +322,7 @@ class TestSinkComponent:
         )
 
     def test_sink_dispatchable_single_input_bus(self):
-        dict_asset = self.dict_values["energyConsumption"]["dispatchable_single"]
+        dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_single"]
 
         D1.sink_dispatchable(
             model=self.model,
@@ -316,7 +336,7 @@ class TestSinkComponent:
         )
 
     def test_sink_dispatchable_multiple_input_busses(self):
-        dict_asset = self.dict_values["energyConsumption"]["dispatchable_multiple"]
+        dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_multiple"]
 
         D1.sink_dispatchable(
             model=self.model,
@@ -371,10 +391,10 @@ class TestStorageComponent:
         self.storages = {}
 
     def test_storage_optimize(self):
-        dict_asset = self.dict_values["energyStorage"]["storage_optimize"]
-        dict_asset["storage capacity"]["maximumCap"] = {"value": None, "unit": "kWh"}
-        dict_asset["input power"]["maximumCap"] = {"value": None, "unit": "kWh"}
-        dict_asset["output power"]["maximumCap"] = {"value": None, "unit": "kWh"}
+        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_optimize"]
+        dict_asset[STORAGE_CAPACITY][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
+        dict_asset[INPUT_POWER][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
+        dict_asset[OUTPUT_POWER][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
         D1.storage(
             model=self.model,
             dict_asset=dict_asset,
@@ -383,50 +403,48 @@ class TestStorageComponent:
         )
 
         # self.storages should contain the storage (key = label, value = storage object)
-        assert dict_asset["label"] in self.storages
+        assert dict_asset[LABEL] in self.storages
         assert isinstance(
-            self.storages[dict_asset["label"]], solph.components.GenericStorage
+            self.storages[dict_asset[LABEL]], solph.components.GenericStorage
         )
 
         # check value of `existing`, `investment` and `nominal_value`(`nominal_storage_capacity`)
         input_bus = self.model.entities[-1].inputs[self.busses["Storage bus"]]
         output_bus = self.model.entities[-1].outputs[self.busses["Storage bus"]]
 
-        assert input_bus.existing == dict_asset["input power"]["installedCap"]["value"]
+        assert input_bus.existing == dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE]
         assert (
             input_bus.investment.ep_costs
-            == dict_asset["input power"]["simulation_annuity"]["value"]
+            == dict_asset[INPUT_POWER][SIMULATION_ANNUITY][VALUE]
         )
-        assert input_bus.nominal_value == None
+        assert input_bus.nominal_value is None
 
-        assert (
-            output_bus.existing == dict_asset["output power"]["installedCap"]["value"]
-        )
+        assert output_bus.existing == dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE]
         assert (
             output_bus.investment.ep_costs
-            == dict_asset["output power"]["simulation_annuity"]["value"]
+            == dict_asset[OUTPUT_POWER][SIMULATION_ANNUITY][VALUE]
         )
-        assert output_bus.nominal_value == None
+        assert output_bus.nominal_value is None
 
-        # assert self.model.entities[-1].existing ==  dict_asset["storage capacity"]["installedCap"]["value"]  # todo probably not necessary parameter
+        # assert self.model.entities[-1].existing ==  dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]  # todo probably not necessary parameter
         assert (
             self.model.entities[-1].investment.ep_costs
-            == dict_asset["storage capacity"]["simulation_annuity"]["value"]
+            == dict_asset[STORAGE_CAPACITY][SIMULATION_ANNUITY][VALUE]
         )
-        assert self.model.entities[-1].nominal_storage_capacity == None
+        assert self.model.entities[-1].nominal_storage_capacity is None
 
         # check that invest_relation_input_capacity and invest_relation_output_capacity is added
         assert (
             self.model.entities[-1].invest_relation_input_capacity
-            == dict_asset["input power"]["c_rate"]["value"]
+            == dict_asset[INPUT_POWER][C_RATE][VALUE]
         )
         assert (
             self.model.entities[-1].invest_relation_output_capacity
-            == dict_asset["output power"]["c_rate"]["value"]
+            == dict_asset[OUTPUT_POWER][C_RATE][VALUE]
         )
 
     def test_storage_fix(self):
-        dict_asset = self.dict_values["energyStorage"]["storage_fix"]
+        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_fix"]
         D1.storage(
             model=self.model,
             dict_asset=dict_asset,
@@ -435,41 +453,38 @@ class TestStorageComponent:
         )
 
         # self.storages should contain the storage (key = label, value = storage object)
-        assert dict_asset["label"] in self.storages
+        assert dict_asset[LABEL] in self.storages
         assert isinstance(
-            self.storages[dict_asset["label"]], solph.components.GenericStorage
+            self.storages[dict_asset[LABEL]], solph.components.GenericStorage
         )
 
         # check value of `existing`, `investment` and `nominal_value`(`nominal_storage_capacity`)
         input_bus = self.model.entities[-1].inputs[self.busses["Storage bus"]]
         output_bus = self.model.entities[-1].outputs[self.busses["Storage bus"]]
 
-        assert hasattr(input_bus, "existing") == False
-        assert input_bus.investment == None
+        assert hasattr(input_bus, "existing") is False
+        assert input_bus.investment is None
         assert (
             input_bus.nominal_value
-            == dict_asset["storage capacity"]["installedCap"]["value"]
+            == dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
         )
 
-        assert hasattr(output_bus, "existing") == False
-        assert output_bus.investment == None
-        assert (
-            output_bus.nominal_value
-            == dict_asset["input power"]["installedCap"]["value"]
-        )
+        assert hasattr(output_bus, "existing") is False
+        assert output_bus.investment is None
+        assert output_bus.nominal_value == dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE]
 
         assert (
-            hasattr(self.model.entities[-1], "existing") == False
+            hasattr(self.model.entities[-1], "existing") is False
         )  # todo probably not necessary parameter
-        assert self.model.entities[-1].investment == None
+        assert self.model.entities[-1].investment is None
         assert (
             self.model.entities[-1].nominal_storage_capacity
-            == dict_asset["output power"]["installedCap"]["value"]
+            == dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE]
         )
 
         # # check that invest_relation_input_capacity and invest_relation_output_capacity is not added
-        assert self.model.entities[-1].invest_relation_input_capacity == None
-        assert self.model.entities[-1].invest_relation_output_capacity == None
+        assert self.model.entities[-1].invest_relation_input_capacity is None
+        assert self.model.entities[-1].invest_relation_output_capacity is None
 
 
 ### other functionalities
@@ -511,8 +526,8 @@ def test_check_optimize_cap_raise_error(get_json, get_model, get_busses):
     dict_values = get_json
     model = get_model
     busses = get_busses
-    test_asset = dict_values["energyConversion"]["test_asset_for_error_raising"]
-    test_asset["optimizeCap"]["value"] = "wrong value"
+    test_asset = dict_values[ENERGY_CONVERSION]["test_asset_for_error_raising"]
+    test_asset[OPTIMIZE_CAP][VALUE] = "wrong value"
 
     msg = f"Input error! 'optimize_cap' of asset {test_asset['label']}"
     with pytest.raises(ValueError, match=msg):

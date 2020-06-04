@@ -45,7 +45,15 @@ from src.constants import (
     INPUTS_COPY,
     DEFAULT_MAIN_KWARGS,
     PDF_REPORT,
+    SIMULATION_SETTINGS,
+    PATH_INPUT_FILE,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+    INPUT_TYPE,
+    OVERWRITE,
+    DISPLAY_OUTPUT,
 )
+from src.constants_json_strings import LABEL
 
 
 def create_parser():
@@ -58,7 +66,7 @@ def create_parser():
     )
     parser.add_argument(
         "-i",
-        dest="path_input_folder",
+        dest=PATH_INPUT_FOLDER,
         nargs="?",
         type=str,
         help="path to the input folder",
@@ -66,7 +74,7 @@ def create_parser():
     )
     parser.add_argument(
         "-ext",
-        dest="input_type",
+        dest=INPUT_TYPE,
         nargs="?",
         type=str,
         help="type (json or csv) of the input files (default: 'json'",
@@ -76,7 +84,7 @@ def create_parser():
     )
     parser.add_argument(
         "-o",
-        dest="path_output_folder",
+        dest=PATH_OUTPUT_FOLDER,
         nargs="?",
         type=str,
         help="path to the output folder for the simulation's results",
@@ -84,7 +92,7 @@ def create_parser():
     )
     parser.add_argument(
         "-log",
-        dest="display_output",
+        dest=DISPLAY_OUTPUT,
         help="level of logging in the console",
         nargs="?",
         default="info",
@@ -93,7 +101,7 @@ def create_parser():
     )
     parser.add_argument(
         "-f",
-        dest="overwrite",
+        dest=OVERWRITE,
         help="overwrite the output folder if True (default: False)",
         nargs="?",
         const=True,
@@ -266,39 +274,37 @@ def process_user_arguments(
     # However the command line arguments have priority over default kwargs
     if path_input_folder is None:
         path_input_folder = args.get(
-            "path_input_folder", DEFAULT_MAIN_KWARGS["path_input_folder"]
+            PATH_INPUT_FOLDER, DEFAULT_MAIN_KWARGS[PATH_INPUT_FOLDER]
         )
 
     if input_type is None:
-        input_type = args.get("input_type", DEFAULT_MAIN_KWARGS["input_type"])
+        input_type = args.get(INPUT_TYPE, DEFAULT_MAIN_KWARGS[INPUT_TYPE])
 
     if path_output_folder is None:
         path_output_folder = args.get(
-            "path_output_folder", DEFAULT_MAIN_KWARGS["path_output_folder"]
+            PATH_OUTPUT_FOLDER, DEFAULT_MAIN_KWARGS[PATH_OUTPUT_FOLDER]
         )
 
     if overwrite is None:
-        overwrite = args.get("overwrite", DEFAULT_MAIN_KWARGS["overwrite"])
+        overwrite = args.get(OVERWRITE, DEFAULT_MAIN_KWARGS[OVERWRITE])
 
     if pdf_report is None:
         pdf_report = args.get("pdf_report", DEFAULT_MAIN_KWARGS["pdf_report"])
 
     if display_output is None:
-        display_output = args.get(
-            "display_output", DEFAULT_MAIN_KWARGS["display_output"]
-        )
+        display_output = args.get(DISPLAY_OUTPUT, DEFAULT_MAIN_KWARGS[DISPLAY_OUTPUT])
 
     path_input_file = check_input_folder(path_input_folder, input_type)
     check_output_folder(path_input_folder, path_output_folder, overwrite)
 
     user_input = {
-        "label": "simulation_settings",
-        "path_input_folder": path_input_folder,
-        "input_type": input_type,
-        "path_input_file": path_input_file,
-        "path_output_folder": path_output_folder,
-        "overwrite": overwrite,
-        "display_output": display_output,
+        LABEL: SIMULATION_SETTINGS,
+        PATH_INPUT_FOLDER: path_input_folder,
+        INPUT_TYPE: input_type,
+        PATH_INPUT_FILE: path_input_file,
+        PATH_OUTPUT_FOLDER: path_output_folder,
+        OVERWRITE: overwrite,
+        DISPLAY_OUTPUT: display_output,
         "lp_file_output": lp_file_output,
     }
 

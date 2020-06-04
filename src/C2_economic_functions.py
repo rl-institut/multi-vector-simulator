@@ -1,7 +1,6 @@
 # todo check whether this is the most recent version
 # - there were some project costs included wrongly,
 # and something with the replacement costs
-
 """
 Module C2 performs the economic pre-processing of MVS' input parameters.
 It includes basic economic formulas.
@@ -15,6 +14,7 @@ Functionalities:
 - calculate effective fuel price cost, in case there is a annual fuel price change (this functionality still has to be checked in this module)
 """
 
+from src.constants_json_strings import CRF
 
 # annuity factor to calculate present value of cash flows
 def annuity_factor(project_life, wacc):
@@ -126,7 +126,7 @@ def fuel_price_present_value(economics,):
         for i in range(0, economics["project_lifetime"]):
             cash_flow_fuel_l += fuel_price_i / (1 + economics["wacc"]) ** (i)
             fuel_price_i = fuel_price_i * (1 + economics["fuel_price_change_annual"])
-        economics.update({"price_fuel": cash_flow_fuel_l * economics["crf"]})
+        economics.update({"price_fuel": cash_flow_fuel_l * economics[CRF]})
 
 
 def simulation_annuity(annuity, days):
