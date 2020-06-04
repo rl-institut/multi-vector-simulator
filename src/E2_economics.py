@@ -6,7 +6,7 @@ from src.constants_json_strings import (
     ECONOMIC_DATA,
     CURR,
     LABEL,
-    CAPEX_FIX,
+    C_DEVELOPMENT,
     CAPEX_VAR,
     INSTALLED_CAP,
     SIMULATION_SETTINGS,
@@ -16,7 +16,7 @@ from src.constants_json_strings import (
     LIFETIME_OPEX_VAR,
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
-ANNUITY_OM
+    ANNUITY_OM
 )
 
 r"""
@@ -56,7 +56,7 @@ def get_costs(dict_asset, economic_data):
         # Calculation of connected parameters:
         if (
             all_list_in_dict(
-                dict_asset, [LIFETIME_CAPEX_VAR, CAPEX_FIX, OPTIMIZED_ADD_CAP]
+                dict_asset, [LIFETIME_CAPEX_VAR, C_DEVELOPMENT, OPTIMIZED_ADD_CAP]
             )
             is True
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
@@ -65,14 +65,14 @@ def get_costs(dict_asset, economic_data):
             costs_investment = (
                 dict_asset[OPTIMIZED_ADD_CAP][VALUE]
                 * dict_asset[LIFETIME_CAPEX_VAR][VALUE]
-                + dict_asset[CAPEX_FIX][VALUE]
+                + dict_asset[C_DEVELOPMENT][VALUE]
             )
             costs_total = add_costs_and_total(
                 dict_asset, "costs_investment", costs_investment, costs_total
             )
 
         if (
-            all_list_in_dict(dict_asset, [CAPEX_VAR, CAPEX_FIX, OPTIMIZED_ADD_CAP])
+            all_list_in_dict(dict_asset, [CAPEX_VAR, C_DEVELOPMENT, OPTIMIZED_ADD_CAP])
             is True
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
         ):
@@ -80,7 +80,7 @@ def get_costs(dict_asset, economic_data):
             costs_upfront = (
                 dict_asset[OPTIMIZED_ADD_CAP][VALUE]
                 + dict_asset[CAPEX_VAR][VALUE]
-                + dict_asset[CAPEX_FIX][VALUE]
+                + dict_asset[C_DEVELOPMENT][VALUE]
             )
             costs_total = add_costs_and_total(
                 dict_asset, "costs_upfront", costs_upfront, costs_total

@@ -421,7 +421,7 @@ def define_missing_cost_data(dict_values, dict_asset):
         OPTIMIZE_CAP: {VALUE: False, UNIT: TYPE_BOOL},
         UNIT: "?",
         INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
-        CAPEX_FIX: {VALUE: 0, UNIT: CURR},
+        C_DEVELOPMENT: {VALUE: 0, UNIT: CURR},
         CAPEX_VAR: {VALUE: 0, UNIT: "currency/unit"},
         OPEX_FIX: {VALUE: 0, UNIT: "currency/year"},
         OPEX_VAR: {VALUE: 0, UNIT: "currency/unit/year"},
