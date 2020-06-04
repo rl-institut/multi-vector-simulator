@@ -1,7 +1,7 @@
 ,unit,heat_pump
 age_installed,year,0
 C_development,currency,0
-capex_var,currency/kW,7000
+c_specific,currency/kW,7000
 efficiency,factor,"{'value': {'file_name': 'cops_eers_test.csv', 'header': 'no_unit'}, 'unit': ''}"
 inflow_direction,str,Electricity
 installedCap,kW,0

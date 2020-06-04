@@ -169,7 +169,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "capex_var": {
+            "c_specific": {
                 "unit": "currency/kW",
                 "value": 3000
             },
@@ -213,7 +213,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "capex_var": {
+            "c_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -257,7 +257,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "capex_var": {
+            "c_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -301,7 +301,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "capex_var": {
+            "c_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -345,7 +345,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "capex_var": {
+            "c_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -391,7 +391,7 @@
                 "unit": "currency",
                 "value": 10000
             },
-            "capex_var": {
+            "c_specific": {
                 "unit": "currency/unit",
                 "value": 7200
             },

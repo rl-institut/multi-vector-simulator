@@ -1,7 +1,7 @@
 ,unit
 age_installed,year
 C_development,currency
-capex_var,currency
+c_specific,currency
 label,str
 lifetime,year
 opex_fix,currency/year
