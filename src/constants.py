@@ -86,7 +86,7 @@ REQUIRED_CSV_PARAMETERS = {
     ENERGY_CONVERSION: [
         AGE_INSTALLED,
         C_DEVELOPMENT,
-        CAPEX_VAR,
+        C_SPECIFIC,
         EFFICIENCY,
         INFLOW_DIRECTION,
         INSTALLED_CAP,
@@ -112,7 +112,7 @@ REQUIRED_CSV_PARAMETERS = {
     ENERGY_PRODUCTION: [
         AGE_INSTALLED,
         C_DEVELOPMENT,
-        CAPEX_VAR,
+        C_SPECIFIC,
         FILENAME,
         INSTALLED_CAP,
         LABEL,
@@ -140,7 +140,7 @@ REQUIRED_CSV_PARAMETERS = {
     FIX_COST: [
         AGE_INSTALLED,
         C_DEVELOPMENT,
-        CAPEX_VAR,
+        C_SPECIFIC,
         LABEL,
         LIFETIME,
         OPEX_FIX,

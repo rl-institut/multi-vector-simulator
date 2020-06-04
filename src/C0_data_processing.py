@@ -422,7 +422,7 @@ def define_missing_cost_data(dict_values, dict_asset):
         UNIT: "?",
         INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
         C_DEVELOPMENT: {VALUE: 0, UNIT: CURR},
-        CAPEX_VAR: {VALUE: 0, UNIT: "currency/unit"},
+        C_SPECIFIC: {VALUE: 0, UNIT: "currency/unit"},
         OPEX_FIX: {VALUE: 0, UNIT: "currency/year"},
         OPEX_VAR: {VALUE: 0, UNIT: "currency/unit/year"},
         LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: "year",},
@@ -724,11 +724,11 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
         "Asset %s: sum of timeseries = %s", asset_name, sum(timeseries.values)
     )
 
-    if OPEX_FIX in kwargs or CAPEX_VAR in kwargs:
+    if OPEX_FIX in kwargs or C_SPECIFIC in kwargs:
         if OPEX_FIX in kwargs:
             source.update({OPEX_FIX: kwargs[OPEX_FIX]})
         else:
-            source.update({CAPEX_VAR: kwargs[CAPEX_VAR]})
+            source.update({C_SPECIFIC: kwargs[C_SPECIFIC]})
 
         source.update(
             {
@@ -852,10 +852,10 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
             value = price[VALUE]
         sink.update({OPEX_VAR: {VALUE: value, UNIT: price[UNIT]}})
 
-    if CAPEX_VAR in kwargs:
+    if C_SPECIFIC in kwargs:
         sink.update(
             {
-                CAPEX_VAR: kwargs[CAPEX_VAR],
+                C_SPECIFIC: kwargs[C_SPECIFIC],
                 OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
             }
         )
@@ -897,13 +897,13 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         {
             LIFETIME_CAPEX_VAR: {
                 VALUE: economics.capex_from_investment(
-                    dict_asset[CAPEX_VAR][VALUE],
+                    dict_asset[C_SPECIFIC][VALUE],
                     dict_asset[LIFETIME][VALUE],
                     economic_data[PROJECT_DURATION][VALUE],
                     economic_data[DISCOUNTFACTOR][VALUE],
                     economic_data[TAX][VALUE],
                 ),
-                UNIT: dict_asset[CAPEX_VAR][UNIT],
+                UNIT: dict_asset[C_SPECIFIC][UNIT],
             }
         }
     )
@@ -948,8 +948,8 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
 def complete_missing_cost_data(dict_asset):
     # todo check if this can be deleted
-    if CAPEX_VAR not in dict_asset:
-        dict_asset.update({CAPEX_VAR: 0})
+    if C_SPECIFIC not in dict_asset:
+        dict_asset.update({C_SPECIFIC: 0})
         logging.error(
             "Dictionary of asset %s is incomplete, as cost_specific is missing.",
             dict_asset[LABEL],
