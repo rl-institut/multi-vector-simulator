@@ -60,7 +60,7 @@ def test_adding_economic_parameters_C2():
         assert k in economic_parameters.keys()
 
 
-def test_complete_missing_cost_data_opex_fix():
+def test_complete_missing_cost_data_cost_om():
     dict_asset = {LABEL: "a_label"}
     C0.complete_missing_cost_data(dict_asset)
     assert OPEX_FIX in dict_asset.keys()

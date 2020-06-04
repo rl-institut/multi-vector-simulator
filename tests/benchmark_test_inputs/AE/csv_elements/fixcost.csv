@@ -4,5 +4,5 @@ C_development,currency
 c_specific,currency
 label,str
 lifetime,year
-opex_fix,currency/year
+cost_om,currency/year
 opex_var,currency/kWh

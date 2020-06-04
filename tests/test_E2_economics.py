@@ -40,7 +40,7 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     E2.get_costs(dict_asset, dict_economic)
     for k in (
         "costs_opex_var",
-        "costs_opex_fix",
+        "costs_cost_om",
         "costs_total",
         "costs_om",
         "annuity_total",

@@ -7,7 +7,7 @@ installedCap,kWp
 maximumCap, kWp
 label,str
 lifetime,year
-opex_fix,currency/unit/year
+cost_om,currency/unit/year
 opex_var,currency/kWh
 optimizeCap,bool
 outflow_direction,str

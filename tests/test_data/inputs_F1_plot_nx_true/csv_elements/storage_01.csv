@@ -7,7 +7,7 @@ efficiency,factor,0.0,0.9500000000000001,0.9500000000000001
 installedCap,kWh,0.0,0,0
 label,str,Storage capacity,discharging_power,discharging_power
 lifetime,year,10,10,10
-opex_fix,currency/kWh/year,0,0,0
+cost_om,currency/kWh/year,0,0,0
 opex_var,currency/kWh,NaN,0,0
 opex_var,currency/kWh,NaN,0,0
 soc_initial,None or factor,None,NaN,NaN

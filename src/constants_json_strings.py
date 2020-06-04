@@ -85,7 +85,7 @@ AGE_INSTALLED = "age_installed"
 LIFETIME = "lifetime"
 CAPEX_FIX = "C_development"
 CAPEX_VAR = "c_specific"
-OPEX_FIX = "opex_fix"
+OPEX_FIX = "cost_om"
 OPEX_VAR = "opex_var"
 OEMOF_ASSET_TYPE = "type_oemof"
 
@@ -118,7 +118,7 @@ TIMESERIES_PEAK = "timeseries_peak"
 ANNUITY_FACTOR = "annuity_factor"
 SIMULATION_ANNUITY = "simulation_annuity"
 CRF = "crf"
-LIFETIME_OPEX_FIX = "lifetime_opex_fix"
+LIFETIME_OPEX_FIX = "lifetime_cost_om"
 LIFETIME_OPEX_VAR = "lifetime_opex_var"
 
 # Other Parameters
@@ -154,7 +154,7 @@ KPI_SCALARS = (
     "annuity_total",
     COST_INVESTMENT,
     COST_OM,
-    "costs_opex_fix",
+    "costs_cost_om",
     "costs_opex_var",
     COST_TOTAL,
     "costs_upfront",

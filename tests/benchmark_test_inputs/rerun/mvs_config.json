@@ -80,7 +80,7 @@
                 "unit": "currency/kW",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
@@ -88,7 +88,7 @@
                 "unit": "?",
                 "value": -5.505932460595773
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 0
             },
@@ -135,7 +135,7 @@
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
@@ -143,7 +143,7 @@
                 "unit": "?",
                 "value": 0.0
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 0
             },
@@ -193,7 +193,7 @@
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
@@ -201,7 +201,7 @@
                 "unit": "?",
                 "value": 0.0
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 0
             },
@@ -265,7 +265,7 @@
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
@@ -273,7 +273,7 @@
                 "unit": "?",
                 "value": 0.0
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 0
             },
@@ -337,7 +337,7 @@
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
@@ -345,7 +345,7 @@
                 "unit": "?",
                 "value": 0.0
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 0
             },
@@ -417,7 +417,7 @@
                 "unit": "currency/kW",
                 "value": 4251.795182206622
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
@@ -429,7 +429,7 @@
                 "unit": "kW",
                 "value": null
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
@@ -487,7 +487,7 @@
                 "unit": "currency/kW",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
@@ -499,7 +499,7 @@
                 "unit": "kW",
                 "value": null
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
@@ -557,7 +557,7 @@
                 "unit": "currency/kW",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
@@ -569,7 +569,7 @@
                 "unit": "kW",
                 "value": null
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
@@ -627,7 +627,7 @@
                 "unit": "currency/kW",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
@@ -639,7 +639,7 @@
                 "unit": "kVA",
                 "value": null
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
@@ -697,7 +697,7 @@
                 "unit": "currency/kW",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
@@ -709,7 +709,7 @@
                 "unit": "kVA",
                 "value": null
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
@@ -759,7 +759,7 @@
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kWpe",
                 "value": 0.0
             },
@@ -771,7 +771,7 @@
                 "unit": "kWp",
                 "value": null
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/kWpeak",
                 "value": 0
             },
@@ -830,7 +830,7 @@
                 "unit": "currency/unit",
                 "value": 7200.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/unit/ye",
                 "value": 1101.1864921191543
             },
@@ -842,7 +842,7 @@
                 "unit": " kWp",
                 "value": null
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/unit/year",
                 "value": 80
             },
@@ -919,7 +919,7 @@
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
@@ -927,7 +927,7 @@
                 "unit": "?",
                 "value": 0.0
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 0
             },
@@ -1002,7 +1002,7 @@
                     "unit": "currency/unit",
                     "value": 0.0
                 },
-                "lifetime_opex_fix": {
+                "lifetime_cost_om": {
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
@@ -1014,7 +1014,7 @@
                     "unit": "kW",
                     "value": null
                 },
-                "opex_fix": {
+                "cost_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
@@ -1077,7 +1077,7 @@
                     "unit": "currency/unit",
                     "value": 0.0
                 },
-                "lifetime_opex_fix": {
+                "lifetime_cost_om": {
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
@@ -1089,7 +1089,7 @@
                     "unit": "kW",
                     "value": null
                 },
-                "opex_fix": {
+                "cost_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
@@ -1142,7 +1142,7 @@
                     "unit": "currency/unit",
                     "value": 6784.35749156227
                 },
-                "lifetime_opex_fix": {
+                "lifetime_cost_om": {
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
@@ -1154,7 +1154,7 @@
                     "unit": "kWh",
                     "value": null
                 },
-                "opex_fix": {
+                "cost_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
@@ -1207,7 +1207,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 0
             },
@@ -1234,7 +1234,7 @@
                 "unit": "year",
                 "value": 20
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 0
             },
@@ -1261,7 +1261,7 @@
                 "unit": "year",
                 "value": 20
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 4600
             },

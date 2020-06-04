@@ -76,7 +76,7 @@
                 "unit": "year",
                 "value": 15
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
@@ -120,7 +120,7 @@
                 "unit": "year",
                 "value": 10
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
@@ -164,7 +164,7 @@
                 "unit": "year",
                 "value": 10
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
@@ -208,7 +208,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
@@ -252,7 +252,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
@@ -298,7 +298,7 @@
                 "unit": " kWp",
                 "value": null
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/unit/year",
                 "value": 80
             },
@@ -382,7 +382,7 @@
                     "unit": "year",
                     "value": 10
                 },
-                "opex_fix": {
+                "cost_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
@@ -428,7 +428,7 @@
                     "unit": "year",
                     "value": 10
                 },
-                "opex_fix": {
+                "cost_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
@@ -464,7 +464,7 @@
                     "unit": "year",
                     "value": 10
                 },
-                "opex_fix": {
+                "cost_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
@@ -505,7 +505,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 0
             },
@@ -532,7 +532,7 @@
                 "unit": "year",
                 "value": 20
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 0
             },
@@ -559,7 +559,7 @@
                 "unit": "year",
                 "value": 20
             },
-            "opex_fix": {
+            "cost_om": {
                 "unit": "currency/year",
                 "value": 4600
             },

@@ -600,7 +600,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
             dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
             dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION],
             timeseries,
-            opex_fix=peak_demand_pricing,
+            cost_om=peak_demand_pricing,
         )
         list_of_dso_energyProduction_assets.append(dso + "_consumption")
     else:
@@ -625,7 +625,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
                 dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
                 dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION],
                 timeseries,
-                opex_fix=peak_demand_pricing,
+                cost_om=peak_demand_pricing,
             )
             list_of_dso_energyProduction_assets.append(dso_source_name)
 
@@ -957,7 +957,7 @@ def complete_missing_cost_data(dict_asset):
     if OPEX_FIX not in dict_asset:
         dict_asset.update({OPEX_FIX: 0})
         logging.error(
-            "Dictionary of asset %s is incomplete, as opex_fix is missing.",
+            "Dictionary of asset %s is incomplete, as cost_om is missing.",
             dict_asset[LABEL],
         )
     return

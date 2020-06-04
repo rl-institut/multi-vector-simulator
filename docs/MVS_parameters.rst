@@ -71,7 +71,7 @@ Common Parameters in the CSV/JSON files and in energyConversion.csv:
 
 **lifetime**: Number of operational years of the asset until it has to be replaced
 
-**opex_fix**: Specific annual OPEX of the asset (€/kW/year)
+**cost_om**: Specific annual OPEX of the asset (€/kW/year)
 
 **opex_var**: Variable cost associated with a flow through/from the asset (€/kWh). In "storage_xx.csv" only the columns "input power" and "output power"
 require a value, in column "storage capacity" opex_var should be set to NaN.

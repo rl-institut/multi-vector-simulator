@@ -7,7 +7,7 @@ inflow_direction,str,"[MicroGrid,Water]"
 installedCap,kW,0
 label,str,Electrolyser
 lifetime,year,20
-opex_fix,currency/kW/year,75
+cost_om,currency/kW/year,75
 opex_var,currency/kWh,"[0,0.0038]"
 optimizeCap,bool,True
 outflow_direction,str,Local H2 grid

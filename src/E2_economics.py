@@ -123,12 +123,12 @@ def get_costs(dict_asset, economic_data):
             if OPTIMIZED_ADD_CAP in dict_asset:
                 cap += dict_asset[OPTIMIZED_ADD_CAP][VALUE]
 
-            costs_opex_fix = dict_asset[LIFETIME_OPEX_FIX][VALUE] * cap
+            costs_cost_om = dict_asset[LIFETIME_OPEX_FIX][VALUE] * cap
             costs_total = add_costs_and_total(
-                dict_asset, "costs_opex_fix", costs_opex_fix, costs_total
+                dict_asset, "costs_cost_om", costs_cost_om, costs_total
             )
             cost_om = add_costs_and_total(
-                dict_asset, "costs_opex_fix", costs_opex_fix, cost_om
+                dict_asset, "costs_cost_om", costs_cost_om, cost_om
             )
 
         dict_asset.update(
