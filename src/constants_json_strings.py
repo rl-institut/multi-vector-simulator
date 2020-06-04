@@ -85,7 +85,7 @@ AGE_INSTALLED = "age_installed"
 LIFETIME = "lifetime"
 C_DEVELOPMENT = "Cost_development"
 C_SPECIFIC = "cost_specific"
-OPEX_FIX = "cost_om"
+C_OM = "cost_om"
 OPEX_VAR = "p_dispatch"
 OEMOF_ASSET_TYPE = "type_oemof"
 

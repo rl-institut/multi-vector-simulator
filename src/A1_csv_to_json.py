@@ -50,7 +50,7 @@ from src.constants import (
 from src.constants_json_strings import (
     LABEL,
     OPEX_VAR,
-    OPEX_FIX,
+    C_OM,
     C_DEVELOPMENT,
     C_SPECIFIC,
     AGE_INSTALLED,
@@ -556,7 +556,7 @@ def add_storage_components(storage_filename, input_directory):
             INSTALLED_CAP,
             LABEL,
             LIFETIME,
-            OPEX_FIX,
+            C_OM,
             UNIT,
         ]
         single_dict = create_json_from_csv(
