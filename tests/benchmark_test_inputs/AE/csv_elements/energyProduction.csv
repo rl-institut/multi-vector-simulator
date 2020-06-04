@@ -1,6 +1,6 @@
 ,unit
 age_installed,year
-capex_fix,currency
+C_development,currency
 capex_var,currency/unit
 file_name
 installedCap,kWp

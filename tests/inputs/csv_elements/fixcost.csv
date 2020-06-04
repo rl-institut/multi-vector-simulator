@@ -1,6 +1,6 @@
 ,unit,distribution_grid,engineering,operation
 age_installed,year,10, 0, 0
-capex_fix,currency,0.0,0,0
+C_development,currency,0.0,0,0
 capex_var,currency,0.0,0,0
 label,str,distribution grid infrastructure,"R&D, engineering",Fix project operation
 lifetime,year,30,20,20

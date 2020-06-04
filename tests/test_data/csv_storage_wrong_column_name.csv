@@ -1,6 +1,6 @@
 ,unit,storage capacity,input power,wrong
 age_installed,str,val11,val22,val33
-capex_fix,factor,21,22,23
+C_development,factor,21,22,23
 c_rate,factor of total capacity (kWh),1,1,1
 opex_var,currency/kWh,NaN,0,0
 soc_initial,None or factor,None,NaN,NaN

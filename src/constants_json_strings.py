@@ -83,7 +83,7 @@ INSTALLED_CAP = "installedCap"
 MAXIMUM_CAP = "maximumCap"
 AGE_INSTALLED = "age_installed"
 LIFETIME = "lifetime"
-CAPEX_FIX = "capex_fix"
+CAPEX_FIX = "C_development"
 CAPEX_VAR = "capex_var"
 OPEX_FIX = "opex_fix"
 OPEX_VAR = "opex_var"
@@ -165,8 +165,3 @@ TOTAL_FLOW = "total_flow"
 ANNUAL_TOTAL_FLOW = "annual_total_flow"
 LIFETIME_CAPEX_VAR = "lifetime_capex_var"
 ANNUITY_CAPEX_OPEX_VAR = "annuity_capex_opex_var"
-
-
-
-
-
