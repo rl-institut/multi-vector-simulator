@@ -572,14 +572,14 @@ def define_dso_sinks_and_sources(dict_values, dso):
     peak_demand_pricing = dict_values[ENERGY_PROVIDERS][dso][PEAK_DEMAND_PRICING][VALUE]
     if isinstance(peak_demand_pricing, float) or isinstance(peak_demand_pricing, int):
         logging.debug(
-            "The peak demand pricing price of %s %s is set as c_specific of "
+            "The peak demand pricing price of %s %s is set as cost_specific of "
             "the sources of grid energy.",
             peak_demand_pricing,
             dict_values[ECONOMIC_DATA][CURR],
         )
     else:
         logging.debug(
-            "The peak demand pricing price of %s %s is set as c_specific of "
+            "The peak demand pricing price of %s %s is set as cost_specific of "
             "the sources of grid energy.",
             sum(peak_demand_pricing) / len(peak_demand_pricing),
             dict_values[ECONOMIC_DATA][CURR],
@@ -634,7 +634,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         dso + "_feedin",
         dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
         dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
-        c_specific={VALUE: 0, UNIT: "currency/kW"},
+        cost_specific={VALUE: 0, UNIT: "currency/kW"},
     )
 
     dict_values[ENERGY_PROVIDERS][dso].update(
@@ -951,7 +951,7 @@ def complete_missing_cost_data(dict_asset):
     if CAPEX_VAR not in dict_asset:
         dict_asset.update({CAPEX_VAR: 0})
         logging.error(
-            "Dictionary of asset %s is incomplete, as c_specific is missing.",
+            "Dictionary of asset %s is incomplete, as cost_specific is missing.",
             dict_asset[LABEL],
         )
     if OPEX_FIX not in dict_asset:

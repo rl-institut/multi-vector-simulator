@@ -1,7 +1,7 @@
 ,unit
 age_installed,year
 Cost_development,currency
-c_specific,currency/unit
+cost_specific,currency/unit
 file_name
 installedCap,kWp
 maximumCap, kWp

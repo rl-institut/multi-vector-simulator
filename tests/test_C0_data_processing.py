@@ -67,7 +67,7 @@ def test_complete_missing_cost_data_cost_om():
     assert dict_asset[OPEX_FIX] == 0
 
 
-def test_complete_missing_cost_data_c_specific():
+def test_complete_missing_cost_data_cost_specific():
     dict_asset = {LABEL: "a_label"}
     C0.complete_missing_cost_data(dict_asset)
     assert CAPEX_VAR in dict_asset.keys()

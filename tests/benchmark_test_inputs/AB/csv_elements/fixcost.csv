@@ -1,7 +1,7 @@
 ,unit
 age_installed,year
 Cost_development,currency
-c_specific,currency
+cost_specific,currency
 label,str
 lifetime,year
 cost_om,currency/year

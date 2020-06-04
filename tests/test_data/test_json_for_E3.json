@@ -77,7 +77,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/kW",
                 "value": 0
             },
@@ -107,7 +107,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -175,7 +175,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -205,7 +205,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -273,7 +273,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -306,7 +306,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -388,7 +388,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -421,7 +421,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -503,7 +503,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -536,7 +536,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -624,7 +624,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/kW",
                 "value": 3000
             },
@@ -659,7 +659,7 @@
                 "unit": "year",
                 "value": 15
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/kW",
                 "value": 4251.795182206622
             },
@@ -737,7 +737,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -778,7 +778,7 @@
                 "unit": "year",
                 "value": 10
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -856,7 +856,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -897,7 +897,7 @@
                 "unit": "year",
                 "value": 10
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -975,7 +975,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -1010,7 +1010,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -1088,7 +1088,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -1123,7 +1123,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -1199,7 +1199,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -1238,7 +1238,7 @@
                 "unit": "factor",
                 "value": 0.1
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -1318,7 +1318,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -1357,7 +1357,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -1441,7 +1441,7 @@
                 "unit": "currency",
                 "value": 10000
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/unit",
                 "value": 7200
             },
@@ -1471,7 +1471,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/unit",
                 "value": 7200.0
             },
@@ -1545,7 +1545,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -1572,7 +1572,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_c_specific": {
+            "lifetime_cost_specific": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -1654,7 +1654,7 @@
                     "unit": "currency",
                     "value": 0
                 },
-                "c_specific": {
+                "cost_specific": {
                     "unit": "currency/unit",
                     "value": 0
                 },
@@ -1686,7 +1686,7 @@
                     "unit": "year",
                     "value": 10
                 },
-                "lifetime_c_specific": {
+                "lifetime_cost_specific": {
                     "unit": "currency/unit",
                     "value": 0.0
                 },
@@ -1772,7 +1772,7 @@
                     "unit": "currency",
                     "value": 0
                 },
-                "c_specific": {
+                "cost_specific": {
                     "unit": "currency/unit",
                     "value": 0
                 },
@@ -1804,7 +1804,7 @@
                     "unit": "year",
                     "value": 10
                 },
-                "lifetime_c_specific": {
+                "lifetime_cost_specific": {
                     "unit": "currency/unit",
                     "value": 0.0
                 },
@@ -1880,7 +1880,7 @@
                     "unit": "currency",
                     "value": 0
                 },
-                "c_specific": {
+                "cost_specific": {
                     "unit": "currency/unit",
                     "value": 4000
                 },
@@ -1912,7 +1912,7 @@
                     "unit": "year",
                     "value": 10
                 },
-                "lifetime_c_specific": {
+                "lifetime_cost_specific": {
                     "unit": "currency/unit",
                     "value": 6784.35749156227
                 },
@@ -1985,7 +1985,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -2012,7 +2012,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency",
                 "value": 0
             },
@@ -2039,7 +2039,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "c_specific": {
+            "cost_specific": {
                 "unit": "currency",
                 "value": 0
             },

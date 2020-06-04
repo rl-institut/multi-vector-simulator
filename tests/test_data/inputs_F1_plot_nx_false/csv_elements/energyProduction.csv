@@ -1,7 +1,7 @@
 ,unit,pv_plant_01
 age_installed,year,0
 Cost_development,currency,10000
-c_specific,currency/unit,7200
+cost_specific,currency/unit,7200
 file_name,str,pv_gen_merra2_2014_eff1_tilt40_az180.csv
 installedCap,kWp,1500
 maximumCap, kWp, 1000
