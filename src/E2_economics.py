@@ -111,7 +111,7 @@ def get_costs(dict_asset, economic_data):
                 dict_asset, COST_DISPATCH, costs_price_dispatch, cost_om
             )
 
-        # todo actually, price is probably not the label, but price_dispatch
+        # todo actually, price is probably not the label, but dispatch_price
         if all_list_in_dict(dict_asset, ["price", ANNUAL_TOTAL_FLOW]) is True:
             costs_energy = (
                 dict_asset["price"][VALUE] * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]

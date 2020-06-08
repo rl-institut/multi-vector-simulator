@@ -267,11 +267,11 @@ class TestSinkComponent:
         if amount_inputs == 1:
             input_bus_names = [dict_asset[INPUT_BUS_NAME]]
             if dispatchable is True:
-                price_dispatch = [dict_asset[DISPATCH_PRICE][VALUE]]
+                dispatch_price = [dict_asset[DISPATCH_PRICE][VALUE]]
         elif amount_inputs > 1:
             input_bus_names = dict_asset[INPUT_BUS_NAME]
             if dispatchable is True:
-                price_dispatch = dict_asset[DISPATCH_PRICE][VALUE]
+                dispatch_price = dict_asset[DISPATCH_PRICE][VALUE]
         else:
             raise ValueError("`amount_inputs` should be int but not zero.")
         for input_bus_name, i in zip(input_bus_names, range(len(input_bus_names))):
@@ -281,11 +281,11 @@ class TestSinkComponent:
                 assert_series_equal(input_bus.actual_value, dict_asset[TIMESERIES])
                 assert (
                     input_bus.variable_costs.default == 0
-                )  # this only is a real check if price_dispatch is not 0
+                )  # this only is a real check if dispatch_price is not 0
             elif dispatchable is True:
                 assert input_bus.fixed is False
                 assert len(input_bus.actual_value) == 0
-                assert input_bus.variable_costs.default == price_dispatch[i]
+                assert input_bus.variable_costs.default == dispatch_price[i]
             else:
                 raise ValueError(
                     f"`dispatchable` should be True/False but is '{dispatchable}'"
