@@ -55,6 +55,12 @@ from src.constants_json_strings import (
     KPI,
     KPI_SCALAR_MATRIX,
     KPI_COST_MATRIX,
+    COST_TOTAL,
+    COST_OM_TOTAL,
+    COST_INVESTMENT,
+    COST_DISPATCH,
+    COST_OM_FIX,
+    COST_UPFRONT
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -308,10 +314,10 @@ def create_app(results_json):
     df_cost_matrix = df_cost_matrix.drop(
         [
             "index",
-            "costs_om",
-            "costs_investment",
-            "costs_price_dispatch",
-            "costs_cost_om",
+            COST_OM_TOTAL,
+            COST_INVESTMENT,
+            COST_DISPATCH,
+            COST_OM_FIX,
         ],
         axis=1,
     )
@@ -320,8 +326,8 @@ def create_app(results_json):
     df_cost_matrix = df_cost_matrix.rename(
         columns={
             LABEL: "Component",
-            "costs_total": "CAP",
-            "costs_upfront": "Upfront Investment Costs",
+            COST_TOTAL: "CAP",
+            COST_UPFRONT: "Upfront Investment Costs",
         }
     )
 
