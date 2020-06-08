@@ -116,13 +116,16 @@ TIMESERIES_PEAK = "timeseries_peak"
 
 # Pre-processing cost parameters
 ANNUITY_FACTOR = "annuity_factor"
-SIMULATION_ANNUITY = "simulation_annuity"
 CRF = "CRF"
 
 # Processed cost parameters
 LIFETIME_SPECIFIC_COST_OM = "lifetime_specific_cost_om"
 LIFETIME_PRICE_DISPATCH = "lifetime_price_dispatch"
 LIFETIME_SPECIFIC_COST = "lifetime_specific_cost"
+ANNUITY_SPECIFIC_INVESTMENT_AND_OM = (
+    "annuity_of_specific_investment_costs_and_specific_annual_om"
+)
+SIMULATION_ANNUITY = "simulation_annuity"
 
 # Other Parameters
 SECTORS = "sectors"
@@ -152,21 +155,26 @@ OPTIMIZED_ADD_CAP = "optimizedAddCap"
 
 # Costs - Annuities
 ANNUITY_OM = "annuity_om"
-ANNUITY_CAPEX_OPEX_VAR = "annuity_capex_price_dispatch"
+ANNUITY_TOTAL = "annuity_total"
 
-# Costs - Total
+# Costs - Total per asset
 COST_TOTAL = "costs_total"
-COST_OM = "costs_om"
-COST_INVESTMENT = "costs_investment"
+COST_OM_TOTAL = "costs_om_total"
+COST_OM_FIX = "costs_cost_om"  # Fix asset operation/management costs per year, not depending on use
+COST_DISPATCH = (
+    "costs_dispatch"  # Variable asset operation/management costs, depending on dispatch
+)
+COST_UPFRONT = "costs_upfront_in_year_zero"
+COST_INVESTMENT = "costs_investment_over_lifetime"
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (
     ANNUITY_OM,
-    "annuity_total",
+    ANNUITY_TOTAL,
     COST_INVESTMENT,
-    COST_OM,
-    "costs_cost_om",
-    "costs_price_dispatch",
+    COST_OM_TOTAL,
+    COST_OM_FIX,
+    COST_DISPATCH,
     COST_TOTAL,
-    "costs_upfront",
+    COST_UPFRONT,
 )

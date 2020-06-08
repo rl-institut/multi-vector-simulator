@@ -17,6 +17,13 @@ from src.constants_json_strings import (
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
     ANNUITY_OM,
+    ANNUITY_TOTAL,
+    COST_TOTAL,
+    COST_OM_TOTAL,
+    COST_INVESTMENT,
+    COST_DISPATCH,
+    COST_OM_FIX,
+    COST_UPFRONT,
 )
 
 r"""
@@ -69,7 +76,7 @@ def get_costs(dict_asset, economic_data):
                 + dict_asset[COST_DEVELOPMENT][VALUE]
             )
             costs_total = add_costs_and_total(
-                dict_asset, "costs_investment", costs_investment, costs_total
+                dict_asset, COST_INVESTMENT, costs_investment, costs_total
             )
 
         if (
@@ -86,7 +93,7 @@ def get_costs(dict_asset, economic_data):
                 + dict_asset[COST_DEVELOPMENT][VALUE]
             )
             costs_total = add_costs_and_total(
-                dict_asset, "costs_upfront", costs_upfront, costs_total
+                dict_asset, COST_UPFRONT, costs_upfront, costs_total
             )
 
         if (
@@ -98,10 +105,10 @@ def get_costs(dict_asset, economic_data):
                 * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]
             )
             costs_total = add_costs_and_total(
-                dict_asset, "costs_price_dispatch", costs_price_dispatch, costs_total
+                dict_asset, COST_DISPATCH, costs_price_dispatch, costs_total
             )
             cost_om = add_costs_and_total(
-                dict_asset, "costs_price_dispatch", costs_price_dispatch, cost_om
+                dict_asset, COST_DISPATCH, costs_price_dispatch, cost_om
             )
 
         # todo actually, price is probably not the label, but price_dispatch
@@ -131,27 +138,27 @@ def get_costs(dict_asset, economic_data):
 
             costs_cost_om = dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE] * cap
             costs_total = add_costs_and_total(
-                dict_asset, "costs_cost_om", costs_cost_om, costs_total
+                dict_asset, COST_OM_FIX, costs_cost_om, costs_total
             )
             cost_om = add_costs_and_total(
-                dict_asset, "costs_cost_om", costs_cost_om, cost_om
+                dict_asset, COST_OM_FIX, costs_cost_om, cost_om
             )
 
         dict_asset.update(
             {
-                "costs_total": {VALUE: costs_total, UNIT: CURR},
-                "costs_om": {VALUE: cost_om, UNIT: CURR},
+                COST_TOTAL: {VALUE: costs_total, UNIT: CURR},
+                COST_OM_TOTAL: {VALUE: cost_om, UNIT: CURR},
             }
         )
 
         dict_asset.update(
             {
-                "annuity_total": {
-                    VALUE: dict_asset["costs_total"][VALUE] * economic_data[CRF][VALUE],
+                ANNUITY_TOTAL: {
+                    VALUE: dict_asset[COST_TOTAL][VALUE] * economic_data[CRF][VALUE],
                     UNIT: "currency/year",
                 },
                 ANNUITY_OM: {
-                    VALUE: dict_asset["costs_om"][VALUE] * economic_data[CRF][VALUE],
+                    VALUE: dict_asset[COST_OM_TOTAL][VALUE] * economic_data[CRF][VALUE],
                     UNIT: "currency/year",
                 },
             }

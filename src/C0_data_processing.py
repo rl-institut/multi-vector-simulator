@@ -919,7 +919,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     # Annuities of components including opex AND capex #
     dict_asset.update(
         {
-            ANNUITY_CAPEX_OPEX_VAR: {
+            ANNUITY_SPECIFIC_INVESTMENT_AND_OM: {
                 VALUE: economics.annuity(
                     dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
                     economic_data[CRF][VALUE],
@@ -944,7 +944,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         {
             SIMULATION_ANNUITY: {
                 VALUE: economics.simulation_annuity(
-                    dict_asset[ANNUITY_CAPEX_OPEX_VAR][VALUE],
+                    dict_asset[ANNUITY_SPECIFIC_INVESTMENT_AND_OM][VALUE],
                     settings[EVALUATED_PERIOD][VALUE],
                 ),
                 UNIT: "currency/unit/simulation period",
