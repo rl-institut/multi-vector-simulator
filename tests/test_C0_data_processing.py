@@ -98,11 +98,11 @@ dict_asset = {
 def test_evaluate_lifetime_costs_adds_all_parameters():
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
     for k in (
-            LIFETIME_SPECIFIC_COST,
-            ANNUITY_CAPEX_OPEX_VAR,
-            LIFETIME_SPECIFIC_COST_OM,
-            LIFETIME_PRICE_DISPATCH,
-            SIMULATION_ANNUITY,
+        LIFETIME_SPECIFIC_COST,
+        ANNUITY_CAPEX_OPEX_VAR,
+        LIFETIME_SPECIFIC_COST_OM,
+        LIFETIME_PRICE_DISPATCH,
+        SIMULATION_ANNUITY,
     ):
         assert k in dict_asset.keys()
 
