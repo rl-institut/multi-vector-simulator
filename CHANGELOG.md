@@ -31,6 +31,8 @@ Here is a template for new release sections
 - Renaming CAPEX_VAR = "capex_var" into SPECIFIC_COST = "specific_cost" (#40)
 - Renaming OPEX_FIX = "opex_fix" into SPECIFIC_COST_OM = "specific_cost_om" (#40)
 - Renaming OPEX_VAR = "opex_var" into PRICE_DISPATCH = "price_dispatch" (#40)
+- Change into constants into "constants_json_strings.py": "annuity_total", "costs_opex_fix"/"costs_cost_om", "costs_opex_var"/"costs_p_dispatch", "costs_upfront", "costs_total" and "costs_om"
+
 
 ### Removed
 
