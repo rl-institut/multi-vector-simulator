@@ -15,7 +15,7 @@ from src.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
     ENERGY_STORAGE,
-    PRICE_DISPATCH,
+    DISPATCH_PRICE,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
     INPUT_POWER,
@@ -267,11 +267,11 @@ class TestSinkComponent:
         if amount_inputs == 1:
             input_bus_names = [dict_asset[INPUT_BUS_NAME]]
             if dispatchable is True:
-                price_dispatch = [dict_asset[PRICE_DISPATCH][VALUE]]
+                price_dispatch = [dict_asset[DISPATCH_PRICE][VALUE]]
         elif amount_inputs > 1:
             input_bus_names = dict_asset[INPUT_BUS_NAME]
             if dispatchable is True:
-                price_dispatch = dict_asset[PRICE_DISPATCH][VALUE]
+                price_dispatch = dict_asset[DISPATCH_PRICE][VALUE]
         else:
             raise ValueError("`amount_inputs` should be int but not zero.")
         for input_bus_name, i in zip(input_bus_names, range(len(input_bus_names))):

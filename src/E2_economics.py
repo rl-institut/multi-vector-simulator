@@ -6,8 +6,8 @@ from src.constants_json_strings import (
     ECONOMIC_DATA,
     CURR,
     LABEL,
-    COST_DEVELOPMENT,
-    SPECIFIC_COST,
+    DEVELOPMENT_COSTS,
+    SPECIFIC_COSTS,
     INSTALLED_CAP,
     SIMULATION_SETTINGS,
     LIFETIME_SPECIFIC_COST,
@@ -64,7 +64,7 @@ def get_costs(dict_asset, economic_data):
         if (
             all_list_in_dict(
                 dict_asset,
-                [LIFETIME_SPECIFIC_COST, COST_DEVELOPMENT, OPTIMIZED_ADD_CAP],
+                [LIFETIME_SPECIFIC_COST, DEVELOPMENT_COSTS, OPTIMIZED_ADD_CAP],
             )
             is True
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
@@ -73,7 +73,7 @@ def get_costs(dict_asset, economic_data):
             costs_investment = (
                 dict_asset[OPTIMIZED_ADD_CAP][VALUE]
                 * dict_asset[LIFETIME_SPECIFIC_COST][VALUE]
-                + dict_asset[COST_DEVELOPMENT][VALUE]
+                + dict_asset[DEVELOPMENT_COSTS][VALUE]
             )
             costs_total = add_costs_and_total(
                 dict_asset, COST_INVESTMENT, costs_investment, costs_total
@@ -81,7 +81,7 @@ def get_costs(dict_asset, economic_data):
 
         if (
             all_list_in_dict(
-                dict_asset, [SPECIFIC_COST, COST_DEVELOPMENT, OPTIMIZED_ADD_CAP]
+                dict_asset, [SPECIFIC_COSTS, DEVELOPMENT_COSTS, OPTIMIZED_ADD_CAP]
             )
             is True
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
@@ -89,8 +89,8 @@ def get_costs(dict_asset, economic_data):
             # investments including fix prices, only upfront costs at t=0
             costs_upfront = (
                 dict_asset[OPTIMIZED_ADD_CAP][VALUE]
-                + dict_asset[SPECIFIC_COST][VALUE]
-                + dict_asset[COST_DEVELOPMENT][VALUE]
+                + dict_asset[SPECIFIC_COSTS][VALUE]
+                + dict_asset[DEVELOPMENT_COSTS][VALUE]
             )
             costs_total = add_costs_and_total(
                 dict_asset, COST_UPFRONT, costs_upfront, costs_total
