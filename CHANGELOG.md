@@ -20,6 +20,14 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+-
+### Changed
+-
+### Removed
+
+## [0.3.0] - 2020-06-08
+
+### Added
 - Test for re-running a simulation with `json_input_processed.json` file (#343)
 
 ### Changed
