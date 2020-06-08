@@ -1,20 +1,42 @@
 import src.E2_economics as E2
+from src.constants_json_strings import (
+    UNIT,
+    CURR,
+    DEVELOPMENT_COSTS,
+    SPECIFIC_COSTS,
+    DISPATCH_PRICE,
+    VALUE,
+    LABEL,
+    INSTALLED_CAP,
+    LIFETIME_SPECIFIC_COST,
+    CRF,
+    LIFETIME_SPECIFIC_COST_OM,
+    LIFETIME_PRICE_DISPATCH,
+    ANNUAL_TOTAL_FLOW,
+    OPTIMIZED_ADD_CAP,
+    ANNUITY_OM,
+    ANNUITY_TOTAL,
+    COST_TOTAL,
+    COST_OM_TOTAL,
+    COST_DISPATCH,
+    COST_OM_FIX,
+)
 
 dict_asset = {
-    "label": "DSO_feedin_sink",
-    "opex_var": {"value": -0.4, "unit": "currency/kWh"},
-    "capex_var": {"value": 0, "unit": "currency/kW"},
-    "installedCap": {"value": 0.0, "unit": "unit"},
-    "capex_fix": {"value": 0, "unit": "currency"},
-    "lifetime_capex_var": {"value": 0.0, "unit": "currency/kW"},
-    "lifetime_opex_fix": {"value": 0.0, "unit": "currency/ye"},
-    "lifetime_opex_var": {"value": -5.505932460595773, "unit": "?"},
-    "annual_total_flow": {"value": 0.0, "unit": "kWh"},
-    "optimizedAddCap": {"value": 0, "unit": "?"},
+    LABEL: "DSO_feedin_sink",
+    DISPATCH_PRICE: {VALUE: -0.4, UNIT: "currency/kWh"},
+    SPECIFIC_COSTS: {VALUE: 0, UNIT: "currency/kW"},
+    INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
+    DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
+    LIFETIME_SPECIFIC_COST: {VALUE: 0.0, UNIT: "currency/kW"},
+    LIFETIME_SPECIFIC_COST_OM: {VALUE: 0.0, UNIT: "currency/ye"},
+    LIFETIME_PRICE_DISPATCH: {VALUE: -5.505932460595773, UNIT: "?"},
+    ANNUAL_TOTAL_FLOW: {VALUE: 0.0, UNIT: "kWh"},
+    OPTIMIZED_ADD_CAP: {VALUE: 0, UNIT: "?"},
 }
 
 dict_economic = {
-    "crf": {"value": 0.07264891149004721, "unit": "?"},
+    CRF: {VALUE: 0.07264891149004721, UNIT: "?"},
 }
 
 
@@ -22,12 +44,12 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     """Tests whether the function get_costs is adding all the calculated costs to dict_asset."""
     E2.get_costs(dict_asset, dict_economic)
     for k in (
-        "costs_opex_var",
-        "costs_opex_fix",
-        "costs_total",
-        "costs_om",
-        "annuity_total",
-        "annuity_om",
+        COST_DISPATCH,
+        COST_OM_FIX,
+        COST_TOTAL,
+        COST_OM_TOTAL,
+        ANNUITY_TOTAL,
+        ANNUITY_OM,
     ):
         assert k in dict_asset
 
@@ -45,13 +67,13 @@ def test_add_costs_and_total():
 
 def test_all_list_in_dict_passes_as_all_keys_included():
     """Tests whether looking for list items in dict_asset is plausible."""
-    list_true = ["annual_total_flow", "optimizedAddCap"]
+    list_true = ["annual_total_flow", OPTIMIZED_ADD_CAP]
     boolean = E2.all_list_in_dict(dict_asset, list_true)
-    assert boolean == True
+    assert boolean is True
 
 
 def test_all_list_in_dict_fails_due_to_not_included_keys():
     """Tests whether looking for list items in dict_asset is plausible."""
-    list_false = ["flow", "optimizedAddCap"]
+    list_false = ["flow", OPTIMIZED_ADD_CAP]
     boolean = E2.all_list_in_dict(dict_asset, list_false)
-    assert boolean == False
+    assert boolean is False

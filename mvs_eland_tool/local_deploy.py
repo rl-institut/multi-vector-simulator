@@ -38,7 +38,14 @@ import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
 import src.F0_output as output_processing
 from mvs_eland_tool import version, version_date
-from src.constants import CSV_ELEMENTS, CSV_EXT
+from src.constants import (
+    CSV_ELEMENTS,
+    CSV_EXT,
+    PATH_INPUT_FILE,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+    INPUT_TYPE,
+)
 
 
 def main(**kwargs):
@@ -97,22 +104,22 @@ def main(**kwargs):
     # Read all inputs
     #    print("")
     #    # todo: is user input completely used?
-    #    dict_values = data_input.load_json(user_input["path_input_file"])
+    #    dict_values = data_input.load_json(user_input[PATH_INPUT_FILE ])
 
     move_copy_config_file = False
 
-    if user_input["input_type"] == CSV_EXT:
+    if user_input[INPUT_TYPE] == CSV_EXT:
         logging.debug("Accessing script: A1_csv_to_json")
         move_copy_config_file = True
         load_data_from_csv.create_input_json(
-            input_directory=os.path.join(user_input["path_input_folder"], CSV_ELEMENTS)
+            input_directory=os.path.join(user_input[PATH_INPUT_FOLDER], CSV_ELEMENTS)
         )
 
     logging.debug("Accessing script: B0_data_input_json")
     dict_values = data_input.load_json(
-        user_input["path_input_file"],
-        path_input_folder=user_input["path_input_folder"],
-        path_output_folder=user_input["path_output_folder"],
+        user_input[PATH_INPUT_FILE],
+        path_input_folder=user_input[PATH_INPUT_FOLDER],
+        path_output_folder=user_input[PATH_OUTPUT_FOLDER],
         move_copy=move_copy_config_file,
     )
 
@@ -124,8 +131,8 @@ def main(**kwargs):
     logging.debug("Accessing script: D0_modelling_and_optimization")
     results_meta, results_main = modelling.run_oemof(dict_values)
     """
-    if dict_values['simulation_settings']['restore_from_oemof_file'] == True:
-        if os.path.isfile(dict_values['simulation_settings']['path_output_folder'] + '/' + "oemof_simulation_results.oemof)== False:
+    if dict_values['simulation_settings']['restore_from_oemof_file'] is True:
+        if os.path.isfile(dict_values['simulation_settings']['path_output_folder'] + '/' + "oemof_simulation_results.oemof)is False:
             print('')
             logging.debug('Accessing script: D0_modelling_and_optimization')
             results_meta, results_main = modelling.run_oemof(dict_values)

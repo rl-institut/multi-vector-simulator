@@ -21,12 +21,51 @@ import reverse_geocoder as rg
 from src.constants import (
     PLOTS_BUSSES,
     PATHS_TO_PLOTS,
+    PATH_OUTPUT_FOLDER,
     PLOTS_DEMANDS,
     PLOTS_RESOURCES,
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
+    REPO_PATH,
+    OUTPUT_FOLDER,
+    INPUTS_COPY,
+    CSV_ELEMENTS,
+    ECONOMIC_DATA,
+    PROJECT_DATA,
+    INSTALLED_CAP,
 )
-from src.constants import REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS
+from src.constants_json_strings import (
+    UNIT,
+    ENERGY_CONVERSION,
+    ENERGY_CONSUMPTION,
+    ENERGY_PRODUCTION,
+    OEMOF_ASSET_TYPE,
+    LABEL,
+    SECTORS,
+    VALUE,
+    ENERGY_VECTOR,
+    OPTIMIZE_CAP,
+    SIMULATION_SETTINGS,
+    EVALUATED_PERIOD,
+    START_DATE,
+    TIMESTEP,
+    TIMESERIES_PEAK,
+    ANNUAL_TOTAL_FLOW,
+    OPTIMIZED_ADD_CAP,
+    KPI,
+    KPI_SCALAR_MATRIX,
+    KPI_COST_MATRIX,
+    COST_TOTAL,
+    COST_OM_TOTAL,
+    COST_INVESTMENT,
+    COST_DISPATCH,
+    COST_OM_FIX,
+    COST_UPFRONT,
+    PROJECT_NAME,
+    PROJECT_ID,
+    SCENARIO_NAME,
+    SCENARIO_ID,
+)
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
@@ -72,7 +111,7 @@ def make_dash_data_table(df):
 
 
 def create_app(results_json):
-    path_output_folder = results_json["simulation_settings"]["path_output_folder"]
+    path_output_folder = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
 
     # Initialize the app
     app = dash.Dash(__name__)
@@ -85,8 +124,8 @@ def create_app(results_json):
         "font-inpbox": "#FFFFFF",
     }
     # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
-    dfprojectData = pd.DataFrame.from_dict(results_json["project_data"])
-    dfeconomicData = pd.DataFrame.from_dict(results_json["economic_data"]).loc["value"]
+    dfprojectData = pd.DataFrame.from_dict(results_json[PROJECT_DATA])
+    dfeconomicData = pd.DataFrame.from_dict(results_json[ECONOMIC_DATA]).loc[VALUE]
 
     # Obtaining the coordinates of the project location
     coordinates = (
@@ -125,19 +164,27 @@ def create_app(results_json):
     )
 
     dict_simsettings = {
-        "Evaluated period": results_json["simulation_settings"]["evaluated_period"][
-            "value"
-        ],
-        "Start date": results_json["simulation_settings"]["start_date"],
-        "Timestep length": results_json["simulation_settings"]["timestep"]["value"],
+        "Evaluated period": results_json[SIMULATION_SETTINGS][EVALUATED_PERIOD][VALUE],
+        "Start date": results_json[SIMULATION_SETTINGS][START_DATE],
+        "Timestep length": results_json[SIMULATION_SETTINGS][TIMESTEP][VALUE],
     }
 
     df_simsettings = pd.DataFrame(
         list(dict_simsettings.items()), columns=["Setting", "Value"]
     )
 
-    projectName = "Harbor Norway"
-    scenarioName = "100% self-generation"
+    projectName = (
+        results_json[PROJECT_DATA][PROJECT_NAME]
+        + "(ID:"
+        + str(results_json[PROJECT_DATA][PROJECT_ID])
+        + ")"
+    )
+    scenarioName = (
+        results_json[PROJECT_DATA][SCENARIO_NAME]
+        + "(ID:"
+        + str(results_json[PROJECT_DATA][SCENARIO_ID])
+        + ")"
+    )
 
     releaseDesign = "0.0x"
 
@@ -155,13 +202,13 @@ def create_app(results_json):
 
     # Determining the sectors which were simulated
 
-    sectors = list(results_json["project_data"]["sectors"].keys())
+    sectors = list(results_json[PROJECT_DATA][SECTORS].keys())
     sec_list = """"""
     for sec in sectors:
         sec_list += "\n" + f"\u2022 {sec.upper()}"
 
     # Creating a dataframe for the demands
-    demands = results_json["energyConsumption"]
+    demands = results_json[ENERGY_CONSUMPTION]
 
     del demands["DSO_feedin"]
     del demands["Electricity excess"]
@@ -174,10 +221,10 @@ def create_app(results_json):
         demand_data.update(
             {
                 dem: [
-                    demands[dem]["unit"],
-                    demands[dem]["timeseries_peak"]["value"],
-                    demands[dem]["timeseries_average"]["value"],
-                    demands[dem]["timeseries_total"]["value"],
+                    demands[dem][UNIT],
+                    demands[dem][TIMESERIES_PEAK][VALUE],
+                    demands[dem]["timeseries_average"][VALUE],
+                    demands[dem]["timeseries_total"][VALUE],
                 ]
             }
         )
@@ -185,7 +232,7 @@ def create_app(results_json):
     df_dem = pd.DataFrame.from_dict(
         demand_data,
         orient="index",
-        columns=["Unit", "Peak Demand", "Mean Demand", "Total Demand per annum"],
+        columns=[UNIT, "Peak Demand", "Mean Demand", "Total Demand per annum"],
     )
     df_dem.index.name = "Demands"
     df_dem = df_dem.reset_index()
@@ -193,8 +240,8 @@ def create_app(results_json):
 
     # Creating a DF for the components table
 
-    components1 = results_json["energyProduction"]
-    components2 = results_json["energyConversion"]
+    components1 = results_json[ENERGY_PRODUCTION]
+    components2 = results_json[ENERGY_CONVERSION]
 
     comp1_keys = list(components1.keys())
     comp2_keys = list(components2.keys())
@@ -205,10 +252,10 @@ def create_app(results_json):
         components.update(
             {
                 comps: [
-                    components1[comps]["type_oemof"],
-                    components1[comps]["unit"],
-                    components1[comps]["installedCap"]["value"],
-                    components1[comps]["optimizeCap"]["value"],
+                    components1[comps][OEMOF_ASSET_TYPE],
+                    components1[comps][UNIT],
+                    components1[comps][INSTALLED_CAP][VALUE],
+                    components1[comps][OPTIMIZE_CAP][VALUE],
                 ]
             }
         )
@@ -216,11 +263,11 @@ def create_app(results_json):
         components.update(
             {
                 comps: [
-                    components2[comps]["type_oemof"],
-                    components2[comps]["energyVector"],
-                    components2[comps]["unit"],
-                    components2[comps]["installedCap"]["value"],
-                    components2[comps]["optimizeCap"]["value"],
+                    components2[comps][OEMOF_ASSET_TYPE],
+                    components2[comps][ENERGY_VECTOR],
+                    components2[comps][UNIT],
+                    components2[comps][INSTALLED_CAP][VALUE],
+                    components2[comps][OPTIMIZE_CAP][VALUE],
                 ]
             }
         )
@@ -231,7 +278,7 @@ def create_app(results_json):
         columns=[
             "Type of Component",
             "Energy Vector",
-            "Unit",
+            UNIT,
             "Installed Capcity",
             "Optimization",
         ],
@@ -248,22 +295,22 @@ def create_app(results_json):
     # Creating a Pandas dataframe for the components optimization results table
 
     # Read in the scalar matrix as pandas dataframe
-    df_scalar_matrix = results_json["kpi"]["scalar_matrix"]
+    df_scalar_matrix = results_json[KPI][KPI_SCALAR_MATRIX]
 
     # Changing the index to a sequence of 0,1,2...
     df_scalar_matrix = df_scalar_matrix.reset_index()
 
     # Dropping irrelevant columns from the dataframe
     df_scalar_matrix = df_scalar_matrix.drop(
-        ["index", "total_flow", "peak_flow", "average_flow"], axis=1
+        ["index", TOTAL_FLOW, "peak_flow", "average_flow"], axis=1
     )
 
     # Renaming the columns
     df_scalar_matrix = df_scalar_matrix.rename(
         columns={
-            "label": "Component/Parameter",
-            "optimizedAddCap": "CAP",
-            "annual_total_flow": "Aggregated Flow",
+            LABEL: "Component/Parameter",
+            OPTIMIZED_ADD_CAP: "CAP",
+            ANNUAL_TOTAL_FLOW: "Aggregated Flow",
         }
     )
     # Rounding the numeric values to two significant digits
@@ -272,23 +319,22 @@ def create_app(results_json):
     # Creating a Pandas dataframe for the costs' results
 
     # Read in the cost matrix as a pandas dataframe
-    df_cost_matrix = results_json["kpi"]["cost_matrix"]
+    df_cost_matrix = results_json[KPI][KPI_COST_MATRIX]
 
     # Changing the index to a sequence of 0,1,2...
     df_cost_matrix = df_cost_matrix.reset_index()
 
     # Drop some irrelevant columns from the dataframe
     df_cost_matrix = df_cost_matrix.drop(
-        ["index", "costs_om", "costs_investment", "costs_opex_var", "costs_opex_fix"],
-        axis=1,
+        ["index", COST_OM_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM_FIX,], axis=1,
     )
 
     # Rename some of the column names
     df_cost_matrix = df_cost_matrix.rename(
         columns={
-            "label": "Component",
-            "costs_total": "CAP",
-            "costs_upfront": "Upfront Investment Costs",
+            LABEL: "Component",
+            COST_TOTAL: "CAP",
+            COST_UPFRONT: "Upfront Investment Costs",
         }
     )
 

@@ -13,6 +13,43 @@ import os
 
 import pandas as pd
 
+from src.constants import (
+    PATH_INPUT_FILE,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+    DISPLAY_OUTPUT,
+    OVERWRITE,
+)
+from src.constants_json_strings import (
+    PROJECT_DURATION,
+    DISCOUNTFACTOR,
+    TAX,
+    LABEL,
+    CURR,
+    DISPATCH_PRICE,
+    SPECIFIC_COSTS_OM,
+    DEVELOPMENT_COSTS,
+    SPECIFIC_COSTS,
+    AGE_INSTALLED,
+    LIFETIME,
+    INSTALLED_CAP,
+    FILENAME,
+    EFFICIENCY,
+    EVALUATED_PERIOD,
+    START_DATE,
+    SOC_INITIAL,
+    SOC_MAX,
+    SOC_MIN,
+    FEEDIN_TARIFF,
+    MAXIMUM_CAP,
+    SCENARIO_NAME,
+    PROJECT_NAME,
+    LONGITUDE,
+    LATITUDE,
+    PERIODS,
+    COUNTRY,
+)
+
 
 # web-application: valid input directly connected to cell-input
 
@@ -29,7 +66,7 @@ def lookup_file(file_path, name):
     asset is used.
     :return:
     """
-    if os.path.isfile(file_path) == False:
+    if os.path.isfile(file_path) is False:
         msg = (
             f"Missing file! The timeseries file '{file_path}' \nof asset "
             + f"{name} can not be found. Operation terminated."
@@ -102,52 +139,52 @@ def all_valid_intervals(name, value, title):
     :return:
     """
     valid_type_string = [
-        "project_name",
-        "scenario_name",
-        "country",
+        PROJECT_NAME,
+        SCENARIO_NAME,
+        COUNTRY,
         "parent",
         "type",
-        "file_name",
-        "label",
-        "currency",
-        "path_output_folder",
-        "display_output",
-        "path_input_file",
-        "path_input_folder",
+        FILENAME,
+        LABEL,
+        CURR,
+        PATH_OUTPUT_FOLDER,
+        DISPLAY_OUTPUT,
+        PATH_INPUT_FILE,
+        PATH_INPUT_FOLDER,
         "sector",
     ]
 
-    valid_type_int = ["evaluated_period", "time_step", "periods"]
+    valid_type_int = [EVALUATED_PERIOD, "time_step", PERIODS]
 
-    valid_type_timestamp = ["start_date"]
+    valid_type_timestamp = [START_DATE]
 
     valid_type_index = ["index"]
 
-    valid_binary = ["optimize_cap", "dsm", "overwrite"]
+    valid_binary = ["optimize_cap", DSM, OVERWRITE]
 
     valid_intervals = {
-        "longitude": [-180, 180],
-        "latitude": [-90, 90],
-        "lifetime": ["largerzero", "any"],
-        "age_installed": [0, "any"],
-        "installedCap": [0, "any"],
-        "maximumCap": [0, "any", None],
-        "soc_min": [0, 1],
-        "soc_max": [0, 1],
-        "soc_initial": [0, 1],
+        LONGITUDE: [-180, 180],
+        LATITUDE: [-90, 90],
+        LIFETIME: ["largerzero", "any"],
+        AGE_INSTALLED: [0, "any"],
+        INSTALLED_CAP: [0, "any"],
+        MAXIMUM_CAP: [0, "any", None],
+        SOC_MIN: [0, 1],
+        SOC_MAX: [0, 1],
+        SOC_INITIAL: [0, 1],
         "crate": [0, 1],
-        "efficiency": [0, 1],
+        EFFICIENCY: [0, 1],
         "electricity_cost_fix_annual": [0, "any"],
         "electricity_price_var_kWh": [0, "any"],
         "electricity_price_var_kW_monthly": [0, "any"],
-        "feedin_tariff": [0, "any"],
-        "capex_fix": [0, "any"],
-        "capex_var": [0, "any"],
-        "opex_fix": [0, "any"],
-        "opex_var": [0, "any"],
-        "discount_factor": [0, 1],
-        "project_duration": ["largerzero", "any"],
-        "tax": [0, 1],
+        FEEDIN_TARIFF: [0, "any"],
+        DEVELOPMENT_COSTS: [0, "any"],
+        SPECIFIC_COSTS: [0, "any"],
+        SPECIFIC_COSTS_OM: [0, "any"],
+        DISPATCH_PRICE: [0, "any"],
+        DISCOUNTFACTOR: [0, 1],
+        PROJECT_DURATION: ["largerzero", "any"],
+        TAX: [0, 1],
     }
 
     if name in valid_type_int:
@@ -183,14 +220,14 @@ def all_valid_intervals(name, value, title):
             )
 
     elif name in valid_binary:
-        if not (value == True or value == False):
+        if not (value is True or value is False):
             logging.error(
                 "Input error! Value %s/%s is neither True nor False.", name, title
             )
 
     elif name in valid_intervals:
-        if name == "soc_initial":
-            if value != None:
+        if name == SOC_INITIAL:
+            if value is not None:
                 if not (0 <= value and value <= 1):
                     logging.error(
                         "Input error! Value %s/%s should be None, or between 0 and 1.",

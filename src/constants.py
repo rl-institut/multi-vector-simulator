@@ -1,5 +1,7 @@
 import os
 
+from src.constants_json_strings import *
+
 # path to the root of this repository (assumes this file is in src folder)
 REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # name of the input folder
@@ -16,15 +18,15 @@ JSON_FNAME = "mvs_config.json"
 CSV_FNAME = "mvs_csv_config.json"
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = (
-    "fixcost",
-    "simulation_settings",
-    "project_data",
-    "economic_data",
-    "energyConversion",
-    "energyProduction",
-    "energyStorage",
-    "energyProviders",
-    "energyConsumption",
+    FIX_COST,
+    SIMULATION_SETTINGS,
+    PROJECT_DATA,
+    ECONOMIC_DATA,
+    ENERGY_CONVERSION,
+    ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
+    ENERGY_PROVIDERS,
+    ENERGY_CONSUMPTION,
 )
 
 # allowed symbols for separating values in .csv files
@@ -42,12 +44,21 @@ PDF_REPORT = "simulation_report.pdf"
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 
+PATH_INPUT_FILE = "path_input_file"
+PATH_INPUT_FOLDER = "path_input_folder"
+PATH_OUTPUT_FOLDER = "path_output_folder"
+PATH_OUTPUT_FOLDER_INPUTS = "path_output_folder_inputs"
+INPUT_TYPE = "input_type"
+OVERWRITE = "overwrite"
+DISPLAY_OUTPUT = "display_output"
+
 USER_INPUT_ARGUMENTS = (
-    "path_input_file",
-    "path_output_folder",
-    "input_type" "path_input_sequences",
-    "overwrite",
-    "display_output",
+    PATH_INPUT_FILE,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+    INPUT_TYPE,
+    OVERWRITE,
+    DISPLAY_OUTPUT,
 )
 
 DEFAULT_MAIN_KWARGS = dict(
@@ -62,107 +73,101 @@ DEFAULT_MAIN_KWARGS = dict(
 # list of csv filename which must be present within the CSV_ELEMENTS folder with the parameters
 # associated to each of these filenames
 REQUIRED_CSV_PARAMETERS = {
-    "energyConsumption": [
-        "dsm",
-        "file_name",
-        "label",
-        "type_asset",
-        "type_oemof",
-        "energyVector",
-        "inflow_direction",
-        "unit",
+    ENERGY_CONSUMPTION: [
+        DSM,
+        FILENAME,
+        LABEL,
+        TYPE_ASSET,
+        OEMOF_ASSET_TYPE,
+        ENERGY_VECTOR,
+        INFLOW_DIRECTION,
+        UNIT,
     ],
-    "energyConversion": [
-        "age_installed",
-        "capex_fix",
-        "capex_var",
-        "efficiency",
-        "inflow_direction",
-        "installedCap",
-        "label",
-        "lifetime",
-        "opex_fix",
-        "opex_var",
-        "optimizeCap",
-        "outflow_direction",
-        "type_oemof",
-        "energyVector",
-        "unit",
+    ENERGY_CONVERSION: [
+        AGE_INSTALLED,
+        DEVELOPMENT_COSTS,
+        SPECIFIC_COSTS,
+        EFFICIENCY,
+        INFLOW_DIRECTION,
+        INSTALLED_CAP,
+        LABEL,
+        LIFETIME,
+        SPECIFIC_COSTS_OM,
+        DISPATCH_PRICE,
+        OPTIMIZE_CAP,
+        OUTFLOW_DIRECTION,
+        OEMOF_ASSET_TYPE,
+        ENERGY_VECTOR,
+        UNIT,
     ],
-    "energyStorage": [
-        "inflow_direction",
-        "label",
-        "optimizeCap",
-        "outflow_direction",
-        "type_oemof",
-        "storage_filename",
-        "energyVector",
+    ENERGY_STORAGE: [
+        INFLOW_DIRECTION,
+        LABEL,
+        OPTIMIZE_CAP,
+        OUTFLOW_DIRECTION,
+        OEMOF_ASSET_TYPE,
+        STORAGE_FILENAME,
+        ENERGY_VECTOR,
     ],
-    "energyProduction": [
-        "age_installed",
-        "capex_fix",
-        "capex_var",
-        "file_name",
-        "installedCap",
-        "label",
-        "lifetime",
-        "opex_fix",
-        "opex_var",
-        "optimizeCap",
-        "outflow_direction",
-        "type_oemof",
-        "unit",
-        "energyVector",
+    ENERGY_PRODUCTION: [
+        AGE_INSTALLED,
+        DEVELOPMENT_COSTS,
+        SPECIFIC_COSTS,
+        FILENAME,
+        INSTALLED_CAP,
+        LABEL,
+        LIFETIME,
+        SPECIFIC_COSTS_OM,
+        DISPATCH_PRICE,
+        OPTIMIZE_CAP,
+        OUTFLOW_DIRECTION,
+        OEMOF_ASSET_TYPE,
+        UNIT,
+        ENERGY_VECTOR,
     ],
-    "energyProviders": [
-        "energy_price",
-        "feedin_tariff",
-        "inflow_direction",
-        "label",
-        "optimizeCap",
-        "outflow_direction",
-        "peak_demand_pricing",
-        "peak_demand_pricing_period",
-        "type_oemof",
-        "energyVector",
+    ENERGY_PROVIDERS: [
+        ENERGY_PRICE,
+        FEEDIN_TARIFF,
+        INFLOW_DIRECTION,
+        LABEL,
+        OPTIMIZE_CAP,
+        OUTFLOW_DIRECTION,
+        PEAK_DEMAND_PRICING,
+        PEAK_DEMAND_PRICING_PERIOD,
+        OEMOF_ASSET_TYPE,
+        ENERGY_VECTOR,
     ],
-    "fixcost": [
-        "age_installed",
-        "capex_fix",
-        "capex_var",
-        "label",
-        "lifetime",
-        "opex_fix",
-        "opex_var",
+    FIX_COST: [
+        AGE_INSTALLED,
+        DEVELOPMENT_COSTS,
+        SPECIFIC_COSTS,
+        LABEL,
+        LIFETIME,
+        SPECIFIC_COSTS_OM,
+        DISPATCH_PRICE,
     ],
-    "simulation_settings": [
-        "evaluated_period",
-        "label",
-        "output_lp_file",
-        "restore_from_oemof_file",
-        "display_nx_graph",
-        "store_nx_graph",
-        "start_date",
-        "store_oemof_results",
-        "timestep",
+    SIMULATION_SETTINGS: [
+        EVALUATED_PERIOD,
+        LABEL,
+        OUTPUT_LP_FILE,
+        STORE_OEMOF_RESULTS,
+        DISPLAY_NX_GRAPH,
+        STORE_NX_GRAPH,
+        START_DATE,
+        STORE_OEMOF_RESULTS,
+        TIMESTEP,
     ],
-    "project_data": [
-        "country",
-        "label",
-        "latitude",
-        "longitude",
-        "project_id",
-        "project_name",
-        "scenario_id",
-        "scenario_name",
+    PROJECT_DATA: [
+        COUNTRY,
+        LABEL,
+        LATITUDE,
+        LONGITUDE,
+        PROJECT_ID,
+        PROJECT_NAME,
+        SCENARIO_ID,
+        SCENARIO_NAME,
     ],
-    "economic_data": [
-        "currency",
-        "discount_factor",
-        "label",
-        "project_duration",
-        "tax",
-    ],
+    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX,],
 }
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
@@ -173,34 +178,14 @@ TYPE_DATETIMEINDEX = "pandas_DatetimeIndex:"
 TYPE_SERIES = "pandas_Series:"
 TYPE_DATAFRAME = "pandas_Dataframe:"
 TYPE_TIMESTAMP = "pandas_Timestamp:"
+TYPE_BOOL = "bool"
+TYPE_STR = "str"
+TYPE_NONE = "None"
 
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
-    "Electricity": {"unit": "kWh_eleq/kWh_el", "value": 1},
-    "H2": {"unit": "kWh_eleq/kgH2", "value": 32.87},
+    "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1},
+    "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87},
 }
-
-# Names for KPI output
-
-KPI_DICT = "kpi"
-
-KPI_SCALARS_DICT = "scalars"
-
-KPI_UNCOUPLED_DICT = "KPI individual sectors"
-
-KPI_COST_MATRIX = "cost_matrix"
-
-# KPI_FLOW_MATRIX
-
-KPI_SCALARS = (
-    "annuity_om",
-    "annuity_total",
-    "costs_investment",
-    "costs_om",
-    "costs_opex_fix",
-    "costs_opex_var",
-    "costs_total",
-    "costs_upfront",
-)
 
 # key of the dict containing generated plots filesnames in results_json file
 PATHS_TO_PLOTS = "paths_to_plots"

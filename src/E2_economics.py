@@ -1,5 +1,31 @@
 import logging
 
+from src.constants_json_strings import (
+    UNIT,
+    VALUE,
+    ECONOMIC_DATA,
+    CURR,
+    LABEL,
+    DEVELOPMENT_COSTS,
+    SPECIFIC_COSTS,
+    INSTALLED_CAP,
+    SIMULATION_SETTINGS,
+    LIFETIME_SPECIFIC_COST,
+    CRF,
+    LIFETIME_SPECIFIC_COST_OM,
+    LIFETIME_PRICE_DISPATCH,
+    ANNUAL_TOTAL_FLOW,
+    OPTIMIZED_ADD_CAP,
+    ANNUITY_OM,
+    ANNUITY_TOTAL,
+    COST_TOTAL,
+    COST_OM_TOTAL,
+    COST_INVESTMENT,
+    COST_DISPATCH,
+    COST_OM_FIX,
+    COST_UPFRONT,
+)
+
 r"""
 Module E3 economic processing
 -----------------------------
@@ -22,70 +48,73 @@ The module processes the simulation results regarding economic parameters:
 
 def get_costs(dict_asset, economic_data):
     if isinstance(dict_asset, dict) and not (
-        dict_asset["label"]
+        dict_asset[LABEL]
         in [
             "settings",
-            "economic_data",
+            ECONOMIC_DATA,
             "electricity_demand",
-            "simulation_settings",
+            SIMULATION_SETTINGS,
             "simulation_results",
         ]
     ):
-        logging.debug("Calculating costs of asset %s", dict_asset["label"])
+        logging.debug("Calculating costs of asset %s", dict_asset[LABEL])
         costs_total = 0
         cost_om = 0
         # Calculation of connected parameters:
         if (
             all_list_in_dict(
-                dict_asset, ["lifetime_capex_var", "capex_fix", "optimizedAddCap"]
+                dict_asset,
+                [LIFETIME_SPECIFIC_COST, DEVELOPMENT_COSTS, OPTIMIZED_ADD_CAP],
             )
-            == True
-            and dict_asset["optimizedAddCap"]["value"] > 0
+            is True
+            and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
         ):
             # total investments including fix prices
             costs_investment = (
-                dict_asset["optimizedAddCap"]["value"]
-                * dict_asset["lifetime_capex_var"]["value"]
-                + dict_asset["capex_fix"]["value"]
+                dict_asset[OPTIMIZED_ADD_CAP][VALUE]
+                * dict_asset[LIFETIME_SPECIFIC_COST][VALUE]
+                + dict_asset[DEVELOPMENT_COSTS][VALUE]
             )
             costs_total = add_costs_and_total(
-                dict_asset, "costs_investment", costs_investment, costs_total
+                dict_asset, COST_INVESTMENT, costs_investment, costs_total
             )
 
         if (
-            all_list_in_dict(dict_asset, ["capex_var", "capex_fix", "optimizedAddCap"])
-            == True
-            and dict_asset["optimizedAddCap"]["value"] > 0
+            all_list_in_dict(
+                dict_asset, [SPECIFIC_COSTS, DEVELOPMENT_COSTS, OPTIMIZED_ADD_CAP]
+            )
+            is True
+            and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
         ):
             # investments including fix prices, only upfront costs at t=0
             costs_upfront = (
-                dict_asset["optimizedAddCap"]["value"]
-                + dict_asset["capex_var"]["value"]
-                + dict_asset["capex_fix"]["value"]
+                dict_asset[OPTIMIZED_ADD_CAP][VALUE]
+                + dict_asset[SPECIFIC_COSTS][VALUE]
+                + dict_asset[DEVELOPMENT_COSTS][VALUE]
             )
             costs_total = add_costs_and_total(
-                dict_asset, "costs_upfront", costs_upfront, costs_total
+                dict_asset, COST_UPFRONT, costs_upfront, costs_total
             )
 
         if (
-            all_list_in_dict(dict_asset, ["annual_total_flow", "lifetime_opex_var"])
-            == True
+            all_list_in_dict(dict_asset, [ANNUAL_TOTAL_FLOW, LIFETIME_PRICE_DISPATCH])
+            is True
         ):
-            costs_opex_var = (
-                dict_asset["lifetime_opex_var"]["value"]
-                * dict_asset["annual_total_flow"]["value"]
+            costs_price_dispatch = (
+                dict_asset[LIFETIME_PRICE_DISPATCH][VALUE]
+                * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]
             )
             costs_total = add_costs_and_total(
-                dict_asset, "costs_opex_var", costs_opex_var, costs_total
+                dict_asset, COST_DISPATCH, costs_price_dispatch, costs_total
             )
             cost_om = add_costs_and_total(
-                dict_asset, "costs_opex_var", costs_opex_var, cost_om
+                dict_asset, COST_DISPATCH, costs_price_dispatch, cost_om
             )
 
-        # todo actually, price is probably not the label, but opex_var
-        if all_list_in_dict(dict_asset, ["price", "annual_total_flow"]) == True:
+        # todo actually, price is probably not the label, but dispatch_price
+        if all_list_in_dict(dict_asset, ["price", ANNUAL_TOTAL_FLOW]) is True:
             costs_energy = (
-                dict_asset["price"]["value"] * dict_asset["annual_total_flow"]["value"]
+                dict_asset["price"][VALUE] * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]
             )
             cost_om = add_costs_and_total(
                 dict_asset, "costs_energy", costs_energy, cost_om
@@ -95,44 +124,42 @@ def get_costs(dict_asset, economic_data):
             all_list_in_dict(
                 dict_asset,
                 [
-                    "annual_total_flow",
-                    "lifetime_opex_var",
-                    "installedCap",
-                    "optimizedAddCap",
+                    ANNUAL_TOTAL_FLOW,
+                    LIFETIME_PRICE_DISPATCH,
+                    INSTALLED_CAP,
+                    OPTIMIZED_ADD_CAP,
                 ],
             )
-            == True
+            is True
         ):
-            cap = dict_asset["installedCap"]["value"]
-            if "optimizedAddCap" in dict_asset:
-                cap += dict_asset["optimizedAddCap"]["value"]
+            cap = dict_asset[INSTALLED_CAP][VALUE]
+            if OPTIMIZED_ADD_CAP in dict_asset:
+                cap += dict_asset[OPTIMIZED_ADD_CAP][VALUE]
 
-            costs_opex_fix = dict_asset["lifetime_opex_fix"]["value"] * cap
+            costs_cost_om = dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE] * cap
             costs_total = add_costs_and_total(
-                dict_asset, "costs_opex_fix", costs_opex_fix, costs_total
+                dict_asset, COST_OM_FIX, costs_cost_om, costs_total
             )
             cost_om = add_costs_and_total(
-                dict_asset, "costs_opex_fix", costs_opex_fix, cost_om
+                dict_asset, COST_OM_FIX, costs_cost_om, cost_om
             )
 
         dict_asset.update(
             {
-                "costs_total": {"value": costs_total, "unit": "currency"},
-                "costs_om": {"value": cost_om, "unit": "currency"},
+                COST_TOTAL: {VALUE: costs_total, UNIT: CURR},
+                COST_OM_TOTAL: {VALUE: cost_om, UNIT: CURR},
             }
         )
 
         dict_asset.update(
             {
-                "annuity_total": {
-                    "value": dict_asset["costs_total"]["value"]
-                    * economic_data["crf"]["value"],
-                    "unit": "currency/year",
+                ANNUITY_TOTAL: {
+                    VALUE: dict_asset[COST_TOTAL][VALUE] * economic_data[CRF][VALUE],
+                    UNIT: "currency/year",
                 },
-                "annuity_om": {
-                    "value": dict_asset["costs_om"]["value"]
-                    * economic_data["crf"]["value"],
-                    "unit": "currency/year",
+                ANNUITY_OM: {
+                    VALUE: dict_asset[COST_OM_TOTAL][VALUE] * economic_data[CRF][VALUE],
+                    UNIT: "currency/year",
                 },
             }
         )
@@ -141,10 +168,10 @@ def get_costs(dict_asset, economic_data):
 
 def add_costs_and_total(dict_asset, name, value, total_costs):
     total_costs += value
-    dict_asset.update({name: {"value": value}})
+    dict_asset.update({name: {VALUE: value}})
     return total_costs
 
 
 def all_list_in_dict(dict_asset, list):
-    boolean = all([name in dict_asset for name in list]) == True
+    boolean = all([name in dict_asset for name in list]) is True
     return boolean

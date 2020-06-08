@@ -11,7 +11,20 @@ import src.B0_data_input_json as data_input
 import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
-from .constants import TEST_REPO_PATH, INPUT_FOLDER, KPI_SCALARS
+from src.constants_json_strings import (
+    KPI,
+    KPI_SCALARS,
+    KPI_COST_MATRIX,
+    KPI_SCALAR_MATRIX,
+    KPI_SCALARS_DICT,
+)
+from .constants import (
+    TEST_REPO_PATH,
+    INPUT_FOLDER,
+    PATH_INPUT_FILE,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+)
 
 PARSER = initializing.create_parser()
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
@@ -34,9 +47,9 @@ def setup_module(m_args):
 
     logging.debug("Accessing script: B0_data_input_json")
     dict_values = data_input.load_json(
-        user_input["path_input_file"],
-        path_input_folder=user_input["path_input_folder"],
-        path_output_folder=user_input["path_output_folder"],
+        user_input[PATH_INPUT_FILE],
+        path_input_folder=user_input[PATH_INPUT_FOLDER],
+        path_output_folder=user_input[PATH_OUTPUT_FOLDER],
         move_copy=False,
     )
     logging.debug("Accessing script: C0_data_processing")
@@ -62,7 +75,7 @@ def test_evaluate_dict_append_new_fields():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    for k in ("kpi", "optimizedFlows"):
+    for k in (KPI, "optimizedFlows"):
         assert k not in dict_values_before
         assert k in dict_values_after
 
@@ -72,8 +85,8 @@ def test_evaluate_dict_important_fields_in_output_dict():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    for k in ("scalar_matrix", "cost_matrix"):
-        assert k in dict_values_after["kpi"]
+    for k in (KPI_SCALAR_MATRIX, KPI_COST_MATRIX):
+        assert k in dict_values_after[KPI]
 
 
 def test_evaluate_dict_fields_values_in_output_dict_are_dataframes():
@@ -81,8 +94,8 @@ def test_evaluate_dict_fields_values_in_output_dict_are_dataframes():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    for k in ("scalar_matrix", "cost_matrix"):
-        assert isinstance(dict_values_after["kpi"][k], pd.DataFrame)
+    for k in (KPI_SCALAR_MATRIX, KPI_COST_MATRIX):
+        assert isinstance(dict_values_after[KPI][k], pd.DataFrame)
 
 
 def test_evaluate_check_dict_fields_in_output_dict_under_kpi_scalar_fields():
@@ -91,9 +104,9 @@ def test_evaluate_check_dict_fields_in_output_dict_under_kpi_scalar_fields():
         dict_values_after = pickle.load(handle)
 
     for k in KPI_SCALARS:
-        assert k in dict_values_after["kpi"]["scalars"]
+        assert k in dict_values_after[KPI][KPI_SCALARS_DICT]
 
-    # for k in dict_values_after["kpi"]["scalars"]:
+    # for k in dict_values_after[KPI][KPI_SCALARS_DICT]:
     #    assert k in KPI_SCALARS
 
 

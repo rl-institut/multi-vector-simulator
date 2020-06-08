@@ -1,8 +1,8 @@
 ,unit
 age_installed,year
-capex_fix,currency
-capex_var,currency
+development_costs,currency
+specific_costs,currency
 label,str
 lifetime,year
-opex_fix,currency/year
-opex_var,currency/kWh
+specific_costs_om,currency/year
+dispatch_price,currency/kWh

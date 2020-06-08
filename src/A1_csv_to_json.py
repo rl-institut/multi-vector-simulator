@@ -39,7 +39,35 @@ from src.constants import (
     CSV_SEPARATORS,
     REQUIRED_CSV_FILES,
     REQUIRED_CSV_PARAMETERS,
+    SIMULATION_SETTINGS,
+    ECONOMIC_DATA,
+    PROJECT_DATA,
+    STORAGE_FILENAME,
+    TYPE_BOOL,
+    TYPE_STR,
+    TYPE_NONE,
 )
+from src.constants_json_strings import (
+    LABEL,
+    DISPATCH_PRICE,
+    SPECIFIC_COSTS_OM,
+    DEVELOPMENT_COSTS,
+    SPECIFIC_COSTS,
+    AGE_INSTALLED,
+    LIFETIME,
+    INSTALLED_CAP,
+    EFFICIENCY,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    C_RATE,
+    DISPATCH_PRICE,
+    SOC_INITIAL,
+    SOC_MAX,
+    SOC_MIN,
+    STORAGE_CAPACITY,
+    MAXIMUM_CAP,
+)
+from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
 
 class MissingParameterError(ValueError):
@@ -217,7 +245,7 @@ def create_json_from_csv(
     # TODO in next version: add maximumCap to hardcoded parameter list in constants.py
     # TODO create this as a function, so that in future also new parameters can be added
     list_of_new_parameters = {
-        "maximumCap": "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
+        MAXIMUM_CAP: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
         "renewableAsset": "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
         "renewable_share": "allows defining the renewable share of the DSO supply (Values: Float). ",
     }
@@ -271,7 +299,7 @@ def create_json_from_csv(
         )
     df_copy = df.copy()
     for column in df_copy:
-        if column != "unit":
+        if column != UNIT:
             column_dict = {}
             # the storage columns are checked for the right parameters,
             # Nan values that are not needed are deleted
@@ -284,10 +312,10 @@ def create_json_from_csv(
                         "columns."
                     )
                 # add column specific parameters
-                if column == "storage capacity":
-                    extra = ["soc_initial", "soc_max", "soc_min"]
-                elif column == "input power" or column == "output power":
-                    extra = ["c_rate", "opex_var"]
+                if column == STORAGE_CAPACITY:
+                    extra = [SOC_INITIAL, SOC_MAX, SOC_MIN]
+                elif column == INPUT_POWER or column == OUTPUT_POWER:
+                    extra = [C_RATE, DISPATCH_PRICE]
                 else:
                     raise WrongStorageColumn(
                         f"The column name {column} in The file {filename}.csv"
@@ -307,11 +335,11 @@ def create_json_from_csv(
                         # check if not required parameters are set to Nan and
                         # if not, set them to Nan
                         if i not in [
-                            "c_rate",
-                            "opex_var",
-                            "soc_initial",
-                            "soc_max",
-                            "soc_min",
+                            C_RATE,
+                            DISPATCH_PRICE,
+                            SOC_INITIAL,
+                            SOC_MAX,
+                            SOC_MIN,
                         ]:
                             warnings.warn(
                                 WrongParameterWarning(
@@ -356,7 +384,7 @@ def create_json_from_csv(
                 df = df_copy[df_copy[column].notna()]
 
             for param, row in df.iterrows():
-                if param == "label":
+                if param == LABEL:
                     asset_name_string = asset_name_string + row[column] + ", "
 
                 # Find type of input value (csv file is read into df as an object)
@@ -397,10 +425,10 @@ def create_json_from_csv(
                                 asset=column,
                                 filename=filename,
                             )
-                            if row["unit"] != "str":
-                                if "value" in column_dict[param]:
+                            if row[UNIT] != TYPE_STR:
+                                if VALUE in column_dict[param]:
                                     # if wrapped in list is a scalar
-                                    value_list[item] = column_dict[param]["value"]
+                                    value_list[item] = column_dict[param][VALUE]
                                 else:
                                     # if wrapped in list is a dictionary (ie. timeseries)
                                     value_list[item] = column_dict[param]
@@ -409,9 +437,9 @@ def create_json_from_csv(
                                 # if wrapped in list is a string
                                 value_list[item] = column_dict[param]
 
-                        if row["unit"] != "str":
+                        if row[UNIT] != TYPE_STR:
                             column_dict.update(
-                                {param: {"value": value_list, "unit": row["unit"]}}
+                                {param: {VALUE: value_list, UNIT: row[UNIT]}}
                             )
                         else:
                             column_dict.update({param: value_list})
@@ -430,9 +458,9 @@ def create_json_from_csv(
 
             single_dict.update({column: column_dict})
             # add exception for energyStorage
-            if filename == "energyStorage":
+            if filename == ENERGY_STORAGE:
                 storage_dict = add_storage_components(
-                    df.loc["storage_filename"][column][:-4], input_directory
+                    df.loc[STORAGE_FILENAME][column][:-4], input_directory
                 )
                 single_dict[column].update(storage_dict)
 
@@ -444,9 +472,9 @@ def create_json_from_csv(
 
     # add exception for single dicts
     if filename in [
-        "economic_data",
-        "project_data",
-        "simulation_settings",
+        ECONOMIC_DATA,
+        PROJECT_DATA,
+        SIMULATION_SETTINGS,
     ]:
         return single_dict
     elif asset_is_a_storage is True:
@@ -475,11 +503,11 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                 f"Parameter {param} of asset {asset} is defined as a timeseries."
             )
 
-    elif row["unit"] == "str":
+    elif row[UNIT] == TYPE_STR:
         asset_dict.update({param: value})
 
     else:
-        if row["unit"] == "bool":
+        if row[UNIT] == TYPE_BOOL:
             if value in ["True", "true", "T", "t", "1"]:
                 value = True
             elif value in ["False", "false", "F", "f", "0"]:
@@ -490,7 +518,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                     "(True/T/true or False/F/false)."
                 )
         else:
-            if value == "None":
+            if value == TYPE_NONE:
                 value = None
             else:
                 try:
@@ -498,7 +526,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                 except:
                     value = float(value)
 
-        asset_dict.update({param: {"value": value, "unit": row["unit"]}})
+        asset_dict.update({param: {VALUE: value, UNIT: row[UNIT]}})
     return asset_dict
 
 
@@ -521,15 +549,15 @@ def add_storage_components(storage_filename, input_directory):
     else:
         # hardcoded parameterlist of common parameters in all columns
         parameters = [
-            "age_installed",
-            "capex_fix",
-            "capex_var",
-            "efficiency",
-            "installedCap",
-            "label",
-            "lifetime",
-            "opex_fix",
-            "unit",
+            AGE_INSTALLED,
+            DEVELOPMENT_COSTS,
+            SPECIFIC_COSTS,
+            EFFICIENCY,
+            INSTALLED_CAP,
+            LABEL,
+            LIFETIME,
+            SPECIFIC_COSTS_OM,
+            UNIT,
         ]
         single_dict = create_json_from_csv(
             input_directory,

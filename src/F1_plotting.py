@@ -10,6 +10,16 @@ from src.constants import (
     PLOTS_NX,
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
+    PROJECT_DATA,
+    LABEL,
+    PATH_OUTPUT_FOLDER,
+)
+from src.constants_json_strings import (
+    SIMULATION_SETTINGS,
+    PROJECT_NAME,
+    SCENARIO_NAME,
+    KPI,
+    KPI_COST_MATRIX,
 )
 
 r"""
@@ -66,9 +76,9 @@ def flows(dict_values, user_input, project_data, results_timeseries, bus, interv
     flows_les.plot(
         title=bus
         + " flows in LES: "
-        + project_data["project_name"]
+        + project_data[PROJECT_NAME]
         + ", "
-        + project_data["scenario_name"],
+        + project_data[SCENARIO_NAME],
         ax=axes_mg,
         drawstyle="steps-mid",
     )
@@ -85,7 +95,7 @@ def flows(dict_values, user_input, project_data, results_timeseries, bus, interv
         axes[1].legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
     path = os.path.join(
-        user_input["path_output_folder"], bus + "_flows_" + str(interval) + "_days.png",
+        user_input[PATH_OUTPUT_FOLDER], bus + "_flows_" + str(interval) + "_days.png",
     )
 
     plt.savefig(
@@ -150,13 +160,13 @@ def capacities(dict_values, user_input, project_data, assets, capacities):
         x="items",
         y="capacities",
         title="Optimal additional capacities (kW/kWh/kWp): "
-        + project_data["project_name"]
+        + project_data[PROJECT_NAME]
         + ", "
-        + project_data["scenario_name"],
+        + project_data[SCENARIO_NAME],
     )
 
     path = os.path.join(
-        user_input["path_output_folder"], "optimal_additional_capacities.png"
+        user_input[PATH_OUTPUT_FOLDER], "optimal_additional_capacities.png"
     )
     plt.savefig(
         path, bbox_inches="tight",
@@ -191,14 +201,14 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
     label = file_name.replace("_", " ")
 
     process_pie_chart = determine_if_plotting_necessary(
-        dict_values["kpi"]["cost_matrix"][parameter].values
+        dict_values[KPI][KPI_COST_MATRIX][parameter].values
     )
 
     if process_pie_chart is True:
 
         costs_perc_grouped, total = group_costs(
-            dict_values["kpi"]["cost_matrix"][parameter],
-            dict_values["kpi"]["cost_matrix"]["label"],
+            dict_values[KPI][KPI_COST_MATRIX][parameter],
+            dict_values[KPI][KPI_COST_MATRIX][LABEL],
         )
 
         costs_perc_grouped_pandas = pd.Series(costs_perc_grouped)
@@ -208,14 +218,14 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
             + " costs ("
             + str(round(total, 2))
             + "$): "
-            + dict_values["project_data"]["project_name"]
+            + dict_values[PROJECT_DATA][PROJECT_NAME]
             + ", "
-            + dict_values["project_data"]["scenario_name"]
+            + dict_values[PROJECT_DATA][SCENARIO_NAME]
         )
 
         plot_a_piechart(
             dict_values,
-            dict_values["simulation_settings"],
+            dict_values[SIMULATION_SETTINGS],
             file_name,
             costs_perc_grouped_pandas,
             label,
@@ -237,14 +247,14 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
                 + "% of "
                 + str(round(total, 2))
                 + "$): "
-                + dict_values["project_data"]["project_name"]
+                + dict_values[PROJECT_DATA][PROJECT_NAME]
                 + ", "
-                + dict_values["project_data"]["scenario_name"]
+                + dict_values[PROJECT_DATA][SCENARIO_NAME]
             )
 
             plot_a_piechart(
                 dict_values,
-                dict_values["simulation_settings"],
+                dict_values[SIMULATION_SETTINGS],
                 file_name + "_minor",
                 costs_perc_grouped_minor,
                 label + " (minor)",
@@ -332,7 +342,7 @@ def recalculate_distribution_of_rest_costs(costs_perc_grouped_pandas):
             plot_minor_costs_pie = True
             major = asset
 
-    if plot_minor_costs_pie == True:
+    if plot_minor_costs_pie is True:
         costs_perc_grouped_pandas = costs_perc_grouped_pandas.drop([major])
         rest = costs_perc_grouped_pandas.values.sum()
         costs_perc_grouped_minor = pd.Series(
@@ -375,12 +385,12 @@ def plot_a_piechart(dict_values, settings, file_name, costs, label, title):
     Pie chart of a dataset
 
     """
-    if costs.empty == False:
+    if costs.empty is False:
         logging.info("Creating pie-chart for total " + label)
         costs.plot.pie(
             title=title, autopct="%1.1f%%", subplots=True,
         )
-        path = os.path.join(settings["path_output_folder"], file_name + ".png")
+        path = os.path.join(settings[PATH_OUTPUT_FOLDER], file_name + ".png")
         plt.savefig(
             path, bbox_inches="tight",
         )
@@ -475,7 +485,7 @@ def draw_graph(
         fig.show()
 
     if save_plot is True:
-        path = os.path.join(user_input["path_output_folder"], "network_graph.png")
+        path = os.path.join(user_input[PATH_OUTPUT_FOLDER], "network_graph.png")
         dict_values[PATHS_TO_PLOTS][PLOTS_NX] += [str(path)]
 
         fig.savefig(

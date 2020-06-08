@@ -4,38 +4,57 @@ import pytest
 
 import src.A1_csv_to_json as A1
 import src.B0_data_input_json as data_input
-from src.constants import PATHS_TO_PLOTS
-from .constants import CSV_PATH, CSV_FNAME, DUMMY_CSV_PATH, REQUIRED_CSV_FILES
+from src.constants_json_strings import (
+    UNIT,
+    VALUE,
+    DISPATCH_PRICE,
+    DEVELOPMENT_COSTS,
+    AGE_INSTALLED,
+    INSTALLED_CAP,
+    FILENAME,
+    C_RATE,
+    SOC_INITIAL,
+    SOC_MAX,
+    SOC_MIN,
+)
+from .constants import (
+    CSV_PATH,
+    CSV_FNAME,
+    DUMMY_CSV_PATH,
+    REQUIRED_CSV_FILES,
+    PATHS_TO_PLOTS,
+    TYPE_BOOL,
+)
 
 CSV_PARAMETERS = ["param1", "param2"]
 
-CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {"value": 21, "unit": "factor"}}}
+CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {VALUE: 21, UNIT: "factor"}}}
 CSV_TIMESERIES = {
     "param1": {
-        "value": {"file_name": "test_time_series.csv", "header": "power"},
-        "unit": "kW",
+        VALUE: {FILENAME: "test_time_series.csv", "header": "power"},
+        UNIT: "kW",
     }
 }
 
 CSV_LIST = {
     "param1": ["one", "two"],
-    "param2": {"unit": "factor", "value": [1.02, 3.04]},
-    "param3": {"unit": "currency/kWh", "value": [0.2, 0.7]},
-    "param4": {"unit": "bool", "value": [True, False, True]},
-    "param5": {"unit": "year", "value": [2, 7]},
+    "param2": {UNIT: "factor", VALUE: [1.02, 3.04]},
+    "param3": {UNIT: "currency/kWh", VALUE: [0.2, 0.7]},
+    "param4": {UNIT: TYPE_BOOL, VALUE: [True, False, True]},
+    "param5": {UNIT: "year", VALUE: [2, 7]},
 }
 
 CONVERSION_TYPE = {
     "param_str": "one",
-    "param_factor": {"unit": "factor", "value": 1.04},
-    "param_cur": {"unit": "currency/kWh", "value": 18.9},
-    "param_bool1": {"unit": "bool", "value": True},
-    "param_bool2": {"unit": "bool", "value": True},
-    "param_bool3": {"unit": "bool", "value": False},
-    "param_bool4": {"unit": "bool", "value": False},
-    "param_bool5": {"unit": "bool", "value": True},
-    "param_bool6": {"unit": "bool", "value": False},
-    "param_year": {"unit": "year", "value": 8},
+    "param_factor": {UNIT: "factor", VALUE: 1.04},
+    "param_cur": {UNIT: "currency/kWh", VALUE: 18.9},
+    "param_bool1": {UNIT: TYPE_BOOL, VALUE: True},
+    "param_bool2": {UNIT: TYPE_BOOL, VALUE: True},
+    "param_bool3": {UNIT: TYPE_BOOL, VALUE: False},
+    "param_bool4": {UNIT: TYPE_BOOL, VALUE: False},
+    "param_bool5": {UNIT: TYPE_BOOL, VALUE: True},
+    "param_bool6": {UNIT: TYPE_BOOL, VALUE: False},
+    "param_year": {UNIT: "year", VALUE: 8},
 }
 
 
@@ -198,7 +217,7 @@ def test_create_json_from_csv_storage_raises_WrongParameterWarning():
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
-            parameters=["age_installed", "capex_fix"],
+            parameters=[AGE_INSTALLED, DEVELOPMENT_COSTS],
             asset_is_a_storage=True,
         )
 
@@ -210,14 +229,14 @@ def test_create_json_from_csv_storage_raises_MissingParameterError():
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
             parameters=[
-                "age_installed",
-                "capex_fix",
-                "c_rate",
-                "opex_var",
-                "soc_initial",
-                "soc_max",
-                "soc_min",
-                "installedCap",
+                AGE_INSTALLED,
+                DEVELOPMENT_COSTS,
+                C_RATE,
+                DISPATCH_PRICE,
+                SOC_INITIAL,
+                SOC_MAX,
+                SOC_MIN,
+                INSTALLED_CAP,
             ],
             asset_is_a_storage=True,
         )
@@ -229,7 +248,7 @@ def test_create_json_from_csv_storage_raises_WrongParameterWarning_for_wrong_val
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_values",
-            parameters=["age_installed", "capex_fix"],
+            parameters=[AGE_INSTALLED, DEVELOPMENT_COSTS],
             asset_is_a_storage=True,
         )
 
@@ -240,7 +259,7 @@ def test_create_json_from_csv_storage_raises_WrongStorageColumn():
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_column_name",
-            parameters=["age_installed", "capex_fix"],
+            parameters=[AGE_INSTALLED, DEVELOPMENT_COSTS],
             asset_is_a_storage=True,
         )
 

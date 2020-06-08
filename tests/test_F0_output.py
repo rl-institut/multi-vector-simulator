@@ -22,9 +22,18 @@ import src.A0_initialization as initializing
 import src.B0_data_input_json as B0
 import src.F0_output as F0
 from mvs_eland_tool import main
+from src.constants_json_strings import (
+    LABEL,
+    PROJECT_DATA,
+    SIMULATION_SETTINGS,
+    OPTIMIZED_ADD_CAP,
+    PROJECT_NAME,
+    SCENARIO_NAME,
+    KPI,
+    KPI_SCALAR_MATRIX,
+)
 from .constants import (
     EXECUTE_TESTS_ON,
-    TESTS_ON_MASTER,
     TEST_REPO_PATH,
     DICT_PLOTS,
     PDF_REPORT,
@@ -32,6 +41,9 @@ from .constants import (
     TYPE_DATAFRAME,
     TYPE_SERIES,
     TYPE_TIMESTAMP,
+    TYPE_BOOL,
+    TYPE_STR,
+    PATH_OUTPUT_FOLDER,
 )
 
 PARSER = initializing.create_parser()
@@ -51,8 +63,8 @@ pandas_Dataframe = pd.DataFrame({"a": VALUES, "b": VALUES})
 SCALAR = 2
 
 JSON_TEST_DICTIONARY = {
-    "bool": True,
-    "str": "str",
+    TYPE_BOOL: True,
+    TYPE_STR: "str",
     "numpy_int64": np.int64(SCALAR),
     "pandas_DatetimeIndex": pandas_DatetimeIndex,
     "pandas_Timestamp": pd.Timestamp(START_TIME),
@@ -88,14 +100,11 @@ class TestFileCreation:
     def test_store_barchart_for_capacities_no_additional_capacities(self):
         """ """
         dict_scalar_capacities = {
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
-            "project_data": {
-                "project_name": "a_project",
-                "scenario_name": "a_scenario",
-            },
-            "kpi": {
-                "scalar_matrix": pd.DataFrame(
-                    {"label": ["asset_a", "asset_b"], "optimizedAddCap": [0, 0]}
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
+            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
+            KPI: {
+                KPI_SCALAR_MATRIX: pd.DataFrame(
+                    {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [0, 0]}
                 )
             },
         }
@@ -106,14 +115,11 @@ class TestFileCreation:
     def test_store_barchart_for_capacities_with_additional_capacities(self):
         """ """
         dict_scalar_capacities = {
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
-            "project_data": {
-                "project_name": "a_project",
-                "scenario_name": "a_scenario",
-            },
-            "kpi": {
-                "scalar_matrix": pd.DataFrame(
-                    {"label": ["asset_a", "asset_b"], "optimizedAddCap": [1, 2]}
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
+            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
+            KPI: {
+                KPI_SCALAR_MATRIX: pd.DataFrame(
+                    {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [1, 2]}
                 )
             },
         }
@@ -124,8 +130,8 @@ class TestFileCreation:
     def test_store_scalars_to_excel_two_tabs_dict(self):
         """ """
         dict_scalars_two_tabs_dict = {
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
-            "kpi": {
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
+            KPI: {
                 "economic": pandas_Dataframe,
                 "technical": {"param1": 1, "param2": 2},
             },
@@ -136,8 +142,8 @@ class TestFileCreation:
     def test_store_scalars_to_excel_two_tabs_no_dict(self):
         """ """
         dict_scalars_two_tabs = {
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
-            "kpi": {"economic": pandas_Dataframe, "technical": pandas_Dataframe},
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
+            KPI: {"economic": pandas_Dataframe, "technical": pandas_Dataframe},
         }
 
         F0.store_scalars_to_excel(dict_scalars_two_tabs)
@@ -146,11 +152,8 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
         """ """
         dict_timeseries_test_one_bus = {
-            "project_data": {
-                "project_name": "a_project",
-                "scenario_name": "a_scenario",
-            },
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS},
         }
         dict_timeseries_test_one_bus.update(copy.deepcopy(DICT_PLOTS))
@@ -167,11 +170,8 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         """ """
         dict_timeseries_test_two_busses = {
-            "project_data": {
-                "project_name": "a_project",
-                "scenario_name": "a_scenario",
-            },
-            "simulation_settings": {"path_output_folder": OUTPUT_PATH},
+            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
+            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             "optimizedFlows": {"a_bus": BUS, "b_bus": BUS},
         }
         print(DICT_PLOTS)
@@ -239,13 +239,13 @@ class TestDictionaryToJsonConversion:
     def test_processing_dict_for_json_export_parse_bool(self):
         """ """
         file_name = "test_json_bool"
-        F0.store_as_json(JSON_TEST_DICTIONARY["bool"], OUTPUT_PATH, file_name)
+        F0.store_as_json(JSON_TEST_DICTIONARY[TYPE_BOOL], OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
     def test_processing_dict_for_json_export_parse_str(self):
         """ """
         file_name = "test_json_str"
-        F0.store_as_json(JSON_TEST_DICTIONARY["str"], OUTPUT_PATH, file_name)
+        F0.store_as_json(JSON_TEST_DICTIONARY[TYPE_STR], OUTPUT_PATH, file_name)
         assert os.path.exists(os.path.join(OUTPUT_PATH, file_name + ".json")) is True
 
     def test_processing_dict_for_json_export_parse_numpy_int64(self):
