@@ -1020,7 +1020,7 @@ def get_lifetime_price_dispatch_one_value(dict_asset, economic_data):
 
     """
     lifetime_price_dispatch = (
-            dict_asset[DISPATCH_PRICE][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
+        dict_asset[DISPATCH_PRICE][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
     return lifetime_price_dispatch
 
@@ -1060,7 +1060,7 @@ def get_lifetime_price_dispatch_timeseries(dict_asset, economic_data):
         dict_asset[DISPATCH_PRICE][VALUE]
     )
     lifetime_price_dispatch = (
-            dict_asset[DISPATCH_PRICE][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
+        dict_asset[DISPATCH_PRICE][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
     return lifetime_price_dispatch
 
