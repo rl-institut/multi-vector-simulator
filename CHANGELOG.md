@@ -30,7 +30,7 @@ Here is a template for new release sections
 - Renaming CAPEX_FIX = "capex_fix" into COST_DEVELOPMENT = "cost_development" (#40)
 - Renaming CAPEX_VAR = "capex_var" into SPECIFIC_COST = "specific_cost" (#40)
 - Renaming OPEX_FIX = "opex_fix" into SPECIFIC_COST_OM = "specific_cost_om" (#40)
-- Renaming OPEX_VAR = "opex_var" into P_DISPATCH = "p_dispatch" (#40)
+- Renaming OPEX_VAR = "opex_var" into PRICE_DISPATCH = "price_dispatch" (#40)
 
 ### Removed
 

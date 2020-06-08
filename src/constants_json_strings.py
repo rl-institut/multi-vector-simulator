@@ -86,7 +86,7 @@ LIFETIME = "lifetime"
 COST_DEVELOPMENT = "cost_development"
 SPECIFIC_COST = "specific_cost"
 SPECIFIC_COST_OM = "specific_cost_om"
-P_DISPATCH = "p_dispatch"
+PRICE_DISPATCH = "price_dispatch"
 OEMOF_ASSET_TYPE = "type_oemof"
 
 # Asset definitions: Providers

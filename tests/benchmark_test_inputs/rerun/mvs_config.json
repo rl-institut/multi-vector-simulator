@@ -92,7 +92,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": -0.4
             },
@@ -147,7 +147,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0
             },
@@ -205,7 +205,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -277,7 +277,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -349,7 +349,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -433,7 +433,7 @@
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -503,7 +503,7 @@
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -573,7 +573,7 @@
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -643,7 +643,7 @@
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -713,7 +713,7 @@
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -775,7 +775,7 @@
                 "unit": "currency/kWpeak",
                 "value": 0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0.54
             },
@@ -846,7 +846,7 @@
                 "unit": "currency/unit/year",
                 "value": 80
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0
             },
@@ -931,7 +931,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -1018,7 +1018,7 @@
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "p_dispatch": {
+                "price_dispatch": {
                     "unit": "currency/kWh",
                     "value": 0
                 },
@@ -1093,7 +1093,7 @@
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "p_dispatch": {
+                "price_dispatch": {
                     "unit": "currency/kWh",
                     "value": 0
                 },
@@ -1158,7 +1158,7 @@
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "p_dispatch": {
+                "price_dispatch": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
@@ -1211,7 +1211,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0
             }
@@ -1238,7 +1238,7 @@
                 "unit": "currency/year",
                 "value": 0
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0
             }
@@ -1265,7 +1265,7 @@
                 "unit": "currency/year",
                 "value": 4600
             },
-            "p_dispatch": {
+            "price_dispatch": {
                 "unit": "currency/kWh",
                 "value": 0
             }
