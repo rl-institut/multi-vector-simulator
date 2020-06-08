@@ -423,7 +423,7 @@ def define_missing_cost_data(dict_values, dict_asset):
         INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
         COST_DEVELOPMENT: {VALUE: 0, UNIT: CURR},
         SPECIFIC_COST: {VALUE: 0, UNIT: "currency/unit"},
-        C_OM: {VALUE: 0, UNIT: "currency/year"},
+        SPECIFIC_COST_OM: {VALUE: 0, UNIT: "currency/year"},
         P_DISPATCH: {VALUE: 0, UNIT: "currency/unit/year"},
         LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: "year",},
     }
@@ -724,9 +724,9 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
         "Asset %s: sum of timeseries = %s", asset_name, sum(timeseries.values)
     )
 
-    if C_OM in kwargs or SPECIFIC_COST in kwargs:
-        if C_OM in kwargs:
-            source.update({C_OM: kwargs[C_OM]})
+    if SPECIFIC_COST_OM in kwargs or SPECIFIC_COST in kwargs:
+        if SPECIFIC_COST_OM in kwargs:
+            source.update({SPECIFIC_COST_OM: kwargs[SPECIFIC_COST_OM]})
         else:
             source.update({SPECIFIC_COST: kwargs[SPECIFIC_COST]})
 
@@ -859,9 +859,9 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
                 OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
             }
         )
-    if C_OM in kwargs:
+    if SPECIFIC_COST_OM in kwargs:
         sink.update(
-            {C_OM: kwargs[C_OM], OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},}
+            {SPECIFIC_COST_OM: kwargs[SPECIFIC_COST_OM], OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},}
         )
     else:
         sink.update({OPTIMIZE_CAP: {VALUE: False, UNIT: TYPE_BOOL}})
@@ -915,7 +915,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                 VALUE: economics.annuity(
                     dict_asset[LIFETIME_CAPEX_VAR][VALUE], economic_data[CRF][VALUE],
                 )
-                + dict_asset[C_OM][VALUE],  # changes from p_dispatch
+                + dict_asset[SPECIFIC_COST_OM][VALUE],  # changes from p_dispatch
                 UNIT: dict_asset[LIFETIME_CAPEX_VAR][UNIT] + "/a",
             }
         }
@@ -924,8 +924,8 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             LIFETIME_OPEX_FIX: {
-                VALUE: dict_asset[C_OM][VALUE] * economic_data[ANNUITY_FACTOR][VALUE],
-                UNIT: dict_asset[C_OM][UNIT][:-2],
+                VALUE: dict_asset[SPECIFIC_COST_OM][VALUE] * economic_data[ANNUITY_FACTOR][VALUE],
+                UNIT: dict_asset[SPECIFIC_COST_OM][UNIT][:-2],
             }
         }
     )
@@ -953,8 +953,8 @@ def complete_missing_cost_data(dict_asset):
             "Dictionary of asset %s is incomplete, as cost_specific is missing.",
             dict_asset[LABEL],
         )
-    if C_OM not in dict_asset:
-        dict_asset.update({C_OM: 0})
+    if SPECIFIC_COST_OM not in dict_asset:
+        dict_asset.update({SPECIFIC_COST_OM: 0})
         logging.error(
             "Dictionary of asset %s is incomplete, as cost_om is missing.",
             dict_asset[LABEL],

@@ -85,7 +85,7 @@ AGE_INSTALLED = "age_installed"
 LIFETIME = "lifetime"
 COST_DEVELOPMENT = "cost_development"
 SPECIFIC_COST = "specific_cost"
-C_OM = "cost_om"
+SPECIFIC_COST_OM = "specific_cost_om"
 P_DISPATCH = "p_dispatch"
 OEMOF_ASSET_TYPE = "type_oemof"
 
@@ -143,7 +143,7 @@ KPI_SCALAR_MATRIX = "scalar_matrix"
 ANNUITY_OM = "annuity_om"
 
 COST_TOTAL = "cost_total"
-COST_OM = "cost_om"
+COST_OM = "specific_cost_om"
 COST_INVESTMENT = "cost_investment"
 
 OPTIMIZED_ADD_CAP = "optimizedAddCap"

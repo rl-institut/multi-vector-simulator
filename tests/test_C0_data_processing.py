@@ -12,7 +12,7 @@ from src.constants_json_strings import (
     VALUE,
     LABEL,
     P_DISPATCH,
-    C_OM,
+    SPECIFIC_COST_OM,
     COST_DEVELOPMENT,
     SPECIFIC_COST,
     LIFETIME,
@@ -63,8 +63,8 @@ def test_adding_economic_parameters_C2():
 def test_complete_missing_cost_data_cost_om():
     dict_asset = {LABEL: "a_label"}
     C0.complete_missing_cost_data(dict_asset)
-    assert C_OM in dict_asset.keys()
-    assert dict_asset[C_OM] == 0
+    assert SPECIFIC_COST_OM in dict_asset.keys()
+    assert dict_asset[SPECIFIC_COST_OM] == 0
 
 
 def test_complete_missing_cost_data_cost_specific():
@@ -85,7 +85,7 @@ economic_data = {
 }
 
 dict_asset = {
-    C_OM: {VALUE: 1, UNIT: "a_unit"},
+    SPECIFIC_COST_OM: {VALUE: 1, UNIT: "a_unit"},
     CRF: {VALUE: 1},
     SPECIFIC_COST: {VALUE: 1, UNIT: "a_unit"},
     P_DISPATCH: {VALUE: 1},
