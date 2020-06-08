@@ -117,7 +117,9 @@ TIMESERIES_PEAK = "timeseries_peak"
 # Pre-processing cost parameters
 ANNUITY_FACTOR = "annuity_factor"
 SIMULATION_ANNUITY = "simulation_annuity"
-CRF = "crf"
+CRF = "CRF"
+
+# Processed cost parameters
 LIFETIME_SPECIFIC_COST_OM = "lifetime_specific_cost_om"
 LIFETIME_PRICE_DISPATCH = "lifetime_price_dispatch"
 LIFETIME_SPECIFIC_COST = "lifetime_specific_cost"
@@ -141,18 +143,21 @@ KPI_UNCOUPLED_DICT = "KPI individual sectors"
 KPI_COST_MATRIX = "cost_matrix"
 KPI_SCALAR_MATRIX = "scalar_matrix"
 
-# Costs
-ANNUITY_OM = "annuity_om"
+# Flows
 TOTAL_FLOW = "total_flow"
 ANNUAL_TOTAL_FLOW = "annual_total_flow"
 
+# Capacity
+OPTIMIZED_ADD_CAP = "optimizedAddCap"
+
+# Costs - Annuities
+ANNUITY_OM = "annuity_om"
 ANNUITY_CAPEX_OPEX_VAR = "annuity_capex_p_dispatch"
 
-COST_TOTAL = "cost_total"
-COST_OM = "cost_om"
-COST_INVESTMENT = "cost_investment"
-
-OPTIMIZED_ADD_CAP = "optimizedAddCap"
+# Costs - Total
+COST_TOTAL = "costs_total"
+COST_OM = "costs_om"
+COST_INVESTMENT = "costs_investment"
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (
