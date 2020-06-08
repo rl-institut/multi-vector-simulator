@@ -1,7 +1,11 @@
+"""
+This module calculates time series for solar thermal collectors using the
+oemof-thermal package.
+
+"""
+
 import pandas as pd
-import numpy as np
 import os
-from matplotlib import pyplot as plt
 import logging
 
 from oemof.thermal.flat_plate_collector import flat_plate_precalc
@@ -37,9 +41,8 @@ weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
 weather.reset_index("time", inplace=True)
 
 # load collector data
-# filename_collector_data = os.path.join(path_to_server, path_to_data_folder,
-#                                        "2020-05-13_technical_data_UVTgV_system_solar_thermal.csv")
-filename_collector_data = "/home/sabine/Schreibtisch/Offline/rl-institut/250_E-LAND/03-Projektinhalte/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/2020-05-13_technical_data_UVTgV_system_solar_thermal.csv"  # offline
+filename_collector_data = os.path.join(path_to_server, path_to_data_folder,
+                                       "2020-05-13_technical_data_UVTgV_system_solar_thermal.csv")
 rename_inds = {
     "alpha_coll": "collector_azimuth",
     "Beta": "collector_tilt",
