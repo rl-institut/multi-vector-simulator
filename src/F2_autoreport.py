@@ -60,7 +60,11 @@ from src.constants_json_strings import (
     COST_INVESTMENT,
     COST_DISPATCH,
     COST_OM_FIX,
-    COST_UPFRONT
+    COST_UPFRONT,
+    PROJECT_NAME,
+    PROJECT_ID,
+    SCENARIO_NAME,
+    SCENARIO_ID
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -169,8 +173,8 @@ def create_app(results_json):
         list(dict_simsettings.items()), columns=["Setting", "Value"]
     )
 
-    projectName = "Harbor Norway"
-    scenarioName = "100% self-generation"
+    projectName = results_json[PROJECT_DATA][PROJECT_NAME] + "(ID:" + str(results_json[PROJECT_DATA][PROJECT_ID]) + ")"
+    scenarioName = results_json[PROJECT_DATA][SCENARIO_NAME] + "(ID:" + str(results_json[PROJECT_DATA][SCENARIO_ID]) + ")"
 
     releaseDesign = "0.0x"
 
