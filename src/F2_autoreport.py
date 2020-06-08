@@ -306,7 +306,13 @@ def create_app(results_json):
 
     # Drop some irrelevant columns from the dataframe
     df_cost_matrix = df_cost_matrix.drop(
-        ["index", "costs_om", "costs_investment", "costs_price_dispatch", "costs_cost_om"],
+        [
+            "index",
+            "costs_om",
+            "costs_investment",
+            "costs_price_dispatch",
+            "costs_cost_om",
+        ],
         axis=1,
     )
 

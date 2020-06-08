@@ -992,7 +992,9 @@ def determine_lifetime_price_dispatch(dict_asset, economic_data):
         )
 
     elif isinstance(dict_asset[PRICE_DISPATCH][VALUE], list):
-        lifetime_price_dispatch = get_lifetime_price_dispatch_list(dict_asset, economic_data)
+        lifetime_price_dispatch = get_lifetime_price_dispatch_list(
+            dict_asset, economic_data
+        )
 
     elif isinstance(dict_asset[PRICE_DISPATCH][VALUE], pd.Series):
         lifetime_price_dispatch = get_lifetime_price_dispatch_timeseries(
