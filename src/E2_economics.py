@@ -56,7 +56,8 @@ def get_costs(dict_asset, economic_data):
         # Calculation of connected parameters:
         if (
             all_list_in_dict(
-                dict_asset, [LIFETIME_SPECIFIC_COST, COST_DEVELOPMENT, OPTIMIZED_ADD_CAP]
+                dict_asset,
+                [LIFETIME_SPECIFIC_COST, COST_DEVELOPMENT, OPTIMIZED_ADD_CAP],
             )
             is True
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
@@ -72,7 +73,9 @@ def get_costs(dict_asset, economic_data):
             )
 
         if (
-            all_list_in_dict(dict_asset, [SPECIFIC_COST, COST_DEVELOPMENT, OPTIMIZED_ADD_CAP])
+            all_list_in_dict(
+                dict_asset, [SPECIFIC_COST, COST_DEVELOPMENT, OPTIMIZED_ADD_CAP]
+            )
             is True
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
         ):
@@ -86,7 +89,10 @@ def get_costs(dict_asset, economic_data):
                 dict_asset, "costs_upfront", costs_upfront, costs_total
             )
 
-        if all_list_in_dict(dict_asset, [ANNUAL_TOTAL_FLOW, LIFETIME_PRICE_DISPATCH]) is True:
+        if (
+            all_list_in_dict(dict_asset, [ANNUAL_TOTAL_FLOW, LIFETIME_PRICE_DISPATCH])
+            is True
+        ):
             costs_p_dispatch = (
                 dict_asset[LIFETIME_PRICE_DISPATCH][VALUE]
                 * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]

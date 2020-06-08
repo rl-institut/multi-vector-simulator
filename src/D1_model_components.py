@@ -845,7 +845,8 @@ def sink_dispatchable(model, dict_asset, **kwargs):
     else:
         inputs = {
             kwargs["busses"][dict_asset[INPUT_BUS_NAME]]: solph.Flow(
-                label=dict_asset[LABEL], variable_costs=dict_asset[PRICE_DISPATCH][VALUE],
+                label=dict_asset[LABEL],
+                variable_costs=dict_asset[PRICE_DISPATCH][VALUE],
             )
         }
 

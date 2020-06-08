@@ -410,7 +410,10 @@ def define_missing_cost_data(dict_values, dict_asset):
     if PRICE_DISPATCH in dict_asset:
         if isinstance(dict_asset[PRICE_DISPATCH][VALUE], dict):
             receive_timeseries_from_csv(
-                dict_values, dict_values[SIMULATION_SETTINGS], dict_asset, PRICE_DISPATCH
+                dict_values,
+                dict_values[SIMULATION_SETTINGS],
+                dict_asset,
+                PRICE_DISPATCH,
             )
         elif isinstance(dict_asset[PRICE_DISPATCH][VALUE], list):
             treat_multiple_flows(dict_asset, dict_values, PRICE_DISPATCH)
@@ -844,7 +847,9 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         if (
             asset_name[-6:] == "feedin"
         ):  # change into negative value if this is a feedin sink
-            sink[PRICE_DISPATCH].update({VALUE: [-i for i in sink[PRICE_DISPATCH][VALUE]]})
+            sink[PRICE_DISPATCH].update(
+                {VALUE: [-i for i in sink[PRICE_DISPATCH][VALUE]]}
+            )
     else:
         if asset_name[-6:] == "feedin":
             value = -price[VALUE]
@@ -861,7 +866,10 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         )
     if SPECIFIC_COST_OM in kwargs:
         sink.update(
-            {SPECIFIC_COST_OM: kwargs[SPECIFIC_COST_OM], OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},}
+            {
+                SPECIFIC_COST_OM: kwargs[SPECIFIC_COST_OM],
+                OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
+            }
         )
     else:
         sink.update({OPTIMIZE_CAP: {VALUE: False, UNIT: TYPE_BOOL}})
@@ -913,7 +921,8 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         {
             ANNUITY_CAPEX_OPEX_VAR: {
                 VALUE: economics.annuity(
-                    dict_asset[LIFETIME_SPECIFIC_COST][VALUE], economic_data[CRF][VALUE],
+                    dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
+                    economic_data[CRF][VALUE],
                 )
                 + dict_asset[SPECIFIC_COST_OM][VALUE],  # changes from p_dispatch
                 UNIT: dict_asset[LIFETIME_SPECIFIC_COST][UNIT] + "/a",
@@ -924,7 +933,8 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             LIFETIME_SPECIFIC_COST_OM: {
-                VALUE: dict_asset[SPECIFIC_COST_OM][VALUE] * economic_data[ANNUITY_FACTOR][VALUE],
+                VALUE: dict_asset[SPECIFIC_COST_OM][VALUE]
+                * economic_data[ANNUITY_FACTOR][VALUE],
                 UNIT: dict_asset[SPECIFIC_COST_OM][UNIT][:-2],
             }
         }
@@ -994,7 +1004,9 @@ def determine_lifetime_p_dispatch(dict_asset, economic_data):
             f"Type of p_dispatch neither int, float, list or pd.Series, but of type {dict_asset[PRICE_DISPATCH][VALUE]}. Is type correct?"
         )
 
-    dict_asset.update({LIFETIME_PRICE_DISPATCH: {VALUE: lifetime_p_dispatch, UNIT: "?", }})
+    dict_asset.update(
+        {LIFETIME_PRICE_DISPATCH: {VALUE: lifetime_p_dispatch, UNIT: "?",}}
+    )
     return
 
 
@@ -1042,7 +1054,9 @@ def get_lifetime_p_dispatch_timeseries(dict_asset, economic_data):
     """
     # take average value of p_dispatch if it is a timeseries
 
-    p_dispatch = sum(dict_asset[PRICE_DISPATCH][VALUE]) / len(dict_asset[PRICE_DISPATCH][VALUE])
+    p_dispatch = sum(dict_asset[PRICE_DISPATCH][VALUE]) / len(
+        dict_asset[PRICE_DISPATCH][VALUE]
+    )
     lifetime_p_dispatch = (
         dict_asset[PRICE_DISPATCH][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
