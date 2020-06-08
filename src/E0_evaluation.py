@@ -29,6 +29,7 @@ from src.constants_json_strings import (
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
     TOTAL_FLOW,
+    ANNUITY_OM,
 )
 
 r"""
@@ -68,10 +69,10 @@ def evaluate_dict(dict_values, results_main, results_meta):
                         "costs_om",
                         "costs_investment",
                         "costs_upfront",
-                        "costs_opex_var",
-                        "costs_opex_fix",
+                        "costs_price_dispatch",
+                        "costs_cost_om",
                         "annuity_total",
-                        "annuity_om",
+                        ANNUITY_OM,
                     ]
                 ),
                 KPI_SCALAR_MATRIX: pd.DataFrame(

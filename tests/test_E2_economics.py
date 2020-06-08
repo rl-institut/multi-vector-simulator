@@ -2,29 +2,30 @@ import src.E2_economics as E2
 from src.constants_json_strings import (
     UNIT,
     CURR,
-    CAPEX_FIX,
-    CAPEX_VAR,
-    OPEX_VAR,
+    COST_DEVELOPMENT,
+    SPECIFIC_COST,
+    PRICE_DISPATCH,
     VALUE,
     LABEL,
     INSTALLED_CAP,
-    LIFETIME_CAPEX_VAR,
+    LIFETIME_SPECIFIC_COST,
     CRF,
-    LIFETIME_OPEX_FIX,
-    LIFETIME_OPEX_VAR,
+    LIFETIME_SPECIFIC_COST_OM,
+    LIFETIME_PRICE_DISPATCH,
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
+    ANNUITY_OM,
 )
 
 dict_asset = {
     LABEL: "DSO_feedin_sink",
-    OPEX_VAR: {VALUE: -0.4, UNIT: "currency/kWh"},
-    CAPEX_VAR: {VALUE: 0, UNIT: "currency/kW"},
+    PRICE_DISPATCH: {VALUE: -0.4, UNIT: "currency/kWh"},
+    SPECIFIC_COST: {VALUE: 0, UNIT: "currency/kW"},
     INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
-    CAPEX_FIX: {VALUE: 0, UNIT: CURR},
-    LIFETIME_CAPEX_VAR: {VALUE: 0.0, UNIT: "currency/kW"},
-    LIFETIME_OPEX_FIX: {VALUE: 0.0, UNIT: "currency/ye"},
-    LIFETIME_OPEX_VAR: {VALUE: -5.505932460595773, UNIT: "?"},
+    COST_DEVELOPMENT: {VALUE: 0, UNIT: CURR},
+    LIFETIME_SPECIFIC_COST: {VALUE: 0.0, UNIT: "currency/kW"},
+    LIFETIME_SPECIFIC_COST_OM: {VALUE: 0.0, UNIT: "currency/ye"},
+    LIFETIME_PRICE_DISPATCH: {VALUE: -5.505932460595773, UNIT: "?"},
     ANNUAL_TOTAL_FLOW: {VALUE: 0.0, UNIT: "kWh"},
     OPTIMIZED_ADD_CAP: {VALUE: 0, UNIT: "?"},
 }
@@ -38,12 +39,12 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     """Tests whether the function get_costs is adding all the calculated costs to dict_asset."""
     E2.get_costs(dict_asset, dict_economic)
     for k in (
-        "costs_opex_var",
-        "costs_opex_fix",
+        "costs_price_dispatch",
+        "costs_cost_om",
         "costs_total",
         "costs_om",
         "annuity_total",
-        "annuity_om",
+        ANNUITY_OM,
     ):
         assert k in dict_asset
 

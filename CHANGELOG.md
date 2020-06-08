@@ -26,6 +26,11 @@ Here is a template for new release sections
 - Test input files (#343)
 - All parameters of the json/csv input files are now defined by constant variables (i.e, `CRATE="crate"` instead of string `"crate"`) (#346)
 - Use "is" instead of "==" in if clauses for True, False and None (#346)
+- Categorize constants in 'constants_json_strings.py' (#347)
+- Renaming CAPEX_FIX = "capex_fix" into COST_DEVELOPMENT = "cost_development" (#40)
+- Renaming CAPEX_VAR = "capex_var" into SPECIFIC_COST = "specific_cost" (#40)
+- Renaming OPEX_FIX = "opex_fix" into SPECIFIC_COST_OM = "specific_cost_om" (#40)
+- Renaming OPEX_VAR = "opex_var" into PRICE_DISPATCH = "price_dispatch" (#40)
 
 ### Removed
 

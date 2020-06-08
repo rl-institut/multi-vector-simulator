@@ -1,14 +1,14 @@
 ,unit,electrolyser
 age_installed,year,3
-capex_fix,currency,0
-capex_var,currency/kW,1500
+cost_development,currency,0
+specific_cost,currency/kW,1500
 efficiency,factor,"[0.01923,0.28845]"
 inflow_direction,str,"[MicroGrid,Water]"
 installedCap,kW,0
 label,str,Electrolyser
 lifetime,year,20
-opex_fix,currency/kW/year,75
-opex_var,currency/kWh,"[0,0.0038]"
+specific_cost_om,currency/kW/year,75
+price_dispatch,currency/kWh,"[0,0.0038]"
 optimizeCap,bool,True
 outflow_direction,str,Local H2 grid
 energyVector,str,Electricity

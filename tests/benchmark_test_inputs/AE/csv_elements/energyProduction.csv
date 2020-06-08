@@ -1,14 +1,14 @@
 ,unit
 age_installed,year
-capex_fix,currency
-capex_var,currency/unit
+cost_development,currency
+specific_cost,currency/unit
 file_name
 installedCap,kWp
 maximumCap, kWp
 label,str
 lifetime,year
-opex_fix,currency/unit/year
-opex_var,currency/kWh
+specific_cost_om,currency/unit/year
+price_dispatch,currency/kWh
 optimizeCap,bool
 outflow_direction,str
 type_oemof,str
