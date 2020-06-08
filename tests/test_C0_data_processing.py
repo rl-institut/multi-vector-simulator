@@ -11,10 +11,10 @@ from src.constants_json_strings import (
     TAX,
     VALUE,
     LABEL,
-    PRICE_DISPATCH,
-    SPECIFIC_COST_OM,
-    COST_DEVELOPMENT,
-    SPECIFIC_COST,
+    DISPATCH_PRICE,
+    SPECIFIC_COSTS_OM,
+    DEVELOPMENT_COSTS,
+    SPECIFIC_COSTS,
     LIFETIME,
     SIMULATION_SETTINGS,
     PEAK_DEMAND_PRICING_PERIOD,
@@ -63,15 +63,15 @@ def test_adding_economic_parameters_C2():
 def test_complete_missing_cost_data_cost_om():
     dict_asset = {LABEL: "a_label"}
     C0.complete_missing_cost_data(dict_asset)
-    assert SPECIFIC_COST_OM in dict_asset.keys()
-    assert dict_asset[SPECIFIC_COST_OM] == 0
+    assert SPECIFIC_COSTS_OM in dict_asset.keys()
+    assert dict_asset[SPECIFIC_COSTS_OM] == 0
 
 
 def test_complete_missing_cost_data_specific_cost():
     dict_asset = {LABEL: "a_label"}
     C0.complete_missing_cost_data(dict_asset)
-    assert SPECIFIC_COST in dict_asset.keys()
-    assert dict_asset[SPECIFIC_COST] == 0
+    assert SPECIFIC_COSTS in dict_asset.keys()
+    assert dict_asset[SPECIFIC_COSTS] == 0
 
 
 settings = {EVALUATED_PERIOD: {VALUE: 365}}
@@ -85,11 +85,11 @@ economic_data = {
 }
 
 dict_asset = {
-    SPECIFIC_COST_OM: {VALUE: 1, UNIT: "a_unit"},
+    SPECIFIC_COSTS_OM: {VALUE: 1, UNIT: "a_unit"},
     CRF: {VALUE: 1},
-    SPECIFIC_COST: {VALUE: 1, UNIT: "a_unit"},
-    PRICE_DISPATCH: {VALUE: 1},
-    COST_DEVELOPMENT: {VALUE: 1},
+    SPECIFIC_COSTS: {VALUE: 1, UNIT: "a_unit"},
+    DISPATCH_PRICE: {VALUE: 1},
+    DEVELOPMENT_COSTS: {VALUE: 1},
     LIFETIME: {VALUE: 20},
     UNIT: "a_unit",
 }
@@ -108,7 +108,7 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
 
 
 def test_determine_lifetime_price_dispatch_as_int():
-    dict_asset = {PRICE_DISPATCH: {VALUE: 1}}
+    dict_asset = {DISPATCH_PRICE: {VALUE: 1}}
     C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float) or isinstance(
@@ -117,14 +117,14 @@ def test_determine_lifetime_price_dispatch_as_int():
 
 
 def test_determine_lifetime_price_dispatch_as_float():
-    dict_asset = {PRICE_DISPATCH: {VALUE: 1.5}}
+    dict_asset = {DISPATCH_PRICE: {VALUE: 1.5}}
     C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
 
 
 def test_determine_lifetime_price_dispatch_as_list():
-    dict_asset = {PRICE_DISPATCH: {VALUE: [1.0, 1.0]}}
+    dict_asset = {DISPATCH_PRICE: {VALUE: [1.0, 1.0]}}
     C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
@@ -142,14 +142,14 @@ pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
 
 
 def test_determine_lifetime_price_dispatch_as_timeseries():
-    dict_asset = {PRICE_DISPATCH: {VALUE: pandas_Series}}
+    dict_asset = {DISPATCH_PRICE: {VALUE: pandas_Series}}
     C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], pd.Series)
 
 
 def test_determine_lifetime_price_dispatch_is_other():
-    dict_asset = {PRICE_DISPATCH: {VALUE: TYPE_STR}}
+    dict_asset = {DISPATCH_PRICE: {VALUE: TYPE_STR}}
     with pytest.raises(ValueError):
         C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
