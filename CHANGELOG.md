@@ -27,12 +27,12 @@ Here is a template for new release sections
 - All parameters of the json/csv input files are now defined by constant variables (i.e, `CRATE="crate"` instead of string `"crate"`) (#346)
 - Use "is" instead of "==" in if clauses for True, False and None (#346)
 - Categorize constants in 'constants_json_strings.py' (#347)
-- Renaming CAPEX_FIX = "capex_fix" into COST_DEVELOPMENT = "development_costs" (#347)
-- Renaming CAPEX_VAR = "capex_var" into SPECIFIC_COST = "specific_costs" (#347)
-- Renaming OPEX_FIX = "opex_fix" into SPECIFIC_COST_OM = "specific_costs_om" (#347)
-- Renaming OPEX_VAR = "opex_var" into PRICE_DISPATCH = "dispatch_price" (#347)
+- Renaming CAPEX_FIX = "capex_fix" into COST_DEVELOPMENT = "development_costs" (#347, #350)
+- Renaming CAPEX_VAR = "capex_var" into SPECIFIC_COST = "specific_costs" (#347, #350)
+- Renaming OPEX_FIX = "opex_fix" into SPECIFIC_COST_OM = "specific_costs_om" (#347, #350)
+- Renaming OPEX_VAR = "opex_var" into PRICE_DISPATCH = "dispatch_price" (#347, #350)
 - Change last strings into global constants in "constants_json_strings.py" (#349)
-- Autoreport now refers to actual project and scenario name + ID
+- Autoreport now refers to actual project and scenario name + ID (#349)
 
 ### Removed
 
