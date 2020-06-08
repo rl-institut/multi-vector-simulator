@@ -895,7 +895,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
     dict_asset.update(
         {
-            LIFETIME_CAPEX_VAR: {
+            LIFETIME_SPECIFIC_COST: {
                 VALUE: economics.capex_from_investment(
                     dict_asset[SPECIFIC_COST][VALUE],
                     dict_asset[LIFETIME][VALUE],
@@ -913,17 +913,17 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         {
             ANNUITY_CAPEX_OPEX_VAR: {
                 VALUE: economics.annuity(
-                    dict_asset[LIFETIME_CAPEX_VAR][VALUE], economic_data[CRF][VALUE],
+                    dict_asset[LIFETIME_SPECIFIC_COST][VALUE], economic_data[CRF][VALUE],
                 )
                 + dict_asset[SPECIFIC_COST_OM][VALUE],  # changes from p_dispatch
-                UNIT: dict_asset[LIFETIME_CAPEX_VAR][UNIT] + "/a",
+                UNIT: dict_asset[LIFETIME_SPECIFIC_COST][UNIT] + "/a",
             }
         }
     )
 
     dict_asset.update(
         {
-            LIFETIME_OPEX_FIX: {
+            LIFETIME_SPECIFIC_COST_OM: {
                 VALUE: dict_asset[SPECIFIC_COST_OM][VALUE] * economic_data[ANNUITY_FACTOR][VALUE],
                 UNIT: dict_asset[SPECIFIC_COST_OM][UNIT][:-2],
             }
@@ -994,7 +994,7 @@ def determine_lifetime_p_dispatch(dict_asset, economic_data):
             f"Type of p_dispatch neither int, float, list or pd.Series, but of type {dict_asset[PRICE_DISPATCH][VALUE]}. Is type correct?"
         )
 
-    dict_asset.update({LIFETIME_OPEX_VAR: {VALUE: lifetime_p_dispatch, UNIT: "?",}})
+    dict_asset.update({LIFETIME_PRICE_DISPATCH: {VALUE: lifetime_p_dispatch, UNIT: "?", }})
     return
 
 

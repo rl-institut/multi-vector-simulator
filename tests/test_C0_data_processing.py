@@ -25,11 +25,11 @@ from src.constants_json_strings import (
     TIME_INDEX,
     ANNUITY_FACTOR,
     SIMULATION_ANNUITY,
-    LIFETIME_CAPEX_VAR,
+    LIFETIME_SPECIFIC_COST,
     CRF,
     ANNUITY_CAPEX_OPEX_VAR,
-    LIFETIME_OPEX_FIX,
-    LIFETIME_OPEX_VAR,
+    LIFETIME_SPECIFIC_COST_OM,
+    LIFETIME_PRICE_DISPATCH,
     PERIODS,
 )
 from .constants import TYPE_STR
@@ -98,11 +98,11 @@ dict_asset = {
 def test_evaluate_lifetime_costs_adds_all_parameters():
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
     for k in (
-        LIFETIME_CAPEX_VAR,
-        ANNUITY_CAPEX_OPEX_VAR,
-        LIFETIME_OPEX_FIX,
-        LIFETIME_OPEX_VAR,
-        SIMULATION_ANNUITY,
+            LIFETIME_SPECIFIC_COST,
+            ANNUITY_CAPEX_OPEX_VAR,
+            LIFETIME_SPECIFIC_COST_OM,
+            LIFETIME_PRICE_DISPATCH,
+            SIMULATION_ANNUITY,
     ):
         assert k in dict_asset.keys()
 
@@ -110,24 +110,24 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
 def test_determine_lifetime_p_dispatch_as_int():
     dict_asset = {PRICE_DISPATCH: {VALUE: 1}}
     C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
-    assert LIFETIME_OPEX_VAR in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float) or isinstance(
-        dict_asset[LIFETIME_OPEX_VAR][VALUE], int
+    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float) or isinstance(
+        dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], int
     )
 
 
 def test_determine_lifetime_p_dispatch_as_float():
     dict_asset = {PRICE_DISPATCH: {VALUE: 1.5}}
     C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
-    assert LIFETIME_OPEX_VAR in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float)
+    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
 
 
 def test_determine_lifetime_p_dispatch_as_list():
     dict_asset = {PRICE_DISPATCH: {VALUE: [1.0, 1.0]}}
     C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
-    assert LIFETIME_OPEX_VAR in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float)
+    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
     # todo this should be here some time, shouldnt it? assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], list)
 
 
@@ -144,8 +144,8 @@ pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
 def test_determine_lifetime_p_dispatch_as_timeseries():
     dict_asset = {PRICE_DISPATCH: {VALUE: pandas_Series}}
     C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
-    assert LIFETIME_OPEX_VAR in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], pd.Series)
+    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], pd.Series)
 
 
 def test_determine_lifetime_p_dispatch_is_other():

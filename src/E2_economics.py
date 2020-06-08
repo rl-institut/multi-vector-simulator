@@ -10,10 +10,10 @@ from src.constants_json_strings import (
     SPECIFIC_COST,
     INSTALLED_CAP,
     SIMULATION_SETTINGS,
-    LIFETIME_CAPEX_VAR,
+    LIFETIME_SPECIFIC_COST,
     CRF,
-    LIFETIME_OPEX_FIX,
-    LIFETIME_OPEX_VAR,
+    LIFETIME_SPECIFIC_COST_OM,
+    LIFETIME_PRICE_DISPATCH,
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
     ANNUITY_OM,
@@ -56,7 +56,7 @@ def get_costs(dict_asset, economic_data):
         # Calculation of connected parameters:
         if (
             all_list_in_dict(
-                dict_asset, [LIFETIME_CAPEX_VAR, COST_DEVELOPMENT, OPTIMIZED_ADD_CAP]
+                dict_asset, [LIFETIME_SPECIFIC_COST, COST_DEVELOPMENT, OPTIMIZED_ADD_CAP]
             )
             is True
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
@@ -64,7 +64,7 @@ def get_costs(dict_asset, economic_data):
             # total investments including fix prices
             costs_investment = (
                 dict_asset[OPTIMIZED_ADD_CAP][VALUE]
-                * dict_asset[LIFETIME_CAPEX_VAR][VALUE]
+                * dict_asset[LIFETIME_SPECIFIC_COST][VALUE]
                 + dict_asset[COST_DEVELOPMENT][VALUE]
             )
             costs_total = add_costs_and_total(
@@ -86,9 +86,9 @@ def get_costs(dict_asset, economic_data):
                 dict_asset, "costs_upfront", costs_upfront, costs_total
             )
 
-        if all_list_in_dict(dict_asset, [ANNUAL_TOTAL_FLOW, LIFETIME_OPEX_VAR]) is True:
+        if all_list_in_dict(dict_asset, [ANNUAL_TOTAL_FLOW, LIFETIME_PRICE_DISPATCH]) is True:
             costs_p_dispatch = (
-                dict_asset[LIFETIME_OPEX_VAR][VALUE]
+                dict_asset[LIFETIME_PRICE_DISPATCH][VALUE]
                 * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]
             )
             costs_total = add_costs_and_total(
@@ -112,7 +112,7 @@ def get_costs(dict_asset, economic_data):
                 dict_asset,
                 [
                     ANNUAL_TOTAL_FLOW,
-                    LIFETIME_OPEX_VAR,
+                    LIFETIME_PRICE_DISPATCH,
                     INSTALLED_CAP,
                     OPTIMIZED_ADD_CAP,
                 ],
@@ -123,7 +123,7 @@ def get_costs(dict_asset, economic_data):
             if OPTIMIZED_ADD_CAP in dict_asset:
                 cap += dict_asset[OPTIMIZED_ADD_CAP][VALUE]
 
-            costs_cost_om = dict_asset[LIFETIME_OPEX_FIX][VALUE] * cap
+            costs_cost_om = dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE] * cap
             costs_total = add_costs_and_total(
                 dict_asset, "costs_cost_om", costs_cost_om, costs_total
             )
