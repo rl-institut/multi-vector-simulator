@@ -57,7 +57,7 @@
                 "unit": "kWh",
                 "value": 0.0
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
@@ -88,7 +88,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": -0.0
             },
             "costs_total": {
@@ -107,7 +107,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -115,7 +115,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": -5.505932460595773
             },
@@ -155,7 +155,7 @@
                 "unit": "kWh",
                 "value": 0.0
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -186,7 +186,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": 0.0
             },
             "costs_total": {
@@ -205,7 +205,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -213,7 +213,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -253,7 +253,7 @@
                 "unit": "kWh",
                 "value": 1247796.3000000003
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -284,7 +284,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": 0.0
             },
             "costs_total": {
@@ -306,7 +306,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -314,7 +314,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -368,7 +368,7 @@
                 "unit": "kWh",
                 "value": 0.0
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -399,7 +399,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": 0.0
             },
             "costs_total": {
@@ -421,7 +421,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -429,7 +429,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -483,7 +483,7 @@
                 "unit": "kWh",
                 "value": 1149750.0
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -514,7 +514,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": 0.0
             },
             "costs_total": {
@@ -536,7 +536,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -544,7 +544,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -604,7 +604,7 @@
                 "unit": "kWh",
                 "value": -6.920450711275001e-10
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 308.888291865938
             },
@@ -635,7 +635,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": -0.0
             },
             "costs_total": {
@@ -659,7 +659,7 @@
                 "unit": "year",
                 "value": 15
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 4251.795182206622
             },
@@ -667,7 +667,7 @@
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -717,7 +717,7 @@
                 "unit": "kWh",
                 "value": -8.886413132749998e-10
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
@@ -751,7 +751,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": -0.0
             },
             "costs_total": {
@@ -778,7 +778,7 @@
                 "unit": "year",
                 "value": 10
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -786,7 +786,7 @@
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -836,7 +836,7 @@
                 "unit": "kWh",
                 "value": -6.481528836250018e-10
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
@@ -870,7 +870,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": -0.0
             },
             "costs_total": {
@@ -897,7 +897,7 @@
                 "unit": "year",
                 "value": 10
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -905,7 +905,7 @@
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -955,7 +955,7 @@
                 "unit": "kWh",
                 "value": 2397546.3
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
@@ -986,7 +986,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": 0.0
             },
             "costs_total": {
@@ -1010,7 +1010,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -1018,7 +1018,7 @@
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -1068,7 +1068,7 @@
                 "unit": "kWh",
                 "value": 0.0
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
@@ -1099,7 +1099,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": 0.0
             },
             "costs_total": {
@@ -1123,7 +1123,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -1131,7 +1131,7 @@
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -1179,7 +1179,7 @@
                 "unit": "kWh",
                 "value": 2497444.0661499994
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -1213,7 +1213,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": 18563523.775655728
             },
             "costs_total": {
@@ -1238,7 +1238,7 @@
                 "unit": "factor",
                 "value": 0.1
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -1246,7 +1246,7 @@
                 "unit": "currency/kWpe",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 7.433008821804292
             },
@@ -1298,7 +1298,7 @@
                 "unit": "kWh",
                 "value": 2497444.0661499994
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -1332,7 +1332,7 @@
             "costs_cost_om": {
                 "value": 0.0
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": 18563523.775655728
             },
             "costs_total": {
@@ -1357,7 +1357,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -1365,7 +1365,7 @@
                 "unit": "currency/kWpe",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 7.433008821804292
             },
@@ -1421,7 +1421,7 @@
                 "unit": "kWh",
                 "value": -6.920450711275001e-10
             },
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 603.0721627283399
             },
@@ -1452,7 +1452,7 @@
             "costs_cost_om": {
                 "value": 1651779.7381786811
             },
-            "costs_p_dispatch": {
+            "costs_price_dispatch": {
                 "value": -0.0
             },
             "costs_total": {
@@ -1471,7 +1471,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 7200.0
             },
@@ -1479,7 +1479,7 @@
                 "unit": "currency/unit/ye",
                 "value": 1101.1864921191543
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -1537,7 +1537,7 @@
     },
     "energyProviders": {
         "DSO": {
-            "annuity_capex_p_dispatch": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
@@ -1572,7 +1572,7 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_cost_specific": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
@@ -1580,7 +1580,7 @@
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_p_dispatch": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -1630,7 +1630,7 @@
                     "unit": "kWh",
                     "value": -2.46654956825e-09
                 },
-                "annuity_capex_p_dispatch": {
+                "annuity_capex_price_dispatch": {
                     "unit": "currency/unit/a",
                     "value": 0.0
                 },
@@ -1665,7 +1665,7 @@
                 "costs_cost_om": {
                     "value": -0.0
                 },
-                "costs_p_dispatch": {
+                "costs_price_dispatch": {
                     "value": -0.0
                 },
                 "costs_total": {
@@ -1686,7 +1686,7 @@
                     "unit": "year",
                     "value": 10
                 },
-                "lifetime_cost_specific": {
+                "lifetime_specific_cost": {
                     "unit": "currency/unit",
                     "value": 0.0
                 },
@@ -1694,7 +1694,7 @@
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
-                "lifetime_p_dispatch": {
+                "lifetime_price_dispatch": {
                     "unit": "?",
                     "value": 0.0
                 },
@@ -1748,7 +1748,7 @@
                     "unit": "kWh",
                     "value": -2.226061051000001e-09
                 },
-                "annuity_capex_p_dispatch": {
+                "annuity_capex_price_dispatch": {
                     "unit": "currency/unit/a",
                     "value": 0.0
                 },
@@ -1783,7 +1783,7 @@
                 "costs_cost_om": {
                     "value": -0.0
                 },
-                "costs_p_dispatch": {
+                "costs_price_dispatch": {
                     "value": -0.0
                 },
                 "costs_total": {
@@ -1804,7 +1804,7 @@
                     "unit": "year",
                     "value": 10
                 },
-                "lifetime_cost_specific": {
+                "lifetime_specific_cost": {
                     "unit": "currency/unit",
                     "value": 0.0
                 },
@@ -1812,7 +1812,7 @@
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
-                "lifetime_p_dispatch": {
+                "lifetime_price_dispatch": {
                     "unit": "?",
                     "value": 0.0
                 },
@@ -1860,7 +1860,7 @@
                     "unit": "kWh",
                     "value": -1.11818218733e-07
                 },
-                "annuity_capex_p_dispatch": {
+                "annuity_capex_price_dispatch": {
                     "unit": "currency/unit/a",
                     "value": 492.87618692134606
                 },
@@ -1891,7 +1891,7 @@
                 "costs_cost_om": {
                     "value": -0.0
                 },
-                "costs_p_dispatch": {
+                "costs_price_dispatch": {
                     "value": -0.0
                 },
                 "costs_total": {
@@ -1912,7 +1912,7 @@
                     "unit": "year",
                     "value": 10
                 },
-                "lifetime_cost_specific": {
+                "lifetime_specific_cost": {
                     "unit": "currency/unit",
                     "value": 6784.35749156227
                 },
@@ -1920,7 +1920,7 @@
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
-                "lifetime_p_dispatch": {
+                "lifetime_price_dispatch": {
                     "unit": "?",
                     "value": 0.0
                 },
@@ -2076,7 +2076,7 @@
                 "Electricity": 1368.4625019999999
             }
         },
-        "cost_matrix": "pandas_Dataframe:{\"columns\":[\"label\",\"costs_total\",\"costs_om\",\"costs_investment\",\"costs_upfront\",\"costs_p_dispatch\",\"costs_cost_om\",\"annuity_total\",\"annuity_om\"],\"index\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"data\":[[\"storage capacity\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"input power\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"output power\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Solar inverter (mono)\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Charge Contoller ESS Li-Ion (charge)\",0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[\"Charge Contoller ESS Li-Ion (discharge)\",0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[\"Transformer station (DSO) consumption\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Transformer station (DSO) feedin\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"PV plant (mono)\",1651779.7381800001,1651779.7381800001,null,null,0.0,1651779.7381800001,120000.0,120000.0],[\"DSO_consumption source\",18564045.7548299991,18563523.7756600007,0.0,521.97917,18563523.7756600007,0.0,1348657.71694,1348619.7957200001],[\"Harbor\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Remaining demand\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Shore power (docked ships)\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Electricity excess_sink\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"DSO_feedin_sink\",0.0,0.0,null,null,0.0,0.0,0.0,0.0]]}",
+        "cost_matrix": "pandas_Dataframe:{\"columns\":[\"label\",\"costs_total\",\"costs_om\",\"costs_investment\",\"costs_upfront\",\"costs_price_dispatch\",\"costs_cost_om\",\"annuity_total\",\"annuity_om\"],\"index\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"data\":[[\"storage capacity\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"input power\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"output power\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Solar inverter (mono)\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Charge Contoller ESS Li-Ion (charge)\",0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[\"Charge Contoller ESS Li-Ion (discharge)\",0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[\"Transformer station (DSO) consumption\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Transformer station (DSO) feedin\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"PV plant (mono)\",1651779.7381800001,1651779.7381800001,null,null,0.0,1651779.7381800001,120000.0,120000.0],[\"DSO_consumption source\",18564045.7548299991,18563523.7756600007,0.0,521.97917,18563523.7756600007,0.0,1348657.71694,1348619.7957200001],[\"Harbor\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Remaining demand\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Shore power (docked ships)\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"Electricity excess_sink\",0.0,0.0,null,null,0.0,0.0,0.0,0.0],[\"DSO_feedin_sink\",0.0,0.0,null,null,0.0,0.0,0.0,0.0]]}",
         "scalar_matrix": "pandas_Dataframe:{\"columns\":[\"label\",\"optimizedAddCap\",\"total_flow\",\"annual_total_flow\",\"peak_flow\",\"average_flow\"],\"index\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"data\":[[\"storage capacity\",0.0,0.0,0.0,0.0,0.0],[\"input power\",0.0,0.0,0.0,0.0,0.0],[\"output power\",0.0,0.0,0.0,0.0,0.0],[\"Solar inverter (mono)\",0.0,0.0,0.0,0.0,0.0],[\"Charge Contoller ESS Li-Ion (charge)\",0.0,0.0,0.0,0.0,0.0],[\"Charge Contoller ESS Li-Ion (discharge)\",0.0,0.0,0.0,0.0,0.0],[\"Transformer station (DSO) consumption\",0.0,13137.24,2397546.2999999998,501.1,273.6925],[\"Transformer station (DSO) feedin\",0.0,0.0,0.0,0.0,0.0],[\"PV plant (mono)\",0.0,0.0,0.0,0.0,0.0],[\"DSO_consumption source\",521.97917,13684.62502,2497444.0661499999,521.97917,285.09635],[\"Harbor\",0.0,6837.24,1247796.3,201.1,142.4425],[\"Remaining demand\",0.0,0.0,0.0,0.0,0.0],[\"Shore power (docked ships)\",0.0,6300.0,1149750.0,300.0,131.25],[\"Electricity excess_sink\",0.0,0.0,0.0,0.0,0.0],[\"DSO_feedin_sink\",0.0,0.0,0.0,0.0,0.0]]}",
         "scalars": {
             "Renewable share": 0.1,
@@ -2089,7 +2089,7 @@
             "costs_investment": 0.0,
             "costs_om": 20215303.51384,
             "costs_cost_om": 1651779.73818,
-            "costs_p_dispatch": 18563523.77566,
+            "costs_price_dispatch": 18563523.77566,
             "costs_total": 20215825.49301,
             "costs_upfront": 521.97917
         }

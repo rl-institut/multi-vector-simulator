@@ -67,7 +67,7 @@ def test_complete_missing_cost_data_cost_om():
     assert dict_asset[SPECIFIC_COST_OM] == 0
 
 
-def test_complete_missing_cost_data_cost_specific():
+def test_complete_missing_cost_data_specific_cost():
     dict_asset = {LABEL: "a_label"}
     C0.complete_missing_cost_data(dict_asset)
     assert SPECIFIC_COST in dict_asset.keys()
@@ -107,25 +107,25 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
         assert k in dict_asset.keys()
 
 
-def test_determine_lifetime_p_dispatch_as_int():
+def test_determine_lifetime_price_dispatch_as_int():
     dict_asset = {PRICE_DISPATCH: {VALUE: 1}}
-    C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
+    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float) or isinstance(
         dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], int
     )
 
 
-def test_determine_lifetime_p_dispatch_as_float():
+def test_determine_lifetime_price_dispatch_as_float():
     dict_asset = {PRICE_DISPATCH: {VALUE: 1.5}}
-    C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
+    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
 
 
-def test_determine_lifetime_p_dispatch_as_list():
+def test_determine_lifetime_price_dispatch_as_list():
     dict_asset = {PRICE_DISPATCH: {VALUE: [1.0, 1.0]}}
-    C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
+    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
     # todo this should be here some time, shouldnt it? assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], list)
@@ -141,17 +141,17 @@ pandas_DatetimeIndex = pd.date_range(
 pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
 
 
-def test_determine_lifetime_p_dispatch_as_timeseries():
+def test_determine_lifetime_price_dispatch_as_timeseries():
     dict_asset = {PRICE_DISPATCH: {VALUE: pandas_Series}}
-    C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
+    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], pd.Series)
 
 
-def test_determine_lifetime_p_dispatch_is_other():
+def test_determine_lifetime_price_dispatch_is_other():
     dict_asset = {PRICE_DISPATCH: {VALUE: TYPE_STR}}
     with pytest.raises(ValueError):
-        C0.determine_lifetime_p_dispatch(dict_asset, economic_data)
+        C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
 
 def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear():

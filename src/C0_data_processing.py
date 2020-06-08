@@ -405,7 +405,7 @@ def define_missing_cost_data(dict_values, dict_asset):
     """
 
     # read timeseries with filename provided for variable costs.
-    # if multiple p_dispatch are given for multiple busses, it checks if any v
+    # if multiple price_dispatch are given for multiple busses, it checks if any v
     # alue is a timeseries
     if PRICE_DISPATCH in dict_asset:
         if isinstance(dict_asset[PRICE_DISPATCH][VALUE], dict):
@@ -575,14 +575,14 @@ def define_dso_sinks_and_sources(dict_values, dso):
     peak_demand_pricing = dict_values[ENERGY_PROVIDERS][dso][PEAK_DEMAND_PRICING][VALUE]
     if isinstance(peak_demand_pricing, float) or isinstance(peak_demand_pricing, int):
         logging.debug(
-            "The peak demand pricing price of %s %s is set as cost_specific of "
+            "The peak demand pricing price of %s %s is set as specific_cost of "
             "the sources of grid energy.",
             peak_demand_pricing,
             dict_values[ECONOMIC_DATA][CURR],
         )
     else:
         logging.debug(
-            "The peak demand pricing price of %s %s is set as cost_specific of "
+            "The peak demand pricing price of %s %s is set as specific_cost of "
             "the sources of grid energy.",
             sum(peak_demand_pricing) / len(peak_demand_pricing),
             dict_values[ECONOMIC_DATA][CURR],
@@ -637,7 +637,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         dso + "_feedin",
         dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
         dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
-        cost_specific={VALUE: 0, UNIT: "currency/kW"},
+        specific_cost={VALUE: 0, UNIT: "currency/kW"},
     )
 
     dict_values[ENERGY_PROVIDERS][dso].update(
@@ -684,7 +684,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     }
 
     # check if multiple busses are provided
-    # for each bus, read time series for p_dispatch if a file name has been
+    # for each bus, read time series for price_dispatch if a file name has been
     # provided in energy price
     if isinstance(price[VALUE], list):
         source.update({PRICE_DISPATCH: {VALUE: [], UNIT: price[UNIT]}})
@@ -808,7 +808,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
     }
 
     # check if multiple busses are provided
-    # for each bus, read time series for p_dispatch if a file name has been provided in feedin tariff
+    # for each bus, read time series for price_dispatch if a file name has been provided in feedin tariff
     if isinstance(price[VALUE], list):
         sink.update({PRICE_DISPATCH: {VALUE: [], UNIT: price[UNIT]}})
         values_info = []
@@ -899,7 +899,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
     complete_missing_cost_data(dict_asset)
 
-    determine_lifetime_p_dispatch(dict_asset, economic_data)
+    determine_lifetime_price_dispatch(dict_asset, economic_data)
 
     dict_asset.update(
         {
@@ -924,7 +924,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                     dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
                     economic_data[CRF][VALUE],
                 )
-                + dict_asset[SPECIFIC_COST_OM][VALUE],  # changes from p_dispatch
+                + dict_asset[SPECIFIC_COST_OM][VALUE],  # changes from price_dispatch
                 UNIT: dict_asset[LIFETIME_SPECIFIC_COST][UNIT] + "/a",
             }
         }
@@ -960,7 +960,7 @@ def complete_missing_cost_data(dict_asset):
     if SPECIFIC_COST not in dict_asset:
         dict_asset.update({SPECIFIC_COST: 0})
         logging.error(
-            "Dictionary of asset %s is incomplete, as cost_specific is missing.",
+            "Dictionary of asset %s is incomplete, as specific_cost is missing.",
             dict_asset[LABEL],
         )
     if SPECIFIC_COST_OM not in dict_asset:
@@ -972,7 +972,7 @@ def complete_missing_cost_data(dict_asset):
     return
 
 
-def determine_lifetime_p_dispatch(dict_asset, economic_data):
+def determine_lifetime_price_dispatch(dict_asset, economic_data):
     """
     #todo I am not sure that this makes sense. is this used in d0?
     Parameters
@@ -987,80 +987,80 @@ def determine_lifetime_p_dispatch(dict_asset, economic_data):
     if isinstance(dict_asset[PRICE_DISPATCH][VALUE], float) or isinstance(
         dict_asset[PRICE_DISPATCH][VALUE], int
     ):
-        lifetime_p_dispatch = get_lifetime_p_dispatch_one_value(
+        lifetime_price_dispatch = get_lifetime_price_dispatch_one_value(
             dict_asset, economic_data
         )
 
     elif isinstance(dict_asset[PRICE_DISPATCH][VALUE], list):
-        lifetime_p_dispatch = get_lifetime_p_dispatch_list(dict_asset, economic_data)
+        lifetime_price_dispatch = get_lifetime_price_dispatch_list(dict_asset, economic_data)
 
     elif isinstance(dict_asset[PRICE_DISPATCH][VALUE], pd.Series):
-        lifetime_p_dispatch = get_lifetime_p_dispatch_timeseries(
+        lifetime_price_dispatch = get_lifetime_price_dispatch_timeseries(
             dict_asset, economic_data
         )
 
     else:
         raise ValueError(
-            f"Type of p_dispatch neither int, float, list or pd.Series, but of type {dict_asset[PRICE_DISPATCH][VALUE]}. Is type correct?"
+            f"Type of price_dispatch neither int, float, list or pd.Series, but of type {dict_asset[PRICE_DISPATCH][VALUE]}. Is type correct?"
         )
 
     dict_asset.update(
-        {LIFETIME_PRICE_DISPATCH: {VALUE: lifetime_p_dispatch, UNIT: "?",}}
+        {LIFETIME_PRICE_DISPATCH: {VALUE: lifetime_price_dispatch, UNIT: "?",}}
     )
     return
 
 
-def get_lifetime_p_dispatch_one_value(dict_asset, economic_data):
+def get_lifetime_price_dispatch_one_value(dict_asset, economic_data):
     """
-    p_dispatch can be a fix value
+    price_dispatch can be a fix value
     Returns
     -------
 
     """
-    lifetime_p_dispatch = (
+    lifetime_price_dispatch = (
         dict_asset[PRICE_DISPATCH][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
-    return lifetime_p_dispatch
+    return lifetime_price_dispatch
 
 
-def get_lifetime_p_dispatch_list(dict_asset, economic_data):
+def get_lifetime_price_dispatch_list(dict_asset, economic_data):
     """
-    p_dispatch can be a list, for example if there are two input flows to a component, eg. water and electricity.
-    Their ratio for providing cooling in kWh therm is fix. There should be a lifetime_p_dispatch for each of them.
+    price_dispatch can be a list, for example if there are two input flows to a component, eg. water and electricity.
+    Their ratio for providing cooling in kWh therm is fix. There should be a lifetime_price_dispatch for each of them.
 
     Returns
     -------
 
     """
 
-    # if multiple busses are provided, it takes the first p_dispatch (corresponding to the first bus)
+    # if multiple busses are provided, it takes the first price_dispatch (corresponding to the first bus)
 
     first_value = dict_asset[PRICE_DISPATCH][VALUE][0]
     if isinstance(first_value, float) or isinstance(first_value, int):
-        p_dispatch = first_value
+        price_dispatch = first_value
     else:
-        p_dispatch = sum(first_value) / len(first_value)
+        price_dispatch = sum(first_value) / len(first_value)
 
-    lifetime_p_dispatch = p_dispatch * economic_data[ANNUITY_FACTOR][VALUE]
-    return lifetime_p_dispatch
+    lifetime_price_dispatch = price_dispatch * economic_data[ANNUITY_FACTOR][VALUE]
+    return lifetime_price_dispatch
 
 
-def get_lifetime_p_dispatch_timeseries(dict_asset, economic_data):
+def get_lifetime_price_dispatch_timeseries(dict_asset, economic_data):
     """
-    p_dispatch can be a timeseries, eg. in case that there is an hourly pricing
+    price_dispatch can be a timeseries, eg. in case that there is an hourly pricing
     Returns
     -------
 
     """
-    # take average value of p_dispatch if it is a timeseries
+    # take average value of price_dispatch if it is a timeseries
 
-    p_dispatch = sum(dict_asset[PRICE_DISPATCH][VALUE]) / len(
+    price_dispatch = sum(dict_asset[PRICE_DISPATCH][VALUE]) / len(
         dict_asset[PRICE_DISPATCH][VALUE]
     )
-    lifetime_p_dispatch = (
+    lifetime_price_dispatch = (
         dict_asset[PRICE_DISPATCH][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
     )
-    return lifetime_p_dispatch
+    return lifetime_price_dispatch
 
 
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,

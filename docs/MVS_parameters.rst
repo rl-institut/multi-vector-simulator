@@ -55,9 +55,9 @@ Common Parameters in the CSV/JSON files and in energyConversion.csv:
 
 **age_installed**: The number of years the asset has already been in operation
 
-**Cost_development**: A fixed cost to implement the asset, eg. planning costs which do not depend on the (optimized) asset capacity (€)
+**cost_development**: A fixed cost to implement the asset, eg. planning costs which do not depend on the (optimized) asset capacity (€)
 
-**cost_specific**: Actual CAPEX of the asset (€/kW), ie. specific investment costs
+**specific_cost**: Actual CAPEX of the asset (€/kW), ie. specific investment costs
 
 **efficiency**: Ratio of energy output/energy input
 
@@ -73,8 +73,8 @@ Common Parameters in the CSV/JSON files and in energyConversion.csv:
 
 **cost_om**: Specific annual OPEX of the asset (€/kW/year)
 
-**p_dispatch**: Variable cost associated with a flow through/from the asset (€/kWh). In "storage_xx.csv" only the columns "input power" and "output power"
-require a value, in column "storage capacity" p_dispatch should be set to NaN.
+**price_dispatch**: Variable cost associated with a flow through/from the asset (€/kWh). In "storage_xx.csv" only the columns "input power" and "output power"
+require a value, in column "storage capacity" price_dispatch should be set to NaN.
 
 **optimizeCap**: Permissible values are either True or False; ‘True’ if the user wants to perform capacity optimization for various components
 

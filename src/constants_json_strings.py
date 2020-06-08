@@ -152,7 +152,7 @@ OPTIMIZED_ADD_CAP = "optimizedAddCap"
 
 # Costs - Annuities
 ANNUITY_OM = "annuity_om"
-ANNUITY_CAPEX_OPEX_VAR = "annuity_capex_p_dispatch"
+ANNUITY_CAPEX_OPEX_VAR = "annuity_capex_price_dispatch"
 
 # Costs - Total
 COST_TOTAL = "costs_total"
@@ -166,7 +166,7 @@ KPI_SCALARS = (
     COST_INVESTMENT,
     COST_OM,
     "costs_cost_om",
-    "costs_p_dispatch",
+    "costs_price_dispatch",
     COST_TOTAL,
     "costs_upfront",
 )

@@ -69,7 +69,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
                         "costs_om",
                         "costs_investment",
                         "costs_upfront",
-                        "costs_p_dispatch",
+                        "costs_price_dispatch",
                         "costs_cost_om",
                         "annuity_total",
                         ANNUITY_OM,
