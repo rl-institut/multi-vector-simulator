@@ -7,7 +7,7 @@ from src.constants_json_strings import (
     CURR,
     LABEL,
     COST_DEVELOPMENT,
-    C_SPECIFIC,
+    SPECIFIC_COST,
     INSTALLED_CAP,
     SIMULATION_SETTINGS,
     LIFETIME_CAPEX_VAR,
@@ -72,14 +72,14 @@ def get_costs(dict_asset, economic_data):
             )
 
         if (
-            all_list_in_dict(dict_asset, [C_SPECIFIC, COST_DEVELOPMENT, OPTIMIZED_ADD_CAP])
+            all_list_in_dict(dict_asset, [SPECIFIC_COST, COST_DEVELOPMENT, OPTIMIZED_ADD_CAP])
             is True
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
         ):
             # investments including fix prices, only upfront costs at t=0
             costs_upfront = (
                 dict_asset[OPTIMIZED_ADD_CAP][VALUE]
-                + dict_asset[C_SPECIFIC][VALUE]
+                + dict_asset[SPECIFIC_COST][VALUE]
                 + dict_asset[COST_DEVELOPMENT][VALUE]
             )
             costs_total = add_costs_and_total(

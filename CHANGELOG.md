@@ -28,7 +28,7 @@ Here is a template for new release sections
 - Use "is" instead of "==" in if clauses for True, False and None (#346)
 - Categorize constants in 'constants_json_strings.py' (#347)
 - Renaming CAPEX_FIX = "capex_fix" into COST_DEVELOPMENT = "cost_development" (#40)
-- Renaming CAPEX_VAR = "capex_var" into C_SPECIFIC = "cost_specific" (#40)
+- Renaming CAPEX_VAR = "capex_var" into SPECIFIC_COST = "specific_cost" (#40)
 - Renaming OPEX_FIX = "opex_fix" into C_OM = "cost_om" (#40)
 - Renaming OPEX_VAR = "opex_var" into P_DISPATCH = "p_dispatch" (#40)
 

@@ -3,7 +3,7 @@ from src.constants_json_strings import (
     UNIT,
     CURR,
     COST_DEVELOPMENT,
-    C_SPECIFIC,
+    SPECIFIC_COST,
     P_DISPATCH,
     VALUE,
     LABEL,
@@ -20,7 +20,7 @@ from src.constants_json_strings import (
 dict_asset = {
     LABEL: "DSO_feedin_sink",
     P_DISPATCH: {VALUE: -0.4, UNIT: "currency/kWh"},
-    C_SPECIFIC: {VALUE: 0, UNIT: "currency/kW"},
+    SPECIFIC_COST: {VALUE: 0, UNIT: "currency/kW"},
     INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
     COST_DEVELOPMENT: {VALUE: 0, UNIT: CURR},
     LIFETIME_CAPEX_VAR: {VALUE: 0.0, UNIT: "currency/kW"},

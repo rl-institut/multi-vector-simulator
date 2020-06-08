@@ -14,7 +14,7 @@ from src.constants_json_strings import (
     P_DISPATCH,
     C_OM,
     COST_DEVELOPMENT,
-    C_SPECIFIC,
+    SPECIFIC_COST,
     LIFETIME,
     SIMULATION_SETTINGS,
     PEAK_DEMAND_PRICING_PERIOD,
@@ -70,8 +70,8 @@ def test_complete_missing_cost_data_cost_om():
 def test_complete_missing_cost_data_cost_specific():
     dict_asset = {LABEL: "a_label"}
     C0.complete_missing_cost_data(dict_asset)
-    assert C_SPECIFIC in dict_asset.keys()
-    assert dict_asset[C_SPECIFIC] == 0
+    assert SPECIFIC_COST in dict_asset.keys()
+    assert dict_asset[SPECIFIC_COST] == 0
 
 
 settings = {EVALUATED_PERIOD: {VALUE: 365}}
@@ -87,7 +87,7 @@ economic_data = {
 dict_asset = {
     C_OM: {VALUE: 1, UNIT: "a_unit"},
     CRF: {VALUE: 1},
-    C_SPECIFIC: {VALUE: 1, UNIT: "a_unit"},
+    SPECIFIC_COST: {VALUE: 1, UNIT: "a_unit"},
     P_DISPATCH: {VALUE: 1},
     COST_DEVELOPMENT: {VALUE: 1},
     LIFETIME: {VALUE: 20},

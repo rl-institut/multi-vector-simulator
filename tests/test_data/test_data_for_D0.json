@@ -61,7 +61,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/kW",
                 "value": 0
             },
@@ -116,7 +116,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -171,7 +171,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -243,7 +243,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -315,7 +315,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -393,7 +393,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/kW",
                 "value": 3000
             },
@@ -463,7 +463,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -533,7 +533,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -603,7 +603,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -673,7 +673,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -741,7 +741,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -811,7 +811,7 @@
                 "unit": "currency",
                 "value": 10000
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/unit",
                 "value": 7200
             },
@@ -888,7 +888,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -973,7 +973,7 @@
                     "unit": "currency",
                     "value": 0
                 },
-                "cost_specific": {
+                "specific_cost": {
                     "unit": "currency/unit",
                     "value": 0
                 },
@@ -1048,7 +1048,7 @@
                     "unit": "currency",
                     "value": 0
                 },
-                "cost_specific": {
+                "specific_cost": {
                     "unit": "currency/unit",
                     "value": 0
                 },
@@ -1113,7 +1113,7 @@
                     "unit": "currency",
                     "value": 0
                 },
-                "cost_specific": {
+                "specific_cost": {
                     "unit": "currency/unit",
                     "value": 4000
                 },
@@ -1190,7 +1190,7 @@
                 "unit": "currency",
                 "value": 0.0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -1217,7 +1217,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency",
                 "value": 0
             },
@@ -1244,7 +1244,7 @@
                 "unit": "currency",
                 "value": 0
             },
-            "cost_specific": {
+            "specific_cost": {
                 "unit": "currency",
                 "value": 0
             },
