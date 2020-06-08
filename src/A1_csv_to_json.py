@@ -51,7 +51,7 @@ from src.constants_json_strings import (
     LABEL,
     P_DISPATCH,
     C_OM,
-    C_DEVELOPMENT,
+    COST_DEVELOPMENT,
     C_SPECIFIC,
     AGE_INSTALLED,
     LIFETIME,
@@ -550,7 +550,7 @@ def add_storage_components(storage_filename, input_directory):
         # hardcoded parameterlist of common parameters in all columns
         parameters = [
             AGE_INSTALLED,
-            C_DEVELOPMENT,
+            COST_DEVELOPMENT,
             C_SPECIFIC,
             EFFICIENCY,
             INSTALLED_CAP,

@@ -13,7 +13,7 @@ from src.constants_json_strings import (
     LABEL,
     P_DISPATCH,
     C_OM,
-    C_DEVELOPMENT,
+    COST_DEVELOPMENT,
     C_SPECIFIC,
     LIFETIME,
     SIMULATION_SETTINGS,
@@ -89,7 +89,7 @@ dict_asset = {
     CRF: {VALUE: 1},
     C_SPECIFIC: {VALUE: 1, UNIT: "a_unit"},
     P_DISPATCH: {VALUE: 1},
-    C_DEVELOPMENT: {VALUE: 1},
+    COST_DEVELOPMENT: {VALUE: 1},
     LIFETIME: {VALUE: 20},
     UNIT: "a_unit",
 }

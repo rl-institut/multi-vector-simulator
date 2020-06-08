@@ -2,7 +2,7 @@ import src.E2_economics as E2
 from src.constants_json_strings import (
     UNIT,
     CURR,
-    C_DEVELOPMENT,
+    COST_DEVELOPMENT,
     C_SPECIFIC,
     P_DISPATCH,
     VALUE,
@@ -22,7 +22,7 @@ dict_asset = {
     P_DISPATCH: {VALUE: -0.4, UNIT: "currency/kWh"},
     C_SPECIFIC: {VALUE: 0, UNIT: "currency/kW"},
     INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
-    C_DEVELOPMENT: {VALUE: 0, UNIT: CURR},
+    COST_DEVELOPMENT: {VALUE: 0, UNIT: CURR},
     LIFETIME_CAPEX_VAR: {VALUE: 0.0, UNIT: "currency/kW"},
     LIFETIME_OPEX_FIX: {VALUE: 0.0, UNIT: "currency/ye"},
     LIFETIME_OPEX_VAR: {VALUE: -5.505932460595773, UNIT: "?"},
