@@ -19,7 +19,7 @@ from src.constants_json_strings import (
     COST_TOTAL,
     COST_OM_TOTAL,
     COST_DISPATCH,
-    COST_OM_FIX
+    COST_OM_FIX,
 )
 
 dict_asset = {
@@ -44,12 +44,12 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     """Tests whether the function get_costs is adding all the calculated costs to dict_asset."""
     E2.get_costs(dict_asset, dict_economic)
     for k in (
-            COST_DISPATCH,
-            COST_OM_FIX,
-            COST_TOTAL,
-            COST_OM_TOTAL,
-            ANNUITY_TOTAL,
-            ANNUITY_OM,
+        COST_DISPATCH,
+        COST_OM_FIX,
+        COST_TOTAL,
+        COST_OM_TOTAL,
+        ANNUITY_TOTAL,
+        ANNUITY_OM,
     ):
         assert k in dict_asset
 

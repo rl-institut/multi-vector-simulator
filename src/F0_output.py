@@ -17,7 +17,15 @@ from src.constants import (
     SECTORS,
     PATH_OUTPUT_FOLDER,
 )
-from src.constants_json_strings import OPTIMIZED_ADD_CAP, KPI, LABEL, KPI_SCALAR_MATRIX, COST_OM_TOTAL, COST_INVESTMENT, ANNUITY_TOTAL
+from src.constants_json_strings import (
+    OPTIMIZED_ADD_CAP,
+    KPI,
+    LABEL,
+    KPI_SCALAR_MATRIX,
+    COST_OM_TOTAL,
+    COST_INVESTMENT,
+    ANNUITY_TOTAL,
+)
 
 r"""
 Module F0 Output
