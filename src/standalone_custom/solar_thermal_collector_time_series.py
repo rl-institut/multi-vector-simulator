@@ -41,8 +41,11 @@ weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
 weather.reset_index("time", inplace=True)
 
 # load collector data
-filename_collector_data = os.path.join(path_to_server, path_to_data_folder,
-                                       "2020-05-13_technical_data_UVTgV_system_solar_thermal.csv")
+filename_collector_data = os.path.join(
+    path_to_server,
+    path_to_data_folder,
+    "2020-05-13_technical_data_UVTgV_system_solar_thermal.csv",
+)
 rename_inds = {
     "alpha_coll": "collector_azimuth",
     "Beta": "collector_tilt",
