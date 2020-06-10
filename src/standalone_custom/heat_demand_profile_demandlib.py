@@ -26,7 +26,7 @@ import workalendar
 try:
     from matplotlib import pyplot as plt
 except ImportError:
-     plt = None
+    plt = None
 
 from pvcompare import demand as pvcompare_demand
 
@@ -164,9 +164,9 @@ if __name__ == "__main__":
 
     # load dummy weather
     weather = pd.read_csv("era5_weather_UVTgV_2019.csv", parse_dates=True).set_index(
-        "time")
-    weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(
-        time_zone)
+        "time"
+    )
+    weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
     weather.reset_index("time", inplace=True)
 
     demand = calculate_heat_demand_time_series(
@@ -192,12 +192,13 @@ if __name__ == "__main__":
         # plt.show()
         # fig.savefig(os.path.join(folder, "heat_demand_year.pdf"))
 
-
         # sum in January - annual heat demand calc    respectively April
-        demand_jan_yearl_calc = demand.iloc[0:24*31]
+        demand_jan_yearl_calc = demand.iloc[0 : 24 * 31]
         sum_jan = demand_jan_yearl_calc.sum()
 
-        demand_apr_yearly_calc = demand.iloc[24*31*2 + 24*29 : 24*31*2 + 24*29 + 24*30]
+        demand_apr_yearly_calc = demand.iloc[
+            24 * 31 * 2 + 24 * 29 : 24 * 31 * 2 + 24 * 29 + 24 * 30
+        ]
         sum_apr = demand_apr_yearly_calc.sum()
 
         # plot only January     respectively April
@@ -205,17 +206,21 @@ if __name__ == "__main__":
         plt.ylim([0, demand_jan_yearl_calc.max() + 50])
         fig.savefig(os.path.join(folder, "heat_demand_year_january.pdf"))
 
-        plt.xlim([demand.index[24*31*2 + 24*29], demand.index[24*31*2 + 24*29 + 24*30 -1]])
+        plt.xlim(
+            [
+                demand.index[24 * 31 * 2 + 24 * 29],
+                demand.index[24 * 31 * 2 + 24 * 29 + 24 * 30 - 1],
+            ]
+        )
         plt.ylim([0, demand_apr_yearly_calc.max() + 50])
         fig.savefig(os.path.join(folder, "heat_demand_year_april.pdf"))
-
 
         # calculate heat demand of only January:
         annual_demand_jan = 45630.42 * efficiency_gas_boiler  # kWh
         demand_jan = calculate_heat_demand_time_series(
             year=year,
             annual_demand=annual_demand_jan,
-            ambient_temperature=weather["temp_air"].iloc[0:24*31],
+            ambient_temperature=weather["temp_air"].iloc[0 : 24 * 31],
             profile_type=profile_type,
             country=country,
             # filename=filename_heat_demand,
@@ -235,10 +240,14 @@ if __name__ == "__main__":
         # sum in January - only monthly calc
         sum_jan_single = demand_jan.sum()
 
-        print(f"Demand January yearly calc: {round(sum_jan, 2)} kWh \nDemand January single calc: {round(sum_jan_single, 2)} kWh")
+        print(
+            f"Demand January yearly calc: {round(sum_jan, 2)} kWh \nDemand January single calc: {round(sum_jan_single, 2)} kWh"
+        )
 
-        print(f"January yearly calc: Min: {round(demand_jan_yearl_calc.min(), 2)} Max: {round(demand_jan_yearl_calc.max(), 2)} Diff: {round(demand_jan_yearl_calc.max()-demand_jan_yearl_calc.min(), 2)}\n"
-              f"January monthly calc: Min: {round(demand_jan.min(), 2)} Max: {round(demand_jan.max(),2)} Diff: {round(demand_jan.max()-demand_jan.min(), 2)}")
+        print(
+            f"January yearly calc: Min: {round(demand_jan_yearl_calc.min(), 2)} Max: {round(demand_jan_yearl_calc.max(), 2)} Diff: {round(demand_jan_yearl_calc.max()-demand_jan_yearl_calc.min(), 2)}\n"
+            f"January monthly calc: Min: {round(demand_jan.min(), 2)} Max: {round(demand_jan.max(),2)} Diff: {round(demand_jan.max()-demand_jan.min(), 2)}"
+        )
 
         ####### check for April
         # calculate heat demand of only April:
@@ -246,13 +255,15 @@ if __name__ == "__main__":
         demand_apr = calculate_heat_demand_time_series(
             year=year,
             annual_demand=annual_demand_apr,
-            ambient_temperature=weather["temp_air"].iloc[24*31*2 + 24*29 : 24*31*2 + 24*29 + 24*30],
+            ambient_temperature=weather["temp_air"].iloc[
+                24 * 31 * 2 + 24 * 29 : 24 * 31 * 2 + 24 * 29 + 24 * 30
+            ],
             profile_type=profile_type,
             country=country,
             # filename=filename_heat_demand,
             frequency="H",
             hour_shift=hour_shift,
-            start_date=[4, 1]
+            start_date=[4, 1],
         )
 
         fig = plt.figure()
@@ -267,8 +278,10 @@ if __name__ == "__main__":
         sum_apr_single = demand_apr.sum()
 
         print(
-            f"Demand April yearly calc: {round(sum_apr, 2)} kWh \nDemand April single calc: {round(sum_apr_single, 2)} kWh")
+            f"Demand April yearly calc: {round(sum_apr, 2)} kWh \nDemand April single calc: {round(sum_apr_single, 2)} kWh"
+        )
 
         print(
             f"April yearly calc: Min: {round(demand_apr_yearly_calc.min(), 2)} Max: {round(demand_apr_yearly_calc.max(), 2)} Diff: {round(demand_apr_yearly_calc.max() - demand_apr_yearly_calc.min(), 2)}\n"
-            f"April monthly calc: Min: {round(demand_apr.min(), 2)} Max: {round(demand_apr.max(), 2)} Diff: {round(demand_apr.max() - demand_apr.min(), 2)}")
+            f"April monthly calc: Min: {round(demand_apr.min(), 2)} Max: {round(demand_apr.max(), 2)} Diff: {round(demand_apr.max() - demand_apr.min(), 2)}"
+        )

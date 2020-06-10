@@ -22,13 +22,13 @@ location = "UVTgV"  # only used for file name
 year = 2019
 
 # set start and end date (end date will be included)
-start_date, end_date = f'{year}-01-01', f'{year}-12-31'
+start_date, end_date = f"{year}-01-01", f"{year}-12-31"
 
 # output filename for weather data (csv)
 output_filename = f"era5_weather_{location}_{year}.csv"
 
 # filename of downloaded data
-era5_netcdf_filename = f'ERA5_pvlib_{year}.nc'
+era5_netcdf_filename = f"ERA5_pvlib_{year}.nc"
 
 # set variable set to download ("pvlib" or "windpowerlib")
 variable = "pvlib"
@@ -37,9 +37,12 @@ variable = "pvlib"
 if not os.path.isfile(era5_netcdf_filename):
     era5.get_era5_data_from_datespan_and_position(
         variable=variable,
-        start_date=start_date, end_date=end_date,
-        latitude=latitude, longitude=longitude,
-        target_file=era5_netcdf_filename)
+        start_date=start_date,
+        end_date=end_date,
+        latitude=latitude,
+        longitude=longitude,
+        target_file=era5_netcdf_filename,
+    )
 
 
 # # import downloaded data
@@ -47,9 +50,8 @@ if not os.path.isfile(era5_netcdf_filename):
 
 # transform to pvlib format
 pvlib_df = era5.weather_df_from_era5(
-    era5_netcdf_filename=era5_netcdf_filename,
-    lib='pvlib',
-    area=[latitude, longitude])
+    era5_netcdf_filename=era5_netcdf_filename, lib="pvlib", area=[latitude, longitude]
+)
 
 print(pvlib_df.head())
 
