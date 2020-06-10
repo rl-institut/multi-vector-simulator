@@ -10,6 +10,11 @@ import logging
 
 from oemof.thermal.flat_plate_collector import flat_plate_precalc
 
+try:
+    from matplotlib import pyplot as plt
+except ImportError:
+    plt = None
+
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
@@ -121,3 +126,10 @@ filename_collector_data = os.path.join(
     path_to_results_folder, f"solar_thermal_collectors_heat.csv"
 )
 heat_kwh_df.to_csv(filename_collector_data)
+
+if plt:
+    heat_kwh_df.plot()
+    plt.show()
+
+
+print(f"Total collector's heat: {round(heat_kwh_df.sum().values[0], 2)} kWh")
