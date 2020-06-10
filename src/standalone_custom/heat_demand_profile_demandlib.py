@@ -4,8 +4,6 @@ This module calculates heat demand time series using oemof demandlib.
 Installation requirements:
 demandlib==0.1.6
 importlib==1.0.4
-pkgutil==
-inspect
 sys
 workalendar==8.1.0
 
@@ -193,8 +191,6 @@ if __name__ == "__main__":
         plt.ylabel("heat demand in kWh")
         # plt.show()
         # fig.savefig(os.path.join(folder, "heat_demand_year.pdf"))
-        # only January
-        plt.xlim([demand.index[0], demand.index[24*31 - 1]])
         fig.savefig(os.path.join(folder, "heat_demand_year_january.pdf"))
 
         # sum in January - annual heat demand calc
@@ -220,8 +216,6 @@ if __name__ == "__main__":
         plt.ylabel("heat demand in kWh")
         # plt.show()
         # fig.savefig(os.path.join(folder, "heat_demand_year.pdf"))
-        # only January
-        plt.xlim([demand_jan.index[0], demand_jan.index[24 * 31 - 1]])
         fig.savefig(os.path.join(folder, "heat_demand_single_january.pdf"))
 
         # sum in January - only monthly calc
