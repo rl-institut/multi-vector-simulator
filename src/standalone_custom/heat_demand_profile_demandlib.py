@@ -191,10 +191,23 @@ if __name__ == "__main__":
         plt.ylabel("heat demand in kWh")
         # plt.show()
         # fig.savefig(os.path.join(folder, "heat_demand_year.pdf"))
+
+
+        # sum in January - annual heat demand calc    respectively April
+        demand_jan_yearl_calc = demand.iloc[0:24*31]
+        sum_jan = demand_jan_yearl_calc.sum()
+
+        demand_apr_yearly_calc = demand.iloc[24*31*2 + 24*29 : 24*31*2 + 24*29 + 24*30]
+        sum_apr = demand_apr_yearly_calc.sum()
+
+        # plot only January     respectively April
+        plt.xlim([demand.index[0], demand.index[24 * 31 - 1]])
+        plt.ylim([0, demand_jan_yearl_calc.max() + 50])
         fig.savefig(os.path.join(folder, "heat_demand_year_january.pdf"))
 
-        # sum in January - annual heat demand calc
-        sum_jan = demand.iloc[0:24*31].sum()
+        plt.xlim([demand.index[24*31*2 + 24*29], demand.index[24*31*2 + 24*29 + 24*30 -1]])
+        plt.ylim([0, demand_apr_yearly_calc.max() + 50])
+        fig.savefig(os.path.join(folder, "heat_demand_year_april.pdf"))
 
 
         # calculate heat demand of only January:
@@ -214,6 +227,7 @@ if __name__ == "__main__":
         demand_jan.plot()
         plt.xlabel("time")
         plt.ylabel("heat demand in kWh")
+        plt.ylim([0, demand_jan_yearl_calc.max() + 50])
         # plt.show()
         # fig.savefig(os.path.join(folder, "heat_demand_year.pdf"))
         fig.savefig(os.path.join(folder, "heat_demand_single_january.pdf"))
@@ -223,7 +237,38 @@ if __name__ == "__main__":
 
         print(f"Demand January yearly calc: {round(sum_jan, 2)} kWh \nDemand January single calc: {round(sum_jan_single, 2)} kWh")
 
-        print(f"January yearly calc: Min: {round(demand.min(), 2)} Max: {round(demand.max(), 2)} Diff: {round(demand.max()-demand.min(), 2)}\n"
+        print(f"January yearly calc: Min: {round(demand_jan_yearl_calc.min(), 2)} Max: {round(demand_jan_yearl_calc.max(), 2)} Diff: {round(demand_jan_yearl_calc.max()-demand_jan_yearl_calc.min(), 2)}\n"
               f"January monthly calc: Min: {round(demand_jan.min(), 2)} Max: {round(demand_jan.max(),2)} Diff: {round(demand_jan.max()-demand_jan.min(), 2)}")
 
-        # check for July
+        ####### check for April
+        # calculate heat demand of only April:
+        annual_demand_apr = 6332.93 * efficiency_gas_boiler  # kWh
+        demand_apr = calculate_heat_demand_time_series(
+            year=year,
+            annual_demand=annual_demand_apr,
+            ambient_temperature=weather["temp_air"].iloc[24*31*2 + 24*29 : 24*31*2 + 24*29 + 24*30],
+            profile_type=profile_type,
+            country=country,
+            # filename=filename_heat_demand,
+            frequency="H",
+            hour_shift=hour_shift,
+            start_date=[4, 1]
+        )
+
+        fig = plt.figure()
+        demand_apr.plot()
+        plt.xlabel("time")
+        plt.ylabel("heat demand in kWh")
+        # plt.show()
+        plt.ylim([0, demand_apr_yearly_calc.max() + 50])
+        fig.savefig(os.path.join(folder, "heat_demand_single_apr.pdf"))
+
+        # sum in April - only monthly calc
+        sum_apr_single = demand_apr.sum()
+
+        print(
+            f"Demand April yearly calc: {round(sum_apr, 2)} kWh \nDemand April single calc: {round(sum_apr_single, 2)} kWh")
+
+        print(
+            f"April yearly calc: Min: {round(demand_apr_yearly_calc.min(), 2)} Max: {round(demand_apr_yearly_calc.max(), 2)} Diff: {round(demand_apr_yearly_calc.max() - demand_apr_yearly_calc.min(), 2)}\n"
+            f"April monthly calc: Min: {round(demand_apr.min(), 2)} Max: {round(demand_apr.max(), 2)} Diff: {round(demand_apr.max() - demand_apr.min(), 2)}")
