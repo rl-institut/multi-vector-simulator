@@ -53,15 +53,15 @@
     },
     "energyConsumption": {
         "DSO_feedin": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 0
             },
@@ -76,23 +76,23 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": -5.505932460595773
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": -0.4
             },
@@ -108,15 +108,15 @@
             "unit": "?"
         },
         "Electricity excess": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -131,23 +131,23 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0
             },
@@ -163,15 +163,15 @@
             "unit": "?"
         },
         "demand_01": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -189,23 +189,23 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -235,15 +235,15 @@
             "unit": "kW"
         },
         "demand_02": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -261,23 +261,23 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -307,15 +307,15 @@
             "unit": "kW"
         },
         "demand_03": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -333,23 +333,23 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -385,15 +385,15 @@
                 "unit": "year",
                 "value": 0
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 308.888291865938
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 3000
             },
@@ -413,15 +413,15 @@
                 "unit": "year",
                 "value": 15
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 4251.795182206622
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -429,11 +429,11 @@
                 "unit": "kW",
                 "value": null
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -455,15 +455,15 @@
                 "unit": "year",
                 "value": 0.0
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -483,15 +483,15 @@
                 "unit": "year",
                 "value": 10
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -499,11 +499,11 @@
                 "unit": "kW",
                 "value": null
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -525,15 +525,15 @@
                 "unit": "year",
                 "value": 0.0
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -553,15 +553,15 @@
                 "unit": "year",
                 "value": 10
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -569,11 +569,11 @@
                 "unit": "kW",
                 "value": null
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -595,15 +595,15 @@
                 "unit": "year",
                 "value": 5
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -623,15 +623,15 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -639,11 +639,11 @@
                 "unit": "kVA",
                 "value": null
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -665,15 +665,15 @@
                 "unit": "year",
                 "value": 5
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -693,15 +693,15 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kW/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -709,11 +709,11 @@
                 "unit": "kVA",
                 "value": null
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -733,15 +733,15 @@
     },
     "energyProduction": {
         "DSO_consumption": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -755,15 +755,15 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/kWpe",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 7.433008821804292
             },
@@ -771,11 +771,11 @@
                 "unit": "kWp",
                 "value": null
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/kWpeak",
                 "value": 0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.54
             },
@@ -803,15 +803,15 @@
                 "unit": "year",
                 "value": 0
             },
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 603.0721627283399
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 10000
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 7200
             },
@@ -826,15 +826,15 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 7200.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/unit/ye",
                 "value": 1101.1864921191543
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
@@ -842,11 +842,11 @@
                 "unit": " kWp",
                 "value": null
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/unit/year",
                 "value": 80
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0
             },
@@ -880,15 +880,15 @@
     },
     "energyProviders": {
         "DSO": {
-            "annuity_capex_opex_var": {
+            "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -915,23 +915,23 @@
                 "unit": "year",
                 "value": 30
             },
-            "lifetime_capex_var": {
+            "lifetime_specific_cost": {
                 "unit": "currency/unit",
                 "value": 0.0
             },
-            "lifetime_opex_fix": {
+            "lifetime_cost_om": {
                 "unit": "currency/ye",
                 "value": 0.0
             },
-            "lifetime_opex_var": {
+            "lifetime_price_dispatch": {
                 "unit": "?",
                 "value": 0.0
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -969,7 +969,7 @@
                     "unit": "year",
                     "value": 0
                 },
-                "annuity_capex_opex_var": {
+                "annuity_capex_price_dispatch": {
                     "unit": "currency/unit/a",
                     "value": 0.0
                 },
@@ -977,11 +977,11 @@
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
-                "capex_fix": {
+                "development_costs": {
                     "unit": "currency",
                     "value": 0
                 },
-                "capex_var": {
+                "specific_costs": {
                     "unit": "currency/unit",
                     "value": 0
                 },
@@ -998,15 +998,15 @@
                     "unit": "year",
                     "value": 10
                 },
-                "lifetime_capex_var": {
+                "lifetime_specific_cost": {
                     "unit": "currency/unit",
                     "value": 0.0
                 },
-                "lifetime_opex_fix": {
+                "lifetime_cost_om": {
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
-                "lifetime_opex_var": {
+                "lifetime_price_dispatch": {
                     "unit": "?",
                     "value": 0.0
                 },
@@ -1014,11 +1014,11 @@
                     "unit": "kW",
                     "value": null
                 },
-                "opex_fix": {
+                "specific_costs_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "opex_var": {
+                "dispatch_price": {
                     "unit": "currency/kWh",
                     "value": 0
                 },
@@ -1044,7 +1044,7 @@
                     "unit": "year",
                     "value": 0
                 },
-                "annuity_capex_opex_var": {
+                "annuity_capex_price_dispatch": {
                     "unit": "currency/unit/a",
                     "value": 0.0
                 },
@@ -1052,11 +1052,11 @@
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
-                "capex_fix": {
+                "development_costs": {
                     "unit": "currency",
                     "value": 0
                 },
-                "capex_var": {
+                "specific_costs": {
                     "unit": "currency/unit",
                     "value": 0
                 },
@@ -1073,15 +1073,15 @@
                     "unit": "year",
                     "value": 10
                 },
-                "lifetime_capex_var": {
+                "lifetime_specific_cost": {
                     "unit": "currency/unit",
                     "value": 0.0
                 },
-                "lifetime_opex_fix": {
+                "lifetime_cost_om": {
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
-                "lifetime_opex_var": {
+                "lifetime_price_dispatch": {
                     "unit": "?",
                     "value": 0.0
                 },
@@ -1089,11 +1089,11 @@
                     "unit": "kW",
                     "value": null
                 },
-                "opex_fix": {
+                "specific_costs_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "opex_var": {
+                "dispatch_price": {
                     "unit": "currency/kWh",
                     "value": 0
                 },
@@ -1113,15 +1113,15 @@
                     "unit": "year",
                     "value": 0
                 },
-                "annuity_capex_opex_var": {
+                "annuity_capex_price_dispatch": {
                     "unit": "currency/unit/a",
                     "value": 492.87618692134606
                 },
-                "capex_fix": {
+                "development_costs": {
                     "unit": "currency",
                     "value": 0
                 },
-                "capex_var": {
+                "specific_costs": {
                     "unit": "currency/unit",
                     "value": 4000
                 },
@@ -1138,15 +1138,15 @@
                     "unit": "year",
                     "value": 10
                 },
-                "lifetime_capex_var": {
+                "lifetime_specific_cost": {
                     "unit": "currency/unit",
                     "value": 6784.35749156227
                 },
-                "lifetime_opex_fix": {
+                "lifetime_cost_om": {
                     "unit": "currency/unit/ye",
                     "value": 0.0
                 },
-                "lifetime_opex_var": {
+                "lifetime_price_dispatch": {
                     "unit": "?",
                     "value": 0.0
                 },
@@ -1154,11 +1154,11 @@
                     "unit": "kWh",
                     "value": null
                 },
-                "opex_fix": {
+                "specific_costs_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "opex_var": {
+                "dispatch_price": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
@@ -1194,11 +1194,11 @@
                 "unit": "year",
                 "value": 10
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -1207,11 +1207,11 @@
                 "unit": "year",
                 "value": 30
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0
             }
@@ -1221,11 +1221,11 @@
                 "unit": "year",
                 "value": 0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency",
                 "value": 0
             },
@@ -1234,11 +1234,11 @@
                 "unit": "year",
                 "value": 20
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0
             }
@@ -1248,11 +1248,11 @@
                 "unit": "year",
                 "value": 0
             },
-            "capex_fix": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "capex_var": {
+            "specific_costs": {
                 "unit": "currency",
                 "value": 0
             },
@@ -1261,11 +1261,11 @@
                 "unit": "year",
                 "value": 20
             },
-            "opex_fix": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 4600
             },
-            "opex_var": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0
             }

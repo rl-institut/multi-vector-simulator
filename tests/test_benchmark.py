@@ -59,7 +59,7 @@ class TestLocalSimulation:
         assert 1 == 1
 
     @pytest.mark.skipif(
-        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        EXECUTE_TESTS_ON not in ("do no test now"),
         reason="Benchmark test deactivated, set env variable "
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
@@ -85,7 +85,7 @@ class TestServerSimulation:
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
     # alone it called
     @pytest.mark.skipif(
-        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        EXECUTE_TESTS_ON not in ("do no test now"),
         reason="Benchmark test deactivated, set env variable "
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )

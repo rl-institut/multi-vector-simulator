@@ -11,10 +11,10 @@ from src.constants_json_strings import (
     TAX,
     VALUE,
     LABEL,
-    OPEX_VAR,
-    OPEX_FIX,
-    CAPEX_FIX,
-    CAPEX_VAR,
+    DISPATCH_PRICE,
+    SPECIFIC_COSTS_OM,
+    DEVELOPMENT_COSTS,
+    SPECIFIC_COSTS,
     LIFETIME,
     SIMULATION_SETTINGS,
     PEAK_DEMAND_PRICING_PERIOD,
@@ -25,11 +25,11 @@ from src.constants_json_strings import (
     TIME_INDEX,
     ANNUITY_FACTOR,
     SIMULATION_ANNUITY,
-    LIFETIME_CAPEX_VAR,
+    LIFETIME_SPECIFIC_COST,
     CRF,
-    ANNUITY_CAPEX_OPEX_VAR,
-    LIFETIME_OPEX_FIX,
-    LIFETIME_OPEX_VAR,
+    ANNUITY_SPECIFIC_INVESTMENT_AND_OM,
+    LIFETIME_SPECIFIC_COST_OM,
+    LIFETIME_PRICE_DISPATCH,
     PERIODS,
 )
 from .constants import TYPE_STR
@@ -60,18 +60,18 @@ def test_adding_economic_parameters_C2():
         assert k in economic_parameters.keys()
 
 
-def test_complete_missing_cost_data_opex_fix():
+def test_complete_missing_cost_data_cost_om():
     dict_asset = {LABEL: "a_label"}
     C0.complete_missing_cost_data(dict_asset)
-    assert OPEX_FIX in dict_asset.keys()
-    assert dict_asset[OPEX_FIX] == 0
+    assert SPECIFIC_COSTS_OM in dict_asset.keys()
+    assert dict_asset[SPECIFIC_COSTS_OM] == 0
 
 
-def test_complete_missing_cost_data_capex_var():
+def test_complete_missing_cost_data_specific_cost():
     dict_asset = {LABEL: "a_label"}
     C0.complete_missing_cost_data(dict_asset)
-    assert CAPEX_VAR in dict_asset.keys()
-    assert dict_asset[CAPEX_VAR] == 0
+    assert SPECIFIC_COSTS in dict_asset.keys()
+    assert dict_asset[SPECIFIC_COSTS] == 0
 
 
 settings = {EVALUATED_PERIOD: {VALUE: 365}}
@@ -85,11 +85,11 @@ economic_data = {
 }
 
 dict_asset = {
-    OPEX_FIX: {VALUE: 1, UNIT: "a_unit"},
+    SPECIFIC_COSTS_OM: {VALUE: 1, UNIT: "a_unit"},
     CRF: {VALUE: 1},
-    CAPEX_VAR: {VALUE: 1, UNIT: "a_unit"},
-    OPEX_VAR: {VALUE: 1},
-    CAPEX_FIX: {VALUE: 1},
+    SPECIFIC_COSTS: {VALUE: 1, UNIT: "a_unit"},
+    DISPATCH_PRICE: {VALUE: 1},
+    DEVELOPMENT_COSTS: {VALUE: 1},
     LIFETIME: {VALUE: 20},
     UNIT: "a_unit",
 }
@@ -98,36 +98,36 @@ dict_asset = {
 def test_evaluate_lifetime_costs_adds_all_parameters():
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
     for k in (
-        LIFETIME_CAPEX_VAR,
-        ANNUITY_CAPEX_OPEX_VAR,
-        LIFETIME_OPEX_FIX,
-        LIFETIME_OPEX_VAR,
+        LIFETIME_SPECIFIC_COST,
+        ANNUITY_SPECIFIC_INVESTMENT_AND_OM,
+        LIFETIME_SPECIFIC_COST_OM,
+        LIFETIME_PRICE_DISPATCH,
         SIMULATION_ANNUITY,
     ):
         assert k in dict_asset.keys()
 
 
-def test_determine_lifetime_opex_var_as_int():
-    dict_asset = {OPEX_VAR: {VALUE: 1}}
-    C0.determine_lifetime_opex_var(dict_asset, economic_data)
-    assert LIFETIME_OPEX_VAR in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float) or isinstance(
-        dict_asset[LIFETIME_OPEX_VAR][VALUE], int
+def test_determine_lifetime_price_dispatch_as_int():
+    dict_asset = {DISPATCH_PRICE: {VALUE: 1}}
+    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
+    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float) or isinstance(
+        dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], int
     )
 
 
-def test_determine_lifetime_opex_var_as_float():
-    dict_asset = {OPEX_VAR: {VALUE: 1.5}}
-    C0.determine_lifetime_opex_var(dict_asset, economic_data)
-    assert LIFETIME_OPEX_VAR in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float)
+def test_determine_lifetime_price_dispatch_as_float():
+    dict_asset = {DISPATCH_PRICE: {VALUE: 1.5}}
+    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
+    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
 
 
-def test_determine_lifetime_opex_var_as_list():
-    dict_asset = {OPEX_VAR: {VALUE: [1.0, 1.0]}}
-    C0.determine_lifetime_opex_var(dict_asset, economic_data)
-    assert LIFETIME_OPEX_VAR in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], float)
+def test_determine_lifetime_price_dispatch_as_list():
+    dict_asset = {DISPATCH_PRICE: {VALUE: [1.0, 1.0]}}
+    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
+    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
     # todo this should be here some time, shouldnt it? assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], list)
 
 
@@ -141,17 +141,17 @@ pandas_DatetimeIndex = pd.date_range(
 pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
 
 
-def test_determine_lifetime_opex_var_as_timeseries():
-    dict_asset = {OPEX_VAR: {VALUE: pandas_Series}}
-    C0.determine_lifetime_opex_var(dict_asset, economic_data)
-    assert LIFETIME_OPEX_VAR in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], pd.Series)
+def test_determine_lifetime_price_dispatch_as_timeseries():
+    dict_asset = {DISPATCH_PRICE: {VALUE: pandas_Series}}
+    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
+    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
+    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], pd.Series)
 
 
-def test_determine_lifetime_opex_var_is_other():
-    dict_asset = {OPEX_VAR: {VALUE: TYPE_STR}}
+def test_determine_lifetime_price_dispatch_is_other():
+    dict_asset = {DISPATCH_PRICE: {VALUE: TYPE_STR}}
     with pytest.raises(ValueError):
-        C0.determine_lifetime_opex_var(dict_asset, economic_data)
+        C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
 
 def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear():

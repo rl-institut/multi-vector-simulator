@@ -55,6 +55,16 @@ from src.constants_json_strings import (
     KPI,
     KPI_SCALAR_MATRIX,
     KPI_COST_MATRIX,
+    COST_TOTAL,
+    COST_OM_TOTAL,
+    COST_INVESTMENT,
+    COST_DISPATCH,
+    COST_OM_FIX,
+    COST_UPFRONT,
+    PROJECT_NAME,
+    PROJECT_ID,
+    SCENARIO_NAME,
+    SCENARIO_ID,
 )
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
@@ -163,8 +173,18 @@ def create_app(results_json):
         list(dict_simsettings.items()), columns=["Setting", "Value"]
     )
 
-    projectName = "Harbor Norway"
-    scenarioName = "100% self-generation"
+    projectName = (
+        results_json[PROJECT_DATA][PROJECT_NAME]
+        + "(ID:"
+        + str(results_json[PROJECT_DATA][PROJECT_ID])
+        + ")"
+    )
+    scenarioName = (
+        results_json[PROJECT_DATA][SCENARIO_NAME]
+        + "(ID:"
+        + str(results_json[PROJECT_DATA][SCENARIO_ID])
+        + ")"
+    )
 
     releaseDesign = "0.0x"
 
@@ -306,16 +326,15 @@ def create_app(results_json):
 
     # Drop some irrelevant columns from the dataframe
     df_cost_matrix = df_cost_matrix.drop(
-        ["index", "costs_om", "costs_investment", "costs_opex_var", "costs_opex_fix"],
-        axis=1,
+        ["index", COST_OM_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM_FIX,], axis=1,
     )
 
     # Rename some of the column names
     df_cost_matrix = df_cost_matrix.rename(
         columns={
             LABEL: "Component",
-            "costs_total": "CAP",
-            "costs_upfront": "Upfront Investment Costs",
+            COST_TOTAL: "CAP",
+            COST_UPFRONT: "Upfront Investment Costs",
         }
     )
 

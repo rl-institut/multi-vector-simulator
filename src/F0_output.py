@@ -17,7 +17,15 @@ from src.constants import (
     SECTORS,
     PATH_OUTPUT_FOLDER,
 )
-from src.constants_json_strings import OPTIMIZED_ADD_CAP, KPI, LABEL, KPI_SCALAR_MATRIX
+from src.constants_json_strings import (
+    OPTIMIZED_ADD_CAP,
+    KPI,
+    LABEL,
+    KPI_SCALAR_MATRIX,
+    COST_OM_TOTAL,
+    COST_INVESTMENT,
+    ANNUITY_TOTAL,
+)
 
 r"""
 Module F0 Output
@@ -148,16 +156,16 @@ def plot_piecharts_of_costs(dict_values):
     """
 
     # Annuity costs plot (only plot if there are values with cost over 0)
-    F1_plots.evaluate_cost_parameter(dict_values, "annuity_total", "annuity")
+    F1_plots.evaluate_cost_parameter(dict_values, ANNUITY_TOTAL, "annuity")
 
     # First-investment costs plot (only plot if there are values with cost over 0)
     F1_plots.evaluate_cost_parameter(
-        dict_values, "costs_investment", "upfront_investment_costs"
+        dict_values, COST_INVESTMENT, "upfront_investment_costs"
     )
 
     # O&M costs plot (only plot if there are values with cost over 0)
     F1_plots.evaluate_cost_parameter(
-        dict_values, "costs_om", "operation_and_maintenance_costs"
+        dict_values, COST_OM_TOTAL, "operation_and_maintenance_costs"
     )
     return
 
