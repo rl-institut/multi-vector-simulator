@@ -64,6 +64,7 @@ def calculate_heat_demand_time_series(
     ambient_temperature,
     profile_type,
     country,
+    start_date=[1, 1],
     filename=None,
     frequency="H",
     hour_shift=False,
@@ -84,6 +85,8 @@ def calculate_heat_demand_time_series(
         https://www.enwg-veroeffentlichungen.de/badtoelz/Netze/Gasnetz/Netzbeschreibung/LF-Abwicklung-von-Standardlastprofilen-Gas-20110630-final.pdf
     country : str
         Country starting with capital letter; needed for holiday detection.
+    start_date : list of ints
+        Default: [1, 1].
     filename : str
         File name incl. path for saving demand. If None: not saved. Default: None.
     frequency : str
@@ -102,7 +105,7 @@ def calculate_heat_demand_time_series(
     # Create DataFrame for demand timeseries
     demand = pd.DataFrame(
         index=pd.date_range(
-            pd.datetime(int(year), 1, 1, 0),
+            pd.datetime(int(year), start_date[0], start_date[1], 0),
             periods=ambient_temperature.count(),
             freq=frequency,
         )
