@@ -16,8 +16,9 @@ logging.getLogger().setLevel(logging.INFO)
 # please adapt
 path_to_server = "/home/sabine/rl-institut/"
 
-path_to_data_folder = "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition"
-path_to_results_folder = "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/solar_thermal_collector"
+# path_to_data_folder = os.path.join(path_to_server, "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition")
+# path_to_results_folder = os.path.join(path_to_server, "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/solar_thermal_collector")
+
 
 # collectors to be analysed
 collectors = [
@@ -42,10 +43,10 @@ weather.reset_index("time", inplace=True)
 
 # load collector data
 filename_collector_data = os.path.join(
-    path_to_server,
     path_to_data_folder,
     "2020-05-13_technical_data_UVTgV_system_solar_thermal.csv",
 )
+
 rename_inds = {
     "alpha_coll": "collector_azimuth",
     "Beta": "collector_tilt",
@@ -107,7 +108,6 @@ for collector in collectors:
 
     # save precalc data to file and collectors heat to heat df
     filename_precalc = os.path.join(
-        path_to_server,
         path_to_results_folder,
         f"solar_thermal_precal_data_{collector}.csv",
     )
@@ -118,6 +118,6 @@ for collector in collectors:
 
 # save collectors heat df to file
 filename_collector_data = os.path.join(
-    path_to_server, path_to_results_folder, f"solar_thermal_collectors_heat.csv"
+    path_to_results_folder, f"solar_thermal_collectors_heat.csv"
 )
 heat_kwh_df.to_csv(filename_collector_data)
