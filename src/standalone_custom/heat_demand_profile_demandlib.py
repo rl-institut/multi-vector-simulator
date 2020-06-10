@@ -39,7 +39,7 @@ path_to_server = "/home/sabine/rl-institut/"
 # path_to_data_folder = "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition"
 path_to_results_folder = "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/heat_demand"
 
-time_zone = "Europe/Berlin"  # todo
+time_zone = "Europe/Bucharest"
 
 ### parameters ###
 year = 2020
@@ -163,7 +163,7 @@ if __name__ == "__main__":
     plots = True
 
     # load dummy weather
-    weather = pd.read_csv("example_weather.csv", parse_dates=True).set_index(
+    weather = pd.read_csv("era5_weather_UVTgV_2019.csv", parse_dates=True).set_index(
         "time")
     weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(
         time_zone)
