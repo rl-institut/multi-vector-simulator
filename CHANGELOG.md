@@ -25,6 +25,9 @@ Here is a template for new release sections
 
 ### Removed
 
+### Fix
+- Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
+
 ## [0.3.0] - 2020-06-08
 
 ### Added
