@@ -1,11 +1,52 @@
-import logging
 import os
+import argparse
 
-from src.constants import REPO_PATH, OUTPUT_FOLDER
+from src.constants import REPO_PATH, REPORT_PATH, OUTPUT_FOLDER, PDF_REPORT
 from src.B0_data_input_json import load_json
-from src.F2_autoreport import create_app, open_in_browser
+from src.F2_autoreport import create_app, open_in_browser, print_pdf
+
+ARG_PDF = "print_report"
+ARG_REPORT_PATH = "report_path"
+
+
+def report_arg_parser():
+    """Create a command line argument parser for MVS
+
+    :return: parser
+    """
+    parser = argparse.ArgumentParser(
+        prog="python mvs_report.py",
+        description="Display the report of a MVS simulation",
+    )
+    parser.add_argument(
+        "-pdf",
+        dest=ARG_PDF,
+        help="print the report as pdf (default: False)",
+        nargs="?",
+        const=True,
+        default=False,
+        type=bool,
+    )
+    parser.add_argument(
+        "-o",
+        dest=ARG_REPORT_PATH,
+        nargs="?",
+        type=str,
+        help="path to the report file",
+        default=os.path.join(REPORT_PATH, PDF_REPORT),
+    )
+    return parser
+
 
 if __name__ == "__main__":
+
+    # Parse the arguments from the command line
+    parser = report_arg_parser()
+    args = vars(parser.parse_args())
+    print(args)
+    bool_print_report = args.get(ARG_PDF)
+    report_path = args.get(ARG_REPORT_PATH)
+
     fname = os.path.join(REPO_PATH, OUTPUT_FOLDER, "json_with_results.json")
 
     if os.path.exists(fname) is False:
@@ -20,10 +61,14 @@ if __name__ == "__main__":
         banner = "*" * 40
         print(banner + "\nPress ctrl+c to stop the report server\n" + banner)
         # run the dash server for 600s before shutting it down
-        open_in_browser(test_app, timeout=600)
-        print(
-            banner
-            + "\nThe report server has timed out.\nTo start it again run `python "
-            "mvs_report.py`.\nTo let it run for a longer time, change timeout setting in "
-            "the mvs_report.py file\n" + banner
-        )
+        if bool_print_report is True:
+            print_pdf(test_app, path_pdf_report=report_path)
+        else:
+
+            open_in_browser(test_app, timeout=600)
+            print(
+                banner
+                + "\nThe report server has timed out.\nTo start it again run `python "
+                "mvs_report.py`.\nTo let it run for a longer time, change timeout setting in "
+                "the mvs_report.py file\n" + banner
+            )
