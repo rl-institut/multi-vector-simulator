@@ -94,6 +94,11 @@ def calculate_heat_demand_time_series(
         For this you need to install pvcompare, see https://github.com/greco-project/pvcompare#installation
         Default: False.
 
+    Returns
+    -------
+    demand : pd.DataFrame
+        Demand time series with data in column "kWh".
+
     """
 
     # load workelendar for country
@@ -123,6 +128,9 @@ def calculate_heat_demand_time_series(
 
     if hour_shift == True:
         demand = pvcompare_demand.shift_working_hours(country=country, ts=demand)
+
+    # rename column
+    demand.rename(columns={"h0": "kWh"}, inplace=True)
 
     if filename is not None:
         demand.to_csv(filename)
@@ -175,7 +183,7 @@ if __name__ == "__main__":
         ambient_temperature=weather["temp_air"],
         profile_type=profile_type,
         country=country,
-        # filename=filename_heat_demand,
+        filename=filename_heat_demand,
         frequency="H",
         hour_shift=hour_shift,
     )
@@ -184,7 +192,6 @@ if __name__ == "__main__":
 
     if plots and plt:
         folder = os.path.join(path_to_server, path_to_results_folder, "plots")
-        # year
         fig = plt.figure()
         demand.plot()
         plt.xlabel("time")
@@ -285,3 +292,4 @@ if __name__ == "__main__":
             f"April yearly calc: Min: {round(demand_apr_yearly_calc.min(), 2)} Max: {round(demand_apr_yearly_calc.max(), 2)} Diff: {round(demand_apr_yearly_calc.max() - demand_apr_yearly_calc.min(), 2)}\n"
             f"April monthly calc: Min: {round(demand_apr.min(), 2)} Max: {round(demand_apr.max(), 2)} Diff: {round(demand_apr.max() - demand_apr.min(), 2)}"
         )
+        fig.savefig(os.path.join(folder, "heat_demand_year.pdf"))
