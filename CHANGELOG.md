@@ -20,9 +20,9 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Release protocol in CONTRIBUTING.md file (#353)
 ### Changed
--
+
 ### Removed
 
 ## [0.3.0] - 2020-06-08
@@ -41,9 +41,6 @@ Here is a template for new release sections
 - Renaming OPEX_VAR = "opex_var" into PRICE_DISPATCH = "dispatch_price" (#347, #350)
 - Change last strings into global constants in "constants_json_strings.py" (#349)
 - Autoreport now refers to actual project and scenario name + ID (#349)
-
-### Removed
-
 
 
 ## [0.2.1] - 2020-05-28
