@@ -109,7 +109,7 @@ As above, we apply a weighting based on Electricity Equivalent.
 Degree of sector-coupling (DSC)
 ###############################
 
-While a MES includes multiple energy carriers,
+While a MVS includes multiple energy carriers,
 this fact does not define how strongly interconnected its sectors are.
 To measure this, we propose to compare the energy flows in between the sectors to the energy demand supplied:
 
