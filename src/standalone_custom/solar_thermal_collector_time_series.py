@@ -121,6 +121,9 @@ for collector in collectors:
         columns={"heat_kWh": f"heat_kWh_{collector}"}
     )
 
+    coll_area = float(coll_data.A_coll) * float(coll_data.Number_of_panels)
+    print(f"Total area collector {coll_area}")
+
 # save collectors heat df to file
 filename_collector_data = os.path.join(
     path_to_results_folder, f"solar_thermal_collectors_heat.csv"
@@ -128,8 +131,15 @@ filename_collector_data = os.path.join(
 heat_kwh_df.to_csv(filename_collector_data)
 
 if plt:
-    heat_kwh_df.plot()
+    fig, ax = plt.subplots()
+    heat_kwh_df.plot(ax=ax)
+    plt.xlabel("time")
+    plt.ylabel("collector's heat in kWh")
     plt.show()
 
+total_heat = heat_kwh_df.sum().values[0]
+print(f"Total collector's heat: {round(total_heat, 2)} kWh")
 
-print(f"Total collector's heat: {round(heat_kwh_df.sum().values[0], 2)} kWh")
+print()
+
+print(f"Collector's heat per m2: {round(total_heat / coll_area, 2)} kWh/m2")
