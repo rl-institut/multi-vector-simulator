@@ -7,6 +7,7 @@ import os
 import threading
 import time
 import webbrowser
+from selenium import webdriver
 
 # Importing necessary packages
 import dash
@@ -27,6 +28,7 @@ from src.constants import (
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
     REPO_PATH,
+    REPORT_PATH,
     OUTPUT_FOLDER,
     INPUTS_COPY,
     CSV_ELEMENTS,
@@ -72,15 +74,48 @@ OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
 
 
-def print_pdf(app, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
-    """Run the dash app in a thread an print a pdf before exiting"""
-    td = threading.Thread(target=app.run_server)
-    td.daemon = True
-    td.start()
-    # TODO change time (seconds) here to be able to visualize the report in the browser
-    # time.sleep(5)
-    pdfkit.from_url("http://127.0.0.1:8050", path_pdf_report)
-    td.join(2)
+def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
+    """Run the dash app in a thread an print a pdf before exiting
+
+    Parameters
+    ----------
+    app: handle to a dash app
+    path_pdf_report: str
+        path where the pdf report should ba saved
+
+    Returns
+    -------
+    None, but saves a pdf printout of the provided app under the provided path
+    """
+
+    # if an app handle is provided, serve it locally in a separated thread
+    if app is not None:
+        td = threading.Thread(target=app.run_server)
+        td.daemon = True
+        td.start()
+
+    # Emulates a webdriver
+    # TODO check if chromium is easier
+    driver = webdriver.Firefox(executable_path=os.path.join(REPORT_PATH, "geckodriver"))
+    driver.get("http://127.0.0.1:8050")
+
+    # TODO figure a way to wait enough time for everything to load
+    # waits to load the page, could alternatively wait for a certain html tag to be present
+    time.sleep(5)
+
+    # Extracts the html source code of the app and save it in a file
+    html_src = driver.page_source
+    html_path = os.path.join(REPORT_PATH, "report.html")
+    with open(html_path, "w") as f:
+        f.write(html_src)
+    driver.close()
+
+    # Convert the html file into a pdf
+    pdfkit.from_url("file:///" + html_path, path_pdf_report)
+    print(f"Saved the report under {path_pdf_report}")
+
+    if app is not None:
+        td.join(20)
 
 
 def open_in_browser(app, timeout=600):
