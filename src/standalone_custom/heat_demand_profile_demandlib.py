@@ -192,8 +192,8 @@ if __name__ == "__main__":
 
     if plots and plt:
         folder = os.path.join(path_to_server, path_to_results_folder, "plots")
-        fig = plt.figure()
-        demand.plot()
+        fig, ax = plt.subplots()
+        demand.plot(ax=ax)
         plt.xlabel("time")
         plt.ylabel("heat demand in kWh")
         # plt.show()
