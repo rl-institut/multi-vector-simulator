@@ -89,6 +89,7 @@ tipps for module building, and hint that units in the MVS are not checked (#229)
 - Possibility to deploy the report of the results in a browser (#323)
 - A main() function to be used by a server which only accepts json variable and returns json
  variable (not saving to a file) (#327)
+- Add information about the feature to view the web app and generate PDF of the automatic report to readthedocs (#283)
 
 ### Changed
 - Default input files from "inputs": Changed some parameters (#143)
