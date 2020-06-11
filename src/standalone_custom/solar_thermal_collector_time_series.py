@@ -108,7 +108,7 @@ for collector in collectors:
     precalc_data["heat_kWh"] = (
         precalc_data["collectors_heat"]
         * float(coll_data.A_coll)
-        * float(coll_data.Number_of_panels)
+        * float(coll_data.Number_of_panels) / 1000
     )
 
     # save precalc data to file and collectors heat to heat df
