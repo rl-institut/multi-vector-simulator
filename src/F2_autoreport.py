@@ -50,6 +50,7 @@ from src.constants_json_strings import (
     START_DATE,
     TIMESTEP,
     TIMESERIES_PEAK,
+    TOTAL_FLOW,
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
     KPI,
