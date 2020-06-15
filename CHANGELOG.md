@@ -24,6 +24,7 @@ Here is a template for new release sections
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
+- Added global variables to `constants_json_str.csv`
 
 ### Removed
 

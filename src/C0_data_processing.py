@@ -672,7 +672,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
 
     source = {
         OEMOF_ASSET_TYPE: OEMOF_SOURCE,
-        LABEL: asset_name + " source",
+        LABEL: asset_name + AUTO_SOURCE,
         OUTFLOW_DIRECTION: output_bus, #todo
         OUTPUT_BUS_NAME: output_bus_name,
         DISPATCHABILITY: True,
@@ -798,7 +798,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
     # create a dictionary for the sink
     sink = {
         OEMOF_ASSET_TYPE: OEMOF_SINK,
-        LABEL: asset_name + "_sink",
+        LABEL: asset_name + AUTO_SINK,
         "input_direction": input_bus,
         INPUT_BUS_NAME: input_bus_name,
         # OPEX_VAR: {VALUE: price, UNIT: "currency/kWh"},
