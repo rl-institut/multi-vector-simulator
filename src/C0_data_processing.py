@@ -17,6 +17,7 @@ from src.constants import (
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     TYPE_BOOL,
+    HEADER,
 )
 
 from src.constants_json_strings import *
@@ -672,7 +673,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     source = {
         OEMOF_ASSET_TYPE: OEMOF_SOURCE,
         LABEL: asset_name + " source",
-        "output_direction": output_bus,
+        OUTFLOW_DIRECTION: output_bus, #todo
         OUTPUT_BUS_NAME: output_bus_name,
         DISPATCHABILITY: True,
         TIMESERIES: timeseries,
