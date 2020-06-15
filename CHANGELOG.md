@@ -21,7 +21,10 @@ Here is a template for new release sections
 
 ### Added
 - Release protocol in CONTRIBUTING.md file (#353)
+- Input template folder for easy generation of new simulations, later also for tests of the input folder
+
 ### Changed
+- Sorted parameters in input folder
 
 ### Removed
 
