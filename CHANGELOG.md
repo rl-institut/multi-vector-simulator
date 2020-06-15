@@ -21,11 +21,11 @@ Here is a template for new release sections
 
 ### Added
 - Release protocol in CONTRIBUTING.md file (#353)
-- Input template folder for easy generation of new simulations, later also for tests of the input folder
+- Input template folder for easy generation of new simulations (#374), later also for tests of the input folder
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
-- Sorted parameters in input folder
+- Sorted parameters in input folder (#374)
 
 ### Removed
 
