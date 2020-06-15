@@ -26,11 +26,7 @@ path_to_server = "/home/sabine/rl-institut/"
 
 
 # collectors to be analysed
-collectors = [
-    "ST1",
-    "ST2",
-    "ST3"
-]
+collectors = ["ST1", "ST2", "ST3"]
 
 # define parameters that are not given in the csv file
 temp_collector_inlet = 20  #  Collectors inlet temperature in C°.
@@ -49,8 +45,7 @@ weather.reset_index("time", inplace=True)
 
 # load collector data
 filename_collector_data = os.path.join(
-    path_to_data_folder,
-    "2020-06-05_technical_data_UVTgV_system_sh.csv",
+    path_to_data_folder, "2020-06-05_technical_data_UVTgV_system_sh.csv",
 )
 
 rename_inds = {
@@ -109,18 +104,18 @@ for collector in collectors:
     precalc_data["heat_kWh"] = (
         precalc_data["collectors_heat"]
         * float(coll_data.A_coll)
-        * float(coll_data.Number_of_panels) / 1000
+        * float(coll_data.Number_of_panels)
+        / 1000
     )
 
     # save precalc data to file and collectors heat to heat df
     filename_precalc = os.path.join(
-        path_to_results_folder,
-        f"solar_thermal_precal_data_{collector}.csv",
+        path_to_results_folder, f"solar_thermal_precal_data_{collector}.csv",
     )
     precalc_data.to_csv(filename_precalc)
 
     # apply losses and add to data frame
-    heat_kwh = precalc_data["heat_kWh"] * (1- losses)
+    heat_kwh = precalc_data["heat_kWh"] * (1 - losses)
     heat_kwh_df = pd.concat([heat_kwh_df, heat_kwh], axis=1).rename(
         columns={"heat_kWh": f"heat_kWh_{collector}"}
     )
