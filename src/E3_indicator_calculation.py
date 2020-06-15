@@ -26,6 +26,7 @@ from src.constants_json_strings import (
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
     TOTAL_FLOW,
+CONNECTED_CONSUMPTION_SOURCES,
 )
 
 
@@ -110,7 +111,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
     for DSO in dict_values[ENERGY_PROVIDERS]:
         sector = dict_values[ENERGY_PROVIDERS][DSO][ENERGY_VECTOR]
         for DSO_source in dict_values[ENERGY_PROVIDERS][DSO][
-            "connected_consumption_sources"
+            CONNECTED_CONSUMPTION_SOURCES
         ]:
             renewable_origin[sector] += (
                 dict_values[ENERGY_PRODUCTION][DSO_source][TOTAL_FLOW][VALUE]

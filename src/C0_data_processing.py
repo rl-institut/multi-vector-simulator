@@ -634,7 +634,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
 
     define_sink(
         dict_values,
-        dso + "_feedin",
+        dso + DSO_FEEDIN,
         dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
         dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
         specific_costs={VALUE: 0, UNIT: "currency/kW"},
@@ -642,8 +642,8 @@ def define_dso_sinks_and_sources(dict_values, dso):
 
     dict_values[ENERGY_PROVIDERS][dso].update(
         {
-            "connected_consumption_sources": list_of_dso_energyProduction_assets,
-            "connected_feedin_sink": dso + "_feedin",
+            CONNECTED_CONSUMPTION_SOURCES: list_of_dso_energyProduction_assets,
+            CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN,
         }
     )
 
