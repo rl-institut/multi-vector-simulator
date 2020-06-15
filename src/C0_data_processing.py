@@ -1086,7 +1086,7 @@ def receive_timeseries_from_csv(
         # todo this input/file_name thing is a workaround and has to be improved in the future
         # if only filename is given here, then only one column can be in the csv
         file_name = dict_asset[FILENAME]
-        unit = dict_asset[UNIT] + "/h"
+        unit = dict_asset[UNIT] + "/" + UNIT_HOUR
     else:
         file_name = dict_asset[input_type][VALUE][FILENAME]
         header = dict_asset[input_type][VALUE][HEADER]
