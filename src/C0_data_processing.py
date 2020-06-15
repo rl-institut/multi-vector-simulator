@@ -621,7 +621,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
             )
 
             timeseries = timeseries.add(pd.Series(1, index=time_period), fill_value=0)
-            dso_source_name = dso + "_consumption_period_" + str(pricing_period)
+            dso_source_name = dso + DSO_CONSUMPTION_PERIODS + str(pricing_period)
             define_source(
                 dict_values,
                 dso_source_name,
