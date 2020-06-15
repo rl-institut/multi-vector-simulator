@@ -39,6 +39,8 @@ OUTPUT_FOLDER = "MVS_outputs"
 INPUTS_COPY = INPUT_FOLDER
 # name of the automatically generated pdf report
 PDF_REPORT = "simulation_report.pdf"
+# path of the pdf report path
+REPORT_PATH = os.path.join(REPO_PATH, "report")
 
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
