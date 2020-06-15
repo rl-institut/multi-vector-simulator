@@ -42,7 +42,7 @@ path_to_results_folder = "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_
 time_zone = "Europe/Bucharest"
 
 ### parameters ###
-year = 2020
+year = 2018
 profile_type = "GKO"  # BDEW profile type
 country = "Romania"  # needed for holiday detection
 hour_shift = True  # If True: The load profile is shifted due to countrys specific behaviour - for more information see https://github.com/greco-project/pvcompare/blob/bc4425abaf3f4957e3aa68dbe7cbeffb3d530719/pvcompare/demand.py#L330
