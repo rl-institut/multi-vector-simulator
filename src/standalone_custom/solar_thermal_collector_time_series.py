@@ -27,8 +27,8 @@ path_to_server = "/home/sabine/rl-institut/"
 
 # collectors to be analysed
 collectors = [
-    # "ST1",
-    # "ST2",
+    "ST1",
+    "ST2",
     "ST3"
 ]
 
@@ -50,7 +50,7 @@ weather.reset_index("time", inplace=True)
 # load collector data
 filename_collector_data = os.path.join(
     path_to_data_folder,
-    "2020-05-13_technical_data_UVTgV_system_solar_thermal.csv",
+    "2020-06-05_technical_data_UVTgV_system_sh.csv",
 )
 
 rename_inds = {
@@ -126,7 +126,11 @@ for collector in collectors:
     )
 
     coll_area = float(coll_data.A_coll) * float(coll_data.Number_of_panels)
-    print(f"Total area collector {coll_area}")
+
+    print(collector)
+    print(f"Total collector's heat: {round(heat_kwh.sum(), 2)} kWh")
+    print(f"Collector's heat per m2: {round(heat_kwh.sum() / coll_area, 2)} kWh/m2")
+
 
 # save collectors heat df to file
 filename_collector_data = os.path.join(
@@ -140,10 +144,3 @@ if plt:
     plt.xlabel("time")
     plt.ylabel("collector's heat in kWh")
     plt.show()
-
-total_heat = heat_kwh_df.sum().values[0]
-print(f"Total collector's heat: {round(total_heat, 2)} kWh")
-
-print()
-
-print(f"Collector's heat per m2: {round(total_heat / coll_area, 2)} kWh/m2")
