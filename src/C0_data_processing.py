@@ -799,7 +799,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
     sink = {
         OEMOF_ASSET_TYPE: OEMOF_SINK,
         LABEL: asset_name + AUTO_SINK,
-        "input_direction": input_bus,
+        INFLOW_DIRECTION: input_bus,
         INPUT_BUS_NAME: input_bus_name,
         # OPEX_VAR: {VALUE: price, UNIT: "currency/kWh"},
         LIFETIME: {
