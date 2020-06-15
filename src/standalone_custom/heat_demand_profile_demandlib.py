@@ -36,8 +36,14 @@ logging.getLogger().setLevel(logging.INFO)
 # please adapt
 path_to_server = "/home/sabine/rl-institut/"
 
-path_to_data_folder = os.path.join(path_to_server, "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition")
-path_to_results_folder = os.path.join(path_to_server, "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/heat_demand")
+path_to_data_folder = os.path.join(
+    path_to_server,
+    "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition",
+)
+path_to_results_folder = os.path.join(
+    path_to_server,
+    "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/heat_demand",
+)
 
 time_zone = "Europe/Bucharest"
 
@@ -49,12 +55,14 @@ hour_shift = True  # If True: The load profile is shifted due to countrys specif
 # heat demand from natural gas consumption and solar thermal collector's heat
 gas_consumption = 179578.24  # in kWh
 efficiency_gas_boiler = 0.954  # email from UVTgV
-annual_demand_gas = gas_consumption * efficiency_gas_boiler # in kWh
+annual_demand_gas = gas_consumption * efficiency_gas_boiler  # in kWh
 
 # add annual collectors heat to annual demand
-filename_coll = os.path.join(path_to_data_folder, "solar_thermal_collector", "solar_thermal_collectors_heat.csv")
+filename_coll = os.path.join(
+    path_to_data_folder, "solar_thermal_collector", "solar_thermal_collectors_heat.csv"
+)
 collectors_heat = pd.read_csv(filename_coll, index_col=0, header=0).sum().sum()
-annual_demand = annual_demand_gas + collectors_heat # in kWh
+annual_demand = annual_demand_gas + collectors_heat  # in kWh
 
 filename_heat_demand = os.path.join(path_to_results_folder, "heat_demand.csv")
 
