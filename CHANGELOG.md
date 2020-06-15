@@ -25,7 +25,7 @@ Here is a template for new release sections
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
-- Sorted parameters in input folder (#374)
+- Sorted parameters in csv´s withing the input folder (#374)
 
 ### Removed
 
