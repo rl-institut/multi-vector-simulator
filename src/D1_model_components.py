@@ -35,6 +35,7 @@ from src.constants_json_strings import (
     OUTPUT_BUS_NAME,
     SIMULATION_ANNUITY,
     MAXIMUM_CAP,
+DISPATCHABILITY,
 )
 
 
@@ -216,7 +217,7 @@ def source(model, dict_asset, **kwargs):
         see issue #121
 
     """
-    if "dispatchable" in dict_asset and dict_asset["dispatchable"] is True:
+    if DISPATCHABILITY in dict_asset and dict_asset[DISPATCHABILITY] is True:
         check_optimize_cap(
             model,
             dict_asset,

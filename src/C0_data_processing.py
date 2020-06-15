@@ -674,7 +674,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
         LABEL: asset_name + " source",
         "output_direction": output_bus,
         OUTPUT_BUS_NAME: output_bus_name,
-        "dispatchable": True,
+        DISPATCHABILITY: True,
         TIMESERIES: timeseries,
         # OPEX_VAR: {VALUE: price, UNIT: "currency/unit"},
         LIFETIME: {
