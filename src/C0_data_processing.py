@@ -194,7 +194,7 @@ def process_all_assets(dict_values):
         define_sink(
             dict_values,
             dict_values[PROJECT_DATA][SECTORS][sector] + EXCESS,
-            {VALUE: 0, UNIT: CURR + "/kWh"},
+            {VALUE: 0, UNIT: CURR + "/" + UNIT},
             dict_values[PROJECT_DATA][SECTORS][sector],
         )
         logging.debug(
@@ -591,7 +591,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
 
     peak_demand_pricing = {
         VALUE: dict_values[ENERGY_PROVIDERS][dso][PEAK_DEMAND_PRICING][VALUE],
-        UNIT: CURR + "/kWpeak",
+        UNIT: CURR + "/" + UNIT,
     }
 
     list_of_dso_energyProduction_assets = []
@@ -638,7 +638,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         dso + DSO_FEEDIN,
         dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
         dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
-        specific_costs={VALUE: 0, UNIT: CURR + "/kW"},
+        specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
     )
 
     dict_values[ENERGY_PROVIDERS][dso].update(
@@ -673,7 +673,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     source = {
         OEMOF_ASSET_TYPE: OEMOF_SOURCE,
         LABEL: asset_name + AUTO_SOURCE,
-        OUTFLOW_DIRECTION: output_bus, #todo
+        OUTFLOW_DIRECTION: output_bus,
         OUTPUT_BUS_NAME: output_bus_name,
         DISPATCHABILITY: True,
         TIMESERIES: timeseries,
@@ -801,7 +801,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         LABEL: asset_name + AUTO_SINK,
         INFLOW_DIRECTION: input_bus,
         INPUT_BUS_NAME: input_bus_name,
-        # OPEX_VAR: {VALUE: price, UNIT: CURR + "/kWh"},
+        # OPEX_VAR: {VALUE: price, UNIT: CURR + "/" + UNIT},
         LIFETIME: {
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
             UNIT: UNIT_YEAR,
