@@ -21,8 +21,14 @@ logging.getLogger().setLevel(logging.INFO)
 # please adapt
 path_to_server = "/home/sabine/rl-institut/"
 
-path_to_data_folder = os.path.join(path_to_server, "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition")
-path_to_results_folder = os.path.join(path_to_server, "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/solar_thermal_collector")
+path_to_data_folder = os.path.join(
+    path_to_server,
+    "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition",
+)
+path_to_results_folder = os.path.join(
+    path_to_server,
+    "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/solar_thermal_collector",
+)
 
 
 # collectors to be analysed
