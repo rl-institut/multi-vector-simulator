@@ -46,10 +46,15 @@ year = 2018
 profile_type = "GKO"  # BDEW profile type
 country = "Romania"  # needed for holiday detection
 hour_shift = True  # If True: The load profile is shifted due to countrys specific behaviour - for more information see https://github.com/greco-project/pvcompare/blob/bc4425abaf3f4957e3aa68dbe7cbeffb3d530719/pvcompare/demand.py#L330
-# heat demand from natural gas consumption
+# heat demand from natural gas consumption and solar thermal collector's heat
 gas_consumption = 179578.24  # in kWh
 efficiency_gas_boiler = 0.954  # email from UVTgV
-annual_demand = gas_consumption * efficiency_gas_boiler  # in kWh
+annual_demand_gas = gas_consumption * efficiency_gas_boiler # in kWh
+
+# add annual collectors heat to annual demand
+filename_coll = os.path.join(path_to_server, path_to_data_folder, "solar_thermal_collector", "solar_thermal_collectors_heat.csv")
+collectors_heat = pd.read_csv(filename_coll, index_col=0, header=0).sum().sum()
+annual_demand = annual_demand_gas + collectors_heat # in kWh
 
 filename_heat_demand = os.path.join(
     path_to_server, path_to_results_folder, "heat_demand.csv"
