@@ -37,6 +37,7 @@ temp_collector_inlet = 20  #  Collectors inlet temperature in C°.
 delta_temp_n = (
     10  # Temperature difference between collector inlet and mean temperature.
 )
+losses = 0.35
 time_zone = "Europe/Bucharest"
 
 ############### Get data - pre-processing ###############
@@ -117,7 +118,10 @@ for collector in collectors:
         f"solar_thermal_precal_data_{collector}.csv",
     )
     precalc_data.to_csv(filename_precalc)
-    heat_kwh_df = pd.concat([heat_kwh_df, precalc_data["heat_kWh"]], axis=1).rename(
+
+    # apply losses and add to data frame
+    heat_kwh = precalc_data["heat_kWh"] * (1- losses)
+    heat_kwh_df = pd.concat([heat_kwh_df, heat_kwh], axis=1).rename(
         columns={"heat_kWh": f"heat_kWh_{collector}"}
     )
 
