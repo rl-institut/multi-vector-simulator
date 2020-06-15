@@ -24,12 +24,14 @@ Here is a template for new release sections
 - Input template folder for easy generation of new simulations, later also for tests of the input folder
 
 ### Changed
+- Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
 - Sorted parameters in input folder
 
 ### Removed
 
-### Fix
+### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
+- Issue #357 Bug connected to global variables (#356)
 
 ## [0.3.0] - 2020-06-08
 
@@ -92,6 +94,7 @@ tipps for module building, and hint that units in the MVS are not checked (#229)
 - Possibility to deploy the report of the results in a browser (#323)
 - A main() function to be used by a server which only accepts json variable and returns json
  variable (not saving to a file) (#327)
+- Add information about the feature to view the web app and generate PDF of the automatic report to readthedocs (#283)
 
 ### Changed
 - Default input files from "inputs": Changed some parameters (#143)
