@@ -696,7 +696,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                         dict_values[SIMULATION_SETTINGS],
                         source,
                         element[FILENAME],
-                        element["header"],
+                        element[HEADER],
                     )
                 )
                 values_info.append(element)
@@ -711,7 +711,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                 DISPATCH_PRICE: {
                     VALUE: {
                         FILENAME: price[VALUE][FILENAME],
-                        "header": price[VALUE]["header"],
+                        HEADER: price[VALUE][HEADER],
                     },
                     UNIT: price[UNIT],
                 }
@@ -818,7 +818,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
                     dict_values[SIMULATION_SETTINGS],
                     sink,
                     element[FILENAME],
-                    element["header"],
+                    element[HEADER],
                 )
                 if asset_name[-6:] == "feedin":
                     sink[DISPATCH_PRICE][VALUE].append([-i for i in timeseries])
@@ -835,7 +835,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
                 DISPATCH_PRICE: {
                     VALUE: {
                         FILENAME: price[VALUE][FILENAME],
-                        "header": price[VALUE]["header"],
+                        HEADER: price[VALUE][HEADER],
                     },
                     UNIT: price[UNIT],
                 }
@@ -1079,7 +1079,7 @@ def receive_timeseries_from_csv(
     """
     if input_type == "input" and "input" in dict_asset:
         file_name = dict_asset[input_type][FILENAME]
-        header = dict_asset[input_type]["header"]
+        header = dict_asset[input_type][HEADER]
         unit = dict_asset[input_type][UNIT]
     elif FILENAME in dict_asset:
         # todo this input/file_name thing is a workaround and has to be improved in the future
@@ -1088,7 +1088,7 @@ def receive_timeseries_from_csv(
         unit = dict_asset[UNIT] + "/h"
     else:
         file_name = dict_asset[input_type][VALUE][FILENAME]
-        header = dict_asset[input_type][VALUE]["header"]
+        header = dict_asset[input_type][VALUE][HEADER]
         unit = dict_asset[input_type][UNIT]
 
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
@@ -1261,7 +1261,7 @@ def treat_multiple_flows(dict_asset, dict_values, parameter):
                     dict_values[SIMULATION_SETTINGS],
                     dict_asset,
                     element[FILENAME],
-                    element["header"],
+                    element[HEADER],
                 )
             )
             values_info.append(element)
