@@ -3,6 +3,7 @@ import logging
 from src.constants_json_strings import (
     UNIT,
     CURR,
+    UNIT_YEAR,
     VALUE,
     ECONOMIC_DATA,
     CURR,
