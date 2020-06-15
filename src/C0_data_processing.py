@@ -898,8 +898,6 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     :return:
     """
 
-    complete_missing_cost_data(dict_asset)
-
     determine_lifetime_price_dispatch(dict_asset, economic_data)
 
     dict_asset.update(
@@ -954,24 +952,6 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     )
 
     return
-
-
-def complete_missing_cost_data(dict_asset):
-    # todo check if this can be deleted
-    if SPECIFIC_COSTS not in dict_asset:
-        dict_asset.update({SPECIFIC_COSTS: 0})
-        logging.error(
-            "Dictionary of asset %s is incomplete, as specific_costs is missing.",
-            dict_asset[LABEL],
-        )
-    if SPECIFIC_COSTS_OM not in dict_asset:
-        dict_asset.update({SPECIFIC_COSTS_OM: 0})
-        logging.error(
-            "Dictionary of asset %s is incomplete, as cost_om is missing.",
-            dict_asset[LABEL],
-        )
-    return
-
 
 def determine_lifetime_price_dispatch(dict_asset, economic_data):
     """
