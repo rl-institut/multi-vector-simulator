@@ -9,7 +9,7 @@ workalendar==8.1.0
 
 
 optionally (for working hours shift):
-pvcompare
+pvcompare - install via: git@github.com:greco-project/pvcompare.git, pip install -e path/to/pvcompare
 
 """
 
@@ -193,8 +193,6 @@ if __name__ == "__main__":
         hour_shift=hour_shift,
     )
 
-    print(demand.head())
-
     if plots and plt:
         folder = os.path.join(path_to_server, path_to_results_folder, "plots")
         fig, ax = plt.subplots()
@@ -203,3 +201,7 @@ if __name__ == "__main__":
         plt.ylabel("heat demand in kWh")
         # plt.show()
         fig.savefig(os.path.join(folder, "heat_demand_year.pdf"))
+
+    print(f"Annual heat demand: {round(annual_demand, 2)} kWh")
+    print(f"Retrieved from gas: {round(annual_demand_gas, 2)} kWh")
+    print(f"Retrieved from solar thermal heat: {round(collectors_heat, 2)} kWh")
