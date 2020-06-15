@@ -1,0 +1,16 @@
+;unit
+label;str
+unit;str
+optimizeCap;bool
+maximumCap; kWp
+installedCap;kW
+age_installed;year
+lifetime;year
+development_costs;currency
+specific_costs;currency/kW
+specific_costs_om;currency/kW/year
+dispatch_price;currency/kWh
+outflow_direction;str
+file_name;str
+energyVector;str
+type_oemof;str

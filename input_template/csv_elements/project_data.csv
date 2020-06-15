@@ -1,0 +1,9 @@
+;unit;
+label;str;project_data
+country;str;
+latitude;str;
+longitude;str;
+project_id;str;
+project_name;str;
+scenario_id;str;
+scenario_name;str;
