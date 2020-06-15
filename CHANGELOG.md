@@ -22,11 +22,12 @@ Here is a template for new release sections
 ### Added
 - Release protocol in CONTRIBUTING.md file (#353)
 ### Changed
-
+- Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
 ### Removed
 
-### Fix
+### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
+- Issue #357 Bug connected to global variables (#356)
 
 ## [0.3.0] - 2020-06-08
 
