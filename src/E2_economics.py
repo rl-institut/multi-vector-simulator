@@ -2,6 +2,7 @@ import logging
 
 from src.constants_json_strings import (
     UNIT,
+    CURR,
     VALUE,
     ECONOMIC_DATA,
     CURR,
@@ -155,11 +156,11 @@ def get_costs(dict_asset, economic_data):
             {
                 ANNUITY_TOTAL: {
                     VALUE: dict_asset[COST_TOTAL][VALUE] * economic_data[CRF][VALUE],
-                    UNIT: "currency/year",
+                    UNIT: CURR + "/" + UNIT_YEAR,
                 },
                 ANNUITY_OM: {
                     VALUE: dict_asset[COST_OM_TOTAL][VALUE] * economic_data[CRF][VALUE],
-                    UNIT: "currency/year",
+                    UNIT: CURR + "/" + UNIT_YEAR,
                 },
             }
         )

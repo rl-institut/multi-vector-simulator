@@ -194,7 +194,7 @@ def process_all_assets(dict_values):
         define_sink(
             dict_values,
             dict_values[PROJECT_DATA][SECTORS][sector] + EXCESS,
-            {VALUE: 0, UNIT: "currency/kWh"},
+            {VALUE: 0, UNIT: CURR + "/kWh"},
             dict_values[PROJECT_DATA][SECTORS][sector],
         )
         logging.debug(
@@ -426,10 +426,10 @@ def define_missing_cost_data(dict_values, dict_asset):
         UNIT: "?",
         INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
-        SPECIFIC_COSTS: {VALUE: 0, UNIT: "currency/unit"},
-        SPECIFIC_COSTS_OM: {VALUE: 0, UNIT: "currency/year"},
-        DISPATCH_PRICE: {VALUE: 0, UNIT: "currency/unit/year"},
-        LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: "year",},
+        SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + UNIT},
+        SPECIFIC_COSTS_OM: {VALUE: 0, UNIT: CURR + "/" + UNIT_YEAR},
+        DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + UNIT + "/" + UNIT_YEAR},
+        LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: UNIT_YEAR,},
     }
 
     # checks that an asset has all cost parameters needed for evaluation.
@@ -591,7 +591,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
 
     peak_demand_pricing = {
         VALUE: dict_values[ENERGY_PROVIDERS][dso][PEAK_DEMAND_PRICING][VALUE],
-        UNIT: "currency/kWpeak",
+        UNIT: CURR + "/kWpeak",
     }
 
     list_of_dso_energyProduction_assets = []
@@ -638,7 +638,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         dso + DSO_FEEDIN,
         dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
         dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
-        specific_costs={VALUE: 0, UNIT: "currency/kW"},
+        specific_costs={VALUE: 0, UNIT: CURR + "/kW"},
     )
 
     dict_values[ENERGY_PROVIDERS][dso].update(
@@ -677,10 +677,10 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
         OUTPUT_BUS_NAME: output_bus_name,
         DISPATCHABILITY: True,
         TIMESERIES: timeseries,
-        # OPEX_VAR: {VALUE: price, UNIT: "currency/unit"},
+        # OPEX_VAR: {VALUE: price, UNIT: CURR + "/" + UNIT},
         LIFETIME: {
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
-            UNIT: "year",
+            UNIT: UNIT_YEAR,
         },
     }
 
@@ -801,10 +801,10 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         LABEL: asset_name + AUTO_SINK,
         INFLOW_DIRECTION: input_bus,
         INPUT_BUS_NAME: input_bus_name,
-        # OPEX_VAR: {VALUE: price, UNIT: "currency/kWh"},
+        # OPEX_VAR: {VALUE: price, UNIT: CURR + "/kWh"},
         LIFETIME: {
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
-            UNIT: "year",
+            UNIT: UNIT_YEAR,
         },
     }
 
@@ -926,7 +926,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                     economic_data[CRF][VALUE],
                 )
                 + dict_asset[SPECIFIC_COSTS_OM][VALUE],  # changes from dispatch_price
-                UNIT: dict_asset[LIFETIME_SPECIFIC_COST][UNIT] + "/a",
+                UNIT: dict_asset[LIFETIME_SPECIFIC_COST][UNIT] + "/" + UNIT_YEAR,
             }
         }
     )
@@ -948,7 +948,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                     dict_asset[ANNUITY_SPECIFIC_INVESTMENT_AND_OM][VALUE],
                     settings[EVALUATED_PERIOD][VALUE],
                 ),
-                UNIT: "currency/unit/simulation period",
+                UNIT: CURR + "/" + UNIT + "/" + EVALUATED_PERIOD,
             }
         }
     )
