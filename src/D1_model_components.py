@@ -35,7 +35,7 @@ from src.constants_json_strings import (
     OUTPUT_BUS_NAME,
     SIMULATION_ANNUITY,
     MAXIMUM_CAP,
-DISPATCHABILITY,
+    DISPATCHABILITY,
 )
 
 

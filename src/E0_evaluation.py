@@ -37,7 +37,7 @@ from src.constants_json_strings import (
     COST_DISPATCH,
     COST_OM_FIX,
     COST_UPFRONT,
-OPTIMIZED_FLOWS
+    OPTIMIZED_FLOWS,
 )
 
 r"""

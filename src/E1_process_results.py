@@ -32,7 +32,7 @@ from src.constants_json_strings import (
     OPTIMIZED_ADD_CAP,
     KPI_SCALARS_DICT,
     TOTAL_FLOW,
-OPTIMIZED_FLOWS
+    OPTIMIZED_FLOWS,
 )
 
 

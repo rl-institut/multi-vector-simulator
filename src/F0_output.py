@@ -25,8 +25,8 @@ from src.constants_json_strings import (
     COST_OM_TOTAL,
     COST_INVESTMENT,
     ANNUITY_TOTAL,
-OPTIMIZED_FLOWS,
-BUS_SUFFIX
+    OPTIMIZED_FLOWS,
+    BUS_SUFFIX,
 )
 
 r"""

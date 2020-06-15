@@ -953,6 +953,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
     return
 
+
 def determine_lifetime_price_dispatch(dict_asset, economic_data):
     """
     #todo I am not sure that this makes sense. is this used in d0?

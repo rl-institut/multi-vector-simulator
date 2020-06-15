@@ -26,7 +26,7 @@ from src.constants_json_strings import (
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
     TOTAL_FLOW,
-CONNECTED_CONSUMPTION_SOURCES,
+    CONNECTED_CONSUMPTION_SOURCES,
 )
 
 
