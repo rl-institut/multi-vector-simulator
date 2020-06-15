@@ -24,14 +24,15 @@ Here is a template for new release sections
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
-- Added global variables to `constants_json_str.csv`
+- Added global variables to `constants_json_str.csv`, defining units with them (#379)
 
 ### Removed
+- Removed function C0.complete_missing_cost_data() as this should be covered by A1 for csv files (#379)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
-- Issue #357: Bug connected to global variables (#356)
-- Issue #186: No fuel source for transformers generated (#)
+- Bug connected to global variables (#356)
+- No fuel source for transformers generated ((#379)
 
 ## [0.3.0] - 2020-06-08
 
