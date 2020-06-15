@@ -32,6 +32,7 @@ from src.constants_json_strings import (
     OPTIMIZED_ADD_CAP,
     KPI_SCALARS_DICT,
     TOTAL_FLOW,
+OPTIMIZED_FLOWS
 )
 
 
@@ -81,7 +82,7 @@ def get_timeseries_per_bus(dict_values, bus_data):
                 from_bus[asset]
             ]
 
-    dict_values.update({"optimizedFlows": bus_data_timeseries})
+    dict_values.update({OPTIMIZED_FLOWS: bus_data_timeseries})
     return
 
 

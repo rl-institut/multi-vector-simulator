@@ -192,7 +192,7 @@ def process_all_assets(dict_values):
     for sector in dict_values[PROJECT_DATA][SECTORS]:
         define_sink(
             dict_values,
-            dict_values[PROJECT_DATA][SECTORS][sector] + " excess",
+            dict_values[PROJECT_DATA][SECTORS][sector] + EXCESS,
             {VALUE: 0, UNIT: "currency/kWh"},
             dict_values[PROJECT_DATA][SECTORS][sector],
         )
@@ -507,7 +507,7 @@ def bus_suffix(bus):
     :param bus:
     :return:
     """
-    bus_label = bus + " bus"
+    bus_label = bus + BUS_SUFFIX
     return bus_label
 
 

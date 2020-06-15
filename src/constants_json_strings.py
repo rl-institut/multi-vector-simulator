@@ -134,6 +134,8 @@ INFLOW_DIRECTION = "inflow_direction"
 OUTPUT_BUS_NAME = "output_bus_name"
 INPUT_BUS_NAME = "input_bus_name"
 ENERGY_VECTOR = "energyVector"
+EXCESS = " excess"
+BUS_SUFFIX = " bus"
 
 #######################################
 # Parameters added in post-processing #
@@ -149,6 +151,7 @@ KPI_SCALAR_MATRIX = "scalar_matrix"
 # Flows
 TOTAL_FLOW = "total_flow"
 ANNUAL_TOTAL_FLOW = "annual_total_flow"
+OPTIMIZED_FLOWS = "optimizedFlows"
 
 # Capacity
 OPTIMIZED_ADD_CAP = "optimizedAddCap"

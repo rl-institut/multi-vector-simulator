@@ -37,6 +37,7 @@ from src.constants_json_strings import (
     COST_DISPATCH,
     COST_OM_FIX,
     COST_UPFRONT,
+OPTIMIZED_FLOWS
 )
 
 r"""
@@ -132,10 +133,10 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
         if (
             dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
-            in dict_values["optimizedFlows"].keys()
+            in dict_values[OPTIMIZED_FLOWS].keys()
         ) or (
             dict_values[ENERGY_STORAGE][storage][OUTPUT_BUS_NAME]
-            in dict_values["optimizedFlows"].keys()
+            in dict_values[OPTIMIZED_FLOWS].keys()
         ):
             bus_name = dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
             timeseries_name = (
@@ -155,7 +156,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + ") SOC"
             )
 
-            dict_values["optimizedFlows"][bus_name][timeseries_name] = dict_values[
+            dict_values[OPTIMIZED_FLOWS][bus_name][timeseries_name] = dict_values[
                 ENERGY_STORAGE
             ][storage]["timeseries_soc"]
 
