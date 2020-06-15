@@ -176,7 +176,7 @@ if __name__ == "__main__":
     plots = True
 
     # load dummy weather
-    weather = pd.read_csv("era5_weather_UVTgV_2019.csv", parse_dates=True).set_index(
+    weather = pd.read_csv(f"era5_weather_UVTgV_{year}.csv", parse_dates=True).set_index(
         "time"
     )
     weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
