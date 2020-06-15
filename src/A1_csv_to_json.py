@@ -49,10 +49,10 @@ from src.constants import (
 )
 from src.constants_json_strings import (
     LABEL,
-    PRICE_DISPATCH,
-    SPECIFIC_COST_OM,
-    COST_DEVELOPMENT,
-    SPECIFIC_COST,
+    DISPATCH_PRICE,
+    SPECIFIC_COSTS_OM,
+    DEVELOPMENT_COSTS,
+    SPECIFIC_COSTS,
     AGE_INSTALLED,
     LIFETIME,
     INSTALLED_CAP,
@@ -60,7 +60,7 @@ from src.constants_json_strings import (
     INPUT_POWER,
     OUTPUT_POWER,
     C_RATE,
-    PRICE_DISPATCH,
+    DISPATCH_PRICE,
     SOC_INITIAL,
     SOC_MAX,
     SOC_MIN,
@@ -315,7 +315,7 @@ def create_json_from_csv(
                 if column == STORAGE_CAPACITY:
                     extra = [SOC_INITIAL, SOC_MAX, SOC_MIN]
                 elif column == INPUT_POWER or column == OUTPUT_POWER:
-                    extra = [C_RATE, PRICE_DISPATCH]
+                    extra = [C_RATE, DISPATCH_PRICE]
                 else:
                     raise WrongStorageColumn(
                         f"The column name {column} in The file {filename}.csv"
@@ -336,7 +336,7 @@ def create_json_from_csv(
                         # if not, set them to Nan
                         if i not in [
                             C_RATE,
-                            PRICE_DISPATCH,
+                            DISPATCH_PRICE,
                             SOC_INITIAL,
                             SOC_MAX,
                             SOC_MIN,
@@ -550,13 +550,13 @@ def add_storage_components(storage_filename, input_directory):
         # hardcoded parameterlist of common parameters in all columns
         parameters = [
             AGE_INSTALLED,
-            COST_DEVELOPMENT,
-            SPECIFIC_COST,
+            DEVELOPMENT_COSTS,
+            SPECIFIC_COSTS,
             EFFICIENCY,
             INSTALLED_CAP,
             LABEL,
             LIFETIME,
-            SPECIFIC_COST_OM,
+            SPECIFIC_COSTS_OM,
             UNIT,
         ]
         single_dict = create_json_from_csv(

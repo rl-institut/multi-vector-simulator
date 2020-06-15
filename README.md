@@ -120,12 +120,20 @@ Edit the csv files (or, for devs, the json file) and run the `main()` function. 
 
 ## Generate report
 
-To generate a report (only in browser for now), run the following command **after** a simulation
- ran:
+To generate a report of the simulation, run the following command **after** a simulation
+ generated an output folder:
  
 `python mvs_report.py`
 
-the report should appear in your browser (at http://127.0.0.1:8050) as a Plotly Dash app.
+the report should appear in your browser (at http://127.0.0.1:8050) as an interactive Plotly Dash
+ app.
+
+It is also possible to print the report as pdf by using the option `-pdf`. By default, it will
+save the report in the `report` folder. See`python mvs_report.py -h` for more information about
+possible options. The css and images used to make the report pretty should be located under
+`report/assets`. Note that for automatic generation of pdf you need to install selenium's
+[Firefox webbrowser](https://www.selenium.dev/documentation/en/webdriver/driver_requirements/#quick-reference)
+
 
 ## Contributing
 

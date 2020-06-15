@@ -2,9 +2,9 @@ import src.E2_economics as E2
 from src.constants_json_strings import (
     UNIT,
     CURR,
-    COST_DEVELOPMENT,
-    SPECIFIC_COST,
-    PRICE_DISPATCH,
+    DEVELOPMENT_COSTS,
+    SPECIFIC_COSTS,
+    DISPATCH_PRICE,
     VALUE,
     LABEL,
     INSTALLED_CAP,
@@ -24,10 +24,10 @@ from src.constants_json_strings import (
 
 dict_asset = {
     LABEL: "DSO_feedin_sink",
-    PRICE_DISPATCH: {VALUE: -0.4, UNIT: "currency/kWh"},
-    SPECIFIC_COST: {VALUE: 0, UNIT: "currency/kW"},
+    DISPATCH_PRICE: {VALUE: -0.4, UNIT: "currency/kWh"},
+    SPECIFIC_COSTS: {VALUE: 0, UNIT: "currency/kW"},
     INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
-    COST_DEVELOPMENT: {VALUE: 0, UNIT: CURR},
+    DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
     LIFETIME_SPECIFIC_COST: {VALUE: 0.0, UNIT: "currency/kW"},
     LIFETIME_SPECIFIC_COST_OM: {VALUE: 0.0, UNIT: "currency/ye"},
     LIFETIME_PRICE_DISPATCH: {VALUE: -5.505932460595773, UNIT: "?"},

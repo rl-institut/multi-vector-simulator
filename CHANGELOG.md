@@ -20,6 +20,18 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+- Release protocol in CONTRIBUTING.md file (#353)
+### Changed
+- Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
+### Removed
+
+### Fixed
+- Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
+- Issue #357 Bug connected to global variables (#356)
+
+## [0.3.0] - 2020-06-08
+
+### Added
 - Test for re-running a simulation with `json_input_processed.json` file (#343)
 
 ### Changed
@@ -27,15 +39,12 @@ Here is a template for new release sections
 - All parameters of the json/csv input files are now defined by constant variables (i.e, `CRATE="crate"` instead of string `"crate"`) (#346)
 - Use "is" instead of "==" in if clauses for True, False and None (#346)
 - Categorize constants in 'constants_json_strings.py' (#347)
-- Renaming CAPEX_FIX = "capex_fix" into COST_DEVELOPMENT = "cost_development" (#347)
-- Renaming CAPEX_VAR = "capex_var" into SPECIFIC_COST = "specific_cost" (#347)
-- Renaming OPEX_FIX = "opex_fix" into SPECIFIC_COST_OM = "specific_cost_om" (#347)
-- Renaming OPEX_VAR = "opex_var" into PRICE_DISPATCH = "price_dispatch" (#347)
+- Renaming CAPEX_FIX = "capex_fix" into COST_DEVELOPMENT = "development_costs" (#347, #350)
+- Renaming CAPEX_VAR = "capex_var" into SPECIFIC_COST = "specific_costs" (#347, #350)
+- Renaming OPEX_FIX = "opex_fix" into SPECIFIC_COST_OM = "specific_costs_om" (#347, #350)
+- Renaming OPEX_VAR = "opex_var" into PRICE_DISPATCH = "dispatch_price" (#347, #350)
 - Change last strings into global constants in "constants_json_strings.py" (#349)
-- Autoreport now refers to actual project and scenario name + ID
-
-### Removed
-
+- Autoreport now refers to actual project and scenario name + ID (#349)
 
 
 ## [0.2.1] - 2020-05-28
@@ -81,6 +90,7 @@ tipps for module building, and hint that units in the MVS are not checked (#229)
 - Possibility to deploy the report of the results in a browser (#323)
 - A main() function to be used by a server which only accepts json variable and returns json
  variable (not saving to a file) (#327)
+- Add information about the feature to view the web app and generate PDF of the automatic report to readthedocs (#283)
 
 ### Changed
 - Default input files from "inputs": Changed some parameters (#143)

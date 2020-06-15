@@ -57,11 +57,11 @@
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 0
             },
@@ -88,11 +88,11 @@
                 "unit": "?",
                 "value": -5.505932460595773
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": -0.4
             },
@@ -112,11 +112,11 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -143,11 +143,11 @@
                 "unit": "?",
                 "value": 0.0
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0
             },
@@ -167,11 +167,11 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -201,11 +201,11 @@
                 "unit": "?",
                 "value": 0.0
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -239,11 +239,11 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -273,11 +273,11 @@
                 "unit": "?",
                 "value": 0.0
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -311,11 +311,11 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -345,11 +345,11 @@
                 "unit": "?",
                 "value": 0.0
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -389,11 +389,11 @@
                 "unit": "currency/kW/a",
                 "value": 308.888291865938
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 3000
             },
@@ -429,11 +429,11 @@
                 "unit": "kW",
                 "value": null
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -459,11 +459,11 @@
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -499,11 +499,11 @@
                 "unit": "kW",
                 "value": null
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -529,11 +529,11 @@
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -569,11 +569,11 @@
                 "unit": "kW",
                 "value": null
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -599,11 +599,11 @@
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -639,11 +639,11 @@
                 "unit": "kVA",
                 "value": null
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -669,11 +669,11 @@
                 "unit": "currency/kW/a",
                 "value": 0.0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/kW",
                 "value": 0.0
             },
@@ -709,11 +709,11 @@
                 "unit": "kVA",
                 "value": null
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.0
             },
@@ -737,11 +737,11 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -771,11 +771,11 @@
                 "unit": "kWp",
                 "value": null
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/kWpeak",
                 "value": 0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.54
             },
@@ -807,11 +807,11 @@
                 "unit": "currency/unit/a",
                 "value": 603.0721627283399
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 10000
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 7200
             },
@@ -842,11 +842,11 @@
                 "unit": " kWp",
                 "value": null
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/unit/year",
                 "value": 80
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0
             },
@@ -884,11 +884,11 @@
                 "unit": "currency/unit/a",
                 "value": 0.0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency/unit",
                 "value": 0
             },
@@ -923,11 +923,11 @@
                 "unit": "?",
                 "value": 0.0
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/unit/year",
                 "value": 0
             },
@@ -969,11 +969,11 @@
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
-                "cost_development": {
+                "development_costs": {
                     "unit": "currency",
                     "value": 0
                 },
-                "specific_cost": {
+                "specific_costs": {
                     "unit": "currency/unit",
                     "value": 0
                 },
@@ -1006,11 +1006,11 @@
                     "unit": "kW",
                     "value": null
                 },
-                "specific_cost_om": {
+                "specific_costs_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "price_dispatch": {
+                "dispatch_price": {
                     "unit": "currency/kWh",
                     "value": 0
                 },
@@ -1044,11 +1044,11 @@
                     "unit": "factor of total capacity (kWh)",
                     "value": 1
                 },
-                "cost_development": {
+                "development_costs": {
                     "unit": "currency",
                     "value": 0
                 },
-                "specific_cost": {
+                "specific_costs": {
                     "unit": "currency/unit",
                     "value": 0
                 },
@@ -1081,11 +1081,11 @@
                     "unit": "kW",
                     "value": null
                 },
-                "specific_cost_om": {
+                "specific_costs_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "price_dispatch": {
+                "dispatch_price": {
                     "unit": "currency/kWh",
                     "value": 0
                 },
@@ -1109,11 +1109,11 @@
                     "unit": "currency/unit/a",
                     "value": 492.87618692134606
                 },
-                "cost_development": {
+                "development_costs": {
                     "unit": "currency",
                     "value": 0
                 },
-                "specific_cost": {
+                "specific_costs": {
                     "unit": "currency/unit",
                     "value": 4000
                 },
@@ -1146,11 +1146,11 @@
                     "unit": "kWh",
                     "value": null
                 },
-                "specific_cost_om": {
+                "specific_costs_om": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
-                "price_dispatch": {
+                "dispatch_price": {
                     "unit": "currency/unit/year",
                     "value": 0
                 },
@@ -1186,11 +1186,11 @@
                 "unit": "year",
                 "value": 10
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency",
                 "value": 0.0
             },
@@ -1199,11 +1199,11 @@
                 "unit": "year",
                 "value": 30
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0
             }
@@ -1213,11 +1213,11 @@
                 "unit": "year",
                 "value": 0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency",
                 "value": 0
             },
@@ -1226,11 +1226,11 @@
                 "unit": "year",
                 "value": 20
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0
             }
@@ -1240,11 +1240,11 @@
                 "unit": "year",
                 "value": 0
             },
-            "cost_development": {
+            "development_costs": {
                 "unit": "currency",
                 "value": 0
             },
-            "specific_cost": {
+            "specific_costs": {
                 "unit": "currency",
                 "value": 0
             },
@@ -1253,11 +1253,11 @@
                 "unit": "year",
                 "value": 20
             },
-            "specific_cost_om": {
+            "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 4600
             },
-            "price_dispatch": {
+            "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0
             }

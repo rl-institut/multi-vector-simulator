@@ -1,14 +1,14 @@
 ,unit,heat_pump
 age_installed,year,0
-cost_development,currency,0
-specific_cost,currency/kW,7000
+development_costs,currency,0
+specific_costs,currency/kW,7000
 efficiency,factor,"{'value': {'file_name': 'cops_eers_test.csv', 'header': 'no_unit'}, 'unit': ''}"
 inflow_direction,str,Electricity
 installedCap,kW,0
 label,str,Heat pump
 lifetime,year,20
-specific_cost_om,currency/kW/year,0
-price_dispatch,currency/kWh,0
+specific_costs_om,currency/kW/year,0
+dispatch_price,currency/kWh,0
 optimizeCap,bool,True
 outflow_direction,str,Heat
 energyVector,str,Electricity

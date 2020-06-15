@@ -39,6 +39,8 @@ OUTPUT_FOLDER = "MVS_outputs"
 INPUTS_COPY = INPUT_FOLDER
 # name of the automatically generated pdf report
 PDF_REPORT = "simulation_report.pdf"
+# path of the pdf report path
+REPORT_PATH = os.path.join(REPO_PATH, "report")
 
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
@@ -85,15 +87,15 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     ENERGY_CONVERSION: [
         AGE_INSTALLED,
-        COST_DEVELOPMENT,
-        SPECIFIC_COST,
+        DEVELOPMENT_COSTS,
+        SPECIFIC_COSTS,
         EFFICIENCY,
         INFLOW_DIRECTION,
         INSTALLED_CAP,
         LABEL,
         LIFETIME,
-        SPECIFIC_COST_OM,
-        PRICE_DISPATCH,
+        SPECIFIC_COSTS_OM,
+        DISPATCH_PRICE,
         OPTIMIZE_CAP,
         OUTFLOW_DIRECTION,
         OEMOF_ASSET_TYPE,
@@ -111,14 +113,14 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     ENERGY_PRODUCTION: [
         AGE_INSTALLED,
-        COST_DEVELOPMENT,
-        SPECIFIC_COST,
+        DEVELOPMENT_COSTS,
+        SPECIFIC_COSTS,
         FILENAME,
         INSTALLED_CAP,
         LABEL,
         LIFETIME,
-        SPECIFIC_COST_OM,
-        PRICE_DISPATCH,
+        SPECIFIC_COSTS_OM,
+        DISPATCH_PRICE,
         OPTIMIZE_CAP,
         OUTFLOW_DIRECTION,
         OEMOF_ASSET_TYPE,
@@ -139,12 +141,12 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     FIX_COST: [
         AGE_INSTALLED,
-        COST_DEVELOPMENT,
-        SPECIFIC_COST,
+        DEVELOPMENT_COSTS,
+        SPECIFIC_COSTS,
         LABEL,
         LIFETIME,
-        SPECIFIC_COST_OM,
-        PRICE_DISPATCH,
+        SPECIFIC_COSTS_OM,
+        DISPATCH_PRICE,
     ],
     SIMULATION_SETTINGS: [
         EVALUATED_PERIOD,

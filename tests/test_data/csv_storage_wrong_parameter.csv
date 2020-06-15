@@ -1,8 +1,8 @@
 ,unit,storage capacity,input power,output power
 age_installed,str,val11,val22,val33
-cost_development,factor,21,22,23
+development_costs,factor,21,22,23
 c_rate,factor of total capacity (kWh),NaN,1,1
-price_dispatch,currency/kWh,NaN,0,0
+dispatch_price,currency/kWh,NaN,0,0
 soc_initial,None or factor,None,NaN,NaN
 soc_max,factor,1.0,NaN,NaN
 soc_min,factor,0.2,NaN,NaN
