@@ -3,6 +3,9 @@ This module calculates heat demand time series using oemof demandlib and
 BDEW profiles. See the demandlib documentation for more information:
 https://demandlib.readthedocs.io/en/latest/description.html#model-description
 
+ERA5 weather data was downloaded for the corresponding weather data point
+(ambient temperature, global and diffuse horizontal irradiance) using `era5_weather_download.py`.
+
 Installation requirements:
 demandlib==0.1.6
 importlib==1.0.4
