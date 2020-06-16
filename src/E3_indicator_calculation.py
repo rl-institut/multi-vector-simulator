@@ -26,6 +26,7 @@ from src.constants_json_strings import (
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
     TOTAL_FLOW,
+RENEWABLE_ASSET_BOOL
 )
 
 
@@ -89,9 +90,9 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
         non_renewable_origin.update({sector: 0})
 
     for asset in dict_values[ENERGY_PRODUCTION]:
-        if "renewableAsset" in dict_values[ENERGY_PRODUCTION][asset]:
+        if RENEWABLE_ASSET_BOOL in dict_values[ENERGY_PRODUCTION][asset]:
             sector = dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
-            if dict_values[ENERGY_PRODUCTION][asset]["renewableAsset"][VALUE] is True:
+            if dict_values[ENERGY_PRODUCTION][asset][RENEWABLE_ASSET_BOOL][VALUE] is True:
                 renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][asset][
                     TOTAL_FLOW
                 ][VALUE]
@@ -174,6 +175,7 @@ def renewable_share(dict_values):
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {kpi_name: equation_renewable_share(total_res, total_non_res)}
     )
+    print(total_res,total_non_res)
     return
 
 

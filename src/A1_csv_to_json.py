@@ -66,6 +66,7 @@ from src.constants_json_strings import (
     SOC_MIN,
     STORAGE_CAPACITY,
     MAXIMUM_CAP,
+RENEWABLE_ASSET_BOOL
 )
 from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
@@ -246,7 +247,7 @@ def create_json_from_csv(
     # TODO create this as a function, so that in future also new parameters can be added
     list_of_new_parameters = {
         MAXIMUM_CAP: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
-        "renewableAsset": "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
+        RENEWABLE_ASSET_BOOL: "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
         "renewable_share": "allows defining the renewable share of the DSO supply (Values: Float). ",
     }
 
