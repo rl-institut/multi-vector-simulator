@@ -1,5 +1,7 @@
 """
-This module calculates heat demand time series using oemof demandlib.
+This module calculates heat demand time series using oemof demandlib and
+BDEW profiles. See the demandlib documentation for more information:
+https://demandlib.readthedocs.io/en/latest/description.html#model-description
 
 Installation requirements:
 demandlib==0.1.6
@@ -92,6 +94,7 @@ def calculate_heat_demand_time_series(
     profile_type : str
         BDEW profile type, for more information see
         https://www.enwg-veroeffentlichungen.de/badtoelz/Netze/Gasnetz/Netzbeschreibung/LF-Abwicklung-von-Standardlastprofilen-Gas-20110630-final.pdf
+        For different profile types than 'GKO' please see the Notes.
     country : str
         Country starting with capital letter; needed for holiday detection.
     start_date : list of ints
@@ -104,6 +107,13 @@ def calculate_heat_demand_time_series(
         If True: the load profile is shifted due to "country's specific habits".
         For this you need to install pvcompare, see https://github.com/greco-project/pvcompare#installation
         Default: False.
+
+    Notes
+    -----
+    For different profile types the parameter `building_class` might have to be
+    an input to `bdew.HeatBuilding()`. This is for example the case for 'MFH'.
+    As for the current use case is not needed this stays an open todo
+    until we need this or require a generic function.
 
     Returns
     -------
