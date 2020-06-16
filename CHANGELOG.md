@@ -21,11 +21,12 @@ Here is a template for new release sections
 
 ### Added
 - Release protocol in CONTRIBUTING.md file (#353)
-- Code and test for checking for new parameters in csv and displaying a warning message if not defined (`A1.check_for_newly_added_parameters`)
+- Code and test for checking for new parameters in csv and rasing Error message if not defined (`A1.check_for_newly_added_parameters`). This means that there is no possibility to leave out the parameters anymore! (#384)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
-- LIST_OF_NEW_PARAMETERS can now be edited within `constants.py` (moved from A1). 
+- LIST_OF_NEW_PARAMETERS can now be edited within `constants.py` (moved from A1) (#384). 
+- Order of parameters in tests/inputs, fixed missing parameters  (#384)
 
 ### Removed
 

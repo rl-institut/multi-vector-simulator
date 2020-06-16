@@ -500,7 +500,7 @@ def check_for_newly_added_parameters(filename, df, parameters, list_of_new_param
                 raise MissingParameterError(
                     f"You are not using the parameter {new_parameter} for asset group {filename}, which "
                     + list_of_new_parameters[new_parameter][WARNING_TEXT]
-                    + " In the upcoming version of the MVS, this parameter will be required."
+                    + " From now on, this parameter is required."
                 )
     return parameters
 
