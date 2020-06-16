@@ -46,6 +46,9 @@ from src.constants import (
     TYPE_BOOL,
     TYPE_STR,
     TYPE_NONE,
+LIST_OF_NEW_PARAMETERS,
+WARNING_TEXT,
+REQUIRED_IN_CSV_ELEMENTS,
 )
 from src.constants_json_strings import (
     LABEL,
@@ -67,7 +70,7 @@ from src.constants_json_strings import (
     STORAGE_CAPACITY,
     MAXIMUM_CAP,
 RENEWABLE_ASSET_BOOL,
-RENEWABLE_SHARE_DSO
+RENEWABLE_SHARE_DSO,
 )
 from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
@@ -243,25 +246,7 @@ def create_json_from_csv(
             )
         )
 
-    # check wether parameter maximumCap is availavle
-    # TODO in next version: add maximumCap to hardcoded parameter list in constants.py
-    # TODO create this as a function, so that in future also new parameters can be added
-    LIST_OF_NEW_PARAMETERS = {
-        MAXIMUM_CAP: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
-        RENEWABLE_ASSET_BOOL: "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
-        RENEWABLE_SHARE_DSO: "allows defining the renewable share of the DSO supply (Values: Float). ",
-    }
-
-    for new_parameter in LIST_OF_NEW_PARAMETERS:
-        if new_parameter in df.index:
-            parameters.append(new_parameter)
-        else:
-            # todo this message should only be displayed in case that the parameter is actually supposed to be applied to each of the files. For maxCap, this is also not valid, eg. it should not be added to economic_data
-            logging.warning(
-                f"You are not using the parameter {new_parameter} for asset group {filename}, which "
-                + LIST_OF_NEW_PARAMETERS[new_parameter]
-                + "In the upcoming version of the MVS, this parameter will be required."
-            )
+    parameters = check_for_newly_added_parameters(filename, df, parameters, LIST_OF_NEW_PARAMETERS)
 
     # check parameters
     missing_parameters = []
@@ -487,6 +472,37 @@ def create_json_from_csv(
         return single_dict2
     return
 
+def check_for_newly_added_parameters(filename, df, parameters, list_of_new_parameters):
+    """
+    Checks if there are new parameters that should be in the csvs.
+    Adds them to the required list of parameters.
+
+    Parameters
+    ----------
+    df: DataFrame
+    Data frame read from one of the input files
+
+    parameters: List
+    List of parameters that should be in the Data frame.
+
+    Returns
+    -------
+    Adds new parameter to list of parsed parameters or returns a warning if a parameter is not defined in the csv.
+    """
+    for new_parameter in list_of_new_parameters:
+        # Check if the new parameter is needed in the specific csv file
+        if filename in list_of_new_parameters[new_parameter][REQUIRED_IN_CSV_ELEMENTS]:
+            # Check if the new parameter is included in the specific csv file
+            if new_parameter in df.index:
+                parameters.append(new_parameter)
+            else:
+                # Display warning message if there are parameter that are not present.
+                raise MissingParameterError(
+                    f"You are not using the parameter {new_parameter} for asset group {filename}, which "
+                    + list_of_new_parameters[new_parameter][WARNING_TEXT]
+                    + " In the upcoming version of the MVS, this parameter will be required."
+                )
+    return parameters
 
 def conversion(value, asset_dict, row, param, asset, filename=""):
     if isinstance(value, str) and ("{" in value or "}" in value):
