@@ -175,16 +175,26 @@ REQUIRED_CSV_PARAMETERS = {
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
 
-#Instroducting new parameters (later to be merged into list ll.77)
+# Instroducting new parameters (later to be merged into list ll.77)
 WARNING_TEXT = "warning_text"
 REQUIRED_IN_CSV_ELEMENTS = "required in files"
 LIST_OF_NEW_PARAMETERS = {
-    MAXIMUM_CAP: {WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
-                  REQUIRED_IN_CSV_ELEMENTS: [ENERGY_CONVERSION, ENERGY_STORAGE, ENERGY_PRODUCTION]},
-    RENEWABLE_ASSET_BOOL: {WARNING_TEXT: "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
-                           REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PRODUCTION]},
-    RENEWABLE_SHARE_DSO: {WARNING_TEXT: "allows defining the renewable share of the DSO supply (Values: Float). ",
-                          REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS]},
+    MAXIMUM_CAP: {
+        WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [
+            ENERGY_CONVERSION,
+            ENERGY_STORAGE,
+            ENERGY_PRODUCTION,
+        ],
+    },
+    RENEWABLE_ASSET_BOOL: {
+        WARNING_TEXT: "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PRODUCTION],
+    },
+    RENEWABLE_SHARE_DSO: {
+        WARNING_TEXT: "allows defining the renewable share of the DSO supply (Values: Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
+    },
 }
 
 # possible type of variable stored into the json file

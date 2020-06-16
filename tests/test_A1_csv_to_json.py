@@ -69,27 +69,38 @@ CONVERSION_TYPE = {
 
 filename_a = "a_file"
 filename_b = "b_file"
-df_no_new_parameter = pd.DataFrame(["a", "b"], index = ["unit", "value"])
+df_no_new_parameter = pd.DataFrame(["a", "b"], index=["unit", "value"])
 
 parameters = ["unit", "value"]
 
-list_of_new_parameter = {"max": {
-    WARNING_TEXT: "a test warning",
-    REQUIRED_IN_CSV_ELEMENTS: [filename_a]}}
+list_of_new_parameter = {
+    "max": {WARNING_TEXT: "a test warning", REQUIRED_IN_CSV_ELEMENTS: [filename_a]}
+}
+
 
 def test_if_check_for_newly_added_parameter_adds_no_parameter_when_not_necessary():
-    parameters_updated = A1.check_for_newly_added_parameters(filename_b, df_no_new_parameter, parameters, list_of_new_parameter)
+    parameters_updated = A1.check_for_newly_added_parameters(
+        filename_b, df_no_new_parameter, parameters, list_of_new_parameter
+    )
     assert parameters == parameters_updated
+
 
 def test_if_check_for_newly_added_parameter_raises_warning_if_parameter_doesnt_exist():
     with pytest.raises(A1.MissingParameterError):
-        parameters_updated = A1.check_for_newly_added_parameters(filename_a, df_no_new_parameter, parameters, list_of_new_parameter)
+        parameters_updated = A1.check_for_newly_added_parameters(
+            filename_a, df_no_new_parameter, parameters, list_of_new_parameter
+        )
 
-df_with_new_parameter = pd.DataFrame(["a", "b", 20], index = ["unit", "value", "max"])
+
+df_with_new_parameter = pd.DataFrame(["a", "b", 20], index=["unit", "value", "max"])
+
 
 def test_if_check_for_newly_added_parameter_adds_to_parameter_list_when_new_parameter_exists():
-    parameters_updated = A1.check_for_newly_added_parameters(filename_a, df_with_new_parameter, parameters, list_of_new_parameter)
+    parameters_updated = A1.check_for_newly_added_parameters(
+        filename_a, df_with_new_parameter, parameters, list_of_new_parameter
+    )
     assert ["unit", "value", "max"] == parameters_updated
+
 
 def test_create_input_json_creation_of_json_file():
     A1.create_input_json(input_directory=CSV_PATH)

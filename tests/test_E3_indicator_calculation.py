@@ -19,7 +19,7 @@ from src.constants_json_strings import (
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
     TOTAL_FLOW,
-RENEWABLE_SHARE_DSO
+    RENEWABLE_SHARE_DSO,
 )
 
 numbers = [10, 15, 20, 25]
@@ -265,6 +265,7 @@ class TestTechnicalParameters:
         tot_non_res = 0
         renewable_share = E3.equation_renewable_share(tot_res, tot_non_res)
         assert renewable_share == 0
+
     '''
     def test_degree_of_autonomy_below_1(self):
         """ """

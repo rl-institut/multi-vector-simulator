@@ -46,9 +46,9 @@ from src.constants import (
     TYPE_BOOL,
     TYPE_STR,
     TYPE_NONE,
-LIST_OF_NEW_PARAMETERS,
-WARNING_TEXT,
-REQUIRED_IN_CSV_ELEMENTS,
+    LIST_OF_NEW_PARAMETERS,
+    WARNING_TEXT,
+    REQUIRED_IN_CSV_ELEMENTS,
 )
 from src.constants_json_strings import (
     LABEL,
@@ -69,8 +69,8 @@ from src.constants_json_strings import (
     SOC_MIN,
     STORAGE_CAPACITY,
     MAXIMUM_CAP,
-RENEWABLE_ASSET_BOOL,
-RENEWABLE_SHARE_DSO,
+    RENEWABLE_ASSET_BOOL,
+    RENEWABLE_SHARE_DSO,
 )
 from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
@@ -246,7 +246,9 @@ def create_json_from_csv(
             )
         )
 
-    parameters = check_for_newly_added_parameters(filename, df, parameters, LIST_OF_NEW_PARAMETERS)
+    parameters = check_for_newly_added_parameters(
+        filename, df, parameters, LIST_OF_NEW_PARAMETERS
+    )
 
     # check parameters
     missing_parameters = []
@@ -472,6 +474,7 @@ def create_json_from_csv(
         return single_dict2
     return
 
+
 def check_for_newly_added_parameters(filename, df, parameters, list_of_new_parameters):
     """
     Checks if there are new parameters that should be in the csvs.
@@ -503,6 +506,7 @@ def check_for_newly_added_parameters(filename, df, parameters, list_of_new_param
                     + " From now on, this parameter is required."
                 )
     return parameters
+
 
 def conversion(value, asset_dict, row, param, asset, filename=""):
     if isinstance(value, str) and ("{" in value or "}" in value):
