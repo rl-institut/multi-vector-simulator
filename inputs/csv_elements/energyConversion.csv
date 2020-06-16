@@ -14,3 +14,4 @@ outflow_direction,str,ESS Li-Ion,Electricity,Electricity,Electricity,Electricity
 energyVector,str,Electricity,Electricity,Electricity,Electricity,Electricity
 type_oemof,str,transformer,transformer,transformer,transformer,transformer
 unit,str,kW,kW,kW,kVA,kVA
+maximumCap,None or float,None,None,None,None,None
