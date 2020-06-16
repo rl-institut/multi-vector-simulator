@@ -138,6 +138,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
         "Total non-renewable energy use",
     ]:
         weighting_for_sector_coupled_kpi(dict_values, sector_specific_kpi)
+
     return
 
 
@@ -176,9 +177,7 @@ def renewable_share(dict_values):
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {kpi_name: equation_renewable_share(total_res, total_non_res)}
     )
-    print(total_res,total_non_res)
     return
-
 
 def equation_renewable_share(total_res, total_non_res):
     """Calculates the renewable share
@@ -207,12 +206,16 @@ def equation_renewable_share(total_res, total_non_res):
 
         renewable share = 1 - all energy in the energy system is of renewable origin
         renewable share < 1 - part of the energy in the system is of renewable origin
-        renewable share = 0 - no energy is of renewable orgigin
-        
+        renewable share = 0 - no energy is of renewable origin
+
         As for now this is relative to generation, but not consumption of energy, the renewable share can not be larger 1. If in future however the renewable share is calculated relative to the energy consumption, a renewable share larger 1 is possible in case of overly high renewable gerneation within the system that is later fed into the DSO grid.
+        If there is no generation or consumption from a DSO withing an energyVector and supply is solely reached by energy conversion from another vector, the renewable share is defined to be zero.
 
     """
-    renewable_share = total_res / (total_non_res + total_res)
+    if total_res + total_non_res > 0:
+        renewable_share = total_res / (total_non_res + total_res)
+    else:
+        renewable_share = 0
     return renewable_share
 
 

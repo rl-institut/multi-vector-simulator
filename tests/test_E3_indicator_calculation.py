@@ -259,6 +259,12 @@ class TestTechnicalParameters:
         renewable_share = E3.equation_renewable_share(tot_res, tot_non_res)
         assert renewable_share == tot_res / (tot_res + tot_non_res)
 
+    def test_renewable_share_equation_no_generation(self):
+        """ """
+        tot_res = 0
+        tot_non_res = 0
+        renewable_share = E3.equation_renewable_share(tot_res, tot_non_res)
+        assert renewable_share == 0
     '''
     def test_degree_of_autonomy_below_1(self):
         """ """
