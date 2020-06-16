@@ -175,6 +175,13 @@ REQUIRED_CSV_PARAMETERS = {
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
 
+#Instroducting new parameters (later to be merged into list ll.77)
+LIST_OF_NEW_PARAMETERS = {
+    MAXIMUM_CAP: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
+    RENEWABLE_ASSET_BOOL: "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
+    RENEWABLE_SHARE_DSO: "allows defining the renewable share of the DSO supply (Values: Float). ",
+}
+
 # possible type of variable stored into the json file
 TYPE_DATETIMEINDEX = "pandas_DatetimeIndex:"
 TYPE_SERIES = "pandas_Series:"

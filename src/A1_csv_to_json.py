@@ -66,7 +66,8 @@ from src.constants_json_strings import (
     SOC_MIN,
     STORAGE_CAPACITY,
     MAXIMUM_CAP,
-RENEWABLE_ASSET_BOOL
+RENEWABLE_ASSET_BOOL,
+RENEWABLE_SHARE_DSO
 )
 from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
@@ -245,20 +246,20 @@ def create_json_from_csv(
     # check wether parameter maximumCap is availavle
     # TODO in next version: add maximumCap to hardcoded parameter list in constants.py
     # TODO create this as a function, so that in future also new parameters can be added
-    list_of_new_parameters = {
+    LIST_OF_NEW_PARAMETERS = {
         MAXIMUM_CAP: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
         RENEWABLE_ASSET_BOOL: "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
-        "renewable_share": "allows defining the renewable share of the DSO supply (Values: Float). ",
+        RENEWABLE_SHARE_DSO: "allows defining the renewable share of the DSO supply (Values: Float). ",
     }
 
-    for new_parameter in list_of_new_parameters:
+    for new_parameter in LIST_OF_NEW_PARAMETERS:
         if new_parameter in df.index:
             parameters.append(new_parameter)
         else:
             # todo this message should only be displayed in case that the parameter is actually supposed to be applied to each of the files. For maxCap, this is also not valid, eg. it should not be added to economic_data
             logging.warning(
                 f"You are not using the parameter {new_parameter} for asset group {filename}, which "
-                + list_of_new_parameters[new_parameter]
+                + LIST_OF_NEW_PARAMETERS[new_parameter]
                 + "In the upcoming version of the MVS, this parameter will be required."
             )
 
