@@ -21,6 +21,7 @@ Here is a template for new release sections
 
 ### Added
 - Release protocol in CONTRIBUTING.md file (#353)
+- Custom heat demand profile generation (#371)
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
 ### Removed
