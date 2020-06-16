@@ -5,6 +5,5 @@ evaluated_period,days,2
 timestep,minutes,60
 output_lp_file,bool,False
 store_oemof_results,bool,True
-restore_from_oemof_file,bool,True
 display_nx_graph,bool,False
 store_nx_graph,bool,False
