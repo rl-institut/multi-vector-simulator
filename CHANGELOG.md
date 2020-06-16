@@ -29,7 +29,6 @@ Here is a template for new release sections
 - LIST_OF_NEW_PARAMETERS can now be edited within `constants.py` (moved from A1) (#384). 
 - Order of parameters in tests/inputs, fixed missing parameters  (#384)
 
-
 ### Removed
 
 ### Fixed
