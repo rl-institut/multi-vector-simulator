@@ -1,6 +1,16 @@
 """
 This module calculates time series for solar thermal collectors using the
-oemof-thermal package.
+oemof-thermal package. For information about the model please see the documentation:
+https://oemof-thermal.readthedocs.io/en/stable/solar_thermal_collector.html
+
+Assumptions in this module:
+- Collectors inlet temperature in (temp_collector_inlet) = 20°C
+- Temperature difference between collector inlet and mean temperature (delta_temp_n) = 10°C
+- azimuth 190°
+- Losses:  heat transfer 15 %, peripheral losses 15 % storage losses 5 % --> 35 %
+
+ERA5 weather data was downloaded for the corresponding weather data point
+(ambient temperature, global and diffuse horizontal irradiance) using `era5_weather_download.py`.
 
 """
 
