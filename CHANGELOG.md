@@ -25,6 +25,9 @@ Here is a template for new release sections
 - Add custom solar thermal collector generation profile (#370)
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
+- If a custom input path is provided, the output path is constructed with the last folder in the
+ input_path and `OUTPUT_SUFFIX` ()
+ 
 ### Removed
 
 ### Fixed
