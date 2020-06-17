@@ -37,6 +37,8 @@ from src.constants import (
     REPO_PATH,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
+    OUTPUT_FOLDER,
+    OUTPUT_SUFFIX,
     JSON_FNAME,
     CSV_FNAME,
     JSON_EXT,
@@ -283,6 +285,19 @@ def process_user_arguments(
     if path_output_folder is None:
         path_output_folder = args.get(
             PATH_OUTPUT_FOLDER, DEFAULT_MAIN_KWARGS[PATH_OUTPUT_FOLDER]
+        )
+
+    # if the path_input_folder is not the default one but the path_output folder is the default one
+    # this allow running simulation without having to either overwrite the output folder or
+    # providing an output_path_folder
+    if (
+        path_input_folder != DEFAULT_MAIN_KWARGS[PATH_INPUT_FOLDER]
+        and path_output_folder == DEFAULT_MAIN_KWARGS[PATH_OUTPUT_FOLDER]
+    ):
+        path_output_folder = os.path.join(
+            REPO_PATH,
+            OUTPUT_FOLDER,
+            os.path.basename(path_input_folder) + "_" + OUTPUT_SUFFIX,
         )
 
     if overwrite is None:
