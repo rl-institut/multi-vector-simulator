@@ -4,8 +4,9 @@ from src.constants_json_strings import *
 
 # path to the root of this repository (assumes this file is in src folder)
 REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# name of the input folder
+# names of the input/output folders
 INPUT_FOLDER = "inputs"
+OUTPUT_FOLDER = "outputs"
 # name of the json extension
 JSON_EXT = "json"
 # name of the csv extension
@@ -33,8 +34,8 @@ REQUIRED_CSV_FILES = (
 CSV_SEPARATORS = (",", ";", "&")
 # name of the folder containing timeseries described by .csv files
 TIME_SERIES = "time_series"
-# name of the folder containing the output of the simulation
-OUTPUT_FOLDER = "MVS_outputs"
+# suffix to be added to the name of folder containing the output of the simulation
+OUTPUT_SUFFIX = "MVS_results"
 # name of the folder containing the copied content of the input folder within the output folder
 INPUTS_COPY = INPUT_FOLDER
 # name of the automatically generated pdf report
@@ -44,7 +45,7 @@ REPORT_PATH = os.path.join(REPO_PATH, "report")
 
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
-DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)
+DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER, OUTPUT_SUFFIX)
 
 PATH_INPUT_FILE = "path_input_file"
 PATH_INPUT_FOLDER = "path_input_folder"

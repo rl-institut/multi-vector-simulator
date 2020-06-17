@@ -2,8 +2,10 @@ import os
 
 # import constants from src
 from src.constants import (
+    REPO_PATH,
     INPUT_FOLDER,
     OUTPUT_FOLDER,
+    OUTPUT_SUFFIX,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
     PATH_INPUT_FILE,
