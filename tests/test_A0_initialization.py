@@ -39,6 +39,11 @@ class TestProcessUserArguments:
     custom_input_path = os.path.join(
         TEST_REPO_PATH, "test_data", "A0_test_output_folder_name"
     )
+    custom_output_path = os.path.join(
+        REPO_PATH,
+        OUTPUT_FOLDER,
+        os.path.basename(custom_input_path) + "_" + OUTPUT_SUFFIX,
+    )
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
@@ -75,11 +80,7 @@ class TestProcessUserArguments:
     def test_input_folder_name_used_within_default_output_folder_name(self, m_args):
         user_inputs = initializing.process_user_arguments()
 
-        assert user_inputs[PATH_OUTPUT_FOLDER] == os.path.join(
-            REPO_PATH,
-            OUTPUT_FOLDER,
-            os.path.basename(self.custom_input_path) + "_" + OUTPUT_SUFFIX,
-        )
+        assert user_inputs[PATH_OUTPUT_FOLDER] == self.custom_output_path
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
@@ -207,10 +208,9 @@ class TestProcessUserArguments:
         assert "path_pdf_report" not in user_inputs.keys()
 
     def teardown_method(self):
-        if os.path.exists(self.test_out_path):
-            shutil.rmtree(self.test_out_path, ignore_errors=True)
-        if os.path.exists(self.fake_input_path):
-            shutil.rmtree(self.fake_input_path, ignore_errors=True)
+        for op in (self.test_out_path, self.fake_input_path, self.custom_output_path):
+            if os.path.exists(op):
+                shutil.rmtree(op, ignore_errors=True)
 
 
 def test_check_input_path_posix():
