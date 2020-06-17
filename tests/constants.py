@@ -40,7 +40,7 @@ TESTS_ON_MASTER = "master"
 TESTS_ON_DEV = "dev"
 
 EXECUTE_TESTS_ON = os.environ.get("EXECUTE_TESTS_ON", "skip")
-
+CI_TESTS = os.environ.get("CI_TESTS", False)
 TEST_REPO_PATH = os.path.dirname(__file__)
 
 DUMMY_CSV_PATH = os.path.join(TEST_REPO_PATH, "test_data")

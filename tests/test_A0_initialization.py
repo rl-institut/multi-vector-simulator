@@ -8,6 +8,7 @@ import src.A0_initialization as initializing
 from mvs_eland_tool import main
 from .constants import (
     EXECUTE_TESTS_ON,
+    CI_TESTS,
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
     REPO_PATH,
@@ -55,6 +56,11 @@ class TestProcessUserArguments:
         with pytest.raises(FileNotFoundError):
             initializing.process_user_arguments()
 
+    @pytest.mark.skipif(
+        CI_TESTS is False,
+        reason="Test deactivated, set env variable "
+        "CI_TESTS to True to run this test",
+    )
     @mock.patch(
         "argparse.ArgumentParser.parse_args", return_value=PARSER.parse_args([]),
     )
