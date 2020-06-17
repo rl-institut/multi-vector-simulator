@@ -10,6 +10,7 @@ from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
+    REPO_PATH,
     CSV_ELEMENTS,
     INPUTS_COPY,
     JSON_FNAME,
@@ -21,6 +22,9 @@ from .constants import (
     DEFAULT_OUTPUT_PATH,
     PDF_REPORT,
     PATH_INPUT_FILE,
+    PATH_OUTPUT_FOLDER,
+    OUTPUT_FOLDER,
+    OUTPUT_SUFFIX,
 )
 
 PARSER = initializing.create_parser()
@@ -28,9 +32,12 @@ PARSER = initializing.create_parser()
 
 class TestProcessUserArguments:
 
-    test_in_path = os.path.join("tests", "inputs")
-    test_out_path = os.path.join(".", "tests", "MVS_outputs")
-    fake_input_path = os.path.join("tests", "fake_inputs")
+    test_in_path = os.path.join(TEST_REPO_PATH, "inputs")
+    test_out_path = os.path.join(TEST_REPO_PATH, "MVS_outputs")
+    fake_input_path = os.path.join(TEST_REPO_PATH, "fake_inputs")
+    custom_input_path = os.path.join(
+        TEST_REPO_PATH, "test_data", "A0_test_output_folder_name"
+    )
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
@@ -47,6 +54,26 @@ class TestProcessUserArguments:
     def test_input_folder_not_existing_raise_filenotfound_error(self, m_args):
         with pytest.raises(FileNotFoundError):
             initializing.process_user_arguments()
+
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args", return_value=PARSER.parse_args([]),
+    )
+    def test_default_output_folder_name_when_no_input_folder_given(self, m_args):
+        user_inputs = initializing.process_user_arguments()
+        assert user_inputs[PATH_OUTPUT_FOLDER] == DEFAULT_OUTPUT_PATH
+
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(["-i", custom_input_path]),
+    )
+    def test_input_folder_name_used_within_default_output_folder_name(self, m_args):
+        user_inputs = initializing.process_user_arguments()
+
+        assert user_inputs[PATH_OUTPUT_FOLDER] == os.path.join(
+            REPO_PATH,
+            OUTPUT_FOLDER,
+            os.path.basename(self.custom_input_path) + "_" + OUTPUT_SUFFIX,
+        )
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
