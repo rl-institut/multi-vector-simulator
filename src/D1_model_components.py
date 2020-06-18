@@ -597,29 +597,15 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
     Indirectly updated `model` and dict of asset in `kwargs` with the source object.
 
     """
-    # check if the source has multiple output flows
-    if isinstance(dict_asset[OUTPUT_BUS_NAME], list):
-        outputs = {}
-        index = 0
-        for bus in dict_asset[OUTPUT_BUS_NAME]:
-            outputs[kwargs["busses"][bus]] = solph.Flow(
-                label=dict_asset[LABEL],
-                actual_value=dict_asset[TIMESERIES],
-                fixed=True,
-                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
-                variable_costs=dict_asset[DISPATCH_PRICE][0],
-            )
-            index += 1
-    else:
-        outputs = {
-            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
-                label=dict_asset[LABEL],
-                actual_value=dict_asset[TIMESERIES],
-                fixed=True,
-                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
-                variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
-            )
-        }
+    outputs = {
+        kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+            label=dict_asset[LABEL],
+            actual_value=dict_asset[TIMESERIES],
+            fixed=True,
+            nominal_value=dict_asset[INSTALLED_CAP][VALUE],
+            variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+        )
+    }
 
     source_non_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs)
 
