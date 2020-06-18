@@ -35,6 +35,7 @@ from src.constants_json_strings import (
     OUTPUT_BUS_NAME,
     SIMULATION_ANNUITY,
     MAXIMUM_CAP,
+    OEMOF_ASSET_TYPE
 )
 
 
@@ -280,7 +281,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
         logging.debug(
             "Defined asset %s as %s (fix capacity)",
             dict_asset[LABEL],
-            dict_asset["type_oemof"],
+            dict_asset[OEMOF_ASSET_TYPE],
         )
 
     elif dict_asset[OPTIMIZE_CAP][VALUE] is True:
@@ -288,7 +289,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
         logging.debug(
             "Defined asset %s as %s (to be optimized)",
             dict_asset[LABEL],
-            dict_asset["type_oemof"],
+            dict_asset[OEMOF_ASSET_TYPE],
         )
     else:
         raise ValueError(
