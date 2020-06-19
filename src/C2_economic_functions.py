@@ -26,7 +26,9 @@ def annuity_factor(project_life, discount_factor):
     :return: financial value "annuity factor". Dividing a present cost by tha annuity factor returns its annuity, multiplying an annuity with the annuity factor returns its present value
     """
     # discount_rate was replaced here by discount_factor
-    annuity_factor = 1 / discount_factor - 1 / (discount_factor * (1 + discount_factor) ** project_life)
+    annuity_factor = 1 / discount_factor - 1 / (
+        discount_factor * (1 + discount_factor) ** project_life
+    )
     return annuity_factor
 
 
@@ -39,7 +41,9 @@ def crf(project_life, discount_factor):
     :param discount_factor: weighted average cost of capital, which is the after-tax average cost of various capital sources
     :return: capital recovery factor, a ratio used to calculate the present value of an annuity
     """
-    crf = (discount_factor * (1 + discount_factor) ** project_life) / ((1 + discount_factor) ** project_life - 1)
+    crf = (discount_factor * (1 + discount_factor) ** project_life) / (
+        (1 + discount_factor) ** project_life - 1
+    )
     return crf
 
 

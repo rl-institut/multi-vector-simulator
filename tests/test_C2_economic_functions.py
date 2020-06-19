@@ -33,7 +33,9 @@ def test_annuity_factor():
     Tests whether the MVS is correctly calculating the annuity factor
     """
     AF = e_functions.annuity_factor(project_life, discount_factor)
-    assert AF == 1 / discount_factor - 1 / (discount_factor * (1 + discount_factor) ** project_life)
+    assert AF == 1 / discount_factor - 1 / (
+        discount_factor * (1 + discount_factor) ** project_life
+    )
 
 
 def test_crf():
@@ -42,7 +44,9 @@ def test_crf():
     Tests whether the MVS is correctly calculating the capital recovery factor
     """
     CRF = e_functions.crf(project_life, discount_factor)
-    assert CRF == (discount_factor * (1 + discount_factor) ** project_life) / ((1 + discount_factor) ** project_life - 1)
+    assert CRF == (discount_factor * (1 + discount_factor) ** project_life) / (
+        (1 + discount_factor) ** project_life - 1
+    )
 
 
 def test_capex_from_investment_lifetime_equals_project_life():
@@ -51,7 +55,11 @@ def test_capex_from_investment_lifetime_equals_project_life():
     Tests whether the MVS is correctly calculating the capital expenditure of the project if the lifetime is equal to project_life
     """
     CAPEX = e_functions.capex_from_investment(
-        investment_t0, lifetime["equal project life"], project_life, discount_factor, tax
+        investment_t0,
+        lifetime["equal project life"],
+        project_life,
+        discount_factor,
+        tax,
     )
     assert round(CAPEX, 7) == exp_capex_equal_project_life
 
@@ -62,7 +70,11 @@ def test_capex_from_investment_lifetime_smaller_than_project_life():
     Tests whether the MVS is correctly calculating the capital expenditure of the project if the lifetime is smaller than project_life
     """
     CAPEX = e_functions.capex_from_investment(
-        investment_t0, lifetime["smaller project life"], project_life, discount_factor, tax
+        investment_t0,
+        lifetime["smaller project life"],
+        project_life,
+        discount_factor,
+        tax,
     )
     assert CAPEX == approx(exp_capex_smaller_project_life, rel=1e-3)
 
@@ -73,7 +85,11 @@ def test_capex_from_investment_lifetime_bigger_than_project_life():
     Tests whether the MVS is correctly calculating the capital expenditure of the project if the lifetime is bigger than project_life
     """
     CAPEX = e_functions.capex_from_investment(
-        investment_t0, lifetime["bigger project life"], project_life, discount_factor, tax
+        investment_t0,
+        lifetime["bigger project life"],
+        project_life,
+        discount_factor,
+        tax,
     )
     assert CAPEX == approx(exp_capex_bigger_project_life, rel=1e-3)
 
