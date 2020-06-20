@@ -49,7 +49,7 @@ from src.constants import (
     LIST_OF_NEW_PARAMETERS,
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
-DEFAULT_VALUE,
+    DEFAULT_VALUE,
 )
 from src.constants_json_strings import (
     LABEL,
@@ -81,10 +81,12 @@ class MissingParameterError(ValueError):
 
     pass
 
+
 class MissingParameterWarning(UserWarning):
     """Exception raised for missing new parameters of a csv input file, which will be set to default."""
 
     pass
+
 
 class WrongParameterWarning(UserWarning):
     """Exception raised for errors in the parameters of a csv input file."""
@@ -505,18 +507,22 @@ def check_for_newly_added_parameters(filename, df, parameters, list_of_new_param
                 # Add default values for each of the columns in the df
                 default_values = {}
                 for column in df:
-                    default_values.update({column: list_of_new_parameters[new_parameter][DEFAULT_VALUE]})
-                default_values = pd.Series(data=default_values, name= new_parameter)
+                    default_values.update(
+                        {column: list_of_new_parameters[new_parameter][DEFAULT_VALUE]}
+                    )
+                default_values = pd.Series(data=default_values, name=new_parameter)
                 df.append(default_values, ignore_index=False)
 
                 # Display warning message if there are parameter that are not present.
                 warnings.warn(
                     MissingParameterWarning(
-                    f"You are not using the parameter {new_parameter} for asset group {filename}, which "
-                    + list_of_new_parameters[new_parameter][WARNING_TEXT] + ". "
-                    + f"This parameter is set to it's default value {list_of_new_parameters[new_parameter][DEFAULT_VALUE]}, which can influence the results."
-                    + "In the next release, this parameter will required."
-                ))
+                        f"You are not using the parameter {new_parameter} for asset group {filename}, which "
+                        + list_of_new_parameters[new_parameter][WARNING_TEXT]
+                        + ". "
+                        + f"This parameter is set to it's default value {list_of_new_parameters[new_parameter][DEFAULT_VALUE]}, which can influence the results."
+                        + "In the next release, this parameter will required."
+                    )
+                )
 
             if new_parameter not in parameters:
                 # Now that it is confirmed that the new parameter is in the df
