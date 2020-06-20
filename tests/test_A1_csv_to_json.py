@@ -9,6 +9,7 @@ import src.B0_data_input_json as data_input
 from src.constants import (
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
+DEFAULT_VALUE
 )
 
 from src.constants_json_strings import (
@@ -74,7 +75,7 @@ df_no_new_parameter = pd.DataFrame(["a", "b"], index=["unit", "value"])
 parameters = ["unit", "value"]
 
 list_of_new_parameter = {
-    "max": {WARNING_TEXT: "a test warning", REQUIRED_IN_CSV_ELEMENTS: [filename_a]}
+    "max": {WARNING_TEXT: "a test warning", REQUIRED_IN_CSV_ELEMENTS: [filename_a],DEFAULT_VALUE: False}
 }
 
 
@@ -86,14 +87,13 @@ def test_if_check_for_newly_added_parameter_adds_no_parameter_when_not_necessary
 
 
 def test_if_check_for_newly_added_parameter_raises_warning_if_parameter_doesnt_exist():
-    with pytest.raises(A1.MissingParameterError):
+    with pytest.warns(A1.MissingParameterWarning):
         parameters_updated = A1.check_for_newly_added_parameters(
             filename_a, df_no_new_parameter, parameters, list_of_new_parameter
         )
 
 
 df_with_new_parameter = pd.DataFrame(["a", "b", 20], index=["unit", "value", "max"])
-
 
 def test_if_check_for_newly_added_parameter_adds_to_parameter_list_when_new_parameter_exists():
     parameters_updated = A1.check_for_newly_added_parameters(

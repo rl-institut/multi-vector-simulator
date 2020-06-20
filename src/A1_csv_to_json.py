@@ -49,6 +49,7 @@ from src.constants import (
     LIST_OF_NEW_PARAMETERS,
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
+DEFAULT_VALUE,
 )
 from src.constants_json_strings import (
     LABEL,
@@ -80,6 +81,10 @@ class MissingParameterError(ValueError):
 
     pass
 
+class MissingParameterWarning(UserWarning):
+    """Exception raised for missing new parameters of a csv input file, which will be set to default."""
+
+    pass
 
 class WrongParameterWarning(UserWarning):
     """Exception raised for errors in the parameters of a csv input file."""
@@ -490,21 +495,34 @@ def check_for_newly_added_parameters(filename, df, parameters, list_of_new_param
 
     Returns
     -------
-    Adds new parameter to list of parsed parameters or returns a warning if a parameter is not defined in the csv.
+    Adds new parameter to list of parsed parameters or returns a warning if a new parameter is not defined in the csv. The parameter will be set to it's default value.
     """
     for new_parameter in list_of_new_parameters:
         # Check if the new parameter is needed in the specific csv file
         if filename in list_of_new_parameters[new_parameter][REQUIRED_IN_CSV_ELEMENTS]:
             # Check if the new parameter is included in the specific csv file
-            if new_parameter in df.index:
-                parameters.append(new_parameter)
-            else:
+            if new_parameter not in df.index:
+                # Add default values for each of the columns in the df
+                default_values = {}
+                for column in df:
+                    default_values.update({column: list_of_new_parameters[new_parameter][DEFAULT_VALUE]})
+                default_values = pd.Series(data=default_values, name= new_parameter)
+                df.append(default_values, ignore_index=False)
+
                 # Display warning message if there are parameter that are not present.
-                raise MissingParameterError(
+                warnings.warn(
+                    MissingParameterWarning(
                     f"You are not using the parameter {new_parameter} for asset group {filename}, which "
-                    + list_of_new_parameters[new_parameter][WARNING_TEXT]
-                    + " From now on, this parameter is required."
-                )
+                    + list_of_new_parameters[new_parameter][WARNING_TEXT] + ". "
+                    + f"This parameter is set to it's default value {list_of_new_parameters[new_parameter][DEFAULT_VALUE]}, which can influence the results."
+                    + "In the next release, this parameter will required."
+                ))
+
+            if new_parameter not in parameters:
+                # Now that it is confirmed that the new parameter is in the df
+                # (optional with default values being added) add the new parameter to parameter list
+                parameters.append(new_parameter)
+
     return parameters
 
 

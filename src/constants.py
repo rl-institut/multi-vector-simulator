@@ -178,8 +178,11 @@ REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
 # Instroducting new parameters (later to be merged into list ll.77)
 WARNING_TEXT = "warning_text"
 REQUIRED_IN_CSV_ELEMENTS = "required in files"
+DEFAULT_VALUE = "default"
+
 LIST_OF_NEW_PARAMETERS = {
     MAXIMUM_CAP: {
+        DEFAULT_VALUE: None,
         WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [
             ENERGY_CONVERSION,
@@ -188,10 +191,12 @@ LIST_OF_NEW_PARAMETERS = {
         ],
     },
     RENEWABLE_ASSET_BOOL: {
+        DEFAULT_VALUE: False,
         WARNING_TEXT: "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PRODUCTION],
     },
     RENEWABLE_SHARE_DSO: {
+        DEFAULT_VALUE: 0,
         WARNING_TEXT: "allows defining the renewable share of the DSO supply (Values: Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
     },
