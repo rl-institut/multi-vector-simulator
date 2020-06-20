@@ -24,14 +24,12 @@ Here is a template for new release sections
 - Custom heat demand profile generation (#371)
 - Add custom solar thermal collector generation profile (#370)
 - Input template folder for easy generation of new simulations (#374), later also for tests of the input folder
-
-- Code and test for checking for new parameters in csv and rasing Error message if not defined (`A1.check_for_newly_added_parameters`). This means that there is no possibility to leave out the parameters anymore! (#384)
+- Code and test for checking for new parameters in csv and raising warning message if not defined (`A1.check_for_newly_added_parameters`). This then also adds a default value to the new parameter  (#384)
 - Exception if an energyVector does not have internal generation or consumption from a DSO, and is only supplied by energy conversion from another sector: renewable share = 0. (#384)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
 - Sorted parameters in csv´s withing the input folder (#374)
-
 - LIST_OF_NEW_PARAMETERS can now be edited within `constants.py` (moved from A1) (#384). 
 - Order of parameters in tests/inputs, fixed missing parameters  (#384)
 
