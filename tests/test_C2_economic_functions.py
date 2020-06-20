@@ -22,7 +22,7 @@ exp_capex_bigger_project_life = 144571.428
 fuel_keys = {
     "fuel_price": 1.3,
     "fuel_price_change_annual": 0,
-    "project_lifetime": project_life,
+    PROJECT_DURATION: project_life,
     DISCOUNTFACTOR: discount_factor,
 }
 

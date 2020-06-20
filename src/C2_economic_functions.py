@@ -127,7 +127,7 @@ def fuel_price_present_value(economics,):
     if economics["fuel_price_change_annual"] == 0:
         economics.update({"price_fuel": fuel_price_i})
     else:
-        for i in range(0, economics["project_lifetime"]):
+        for i in range(0, economics[PROJECT_DURATION]):
             cash_flow_fuel_l += fuel_price_i / (1 + economics[DISCOUNTFACTOR]) ** (i)
             fuel_price_i = fuel_price_i * (1 + economics["fuel_price_change_annual"])
         economics.update({"price_fuel": cash_flow_fuel_l * economics[CRF]})
