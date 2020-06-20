@@ -21,6 +21,8 @@ Here is a template for new release sections
 
 ### Added
 - Release protocol in CONTRIBUTING.md file (#353)
+- Custom heat demand profile generation (#371)
+- Add custom solar thermal collector generation profile (#370)
 - Input template folder for easy generation of new simulations (#374), later also for tests of the input folder
 
 ### Changed
@@ -32,6 +34,7 @@ Here is a template for new release sections
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
 - Issue #357 Bug connected to global variables (#356)
+- Issue #168 Duplicate of timeseries files (#388)
 
 ## [0.3.0] - 2020-06-08
 
