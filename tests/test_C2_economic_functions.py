@@ -23,7 +23,7 @@ fuel_keys = {
     "fuel_price": 1.3,
     "fuel_price_change_annual": 0,
     "project_lifetime": project_life,
-    "discount_factor": discount_factor,
+    DISCOUNTFACTOR: discount_factor,
 }
 
 

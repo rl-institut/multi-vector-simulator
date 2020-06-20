@@ -1,7 +1,7 @@
 {
     "economic_data": {
         "currency": "NOK",
-        "discount_factor": {
+        DISCOUNTFACTOR: {
             "unit": "factor",
             "value": 0.06
         },
