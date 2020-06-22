@@ -7,15 +7,18 @@ What should differ between the different functions is the input file
 import argparse
 import os
 import shutil
+import json
 
 import mock
 import pandas as pd
 import pytest
 
 from mvs_eland_tool import main
+from src.B0_data_input_json import convert_special_types
 from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
+    TESTS_ON_DEV,
     TEST_REPO_PATH,
     CSV_EXT,
 )
@@ -82,6 +85,37 @@ class TestACElectricityBus:
         df_busses_flow = df_busses_flow.set_index("Unnamed: 0")
 
         # TODO make sure the battery is not used in an assert here
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER, TESTS_ON_DEV, "testing_ABE"),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_benchmark_ABE_grid_pv_bat(self, margs):
+        use_case = "AB"
+        main(
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=CSV_EXT,
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+        )
+        with open(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json")
+        ) as fp:
+            AB_dict_values = convert_special_types(json.load(fp))
+
+        use_case = "ABE"
+        main(
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=CSV_EXT,
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+        )
+        with open(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json")
+        ) as fp:
+            ABE_dict_values = convert_special_types(json.load(fp))
+
+        assert 1 == 0
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
