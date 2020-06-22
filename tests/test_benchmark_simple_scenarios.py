@@ -99,10 +99,18 @@ class TestACElectricityBus:
             input_type=CSV_EXT,
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
         )
-        with open(
-            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json")
-        ) as fp:
-            AB_dict_values = convert_special_types(json.load(fp))
+        #with open(
+            #os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json")
+        #) as fp:
+            #AB_dict_values = convert_special_types(json.load(fp))
+
+        AB_busses_flow = pd.read_excel(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
+            sheet_name="Electricity bus",
+        )
+        #AB_busses_flow = AB_busses_flow.set_index("Unnamed: 0")
+        # compute the sum of the excess electricity
+        AB_busses_flow["Electricity excess_sink"] = AB_busses_flow.sum()
 
         use_case = "ABE"
         main(
@@ -110,12 +118,21 @@ class TestACElectricityBus:
             input_type=CSV_EXT,
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
         )
-        with open(
-            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json")
-        ) as fp:
-            ABE_dict_values = convert_special_types(json.load(fp))
+        #with open(
+            #os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json")
+        #) as fp:
+            #ABE_dict_values = convert_special_types(json.load(fp))
 
-        assert 1 == 0
+        ABE_busses_flow = pd.read_excel(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
+            sheet_name="Electricity bus",
+        )
+        #ABE_busses_flow = ABE_busses_flow.set_index("Unnamed: 0")
+        # compute the sum of the excess electricity
+        ABE_busses_flow["Electricity excess_sink"] = ABE_busses_flow.sum()
+
+        assert AB_busses_flow["Electricity excess_sink"] > ABE_busses_flow["Electricity excess_sink"]
+
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
