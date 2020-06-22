@@ -28,9 +28,9 @@ PARSER = initializing.create_parser()
 
 class TestProcessUserArguments:
 
-    test_in_path = os.path.join("tests", "inputs")
-    test_out_path = os.path.join(".", "tests", "MVS_outputs")
-    fake_input_path = os.path.join("tests", "fake_inputs")
+    test_in_path = os.path.join(TEST_REPO_PATH, "inputs")
+    test_out_path = os.path.join(TEST_REPO_PATH, "MVS_outputs")
+    fake_input_path = os.path.join(TEST_REPO_PATH, "fake_inputs")
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
