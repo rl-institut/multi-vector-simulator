@@ -2,6 +2,7 @@ from pytest import approx
 
 import src.C2_economic_functions as e_functions
 
+
 project_life = 20
 discount_factor = 0.1
 investment_t0 = 220000
@@ -22,8 +23,6 @@ exp_capex_bigger_project_life = 144571.428
 fuel_keys = {
     "fuel_price": 1.3,
     "fuel_price_change_annual": 0,
-    PROJECT_DURATION: project_life,
-    DISCOUNTFACTOR: discount_factor,
 }
 
 
