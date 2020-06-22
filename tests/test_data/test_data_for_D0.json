@@ -9,7 +9,7 @@
             "value": 0.07264891149004721
         },
         "currency": "NOK",
-        DISCOUNTFACTOR: {
+        "discount_factor": {
             "unit": "factor",
             "value": 0.06
         },
