@@ -14,7 +14,7 @@ Functionalities:
 - calculate effective fuel price cost, in case there is a annual fuel price change (this functionality still has to be checked in this module)
 """
 
-from src.constants_json_strings import CRF
+from src.constants_json_strings import CRF, PROJECT_DURATION, DISCOUNTFACTOR
 
 # annuity factor to calculate present value of cash flows
 def annuity_factor(project_life, discount_factor):
