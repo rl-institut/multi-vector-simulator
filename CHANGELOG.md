@@ -29,6 +29,7 @@ Here is a template for new release sections
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
 - Sorted parameters in csv´s withing the input folder (#374)
 - Change relative folder path to absolute in tests files (#396)
+- Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
 
 ### Removed
 
@@ -125,6 +126,7 @@ tipps for module building, and hint that units in the MVS are not checked (#229)
 - Rename mvs_eland_tool/mvs_eland_tool.py --> mvs_eland_tool/local_deploy.py (#327)
 - Now main (local use) and run_simulation (server use) are available in mvs_eland_tool package
   (#327)
+
  
 ### Removed
 - Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´, as well as from all input
