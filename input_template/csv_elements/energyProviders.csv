@@ -1,0 +1,12 @@
+,unit
+label,str
+optimizeCap,bool
+energy_price,currency/kWh
+feedin_tariff,currency/kWh
+peak_demand_pricing,currency/kW
+peak_demand_pricing_period,"times per year (1,2,3,4,6,12)"
+renewable_share,factor
+inflow_direction,str
+outflow_direction,str
+energyVector,str
+type_oemof,str

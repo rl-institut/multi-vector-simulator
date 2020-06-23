@@ -21,13 +21,23 @@ Here is a template for new release sections
 
 ### Added
 - Release protocol in CONTRIBUTING.md file (#353)
+- Custom heat demand profile generation (#371)
+- Add custom solar thermal collector generation profile (#370)
+- Input template folder for easy generation of new simulations (#374), later also for tests of the input folder
 - Tests for ABE usecase (grid, PV, battery)
+
 ### Changed
+- Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
+- Sorted parameters in csv´s withing the input folder (#374)
+- Change relative folder path to absolute in tests files (#396)
+- Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
 
 ### Removed
 
-### Fix
+### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
+- Issue #357 Bug connected to global variables (#356)
+- Issue #168 Duplicate of timeseries files (#388)
 
 ## [0.3.0] - 2020-06-08
 
@@ -117,6 +127,7 @@ tipps for module building, and hint that units in the MVS are not checked (#229)
 - Rename mvs_eland_tool/mvs_eland_tool.py --> mvs_eland_tool/local_deploy.py (#327)
 - Now main (local use) and run_simulation (server use) are available in mvs_eland_tool package
   (#327)
+
  
 ### Removed
 - Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´, as well as from all input
