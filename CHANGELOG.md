@@ -21,6 +21,7 @@ Here is a template for new release sections
 
 ### Added
 - Release protocol in CONTRIBUTING.md file (#353)
+- Tests for ABE usecase (grid, PV, battery)
 ### Changed
 
 ### Removed
