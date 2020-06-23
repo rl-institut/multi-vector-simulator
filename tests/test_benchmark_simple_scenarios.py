@@ -93,7 +93,9 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_ABE_grid_pv_bat(self, margs):
+        # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
         use_case = ["AB", "ABE"]
+        # define an empty dictionary for excess electricity
         excess = {}
         for case in use_case:
             main(
@@ -105,9 +107,10 @@ class TestACElectricityBus:
                 os.path.join(TEST_OUTPUT_PATH, case, "timeseries_all_busses.xlsx"),
                 sheet_name="Electricity bus",
             )
+            # compute the sum of the excess electricity for all timesteps
             busses_flow["Electricity excess_sink"] = busses_flow.sum()
             excess[case] = busses_flow["Electricity excess_sink"]
-
+        # compare the total excess electricity between the two cases
         assert excess["AB"] > excess["ABE"]
 
     def teardown_method(self):
