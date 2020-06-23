@@ -94,7 +94,7 @@ class TestACElectricityBus:
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_ABE_grid_pv_bat(self, margs):
         # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
-        use_case = ["AB", "ABE"]
+        use_case = ["AB", "ABE_grid_PV_battery"]
         # define an empty dictionary for excess electricity
         excess = {}
         for case in use_case:
