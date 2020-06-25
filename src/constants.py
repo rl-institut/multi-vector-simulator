@@ -16,19 +16,6 @@ CSV_ELEMENTS = "csv_elements"
 JSON_FNAME = "mvs_config.json"
 # name of the json file which is should be created in the input folder if option -i csv was chosen
 CSV_FNAME = "mvs_csv_config.json"
-# list of csv filename which must be present within the CSV_ELEMENTS folder
-REQUIRED_CSV_FILES = (
-    FIX_COST,
-    SIMULATION_SETTINGS,
-    PROJECT_DATA,
-    ECONOMIC_DATA,
-    ENERGY_CONVERSION,
-    ENERGY_PRODUCTION,
-    ENERGY_STORAGE,
-    ENERGY_PROVIDERS,
-    ENERGY_CONSUMPTION,
-)
-
 # allowed symbols for separating values in .csv files
 CSV_SEPARATORS = (",", ";", "&")
 # name of the folder containing timeseries described by .csv files
