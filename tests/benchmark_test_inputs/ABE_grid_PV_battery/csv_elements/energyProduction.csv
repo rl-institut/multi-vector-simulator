@@ -10,7 +10,7 @@ lifetime,year,30
 specific_costs_om,currency/unit/year,0
 dispatch_price,currency/kWh,0
 optimizeCap,bool,False
-outflow_direction,str,Electricity
+outflow_direction,str,battery
 type_oemof,str,source
 unit,str,kWp
 energyVector,str,Electricity
