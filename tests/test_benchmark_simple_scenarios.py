@@ -108,8 +108,7 @@ class TestACElectricityBus:
                 sheet_name="Electricity bus",
             )
             # compute the sum of the excess electricity for all timesteps
-            busses_flow["Electricity excess_sink"] = busses_flow.sum()
-            excess[case] = busses_flow["Electricity excess_sink"]
+            excess[case] = sum(busses_flow["Electricity excess_sink"])
         # compare the total excess electricity between the two cases
         assert excess["AB"] > excess["ABE_grid_PV_battery"]
 
