@@ -110,7 +110,7 @@ class TestACElectricityBus:
             # compute the sum of the excess electricity for all timesteps
             excess[case] = sum(busses_flow["Electricity excess_sink"])
         # compare the total excess electricity between the two cases
-        assert excess["AB"] > excess["ABE_grid_PV_battery"]
+        assert excess["AB"] < excess["ABE_grid_PV_battery"]
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
