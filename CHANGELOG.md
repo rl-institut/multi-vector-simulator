@@ -24,6 +24,7 @@ Here is a template for new release sections
 - Custom heat demand profile generation (#371)
 - Add custom solar thermal collector generation profile (#370)
 - Input template folder for easy generation of new simulations (#374), later also for tests of the input folder
+- Tests for ABE usecase (grid, PV, battery)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
