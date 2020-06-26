@@ -51,7 +51,7 @@ def find_input_folders(
 
 
 def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
-    f"""Compare provided MVS input parameters with the required parameters
+    """Compare provided MVS input parameters with the required parameters
 
     Parameters
     ----------
@@ -62,7 +62,8 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
 
     Returns
     -------
-    A dict with the missing parameters and extra parameters
+    A dict with the missing parameters under the key {MISSING_PARAMETERS_KEY} and extra parameters
+    under the key {EXTRA_PARAMETERS_KEY}
     """
     if ext == JSON_EXT:
         # load the mvs input json file into a dict
@@ -72,7 +73,6 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
     elif ext == CSV_EXT:
         # list the mvs input csv files
         folder_csv_path = os.path.join(folder_path, CSV_ELEMENTS)
-        print(folder_csv_path)
         main_parameters = [
             fn[:-4] for fn in os.listdir(folder_csv_path) if fn.endswith(".csv")
         ]
