@@ -1,5 +1,6 @@
 import os
 import json
+import pandas as pd
 from src.constants import (
     CSV_ELEMENTS,
     OUTPUT_FOLDER,
@@ -7,6 +8,8 @@ from src.constants import (
     CSV_EXT,
     REQUIRED_MVS_PARAMETERS,
     JSON_FNAME,
+    MISSING_PARAMETERS_KEY,
+    EXTRA_PARAMETERS_KEY,
 )
 
 
@@ -117,7 +120,10 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
             # the main parameter is not provided but is required --> missing
             missing_parameters[mp] = required_parameters[mp]
 
-    return {
-        "missing_parameters": missing_parameters,
-        "extra_parameters": extra_parameters,
-    }
+    answer = {}
+    if len(missing_parameters) > 0:
+        answer[MISSING_PARAMETERS_KEY] = missing_parameters
+    if len(extra_parameters) > 0:
+        answer[EXTRA_PARAMETERS_KEY] = extra_parameters
+
+    return answer

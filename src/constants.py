@@ -169,6 +169,9 @@ REQUIRED_MVS_PARAMETERS = {
     CSV_EXT: REQUIRED_CSV_PARAMETERS,
 }
 
+MISSING_PARAMETERS_KEY = "missing_parameters"
+EXTRA_PARAMETERS_KEY = "extra_parameters"
+
 # possible type of variable stored into the json file
 TYPE_DATETIMEINDEX = "pandas_DatetimeIndex:"
 TYPE_SERIES = "pandas_Series:"
