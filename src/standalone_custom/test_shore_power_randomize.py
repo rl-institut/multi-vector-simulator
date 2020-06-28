@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from src.standalone_custom.shore_power_randomize import randomize_shore_power
+from .shore_power_randomize import randomize_shore_power
 
 
 def test_randomize_shore_power():
