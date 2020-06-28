@@ -46,7 +46,7 @@ from src.constants import (
     TYPE_BOOL,
     TYPE_STR,
     TYPE_NONE,
-    LIST_OF_NEW_PARAMETERS,
+    EXTRA_CSV_PARAMETERS,
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
     DEFAULT_VALUE,
@@ -482,7 +482,9 @@ def create_json_from_csv(
     return
 
 
-def check_for_newly_added_parameters(filename, df, parameters, list_of_new_parameters):
+def check_for_newly_added_parameters(
+    filename, df, required_parameters, official_extra_parameters=EXTRA_CSV_PARAMETERS
+):
     """
     Checks if there are new parameters that should be in the csvs.
     Adds them to the required list of parameters.

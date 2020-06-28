@@ -177,7 +177,7 @@ WARNING_TEXT = "warning_text"
 REQUIRED_IN_CSV_ELEMENTS = "required in files"
 DEFAULT_VALUE = "default"
 
-LIST_OF_NEW_PARAMETERS = {
+EXTRA_CSV_PARAMETERS = {
     MAXIMUM_CAP: {
         DEFAULT_VALUE: None,
         WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
