@@ -47,12 +47,13 @@ For that, each of the following files have to be present in the folder "csv_elem
 - `project_data.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/project_data.csv>`_ - some generic project information
 
 
-For easy set-up of your energy system, we have provided an empty input folder template as well `here <https://github.com/rl-institut/mvs_eland/blob/dev/input_template`_
+For easy set-up of your energy system, we have provided an empty input folder template as well
+`here <https://github.com/rl-institut/mvs_eland/blob/dev/input_template>`_
 When defining your energy system with this CSV files,
 please also refer to the definition of parameters that you can find here: `stable <https://mvs-eland.readthedocs.io/en/stable/MVS_parameters.html>`_ / `latest <https://mvs-eland.readthedocs.io/en/latest/MVS_parameters.html>`_.
 
 Please note that the allowed separators for csv files are located in `src/constants.py` under the
-`CSV_SEPARATORS` variable. Currently only `[',', ';', '&']` are allowed.
+`CSV_SEPARATORS` variable. Currently only `[",", ";", "&"]` are allowed.
 
 Json file: mvs_config.json
 ##########################
