@@ -24,7 +24,13 @@ Here is a template for new release sections
 - Custom heat demand profile generation (#371)
 - Add custom solar thermal collector generation profile (#370)
 - Input template folder for easy generation of new simulations (#374), later also for tests of the input folder
-- Tests for ABE usecase (grid, PV, battery)
+- Tests for ABE usecase (grid, PV, battery) (#385)
+- Test to verify that input folders have all required parameters (#398)
+- New `dict` `REQUIRED_MVS_PARAMETERS` to gather the required parameters from the csv or json
+ input type (#398)
+ - `utils.py` module in `src` to gather the functions `find_input_folders
+ ` and `compare_input_parameters_with_reference` which can be used to find and validate input
+  folders (#398)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
