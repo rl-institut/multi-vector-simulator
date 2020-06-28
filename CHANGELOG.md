@@ -38,7 +38,7 @@ Here is a template for new release sections
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
-- Sorted parameters in csv´s withing the input folder (#374)
+- Sort parameters in csv´s withing the input folder (#374)
 - Change relative folder path to absolute in tests files (#396)
 - Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
 - Improve styling of the pfd report (#369)
@@ -49,9 +49,12 @@ Here is a template for new release sections
 - Move `existing` parameter into Investment objects of D1 components (was before added to output flow) (#391)
 - Use pyppeteers instead of selenium to emulate the webbrowser and print the pdf report
  automatically (#407)
+- Add `ìnputs` folder to `.gitignore` (#401)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
+- `inputs` folder (#401)
+- `tests/test_benchmark.py` module (#401)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
