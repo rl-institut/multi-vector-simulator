@@ -25,7 +25,7 @@ economic_data.csv
 
 **currency**: The currency of the country where the project is implemented. For example, in the case of Germany, the value is EUR. For Norway, it is NOK. 
 
-**discount_factor**: Discount factor is the factor which accounts for the depreciation in the value of money in the future, compared to the current value of the same money. 
+**discount_factor**: Discount factor is the factor which accounts for the depreciation in the value of money in the future, compared to the current value of the same money. The common method is to calculate the weighted average cost of capital (WACC) and use it as the discount rate.
 
 **Project_duration**: The name of years the project is intended to be operational. 
 

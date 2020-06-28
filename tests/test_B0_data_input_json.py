@@ -17,6 +17,7 @@ from .constants import (
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     PATH_OUTPUT_FOLDER_INPUTS,
+    TEST_REPO_PATH,
 )
 
 
@@ -38,8 +39,8 @@ PARSER = initializing.create_parser()
 
 class TestTemporaryJsonFileDisposal:
 
-    test_in_path = os.path.join("tests", "inputs")
-    test_out_path = os.path.join(".", "tests", "MVS_outputs")
+    test_in_path = os.path.join(TEST_REPO_PATH, "inputs")
+    test_out_path = os.path.join(TEST_REPO_PATH, "MVS_outputs")
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",

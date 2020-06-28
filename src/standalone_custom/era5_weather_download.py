@@ -1,6 +1,6 @@
 """
-This module provides a function for downloading ERA5 weather data for a single
-weather data point (coordinate) and converting it into the format needed by pvlib.
+This module provides a download of ERA5 weather data for a single
+weather data point (coordinate) and the conversion into the format needed by pvlib.
 For downloading a region see
 http://localhost:8888/notebooks/load_era5_weather_data.ipynb for information.
 For downloading ERA5 weather data you need an account at CDS, see above mentioned link or
