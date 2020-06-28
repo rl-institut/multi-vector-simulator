@@ -39,7 +39,7 @@ Here is a template for new release sections
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
-- Sorted parameters in csv´s withing the input folder (#374)
+- Sort parameters in csv´s withing the input folder (#374)
 - Change relative folder path to absolute in tests files (#396)
 - Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
 - Improve styling of the pfd report (#369)
@@ -53,10 +53,13 @@ Here is a template for new release sections
 - Update flowchart again (#409)
 - Label of storage components (storage capacity, input power, output power) will by default be redefined to the name of the storage and this component (#415)
 - Version number and date is only to be edited in one file (#419)
+- Add `ìnputs` folder to `.gitignore` (#401)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
 - `MaximumCap` from list of required parameters for `energyStorage` assets (#415)
+- `inputs` folder (#401)
+- `tests/test_benchmark.py` module (#401)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
