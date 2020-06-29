@@ -636,6 +636,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                 / dict_asset[TIMESERIES_PEAK][VALUE],
                 maximum=dict_asset[MAXIMUM_CAP][VALUE],
             ),
+            # variable_costs are devided by time series peak as normalized time series are used as actual_value
             variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
             / dict_asset[TIMESERIES_PEAK][VALUE],
         )
@@ -658,6 +659,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                     / dict_asset[TIMESERIES_PEAK][VALUE],
                     maximum=dict_asset[MAXIMUM_CAP][VALUE],
                 ),
+                # variable_costs are devided by time series peak as normalized time series are used as actual_value
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
             )
