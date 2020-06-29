@@ -115,3 +115,7 @@ mvs_csv_config.json
 
 # ERA5 nc file
 *.nc
+
+# Local input folders, eg. for pilots
+/example_1/
+/UVTgv_input_files/

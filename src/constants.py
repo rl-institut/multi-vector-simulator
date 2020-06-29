@@ -16,19 +16,6 @@ CSV_ELEMENTS = "csv_elements"
 JSON_FNAME = "mvs_config.json"
 # name of the json file which is should be created in the input folder if option -i csv was chosen
 CSV_FNAME = "mvs_csv_config.json"
-# list of csv filename which must be present within the CSV_ELEMENTS folder
-REQUIRED_CSV_FILES = (
-    FIX_COST,
-    SIMULATION_SETTINGS,
-    PROJECT_DATA,
-    ECONOMIC_DATA,
-    ENERGY_CONVERSION,
-    ENERGY_PRODUCTION,
-    ENERGY_STORAGE,
-    ENERGY_PROVIDERS,
-    ENERGY_CONSUMPTION,
-)
-
 # allowed symbols for separating values in .csv files
 CSV_SEPARATORS = (",", ";", "&")
 # name of the folder containing timeseries described by .csv files
@@ -174,6 +161,16 @@ REQUIRED_CSV_PARAMETERS = {
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
+# todo needs to be filled
+REQUIRED_JSON_PARAMETERS = {}
+# references for which parameters must be present either in the json or csv input method
+REQUIRED_MVS_PARAMETERS = {
+    JSON_EXT: REQUIRED_JSON_PARAMETERS,
+    CSV_EXT: REQUIRED_CSV_PARAMETERS,
+}
+
+MISSING_PARAMETERS_KEY = "missing_parameters"
+EXTRA_PARAMETERS_KEY = "extra_parameters"
 
 # possible type of variable stored into the json file
 TYPE_DATETIMEINDEX = "pandas_DatetimeIndex:"
