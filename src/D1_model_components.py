@@ -678,6 +678,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                 investment=solph.Investment(
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                     existing = dict_asset[INSTALLED_CAP][VALUE],
+                    maximum=dict_asset[MAXIMUM_CAP][VALUE],
                 ),
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
