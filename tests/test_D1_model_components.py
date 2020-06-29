@@ -104,14 +104,14 @@ class TestTransformerComponent:
             assert isinstance(
                 output_bus.investment, solph.options.Investment
             )  # todo maybe ep costs
-            assert output_bus.existing == dict_asset[INSTALLED_CAP][VALUE]
+            assert output_bus.investment.existing == dict_asset[INSTALLED_CAP][VALUE]
             assert output_bus.nominal_value is None
         elif optimize is False:
             output_bus = self.model.entities[-1].outputs.data[
                 self.busses[dict_asset[OUTPUT_BUS_NAME]]
             ]
             assert output_bus.investment is None
-            assert hasattr(output_bus, "existing") is False
+            assert hasattr(output_bus.investment, "existing") is False
             assert output_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
         else:
             raise ValueError(f"`optimize` should be True/False but is '{optimize}'")
@@ -412,14 +412,14 @@ class TestStorageComponent:
         input_bus = self.model.entities[-1].inputs[self.busses["Storage bus"]]
         output_bus = self.model.entities[-1].outputs[self.busses["Storage bus"]]
 
-        assert input_bus.existing == dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE]
+        assert input_bus.investment.existing == dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE]
         assert (
             input_bus.investment.ep_costs
             == dict_asset[INPUT_POWER][SIMULATION_ANNUITY][VALUE]
         )
         assert input_bus.nominal_value is None
 
-        assert output_bus.existing == dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE]
+        assert output_bus.investment.existing == dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE]
         assert (
             output_bus.investment.ep_costs
             == dict_asset[OUTPUT_POWER][SIMULATION_ANNUITY][VALUE]
