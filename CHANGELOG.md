@@ -31,6 +31,7 @@ Here is a template for new release sections
  - `utils.py` module in `src` to gather the functions `find_input_folders
  ` and `compare_input_parameters_with_reference` which can be used to find and validate input
   folders (#398)
+ - Tests for source components in D1 (#391)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
