@@ -414,8 +414,8 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                         maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                        existing=dict_asset[INSTALLED_CAP][VALUE],
                     ),
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                 )
             }
@@ -435,8 +435,9 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                         maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                        existing=dict_asset[INSTALLED_CAP][VALUE],
                     ),
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
+
                     variable_costs=variable_costs,
                 )
                 index += 1
@@ -453,8 +454,8 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 investment=solph.Investment(
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                     maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
                 ),
-                existing=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
         }
@@ -535,29 +536,29 @@ def storage_optimize(model, dict_asset, **kwargs):
     """
     storage = solph.components.GenericStorage(
         label=dict_asset[LABEL],
-        existing=dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][
-            VALUE
-        ],  # todo I think this parameter is not used in the GenericStorage
         investment=solph.Investment(
             ep_costs=dict_asset[STORAGE_CAPACITY][SIMULATION_ANNUITY][VALUE],
             maximum=dict_asset[STORAGE_CAPACITY][MAXIMUM_CAP][VALUE],
+            existing=dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][
+                VALUE
+            ],
         ),
         inputs={
             kwargs["busses"][dict_asset[INPUT_BUS_NAME]]: solph.Flow(
-                existing=dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE],
                 investment=solph.Investment(
                     ep_costs=dict_asset[INPUT_POWER][SIMULATION_ANNUITY][VALUE],
                     maximum=dict_asset[INPUT_POWER][MAXIMUM_CAP][VALUE],
+                    existing=dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE],  # todo: `existing needed here?`
                 ),
                 variable_costs=dict_asset[INPUT_POWER][DISPATCH_PRICE][VALUE],
             )
         },  # maximum charge power
         outputs={
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
-                existing=dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE],
                 investment=solph.Investment(
                     ep_costs=dict_asset[OUTPUT_POWER][SIMULATION_ANNUITY][VALUE],
                     maximum=dict_asset[OUTPUT_POWER][MAXIMUM_CAP][VALUE],
+                    existing=dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE],  # todo: `existing needed here?`
                 ),
                 variable_costs=dict_asset[OUTPUT_POWER][DISPATCH_PRICE][VALUE],
             )
@@ -630,11 +631,11 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
             label=dict_asset[LABEL],
             actual_value=dict_asset[TIMESERIES_NORMALIZED],
             fixed=True,
-            existing=dict_asset[INSTALLED_CAP][VALUE],
             investment=solph.Investment(
                 ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
                 maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                existing=dict_asset[INSTALLED_CAP][VALUE],
             ),
             # variable_costs are devided by time series peak as normalized time series are used as actual_value
             variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
@@ -658,6 +659,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                     / dict_asset[TIMESERIES_PEAK][VALUE],
                     maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
                 ),
                 # variable_costs are devided by time series peak as normalized time series are used as actual_value
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
@@ -674,7 +676,8 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                 label=dict_asset[LABEL],
                 investment=solph.Investment(
-                    ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
+                    ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
+                    existing = dict_asset[INSTALLED_CAP][VALUE],
                 ),
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
