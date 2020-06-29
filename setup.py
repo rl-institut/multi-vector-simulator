@@ -128,7 +128,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["oemof>=0.4.0"],  # Optional
+    install_requires=["oemof"],  # Optional  # todo: later exchange to oemof.solph>=0.4.0, oemof.network>=0.4.0 oemof.tools>=??
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:
