@@ -38,6 +38,8 @@ Here is a template for new release sections
 - Sorted parameters in csv´s withing the input folder (#374)
 - Change relative folder path to absolute in tests files (#396)
 - Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
+- Only a single output flow (instead of multiple possible) as discussed in #149  (#391)
+- Move `existing` parameter into Investment objects of D1 components (was before added to output flow) (#391)
 
 ### Removed
 
