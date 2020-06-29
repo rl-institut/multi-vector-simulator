@@ -604,8 +604,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
         for bus in dict_asset[OUTPUT_BUS_NAME]:
             outputs[kwargs["busses"][bus]] = solph.Flow(
                 label=dict_asset[LABEL],
-                actual_value=dict_asset[TIMESERIES],
-                fixed=True,
+                fix=dict_asset[TIMESERIES],
                 nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][0],
             )
@@ -614,8 +613,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
         outputs = {
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                 label=dict_asset[LABEL],
-                actual_value=dict_asset[TIMESERIES],
-                fixed=True,
+                fix=dict_asset[TIMESERIES],
                 nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
@@ -646,8 +644,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
         for bus in dict_asset[OUTPUT_BUS_NAME]:
             outputs[kwargs["busses"][bus]] = solph.Flow(
                 label=dict_asset[LABEL],
-                actual_value=dict_asset[TIMESERIES_NORMALIZED],
-                fixed=True,
+                fix=dict_asset[TIMESERIES_NORMALIZED],
                 existing=dict_asset[INSTALLED_CAP][VALUE],
                 investment=solph.Investment(
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
@@ -663,8 +660,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
         outputs = {
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                 label=dict_asset[LABEL],
-                actual_value=dict_asset[TIMESERIES_NORMALIZED],
-                fixed=True,
+                fix=dict_asset[TIMESERIES_NORMALIZED],
                 existing=dict_asset[INSTALLED_CAP][VALUE],
                 investment=solph.Investment(
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
@@ -875,13 +871,13 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
         index = 0
         for bus in dict_asset[INPUT_BUS_NAME]:
             inputs[kwargs["busses"][bus]] = solph.Flow(
-                actual_value=dict_asset[TIMESERIES], nominal_value=1, fixed=True
+                fix=dict_asset[TIMESERIES], nominal_value=1
             )
             index += 1
     else:
         inputs = {
             kwargs["busses"][dict_asset[INPUT_BUS_NAME]]: solph.Flow(
-                actual_value=dict_asset[TIMESERIES], nominal_value=1, fixed=True
+                fix=dict_asset[TIMESERIES], nominal_value=1
             )
         }
 

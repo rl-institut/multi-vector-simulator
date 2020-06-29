@@ -249,7 +249,7 @@ class TestSinkComponent:
         Checks done:
         * self.sinks contains the sink (key = label, value = sink object)
         * self.models contains the sink (indirectly tested)
-        * input bus has appropriate values for `fixed`, `actual_value` and `variable_costs` (depending on 'dispatchable')
+        * input bus has appropriate values for `fix` and `variable_costs` (depending on 'dispatchable')
         * expected amount of input flows according to `amount_inputs`
 
         """
@@ -261,7 +261,7 @@ class TestSinkComponent:
         assert len([str(i) for i in self.model.entities[-1].inputs]) == amount_inputs
 
         # self.models should contain the sink (indirectly tested)
-        # check input bus(es) (`fixed`, `actual_value` and `variable_costs`)
+        # check input bus(es) (``fix` and `variable_costs`)
         # foreach input bus - these values are expected to be different
         # depending on `dispatchable`
         if amount_inputs == 1:
@@ -277,14 +277,12 @@ class TestSinkComponent:
         for input_bus_name, i in zip(input_bus_names, range(len(input_bus_names))):
             input_bus = self.model.entities[-1].inputs[self.busses[input_bus_name]]
             if dispatchable is False:
-                assert input_bus.fixed is True
-                assert_series_equal(input_bus.actual_value, dict_asset[TIMESERIES])
+                assert_series_equal(input_bus.fix, dict_asset[TIMESERIES])
                 assert (
                     input_bus.variable_costs.default == 0
                 )  # this only is a real check if dispatch_price is not 0
             elif dispatchable is True:
-                assert input_bus.fixed is False
-                assert len(input_bus.actual_value) == 0
+                assert len(input_bus.fix) == 0
                 assert input_bus.variable_costs.default == dispatch_price[i]
             else:
                 raise ValueError(
