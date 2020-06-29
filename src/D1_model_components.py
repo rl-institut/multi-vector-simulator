@@ -695,7 +695,6 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
     Indirectly updated `model` and dict of asset in `kwargs` with the source object.
 
     """
-    # todo 'timeseries_normalized' is correct term?
     if TIMESERIES_NORMALIZED in dict_asset:
         outputs = {
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
