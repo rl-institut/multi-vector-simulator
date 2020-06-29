@@ -705,7 +705,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                 label=dict_asset[LABEL],
                 max=dict_asset[TIMESERIES_NORMALIZED],
-                existing=dict_asset[INSTALLED_CAP][VALUE],
+                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
         }
@@ -718,7 +718,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
         outputs = {
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                 label=dict_asset[LABEL],
-                existing=dict_asset[INSTALLED_CAP][VALUE],
+                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
         }
