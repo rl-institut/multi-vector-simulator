@@ -263,7 +263,7 @@ def create_app(results_json):
         tooltip=tooltip,
         icon=folium.Icon(color="red", icon="glyphicon glyphicon-flash"),
     ).add_to(mapy)
-    mapy.save(os.path.join(REPO_PATH, "src", "assets", "proj_map"))
+    mapy.save(os.path.join(REPORT_PATH, "assets", "proj_map"))
 
     dict_projectdata = {
         "Country": dfprojectData.country,
