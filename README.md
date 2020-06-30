@@ -44,7 +44,7 @@ To set up the MVS, follow the steps below:
 
 * Open Anaconda prompt (or other software as Pycharm) to create and activate a virtual environment
 
-    `conda create -n [your_env_name] python=3.5`
+    `conda create -n [your_env_name] python=3.6`
     `activate [your env_name]`
 
 * Install required packages from requirements.txt file using pip
