@@ -127,22 +127,92 @@ def open_in_browser(app, timeout=600):
     td.join(timeout)
 
 
-def make_dash_data_table(df):
+def make_dash_data_table(df, title=None):
     """Function that creates a Dash DataTable from a Pandas dataframe"""
-    return dash_table.DataTable(
-        columns=[{"name": i, "id": i} for i in df.columns],
-        data=df.to_dict("records"),
-        style_cell={
-            "padding": "5px",
-            "height": "auto",
-            "width": "auto",
-            "textAlign": "center",
-        },
-        style_data_conditional=[
-            {"if": {"row_index": "odd"}, "backgroundColor": "rgb(248, 248, 248)"}
+    content = [
+        html.Div(
+            className="tableplay",
+            children=dash_table.DataTable(
+                columns=[{"name": i, "id": i} for i in df.columns],
+                data=df.to_dict("records"),
+                style_cell={
+                    "padding": "5px",
+                    "height": "auto",
+                    "width": "auto",
+                    "fontFamily": "Courier New",
+                    "textAlign": "center",
+                },
+                style_data_conditional=[
+                    {
+                        "if": {"row_index": "odd"},
+                        "backgroundColor": "rgb(248, 248, 248)",
+                    }
+                ],
+                style_header={"fontWeight": "bold", "color": "#8c3604"},
+            ),
+        )
+    ]
+
+    if title is not None:
+        content = [html.H4(title, className="report_table_title")] + content
+
+    return html.Div(className="report_table", children=content)
+
+
+def insert_subsection(title, content, **kwargs):
+    if "className" in kwargs:
+        className = "cell subsection {}".format(kwargs.pop("className"))
+    else:
+        className = "cell subsection"
+
+    # TODO if content is a list
+
+    if not isinstance(content, list):
+        content = [content]
+
+    return html.Div(
+        className=className,
+        children=[html.H3(title), html.Hr(className="cell small-12 horizontal_line")]
+        + content,
+        **kwargs,
+    )
+
+
+# Function that creates the headings
+def insert_headings(heading_text):
+    """
+    This function is for creating the headings such as information, input data, etc.
+    parameters: string
+    returns: a html element with the heading_text encsased in a container
+    """
+    return html.H2(
+        className="cell", children=heading_text, style={"page-break-after": "avoid"}
+    )
+
+
+# Functions that creates paragraphs
+def insert_body_text(body_of_text):
+    """
+    This function is for rendering blocks of text
+    parameters: paragraph (string)
+    returns: a html element with a paragraph
+    """
+    return html.P(className="cell large-11 blockoftext", children=body_of_text)
+
+
+def insert_image_array(img_list, width=500):
+    return html.Div(
+        className="image-array",
+        children=[
+            html.Img(
+                className="graphs_ts",
+                src="data:image/png;base64,{}".format(
+                    base64.b64encode(open(ts, "rb").read()).decode()
+                ),
+                width="{}px".format(width),
+            )
+            for ts in img_list
         ],
-        style_header={"fontWeight": "bold", "color": "#8c3604"},
-        style_table={"margin": "30px", "fontSize": "40px"},
     )
 
 
