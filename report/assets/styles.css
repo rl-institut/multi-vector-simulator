@@ -280,14 +280,8 @@ h4 {
         padding-top: 0.5cm;
    }
 
-  #main-div{
-    border: 2px dotted magenta;
-    width: 100%;
-  }
-
   section{
     display: block;
-    // border: 2px dashed blue;
     width: 100%
   }
 
@@ -318,8 +312,8 @@ header, footer, aside, nav, form, iframe, .menu, .hero, .adslot {
 
 /* set margins of the document */
 @page {
-  // margin-top: 2cm;
-  // margin-bottom: 2cm;
+  margin-top: 1cm;
+  margin-bottom: 1cm;
   margin-left: 2.25cm;
   margin-right: 2.25cm;
 }

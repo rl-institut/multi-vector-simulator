@@ -16,16 +16,15 @@ numpy==1.16.4
 oemof==0.3.1
 openpyxl==2.6.3
 pandas==0.24.2
-pdfkit==0.6.1
 ply==3.11
 pygraphviz==1.5
 Pyomo==5.6.6
 pyparsing==2.4.2
+pyppeteer==0.2.2
 python-dateutil==2.8.0
 pytz==2019.2
 PyUtilib==5.7.1
 reverse_geocoder==1.5.1
-selenium
 six==1.12.0
 staticmap==0.5.4
 xlrd==1.2.0
