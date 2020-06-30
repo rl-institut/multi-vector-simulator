@@ -73,6 +73,10 @@ from src.constants_json_strings import (
     SCENARIO_ID,
 )
 
+# TODO link this to the version and date number @Bachibouzouk
+version = "X.Y.Z"
+version_date = "YYYY-MM-DD"
+
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
 
