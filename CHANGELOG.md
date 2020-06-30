@@ -31,6 +31,8 @@ Here is a template for new release sections
  - `utils.py` module in `src` to gather the functions `find_input_folders
  ` and `compare_input_parameters_with_reference` which can be used to find and validate input
   folders (#398)
+- Code and test for checking for new parameters in csv and raising warning message if not defined (`A1.check_for_newly_added_parameters`). This then also adds a default value to the new parameter  (#384)
+- Exception if an energyVector does not have internal generation or consumption from a DSO, and is only supplied by energy conversion from another sector: renewable share = 0. (#384)
  - Tests for source components in D1 (#391)
 
 ### Changed
@@ -38,6 +40,10 @@ Here is a template for new release sections
 - Sorted parameters in csv´s withing the input folder (#374)
 - Change relative folder path to absolute in tests files (#396)
 - Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
+- Improve styling of the pfd report (#369)
+- `LIST_OF_NEW_PARAMETERS` renamed `EXTRA_CSV_PARAMETERS` and moved from `A1` to `constants.py
+` (#384)
+- Order of parameters in tests/inputs, fixed missing parameters  (#384)
 - Only a single output flow (instead of multiple possible) as discussed in #149  (#391)
 - Move `existing` parameter into Investment objects of D1 components (was before added to output flow) (#391)
 

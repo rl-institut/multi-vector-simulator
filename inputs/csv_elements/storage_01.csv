@@ -1,6 +1,7 @@
 ,unit,storage capacity,input power,output power
 label,str,storage capacity,input power,output power
 unit,str,kWh,kW,kW
+maximumCap,None or float,None
 installedCap,unit,0,0,0
 age_installed,year,0,0,0
 lifetime,year,10,10,10

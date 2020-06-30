@@ -13,4 +13,5 @@ dispatch_price,currency/kWh,0
 outflow_direction,str,PV plant (mono)
 file_name,str,pv_gen_merra2_2014_eff1_tilt40_az180.csv
 energyVector,str,Electricity
+renewableAsset,bool,True
 type_oemof,str,source
