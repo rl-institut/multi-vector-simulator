@@ -119,7 +119,9 @@ mvs_csv_config.json
 # ERA5 nc file
 *.nc
 
+# report files
 /report/assets/proj_map*
+/report/*.pdf
 
 # Local input folders, eg. for pilots
 /example_1/
