@@ -324,7 +324,7 @@ def create_app(results_json):
 
     ELAND_LOGO = base64.b64encode(
         open(
-            os.path.join(REPO_PATH, "src", "assets", "logo-eland-original.jpg"), "rb"
+            os.path.join(REPORT_PATH, "assets", "logo-eland-original.jpg"), "rb"
         ).read()
     )
 
