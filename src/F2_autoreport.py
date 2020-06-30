@@ -265,6 +265,18 @@ def create_app(results_json):
     ).add_to(mapy)
     mapy.save(os.path.join(REPORT_PATH, "assets", "proj_map"))
 
+    # Adds a staticmap to the PDF
+
+    longitude = coordinates[1]
+    latitude = coordinates[0]
+    coords = longitude, latitude
+
+    map_static = staticmap.StaticMap(600, 600, 80)
+    marker = staticmap.CircleMarker(coords, "#13074f", 15)
+    map_static.add_marker(marker)
+    map_image = map_static.render(zoom=14)
+    map_image.save(os.path.join(REPORT_PATH, "assets", "proj_map_static.png"))
+
     dict_projectdata = {
         "Country": dfprojectData.country,
         "Project ID": dfprojectData.project_id,
@@ -314,6 +326,10 @@ def create_app(results_json):
         open(
             os.path.join(REPO_PATH, "src", "assets", "logo-eland-original.jpg"), "rb"
         ).read()
+    )
+
+    MAP_STATIC = base64.b64encode(
+        open(os.path.join(REPORT_PATH, "assets", "proj_map_static.png"), "rb").read()
     )
 
     # Determining the sectors which were simulated
@@ -583,6 +599,47 @@ def create_app(results_json):
                                     html.H4(
                                         ["Simulation Settings"],
                                         className="projdataheading",
+                                className="grid-x ",
+                                id="location-map-div",
+                                children=[
+                                    html.Div(
+                                        className="cell small-6 location-map-column",
+                                        children=[
+                                            html.H4(["Project Location"]),
+                                            html.Iframe(
+                                                srcDoc=open(
+                                                    os.path.join(
+                                                        REPORT_PATH,
+                                                        "assets",
+                                                        "proj_map",
+                                                    ),
+                                                    "r",
+                                                ).read(),
+                                                height="400",
+                                                style={
+                                                    "margin": "30px",
+                                                    "width": "30%",
+                                                    "marginBottom": "1.5cm",
+                                                },
+                                            ),
+                                            html.Div(
+                                                className="staticimagepdf",
+                                                children=[
+                                                    insert_body_text(
+                                                        "The blue dot in the below map indicates "
+                                                        "the location of the project."
+                                                    ),
+                                                    html.Img(
+                                                        id="staticmapimage",
+                                                        src="data:image/png;base64,{}".format(
+                                                            MAP_STATIC.decode()
+                                                        ),
+                                                        width="400px",
+                                                        style={"marginLeft": "30px"},
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
                                     ),
                                     html.Div(
                                         className="tableplay",
