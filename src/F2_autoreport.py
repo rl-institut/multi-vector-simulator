@@ -216,19 +216,29 @@ def insert_image_array(img_list, width=500):
     )
 
 
+# Styling of the report
+
+
 def create_app(results_json):
-    path_output_folder = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
-
     # Initialize the app
-    app = dash.Dash(__name__)
 
-    colors = {
-        "bg-head": "#9ae6db",
-        "text-head": "#000000",
-        "text-body": "#000000",
-        "inp-box": "#03034f",
-        "font-inpbox": "#FFFFFF",
-    }
+    # external CSS stylesheets
+    external_stylesheets = [
+        {
+            "href": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/css/foundation.min.css",
+            "rel": "stylesheet",
+            "integrity": "sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I=",
+            "crossorigin": "anonymous",
+            "media": "screen",
+        },
+    ]
+
+    app = dash.Dash(
+        __name__,
+        assets_folder=os.path.join(REPORT_PATH, "assets"),
+        external_stylesheets=external_stylesheets,
+    )
+
     # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
     dfprojectData = pd.DataFrame.from_dict(results_json[PROJECT_DATA])
     dfeconomicData = pd.DataFrame.from_dict(results_json[ECONOMIC_DATA]).loc[VALUE]
