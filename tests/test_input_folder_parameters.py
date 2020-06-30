@@ -1,8 +1,7 @@
 import os
 import pytest
 
-from src.utils import find_input_folders, compare_input_parameters_with_reference
-from src.constants import REPO_PATH
+from src.constants import REPO_PATH, EXTRA_CSV_PARAMETERS
 from .constants import (
     TEST_REPO_PATH,
     JSON_EXT,
@@ -11,6 +10,7 @@ from .constants import (
     MISSING_PARAMETERS_KEY,
     EXTRA_PARAMETERS_KEY,
 )
+from src.utils import find_input_folders, compare_input_parameters_with_reference
 
 TEST_INPUT_FOLDERS = find_input_folders(REPO_PATH)
 
@@ -24,7 +24,12 @@ def test_input_folder_csv_files_have_required_parameters(input_folder):
         extra parameters besides the required ones
     """
     comparison = compare_input_parameters_with_reference(input_folder, ext=CSV_EXT)
-    assert MISSING_PARAMETERS_KEY not in comparison
+    if MISSING_PARAMETERS_KEY not in comparison:
+        assert True
+    else:
+        for k in comparison[MISSING_PARAMETERS_KEY].keys():
+            for el in comparison[MISSING_PARAMETERS_KEY][k]:
+                assert el in EXTRA_CSV_PARAMETERS
     # TODO: after merging #384, compare with the EXTRA_CSV_PARAMETERS dict
     # if "input_template" in input_folder:
     #     assert EXTRA_PARAMETERS_KEY not in comparison

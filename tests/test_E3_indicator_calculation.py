@@ -19,6 +19,7 @@ from src.constants_json_strings import (
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
     TOTAL_FLOW,
+    RENEWABLE_SHARE_DSO,
 )
 
 numbers = [10, 15, 20, 25]
@@ -57,7 +58,7 @@ dict_renewable_energy_use[ENERGY_PRODUCTION]["DSO_consumption_period_2"][TOTAL_F
 dict_renewable_energy_use[ENERGY_PRODUCTION]["pv_plant_01"][TOTAL_FLOW][
     VALUE
 ] = flow_medium
-dict_renewable_energy_use[ENERGY_PROVIDERS]["DSO"]["renewable_share"][
+dict_renewable_energy_use[ENERGY_PROVIDERS]["DSO"][RENEWABLE_SHARE_DSO][
     VALUE
 ] = renewable_share_dso
 exp_res = flow_medium + (flow_small * 2 * renewable_share_dso)
@@ -257,6 +258,13 @@ class TestTechnicalParameters:
         tot_non_res = 100
         renewable_share = E3.equation_renewable_share(tot_res, tot_non_res)
         assert renewable_share == tot_res / (tot_res + tot_non_res)
+
+    def test_renewable_share_equation_no_generation(self):
+        """ """
+        tot_res = 0
+        tot_non_res = 0
+        renewable_share = E3.equation_renewable_share(tot_res, tot_non_res)
+        assert renewable_share == 0
 
     '''
     def test_degree_of_autonomy_below_1(self):

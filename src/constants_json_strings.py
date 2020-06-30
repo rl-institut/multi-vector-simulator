@@ -89,6 +89,10 @@ SPECIFIC_COSTS_OM = "specific_costs_om"
 DISPATCH_PRICE = "dispatch_price"
 OEMOF_ASSET_TYPE = "type_oemof"
 
+# Specific parameters
+RENEWABLE_ASSET_BOOL = "renewableAsset"
+RENEWABLE_SHARE_DSO = "renewable_share"
+
 # Asset definitions: Providers
 ENERGY_PRICE = "energy_price"
 FEEDIN_TARIFF = "feedin_tariff"
