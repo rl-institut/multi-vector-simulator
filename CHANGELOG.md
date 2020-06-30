@@ -34,6 +34,7 @@ Here is a template for new release sections
 - Code and test for checking for new parameters in csv and raising warning message if not defined (`A1.check_for_newly_added_parameters`). This then also adds a default value to the new parameter  (#384)
 - Exception if an energyVector does not have internal generation or consumption from a DSO, and is only supplied by energy conversion from another sector: renewable share = 0. (#384)
  - Tests for source components in D1 (#391)
+ - Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -46,8 +47,11 @@ Here is a template for new release sections
 - Order of parameters in tests/inputs, fixed missing parameters  (#384)
 - Only a single output flow (instead of multiple possible) as discussed in #149  (#391)
 - Move `existing` parameter into Investment objects of D1 components (was before added to output flow) (#391)
+- Use pyppeteers instead of selenium to emulate the webbrowser and print the pdf report
+ automatically (#407)
 
 ### Removed
+- Selenium to print the automatic project report for help (#407)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
