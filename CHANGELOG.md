@@ -37,6 +37,7 @@ Here is a template for new release sections
 - Sorted parameters in csv´s withing the input folder (#374)
 - Change relative folder path to absolute in tests files (#396)
 - Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
+- Improve styling of the pfd report (#369)
 
 ### Removed
 
