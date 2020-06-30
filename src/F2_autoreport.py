@@ -318,6 +318,7 @@ def create_app(results_json):
 
     # Getting the branch ID
     repo = git.Repo(search_parent_directories=True)
+    # TODO: also extract branch name
     branchID = repo.head.object.hexsha
 
     simDate = time.strftime("%Y-%m-%d")
@@ -473,132 +474,85 @@ def create_app(results_json):
     # Round the numeric values to two significant digits
     df_cost_matrix = df_cost_matrix.round(2)
 
-    # Header section with logo and the title of the report, and CSS styling. Work in progress...
-
     app.layout = html.Div(
-        [
+        className="grid-x align-center",
+        children=[
             html.Div(
-                className="header_title_logo",
+                className="cell small-10 small_offset-1 header_title_logo",
                 children=[
                     html.Img(
                         id="mvslogo",
                         src="data:image/png;base64,{}".format(ELAND_LOGO.decode()),
-                        width="370px",
+                        width="500px",
                     ),
                     html.H1("MULTI VECTOR SIMULATION - REPORT SHEET"),
                 ],
             ),
-            html.Div(
-                className="imp_info",
+            html.Section(
+                className="cell small-10 small_offset-1 grid-x",
                 children=[
-                    html.P(f"MVS Release: {releaseDesign}"),
-                    html.P(f"Branch-id: {branchID}"),
-                    html.P(f"Simulation date: {simDate}"),
-                ],
-            ),
-            html.Div(
-                className="imp_info2",
-                children=[
+                    insert_headings("Information"),
                     html.Div(
-                        [
-                            html.Span(
-                                "Project name   : ", style={"fontWeight": "bold"}
-                            ),
-                            f"{projectName}",
-                        ]
-                    ),
-                    html.Br([]),
-                    html.Div(
-                        [
-                            html.Span(
-                                "Scenario name  : ", style={"fontWeight": "bold"}
-                            ),
-                            f"{scenarioName}",
-                        ]
-                    ),
-                ],
-            ),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.Div(
-                        [
-                            "The energy system with the ",
-                            html.Span(f"{projectName}", style={"fontStyle": "italic"}),
-                            " for the scenario ",
-                            html.Span(f"{scenarioName}", style={"fontStyle": "italic"}),
-                            " was simulated with the Multi-Vector simulation tool MVS 0.0x developed from the E-LAND toolbox "
-                            "developed in the scope of the Horizon 2020 European research project. The tool was developed by "
-                            "Reiner Lemoine Institute and utilizes the OEMOF framework.",
-                        ]
-                    )
-                ],
-            ),
-            html.Br([]),
-            html.Div(
-                className="inputs_simresults_box", children=[html.H2("Input Data")],
-            ),
-            html.Br([]),
-            html.Div(
-                className="heading1",
-                children=[
-                    html.H2("Project Data", className="heading1",),
-                    html.Hr(className="horizontal_line"),
-                ],
-            ),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.P(
-                        "The most important simulation data will be presented below. "
-                        "Detailed settings, costs, and technological parameters can "
-                        "be found in the appendix."
-                    )
-                ],
-            ),
-            html.Div(
-                [
-                    html.Div(
-                        [
-                            html.H4(["Project Location"], className="projdataheading"),
-                            html.Iframe(
-                                srcDoc=open(
-                                    os.path.join(
-                                        REPO_PATH, "src", "assets", "proj_map"
+                        className="cell imp_info",
+                        children=[
+                            html.P(f"MVS Release: {version} ({version_date})"),
+                            html.P(f"Branch-id: {branchID}"),
+                            html.P(f"Simulation date: {simDate}"),
+                            html.Div(
+                                className="cell imp_info2",
+                                children=[
+                                    html.Span(
+                                        "Project name   : ",
+                                        style={"font-weight": "bold"},
                                     ),
-                                    "r",
-                                ).read(),
-                                width="70%",
-                                height="700",
+                                    f"{projectName}",
+                                ],
+                            ),
+                            html.Div(
+                                className="cell imp_info2",
+                                children=[
+                                    html.Span(
+                                        "Scenario name  : ",
+                                        style={"font-weight": "bold"},
+                                    ),
+                                    f"{scenarioName}",
+                                ],
+                            ),
+                            html.Div(
+                                className="blockoftext",
+                                children=[
+                                    "The energy system with the ",
+                                    html.Span(
+                                        f"{projectName}", style={"font-style": "italic"}
+                                    ),
+                                    " for the scenario ",
+                                    html.Span(
+                                        f"{scenarioName}",
+                                        style={"font-style": "italic"},
+                                    ),
+                                    " was simulated with the Multi-Vector simulation tool MVS 0.0x developed from the E-LAND toolbox "
+                                    "developed in the scope of the Horizon 2020 European research project. The tool was developed by "
+                                    "Reiner Lemoine Institute and utilizes the OEMOF framework.",
+                                ],
                             ),
                         ],
-                        style={"margin": "30px", "width": "48%"},
                     ),
-                    html.Div(
-                        [
+                ],
+            ),
+            html.Section(
+                className="cell small-10 small_offset-1 grid-x",
+                style={"pageBreakBefore": "always"},
+                children=[
+                    insert_headings("Input Data"),
+                    insert_subsection(
+                        title="Project Data",
+                        content=[
+                            insert_body_text(
+                                "The most important simulation data will be presented below. "
+                                "Detailed settings, costs, and technological parameters can "
+                                "be found in the appendix."
+                            ),
                             html.Div(
-                                [
-                                    html.Br([]),
-                                    html.H4(
-                                        ["Project Data"], className="projdataheading"
-                                    ),
-                                    html.Div(
-                                        className="tableplay",
-                                        children=[make_dash_data_table(df_projectData)],
-                                    ),
-                                ],
-                                className="projdata",
-                            )
-                        ]
-                    ),
-                    html.Div(
-                        [
-                            html.Div(
-                                [
-                                    html.Br([]),
-                                    html.H4(
-                                        ["Simulation Settings"],
-                                        className="projdataheading",
                                 className="grid-x ",
                                 id="location-map-div",
                                 children=[
@@ -642,174 +596,100 @@ def create_app(results_json):
                                         ],
                                     ),
                                     html.Div(
-                                        className="tableplay",
-                                        children=[make_dash_data_table(df_simsettings)],
+                                        className="cell small-6 location-map-column",
+                                        children=make_dash_data_table(
+                                            df_projectData, "Project at a Glance"
+                                        ),
                                     ),
                                 ],
-                                className="projdata",
+                            ),
+                            make_dash_data_table(df_simsettings, "Simulation Settings"),
+                        ],
+                    ),
+                    insert_subsection(
+                        title="Energy demand",
+                        content=[
+                            insert_body_text(
+                                "The simulation was performed for the energy system "
+                                "covering the following sectors: "
+                            ),
+                            insert_body_text(f"{sec_list}"),
+                            html.H4("Electricity Demand"),
+                            insert_body_text(
+                                "Electricity demands " "that have to be supplied are:"
+                            ),
+                            make_dash_data_table(df_dem),
+                            # TODO use insert_graph(),
+                            insert_image_array(
+                                results_json[PATHS_TO_PLOTS][PLOTS_DEMANDS]
+                            ),
+                            # TODO Plotly plot of demand timeseries(s) which will replace above
+                            html.H4("Resources"),
+                            insert_image_array(
+                                results_json[PATHS_TO_PLOTS][PLOTS_RESOURCES], width=900
                             )
-                        ]
+                            # TODO Plotly plot of generation time series(s) replacing above
+                        ],
                     ),
-                ]
-            ),
-            html.Br(),
-            html.Div(
-                className="heading1",
-                children=[
-                    html.H2("Energy Demand"),
-                    html.Hr(className="horizontal_line"),
-                ],
-            ),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.P(
-                        "The simulation was performed for the energy system "
-                        "covering the following sectors:"
+                    insert_subsection(
+                        title="Energy system components",
+                        content=[
+                            insert_body_text(
+                                "The energy system is comprised of "
+                                "the following components:"
+                            ),
+                            make_dash_data_table(df_comp),
+                        ],
                     ),
-                    html.P(f"{sec_list}"),
+                    # TODO fix the little dash appearing above the table
                 ],
             ),
-            html.Div(
-                className="demandmatter",
+            html.Section(
+                className="cell small-10 small_offset-1 grid-x",
+                style={"pageBreakBefore": "always"},
                 children=[
-                    html.Br(),
-                    html.H4("Electricity Demand", className="graph__pre-title",),
-                    html.P("Electricity demands that have to be supplied are: "),
-                ],
-            ),
-            html.Div(children=[make_dash_data_table(df_dem)]),
-            html.Div(
-                className="timeseriesplots",
-                children=[
-                    html.Div(
-                        [
-                            html.Img(
-                                src="data:image/png;base64,{}".format(
-                                    base64.b64encode(open(ts, "rb").read()).decode()
-                                ),
-                                width="1500px",
+                    html.H2(className="cell", children="Simulation Results"),
+                    insert_subsection(
+                        title="Dispatch & Energy Flows",
+                        content=[
+                            insert_body_text(
+                                "The capacity optimization of components that were to be used resulted in:"
+                            ),
+                            make_dash_data_table(df_scalar_matrix),
+                            insert_body_text(
+                                "With this, the demands are met with the following dispatch schedules:"
+                            ),
+                            insert_body_text(
+                                "a. Flows in the system for a duration of 14 days"
+                            ),
+                            insert_image_array(
+                                results_json[PATHS_TO_PLOTS][PLOTS_BUSSES]
+                                + results_json[PATHS_TO_PLOTS][PLOTS_PERFORMANCE],
+                                width=900,
+                            ),
+                            insert_body_text(
+                                "This results in the following KPI of the dispatch:"
+                            ),
+                            # TODO the table with renewable share, emissions, total renewable generation, etc.
+                        ],
+                    ),
+                    insert_subsection(
+                        title="Economic Evaluation",
+                        content=[
+                            insert_body_text(
+                                "The following installation and operation costs "
+                                "result from capacity and dispatch optimization:"
+                            ),
+                            make_dash_data_table(df_cost_matrix),
+                            insert_image_array(
+                                results_json[PATHS_TO_PLOTS][PLOTS_COSTS], width=500
                             )
-                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_DEMANDS]
-                        ]
-                    ),
-                    html.H4("Resources", className="graph__pre-title"),
-                    html.Div(
-                        [
-                            html.Img(
-                                src="data:image/png;base64,{}".format(
-                                    base64.b64encode(open(ts, "rb").read()).decode()
-                                ),
-                                width="1500px",
-                            )
-                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_RESOURCES]
-                        ]
-                    ),
-                ],
-                style={"margin": "30px"},
-            ),
-            html.Div(),
-            html.Br(),
-            html.Div(
-                className="heading1",
-                children=[
-                    html.H2("Energy System Components"),
-                    html.Hr(className="horizontal_line"),
-                ],
-            ),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.P(
-                        "The energy system is comprised of the following components:"
-                    )
-                ],
-            ),
-            html.Div(children=[make_dash_data_table(df_comp)]),
-            html.Br([]),
-            html.Div(
-                className="inputs_simresults_box",
-                children=[html.H2("SIMULATION RESULTS")],
-            ),
-            html.Br([]),
-            html.Div(
-                className="heading1",
-                children=[
-                    html.H2("Dispatch & Energy Flows"),
-                    html.Hr(className="horizontal_line"),
-                ],
-            ),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.P(
-                        "The capacity optimization of components that were to be used resulted in:"
-                    )
-                ],
-            ),
-            html.Div(children=[make_dash_data_table(df_scalar_matrix)]),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.P(
-                        "With this, the demands are met with the following dispatch schedules:"
-                    ),
-                    html.P(
-                        "a. Flows in the system for a duration of 14 days",
-                        style={"marginLeft": "20px"},
-                    ),
-                ]
-                + [
-                    html.Div(
-                        [
-                            html.Img(
-                                src="data:image/png;base64,{}".format(
-                                    base64.b64encode(open(ts, "rb").read()).decode()
-                                ),
-                                width="1500px",
-                            )
-                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_BUSSES]
-                            + results_json[PATHS_TO_PLOTS][PLOTS_PERFORMANCE]
-                        ]
+                            # TODO Plots to be generated using Plotly
+                        ],
                     ),
                 ],
             ),
-            html.Br(style={"marginBottom": "5px"}),
-            html.P(
-                "This results in the following KPI of the dispatch:",
-                style={
-                    "marginLeft": "50px",
-                    "textAlign": "justify",
-                    "fontSize": "40px",
-                },
-            ),
-            html.Div(
-                className="heading1",
-                children=[
-                    html.H2("Economic Evaluation"),
-                    html.Hr(className="horizontal_line"),
-                ],
-            ),
-            html.P(
-                className="blockoftext",
-                children=[
-                    "The following installation and operation costs result from capacity and dispatch optimization:"
-                ],
-            ),
-            html.Div(children=[make_dash_data_table(df_cost_matrix)]),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.Img(
-                        src="data:image/png;base64,{}".format(
-                            base64.b64encode(open(ts, "rb").read()).decode()
-                        ),
-                        width="1500px",
-                    )
-                    for ts in results_json[PATHS_TO_PLOTS][PLOTS_COSTS]
-                ],
-            ),
-        ]
+        ],
     )
     return app
 
