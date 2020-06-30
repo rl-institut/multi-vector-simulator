@@ -12,12 +12,15 @@ from selenium import webdriver
 # Importing necessary packages
 import dash
 import dash_html_components as html
+import dash_core_components as dcc
+import plotly.graph_objs as go
 import dash_table
 import folium
 import git
 import pandas as pd
 import pdfkit
 import reverse_geocoder as rg
+import staticmap
 
 from src.constants import (
     PLOTS_BUSSES,
