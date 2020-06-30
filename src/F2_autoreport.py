@@ -7,7 +7,6 @@ import os
 import threading
 import time
 import webbrowser
-from selenium import webdriver
 
 # Importing necessary packages
 import dash
@@ -18,9 +17,10 @@ import dash_table
 import folium
 import git
 import pandas as pd
-import pdfkit
 import reverse_geocoder as rg
 import staticmap
+import asyncio
+from pyppeteer import launch
 
 from src.constants import (
     PLOTS_BUSSES,
@@ -81,6 +81,19 @@ OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
 
 
+async def _print_pdf_from_chrome(path_pdf_report):
+    browser = await launch()
+    page = await browser.newPage()
+    await page.goto("http://127.0.0.1:8050", {"waitUntil": "networkidle0"})
+    await page.waitForSelector("#main-div")
+    await page.pdf({"path": path_pdf_report, "format": "A4", "printBackground": True})
+    await browser.close()
+    print("*" * 10)
+    print("The report was saved under {}".format(path_pdf_report))
+    print("You can now quit with ctlr+c")
+    print("*" * 10)
+
+
 def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
     """Run the dash app in a thread an print a pdf before exiting
 
@@ -102,24 +115,7 @@ def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
         td.start()
 
     # Emulates a webdriver
-    # TODO check if chromium is easier
-    driver = webdriver.Firefox(executable_path=os.path.join(REPORT_PATH, "geckodriver"))
-    driver.get("http://127.0.0.1:8050")
-
-    # TODO figure a way to wait enough time for everything to load
-    # waits to load the page, could alternatively wait for a certain html tag to be present
-    time.sleep(5)
-
-    # Extracts the html source code of the app and save it in a file
-    html_src = driver.page_source
-    html_path = os.path.join(REPORT_PATH, "report.html")
-    with open(html_path, "w") as f:
-        f.write(html_src)
-    driver.close()
-
-    # Convert the html file into a pdf
-    pdfkit.from_url("file:///" + html_path, path_pdf_report)
-    print(f"Saved the report under {path_pdf_report}")
+    asyncio.get_event_loop().run_until_complete(_print_pdf_from_chrome(path_pdf_report))
 
     if app is not None:
         td.join(20)
@@ -482,6 +478,7 @@ def create_app(results_json):
     df_cost_matrix = df_cost_matrix.round(2)
 
     app.layout = html.Div(
+        id="main-div",
         className="grid-x align-center",
         children=[
             html.Div(
