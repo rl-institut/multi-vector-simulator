@@ -128,6 +128,10 @@ To generate a report of the simulation, run the following command **after** a si
 the report should appear in your browser (at http://127.0.0.1:8050) as an interactive Plotly Dash
  app.
 
+You can print the report via your browser print functionnality (ctrl+p), however the layout of
+ the pdf report is only well
+ optimized for chrome or chromimum browser.
+
 It is also possible to print the report as pdf by using the option `-pdf`. By default, it will
 save the report in the `report` folder. See`python mvs_report.py -h` for more information about
 possible options. The css and images used to make the report pretty should be located under

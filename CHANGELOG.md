@@ -39,6 +39,7 @@ Here is a template for new release sections
 - Sorted parameters in csv´s withing the input folder (#374)
 - Change relative folder path to absolute in tests files (#396)
 - Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
+- Improve styling of the pfd report (#369)
 - `LIST_OF_NEW_PARAMETERS` renamed `EXTRA_CSV_PARAMETERS` and moved from `A1` to `constants.py
 ` (#384)
 - Order of parameters in tests/inputs, fixed missing parameters  (#384)
