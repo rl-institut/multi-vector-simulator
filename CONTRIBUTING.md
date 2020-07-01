@@ -76,12 +76,13 @@ Some test take more time to run (run a simulation) and were therefore disabled b
  nevertheless important that you run a simulation test before you ask a review, or whenever you
   are ready to merge, to make sure the
   code still works.
+  
  ```bash
-EXECUTE_TESTS_ON=dev pytest
+EXECUTE_TESTS_ON=dev pytest tests/test_benchmark_simple_scenarios.py
 ```
 will execute only the main simulation once to make sure it runs smoothly, whereas
  ```bash
-EXECUTE_TESTS_ON=master pytest
+EXECUTE_TESTS_ON=master pytest tests/test_benchmark_simple_scenarios.py
 ```
 will execute *all* benchmark tests (it takes thus a longer time to run)
 
