@@ -319,16 +319,16 @@ def create_app(results_json):
     )
 
     projectName = (
-        results_json[PROJECT_DATA][PROJECT_NAME]
-        + "(ID:"
-        + str(results_json[PROJECT_DATA][PROJECT_ID])
-        + ")"
+            results_json[PROJECT_DATA][PROJECT_NAME]
+            + "(ID:"
+            + str(results_json[PROJECT_DATA][PROJECT_ID])
+            + ")"
     )
     scenarioName = (
-        results_json[PROJECT_DATA][SCENARIO_NAME]
-        + "(ID:"
-        + str(results_json[PROJECT_DATA][SCENARIO_ID])
-        + ")"
+            results_json[PROJECT_DATA][SCENARIO_NAME]
+            + "(ID:"
+            + str(results_json[PROJECT_DATA][SCENARIO_ID])
+            + ")"
     )
 
     releaseDesign = "0.0x"
@@ -476,7 +476,7 @@ def create_app(results_json):
 
     # Drop some irrelevant columns from the dataframe
     df_cost_matrix = df_cost_matrix.drop(
-        ["index", COST_OM_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM_FIX,], axis=1,
+        ["index", COST_OM_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM_FIX, ], axis=1,
     )
 
     # Rename some of the column names
