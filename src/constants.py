@@ -181,10 +181,7 @@ EXTRA_CSV_PARAMETERS = {
     MAXIMUM_CAP: {
         DEFAULT_VALUE: None,
         WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
-        REQUIRED_IN_CSV_ELEMENTS: [
-            ENERGY_CONVERSION,
-            ENERGY_PRODUCTION
-        ],
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_CONVERSION, ENERGY_PRODUCTION],
     },
     RENEWABLE_ASSET_BOOL: {
         DEFAULT_VALUE: False,
