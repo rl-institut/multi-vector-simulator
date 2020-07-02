@@ -50,6 +50,7 @@ If you are using OS X, you might need to install this package separately with co
 or
 
     `conda install -c conda-forge/label/cf202003 pyppeteer`
+More information is avaiable on: https://anaconda.org/conda-forge/pyppeteer
 
 Error messages and MVS termination
 ----------------------------------
