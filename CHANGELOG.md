@@ -32,7 +32,6 @@ Here is a template for new release sections
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
 - Bug connected to global variables (#356)
-- No fuel source for transformers generated ((#379)
 
 ## [0.3.0] - 2020-06-08
 
