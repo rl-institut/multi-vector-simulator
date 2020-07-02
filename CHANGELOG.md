@@ -49,6 +49,7 @@ Here is a template for new release sections
 - Move `existing` parameter into Investment objects of D1 components (was before added to output flow) (#391)
 - Use pyppeteers instead of selenium to emulate the webbrowser and print the pdf report
  automatically (#407)
+- Update flowchart again (#409)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
