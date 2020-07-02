@@ -21,8 +21,6 @@ from src.constants import (
 )
 
 from src.constants_json_strings import *
-
-
 import src.C1_verification as verify
 import src.C2_economic_functions as economics
 import src.F0_output as output
