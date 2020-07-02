@@ -136,7 +136,7 @@ def simulation_settings(simulation_settings):
             TIME_INDEX: pd.date_range(
                 start=simulation_settings[START_DATE],
                 end=simulation_settings[END_DATE],
-                freq=str(simulation_settings[TIMESTEP][VALUE]) + "min",
+                freq=str(simulation_settings[TIMESTEP][VALUE]) + UNIT_MINUTE,
             )
         }
     )
@@ -616,7 +616,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
                 + pd.DateOffset(months=(pricing_period - 1) * months_in_a_period),
                 end=dict_values[SIMULATION_SETTINGS][START_DATE]
                 + pd.DateOffset(months=pricing_period * months_in_a_period, hours=-1),
-                freq=str(dict_values[SIMULATION_SETTINGS][TIMESTEP][VALUE]) + "min",
+                freq=str(dict_values[SIMULATION_SETTINGS][TIMESTEP][VALUE]) + UNIT_MINUTE,
             )
 
             timeseries = timeseries.add(pd.Series(1, index=time_period), fill_value=0)

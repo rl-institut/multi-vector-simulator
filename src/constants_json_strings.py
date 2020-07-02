@@ -113,6 +113,8 @@ SOC_MIN = "soc_min"
 #######################################
 # Units
 UNIT_YEAR = "year"
+UNIT_HOUR = "hour"
+UNIT_MINUTE = "min"
 
 # Preprocessing: Time
 END_DATE = "end_date"
