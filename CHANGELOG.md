@@ -63,7 +63,6 @@ Here is a template for new release sections
 - Issue #357 Bug connected to global variables (#356)
 - Issue #168 Duplicate of timeseries files (#388)
 - Bug connected to global variables (#356)
-- No fuel source for transformers generated ((#379)
 
 ## [0.3.0] - 2020-06-08
 
