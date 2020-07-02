@@ -51,7 +51,6 @@ Here is a template for new release sections
 - Use pyppeteers instead of selenium to emulate the webbrowser and print the pdf report
  automatically (#407)
 - Update flowchart again (#409)
-
 - Added global variables to `constants_json_str.csv`, defining units with them (#379)
 
 ### Removed
