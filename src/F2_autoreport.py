@@ -729,6 +729,10 @@ def create_app(results_json):
                     ),
                 ],
             ),
+            html.Section(
+                insert_log_messages(log_dict=warnings_dict, title_of_section='Warning Messages'),
+                insert_log_messages(log_dict=errors_dict, title_of_section='Error Messages')
+            ),
         ],
     )
     return app
