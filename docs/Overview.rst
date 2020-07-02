@@ -28,8 +28,8 @@ The user is asked to enter the required data through a web interface. In develop
 
 4.	Meteorological data, which is related to the components that generate electricity by harnessing an existing source of energy that is weather- and time-dependent (e.g., solar and wind power).
 
-This set of input data is then translated to a linear programming problem, also known as a constrained optimization problem. The MVS is based on the oemof python library that describes the problem by specifying the objective function, the decision variables and the constraints. The aim is to minimize the production costs by determining the generating units' optimal output, which meets the total demand.
-The simulation outputs are also separated into categories. The economic results, such as the levelized cost of electricity or heat or the net present value of the projected investments, are the ones used for financial evaluation and decision making. The technical results also showcase several important values, such as the optimized capacities and dispatch of each asset. Lastly, the system’s environmental contribution is shown through the value of CO2 emissions. 
+This set of input data is then translated to a linear programming problem, also known as a constrained optimization problem. The MVS is based on the oemof-solph python library that describes the problem by specifying the objective function, the decision variables and the bounds and constraints. The goal is to (1) minimize the production costs by determining the generating units' optimal output, which meets the total demand, and (2) optimize near-future investments in generation and storage assets with the least possible cost of energy.
+The simulation outputs are also separated into categories: the economic results used for the financial evaluation, such as the levelized cost of electricity or heat or the net present value of the projected investments, the technical results that include the optimized capacities and dispatch of each asset for instance, and the system’s environmental contribution in terms of CO2 emissions. All these results are valuable for the decision making.
 
 MVS Validation Plan
 -------
