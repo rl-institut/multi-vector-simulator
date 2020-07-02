@@ -305,6 +305,7 @@ def energyStorage(dict_values, group):
     """
     for asset in dict_values[group]:
         for subasset in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
+            dict_values[group][asset][subasset].update({LABEL: dict_values[group][asset][LABEL]+ "_"+dict_values[group][asset][subasset][LABEL]})
             define_missing_cost_data(
                 dict_values, dict_values[group][asset][subasset],
             )
