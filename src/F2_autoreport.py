@@ -491,6 +491,28 @@ def create_app(results_json):
     # Round the numeric values to two significant digits
     df_cost_matrix = df_cost_matrix.round(2)
 
+    # Dictionaries to gather non-fatal warning and error messages that appear during the simulation
+    warnings_dict = {}
+    errors_dict = {}
+
+    log_file = os.path.join(OUTPUT_FOLDER, "mvs_logfile.log")
+    words = ('WARNING', 'ERROR')
+    substrings = []
+
+    with open(log_file) as log_messages:
+        log_messages = log_messages.readlines()
+
+    i = 0
+    for line in log_messages:
+        if 'WARNING' in line:
+            i = i + 1
+            substrings = line.split(' - ')
+            warnings_dict.update({i: substrings[-1]})
+        elif 'ERROR' in line:
+            i = i + 1
+            substrings = line.split(' - ')
+            errors_dict.update({i: substrings[-1]})
+
     app.layout = html.Div(
         id="main-div",
         className="grid-x align-center",
