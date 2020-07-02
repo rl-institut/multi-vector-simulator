@@ -44,9 +44,12 @@ pyppeteer
 ##########
 
 If you are using OS X, you might need to install this package separately with conda using:
-conda install -c conda-forge pyppeteer 
+    
+    `conda install -c conda-forge pyppeteer`
+    
 or
-conda install -c conda-forge/label/cf202003 pyppeteer
+
+    `conda install -c conda-forge/label/cf202003 pyppeteer`
 
 Error messages and MVS termination
 ----------------------------------
