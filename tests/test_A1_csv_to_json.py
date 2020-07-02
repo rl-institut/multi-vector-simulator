@@ -6,7 +6,7 @@ import pandas as pd
 import src.A1_csv_to_json as A1
 import src.B0_data_input_json as data_input
 
-from src.constants import WARNING_TEXT, REQUIRED_IN_CSV_ELEMENTS, DEFAULT_VALUE
+from src.constants import WARNING_TEXT, REQUIRED_IN_CSV_ELEMENTS, DEFAULT_VALUE, HEADER
 
 from src.constants_json_strings import (
     UNIT,
@@ -28,7 +28,6 @@ from .constants import (
     REQUIRED_CSV_FILES,
     PATHS_TO_PLOTS,
     TYPE_BOOL,
-    HEADER,
 )
 
 CSV_PARAMETERS = ["param1", "param2"]
