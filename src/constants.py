@@ -183,8 +183,7 @@ EXTRA_CSV_PARAMETERS = {
         WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [
             ENERGY_CONVERSION,
-            ENERGY_STORAGE,
-            ENERGY_PRODUCTION,
+            ENERGY_PRODUCTION
         ],
     },
     RENEWABLE_ASSET_BOOL: {
