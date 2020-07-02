@@ -217,9 +217,24 @@ def insert_image_array(img_list, width=500):
         ],
     )
 
+def insert_log_messages(log_dict, title_of_section):
+    """
+    :param title_of_section: string, name of the sub-section
+    :param log_dict: dict, containing the logging messages
+    :return: html.Div() element
+    """
+    return html.Div(
+        className='log-messages-rep',
+        children=[
+            html.H3(title_of_section), html.Hr(className="cell small-12 horizontal_line"),
+            html.Ul(children=[
+                html.Li(children=[html.Span(k), v])
+                for k, v in log_dict.items()
+            ])
+        ])
+
 
 # Styling of the report
-
 
 def create_app(results_json):
     # Initialize the app
