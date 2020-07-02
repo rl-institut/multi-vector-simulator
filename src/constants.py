@@ -16,19 +16,6 @@ CSV_ELEMENTS = "csv_elements"
 JSON_FNAME = "mvs_config.json"
 # name of the json file which is should be created in the input folder if option -i csv was chosen
 CSV_FNAME = "mvs_csv_config.json"
-# list of csv filename which must be present within the CSV_ELEMENTS folder
-REQUIRED_CSV_FILES = (
-    FIX_COST,
-    SIMULATION_SETTINGS,
-    PROJECT_DATA,
-    ECONOMIC_DATA,
-    ENERGY_CONVERSION,
-    ENERGY_PRODUCTION,
-    ENERGY_STORAGE,
-    ENERGY_PROVIDERS,
-    ENERGY_CONSUMPTION,
-)
-
 # allowed symbols for separating values in .csv files
 CSV_SEPARATORS = (",", ";", "&")
 # name of the folder containing timeseries described by .csv files
@@ -174,6 +161,43 @@ REQUIRED_CSV_PARAMETERS = {
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
+# todo needs to be filled
+REQUIRED_JSON_PARAMETERS = {}
+# references for which parameters must be present either in the json or csv input method
+REQUIRED_MVS_PARAMETERS = {
+    JSON_EXT: REQUIRED_JSON_PARAMETERS,
+    CSV_EXT: REQUIRED_CSV_PARAMETERS,
+}
+
+MISSING_PARAMETERS_KEY = "missing_parameters"
+EXTRA_PARAMETERS_KEY = "extra_parameters"
+
+# Instroducting new parameters (later to be merged into list ll.77)
+WARNING_TEXT = "warning_text"
+REQUIRED_IN_CSV_ELEMENTS = "required in files"
+DEFAULT_VALUE = "default"
+
+EXTRA_CSV_PARAMETERS = {
+    MAXIMUM_CAP: {
+        DEFAULT_VALUE: None,
+        WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [
+            ENERGY_CONVERSION,
+            ENERGY_STORAGE,
+            ENERGY_PRODUCTION,
+        ],
+    },
+    RENEWABLE_ASSET_BOOL: {
+        DEFAULT_VALUE: False,
+        WARNING_TEXT: "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PRODUCTION],
+    },
+    RENEWABLE_SHARE_DSO: {
+        DEFAULT_VALUE: 0,
+        WARNING_TEXT: "allows defining the renewable share of the DSO supply (Values: Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
+    },
+}
 
 # possible type of variable stored into the json file
 TYPE_DATETIMEINDEX = "pandas_DatetimeIndex:"

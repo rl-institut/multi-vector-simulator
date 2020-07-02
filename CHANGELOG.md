@@ -21,16 +21,47 @@ Here is a template for new release sections
 
 ### Added
 - Release protocol in CONTRIBUTING.md file (#353)
+- Custom heat demand profile generation (#371)
+- Add custom solar thermal collector generation profile (#370)
+- Input template folder for easy generation of new simulations (#374), later also for tests of the input folder
+- Tests for ABE usecase (grid, PV, battery) (#385)
+- Test to verify that input folders have all required parameters (#398)
+- New `dict` `REQUIRED_MVS_PARAMETERS` to gather the required parameters from the csv or json
+ input type (#398)
+ - `utils.py` module in `src` to gather the functions `find_input_folders
+ ` and `compare_input_parameters_with_reference` which can be used to find and validate input
+  folders (#398)
+- Code and test for checking for new parameters in csv and raising warning message if not defined (`A1.check_for_newly_added_parameters`). This then also adds a default value to the new parameter  (#384)
+- Exception if an energyVector does not have internal generation or consumption from a DSO, and is only supplied by energy conversion from another sector: renewable share = 0. (#384)
+ - Tests for source components in D1 (#391)
+ - Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
+
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
+- Sorted parameters in csv´s withing the input folder (#374)
+- Change relative folder path to absolute in tests files (#396)
+- Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
+- Improve styling of the pfd report (#369)
+- `LIST_OF_NEW_PARAMETERS` renamed `EXTRA_CSV_PARAMETERS` and moved from `A1` to `constants.py
+` (#384)
+- Order of parameters in tests/inputs, fixed missing parameters  (#384)
+- Only a single output flow (instead of multiple possible) as discussed in #149  (#391)
+- Move `existing` parameter into Investment objects of D1 components (was before added to output flow) (#391)
+- Use pyppeteers instead of selenium to emulate the webbrowser and print the pdf report
+ automatically (#407)
+- Update flowchart again (#409)
+
 - Added global variables to `constants_json_str.csv`, defining units with them (#379)
 
 ### Removed
+- Selenium to print the automatic project report for help (#407)
 - Removed function C0.complete_missing_cost_data() as this should be covered by A1 for csv files (#379)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
+- Issue #357 Bug connected to global variables (#356)
+- Issue #168 Duplicate of timeseries files (#388)
 - Bug connected to global variables (#356)
 - No fuel source for transformers generated ((#379)
 
@@ -122,6 +153,7 @@ tipps for module building, and hint that units in the MVS are not checked (#229)
 - Rename mvs_eland_tool/mvs_eland_tool.py --> mvs_eland_tool/local_deploy.py (#327)
 - Now main (local use) and run_simulation (server use) are available in mvs_eland_tool package
   (#327)
+
  
 ### Removed
 - Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´, as well as from all input

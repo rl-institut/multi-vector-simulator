@@ -1180,13 +1180,6 @@ def receive_timeseries_from_csv(
             is_demand_profile,
         )
 
-    # copy input files
-    shutil.copy(
-        file_path, os.path.join(settings[PATH_OUTPUT_FOLDER], INPUTS_COPY, file_name)
-    )
-    logging.debug("Copied timeseries %s to output folder / inputs.", file_path)
-    return
-
 
 def plot_input_timeseries(
     dict_values, user_input, timeseries, asset_name, column_head, is_demand_profile
