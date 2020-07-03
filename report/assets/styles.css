@@ -60,15 +60,18 @@ h4 {
    text-align: left;
    }
 
-
-
 @media screen {
 
     /* Styling for the E-lands logo and the title of the report */
     .header_title_logo {
         margin: 30px;
 }
-
+    /* Styling for the log messages */
+    .list-log {
+        text-align: left;
+        font-size: 20pt;
+        margin: 30px;
+}
     .tableplay {
         width:70%;
         font-size: 20pt;
