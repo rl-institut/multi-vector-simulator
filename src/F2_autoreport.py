@@ -217,21 +217,24 @@ def insert_image_array(img_list, width=500):
         ],
     )
 
-def insert_log_messages(log_dict, title_of_section):
+
+def insert_log_messages(log_dict):
     """
-    :param title_of_section: string, name of the sub-section
     :param log_dict: dict, containing the logging messages
     :return: html.Div() element
     """
     return html.Div(
-        className='log-messages-rep',
         children=[
-            html.H3(title_of_section), html.Hr(className="cell small-12 horizontal_line"),
-            html.Ul(children=[
-                html.Li(children=[html.Span(k), v])
-                for k, v in log_dict.items()
-            ])
-        ])
+            html.Ul(
+                children=[
+                    html.Li(
+                        className="grid-x small-10 list-log", children=[html.Span(v)]
+                    )
+                    for k, v in log_dict.items()
+                ]
+            )
+        ]
+    )
 
 
 # Styling of the report
@@ -319,16 +322,16 @@ def create_app(results_json):
     )
 
     projectName = (
-            results_json[PROJECT_DATA][PROJECT_NAME]
-            + "(ID:"
-            + str(results_json[PROJECT_DATA][PROJECT_ID])
-            + ")"
+        results_json[PROJECT_DATA][PROJECT_NAME]
+        + "(ID:"
+        + str(results_json[PROJECT_DATA][PROJECT_ID])
+        + ")"
     )
     scenarioName = (
-            results_json[PROJECT_DATA][SCENARIO_NAME]
-            + "(ID:"
-            + str(results_json[PROJECT_DATA][SCENARIO_ID])
-            + ")"
+        results_json[PROJECT_DATA][SCENARIO_NAME]
+        + "(ID:"
+        + str(results_json[PROJECT_DATA][SCENARIO_ID])
+        + ")"
     )
 
     releaseDesign = "0.0x"
@@ -476,7 +479,7 @@ def create_app(results_json):
 
     # Drop some irrelevant columns from the dataframe
     df_cost_matrix = df_cost_matrix.drop(
-        ["index", COST_OM_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM_FIX, ], axis=1,
+        ["index", COST_OM_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM_FIX,], axis=1,
     )
 
     # Rename some of the column names
@@ -496,22 +499,24 @@ def create_app(results_json):
     errors_dict = {}
 
     log_file = os.path.join(OUTPUT_FOLDER, "mvs_logfile.log")
-    words = ('WARNING', 'ERROR')
-    substrings = []
+    # log_file = "/home/mr/Projects/mvs_eland/MVS_outputs/mvs_logfile.log"
+    print(log_file)
 
     with open(log_file) as log_messages:
         log_messages = log_messages.readlines()
 
     i = 0
     for line in log_messages:
-        if 'WARNING' in line:
+        if "WARNING" in line:
             i = i + 1
-            substrings = line.split(' - ')
-            warnings_dict.update({i: substrings[-1]})
-        elif 'ERROR' in line:
+            substrings = line.split(" - ")
+            message_string = u'\u2022 '+substrings[-1]
+            warnings_dict.update({i: message_string})
+        elif "ERROR" in line:
             i = i + 1
-            substrings = line.split(' - ')
-            errors_dict.update({i: substrings[-1]})
+            substrings = line.split(" - ")
+            message_string = u'\u2022 ' + substrings[-1]
+            errors_dict.update({i: message_string})
 
     app.layout = html.Div(
         id="main-div",
@@ -730,8 +735,25 @@ def create_app(results_json):
                 ],
             ),
             html.Section(
-                insert_log_messages(log_dict=warnings_dict, title_of_section='Warning Messages'),
-                insert_log_messages(log_dict=errors_dict, title_of_section='Error Messages')
+                className="cell small-10 small_offset-1 grid-x",
+                children=[
+                    html.Div(
+                        className="cell",
+                        children=[insert_headings(heading_text="Logging Messages"),],
+                    ),
+                    html.Div(
+                        children=[
+                            insert_subsection(
+                                title="Warning Messages",
+                                content=insert_log_messages(log_dict=warnings_dict),
+                            ),
+                            insert_subsection(
+                                title="Error Messages",
+                                content=insert_log_messages(log_dict=errors_dict),
+                            ),
+                        ]
+                    ),
+                ],
             ),
         ],
     )
