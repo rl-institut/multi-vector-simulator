@@ -2,7 +2,7 @@
 label,str,Harbor,Remaining demand,Shore power (docked ships)
 unit,str,kW,kW,kW
 inflow_direction,str,Electricity,Electricity,Electricity
-file_name,str,demand_habor.csv,demand_remaining.csv,demand_shore_power.csv
+file_name,str,demand_harbor.csv,demand_remaining.csv,demand_shore_power.csv
 energyVector,str,Electricity,Electricity,Electricity
 type_oemof,str,sink,sink,sink
 type_asset,str,demand,demand,demand
