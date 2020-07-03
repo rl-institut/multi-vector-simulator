@@ -40,10 +40,22 @@ While with Ubuntu the installation of the cbc solver should work rather well, ev
 
 A workaround is to directly put the `cbc.exe` file into the pycharm project, ie. in the same folder where also the CHANGELOG.md is located. Python/Oemof/Pyomo then are able to find the solver.
 
+pyppeteer
+##########
+
+If you are using OS X, you might need to install this package separately with conda using:
+    
+    `conda install -c conda-forge pyppeteer`
+    
+or
+
+    `conda install -c conda-forge/label/cf202003 pyppeteer`
+More information is avaiable on: https://anaconda.org/conda-forge/pyppeteer
+
 Error messages and MVS termination
 ----------------------------------
 
-Eventhough we try to keep the error messages of the MVS clear and concise, there might be a some that are harder to understand. 
+Even though we try to keep the error messages of the MVS clear and concise, there might be a some that are harder to understand. 
 This especially applies to error messages that occur due to the termination of the oemof optimization process.
 
 json.decoder.JSONDecodeError
