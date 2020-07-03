@@ -79,12 +79,12 @@ class TestACElectricityBus:
 
         df_busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
-            sheet_name="battery bus",
+            sheet_name="Electricity bus",
         )
         # make the time the index
         df_busses_flow = df_busses_flow.set_index("Unnamed: 0")
-
-        # TODO make sure the battery is not used in an assert here
+        # make sure battery is not used
+        assert sum(df_busses_flow["battery"]) == 0
 
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),

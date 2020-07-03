@@ -5,6 +5,7 @@ specific_costs,currency/kW,0,0,0
 efficiency,factor,0.96,0.95,0.95
 inflow_direction,str,Electricity (DSO),battery,Electricity
 installedCap,kW,1250,1000,1000
+maximumCap,kW,None,None,None
 label,str,Transformer station (DSO) consumption,inverter,rectifier
 lifetime,year,30,20,20
 specific_costs_om,currency/kW/year,0,0,0
