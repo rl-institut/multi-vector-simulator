@@ -51,9 +51,11 @@ Here is a template for new release sections
 - Use pyppeteers instead of selenium to emulate the webbrowser and print the pdf report
  automatically (#407)
 - Update flowchart again (#409)
+- Label of storage components (storage capacity, input power, output power) will by default be redefined to the name of the storage and this component (#415)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
+- `MaximumCap` from list of required parameters for `energyStorage` assets (#415)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
