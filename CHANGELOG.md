@@ -35,6 +35,7 @@ Here is a template for new release sections
 - Exception if an energyVector does not have internal generation or consumption from a DSO, and is only supplied by energy conversion from another sector: renewable share = 0. (#384)
  - Tests for source components in D1 (#391)
  - Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
+ - Pyppeteer package for OS X users in troubleshooting (#414)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
