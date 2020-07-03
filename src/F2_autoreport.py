@@ -239,6 +239,7 @@ def insert_log_messages(log_dict):
 
 # Styling of the report
 
+
 def create_app(results_json):
     # Initialize the app
 
@@ -510,12 +511,12 @@ def create_app(results_json):
         if "WARNING" in line:
             i = i + 1
             substrings = line.split(" - ")
-            message_string = u'\u2022 '+substrings[-1]
+            message_string = "\u2022 " + substrings[-1]
             warnings_dict.update({i: message_string})
         elif "ERROR" in line:
             i = i + 1
             substrings = line.split(" - ")
-            message_string = u'\u2022 ' + substrings[-1]
+            message_string = "\u2022 " + substrings[-1]
             errors_dict.update({i: message_string})
 
     app.layout = html.Div(
