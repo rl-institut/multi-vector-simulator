@@ -74,8 +74,7 @@ from src.constants_json_strings import (
 )
 
 # TODO link this to the version and date number @Bachibouzouk
-version = "X.Y.Z"
-version_date = "YYYY-MM-DD"
+from mvs_eland_tool.version import version_num, version_date
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
@@ -499,7 +498,7 @@ def create_app(results_json):
                     html.Div(
                         className="cell imp_info",
                         children=[
-                            html.P(f"MVS Release: {version} ({version_date})"),
+                            html.P(f"MVS Release: {version_num} ({version_date})"),
                             html.P(f"Branch-id: {branchID}"),
                             html.P(f"Simulation date: {simDate}"),
                             html.Div(
