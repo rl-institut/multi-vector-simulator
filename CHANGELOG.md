@@ -52,6 +52,7 @@ Here is a template for new release sections
  automatically (#407)
 - Update flowchart again (#409)
 - Label of storage components (storage capacity, input power, output power) will by default be redefined to the name of the storage and this component (#415)
+- Version number and date is only to be edited in one file (#419)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
