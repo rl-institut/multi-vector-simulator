@@ -1,9 +1,9 @@
 ,unit,simulation_settings
 label,str,simulation_settings
 start_date,str,2018-01-01 00:00:00
-evaluated_period,days,2
+evaluated_period,days,7
 timestep,minutes,60
 output_lp_file,bool,False
-store_oemof_results,bool,True
+store_oemof_results,bool,False
 display_nx_graph,bool,False
-store_nx_graph,bool,False
+store_nx_graph,bool,True
