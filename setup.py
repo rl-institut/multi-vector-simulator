@@ -9,6 +9,8 @@ https://github.com/pypa/sampleproject
 from setuptools import setup, find_packages
 from os import path
 
+from mvs_eland_tool.version import version_num
+
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
@@ -38,7 +40,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="0.3.0",  # Required
+    version=version_num,  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
