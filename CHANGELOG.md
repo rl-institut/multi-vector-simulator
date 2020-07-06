@@ -46,7 +46,7 @@ Here is a template for new release sections
 - `LIST_OF_NEW_PARAMETERS` renamed `EXTRA_CSV_PARAMETERS` and moved from `A1` to `constants.py
 ` (#384)
 - Order of parameters in tests/inputs, fixed missing parameters  (#384)
-- Only a single output flow (instead of multiple possible) as discussed in #149  (#391)
+- Only a single output flow for sources (instead of multiple possible) as discussed in #149  (#391)
 - Move `existing` parameter into Investment objects of D1 components (was before added to output flow) (#391)
 - Use pyppeteers instead of selenium to emulate the webbrowser and print the pdf report
  automatically (#407)
