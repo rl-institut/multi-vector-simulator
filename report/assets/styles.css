@@ -67,7 +67,7 @@ h4 {
         margin: 30px;
 }
     /* Styling for the log messages */
-    .list-log {
+    .list-log-screen {
         text-align: left;
         font-size: 20pt;
         margin: 30px;
@@ -204,9 +204,11 @@ h4 {
     display: none;
   }
 
+  .list-log-print {
+    display: none;
+  }
+
 }
-
-
 
 /* print styles */
 @media print {
@@ -219,6 +221,15 @@ h4 {
   #location-map-div {
 
     }
+
+  .list-log-screen {
+    display: none;
+  }
+
+  .list-log-print {
+    text-align: left;
+    font-size: 15pt;
+  }
 
   .location-map-column {
     width: 48%;
