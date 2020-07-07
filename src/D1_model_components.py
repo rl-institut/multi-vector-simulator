@@ -674,7 +674,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     else:
         if TIMESERIES in dict_asset:
-            logging.error(
+            logging.debug(
                 "Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow"
             )
         outputs = {
@@ -718,7 +718,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     else:
         if TIMESERIES in dict_asset:
-            logging.error(
+            logging.debug(
                 "Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow"
             )
         outputs = {
