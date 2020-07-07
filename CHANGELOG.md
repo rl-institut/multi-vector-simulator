@@ -36,6 +36,7 @@ Here is a template for new release sections
  - Tests for source components in D1 (#391)
  - Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
  - Pyppeteer package for OS X users in troubleshooting (#414)
+ - Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
