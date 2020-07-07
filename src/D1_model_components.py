@@ -277,19 +277,21 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
     """
     if dict_asset[OPTIMIZE_CAP][VALUE] is False:
         func_constant(model, dict_asset, **kwargs)
-        logging.debug(
-            "Defined asset %s as %s (fix capacity)",
-            dict_asset[LABEL],
-            dict_asset["type_oemof"],
-        )
+        if dict_asset["type_oemof"] != "source":
+            logging.debug(
+                "Added: %s %s (fixed capacity)",
+                dict_asset["type_oemof"].capitalize(),
+                dict_asset[LABEL],
+            )
 
     elif dict_asset[OPTIMIZE_CAP][VALUE] is True:
         func_optimize(model, dict_asset, **kwargs)
-        logging.debug(
-            "Defined asset %s as %s (to be optimized)",
-            dict_asset[LABEL],
-            dict_asset["type_oemof"],
-        )
+        if dict_asset["type_oemof"] != "source":
+            logging.debug(
+                "Added: %s %s (capacity to be optimized)",
+                dict_asset["type_oemof"].capitalize(),
+                dict_asset[LABEL],
+            )
     else:
         raise ValueError(
             f"Input error! 'optimize_cap' of asset {dict_asset['label']}\n should be True/False but is {dict_asset['optimizeCap']['value']}."
@@ -613,6 +615,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
 
     model.add(source_non_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_non_dispatchable})
+    logging.debug("Added: Non-dispatchable source %s (fixed capacity)", dict_asset[LABEL])
     return
 
 
@@ -647,6 +650,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
 
     model.add(source_non_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_non_dispatchable})
+    logging.debug("Added: Non-dispatchable source %s (capacity to be optimized)", dict_asset[LABEL])
     return
 
 
@@ -687,7 +691,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     model.add(source_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_dispatchable})
-    logging.info("Added: Dispatchable source %s", dict_asset[LABEL])
+    logging.debug("Added: Dispatchable source %s (capacity to be optimized)", dict_asset[LABEL])
     return
 
 
@@ -727,7 +731,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     model.add(source_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_dispatchable})
-    logging.info("Added: Dispatchable source %s", dict_asset[LABEL])
+    logging.debug("Added: Dispatchable source %s (fixed capacity)", dict_asset[LABEL])
     return
 
 
