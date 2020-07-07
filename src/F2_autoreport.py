@@ -227,8 +227,12 @@ def insert_log_messages(log_dict):
         children=[
             html.Ul(
                 children=[
-                    html.Li(
-                        className="grid-x small-10 list-log", children=[html.Span(v)]
+                    html.Div(
+                        className="cell grid-x",
+                        children=[
+                            html.Div(children=k, className="cell small-1 list-marker"),
+                            html.Div(children=v, className="cell small-11 list-log"),
+                        ],
                     )
                     for k, v in log_dict.items()
                 ]
