@@ -67,10 +67,9 @@ h4 {
         margin: 30px;
 }
     /* Styling for the log messages */
-    .list-log-screen {
+    .list-log {
         text-align: left;
         font-size: 20pt;
-        margin: 30px;
 }
     .tableplay {
         width:70%;
@@ -204,7 +203,7 @@ h4 {
     display: none;
   }
 
-  .list-log-print {
+  .print {
     display: none;
   }
 
@@ -222,11 +221,11 @@ h4 {
 
     }
 
-  .list-log-screen {
+  .no-print > div {
     display: none;
   }
 
-  .list-log-print {
+  .list-log{
     text-align: left;
     font-size: 15pt;
   }

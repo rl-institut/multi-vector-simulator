@@ -225,7 +225,8 @@ def insert_log_messages(log_dict):
     """
     return html.Div(
         children=[
-            html.Ul(
+            html.Div(
+                className="grid-x no-print",
                 children=[
                     html.Div(
                         className="cell grid-x",
@@ -235,8 +236,14 @@ def insert_log_messages(log_dict):
                         ],
                     )
                     for k, v in log_dict.items()
-                ]
-            )
+                ],
+            ),
+            html.Div(
+                className="list-log print",
+                children=[
+                    html.Ul(children=[html.Span(v)]) for k, v in log_dict.items()
+                ],
+            ),
         ]
     )
 
