@@ -615,7 +615,9 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
 
     model.add(source_non_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_non_dispatchable})
-    logging.debug("Added: Non-dispatchable source %s (fixed capacity)", dict_asset[LABEL])
+    logging.debug(
+        "Added: Non-dispatchable source %s (fixed capacity)", dict_asset[LABEL]
+    )
     return
 
 
@@ -650,7 +652,10 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
 
     model.add(source_non_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_non_dispatchable})
-    logging.debug("Added: Non-dispatchable source %s (capacity to be optimized)", dict_asset[LABEL])
+    logging.debug(
+        "Added: Non-dispatchable source %s (capacity to be optimized)",
+        dict_asset[LABEL],
+    )
     return
 
 
@@ -691,7 +696,9 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     model.add(source_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_dispatchable})
-    logging.debug("Added: Dispatchable source %s (capacity to be optimized)", dict_asset[LABEL])
+    logging.debug(
+        "Added: Dispatchable source %s (capacity to be optimized)", dict_asset[LABEL]
+    )
     return
 
 
