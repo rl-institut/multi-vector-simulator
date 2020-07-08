@@ -82,6 +82,8 @@ def capex_from_investment(investment_t0, lifetime, project_life, discount_factor
         last_investment = first_time_investment / (
             (1 + discount_factor) ** ((number_of_investments - 1) * lifetime)
         )
+        # the residual of the capex at the end of the simulation time takes into
+        # account the value of the money by deviding by (1 + discount_factor) ** (project_life)
         linear_depreciation_last_investment = last_investment / lifetime
         capex = capex - linear_depreciation_last_investment * (
             number_of_investments * lifetime - project_life
