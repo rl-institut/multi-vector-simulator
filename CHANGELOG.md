@@ -55,6 +55,7 @@ Here is a template for new release sections
 - Label of storage components (storage capacity, input power, output power) will by default be redefined to the name of the storage and this component (#415)
 - Version number and date is only to be edited in one file (#419)
 - Add `ìnputs` folder to `.gitignore` (#401)
+- Change the residual for capex in C2 and test_C2 (#289, #247)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
