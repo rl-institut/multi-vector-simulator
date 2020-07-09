@@ -37,8 +37,8 @@ Here is a template for new release sections
  - Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
  - Pyppeteer package for OS X users in troubleshooting (#414)
  - Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
- - New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json
- input files (#432)
+ - New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
+ - `.readthedocs.yml` configuration file (#435)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
