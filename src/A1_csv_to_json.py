@@ -20,6 +20,7 @@ Functions of this module (that need to be tested)
 - read all parameters in from csv files
 - parse parameter that is given as a timeseries with input file name and header
 - parse parameter that is given as a list
+
 - check that parameter that is given as a list results and subsequent other parameters to be given
   as list e.g. if we have two output flows in conversion assets there should be two efficiencies
   to operational costs (this is not implemented in code yet)
@@ -198,8 +199,8 @@ def create_json_from_csv(
     main key of the dictionary. Exceptions are made for the files
     ["economic_data", "project", "project_data", "simulation_settings"], here
     no main key is added. Another exception is made for the file
-    "energyStorage". When this file is processed, the according "storage_"
-    files (names of the "storage_"-columns in "energyStorage" are called and
+    "energyStorage". When this file is processed, the according "storage"
+    files (names of the "storage" columns in "energyStorage" are called and
     added to the energyStorage Dictionary.
 
 
@@ -210,10 +211,12 @@ def create_json_from_csv(
         extension
     :param parameters: list
         List of parameters names that are required
+
     :param asset_is_a_storage : bool
         default value is False. If the function is called by
         add_storage_components() the
         parameter is set to True
+
     :return: dict
         the converted dictionary
     """
@@ -491,7 +494,7 @@ def check_for_newly_added_parameters(
     ----------
     filename: str
         Defines the name of a csv input file (without the extension)
-    df: :pandas:`pandas.DataFrame<frame>`
+    df: :py:class:`~pandas.core.frame.DataFrame`
         Data frame read from one of the input files
     required_parameters: list
         Defines the required parameters
@@ -593,6 +596,7 @@ def add_storage_components(storage_filename, input_directory):
     loads the csv of a the specific storage listed as column in
     "energyStorage.csv", checks for complete set of parameters and creates a
     json dictionary.
+
     :param storage_filename: str
         name of storage, given by the column name in "energyStorage.csv
     :param input_directory: str

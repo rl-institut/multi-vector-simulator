@@ -19,12 +19,13 @@ Setup process for users
 
 To set up the MVS, please follow the steps below:
 
-1. If python3 is not pre-installed: Install miniconda (click `here <https://docs.conda.io/en/latest/miniconda.html>`_ for python 3.7)
+1. If python3 is not pre-installed: Install miniconda ( `Find instructions <https://docs.conda.io/en/latest/miniconda.html>`_ for python 3.7)
 
 2. Clone or download the latest `MVS release <https://github.com/rl-institut/mvs_eland/releases>`_. Run this command in your Terminal or Command Prompt to clone MVS::
 
     git clone https://github.com/rl-institut/mvs_eland.git
-   and move to the ``mvs_eland`` folder
+
+    and move to the ``mvs_eland`` folder
 
 3. Download the `cbc-solver <https://projects.coin-or.org/Cbc>`_ into your system from `here <https://ampl.com/dl/open/cbc/>` and integrate it in your system, i.e., unzip, place into chosen path, and add path to your system variables (Windows: “System Properties” --> ”Advanced” --> “Environment Variables”, requires admin-rights).
 
@@ -41,6 +42,7 @@ To set up the MVS, please follow the steps below:
 5. Test if that the cbc solver is properly installed by typing::
 
     oemof_installation_test
+
    You should at least get a confirmation as below that the cbc solver is working::
    
     *****************************
@@ -105,6 +107,6 @@ Edit the csv files (or, for devs, the json file) and run the `main()` function. 
 Contributing and additional information for developers
 ------------------------------------------------------
 
-If you want to contribute to this project, please read [CONTRIBUTING.md](https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md). For less experienced github users we propose a workflow [HERE](https://github.com/rl-institut/mvs_eland/wiki/Examplary-Workflow).
+If you want to contribute to this project, please read [CONTRIBUTING.md](https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md). For less experienced github users we propose a workflow. [Link](https://github.com/rl-institut/mvs_eland/wiki/Examplary-Workflow).
 
-For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in turn might not be tested. You can find the CHANGELOG.md `here <https://github.com/rl-institut/mvs_eland/blob/dev/CHANGELOG.md>`_. 
+For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in turn might not be tested. You can find the CHANGELOG.md on this`page <https://github.com/rl-institut/mvs_eland/blob/dev/CHANGELOG.md>`_.
