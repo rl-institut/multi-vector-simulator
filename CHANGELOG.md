@@ -66,6 +66,7 @@ Here is a template for new release sections
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
 - Issue #357 Bug connected to global variables (#356)
 - Issue #168 Duplicate of timeseries files (#388)
+- Warnings from local readthedocs compilation (#426)
 
 ## [0.3.0] - 2020-06-08
 
