@@ -594,7 +594,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                     "(True/T/true or False/F/false)."
                 )
         else:
-            if value == TYPE_NONE:
+            if value == TYPE_NONE or value is None:
                 value = None
             else:
                 try:
