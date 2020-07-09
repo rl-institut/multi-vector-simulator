@@ -165,7 +165,9 @@ REQUIRED_CSV_PARAMETERS = {
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
-# todo needs to be filled
+# list of parameters which must be present within the JSON_FNAME file with the sub-parameters
+# note: if the value of a key is none, then the value is expected to be user-defined and thus cannot
+# be in a required parameters dict
 REQUIRED_JSON_PARAMETERS = {
     ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX],
     ENERGY_CONSUMPTION: None,

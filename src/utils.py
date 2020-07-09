@@ -136,10 +136,14 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
                 df = pd.read_csv(os.path.join(folder_csv_path, mp + ".csv"))
                 sub_parameters = df.iloc[:, 0].unique().tolist()
 
-            # intersect the set of provided sub_parameters with the set of required sub parameters
-            not_matching_params = list(
-                set(sub_parameters) ^ set(required_parameters[mp])
-            )
+            if required_parameters[mp] is not None:
+                # intersect the set of provided sub_parameters with the set of required sub parameters
+                not_matching_params = list(
+                    set(sub_parameters) ^ set(required_parameters[mp])
+                )
+            else:
+                # the parameter is expected to contain user defined names --> those are not checked
+                not_matching_params = []
 
             for sp in not_matching_params:
                 if sp in required_parameters[mp]:
