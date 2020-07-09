@@ -11,7 +11,7 @@ License
 The MVS is licensed with the **GNU General Public License v2.0**. The GNU GPL is the most widely used free software license and has a strong copyleft requirement. When distributing derived works, the source code of the work must be made available under the same license. There are multiple variants of the GNU GPL, each with different requirements.
 
 Flowchart
--------
+---------
  
 The MVS' global flowchart, or graphical model, is divided into three connected blocks that trace the logic sequence: inputs, system model, and outputs. This is a typical representation of a simulation model.
 
@@ -32,7 +32,7 @@ This set of input data is then translated to a linear programming problem, also 
 The simulation outputs are also separated into categories: the economic results used for the financial evaluation, such as the levelized cost of electricity or heat or the net present value of the projected investments, the technical results that include the optimized capacities and dispatch of each asset for instance, and the system’s environmental contribution in terms of CO2 emissions. All these results are valuable for the decision making.
 
 MVS Validation Plan
--------
+-------------------
 
 The adopted validation plan is part of the MVS’ entire development process and is based on three main validation types: conceptual model validation, model verification and operational validity. Following some in-depth research, a validation approach is chosen for the MVS, through which the most appropriate validation techniques are applied to the MVS so that it gains the necessary credibility.
 
@@ -49,7 +49,4 @@ The adopted validation plan is part of the MVS’ entire development process and
 *	Replication of one pilot project, with a validated optimization model with different component representation to compare and assess the results; and
   
 *	Sensitivity analysis, through which input-output transformations are studied to show the impact of changing the values of some input parameters.
-=======
-
-
 
