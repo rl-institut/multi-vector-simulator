@@ -2,6 +2,7 @@ import os
 import json
 import pandas as pd
 from src.constants import (
+    JSON_FNAME,
     CSV_ELEMENTS,
     OUTPUT_FOLDER,
     JSON_EXT,
@@ -13,7 +14,44 @@ from src.constants import (
 )
 
 
-def find_input_folders(
+def find_json_input_folders(
+    path, specific_file_name=JSON_FNAME, ignore_folders=(OUTPUT_FOLDER,)
+):
+    """Recursively look in the folder structure until is sees a specific file
+
+    Parameters
+    ----------
+    path: str
+        the starting point of the search in the folder structure
+    specific_file_name: str
+        the name of the special file which should be present within a folder to add this folder
+        name to the list of matching folders
+    ignore_folders: tuple of str
+        a tuple of folder names which should not be investigated by the function, nor added to
+        the list of matching folders
+
+    Returns
+    -------
+    A list of paths to folders containing a specific file
+    """
+    folder_list = [
+        fn.name
+        for fn in os.scandir(path)
+        if fn.is_dir() and fn.name not in ignore_folders
+    ]
+
+    if os.path.exists(os.path.join(path, JSON_FNAME)):
+        return [path]
+    else:
+        answer = []
+        for folder in folder_list:
+            answer = answer + find_json_input_folders(
+                os.path.join(path, folder), specific_file_name=specific_file_name
+            )
+        return answer
+
+
+def find_csv_input_folders(
     path, specific_folder_name=CSV_ELEMENTS, ignore_folders=(OUTPUT_FOLDER,)
 ):
     """Recursively look in the folder structure until is sees a specific folder
@@ -21,7 +59,7 @@ def find_input_folders(
     Parameters
     ----------
     path: str
-        the starting point of the search
+        the starting point of the search in the folder structure
     specific_folder_name: str
         the name of the special folder which should be present within a folder to add this folder
         name to the list of matching folders
@@ -34,17 +72,17 @@ def find_input_folders(
     A list of paths to folders containing a specific folder
     """
 
-    folderlist = [
+    folder_list = [
         fn.name
         for fn in os.scandir(path)
         if fn.is_dir() and fn.name not in ignore_folders
     ]
-    if CSV_ELEMENTS in folderlist:
+    if CSV_ELEMENTS in folder_list:
         return [path]
     else:
         answer = []
-        for folder in folderlist:
-            answer = answer + find_input_folders(
+        for folder in folder_list:
+            answer = answer + find_csv_input_folders(
                 os.path.join(path, folder), specific_folder_name=specific_folder_name
             )
         return answer
@@ -98,10 +136,14 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
                 df = pd.read_csv(os.path.join(folder_csv_path, mp + ".csv"))
                 sub_parameters = df.iloc[:, 0].unique().tolist()
 
-            # intersect the set of provided sub_parameters with the set of required sub parameters
-            not_matching_params = list(
-                set(sub_parameters) ^ set(required_parameters[mp])
-            )
+            if required_parameters[mp] is not None:
+                # intersect the set of provided sub_parameters with the set of required sub parameters
+                not_matching_params = list(
+                    set(sub_parameters) ^ set(required_parameters[mp])
+                )
+            else:
+                # the parameter is expected to contain user defined names --> those are not checked
+                not_matching_params = []
 
             for sp in not_matching_params:
                 if sp in required_parameters[mp]:
