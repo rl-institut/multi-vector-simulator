@@ -3,7 +3,9 @@ import os
 # import constants from src
 from src.constants import (
     INPUT_FOLDER,
+    TEMPLATE_INPUT_FOLDER,
     OUTPUT_FOLDER,
+    TEMPLATE_INPUT_PATH,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
     PATH_INPUT_FILE,

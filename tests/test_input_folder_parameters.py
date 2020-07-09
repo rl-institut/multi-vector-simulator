@@ -4,6 +4,8 @@ import pytest
 from src.constants import REPO_PATH, EXTRA_CSV_PARAMETERS
 from .constants import (
     TEST_REPO_PATH,
+    TEMPLATE_INPUT_FOLDER,
+    TEMPLATE_INPUT_PATH,
     JSON_EXT,
     CSV_EXT,
     JSON_FNAME,
@@ -34,6 +36,8 @@ def test_input_folder_csv_files_have_required_parameters(input_folder):
     # if "input_template" in input_folder:
     #     assert EXTRA_PARAMETERS_KEY not in comparison
 
+    if TEMPLATE_INPUT_FOLDER in input_folder:
+        assert EXTRA_PARAMETERS_KEY not in comparison
 
 @pytest.mark.parametrize("input_folder", TEST_INPUT_FOLDERS)
 def test_input_folder_json_file_have_required_parameters(input_folder):

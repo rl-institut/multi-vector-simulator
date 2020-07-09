@@ -4,8 +4,10 @@ from src.constants_json_strings import *
 
 # path to the root of this repository (assumes this file is in src folder)
 REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# name of the input folder
+# name of the default input folder
 INPUT_FOLDER = "inputs"
+# name of the template input folder
+TEMPLATE_INPUT_FOLDER = "input_template"
 # name of the json extension
 JSON_EXT = "json"
 # name of the csv extension
@@ -32,6 +34,8 @@ REPORT_PATH = os.path.join(REPO_PATH, "report")
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)
+
+TEMPLATE_INPUT_PATH = os.path.join(REPO_PATH, TEMPLATE_INPUT_FOLDER)
 
 PATH_INPUT_FILE = "path_input_file"
 PATH_INPUT_FOLDER = "path_input_folder"
