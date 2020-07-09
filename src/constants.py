@@ -162,7 +162,36 @@ REQUIRED_CSV_PARAMETERS = {
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
 # todo needs to be filled
-REQUIRED_JSON_PARAMETERS = {}
+REQUIRED_JSON_PARAMETERS = {
+    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX],
+    ENERGY_CONSUMPTION: None,
+    ENERGY_CONVERSION: None,
+    ENERGY_PRODUCTION: None,
+    ENERGY_PROVIDERS: None,
+    ENERGY_STORAGE: None,
+    FIX_COST: None,
+    PROJECT_DATA: [
+        COUNTRY,
+        LABEL,
+        LATITUDE,
+        LONGITUDE,
+        PROJECT_ID,
+        PROJECT_NAME,
+        SCENARIO_ID,
+        SCENARIO_NAME,
+    ],
+    SIMULATION_SETTINGS: [
+        DISPLAY_NX_GRAPH,
+        EVALUATED_PERIOD,
+        LABEL,
+        OUTPUT_LP_FILE,
+        START_DATE,
+        STORE_NX_GRAPH,
+        STORE_OEMOF_RESULTS,
+        TIMESTEP,
+        RESTORE_FROM_OEMOF_FILE,
+    ],
+}
 # references for which parameters must be present either in the json or csv input method
 REQUIRED_MVS_PARAMETERS = {
     JSON_EXT: REQUIRED_JSON_PARAMETERS,
