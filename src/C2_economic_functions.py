@@ -151,3 +151,7 @@ def simulation_annuity(annuity, days):
     """
     simulation_annuity = annuity / 365 * days
     return simulation_annuity
+
+def levelized_cost_of_electricity_of_PV(annuity, ):
+    
+    return LCOE_PV
