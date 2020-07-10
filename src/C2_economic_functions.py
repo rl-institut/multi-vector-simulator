@@ -14,7 +14,14 @@ Functionalities:
 - calculate effective fuel price cost, in case there is a annual fuel price change (this functionality still has to be checked in this module)
 """
 
-from src.constants_json_strings import CRF, PROJECT_DURATION, DISCOUNTFACTOR
+from src.constants_json_strings import (
+    CRF,
+    PROJECT_DURATION,
+    DISCOUNTFACTOR,
+    ENERGY_PRODUCTION,
+    SIMULATION_ANNUITY,
+    VALUE,
+)
 
 # annuity factor to calculate present value of cash flows
 def annuity_factor(project_life, discount_factor):
@@ -152,6 +159,22 @@ def simulation_annuity(annuity, days):
     simulation_annuity = annuity / 365 * days
     return simulation_annuity
 
-def levelized_cost_of_electricity_of_PV(annuity, ):
-    
-    return LCOE_PV
+
+def levelized_cost_of_electricity_of_asset(dict_values):
+    """
+    Calculates the levelized cost of electricity (or generation) of each asset defined in energy production
+    Parameters
+    ----------
+    dict_values
+
+    Returns
+    -------
+
+    """
+    for asset in dict_values[ENERGY_PRODUCTION]:
+        LCOE[asset] = (
+            dict_values[ENERGY_PRODUCTION][asset][SIMULATION_ANNUITY][VALUE]
+            / dict_values[ENERGY_PRODUCTION][asset]["timeseries_total"][VALUE]
+        )
+
+    return LCOE
