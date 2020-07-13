@@ -16,6 +16,7 @@ from src.constants import (
     PLOTS_NX,
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
+    CSV_EXT
 )
 from src.constants_json_strings import (
     LABEL,
@@ -36,6 +37,7 @@ from .constants import (
     DUMMY_CSV_PATH,
     CSV_ELEMENTS,
     CSV_FNAME,
+    PARSER_ARGS
 )
 
 dict_values = {
@@ -102,9 +104,7 @@ class TestNetworkx:
     )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
-        return_value=PARSER.parse_args(
-            ["-i", TEST_INPUT_PATH_NX_TRUE, "-o", TEST_OUTPUT_PATH, "-ext", "csv", "-f"]
-        ),
+        return_value=PARSER.parse_args(PARSER_ARGS(input_folder = TEST_INPUT_PATH_NX_TRUE, output_folder = TEST_OUTPUT_PATH, ext = CSV_EXT)),
     )
     def test_if_networkx_graph_is_stored_save_plot_true(self, m_args):
         main()
@@ -126,7 +126,7 @@ class TestNetworkx:
                 "-o",
                 TEST_OUTPUT_PATH,
                 "-ext",
-                "csv",
+                CSV_EXT,
                 "-f",
             ]
         ),
