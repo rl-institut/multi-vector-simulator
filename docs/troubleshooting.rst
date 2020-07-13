@@ -10,28 +10,44 @@ Python package "pygraphviz"
 
 The installation of pygraphviz can cause errors. 
 You can circumvent this issue by setting the *simulation_setting* *plot_nx_graph* to False. 
-If you need to plot the network graphs (set parameter *plot_nx_graph* to True), check if we already have a solution for your OS/distribution.
+If you need to plot the network graphs (set parameter *plot_nx_graph* to True) or run all pytests,
+check if we already have a solution for your OS/distribution:
 
 **Ubuntu 18.4**: 
 Pygraphviz could not be installed with pip. Solution:
 
     sudo apt-get install python3-dev graphviz libgraphviz-dev pkg-config
     pip install pygraphviz
-    
+
+**Windows 10**
+Installing via
+
+   pip install -r requirements.txt
+
+results in an error:
+
+    error: Microsoft Visual C++ 14.0 is required. Get it with "Build Tools for Visual Studio": https://visualstudio.microsoft.com/downloads/
+
+You can find fixes on `stackoverflow <https://stackoverflow.com/questions/40809758/howto-install-pygraphviz-on-windows-10-64bit>`_
+If you have conda installed, activate your environment and run
+
+    conda install -c alubbock graphviz pygraphviz
+
+
 Python package "xlrd"
 #####################
 
 On **Windows** there can be issues installing xlrd. This could solve your troubles:
 
 1. Delete xlrd from requirements.txt
-2. Download the xlrd-1.2.0-py2.py3-none-any.whl file from: https://pypi.org/project/xlrd/#files
+2. Download the xlrd-1.2.0-py2.py3-none-any.whl file from `here <https://pypi.org/project/xlrd/#files>`_.
 3. Copy the file to main directory of the project on your laptop
 4. Install it manually writing pip install xlrd-1.2.0-py2.py3-none-any.whl
 
 Python package "wkhtmltopdf"
 ############################
 
-There can be issues installing ´wkhtmltopdf´. Solution can be found on the packages documentation here: https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf
+There can be issues installing ´wkhtmltopdf´. Solution can be found on the `packages documentation <https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf>`_.
 
 cbc-solver
 ##########
@@ -51,7 +67,7 @@ or
 
     `conda install -c conda-forge/label/cf202003 pyppeteer`
 
-More information is avaiable on: https://anaconda.org/conda-forge/pyppeteer
+More information is avaiable on `their website <https://anaconda.org/conda-forge/pyppeteer>`_.
 
 Error messages and MVS termination
 ----------------------------------
