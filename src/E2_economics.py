@@ -25,7 +25,7 @@ from src.constants_json_strings import (
     COST_OM_FIX,
     COST_UPFRONT,
     ENERGY_PRODUCTION,
-    SIMULATION_ANNUITY,
+    TOTAL_FLOW,
 )
 
 r"""
@@ -190,10 +190,10 @@ def levelized_cost_of_electricity_of_asset(dict_values):
     -------
 
     """
-    for asset in dict_values[ENERGY_PRODUCTION]:
+    for asset in dict_asset[ENERGY_PRODUCTION]:
         LCOE[asset] = (
-            dict_values[ENERGY_PRODUCTION][asset][SIMULATION_ANNUITY][VALUE]
-            / dict_values[ENERGY_PRODUCTION][asset]["timeseries_total"][VALUE]
+            dict_asset[ENERGY_PRODUCTION][asset][ANNUITY_TOTAL][VALUE]
+            / dict_asset[ENERGY_PRODUCTION][asset][TOTAL_FLOW][VALUE]
         )
 
     return LCOE
