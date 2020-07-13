@@ -18,8 +18,8 @@ crf = 0.12
 annuity = 35400
 annuity_factor = 1 / 0.12
 exp_capex_equal_project_life = 253000
-exp_capex_smaller_project_life = 273188.729
-exp_capex_bigger_project_life = 144571.428
+exp_capex_smaller_project_life = 307564.336
+exp_capex_bigger_project_life = 236882.783
 fuel_keys = {
     "fuel_price": 1.3,
     "fuel_price_change_annual": 0,
