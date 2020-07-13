@@ -18,9 +18,6 @@ from src.constants_json_strings import (
     CRF,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
-    ENERGY_PRODUCTION,
-    SIMULATION_ANNUITY,
-    VALUE,
 )
 
 # annuity factor to calculate present value of cash flows
@@ -158,23 +155,3 @@ def simulation_annuity(annuity, days):
     """
     simulation_annuity = annuity / 365 * days
     return simulation_annuity
-
-
-def levelized_cost_of_electricity_of_asset(dict_values):
-    """
-    Calculates the levelized cost of electricity (or generation) of each asset defined in energy production
-    Parameters
-    ----------
-    dict_values
-
-    Returns
-    -------
-
-    """
-    for asset in dict_values[ENERGY_PRODUCTION]:
-        LCOE[asset] = (
-            dict_values[ENERGY_PRODUCTION][asset][SIMULATION_ANNUITY][VALUE]
-            / dict_values[ENERGY_PRODUCTION][asset]["timeseries_total"][VALUE]
-        )
-
-    return LCOE

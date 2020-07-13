@@ -24,6 +24,8 @@ from src.constants_json_strings import (
     COST_DISPATCH,
     COST_OM_FIX,
     COST_UPFRONT,
+    ENERGY_PRODUCTION,
+    SIMULATION_ANNUITY,
 )
 
 r"""
@@ -175,3 +177,23 @@ def add_costs_and_total(dict_asset, name, value, total_costs):
 def all_list_in_dict(dict_asset, list):
     boolean = all([name in dict_asset for name in list]) is True
     return boolean
+
+
+def levelized_cost_of_electricity_of_asset(dict_values):
+    """
+    Calculates the levelized cost of electricity (or generation) of each asset defined in energy production
+    Parameters
+    ----------
+    dict_values
+
+    Returns
+    -------
+
+    """
+    for asset in dict_values[ENERGY_PRODUCTION]:
+        LCOE[asset] = (
+            dict_values[ENERGY_PRODUCTION][asset][SIMULATION_ANNUITY][VALUE]
+            / dict_values[ENERGY_PRODUCTION][asset]["timeseries_total"][VALUE]
+        )
+
+    return LCOE
