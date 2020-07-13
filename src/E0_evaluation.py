@@ -179,6 +179,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
     indicators.all_totals(dict_values)
+    economics.levelized_cost_of_electricity_of_asset(dict_values)
 
     # Processing further KPI
     indicators.total_renewable_and_non_renewable_energy_origin(dict_values)
