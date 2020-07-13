@@ -53,7 +53,11 @@ def crf(project_life, discount_factor):
 
 def capex_from_investment(investment_t0, lifetime, project_life, discount_factor, tax):
     """
-    Calculates the capital expenditures, also known as CapEx. CapEx represent the total funds used to acquire or upgrade an asset
+    Calculates the capital expenditures, also known as CapEx. CapEx represent the total funds used to acquire or upgrade an asset.
+    The specific capex is calculated by taking into account all future cash flows connected to the investment into one unit of the asset.
+    This includes reinvestments, operation and management costs, dispatch costs as well as a deduction of the residual value at project end.
+    The residual value is calculated with a linear depreciation of the last investment, ie. as a even share of the last investment over
+    the lifetime of the asset. The remaining value of the asset is translated in a present value and then deducted.
 
     :param investment_t0: first investment at the beginning of the project made at year 0
     :param lifetime: time period over which investments and re-investments can occur. can be equal to, longer or shorter than project_life
@@ -86,10 +90,12 @@ def capex_from_investment(investment_t0, lifetime, project_life, discount_factor
         last_investment = first_time_investment / (
             (1 + discount_factor) ** ((number_of_investments - 1) * lifetime)
         )
+        # the residual of the capex at the end of the simulation time takes into
+        # account the value of the money by deviding by (1 + discount_factor) ** (project_life)
         linear_depreciation_last_investment = last_investment / lifetime
         capex = capex - linear_depreciation_last_investment * (
             number_of_investments * lifetime - project_life
-        )
+        ) / (1 + discount_factor) ** (project_life)
 
     return capex
 
