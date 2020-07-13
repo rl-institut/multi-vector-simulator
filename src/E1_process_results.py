@@ -43,12 +43,13 @@ def get_timeseries_per_bus(dict_values, bus_data):
     ----------
     dict_values : dict
         Contains all input data of the simulation.
-    bus_data : dict
-        Contains information about all busses in a nested dict.
-        1st level keys: bus names;
-        2nd level keys:
-            'scalars': (pd.Series) (does not exist in all dicts)
-            'sequences': (pd.DataFrame) - contains flows between components and busses
+        bus_data : dict Contains information about all busses in a nested dict.
+
+            1st level keys: bus names;
+            2nd level keys:
+
+                'scalars': (pd.Series) (does not exist in all dicts)
+                'sequences': (pd.DataFrame) - contains flows between components and busses
 
     Returns
     -------
@@ -226,6 +227,7 @@ def get_results(settings, bus_data, dict_asset):
         Contains information about all busses in a nested dict.
         1st level keys: bus names;
         2nd level keys:
+
             'scalars': (pd.Series) (does not exist in all dicts)
             'sequences': (pd.DataFrame) - contains flows between components and busses
     dict_asset : dict

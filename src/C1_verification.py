@@ -61,8 +61,8 @@ def lookup_file(file_path, name):
     If it does not exist, a FileNotFoundError is raised.
 
     :param file_path: File name including path of file that is checked.
-    :param name: Something referring to which component the file belongs. In
-    :func:`~.CO_data_processing.get_timeseries_multiple_flows` the label of the
+    :param name: Something referring to which component the file belongs. In\
+    :func:`~.CO_data_processing.get_timeseries_multiple_flows` the label of the\
     asset is used.
     :return:
     """
