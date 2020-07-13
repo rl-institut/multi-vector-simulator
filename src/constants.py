@@ -212,24 +212,6 @@ WARNING_TEXT = "warning_text"
 REQUIRED_IN_CSV_ELEMENTS = "required in files"
 DEFAULT_VALUE = "default"
 
-EXTRA_CSV_PARAMETERS = {
-    MAXIMUM_CAP: {
-        DEFAULT_VALUE: None,
-        WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
-        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_CONVERSION, ENERGY_PRODUCTION],
-    },
-    RENEWABLE_ASSET_BOOL: {
-        DEFAULT_VALUE: False,
-        WARNING_TEXT: "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
-        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PRODUCTION],
-    },
-    RENEWABLE_SHARE_DSO: {
-        DEFAULT_VALUE: 0,
-        WARNING_TEXT: "allows defining the renewable share of the DSO supply (Values: Float). ",
-        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
-    },
-}
-
 # possible type of variable stored into the json file
 TYPE_DATETIMEINDEX = "pandas_DatetimeIndex:"
 TYPE_SERIES = "pandas_Series:"
@@ -238,6 +220,28 @@ TYPE_TIMESTAMP = "pandas_Timestamp:"
 TYPE_BOOL = "bool"
 TYPE_STR = "str"
 TYPE_NONE = "None"
+TYPE_FLOAT = "float"
+
+EXTRA_CSV_PARAMETERS = {
+    MAXIMUM_CAP: {
+        DEFAULT_VALUE: None,
+        UNIT: TYPE_NONE,
+        WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_CONVERSION, ENERGY_PRODUCTION],
+    },
+    RENEWABLE_ASSET_BOOL: {
+        DEFAULT_VALUE: False,
+        UNIT: TYPE_BOOL,
+        WARNING_TEXT: "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PRODUCTION],
+    },
+    RENEWABLE_SHARE_DSO: {
+        DEFAULT_VALUE: 0,
+        UNIT: TYPE_FLOAT,
+        WARNING_TEXT: "allows defining the renewable share of the DSO supply (Values: Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
+    },
+}
 
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
     "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1},
