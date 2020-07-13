@@ -43,6 +43,10 @@ class TestTemporaryJsonFileDisposal:
     test_in_path = os.path.join(TEST_REPO_PATH, "inputs")
     test_out_path = os.path.join(TEST_REPO_PATH, "MVS_outputs")
 
+    def setup_class(self):
+        """ """
+        shutil.rmtree(test_out_path, ignore_errors=True)
+
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
