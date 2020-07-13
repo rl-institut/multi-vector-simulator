@@ -55,3 +55,34 @@ JSON_CSV_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER, CSV_ELEMENTS, CSV_FNA
 
 # folder to store input directory for tests
 TEST_INPUT_DIRECTORY = "test_data"
+
+def PARSER_ARGS(input_folder = None, output_folder = None, ext = "csv"):
+    """
+    This function defines the parser arguments needed for a multitude of pytests (unit and benchmark)
+
+    Parameters
+    ----------
+    input_folder
+        Input folder for MVS
+
+    output_folder
+        Output folder for MVS
+
+    ext
+        File extension to be used ("csv" or "json")
+
+    Returns
+    -------
+    List of arguments to execute MVS.
+    """
+    parser_args = ["-ext", ext, "-f", "-log", "warning"]
+
+    if input_folder != None:
+        parser_args.append("-i")
+        parser_args.append(input_folder)
+
+    if output_folder != None:
+        parser_args.append("-o")
+        parser_args.append(output_folder)
+
+    return parser_args
