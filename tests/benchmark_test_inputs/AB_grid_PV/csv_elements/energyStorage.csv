@@ -6,3 +6,4 @@ outflow_direction,str
 type_oemof,str
 storage_filename,str
 energyVector,str
+maximumCap,kWh

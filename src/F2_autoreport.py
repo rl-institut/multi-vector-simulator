@@ -74,8 +74,7 @@ from src.constants_json_strings import (
 )
 
 # TODO link this to the version and date number @Bachibouzouk
-version = "X.Y.Z"
-version_date = "YYYY-MM-DD"
+from mvs_eland_tool.version import version_num, version_date
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
@@ -215,6 +214,36 @@ def insert_image_array(img_list, width=500):
                 width="{}px".format(width),
             )
             for ts in img_list
+        ],
+    )
+
+
+def insert_log_messages(log_dict):
+    """
+    :param log_dict: dict, containing the logging messages
+    :return: html.Div() element
+    """
+    return html.Div(
+        children=[
+            # this will be displayed only in the app
+            html.Div(
+                className="grid-x no-print",
+                children=[
+                    html.Div(
+                        className="cell grid-x",
+                        children=[
+                            html.Div(children=k, className="cell small-1 list-marker"),
+                            html.Div(children=v, className="cell small-11 list-log"),
+                        ],
+                    )
+                    for k, v in log_dict.items()
+                ],
+            ),
+            # this will be displayed only in the printed version
+            html.Div(
+                className="list-log print",
+                children=html.Ul(children=[html.Li(v) for k, v in log_dict.items()]),
+            ),
         ],
     )
 
@@ -477,6 +506,30 @@ def create_app(results_json):
     # Round the numeric values to two significant digits
     df_cost_matrix = df_cost_matrix.round(2)
 
+    # Dictionaries to gather non-fatal warning and error messages that appear during the simulation
+    warnings_dict = {}
+    errors_dict = {}
+
+    log_file = os.path.join(OUTPUT_FOLDER, "mvs_logfile.log")
+    # log_file = "/home/mr/Projects/mvs_eland/MVS_outputs/mvs_logfile.log"
+    print(log_file)
+
+    with open(log_file) as log_messages:
+        log_messages = log_messages.readlines()
+
+    i = 0
+    for line in log_messages:
+        if "WARNING" in line:
+            i = i + 1
+            substrings = line.split(" - ")
+            message_string = substrings[-1]
+            warnings_dict.update({i: message_string})
+        elif "ERROR" in line:
+            i = i + 1
+            substrings = line.split(" - ")
+            message_string = substrings[-1]
+            errors_dict.update({i: message_string})
+
     app.layout = html.Div(
         id="main-div",
         className="grid-x align-center",
@@ -499,7 +552,7 @@ def create_app(results_json):
                     html.Div(
                         className="cell imp_info",
                         children=[
-                            html.P(f"MVS Release: {version} ({version_date})"),
+                            html.P(f"MVS Release: {version_num} ({version_date})"),
                             html.P(f"Branch-id: {branchID}"),
                             html.P(f"Simulation date: {simDate}"),
                             html.Div(
@@ -690,6 +743,27 @@ def create_app(results_json):
                             )
                             # TODO Plots to be generated using Plotly
                         ],
+                    ),
+                ],
+            ),
+            html.Section(
+                className="cell small-10 small_offset-1 grid-x",
+                children=[
+                    html.Div(
+                        className="cell",
+                        children=[insert_headings(heading_text="Logging Messages"),],
+                    ),
+                    html.Div(
+                        children=[
+                            insert_subsection(
+                                title="Warning Messages",
+                                content=insert_log_messages(log_dict=warnings_dict),
+                            ),
+                            insert_subsection(
+                                title="Error Messages",
+                                content=insert_log_messages(log_dict=errors_dict),
+                            ),
+                        ]
                     ),
                 ],
             ),

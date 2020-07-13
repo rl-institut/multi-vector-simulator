@@ -37,7 +37,7 @@ import src.C0_data_processing as data_processing
 import src.D0_modelling_and_optimization as modelling
 import src.E0_evaluation as evaluation
 import src.F0_output as output_processing
-from mvs_eland_tool import version, version_date
+from mvs_eland_tool.version import version_num, version_date
 from src.constants import (
     CSV_ELEMENTS,
     CSV_EXT,
@@ -84,7 +84,7 @@ def main(**kwargs):
 
     welcome_text = (
         "\n \n Multi-Vector Simulation Tool (MVS) V"
-        + version
+        + version_num
         + " "
         + "\n Version: "
         + version_date

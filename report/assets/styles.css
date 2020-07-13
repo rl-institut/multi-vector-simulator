@@ -60,15 +60,17 @@ h4 {
    text-align: left;
    }
 
-
-
 @media screen {
 
     /* Styling for the E-lands logo and the title of the report */
     .header_title_logo {
         margin: 30px;
 }
-
+    /* Styling for the log messages */
+    .list-log {
+        text-align: left;
+        font-size: 20pt;
+}
     .tableplay {
         width:70%;
         font-size: 20pt;
@@ -201,9 +203,11 @@ h4 {
     display: none;
   }
 
+  .print {
+    display: none;
+  }
+
 }
-
-
 
 /* print styles */
 @media print {
@@ -216,6 +220,15 @@ h4 {
   #location-map-div {
 
     }
+
+  .no-print > div {
+    display: none;
+  }
+
+  .list-log{
+    text-align: left;
+    font-size: 15pt;
+  }
 
   .location-map-column {
     width: 48%;

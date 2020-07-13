@@ -14,3 +14,4 @@ outflow_direction,str
 type_oemof,str
 unit,str
 energyVector,str
+renewableAsset,bool

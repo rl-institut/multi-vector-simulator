@@ -4,8 +4,10 @@ from src.constants_json_strings import *
 
 # path to the root of this repository (assumes this file is in src folder)
 REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# name of the input folder
+# name of the default input folder
 INPUT_FOLDER = "inputs"
+# name of the template input folder
+TEMPLATE_INPUT_FOLDER = "input_template"
 # name of the json extension
 JSON_EXT = "json"
 # name of the csv extension
@@ -32,6 +34,8 @@ REPORT_PATH = os.path.join(REPO_PATH, "report")
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)
+
+TEMPLATE_INPUT_PATH = os.path.join(REPO_PATH, TEMPLATE_INPUT_FOLDER)
 
 PATH_INPUT_FILE = "path_input_file"
 PATH_INPUT_FOLDER = "path_input_folder"
@@ -161,8 +165,39 @@ REQUIRED_CSV_PARAMETERS = {
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
-# todo needs to be filled
-REQUIRED_JSON_PARAMETERS = {}
+# list of parameters which must be present within the JSON_FNAME file with the sub-parameters
+# note: if the value of a key is none, then the value is expected to be user-defined and thus cannot
+# be in a required parameters dict
+REQUIRED_JSON_PARAMETERS = {
+    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX],
+    ENERGY_CONSUMPTION: None,
+    ENERGY_CONVERSION: None,
+    ENERGY_PRODUCTION: None,
+    ENERGY_PROVIDERS: None,
+    ENERGY_STORAGE: None,
+    FIX_COST: None,
+    PROJECT_DATA: [
+        COUNTRY,
+        LABEL,
+        LATITUDE,
+        LONGITUDE,
+        PROJECT_ID,
+        PROJECT_NAME,
+        SCENARIO_ID,
+        SCENARIO_NAME,
+    ],
+    SIMULATION_SETTINGS: [
+        DISPLAY_NX_GRAPH,
+        EVALUATED_PERIOD,
+        LABEL,
+        OUTPUT_LP_FILE,
+        START_DATE,
+        STORE_NX_GRAPH,
+        STORE_OEMOF_RESULTS,
+        TIMESTEP,
+        RESTORE_FROM_OEMOF_FILE,
+    ],
+}
 # references for which parameters must be present either in the json or csv input method
 REQUIRED_MVS_PARAMETERS = {
     JSON_EXT: REQUIRED_JSON_PARAMETERS,
@@ -181,11 +216,7 @@ EXTRA_CSV_PARAMETERS = {
     MAXIMUM_CAP: {
         DEFAULT_VALUE: None,
         WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
-        REQUIRED_IN_CSV_ELEMENTS: [
-            ENERGY_CONVERSION,
-            ENERGY_STORAGE,
-            ENERGY_PRODUCTION,
-        ],
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_CONVERSION, ENERGY_PRODUCTION],
     },
     RENEWABLE_ASSET_BOOL: {
         DEFAULT_VALUE: False,

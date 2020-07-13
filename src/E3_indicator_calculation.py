@@ -191,6 +191,7 @@ def equation_renewable_share(total_res, total_non_res):
     ----------
     total_res :
         Renewable generation of a system
+
     total_non_res :
         Non-renewable generation of a system
 
@@ -198,6 +199,7 @@ def equation_renewable_share(total_res, total_non_res):
     -------
     type
         Renewable share
+
     .. math::
             RES = \frac{total_res}{total_non_res + total_res}
 
@@ -266,8 +268,7 @@ def assert_aggregated_flows_of_energy_conversion_equivalent(dict_values):
 def equation_degree_of_sector_coupling(
     total_flow_of_energy_conversion_equivalent, total_demand_equivalent
 ):
-    """
-    Calculates degree of sector coupling.
+    """Calculates degree of sector coupling.
 
     Parameters
     ----------
