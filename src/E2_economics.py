@@ -28,6 +28,8 @@ from src.constants_json_strings import (
     TOTAL_FLOW,
 )
 
+LCOE = {}
+
 r"""
 Module E3 economic processing
 -----------------------------
