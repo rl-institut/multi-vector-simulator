@@ -183,10 +183,10 @@ def all_list_in_dict(dict_asset, list):
 
 def levelized_cost_of_electricity_of_asset(dict_asset):
     """
-    Calculates the levelized cost of electricity (or generation) of each asset defined in energy production
+    Calculates the levelized cost of electricity (or generation) of each asset defined in energyProduction.csv
     Parameters
     ----------
-    dict_values
+    dict_asset
 
     Returns
     -------
