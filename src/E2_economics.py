@@ -207,10 +207,9 @@ def lcoe_assets(dict_values):
             if asset_group == "ENERGY_CONSUMPTION":
                 dict_values[asset_group][asset].update({LCOE_ASSET: 0})
             else:
-            lcoe_a = (
-                dict_values[asset_group][asset][ANNUITY_TOTAL][VALUE]
-                / dict_values[asset_group][asset][TOTAL_FLOW][VALUE]
-            )
-            dict_values[asset_group][asset].update({LCOE_ASSET: lcoe_a})
-
+                lcoe_a = (
+                    dict_values[asset_group][asset][ANNUITY_TOTAL][VALUE]
+                    / dict_values[asset_group][asset][TOTAL_FLOW][VALUE]
+                )
+                dict_values[asset_group][asset].update({LCOE_ASSET: lcoe_a})
     return
