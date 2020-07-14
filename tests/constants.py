@@ -56,7 +56,7 @@ JSON_CSV_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER, CSV_ELEMENTS, CSV_FNA
 # folder to store input directory for tests
 TEST_INPUT_DIRECTORY = "test_data"
 
-def PARSER_ARGS(input_folder = None, output_folder = None, ext = CSV_EXT):
+def PARSER_ARGS(input_folder = None, output_folder = None, ext = None, force = True, log = None):
     """
     This function defines the parser arguments needed for a multitude of pytests (unit and benchmark)
 
@@ -75,7 +75,7 @@ def PARSER_ARGS(input_folder = None, output_folder = None, ext = CSV_EXT):
     -------
     List of arguments to execute MVS.
     """
-    parser_args = ["-ext", ext, "-f", "-log", "warning"]
+    parser_args = []
 
     if input_folder != None:
         parser_args.append("-i")
@@ -84,5 +84,19 @@ def PARSER_ARGS(input_folder = None, output_folder = None, ext = CSV_EXT):
     if output_folder != None:
         parser_args.append("-o")
         parser_args.append(output_folder)
+
+    if log is None:
+        parser_args.append("-log")
+        parser_args.append("warning")
+    else:
+        parser_args.append("-log")
+        parser_args.append(log)
+
+    if force is True:
+        parser_args.append("-f")
+
+    if ext != None:
+        parser_args.append("-ext")
+        parser_args.append(ext)
 
     return parser_args
