@@ -206,6 +206,8 @@ def lcoe_assets(dict_values):
         for asset in dict_values[asset_group]:
             if asset_group == "ENERGY_CONSUMPTION":
                 dict_values[asset_group][asset].update({LCOE_ASSET: 0})
+            elif dict_values[asset_group][asset][TOTAL_FLOW][VALUE] == 0:
+                dict_values[asset_group][asset].update({LCOE_ASSET: "NA"})
             else:
                 lcoe_a = (
                     dict_values[asset_group][asset][ANNUITY_TOTAL][VALUE]
