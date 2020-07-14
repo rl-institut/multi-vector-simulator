@@ -56,7 +56,10 @@ JSON_CSV_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER, CSV_ELEMENTS, CSV_FNA
 # folder to store input directory for tests
 TEST_INPUT_DIRECTORY = "test_data"
 
-def PARSER_ARGS(input_folder = None, output_folder = None, ext = None, force = True, log = None, pdf=False):
+
+def PARSER_ARGS(
+    input_folder=None, output_folder=None, ext=None, force=True, log=None, pdf=False
+):
     """
     This function defines the parser arguments needed for a multitude of pytests (unit and benchmark)
 

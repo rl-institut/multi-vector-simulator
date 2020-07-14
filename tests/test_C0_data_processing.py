@@ -59,6 +59,7 @@ def test_adding_economic_parameters_C2():
     for k in (ANNUITY_FACTOR, CRF):
         assert k in economic_parameters.keys()
 
+
 settings = {EVALUATED_PERIOD: {VALUE: 365}}
 
 economic_data = {

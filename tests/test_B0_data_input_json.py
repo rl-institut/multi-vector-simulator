@@ -18,7 +18,7 @@ from .constants import (
     PATH_OUTPUT_FOLDER,
     PATH_OUTPUT_FOLDER_INPUTS,
     TEST_REPO_PATH,
-    PARSER_ARGS
+    PARSER_ARGS,
 )
 
 
@@ -46,7 +46,9 @@ class TestTemporaryJsonFileDisposal:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            PARSER_ARGS(input_folder=test_in_path, output_folder=test_out_path, ext=CSV_EXT)
+            PARSER_ARGS(
+                input_folder=test_in_path, output_folder=test_out_path, ext=CSV_EXT
+            )
         ),
     )
     def test_load_json_removes_json_file_from_inputs_folder(self, m_args):
@@ -64,7 +66,9 @@ class TestTemporaryJsonFileDisposal:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            PARSER_ARGS(input_folder=test_in_path, output_folder=test_out_path, ext=CSV_EXT)
+            PARSER_ARGS(
+                input_folder=test_in_path, output_folder=test_out_path, ext=CSV_EXT
+            )
         ),
     )
     def test_load_json_copies_json_file_to_output_folder(self, m_args):
