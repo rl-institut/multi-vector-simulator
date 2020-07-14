@@ -28,8 +28,6 @@ from src.constants_json_strings import (
     TOTAL_FLOW,
 )
 
-LCOE = {}
-
 r"""
 Module E3 economic processing
 -----------------------------
@@ -192,10 +190,11 @@ def levelized_cost_of_electricity_of_asset(dict_asset):
     -------
 
     """
+    lcoe = {}
     for asset in dict_asset[ENERGY_PRODUCTION]:
-        LCOE[asset] = (
+        lcoe[asset] = (
             dict_asset[ENERGY_PRODUCTION][asset][ANNUITY_TOTAL][VALUE]
             / dict_asset[ENERGY_PRODUCTION][asset][TOTAL_FLOW][VALUE]
         )
 
-    return LCOE
+    return lcoe
