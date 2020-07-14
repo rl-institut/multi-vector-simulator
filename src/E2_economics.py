@@ -26,6 +26,11 @@ from src.constants_json_strings import (
     COST_UPFRONT,
     ENERGY_PRODUCTION,
     TOTAL_FLOW,
+    ENERGY_CONSUMPTION,
+    ENERGY_CONVERSION,
+    ENERGY_PROVIDERS,
+    ENERGY_STORAGE,
+    LCOE_ASSET,
 )
 
 r"""
@@ -179,22 +184,33 @@ def all_list_in_dict(dict_asset, list):
     return boolean
 
 
-def levelized_cost_of_electricity_of_asset(dict_asset):
+def lcoe_assets(dict_values):
     """
-    Calculates the levelized cost of electricity (or generation) of each asset defined in energyProduction.csv
+    Calculates the levelized cost of electricity (lcoe) of each asset
     Parameters
     ----------
-    dict_asset
+    dict_values
 
     Returns
     -------
 
     """
-    lcoe = {}
-    for asset in dict_asset[ENERGY_PRODUCTION]:
-        lcoe[asset] = (
-            dict_asset[ENERGY_PRODUCTION][asset][ANNUITY_TOTAL][VALUE]
-            / dict_asset[ENERGY_PRODUCTION][asset][TOTAL_FLOW][VALUE]
-        )
+    asset_group_list = [
+        ENERGY_CONSUMPTION,
+        ENERGY_CONVERSION,
+        ENERGY_PRODUCTION,
+        ENERGY_PROVIDERS,
+        ENERGY_STORAGE,
+    ]
+    for asset_group in asset_group_list:
+        for asset in dict_values[asset_group]:
+            if asset_group == "ENERGY_CONSUMPTION":
+                dict_values[asset_group][asset].update({LCOE_ASSET: 0})
+            else:
+            lcoe_a = (
+                dict_values[asset_group][asset][ANNUITY_TOTAL][VALUE]
+                / dict_values[asset_group][asset][TOTAL_FLOW][VALUE]
+            )
+            dict_values[asset_group][asset].update({LCOE_ASSET: lcoe_a})
 
-    return lcoe
+    return
