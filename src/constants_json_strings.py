@@ -171,6 +171,9 @@ COST_DISPATCH = (
 COST_UPFRONT = "costs_upfront_in_year_zero"
 COST_INVESTMENT = "costs_investment_over_lifetime"
 
+# Levelized cost of electricity
+LCOE_ASSET = "levelized_cost_of_electricity_of_asset"
+
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (
     ANNUITY_OM,
