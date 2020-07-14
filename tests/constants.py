@@ -56,7 +56,7 @@ JSON_CSV_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER, CSV_ELEMENTS, CSV_FNA
 # folder to store input directory for tests
 TEST_INPUT_DIRECTORY = "test_data"
 
-def PARSER_ARGS(input_folder = None, output_folder = None, ext = None, force = True, log = None):
+def PARSER_ARGS(input_folder = None, output_folder = None, ext = None, force = True, log = None, pdf=False):
     """
     This function defines the parser arguments needed for a multitude of pytests (unit and benchmark)
 
@@ -70,6 +70,14 @@ def PARSER_ARGS(input_folder = None, output_folder = None, ext = None, force = T
 
     ext
         File extension to be used ("csv" or "json")
+
+    force
+        Overwrite existing files
+        Default = True
+
+    log
+        Print warning messages
+        Default level = warning
 
     Returns
     -------
@@ -98,5 +106,8 @@ def PARSER_ARGS(input_folder = None, output_folder = None, ext = None, force = T
     if ext != None:
         parser_args.append("-ext")
         parser_args.append(ext)
+
+    if pdf is True:
+        parser_args.append("-pdf")
 
     return parser_args
