@@ -212,7 +212,7 @@ def lcoe_assets(dict_values):
                 )
                 dict_values[asset_group][asset].update({LCOE_ASSET: lcoe_a})
 
-    for asset in ENERGY_STORAGE:
+    for asset in dict_values[ENERGY_STORAGE]:
         if dict_values[ENERGY_STORAGE][asset]["output power"][TOTAL_FLOW][VALUE] == 0:
             dict_values[ENERGY_STORAGE][asset].update({LCOE_ASSET: None})
         else:
