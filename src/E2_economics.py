@@ -208,8 +208,19 @@ def lcoe_assets(dict_values):
             elif dict_values[asset_group][asset][TOTAL_FLOW][VALUE] == 0.0:
                 dict_values[asset_group][asset].update({LCOE_ASSET: None})
             elif asset_group == "ENERGY_STORAGE":
-                storage_annuity = dict_values[asset_group][asset]["input power"][ANNUITY_TOTAL][VALUE] + dict_values[asset_group][asset]["output power"][ANNUITY_TOTAL][VALUE] + dict_values[asset_group][asset]["storage capacity"][ANNUITY_TOTAL][VALUE]
-                lcoe_a = storage_annuity / dict_values[asset_group][asset]["output power"][TOTAL_FLOW][VALUE]
+                storage_annuity = (
+                    dict_values[asset_group][asset]["input power"][ANNUITY_TOTAL][VALUE]
+                    + dict_values[asset_group][asset]["output power"][ANNUITY_TOTAL][
+                        VALUE
+                    ]
+                    + dict_values[asset_group][asset]["storage capacity"][
+                        ANNUITY_TOTAL
+                    ][VALUE]
+                )
+                lcoe_a = (
+                    storage_annuity
+                    / dict_values[asset_group][asset]["output power"][TOTAL_FLOW][VALUE]
+                )
                 dict_values[asset_group][asset].update({LCOE_ASSET: lcoe_a})
             else:
                 lcoe_a = (
