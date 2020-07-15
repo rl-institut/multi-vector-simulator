@@ -33,6 +33,7 @@ from src.constants_json_strings import (
     COST_OM_TOTAL,
     COST_DISPATCH,
     COST_OM_FIX,
+    LCOE_ASSET,
 )
 
 from .constants import (
@@ -107,6 +108,7 @@ def test_all_list_in_dict_fails_due_to_not_included_keys():
     boolean = E2.all_list_in_dict(dict_asset, list_false)
     assert boolean is False
 
+
 @mock.patch(
     "argparse.ArgumentParser.parse_args",
     return_value=PARSER.parse_args(["-i", TEST_INPUT_PATH, "-o", TEST_OUTPUT_PATH]),
@@ -139,6 +141,7 @@ def setup_module(m_args):
     with open(DICT_AFTER, "wb") as handle:
         pickle.dump(dict_values, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+
 def test_lcoe_parameter_added_to_dict_asset():
     with open(DICT_BEFORE, "rb") as handle:
         dict_values_before = pickle.load(handle)
@@ -146,5 +149,5 @@ def test_lcoe_parameter_added_to_dict_asset():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    assert "LCOE" not in dict_values_before
-    assert "LCOE" in dict_values_after
+    assert LCOE_ASSET not in dict_values_before
+    assert LCOE_ASSET in dict_values_after
