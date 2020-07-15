@@ -28,7 +28,6 @@ from src.constants_json_strings import (
     TOTAL_FLOW,
     ENERGY_CONSUMPTION,
     ENERGY_CONVERSION,
-    ENERGY_PROVIDERS,
     ENERGY_STORAGE,
     LCOE_ASSET,
 )
@@ -199,7 +198,6 @@ def lcoe_assets(dict_values):
         ENERGY_CONSUMPTION,
         ENERGY_CONVERSION,
         ENERGY_PRODUCTION,
-        ENERGY_STORAGE,
     ]
     for asset_group in asset_group_list:
         for asset in dict_values[asset_group]:
@@ -207,25 +205,29 @@ def lcoe_assets(dict_values):
                 dict_values[asset_group][asset].update({LCOE_ASSET: 0})
             elif dict_values[asset_group][asset][TOTAL_FLOW][VALUE] == 0.0:
                 dict_values[asset_group][asset].update({LCOE_ASSET: None})
-            elif asset_group == "ENERGY_STORAGE":
-                storage_annuity = (
-                    dict_values[asset_group][asset]["input power"][ANNUITY_TOTAL][VALUE]
-                    + dict_values[asset_group][asset]["output power"][ANNUITY_TOTAL][
-                        VALUE
-                    ]
-                    + dict_values[asset_group][asset]["storage capacity"][
-                        ANNUITY_TOTAL
-                    ][VALUE]
-                )
-                lcoe_a = (
-                    storage_annuity
-                    / dict_values[asset_group][asset]["output power"][TOTAL_FLOW][VALUE]
-                )
-                dict_values[asset_group][asset].update({LCOE_ASSET: lcoe_a})
             else:
                 lcoe_a = (
                     dict_values[asset_group][asset][ANNUITY_TOTAL][VALUE]
                     / dict_values[asset_group][asset][TOTAL_FLOW][VALUE]
                 )
                 dict_values[asset_group][asset].update({LCOE_ASSET: lcoe_a})
+
+    for asset in ENERGY_STORAGE:
+        if dict_values[ENERGY_STORAGE][asset]["output power"][TOTAL_FLOW][VALUE] == 0:
+            dict_values[ENERGY_STORAGE][asset].update({LCOE_ASSET: None})
+        else:
+            storage_annuity = (
+                dict_values[ENERGY_STORAGE][asset]["input power"][ANNUITY_TOTAL][VALUE]
+                + dict_values[ENERGY_STORAGE][asset]["output power"][ANNUITY_TOTAL][
+                    VALUE
+                ]
+                + dict_values[ENERGY_STORAGE][asset]["storage capacity"][ANNUITY_TOTAL][
+                    VALUE
+                ]
+            )
+            lcoe_a = (
+                storage_annuity
+                / dict_values[ENERGY_STORAGE][asset]["output power"][TOTAL_FLOW][VALUE]
+            )
+            dict_values[ENERGY_STORAGE][asset].update({LCOE_ASSET: lcoe_a})
     return
