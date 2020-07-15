@@ -10,7 +10,7 @@
 Development of a feature for this repository should follow the workflow described 
 by [Vincent Driessen](https://nvie.com/posts/a-successful-git-branching-model/).
 
-Here are the minimal procedure you should follow : 
+Here is the minimal procedure you should follow : 
 
 #### Step 1: Create an issue.
  
@@ -72,7 +72,7 @@ If a test fails, it is only due to what you changed (the test must passed before
   test names and error messages are there to help you find the error, please read them to try to
    debug yourself before seeking assistance :)
 
-Some test take more time to run (run a simulation) and were therefore disabled by default. It is
+Some tests take more time to run (run a simulation) and were therefore disabled by default. It is
  nevertheless important that you run a simulation test before you ask a review, or whenever you
   are ready to merge, to make sure the
   code still works.
