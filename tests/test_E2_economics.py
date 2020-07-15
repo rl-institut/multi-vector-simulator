@@ -34,6 +34,10 @@ from src.constants_json_strings import (
     COST_DISPATCH,
     COST_OM_FIX,
     LCOE_ASSET,
+    ENERGY_CONSUMPTION,
+    ENERGY_CONVERSION,
+    ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
 )
 
 from .constants import (
@@ -149,5 +153,14 @@ def test_lcoe_parameter_added_to_dict_asset():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    assert LCOE_ASSET not in dict_values_before
-    assert LCOE_ASSET in dict_values_after
+    asset_group_list = [
+        ENERGY_CONSUMPTION,
+        ENERGY_CONVERSION,
+        ENERGY_PRODUCTION,
+        ENERGY_STORAGE,
+    ]
+    for asset_group in asset_group_list:
+        for asset in dict_values_before[asset_group]:
+            assert LCOE_ASSET not in dict_values_before[asset_group][asset]
+        for asset in dict_values_after[asset_group]:
+            assert LCOE_ASSET in dict_values_after[asset_group][asset]
