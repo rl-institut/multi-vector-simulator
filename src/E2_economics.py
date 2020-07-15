@@ -199,7 +199,6 @@ def lcoe_assets(dict_values):
         ENERGY_CONSUMPTION,
         ENERGY_CONVERSION,
         ENERGY_PRODUCTION,
-        # ENERGY_PROVIDERS,
         ENERGY_STORAGE,
     ]
     for asset_group in asset_group_list:
