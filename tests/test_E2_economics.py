@@ -1,15 +1,3 @@
-import logging
-import os
-import pickle
-import shutil
-
-import mock
-
-import src.A0_initialization as initializing
-import src.B0_data_input_json as data_input
-import src.C0_data_processing as data_processing
-import src.D0_modelling_and_optimization as modelling
-import src.E0_evaluation as evaluation
 import src.E2_economics as E2
 
 from src.constants_json_strings import (
@@ -38,14 +26,7 @@ from src.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
-)
-
-from .constants import (
-    TEST_REPO_PATH,
-    INPUT_FOLDER,
-    PATH_INPUT_FILE,
-    PATH_INPUT_FOLDER,
-    PATH_OUTPUT_FOLDER,
+    TOTAL_FLOW,
 )
 
 dict_asset = {
@@ -65,13 +46,42 @@ dict_economic = {
     CRF: {VALUE: 0.07264891149004721, UNIT: "?"},
 }
 
-PARSER = initializing.create_parser()
-TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
-TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs")
+dict_values = {
+    ENERGY_PRODUCTION: {
+        "PV": {ANNUITY_TOTAL: {VALUE: 50000}, TOTAL_FLOW: {VALUE: 470000}}
+    },
+    ENERGY_CONVERSION: {
+        "inverter": {ANNUITY_TOTAL: {VALUE: 15000}, TOTAL_FLOW: {VALUE: 0}}
+    },
+    ENERGY_CONSUMPTION: {
+        "demand": {ANNUITY_TOTAL: {VALUE: 0}, TOTAL_FLOW: {VALUE: 40000}}
+    },
+    ENERGY_STORAGE: {
+        "battery_1": {
+            "input power": {ANNUITY_TOTAL: {VALUE: 1000}, TOTAL_FLOW: {VALUE: 1000}},
+            "output power": {
+                ANNUITY_TOTAL: {VALUE: 30000},
+                TOTAL_FLOW: {VALUE: 240000},
+            },
+            "storage capacity": {
+                ANNUITY_TOTAL: {VALUE: 25000},
+                TOTAL_FLOW: {VALUE: 200000},
+            },
+        },
+        "battery_2": {
+            "input power": {ANNUITY_TOTAL: {VALUE: 1000}, TOTAL_FLOW: {VALUE: 1000}},
+            "output power": {ANNUITY_TOTAL: {VALUE: 30000}, TOTAL_FLOW: {VALUE: 0}},
+            "storage capacity": {
+                ANNUITY_TOTAL: {VALUE: 25000},
+                TOTAL_FLOW: {VALUE: 200000},
+            },
+        },
+    },
+}
 
-DICT_BEFORE = os.path.join(TEST_REPO_PATH, "dict_values_before_E0.pickle")
-
-DICT_AFTER = os.path.join(TEST_REPO_PATH, "dict_values_after_E0.pickle")
+exp_lcoe_pv = 50000 / 470000
+exp_lcoe_demand = 0
+exp_lcoe_battery_1 = (1000 + 30000 + 25000) / 200000
 
 
 def test_all_cost_info_parameters_added_to_dict_asset():
@@ -113,54 +123,14 @@ def test_all_list_in_dict_fails_due_to_not_included_keys():
     assert boolean is False
 
 
-@mock.patch(
-    "argparse.ArgumentParser.parse_args",
-    return_value=PARSER.parse_args(["-i", TEST_INPUT_PATH, "-o", TEST_OUTPUT_PATH]),
-)
-def setup_module(m_args):
-    """Run the simulation up to module E0 and save dict_values before and after evaluation"""
-    if os.path.exists(TEST_OUTPUT_PATH):
-        shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
-    user_input = initializing.process_user_arguments()
-
-    logging.debug("Accessing script: B0_data_input_json")
-    dict_values = data_input.load_json(
-        user_input[PATH_INPUT_FILE],
-        path_input_folder=user_input[PATH_INPUT_FOLDER],
-        path_output_folder=user_input[PATH_OUTPUT_FOLDER],
-        move_copy=False,
-    )
-    logging.debug("Accessing script: C0_data_processing")
-    data_processing.all(dict_values)
-
-    logging.debug("Accessing script: D0_modelling_and_optimization")
-    results_meta, results_main = modelling.run_oemof(dict_values)
-
-    with open(DICT_BEFORE, "wb") as handle:
-        pickle.dump(dict_values, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-    logging.debug("Accessing script: E0_evaluation")
-    evaluation.evaluate_dict(dict_values, results_main, results_meta)
-
-    with open(DICT_AFTER, "wb") as handle:
-        pickle.dump(dict_values, handle, protocol=pickle.HIGHEST_PROTOCOL)
+def test_calculation_of_lcoe_asset_storage_flow_0_provider_flow_0():
+    E2.lcoe_asset(dict_values)
+    assert dict_values[ENERGY_CONVERSION]["inverter"][LCOE_ASSET] is None
+    assert dict_values[ENERGY_STORAGE]["battery_2"][LCOE_ASSET] is None
 
 
-def test_lcoe_parameter_added_to_dict_asset():
-    with open(DICT_BEFORE, "rb") as handle:
-        dict_values_before = pickle.load(handle)
-
-    with open(DICT_AFTER, "rb") as handle:
-        dict_values_after = pickle.load(handle)
-
-    asset_group_list = [
-        ENERGY_CONSUMPTION,
-        ENERGY_CONVERSION,
-        ENERGY_PRODUCTION,
-        ENERGY_STORAGE,
-    ]
-    for asset_group in asset_group_list:
-        for asset in dict_values_before[asset_group]:
-            assert LCOE_ASSET not in dict_values_before[asset_group][asset]
-        for asset in dict_values_after[asset_group]:
-            assert LCOE_ASSET in dict_values_after[asset_group][asset]
+def test_calculation_of_lcoe_asset_storage_flow_not_0_provider_flow_not_0():
+    E2.lcoe_asset(dict_values)
+    assert dict_values[ENERGY_PRODUCTION]["PV"][LCOE_ASSET] == exp_lcoe_pv
+    assert dict_values[ENERGY_CONSUMPTION]["demand"][LCOE_ASSET] == exp_lcoe_demand
+    assert dict_values[ENERGY_STORAGE]["battery_1"][LCOE_ASSET] == exp_lcoe_battery_1
