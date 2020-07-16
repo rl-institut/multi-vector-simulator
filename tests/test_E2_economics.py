@@ -123,7 +123,7 @@ def test_all_list_in_dict_fails_due_to_not_included_keys():
     assert boolean is False
 
 
-def test_calculation_of_lcoe_asset_storage_flow_0_provider_flow_0():
+def test_calculation_of_lcoe_of_asset_total_flow_is_0():
     """Tests if LCOE is set to None with TOTAL_FLOW of asset is 0"""
     E2.lcoe_assets(dict_values)
     assert dict_values[ENERGY_CONVERSION]["inverter"][LCOE_ASSET] is None
