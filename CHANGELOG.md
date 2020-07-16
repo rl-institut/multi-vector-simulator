@@ -28,9 +28,7 @@ Here is a template for new release sections
 - Test to verify that input folders have all required parameters (#398)
 - New `dict` `REQUIRED_MVS_PARAMETERS` to gather the required parameters from the csv or json
  input type (#398)
- - `utils.py` module in `src` to gather the functions `find_input_folders
- ` and `compare_input_parameters_with_reference` which can be used to find and validate input
-  folders (#398)
+ - `utils.py` module in `src` to gather the functions `find_input_folders` and `compare_input_parameters_with_reference` which can be used to find and validate input folders (#398)
 - Code and test for checking for new parameters in csv and raising warning message if not defined (`A1.check_for_newly_added_parameters`). This then also adds a default value to the new parameter  (#384)
 - Exception if an energyVector does not have internal generation or consumption from a DSO, and is only supplied by energy conversion from another sector: renewable share = 0. (#384)
  - Tests for source components in D1 (#391)
@@ -39,8 +37,9 @@ Here is a template for new release sections
  - Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
  - New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
  - `.readthedocs.yml` configuration file (#435, #436)
- - Calculation of levelized cost of energy (LCOE) of each asset in E2 (#438 )
+ - Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
  - Tests for LCOE function in test_E2_economics (#438)
+ - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
