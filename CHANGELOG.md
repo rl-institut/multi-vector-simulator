@@ -40,6 +40,7 @@ Here is a template for new release sections
  - New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
  - `.readthedocs.yml` configuration file (#435, #436)
  - Calculation of levelized cost of electricity (LCOE) of a production asset in E2 (#433)
+ - Tests for LCOE function in test_E2_economics (#433)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
