@@ -60,7 +60,9 @@ Here is a template for new release sections
 - Version number and date is only to be edited in one file (#419)
 - Add `ìnputs` folder to `.gitignore` (#401)
 - Change the calculation of the residual value for specific capex in C2 and test_C2 (#289, #247, PR #431): Now the present value of the residual value is considered
-- Added global variables to `constants_json_str.csv`, defining units with them (#379)
+- Explicitly return the dataframe with parameters value in function
+ `check_for_newly_added_parameter` (#428)
+- Rename function `check_for_newly_added_parameter` in `check_for_official_extra_parameters` (#428)- Added global variables to `constants_json_str.csv`, defining units with them (#379)
 - Some tests in A0, B0, F1 call `PARSER_ARGS` (#379)
 - Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
 
