@@ -202,19 +202,27 @@ def lcoe_assets(dict_values):
     for asset_group in asset_group_list:
         for asset in dict_values[asset_group]:
             if asset_group == "ENERGY_CONSUMPTION":
-                dict_values[asset_group][asset].update({LCOE_ASSET: 0})
+                dict_values[asset_group][asset].update(
+                    {LCOE_ASSET: {VALUE: 0, UNIT: "currency/kWh"}}
+                )
             elif dict_values[asset_group][asset][TOTAL_FLOW][VALUE] == 0.0:
-                dict_values[asset_group][asset].update({LCOE_ASSET: None})
+                dict_values[asset_group][asset].update(
+                    {LCOE_ASSET: {VALUE: None, UNIT: "currency/kWh"}}
+                )
             else:
                 lcoe_a = (
                     dict_values[asset_group][asset][ANNUITY_TOTAL][VALUE]
                     / dict_values[asset_group][asset][TOTAL_FLOW][VALUE]
                 )
-                dict_values[asset_group][asset].update({LCOE_ASSET: lcoe_a})
+                dict_values[asset_group][asset].update(
+                    {LCOE_ASSET: {VALUE: lcoe_a, UNIT: "currency/kWh"}}
+                )
 
     for asset in dict_values[ENERGY_STORAGE]:
         if dict_values[ENERGY_STORAGE][asset]["output power"][TOTAL_FLOW][VALUE] == 0:
-            dict_values[ENERGY_STORAGE][asset].update({LCOE_ASSET: None})
+            dict_values[ENERGY_STORAGE][asset].update(
+                {LCOE_ASSET: {VALUE: None, UNIT: "currency/kWh"}}
+            )
         else:
             storage_annuity = (
                 dict_values[ENERGY_STORAGE][asset]["input power"][ANNUITY_TOTAL][VALUE]
@@ -229,5 +237,7 @@ def lcoe_assets(dict_values):
                 storage_annuity
                 / dict_values[ENERGY_STORAGE][asset]["output power"][TOTAL_FLOW][VALUE]
             )
-            dict_values[ENERGY_STORAGE][asset].update({LCOE_ASSET: lcoe_a})
+            dict_values[ENERGY_STORAGE][asset].update(
+                {LCOE_ASSET: {VALUE: lcoe_a, UNIT: "currency/kWh"}}
+            )
     return
