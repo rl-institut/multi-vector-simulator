@@ -39,8 +39,8 @@ Here is a template for new release sections
  - Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
  - New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
  - `.readthedocs.yml` configuration file (#435, #436)
- - Calculation of levelized cost of energy (LCOE) of each asset in E2 (#433)
- - Tests for LCOE function in test_E2_economics (#433)
+ - Calculation of levelized cost of energy (LCOE) of each asset in E2 (#438 )
+ - Tests for LCOE function in test_E2_economics (#438)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
