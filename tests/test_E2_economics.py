@@ -124,13 +124,13 @@ def test_all_list_in_dict_fails_due_to_not_included_keys():
 
 
 def test_calculation_of_lcoe_asset_storage_flow_0_provider_flow_0():
-    E2.lcoe_asset(dict_values)
+    E2.lcoe_assets(dict_values)
     assert dict_values[ENERGY_CONVERSION]["inverter"][LCOE_ASSET] is None
     assert dict_values[ENERGY_STORAGE]["battery_2"][LCOE_ASSET] is None
 
 
 def test_calculation_of_lcoe_asset_storage_flow_not_0_provider_flow_not_0():
-    E2.lcoe_asset(dict_values)
+    E2.lcoe_assets(dict_values)
     assert dict_values[ENERGY_PRODUCTION]["PV"][LCOE_ASSET] == exp_lcoe_pv
     assert dict_values[ENERGY_CONSUMPTION]["demand"][LCOE_ASSET] == exp_lcoe_demand
     assert dict_values[ENERGY_STORAGE]["battery_1"][LCOE_ASSET] == exp_lcoe_battery_1
