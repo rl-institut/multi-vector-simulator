@@ -81,7 +81,7 @@ dict_values = {
 
 exp_lcoe_pv = 50000 / 470000
 exp_lcoe_demand = 0
-exp_lcoe_battery_1 = (1000 + 30000 + 25000) / 200000
+exp_lcoe_battery_1 = (1000 + 30000 + 25000) / 240000
 
 
 def test_all_cost_info_parameters_added_to_dict_asset():
