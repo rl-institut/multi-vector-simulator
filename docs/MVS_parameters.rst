@@ -48,6 +48,12 @@ simulation_settings.csv
 
 **timestep**: Length of the timesteps. Acceptable values in minutes. This is currently only tested for 60-minute intervals.
 
+**server_simulation**: Whether the simulation runs on a local computer or on a server. Format
+is boolean. If set to True, the read/write functions will be skipped, *i.e.* no file will be read
+or written
+to the file
+system
+
 Common Parameters in the CSV/JSON files and in energyConversion.csv:
 --------------------------------------------------------------------
 

@@ -73,6 +73,7 @@ RESTORE_FROM_OEMOF_FILE = "restore_from_oemof_file"
 COUNTRY = "country"
 PROJECT_ID = "project_id"
 SCENARIO_ID = "scenario_id"
+SERVER_SIMULATION = "server_simulation"
 
 # Asset definitions
 DSM = "dsm"
