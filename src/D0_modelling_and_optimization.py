@@ -17,6 +17,7 @@ from src.constants_json_strings import (
     OEMOF_TRANSFORMER,
     VALUE,
     SIMULATION_SETTINGS,
+    SERVER_SIMULATION,
     LABEL,
     TIME_INDEX,
     DISPLAY_NX_GRAPH,
@@ -336,17 +337,19 @@ class model_building:
         -------
         None
         """
-        # store energy system with results
-        if dict_values[SIMULATION_SETTINGS][STORE_OEMOF_RESULTS][VALUE] is True:
-            model.dump(
-                dpath=dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-                filename="oemof_simulation_results.oemof",
-            )
-            logging.debug(
-                "Stored results in %s/MVS_results.oemof.",
-                dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-            )
-        return
+
+        # if the simulation runs on a server, no files is written to the local structure
+        if dict_values[SIMULATION_SETTINGS][SERVER_SIMULATION] is False:
+            # store energy system with results
+            if dict_values[SIMULATION_SETTINGS][STORE_OEMOF_RESULTS][VALUE] is True:
+                model.dump(
+                    dpath=dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
+                    filename="oemof_simulation_results.oemof",
+                )
+                logging.debug(
+                    "Stored results in %s/MVS_results.oemof.",
+                    dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
+                )
 
 
 class timer:

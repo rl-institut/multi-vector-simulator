@@ -72,12 +72,13 @@ def all(dict_values):
     # Adds costs to each asset and sub-asset
     process_all_assets(dict_values)
 
-    output.store_as_json(
-        dict_values,
-        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-        "json_input_processed",
-    )
-    return
+    # if the simulation runs on a server, no files is written to the local structure
+    if dict_values[SIMULATION_SETTINGS][SERVER_SIMULATION] is False:
+        output.store_as_json(
+            dict_values,
+            dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
+            "json_input_processed",
+        )
 
 
 def identify_energy_vectors(dict_values):
