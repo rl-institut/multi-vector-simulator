@@ -125,14 +125,18 @@ def test_all_list_in_dict_fails_due_to_not_included_keys():
 
 def test_calculation_of_lcoe_of_asset_total_flow_is_0():
     """Tests if LCOE is set to None with TOTAL_FLOW of asset is 0"""
-    E2.lcoe_assets(dict_values)
+    for group in [ENERGY_CONVERSION, ENERGY_STORAGE]:
+        for asset in dict_values[group]:
+            E2.lcoe_assets(dict_values[group][asset], group)
     assert dict_values[ENERGY_CONVERSION]["inverter"][LCOE_ASSET][VALUE] is None
     assert dict_values[ENERGY_STORAGE]["battery_2"][LCOE_ASSET][VALUE] is None
 
 
 def test_calculation_of_lcoe_asset_storage_flow_not_0_provider_flow_not_0():
     """Tests whether the LCOE is correctly calculated for each asset in the different asset groups"""
-    E2.lcoe_assets(dict_values)
+    for group in [ENERGY_PRODUCTION, ENERGY_CONSUMPTION, ENERGY_STORAGE]:
+        for asset in dict_values[group]:
+            E2.lcoe_assets(dict_values[group][asset], group)
     assert dict_values[ENERGY_PRODUCTION]["PV"][LCOE_ASSET][VALUE] == exp_lcoe_pv
     assert (
         dict_values[ENERGY_CONSUMPTION]["demand"][LCOE_ASSET][VALUE] == exp_lcoe_demand

@@ -96,12 +96,14 @@ def evaluate_dict(dict_values, results_main, results_meta):
             dict_values[ENERGY_STORAGE][storage],
         )
 
-        # hardcoded list of names in storage_01.csv
         for storage_item in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
             economics.get_costs(
                 dict_values[ENERGY_STORAGE][storage][storage_item],
                 dict_values[ECONOMIC_DATA],
             )
+
+        economics.lcoe_assets(dict_values[ENERGY_STORAGE][storage], ENERGY_STORAGE)
+        for storage_item in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
             store_result_matrix(
                 dict_values[KPI], dict_values[ENERGY_STORAGE][storage][storage_item]
             )
@@ -135,27 +137,16 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 ENERGY_STORAGE
             ][storage]["timeseries_soc"]
 
-    for asset in dict_values[ENERGY_CONVERSION]:
-        process_results.get_results(
-            dict_values[SIMULATION_SETTINGS],
-            bus_data,
-            dict_values[ENERGY_CONVERSION][asset],
-        )
-        economics.get_costs(
-            dict_values[ENERGY_CONVERSION][asset], dict_values[ECONOMIC_DATA]
-        )
-        store_result_matrix(dict_values[KPI], dict_values[ENERGY_CONVERSION][asset])
-
-    for group in [ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
+    for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:
             process_results.get_results(
                 dict_values[SIMULATION_SETTINGS], bus_data, dict_values[group][asset],
             )
             economics.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
+            economics.lcoe_assets(dict_values[group][asset], group)
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
     indicators.all_totals(dict_values)
-    economics.lcoe_assets(dict_values)
 
     # Processing further KPI
     indicators.total_renewable_and_non_renewable_energy_origin(dict_values)
