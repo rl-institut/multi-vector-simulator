@@ -1,6 +1,6 @@
 import logging
 
-from oemof.solph import processing
+import oemof.solph as solph
 import pandas as pd
 
 import src.E1_process_results as process_results
