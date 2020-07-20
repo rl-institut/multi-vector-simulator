@@ -62,6 +62,8 @@ Here is a template for new release sections
 - Explicitly return the dataframe with parameters value in function
  `check_for_newly_added_parameter` (#428)
 - Rename function `check_for_newly_added_parameter` in `check_for_official_extra_parameters` (#428)
+- Add `ìnputs` folder to `.gitignore` (#401)
+- Readthedocs links to simple scenario `tests/inputs` (#420)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
@@ -75,6 +77,7 @@ Here is a template for new release sections
 - Issue #168 Duplicate of timeseries files (#388)
 - Warnings from local readthedocs compilation (#426)
 - Issue #430 Bug on local install (#437)
+- Input folder `tests/inputs` with simple example scenario (#420)
 
 ## [0.3.0] - 2020-06-08
 
