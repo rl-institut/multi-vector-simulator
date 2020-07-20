@@ -1,6 +1,6 @@
 import logging
 
-import oemof.outputlib as outputlib
+from oemof.solph import processing
 import pandas as pd
 
 import src.E1_process_results as process_results
@@ -58,9 +58,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
     dict_values: dict
         simulation parameters
     results_main: DataFrame
-        oemof simulation results as output by outputlib.processing.results()
+        oemof simulation results as output by processing.results()
     results_meta: DataFrame
-        oemof simulation meta information as output by outputlib.processing.meta_results()
+        oemof simulation meta information as output by processing.meta_results()
 
     Returns
     -------
