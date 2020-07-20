@@ -100,7 +100,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     # Store all information related to busses in bus_data
     for bus in dict_values[ENERGY_BUSSES]:
         # Read all energy flows from busses
-        bus_data.update({bus: processing.views.node(results_main, bus)})
+        bus_data.update({bus: solph.views.node(results_main, bus)})
 
     # Evaluate timeseries and store to a large DataFrame for each bus:
     process_results.get_timeseries_per_bus(dict_values, bus_data)
@@ -109,7 +109,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     for storage in dict_values[ENERGY_STORAGE]:
         bus_data.update(
             {
-                dict_values[ENERGY_STORAGE][storage][LABEL]: processing.views.node(
+                dict_values[ENERGY_STORAGE][storage][LABEL]: solph.views.node(
                     results_main, dict_values[ENERGY_STORAGE][storage][LABEL],
                 )
             }
