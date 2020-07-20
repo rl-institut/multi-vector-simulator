@@ -679,9 +679,10 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     else:
         if TIMESERIES in dict_asset:
+            logging.info(
+                "Asset %s is introduced as a dispatchable source with an availability schedule.", dict_asset[LABEL])
             logging.debug(
-                "Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow"
-            )
+                "The availability schedule is solely introduced because the key %s was not in the asset´s dictionary. \nIt should only be applied to DSO sources. If the asset should not have this behaviour, please create an issue.", TIMESERIES_NORMALIZED)
         outputs = {
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                 label=dict_asset[LABEL],
@@ -725,9 +726,12 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     else:
         if TIMESERIES in dict_asset:
+            logging.info(
+                "Asset %s is introduced as a dispatchable source with an availability schedule.",
+                dict_asset[LABEL])
             logging.debug(
-                "Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow"
-            )
+                "The availability schedule is solely introduced because the key %s was not in the asset´s dictionary. \nIt should only be applied to DSO sources. If the asset should not have this behaviour, please create an issue.",
+                TIMESERIES_NORMALIZED)
         outputs = {
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                 label=dict_asset[LABEL],
