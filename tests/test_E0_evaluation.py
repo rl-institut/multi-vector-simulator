@@ -17,6 +17,7 @@ from src.constants_json_strings import (
     KPI_COST_MATRIX,
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
+OPTIMIZED_FLOWS
 )
 from .constants import (
     TEST_REPO_PATH,
@@ -75,7 +76,7 @@ def test_evaluate_dict_append_new_fields():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    for k in (KPI, "optimizedFlows"):
+    for k in (KPI, OPTIMIZED_FLOWS):
         assert k not in dict_values_before
         assert k in dict_values_after
 

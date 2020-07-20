@@ -31,6 +31,7 @@ from src.constants_json_strings import (
     SCENARIO_NAME,
     KPI,
     KPI_SCALAR_MATRIX,
+OPTIMIZED_FLOWS
 )
 from .constants import (
     EXECUTE_TESTS_ON,
@@ -154,7 +155,7 @@ class TestFileCreation:
         dict_timeseries_test_one_bus = {
             PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
-            "optimizedFlows": {"a_bus": BUS},
+            OPTIMIZED_FLOWS: {"a_bus": BUS},
         }
         dict_timeseries_test_one_bus.update(copy.deepcopy(DICT_PLOTS))
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_one_bus)
@@ -172,7 +173,7 @@ class TestFileCreation:
         dict_timeseries_test_two_busses = {
             PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
-            "optimizedFlows": {"a_bus": BUS, "b_bus": BUS},
+            OPTIMIZED_FLOWS: {"a_bus": BUS, "b_bus": BUS},
         }
         print(DICT_PLOTS)
         dict_timeseries_test_two_busses.update(copy.deepcopy(DICT_PLOTS))

@@ -40,6 +40,7 @@ Here is a template for new release sections
  - Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
  - Tests for LCOE function in test_E2_economics (#438)
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
+- File "constants_output.py" to contain all keys included in "scalars.xlsx" ()
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -62,6 +63,8 @@ Here is a template for new release sections
 - Explicitly return the dataframe with parameters value in function
  `check_for_newly_added_parameter` (#428)
 - Rename function `check_for_newly_added_parameter` in `check_for_official_extra_parameters` (#428)
+- Moved list of keys to be printed in "scalars.xlsx" to "constants_output.py" ()
+- Renamed "peak_flow" to `PEAK_FLOW` and "average_flow" to `AVERAGE_FLOW` ()
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)

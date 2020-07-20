@@ -27,9 +27,10 @@ from src.constants_json_strings import (
     KPI_COST_MATRIX,
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
+OPTIMIZED_FLOWS
 )
 
-from src.constants_outputs import KPI_COST_MATRIX_ENTRIES, KPI_SCALAR_MATRIX_ENTRIES
+from src.constants_output import KPI_COST_MATRIX_ENTRIES, KPI_SCALAR_MATRIX_ENTRIES
 
 r"""
 Module E0 evaluation
@@ -107,10 +108,10 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
         if (
             dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
-            in dict_values["optimizedFlows"].keys()
+            in dict_values[OPTIMIZED_FLOWS].keys()
         ) or (
             dict_values[ENERGY_STORAGE][storage][OUTPUT_BUS_NAME]
-            in dict_values["optimizedFlows"].keys()
+            in dict_values[OPTIMIZED_FLOWS].keys()
         ):
             bus_name = dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
             timeseries_name = (
@@ -130,7 +131,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + ") SOC"
             )
 
-            dict_values["optimizedFlows"][bus_name][timeseries_name] = dict_values[
+            dict_values[OPTIMIZED_FLOWS][bus_name][timeseries_name] = dict_values[
                 ENERGY_STORAGE
             ][storage]["timeseries_soc"]
 
