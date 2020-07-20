@@ -86,9 +86,11 @@ def identify_energy_vectors(dict_values):
     energyVectors later will be used to distribute costs and KPI amongst the sectors (not implemented)
 
     :param: dict
+
     All input data in dict format
 
     :return:
+
     Update dict['project_data'] by used sectors
     """
     dict_of_sectors = {}
@@ -305,6 +307,14 @@ def energyStorage(dict_values, group):
     """
     for asset in dict_values[group]:
         for subasset in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
+            # Redefining the label of storage components, ie. so that is is clear to which storage a component (eg. input power) belongs.
+            dict_values[group][asset][subasset].update(
+                {
+                    LABEL: dict_values[group][asset][LABEL]
+                    + "_"
+                    + dict_values[group][asset][subasset][LABEL]
+                }
+            )
             define_missing_cost_data(
                 dict_values, dict_values[group][asset][subasset],
             )

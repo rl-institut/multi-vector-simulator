@@ -28,22 +28,56 @@ Here is a template for new release sections
 - Test to verify that input folders have all required parameters (#398)
 - New `dict` `REQUIRED_MVS_PARAMETERS` to gather the required parameters from the csv or json
  input type (#398)
- - `utils.py` module in `src` to gather the functions `find_input_folders
- ` and `compare_input_parameters_with_reference` which can be used to find and validate input
-  folders (#398)
+ - `utils.py` module in `src` to gather the functions `find_input_folders` and `compare_input_parameters_with_reference` which can be used to find and validate input folders (#398)
+- Code and test for checking for new parameters in csv and raising warning message if not defined (`A1.check_for_newly_added_parameters`). This then also adds a default value to the new parameter  (#384)
+- Exception if an energyVector does not have internal generation or consumption from a DSO, and is only supplied by energy conversion from another sector: renewable share = 0. (#384)
+ - Tests for source components in D1 (#391)
+ - Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
+ - Pyppeteer package for OS X users in troubleshooting (#414)
+ - Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
+ - New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
+ - `.readthedocs.yml` configuration file (#435, #436)
+ - Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
+ - Tests for LCOE function in test_E2_economics (#438)
+ - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
-- Sorted parameters in csv´s withing the input folder (#374)
+- Sort parameters in csv´s within the input folder (#374)
 - Change relative folder path to absolute in tests files (#396)
 - Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
+- Improve styling of the pfd report (#369)
+- `LIST_OF_NEW_PARAMETERS` renamed `EXTRA_CSV_PARAMETERS` and moved from `A1` to `constants.py
+` (#384)
+- Order of parameters in tests/inputs, fixed missing parameters  (#384)
+- Only a single output flow for sources (instead of multiple possible) as discussed in #149  (#391)
+- Move `existing` parameter into Investment objects of D1 components (was before added to output flow) (#391)
+- Use pyppeteers instead of selenium to emulate the webbrowser and print the pdf report
+ automatically (#407)
+- Update flowchart again (#409)
+- Label of storage components (storage capacity, input power, output power) will by default be redefined to the name of the storage and this component (#415)
+- Version number and date is only to be edited in one file (#419)
+- Add `ìnputs` folder to `.gitignore` (#401)
+- Change the calculation of the residual value for specific capex in C2 and test_C2 (#289, #247, PR #431): Now the present value of the residual value is considered
+- Explicitly return the dataframe with parameters value in function
+ `check_for_newly_added_parameter` (#428)
+- Rename function `check_for_newly_added_parameter` in `check_for_official_extra_parameters` (#428)
+- Add `ìnputs` folder to `.gitignore` (#401)
+- Readthedocs links to simple scenario `tests/inputs` (#420)
 
 ### Removed
+- Selenium to print the automatic project report for help (#407)
+- `MaximumCap` from list of required parameters for `energyStorage` assets (#415)
+- `inputs` folder (#401)
+- `tests/test_benchmark.py` module (#401)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
 - Issue #357 Bug connected to global variables (#356)
 - Issue #168 Duplicate of timeseries files (#388)
+- Warnings from local readthedocs compilation (#426)
+- Issue #430 Bug on local install (#437)
+- Input folder `tests/inputs` with simple example scenario (#420)
 
 ## [0.3.0] - 2020-06-08
 

@@ -5,6 +5,7 @@ specific_costs,currency/kW,0
 efficiency,factor,0.96
 inflow_direction,str,Electricity (DSO)
 installedCap,kW,1250
+maximumCap,kW,None
 label,str,Transformer station (DSO) consumption
 lifetime,year,30
 specific_costs_om,currency/kW/year,0

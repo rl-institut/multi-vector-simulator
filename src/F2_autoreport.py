@@ -7,17 +7,20 @@ import os
 import threading
 import time
 import webbrowser
-from selenium import webdriver
 
 # Importing necessary packages
 import dash
 import dash_html_components as html
+import dash_core_components as dcc
+import plotly.graph_objs as go
 import dash_table
 import folium
 import git
 import pandas as pd
-import pdfkit
 import reverse_geocoder as rg
+import staticmap
+import asyncio
+from pyppeteer import launch
 
 from src.constants import (
     PLOTS_BUSSES,
@@ -70,8 +73,24 @@ from src.constants_json_strings import (
     SCENARIO_ID,
 )
 
+# TODO link this to the version and date number @Bachibouzouk
+from mvs_eland_tool.version import version_num, version_date
+
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
+
+
+async def _print_pdf_from_chrome(path_pdf_report):
+    browser = await launch()
+    page = await browser.newPage()
+    await page.goto("http://127.0.0.1:8050", {"waitUntil": "networkidle0"})
+    await page.waitForSelector("#main-div")
+    await page.pdf({"path": path_pdf_report, "format": "A4", "printBackground": True})
+    await browser.close()
+    print("*" * 10)
+    print("The report was saved under {}".format(path_pdf_report))
+    print("You can now quit with ctlr+c")
+    print("*" * 10)
 
 
 def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
@@ -95,24 +114,7 @@ def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
         td.start()
 
     # Emulates a webdriver
-    # TODO check if chromium is easier
-    driver = webdriver.Firefox(executable_path=os.path.join(REPORT_PATH, "geckodriver"))
-    driver.get("http://127.0.0.1:8050")
-
-    # TODO figure a way to wait enough time for everything to load
-    # waits to load the page, could alternatively wait for a certain html tag to be present
-    time.sleep(5)
-
-    # Extracts the html source code of the app and save it in a file
-    html_src = driver.page_source
-    html_path = os.path.join(REPORT_PATH, "report.html")
-    with open(html_path, "w") as f:
-        f.write(html_src)
-    driver.close()
-
-    # Convert the html file into a pdf
-    pdfkit.from_url("file:///" + html_path, path_pdf_report)
-    print(f"Saved the report under {path_pdf_report}")
+    asyncio.get_event_loop().run_until_complete(_print_pdf_from_chrome(path_pdf_report))
 
     if app is not None:
         td.join(20)
@@ -127,38 +129,148 @@ def open_in_browser(app, timeout=600):
     td.join(timeout)
 
 
-def make_dash_data_table(df):
+def make_dash_data_table(df, title=None):
     """Function that creates a Dash DataTable from a Pandas dataframe"""
-    return dash_table.DataTable(
-        columns=[{"name": i, "id": i} for i in df.columns],
-        data=df.to_dict("records"),
-        style_cell={
-            "padding": "5px",
-            "height": "auto",
-            "width": "auto",
-            "textAlign": "center",
-        },
-        style_data_conditional=[
-            {"if": {"row_index": "odd"}, "backgroundColor": "rgb(248, 248, 248)"}
-        ],
-        style_header={"fontWeight": "bold", "color": "#8c3604"},
-        style_table={"margin": "30px", "fontSize": "40px"},
+    content = [
+        html.Div(
+            className="tableplay",
+            children=dash_table.DataTable(
+                columns=[{"name": i, "id": i} for i in df.columns],
+                data=df.to_dict("records"),
+                style_cell={
+                    "padding": "5px",
+                    "height": "auto",
+                    "width": "auto",
+                    "fontFamily": "Courier New",
+                    "textAlign": "center",
+                },
+                style_data_conditional=[
+                    {
+                        "if": {"row_index": "odd"},
+                        "backgroundColor": "rgb(248, 248, 248)",
+                    }
+                ],
+                style_header={"fontWeight": "bold", "color": "#8c3604"},
+            ),
+        )
+    ]
+
+    if title is not None:
+        content = [html.H4(title, className="report_table_title")] + content
+
+    return html.Div(className="report_table", children=content)
+
+
+def insert_subsection(title, content, **kwargs):
+    if "className" in kwargs:
+        className = "cell subsection {}".format(kwargs.pop("className"))
+    else:
+        className = "cell subsection"
+
+    # TODO if content is a list
+
+    if not isinstance(content, list):
+        content = [content]
+
+    return html.Div(
+        className=className,
+        children=[html.H3(title), html.Hr(className="cell small-12 horizontal_line")]
+        + content,
+        **kwargs,
     )
 
 
+# Function that creates the headings
+def insert_headings(heading_text):
+    """
+    This function is for creating the headings such as information, input data, etc.
+    parameters: string
+    returns: a html element with the heading_text encsased in a container
+    """
+    return html.H2(
+        className="cell", children=heading_text, style={"page-break-after": "avoid"}
+    )
+
+
+# Functions that creates paragraphs
+def insert_body_text(body_of_text):
+    """
+    This function is for rendering blocks of text
+    parameters: paragraph (string)
+    returns: a html element with a paragraph
+    """
+    return html.P(className="cell large-11 blockoftext", children=body_of_text)
+
+
+def insert_image_array(img_list, width=500):
+    return html.Div(
+        className="image-array",
+        children=[
+            html.Img(
+                className="graphs_ts",
+                src="data:image/png;base64,{}".format(
+                    base64.b64encode(open(ts, "rb").read()).decode()
+                ),
+                width="{}px".format(width),
+            )
+            for ts in img_list
+        ],
+    )
+
+
+def insert_log_messages(log_dict):
+    """
+    :param log_dict: dict, containing the logging messages
+    :return: html.Div() element
+    """
+    return html.Div(
+        children=[
+            # this will be displayed only in the app
+            html.Div(
+                className="grid-x no-print",
+                children=[
+                    html.Div(
+                        className="cell grid-x",
+                        children=[
+                            html.Div(children=k, className="cell small-1 list-marker"),
+                            html.Div(children=v, className="cell small-11 list-log"),
+                        ],
+                    )
+                    for k, v in log_dict.items()
+                ],
+            ),
+            # this will be displayed only in the printed version
+            html.Div(
+                className="list-log print",
+                children=html.Ul(children=[html.Li(v) for k, v in log_dict.items()]),
+            ),
+        ],
+    )
+
+
+# Styling of the report
+
+
 def create_app(results_json):
-    path_output_folder = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
-
     # Initialize the app
-    app = dash.Dash(__name__)
 
-    colors = {
-        "bg-head": "#9ae6db",
-        "text-head": "#000000",
-        "text-body": "#000000",
-        "inp-box": "#03034f",
-        "font-inpbox": "#FFFFFF",
-    }
+    # external CSS stylesheets
+    external_stylesheets = [
+        {
+            "href": "https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/css/foundation.min.css",
+            "rel": "stylesheet",
+            "integrity": "sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I=",
+            "crossorigin": "anonymous",
+            "media": "screen",
+        },
+    ]
+
+    app = dash.Dash(
+        __name__,
+        assets_folder=os.path.join(REPORT_PATH, "assets"),
+        external_stylesheets=external_stylesheets,
+    )
+
     # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
     dfprojectData = pd.DataFrame.from_dict(results_json[PROJECT_DATA])
     dfeconomicData = pd.DataFrame.from_dict(results_json[ECONOMIC_DATA]).loc[VALUE]
@@ -183,7 +295,19 @@ def create_app(results_json):
         tooltip=tooltip,
         icon=folium.Icon(color="red", icon="glyphicon glyphicon-flash"),
     ).add_to(mapy)
-    mapy.save(os.path.join(REPO_PATH, "src", "assets", "proj_map"))
+    mapy.save(os.path.join(REPORT_PATH, "assets", "proj_map"))
+
+    # Adds a staticmap to the PDF
+
+    longitude = coordinates[1]
+    latitude = coordinates[0]
+    coords = longitude, latitude
+
+    map_static = staticmap.StaticMap(600, 600, 80)
+    marker = staticmap.CircleMarker(coords, "#13074f", 15)
+    map_static.add_marker(marker)
+    map_image = map_static.render(zoom=14)
+    map_image.save(os.path.join(REPORT_PATH, "assets", "proj_map_static.png"))
 
     dict_projectdata = {
         "Country": dfprojectData.country,
@@ -226,14 +350,19 @@ def create_app(results_json):
 
     # Getting the branch ID
     repo = git.Repo(search_parent_directories=True)
+    # TODO: also extract branch name
     branchID = repo.head.object.hexsha
 
     simDate = time.strftime("%Y-%m-%d")
 
     ELAND_LOGO = base64.b64encode(
         open(
-            os.path.join(REPO_PATH, "src", "assets", "logo-eland-original.jpg"), "rb"
+            os.path.join(REPORT_PATH, "assets", "logo-eland-original.jpg"), "rb"
         ).read()
+    )
+
+    MAP_STATIC = base64.b64encode(
+        open(os.path.join(REPORT_PATH, "assets", "proj_map_static.png"), "rb").read()
     )
 
     # Determining the sectors which were simulated
@@ -377,302 +506,268 @@ def create_app(results_json):
     # Round the numeric values to two significant digits
     df_cost_matrix = df_cost_matrix.round(2)
 
-    # Header section with logo and the title of the report, and CSS styling. Work in progress...
+    # Dictionaries to gather non-fatal warning and error messages that appear during the simulation
+    warnings_dict = {}
+    errors_dict = {}
+
+    log_file = os.path.join(OUTPUT_FOLDER, "mvs_logfile.log")
+    # log_file = "/home/mr/Projects/mvs_eland/MVS_outputs/mvs_logfile.log"
+    print(log_file)
+
+    with open(log_file) as log_messages:
+        log_messages = log_messages.readlines()
+
+    i = 0
+    for line in log_messages:
+        if "WARNING" in line:
+            i = i + 1
+            substrings = line.split(" - ")
+            message_string = substrings[-1]
+            warnings_dict.update({i: message_string})
+        elif "ERROR" in line:
+            i = i + 1
+            substrings = line.split(" - ")
+            message_string = substrings[-1]
+            errors_dict.update({i: message_string})
 
     app.layout = html.Div(
-        [
+        id="main-div",
+        className="grid-x align-center",
+        children=[
             html.Div(
-                className="header_title_logo",
+                className="cell small-10 small_offset-1 header_title_logo",
                 children=[
                     html.Img(
                         id="mvslogo",
                         src="data:image/png;base64,{}".format(ELAND_LOGO.decode()),
-                        width="370px",
+                        width="500px",
                     ),
                     html.H1("MULTI VECTOR SIMULATION - REPORT SHEET"),
                 ],
             ),
-            html.Div(
-                className="imp_info",
+            html.Section(
+                className="cell small-10 small_offset-1 grid-x",
                 children=[
-                    html.P(f"MVS Release: {releaseDesign}"),
-                    html.P(f"Branch-id: {branchID}"),
-                    html.P(f"Simulation date: {simDate}"),
-                ],
-            ),
-            html.Div(
-                className="imp_info2",
-                children=[
+                    insert_headings("Information"),
                     html.Div(
-                        [
-                            html.Span(
-                                "Project name   : ", style={"fontWeight": "bold"}
-                            ),
-                            f"{projectName}",
-                        ]
-                    ),
-                    html.Br([]),
-                    html.Div(
-                        [
-                            html.Span(
-                                "Scenario name  : ", style={"fontWeight": "bold"}
-                            ),
-                            f"{scenarioName}",
-                        ]
-                    ),
-                ],
-            ),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.Div(
-                        [
-                            "The energy system with the ",
-                            html.Span(f"{projectName}", style={"fontStyle": "italic"}),
-                            " for the scenario ",
-                            html.Span(f"{scenarioName}", style={"fontStyle": "italic"}),
-                            " was simulated with the Multi-Vector simulation tool MVS 0.0x developed from the E-LAND toolbox "
-                            "developed in the scope of the Horizon 2020 European research project. The tool was developed by "
-                            "Reiner Lemoine Institute and utilizes the OEMOF framework.",
-                        ]
-                    )
-                ],
-            ),
-            html.Br([]),
-            html.Div(
-                className="inputs_simresults_box", children=[html.H2("Input Data")],
-            ),
-            html.Br([]),
-            html.Div(
-                className="heading1",
-                children=[
-                    html.H2("Project Data", className="heading1",),
-                    html.Hr(className="horizontal_line"),
-                ],
-            ),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.P(
-                        "The most important simulation data will be presented below. "
-                        "Detailed settings, costs, and technological parameters can "
-                        "be found in the appendix."
-                    )
-                ],
-            ),
-            html.Div(
-                [
-                    html.Div(
-                        [
-                            html.H4(["Project Location"], className="projdataheading"),
-                            html.Iframe(
-                                srcDoc=open(
-                                    os.path.join(
-                                        REPO_PATH, "src", "assets", "proj_map"
+                        className="cell imp_info",
+                        children=[
+                            html.P(f"MVS Release: {version_num} ({version_date})"),
+                            html.P(f"Branch-id: {branchID}"),
+                            html.P(f"Simulation date: {simDate}"),
+                            html.Div(
+                                className="cell imp_info2",
+                                children=[
+                                    html.Span(
+                                        "Project name   : ",
+                                        style={"font-weight": "bold"},
                                     ),
-                                    "r",
-                                ).read(),
-                                width="70%",
-                                height="700",
+                                    f"{projectName}",
+                                ],
+                            ),
+                            html.Div(
+                                className="cell imp_info2",
+                                children=[
+                                    html.Span(
+                                        "Scenario name  : ",
+                                        style={"font-weight": "bold"},
+                                    ),
+                                    f"{scenarioName}",
+                                ],
+                            ),
+                            html.Div(
+                                className="blockoftext",
+                                children=[
+                                    "The energy system with the ",
+                                    html.Span(
+                                        f"{projectName}", style={"font-style": "italic"}
+                                    ),
+                                    " for the scenario ",
+                                    html.Span(
+                                        f"{scenarioName}",
+                                        style={"font-style": "italic"},
+                                    ),
+                                    " was simulated with the Multi-Vector simulation tool MVS 0.0x developed from the E-LAND toolbox "
+                                    "developed in the scope of the Horizon 2020 European research project. The tool was developed by "
+                                    "Reiner Lemoine Institute and utilizes the OEMOF framework.",
+                                ],
                             ),
                         ],
-                        style={"margin": "30px", "width": "48%"},
                     ),
-                    html.Div(
-                        [
+                ],
+            ),
+            html.Section(
+                className="cell small-10 small_offset-1 grid-x",
+                style={"pageBreakBefore": "always"},
+                children=[
+                    insert_headings("Input Data"),
+                    insert_subsection(
+                        title="Project Data",
+                        content=[
+                            insert_body_text(
+                                "The most important simulation data will be presented below. "
+                                "Detailed settings, costs, and technological parameters can "
+                                "be found in the appendix."
+                            ),
                             html.Div(
-                                [
-                                    html.Br([]),
-                                    html.H4(
-                                        ["Project Data"], className="projdataheading"
+                                className="grid-x ",
+                                id="location-map-div",
+                                children=[
+                                    html.Div(
+                                        className="cell small-6 location-map-column",
+                                        children=[
+                                            html.H4(["Project Location"]),
+                                            html.Iframe(
+                                                srcDoc=open(
+                                                    os.path.join(
+                                                        REPORT_PATH,
+                                                        "assets",
+                                                        "proj_map",
+                                                    ),
+                                                    "r",
+                                                ).read(),
+                                                height="400",
+                                                style={
+                                                    "margin": "30px",
+                                                    "width": "30%",
+                                                    "marginBottom": "1.5cm",
+                                                },
+                                            ),
+                                            html.Div(
+                                                className="staticimagepdf",
+                                                children=[
+                                                    insert_body_text(
+                                                        "The blue dot in the below map indicates "
+                                                        "the location of the project."
+                                                    ),
+                                                    html.Img(
+                                                        id="staticmapimage",
+                                                        src="data:image/png;base64,{}".format(
+                                                            MAP_STATIC.decode()
+                                                        ),
+                                                        width="400px",
+                                                        style={"marginLeft": "30px"},
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
                                     ),
                                     html.Div(
-                                        className="tableplay",
-                                        children=[make_dash_data_table(df_projectData)],
+                                        className="cell small-6 location-map-column",
+                                        children=make_dash_data_table(
+                                            df_projectData, "Project at a Glance"
+                                        ),
                                     ),
                                 ],
-                                className="projdata",
+                            ),
+                            make_dash_data_table(df_simsettings, "Simulation Settings"),
+                        ],
+                    ),
+                    insert_subsection(
+                        title="Energy demand",
+                        content=[
+                            insert_body_text(
+                                "The simulation was performed for the energy system "
+                                "covering the following sectors: "
+                            ),
+                            insert_body_text(f"{sec_list}"),
+                            html.H4("Electricity Demand"),
+                            insert_body_text(
+                                "Electricity demands " "that have to be supplied are:"
+                            ),
+                            make_dash_data_table(df_dem),
+                            # TODO use insert_graph(),
+                            insert_image_array(
+                                results_json[PATHS_TO_PLOTS][PLOTS_DEMANDS]
+                            ),
+                            # TODO Plotly plot of demand timeseries(s) which will replace above
+                            html.H4("Resources"),
+                            insert_image_array(
+                                results_json[PATHS_TO_PLOTS][PLOTS_RESOURCES], width=900
                             )
-                        ]
+                            # TODO Plotly plot of generation time series(s) replacing above
+                        ],
+                    ),
+                    insert_subsection(
+                        title="Energy system components",
+                        content=[
+                            insert_body_text(
+                                "The energy system is comprised of "
+                                "the following components:"
+                            ),
+                            make_dash_data_table(df_comp),
+                        ],
+                    ),
+                    # TODO fix the little dash appearing above the table
+                ],
+            ),
+            html.Section(
+                className="cell small-10 small_offset-1 grid-x",
+                style={"pageBreakBefore": "always"},
+                children=[
+                    html.H2(className="cell", children="Simulation Results"),
+                    insert_subsection(
+                        title="Dispatch & Energy Flows",
+                        content=[
+                            insert_body_text(
+                                "The capacity optimization of components that were to be used resulted in:"
+                            ),
+                            make_dash_data_table(df_scalar_matrix),
+                            insert_body_text(
+                                "With this, the demands are met with the following dispatch schedules:"
+                            ),
+                            insert_body_text(
+                                "a. Flows in the system for a duration of 14 days"
+                            ),
+                            insert_image_array(
+                                results_json[PATHS_TO_PLOTS][PLOTS_BUSSES]
+                                + results_json[PATHS_TO_PLOTS][PLOTS_PERFORMANCE],
+                                width=900,
+                            ),
+                            insert_body_text(
+                                "This results in the following KPI of the dispatch:"
+                            ),
+                            # TODO the table with renewable share, emissions, total renewable generation, etc.
+                        ],
+                    ),
+                    insert_subsection(
+                        title="Economic Evaluation",
+                        content=[
+                            insert_body_text(
+                                "The following installation and operation costs "
+                                "result from capacity and dispatch optimization:"
+                            ),
+                            make_dash_data_table(df_cost_matrix),
+                            insert_image_array(
+                                results_json[PATHS_TO_PLOTS][PLOTS_COSTS], width=500
+                            )
+                            # TODO Plots to be generated using Plotly
+                        ],
+                    ),
+                ],
+            ),
+            html.Section(
+                className="cell small-10 small_offset-1 grid-x",
+                children=[
+                    html.Div(
+                        className="cell",
+                        children=[insert_headings(heading_text="Logging Messages"),],
                     ),
                     html.Div(
-                        [
-                            html.Div(
-                                [
-                                    html.Br([]),
-                                    html.H4(
-                                        ["Simulation Settings"],
-                                        className="projdataheading",
-                                    ),
-                                    html.Div(
-                                        className="tableplay",
-                                        children=[make_dash_data_table(df_simsettings)],
-                                    ),
-                                ],
-                                className="projdata",
-                            )
-                        ]
-                    ),
-                ]
-            ),
-            html.Br(),
-            html.Div(
-                className="heading1",
-                children=[
-                    html.H2("Energy Demand"),
-                    html.Hr(className="horizontal_line"),
-                ],
-            ),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.P(
-                        "The simulation was performed for the energy system "
-                        "covering the following sectors:"
-                    ),
-                    html.P(f"{sec_list}"),
-                ],
-            ),
-            html.Div(
-                className="demandmatter",
-                children=[
-                    html.Br(),
-                    html.H4("Electricity Demand", className="graph__pre-title",),
-                    html.P("Electricity demands that have to be supplied are: "),
-                ],
-            ),
-            html.Div(children=[make_dash_data_table(df_dem)]),
-            html.Div(
-                className="timeseriesplots",
-                children=[
-                    html.Div(
-                        [
-                            html.Img(
-                                src="data:image/png;base64,{}".format(
-                                    base64.b64encode(open(ts, "rb").read()).decode()
-                                ),
-                                width="1500px",
-                            )
-                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_DEMANDS]
-                        ]
-                    ),
-                    html.H4("Resources", className="graph__pre-title"),
-                    html.Div(
-                        [
-                            html.Img(
-                                src="data:image/png;base64,{}".format(
-                                    base64.b64encode(open(ts, "rb").read()).decode()
-                                ),
-                                width="1500px",
-                            )
-                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_RESOURCES]
-                        ]
-                    ),
-                ],
-                style={"margin": "30px"},
-            ),
-            html.Div(),
-            html.Br(),
-            html.Div(
-                className="heading1",
-                children=[
-                    html.H2("Energy System Components"),
-                    html.Hr(className="horizontal_line"),
-                ],
-            ),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.P(
-                        "The energy system is comprised of the following components:"
-                    )
-                ],
-            ),
-            html.Div(children=[make_dash_data_table(df_comp)]),
-            html.Br([]),
-            html.Div(
-                className="inputs_simresults_box",
-                children=[html.H2("SIMULATION RESULTS")],
-            ),
-            html.Br([]),
-            html.Div(
-                className="heading1",
-                children=[
-                    html.H2("Dispatch & Energy Flows"),
-                    html.Hr(className="horizontal_line"),
-                ],
-            ),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.P(
-                        "The capacity optimization of components that were to be used resulted in:"
-                    )
-                ],
-            ),
-            html.Div(children=[make_dash_data_table(df_scalar_matrix)]),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.P(
-                        "With this, the demands are met with the following dispatch schedules:"
-                    ),
-                    html.P(
-                        "a. Flows in the system for a duration of 14 days",
-                        style={"marginLeft": "20px"},
-                    ),
-                ]
-                + [
-                    html.Div(
-                        [
-                            html.Img(
-                                src="data:image/png;base64,{}".format(
-                                    base64.b64encode(open(ts, "rb").read()).decode()
-                                ),
-                                width="1500px",
-                            )
-                            for ts in results_json[PATHS_TO_PLOTS][PLOTS_BUSSES]
-                            + results_json[PATHS_TO_PLOTS][PLOTS_PERFORMANCE]
+                        children=[
+                            insert_subsection(
+                                title="Warning Messages",
+                                content=insert_log_messages(log_dict=warnings_dict),
+                            ),
+                            insert_subsection(
+                                title="Error Messages",
+                                content=insert_log_messages(log_dict=errors_dict),
+                            ),
                         ]
                     ),
                 ],
             ),
-            html.Br(style={"marginBottom": "5px"}),
-            html.P(
-                "This results in the following KPI of the dispatch:",
-                style={
-                    "marginLeft": "50px",
-                    "textAlign": "justify",
-                    "fontSize": "40px",
-                },
-            ),
-            html.Div(
-                className="heading1",
-                children=[
-                    html.H2("Economic Evaluation"),
-                    html.Hr(className="horizontal_line"),
-                ],
-            ),
-            html.P(
-                className="blockoftext",
-                children=[
-                    "The following installation and operation costs result from capacity and dispatch optimization:"
-                ],
-            ),
-            html.Div(children=[make_dash_data_table(df_cost_matrix)]),
-            html.Div(
-                className="blockoftext",
-                children=[
-                    html.Img(
-                        src="data:image/png;base64,{}".format(
-                            base64.b64encode(open(ts, "rb").read()).decode()
-                        ),
-                        width="1500px",
-                    )
-                    for ts in results_json[PATHS_TO_PLOTS][PLOTS_COSTS]
-                ],
-            ),
-        ]
+        ],
     )
     return app
 

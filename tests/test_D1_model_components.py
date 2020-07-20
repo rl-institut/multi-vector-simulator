@@ -15,6 +15,7 @@ from src.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
     ENERGY_STORAGE,
+    ENERGY_PRODUCTION,
     DISPATCH_PRICE,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
@@ -23,6 +24,8 @@ from src.constants_json_strings import (
     C_RATE,
     STORAGE_CAPACITY,
     TIMESERIES,
+    TIMESERIES_NORMALIZED,
+    TIMESERIES_PEAK,
     INPUT_BUS_NAME,
     OUTPUT_BUS_NAME,
     SIMULATION_ANNUITY,
@@ -104,14 +107,14 @@ class TestTransformerComponent:
             assert isinstance(
                 output_bus.investment, solph.options.Investment
             )  # todo maybe ep costs
-            assert output_bus.existing == dict_asset[INSTALLED_CAP][VALUE]
+            assert output_bus.investment.existing == dict_asset[INSTALLED_CAP][VALUE]
             assert output_bus.nominal_value is None
         elif optimize is False:
             output_bus = self.model.entities[-1].outputs.data[
                 self.busses[dict_asset[OUTPUT_BUS_NAME]]
             ]
             assert output_bus.investment is None
-            assert hasattr(output_bus, "existing") is False
+            assert hasattr(output_bus.investment, "existing") is False
             assert output_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
         else:
             raise ValueError(f"`optimize` should be True/False but is '{optimize}'")
@@ -161,7 +164,7 @@ class TestTransformerComponent:
     def test_transformer_optimize_cap_multiple_output_busses(self):
         pass
 
-    def test_transformer_fix_cap_single_busses(self):  ## todo done
+    def test_transformer_fix_cap_single_busses(self):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_single_busses"
         ]
@@ -257,7 +260,7 @@ class TestSinkComponent:
         assert dict_asset[LABEL] in self.sinks
         assert isinstance(self.sinks[dict_asset[LABEL]], solph.network.Sink)
 
-        # check amount of sinks
+        # check amount of inputs to sink
         assert len([str(i) for i in self.model.entities[-1].inputs]) == amount_inputs
 
         # self.models should contain the sink (indirectly tested)
@@ -349,34 +352,208 @@ class TestSinkComponent:
 
 
 class TestSourceComponent:
+    @pytest.fixture(autouse=True)
+    def setup_class(self, get_json, get_model, get_busses):
+        """ Sets up class attributes for the tests. """
+        self.dict_values = get_json
+        self.model = get_model
+        self.busses = get_busses
+        self.sources = {}
+        self.time_series = pd.Series(data=[10, 11, 12])
+
+    def helper_test_source_in_model_and_dict(
+        self, dict_asset, dispatchable, mode, timeseries=None
+    ):
+        """
+        Helps testing whether `self.sources` and `self.model` was updated.
+
+        Checks done:
+        * self.sources contains the source (key = label, value = source object)
+        * self.models contains the source (indirectly tested)
+        * output bus has appropriate values for `actual_value`, investment and `variable_costs` (depending on `dispatchable`, `mode` and `timeseries`)
+        * source only has one output flow
+
+        """
+        # self.sinks should contain the sink (key = label, value = sink object)
+        assert dict_asset[LABEL] in self.sources
+        assert isinstance(self.sources[dict_asset[LABEL]], solph.network.Source)
+
+        # check amount of outputs from source (only one)
+        assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
+
+        # self.models should contain the source (indirectly tested)
+        # check output bus (`actual_value`, `investment` and `variable_costs`).
+        # these values are expected to be different depending on `dispatchable`, `mode` and `timeseries`
+        output_bus = self.model.entities[-1].outputs[
+            self.busses[dict_asset[OUTPUT_BUS_NAME]]
+        ]
+        if mode == "fix":
+            assert (
+                output_bus.variable_costs.default == dict_asset[DISPATCH_PRICE][VALUE]
+            )
+            assert output_bus.investment is None
+            if dispatchable == False:
+                assert output_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
+                assert_series_equal(output_bus.actual_value, dict_asset[TIMESERIES])
+                assert output_bus.max == []
+            elif dispatchable == True:
+                assert output_bus.existing == dict_asset[INSTALLED_CAP][VALUE]
+        elif mode == "optimize":
+            assert output_bus.nominal_value == None
+            if dispatchable == False:
+                assert_series_equal(
+                    output_bus.actual_value, dict_asset[TIMESERIES_NORMALIZED]
+                )
+                assert output_bus.max == []
+            if timeseries == "normalized":
+                assert (
+                    output_bus.investment.ep_costs
+                    == dict_asset[SIMULATION_ANNUITY][VALUE]
+                    / dict_asset[TIMESERIES_PEAK][VALUE]
+                )
+                assert (
+                    output_bus.variable_costs.default
+                    == dict_asset[DISPATCH_PRICE][VALUE]
+                    / dict_asset[TIMESERIES_PEAK][VALUE]
+                )
+                if dispatchable == True:
+                    assert_series_equal(
+                        output_bus.max, dict_asset[TIMESERIES_NORMALIZED]
+                    )
+            elif timeseries == "not_normalized":
+                assert (
+                    output_bus.investment.ep_costs
+                    == dict_asset[SIMULATION_ANNUITY][VALUE]
+                )
+                assert (
+                    output_bus.variable_costs.default
+                    == dict_asset[DISPATCH_PRICE][VALUE]
+                )
+                assert output_bus.max == []
+            else:
+                raise ValueError(
+                    f"`timeseries` should be 'normalized' or 'not_normalized' but is {timeseries}."
+                )
+        else:
+            raise ValueError(f"`mode` should be 'fix' or 'optimize' but is {mode}.")
 
     ## non dispatchable
-    def test_source_non_dispatchable_optimize_cap(self):
-        pass
+    def test_source_non_dispatchable_optimize(self):
+        dict_asset = self.dict_values[ENERGY_PRODUCTION][
+            "non_dispatchable_source_optimize"
+        ]
+        dict_asset[TIMESERIES_NORMALIZED] = self.time_series / max(self.time_series)
+        dict_asset[TIMESERIES_PEAK] = {"unit": "kWp/H", "value": self.time_series.max()}
 
-    def test_source_non_dispatchable_fix_cap(self):
-        pass
+        D1.source(
+            model=self.model,
+            dict_asset=dict_asset,
+            sources=self.sources,
+            busses=self.busses,
+        )
+
+        # checks done with helper function (see func for more information)
+        self.helper_test_source_in_model_and_dict(
+            dict_asset=dict_asset,
+            dispatchable=False,
+            mode="optimize",
+            timeseries="normalized",
+        )
+
+    def test_source_non_dispatchable_fix(self):
+        dict_asset = self.dict_values[ENERGY_PRODUCTION]["non_dispatchable_source_fix"]
+        dict_asset[TIMESERIES] = self.time_series
+        dict_asset[TIMESERIES_PEAK] = {"unit": "kWp/H", "value": self.time_series.max()}
+
+        D1.source(
+            model=self.model,
+            dict_asset=dict_asset,
+            sources=self.sources,
+            busses=self.busses,
+        )
+
+        # checks done with helper function (see func for more information)
+        self.helper_test_source_in_model_and_dict(
+            dict_asset=dict_asset, dispatchable=False, mode="fix"
+        )
 
     ## dispatchable
-    def test_source_dispatchable_optimize_cap_normalized_timeseries(self):
-        pass
+    def test_source_dispatchable_optimize_normalized_timeseries(self):
+        dict_asset = self.dict_values[ENERGY_PRODUCTION]["dispatchable_source_optimize"]
+        dict_asset[TIMESERIES_NORMALIZED] = self.time_series / max(self.time_series)
+        dict_asset[TIMESERIES_PEAK] = {"unit": "kWp/H", "value": self.time_series.max()}
 
-    def test_source_dispatchable_optimize_cap_timeseries_not_normalized_timeseries(
-        self,
-    ):
-        pass
+        D1.source(
+            model=self.model,
+            dict_asset=dict_asset,
+            sources=self.sources,
+            busses=self.busses,
+        )
 
-    def test_source_dispatchable_optimize_cap_without_timeseries(self):
-        pass
+        # checks done with helper function (see func for more information)
+        self.helper_test_source_in_model_and_dict(
+            dict_asset=dict_asset,
+            dispatchable=True,
+            mode="optimize",
+            timeseries="normalized",
+        )
 
-    def test_source_dispatchable_fix_cap_normalized_timeseries(self):
-        pass
+    def test_source_dispatchable_optimize_timeseries_not_normalized_timeseries(self,):
+        dict_asset = self.dict_values[ENERGY_PRODUCTION]["dispatchable_source_optimize"]
+        dict_asset[TIMESERIES] = self.time_series
+        dict_asset[TIMESERIES_PEAK] = {"unit": "kWp/H", "value": self.time_series.max()}
 
-    def test_source_dispatchable_fix_cap_timeseries_not_normalized_timeseries(self):
-        pass
+        D1.source(
+            model=self.model,
+            dict_asset=dict_asset,
+            sources=self.sources,
+            busses=self.busses,
+        )
+        # checks done with helper function (see func for more information)
+        self.helper_test_source_in_model_and_dict(
+            dict_asset=dict_asset,
+            dispatchable=True,
+            mode="optimize",
+            timeseries="not_normalized",
+        )
 
-    def test_source_dispatchable_fix_cap_without_timeseries(self):
-        pass
+    def test_source_dispatchable_fix_normalized_timeseries(self):
+        dict_asset = self.dict_values[ENERGY_PRODUCTION]["dispatchable_source_fix"]
+        dict_asset[TIMESERIES_NORMALIZED] = self.time_series / max(self.time_series)
+        dict_asset[TIMESERIES_PEAK] = {"unit": "kWp/H", "value": self.time_series.max()}
+
+        D1.source(
+            model=self.model,
+            dict_asset=dict_asset,
+            sources=self.sources,
+            busses=self.busses,
+        )
+        # checks done with helper function (see func for more information)
+        self.helper_test_source_in_model_and_dict(
+            dict_asset=dict_asset,
+            dispatchable=True,
+            mode="fix",
+            timeseries="normalized",
+        )
+
+    def test_source_dispatchable_fix_timeseries_not_normalized_timeseries(self):
+        dict_asset = self.dict_values[ENERGY_PRODUCTION]["dispatchable_source_fix"]
+        dict_asset[TIMESERIES] = self.time_series
+        dict_asset[TIMESERIES_PEAK] = {"unit": "kWp/H", "value": self.time_series.max()}
+
+        D1.source(
+            model=self.model,
+            dict_asset=dict_asset,
+            sources=self.sources,
+            busses=self.busses,
+        )
+        # checks done with helper function (see func for more information)
+        self.helper_test_source_in_model_and_dict(
+            dict_asset=dict_asset,
+            dispatchable=True,
+            mode="fix",
+            timeseries="not_normalized",
+        )
 
 
 class TestStorageComponent:
@@ -410,14 +587,20 @@ class TestStorageComponent:
         input_bus = self.model.entities[-1].inputs[self.busses["Storage bus"]]
         output_bus = self.model.entities[-1].outputs[self.busses["Storage bus"]]
 
-        assert input_bus.existing == dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE]
+        assert (
+            input_bus.investment.existing
+            == dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE]
+        )
         assert (
             input_bus.investment.ep_costs
             == dict_asset[INPUT_POWER][SIMULATION_ANNUITY][VALUE]
         )
         assert input_bus.nominal_value is None
 
-        assert output_bus.existing == dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE]
+        assert (
+            output_bus.investment.existing
+            == dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE]
+        )
         assert (
             output_bus.investment.ep_costs
             == dict_asset[OUTPUT_POWER][SIMULATION_ANNUITY][VALUE]

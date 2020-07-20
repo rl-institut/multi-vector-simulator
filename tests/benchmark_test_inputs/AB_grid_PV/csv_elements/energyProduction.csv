@@ -14,3 +14,4 @@ outflow_direction,str,Electricity
 type_oemof,str,source
 unit,str,kWp
 energyVector,str,Electricity
+renewableAsset,bool,True
