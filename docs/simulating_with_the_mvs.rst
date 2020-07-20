@@ -48,6 +48,8 @@ For that, each of the following files have to be present in the folder "csv_elem
 
 
 For easy set-up of your energy system, we have provided an empty input folder template as well
+`here. <https://github.com/rl-institut/mvs_eland/blob/dev/input_template>`_
+For easy set-up of your energy system, we have provided an empty input folder template as well
 `here <https://github.com/rl-institut/mvs_eland/blob/dev/input_template>`_.
 A simple example system is setup with this `input folder <https://github.com/rl-institut/mvs_eland/blob/dev/tests/inputs>`_.
 When defining your energy system with this CSV files,
@@ -87,6 +89,13 @@ The unit columns also tell you what type of information is required from you (st
 In case of doubts, also consider the parameter list that is linked above.
 Do not delete any of the rows of the CSV´s – each parameter is needed for the simulation.
 There will also be warnings if you do so.
+
+Example of simple energy systems
+################################
+
+Input files of simple benchmarks (PV + battery + grid) scenarios can be found
+`here <https://github.com/rl-institut/mvs_eland/blob/dev/tests/benchmark_test_inputs/>`_
+
 
 Building a model from assets and energy flows
 #############################################

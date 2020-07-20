@@ -7,6 +7,7 @@ Module A0_initialization defines functions to parse user inputs to the MVS simul
     - Define screen logging depth
 
 Usage from root of repository:
+
 python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]]
                           [-o [PATH_OUTPUT_FOLDER]]
                           [-log [{debug,info,error,warning}]] [-f [OVERWRITE]]
@@ -14,14 +15,20 @@ python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]]
 Process MVS arguments
 
 optional arguments:
+
   -h, --help            show this help message and exit
+
   -i [PATH_INPUT_FOLDER]
                         path to the input folder
+
   -ext [{json,csv}]     type (json or csv) of the input files (default: 'json')
+
   -o [PATH_OUTPUT_FOLDER]
                         path to the output folder for the simulation's results
+
   -log [{debug,info,error,warning}]
                         level of logging in the console
+
   -f [OVERWRITE]        overwrite the output folder if True (default: False)
 
 """

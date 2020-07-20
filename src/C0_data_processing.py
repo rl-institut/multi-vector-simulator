@@ -86,9 +86,11 @@ def identify_energy_vectors(dict_values):
     energyVectors later will be used to distribute costs and KPI amongst the sectors (not implemented)
 
     :param: dict
+
     All input data in dict format
 
     :return:
+
     Update dict['project_data'] by used sectors
     """
     dict_of_sectors = {}
