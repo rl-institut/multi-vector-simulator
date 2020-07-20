@@ -1,7 +1,6 @@
 ,unit,storage_01
 label,str,ESS Li-Ion
 optimizeCap,bool,True
-maximumCap,None or float,None
 outflow_direction,str,ESS Li-Ion
 inflow_direction,str,ESS Li-Ion
 storage_filename,str,storage_01.csv

@@ -1,4 +1,5 @@
 import src.E2_economics as E2
+
 from src.constants_json_strings import (
     UNIT,
     CURR,
@@ -20,6 +21,12 @@ from src.constants_json_strings import (
     COST_OM_TOTAL,
     COST_DISPATCH,
     COST_OM_FIX,
+    LCOE_ASSET,
+    ENERGY_CONSUMPTION,
+    ENERGY_CONVERSION,
+    ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
+    TOTAL_FLOW,
 )
 
 dict_asset = {
@@ -38,6 +45,43 @@ dict_asset = {
 dict_economic = {
     CRF: {VALUE: 0.07264891149004721, UNIT: "?"},
 }
+
+dict_values = {
+    ENERGY_PRODUCTION: {
+        "PV": {ANNUITY_TOTAL: {VALUE: 50000}, TOTAL_FLOW: {VALUE: 470000}}
+    },
+    ENERGY_CONVERSION: {
+        "inverter": {ANNUITY_TOTAL: {VALUE: 15000}, TOTAL_FLOW: {VALUE: 0}}
+    },
+    ENERGY_CONSUMPTION: {
+        "demand": {ANNUITY_TOTAL: {VALUE: 0}, TOTAL_FLOW: {VALUE: 40000}}
+    },
+    ENERGY_STORAGE: {
+        "battery_1": {
+            "input power": {ANNUITY_TOTAL: {VALUE: 1000}, TOTAL_FLOW: {VALUE: 1000}},
+            "output power": {
+                ANNUITY_TOTAL: {VALUE: 30000},
+                TOTAL_FLOW: {VALUE: 240000},
+            },
+            "storage capacity": {
+                ANNUITY_TOTAL: {VALUE: 25000},
+                TOTAL_FLOW: {VALUE: 200000},
+            },
+        },
+        "battery_2": {
+            "input power": {ANNUITY_TOTAL: {VALUE: 1000}, TOTAL_FLOW: {VALUE: 1000}},
+            "output power": {ANNUITY_TOTAL: {VALUE: 30000}, TOTAL_FLOW: {VALUE: 0}},
+            "storage capacity": {
+                ANNUITY_TOTAL: {VALUE: 25000},
+                TOTAL_FLOW: {VALUE: 200000},
+            },
+        },
+    },
+}
+
+exp_lcoe_pv = 50000 / 470000
+exp_lcoe_demand = 0
+exp_lcoe_battery_1 = (1000 + 30000 + 25000) / 240000
 
 
 def test_all_cost_info_parameters_added_to_dict_asset():
@@ -77,3 +121,23 @@ def test_all_list_in_dict_fails_due_to_not_included_keys():
     list_false = ["flow", OPTIMIZED_ADD_CAP]
     boolean = E2.all_list_in_dict(dict_asset, list_false)
     assert boolean is False
+
+
+def test_calculation_of_lcoe_of_asset_total_flow_is_0():
+    """Tests if LCOE is set to None with TOTAL_FLOW of asset is 0"""
+    E2.lcoe_assets(dict_values)
+    assert dict_values[ENERGY_CONVERSION]["inverter"][LCOE_ASSET][VALUE] is None
+    assert dict_values[ENERGY_STORAGE]["battery_2"][LCOE_ASSET][VALUE] is None
+
+
+def test_calculation_of_lcoe_asset_storage_flow_not_0_provider_flow_not_0():
+    """Tests whether the LCOE is correctly calculated for each asset in the different asset groups"""
+    E2.lcoe_assets(dict_values)
+    assert dict_values[ENERGY_PRODUCTION]["PV"][LCOE_ASSET][VALUE] == exp_lcoe_pv
+    assert (
+        dict_values[ENERGY_CONSUMPTION]["demand"][LCOE_ASSET][VALUE] == exp_lcoe_demand
+    )
+    assert (
+        dict_values[ENERGY_STORAGE]["battery_1"][LCOE_ASSET][VALUE]
+        == exp_lcoe_battery_1
+    )
