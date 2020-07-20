@@ -18,8 +18,8 @@ from src.constants import (
     OPTIMIZED_ADD_CAP,
     TOTAL_FLOW,
     ANNUAL_TOTAL_FLOW,
-"peak_flow",
-"average_flow",
+PEAK_FLOW,
+AVERAGE_FLOW,
 )
 
 from src.constants_json_strings import LABEL
@@ -49,8 +49,8 @@ KPI_SCALAR_MATRIX_ENTRIES = [
     OPTIMIZED_ADD_CAP,
     TOTAL_FLOW,
     ANNUAL_TOTAL_FLOW,
-    "peak_flow",
-    "average_flow",
+    PEAK_FLOW,
+    AVERAGE_FLOW,
 ]
 ##################
 # Tab "scalars"  #

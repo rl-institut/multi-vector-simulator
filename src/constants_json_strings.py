@@ -153,6 +153,8 @@ KPI_SCALAR_MATRIX = "scalar_matrix"
 # Flows
 TOTAL_FLOW = "total_flow"
 ANNUAL_TOTAL_FLOW = "annual_total_flow"
+PEAK_FLOW = "peak_flow"
+AVERAGE_FLOW = "average_flow"
 
 # Capacity
 OPTIMIZED_ADD_CAP = "optimizedAddCap"

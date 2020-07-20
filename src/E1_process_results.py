@@ -32,6 +32,8 @@ from src.constants_json_strings import (
     OPTIMIZED_ADD_CAP,
     KPI_SCALARS_DICT,
     TOTAL_FLOW,
+PEAK_FLOW,
+AVERAGE_FLOW
 )
 
 
@@ -452,8 +454,8 @@ def add_info_flows(settings, dict_asset, flow):
                 VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
                 UNIT: "kWh",
             },
-            "peak_flow": {VALUE: max(flow), UNIT: "kW"},
-            "average_flow": {VALUE: total_flow / len(flow), UNIT: "kW"},
+            PEAK_FLOW: {VALUE: max(flow), UNIT: "kW"},
+            AVERAGE_FLOW: {VALUE: total_flow / len(flow), UNIT: "kW"},
         }
     )
     return
