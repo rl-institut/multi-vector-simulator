@@ -22,24 +22,14 @@ from src.constants_json_strings import (
     STORAGE_CAPACITY,
     INPUT_BUS_NAME,
     OUTPUT_BUS_NAME,
-    ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
     KPI,
     KPI_COST_MATRIX,
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
-    TOTAL_FLOW,
-    ANNUITY_OM,
-    ANNUITY_TOTAL,
-    COST_TOTAL,
-    COST_OM_TOTAL,
-    COST_INVESTMENT,
-    COST_DISPATCH,
-    COST_OM_FIX,
-    COST_UPFRONT,
-    LCOE_ASSET,
-    INSTALLED_CAP,
 )
+
+from src.constants_outputs import KPI_COST_MATRIX_ENTRIES, KPI_SCALAR_MATRIX_ENTRIES
 
 r"""
 Module E0 evaluation
@@ -72,29 +62,10 @@ def evaluate_dict(dict_values, results_main, results_meta):
         {
             KPI: {
                 KPI_COST_MATRIX: pd.DataFrame(
-                    columns=[
-                        LABEL,
-                        COST_TOTAL,
-                        COST_OM_TOTAL,
-                        COST_INVESTMENT,
-                        COST_UPFRONT,
-                        COST_DISPATCH,
-                        COST_OM_FIX,
-                        ANNUITY_TOTAL,
-                        ANNUITY_OM,
-                        LCOE_ASSET,
-                    ]
+                    columns= KPI_COST_MATRIX_ENTRIES
                 ),
                 KPI_SCALAR_MATRIX: pd.DataFrame(
-                    columns=[
-                        LABEL,
-                        INSTALLED_CAP,
-                        OPTIMIZED_ADD_CAP,
-                        TOTAL_FLOW,
-                        ANNUAL_TOTAL_FLOW,
-                        "peak_flow",
-                        "average_flow",
-                    ]
+                    columns=KPI_SCALAR_MATRIX_ENTRIES
                 ),
                 KPI_SCALARS_DICT: {},
             }
