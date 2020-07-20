@@ -672,7 +672,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                 "Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow"
             )
         outputs = {
-            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]] = solph.Flow(
+            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                 label=dict_asset[LABEL],
                 investment=solph.Investment(
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
@@ -702,7 +702,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
     """
     if TIMESERIES_NORMALIZED in dict_asset:
         outputs = {
-            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]] = solph.Flow(
+            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                 label=dict_asset[LABEL],
                 max=dict_asset[TIMESERIES_NORMALIZED],
                 existing=dict_asset[INSTALLED_CAP][VALUE],
@@ -716,7 +716,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
                 "Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow"
             )
         outputs = {
-            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]=solph.Flow(
+            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                 label=dict_asset[LABEL],
                 existing=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
