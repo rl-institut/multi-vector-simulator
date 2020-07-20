@@ -1,8 +1,8 @@
-'''
+"""
 This file contains multiple lists of paramters that are written to the "scalars.xlsx" output file of the MVS.
 One should simply import new KPI names from constants.py or constants_json_strings.py
 and add them to the list to make them appear in the excel output sheet "scalars".
-'''
+"""
 
 from src.constants import (
     COST_TOTAL,
@@ -18,11 +18,12 @@ from src.constants import (
     OPTIMIZED_ADD_CAP,
     TOTAL_FLOW,
     ANNUAL_TOTAL_FLOW,
-PEAK_FLOW,
-AVERAGE_FLOW,
+    PEAK_FLOW,
+    AVERAGE_FLOW,
 )
 
 from src.constants_json_strings import LABEL
+
 ######################
 # Tab "cost_matrix"  #
 ######################
@@ -36,8 +37,7 @@ KPI_COST_MATRIX_ENTRIES = [
     COST_OM_FIX,
     ANNUITY_TOTAL,
     ANNUITY_OM,
-    LCOE_ASSET
-
+    LCOE_ASSET,
 ]
 ########################
 # Tab "scalar_matrix"  #

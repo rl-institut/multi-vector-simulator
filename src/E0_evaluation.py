@@ -27,7 +27,7 @@ from src.constants_json_strings import (
     KPI_COST_MATRIX,
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
-OPTIMIZED_FLOWS
+    OPTIMIZED_FLOWS,
 )
 
 from src.constants_output import KPI_COST_MATRIX_ENTRIES, KPI_SCALAR_MATRIX_ENTRIES
@@ -62,12 +62,8 @@ def evaluate_dict(dict_values, results_main, results_meta):
     dict_values.update(
         {
             KPI: {
-                KPI_COST_MATRIX: pd.DataFrame(
-                    columns= KPI_COST_MATRIX_ENTRIES
-                ),
-                KPI_SCALAR_MATRIX: pd.DataFrame(
-                    columns=KPI_SCALAR_MATRIX_ENTRIES
-                ),
+                KPI_COST_MATRIX: pd.DataFrame(columns=KPI_COST_MATRIX_ENTRIES),
+                KPI_SCALAR_MATRIX: pd.DataFrame(columns=KPI_SCALAR_MATRIX_ENTRIES),
                 KPI_SCALARS_DICT: {},
             }
         }

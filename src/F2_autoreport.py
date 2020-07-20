@@ -71,8 +71,8 @@ from src.constants_json_strings import (
     PROJECT_ID,
     SCENARIO_NAME,
     SCENARIO_ID,
-PEAK_FLOW,
-AVERAGE_FLOW
+    PEAK_FLOW,
+    AVERAGE_FLOW,
 )
 
 # TODO link this to the version and date number @Bachibouzouk

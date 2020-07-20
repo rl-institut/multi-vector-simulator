@@ -17,7 +17,7 @@ from src.constants_json_strings import (
     KPI_COST_MATRIX,
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
-OPTIMIZED_FLOWS
+    OPTIMIZED_FLOWS,
 )
 from .constants import (
     TEST_REPO_PATH,

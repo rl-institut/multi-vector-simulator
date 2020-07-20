@@ -31,7 +31,7 @@ from src.constants_json_strings import (
     SCENARIO_NAME,
     KPI,
     KPI_SCALAR_MATRIX,
-OPTIMIZED_FLOWS
+    OPTIMIZED_FLOWS,
 )
 from .constants import (
     EXECUTE_TESTS_ON,

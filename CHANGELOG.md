@@ -65,6 +65,7 @@ Here is a template for new release sections
 - Rename function `check_for_newly_added_parameter` in `check_for_official_extra_parameters` (#428)
 - Moved list of keys to be printed in "scalars.xlsx" to "constants_output.py" ()
 - Renamed "peak_flow" to `PEAK_FLOW` and "average_flow" to `AVERAGE_FLOW` ()
+- Changed function "E2.lcoe_asset()" and its tests, now processes one asset at a time ()
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)

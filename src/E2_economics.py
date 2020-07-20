@@ -31,8 +31,8 @@ from src.constants_json_strings import (
     ENERGY_STORAGE,
     LCOE_ASSET,
     OUTPUT_POWER,
-INPUT_POWER,
-STORAGE_CAPACITY
+    INPUT_POWER,
+    STORAGE_CAPACITY,
 )
 
 r"""
@@ -203,44 +203,24 @@ def lcoe_assets(dict_asset, asset_group):
     """
 
     if asset_group == ENERGY_CONSUMPTION:
-        dict_asset.update(
-            {LCOE_ASSET: {VALUE: 0, UNIT: "currency/kWh"}}
-        )
-        
+        dict_asset.update({LCOE_ASSET: {VALUE: 0, UNIT: "currency/kWh"}})
+
     elif asset_group == ENERGY_STORAGE:
         if dict_asset[OUTPUT_POWER][TOTAL_FLOW][VALUE] == 0:
-            dict_asset.update(
-                {LCOE_ASSET: {VALUE: None, UNIT: "currency/kWh"}}
-            )
+            dict_asset.update({LCOE_ASSET: {VALUE: None, UNIT: "currency/kWh"}})
         else:
             storage_annuity = (
                 dict_asset[INPUT_POWER][ANNUITY_TOTAL][VALUE]
-                + dict_asset[OUTPUT_POWER][ANNUITY_TOTAL][
-                    VALUE
-                ]
-                + dict_asset[STORAGE_CAPACITY][ANNUITY_TOTAL][
-                    VALUE
-                ]
+                + dict_asset[OUTPUT_POWER][ANNUITY_TOTAL][VALUE]
+                + dict_asset[STORAGE_CAPACITY][ANNUITY_TOTAL][VALUE]
             )
-            lcoe_a = (
-                storage_annuity
-                / dict_asset[OUTPUT_POWER][TOTAL_FLOW][VALUE]
-            )
-            dict_asset.update(
-                {LCOE_ASSET: {VALUE: lcoe_a, UNIT: "currency/kWh"}}
-            )
-    
+            lcoe_a = storage_annuity / dict_asset[OUTPUT_POWER][TOTAL_FLOW][VALUE]
+            dict_asset.update({LCOE_ASSET: {VALUE: lcoe_a, UNIT: "currency/kWh"}})
+
     elif dict_asset[TOTAL_FLOW][VALUE] == 0.0:
-        dict_asset.update(
-            {LCOE_ASSET: {VALUE: None, UNIT: "currency/kWh"}}
-        )
+        dict_asset.update({LCOE_ASSET: {VALUE: None, UNIT: "currency/kWh"}})
     else:
-        lcoe_a = (
-            dict_asset[ANNUITY_TOTAL][VALUE]
-            / dict_asset[TOTAL_FLOW][VALUE]
-        )
-        dict_asset.update(
-            {LCOE_ASSET: {VALUE: lcoe_a, UNIT: "currency/kWh"}}
-        )
+        lcoe_a = dict_asset[ANNUITY_TOTAL][VALUE] / dict_asset[TOTAL_FLOW][VALUE]
+        dict_asset.update({LCOE_ASSET: {VALUE: lcoe_a, UNIT: "currency/kWh"}})
 
     return
