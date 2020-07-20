@@ -277,19 +277,21 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
     """
     if dict_asset[OPTIMIZE_CAP][VALUE] is False:
         func_constant(model, dict_asset, **kwargs)
-        logging.debug(
-            "Defined asset %s as %s (fix capacity)",
-            dict_asset[LABEL],
-            dict_asset["type_oemof"],
-        )
+        if dict_asset["type_oemof"] != "source":
+            logging.debug(
+                "Added: %s %s (fixed capacity)",
+                dict_asset["type_oemof"].capitalize(),
+                dict_asset[LABEL],
+            )
 
     elif dict_asset[OPTIMIZE_CAP][VALUE] is True:
         func_optimize(model, dict_asset, **kwargs)
-        logging.debug(
-            "Defined asset %s as %s (to be optimized)",
-            dict_asset[LABEL],
-            dict_asset["type_oemof"],
-        )
+        if dict_asset["type_oemof"] != "source":
+            logging.debug(
+                "Added: %s %s (capacity to be optimized)",
+                dict_asset["type_oemof"].capitalize(),
+                dict_asset[LABEL],
+            )
     else:
         raise ValueError(
             f"Input error! 'optimize_cap' of asset {dict_asset['label']}\n should be True/False but is {dict_asset['optimizeCap']['value']}."
@@ -613,6 +615,9 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
 
     model.add(source_non_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_non_dispatchable})
+    logging.debug(
+        "Added: Non-dispatchable source %s (fixed capacity)", dict_asset[LABEL]
+    )
     return
 
 
@@ -647,6 +652,10 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
 
     model.add(source_non_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_non_dispatchable})
+    logging.debug(
+        "Added: Non-dispatchable source %s (capacity to be optimized)",
+        dict_asset[LABEL],
+    )
     return
 
 
@@ -670,8 +679,13 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     else:
         if TIMESERIES in dict_asset:
-            logging.error(
-                "Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow"
+            logging.info(
+                "Asset %s is introduced as a dispatchable source with an availability schedule.",
+                dict_asset[LABEL],
+            )
+            logging.debug(
+                "The availability schedule is solely introduced because the key %s was not in the asset´s dictionary. \nIt should only be applied to DSO sources. If the asset should not have this behaviour, please create an issue.",
+                TIMESERIES_NORMALIZED,
             )
         outputs = {
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
@@ -687,7 +701,9 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     model.add(source_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_dispatchable})
-    logging.info("Added: Dispatchable source %s", dict_asset[LABEL])
+    logging.debug(
+        "Added: Dispatchable source %s (capacity to be optimized)", dict_asset[LABEL]
+    )
     return
 
 
@@ -714,8 +730,13 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     else:
         if TIMESERIES in dict_asset:
-            logging.error(
-                "Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow"
+            logging.info(
+                "Asset %s is introduced as a dispatchable source with an availability schedule.",
+                dict_asset[LABEL],
+            )
+            logging.debug(
+                "The availability schedule is solely introduced because the key %s was not in the asset´s dictionary. \nIt should only be applied to DSO sources. If the asset should not have this behaviour, please create an issue.",
+                TIMESERIES_NORMALIZED,
             )
         outputs = {
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
@@ -727,7 +748,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     model.add(source_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_dispatchable})
-    logging.info("Added: Dispatchable source %s", dict_asset[LABEL])
+    logging.debug("Added: Dispatchable source %s (fixed capacity)", dict_asset[LABEL])
     return
 
 
@@ -764,7 +785,7 @@ def sink_dispatchable(model, dict_asset, **kwargs):
     sink_dispatchable = solph.Sink(label=dict_asset[LABEL], inputs=inputs,)
     model.add(sink_dispatchable)
     kwargs["sinks"].update({dict_asset[LABEL]: sink_dispatchable})
-    logging.info("Added: Dispatchable sink %s", dict_asset[LABEL])
+    logging.debug("Added: Dispatchable sink %s", dict_asset[LABEL])
     return
 
 
@@ -799,5 +820,5 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     sink_demand = solph.Sink(label=dict_asset[LABEL], inputs=inputs,)
     model.add(sink_demand)
     kwargs["sinks"].update({dict_asset[LABEL]: sink_demand})
-    logging.info("Added: Non-dispatchable sink %s", dict_asset[LABEL])
+    logging.debug("Added: Non-dispatchable sink %s", dict_asset[LABEL])
     return

@@ -64,6 +64,7 @@ Here is a template for new release sections
 - Rename function `check_for_newly_added_parameter` in `check_for_official_extra_parameters` (#428)
 - Add `ìnputs` folder to `.gitignore` (#401)
 - Readthedocs links to simple scenario `tests/inputs` (#420)
+- Adapt and add logging messages for components added to the model in D1 (#429)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
