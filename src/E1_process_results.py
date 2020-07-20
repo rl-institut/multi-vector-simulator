@@ -118,7 +118,9 @@ def get_storage_results(settings, storage_bus, dict_asset):
     ]
     add_info_flows(settings, dict_asset[OUTPUT_POWER], power_discharge)
 
-    capacity = storage_bus["sequences"][((dict_asset[LABEL], TYPE_NONE), "capacity")]
+    capacity = storage_bus["sequences"][
+        ((dict_asset[LABEL], TYPE_NONE), "storage_content")
+    ]
     add_info_flows(settings, dict_asset[STORAGE_CAPACITY], capacity)
 
     if OPTIMIZE_CAP in dict_asset:
