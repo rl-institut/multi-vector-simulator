@@ -38,7 +38,9 @@ DICT_AFTER = os.path.join(TEST_REPO_PATH, "dict_values_after_E0.pickle")
 
 @mock.patch(
     "argparse.ArgumentParser.parse_args",
-    return_value=PARSER.parse_args(["-f", "-log", "warning", "-i", TEST_INPUT_PATH, "-o", TEST_OUTPUT_PATH]),
+    return_value=PARSER.parse_args(
+        ["-f", "-log", "warning", "-i", TEST_INPUT_PATH, "-o", TEST_OUTPUT_PATH]
+    ),
 )
 def setup_module(m_args):
     """Run the simulation up to module E0 and save dict_values before and after evaluation"""
