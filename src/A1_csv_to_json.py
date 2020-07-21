@@ -20,6 +20,7 @@ Functions of this module (that need to be tested)
 - read all parameters in from csv files
 - parse parameter that is given as a timeseries with input file name and header
 - parse parameter that is given as a list
+
 - check that parameter that is given as a list results and subsequent other parameters to be given
   as list e.g. if we have two output flows in conversion assets there should be two efficiencies
   to operational costs (this is not implemented in code yet)
@@ -46,6 +47,10 @@ from src.constants import (
     TYPE_BOOL,
     TYPE_STR,
     TYPE_NONE,
+    EXTRA_CSV_PARAMETERS,
+    WARNING_TEXT,
+    REQUIRED_IN_CSV_ELEMENTS,
+    DEFAULT_VALUE,
 )
 from src.constants_json_strings import (
     LABEL,
@@ -66,12 +71,20 @@ from src.constants_json_strings import (
     SOC_MIN,
     STORAGE_CAPACITY,
     MAXIMUM_CAP,
+    RENEWABLE_ASSET_BOOL,
+    RENEWABLE_SHARE_DSO,
 )
 from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
 
 class MissingParameterError(ValueError):
     """Exception raised for missing parameters of a csv input file."""
+
+    pass
+
+
+class MissingParameterWarning(UserWarning):
+    """Exception raised for missing new parameters of a csv input file, which will be set to default."""
 
     pass
 
@@ -186,8 +199,8 @@ def create_json_from_csv(
     main key of the dictionary. Exceptions are made for the files
     ["economic_data", "project", "project_data", "simulation_settings"], here
     no main key is added. Another exception is made for the file
-    "energyStorage". When this file is processed, the according "storage_"
-    files (names of the "storage_"-columns in "energyStorage" are called and
+    "energyStorage". When this file is processed, the according "storage"
+    files (names of the "storage" columns in "energyStorage" are called and
     added to the energyStorage Dictionary.
 
 
@@ -198,10 +211,12 @@ def create_json_from_csv(
         extension
     :param parameters: list
         List of parameters names that are required
+
     :param asset_is_a_storage : bool
         default value is False. If the function is called by
         add_storage_components() the
         parameter is set to True
+
     :return: dict
         the converted dictionary
     """
@@ -241,27 +256,11 @@ def create_json_from_csv(
             )
         )
 
-    # check wether parameter maximumCap is availavle
-    # TODO in next version: add maximumCap to hardcoded parameter list in constants.py
-    # TODO create this as a function, so that in future also new parameters can be added
-    list_of_new_parameters = {
-        MAXIMUM_CAP: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
-        "renewableAsset": "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
-        "renewable_share": "allows defining the renewable share of the DSO supply (Values: Float). ",
-    }
+    # Compare the csv input file potential extra parameters with the acknowledged
+    # EXTRA_CSV_PARAMETERS, update the parameters list and the values of the parameters
+    parameters, df = check_for_official_extra_parameters(filename, df, parameters)
 
-    for new_parameter in list_of_new_parameters:
-        if new_parameter in df.index:
-            parameters.append(new_parameter)
-        else:
-            # todo this message should only be displayed in case that the parameter is actually supposed to be applied to each of the files. For maxCap, this is also not valid, eg. it should not be added to economic_data
-            logging.warning(
-                f"You are not using the parameter {new_parameter} for asset group {filename}, which "
-                + list_of_new_parameters[new_parameter]
-                + "In the upcoming version of the MVS, this parameter will be required."
-            )
-
-    # check parameters
+    # check for wrong or missing required parameters
     missing_parameters = []
     wrong_parameters = []
     if asset_is_a_storage is False:
@@ -486,6 +485,83 @@ def create_json_from_csv(
     return
 
 
+def check_for_official_extra_parameters(
+    filename, df, required_parameters, official_extra_parameters=EXTRA_CSV_PARAMETERS
+):
+    """
+    Checks if there are new parameters that should be in the csvs.
+    Adds them to the required list of parameters.
+
+    Parameters
+    ----------
+    filename: str
+        Defines the name of a csv input file (without the extension)
+    df: :py:class:`~pandas.core.frame.DataFrame`
+        Data frame read from one of the input files
+    required_parameters: list
+        Defines the required parameters
+    official_extra_parameters: dict
+        dict specifing allowed extra parameters that should be in the Data frame
+
+    Returns
+    -------
+    Updated parameters list and updated dataframe and updated :pandas:`pandas.DataFrame<frame>`
+    The function through a warning if a new parameter is not defined in the csv but exists inf
+    the official_extra_parameters. The parameter will then be set to it's default value.
+    """
+    df = df.copy()
+
+    # Loop through official extra parameters (i.e. not yet added to the REQUIRED_CSV_PARAMETERS)
+    for extra_parameter in official_extra_parameters:
+        # Check whether the extra parameter should be contained in the csv file named `filename`
+        if (
+            filename
+            in official_extra_parameters[extra_parameter][REQUIRED_IN_CSV_ELEMENTS]
+        ):
+            # Check if the extra parameter is included in the pandas Dataframe
+            if extra_parameter not in df.index:
+                # Add default values for each of the columns in the df
+                default_values = {}
+                for i, column in enumerate(df):
+                    if i == 0:
+                        default_values.update({column: extra_parameter})
+                    elif column == "unit":
+                        default_values.update(
+                            {
+                                column: official_extra_parameters[extra_parameter].get(
+                                    UNIT, TYPE_STR
+                                )
+                            }
+                        )
+                    else:
+                        default_values.update(
+                            {
+                                column: official_extra_parameters[extra_parameter][
+                                    DEFAULT_VALUE
+                                ]
+                            }
+                        )
+                default_values = pd.Series(data=default_values, name=extra_parameter)
+                df = df.append(default_values, ignore_index=False)
+
+                # Display warning message if the extra parameter was not present in the csv file.
+                warnings.warn(
+                    MissingParameterWarning(
+                        f"You are not using the parameter {extra_parameter} for asset group {filename}, which "
+                        + official_extra_parameters[extra_parameter][WARNING_TEXT]
+                        + ". "
+                        + f"This parameter is set to it's default value {official_extra_parameters[extra_parameter][DEFAULT_VALUE]}, which can influence the results."
+                        + "In the next release, this parameter will required."
+                    )
+                )
+
+            if extra_parameter not in required_parameters:
+                # Now that the new parameter is in the df
+                # (optional with default values being added) add the new parameter to parameter list
+                required_parameters.append(extra_parameter)
+    return required_parameters, df
+
+
 def conversion(value, asset_dict, row, param, asset, filename=""):
     if isinstance(value, str) and ("{" in value or "}" in value):
         # if parameter defined as dictionary
@@ -518,7 +594,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                     "(True/T/true or False/F/false)."
                 )
         else:
-            if value == TYPE_NONE:
+            if value == TYPE_NONE or value is None:
                 value = None
             else:
                 try:
@@ -536,6 +612,7 @@ def add_storage_components(storage_filename, input_directory):
     loads the csv of a the specific storage listed as column in
     "energyStorage.csv", checks for complete set of parameters and creates a
     json dictionary.
+
     :param storage_filename: str
         name of storage, given by the column name in "energyStorage.csv
     :param input_directory: str

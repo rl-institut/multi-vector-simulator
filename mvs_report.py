@@ -7,10 +7,24 @@ from src.F2_autoreport import create_app, open_in_browser, print_pdf
 
 ARG_PDF = "print_report"
 ARG_REPORT_PATH = "report_path"
+SIM_OUTPUT_PATH = "output_folder"
 
 
 def report_arg_parser():
     """Create a command line argument parser for MVS
+
+    usage: python mvs_report.py [-h] [-pdf [PRINT_REPORT]] [-i [OUTPUT_FOLDER]]
+                                [-o [REPORT_PATH]]
+
+    Display the report of a MVS simulation
+
+    optional arguments:
+      -h, --help           show this help message and exit
+      -pdf [PRINT_REPORT]  print the report as pdf (default: False)
+      -i [OUTPUT_FOLDER]   path to the simulation result json file
+                           'json_with_results.json'
+      -o [REPORT_PATH]     path to save the pdf report
+
 
     :return: parser
     """
@@ -28,11 +42,19 @@ def report_arg_parser():
         type=bool,
     )
     parser.add_argument(
+        "-i",
+        dest=SIM_OUTPUT_PATH,
+        nargs="?",
+        type=str,
+        help="path to the simulation result json file 'json_with_results.json'",
+        default=os.path.join(REPO_PATH, OUTPUT_FOLDER, "json_with_results.json"),
+    )
+    parser.add_argument(
         "-o",
         dest=ARG_REPORT_PATH,
         nargs="?",
         type=str,
-        help="path to the report file",
+        help="path to save the pdf report",
         default=os.path.join(REPORT_PATH, PDF_REPORT),
     )
     return parser
@@ -46,8 +68,7 @@ if __name__ == "__main__":
     print(args)
     bool_print_report = args.get(ARG_PDF)
     report_path = args.get(ARG_REPORT_PATH)
-
-    fname = os.path.join(REPO_PATH, OUTPUT_FOLDER, "json_with_results.json")
+    fname = args.get(SIM_OUTPUT_PATH)
 
     if os.path.exists(fname) is False:
         raise FileNotFoundError(
@@ -60,11 +81,10 @@ if __name__ == "__main__":
         test_app = create_app(dict_values)
         banner = "*" * 40
         print(banner + "\nPress ctrl+c to stop the report server\n" + banner)
-        # run the dash server for 600s before shutting it down
         if bool_print_report is True:
             print_pdf(test_app, path_pdf_report=report_path)
         else:
-
+            # run the dash server for 600s before shutting it down
             open_in_browser(test_app, timeout=600)
             print(
                 banner

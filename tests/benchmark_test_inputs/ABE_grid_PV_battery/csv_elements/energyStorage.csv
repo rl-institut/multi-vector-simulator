@@ -6,3 +6,4 @@ outflow_direction,str,battery
 type_oemof,str,storage
 storage_filename,str,storage_1.csv
 energyVector,str,Electricity
+maximumCap,kWh,None

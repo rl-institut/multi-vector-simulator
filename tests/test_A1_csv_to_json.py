@@ -1,9 +1,13 @@
 import os
 
 import pytest
+import pandas as pd
 
 import src.A1_csv_to_json as A1
 import src.B0_data_input_json as data_input
+
+from src.constants import WARNING_TEXT, REQUIRED_IN_CSV_ELEMENTS, DEFAULT_VALUE, HEADER
+
 from src.constants_json_strings import (
     UNIT,
     VALUE,
@@ -30,10 +34,7 @@ CSV_PARAMETERS = ["param1", "param2"]
 
 CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {VALUE: 21, UNIT: "factor"}}}
 CSV_TIMESERIES = {
-    "param1": {
-        VALUE: {FILENAME: "test_time_series.csv", "header": "power"},
-        UNIT: "kW",
-    }
+    "param1": {VALUE: {FILENAME: "test_time_series.csv", HEADER: "power"}, UNIT: "kW",}
 }
 
 CSV_LIST = {
@@ -56,6 +57,56 @@ CONVERSION_TYPE = {
     "param_bool6": {UNIT: TYPE_BOOL, VALUE: False},
     "param_year": {UNIT: "year", VALUE: 8},
 }
+
+
+### Test function
+
+filename_a = "a_file"
+filename_b = "b_file"
+df_no_new_parameter = pd.DataFrame(["a", "b"], index=["unit", "value"])
+
+parameters = ["unit", "value"]
+
+list_of_new_parameter = {
+    "max": {
+        WARNING_TEXT: "a test warning",
+        REQUIRED_IN_CSV_ELEMENTS: [filename_a],
+        DEFAULT_VALUE: False,
+    }
+}
+
+
+def test_if_check_for_official_extra_parameters_adds_no_parameter_when_not_necessary():
+    parameters_updated, _ = A1.check_for_official_extra_parameters(
+        filename_b,
+        df_no_new_parameter,
+        parameters,
+        official_extra_parameters=list_of_new_parameter,
+    )
+    assert parameters == parameters_updated
+
+
+def test_if_check_for_official_extra_parameters_raises_warning_if_parameter_doesnt_exist():
+    with pytest.warns(A1.MissingParameterWarning):
+        parameters_updated, _ = A1.check_for_official_extra_parameters(
+            filename_a,
+            df_no_new_parameter,
+            parameters,
+            official_extra_parameters=list_of_new_parameter,
+        )
+
+
+df_with_new_parameter = pd.DataFrame(["a", "b", 20], index=["unit", "value", "max"])
+
+
+def test_if_check_for_official_extra_parameters_adds_to_parameter_list_when_new_parameter_exists():
+    parameters_updated, _ = A1.check_for_official_extra_parameters(
+        filename_a,
+        df_with_new_parameter,
+        parameters,
+        official_extra_parameters=list_of_new_parameter,
+    )
+    assert ["unit", "value", "max"] == parameters_updated
 
 
 def test_create_input_json_creation_of_json_file():

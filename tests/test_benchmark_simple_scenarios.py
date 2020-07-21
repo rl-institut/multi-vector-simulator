@@ -44,6 +44,8 @@ class TestACElectricityBus:
     def test_benchmark_AB_grid_pv(self, margs):
         use_case = "AB_grid_PV"
         main(
+            overwrite=True,
+            display_output="warning",
             path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
             input_type=CSV_EXT,
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
@@ -72,6 +74,8 @@ class TestACElectricityBus:
     def test_benchmark_AE_grid_battery(self, margs):
         use_case = "AE_grid_battery"
         main(
+            overwrite=True,
+            display_output="warning",
             path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
             input_type=CSV_EXT,
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
@@ -79,12 +83,12 @@ class TestACElectricityBus:
 
         df_busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
-            sheet_name="battery bus",
+            sheet_name="Electricity bus",
         )
         # make the time the index
         df_busses_flow = df_busses_flow.set_index("Unnamed: 0")
-
-        # TODO make sure the battery is not used in an assert here
+        # make sure battery is not used
+        assert sum(df_busses_flow["battery"]) == 0
 
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
@@ -99,6 +103,8 @@ class TestACElectricityBus:
         excess = {}
         for case in use_case:
             main(
+                overwrite=True,
+                display_output="warning",
                 path_input_folder=os.path.join(TEST_INPUT_PATH, case),
                 input_type=CSV_EXT,
                 path_output_folder=os.path.join(TEST_OUTPUT_PATH, case),

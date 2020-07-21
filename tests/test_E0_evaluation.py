@@ -17,6 +17,7 @@ from src.constants_json_strings import (
     KPI_COST_MATRIX,
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
+    OPTIMIZED_FLOWS,
 )
 from .constants import (
     TEST_REPO_PATH,
@@ -37,7 +38,9 @@ DICT_AFTER = os.path.join(TEST_REPO_PATH, "dict_values_after_E0.pickle")
 
 @mock.patch(
     "argparse.ArgumentParser.parse_args",
-    return_value=PARSER.parse_args(["-i", TEST_INPUT_PATH, "-o", TEST_OUTPUT_PATH]),
+    return_value=PARSER.parse_args(
+        ["-f", "-log", "warning", "-i", TEST_INPUT_PATH, "-o", TEST_OUTPUT_PATH]
+    ),
 )
 def setup_module(m_args):
     """Run the simulation up to module E0 and save dict_values before and after evaluation"""
@@ -75,7 +78,7 @@ def test_evaluate_dict_append_new_fields():
     with open(DICT_AFTER, "rb") as handle:
         dict_values_after = pickle.load(handle)
 
-    for k in (KPI, "optimizedFlows"):
+    for k in (KPI, OPTIMIZED_FLOWS):
         assert k not in dict_values_before
         assert k in dict_values_after
 

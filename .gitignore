@@ -81,6 +81,9 @@ target/
 # pyenv
 .python-version
 
+# folium map
+report/assets/proj_map
+
 # celery beat schedule file
 celerybeat-schedule
 
@@ -116,6 +119,12 @@ mvs_csv_config.json
 # ERA5 nc file
 *.nc
 
+# report files
+/report/assets/proj_map*
+/report/*.pdf
+
 # Local input folders, eg. for pilots
 /example_1/
 /UVTgv_input_files/
+/inputs/
+
