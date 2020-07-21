@@ -42,6 +42,7 @@ Here is a template for new release sections
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 - File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
+ - Add Plotly-based plots to `F2_autoreport.py` (#439)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -82,6 +83,7 @@ Here is a template for new release sections
 - `tests/test_benchmark.py` module (#401)
 - Outdated table of tests of MVS `docs/tables/table_tests.csv` (#456)
 - Removed function C0.complete_missing_cost_data() as this should be covered by A1 for csv files (#379)
+- Old plots in `F2_autoreport.py` generated with matplotlib (#439)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
