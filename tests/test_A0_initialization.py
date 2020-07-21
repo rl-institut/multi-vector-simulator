@@ -132,7 +132,7 @@ class TestProcessUserArguments:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-i", test_in_path, "-o", test_out_path]
+            ["-log", "warning", "-i", test_in_path, "-o", test_out_path]
         ),
     )
     def test_if_path_output_folder_exists_raise_fileexists_error(self, m_args):
