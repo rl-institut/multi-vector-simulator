@@ -40,7 +40,6 @@ Here is a template for new release sections
 - New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
 - `.readthedocs.yml` configuration file (#435, #436)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
-- Function for unified parser arguments used in pytests (`PARSER_ARGS` in `tests/constants.py`) (#379)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -63,7 +62,6 @@ Here is a template for new release sections
 - Explicitly return the dataframe with parameters value in function
  `check_for_newly_added_parameter` (#428)
 - Rename function `check_for_newly_added_parameter` in `check_for_official_extra_parameters` (#428)- Added global variables to `constants_json_str.csv`, defining units with them (#379)
-- Some tests in A0, B0, F1 call `PARSER_ARGS` (#379)
 - Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
 
 ### Removed
