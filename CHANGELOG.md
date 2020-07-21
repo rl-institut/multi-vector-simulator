@@ -69,12 +69,15 @@ Here is a template for new release sections
 - Moved list of keys to be printed in "scalars.xlsx" to "constants_output.py" (#453)
 - Renamed "peak_flow" to `PEAK_FLOW` and "average_flow" to `AVERAGE_FLOW` (#453)
 - Changed function "E2.lcoe_asset()" and its tests, now processes one asset at a time (#453)
+- Added arguments `"-f", "-log", "warning"` to all `parse_args` and `main()` in `tests` (#456)
+- File `Developing.rst` with new description of tests and conventions (#456)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
 - `MaximumCap` from list of required parameters for `energyStorage` assets (#415)
 - `inputs` folder (#401)
 - `tests/test_benchmark.py` module (#401)
+- Outdated table of tests of MVS `docs/tables/table_tests.csv` (#456)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
