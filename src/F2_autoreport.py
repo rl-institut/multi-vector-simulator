@@ -366,6 +366,141 @@ def ready_single_plots(df_pd, dict_of_labels, only_print=False):
             )
         )
     return plots
+
+
+def ready_capacities_plots(df_kpis, json_results_file, only_print=False):
+    """
+    """
+    x_values = []
+    y_values = []
+
+    for kpi, cap in zip(list(df_kpis["label"]), list(df_kpis["optimizedAddCap"])):
+        if cap > 0:
+            x_values.append(kpi)
+            y_values.append(cap)
+
+    plot = insert_single_plot(
+        x_data=x_values,
+        y_data=y_values,
+        plot_type="bar",
+        plot_title="Optimal additional capacities (kW/kWh/kWp): "
+        + json_results_file[PROJECT_DATA][PROJECT_NAME]
+        + ", "
+        + json_results_file[PROJECT_DATA][SCENARIO_NAME],
+        x_axis_name="Items",
+        y_axis_name="Capacities",
+        id_plot="capacities-plot",
+        print_only=only_print,
+    )
+    return plot
+
+
+def insert_flows_plots(
+    df_plots_data,
+    x_legend=None,
+    y_legend=None,
+    plot_title=None,
+    pdf_only=False,
+    plot_id=None,
+):
+    fig = go.Figure()
+    colors = [
+        "#1f77b4",
+        "#ff7f0e",
+        "#2ca02c",
+        "#d62728",
+        "#9467bd",
+        "#8c564b",
+        "#e377c2",
+        "#7f7f7f",
+        "#bcbd22",
+        "#17becf",
+    ]
+    styling_dict = dict(
+        showgrid=True,
+        gridwidth=1,
+        zeroline=True,
+        mirror=True,
+        title_font=dict(size=22, family="Courier", color="black"),
+    )
+
+    assets_list = list(df_plots_data.columns)
+    assets_list.remove("timestamp")
+
+    for asset, new_color in zip(assets_list, colors):
+        fig.add_trace(
+            go.Scatter(
+                x=df_plots_data["timestamp"],
+                y=df_plots_data[asset],
+                mode="lines",
+                line=dict(color=new_color, width=2.5),
+                name=asset,
+            )
+        )
+
+    fig.update_layout(
+        xaxis_title=x_legend,
+        yaxis_title=y_legend,
+        template="simple_white",
+        xaxis=styling_dict,
+        yaxis=styling_dict,
+        title={
+            "text": plot_title,
+            "y": 0.90,
+            "x": 0.5,
+            "font_size": 26,
+            "xanchor": "center",
+            "yanchor": "top",
+        },
+        legend=dict(
+            y=0.5, traceorder="normal", font=dict(family="sans-serif", color="black"),
+        ),
+    )
+    plot_created = [
+        html.Img(
+            className="print-only dash-plot",
+            src="data:image/png;base64,{}".format(
+                base64.b64encode(fig.to_image(format="png", width=1000)).decode(),
+            ),
+        )
+    ]
+    if pdf_only is False:
+        plot_created.append(
+            dcc.Graph(className="no-print", id=plot_id, figure=fig, responsive=True,)
+        )
+    return html.Div(children=plot_created)
+
+
+def ready_flows_plots(dict_dataseries, json_results_file):
+    buses_list = list(dict_dataseries.keys())
+    multi_plots = []
+    for bus in buses_list:
+        comp_id = bus + "-plot"
+        title = (
+            bus
+            + " flows in LES: "
+            + json_results_file[PROJECT_DATA][PROJECT_NAME]
+            + ", "
+            + json_results_file[PROJECT_DATA][SCENARIO_NAME]
+        )
+
+        df_data = json_results_file["optimizedFlows"][bus]
+        df_data.reset_index(level=0, inplace=True)
+        df_data = df_data.rename(columns={"index": "timestamp"})
+
+        multi_plots.append(
+            insert_flows_plots(
+                df_plots_data=df_data,
+                x_legend="Time",
+                y_legend=bus + " flow in kWh",
+                plot_title=title,
+                pdf_only=False,
+                plot_id=comp_id,
+            )
+        )
+
+    return multi_plots
+
 # Styling of the report
 
 
