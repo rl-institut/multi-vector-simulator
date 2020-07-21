@@ -216,7 +216,7 @@ class TestPDFReportCreation:
     )
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
-        return_value=PARSER.parse_args(["-o", OUTPUT_PATH, "-pdf"]),
+        return_value=PARSER.parse_args(["-f", "-log", "warning", "-o", OUTPUT_PATH, "-pdf"]),
     )
     def test_generate_pdf_report(self, m_args):
         """Run the simulation with -pdf option to make sure the pdf file is generated """

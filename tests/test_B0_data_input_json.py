@@ -45,7 +45,7 @@ class TestTemporaryJsonFileDisposal:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-i", test_in_path, "-o", test_out_path, "-ext", CSV_EXT]
+        ["-f", "-log", "warning", "-i", test_in_path, "-o", test_out_path, "-ext", CSV_EXT]
         ),
     )
     def test_load_json_removes_json_file_from_inputs_folder(self, m_args):
@@ -63,7 +63,7 @@ class TestTemporaryJsonFileDisposal:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-i", test_in_path, "-o", test_out_path, "-ext", CSV_EXT]
+        ["-f", "-log", "warning", "-i", test_in_path, "-o", test_out_path, "-ext", CSV_EXT]
         ),
     )
     def test_load_json_copies_json_file_to_output_folder(self, m_args):
