@@ -83,6 +83,7 @@ Here is a template for new release sections
 - Warnings from local readthedocs compilation (#426)
 - Issue #430 Bug on local install (#437)
 - Input folder `tests/inputs` with simple example scenario (#420)
+- Issue #295 on storage efficiency description
 
 ## [0.3.0] - 2020-06-08
 
