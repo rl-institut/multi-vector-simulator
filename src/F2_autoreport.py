@@ -73,6 +73,8 @@ from src.constants_json_strings import (
     SCENARIO_ID,
     PEAK_FLOW,
     AVERAGE_FLOW,
+    TIMESERIES,
+    ANNUITY_TOTAL,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
