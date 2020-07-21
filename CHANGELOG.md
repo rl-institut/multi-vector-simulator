@@ -40,6 +40,7 @@ Here is a template for new release sections
  - Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
  - Tests for LCOE function in test_E2_economics (#438)
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
+- File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -65,6 +66,9 @@ Here is a template for new release sections
 - Add `ìnputs` folder to `.gitignore` (#401)
 - Readthedocs links to simple scenario `tests/inputs` (#420)
 - Adapt and add logging messages for components added to the model in D1 (#429)
+- Moved list of keys to be printed in "scalars.xlsx" to "constants_output.py" (#453)
+- Renamed "peak_flow" to `PEAK_FLOW` and "average_flow" to `AVERAGE_FLOW` (#453)
+- Changed function "E2.lcoe_asset()" and its tests, now processes one asset at a time (#453)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
