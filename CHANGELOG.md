@@ -41,6 +41,7 @@ Here is a template for new release sections
  - Tests for LCOE function in test_E2_economics (#438)
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 - File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
+- Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -71,6 +72,8 @@ Here is a template for new release sections
 - Changed function "E2.lcoe_asset()" and its tests, now processes one asset at a time (#453)
 - Added arguments `"-f", "-log", "warning"` to all `parse_args` and `main()` in `tests` (#456)
 - File `Developing.rst` with new description of tests and conventions (#456)
+- Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
+
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
@@ -78,6 +81,7 @@ Here is a template for new release sections
 - `inputs` folder (#401)
 - `tests/test_benchmark.py` module (#401)
 - Outdated table of tests of MVS `docs/tables/table_tests.csv` (#456)
+- Removed function C0.complete_missing_cost_data() as this should be covered by A1 for csv files (#379)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
@@ -87,6 +91,7 @@ Here is a template for new release sections
 - Issue #430 Bug on local install (#437)
 - Input folder `tests/inputs` with simple example scenario (#420)
 - Description of storage efficiency in readthedocs (#457)
+- Bug connected to global variables (#356)
 
 ## [0.3.0] - 2020-06-08
 
