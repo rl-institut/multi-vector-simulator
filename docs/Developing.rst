@@ -4,7 +4,7 @@ Contributing to MVS
 
 Proposed workflow
 -----------------
-The workflow is described in the  `CONTRIBUTING.md file<https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md>`_ in the repository.
+The workflow is described in the  `CONTRIBUTING.md file <https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md>`_ in the repository.
 
 
 Unit tests (pytests)
