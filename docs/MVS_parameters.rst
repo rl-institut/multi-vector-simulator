@@ -130,8 +130,10 @@ storage_xx.csv
 A c-rate of 1 implies that the battery can discharge or charge completely in a single timestep.
 Only the columns "input power" and "output power" require a value, in column "storage capacity" c_rate should be set to NaN.
 
-**soc_initial**: The level of charge (as a factor of the actual capacity)  in the storage in the zeroth timestep. Acceptable values are either None or the factor. Only the column "storage capacity" require a value, in column "input power" and "output power" soc_initial should be set to NaN.
+**soc_initial**: The level of charge (as a factor of the actual capacity) in the storage in the zeroth timestep. Acceptable values are either None or the factor. Only the column "storage capacity" require a value, in column "input power" and "output power" soc_initial should be set to NaN.
 
 **soc_max**: The maximum permissible level of charge in the battery (generally, it is when the battery is filled to its nominal capacity), represented by the value 1.0. Users can  also specify a certain value as a factor of the actual capacity. Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_max should be set to NaN.
 
 **soc_min**: The minimum permissible level of charge in the battery as a factor of the nominal capacity of the battery. Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_min should be set to NaN.
+
+**efficiency**: The battery efficiency is the ratio of the energy taken out from the battery, to the energy put in the battery. It means that it is not possible to retrieve as much energy as provided to the battery due to the discharge losses. The efficiency of the "input power" and "ouput power" columns should be set equal to the charge and dischage efficiencies respectively, while the "storage capacity" efficiency should be equal to the storage self-discharge/decay, which is usually in the range of 0 to 0.05.
