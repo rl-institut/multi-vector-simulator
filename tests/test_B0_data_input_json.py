@@ -48,7 +48,7 @@ class TestTemporaryJsonFileDisposal:
             [
                 "-f",
                 "-log",
-                "warning",
+                "warnings",
                 "-i",
                 test_in_path,
                 "-o",
@@ -76,7 +76,7 @@ class TestTemporaryJsonFileDisposal:
             [
                 "-f",
                 "-log",
-                "warning",
+                "warnings",
                 "-i",
                 test_in_path,
                 "-o",

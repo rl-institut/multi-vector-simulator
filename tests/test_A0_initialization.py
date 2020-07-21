@@ -35,7 +35,7 @@ class TestProcessUserArguments:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-i", test_in_path, "-o", test_out_path]
+            ["-f", "-log", "warnings", "-i", test_in_path, "-o", test_out_path]
         ),
     )
     def test_input_folder_is_copied_in_output_within_folder_named_input(self, m_args):
@@ -45,7 +45,7 @@ class TestProcessUserArguments:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-i", fake_input_path, "-o", test_out_path]
+            ["-f", "-log", "warnings", "-i", fake_input_path, "-o", test_out_path]
         ),
     )
     def test_input_folder_not_existing_raise_filenotfound_error(self, m_args):
@@ -54,7 +54,7 @@ class TestProcessUserArguments:
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
-        return_value=PARSER.parse_args(["-f", "-log", "warning", "-ext", JSON_EXT]),
+        return_value=PARSER.parse_args(["-f", "-log", "warnings", "-ext", JSON_EXT]),
     )
     def test_if_json_opt_and_no_json_file_in_input_folder_raise_filenotfound_error(
         self, m_args, tmpdir
@@ -66,7 +66,7 @@ class TestProcessUserArguments:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-i", fake_input_path, "-ext", JSON_EXT]
+            ["-f", "-log", "warnings", "-i", fake_input_path, "-ext", JSON_EXT]
         ),
     )
     def test_if_json_opt_and_more_than_one_json_file_in_input_folder_raise_fileexists_error(
@@ -83,7 +83,7 @@ class TestProcessUserArguments:
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
-        return_value=PARSER.parse_args(["-f", "-log", "warning", "-ext", CSV_EXT]),
+        return_value=PARSER.parse_args(["-f", "-log", "warnings", "-ext", CSV_EXT]),
     )
     def test_if_csv_opt_and_csv_elements_folder_not_in_input_folder_raise_filenotfound_error(
         self, m_args, tmpdir
@@ -97,7 +97,7 @@ class TestProcessUserArguments:
             [
                 "-f",
                 "-log",
-                "warning",
+                "warnings",
                 "-i",
                 fake_input_path,
                 "-ext",
@@ -121,7 +121,7 @@ class TestProcessUserArguments:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-i", test_in_path, "-o", test_out_path]
+            ["-f", "-log", "warnings", "-i", test_in_path, "-o", test_out_path]
         ),
     )
     def test_if_log_opt_display_output_is_set_with_correct_value(self, m_args):
@@ -132,7 +132,7 @@ class TestProcessUserArguments:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-i", test_in_path, "-o", test_out_path]
+            ["-f", "-log", "warnings", "-i", test_in_path, "-o", test_out_path]
         ),
     )
     def test_if_path_output_folder_exists_raise_fileexists_error(self, m_args):
@@ -144,7 +144,7 @@ class TestProcessUserArguments:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-i", test_in_path, "-o", test_out_path]
+            ["-f", "-log", "warnings", "-i", test_in_path, "-o", test_out_path]
         ),
     )
     def test_if_f_opt_preexisting_path_output_folder_should_be_replaced(self, m_args):
@@ -161,7 +161,7 @@ class TestProcessUserArguments:
             [
                 "-f",
                 "-log",
-                "warning",
+                "warnings",
                 "-i",
                 test_in_path,
                 "-o",
@@ -176,7 +176,7 @@ class TestProcessUserArguments:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-i", test_in_path, "-o", test_out_path, "-pdf"]
+            ["-f", "-log", "warnings", "-i", test_in_path, "-o", test_out_path, "-pdf"]
         ),
     )
     def test_if_pdf_opt_the_key_path_pdf_report_exists_in_user_inputs(self, m_args):
@@ -188,7 +188,7 @@ class TestProcessUserArguments:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-i", test_in_path, "-o", test_out_path]
+            ["-f", "-log", "warnings", "-i", test_in_path, "-o", test_out_path]
         ),
     )
     def test_if_no_pdf_opt_the_key_path_pdf_report_does_not_exist_in_user_inputs(
@@ -300,7 +300,7 @@ class TestCommandLineInput:
             [
                 "-f",
                 "-log",
-                "warning",
+                "warnings",
                 "-i",
                 os.path.join("tests", "inputs"),
                 "-o",

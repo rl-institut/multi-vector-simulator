@@ -217,7 +217,7 @@ class TestPDFReportCreation:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-o", OUTPUT_PATH, "-pdf"]
+            ["-f", "-log", "warnings", "-o", OUTPUT_PATH, "-pdf"]
         ),
     )
     def test_generate_pdf_report(self, m_args):
