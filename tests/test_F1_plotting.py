@@ -140,7 +140,7 @@ class TestNetworkx:
                 "-o",
                 TEST_OUTPUT_PATH,
                 "-ext",
-                CSV_EXT
+                CSV_EXT,
             ]
         ),
     )
