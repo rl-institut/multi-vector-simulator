@@ -71,6 +71,8 @@ from src.constants_json_strings import (
     PROJECT_ID,
     SCENARIO_NAME,
     SCENARIO_ID,
+    PEAK_FLOW,
+    AVERAGE_FLOW,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
@@ -467,7 +469,7 @@ def create_app(results_json):
 
     # Dropping irrelevant columns from the dataframe
     df_scalar_matrix = df_scalar_matrix.drop(
-        ["index", TOTAL_FLOW, "peak_flow", "average_flow"], axis=1
+        ["index", TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW], axis=1
     )
 
     # Renaming the columns

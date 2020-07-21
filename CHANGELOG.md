@@ -40,6 +40,7 @@ Here is a template for new release sections
  - Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
  - Tests for LCOE function in test_E2_economics (#438)
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
+- File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -62,6 +63,12 @@ Here is a template for new release sections
 - Explicitly return the dataframe with parameters value in function
  `check_for_newly_added_parameter` (#428)
 - Rename function `check_for_newly_added_parameter` in `check_for_official_extra_parameters` (#428)
+- Add `ìnputs` folder to `.gitignore` (#401)
+- Readthedocs links to simple scenario `tests/inputs` (#420)
+- Adapt and add logging messages for components added to the model in D1 (#429)
+- Moved list of keys to be printed in "scalars.xlsx" to "constants_output.py" (#453)
+- Renamed "peak_flow" to `PEAK_FLOW` and "average_flow" to `AVERAGE_FLOW` (#453)
+- Changed function "E2.lcoe_asset()" and its tests, now processes one asset at a time (#453)
 - Work in progress: Excess sink is created for each and every bus
 
 ### Removed
@@ -76,6 +83,7 @@ Here is a template for new release sections
 - Issue #168 Duplicate of timeseries files (#388)
 - Warnings from local readthedocs compilation (#426)
 - Issue #430 Bug on local install (#437)
+- Input folder `tests/inputs` with simple example scenario (#420)
 
 ## [0.3.0] - 2020-06-08
 
