@@ -4,7 +4,18 @@ Contributing to MVS
 
 Proposed workflow
 -----------------
-The workflow is described in the CONTRIBUTING.md file in the repository
+The workflow is described in the  `CONTRIBUTING.md file<https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md>`_ in the repository.
+
+
+Unit tests (pytests)
+--------------------
+
+When developing code for the MVS please make sure that you always also develop test in `tests`. We integrate those unit tests with `pytest`. 
+Make sure that your tests are as leightweight as possible - this means that you do not always have to run the whole code to test for one feature, but can test a function with a standalone tests. Please refer to the other tests that have already been introduced.
+
+Always aim for the test coverage button on `the main page of the github reprository <https://github.com/rl-institut/mvs_eland/>`_ to reach 100%!
+
+When you do have to run the MVS itself for a test, eg. for benchmark tests, please always use the agruments `-f -log warning` to make the test results better readable.
 
 Build documentation
 -------------------
@@ -25,12 +36,3 @@ Here is how to set that in pycharm
   :width: 600
   :alt: pycharm docstring's format setting
 
-Tests
------
-
-Some tests are integrated into the MVS reprository. They should execute correctly on each developer's computer after adding a new feature and will be tested when attempting to merge into the developer/master branch of the github project.
-
-.. csv-table:: Implemented tests
-   :file: ./tables/table_tests.csv
-   :widths: 30, 50, 70, 70
-   :header-rows: 1
