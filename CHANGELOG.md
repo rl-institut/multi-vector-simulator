@@ -41,6 +41,7 @@ Here is a template for new release sections
  - Tests for LCOE function in test_E2_economics (#438)
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 - File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
+- LCOE_ASSET explaination to KPI documentation (#458)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
