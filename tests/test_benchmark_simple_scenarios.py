@@ -45,7 +45,7 @@ class TestACElectricityBus:
         use_case = "AB_grid_PV"
         main(
             overwrite=True,
-            display_output="warnings",
+            display_output="warning",
             path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
             input_type=CSV_EXT,
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
@@ -75,7 +75,7 @@ class TestACElectricityBus:
         use_case = "AE_grid_battery"
         main(
             overwrite=True,
-            display_output="warnings",
+            display_output="warning",
             path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
             input_type=CSV_EXT,
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
@@ -104,7 +104,7 @@ class TestACElectricityBus:
         for case in use_case:
             main(
                 overwrite=True,
-                display_output="warnings",
+                display_output="warning",
                 path_input_folder=os.path.join(TEST_INPUT_PATH, case),
                 input_type=CSV_EXT,
                 path_output_folder=os.path.join(TEST_OUTPUT_PATH, case),

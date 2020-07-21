@@ -107,7 +107,7 @@ class TestNetworkx:
             [
                 "-f",
                 "-log",
-                "warnings",
+                "warning",
                 "-i",
                 TEST_INPUT_PATH_NX_TRUE,
                 "-o",
@@ -134,7 +134,7 @@ class TestNetworkx:
             [
                 "-f",
                 "-log",
-                "warnings",
+                "warning",
                 "-i",
                 TEST_INPUT_PATH_NX_FALSE,
                 "-o",
