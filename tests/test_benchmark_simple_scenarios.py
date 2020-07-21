@@ -44,6 +44,8 @@ class TestACElectricityBus:
     def test_benchmark_AB_grid_pv(self, margs):
         use_case = "AB_grid_PV"
         main(
+            overwrite=True,
+            display_output="warning",
             path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
             input_type=CSV_EXT,
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
@@ -72,6 +74,8 @@ class TestACElectricityBus:
     def test_benchmark_AE_grid_battery(self, margs):
         use_case = "AE_grid_battery"
         main(
+            overwrite=True,
+            display_output="warning",
             path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
             input_type=CSV_EXT,
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
@@ -99,6 +103,8 @@ class TestACElectricityBus:
         excess = {}
         for case in use_case:
             main(
+                overwrite=True,
+                display_output="warning",
                 path_input_folder=os.path.join(TEST_INPUT_PATH, case),
                 input_type=CSV_EXT,
                 path_output_folder=os.path.join(TEST_OUTPUT_PATH, case),

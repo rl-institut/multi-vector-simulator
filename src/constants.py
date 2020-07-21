@@ -269,3 +269,6 @@ DICT_PLOTS = {
         PLOTS_COSTS: [],
     }
 }
+
+# Reading data from csv file
+HEADER = "header"

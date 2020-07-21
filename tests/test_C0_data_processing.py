@@ -60,20 +60,6 @@ def test_adding_economic_parameters_C2():
         assert k in economic_parameters.keys()
 
 
-def test_complete_missing_cost_data_cost_om():
-    dict_asset = {LABEL: "a_label"}
-    C0.complete_missing_cost_data(dict_asset)
-    assert SPECIFIC_COSTS_OM in dict_asset.keys()
-    assert dict_asset[SPECIFIC_COSTS_OM] == 0
-
-
-def test_complete_missing_cost_data_specific_cost():
-    dict_asset = {LABEL: "a_label"}
-    C0.complete_missing_cost_data(dict_asset)
-    assert SPECIFIC_COSTS in dict_asset.keys()
-    assert dict_asset[SPECIFIC_COSTS] == 0
-
-
 settings = {EVALUATED_PERIOD: {VALUE: 365}}
 
 economic_data = {
