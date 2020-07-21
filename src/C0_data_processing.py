@@ -17,11 +17,10 @@ from src.constants import (
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     TYPE_BOOL,
+    HEADER,
 )
 
 from src.constants_json_strings import *
-
-
 import src.C1_verification as verify
 import src.C2_economic_functions as economics
 import src.F0_output as output
@@ -139,7 +138,7 @@ def simulation_settings(simulation_settings):
             TIME_INDEX: pd.date_range(
                 start=simulation_settings[START_DATE],
                 end=simulation_settings[END_DATE],
-                freq=str(simulation_settings[TIMESTEP][VALUE]) + "min",
+                freq=str(simulation_settings[TIMESTEP][VALUE]) + UNIT_MINUTE,
             )
         }
     )
@@ -194,8 +193,8 @@ def process_all_assets(dict_values):
     for sector in dict_values[PROJECT_DATA][SECTORS]:
         define_sink(
             dict_values,
-            dict_values[PROJECT_DATA][SECTORS][sector] + " excess",
-            {VALUE: 0, UNIT: "currency/kWh"},
+            dict_values[PROJECT_DATA][SECTORS][sector] + EXCESS,
+            {VALUE: 0, UNIT: CURR + "/" + UNIT},
             dict_values[PROJECT_DATA][SECTORS][sector],
         )
         logging.debug(
@@ -435,10 +434,10 @@ def define_missing_cost_data(dict_values, dict_asset):
         UNIT: "?",
         INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
-        SPECIFIC_COSTS: {VALUE: 0, UNIT: "currency/unit"},
-        SPECIFIC_COSTS_OM: {VALUE: 0, UNIT: "currency/year"},
-        DISPATCH_PRICE: {VALUE: 0, UNIT: "currency/unit/year"},
-        LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: "year",},
+        SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + UNIT},
+        SPECIFIC_COSTS_OM: {VALUE: 0, UNIT: CURR + "/" + UNIT_YEAR},
+        DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + UNIT + "/" + UNIT_YEAR},
+        LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: UNIT_YEAR,},
     }
 
     # checks that an asset has all cost parameters needed for evaluation.
@@ -517,7 +516,7 @@ def bus_suffix(bus):
     :param bus:
     :return:
     """
-    bus_label = bus + " bus"
+    bus_label = bus + BUS_SUFFIX
     return bus_label
 
 
@@ -600,7 +599,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
 
     peak_demand_pricing = {
         VALUE: dict_values[ENERGY_PROVIDERS][dso][PEAK_DEMAND_PRICING][VALUE],
-        UNIT: "currency/kWpeak",
+        UNIT: CURR + "/" + UNIT,
     }
 
     list_of_dso_energyProduction_assets = []
@@ -627,11 +626,12 @@ def define_dso_sinks_and_sources(dict_values, dso):
                 + pd.DateOffset(months=(pricing_period - 1) * months_in_a_period),
                 end=dict_values[SIMULATION_SETTINGS][START_DATE]
                 + pd.DateOffset(months=pricing_period * months_in_a_period, hours=-1),
-                freq=str(dict_values[SIMULATION_SETTINGS][TIMESTEP][VALUE]) + "min",
+                freq=str(dict_values[SIMULATION_SETTINGS][TIMESTEP][VALUE])
+                + UNIT_MINUTE,
             )
 
             timeseries = timeseries.add(pd.Series(1, index=time_period), fill_value=0)
-            dso_source_name = dso + "_consumption_period_" + str(pricing_period)
+            dso_source_name = dso + DSO_CONSUMPTION_PERIODS + str(pricing_period)
             define_source(
                 dict_values,
                 dso_source_name,
@@ -644,16 +644,16 @@ def define_dso_sinks_and_sources(dict_values, dso):
 
     define_sink(
         dict_values,
-        dso + "_feedin",
+        dso + DSO_FEEDIN,
         dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
         dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
-        specific_costs={VALUE: 0, UNIT: "currency/kW"},
+        specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
     )
 
     dict_values[ENERGY_PROVIDERS][dso].update(
         {
-            "connected_consumption_sources": list_of_dso_energyProduction_assets,
-            "connected_feedin_sink": dso + "_feedin",
+            CONNECTED_CONSUMPTION_SOURCES: list_of_dso_energyProduction_assets,
+            CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN,
         }
     )
 
@@ -681,15 +681,15 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
 
     source = {
         OEMOF_ASSET_TYPE: OEMOF_SOURCE,
-        LABEL: asset_name + " source",
-        "output_direction": output_bus,
+        LABEL: asset_name + AUTO_SOURCE,
+        OUTFLOW_DIRECTION: output_bus,
         OUTPUT_BUS_NAME: output_bus_name,
-        "dispatchable": True,
+        DISPATCHABILITY: True,
         TIMESERIES: timeseries,
-        # OPEX_VAR: {VALUE: price, UNIT: "currency/unit"},
+        # OPEX_VAR: {VALUE: price, UNIT: CURR + "/" + UNIT},
         LIFETIME: {
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
-            UNIT: "year",
+            UNIT: UNIT_YEAR,
         },
     }
 
@@ -706,7 +706,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                         dict_values[SIMULATION_SETTINGS],
                         source,
                         element[FILENAME],
-                        element["header"],
+                        element[HEADER],
                     )
                 )
                 values_info.append(element)
@@ -721,7 +721,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
                 DISPATCH_PRICE: {
                     VALUE: {
                         FILENAME: price[VALUE][FILENAME],
-                        "header": price[VALUE]["header"],
+                        HEADER: price[VALUE][HEADER],
                     },
                     UNIT: price[UNIT],
                 }
@@ -807,13 +807,13 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
     # create a dictionary for the sink
     sink = {
         OEMOF_ASSET_TYPE: OEMOF_SINK,
-        LABEL: asset_name + "_sink",
-        "input_direction": input_bus,
+        LABEL: asset_name + AUTO_SINK,
+        INFLOW_DIRECTION: input_bus,
         INPUT_BUS_NAME: input_bus_name,
-        # OPEX_VAR: {VALUE: price, UNIT: "currency/kWh"},
+        # OPEX_VAR: {VALUE: price, UNIT: CURR + "/" + UNIT},
         LIFETIME: {
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
-            UNIT: "year",
+            UNIT: UNIT_YEAR,
         },
     }
 
@@ -828,7 +828,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
                     dict_values[SIMULATION_SETTINGS],
                     sink,
                     element[FILENAME],
-                    element["header"],
+                    element[HEADER],
                 )
                 if asset_name[-6:] == "feedin":
                     sink[DISPATCH_PRICE][VALUE].append([-i for i in timeseries])
@@ -845,7 +845,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
                 DISPATCH_PRICE: {
                     VALUE: {
                         FILENAME: price[VALUE][FILENAME],
-                        "header": price[VALUE]["header"],
+                        HEADER: price[VALUE][HEADER],
                     },
                     UNIT: price[UNIT],
                 }
@@ -907,8 +907,6 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     :return:
     """
 
-    complete_missing_cost_data(dict_asset)
-
     determine_lifetime_price_dispatch(dict_asset, economic_data)
 
     dict_asset.update(
@@ -935,7 +933,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                     economic_data[CRF][VALUE],
                 )
                 + dict_asset[SPECIFIC_COSTS_OM][VALUE],  # changes from dispatch_price
-                UNIT: dict_asset[LIFETIME_SPECIFIC_COST][UNIT] + "/a",
+                UNIT: dict_asset[LIFETIME_SPECIFIC_COST][UNIT] + "/" + UNIT_YEAR,
             }
         }
     )
@@ -957,28 +955,11 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                     dict_asset[ANNUITY_SPECIFIC_INVESTMENT_AND_OM][VALUE],
                     settings[EVALUATED_PERIOD][VALUE],
                 ),
-                UNIT: "currency/unit/simulation period",
+                UNIT: CURR + "/" + UNIT + "/" + EVALUATED_PERIOD,
             }
         }
     )
 
-    return
-
-
-def complete_missing_cost_data(dict_asset):
-    # todo check if this can be deleted
-    if SPECIFIC_COSTS not in dict_asset:
-        dict_asset.update({SPECIFIC_COSTS: 0})
-        logging.error(
-            "Dictionary of asset %s is incomplete, as specific_costs is missing.",
-            dict_asset[LABEL],
-        )
-    if SPECIFIC_COSTS_OM not in dict_asset:
-        dict_asset.update({SPECIFIC_COSTS_OM: 0})
-        logging.error(
-            "Dictionary of asset %s is incomplete, as cost_om is missing.",
-            dict_asset[LABEL],
-        )
     return
 
 
@@ -1089,16 +1070,16 @@ def receive_timeseries_from_csv(
     """
     if input_type == "input" and "input" in dict_asset:
         file_name = dict_asset[input_type][FILENAME]
-        header = dict_asset[input_type]["header"]
+        header = dict_asset[input_type][HEADER]
         unit = dict_asset[input_type][UNIT]
     elif FILENAME in dict_asset:
         # todo this input/file_name thing is a workaround and has to be improved in the future
         # if only filename is given here, then only one column can be in the csv
         file_name = dict_asset[FILENAME]
-        unit = dict_asset[UNIT] + "/h"
+        unit = dict_asset[UNIT] + "/" + UNIT_HOUR
     else:
         file_name = dict_asset[input_type][VALUE][FILENAME]
-        header = dict_asset[input_type][VALUE]["header"]
+        header = dict_asset[input_type][VALUE][HEADER]
         unit = dict_asset[input_type][UNIT]
 
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
@@ -1264,7 +1245,7 @@ def treat_multiple_flows(dict_asset, dict_values, parameter):
                     dict_values[SIMULATION_SETTINGS],
                     dict_asset,
                     element[FILENAME],
-                    element["header"],
+                    element[HEADER],
                 )
             )
             values_info.append(element)
