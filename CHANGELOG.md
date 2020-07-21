@@ -69,7 +69,7 @@ Here is a template for new release sections
 - Moved list of keys to be printed in "scalars.xlsx" to "constants_output.py" (#453)
 - Renamed "peak_flow" to `PEAK_FLOW` and "average_flow" to `AVERAGE_FLOW` (#453)
 - Changed function "E2.lcoe_asset()" and its tests, now processes one asset at a time (#453)
-- Added arguments `"-f", "-log", "warning"` to all `parse_args` in `tests`
+- Added arguments `"-f", "-log", "warning"` to all `parse_args` and `main()` in `tests` (#456)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
