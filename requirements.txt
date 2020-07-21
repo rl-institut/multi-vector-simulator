@@ -24,6 +24,7 @@ pyppeteer==0.2.2
 python-dateutil==2.8.0
 pytz==2019.2
 PyUtilib==5.7.1
+psutil==2.1.0
 reverse_geocoder==1.5.1
 six==1.12.0
 staticmap==0.5.4
