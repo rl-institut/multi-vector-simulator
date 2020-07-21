@@ -849,6 +849,8 @@ def create_app(results_json):
     )
     df_capacities.reset_index(drop=True, inplace=True)
 
+    # App layout and populating it with different elements
+
     app.layout = html.Div(
         id="main-div",
         className="grid-x align-center",
@@ -995,16 +997,17 @@ def create_app(results_json):
                                 "Electricity demands " "that have to be supplied are:"
                             ),
                             make_dash_data_table(df_dem),
-                            # TODO use insert_graph(),
-                            insert_image_array(
-                                results_json[PATHS_TO_PLOTS][PLOTS_DEMANDS]
+                            html.Div(
+                                children=ready_single_plots(
+                                    df_all_demands, dict_plot_labels
+                                )
                             ),
-                            # TODO Plotly plot of demand timeseries(s) which will replace above
                             html.H4("Resources"),
-                            insert_image_array(
-                                results_json[PATHS_TO_PLOTS][PLOTS_RESOURCES], width=900
-                            )
-                            # TODO Plotly plot of generation time series(s) replacing above
+                            html.Div(
+                                children=ready_single_plots(
+                                    df_all_res, dict_plot_labels
+                                )
+                            ),
                         ],
                     ),
                     insert_subsection(
@@ -1017,7 +1020,6 @@ def create_app(results_json):
                             make_dash_data_table(df_comp),
                         ],
                     ),
-                    # TODO fix the little dash appearing above the table
                 ],
             ),
             html.Section(
@@ -1038,10 +1040,19 @@ def create_app(results_json):
                             insert_body_text(
                                 "a. Flows in the system for a duration of 14 days"
                             ),
-                            insert_image_array(
-                                results_json[PATHS_TO_PLOTS][PLOTS_BUSSES]
-                                + results_json[PATHS_TO_PLOTS][PLOTS_PERFORMANCE],
-                                width=900,
+                            html.Div(
+                                children=ready_flows_plots(
+                                    dict_dataseries=data_flows,
+                                    json_results_file=results_json,
+                                )
+                            ),
+                            html.Div(
+                                className="add-cap-plot",
+                                children=ready_capacities_plots(
+                                    df_kpis=df_capacities,
+                                    json_results_file=results_json,
+                                    only_print=False,
+                                ),
                             ),
                             insert_body_text(
                                 "This results in the following KPI of the dispatch:"
