@@ -169,9 +169,11 @@ KPI_COST_MATRIX = "cost_matrix"
 KPI_SCALAR_MATRIX = "scalar_matrix"
 
 # Flows
+OPTIMIZED_FLOWS = "optimizedFlows"
 TOTAL_FLOW = "total_flow"
 ANNUAL_TOTAL_FLOW = "annual_total_flow"
-OPTIMIZED_FLOWS = "optimizedFlows"
+PEAK_FLOW = "peak_flow"
+AVERAGE_FLOW = "average_flow"
 
 # Capacity
 OPTIMIZED_ADD_CAP = "optimizedAddCap"
@@ -189,6 +191,9 @@ COST_DISPATCH = (
 )
 COST_UPFRONT = "costs_upfront_in_year_zero"
 COST_INVESTMENT = "costs_investment_over_lifetime"
+
+# Levelized cost of electricity
+LCOE_ASSET = "levelized_cost_of_energy_of_asset"
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (

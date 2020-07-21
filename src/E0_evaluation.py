@@ -22,23 +22,15 @@ from src.constants_json_strings import (
     STORAGE_CAPACITY,
     INPUT_BUS_NAME,
     OUTPUT_BUS_NAME,
-    ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
     KPI,
     KPI_COST_MATRIX,
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
-    TOTAL_FLOW,
-    ANNUITY_OM,
-    ANNUITY_TOTAL,
-    COST_TOTAL,
-    COST_OM_TOTAL,
-    COST_INVESTMENT,
-    COST_DISPATCH,
-    COST_OM_FIX,
-    COST_UPFRONT,
     OPTIMIZED_FLOWS,
 )
+
+from src.constants_output import KPI_COST_MATRIX_ENTRIES, KPI_SCALAR_MATRIX_ENTRIES
 
 r"""
 Module E0 evaluation
@@ -70,29 +62,8 @@ def evaluate_dict(dict_values, results_main, results_meta):
     dict_values.update(
         {
             KPI: {
-                KPI_COST_MATRIX: pd.DataFrame(
-                    columns=[
-                        LABEL,
-                        COST_TOTAL,
-                        COST_OM_TOTAL,
-                        COST_INVESTMENT,
-                        COST_UPFRONT,
-                        COST_DISPATCH,
-                        COST_OM_FIX,
-                        ANNUITY_TOTAL,
-                        ANNUITY_OM,
-                    ]
-                ),
-                KPI_SCALAR_MATRIX: pd.DataFrame(
-                    columns=[
-                        LABEL,
-                        OPTIMIZED_ADD_CAP,
-                        TOTAL_FLOW,
-                        ANNUAL_TOTAL_FLOW,
-                        "peak_flow",
-                        "average_flow",
-                    ]
-                ),
+                KPI_COST_MATRIX: pd.DataFrame(columns=KPI_COST_MATRIX_ENTRIES),
+                KPI_SCALAR_MATRIX: pd.DataFrame(columns=KPI_SCALAR_MATRIX_ENTRIES),
                 KPI_SCALARS_DICT: {},
             }
         }
@@ -121,12 +92,14 @@ def evaluate_dict(dict_values, results_main, results_meta):
             dict_values[ENERGY_STORAGE][storage],
         )
 
-        # hardcoded list of names in storage_01.csv
         for storage_item in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
             economics.get_costs(
                 dict_values[ENERGY_STORAGE][storage][storage_item],
                 dict_values[ECONOMIC_DATA],
             )
+
+        economics.lcoe_assets(dict_values[ENERGY_STORAGE][storage], ENERGY_STORAGE)
+        for storage_item in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
             store_result_matrix(
                 dict_values[KPI], dict_values[ENERGY_STORAGE][storage][storage_item]
             )
@@ -160,23 +133,13 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 ENERGY_STORAGE
             ][storage]["timeseries_soc"]
 
-    for asset in dict_values[ENERGY_CONVERSION]:
-        process_results.get_results(
-            dict_values[SIMULATION_SETTINGS],
-            bus_data,
-            dict_values[ENERGY_CONVERSION][asset],
-        )
-        economics.get_costs(
-            dict_values[ENERGY_CONVERSION][asset], dict_values[ECONOMIC_DATA]
-        )
-        store_result_matrix(dict_values[KPI], dict_values[ENERGY_CONVERSION][asset])
-
-    for group in [ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
+    for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:
             process_results.get_results(
                 dict_values[SIMULATION_SETTINGS], bus_data, dict_values[group][asset],
             )
             economics.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
+            economics.lcoe_assets(dict_values[group][asset], group)
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
     indicators.all_totals(dict_values)

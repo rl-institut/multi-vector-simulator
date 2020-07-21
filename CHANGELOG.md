@@ -28,17 +28,19 @@ Here is a template for new release sections
 - Test to verify that input folders have all required parameters (#398)
 - New `dict` `REQUIRED_MVS_PARAMETERS` to gather the required parameters from the csv or json
  input type (#398)
-- `utils.py` module in `src` to gather the functions `find_input_folders
- ` and `compare_input_parameters_with_reference` which can be used to find and validate input
-  folders (#398)
+ - `utils.py` module in `src` to gather the functions `find_input_folders` and `compare_input_parameters_with_reference` which can be used to find and validate input folders (#398)
 - Code and test for checking for new parameters in csv and raising warning message if not defined (`A1.check_for_newly_added_parameters`). This then also adds a default value to the new parameter  (#384)
 - Exception if an energyVector does not have internal generation or consumption from a DSO, and is only supplied by energy conversion from another sector: renewable share = 0. (#384)
-- Tests for source components in D1 (#391)
-- Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
-- Pyppeteer package for OS X users in troubleshooting (#414)
-- Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
-- New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
-- `.readthedocs.yml` configuration file (#435, #436)
+ - Tests for source components in D1 (#391)
+ - Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
+ - Pyppeteer package for OS X users in troubleshooting (#414)
+ - Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
+ - New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
+ - `.readthedocs.yml` configuration file (#435, #436)
+ - Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
+ - Tests for LCOE function in test_E2_economics (#438)
+ - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
+- File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
 
 ### Changed
@@ -61,7 +63,13 @@ Here is a template for new release sections
 - Change the calculation of the residual value for specific capex in C2 and test_C2 (#289, #247, PR #431): Now the present value of the residual value is considered
 - Explicitly return the dataframe with parameters value in function
  `check_for_newly_added_parameter` (#428)
-- Rename function `check_for_newly_added_parameter` in `check_for_official_extra_parameters` (#428)- Added global variables to `constants_json_str.csv`, defining units with them (#379)
+- Rename function `check_for_newly_added_parameter` in `check_for_official_extra_parameters` (#428)
+- Add `ìnputs` folder to `.gitignore` (#401)
+- Readthedocs links to simple scenario `tests/inputs` (#420)
+- Adapt and add logging messages for components added to the model in D1 (#429)
+- Moved list of keys to be printed in "scalars.xlsx" to "constants_output.py" (#453)
+- Renamed "peak_flow" to `PEAK_FLOW` and "average_flow" to `AVERAGE_FLOW` (#453)
+- Changed function "E2.lcoe_asset()" and its tests, now processes one asset at a time (#453)
 - Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
 
 ### Removed
@@ -77,6 +85,8 @@ Here is a template for new release sections
 - Issue #168 Duplicate of timeseries files (#388)
 - Warnings from local readthedocs compilation (#426)
 - Issue #430 Bug on local install (#437)
+- Input folder `tests/inputs` with simple example scenario (#420)
+- Description of storage efficiency in readthedocs (#457)
 - Bug connected to global variables (#356)
 
 ## [0.3.0] - 2020-06-08

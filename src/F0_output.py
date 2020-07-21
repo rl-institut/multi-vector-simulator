@@ -24,6 +24,7 @@ from src.constants_json_strings import (
     KPI_SCALAR_MATRIX,
     COST_OM_TOTAL,
     COST_INVESTMENT,
+    OPTIMIZED_FLOWS,
     ANNUITY_TOTAL,
     OPTIMIZED_FLOWS,
     BUS_SUFFIX,
