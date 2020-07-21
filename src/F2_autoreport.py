@@ -783,6 +783,72 @@ def create_app(results_json):
             message_string = substrings[-1]
             errors_dict.update({i: message_string})
 
+    # Build a pandas dataframe with the data for the various demands
+
+    # The below dict will gather all the keys of the various plots for later use in the graphOptions.csv
+    dict_for_plots = {"demands": {}, "supplies": {}}
+    dict_plot_labels = {}
+
+    # demands is a dict with all the info for the demands
+    # dem_keys is a list of keys of the demands dict
+
+    # The below loop will add all the demands to the dict_for_plots dictionary, including the timeseries values
+    for demand in dem_keys:
+        dict_for_plots["demands"].update(
+            {demand: results_json[ENERGY_CONSUMPTION][demand][TIMESERIES]}
+        )
+        dict_plot_labels.update(
+            {demand: results_json[ENERGY_CONSUMPTION][demand]["label"]}
+        )
+
+    # Later, this dataframe can be passed to a function directly make the graphs with Plotly
+    df_all_demands = pd.DataFrame.from_dict(dict_for_plots["demands"], orient="columns")
+
+    # Change the index of the dataframe
+    df_all_demands.reset_index(level=0, inplace=True)
+    # Rename the timestamp column from 'index' to 'timestamp'
+    df_all_demands = df_all_demands.rename(columns={"index": "timestamp"})
+
+    # Collect the keys of various resources (PV, Wind, etc.)
+    resources = results_json[ENERGY_PRODUCTION]
+
+    # List of resources (includes DSOs, which need to be removed)
+    res_keys = list(resources.keys())
+    for res in res_keys:
+        if "DSO_" in res:
+            del resources[res]
+
+    # List of resources (with the DSOs deleted)
+    res_keys = list(resources.keys())
+
+    # The below loop will add all the resources to the dict_for_plots dictionary, including the timeseries values
+    for resource in res_keys:
+        dict_for_plots["supplies"].update(
+            {resource: results_json[ENERGY_PRODUCTION][resource][TIMESERIES]}
+        )
+        dict_plot_labels.update(
+            {resource: results_json[ENERGY_PRODUCTION][resource]["label"]}
+        )
+
+    # Later, this dataframe can be passed to a function directly make the graphs with Plotly
+    df_all_res = pd.DataFrame.from_dict(dict_for_plots["supplies"], orient="columns")
+
+    # Change the index of the dataframe
+    df_all_res.reset_index(level=0, inplace=True)
+    # Rename the timestamp column from 'index' to 'timestamp'
+    df_all_res = df_all_res.rename(columns={"index": "timestamp"})
+
+    # Dict that gathers all the flows through various buses
+    data_flows = results_json["optimizedFlows"]
+
+    # Add dataframe to hold all the KPIs and optimized additional capacities
+    df_capacities = results_json[KPI][KPI_SCALAR_MATRIX]
+    df_capacities.drop(
+        columns=["total_flow", "annual_total_flow", "peak_flow", "average_flow"],
+        inplace=True,
+    )
+    df_capacities.reset_index(drop=True, inplace=True)
+
     app.layout = html.Div(
         id="main-div",
         className="grid-x align-center",
