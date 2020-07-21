@@ -72,6 +72,9 @@ For assets in energyStorage, the MVS sums the annuity for "storage capacity," "i
 If the total flow is 0 in any of the previous cases, then the LCOE_ASSET is set to None.
 For assets in energyConsumption, the MVS outputs 0 for the LCOE_ASSET.
 
+.. math::
+  LCOE_ASSET = \frac{ANNUITY_TOTAL}{TOTAL_FLOW}
+
 Technical data
 --------------
 
