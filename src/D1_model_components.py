@@ -288,7 +288,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
 
     elif dict_asset[OPTIMIZE_CAP][VALUE] is True:
         func_optimize(model, dict_asset, **kwargs)
-        if dict_asset[OEMOF_ASSET_TYPE" != "source":
+        if dict_asset[OEMOF_ASSET_TYPE] != "source":
             logging.debug(
                 "Added: %s %s (capacity to be optimized)",
                 dict_asset[OEMOF_ASSET_TYPE].capitalize(),
