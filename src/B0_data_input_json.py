@@ -5,13 +5,17 @@ import os
 import numpy as np
 import pandas as pd
 
+from src.constants_json_strings import VALUE
+
 from src.constants import (
     CSV_FNAME,
     INPUTS_COPY,
     PATHS_TO_PLOTS,
     DICT_PLOTS,
+    DATA_TYPE_JSON_KEY,
     TYPE_DATETIMEINDEX,
     TYPE_SERIES,
+    TYPE_NDARRAY,
     TYPE_DATAFRAME,
     TYPE_TIMESTAMP,
     SIMULATION_SETTINGS,
@@ -48,32 +52,35 @@ def convert_from_json_to_special_types(a_dict, prev_key=None):
 
     """
 
+    answer = a_dict
     if isinstance(a_dict, dict):
-        # the a_dict argument is a dictionary, therefore we dive deeper in the nesting level
-        answer = {}
-        for k in a_dict:
-            answer[k] = convert_from_json_to_special_types(a_dict[k], prev_key=k)
+        # the a_dict argument is a dictionary not containing the special type key,
+        # therefore we dive deeper in the nesting level
+        if DATA_TYPE_JSON_KEY not in a_dict:
+            answer = {}
+            for k in a_dict:
+                answer[k] = convert_from_json_to_special_types(a_dict[k], prev_key=k)
+        else:
+            # the a_dict is a dictionary containing the special type key,
+            # therefore we apply the conversion if this type is listed below
 
-    else:
-        # the a_dict argument is not a dictionary, therefore we check if is one the serialized type
-        # pandas.Series, pandas.DatetimeIndex, pandas.DataFrame, numpy.array
-        answer = a_dict
-        if isinstance(a_dict, str):
-            if TYPE_DATAFRAME in a_dict:
-                a_dict = a_dict.replace(TYPE_DATAFRAME, "")
+            # find the special type value
+            data_type = a_dict.pop(DATA_TYPE_JSON_KEY)
+
+            if TYPE_DATAFRAME in data_type:
                 # pandas.DataFrame
+                a_dict = json.dumps(a_dict)
                 answer = pd.read_json(a_dict, orient="split")
-            elif TYPE_DATETIMEINDEX in a_dict:
+            elif TYPE_DATETIMEINDEX in data_type:
                 # pandas.DatetimeIndex
-                a_dict = a_dict.replace(TYPE_DATETIMEINDEX, "")
+                a_dict = json.dumps(a_dict)
                 answer = pd.read_json(a_dict, orient="split")
                 answer = pd.to_datetime(answer.index)
+
                 answer.freq = answer.inferred_freq
-            elif TYPE_SERIES in a_dict:
+            elif TYPE_SERIES in data_type:
                 # pandas.Series
-                a_dict = a_dict.replace(TYPE_SERIES, "")
                 # extract the name of the series in case it was a tuple
-                a_dict = json.loads(a_dict)
                 name = a_dict.pop("name")
 
                 # reconvert the dict to a json for conversion to pandas Series
@@ -88,12 +95,11 @@ def convert_from_json_to_special_types(a_dict, prev_key=None):
                 if name is not None:
                     answer.name = name
 
-            elif TYPE_TIMESTAMP in a_dict:
-                a_dict = a_dict.replace(TYPE_TIMESTAMP, "")
-                answer = pd.Timestamp(a_dict)
-            elif "array" in a_dict:
+            elif TYPE_TIMESTAMP in data_type:
+                answer = pd.Timestamp(a_dict[VALUE])
+            elif TYPE_NDARRAY in data_type:
                 # numpy.array
-                answer = np.array(json.loads(a_dict)["array"])
+                answer = np.array(a_dict[VALUE])
 
     return answer
 
