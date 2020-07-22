@@ -175,9 +175,10 @@ def store_result_matrix(dict_kpi, dict_asset):
                 if isinstance(dict_asset[key], str):
                     asset_result_dict.update({key: dict_asset[key]})
                 else:
-                    asset_result_dict.update(
-                        {key: round(dict_asset[key][VALUE], round_to_comma)}
-                    )
+                    if dict_asset[key][VALUE] is not None:
+                        asset_result_dict.update(
+                            {key: round(dict_asset[key][VALUE], round_to_comma)}
+                        )
 
         asset_result_df = pd.DataFrame([asset_result_dict])
 
