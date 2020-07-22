@@ -138,9 +138,11 @@ INFLOW_DIRECTION = "inflow_direction"
 OUTPUT_BUS_NAME = "output_bus_name"
 INPUT_BUS_NAME = "input_bus_name"
 ENERGY_VECTOR = "energyVector"
+
 # Sinks
 EXCESS_SINK_POSTFIX = " excess sink"
 
+BUS_POSTFIX = " bus"
 #######################################
 # Parameters added in post-processing #
 #######################################

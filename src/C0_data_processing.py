@@ -482,7 +482,6 @@ def define_busses(dict_values):
 
 def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
     """
-
     :param dict_values:
     :param asset_group:
     :param kwargs:
@@ -524,7 +523,7 @@ def bus_suffix(bus):
     :param bus:
     :return:
     """
-    bus_label = bus + " bus"
+    bus_label = bus + BUS_POSTFIX
     return bus_label
 
 
