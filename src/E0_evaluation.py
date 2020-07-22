@@ -180,9 +180,9 @@ def store_result_matrix(dict_kpi, dict_asset):
             if key in dict_asset:
                 if isinstance(dict_asset[key], str):
                     asset_result_dict.update({key: dict_asset[key]})
-                elif isinstance(dict_asset[key][VALUE], bool):
+                elif isinstance(dict_asset[key], bool):
                     asset_result_dict.update({key: VALUE})
-                elif dict_asset[key][VALUE] is None:
+                elif dict_asset[key] is None:
                     asset_result_dict.update({key: None})
                 else:
                     asset_result_dict.update(
