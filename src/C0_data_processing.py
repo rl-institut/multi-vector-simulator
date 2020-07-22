@@ -216,9 +216,6 @@ def process_all_assets(dict_values):
 
     for asset_group, asset_function in asset_group_list.items():
         logging.info("Pre-processing all assets in asset group %s.", asset_group)
-        if asset_group != ENERGY_PROVIDERS:
-            # Populates dict_values['energyBusses'] with assets
-            update_busses_in_out_direction(dict_values, dict_values[asset_group])
 
         asset_function(dict_values, asset_group)
 
@@ -457,26 +454,27 @@ def define_missing_cost_data(dict_values, dict_asset):
 def define_busses(dict_values):
     """
     This function defines the ENERGY_BUSSES that the energy system model is compised of.
-    All later assets access only those busses.
+    For that, it adds each new bus defined as INPUT_DIRECTION or OUTPUT_DIRECTION in all assets
+    of all the energyAsset types (ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION, ENERGY_PROVIDERS, ENERGY_STORAGE)
 
     Parameters
     ----------
     dict_values: dict
         Dictionary with all simulation information
 
-    :param dict_values:
-    :return:
+    Returns
+    -------
+    Extends dict_values by key "ENERGY_BUSSES" and all their names.
+
     """
     # create new group of assets: busses
     dict_values.update({ENERGY_BUSSES: {}})
 
-    # defines energy busses of sectors
-    for sector in dict_values[PROJECT_DATA][SECTORS]:
-        dict_values[ENERGY_BUSSES].update(
-            {bus_suffix(dict_values[PROJECT_DATA][SECTORS][sector]): {}}
-        )
-    # defines busses accessed by conversion assets
-    update_busses_in_out_direction(dict_values, dict_values[ENERGY_CONVERSION])
+    # Interatively adds busses to ENERGY_BUSSES for each new bus in the inflow/outflow direction of subsequent assets
+    for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION, ENERGY_PROVIDERS, ENERGY_STORAGE]:
+        for asset in dict_values[group]:
+            add_busses_of_asset_depending_on_in_out_direction(dict_values, dict_values[group][asset])
+
     return
 
 
