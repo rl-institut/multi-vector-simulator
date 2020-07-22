@@ -253,12 +253,16 @@ class TestDictionaryToJsonConversion:
 
     def test_processing_dict_for_json_export_parse_numpy_int64(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["numpy_int64"])
+        expr = B0.convert_from_special_types_to_json(
+            JSON_TEST_DICTIONARY["numpy_int64"]
+        )
         assert expr == SCALAR
 
     def test_processing_dict_for_json_export_parse_pandas_DatetimeIndex(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_DatetimeIndex"])
+        expr = B0.convert_from_special_types_to_json(
+            JSON_TEST_DICTIONARY["pandas_DatetimeIndex"]
+        )
         assert (
             expr
             == TYPE_DATETIMEINDEX
@@ -267,12 +271,16 @@ class TestDictionaryToJsonConversion:
 
     def test_processing_dict_for_json_export_parse_pandas_Timestamp(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_Timestamp"])
+        expr = B0.convert_from_special_types_to_json(
+            JSON_TEST_DICTIONARY["pandas_Timestamp"]
+        )
         assert expr == TYPE_TIMESTAMP + "2020-01-01 00:00:00"
 
     def test_processing_dict_for_json_export_parse_pandas_series(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_series"])
+        expr = B0.convert_from_special_types_to_json(
+            JSON_TEST_DICTIONARY["pandas_series"]
+        )
         assert (
             expr
             == TYPE_SERIES
@@ -281,12 +289,16 @@ class TestDictionaryToJsonConversion:
 
     def test_processing_dict_for_json_export_parse_numpy_array(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["numpy_array"])
+        expr = B0.convert_from_special_types_to_json(
+            JSON_TEST_DICTIONARY["numpy_array"]
+        )
         assert expr == '{"array": [0, 1, 2]}'
 
     def test_processing_dict_for_json_export_parse_pandas_Dataframe(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_Dataframe"])
+        expr = B0.convert_from_special_types_to_json(
+            JSON_TEST_DICTIONARY["pandas_Dataframe"]
+        )
         assert (
             expr
             == TYPE_DATAFRAME
@@ -296,7 +308,7 @@ class TestDictionaryToJsonConversion:
     def test_processing_dict_for_json_export_parse_unknown(self):
         """ """
         with pytest.raises(TypeError):
-            F0.convert(UNKNOWN_TYPE)
+            B0.convert_from_special_types_to_json(UNKNOWN_TYPE)
 
     def teardown_class(self):
         """ """

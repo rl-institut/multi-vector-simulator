@@ -14,7 +14,7 @@ import pandas as pd
 import pytest
 
 from mvs_eland_tool import main
-from src.B0_data_input_json import convert_special_types
+from src.B0_data_input_json import convert_from_json_to_special_types
 from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,

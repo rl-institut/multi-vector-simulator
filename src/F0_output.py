@@ -5,7 +5,7 @@ import os
 import numpy
 import pandas as pd
 
-from src.B0_data_input_json import convert
+from src.B0_data_input_json import convert_from_special_types_to_json
 import src.F1_plotting as F1_plots
 import src.F2_autoreport as autoreport
 from src.constants import (
@@ -293,7 +293,11 @@ def store_as_json(dict_values, output_folder=None, file_name=None):
     this file_name, otherwise the json variable is returned
     """
     json_data = json.dumps(
-        dict_values, skipkeys=False, sort_keys=True, default=convert, indent=4
+        dict_values,
+        skipkeys=False,
+        sort_keys=True,
+        default=convert_from_special_types_to_json,
+        indent=4,
     )
     if file_name is not None:
         file_path = os.path.abspath(os.path.join(output_folder, file_name + ".json"))

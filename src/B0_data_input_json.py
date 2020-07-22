@@ -30,7 +30,7 @@ It will be an interface to the EPA.
 """
 
 
-def convert_special_types(a_dict, prev_key=None):
+def convert_from_json_to_special_types(a_dict, prev_key=None):
     """Convert the field values of the mvs result json file which are not simple types.
 
     The function is recursive to explore all nested levels
@@ -52,7 +52,7 @@ def convert_special_types(a_dict, prev_key=None):
         # the a_dict argument is a dictionary, therefore we dive deeper in the nesting level
         answer = {}
         for k in a_dict:
-            answer[k] = convert_special_types(a_dict[k], prev_key=k)
+            answer[k] = convert_from_json_to_special_types(a_dict[k], prev_key=k)
 
     else:
         # the a_dict argument is not a dictionary, therefore we check if is one the serialized type
@@ -98,7 +98,7 @@ def convert_special_types(a_dict, prev_key=None):
     return answer
 
 
-def convert(o):
+def convert_from_special_types_to_json(o):
     """This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
 
     Parameters
@@ -170,7 +170,7 @@ def load_json(
     with open(path_input_file) as json_file:
         dict_values = json.load(json_file)
 
-    dict_values = convert_special_types(dict_values)
+    dict_values = convert_from_json_to_special_types(dict_values)
 
     # The user specified a value
     if path_input_folder is not None:
