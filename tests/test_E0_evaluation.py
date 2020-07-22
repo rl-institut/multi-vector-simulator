@@ -6,12 +6,13 @@ import shutil
 import mock
 import pandas as pd
 
-import src.A0_initialization as initializing
-import src.B0_data_input_json as data_input
-import src.C0_data_processing as data_processing
-import src.D0_modelling_and_optimization as modelling
-import src.E0_evaluation as evaluation
+import src.A0_initialization as A0
+import src.B0_data_input_json as B0
+import src.C0_data_processing as C0
+import src.D0_modelling_and_optimization as D0
+import src.E0_evaluation as E0
 from src.constants_json_strings import (
+    VALUE,
     KPI,
     KPI_SCALARS,
     KPI_COST_MATRIX,
@@ -27,7 +28,7 @@ from .constants import (
     PATH_OUTPUT_FOLDER,
 )
 
-PARSER = initializing.create_parser()
+PARSER = A0.create_parser()
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs")
 
@@ -46,29 +47,54 @@ def setup_module(m_args):
     """Run the simulation up to module E0 and save dict_values before and after evaluation"""
     if os.path.exists(TEST_OUTPUT_PATH):
         shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
-    user_input = initializing.process_user_arguments()
+    user_input = A0.process_user_arguments()
 
     logging.debug("Accessing script: B0_data_input_json")
-    dict_values = data_input.load_json(
+    dict_values = B0.load_json(
         user_input[PATH_INPUT_FILE],
         path_input_folder=user_input[PATH_INPUT_FOLDER],
         path_output_folder=user_input[PATH_OUTPUT_FOLDER],
         move_copy=False,
     )
     logging.debug("Accessing script: C0_data_processing")
-    data_processing.all(dict_values)
+    C0.all(dict_values)
 
     logging.debug("Accessing script: D0_modelling_and_optimization")
-    results_meta, results_main = modelling.run_oemof(dict_values)
+    results_meta, results_main = D0.run_oemof(dict_values)
 
     with open(DICT_BEFORE, "wb") as handle:
         pickle.dump(dict_values, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     logging.debug("Accessing script: E0_evaluation")
-    evaluation.evaluate_dict(dict_values, results_main, results_meta)
+    E0.evaluate_dict(dict_values, results_main, results_meta)
 
     with open(DICT_AFTER, "wb") as handle:
         pickle.dump(dict_values, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+def test_store_result_matrix():
+    dict_kpi = {
+        KPI_COST_MATRIX: pd.DataFrame(columns=["A", "B", "C"]),
+        KPI_SCALAR_MATRIX: pd.DataFrame(columns=["D", "E", "F"]),
+    }
+    dict_asset = {
+        "A": 3.551111,
+        "B": "str",
+        "D": None,
+        "E": {VALUE: 2},
+        "F": False,
+        "G": 1,
+    }
+
+    E0.store_result_matrix(dict_kpi, dict_asset)
+    assert len(dict_kpi[KPI_COST_MATRIX]) == 1
+    assert len(dict_kpi[KPI_SCALAR_MATRIX]) == 1
+    assert dict_kpi[KPI_COST_MATRIX]["A"][0] == 3.55111
+    assert dict_kpi[KPI_COST_MATRIX]["B"][0] == "str"
+    assert dict_kpi[KPI_COST_MATRIX]["C"][0] is None
+    assert dict_kpi[KPI_SCALAR_MATRIX]["D"][0] is None
+    assert dict_kpi[KPI_SCALAR_MATRIX]["E"][0] == 2
+    assert dict_kpi[KPI_SCALAR_MATRIX]["F"][0] is False
 
 
 def test_evaluate_dict_append_new_fields():
