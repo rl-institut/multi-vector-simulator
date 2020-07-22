@@ -65,15 +65,28 @@ The LCOElectricity are then calculated with:
 Levelized Cost of Energy of Asset (LCOE_ASSET)
 ################################
 
-This KPI measures the cost of generating 1 kWh for each asset in the system. It can be used to assess and compare the available alternative methods of energy production. The levelized cost of energy of an asset (LCOE_ASSET) is usually obtained looking at the lifetime costs of building and operating the asset per unit of total energy throughput of an asset over the assumed lifetime [currency/kWh].  
+This KPI measures the cost of generating 1 kWh for each asset in the system. It can be used to assess and compare the available alternative methods of energy production. The levelized cost of energy of an asset (LCOE_ASSET) is usually obtained by looking at the lifetime costs of building and operating the asset per unit of total energy throughput of an asset over the assumed lifetime [currency/kWh].  
 
-Since not all assets are production assets, the MVS distinguishes between the type of assets. For assets in energyConversion and energyProduction the MVS calculates the LCOE_ASSET by dividing the total annuity $a_i$ of the asset $i$ by the total flow $\sum{t} E(t)$.
-For assets in energyStorage, the MVS sums the annuity for "storage capacity," "input power" and "output power" and divides it by the "output power" total flow.
+Since not all assets are production assets, the MVS distinguishes between the type of assets. For assets in energyConversion and energyProduction the MVS calculates the LCOE_ASSET by dividing the total annuity $a_i$ of the asset $i$ by the total flow $\sum{t} E_i(t)$.
+
+.. math::
+  LCOE\_ASSET{i} = \frac{a_i}{\sum^{t} E_i(t)} 
+  
+For assets in energyStorage, the MVS sums the annuity for "storage capacity" $a_i_sc$, "input power" $a_i_ip$ and "output power" $a_i_op$ and divides it by the "output power" total flow $\sum{t} E_i_op(t)$.
+
+.. math::
+  LCOE\_ASSET{i} = \frac{a_i_sc + a_i_ip + a_i_op}{\sum^{t} E_i_op(t)} 
+
 If the total flow is 0 in any of the previous cases, then the LCOE_ASSET is set to None.
+
+.. math::
+  LCOE\_ASSET{i} = None
+  
 For assets in energyConsumption, the MVS outputs 0 for the LCOE_ASSET.
 
 .. math::
-  LCOE\_ASSET{i} = \frac{a_i}{\sum^{t} E_i (t)} 
+  LCOE\_ASSET{i} = 0
+
 
 Technical data
 --------------
