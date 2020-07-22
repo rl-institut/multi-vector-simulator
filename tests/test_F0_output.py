@@ -359,6 +359,7 @@ class TestLoadDictionaryFromJson:
         """ """
         k = TYPE_DATETIMEINDEX
         assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
+        assert hasattr(self.value_dict[k], "freq")
 
     def test_load_json_export_parse_pandas_Timestamp(self):
         """ """
