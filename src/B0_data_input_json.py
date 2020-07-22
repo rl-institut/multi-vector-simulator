@@ -99,7 +99,8 @@ def convert_from_json_to_special_types(a_dict, prev_key=None):
 
 
 def convert_from_special_types_to_json(o):
-    """This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
+    """This converts all data stored in dict_values that is not compatible with the
+    json format to a format that is compatible.
 
     Parameters
     ----------
@@ -114,22 +115,21 @@ def convert_from_special_types_to_json(o):
     """
     if isinstance(o, np.int64):
         answer = int(o)
-    # todo this actually drops the date time index, which could be interesting
+    elif isinstance(o, bool) or isinstance(o, str):
+        answer = o
     elif isinstance(o, pd.DatetimeIndex):
-        answer = o.to_frame().to_json(orient="split")
-        answer = "{}{}".format(TYPE_DATETIMEINDEX, answer)
+        answer = {DATA_TYPE_JSON_KEY: TYPE_DATETIMEINDEX}
+        answer.update(json.loads(o.to_frame().to_json(orient="split")))
     elif isinstance(o, pd.Timestamp):
-        answer = str(o)
-        answer = "{}{}".format(TYPE_TIMESTAMP, answer)
-    # todo this also drops the timeindex, which is unfortunate.
+        answer = {DATA_TYPE_JSON_KEY: TYPE_TIMESTAMP, VALUE: str(o)}
     elif isinstance(o, pd.Series):
-        answer = o.to_json(orient="split")
-        answer = "{}{}".format(TYPE_SERIES, answer)
+        answer = {DATA_TYPE_JSON_KEY: TYPE_SERIES}
+        answer.update(json.loads(o.to_json(orient="split")))
     elif isinstance(o, np.ndarray):
-        answer = json.dumps({"array": o.tolist()})
+        answer = {DATA_TYPE_JSON_KEY: TYPE_NDARRAY, VALUE: o.tolist()}
     elif isinstance(o, pd.DataFrame):
-        answer = o.to_json(orient="split")
-        answer = "{}{}".format(TYPE_DATAFRAME, answer)
+        answer = {DATA_TYPE_JSON_KEY: TYPE_DATAFRAME}
+        answer.update(json.loads(o.to_json(orient="split")))
     else:
         raise TypeError(
             "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"
