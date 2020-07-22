@@ -156,7 +156,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
 def store_result_matrix(dict_kpi, dict_asset):
     """
     Storing results to vector and then result matrix for saving it in csv.
-    Defined value types: Str, bool, None, else (int, float)
+    Defined value types: Str, bool, None, dict (with key "VALUE"), else (int, float)
     Parameters
     ----------
     dict_kpi: dict
@@ -184,6 +184,11 @@ def store_result_matrix(dict_kpi, dict_asset):
                     asset_result_dict.update({key: VALUE})
                 elif dict_asset[key] is None:
                     asset_result_dict.update({key: None})
+                elif isinstance(dict_asset[key], dict):
+                    if VALUE in dict_asset[key].keys():
+                        asset_result_dict.update(
+                        {key: round(dict_asset[key][VALUE], round_to_comma)}
+                    )
                 else:
                     asset_result_dict.update(
                         {key: round(dict_asset[key], round_to_comma)}
