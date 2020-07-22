@@ -142,9 +142,11 @@ INFLOW_DIRECTION = "inflow_direction"
 OUTPUT_BUS_NAME = "output_bus_name"
 INPUT_BUS_NAME = "input_bus_name"
 ENERGY_VECTOR = "energyVector"
-BUS_SUFFIX = " bus"
+
 # Sinks
 EXCESS_SINK_POSTFIX = " excess sink"
+
+BUS_POSTFIX = " bus"
 
 # DSO
 DSO_CONSUMPTION = "_consumption"
