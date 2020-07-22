@@ -147,7 +147,6 @@ def test_determine_lifetime_price_dispatch_as_timeseries():
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], pd.Series)
 
-
 def test_determine_lifetime_price_dispatch_is_other():
     dict_asset = {DISPATCH_PRICE: {VALUE: TYPE_STR}}
     with pytest.raises(ValueError):
@@ -233,9 +232,6 @@ def test_generation_of_dso_side():
 
 # Add a source if a conversion object is connected to a new input_direction (bug #186)
 def test_add_source_when_unknown_input_direction():
-    assert 1 == 0
-
-def test_define_energyBusses():
     assert 1 == 0
 
 # Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
