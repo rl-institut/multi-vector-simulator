@@ -27,7 +27,7 @@ from src.constants_json_strings import (
     OPTIMIZED_FLOWS,
     ANNUITY_TOTAL,
     OPTIMIZED_FLOWS,
-    BUS_POSTFIX
+    BUS_SUFFIX,
 )
 
 r"""

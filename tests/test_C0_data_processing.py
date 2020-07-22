@@ -124,6 +124,7 @@ def test_determine_lifetime_price_dispatch_as_list():
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
     # todo this should be here some time, shouldnt it? assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], list)
 
+
 TEST_START_TIME = "2020-01-01 00:00"
 TEST_PERIODS = 3
 VALUES = [0, 1, 2]
@@ -133,11 +134,13 @@ pandas_DatetimeIndex = pd.date_range(
 )
 pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
 
+
 def test_determine_lifetime_price_dispatch_as_timeseries():
     dict_asset = {DISPATCH_PRICE: {VALUE: pandas_Series}}
     C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], pd.Series)
+
 
 def test_determine_lifetime_price_dispatch_is_other():
     dict_asset = {DISPATCH_PRICE: {VALUE: TYPE_STR}}
@@ -153,50 +156,102 @@ def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear
     with pytest.raises(ValueError):
         C0.define_dso_sinks_and_sources(dict_test, "a_dso")
 
+
 def test_define_energyBusses():
-    asset_names = ["asset_name_" + str(i) for i in range(0,6)]
-    in_bus_names = ["in_bus_name_" + str(i) for i in range(0,6)]
-    out_bus_names = ["out_bus_name_" + str(i) for i in range(0,6)]
+    asset_names = ["asset_name_" + str(i) for i in range(0, 6)]
+    in_bus_names = ["in_bus_name_" + str(i) for i in range(0, 6)]
+    out_bus_names = ["out_bus_name_" + str(i) for i in range(0, 6)]
 
     dict_test = {
         ENERGY_PROVIDERS: {
             asset_names[0]: {
                 LABEL: asset_names[0],
                 OUTFLOW_DIRECTION: out_bus_names[0],
-                INFLOW_DIRECTION: in_bus_names[0]}},
+                INFLOW_DIRECTION: in_bus_names[0],
+            }
+        },
         ENERGY_STORAGE: {
             asset_names[1]: {
                 LABEL: asset_names[1],
                 OUTFLOW_DIRECTION: out_bus_names[1],
-                INFLOW_DIRECTION: in_bus_names[1]}},
+                INFLOW_DIRECTION: in_bus_names[1],
+            }
+        },
         ENERGY_CONSUMPTION: {
-            asset_names[2]: {
-                LABEL: asset_names[2],
-                INFLOW_DIRECTION: in_bus_names[2]}},
+            asset_names[2]: {LABEL: asset_names[2], INFLOW_DIRECTION: in_bus_names[2]}
+        },
         ENERGY_PRODUCTION: {
-            asset_names[3]: {
-                LABEL: asset_names[3],
-                OUTFLOW_DIRECTION: out_bus_names[2]}},
+            asset_names[3]: {LABEL: asset_names[3], OUTFLOW_DIRECTION: out_bus_names[2]}
+        },
         ENERGY_CONVERSION: {
             asset_names[4]: {
                 LABEL: asset_names[4],
                 OUTFLOW_DIRECTION: out_bus_names[3],
-                INFLOW_DIRECTION: in_bus_names[3]},
+                INFLOW_DIRECTION: in_bus_names[3],
+            },
             asset_names[5]: {
                 LABEL: asset_names[5],
                 OUTFLOW_DIRECTION: [out_bus_names[4], out_bus_names[5]],
-                INFLOW_DIRECTION: [in_bus_names[4], in_bus_names[5]]}},
+                INFLOW_DIRECTION: [in_bus_names[4], in_bus_names[5]],
+            },
+        },
     }
 
     C0.define_busses(dict_test)
     assert ENERGY_BUSSES in dict_test.keys()
-    # assert that bus list in/put in ENERGY_BUSSES
+    for k in in_bus_names:
+        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
+    for k in out_bus_names:
+        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
+
+
+def test_add_busses_of_asset_depending_on_in_out_direction_single():
+    bus_names = ["bus_name_" + str(i) for i in range(1, 3)]
+    asset_name = "asset"
+    asset_label = "asset_label"
+    dict_test = {
+        ENERGY_BUSSES: {},
+        ENERGY_CONVERSION: {
+            asset_name: {
+                LABEL: asset_label,
+                OUTFLOW_DIRECTION: bus_names[0],
+                INFLOW_DIRECTION: bus_names[1],
+            }
+        },
+    }
+    C0.add_busses_of_asset_depending_on_in_out_direction(
+        dict_test, dict_test[ENERGY_CONVERSION][asset_name], asset_name
+    )
+    for k in bus_names:
+        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
+    for bus in dict_test[ENERGY_BUSSES].keys():
+        assert asset_name in dict_test[ENERGY_BUSSES][bus].keys()
+        assert asset_label in dict_test[ENERGY_BUSSES][bus][asset_name]
+
+
+def test_update_bus():
+    bus_name = "bus_name"
+    asset_name = "asset"
+    asset_label = "asset_label"
+    dict_test = {
+        ENERGY_BUSSES: {},
+        ENERGY_CONVERSION: {
+            asset_name: {LABEL: asset_label, OUTFLOW_DIRECTION: bus_name}
+        },
+    }
+    bus_label = C0.bus_suffix(bus_name)
+    C0.update_bus(dict_test, bus_name, asset_name, asset_label)
+    assert bus_label in dict_test[ENERGY_BUSSES]
+    assert asset_name in dict_test[ENERGY_BUSSES][bus_label]
+    assert asset_label in dict_test[ENERGY_BUSSES][bus_label][asset_name]
+
 
 def test_bus_suffix_correct():
     bus = "a"
     bus_name = C0.bus_suffix(bus)
     assert bus_name == bus + BUS_SUFFIX
-    
+
+
 """
 def test_asess_energyVectors_and_add_to_project_data():
     C2.identify_energy_vectors(dict_values)
