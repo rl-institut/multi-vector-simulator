@@ -551,22 +551,38 @@ def bus_suffix(bus):
     return bus_label
 
 
-def update_bus(dict_values, bus, asset, asset_label):
+def update_bus(dict_values, bus, asset_key, asset_label):
     """
+    Checks if an bus is already included in ENERGY_BUSSES and otherwise adds it.
+    Adds asset key and label to list of assets attached to a bus.
 
-    :param dict_values:
-    :param bus:
-    :param asset:
-    :param asset_label:
-    :return:
+    Parameters
+    ----------
+    dict_values: dict
+        Dict of all simulation parameters
+
+    bus: str
+        A bus label
+
+    asset_key: str
+        Key with with an dict_asset would be called from dict_values[groups][key]
+
+    asset_label: str
+        Label of the asset
+
+    Returns
+    -------
+    Updated dict_values[ENERGY_BUSSES], optionally with new busses and/or by adding an asset to a bus
+
     """
     bus_label = bus_suffix(bus)
+
     if bus_label not in dict_values[ENERGY_BUSSES]:
         # add bus to asset group energyBusses
         dict_values[ENERGY_BUSSES].update({bus_label: {}})
 
     # Asset should added to respective bus
-    dict_values[ENERGY_BUSSES][bus_label].update({asset: asset_label})
+    dict_values[ENERGY_BUSSES][bus_label].update({asset_key: asset_label})
     logging.debug("Added asset %s to bus %s", asset_label, bus_label)
     return
 
