@@ -472,45 +472,63 @@ def define_busses(dict_values):
     # Interatively adds busses to ENERGY_BUSSES for each new bus in the inflow/outflow direction of subsequent assets
     for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION, ENERGY_PROVIDERS, ENERGY_STORAGE]:
         for asset in dict_values[group]:
-            add_busses_of_asset_depending_on_in_out_direction(dict_values, dict_values[group][asset])
+            add_busses_of_asset_depending_on_in_out_direction(dict_values, dict_values[group][asset], asset)
 
     return
 
 
 def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
     """
-    :param dict_values:
-    :param asset_group:
-    :param kwargs:
-    :return:
-    """
-    # checks for all assets of an group
-    for asset in asset_group:
-        # the bus that is connected to the inflow
-        if INFLOW_DIRECTION in asset_group[asset]:
-            bus = asset_group[asset][INFLOW_DIRECTION]
-            if isinstance(bus, list):
-                bus_list = []
-                for subbus in bus:
-                    bus_list.append(bus_suffix(subbus))
-                    update_bus(dict_values, subbus, asset, asset_group[asset][LABEL])
-                asset_group[asset].update({INPUT_BUS_NAME: bus_list})
-            else:
-                asset_group[asset].update({INPUT_BUS_NAME: bus_suffix(bus)})
-                update_bus(dict_values, bus, asset, asset_group[asset][LABEL])
-        # the bus that is connected to the outflow
-        if OUTFLOW_DIRECTION in asset_group[asset]:
-            bus = asset_group[asset][OUTFLOW_DIRECTION]
-            if isinstance(bus, list):
-                bus_list = []
-                for subbus in bus:
-                    bus_list.append(bus_suffix(subbus))
-                    update_bus(dict_values, subbus, asset, asset_group[asset][LABEL])
-                asset_group[asset].update({OUTPUT_BUS_NAME: bus_list})
-            else:
-                asset_group[asset].update({OUTPUT_BUS_NAME: bus_suffix(bus)})
-                update_bus(dict_values, bus, asset, asset_group[asset][LABEL])
+    Check if the INPUT_DIRECTION and OUTPUT_DIRECTION, ie the bus, of an asset is already included in energyBusses.
+    Otherwise, add to dict_values(ENERGY_BUSSES).
 
+    Translates INPUT_DIRECTION and OUTPUT_DIRECTION into INPUT_BUS_NAME and OUTPUT_BUS_NAME.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation information
+
+    dict_asset: dict
+        All information of the current asset
+
+    asset_key: str
+        Key that calls the dict_asset from dict_values[asset_group][key]
+
+    Returns
+    -------
+    Updated dict_values with potentially additional busses of the energy system.
+    Updated dict_asset with the input_bus_name
+    """
+
+    for direction in [INFLOW_DIRECTION, OUTFLOW_DIRECTION]:
+        # This is the parameter that will be added to dict_asset as the bus_name_key
+        if direction == INFLOW_DIRECTION:
+            bus_name_key = INPUT_BUS_NAME
+        else:
+            bus_name_key = OUTPUT_BUS_NAME
+
+        # Check if the asset has an INFLOW_DIRECTION or OUTFLOW_DIRECTION
+        if direction in dict_asset:
+            bus = dict_asset[direction]
+            # Check if a list ob busses is in INFLOW_DIRECTION or OUTFLOW_DIRECTION
+            if isinstance(bus, list):
+                # If true: All busses need to be checked
+                bus_list = []
+                # Checking each bus of the list
+                for subbus in bus:
+                    # Append bus name to bus_list
+                    bus_list.append(bus_suffix(subbus))
+                    # Check if bus of the direction is already contained in energyBusses
+                    update_bus(dict_values, subbus, asset_key, dict_asset[LABEL])
+                # Add bus_name_key to dict_asset
+                dict_asset.update({bus_name_key: bus_list})
+            # If false: Only one bus
+            else:
+                # Check if bus of the direction is already contained in energyBusses
+                update_bus(dict_values, bus, asset_key, dict_asset[LABEL])
+                # Add bus_name_key to dict_asset
+                dict_asset.update({bus_name_key: bus_suffix(bus)})
     return
 
 
