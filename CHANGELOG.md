@@ -76,6 +76,8 @@ Here is a template for new release sections
 - Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
 - Created function to read version number and date from file instead of importing it from module
  (#463)
+ - Move and rename json converter and parser to B0 module (#464)
+ - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
 
 
 ### Removed
