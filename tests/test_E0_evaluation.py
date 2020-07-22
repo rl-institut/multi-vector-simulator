@@ -12,6 +12,7 @@ import src.C0_data_processing as C0
 import src.D0_modelling_and_optimization as D0
 import src.E0_evaluation as E0
 from src.constants_json_strings import (
+    VALUE,
     KPI,
     KPI_SCALARS,
     KPI_COST_MATRIX,
@@ -76,17 +77,24 @@ def test_store_result_matrix():
         KPI_COST_MATRIX: pd.DataFrame(columns=["A", "B", "C"]),
         KPI_SCALAR_MATRIX: pd.DataFrame(columns=["D", "E", "F"]),
     }
-    dict_asset = {"A": 3.551111, "B": "str", "D": None, "F": bool, "G": 1}
+    dict_asset = {
+        "A": 3.551111,
+        "B": "str",
+        "D": None,
+        "E": {VALUE: 2},
+        "F": False,
+        "G": 1,
+    }
 
     E0.store_result_matrix(dict_kpi, dict_asset)
     assert len(dict_kpi[KPI_COST_MATRIX]) == 1
     assert len(dict_kpi[KPI_SCALAR_MATRIX]) == 1
-    assert dict_kpi[KPI_COST_MATRIX]["A"] == 3.55111
-    assert dict_kpi[KPI_COST_MATRIX]["B"] == "str"
-    assert dict_kpi[KPI_COST_MATRIX]["C"] == None
-    assert dict_kpi[KPI_COST_MATRIX]["D"] is None
-    assert dict_kpi[KPI_COST_MATRIX]["E"] is None
-    assert isinstance(dict_kpi[KPI_COST_MATRIX]["F"], bool)
+    assert dict_kpi[KPI_COST_MATRIX]["A"][0] == 3.55111
+    assert dict_kpi[KPI_COST_MATRIX]["B"][0] == "str"
+    assert dict_kpi[KPI_COST_MATRIX]["C"][0] is None
+    assert dict_kpi[KPI_SCALAR_MATRIX]["D"][0] is None
+    assert dict_kpi[KPI_SCALAR_MATRIX]["E"][0] == 2
+    assert dict_kpi[KPI_SCALAR_MATRIX]["F"][0] is False
 
 
 def test_evaluate_dict_append_new_fields():

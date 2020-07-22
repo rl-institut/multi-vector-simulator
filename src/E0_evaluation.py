@@ -181,14 +181,14 @@ def store_result_matrix(dict_kpi, dict_asset):
                 if isinstance(dict_asset[key], str):
                     asset_result_dict.update({key: dict_asset[key]})
                 elif isinstance(dict_asset[key], bool):
-                    asset_result_dict.update({key: VALUE})
+                    asset_result_dict.update({key: dict_asset[key]})
                 elif dict_asset[key] is None:
                     asset_result_dict.update({key: None})
                 elif isinstance(dict_asset[key], dict):
                     if VALUE in dict_asset[key].keys():
                         asset_result_dict.update(
-                        {key: round(dict_asset[key][VALUE], round_to_comma)}
-                    )
+                            {key: round(dict_asset[key][VALUE], round_to_comma)}
+                        )
                 else:
                     asset_result_dict.update(
                         {key: round(dict_asset[key], round_to_comma)}
