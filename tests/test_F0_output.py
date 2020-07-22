@@ -41,8 +41,10 @@ from .constants import (
     TYPE_DATETIMEINDEX,
     TYPE_DATAFRAME,
     TYPE_SERIES,
+    TYPE_NDARRAY,
     TYPE_TIMESTAMP,
     TYPE_BOOL,
+    TYPE_INT64,
     TYPE_STR,
     PATH_OUTPUT_FOLDER,
 )
@@ -66,13 +68,13 @@ SCALAR = 2
 JSON_TEST_DICTIONARY = {
     TYPE_BOOL: True,
     TYPE_STR: "str",
-    "numpy_int64": np.int64(SCALAR),
-    "pandas_DatetimeIndex": pandas_DatetimeIndex,
-    "pandas_Timestamp": pd.Timestamp(START_TIME),
-    "pandas_series": pandas_Series,
+    TYPE_INT64: np.int64(SCALAR),
+    TYPE_DATETIMEINDEX: pandas_DatetimeIndex,
+    TYPE_TIMESTAMP: pd.Timestamp(START_TIME),
+    TYPE_SERIES: pandas_Series,
     "pandas_series_tuple_name": pandas_Series_tuple_name,
-    "numpy_array": np.array(VALUES),
-    "pandas_Dataframe": pandas_Dataframe,
+    TYPE_NDARRAY: np.array(VALUES),
+    TYPE_DATAFRAME: pandas_Dataframe,
 }
 
 UNKNOWN_TYPE = np.float32(SCALAR / 10)
