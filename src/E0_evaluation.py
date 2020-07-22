@@ -174,6 +174,8 @@ def store_result_matrix(dict_kpi, dict_asset):
             if key in dict_asset:
                 if isinstance(dict_asset[key], str):
                     asset_result_dict.update({key: dict_asset[key]})
+                elif isinstance(dict_asset[key][VALUE], None):
+                    asset_result_dict.update({key: None})
                 else:
                     asset_result_dict.update(
                         {key: round(dict_asset[key][VALUE], round_to_comma)}
