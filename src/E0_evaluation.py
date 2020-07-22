@@ -153,15 +153,20 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
 
 def store_result_matrix(dict_kpi, dict_asset):
-    """Storing results to vector and then result matrix for saving it in csv.
-
+    """
+    Storing results to vector and then result matrix for saving it in csv.
+    Defined value types: Str, bool, None, else (int, float)
     Parameters
     ----------
-    dict_kpi
-    dict_asset
+    dict_kpi: dict
+        dictionary with the two kpi groups (costs and scalars), which are pd.DF
+
+    dict_asset: dict
+        all information known for a specific asset
 
     Returns
     -------
+    Updated dict_kpi DF, with new row of kpis of the specific asset
 
     """
 
@@ -174,12 +179,16 @@ def store_result_matrix(dict_kpi, dict_asset):
             if key in dict_asset:
                 if isinstance(dict_asset[key], str):
                     asset_result_dict.update({key: dict_asset[key]})
-                elif dict_asset[key][VALUE] == None:
+                elif isinstance(dict_asset[key][VALUE], bool):
+                    asset_result_dict.update({key: VALUE})
+                elif dict_asset[key][VALUE] is None:
                     asset_result_dict.update({key: None})
                 else:
                     asset_result_dict.update(
                         {key: round(dict_asset[key][VALUE], round_to_comma)}
                     )
+            else:
+                asset_result_dict.update({key: None})
 
         asset_result_df = pd.DataFrame([asset_result_dict])
 
