@@ -2,6 +2,8 @@ import logging
 
 from src.constants_json_strings import (
     UNIT,
+    CURR,
+    UNIT_YEAR,
     VALUE,
     ECONOMIC_DATA,
     CURR,
@@ -164,11 +166,11 @@ def get_costs(dict_asset, economic_data):
             {
                 ANNUITY_TOTAL: {
                     VALUE: dict_asset[COST_TOTAL][VALUE] * economic_data[CRF][VALUE],
-                    UNIT: "currency/year",
+                    UNIT: CURR + "/" + UNIT_YEAR,
                 },
                 ANNUITY_OM: {
                     VALUE: dict_asset[COST_OM_TOTAL][VALUE] * economic_data[CRF][VALUE],
-                    UNIT: "currency/year",
+                    UNIT: CURR + "/" + UNIT_YEAR,
                 },
             }
         )
@@ -188,7 +190,7 @@ def all_list_in_dict(dict_asset, list):
 
 def lcoe_assets(dict_asset, asset_group):
     """
-    Calculates the levelized cost of electricity (lcoe) of each asset
+    Calculates the levelized cost of electricity (lcoe) of each asset. [Follow this link for information](docs/MVS_Outputs.rst)
     Parameters
     ----------
     dict_asset: dict

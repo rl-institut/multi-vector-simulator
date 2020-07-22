@@ -41,6 +41,8 @@ Here is a template for new release sections
  - Tests for LCOE function in test_E2_economics (#438)
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 - File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
+- Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
+- LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -69,6 +71,11 @@ Here is a template for new release sections
 - Moved list of keys to be printed in "scalars.xlsx" to "constants_output.py" (#453)
 - Renamed "peak_flow" to `PEAK_FLOW` and "average_flow" to `AVERAGE_FLOW` (#453)
 - Changed function "E2.lcoe_asset()" and its tests, now processes one asset at a time (#453)
+- Added arguments `"-f", "-log", "warning"` to all `parse_args` and `main()` in `tests` (#456)
+- File `Developing.rst` with new description of tests and conventions (#456)
+- Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
+- Created function to read version number and date from file instead of importing it from module
+ (#463)
 - Definition of busses from assets: Now all INFLOW_DIRECTION / OUTFLOW_DIRECTION are translated into ENERGY_BUSSES (#454, #387)
 - Added some tests for `C0` (#454)
 - Work in progress: Excess sink is created for each and every bus 
@@ -78,6 +85,8 @@ Here is a template for new release sections
 - `MaximumCap` from list of required parameters for `energyStorage` assets (#415)
 - `inputs` folder (#401)
 - `tests/test_benchmark.py` module (#401)
+- Outdated table of tests of MVS `docs/tables/table_tests.csv` (#456)
+- Removed function C0.complete_missing_cost_data() as this should be covered by A1 for csv files (#379)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
@@ -86,6 +95,8 @@ Here is a template for new release sections
 - Warnings from local readthedocs compilation (#426)
 - Issue #430 Bug on local install (#437)
 - Input folder `tests/inputs` with simple example scenario (#420)
+- Description of storage efficiency in readthedocs (#457)
+- Bug connected to global variables (#356)
 
 ## [0.3.0] - 2020-06-08
 

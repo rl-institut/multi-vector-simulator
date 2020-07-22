@@ -26,6 +26,7 @@ from src.constants_json_strings import (
     COST_INVESTMENT,
     OPTIMIZED_FLOWS,
     ANNUITY_TOTAL,
+    OPTIMIZED_FLOWS,
     BUS_SUFFIX,
 )
 
@@ -112,7 +113,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
                 )
 
         # todo this should actually link to C0: helpers.bus_suffix
-        dict_values[OPTIMIZED_FLOWS][sector_name + BUS_POSTFIX][
+        dict_values[OPTIMIZED_FLOWS][sector_name + BUS_SUFFIX][
             "Total demand " + sector_name
         ] = total_demand
         """

@@ -262,8 +262,8 @@ def process_user_arguments(
         (Optional) Determines which messages are used for terminal output (command line "-log")
             "debug": All logging messages
             "info": All informative messages and warnings (default)
-            "warnings": All warnings
-            "errors": Only errors
+            "warning": All warnings
+            "error": Only errors
     :param lp_file_output:
         Save linear equation system generated as lp file
     :param welcome_text:

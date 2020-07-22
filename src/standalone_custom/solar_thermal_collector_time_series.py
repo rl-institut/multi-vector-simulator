@@ -54,7 +54,7 @@ time_zone = "Europe/Bucharest"
 
 ############### Get data - pre-processing ###############
 logging.info("Necessary data is loaded and pre-processing is done.")
-# load dummy weather
+# load weather
 weather = pd.read_csv("era5_weather_UVTgV_2018.csv", parse_dates=True).set_index("time")
 weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
 weather.reset_index("time", inplace=True)

@@ -6,7 +6,7 @@ import pandas as pd
 import src.A1_csv_to_json as A1
 import src.B0_data_input_json as data_input
 
-from src.constants import WARNING_TEXT, REQUIRED_IN_CSV_ELEMENTS, DEFAULT_VALUE
+from src.constants import WARNING_TEXT, REQUIRED_IN_CSV_ELEMENTS, DEFAULT_VALUE, HEADER
 
 from src.constants_json_strings import (
     UNIT,
@@ -34,10 +34,7 @@ CSV_PARAMETERS = ["param1", "param2"]
 
 CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {VALUE: 21, UNIT: "factor"}}}
 CSV_TIMESERIES = {
-    "param1": {
-        VALUE: {FILENAME: "test_time_series.csv", "header": "power"},
-        UNIT: "kW",
-    }
+    "param1": {VALUE: {FILENAME: "test_time_series.csv", HEADER: "power"}, UNIT: "kW",}
 }
 
 CSV_LIST = {
