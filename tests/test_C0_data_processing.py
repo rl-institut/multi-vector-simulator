@@ -185,6 +185,12 @@ def test_define_energyBusses():
     C0.define_busses(dict_test)
     assert ENERGY_BUSSES in dict_test.keys()
     # assert that bus list in/put in ENERGY_BUSSES
+
+def test_bus_suffix_correct():
+    bus = "a"
+    bus_name = C0.bus_suffix(bus)
+    assert bus_name == bus + BUS_SUFFIX
+
 """
 
 
