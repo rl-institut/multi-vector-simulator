@@ -470,13 +470,24 @@ def define_busses(dict_values):
     dict_values.update({ENERGY_BUSSES: {}})
 
     # Interatively adds busses to ENERGY_BUSSES for each new bus in the inflow/outflow direction of subsequent assets
-    for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION, ENERGY_PROVIDERS, ENERGY_STORAGE]:
+    for group in [
+        ENERGY_CONVERSION,
+        ENERGY_PRODUCTION,
+        ENERGY_CONSUMPTION,
+        ENERGY_PROVIDERS,
+        ENERGY_STORAGE,
+    ]:
         for asset in dict_values[group]:
-            add_busses_of_asset_depending_on_in_out_direction(dict_values, dict_values[group][asset], asset)
+            add_busses_of_asset_depending_on_in_out_direction(
+                dict_values, dict_values[group][asset], asset
+            )
 
     return
 
-def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
+
+def add_busses_of_asset_depending_on_in_out_direction(
+    dict_values, dict_asset, asset_key
+):
     """
     Check if the INPUT_DIRECTION and OUTPUT_DIRECTION, ie the bus, of an asset is already included in energyBusses.
     Otherwise, add to dict_values(ENERGY_BUSSES).
@@ -529,6 +540,7 @@ def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_suffix(bus)})
     return
+
 
 def bus_suffix(bus):
     """
