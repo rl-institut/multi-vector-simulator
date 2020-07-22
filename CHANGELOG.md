@@ -42,7 +42,7 @@ Here is a template for new release sections
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 - File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
-- LCOE_ASSET explaination in KPI documentation (#458)
+- LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
