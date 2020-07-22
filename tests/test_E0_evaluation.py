@@ -70,6 +70,20 @@ def setup_module(m_args):
     with open(DICT_AFTER, "wb") as handle:
         pickle.dump(dict_values, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+def test_store_result_matrix():
+    dict_kpi={KPI_COST_MATRIX: pd.DataFrame(columns=["A", "B", "C"]),
+            KPI_SCALAR_MATRIX: pd.DataFrame(columns=["D", "E", "F"])}
+    dict_asset = {"A": 3.551111, "B": "str", "D": None, "F": bool, "G": 1}
+
+    evaluation.store_result_matrix(dict_kpi, dict_asset)
+    assert len(dict_kpi[KPI_COST_MATRIX]) == 1
+    assert len(dict_kpi[KPI_SCALAR_MATRIX]) == 1
+    assert dict_kpi[KPI_COST_MATRIX]["A"] == 3.55111
+    assert dict_kpi[KPI_COST_MATRIX]["B"] == "str"
+    assert dict_kpi[KPI_COST_MATRIX]["C"] == None
+    assert dict_kpi[KPI_COST_MATRIX]["D"] is None
+    assert dict_kpi[KPI_COST_MATRIX]["E"] is None
+    assert isinstance(dict_kpi[KPI_COST_MATRIX]["F"], bool)
 
 def test_evaluate_dict_append_new_fields():
     with open(DICT_BEFORE, "rb") as handle:
@@ -81,7 +95,6 @@ def test_evaluate_dict_append_new_fields():
     for k in (KPI, OPTIMIZED_FLOWS):
         assert k not in dict_values_before
         assert k in dict_values_after
-
 
 def test_evaluate_dict_important_fields_in_output_dict():
 
