@@ -30,7 +30,7 @@ import src.F0_output as output
 Module C0 prepares the data red from csv or json for simulation, ie. pre-processes it. 
 - Verify input values with C1
 - Identify energyVectors and write them to project_data/sectors
-- Create a sink for each energyVector (this actually might be changed in the future - create an excess sink for each bus?)
+- Create create an excess sink for each bus
 - Process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 - Add economic parameters to json with C2
 - Calculate "simulation annuity" used in oemof model

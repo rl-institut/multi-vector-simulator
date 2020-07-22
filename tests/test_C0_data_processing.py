@@ -6,6 +6,13 @@ import src.C0_data_processing as C0
 from src.constants_json_strings import (
     UNIT,
     ENERGY_PROVIDERS,
+    ENERGY_STORAGE,
+    ENERGY_CONSUMPTION,
+    ENERGY_PRODUCTION,
+    ENERGY_CONVERSION,
+    ENERGY_BUSSES,
+OUTFLOW_DIRECTION,
+INFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
     TAX,
@@ -130,7 +137,6 @@ def test_determine_lifetime_price_dispatch_as_list():
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
     # todo this should be here some time, shouldnt it? assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], list)
 
-
 TEST_START_TIME = "2020-01-01 00:00"
 TEST_PERIODS = 3
 VALUES = [0, 1, 2]
@@ -139,7 +145,6 @@ pandas_DatetimeIndex = pd.date_range(
     start=TEST_START_TIME, periods=TEST_PERIODS, freq="60min"
 )
 pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
-
 
 def test_determine_lifetime_price_dispatch_as_timeseries():
     dict_asset = {DISPATCH_PRICE: {VALUE: pandas_Series}}
@@ -161,7 +166,38 @@ def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear
     with pytest.raises(ValueError):
         C0.define_dso_sinks_and_sources(dict_test, "a_dso")
 
+def test_define_energyBusses():
+    asset_names = ["asset_name_" + str(i) for i in range(0,6)]
+    in_bus_names = ["in_bus_name_" + str(i) for i in range(0,6)]
+    out_bus_names = ["out_bus_name_" + str(i) for i in range(0,6)]
 
+    dict_test = {
+        ENERGY_PROVIDERS: {
+            asset_names[0]: {
+                OUTFLOW_DIRECTION: out_bus_names[0],
+                INFLOW_DIRECTION: in_bus_names[0]}},
+        ENERGY_STORAGE: {
+            asset_names[1]: {
+                OUTFLOW_DIRECTION: out_bus_names[1],
+                INFLOW_DIRECTION: in_bus_names[1]}},
+        ENERGY_CONSUMPTION: {
+            asset_names[2]: {
+                INFLOW_DIRECTION: in_bus_names[2]}},
+        ENERGY_PRODUCTION: {
+            asset_names[3]: {
+                OUTFLOW_DIRECTION: out_bus_names[2]}},
+        ENERGY_CONVERSION: {
+            asset_names[4]: {
+                OUTFLOW_DIRECTION: out_bus_names[3],
+                INFLOW_DIRECTION: in_bus_names[3]},
+            asset_names[5]: {
+                OUTFLOW_DIRECTION: [out_bus_names[4], out_bus_names[5]],
+                INFLOW_DIRECTION: [in_bus_names[4], in_bus_names[5]]}},
+    }
+
+    C0.define_busses(dict_test)
+    assert ENERGY_BUSSES in dict_test.keys()
+    # assert that bus list in/put in ENERGY_BUSSES
 """
 
 
