@@ -175,23 +175,29 @@ def test_define_energyBusses():
     dict_test = {
         ENERGY_PROVIDERS: {
             asset_names[0]: {
+                LABEL: asset_names[0],
                 OUTFLOW_DIRECTION: out_bus_names[0],
                 INFLOW_DIRECTION: in_bus_names[0]}},
         ENERGY_STORAGE: {
             asset_names[1]: {
+                LABEL: asset_names[1],
                 OUTFLOW_DIRECTION: out_bus_names[1],
                 INFLOW_DIRECTION: in_bus_names[1]}},
         ENERGY_CONSUMPTION: {
             asset_names[2]: {
+                LABEL: asset_names[2],
                 INFLOW_DIRECTION: in_bus_names[2]}},
         ENERGY_PRODUCTION: {
             asset_names[3]: {
+                LABEL: asset_names[3],
                 OUTFLOW_DIRECTION: out_bus_names[2]}},
         ENERGY_CONVERSION: {
             asset_names[4]: {
+                LABEL: asset_names[4],
                 OUTFLOW_DIRECTION: out_bus_names[3],
                 INFLOW_DIRECTION: in_bus_names[3]},
             asset_names[5]: {
+                LABEL: asset_names[5],
                 OUTFLOW_DIRECTION: [out_bus_names[4], out_bus_names[5]],
                 INFLOW_DIRECTION: [in_bus_names[4], in_bus_names[5]]}},
     }
