@@ -5,6 +5,7 @@ import os
 import numpy
 import pandas as pd
 
+from src.B0_data_input_json import convert
 import src.F1_plotting as F1_plots
 import src.F2_autoreport as autoreport
 from src.constants import (
@@ -270,49 +271,6 @@ def store_timeseries_all_busses_to_excel(dict_values):
 
     logging.info("Saved flows at busses to: %s.", timeseries_output_file)
     return
-
-
-def convert(o):
-    """This converts all data stored in dict_values that is not compatible with the json format to a format that is compatible.
-
-    Parameters
-    ----------
-    o :
-        Any type. Object to be converted to json-storable value.
-
-    Returns
-    -------
-    type
-        json-storable value.
-
-    """
-    if isinstance(o, numpy.int64):
-        answer = int(o)
-    # todo this actually drops the date time index, which could be interesting
-    elif isinstance(o, pd.DatetimeIndex):
-        answer = o.to_frame().to_json(orient="split")
-        answer = "{}{}".format(TYPE_DATETIMEINDEX, answer)
-    elif isinstance(o, pd.Timestamp):
-        answer = str(o)
-        answer = "{}{}".format(TYPE_TIMESTAMP, answer)
-    # todo this also drops the timeindex, which is unfortunate.
-    elif isinstance(o, pd.Series):
-        answer = o.to_json(orient="split")
-        answer = "{}{}".format(TYPE_SERIES, answer)
-    elif isinstance(o, numpy.ndarray):
-        answer = json.dumps({"array": o.tolist()})
-    elif isinstance(o, pd.DataFrame):
-        answer = o.to_json(orient="split")
-        answer = "{}{}".format(TYPE_DATAFRAME, answer)
-    else:
-        raise TypeError(
-            "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"
-            "Type: " + str(type(o)) + " \n "
-            "Value(s): " + str(o) + "\n"
-            "Please edit function CO_data_processing.dataprocessing.store_as_json."
-        )
-
-    return answer
 
 
 def store_as_json(dict_values, output_folder=None, file_name=None):
