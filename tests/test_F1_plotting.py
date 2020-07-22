@@ -27,7 +27,6 @@ from src.constants_json_strings import (
     KPI_SCALAR_MATRIX,
 )
 
-
 from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
