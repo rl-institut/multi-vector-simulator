@@ -38,6 +38,7 @@ from .constants import (
     TEST_REPO_PATH,
     DICT_PLOTS,
     PDF_REPORT,
+    DATA_TYPE_JSON_KEY,
     TYPE_DATETIMEINDEX,
     TYPE_DATAFRAME,
     TYPE_SERIES,

@@ -212,6 +212,8 @@ WARNING_TEXT = "warning_text"
 REQUIRED_IN_CSV_ELEMENTS = "required in files"
 DEFAULT_VALUE = "default"
 
+# name of the key linking to the special type of data in a json object
+DATA_TYPE_JSON_KEY = "data_type"
 # possible type of variable stored into the json file
 TYPE_DATETIMEINDEX = "pandas_DatetimeIndex"
 TYPE_SERIES = "pandas_Series"
