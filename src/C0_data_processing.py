@@ -531,7 +531,7 @@ def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_suffix(bus)})
     return
-
+"""
 
 def bus_suffix(bus):
     """
