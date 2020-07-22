@@ -523,7 +523,7 @@ def bus_suffix(bus):
     :param bus:
     :return:
     """
-    bus_label = bus + BUS_POSTFIX
+    bus_label = bus + BUS_SUFFIX
     return bus_label
 
 

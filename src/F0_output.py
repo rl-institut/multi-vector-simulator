@@ -26,7 +26,7 @@ from src.constants_json_strings import (
     COST_INVESTMENT,
     OPTIMIZED_FLOWS,
     ANNUITY_TOTAL,
-BUS_POSTFIX
+    BUS_SUFFIX
 )
 
 r"""
@@ -75,7 +75,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
             dict_values,
             dict_values[SIMULATION_SETTINGS],
             dict_values[PROJECT_DATA],
-            dict_values[OPTIMIZED_FLOWS][sector_name + BUS_POSTFIX],
+            dict_values[OPTIMIZED_FLOWS][sector_name + BUS_SUFFIX],
             sector,
             14,
         )
@@ -85,7 +85,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
             dict_values,
             dict_values[SIMULATION_SETTINGS],
             dict_values[PROJECT_DATA],
-            dict_values[OPTIMIZED_FLOWS][sector_name + BUS_POSTFIX],
+            dict_values[OPTIMIZED_FLOWS][sector_name + BUS_SUFFIX],
             sector,
             365,
         )
