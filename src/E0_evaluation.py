@@ -3,9 +3,10 @@ import logging
 import oemof.outputlib as outputlib
 import pandas as pd
 
-import src.E1_process_results as process_results
-import src.E2_economics as economics
-import src.E3_indicator_calculation as indicators
+import src.E1_process_results as E1
+import src.E2_economics as E2
+import src.E3_indicator_calculation as E3
+
 from src.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,
@@ -75,7 +76,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         bus_data.update({bus: outputlib.views.node(results_main, bus)})
 
     # Evaluate timeseries and store to a large DataFrame for each bus:
-    process_results.get_timeseries_per_bus(dict_values, bus_data)
+    E1.get_timeseries_per_bus(dict_values, bus_data)
 
     # Store all information related to storages in bus_data, as storage capacity acts as a bus
     for storage in dict_values[ENERGY_STORAGE]:
@@ -86,19 +87,19 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 )
             }
         )
-        process_results.get_storage_results(
+        E1.get_storage_results(
             dict_values[SIMULATION_SETTINGS],
             bus_data[dict_values[ENERGY_STORAGE][storage][LABEL]],
             dict_values[ENERGY_STORAGE][storage],
         )
 
         for storage_item in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
-            economics.get_costs(
+            E2.get_costs(
                 dict_values[ENERGY_STORAGE][storage][storage_item],
                 dict_values[ECONOMIC_DATA],
             )
 
-        economics.lcoe_assets(dict_values[ENERGY_STORAGE][storage], ENERGY_STORAGE)
+        E2.lcoe_assets(dict_values[ENERGY_STORAGE][storage], ENERGY_STORAGE)
         for storage_item in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
             store_result_matrix(
                 dict_values[KPI], dict_values[ENERGY_STORAGE][storage][storage_item]
@@ -135,18 +136,18 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:
-            process_results.get_results(
+            E1.get_results(
                 dict_values[SIMULATION_SETTINGS], bus_data, dict_values[group][asset],
             )
-            economics.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
-            economics.lcoe_assets(dict_values[group][asset], group)
+            E2.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
+            E2.lcoe_assets(dict_values[group][asset], group)
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
-    indicators.all_totals(dict_values)
+    E3.all_totals(dict_values)
 
     # Processing further KPI
-    indicators.total_renewable_and_non_renewable_energy_origin(dict_values)
-    indicators.renewable_share(dict_values)
+    E3.total_renewable_and_non_renewable_energy_origin(dict_values)
+    E3.renewable_share(dict_values)
 
     logging.info("Evaluating optimized capacities and dispatch.")
     return
