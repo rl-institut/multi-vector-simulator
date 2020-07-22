@@ -193,7 +193,7 @@ def process_all_assets(dict_values):
     for sector in dict_values[PROJECT_DATA][SECTORS]:
         define_sink(
             dict_values,
-            dict_values[PROJECT_DATA][SECTORS][sector] + EXCESS,
+            dict_values[PROJECT_DATA][SECTORS][sector] + EXCESS_SINK_POSTFIX,
             {VALUE: 0, UNIT: CURR + "/" + UNIT},
             dict_values[PROJECT_DATA][SECTORS][sector],
         )
@@ -455,6 +455,13 @@ def define_missing_cost_data(dict_values, dict_asset):
 
 def define_busses(dict_values):
     """
+    This function defines the ENERGY_BUSSES that the energy system model is compised of.
+    All later assets access only those busses.
+
+    Parameters
+    ----------
+    dict_values: dict
+        Dictionary with all simulation information
 
     :param dict_values:
     :return:
@@ -516,7 +523,7 @@ def bus_suffix(bus):
     :param bus:
     :return:
     """
-    bus_label = bus + BUS_SUFFIX
+    bus_label = bus + " bus"
     return bus_label
 
 
