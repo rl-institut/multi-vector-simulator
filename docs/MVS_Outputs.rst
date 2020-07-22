@@ -73,7 +73,7 @@ If the total flow is 0 in any of the previous cases, then the LCOE_ASSET is set 
 For assets in energyConsumption, the MVS outputs 0 for the LCOE_ASSET.
 
 .. math::
-  LCOE_ASSET = \frac{ANNUITY_TOTAL}{TOTAL_FLOW}
+  LCOE\_ASSET{i} = \frac{a_i}{\sum^{t} E_i (t)} 
 
 Technical data
 --------------
