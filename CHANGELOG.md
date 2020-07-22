@@ -74,6 +74,8 @@ Here is a template for new release sections
 - Added arguments `"-f", "-log", "warning"` to all `parse_args` and `main()` in `tests` (#456)
 - File `Developing.rst` with new description of tests and conventions (#456)
 - Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
+- Created function to read version number and date from file instead of importing it from module
+ (#463)
 
 
 ### Removed
