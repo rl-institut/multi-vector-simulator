@@ -519,9 +519,18 @@ def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
 
 def bus_suffix(bus):
     """
+    Returns the name of a bus with the suffix defined in constants_json_strings.py (BUS_SUFFIX)
 
-    :param bus:
-    :return:
+    It is possible that the suffix will be dropped later on, in case that users always enter the directions with suffix " bus" anyway.
+
+    Parameters
+    ----------
+    bus: str
+        A string, ie. a bus name
+
+    Returns
+    -------
+    Above string with BUS_SUFFIX
     """
     bus_label = bus + BUS_SUFFIX
     return bus_label
