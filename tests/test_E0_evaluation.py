@@ -91,7 +91,6 @@ def test_store_result_matrix():
     assert len(dict_kpi[KPI_SCALAR_MATRIX]) == 1
     assert dict_kpi[KPI_COST_MATRIX]["A"][0] == 3.55111
     assert dict_kpi[KPI_COST_MATRIX]["B"][0] == "str"
-    assert dict_kpi[KPI_COST_MATRIX]["C"][0] is None
     assert dict_kpi[KPI_SCALAR_MATRIX]["D"][0] is None
     assert dict_kpi[KPI_SCALAR_MATRIX]["E"][0] == 2
     assert dict_kpi[KPI_SCALAR_MATRIX]["F"][0] is False

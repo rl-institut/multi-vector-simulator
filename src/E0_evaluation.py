@@ -193,8 +193,6 @@ def store_result_matrix(dict_kpi, dict_asset):
                     asset_result_dict.update(
                         {key: round(dict_asset[key], round_to_comma)}
                     )
-            else:
-                asset_result_dict.update({key: None})
 
         asset_result_df = pd.DataFrame([asset_result_dict])
 
