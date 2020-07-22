@@ -76,6 +76,8 @@ Here is a template for new release sections
 - Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
 - Created function to read version number and date from file instead of importing it from module
  (#463)
+- Fixed E0.store_results_matrix(), now available types: 'str', 'bool', 'None', dict (with key VALUE), else ('int'/'float'). If KPI not in asset, 'None' will be printed. Added test for function (#468)
+- Fixed main() calls in 'test_F1_plotting.py' (#468)
 - Definition of busses from assets: Now all INFLOW_DIRECTION / OUTFLOW_DIRECTION are translated into ENERGY_BUSSES (#454, #387)
 - Added some tests for `C0` (#454)
 - Work in progress: Excess sink is created for each and every bus 
