@@ -186,7 +186,7 @@ def store_result_matrix(dict_kpi, dict_asset):
                     asset_result_dict.update({key: None})
                 else:
                     asset_result_dict.update(
-                        {key: round(dict_asset[key][VALUE], round_to_comma)}
+                        {key: round(dict_asset[key], round_to_comma)}
                     )
             else:
                 asset_result_dict.update({key: None})
