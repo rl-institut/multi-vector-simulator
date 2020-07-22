@@ -189,13 +189,13 @@ def process_all_assets(dict_values):
     #
     define_busses(dict_values)
 
-    # Define all excess sinks for sectors
-    for sector in dict_values[PROJECT_DATA][SECTORS]:
+    # Define all excess sinks for each energy bus
+    for bus in dict_values[ENERGY_BUSSES]:
         define_sink(
             dict_values,
-            dict_values[PROJECT_DATA][SECTORS][sector] + EXCESS_SINK_POSTFIX,
+            bus + EXCESS,
             {VALUE: 0, UNIT: CURR + "/" + UNIT},
-            dict_values[PROJECT_DATA][SECTORS][sector],
+            bus,
         )
         logging.debug(
             "Created excess sink for sector %s",
