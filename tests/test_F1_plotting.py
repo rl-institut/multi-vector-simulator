@@ -118,8 +118,7 @@ class TestNetworkx:
         ),
     )
     def test_if_networkx_graph_is_stored_save_plot_true(self, m_args):
-        main(overwrite=True,
-            display_output="warning")
+        main(overwrite=True, display_output="warning")
         assert (
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
         )
@@ -146,8 +145,7 @@ class TestNetworkx:
         ),
     )
     def test_if_networkx_graph_is_stored_save_plot_false(self, m_args):
-        main(overwrite=True,
-            display_output="warning")
+        main(overwrite=True, display_output="warning")
         assert (
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
         )

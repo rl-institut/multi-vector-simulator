@@ -70,9 +70,12 @@ def setup_module(m_args):
     with open(DICT_AFTER, "wb") as handle:
         pickle.dump(dict_values, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+
 def test_store_result_matrix():
-    dict_kpi={KPI_COST_MATRIX: pd.DataFrame(columns=["A", "B", "C"]),
-            KPI_SCALAR_MATRIX: pd.DataFrame(columns=["D", "E", "F"])}
+    dict_kpi = {
+        KPI_COST_MATRIX: pd.DataFrame(columns=["A", "B", "C"]),
+        KPI_SCALAR_MATRIX: pd.DataFrame(columns=["D", "E", "F"]),
+    }
     dict_asset = {"A": 3.551111, "B": "str", "D": None, "F": bool, "G": 1}
 
     E0.store_result_matrix(dict_kpi, dict_asset)
@@ -85,6 +88,7 @@ def test_store_result_matrix():
     assert dict_kpi[KPI_COST_MATRIX]["E"] is None
     assert isinstance(dict_kpi[KPI_COST_MATRIX]["F"], bool)
 
+
 def test_evaluate_dict_append_new_fields():
     with open(DICT_BEFORE, "rb") as handle:
         dict_values_before = pickle.load(handle)
@@ -95,6 +99,7 @@ def test_evaluate_dict_append_new_fields():
     for k in (KPI, OPTIMIZED_FLOWS):
         assert k not in dict_values_before
         assert k in dict_values_after
+
 
 def test_evaluate_dict_important_fields_in_output_dict():
 
