@@ -210,7 +210,8 @@ def test_bus_suffix_correct():
     bus = "a"
     bus_name = C0.bus_suffix(bus)
     assert bus_name == bus + BUS_SUFFIX
-
+    
+"""
 def test_asess_energyVectors_and_add_to_project_data():
     C2.identify_energy_vectors(dict_values)
     assert 1 == 0
