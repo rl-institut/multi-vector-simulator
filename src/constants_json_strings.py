@@ -146,7 +146,7 @@ ENERGY_VECTOR = "energyVector"
 # Sinks
 EXCESS_SINK_POSTFIX = " excess sink"
 
-BUS_POSTFIX = " bus"
+BUS_SUFFIX = " bus"
 
 # DSO
 DSO_CONSUMPTION = "_consumption"

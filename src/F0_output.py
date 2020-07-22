@@ -86,7 +86,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
             dict_values,
             dict_values[SIMULATION_SETTINGS],
             dict_values[PROJECT_DATA],
-            dict_values[OPTIMIZED_FLOWS][sector_name + BUS_POSTFIX],
+            dict_values[OPTIMIZED_FLOWS][sector_name + BUS_SUFFIX],
             sector,
             365,
         )
