@@ -477,7 +477,6 @@ def define_busses(dict_values):
 
     return
 
-
 def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
     """
     Check if the INPUT_DIRECTION and OUTPUT_DIRECTION, ie the bus, of an asset is already included in energyBusses.
@@ -531,7 +530,6 @@ def update_busses_in_out_direction(dict_values, asset_group, **kwargs):
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_suffix(bus)})
     return
-"""
 
 def bus_suffix(bus):
     """
