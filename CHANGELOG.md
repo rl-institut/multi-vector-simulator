@@ -69,7 +69,9 @@ Here is a template for new release sections
 - Moved list of keys to be printed in "scalars.xlsx" to "constants_output.py" (#453)
 - Renamed "peak_flow" to `PEAK_FLOW` and "average_flow" to `AVERAGE_FLOW` (#453)
 - Changed function "E2.lcoe_asset()" and its tests, now processes one asset at a time (#453)
-- Work in progress: Excess sink is created for each and every bus
+- Definition of busses from assets: Now all INFLOW_DIRECTION / OUTFLOW_DIRECTION are translated into ENERGY_BUSSES (#454, #387)
+- Added some tests for `C0` (#454)
+- Work in progress: Excess sink is created for each and every bus 
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
