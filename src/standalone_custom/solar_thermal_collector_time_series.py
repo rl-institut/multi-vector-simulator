@@ -54,10 +54,28 @@ time_zone = "Europe/Bucharest"
 
 ############### Get data - pre-processing ###############
 logging.info("Necessary data is loaded and pre-processing is done.")
+year = 2018
+weather_data_name = (
+        "uvtgv"  # "uvtgv" is processed monitored data, "era5" is ERA5 data
+    )
+
 # load weather
-weather = pd.read_csv("era5_weather_UVTgV_2018.csv", parse_dates=True).set_index("time")
-weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
-weather.reset_index("time", inplace=True)
+if weather_data_name == "era5":
+    weather = pd.read_csv(
+        f"era5_weather_UVTgV_{year}.csv", parse_dates=True
+    ).set_index("time")
+    weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
+    weather.reset_index("time", inplace=True)
+elif weather_data_name == "uvtgv":
+    filename_weather = "enter_filename_including_path"
+    cols = {"Amb Temp": "temp_air", "Global": "ghi", "Difuse": "dhi"}
+    weather = pd.read_csv(filename_weather, parse_dates=True, index_col=0).rename(columns=cols)
+    weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
+    weather.reset_index("time", inplace=True)
+else:
+    raise ValueError(
+        f"weather_data_name must be 'era5' or 'uvtgv' but is {weather_data_name}"
+    )
 
 # load collector data
 filename_collector_data = os.path.join(
