@@ -172,7 +172,12 @@ heat_kwh_df.to_csv(filename_collector_data)
 
 if plt:
     fig, ax = plt.subplots()
-    heat_kwh_df.plot(ax=ax)
+    heat_kwh_df.rename(
+        columns={col: col.replace("heat_kWh_", "") for col in heat_kwh_df.keys()}, inplace=True)
+    plot_df = heat_kwh_df[["ST3", "ST1", "ST2"]]
+    plot_df.plot(ax=ax)
     plt.xlabel("time")
     plt.ylabel("collector's heat in kWh")
+    filename_fig = os.path.join(path_to_results_folder, "2020-07-23_solar_thermal_generation.pdf")
+    fig.savefig(filename_fig)
     plt.show()
