@@ -82,8 +82,8 @@ Here is a template for new release sections
 - Tests for A0: Now new dirs are only created if not existant
 - Function `A0.check_output_folder()`, now after `shutil.rmtree` we still `try-except os.mkdirs`, this fixes local issues with `FileExistsError`.  (#474)
 - Definition of busses from assets: Now all INFLOW_DIRECTION / OUTFLOW_DIRECTION are translated into ENERGY_BUSSES (#454, #387)
-- Added some tests for `C0` (#454)
-- Work in progress: Excess sink is created for each and every bus 
+- Work in progress: Excess sink is created for each and every bus (#454)
+- Splitting functions in `C0` and adding tests for them (#454)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
