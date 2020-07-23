@@ -43,7 +43,7 @@ Here is a template for new release sections
 - File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
 - LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
-- Heat demand profiles with option of using monitored data at the use case uvtgv. note: file not provided so far (#474)
+- Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case uvtgv. note: file not provided so far (#474)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
