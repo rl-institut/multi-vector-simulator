@@ -53,9 +53,7 @@ path_to_results_folder = os.path.join(
 time_zone = "Europe/Bucharest"
 
 ### parameters ###
-weather_data_name = (
-    "uvtgv"  # "uvtgv" is processed monitored data, "era5" is ERA5 data
-)
+weather_data_name = "uvtgv"  # "uvtgv" is processed monitored data, "era5" is ERA5 data
 year = 2018
 profile_type = "GKO"  # BDEW profile type
 country = "Romania"  # needed for holiday detection
