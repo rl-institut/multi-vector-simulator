@@ -148,7 +148,8 @@ class TestProcessUserArguments:
         ),
     )
     def test_if_f_opt_preexisting_path_output_folder_should_be_replaced(self, m_args):
-        os.mkdir(self.test_out_path)
+        if os.path.exists(self.test_out_path) is False:
+            os.mkdir(self.test_out_path)
         some_file = os.path.join(self.test_out_path, "a_file.txt")
         with open(some_file, "w") as of:
             of.write("something")
