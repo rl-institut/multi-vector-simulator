@@ -209,7 +209,7 @@ if __name__ == "__main__":
     elif weather_data_name == "uvtgv":
         filename_weather = "enter_filename_including_path"
         filename_weather = os.path.join(
-            path_to_data_folder, "2020-07-23_uvtgv_weather.csv"
+            path_to_data_folder, "2020-07-23_uvtgv_weather_processed.csv"
         )
         cols = {"Amb Temp": "temp_air"}
         weather = pd.read_csv(filename_weather).rename(columns=cols)
