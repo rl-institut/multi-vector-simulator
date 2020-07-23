@@ -37,7 +37,7 @@ path_to_data_folder = os.path.join(
 )
 path_to_results_folder = os.path.join(
     path_to_server,
-    "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/solar_thermal_collector",
+    "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/2020-07-23_solar_thermal_collector",
 )
 
 
