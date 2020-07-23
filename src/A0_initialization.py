@@ -226,7 +226,9 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
         logging.info("Creating output folder " + path_output_folder)
     except OSError as error:
         # In case that path_output_folder already exists
-        logging.info("It was not possible to create the output folder " + path_output_folder)
+        logging.info(
+            "It was not possible to create the output folder " + path_output_folder
+        )
 
     logging.info('Creating folder "inputs" in output folder.')
     shutil.copytree(path_input_folder, path_output_folder_inputs)
