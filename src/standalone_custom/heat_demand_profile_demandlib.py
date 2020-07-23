@@ -53,6 +53,9 @@ path_to_results_folder = os.path.join(
 time_zone = "Europe/Bucharest"
 
 ### parameters ###
+weather_data_name = (
+    "uvtgv"  # "uvtgv" is processed monitored data, "era5" is ERA5 data
+)
 year = 2018
 profile_type = "GKO"  # BDEW profile type
 country = "Romania"  # needed for holiday detection
@@ -195,9 +198,6 @@ def get_workalendar_class(country):
 
 if __name__ == "__main__":
     plots = True
-    weather_data_name = (
-        "uvtgv"  # "uvtgv" is processed monitored data, "era5" is ERA5 data
-    )
 
     # load weather
     if weather_data_name == "era5":
