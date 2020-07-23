@@ -137,7 +137,8 @@ class TestProcessUserArguments:
     )
     def test_if_path_output_folder_exists_raise_fileexists_error(self, m_args):
         """The error message should advice the user to use -f option to force overwrite"""
-        os.mkdir(self.test_out_path)
+        if os.path.exists(self.test_out_path) is False:
+            os.mkdir(self.test_out_path)
         with pytest.raises(FileExistsError):
             initializing.process_user_arguments()
 
