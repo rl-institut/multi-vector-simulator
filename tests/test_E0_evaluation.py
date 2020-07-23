@@ -75,7 +75,7 @@ def setup_module(m_args):
 def test_store_result_matrix():
     dict_kpi = {
         KPI_COST_MATRIX: pd.DataFrame(columns=["A", "B", "C"]),
-        KPI_SCALAR_MATRIX: pd.DataFrame(columns=["D", "E", "F"]),
+        KPI_SCALAR_MATRIX: pd.DataFrame(columns=["D", "E", "F", "G"]),
     }
     dict_asset = {
         "A": 3.551111,
@@ -83,7 +83,8 @@ def test_store_result_matrix():
         "D": None,
         "E": {VALUE: 2},
         "F": False,
-        "G": 1,
+        "G": {VALUE: None},  # Returns empty cell
+        "H": 1,
     }
 
     E0.store_result_matrix(dict_kpi, dict_asset)
@@ -91,7 +92,6 @@ def test_store_result_matrix():
     assert len(dict_kpi[KPI_SCALAR_MATRIX]) == 1
     assert dict_kpi[KPI_COST_MATRIX]["A"][0] == 3.55111
     assert dict_kpi[KPI_COST_MATRIX]["B"][0] == "str"
-    assert dict_kpi[KPI_COST_MATRIX]["C"][0] is None
     assert dict_kpi[KPI_SCALAR_MATRIX]["D"][0] is None
     assert dict_kpi[KPI_SCALAR_MATRIX]["E"][0] == 2
     assert dict_kpi[KPI_SCALAR_MATRIX]["F"][0] is False
