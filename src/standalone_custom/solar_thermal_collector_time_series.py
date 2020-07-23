@@ -55,15 +55,13 @@ time_zone = "Europe/Bucharest"
 ############### Get data - pre-processing ###############
 logging.info("Necessary data is loaded and pre-processing is done.")
 year = 2018
-weather_data_name = (
-        "uvtgv"  # "uvtgv" is processed monitored data, "era5" is ERA5 data
-    )
+weather_data_name = "uvtgv"  # "uvtgv" is processed monitored data, "era5" is ERA5 data
 
 # load weather
 if weather_data_name == "era5":
-    weather = pd.read_csv(
-        f"era5_weather_UVTgV_{year}.csv", parse_dates=True
-    ).set_index("time")
+    weather = pd.read_csv(f"era5_weather_UVTgV_{year}.csv", parse_dates=True).set_index(
+        "time"
+    )
     weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
     weather.reset_index("time", inplace=True)
 elif weather_data_name == "uvtgv":
@@ -72,7 +70,9 @@ elif weather_data_name == "uvtgv":
         path_to_data_folder, "2020-07-23_uvtgv_weather_processed.csv"
     )
     cols = {"Amb Temp": "temp_air", "Global": "ghi", "Difuse": "dhi"}
-    weather = pd.read_csv(filename_weather, parse_dates=True, index_col=0).rename(columns=cols)
+    weather = pd.read_csv(filename_weather, parse_dates=True, index_col=0).rename(
+        columns=cols
+    )
     weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
     weather.reset_index("time", inplace=True)
 else:
@@ -173,11 +173,15 @@ heat_kwh_df.to_csv(filename_collector_data)
 if plt:
     fig, ax = plt.subplots()
     heat_kwh_df.rename(
-        columns={col: col.replace("heat_kWh_", "") for col in heat_kwh_df.keys()}, inplace=True)
+        columns={col: col.replace("heat_kWh_", "") for col in heat_kwh_df.keys()},
+        inplace=True,
+    )
     plot_df = heat_kwh_df[["ST3", "ST1", "ST2"]]
     plot_df.plot(ax=ax)
     plt.xlabel("time")
     plt.ylabel("collector's heat in kWh")
-    filename_fig = os.path.join(path_to_results_folder, "2020-07-23_solar_thermal_generation.pdf")
+    filename_fig = os.path.join(
+        path_to_results_folder, "2020-07-23_solar_thermal_generation.pdf"
+    )
     fig.savefig(filename_fig)
     plt.show()
