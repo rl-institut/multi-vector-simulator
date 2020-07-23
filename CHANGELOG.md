@@ -78,6 +78,8 @@ Here is a template for new release sections
  (#463)
 - Fixed E0.store_results_matrix(), now available types: 'str', 'bool', 'None', dict (with key VALUE), else ('int'/'float'). If KPI not in asset, no value is attributed. Added test for function (#468, #470)
 - Fixed main() calls in 'test_F1_plotting.py' (#468)
+- Tests for A0: Now new dirs are only created if not existant
+- Function `A0.check_output_folder()`, now after `shutil.rmtree` we still `try-except os.mkdirs`, this fixes local issues with `FileExistsError`.  (#474)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
@@ -96,6 +98,7 @@ Here is a template for new release sections
 - Input folder `tests/inputs` with simple example scenario (#420)
 - Description of storage efficiency in readthedocs (#457)
 - Bug connected to global variables (#356)
+- Local failing pytests (`FileExistsError`) on Ubuntu and Win10 (#474)
 
 ## [0.3.0] - 2020-06-08
 
