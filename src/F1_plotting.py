@@ -277,7 +277,7 @@ def determine_if_plotting_necessary(parameter_values):
     """
     process_pie_chart = False
     for element in parameter_values:
-        if element > 0:
+        if element is not None and element > 0:
             process_pie_chart = True
     return process_pie_chart
 

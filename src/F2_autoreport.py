@@ -78,7 +78,9 @@ from src.constants_json_strings import (
 )
 
 # TODO link this to the version and date number @Bachibouzouk
-from mvs_eland_tool.version import version_num, version_date
+from src.utils import get_version_info
+
+version_num, version_date = get_version_info()
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
