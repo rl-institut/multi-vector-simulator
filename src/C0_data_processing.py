@@ -660,17 +660,17 @@ def define_av_time(dict_values, number_of_pricing_periods, months_in_a_period):
 
     """
     dict_availability_timeseries = {}
-    for period in range(1, number_of_pricing_periods+1):
+    for period in range(1, number_of_pricing_periods + 1):
         availability_in_period = pd.Series(
             0, index=dict_values[SIMULATION_SETTINGS][TIME_INDEX]
         )
         time_period = pd.date_range(
             # Period start
             start=dict_values[SIMULATION_SETTINGS][START_DATE]
-            + pd.DateOffset(months=(period-1) * months_in_a_period),
+            + pd.DateOffset(months=(period - 1) * months_in_a_period),
             # Period end, with months_in_a_period durartion
             end=dict_values[SIMULATION_SETTINGS][START_DATE]
-            + pd.DateOffset(months=(period) * months_in_a_period, hours = -1),
+            + pd.DateOffset(months=(period) * months_in_a_period, hours=-1),
             freq=str(dict_values[SIMULATION_SETTINGS][TIMESTEP][VALUE]) + UNIT_MINUTE,
         )
 
