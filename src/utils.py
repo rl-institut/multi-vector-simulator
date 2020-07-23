@@ -2,6 +2,7 @@ import os
 import json
 import pandas as pd
 from src.constants import (
+    REPO_PATH,
     JSON_FNAME,
     CSV_ELEMENTS,
     OUTPUT_FOLDER,
@@ -12,6 +13,21 @@ from src.constants import (
     MISSING_PARAMETERS_KEY,
     EXTRA_PARAMETERS_KEY,
 )
+
+
+def get_version_info():
+    """Return the version number and date
+
+    Returns
+    -------
+    version number and date as tuple
+    """
+    main_namespace = {}
+    exec(
+        open(os.path.join(REPO_PATH, "mvs_eland_tool", "version.py")).read(),
+        main_namespace,
+    )
+    return main_namespace["version_num"], main_namespace["version_date"]
 
 
 def find_json_input_folders(

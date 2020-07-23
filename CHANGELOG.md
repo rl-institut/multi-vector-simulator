@@ -42,6 +42,7 @@ Here is a template for new release sections
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 - File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
+- LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -73,7 +74,10 @@ Here is a template for new release sections
 - Added arguments `"-f", "-log", "warning"` to all `parse_args` and `main()` in `tests` (#456)
 - File `Developing.rst` with new description of tests and conventions (#456)
 - Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
-
+- Created function to read version number and date from file instead of importing it from module
+ (#463)
+- Fixed E0.store_results_matrix(), now available types: 'str', 'bool', 'None', dict (with key VALUE), else ('int'/'float'). If KPI not in asset, no value is attributed. Added test for function (#468, #470)
+- Fixed main() calls in 'test_F1_plotting.py' (#468)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
