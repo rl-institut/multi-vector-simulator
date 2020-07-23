@@ -205,6 +205,8 @@ def process_all_assets(dict_values):
     # process all energyAssets:
     # Attention! Order of asset_groups important. for energyProviders/energyConversion sinks and sources
     # might be defined that have to be processed in energyProduction/energyConsumption
+
+    # The values of the keys are functions!
     asset_group_list = {
         ENERGY_PROVIDERS: energyProviders,
         ENERGY_CONVERSION: energyConversion,
@@ -215,7 +217,7 @@ def process_all_assets(dict_values):
 
     for asset_group, asset_function in asset_group_list.items():
         logging.info("Pre-processing all assets in asset group %s.", asset_group)
-
+        # call asset function connected to current asset group (see asset_group_list)
         asset_function(dict_values, asset_group)
 
         logging.debug(
