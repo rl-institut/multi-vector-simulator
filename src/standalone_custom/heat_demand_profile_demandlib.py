@@ -212,7 +212,8 @@ if __name__ == "__main__":
             path_to_data_folder, "2020-07-23_uvtgv_weather_processed.csv"
         )
         cols = {"Amb Temp": "temp_air"}
-        weather = pd.read_csv(filename_weather).rename(columns=cols)
+        weather = pd.read_csv(filename_weather, parse_dates=True, index_col=0).rename(columns=cols)
+        weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
     else:
         raise ValueError(
             f"weather_data_name must be 'era5' or 'uvtgv' but is {weather_data_name}"
