@@ -39,6 +39,7 @@ from src.constants_json_strings import (
     LIFETIME_PRICE_DISPATCH,
     PERIODS,
     BUS_SUFFIX,
+UNIT_MINUTE
 )
 from .constants import TYPE_STR
 
@@ -148,6 +149,7 @@ def test_determine_lifetime_price_dispatch_is_other():
         C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
 
+"""
 def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear():
     dict_test = {
         ENERGY_PROVIDERS: {"a_dso": {PEAK_DEMAND_PRICING_PERIOD: {VALUE: 2}}},
@@ -155,7 +157,38 @@ def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear
     }
     with pytest.raises(ValueError):
         C0.define_dso_sinks_and_sources(dict_test, "a_dso")
+"""
 
+start_date = pd.Timestamp("2018-01-01 00:00:00")
+dict_test_avilability = {
+    SIMULATION_SETTINGS: {
+        TIME_INDEX: pd.date_range(start=start_date, periods=8760, freq=str(60)+UNIT_MINUTE),
+        START_DATE: start_date,
+        TIMESTEP: {VALUE: 60},
+    }
+}
+
+def test_define_av_time_yearly():
+    dict_availability_timeseries = C0.define_av_time(dict_test_avilability, 1, 12)
+    assert len(dict_availability_timeseries)==1
+    assert dict_availability_timeseries[1].values.sum() == 8760
+
+def test_define_av_time_monthly():
+    dict_availability_timeseries = C0.define_av_time(dict_test_avilability, 12, 1)
+    assert len(dict_availability_timeseries)==12
+    assert dict_availability_timeseries[1].values.sum() == 31*24
+    total = 0
+    for key in dict_availability_timeseries:
+        total += dict_availability_timeseries[key].values.sum()
+    assert total == 8760
+
+def test_define_av_time_quarterly():
+    dict_availability_timeseries = C0.define_av_time(dict_test_avilability, 4, 3)
+    assert len(dict_availability_timeseries) == 4
+    total = 0
+    for key in dict_availability_timeseries:
+        total += dict_availability_timeseries[key].values.sum()
+    assert total == 8760
 
 def test_define_energyBusses():
     asset_names = ["asset_name_" + str(i) for i in range(0, 6)]
@@ -250,6 +283,16 @@ def test_bus_suffix_correct():
     bus = "a"
     bus_name = C0.bus_suffix(bus)
     assert bus_name == bus + BUS_SUFFIX
+
+
+def test_determine_months_in_a_peak_demand_pricing_period_not_valid():
+    with pytest.raises(C0.InvalidPeakDemandPricingPeriods):
+        C0.determine_months_in_a_peak_demand_pricing_period(5, 365)
+
+
+def test_determine_months_in_a_peak_demand_pricing_period_valid():
+    months_in_a_period = C0.determine_months_in_a_peak_demand_pricing_period(4, 365)
+    assert months_in_a_period == 3
 
 
 """
