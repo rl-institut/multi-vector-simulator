@@ -45,8 +45,8 @@ Module C0 prepares the data red from csv or json for simulation, ie. pre-process
 """
 
 
-class PeakDemandPricingPeriodsOnlyForYear(ValueError):
-    # Exception raised when there is a number of peak demand pricing periods considered while no year is simulated.
+class InvalidPeakDemandPricingPeriods(ValueError):
+    # Exeption if an input is not valid
     pass
 
 
@@ -581,7 +581,6 @@ def update_bus(dict_values, bus, asset_key, asset_label):
     Returns
     -------
     Updated dict_values[ENERGY_BUSSES], optionally with new busses and/or by adding an asset to a bus
-
     """
     bus_label = bus_suffix(bus)
 
@@ -602,60 +601,90 @@ def define_dso_sinks_and_sources(dict_values, dso):
     :param dso:
     :return:
     """
-    # define to shorten code
     number_of_pricing_periods = dict_values[ENERGY_PROVIDERS][dso][
         PEAK_DEMAND_PRICING_PERIOD
     ][VALUE]
 
-    # check number of pricing periods - if >1 the simulation has to cover a whole year!
-    if number_of_pricing_periods > 1:
-        if dict_values[SIMULATION_SETTINGS][EVALUATED_PERIOD][VALUE] != 365:
-            raise PeakDemandPricingPeriodsOnlyForYear(
-                f"For taking peak demand pricing periods > 1 into account,"
-                f"the evaluation period has to be 365 days."
-                f"\n Message for dev: This is not technically true, "
-                f"as the evaluation period has to approximately be "
-                f"larger than 365/peak demand pricing periods (see #331)."
-            )
-
-    # defines the evaluation period
-    months_in_a_period = 12 / number_of_pricing_periods
-    logging.info(
-        "Peak demand pricing is taking place %s times per year, ie. every %s "
-        "months.",
+    months_in_a_period = determine_months_in_a_peak_demand_pricing_period(
         number_of_pricing_periods,
+        dict_values[SIMULATION_SETTINGS][EVALUATED_PERIOD][VALUE],
+    )
+
+    peak_demand_pricing = determine_peak_demand_pricing_costs(dict_values, dso)
+
+    list_of_dso_energyProduction_assets = define_availability_of_peak_demand_pricing_assets(
+        dict_values,
+        dso,
+        number_of_pricing_periods,
+        peak_demand_pricing,
         months_in_a_period,
     )
 
-    dict_asset = dict_values[ENERGY_PROVIDERS][dso]
-    if isinstance(dict_asset[PEAK_DEMAND_PRICING][VALUE], dict):
-        receive_timeseries_from_csv(
-            dict_values,
-            dict_values[SIMULATION_SETTINGS],
-            dict_asset,
-            PEAK_DEMAND_PRICING,
+    # define feed-in sink of the DSO
+    define_sink(
+        dict_values,
+        dso + DSO_FEEDIN,
+        dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
+        dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
+        specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
+    )
+
+    dict_values[ENERGY_PROVIDERS][dso].update(
+        {
+            CONNECTED_CONSUMPTION_SOURCES: list_of_dso_energyProduction_assets,
+            CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN,
+        }
+    )
+
+    return
+
+
+def define_av_time(dict_values, number_of_pricing_periods, months_in_a_period):
+    r"""
+    Determined the availability timeseries for the later to be defined dso assets for taking into account the peak demand pricing periods.
+
+    Parameters
+    ----------
+    dict
+    _values: dict
+        All simulation inputs
+    number_of_pricing_periods: int
+        Number of pricing periods in a year. Valid: 1,2,3,4,6,12
+    months_in_a_period: int
+        Duration of a period
+
+    Returns
+    -------
+    dict_availability_timeseries: dict
+        Dict with all availability timeseries for each period
+
+    """
+    dict_availability_timeseries = {}
+    for period in range(1, number_of_pricing_periods+1):
+        availability_in_period = pd.Series(
+            0, index=dict_values[SIMULATION_SETTINGS][TIME_INDEX]
+        )
+        time_period = pd.date_range(
+            # Period start
+            start=dict_values[SIMULATION_SETTINGS][START_DATE]
+            + pd.DateOffset(months=(period-1) * months_in_a_period),
+            # Period end, with months_in_a_period durartion
+            end=dict_values[SIMULATION_SETTINGS][START_DATE]
+            + pd.DateOffset(months=(period) * months_in_a_period, hours = -1),
+            freq=str(dict_values[SIMULATION_SETTINGS][TIMESTEP][VALUE]) + UNIT_MINUTE,
         )
 
-    peak_demand_pricing = dict_values[ENERGY_PROVIDERS][dso][PEAK_DEMAND_PRICING][VALUE]
-    if isinstance(peak_demand_pricing, float) or isinstance(peak_demand_pricing, int):
-        logging.debug(
-            "The peak demand pricing price of %s %s is set as specific_costs of "
-            "the sources of grid energy.",
-            peak_demand_pricing,
-            dict_values[ECONOMIC_DATA][CURR],
+        availability_in_period = availability_in_period.add(
+            pd.Series(1, index=time_period), fill_value=0
         )
-    else:
-        logging.debug(
-            "The peak demand pricing price of %s %s is set as specific_costs of "
-            "the sources of grid energy.",
-            sum(peak_demand_pricing) / len(peak_demand_pricing),
-            dict_values[ECONOMIC_DATA][CURR],
-        )
+        dict_availability_timeseries.update({period: availability_in_period})
 
-    peak_demand_pricing = {
-        VALUE: dict_values[ENERGY_PROVIDERS][dso][PEAK_DEMAND_PRICING][VALUE],
-        UNIT: CURR + "/" + UNIT,
-    }
+    return dict_availability_timeseries
+
+
+def define_availability_of_peak_demand_pricing_assets(
+    dict_values, dso, number_of_pricing_periods, peak_demand_pricing, months_in_a_period
+):
 
     list_of_dso_energyProduction_assets = []
     if number_of_pricing_periods == 1:
@@ -697,22 +726,92 @@ def define_dso_sinks_and_sources(dict_values, dso):
             )
             list_of_dso_energyProduction_assets.append(dso_source_name)
 
-    define_sink(
-        dict_values,
-        dso + DSO_FEEDIN,
-        dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
-        dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
-        specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
-    )
+    return list_of_dso_energyProduction_assets
 
-    dict_values[ENERGY_PROVIDERS][dso].update(
-        {
-            CONNECTED_CONSUMPTION_SOURCES: list_of_dso_energyProduction_assets,
-            CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN,
-        }
-    )
 
-    return
+def determine_months_in_a_peak_demand_pricing_period(
+    number_of_pricing_periods, simulation_period_lenght
+):
+    r"""
+    Check if the number of peak demand pricing periods is valid.
+    Warns user that in case the number of periods exceeds 1 but the simulation time is not a year,
+    there could be an unexpected number of timeseries considered.
+    Raises error if number of peak demand pricing periods is not valid.
+
+    Parameters
+    ----------
+    number_of_pricing_periods: int
+        Defined in csv, is number of pricing periods within a year
+    simulation_period_lenght: int
+        Defined in csv, is number of days of the simulation
+
+    Returns
+    -------
+    months_in_a_period: float
+        Number of months that make a period, will be used to determine availability of dso assets
+    """
+
+    # check number of pricing periods - if >1 the simulation has to cover a whole year!
+    if number_of_pricing_periods > 1:
+        if simulation_period_lenght != 365:
+            logging.debug(
+                f"\n Message for dev: Following warning is not technically true, "
+                f"as the evaluation period has to approximately be "
+                f"larger than 365/peak demand pricing periods (see #331)."
+            )
+            logging.warning(
+                f"You have chosen a number of peak demand pricing periods > 1."
+                f"Please be advised that if you are not simulating for a year (365d)"
+                f"an possibly unexpected number of periods will be considered."
+            )
+    if number_of_pricing_periods not in [1, 2, 3, 4, 6, 12]:
+        raise InvalidPeakDemandPricingPeriods(
+            f"You have defined a number of peak demand pricing periods of {number_of_pricing_periods}. "
+            f"Acceptable values are, however: 1 (yearly), 2 (half-yearly), 3 (each trimester), 4 (quarterly), 6 (every two months) and 1 (monthly)."
+        )
+
+    # defines the number of months that one period constists of.
+    months_in_a_period = 12 / number_of_pricing_periods
+    logging.info(
+        "Peak demand pricing is taking place %s times per year, ie. every %s "
+        "months.",
+        number_of_pricing_periods,
+        months_in_a_period,
+    )
+    return months_in_a_period
+
+
+def determine_peak_demand_pricing_costs(dict_values, dso):
+    dict_asset = dict_values[ENERGY_PROVIDERS][dso]
+    if isinstance(dict_asset[PEAK_DEMAND_PRICING][VALUE], dict):
+        receive_timeseries_from_csv(
+            dict_values,
+            dict_values[SIMULATION_SETTINGS],
+            dict_asset,
+            PEAK_DEMAND_PRICING,
+        )
+
+    peak_demand_pricing = dict_asset[PEAK_DEMAND_PRICING][VALUE]
+    if isinstance(peak_demand_pricing, float) or isinstance(peak_demand_pricing, int):
+        logging.debug(
+            "The peak demand pricing price of %s %s is set as specific_costs of "
+            "the sources of grid energy.",
+            peak_demand_pricing,
+            dict_values[ECONOMIC_DATA][CURR],
+        )
+    else:
+        logging.debug(
+            "The peak demand pricing price of %s %s is set as specific_costs of "
+            "the sources of grid energy.",
+            sum(peak_demand_pricing) / len(peak_demand_pricing),
+            dict_values[ECONOMIC_DATA][CURR],
+        )
+
+    peak_demand_pricing = {
+        VALUE: dict_asset[PEAK_DEMAND_PRICING][VALUE],
+        UNIT: CURR + "/" + UNIT,
+    }
+    return peak_demand_pricing
 
 
 def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwargs):
@@ -842,15 +941,27 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
 
 
 def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
+    r"""
+    This automatically defines a sink for an oemof-sink object. The sinks are added to the energyConsumption assets.
+
+    Parameters
+    ----------
+    dict_values
+    asset_name
+    price
+    input_bus
+    kwargs
+
+    Returns
+    -------
+
+    Notes
+    -----
+    Examples:
+    - Used to define excess sinks for all energyBusses
+    - Used to define feed-in sink for each DSO
     """
 
-    :param dict_values:
-    :param asset_name:
-    :param price:
-    :param input_bus:
-    :param kwargs:
-    :return:
-    """
     # create name of bus. Check if multiple busses are given
     if isinstance(input_bus, list):
         input_bus_name = []
@@ -949,8 +1060,34 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
     else:
         # add to list of assets on busses
         update_bus(dict_values, input_bus, asset_name, sink[LABEL])
+    return
+
+
+'''
+def application_of_function_for_one_or_multiple_busses(function, bus, kwargs):
+    r"""
+    Function that is wrapped around a function to apply it to one bus or a list of busses.
+
+    Parameters
+    ----------
+    function: func
+        Function to be applied
+
+    Returns
+    -------
+    Applies the function
+    """
+    # If multiple input busses exist
+    if isinstance(input_bus, list):
+        for bus in input_bus:
+            update_bus(dict_values, bus, asset_name, sink[LABEL])
+    else:
+        # add to list of assets on busses
+        update_bus(dict_values, input_bus, asset_name, sink[LABEL])
+"""
 
     return
+'''
 
 
 def evaluate_lifetime_costs(settings, economic_data, dict_asset):
