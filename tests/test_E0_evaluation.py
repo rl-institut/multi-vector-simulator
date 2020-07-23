@@ -83,8 +83,8 @@ def test_store_result_matrix():
         "D": None,
         "E": {VALUE: 2},
         "F": False,
-        "G": {VALUE: None}, # Returns empty cell
-        "H": 1
+        "G": {VALUE: None},  # Returns empty cell
+        "H": 1,
     }
 
     E0.store_result_matrix(dict_kpi, dict_asset)
