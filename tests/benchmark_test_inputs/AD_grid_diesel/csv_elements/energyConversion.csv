@@ -4,7 +4,7 @@ development_costs,currency,0,0
 specific_costs,currency/kW,0,100
 efficiency,factor,0.96,0.34
 inflow_direction,str,Electricity (DSO),Electricity (diesel)
-installedCap,kW,1250,500
+installedCap,kW,1250,1250
 label,str,Transformer station (DSO) consumption,Diesel generator
 lifetime,year,30,30
 specific_costs_om,currency/kW/year,0,5
