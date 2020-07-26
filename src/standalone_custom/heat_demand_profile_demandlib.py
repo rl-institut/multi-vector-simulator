@@ -47,12 +47,13 @@ path_to_data_folder = os.path.join(
 )
 path_to_results_folder = os.path.join(
     path_to_server,
-    "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/heat_demand",
+    "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/2020-07-23_heat_demand",
 )
 
 time_zone = "Europe/Bucharest"
 
 ### parameters ###
+weather_data_name = "uvtgv"  # "uvtgv" is processed monitored data, "era5" is ERA5 data
 year = 2018
 profile_type = "GKO"  # BDEW profile type
 country = "Romania"  # needed for holiday detection
@@ -64,7 +65,9 @@ annual_demand_gas = gas_consumption * efficiency_gas_boiler  # in kWh
 
 # add annual collectors heat to annual demand
 filename_coll = os.path.join(
-    path_to_data_folder, "solar_thermal_collector", "solar_thermal_collectors_heat.csv"
+    path_to_data_folder,
+    "2020-06-17_solar_thermal_collector",
+    "solar_thermal_collectors_heat.csv",
 )
 collectors_heat = pd.read_csv(filename_coll, index_col=0, header=0).sum().sum()
 annual_demand = annual_demand_gas + collectors_heat  # in kWh
@@ -194,12 +197,27 @@ def get_workalendar_class(country):
 if __name__ == "__main__":
     plots = True
 
-    # load dummy weather
-    weather = pd.read_csv(f"era5_weather_UVTgV_{year}.csv", parse_dates=True).set_index(
-        "time"
-    )
-    weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
-    weather.reset_index("time", inplace=True)
+    # load weather
+    if weather_data_name == "era5":
+        weather = pd.read_csv(
+            f"era5_weather_UVTgV_{year}.csv", parse_dates=True
+        ).set_index("time")
+        weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
+        weather.reset_index("time", inplace=True)
+    elif weather_data_name == "uvtgv":
+        filename_weather = "enter_filename_including_path"
+        filename_weather = os.path.join(
+            path_to_data_folder, "2020-07-23_uvtgv_weather_processed.csv"
+        )
+        cols = {"Amb Temp": "temp_air"}
+        weather = pd.read_csv(filename_weather, parse_dates=True, index_col=0).rename(
+            columns=cols
+        )
+        weather.index = pd.to_datetime(weather.index, utc=True).tz_convert(time_zone)
+    else:
+        raise ValueError(
+            f"weather_data_name must be 'era5' or 'uvtgv' but is {weather_data_name}"
+        )
 
     demand = calculate_heat_demand_time_series(
         year=year,
