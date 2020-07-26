@@ -121,9 +121,11 @@ class TestACElectricityBus:
         @pytest.mark.skipif(
             EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
             reason="Benchmark test deactivated, set env variable "
-                   "EXECUTE_TESTS_ON to 'master' to run this test",
+            "EXECUTE_TESTS_ON to 'master' to run this test",
         )
-        @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+        @mock.patch(
+            "argparse.ArgumentParser.parse_args", return_value=argparse.Namespace()
+        )
         def test_benchmark_AD_grid_diesel(self, margs):
             # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
             use_case = "AD_grid_diesel"
@@ -143,10 +145,17 @@ class TestACElectricityBus:
             # make the time the index
             busses_flow = busses_flow.set_index("Unnamed: 0")
             # read json with results file
-            with open(os.path.join(TEST_OUTPUT_PATH,use_case,"json_with_results.json"), "r") as results:
+            with open(
+                os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
+            ) as results:
                 data = json.load(results)
             # make sure LCOE_dieset is less than grid price
-            assert data["energyConversion"]["diesel_generator"]["levelized_cost_of_energy_of_asset"]["value"] < data["energyProviders"]["DSO"]["energy_price"]["value"]
+            assert (
+                data["energyConversion"]["diesel_generator"][
+                    "levelized_cost_of_energy_of_asset"
+                ]["value"]
+                < data["energyProviders"]["DSO"]["energy_price"]["value"]
+            )
             # make sure grid is not used
             assert sum(busses_flow["Diesel generator"]) == sum(busses_flow["demand_01"])
 
