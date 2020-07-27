@@ -28,7 +28,7 @@ from src.constants_json_strings import (
     TOTAL_FLOW,
     RENEWABLE_ASSET_BOOL,
     RENEWABLE_SHARE_DSO,
-    CONNECTED_CONSUMPTION_SOURCES,
+    CONNECTED_CONSUMPTION_SOURCE,
 )
 
 
