@@ -799,18 +799,22 @@ def define_transformer_for_peak_demand_pricing(dict_values, dict_dso, transforme
     -------
     Updated dict_values
     """
-    dict_values[ENERGY_CONVERSION].update({
-        transformer_name: {
+    default_dso_transformer = {
             LABEL: transformer_name,
             INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION],
+            INPUT_BUS_NAME: bus_suffix(dict_dso[INFLOW_DIRECTION]),
             OUTFLOW_DIRECTION: dict_dso[OUTFLOW_DIRECTION],
+            OUTPUT_BUS_NAME: bus_suffix(dict_dso[OUTFLOW_DIRECTION]),
             AVAILABILITY_DISPATCH: timeseries_availability,
-            DISPATCH_PRICE: 0,
-            SPECIFIC_COSTS: 0,
-            DEVELOPMENT_COSTS: 0,
-            SPECIFIC_COSTS_OM: dict_dso[PEAK_DEMAND_PRICING][VALUE]
-        }
-    })
+            EFFICIENCY: {VALUE: 1, UNIT: "factor"},
+            DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
+            SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + "?"},      # todo: this should be dict_dso[UNIT], but for that the provider needs a unit
+            SPECIFIC_COSTS_OM: {VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE], UNIT: CURR+"/" +"?"+"/" +UNIT_YEAR},
+            DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + "?" + "/" + UNIT_HOUR},
+            OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER
+    }
+
+    dict_values[ENERGY_CONVERSION].update({transformer_name: default_dso_transformer})
 
     #todo define AVAILABILITY_DISPATCH for transfomers in D0
     logging.debug(f"Model for peak demand pricing: Adding transfomer {transformer_name}.")
