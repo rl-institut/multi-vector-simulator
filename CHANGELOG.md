@@ -100,6 +100,7 @@ Here is a template for new release sections
 - Description of storage efficiency in readthedocs (#457)
 - Bug connected to global variables (#356)
 - MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
+- Adapted benchmark input folders to template (#386)
 
 ## [0.3.0] - 2020-06-08
 
