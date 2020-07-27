@@ -17,6 +17,7 @@ from src.constants_json_strings import (
     DISCOUNTFACTOR,
 PEAK_DEMAND_PRICING,
 AVAILABILITY_DISPATCH,
+OEMOF_ASSET_TYPE, INPUT_BUS_NAME, OUTPUT_BUS_NAME, EFFICIENCY,
     TAX,
     VALUE,
     LABEL,
@@ -200,9 +201,9 @@ def test_define_transformer_for_peak_demand_pricing():
     timeseries_availability = pd.Series()
     C0.define_transformer_for_peak_demand_pricing(dict_test, dict_test_dso, transformer_name, timeseries_availability)
     assert transformer_name in dict_test[ENERGY_CONVERSION]
-    for k in [LABEL, INFLOW_DIRECTION, OUTFLOW_DIRECTION, AVAILABILITY_DISPATCH, DISPATCH_PRICE, SPECIFIC_COSTS, DEVELOPMENT_COSTS, SPECIFIC_COSTS_OM]:
+    for k in [LABEL, INFLOW_DIRECTION, OUTFLOW_DIRECTION, AVAILABILITY_DISPATCH, DISPATCH_PRICE, SPECIFIC_COSTS, DEVELOPMENT_COSTS, SPECIFIC_COSTS_OM, OEMOF_ASSET_TYPE, INPUT_BUS_NAME, OUTPUT_BUS_NAME, EFFICIENCY]:
         assert k in dict_test[ENERGY_CONVERSION][transformer_name]
-    assert dict_test[ENERGY_CONVERSION][transformer_name][SPECIFIC_COSTS_OM] == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE]
+    assert dict_test[ENERGY_CONVERSION][transformer_name][SPECIFIC_COSTS_OM][VALUE] == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE]
 
 
 
@@ -289,7 +290,7 @@ def test_update_bus():
         },
     }
     bus_label = C0.bus_suffix(bus_name)
-    C0.update_bus(dict_test, bus_name, asset_name, asset_label)
+    C0.update_bus(dict_values=dict_test, bus=bus_name, asset_key=asset_name, asset_label=asset_label)
     assert bus_label in dict_test[ENERGY_BUSSES]
     assert asset_name in dict_test[ENERGY_BUSSES][bus_label]
     assert asset_label in dict_test[ENERGY_BUSSES][bus_label][asset_name]
