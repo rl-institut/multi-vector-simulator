@@ -15,6 +15,8 @@ from src.constants_json_strings import (
     INFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
+PEAK_DEMAND_PRICING,
+AVAILABILITY_DISPATCH,
     TAX,
     VALUE,
     LABEL,
@@ -194,6 +196,25 @@ def test_define_availability_of_peak_demand_pricing_assets_quarterly():
     for key in dict_availability_timeseries:
         total += dict_availability_timeseries[key].values.sum()
     assert total == 8760
+
+
+def test_define_transformer_for_peak_demand_pricing():
+    dict_test = {ENERGY_CONVERSION: {},
+                 ENERGY_PROVIDERS: {"dso": {
+                     LABEL: "a_label",
+                     INFLOW_DIRECTION: "a_direction",
+                     OUTFLOW_DIRECTION: "b_direction",
+                     PEAK_DEMAND_PRICING: {VALUE: 60}
+                 }}}
+    dict_test_dso = dict_test[ENERGY_PROVIDERS]["dso"].copy
+    transformer_name = "a_name"
+    timeseries_availability = pd.Series()
+    C0.define_transformer_for_peak_demand_pricing(dict_test, dict_test_dso, transformer_name, timeseries_availability)
+    assert transformer_name in dict_test[ENERGY_CONVERSION]
+    for k in [LABEL, INFLOW_DIRECTION, OUTFLOW_DIRECTION, AVAILABILITY_DISPATCH, DISPATCH_PRICE, SPECIFIC_COSTS, DEVELOPMENT_COSTS, SPECIFIC_COSTS_OM]:
+        assert k in dict_test[ENERGY_CONVERSION][transformer_name]
+    assert dict_test[ENERGY_CONVERSION][transformer_name][SPECIFIC_COSTS_OM] == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE]
+
 
 
 def test_define_energyBusses():
