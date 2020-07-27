@@ -196,7 +196,7 @@ def test_define_transformer_for_peak_demand_pricing():
                      OUTFLOW_DIRECTION: "b_direction",
                      PEAK_DEMAND_PRICING: {VALUE: 60}
                  }}}
-    dict_test_dso = dict_test[ENERGY_PROVIDERS]["dso"].copy
+    dict_test_dso = dict_test[ENERGY_PROVIDERS]["dso"].copy()
     transformer_name = "a_name"
     timeseries_availability = pd.Series()
     C0.define_transformer_for_peak_demand_pricing(dict_test, dict_test_dso, transformer_name, timeseries_availability)
