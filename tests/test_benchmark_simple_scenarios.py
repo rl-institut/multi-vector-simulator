@@ -158,7 +158,7 @@ class TestACElectricityBus:
             )
             # make sure grid is not used
             assert sum(busses_flow["Diesel generator"]) == sum(busses_flow["demand_01"])
-
+# todo: Add test for fuel consumption (kWh/l).
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
