@@ -151,16 +151,6 @@ def test_determine_lifetime_price_dispatch_is_other():
         C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
 
-"""
-def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear():
-    dict_test = {
-        ENERGY_PROVIDERS: {"a_dso": {PEAK_DEMAND_PRICING_PERIOD: {VALUE: 2}}},
-        SIMULATION_SETTINGS: {EVALUATED_PERIOD: {VALUE: 30}},
-    }
-    with pytest.raises(ValueError):
-        C0.define_dso_sinks_and_sources(dict_test, "a_dso")
-"""
-
 start_date = pd.Timestamp("2018-01-01 00:00:00")
 dict_test_avilability = {
     SIMULATION_SETTINGS: {
