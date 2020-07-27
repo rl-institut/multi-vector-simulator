@@ -85,6 +85,7 @@ Here is a template for new release sections
 - Work in progress: Excess sink is created for each and every bus (#454)
 - Splitting functions in `C0` and adding tests for them: `C0.define_sinks()` and `C0.define_dso_sinks_and_sources()` (#454)
 - Work in progress: Redefinig DSOs -> Peak demand pricing should be covered via transformers, not sources.
+- Added `pyppdf==0.0.12` to `requirements.txt` (#473)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
@@ -104,6 +105,7 @@ Here is a template for new release sections
 - Description of storage efficiency in readthedocs (#457)
 - Bug connected to global variables (#356)
 - Local failing pytests (`FileExistsError`) on Ubuntu and Win10 (#474)
+- MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
 
 ## [0.3.0] - 2020-06-08
 
