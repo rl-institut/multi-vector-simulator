@@ -295,6 +295,10 @@ def test_update_bus():
     assert asset_name in dict_test[ENERGY_BUSSES][bus_label]
     assert asset_label in dict_test[ENERGY_BUSSES][bus_label][asset_name]
 
+def test_bus_suffix_functions():
+    name = "name"
+    bus_name = C0.bus_suffix(name)
+    assert name == C0.remove_bus_suffix(bus_name)
 
 def test_bus_suffix_correct():
     bus = "a"
@@ -309,6 +313,8 @@ def test_apply_function_to_single_or_list_apply_to_single():
     parameter = 1
     parameter_processed = C0.apply_function_to_single_or_list(multiply, parameter)
     assert parameter_processed == 2
+
+
 
 def test_apply_function_to_single_or_list_apply_to_list():
     def multiply(parameter):
