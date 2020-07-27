@@ -1075,12 +1075,15 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
     dict_values[ENERGY_CONSUMPTION].update({asset_name: sink})
 
     # If multiple input busses exist
+    #todo this should not be commented
+    """
     if isinstance(input_bus, list):
         for bus in input_bus:
             update_bus(dict_values, bus, asset_name, sink[LABEL])
     else:
         # add to list of assets on busses
         update_bus(dict_values, input_bus, asset_name, sink[LABEL])
+    """
     return
 
 def apply_function_to_single_or_list(function, parameter, **kwargs):
