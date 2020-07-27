@@ -2,22 +2,26 @@
 Parameters and Definitions in CSV/JSON 
 ======================================
 
+Each parameter is provided with the definition, unit, type and example values as well to make it easy for users to provide custom values for their systems. The format followed is as follows:
+
+**Parameter name**: Definition; unit; type; example value
+
 project_data.csv
 ----------------
 
-**country**: Name of the country where the project is being deployed. E.g.: Germany
+**country**: Name of the country where the project is being deployed; str; Norway
 
-**latitude**: Latitude coordinate of the project’s geographical location
+**latitude**: Latitude coordinate of the project’s geographical location; str; 45.641603
 
-**longitude**: Longitude coordinate of the project’s geographical location
+**longitude**: Longitude coordinate of the project’s geographical location; str; 5.875387
 
-**Project_id**: Users can assign a project ID as per their preference. 
+**Project_id**: Users can assign a project ID as per their preference; str; 1
 
-**Project_name**: Users can assign a project name as per their preference.
+**Project_name**: Users can assign a project name as per their preference; str, Borg Havn
 
-**scenario_id**: Users can assign a scenario id as per their preference.
+**scenario_id**: Users can assign a scenario id as per their preference; str; 1
 
-**scenario_name**: Users can assign a scenario name as per their preference.
+**scenario_name**: Users can assign a scenario name as per their preference; str; Warehouse 14
 
 
 economic_data.csv
