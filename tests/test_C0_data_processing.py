@@ -171,14 +171,14 @@ dict_test_avilability = {
 }
 
 
-def test_define_av_time_yearly():
-    dict_availability_timeseries = C0.define_av_time(dict_test_avilability, 1, 12)
+def test_define_availability_of_peak_demand_pricing_assets_yearly():
+    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(dict_test_avilability, 1, 12)
     assert len(dict_availability_timeseries) == 1
     assert dict_availability_timeseries[1].values.sum() == 8760
 
 
-def test_define_av_time_monthly():
-    dict_availability_timeseries = C0.define_av_time(dict_test_avilability, 12, 1)
+def test_define_availability_of_peak_demand_pricing_assets_monthly():
+    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(dict_test_avilability, 12, 1)
     assert len(dict_availability_timeseries) == 12
     assert dict_availability_timeseries[1].values.sum() == 31 * 24
     total = 0
@@ -187,8 +187,8 @@ def test_define_av_time_monthly():
     assert total == 8760
 
 
-def test_define_av_time_quarterly():
-    dict_availability_timeseries = C0.define_av_time(dict_test_avilability, 4, 3)
+def test_define_availability_of_peak_demand_pricing_assets_quarterly():
+    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(dict_test_avilability, 4, 3)
     assert len(dict_availability_timeseries) == 4
     total = 0
     for key in dict_availability_timeseries:
