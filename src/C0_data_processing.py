@@ -528,13 +528,19 @@ def add_busses_of_asset_depending_on_in_out_direction(
                     # Append bus name to bus_list
                     bus_list.append(bus_suffix(subbus))
                     # Check if bus of the direction is already contained in energyBusses
-                    update_bus(dict_values, subbus, asset_key, dict_asset[LABEL])
+                    update_bus(bus=subbus,
+                               dict_values=dict_values,
+                               asset_key=asset_key,
+                               asset_label = dict_asset[LABEL])
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_list})
             # If false: Only one bus
             else:
                 # Check if bus of the direction is already contained in energyBusses
-                update_bus(dict_values, bus, asset_key, dict_asset[LABEL])
+                update_bus(bus=bus,
+                           dict_values=dict_values,
+                           asset_key=asset_key,
+                           asset_label = dict_asset[LABEL])
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_suffix(bus)})
     return
@@ -559,7 +565,7 @@ def bus_suffix(bus):
     return bus_label
 
 
-def update_bus(dict_values, bus, asset_key, asset_label):
+def update_bus(bus, dict_values, asset_key, asset_label):
     """
     Checks if an bus is already included in ENERGY_BUSSES and otherwise adds it.
     Adds asset key and label to list of assets attached to a bus.
