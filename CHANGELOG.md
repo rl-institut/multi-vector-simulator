@@ -44,6 +44,7 @@ Here is a template for new release sections
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
  - Add Plotly-based plots to `F2_autoreport.py` (#439)
 - LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
+- Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case uvtgv. note: file not provided so far (#474)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -79,6 +80,7 @@ Here is a template for new release sections
  (#463)
 - Fixed E0.store_results_matrix(), now available types: 'str', 'bool', 'None', dict (with key VALUE), else ('int'/'float'). If KPI not in asset, no value is attributed. Added test for function (#468, #470)
 - Fixed main() calls in 'test_F1_plotting.py' (#468)
+- Added `pyppdf==0.0.12` to `requirements.txt` (#473)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
@@ -98,6 +100,7 @@ Here is a template for new release sections
 - Input folder `tests/inputs` with simple example scenario (#420)
 - Description of storage efficiency in readthedocs (#457)
 - Bug connected to global variables (#356)
+- MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
 
 ## [0.3.0] - 2020-06-08
 

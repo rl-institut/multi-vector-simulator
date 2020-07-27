@@ -20,6 +20,7 @@ import pandas as pd
 import reverse_geocoder as rg
 import staticmap
 import asyncio
+import pyppdf.patch_pyppeteer
 from pyppeteer import launch
 
 from src.constants import (
