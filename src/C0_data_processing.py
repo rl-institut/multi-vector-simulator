@@ -810,6 +810,26 @@ def define_transformer_for_peak_demand_pricing(dict_values, dict_dso, transforme
     logging.debug(f"Model for peak demand pricing: Adding transfomer {transformer_name}.")
     return
 
+def get_name_or_names_of_in_or_output_bus(bus):
+    """
+    Returns the bus names of one or multiple in- or output busses.
+    
+    Parameters
+    ----------
+    bus: str
+        A bus name without bus suffix
+
+    Returns
+    -------
+    Bus name with suffix
+    """
+    if isinstance(bus, list):
+        bus_name = []
+        for bus in bus:
+            bus_name.append(bus_suffix(bus))
+    else:
+        bus_name = bus_suffix(bus)
+    return bus_name
 def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwargs):
     """
 
@@ -822,12 +842,7 @@ def define_source(dict_values, asset_name, price, output_bus, timeseries, **kwar
     :return:
     """
     # create name of bus. Check if multiple busses are given
-    if isinstance(output_bus, list):
-        output_bus_name = []
-        for bus in output_bus:
-            output_bus_name.append(bus_suffix(bus))
-    else:
-        output_bus_name = bus_suffix(output_bus)
+    output_bus_name = get_name_or_names_of_in_or_output_bus(output_bus)
 
     source = {
         OEMOF_ASSET_TYPE: OEMOF_SOURCE,
@@ -959,12 +974,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
     """
 
     # create name of bus. Check if multiple busses are given
-    if isinstance(input_bus, list):
-        input_bus_name = []
-        for bus in input_bus:
-            input_bus_name.append(bus_suffix(bus))
-    else:
-        input_bus_name = bus_suffix(input_bus)
+    input_bus_name = get_name_or_names_of_in_or_output_bus(input_bus)
 
     # create a dictionary for the sink
     sink = {
