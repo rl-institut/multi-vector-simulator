@@ -162,7 +162,6 @@ dict_test_avilability = {
     }
 }
 
-
 def test_define_availability_of_peak_demand_pricing_assets_yearly():
     dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(dict_test_avilability, 1, 12)
     assert len(dict_availability_timeseries) == 1
@@ -311,7 +310,17 @@ def test_determine_months_in_a_peak_demand_pricing_period_valid():
     months_in_a_period = C0.determine_months_in_a_peak_demand_pricing_period(4, 365)
     assert months_in_a_period == 3
 
+def test_get_name_or_names_of_in_or_output_bus_single():
+    bus = "bus"
+    bus_with_suffix = C0.bus_suffix(bus)
+    bus_name = C0.get_name_or_names_of_in_or_output_bus(bus)
+    assert bus_name == bus_with_suffix
 
+def test_get_name_or_names_of_in_or_output_bus_list():
+    bus = ["bus1", "bus2"]
+    bus_with_suffix = [C0.bus_suffix(bus[0]), C0.bus_suffix(bus[1])]
+    bus_name = C0.get_name_or_names_of_in_or_output_bus(bus)
+    assert bus_name == bus_with_suffix
 """
 def test_asess_energyVectors_and_add_to_project_data():
     C2.identify_energy_vectors(dict_values)
