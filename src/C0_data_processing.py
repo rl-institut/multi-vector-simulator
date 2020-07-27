@@ -190,12 +190,14 @@ def process_all_assets(dict_values):
     define_busses(dict_values)
 
     # Define all excess sinks for each energy bus
-    for bus in dict_values[ENERGY_BUSSES]:
-        define_sink(
-            dict_values, bus + EXCESS, {VALUE: 0, UNIT: CURR + "/" + UNIT}, bus,
+    for bus_name in dict_values[ENERGY_BUSSES]:
+        define_sink(dict_values=dict_values,
+                    asset_name=bus_name + EXCESS,
+                    price={VALUE: 0, UNIT: CURR + "/" + UNIT},
+                    input_bus_name=bus_name,
         )
         logging.debug(
-            "Created excess sink for energy bus %s", bus,
+            "Created excess sink for energy bus %s", bus_name,
         )
 
     # process all energyAssets:
@@ -655,10 +657,10 @@ def define_dso_sinks_and_sources(dict_values, dso):
 
     # define feed-in sink of the DSO
     define_sink(
-        dict_values,
-        dso + DSO_FEEDIN + AUTO_SINK,
-        dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
-        dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
+        dict_values=dict_values,
+        asset_name=dso + DSO_FEEDIN + AUTO_SINK,
+        price=dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
+        input_bus_name=dict_values[ENERGY_PROVIDERS][dso][INPUT_BUS_NAME],
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
     )
 
@@ -744,7 +746,7 @@ def add_a_transformer_for_each_peak_demand_pricing_period(dict_values, dict_dso,
         if len(dict_availability_timeseries) == 1:
             transformer_name = dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD
         else:
-            transformer_name = dict_values[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + str(key)
+            transformer_name = dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + str(key)
 
         define_transformer_for_peak_demand_pricing(dict_values, dict_dso, transformer_name, dict_availability_timeseries[key])
         list_of_dso_energyConversion_assets.append(transformer_name)
@@ -978,10 +980,7 @@ def determine_dispatch_price(dict_values, price, source):
 
 
 
-
-
-
-def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
+def define_sink(dict_values, asset_name, price, input_bus_name, **kwargs):
     r"""
     This automatically defines a sink for an oemof-sink object. The sinks are added to the energyConsumption assets.
 
@@ -990,7 +989,7 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
     dict_values
     asset_name
     price
-    input_bus
+    input_direction
     kwargs
 
     Returns
@@ -1004,13 +1003,13 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
     """
 
     # create name of bus. Check if multiple busses are given
-    input_bus_name = get_name_or_names_of_in_or_output_bus(input_bus)
+    input_direction = remove_bus_suffix(input_bus_name)
 
     # create a dictionary for the sink
     sink = {
         OEMOF_ASSET_TYPE: OEMOF_SINK,
         LABEL: asset_name + AUTO_SINK,
-        INFLOW_DIRECTION: input_bus,
+        INFLOW_DIRECTION: input_direction,
         INPUT_BUS_NAME: input_bus_name,
         # OPEX_VAR: {VALUE: price, UNIT: CURR + "/" + UNIT},
         LIFETIME: {
@@ -1091,14 +1090,8 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
 
     # If multiple input busses exist
     #todo this should not be commented
-    """
-    if isinstance(input_bus, list):
-        for bus in input_bus:
-            update_bus(dict_values, bus, asset_name, sink[LABEL])
-    else:
-        # add to list of assets on busses
-        update_bus(dict_values, input_bus, asset_name, sink[LABEL])
-    """
+    apply_function_to_single_or_list(function=update_bus, parameter=input_direction, dict_values=dict_values, asset_key=asset_name, asset_label=sink[LABEL])
+
     return
 
 def apply_function_to_single_or_list(function, parameter, **kwargs):
