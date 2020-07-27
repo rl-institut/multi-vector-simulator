@@ -546,7 +546,7 @@ def add_busses_of_asset_depending_on_in_out_direction(
     return
 
 
-def bus_suffix(bus):
+def bus_suffix(bus_direction):
     """
     Returns the name of a bus with the suffix defined in constants_json_strings.py (BUS_SUFFIX)
 
@@ -554,16 +554,31 @@ def bus_suffix(bus):
 
     Parameters
     ----------
-    bus: str
+    bus_direction: str
         A string, ie. a bus name
 
     Returns
     -------
     Above string with BUS_SUFFIX
     """
-    bus_label = bus + BUS_SUFFIX
+    bus_label = bus_direction + BUS_SUFFIX
     return bus_label
 
+def remove_bus_suffix(bus_label):
+    """
+    Removes suffix from a INPUT / OUTPUT BUS LABEL to get the INPUT / OUTPUT DIRECTION.
+
+    Parameters
+    ----------
+    bus_label: str
+        Bus label with suffix
+
+    Returns
+    -------
+    Bus direction (without suffix)
+    """
+    bus_direction=bus_label[:-len(BUS_SUFFIX)]
+    return bus_direction
 
 def update_bus(bus, dict_values, asset_key, asset_label):
     """
