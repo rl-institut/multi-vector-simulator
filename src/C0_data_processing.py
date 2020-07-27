@@ -814,6 +814,7 @@ def determine_peak_demand_pricing_costs(dict_values, dso):
     return peak_demand_pricing
 
 
+    apply_function_to_single_or_list(function=update_bus, parameter=output_bus_direction, dict_values=dict_values, asset_key=asset_key, asset_label=default_source_dict[LABEL])
 def get_name_or_names_of_in_or_output_bus(bus):
     """
     Returns the bus names of one or multiple in- or output busses.
@@ -1072,33 +1073,32 @@ def define_sink(dict_values, asset_name, price, input_bus, **kwargs):
         update_bus(dict_values, input_bus, asset_name, sink[LABEL])
     return
 
-
-'''
-def application_of_function_for_one_or_multiple_busses(function, bus, kwargs):
-    r"""
-    Function that is wrapped around a function to apply it to one bus or a list of busses.
+def apply_function_to_single_or_list(function, parameter, **kwargs):
+    """
+    Applies function to a paramter or to a list of parameters and returns resut
 
     Parameters
     ----------
     function: func
-        Function to be applied
+        Function to be applied to a parameter
+
+    parameter: float/str/boolean or list
+        Parameter, either float/str/boolean or list to be evaluated
+    kwargs
+        Miscellaneous arguments for function to be called
 
     Returns
     -------
-    Applies the function
+    Processed parameter (single) or list of processed para<meters
     """
-    # If multiple input busses exist
-    if isinstance(input_bus, list):
-        for bus in input_bus:
-            update_bus(dict_values, bus, asset_name, sink[LABEL])
+    if isinstance(parameter, list):
+        parameter_processed = []
+        for parameter_item in parameter:
+            parameter_processed.append(function(parameter_item, **kwargs))
     else:
-        # add to list of assets on busses
-        update_bus(dict_values, input_bus, asset_name, sink[LABEL])
-"""
+        parameter_processed = function(parameter, **kwargs)
 
-    return
-'''
-
+    return parameter_processed
 
 def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     """

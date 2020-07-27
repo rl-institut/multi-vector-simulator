@@ -300,11 +300,27 @@ def test_bus_suffix_correct():
     bus_name = C0.bus_suffix(bus)
     assert bus_name == bus + BUS_SUFFIX
 
+def test_apply_function_to_single_or_list_apply_to_single():
+    def multiply(parameter):
+        parameter_processed = 2 * parameter
+        return parameter_processed
+
+    parameter = 1
+    parameter_processed = C0.apply_function_to_single_or_list(multiply, parameter)
+    assert parameter_processed == 2
+
+def test_apply_function_to_single_or_list_apply_to_list():
+    def multiply(parameter):
+        parameter_processed = 2 * parameter
+        return parameter_processed
+
+    parameter = [1,1]
+    parameter_processed = C0.apply_function_to_single_or_list(multiply, parameter)
+    assert parameter_processed == [2, 2]
 
 def test_determine_months_in_a_peak_demand_pricing_period_not_valid():
     with pytest.raises(C0.InvalidPeakDemandPricingPeriods):
         C0.determine_months_in_a_peak_demand_pricing_period(5, 365)
-
 
 def test_determine_months_in_a_peak_demand_pricing_period_valid():
     months_in_a_period = C0.determine_months_in_a_peak_demand_pricing_period(4, 365)
