@@ -249,7 +249,7 @@ def insert_log_messages(log_dict):
             ),
             # this will be displayed only in the printed version
             html.Div(
-                className="list-log print",
+                className="list-log print-only",
                 children=html.Ul(children=[html.Li(v) for k, v in log_dict.items()]),
             ),
         ],
