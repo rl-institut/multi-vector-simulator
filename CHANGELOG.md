@@ -44,6 +44,7 @@ Here is a template for new release sections
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
 - LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
 - Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case uvtgv. note: file not provided so far (#474)
+- Benchmark test for simple case grid and diesel without test for fuel consumption (#386)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -99,6 +100,7 @@ Here is a template for new release sections
 - Description of storage efficiency in readthedocs (#457)
 - Bug connected to global variables (#356)
 - MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
+- Adapted benchmark tests input folders to template (#386)
 
 ## [0.3.0] - 2020-06-08
 
