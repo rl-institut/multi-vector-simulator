@@ -681,8 +681,7 @@ def define_availability_of_peak_demand_pricing_assets(dict_values, number_of_pri
 
     Parameters
     ----------
-    dict
-    _values: dict
+    dict_values: dict
         All simulation inputs
     number_of_pricing_periods: int
         Number of pricing periods in a year. Valid: 1,2,3,4,6,12
@@ -812,10 +811,26 @@ def define_transformer_for_peak_demand_pricing(dict_values, dict_dso, transforme
     r"""
     Defines a transformer for peak demand pricing in energyConverion
 
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation parameters
+
+    dict_dso: dict
+        All values connected to the DSO
+
+    transformer_name: str
+        label of the transformer to be added
+
+    timeseries_availability: pd.Series
+        Timeseries of transformer availability. Introduced to cover peak demand pricing.
+
     Returns
     -------
-    Updated dict_values
+
+    Updated dict_values with newly added transformer asset in the energyConversion asset group.
     """
+
     default_dso_transformer = {
             LABEL: transformer_name,
             INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION],
