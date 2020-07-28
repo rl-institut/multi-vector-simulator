@@ -145,11 +145,12 @@ def make_dash_data_table(df, title=None):
                 columns=[{"name": i, "id": i} for i in df.columns],
                 data=df.to_dict("records"),
                 style_cell={
-                    "padding": "5px",
+                    "padding": "8px",
                     "height": "auto",
                     "width": "auto",
                     "fontFamily": "Courier New",
                     "textAlign": "center",
+                    'whiteSpace': 'normal'
                 },
                 style_data_conditional=[
                     {
@@ -157,7 +158,7 @@ def make_dash_data_table(df, title=None):
                         "backgroundColor": "rgb(248, 248, 248)",
                     }
                 ],
-                style_header={"fontWeight": "bold", "color": "#8c3604"},
+                style_header={"fontWeight": "bold", "color": "#8c3604", 'whiteSpace': 'normal', 'height': 'auto', },
             ),
         )
     ]
