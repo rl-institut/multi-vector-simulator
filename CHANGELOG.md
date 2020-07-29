@@ -83,7 +83,7 @@ Here is a template for new release sections
 - Function `A0.check_output_folder()`, now after `shutil.rmtree` we still `try-except os.mkdirs`, this fixes local issues with `FileExistsError`.  (#474)
 - Definition of busses from assets: Now all INFLOW_DIRECTION / OUTFLOW_DIRECTION are translated into ENERGY_BUSSES (#454, #387)
 - Work in progress: Excess sink is created for each and every bus (#454)
-- Splitting functions in `C0` and adding tests for them: `C0.define_sinks()` and `C0.define_dso_sinks_and_sources()` (#454)
+- Splitting functions in `C0` and adding tests for them: `C0.define_sink()`, `C0.define_source()` and `C0.define_dso_sinks_and_sources()` (#454)
 - Work in progress: Redefinig DSOs -> Peak demand pricing should be covered via transformers, not sources.
 - Added `pyppdf==0.0.12` to `requirements.txt` (#473)
 
