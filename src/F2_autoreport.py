@@ -889,6 +889,27 @@ def create_app(results_json):
     )
     df_capacities.reset_index(drop=True, inplace=True)
 
+    # Data preparation operations for generating the pie charts with Plotly
+
+    # Get the cost matrix from the reuslts JSON file into a pandas DF
+    df_kpis = results_json[KPI][KPI_COST_MATRIX]
+    # List of the needed parameters
+    costs_needed = ["label", ANNUITY_TOTAL, COST_INVESTMENT, COST_OM_TOTAL]
+    # Drop all the irrelevant columns
+    df_kpis = df_kpis[costs_needed]
+    df_kpis = df_kpis.append(df_kpis.sum(numeric_only=True), ignore_index=True)
+    # Add a label for the row holding the sum of each column
+    df_kpis.iloc[17, 0] = "Total"
+    # Change the index of the DF to labels which are the assets of the energy system
+    # df_kpis = df_kpis.set_index("label")
+    # print(df_kpis.to_string())
+    # print(len(df_kpis))
+
+    # dict_for_pie_plots = {}
+    # for col in list(df_kpis.columns):
+    #     col = {}
+    #     for row_index in range(0, len(df_kpis)):
+
     # App layout and populating it with different elements
 
     app.layout = html.Div(
