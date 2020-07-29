@@ -42,6 +42,7 @@ Here is a template for new release sections
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 - File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
+ - Add Plotly-based blots (line diagrams for energy flows and bar charts) to `F2_autoreport.py` (#439)
 - LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
 - Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case uvtgv. note: file not provided so far (#474)
 - Benchmark test for simple case grid and diesel without test for fuel consumption (#386)
@@ -89,6 +90,7 @@ Here is a template for new release sections
 - `tests/test_benchmark.py` module (#401)
 - Outdated table of tests of MVS `docs/tables/table_tests.csv` (#456)
 - Removed function C0.complete_missing_cost_data() as this should be covered by A1 for csv files (#379)
+- Old plots in `F2_autoreport.py` generated with matplotlib (#439)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
