@@ -20,8 +20,14 @@ import pandas as pd
 import reverse_geocoder as rg
 import staticmap
 import asyncio
+
 import pyppdf.patch_pyppeteer
 from pyppeteer import launch
+
+# This removes extensive logging in the console for pyppeteer.
+import logging
+pyppeteer_level = logging.WARNING
+logging.getLogger('pyppeteer').setLevel(pyppeteer_level)
 
 from src.constants import (
     PLOTS_BUSSES,
