@@ -868,6 +868,9 @@ def define_source(dict_values, asset_key, output_bus_direction, **kwargs):
         Kwargs that can overwrite the default values.
         Typical kwargs:
             - TIMESERIES
+            - SPECIFIC_COSTS_OM
+            - SPECIFIC_COSTS
+            - "price"
 
     Returns
     -------
