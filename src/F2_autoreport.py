@@ -702,6 +702,8 @@ def create_app(results_json):
             {
                 comps: [
                     components1[comps][OEMOF_ASSET_TYPE],
+                    "Electricity",
+                    # components1[comps][ENERGY_VECTOR],
                     components1[comps][UNIT],
                     components1[comps][INSTALLED_CAP][VALUE],
                     components1[comps][OPTIMIZE_CAP][VALUE],
