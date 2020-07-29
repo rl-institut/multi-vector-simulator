@@ -996,22 +996,31 @@ def determine_dispatch_price(dict_values, price, source):
         )
     return
 
-
-
 def define_sink(dict_values, asset_name, price, input_bus_name, **kwargs):
     r"""
     This automatically defines a sink for an oemof-sink object. The sinks are added to the energyConsumption assets.
 
     Parameters
     ----------
-    dict_values
-    asset_name
-    price
-    input_direction
-    kwargs
+    dict_values: dict
+        All information of the simulation
+
+    asset_name: str
+        label of the asset to be generated
+
+    price: float
+        Price of dispatch of the asset
+
+    input_direction: str
+        Direction from which energy is provided to the sink, used to create inbut bus name
+
+    kwargs: Misc
+        Common parameters:
+        -
 
     Returns
     -------
+    Updates dict_values[ENERGY_CONSUMPTION] with a new sink
 
     Notes
     -----
@@ -1234,7 +1243,6 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     )
 
     return
-
 
 def determine_lifetime_price_dispatch(dict_asset, economic_data):
     """
