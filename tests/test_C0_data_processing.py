@@ -344,6 +344,25 @@ def test_get_name_or_names_of_in_or_output_bus_list():
     bus_with_suffix = [C0.bus_suffix(bus[0]), C0.bus_suffix(bus[1])]
     bus_name = C0.get_name_or_names_of_in_or_output_bus(bus)
     assert bus_name == bus_with_suffix
+
+def test_evaluate_lifetime_costs():
+    settings={EVALUATED_PERIOD: {VALUE: 10}}
+    economic_data={PROJECT_DURATION: {VALUE: 20},
+                   DISCOUNTFACTOR: {VALUE: 0.1},
+                   TAX: {VALUE: 0},
+                   CRF: {VALUE: 0.1},
+                   ANNUITY_FACTOR: {VALUE: 7}}
+
+    dict_asset={SPECIFIC_COSTS_OM: {VALUE: 5, UNIT: "unit"},
+                SPECIFIC_COSTS: {VALUE: 100, UNIT: "unit"},
+                DISPATCH_PRICE: {VALUE: 1, UNIT: "unit"},
+                LIFETIME: {VALUE: 10}}
+
+    C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
+
+    for k in [LIFETIME_SPECIFIC_COST, LIFETIME_SPECIFIC_COST_OM, ANNUITY_SPECIFIC_INVESTMENT_AND_OM, SIMULATION_ANNUITY, LIFETIME_PRICE_DISPATCH]:
+        assert k in dict_asset
+
 """
 def test_asess_energyVectors_and_add_to_project_data():
     C2.identify_energy_vectors(dict_values)
@@ -353,8 +372,6 @@ def test_asess_energyVectors_and_add_to_project_data():
 #Create a sink for each energyVector (this actually might be changed in the future - create an excess sink for each bus?)
 def test_create_excess_sinks_for_each_energyVector():
     assert 1 == 0
-
-
 
 #- Add demand sinks to energyVectors (this should actually be changed and demand sinks should be added to bus relative to input_direction, also see issue #179)
 def test_adding_demand_sinks_to_energyVectors():
