@@ -1137,12 +1137,44 @@ def apply_function_to_single_or_list(function, parameter, **kwargs):
     return parameter_processed
 
 def evaluate_lifetime_costs(settings, economic_data, dict_asset):
-    """
+    r"""
+    Evaluates specific costs of an asset over the project lifetime. This includes:
+    - LIFETIME_PRICE_DISPATCH (determine_lifetime_price_dispatch)
+    - LIFETIME_SPECIFIC_COST
+    - LIFETIME_SPECIFIC_COST_OM
+    - ANNUITY_SPECIFIC_INVESTMENT_AND_OM
+    - SIMULATION_ANNUITY
 
-    :param settings:
-    :param economic_data:
-    :param dict_asset:
-    :return:
+    The DEVELOPMENT_COSTS are not processed here, as they are not necessary for the optimization.
+
+    Parameters
+    ----------
+    settings: dict
+        dict of simulation settings, including:
+        - EVALUATED_PERIOD
+
+    economic_data: dict
+        dict of economic data of the simulation, including
+        - project duration (PROJECT_DURATION)
+        - discount factor (DISCOUNTFACTOR)
+        - tax (TAX)
+        - CRF
+        - ANNUITY_FACTOR
+
+    dict_asset: dict
+        dict of all asset parameters, including
+        - SPECIFIC_COSTS
+        - SPECIFIC_COSTS_OM
+        - LIFETIME
+
+    Returns
+    -------
+    Updates asset dict with
+    - LIFETIME_PRICE_DISPATCH (determine_lifetime_price_dispatch)
+    - LIFETIME_SPECIFIC_COST
+    - LIFETIME_SPECIFIC_COST_OM
+    - ANNUITY_SPECIFIC_INVESTMENT_AND_OM
+    - SIMULATION_ANNUITY
     """
 
     determine_lifetime_price_dispatch(dict_asset, economic_data)
