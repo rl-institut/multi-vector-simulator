@@ -26,8 +26,9 @@ from pyppeteer import launch
 
 # This removes extensive logging in the console for pyppeteer.
 import logging
+
 pyppeteer_level = logging.WARNING
-logging.getLogger('pyppeteer').setLevel(pyppeteer_level)
+logging.getLogger("pyppeteer").setLevel(pyppeteer_level)
 
 from src.constants import (
     PLOTS_BUSSES,
@@ -156,7 +157,7 @@ def make_dash_data_table(df, title=None):
                     "width": "auto",
                     "fontFamily": "Courier New",
                     "textAlign": "center",
-                    'whiteSpace': 'normal'
+                    "whiteSpace": "normal",
                 },
                 style_data_conditional=[
                     {
@@ -164,7 +165,12 @@ def make_dash_data_table(df, title=None):
                         "backgroundColor": "rgb(248, 248, 248)",
                     }
                 ],
-                style_header={"fontWeight": "bold", "color": "#8c3604", 'whiteSpace': 'normal', 'height': 'auto', },
+                style_header={
+                    "fontWeight": "bold",
+                    "color": "#8c3604",
+                    "whiteSpace": "normal",
+                    "height": "auto",
+                },
             ),
         )
     ]
