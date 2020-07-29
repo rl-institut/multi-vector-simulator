@@ -9,11 +9,7 @@ import pandas as pd
 logging.getLogger("matplotlib.font_manager").disabled = True
 
 from src.constants import (
-    INPUTS_COPY,
     TIME_SERIES,
-    PATHS_TO_PLOTS,
-    PLOTS_DEMANDS,
-    PLOTS_RESOURCES,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     TYPE_BOOL,
@@ -24,6 +20,7 @@ from src.constants_json_strings import *
 import src.C1_verification as verify
 import src.C2_economic_functions as economics
 import src.F0_output as output
+import src.F1_plotting as F1 # only function F1.plot_input_timeseries()
 
 """
 Module C0 prepares the data red from csv or json for simulation, ie. pre-processes it. 
@@ -1454,52 +1451,23 @@ def receive_timeseries_from_csv(
 
     # plot all timeseries that are red into simulation input
     try:
-        plot_input_timeseries(
-            dict_values,
-            settings,
-            dict_asset[TIMESERIES],
-            dict_asset[LABEL],
-            header,
-            is_demand_profile,
+        F1.plot_input_timeseries(
+            dict_values=dict_values,
+            user_input=settings,
+            timeseries=dict_asset[TIMESERIES],
+            asset_name=dict_asset[LABEL],
+            column_head=header,
+            is_demand_profile=is_demand_profile,
         )
     except:
-        plot_input_timeseries(
-            dict_values,
-            settings,
-            dict_asset[input_type][VALUE],
-            dict_asset[LABEL],
-            header,
-            is_demand_profile,
+        F1.plot_input_timeseries(
+            dict_values=dict_values,
+            user_input=settings,
+            timeseries = dict_asset[input_type][VALUE],
+            asset_name = dict_asset[LABEL],
+            column_head = header,
+            is_demand_profile=is_demand_profile,
         )
-
-
-def plot_input_timeseries(
-    dict_values, user_input, timeseries, asset_name, column_head, is_demand_profile
-):
-    logging.info("Creating plots for asset %s's parameter %s", asset_name, column_head)
-    fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
-    axes_mg = axes
-
-    timeseries.plot(
-        title=asset_name, ax=axes_mg, drawstyle="steps-mid",
-    )
-    axes_mg.set(xlabel="Time", ylabel=column_head)
-    path = os.path.join(
-        user_input[PATH_OUTPUT_FOLDER],
-        "input_timeseries_" + asset_name + "_" + column_head + ".png",
-    )
-    if is_demand_profile is True:
-        dict_values[PATHS_TO_PLOTS][PLOTS_DEMANDS] += [str(path)]
-    else:
-        dict_values[PATHS_TO_PLOTS][PLOTS_RESOURCES] += [str(path)]
-    plt.savefig(
-        path, bbox_inches="tight",
-    )
-
-    plt.close()
-    plt.clf()
-    plt.cla()
-
 
 def treat_multiple_flows(dict_asset, dict_values, parameter):
     """
