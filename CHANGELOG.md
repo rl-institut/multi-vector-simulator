@@ -82,6 +82,8 @@ Here is a template for new release sections
 - Fixed E0.store_results_matrix(), now available types: 'str', 'bool', 'None', dict (with key VALUE), else ('int'/'float'). If KPI not in asset, no value is attributed. Added test for function (#468, #470)
 - Fixed main() calls in 'test_F1_plotting.py' (#468)
 - Added `pyppdf==0.0.12` to `requirements.txt` (#473)
+- Tests for A0: Now new dirs are only created if not existant
+- Function `A0.check_output_folder()`, now after `shutil.rmtree` we still `try-except os.mkdirs`, this fixes local issues with `FileExistsError`.  (#474)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
@@ -103,6 +105,7 @@ Here is a template for new release sections
 - Bug connected to global variables (#356)
 - MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
 - Adapted benchmark tests input folders to template (#386)
+- Local failing pytests (`FileExistsError`) on Ubuntu and Win10 (#474)
 
 ## [0.3.0] - 2020-06-08
 
