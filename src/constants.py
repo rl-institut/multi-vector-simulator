@@ -248,6 +248,9 @@ DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
     "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87},
 }
 
+# dict keys in results_json file
+TIMESERIES = "timeseries"
+
 # key of the dict containing generated plots filesnames in results_json file
 PATHS_TO_PLOTS = "paths_to_plots"
 # keys' names of dict containing generated plots filenames

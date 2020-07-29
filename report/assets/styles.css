@@ -72,12 +72,9 @@ h4 {
         font-size: 20pt;
 }
     .tableplay {
-        width:70%;
-        font-size: 20pt;
+        font-size: 12pt;
         margin-top:15px;
         margin-bottom: 2cm;
-        margin-left:auto;
-        margin-right:auto;
     }
 
     /* Styling for the pre-titles of the graphs */
@@ -203,10 +200,9 @@ h4 {
     display: none;
   }
 
-  .print {
+  .print-only {
     display: none;
   }
-
 }
 
 /* print styles */
@@ -230,6 +226,14 @@ h4 {
     font-size: 15pt;
   }
 
+  .dash-plots {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+  border: 20px dotted blue;
+  }
+
   .location-map-column {
     width: 48%;
     // padding-left: 2%;
@@ -239,7 +243,7 @@ h4 {
 
   .tableplay {
     page-break-inside:avoid;
-    font-size: 10pt;
+    font-size: 9pt;
     margin-top:1cm;
     margin-bottom: 1cm;
     margin-left:1cm;
