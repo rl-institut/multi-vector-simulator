@@ -118,6 +118,48 @@ class TestACElectricityBus:
         # compare the total excess electricity between the two cases
         assert excess["AB_grid_PV"] < excess["ABE_grid_PV_battery"]
 
+        @pytest.mark.skipif(
+            EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+            reason="Benchmark test deactivated, set env variable "
+            "EXECUTE_TESTS_ON to 'master' to run this test",
+        )
+        @mock.patch(
+            "argparse.ArgumentParser.parse_args", return_value=argparse.Namespace()
+        )
+        def test_benchmark_AD_grid_diesel(self, margs):
+            # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
+            use_case = "AD_grid_diesel"
+            # define an empty dictionary for excess electricity
+            main(
+                overwrite=True,
+                display_output="warning",
+                path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+                input_type=CSV_EXT,
+                path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+            )
+            # read timeseries_all_busses excel file
+            busses_flow = pd.read_excel(
+                os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
+                sheet_name="Electricity bus",
+            )
+            # make the time the index
+            busses_flow = busses_flow.set_index("Unnamed: 0")
+            # read json with results file
+            with open(
+                os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
+            ) as results:
+                data = json.load(results)
+            # make sure LCOE_dieset is less than grid price
+            assert (
+                data["energyConversion"]["diesel_generator"][
+                    "levelized_cost_of_energy_of_asset"
+                ]["value"]
+                < data["energyProviders"]["DSO"]["energy_price"]["value"]
+            )
+            # make sure grid is not used
+            assert sum(busses_flow["Diesel generator"]) == sum(busses_flow["demand_01"])
+
+    # todo: Add test for fuel consumption (kWh/l).
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
