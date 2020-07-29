@@ -149,7 +149,7 @@ BUS_SUFFIX = " bus"
 # DSO
 DSO_CONSUMPTION = "_consumption"
 DSO_FEEDIN = "_feedin"
-DSO_CONSUMPTION = "_consumption"
+DSO_PEAK_DEMAND_BUS_NAME = "_pdp" # short for peak demand pricing
 DSO_PEAK_DEMAND_PERIOD = "_period_"
 CONNECTED_CONSUMPTION_SOURCE = "connected_consumption_sources"
 CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS = "connected_peak_demand_pricing_transformers"

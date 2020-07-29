@@ -651,7 +651,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
     define_source(
         dict_values=dict_values,
         asset_key=dso + DSO_CONSUMPTION,
-        output_bus_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION],
+        output_bus_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]+DSO_PEAK_DEMAND_BUS_NAME,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
     )
 
@@ -747,7 +747,11 @@ def add_a_transformer_for_each_peak_demand_pricing_period(dict_values, dict_dso,
         else:
             transformer_name = dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + str(key)
 
-        define_transformer_for_peak_demand_pricing(dict_values, dict_dso, transformer_name, dict_availability_timeseries[key])
+        define_transformer_for_peak_demand_pricing(
+            dict_values=dict_values,
+            dict_dso=dict_dso,
+            transformer_name=transformer_name,
+            timeseries_availability=dict_availability_timeseries[key])
         list_of_dso_energyConversion_assets.append(transformer_name)
 
     logging.debug(
@@ -827,14 +831,13 @@ def define_transformer_for_peak_demand_pricing(dict_values, dict_dso, transforme
 
     Returns
     -------
-
     Updated dict_values with newly added transformer asset in the energyConversion asset group.
     """
 
     default_dso_transformer = {
             LABEL: transformer_name,
-            INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION],
-            INPUT_BUS_NAME: bus_suffix(dict_dso[INFLOW_DIRECTION]),
+            INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION]+DSO_PEAK_DEMAND_BUS_NAME,
+            INPUT_BUS_NAME: bus_suffix(dict_dso[INFLOW_DIRECTION]+DSO_PEAK_DEMAND_BUS_NAME),
             OUTFLOW_DIRECTION: dict_dso[OUTFLOW_DIRECTION],
             OUTPUT_BUS_NAME: bus_suffix(dict_dso[OUTFLOW_DIRECTION]),
             AVAILABILITY_DISPATCH: timeseries_availability,
