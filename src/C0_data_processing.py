@@ -1119,7 +1119,6 @@ def define_sink(dict_values, asset_name, price, input_bus_name, **kwargs):
     dict_values[ENERGY_CONSUMPTION].update({asset_name: sink})
 
     # If multiple input busses exist
-    #todo this should not be commented
     apply_function_to_single_or_list(function=update_bus, parameter=input_direction, dict_values=dict_values, asset_key=asset_name, asset_label=sink[LABEL])
 
     return
