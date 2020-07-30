@@ -6,7 +6,6 @@ import src.C0_data_processing as C0
 from src.constants_json_strings import (
     UNIT,
     ENERGY_PROVIDERS,
-
     ENERGY_STORAGE,
     ENERGY_CONSUMPTION,
     ENERGY_PRODUCTION,
@@ -16,10 +15,14 @@ from src.constants_json_strings import (
     INFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
-    OPTIMIZE_CAP, INSTALLED_CAP,
-PEAK_DEMAND_PRICING,
-AVAILABILITY_DISPATCH,
-OEMOF_ASSET_TYPE, INPUT_BUS_NAME, OUTPUT_BUS_NAME, EFFICIENCY,
+    OPTIMIZE_CAP,
+    INSTALLED_CAP,
+    PEAK_DEMAND_PRICING,
+    AVAILABILITY_DISPATCH,
+    OEMOF_ASSET_TYPE,
+    INPUT_BUS_NAME,
+    OUTPUT_BUS_NAME,
+    EFFICIENCY,
     TAX,
     VALUE,
     LABEL,
@@ -165,14 +168,19 @@ dict_test_avilability = {
     }
 }
 
+
 def test_define_availability_of_peak_demand_pricing_assets_yearly():
-    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(dict_test_avilability, 1, 12)
+    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
+        dict_test_avilability, 1, 12
+    )
     assert len(dict_availability_timeseries) == 1
     assert dict_availability_timeseries[1].values.sum() == 8760
 
 
 def test_define_availability_of_peak_demand_pricing_assets_monthly():
-    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(dict_test_avilability, 12, 1)
+    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
+        dict_test_avilability, 12, 1
+    )
     assert len(dict_availability_timeseries) == 12
     assert dict_availability_timeseries[1].values.sum() == 31 * 24
     total = 0
@@ -182,7 +190,9 @@ def test_define_availability_of_peak_demand_pricing_assets_monthly():
 
 
 def test_define_availability_of_peak_demand_pricing_assets_quarterly():
-    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(dict_test_avilability, 4, 3)
+    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
+        dict_test_avilability, 4, 3
+    )
     assert len(dict_availability_timeseries) == 4
     total = 0
     for key in dict_availability_timeseries:
@@ -191,22 +201,45 @@ def test_define_availability_of_peak_demand_pricing_assets_quarterly():
 
 
 def test_define_transformer_for_peak_demand_pricing():
-    dict_test = {ENERGY_CONVERSION: {},
-                 ENERGY_PROVIDERS: {"dso": {
-                     LABEL: "a_label",
-                     INFLOW_DIRECTION: "a_direction",
-                     OUTFLOW_DIRECTION: "b_direction",
-                     PEAK_DEMAND_PRICING: {VALUE: 60}
-                 }}}
+    dict_test = {
+        ENERGY_CONVERSION: {},
+        ENERGY_PROVIDERS: {
+            "dso": {
+                LABEL: "a_label",
+                INFLOW_DIRECTION: "a_direction",
+                OUTFLOW_DIRECTION: "b_direction",
+                PEAK_DEMAND_PRICING: {VALUE: 60},
+            }
+        },
+    }
     dict_test_dso = dict_test[ENERGY_PROVIDERS]["dso"].copy()
     transformer_name = "a_name"
     timeseries_availability = pd.Series()
-    C0.define_transformer_for_peak_demand_pricing(dict_test, dict_test_dso, transformer_name, timeseries_availability)
+    C0.define_transformer_for_peak_demand_pricing(
+        dict_test, dict_test_dso, transformer_name, timeseries_availability
+    )
     assert transformer_name in dict_test[ENERGY_CONVERSION]
-    for k in [LABEL, OPTIMIZE_CAP, INSTALLED_CAP, INFLOW_DIRECTION, OUTFLOW_DIRECTION, AVAILABILITY_DISPATCH, DISPATCH_PRICE, SPECIFIC_COSTS, DEVELOPMENT_COSTS, SPECIFIC_COSTS_OM, OEMOF_ASSET_TYPE, INPUT_BUS_NAME, OUTPUT_BUS_NAME, EFFICIENCY]:
+    for k in [
+        LABEL,
+        OPTIMIZE_CAP,
+        INSTALLED_CAP,
+        INFLOW_DIRECTION,
+        OUTFLOW_DIRECTION,
+        AVAILABILITY_DISPATCH,
+        DISPATCH_PRICE,
+        SPECIFIC_COSTS,
+        DEVELOPMENT_COSTS,
+        SPECIFIC_COSTS_OM,
+        OEMOF_ASSET_TYPE,
+        INPUT_BUS_NAME,
+        OUTPUT_BUS_NAME,
+        EFFICIENCY,
+    ]:
         assert k in dict_test[ENERGY_CONVERSION][transformer_name]
-    assert dict_test[ENERGY_CONVERSION][transformer_name][SPECIFIC_COSTS_OM][VALUE] == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE]
-
+    assert (
+        dict_test[ENERGY_CONVERSION][transformer_name][SPECIFIC_COSTS_OM][VALUE]
+        == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE]
+    )
 
 
 def test_define_energyBusses():
@@ -292,20 +325,28 @@ def test_update_bus():
         },
     }
     bus_label = C0.bus_suffix(bus_name)
-    C0.update_bus(dict_values=dict_test, bus=bus_name, asset_key=asset_name, asset_label=asset_label)
+    C0.update_bus(
+        dict_values=dict_test,
+        bus=bus_name,
+        asset_key=asset_name,
+        asset_label=asset_label,
+    )
     assert bus_label in dict_test[ENERGY_BUSSES]
     assert asset_name in dict_test[ENERGY_BUSSES][bus_label]
     assert asset_label in dict_test[ENERGY_BUSSES][bus_label][asset_name]
+
 
 def test_bus_suffix_functions():
     name = "name"
     bus_name = C0.bus_suffix(name)
     assert name == C0.remove_bus_suffix(bus_name)
 
+
 def test_bus_suffix_correct():
     bus = "a"
     bus_name = C0.bus_suffix(bus)
     assert bus_name == bus + BUS_SUFFIX
+
 
 def test_apply_function_to_single_or_list_apply_to_single():
     def multiply(parameter):
@@ -317,23 +358,25 @@ def test_apply_function_to_single_or_list_apply_to_single():
     assert parameter_processed == 2
 
 
-
 def test_apply_function_to_single_or_list_apply_to_list():
     def multiply(parameter):
         parameter_processed = 2 * parameter
         return parameter_processed
 
-    parameter = [1,1]
+    parameter = [1, 1]
     parameter_processed = C0.apply_function_to_single_or_list(multiply, parameter)
     assert parameter_processed == [2, 2]
+
 
 def test_determine_months_in_a_peak_demand_pricing_period_not_valid():
     with pytest.raises(C0.InvalidPeakDemandPricingPeriods):
         C0.determine_months_in_a_peak_demand_pricing_period(5, 365)
 
+
 def test_determine_months_in_a_peak_demand_pricing_period_valid():
     months_in_a_period = C0.determine_months_in_a_peak_demand_pricing_period(4, 365)
     assert months_in_a_period == 3
+
 
 def test_get_name_or_names_of_in_or_output_bus_single():
     bus = "bus"
@@ -341,29 +384,42 @@ def test_get_name_or_names_of_in_or_output_bus_single():
     bus_name = C0.get_name_or_names_of_in_or_output_bus(bus)
     assert bus_name == bus_with_suffix
 
+
 def test_get_name_or_names_of_in_or_output_bus_list():
     bus = ["bus1", "bus2"]
     bus_with_suffix = [C0.bus_suffix(bus[0]), C0.bus_suffix(bus[1])]
     bus_name = C0.get_name_or_names_of_in_or_output_bus(bus)
     assert bus_name == bus_with_suffix
 
-def test_evaluate_lifetime_costs():
-    settings={EVALUATED_PERIOD: {VALUE: 10}}
-    economic_data={PROJECT_DURATION: {VALUE: 20},
-                   DISCOUNTFACTOR: {VALUE: 0.1},
-                   TAX: {VALUE: 0},
-                   CRF: {VALUE: 0.1},
-                   ANNUITY_FACTOR: {VALUE: 7}}
 
-    dict_asset={SPECIFIC_COSTS_OM: {VALUE: 5, UNIT: "unit"},
-                SPECIFIC_COSTS: {VALUE: 100, UNIT: "unit"},
-                DISPATCH_PRICE: {VALUE: 1, UNIT: "unit"},
-                LIFETIME: {VALUE: 10}}
+def test_evaluate_lifetime_costs():
+    settings = {EVALUATED_PERIOD: {VALUE: 10}}
+    economic_data = {
+        PROJECT_DURATION: {VALUE: 20},
+        DISCOUNTFACTOR: {VALUE: 0.1},
+        TAX: {VALUE: 0},
+        CRF: {VALUE: 0.1},
+        ANNUITY_FACTOR: {VALUE: 7},
+    }
+
+    dict_asset = {
+        SPECIFIC_COSTS_OM: {VALUE: 5, UNIT: "unit"},
+        SPECIFIC_COSTS: {VALUE: 100, UNIT: "unit"},
+        DISPATCH_PRICE: {VALUE: 1, UNIT: "unit"},
+        LIFETIME: {VALUE: 10},
+    }
 
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
 
-    for k in [LIFETIME_SPECIFIC_COST, LIFETIME_SPECIFIC_COST_OM, ANNUITY_SPECIFIC_INVESTMENT_AND_OM, SIMULATION_ANNUITY, LIFETIME_PRICE_DISPATCH]:
+    for k in [
+        LIFETIME_SPECIFIC_COST,
+        LIFETIME_SPECIFIC_COST_OM,
+        ANNUITY_SPECIFIC_INVESTMENT_AND_OM,
+        SIMULATION_ANNUITY,
+        LIFETIME_PRICE_DISPATCH,
+    ]:
         assert k in dict_asset
+
 
 """
 def test_asess_energyVectors_and_add_to_project_data():

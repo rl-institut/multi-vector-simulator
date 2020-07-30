@@ -18,7 +18,7 @@ from src.constants_json_strings import (
     VALUE,
     LABEL,
     DISPATCH_PRICE,
-AVAILABILITY_DISPATCH,
+    AVAILABILITY_DISPATCH,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
     EFFICIENCY,
@@ -463,7 +463,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                         existing=dict_asset[INSTALLED_CAP][VALUE],
                     ),
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
-                    max = dict_asset[AVAILABILITY_DISPATCH].values
+                    max=dict_asset[AVAILABILITY_DISPATCH].values,
                 )
             }
         else:

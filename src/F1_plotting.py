@@ -453,7 +453,9 @@ def draw_graph(
     import networkx as nx
     import oemof.graph as graph
 
-    grph = graph.create_nx_graph(energysystem)
+    grph = graph.create_nx_graph(
+        energysystem, filename=user_input[PATH_OUTPUT_FOLDER] + "network_graph.xml"
+    )
 
     if type(node_color) is dict:
         node_color = [node_color.get(g, "#AFAFAF") for g in grph.nodes()]
@@ -492,10 +494,17 @@ def draw_graph(
             path, bbox_inches="tight",
         )
 
+
 from src.constants import PLOTS_DEMANDS, PLOTS_RESOURCES
 
+
 def plot_input_timeseries(
-    dict_values, user_input, timeseries, asset_name, column_head, is_demand_profile
+    dict_values,
+    user_input,
+    timeseries,
+    asset_name,
+    column_head="",
+    is_demand_profile=False,
 ):
     r"""
     This function is called from C0 to plot the input timeseries provided to the MVS.
