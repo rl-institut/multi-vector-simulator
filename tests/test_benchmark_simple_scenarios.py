@@ -31,6 +31,7 @@ class TestACElectricityBus:
     def setup_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+        if os.path.exists(TEST_OUTPUT_PATH) is False:
             os.mkdir(TEST_OUTPUT_PATH)
 
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command

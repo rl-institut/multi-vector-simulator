@@ -93,6 +93,7 @@ Here is a template for new release sections
 - Outdated table of tests of MVS `docs/tables/table_tests.csv` (#456)
 - Removed function C0.complete_missing_cost_data() as this should be covered by A1 for csv files (#379)
 - Old plots in `F2_autoreport.py` generated with matplotlib (#439)
+- Parameter `restore_from_oemof_file` from all files (inputs, tests) (#483)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
@@ -105,7 +106,8 @@ Here is a template for new release sections
 - Bug connected to global variables (#356)
 - MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
 - Adapted benchmark tests input folders to template (#386)
-- Local failing pytests (`FileExistsError`) on Ubuntu and Win10 (#474)
+- Local failing pytests (`FileExistsError`) on Ubuntu and Win10 (#474, #483)
+- 9 Warnings due to excess parameter `restore_from_oemof_file` (#483)
 
 ## [0.3.0] - 2020-06-08
 
