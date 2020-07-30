@@ -20,7 +20,7 @@ from src.constants_json_strings import *
 import src.C1_verification as verify
 import src.C2_economic_functions as economics
 import src.F0_output as output
-import src.F1_plotting as F1 # only function F1.plot_input_timeseries()
+import src.F1_plotting as F1  # only function F1.plot_input_timeseries()
 
 """
 Module C0 prepares the data red from csv or json for simulation, ie. pre-processes it. 
@@ -189,10 +189,11 @@ def process_all_assets(dict_values):
 
     # Define all excess sinks for each energy bus
     for bus_name in dict_values[ENERGY_BUSSES]:
-        define_sink(dict_values=dict_values,
-                    asset_name=bus_name + EXCESS,
-                    price={VALUE: 0, UNIT: CURR + "/" + UNIT},
-                    input_bus_name=bus_name,
+        define_sink(
+            dict_values=dict_values,
+            asset_name=bus_name + EXCESS,
+            price={VALUE: 0, UNIT: CURR + "/" + UNIT},
+            input_bus_name=bus_name,
         )
         logging.debug(
             "Created excess sink for energy bus %s", bus_name,
@@ -528,19 +529,23 @@ def add_busses_of_asset_depending_on_in_out_direction(
                     # Append bus name to bus_list
                     bus_list.append(bus_suffix(subbus))
                     # Check if bus of the direction is already contained in energyBusses
-                    update_bus(bus=subbus,
-                               dict_values=dict_values,
-                               asset_key=asset_key,
-                               asset_label = dict_asset[LABEL])
+                    update_bus(
+                        bus=subbus,
+                        dict_values=dict_values,
+                        asset_key=asset_key,
+                        asset_label=dict_asset[LABEL],
+                    )
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_list})
             # If false: Only one bus
             else:
                 # Check if bus of the direction is already contained in energyBusses
-                update_bus(bus=bus,
-                           dict_values=dict_values,
-                           asset_key=asset_key,
-                           asset_label = dict_asset[LABEL])
+                update_bus(
+                    bus=bus,
+                    dict_values=dict_values,
+                    asset_key=asset_key,
+                    asset_label=dict_asset[LABEL],
+                )
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_suffix(bus)})
     return
@@ -564,6 +569,7 @@ def bus_suffix(bus_direction):
     bus_label = bus_direction + BUS_SUFFIX
     return bus_label
 
+
 def remove_bus_suffix(bus_label):
     """
     Removes suffix from a INPUT / OUTPUT BUS LABEL to get the INPUT / OUTPUT DIRECTION.
@@ -577,8 +583,9 @@ def remove_bus_suffix(bus_label):
     -------
     Bus direction (without suffix)
     """
-    bus_direction=bus_label[:-len(BUS_SUFFIX)]
+    bus_direction = bus_label[: -len(BUS_SUFFIX)]
     return bus_direction
+
 
 def update_bus(bus, dict_values, asset_key, asset_label):
     """
@@ -639,17 +646,18 @@ def define_dso_sinks_and_sources(dict_values, dso):
     )
 
     dict_availability_timeseries = define_availability_of_peak_demand_pricing_assets(
-        dict_values,
-        number_of_pricing_periods,
-        months_in_a_period,
+        dict_values, number_of_pricing_periods, months_in_a_period,
     )
 
-    list_of_dso_energyConversion_assets = add_a_transformer_for_each_peak_demand_pricing_period(dict_values, dict_values[ENERGY_PROVIDERS][dso], dict_availability_timeseries)
+    list_of_dso_energyConversion_assets = add_a_transformer_for_each_peak_demand_pricing_period(
+        dict_values, dict_values[ENERGY_PROVIDERS][dso], dict_availability_timeseries
+    )
 
     define_source(
         dict_values=dict_values,
         asset_key=dso + DSO_CONSUMPTION,
-        output_bus_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]+DSO_PEAK_DEMAND_BUS_NAME,
+        output_bus_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]
+        + DSO_PEAK_DEMAND_BUS_NAME,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
     )
 
@@ -673,7 +681,9 @@ def define_dso_sinks_and_sources(dict_values, dso):
     return
 
 
-def define_availability_of_peak_demand_pricing_assets(dict_values, number_of_pricing_periods, months_in_a_period):
+def define_availability_of_peak_demand_pricing_assets(
+    dict_values, number_of_pricing_periods, months_in_a_period
+):
     r"""
     Determined the availability timeseries for the later to be defined dso assets for taking into account the peak demand pricing periods.
 
@@ -714,7 +724,10 @@ def define_availability_of_peak_demand_pricing_assets(dict_values, number_of_pri
 
     return dict_availability_timeseries
 
-def add_a_transformer_for_each_peak_demand_pricing_period(dict_values, dict_dso, dict_availability_timeseries):
+
+def add_a_transformer_for_each_peak_demand_pricing_period(
+    dict_values, dict_dso, dict_availability_timeseries
+):
     r"""
     Adds transformers that are supposed to model the peak_demand_pricing periods for each period.
     This is changed compared to MVS 0.3.0, as there a peak demand pricing period was added by adding a source, not a transformer.
@@ -741,15 +754,24 @@ def add_a_transformer_for_each_peak_demand_pricing_period(dict_values, dict_dso,
     list_of_dso_energyConversion_assets = []
     for key in dict_availability_timeseries.keys():
         if len(dict_availability_timeseries.keys()) == 1:
-            transformer_name = dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD
+            transformer_name = (
+                dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD
+            )
         else:
-            transformer_name = dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + "_" + str(key)
+            transformer_name = (
+                dict_dso[LABEL]
+                + DSO_CONSUMPTION
+                + DSO_PEAK_DEMAND_PERIOD
+                + "_"
+                + str(key)
+            )
 
         define_transformer_for_peak_demand_pricing(
             dict_values=dict_values,
             dict_dso=dict_dso,
             transformer_name=transformer_name,
-            timeseries_availability=dict_availability_timeseries[key])
+            timeseries_availability=dict_availability_timeseries[key],
+        )
 
         F1.plot_input_timeseries(
             dict_values=dict_values,
@@ -765,6 +787,7 @@ def add_a_transformer_for_each_peak_demand_pricing_period(dict_values, dict_dso,
         f"is set as specific_costs_om of the peak demand pricing transformers of the DSO."
     )
     return list_of_dso_energyConversion_assets
+
 
 def determine_months_in_a_peak_demand_pricing_period(
     number_of_pricing_periods, simulation_period_lenght
@@ -817,7 +840,10 @@ def determine_months_in_a_peak_demand_pricing_period(
     )
     return months_in_a_period
 
-def define_transformer_for_peak_demand_pricing(dict_values, dict_dso, transformer_name, timeseries_availability):
+
+def define_transformer_for_peak_demand_pricing(
+    dict_values, dict_dso, transformer_name, timeseries_availability
+):
     r"""
     Defines a transformer for peak demand pricing in energyConverion
 
@@ -841,27 +867,38 @@ def define_transformer_for_peak_demand_pricing(dict_values, dict_dso, transforme
     """
 
     default_dso_transformer = {
-            LABEL: transformer_name,
-            OPTIMIZE_CAP:  {VALUE: True, UNIT: TYPE_BOOL},
-            INSTALLED_CAP: {VALUE: 0, UNIT: "?"},
-            INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION]+DSO_PEAK_DEMAND_BUS_NAME,
-            INPUT_BUS_NAME: bus_suffix(dict_dso[INFLOW_DIRECTION]+DSO_PEAK_DEMAND_BUS_NAME),
-            OUTFLOW_DIRECTION: dict_dso[OUTFLOW_DIRECTION],
-            OUTPUT_BUS_NAME: bus_suffix(dict_dso[OUTFLOW_DIRECTION]),
-            AVAILABILITY_DISPATCH: timeseries_availability,
-            EFFICIENCY: {VALUE: 1, UNIT: "factor"},
-            DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
-            SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + "?"},      # todo: this should be dict_dso[UNIT], but for that the provider needs a unit
-            SPECIFIC_COSTS_OM: {VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE], UNIT: CURR+"/" +"?"+"/" +UNIT_YEAR},
-            DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + "?" + "/" + UNIT_HOUR},
-            OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER
+        LABEL: transformer_name,
+        OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
+        INSTALLED_CAP: {VALUE: 0, UNIT: "?"},
+        INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION] + DSO_PEAK_DEMAND_BUS_NAME,
+        INPUT_BUS_NAME: bus_suffix(
+            dict_dso[INFLOW_DIRECTION] + DSO_PEAK_DEMAND_BUS_NAME
+        ),
+        OUTFLOW_DIRECTION: dict_dso[OUTFLOW_DIRECTION],
+        OUTPUT_BUS_NAME: bus_suffix(dict_dso[OUTFLOW_DIRECTION]),
+        AVAILABILITY_DISPATCH: timeseries_availability,
+        EFFICIENCY: {VALUE: 1, UNIT: "factor"},
+        DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
+        SPECIFIC_COSTS: {
+            VALUE: 0,
+            UNIT: CURR + "/" + "?",
+        },  # todo: this should be dict_dso[UNIT], but for that the provider needs a unit
+        SPECIFIC_COSTS_OM: {
+            VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE],
+            UNIT: CURR + "/" + "?" + "/" + UNIT_YEAR,
+        },
+        DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + "?" + "/" + UNIT_HOUR},
+        OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
     }
 
     dict_values[ENERGY_CONVERSION].update({transformer_name: default_dso_transformer})
 
-    #todo define AVAILABILITY_DISPATCH for transfomers in D0
-    logging.debug(f"Model for peak demand pricing: Adding transfomer {transformer_name}.")
+    # todo define AVAILABILITY_DISPATCH for transfomers in D0
+    logging.debug(
+        f"Model for peak demand pricing: Adding transfomer {transformer_name}."
+    )
     return
+
 
 def define_source(dict_values, asset_key, output_bus_direction, **kwargs):
     f"""
@@ -902,7 +939,7 @@ def define_source(dict_values, asset_key, output_bus_direction, **kwargs):
             UNIT: UNIT_YEAR,
         },
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
-        MAXIMUM_CAP: {VALUE: None, UNIT: "?"}
+        MAXIMUM_CAP: {VALUE: None, UNIT: "?"},
     }
 
     for item in kwargs:
@@ -910,23 +947,35 @@ def define_source(dict_values, asset_key, output_bus_direction, **kwargs):
             default_source_dict.update({item: kwargs[item]})
         if item == TIMESERIES:
             default_source_dict.update({DISPATCHABILITY: False})
-            logging.debug(f"{default_source_dict[LABEL]} can provide a total generation of {sum(kwargs[TIMESERIES].values)}")
+            logging.debug(
+                f"{default_source_dict[LABEL]} can provide a total generation of {sum(kwargs[TIMESERIES].values)}"
+            )
             default_source_dict.update(
                 {
                     OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
                     TIMESERIES_PEAK: {VALUE: max(kwargs[TIMESERIES]), UNIT: "kW"},
                     # todo if we have normalized timeseries hiere, the capex/opex (simulation) have changed, too
-                    TIMESERIES_NORMALIZED: kwargs[TIMESERIES] / max(kwargs[TIMESERIES])
-                })
+                    TIMESERIES_NORMALIZED: kwargs[TIMESERIES] / max(kwargs[TIMESERIES]),
+                }
+            )
         if item == "price":
             determine_dispatch_price(dict_values, kwargs[item], default_source_dict)
 
     dict_values[ENERGY_PRODUCTION].update({asset_key: default_source_dict})
 
-    logging.info(f"Asset {default_source_dict[LABEL]} was added to the energyProduction assets.")
+    logging.info(
+        f"Asset {default_source_dict[LABEL]} was added to the energyProduction assets."
+    )
 
-    apply_function_to_single_or_list(function=update_bus, parameter=output_bus_direction, dict_values=dict_values, asset_key=asset_key, asset_label=default_source_dict[LABEL])
+    apply_function_to_single_or_list(
+        function=update_bus,
+        parameter=output_bus_direction,
+        dict_values=dict_values,
+        asset_key=asset_key,
+        asset_label=default_source_dict[LABEL],
+    )
     return
+
 
 def get_name_or_names_of_in_or_output_bus(bus):
     """
@@ -948,6 +997,7 @@ def get_name_or_names_of_in_or_output_bus(bus):
     else:
         bus_name = bus_suffix(bus)
     return bus_name
+
 
 def determine_dispatch_price(dict_values, price, source):
 
@@ -1006,6 +1056,7 @@ def determine_dispatch_price(dict_values, price, source):
             source[DISPATCH_PRICE][VALUE],
         )
     return
+
 
 def define_sink(dict_values, asset_name, price, input_bus_name, **kwargs):
     r"""
@@ -1127,9 +1178,16 @@ def define_sink(dict_values, asset_name, price, input_bus_name, **kwargs):
     dict_values[ENERGY_CONSUMPTION].update({asset_name: sink})
 
     # If multiple input busses exist
-    apply_function_to_single_or_list(function=update_bus, parameter=input_direction, dict_values=dict_values, asset_key=asset_name, asset_label=sink[LABEL])
+    apply_function_to_single_or_list(
+        function=update_bus,
+        parameter=input_direction,
+        dict_values=dict_values,
+        asset_key=asset_name,
+        asset_label=sink[LABEL],
+    )
 
     return
+
 
 def apply_function_to_single_or_list(function, parameter, **kwargs):
     """
@@ -1157,6 +1215,7 @@ def apply_function_to_single_or_list(function, parameter, **kwargs):
         parameter_processed = function(parameter, **kwargs)
 
     return parameter_processed
+
 
 def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     r"""
@@ -1253,6 +1312,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     )
 
     return
+
 
 def determine_lifetime_price_dispatch(dict_asset, economic_data):
     """
@@ -1474,11 +1534,12 @@ def receive_timeseries_from_csv(
         F1.plot_input_timeseries(
             dict_values=dict_values,
             user_input=settings,
-            timeseries = dict_asset[input_type][VALUE],
-            asset_name = dict_asset[LABEL],
-            column_head = header,
+            timeseries=dict_asset[input_type][VALUE],
+            asset_name=dict_asset[LABEL],
+            column_head=header,
             is_demand_profile=is_demand_profile,
         )
+
 
 def treat_multiple_flows(dict_asset, dict_values, parameter):
     """

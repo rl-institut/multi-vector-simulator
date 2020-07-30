@@ -147,8 +147,8 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     # Processing further KPI
     # todo : reactivate function
-    #E3.total_renewable_and_non_renewable_energy_origin(dict_values)
-    #E3.renewable_share(dict_values)
+    # E3.total_renewable_and_non_renewable_energy_origin(dict_values)
+    # E3.renewable_share(dict_values)
 
     logging.info("Evaluating optimized capacities and dispatch.")
     return
