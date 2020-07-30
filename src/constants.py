@@ -119,7 +119,6 @@ REQUIRED_CSV_PARAMETERS = {
         ENERGY_VECTOR,
     ],
     ENERGY_PROVIDERS: [
-        UNIT,
         ENERGY_PRICE,
         FEEDIN_TARIFF,
         INFLOW_DIRECTION,
@@ -223,6 +222,12 @@ TYPE_NONE = "None"
 TYPE_FLOAT = "float"
 
 EXTRA_CSV_PARAMETERS = {
+    UNIT: {
+        DEFAULT_VALUE: "NA",
+        UNIT: TYPE_STR,
+        WARNING_TEXT: "defines the unit of power provided by a DSO (Values: str). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
+    },
     MAXIMUM_CAP: {
         DEFAULT_VALUE: None,
         UNIT: TYPE_NONE,
