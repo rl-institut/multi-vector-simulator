@@ -161,9 +161,7 @@ CONNECTED_FEEDIN_SINK = "connected_feedin_sink"
 AUTO_SOURCE = "_source"
 AUTO_SINK = "_sink"
 DISPATCHABILITY = "dispatchable"
-AVAILABILITY_DISPATCH = (
-    "availability_timeseries"  # todo this needs to be implemented in D0...D3
-)
+AVAILABILITY_DISPATCH = "availability_timeseries"
 
 # Sinks
 EXCESS_SINK_POSTFIX = " excess sink"
