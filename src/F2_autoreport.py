@@ -539,6 +539,84 @@ def ready_flows_plots(dict_dataseries, json_results_file):
     return multi_plots
 
 
+def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
+    # Initialize an empty list and a dict for use later in the function
+    pie_plots = []
+    pie_data_dict = {}
+
+    # df_pie_data.reset_index(drop=True, inplace=True)
+    columns_list = list(df_pie_data.columns)
+    columns_list.remove(LABEL)
+
+    # List of color schemes to be used in the pie plots
+    colors_schemes = ["thermal", "haline", "solar"]
+    print(df_pie_data.to_string())
+    # Loop to iterate through the list of columns of the DF which are nothing but the KPIs to be plotted
+    for kp_indic, color in zip(columns_list, colors_schemes):
+
+        # Assign an id for the plot
+        comp_id = kp_indic + "plot"
+
+        kpi_part = ""
+
+        # Make a copy of the DF to make various manipulations for the pie chart plotting
+        df_temp = df_pie_data.copy()
+
+        # Get the total value for each KPI to use in the title of the respective pie chart
+        df_temp2 = df_temp.copy()
+        df_temp2.set_index(LABEL, inplace=True)
+        total_for_title = df_temp2.at["Total", kp_indic]
+
+        # Drop the total row in the dataframe
+        df_temp.drop(df_temp.tail(1).index, inplace=True)
+
+        # Gather the data for each asset for the particular KPI, in a dict
+        for row_index in range(0, len(df_temp)):
+            pie_data_dict[df_temp.at[row_index, LABEL]] = df_temp.at[
+                row_index, kp_indic
+            ]
+
+        # Remove negative values (such as the feed-in sinks) from the dict
+        pie_data_dict = {k: v for (k, v) in pie_data_dict.items() if v >= 0}
+
+        # Get the names and values for the pie chart from the above dict
+        names_plot = list(pie_data_dict.keys())
+        values_plot = list(pie_data_dict.values())
+
+        # Below loop determines the first part of the plot title, according to the kpi being plotted
+        if "annuity" in kp_indic:
+            kpi_part = "Annuity Costs ("
+            scheme_choosen = px.colors.sequential.Aggrnyl
+        elif "investment" in kp_indic:
+            kpi_part = "Upfront Investment Costs ("
+            scheme_choosen = px.colors.sequential.RdBu
+        elif "om" in kp_indic:
+            kpi_part = "Operation and Maintenance Costs ("
+            scheme_choosen = px.colors.sequential.haline
+
+        # Title of the pie plot
+        plot_title = (
+            kpi_part
+            + str(round(total_for_title, 2))
+            + "$): "
+            + json_results_file[PROJECT_DATA][PROJECT_NAME]
+            + json_results_file[PROJECT_DATA][SCENARIO_NAME]
+        )
+
+        # Append the plot to the list by calling the plotting function directly
+        pie_plots.append(
+            insert_pie_plots(
+                title_of_plot=plot_title,
+                names=names_plot,
+                values=values_plot,
+                color_scheme=scheme_choosen,
+                plot_id=comp_id,
+                print_only=only_print,
+            )
+        )
+    return pie_plots
+
+
 # Styling of the report
 
 
