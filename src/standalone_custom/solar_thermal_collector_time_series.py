@@ -29,6 +29,7 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
 # please adapt
+simulation_date = "2020-07-30" # used for filenames and folders. non-automatic
 path_to_server = "/home/sabine/rl-institut/"
 
 path_to_data_folder = os.path.join(
@@ -37,7 +38,7 @@ path_to_data_folder = os.path.join(
 )
 path_to_results_folder = os.path.join(
     path_to_server,
-    "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/2020-07-23_solar_thermal_collector",
+    f"04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/{simulation_date}_solar_thermal_collector",
 )
 
 
@@ -181,7 +182,7 @@ if plt:
     plt.xlabel("time")
     plt.ylabel("collector's heat in kWh")
     filename_fig = os.path.join(
-        path_to_results_folder, "2020-07-23_solar_thermal_generation.pdf"
+        path_to_results_folder, f"{simulation_date}_solar_thermal_generation.pdf"
     )
     fig.savefig(filename_fig)
     plt.show()
