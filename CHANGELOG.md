@@ -20,6 +20,15 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+-
+### Changed
+-
+### Removed
+-
+
+## [0.3.1] - 2020-07-30
+
+### Added
 - Release protocol in CONTRIBUTING.md file (#353)
 - Custom heat demand profile generation (#371)
 - Add custom solar thermal collector generation profile (#370)
