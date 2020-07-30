@@ -145,7 +145,8 @@ def simulation_settings(simulation_settings):
 
 
 def economic_parameters(economic_parameters):
-    """Calculate annuity factor
+    """
+    Calculate annuity factor
 
     :param economic_parameters:
     :return:
