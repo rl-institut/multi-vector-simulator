@@ -1241,8 +1241,16 @@ def create_app(results_json):
                             make_dash_data_table(df_cost_matrix),
                             insert_image_array(
                                 results_json[PATHS_TO_PLOTS][PLOTS_COSTS], width=500
-                            )
+                            ),
                             # TODO Plots to be generated using Plotly
+                            html.Div(
+                                className="add-pie-plots",
+                                children=ready_pie_plots(
+                                    df_pie_data=df_kpis,
+                                    json_results_file=results_json,
+                                    only_print=False,
+                                ),
+                            ),
                         ],
                     ),
                 ],
