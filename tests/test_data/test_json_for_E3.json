@@ -1537,6 +1537,7 @@
     },
     "energyProviders": {
         "DSO": {
+            "unit": "kW",
             "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
