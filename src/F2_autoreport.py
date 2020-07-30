@@ -539,6 +539,41 @@ def ready_flows_plots(dict_dataseries, json_results_file):
     return multi_plots
 
 
+def insert_pie_plots(
+    title_of_plot, names, values, color_scheme, plot_id, print_only=False
+):
+
+    fig = px.pie(values=values, names=names, color_discrete_sequence=color_scheme)
+    fig.update_layout(
+        title={
+            "text": title_of_plot,
+            "y": 0.95,
+            "x": 0.5,
+            "font_size": 26,
+            "xanchor": "center",
+            "yanchor": "top",
+        },
+    )
+    fig.update_traces(
+        hoverinfo="label+percent", textposition="inside", textinfo="percent+label"
+    )
+
+    plot_created = [
+        html.Img(
+            className="print-only dash-plot",
+            src="data:image/png;base64,{}".format(
+                base64.b64encode(fig.to_image(format="png", width=500)).decode(),
+            ),
+        )
+    ]
+
+    if print_only is False:
+        plot_created.append(
+            dcc.Graph(className="no-print", id=plot_id, figure=fig, responsive=True,)
+        )
+    return html.Div(children=plot_created)
+
+
 def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
     # Initialize an empty list and a dict for use later in the function
     pie_plots = []
