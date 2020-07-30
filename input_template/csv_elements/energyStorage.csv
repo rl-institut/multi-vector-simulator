@@ -1,0 +1,8 @@
+,unit,
+label,str,
+optimizeCap,bool,
+inflow_direction,str,
+outflow_direction,str,
+storage_filename,str,storage_01.csv
+energyVector,str,
+type_oemof,str,

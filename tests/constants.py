@@ -3,7 +3,9 @@ import os
 # import constants from src
 from src.constants import (
     INPUT_FOLDER,
+    TEMPLATE_INPUT_FOLDER,
     OUTPUT_FOLDER,
+    TEMPLATE_INPUT_PATH,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
     PATH_INPUT_FILE,
@@ -21,6 +23,8 @@ from src.constants import (
     CSV_EXT,
     REQUIRED_CSV_FILES,
     REQUIRED_CSV_PARAMETERS,
+    MISSING_PARAMETERS_KEY,
+    EXTRA_PARAMETERS_KEY,
     KPI_SCALARS,
     PDF_REPORT,
     DICT_PLOTS,

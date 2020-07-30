@@ -46,11 +46,17 @@ For that, each of the following files have to be present in the folder "csv_elem
 - `simulation_settings.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/simulation_settings.csv>`_ - Simulation settings, including start date and duration
 - `project_data.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/project_data.csv>`_ - some generic project information
 
+
+For easy set-up of your energy system, we have provided an empty input folder template as well
+`here. <https://github.com/rl-institut/mvs_eland/blob/dev/input_template>`_
+For easy set-up of your energy system, we have provided an empty input folder template as well
+`here <https://github.com/rl-institut/mvs_eland/blob/dev/input_template>`_.
+A simple example system is setup with this `input folder <https://github.com/rl-institut/mvs_eland/blob/dev/tests/inputs>`_.
 When defining your energy system with this CSV files,
 please also refer to the definition of parameters that you can find here: `stable <https://mvs-eland.readthedocs.io/en/stable/MVS_parameters.html>`_ / `latest <https://mvs-eland.readthedocs.io/en/latest/MVS_parameters.html>`_.
 
 Please note that the allowed separators for csv files are located in `src/constants.py` under the
-`CSV_SEPARATORS` variable. Currently only `[',', ';', '&']` are allowed.
+`CSV_SEPARATORS` variable. Currently only `[",", ";", "&"]` are allowed.
 
 Json file: mvs_config.json
 ##########################
@@ -83,6 +89,13 @@ The unit columns also tell you what type of information is required from you (st
 In case of doubts, also consider the parameter list that is linked above.
 Do not delete any of the rows of the CSV´s – each parameter is needed for the simulation.
 There will also be warnings if you do so.
+
+Example of simple energy systems
+################################
+
+Input files of simple benchmarks (PV + battery + grid) scenarios can be found
+`here <https://github.com/rl-institut/mvs_eland/blob/dev/tests/benchmark_test_inputs/>`_
+
 
 Building a model from assets and energy flows
 #############################################

@@ -1,10 +1,9 @@
 ,unit,simulation_settings
-evaluated_period,days,2
 label,str,simulation_settings
-output_lp_file,bool,False
-restore_from_oemof_file,bool,True
 start_date,str,2018-01-01 00:00:00
-store_oemof_results,bool,True
+evaluated_period,days,365
 timestep,minutes,60
+output_lp_file,bool,False
+store_oemof_results,bool,True
 display_nx_graph,bool,False
 store_nx_graph,bool,False

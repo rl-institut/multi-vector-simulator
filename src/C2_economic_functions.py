@@ -14,43 +14,55 @@ Functionalities:
 - calculate effective fuel price cost, in case there is a annual fuel price change (this functionality still has to be checked in this module)
 """
 
-from src.constants_json_strings import CRF
+from src.constants_json_strings import (
+    CRF,
+    PROJECT_DURATION,
+    DISCOUNTFACTOR,
+)
 
 # annuity factor to calculate present value of cash flows
-def annuity_factor(project_life, wacc):
+def annuity_factor(project_life, discount_factor):
     """
     Calculates the annuity factor, which in turn in used to calculate the present value of annuities (instalments)
 
     :param project_life: time period over which the costs of the system occur
-    :param wacc: weighted average cost of capital, which is the after-tax average cost of various capital sources
+    :param discount_factor: weighted average cost of capital, which is the after-tax average cost of various capital sources
     :return: financial value "annuity factor". Dividing a present cost by tha annuity factor returns its annuity, multiplying an annuity with the annuity factor returns its present value
     """
-    # discount_rate was replaced here by wacc
-    annuity_factor = 1 / wacc - 1 / (wacc * (1 + wacc) ** project_life)
+    # discount_rate was replaced here by discount_factor
+    annuity_factor = 1 / discount_factor - 1 / (
+        discount_factor * (1 + discount_factor) ** project_life
+    )
     return annuity_factor
 
 
 # accounting factor to translate present value to annual cash flows
-def crf(project_life, wacc):
+def crf(project_life, discount_factor):
     """
     Calculates the capital recovery ratio used to determine the present value of a series of equal payments (annuity)
 
     :param project_life: time period over which the costs of the system occur
-    :param wacc: weighted average cost of capital, which is the after-tax average cost of various capital sources
+    :param discount_factor: weighted average cost of capital, which is the after-tax average cost of various capital sources
     :return: capital recovery factor, a ratio used to calculate the present value of an annuity
     """
-    crf = (wacc * (1 + wacc) ** project_life) / ((1 + wacc) ** project_life - 1)
+    crf = (discount_factor * (1 + discount_factor) ** project_life) / (
+        (1 + discount_factor) ** project_life - 1
+    )
     return crf
 
 
-def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
+def capex_from_investment(investment_t0, lifetime, project_life, discount_factor, tax):
     """
-    Calculates the capital expenditures, also known as CapEx. CapEx represent the total funds used to acquire or upgrade an asset
+    Calculates the capital expenditures, also known as CapEx. CapEx represent the total funds used to acquire or upgrade an asset.
+    The specific capex is calculated by taking into account all future cash flows connected to the investment into one unit of the asset.
+    This includes reinvestments, operation and management costs, dispatch costs as well as a deduction of the residual value at project end.
+    The residual value is calculated with a linear depreciation of the last investment, ie. as a even share of the last investment over
+    the lifetime of the asset. The remaining value of the asset is translated in a present value and then deducted.
 
     :param investment_t0: first investment at the beginning of the project made at year 0
     :param lifetime: time period over which investments and re-investments can occur. can be equal to, longer or shorter than project_life
     :param project_life: time period over which the costs of the system occur
-    :param wacc: weighted average cost of capital, which is the after-tax average cost of various capital sources
+    :param discount_factor: weighted average cost of capital, which is the after-tax average cost of various capital sources
     :param tax: compulsory financial charge paid to the government
     :return: capital expenditure for an asset over project lifetime
     """
@@ -70,18 +82,20 @@ def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
             # replacements taking place in year = number_of_replacement * lifetime
             if count_of_replacements * lifetime != project_life:
                 capex = capex + first_time_investment / (
-                    (1 + wacc) ** (count_of_replacements * lifetime)
+                    (1 + discount_factor) ** (count_of_replacements * lifetime)
                 )
 
     # Subtraction of component value at end of life with last replacement (= number_of_investments - 1)
     if number_of_investments * lifetime > project_life:
         last_investment = first_time_investment / (
-            (1 + wacc) ** ((number_of_investments - 1) * lifetime)
+            (1 + discount_factor) ** ((number_of_investments - 1) * lifetime)
         )
+        # the residual of the capex at the end of the simulation time takes into
+        # account the value of the money by deviding by (1 + discount_factor) ** (project_life)
         linear_depreciation_last_investment = last_investment / lifetime
         capex = capex - linear_depreciation_last_investment * (
             number_of_investments * lifetime - project_life
-        )
+        ) / (1 + discount_factor) ** (project_life)
 
     return capex
 
@@ -123,8 +137,8 @@ def fuel_price_present_value(economics,):
     if economics["fuel_price_change_annual"] == 0:
         economics.update({"price_fuel": fuel_price_i})
     else:
-        for i in range(0, economics["project_lifetime"]):
-            cash_flow_fuel_l += fuel_price_i / (1 + economics["wacc"]) ** (i)
+        for i in range(0, economics[PROJECT_DURATION]):
+            cash_flow_fuel_l += fuel_price_i / (1 + economics[DISCOUNTFACTOR]) ** (i)
             fuel_price_i = fuel_price_i * (1 + economics["fuel_price_change_annual"])
         economics.update({"price_fuel": cash_flow_fuel_l * economics[CRF]})
 

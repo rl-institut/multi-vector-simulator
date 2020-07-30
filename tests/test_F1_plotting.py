@@ -16,6 +16,7 @@ from src.constants import (
     PLOTS_NX,
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
+    CSV_EXT,
 )
 from src.constants_json_strings import (
     LABEL,
@@ -25,7 +26,6 @@ from src.constants_json_strings import (
     KPI,
     KPI_SCALAR_MATRIX,
 )
-
 
 from .constants import (
     EXECUTE_TESTS_ON,
@@ -103,11 +103,21 @@ class TestNetworkx:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-i", TEST_INPUT_PATH_NX_TRUE, "-o", TEST_OUTPUT_PATH, "-ext", "csv", "-f"]
+            [
+                "-f",
+                "-log",
+                "warning",
+                "-i",
+                TEST_INPUT_PATH_NX_TRUE,
+                "-o",
+                TEST_OUTPUT_PATH,
+                "-ext",
+                CSV_EXT,
+            ]
         ),
     )
     def test_if_networkx_graph_is_stored_save_plot_true(self, m_args):
-        main()
+        main(overwrite=True, display_output="warning")
         assert (
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
         )
@@ -121,18 +131,20 @@ class TestNetworkx:
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
             [
+                "-f",
+                "-log",
+                "warning",
                 "-i",
                 TEST_INPUT_PATH_NX_FALSE,
                 "-o",
                 TEST_OUTPUT_PATH,
                 "-ext",
-                "csv",
-                "-f",
+                CSV_EXT,
             ]
         ),
     )
     def test_if_networkx_graph_is_stored_save_plot_false(self, m_args):
-        main()
+        main(overwrite=True, display_output="warning")
         assert (
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
         )

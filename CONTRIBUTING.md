@@ -10,7 +10,7 @@
 Development of a feature for this repository should follow the workflow described 
 by [Vincent Driessen](https://nvie.com/posts/a-successful-git-branching-model/).
 
-Here are the minimal procedure you should follow : 
+Here is the minimal procedure you should follow : 
 
 #### Step 1: Create an issue.
  
@@ -72,7 +72,7 @@ If a test fails, it is only due to what you changed (the test must passed before
   test names and error messages are there to help you find the error, please read them to try to
    debug yourself before seeking assistance :)
 
-Some test take more time to run (run a simulation) and were therefore disabled by default. It is
+Some tests take more time to run (run a simulation) and were therefore disabled by default. It is
  nevertheless important that you run a simulation test before you ask a review, or whenever you
   are ready to merge, to make sure the
   code still works.
@@ -104,6 +104,79 @@ Once you are satisfied with your PR you should ask someone to review it. Before 
   described succinctly what you have done in the [CHANGELOG](https://github.com/rl-institut/mvs_eland/blob/dev/CHANGELOG.md) file (indicating the number of the PR in parenthesis after
   the description, not the number of the issue).
 
+## Release protocol
+
+Once you are ready to publish a release, branch off from `dev`
+    ```bash
+    git checkout -b release/vX.Y.Z dev
+    ```
+For meaning of X, Y and Z version numbers, please refer to this [semantic versioning guidelines](https://semver.org/spec/v2.0.0.html).
+
+In this branch, you should normally only update the version number in the `CHANGELOG.md` and `setup.py` files.
+
+Your `CHANGELOG.md` file could look like this before the release
+```
+## [unreleased]
+
+### Added
+- feature 1
+- feature 2
+### Changed 
+- thing 1
+- thing 2
+### Removed
+- some stuff
+```
+
+Simply replace `unreleased` by `X.Y.Z` and add the date of release in [ISO format](https://xkcd.com/1179/), then add the structure for a new `unreleased` version
+
+```
+## [unreleased]
+
+### Added
+-
+### Changed 
+-
+### Removed
+-
+
+## [X.Y.Z] - 20**-**-**
+### Added
+- feature 1
+- feature 2
+### Changed 
+- thing 1
+- thing 2
+### Removed
+- some stuff
+```
+
+After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it in `master`.
+
+Locally, merge `release/vX.Y.Z` into `dev`
+```
+git checkout release/vX.Y.Z
+```
+
+```
+git pull
+```
+    
+```
+git checkout dev
+```
+
+```
+git merge release/vX.Y.Z
+```
+And push your these updates to the remote
+```
+git push
+```
+
+The idea behind this procedure is to avoid creating a merge commit in `dev` (because `master` would otherwise have two merge commit for this release once you merge the next release).
+
+Finally, [create a release](https://help.github.com/en/github/administering-a-repository/creating-releases) on github. Please choose master as the target for the tag and format the tag as `vX.Y.Z`. In the description field simply copy-paste the content of the `CHANGELOG`descriptions for this release and you're done!
 
 ## Contributing to Readthedocs
 

@@ -17,13 +17,96 @@ Here is a template for new release sections
 -
 ```
 
-## [Unreleased]
+## [0.3.1] - 2020-07-30
 
 ### Added
--
+- Release protocol in `CONTRIBUTING.md` file (#353)
+- Custom heat demand profile generation (#371)
+- Add custom solar thermal collector generation profile (#370)
+- Input template folder for easy generation of new simulations (#374), later also for tests of the input folder
+- Tests for ABE usecase (grid, PV, battery) (#385)
+- Test to verify that input folders have all required parameters (#398)
+- New `dict` `REQUIRED_MVS_PARAMETERS` to gather the required parameters from the csv or json
+ input type (#398)
+- `utils.py` module in `src` to gather the functions `find_input_folders` and `compare_input_parameters_with_reference` which can be used to find and validate input folders (#398)
+- Code and test for checking for new parameters in csv and raising warning message if not defined (`A1.check_for_newly_added_parameters`). This then also adds a default value to the new parameter  (#384)
+- Exception if an energyVector does not have internal generation or consumption from a DSO, and is only supplied by energy conversion from another sector: renewable share = 0. (#384)
+- Tests for source components in D1 (#391)
+- Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
+- Pyppeteer package for OS X users in troubleshooting (#414)
+- Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
+- New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
+- `.readthedocs.yml` configuration file (#435, #436)
+- Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
+- Tests for LCOE function in `test_E2_economics` (#438)
+- Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
+- File `constants_output.py` to contain all keys included in `scalars.xlsx` (#453)
+- Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
+- Add Plotly-based blots (line diagrams for energy flows and bar charts) to `F2_autoreport.py` (#439)
+- LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
+- Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case UVtgV. note: file not provided so far (#474)
+- Benchmark test for simple case grid and diesel without test for fuel consumption (#386)
+
 ### Changed
--
+- Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
+- Sort parameters in csv´s within the input folder (#374)
+- Change relative folder path to absolute in tests files (#396)
+- Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
+- Improve styling of the pdf report (#369)
+- `LIST_OF_NEW_PARAMETERS` renamed `EXTRA_CSV_PARAMETERS` and moved from `A1` to `constants.py
+` (#384)
+- Order of parameters in `tests/inputs`, fixed missing parameters  (#384)
+- Only a single output flow for sources (instead of multiple possible) as discussed in #149  (#391)
+- Move `existing` parameter into Investment objects of D1 components (was before added to output flow) (#391)
+- Use pyppeteers instead of selenium to emulate the webbrowser and print the pdf report
+ automatically (#407)
+- Update flowchart again (#409)
+- Label of storage components (storage capacity, input power, output power) will by default be redefined to the name of the storage and this component (#415)
+- Version number and date is only to be edited in one file (#419)
+- Add `ìnputs` folder to `.gitignore` (#401)
+- Change the calculation of the residual value for specific capex in C2 and test_C2 (#289, #247, PR #431): Now the present value of the residual value is considered
+- Explicitly return the dataframe with parameters value in function
+ `check_for_newly_added_parameter` (#428)
+- Rename function `check_for_newly_added_parameter` in `check_for_official_extra_parameters` (#428)
+- Add `ìnputs` folder to `.gitignore` (#401)
+- Readthedocs links to simple scenario `tests/inputs` (#420)
+- Adapt and add logging messages for components added to the model in D1 (#429)
+- Moved list of keys to be printed in `scalars.xlsx` to `constants_output.py` (#453)
+- Renamed `"peak_flow"` to `PEAK_FLOW` and `"average_flow"` to `AVERAGE_FLOW` (#453)
+- Changed function `E2.lcoe_asset()` and its tests, now processes one asset at a time (#453)
+- Added arguments ``-f`, `-log`, `warning`` to all `parse_args` and `main()` in `tests` (#456)
+- File `Developing.rst` with new description of tests and conventions (#456)
+- Added a `setup_class` (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
+- Created function to read version number and date from file instead of importing it from module
+ (#463)
+- Fixed `E0.store_results_matrix()`, now available types: `str`, `bool`, `None`, dict (with key VALUE), else (`int`/`float`). If KPI not in asset, no value is attributed. Added test for function (#468, #470)
+- Fixed `main()` calls in `test_F1_plotting.py` (#468)
+- Added `pyppdf==0.0.12` to `requirements.txt` (#473)
+- Tests for A0: Now new dirs are only created if not existant
+- Function `A0.check_output_folder()`, now after `shutil.rmtree` we still `try-except os.mkdirs`, this fixes local issues with `FileExistsError`.  (#474)
+
 ### Removed
+- Selenium to print the automatic project report for help (#407)
+- `MaximumCap` from list of required parameters for `energyStorage` assets (#415)
+- `inputs` folder (#401)
+- `tests/test_benchmark.py` module (#401)
+- Outdated table of tests of MVS `docs/tables/table_tests.csv` (#456)
+- Removed function `C0.complete_missing_cost_data()` as this should be covered by A1 for csv files (#379)
+- Old plots in `F2_autoreport.py` generated with matplotlib (#439)
+- Parameter `restore_from_oemof_file` from all files (inputs, tests) (#483)
+- Deleted columns from `fixcost.csv` as this is currently not used (#362)
+
+### Fixed
+- Bug connected to global variables (#356)
+- Duplicate of timeseries files (#388)
+- Warnings from local readthedocs compilation (#426)
+- Bug on local install (#437)
+- Input folder `tests/inputs` with simple example scenario (#420)
+- Description of storage efficiency in readthedocs (#457)
+- MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
+- Adapted benchmark tests input folders to template (#386)
+- Local failing pytests (`FileExistsError`) on Ubuntu and Win10 (#474, #483)
+- 9 Warnings due to excess parameter `restore_from_oemof_file` (#483)
 
 ## [0.3.0] - 2020-06-08
 
@@ -33,17 +116,14 @@ Here is a template for new release sections
 ### Changed
 - Test input files (#343)
 - All parameters of the json/csv input files are now defined by constant variables (i.e, `CRATE="crate"` instead of string `"crate"`) (#346)
-- Use "is" instead of "==" in if clauses for True, False and None (#346)
-- Categorize constants in 'constants_json_strings.py' (#347)
+- Use `is` instead of `==` in if clauses for True, False and None (#346)
+- Categorize constants in `constants_json_strings.py` (#347)
 - Renaming CAPEX_FIX = "capex_fix" into COST_DEVELOPMENT = "development_costs" (#347, #350)
 - Renaming CAPEX_VAR = "capex_var" into SPECIFIC_COST = "specific_costs" (#347, #350)
 - Renaming OPEX_FIX = "opex_fix" into SPECIFIC_COST_OM = "specific_costs_om" (#347, #350)
 - Renaming OPEX_VAR = "opex_var" into PRICE_DISPATCH = "dispatch_price" (#347, #350)
 - Change last strings into global constants in "constants_json_strings.py" (#349)
 - Autoreport now refers to actual project and scenario name + ID (#349)
-
-### Removed
-
 
 
 ## [0.2.1] - 2020-05-28
@@ -89,6 +169,7 @@ tipps for module building, and hint that units in the MVS are not checked (#229)
 - Possibility to deploy the report of the results in a browser (#323)
 - A main() function to be used by a server which only accepts json variable and returns json
  variable (not saving to a file) (#327)
+- Add information about the feature to view the web app and generate PDF of the automatic report to readthedocs (#283)
 
 ### Changed
 - Default input files from "inputs": Changed some parameters (#143)
@@ -115,9 +196,10 @@ tipps for module building, and hint that units in the MVS are not checked (#229)
 - Rename mvs_eland_tool/mvs_eland_tool.py --> mvs_eland_tool/local_deploy.py (#327)
 - Now main (local use) and run_simulation (server use) are available in mvs_eland_tool package
   (#327)
+
  
 ### Removed
-- Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´, as well as from all input
+- Removed parameter `oemof_file_name` from `simulation_settings.csv`, as well as from all input
  files etc. The name is hardcoded now (#150)
 
 ### Fixed

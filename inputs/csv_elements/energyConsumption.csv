@@ -1,9 +1,0 @@
-,unit,demand_01,demand_02,demand_03
-dsm,str,False,False,False
-file_name,str,demand_harbor.csv,demand_remaining.csv,demand_shore_power.csv
-label,str,Harbor,Remaining demand,Shore power (docked ships)
-type_asset,str,demand,demand,demand
-type_oemof,str,sink,sink,sink
-energyVector,str,Electricity,Electricity,Electricity
-inflow_direction,str,Electricity,Electricity,Electricity
-unit,str,kW,kW,kW

@@ -4,8 +4,10 @@ from src.constants_json_strings import *
 
 # path to the root of this repository (assumes this file is in src folder)
 REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# name of the input folder
+# name of the default input folder
 INPUT_FOLDER = "inputs"
+# name of the template input folder
+TEMPLATE_INPUT_FOLDER = "input_template"
 # name of the json extension
 JSON_EXT = "json"
 # name of the csv extension
@@ -16,19 +18,6 @@ CSV_ELEMENTS = "csv_elements"
 JSON_FNAME = "mvs_config.json"
 # name of the json file which is should be created in the input folder if option -i csv was chosen
 CSV_FNAME = "mvs_csv_config.json"
-# list of csv filename which must be present within the CSV_ELEMENTS folder
-REQUIRED_CSV_FILES = (
-    FIX_COST,
-    SIMULATION_SETTINGS,
-    PROJECT_DATA,
-    ECONOMIC_DATA,
-    ENERGY_CONVERSION,
-    ENERGY_PRODUCTION,
-    ENERGY_STORAGE,
-    ENERGY_PROVIDERS,
-    ENERGY_CONSUMPTION,
-)
-
 # allowed symbols for separating values in .csv files
 CSV_SEPARATORS = (",", ";", "&")
 # name of the folder containing timeseries described by .csv files
@@ -39,10 +28,14 @@ OUTPUT_FOLDER = "MVS_outputs"
 INPUTS_COPY = INPUT_FOLDER
 # name of the automatically generated pdf report
 PDF_REPORT = "simulation_report.pdf"
+# path of the pdf report path
+REPORT_PATH = os.path.join(REPO_PATH, "report")
 
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)
+
+TEMPLATE_INPUT_PATH = os.path.join(REPO_PATH, TEMPLATE_INPUT_FOLDER)
 
 PATH_INPUT_FILE = "path_input_file"
 PATH_INPUT_FOLDER = "path_input_folder"
@@ -172,6 +165,51 @@ REQUIRED_CSV_PARAMETERS = {
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
 REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
+# list of parameters which must be present within the JSON_FNAME file with the sub-parameters
+# note: if the value of a key is none, then the value is expected to be user-defined and thus cannot
+# be in a required parameters dict
+REQUIRED_JSON_PARAMETERS = {
+    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX],
+    ENERGY_CONSUMPTION: None,
+    ENERGY_CONVERSION: None,
+    ENERGY_PRODUCTION: None,
+    ENERGY_PROVIDERS: None,
+    ENERGY_STORAGE: None,
+    FIX_COST: None,
+    PROJECT_DATA: [
+        COUNTRY,
+        LABEL,
+        LATITUDE,
+        LONGITUDE,
+        PROJECT_ID,
+        PROJECT_NAME,
+        SCENARIO_ID,
+        SCENARIO_NAME,
+    ],
+    SIMULATION_SETTINGS: [
+        DISPLAY_NX_GRAPH,
+        EVALUATED_PERIOD,
+        LABEL,
+        OUTPUT_LP_FILE,
+        START_DATE,
+        STORE_NX_GRAPH,
+        STORE_OEMOF_RESULTS,
+        TIMESTEP,
+    ],
+}
+# references for which parameters must be present either in the json or csv input method
+REQUIRED_MVS_PARAMETERS = {
+    JSON_EXT: REQUIRED_JSON_PARAMETERS,
+    CSV_EXT: REQUIRED_CSV_PARAMETERS,
+}
+
+MISSING_PARAMETERS_KEY = "missing_parameters"
+EXTRA_PARAMETERS_KEY = "extra_parameters"
+
+# Instroducting new parameters (later to be merged into list ll.77)
+WARNING_TEXT = "warning_text"
+REQUIRED_IN_CSV_ELEMENTS = "required in files"
+DEFAULT_VALUE = "default"
 
 # possible type of variable stored into the json file
 TYPE_DATETIMEINDEX = "pandas_DatetimeIndex:"
@@ -181,11 +219,36 @@ TYPE_TIMESTAMP = "pandas_Timestamp:"
 TYPE_BOOL = "bool"
 TYPE_STR = "str"
 TYPE_NONE = "None"
+TYPE_FLOAT = "float"
+
+EXTRA_CSV_PARAMETERS = {
+    MAXIMUM_CAP: {
+        DEFAULT_VALUE: None,
+        UNIT: TYPE_NONE,
+        WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_CONVERSION, ENERGY_PRODUCTION],
+    },
+    RENEWABLE_ASSET_BOOL: {
+        DEFAULT_VALUE: False,
+        UNIT: TYPE_BOOL,
+        WARNING_TEXT: "allows defining a energyProduction asset as either renewable (True) or non-renewable (False) source. ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PRODUCTION],
+    },
+    RENEWABLE_SHARE_DSO: {
+        DEFAULT_VALUE: 0,
+        UNIT: TYPE_FLOAT,
+        WARNING_TEXT: "allows defining the renewable share of the DSO supply (Values: Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
+    },
+}
 
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
     "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1},
     "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87},
 }
+
+# dict keys in results_json file
+TIMESERIES = "timeseries"
 
 # key of the dict containing generated plots filesnames in results_json file
 PATHS_TO_PLOTS = "paths_to_plots"
@@ -208,3 +271,6 @@ DICT_PLOTS = {
         PLOTS_COSTS: [],
     }
 }
+
+# Reading data from csv file
+HEADER = "header"

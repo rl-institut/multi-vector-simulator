@@ -25,9 +25,9 @@ economic_data.csv
 
 **currency**: The currency of the country where the project is implemented. For example, in the case of Germany, the value is EUR. For Norway, it is NOK. 
 
-**discount_factor**: Discount factor is the factor which accounts for the depreciation in the value of money in the future, compared to the current value of the same money. 
+**discount_factor**: Discount factor is the factor which accounts for the depreciation in the value of money in the future, compared to the current value of the same money. The common method is to calculate the weighted average cost of capital (WACC) and use it as the discount rate.
 
-**Project_duration**: The name of years the project is intended to be operational. 
+**Project_duration**: The name of years the project is intended to be operational. The project duration also sets the installation time of the assets used in the simulation. After the project ends these assets are 'sold' and the refund is charged against the initial investment costs.
 
 **tax**: Tax factor. 
 
@@ -39,8 +39,6 @@ simulation_settings.csv
 **evaluated_period**: The number of days for which the simulation is to be run.
 
 **output_lp_file**: Acceptable values are either True or False. Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user to peer ‘under the hood’ to understand how the program optimizes for the solution.
-
-**restore_from_oemof_file**: [Developer setting] Allows the developer to check the OEMOF file where the results are stored and edit the simulation parameters in it. (not integrated yet!)
 
 **start_date**: The data and time on which the simulation starts at the first step. Acceptable format is YYYY-MM-DD HH:MM:SS. E.g.: 2018-01-01 00:00:00
 
@@ -130,8 +128,10 @@ storage_xx.csv
 A c-rate of 1 implies that the battery can discharge or charge completely in a single timestep.
 Only the columns "input power" and "output power" require a value, in column "storage capacity" c_rate should be set to NaN.
 
-**soc_initial**: The level of charge (as a factor of the actual capacity)  in the storage in the zeroth timestep. Acceptable values are either None or the factor. Only the column "storage capacity" require a value, in column "input power" and "output power" soc_initial should be set to NaN.
+**soc_initial**: The level of charge (as a factor of the actual capacity) in the storage in the zeroth timestep. Acceptable values are either None or the factor. Only the column "storage capacity" require a value, in column "input power" and "output power" soc_initial should be set to NaN.
 
 **soc_max**: The maximum permissible level of charge in the battery (generally, it is when the battery is filled to its nominal capacity), represented by the value 1.0. Users can  also specify a certain value as a factor of the actual capacity. Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_max should be set to NaN.
 
 **soc_min**: The minimum permissible level of charge in the battery as a factor of the nominal capacity of the battery. Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_min should be set to NaN.
+
+**efficiency**: The battery efficiency is the ratio of the energy taken out from the battery, to the energy put in the battery. It means that it is not possible to retrieve as much energy as provided to the battery due to the discharge losses. The efficiency of the "input power" and "ouput power" columns should be set equal to the charge and dischage efficiencies respectively, while the "storage capacity" efficiency should be equal to the storage self-discharge/decay, which is usually in the range of 0 to 0.05.

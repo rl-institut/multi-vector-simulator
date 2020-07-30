@@ -44,7 +44,7 @@ To set up the MVS, follow the steps below:
 
 * Open Anaconda prompt (or other software as Pycharm) to create and activate a virtual environment
 
-    `conda create -n [your_env_name] python=3.5`
+    `conda create -n [your_env_name] python=3.6`
     `activate [your env_name]`
 
 * Install required packages from requirements.txt file using pip
@@ -118,14 +118,31 @@ Edit the csv files (or, for devs, the json file) and run the `main()` function. 
 - `display_output` (str): Sets the level of displayed logging messages. Options: "debug", "info", "warning", "error". Default: "info".
 - `lp_file_output` (bool): Specifies whether linear equation system generated is saved as lp file. Default: False.
 
-## Generate report
+## Generate pdf report
 
-To generate a report (only in browser for now), run the following command **after** a simulation
- ran:
+### directly after running a simulation
+
+Use the option `-pdf` in the command line  `python mvs_tool.py` to generate a pdf report in the
+ simulation's output folder (default in `MVS_outputs/simulation_report.pdf`):
+
+ `python mvs_tool.py -pdf`
+
+### post-processing
+To generate a report of the simulation's results, run the following command **after** a simulation
+ generated an output folder:
  
 `python mvs_report.py`
 
-the report should appear in your browser (at http://127.0.0.1:8050) as a Plotly Dash app.
+the report should appear in your browser (at http://127.0.0.1:8050) as an interactive Plotly Dash app.
+
+You can then print the report via your browser print functionality (ctrl+p), however the layout of
+ the pdf report is only well optimized for chrome or chromimum browser.
+
+It is also possible to automatically print the report as pdf by using the option `-pdf`. By default
+, it will
+save the report in the `report` folder. See`python mvs_report.py -h` for more information about
+possible options. The css and images used to make the report pretty should be located under
+`report/assets`.
 
 ## Contributing
 

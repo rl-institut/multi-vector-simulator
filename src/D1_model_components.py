@@ -35,6 +35,8 @@ from src.constants_json_strings import (
     OUTPUT_BUS_NAME,
     SIMULATION_ANNUITY,
     MAXIMUM_CAP,
+    DISPATCHABILITY,
+    OEMOF_ASSET_TYPE,
 )
 
 
@@ -216,7 +218,7 @@ def source(model, dict_asset, **kwargs):
         see issue #121
 
     """
-    if "dispatchable" in dict_asset and dict_asset["dispatchable"] is True:
+    if DISPATCHABILITY in dict_asset and dict_asset[DISPATCHABILITY] is True:
         check_optimize_cap(
             model,
             dict_asset,
@@ -277,19 +279,21 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
     """
     if dict_asset[OPTIMIZE_CAP][VALUE] is False:
         func_constant(model, dict_asset, **kwargs)
-        logging.debug(
-            "Defined asset %s as %s (fix capacity)",
-            dict_asset[LABEL],
-            dict_asset["type_oemof"],
-        )
+        if dict_asset[OEMOF_ASSET_TYPE] != "source":
+            logging.debug(
+                "Added: %s %s (fixed capacity)",
+                dict_asset[OEMOF_ASSET_TYPE].capitalize(),
+                dict_asset[LABEL],
+            )
 
     elif dict_asset[OPTIMIZE_CAP][VALUE] is True:
         func_optimize(model, dict_asset, **kwargs)
-        logging.debug(
-            "Defined asset %s as %s (to be optimized)",
-            dict_asset[LABEL],
-            dict_asset["type_oemof"],
-        )
+        if dict_asset[OEMOF_ASSET_TYPE] != "source":
+            logging.debug(
+                "Added: %s %s (capacity to be optimized)",
+                dict_asset[OEMOF_ASSET_TYPE].capitalize(),
+                dict_asset[LABEL],
+            )
     else:
         raise ValueError(
             f"Input error! 'optimize_cap' of asset {dict_asset['label']}\n should be True/False but is {dict_asset['optimizeCap']['value']}."
@@ -414,8 +418,8 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                         maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                        existing=dict_asset[INSTALLED_CAP][VALUE],
                     ),
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                 )
             }
@@ -435,8 +439,8 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                         maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                        existing=dict_asset[INSTALLED_CAP][VALUE],
                     ),
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=variable_costs,
                 )
                 index += 1
@@ -453,8 +457,8 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 investment=solph.Investment(
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                     maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
                 ),
-                existing=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
         }
@@ -535,29 +539,31 @@ def storage_optimize(model, dict_asset, **kwargs):
     """
     storage = solph.components.GenericStorage(
         label=dict_asset[LABEL],
-        existing=dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][
-            VALUE
-        ],  # todo I think this parameter is not used in the GenericStorage
         investment=solph.Investment(
             ep_costs=dict_asset[STORAGE_CAPACITY][SIMULATION_ANNUITY][VALUE],
             maximum=dict_asset[STORAGE_CAPACITY][MAXIMUM_CAP][VALUE],
+            existing=dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE],
         ),
         inputs={
             kwargs["busses"][dict_asset[INPUT_BUS_NAME]]: solph.Flow(
-                existing=dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE],
                 investment=solph.Investment(
                     ep_costs=dict_asset[INPUT_POWER][SIMULATION_ANNUITY][VALUE],
                     maximum=dict_asset[INPUT_POWER][MAXIMUM_CAP][VALUE],
+                    existing=dict_asset[INPUT_POWER][INSTALLED_CAP][
+                        VALUE
+                    ],  # todo: `existing needed here?`
                 ),
                 variable_costs=dict_asset[INPUT_POWER][DISPATCH_PRICE][VALUE],
             )
         },  # maximum charge power
         outputs={
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
-                existing=dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE],
                 investment=solph.Investment(
                     ep_costs=dict_asset[OUTPUT_POWER][SIMULATION_ANNUITY][VALUE],
                     maximum=dict_asset[OUTPUT_POWER][MAXIMUM_CAP][VALUE],
+                    existing=dict_asset[OUTPUT_POWER][INSTALLED_CAP][
+                        VALUE
+                    ],  # todo: `existing needed here?`
                 ),
                 variable_costs=dict_asset[OUTPUT_POWER][DISPATCH_PRICE][VALUE],
             )
@@ -597,34 +603,23 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
     Indirectly updated `model` and dict of asset in `kwargs` with the source object.
 
     """
-    # check if the source has multiple output flows
-    if isinstance(dict_asset[OUTPUT_BUS_NAME], list):
-        outputs = {}
-        index = 0
-        for bus in dict_asset[OUTPUT_BUS_NAME]:
-            outputs[kwargs["busses"][bus]] = solph.Flow(
-                label=dict_asset[LABEL],
-                actual_value=dict_asset[TIMESERIES],
-                fixed=True,
-                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
-                variable_costs=dict_asset[DISPATCH_PRICE][0],
-            )
-            index += 1
-    else:
-        outputs = {
-            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
-                label=dict_asset[LABEL],
-                actual_value=dict_asset[TIMESERIES],
-                fixed=True,
-                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
-                variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
-            )
-        }
+    outputs = {
+        kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+            label=dict_asset[LABEL],
+            actual_value=dict_asset[TIMESERIES],
+            fixed=True,
+            nominal_value=dict_asset[INSTALLED_CAP][VALUE],
+            variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+        )
+    }
 
     source_non_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs)
 
     model.add(source_non_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_non_dispatchable})
+    logging.debug(
+        "Added: Non-dispatchable source %s (fixed capacity)", dict_asset[LABEL]
+    )
     return
 
 
@@ -639,119 +634,78 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
     Indirectly updated `model` and dict of asset in `kwargs` with the source object.
 
     """
-    # check if the source has multiple output busses
-    if isinstance(dict_asset[OUTPUT_BUS_NAME], list):
-        outputs = {}
-        index = 0
-        for bus in dict_asset[OUTPUT_BUS_NAME]:
-            outputs[kwargs["busses"][bus]] = solph.Flow(
-                label=dict_asset[LABEL],
-                actual_value=dict_asset[TIMESERIES_NORMALIZED],
-                fixed=True,
-                existing=dict_asset[INSTALLED_CAP][VALUE],
-                investment=solph.Investment(
-                    ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
-                    / dict_asset[TIMESERIES_PEAK][VALUE],
-                    maximum=dict_asset[MAXIMUM_CAP][VALUE],
-                ),
-                variable_costs=dict_asset[DISPATCH_PRICE][VALUE][index]
+    outputs = {
+        kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+            label=dict_asset[LABEL],
+            actual_value=dict_asset[TIMESERIES_NORMALIZED],
+            fixed=True,
+            investment=solph.Investment(
+                ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
-            )
-            index += 1
-
-    else:
-        outputs = {
-            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
-                label=dict_asset[LABEL],
-                actual_value=dict_asset[TIMESERIES_NORMALIZED],
-                fixed=True,
+                maximum=dict_asset[MAXIMUM_CAP][VALUE],
                 existing=dict_asset[INSTALLED_CAP][VALUE],
-                investment=solph.Investment(
-                    ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
-                    / dict_asset[TIMESERIES_PEAK][VALUE],
-                    maximum=dict_asset[MAXIMUM_CAP][VALUE],
-                ),
-                variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
-                / dict_asset[TIMESERIES_PEAK][VALUE],
-            )
-        }
+            ),
+            # variable_costs are devided by time series peak as normalized time series are used as actual_value
+            variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
+            / dict_asset[TIMESERIES_PEAK][VALUE],
+        )
+    }
     source_non_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs)
 
     model.add(source_non_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_non_dispatchable})
+    logging.debug(
+        "Added: Non-dispatchable source %s (capacity to be optimized)",
+        dict_asset[LABEL],
+    )
     return
 
 
 def source_dispatchable_optimize(model, dict_asset, **kwargs):
     if TIMESERIES_NORMALIZED in dict_asset:
-        # check if the source has multiple output busses
-        if isinstance(dict_asset[OUTPUT_BUS_NAME], list):
-            outputs = {}
-            index = 0
-            for bus in dict_asset[OUTPUT_BUS_NAME]:
-                # check if maximumCap parameter exists
-                # and add it to solph.Flow()
-                outputs[kwargs["busses"][bus]] = solph.Flow(
-                    label=dict_asset[LABEL],
-                    max=dict_asset[TIMESERIES_NORMALIZED],
-                    investment=solph.Investment(
-                        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
-                        / dict_asset[TIMESERIES_PEAK][VALUE],
-                        maximum=dict_asset[MAXIMUM_CAP][VALUE],
-                    ),
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE][0]
+        outputs = {
+            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+                label=dict_asset[LABEL],
+                max=dict_asset[TIMESERIES_NORMALIZED],
+                investment=solph.Investment(
+                    ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                     / dict_asset[TIMESERIES_PEAK][VALUE],
-                )
-                index += 1
-        else:
-            outputs = {
-                kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
-                    label=dict_asset[LABEL],
-                    max=dict_asset[TIMESERIES_NORMALIZED],
-                    investment=solph.Investment(
-                        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
-                        / dict_asset[TIMESERIES_PEAK][VALUE],
-                        maximum=dict_asset[MAXIMUM_CAP][VALUE],
-                    ),
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
-                    / dict_asset[TIMESERIES_PEAK][VALUE],
-                )
-            }
-
+                    maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
+                ),
+                # variable_costs are devided by time series peak as normalized time series are used as actual_value
+                variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
+                / dict_asset[TIMESERIES_PEAK][VALUE],
+            )
+        }
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     else:
         if TIMESERIES in dict_asset:
-            logging.error(
-                "Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow"
+            logging.info(
+                "Asset %s is introduced as a dispatchable source with an availability schedule.",
+                dict_asset[LABEL],
             )
-        # check if the source has multiple output busses
-        if isinstance(dict_asset[OUTPUT_BUS_NAME], list):
-            outputs = {}
-            index = 0
-            for bus in dict_asset[OUTPUT_BUS_NAME]:
-                outputs[kwargs["busses"][bus]] = solph.Flow(
-                    label=dict_asset[LABEL],
-                    investment=solph.Investment(
-                        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
-                    ),
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE][index],
-                )
-                index += 1
-        else:
-            outputs = {
-                kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
-                    label=dict_asset[LABEL],
-                    investment=solph.Investment(
-                        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
-                    ),
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
-                )
-            }
-
+            logging.debug(
+                "The availability schedule is solely introduced because the key %s was not in the asset´s dictionary. \nIt should only be applied to DSO sources. If the asset should not have this behaviour, please create an issue.",
+                TIMESERIES_NORMALIZED,
+            )
+        outputs = {
+            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+                label=dict_asset[LABEL],
+                investment=solph.Investment(
+                    ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
+                    existing=dict_asset[INSTALLED_CAP][VALUE],
+                    maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                ),
+                variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+            )
+        }
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     model.add(source_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_dispatchable})
-    logging.info("Added: Dispatchable source %s", dict_asset[LABEL])
+    logging.debug(
+        "Added: Dispatchable source %s (capacity to be optimized)", dict_asset[LABEL]
+    )
     return
 
 
@@ -766,58 +720,37 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
     Indirectly updated `model` and dict of asset in `kwargs` with the source object.
 
     """
-    # todo 'timeseries_normalized' is correct term?
     if TIMESERIES_NORMALIZED in dict_asset:
-        # check if the source has multiple output busses
-        if isinstance(dict_asset[OUTPUT_BUS_NAME], list):
-            outputs = {}
-            index = 0
-            for bus in dict_asset[OUTPUT_BUS_NAME]:
-                outputs[kwargs["busses"][bus]] = solph.Flow(
-                    label=dict_asset[LABEL],
-                    max=dict_asset[TIMESERIES_NORMALIZED],
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE][index],
-                )
-                index += 1
-        else:
-            outputs = {
-                kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
-                    label=dict_asset[LABEL],
-                    max=dict_asset[TIMESERIES_NORMALIZED],
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
-                )
-            }
+        outputs = {
+            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+                label=dict_asset[LABEL],
+                max=dict_asset[TIMESERIES_NORMALIZED],
+                existing=dict_asset[INSTALLED_CAP][VALUE],
+                variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+            )
+        }
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     else:
         if TIMESERIES in dict_asset:
-            logging.error(
-                "Change code in D1/source_dispatchable: timeseries_normalized not the only key determining the flow"
+            logging.info(
+                "Asset %s is introduced as a dispatchable source with an availability schedule.",
+                dict_asset[LABEL],
             )
-        # check if the source has multiple output busses
-        if isinstance(dict_asset[OUTPUT_BUS_NAME], list):
-            outputs = {}
-            index = 0
-            for bus in dict_asset[OUTPUT_BUS_NAME]:
-                outputs[kwargs["busses"][bus]] = solph.Flow(
-                    label=dict_asset[LABEL],
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE][index],
-                )
-                index += 1
-        else:
-            outputs = {
-                kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
-                    label=dict_asset[LABEL],
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
-                )
-            }
+            logging.debug(
+                "The availability schedule is solely introduced because the key %s was not in the asset´s dictionary. \nIt should only be applied to DSO sources. If the asset should not have this behaviour, please create an issue.",
+                TIMESERIES_NORMALIZED,
+            )
+        outputs = {
+            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+                label=dict_asset[LABEL],
+                existing=dict_asset[INSTALLED_CAP][VALUE],
+                variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+            )
+        }
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
     model.add(source_dispatchable)
     kwargs["sources"].update({dict_asset[LABEL]: source_dispatchable})
-    logging.info("Added: Dispatchable source %s", dict_asset[LABEL])
+    logging.debug("Added: Dispatchable source %s (fixed capacity)", dict_asset[LABEL])
     return
 
 
@@ -854,7 +787,7 @@ def sink_dispatchable(model, dict_asset, **kwargs):
     sink_dispatchable = solph.Sink(label=dict_asset[LABEL], inputs=inputs,)
     model.add(sink_dispatchable)
     kwargs["sinks"].update({dict_asset[LABEL]: sink_dispatchable})
-    logging.info("Added: Dispatchable sink %s", dict_asset[LABEL])
+    logging.debug("Added: Dispatchable sink %s", dict_asset[LABEL])
     return
 
 
@@ -889,5 +822,5 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     sink_demand = solph.Sink(label=dict_asset[LABEL], inputs=inputs,)
     model.add(sink_demand)
     kwargs["sinks"].update({dict_asset[LABEL]: sink_demand})
-    logging.info("Added: Non-dispatchable sink %s", dict_asset[LABEL])
+    logging.debug("Added: Non-dispatchable sink %s", dict_asset[LABEL])
     return

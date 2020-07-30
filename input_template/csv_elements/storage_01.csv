@@ -1,0 +1,15 @@
+,unit,storage capacity,input power,output power
+label,str,,,
+unit,str,,,
+installedCap,unit,,,
+age_installed,year,,,
+lifetime,year,,,
+development_costs,currency,,,
+specific_costs,currency/unit,,,
+specific_costs_om,currency/unit/year,,,
+dispatch_price,currency/kWh,,,
+c_rate,factor of total capacity (kWh),NA,,
+efficiency,factor,,,
+soc_initial,None or factor,,NA,NA
+soc_max,factor,,NA,NA
+soc_min,factor,,NA,NA

@@ -7,6 +7,7 @@ Module A0_initialization defines functions to parse user inputs to the MVS simul
     - Define screen logging depth
 
 Usage from root of repository:
+
 python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]]
                           [-o [PATH_OUTPUT_FOLDER]]
                           [-log [{debug,info,error,warning}]] [-f [OVERWRITE]]
@@ -14,14 +15,20 @@ python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]]
 Process MVS arguments
 
 optional arguments:
+
   -h, --help            show this help message and exit
+
   -i [PATH_INPUT_FOLDER]
                         path to the input folder
+
   -ext [{json,csv}]     type (json or csv) of the input files (default: 'json')
+
   -o [PATH_OUTPUT_FOLDER]
                         path to the output folder for the simulation's results
+
   -log [{debug,info,error,warning}]
                         level of logging in the console
+
   -f [OVERWRITE]        overwrite the output folder if True (default: False)
 
 """
@@ -209,21 +216,22 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
                 )
             )
         else:
+            # Pre-existing folder is be deleted
             logging.info("Removing existing output folder " + path_output_folder)
-            # might not work on windows
             shutil.rmtree(path_output_folder, ignore_errors=True)
 
-            logging.info("Creating output folder " + path_output_folder)
-            os.makedirs(path_output_folder)
-
-            logging.info('Creating folder "inputs" in output folder.')
-            shutil.copytree(path_input_folder, path_output_folder_inputs)
-    else:
+    try:
+        # trying to create path_output_folder
+        os.makedirs(path_output_folder, exist_ok=True)
         logging.info("Creating output folder " + path_output_folder)
-        os.makedirs(path_output_folder)
+    except OSError as error:
+        # In case that path_output_folder already exists
+        logging.info(
+            "It was not possible to create the output folder " + path_output_folder
+        )
 
-        logging.info('Creating folder "inputs" in output folder.')
-        shutil.copytree(path_input_folder, path_output_folder_inputs)
+    logging.info('Creating folder "inputs" in output folder.')
+    shutil.copytree(path_input_folder, path_output_folder_inputs)
 
 
 def process_user_arguments(
@@ -255,8 +263,8 @@ def process_user_arguments(
         (Optional) Determines which messages are used for terminal output (command line "-log")
             "debug": All logging messages
             "info": All informative messages and warnings (default)
-            "warnings": All warnings
-            "errors": Only errors
+            "warning": All warnings
+            "error": Only errors
     :param lp_file_output:
         Save linear equation system generated as lp file
     :param welcome_text:

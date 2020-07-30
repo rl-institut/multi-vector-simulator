@@ -3,9 +3,10 @@ import logging
 import oemof.outputlib as outputlib
 import pandas as pd
 
-import src.E1_process_results as process_results
-import src.E2_economics as economics
-import src.E3_indicator_calculation as indicators
+import src.E1_process_results as E1
+import src.E2_economics as E2
+import src.E3_indicator_calculation as E3
+
 from src.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,
@@ -22,22 +23,15 @@ from src.constants_json_strings import (
     STORAGE_CAPACITY,
     INPUT_BUS_NAME,
     OUTPUT_BUS_NAME,
-    ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
     KPI,
     KPI_COST_MATRIX,
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
-    TOTAL_FLOW,
-    ANNUITY_OM,
-    ANNUITY_TOTAL,
-    COST_TOTAL,
-    COST_OM_TOTAL,
-    COST_INVESTMENT,
-    COST_DISPATCH,
-    COST_OM_FIX,
-    COST_UPFRONT,
+    OPTIMIZED_FLOWS,
 )
+
+from src.constants_output import KPI_COST_MATRIX_ENTRIES, KPI_SCALAR_MATRIX_ENTRIES
 
 r"""
 Module E0 evaluation
@@ -69,29 +63,8 @@ def evaluate_dict(dict_values, results_main, results_meta):
     dict_values.update(
         {
             KPI: {
-                KPI_COST_MATRIX: pd.DataFrame(
-                    columns=[
-                        LABEL,
-                        COST_TOTAL,
-                        COST_OM_TOTAL,
-                        COST_INVESTMENT,
-                        COST_UPFRONT,
-                        COST_DISPATCH,
-                        COST_OM_FIX,
-                        ANNUITY_TOTAL,
-                        ANNUITY_OM,
-                    ]
-                ),
-                KPI_SCALAR_MATRIX: pd.DataFrame(
-                    columns=[
-                        LABEL,
-                        OPTIMIZED_ADD_CAP,
-                        TOTAL_FLOW,
-                        ANNUAL_TOTAL_FLOW,
-                        "peak_flow",
-                        "average_flow",
-                    ]
-                ),
+                KPI_COST_MATRIX: pd.DataFrame(columns=KPI_COST_MATRIX_ENTRIES),
+                KPI_SCALAR_MATRIX: pd.DataFrame(columns=KPI_SCALAR_MATRIX_ENTRIES),
                 KPI_SCALARS_DICT: {},
             }
         }
@@ -103,7 +76,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         bus_data.update({bus: outputlib.views.node(results_main, bus)})
 
     # Evaluate timeseries and store to a large DataFrame for each bus:
-    process_results.get_timeseries_per_bus(dict_values, bus_data)
+    E1.get_timeseries_per_bus(dict_values, bus_data)
 
     # Store all information related to storages in bus_data, as storage capacity acts as a bus
     for storage in dict_values[ENERGY_STORAGE]:
@@ -114,28 +87,30 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 )
             }
         )
-        process_results.get_storage_results(
+        E1.get_storage_results(
             dict_values[SIMULATION_SETTINGS],
             bus_data[dict_values[ENERGY_STORAGE][storage][LABEL]],
             dict_values[ENERGY_STORAGE][storage],
         )
 
-        # hardcoded list of names in storage_01.csv
         for storage_item in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
-            economics.get_costs(
+            E2.get_costs(
                 dict_values[ENERGY_STORAGE][storage][storage_item],
                 dict_values[ECONOMIC_DATA],
             )
+
+        E2.lcoe_assets(dict_values[ENERGY_STORAGE][storage], ENERGY_STORAGE)
+        for storage_item in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
             store_result_matrix(
                 dict_values[KPI], dict_values[ENERGY_STORAGE][storage][storage_item]
             )
 
         if (
             dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
-            in dict_values["optimizedFlows"].keys()
+            in dict_values[OPTIMIZED_FLOWS].keys()
         ) or (
             dict_values[ENERGY_STORAGE][storage][OUTPUT_BUS_NAME]
-            in dict_values["optimizedFlows"].keys()
+            in dict_values[OPTIMIZED_FLOWS].keys()
         ):
             bus_name = dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
             timeseries_name = (
@@ -155,49 +130,44 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + ") SOC"
             )
 
-            dict_values["optimizedFlows"][bus_name][timeseries_name] = dict_values[
+            dict_values[OPTIMIZED_FLOWS][bus_name][timeseries_name] = dict_values[
                 ENERGY_STORAGE
             ][storage]["timeseries_soc"]
 
-    for asset in dict_values[ENERGY_CONVERSION]:
-        process_results.get_results(
-            dict_values[SIMULATION_SETTINGS],
-            bus_data,
-            dict_values[ENERGY_CONVERSION][asset],
-        )
-        economics.get_costs(
-            dict_values[ENERGY_CONVERSION][asset], dict_values[ECONOMIC_DATA]
-        )
-        store_result_matrix(dict_values[KPI], dict_values[ENERGY_CONVERSION][asset])
-
-    for group in [ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
+    for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:
-            process_results.get_results(
+            E1.get_results(
                 dict_values[SIMULATION_SETTINGS], bus_data, dict_values[group][asset],
             )
-            economics.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
+            E2.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
+            E2.lcoe_assets(dict_values[group][asset], group)
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
-    indicators.all_totals(dict_values)
+    E3.all_totals(dict_values)
 
     # Processing further KPI
-    indicators.total_renewable_and_non_renewable_energy_origin(dict_values)
-    indicators.renewable_share(dict_values)
+    E3.total_renewable_and_non_renewable_energy_origin(dict_values)
+    E3.renewable_share(dict_values)
 
     logging.info("Evaluating optimized capacities and dispatch.")
     return
 
 
 def store_result_matrix(dict_kpi, dict_asset):
-    """Storing results to vector and then result matrix for saving it in csv.
-
+    """
+    Storing results to vector and then result matrix for saving it in csv.
+    Defined value types: Str, bool, None, dict (with key "VALUE"), else (int, float)
     Parameters
     ----------
-    dict_kpi
-    dict_asset
+    dict_kpi: dict
+        dictionary with the two kpi groups (costs and scalars), which are pd.DF
+
+    dict_asset: dict
+        all information known for a specific asset
 
     Returns
     -------
+    Updated dict_kpi DF, with new row of kpis of the specific asset
 
     """
 
@@ -210,9 +180,19 @@ def store_result_matrix(dict_kpi, dict_asset):
             if key in dict_asset:
                 if isinstance(dict_asset[key], str):
                     asset_result_dict.update({key: dict_asset[key]})
+                elif isinstance(dict_asset[key], bool):
+                    asset_result_dict.update({key: dict_asset[key]})
+                elif dict_asset[key] is None:
+                    asset_result_dict.update({key: None})
+                elif isinstance(dict_asset[key], dict):
+                    if VALUE in dict_asset[key].keys():
+                        if dict_asset[key][VALUE] is not None:
+                            asset_result_dict.update(
+                                {key: round(dict_asset[key][VALUE], round_to_comma)}
+                            )
                 else:
                     asset_result_dict.update(
-                        {key: round(dict_asset[key][VALUE], round_to_comma)}
+                        {key: round(dict_asset[key], round_to_comma)}
                     )
 
         asset_result_df = pd.DataFrame([asset_result_dict])
