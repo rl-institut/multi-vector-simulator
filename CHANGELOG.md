@@ -21,10 +21,20 @@ Here is a template for new release sections
 
 ### Added
 -
+
 ### Changed
--
+- Definition of busses from assets: Now all INFLOW_DIRECTION / OUTFLOW_DIRECTION are translated into ENERGY_BUSSES (#454, #387)
+- An excess sink is created for each and every bus (#454)
+- Splitting functions in `C0` and adding tests for them: `C0.define_sink()`, `C0.define_source()` and `C0.define_dso_sinks_and_sources()` (#454)
+- Instead of defining multiple DSO sources for modelling peak demand pricing, now a single source is defined and another level added with transformers that, with an availability limited to a peak demand pricing period, only represent the costs of peak demand pricing in the specific period. (#454)
+- Moved function `C0.plot_input_timeseries()` to `F1.plot_input_timeseries()` (#454)
+- Add required parameter "unit" to energyProviders.csv. Used for defining the units of the peak demand pricing transformer. (#454)
+
 ### Removed
 -
+
+### Fixed
+- Peak demand pricing feature (#454)
 
 ## [0.3.1] - 2020-07-30
 
@@ -93,6 +103,7 @@ Here is a template for new release sections
 - Added `pyppdf==0.0.12` to `requirements.txt` (#473)
 - Tests for A0: Now new dirs are only created if not existant
 - Function `A0.check_output_folder()`, now after `shutil.rmtree` we still `try-except os.mkdirs`, this fixes local issues with `FileExistsError`.  (#474)
+- Added `pyppdf==0.0.12` to `requirements.txt` (#473)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
