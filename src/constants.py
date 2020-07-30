@@ -195,7 +195,6 @@ REQUIRED_JSON_PARAMETERS = {
         STORE_NX_GRAPH,
         STORE_OEMOF_RESULTS,
         TIMESTEP,
-        RESTORE_FROM_OEMOF_FILE,
     ],
 }
 # references for which parameters must be present either in the json or csv input method
