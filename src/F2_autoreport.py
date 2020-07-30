@@ -13,6 +13,7 @@ import dash
 import dash_html_components as html
 import dash_core_components as dcc
 import plotly.graph_objs as go
+import plotly.express as px
 import dash_table
 import folium
 import git
