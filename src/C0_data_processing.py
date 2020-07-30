@@ -740,16 +740,24 @@ def add_a_transformer_for_each_peak_demand_pricing_period(dict_values, dict_dso,
 
     list_of_dso_energyConversion_assets = []
     for key in dict_availability_timeseries.keys():
-        if len(dict_availability_timeseries) == 1:
+        if len(dict_availability_timeseries.keys()) == 1:
             transformer_name = dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD
         else:
-            transformer_name = dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + str(key)
+            transformer_name = dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + "_" + str(key)
 
         define_transformer_for_peak_demand_pricing(
             dict_values=dict_values,
             dict_dso=dict_dso,
             transformer_name=transformer_name,
             timeseries_availability=dict_availability_timeseries[key])
+
+        F1.plot_input_timeseries(
+            dict_values=dict_values,
+            user_input=dict_values[SIMULATION_SETTINGS],
+            timeseries=dict_availability_timeseries[key],
+            asset_name="Availability of " + transformer_name,
+        )
+
         list_of_dso_energyConversion_assets.append(transformer_name)
 
     logging.debug(
@@ -834,6 +842,8 @@ def define_transformer_for_peak_demand_pricing(dict_values, dict_dso, transforme
 
     default_dso_transformer = {
             LABEL: transformer_name,
+            OPTIMIZE_CAP:  {VALUE: True, UNIT: TYPE_BOOL},
+            INSTALLED_CAP: {VALUE: 0, UNIT: "?"},
             INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION]+DSO_PEAK_DEMAND_BUS_NAME,
             INPUT_BUS_NAME: bus_suffix(dict_dso[INFLOW_DIRECTION]+DSO_PEAK_DEMAND_BUS_NAME),
             OUTFLOW_DIRECTION: dict_dso[OUTFLOW_DIRECTION],

@@ -6,6 +6,7 @@ import src.C0_data_processing as C0
 from src.constants_json_strings import (
     UNIT,
     ENERGY_PROVIDERS,
+
     ENERGY_STORAGE,
     ENERGY_CONSUMPTION,
     ENERGY_PRODUCTION,
@@ -15,6 +16,7 @@ from src.constants_json_strings import (
     INFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
+    OPTIMIZE_CAP, INSTALLED_CAP,
 PEAK_DEMAND_PRICING,
 AVAILABILITY_DISPATCH,
 OEMOF_ASSET_TYPE, INPUT_BUS_NAME, OUTPUT_BUS_NAME, EFFICIENCY,
@@ -201,7 +203,7 @@ def test_define_transformer_for_peak_demand_pricing():
     timeseries_availability = pd.Series()
     C0.define_transformer_for_peak_demand_pricing(dict_test, dict_test_dso, transformer_name, timeseries_availability)
     assert transformer_name in dict_test[ENERGY_CONVERSION]
-    for k in [LABEL, INFLOW_DIRECTION, OUTFLOW_DIRECTION, AVAILABILITY_DISPATCH, DISPATCH_PRICE, SPECIFIC_COSTS, DEVELOPMENT_COSTS, SPECIFIC_COSTS_OM, OEMOF_ASSET_TYPE, INPUT_BUS_NAME, OUTPUT_BUS_NAME, EFFICIENCY]:
+    for k in [LABEL, OPTIMIZE_CAP, INSTALLED_CAP, INFLOW_DIRECTION, OUTFLOW_DIRECTION, AVAILABILITY_DISPATCH, DISPATCH_PRICE, SPECIFIC_COSTS, DEVELOPMENT_COSTS, SPECIFIC_COSTS_OM, OEMOF_ASSET_TYPE, INPUT_BUS_NAME, OUTPUT_BUS_NAME, EFFICIENCY]:
         assert k in dict_test[ENERGY_CONVERSION][transformer_name]
     assert dict_test[ENERGY_CONVERSION][transformer_name][SPECIFIC_COSTS_OM][VALUE] == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE]
 
