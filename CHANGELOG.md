@@ -29,6 +29,8 @@ Here is a template for new release sections
 - Instead of defining multiple DSO sources for modelling peak demand pricing, now a single source is defined and another level added with transformers that, with an availability limited to a peak demand pricing period, only represent the costs of peak demand pricing in the specific period. (#454)
 - Moved function `C0.plot_input_timeseries()` to `F1.plot_input_timeseries()` (#454)
 - Add required parameter "unit" to energyProviders.csv. Used for defining the units of the peak demand pricing transformer. (#454)
+- Updated `F2` for new DSO/excess sink structure: DSO feedin and excess sink removal from demands now universal (#454)
+- Replace `logging.warning` for dispatch price of sources in case of DSOs - this is now only an `logging.info`
 
 ### Removed
 -
