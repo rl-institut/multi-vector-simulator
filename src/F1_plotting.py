@@ -453,8 +453,12 @@ def draw_graph(
     import networkx as nx
     import oemof.graph as graph
 
+    #grph = graph.create_nx_graph(
+    #    energysystem, filename=user_input[PATH_OUTPUT_FOLDER] + "network_graph.xml"
+    #)
+
     grph = graph.create_nx_graph(
-        energysystem, filename=user_input[PATH_OUTPUT_FOLDER] + "network_graph.xml"
+        energysystem
     )
 
     if type(node_color) is dict:
