@@ -889,6 +889,7 @@ def define_transformer_for_peak_demand_pricing(
         },
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
+        ENERGY_VECTOR: dict_dso[ENERGY_VECTOR]
     }
 
     dict_values[ENERGY_CONVERSION].update({transformer_name: default_dso_transformer})
