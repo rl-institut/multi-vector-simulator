@@ -127,9 +127,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
 
         non_renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][DSO_source_name][
             TOTAL_FLOW
-        ][VALUE] * (
-            1 - dict_values[ENERGY_PROVIDERS][DSO][RENEWABLE_SHARE_DSO][VALUE]
-        )
+        ][VALUE] * (1 - dict_values[ENERGY_PROVIDERS][DSO][RENEWABLE_SHARE_DSO][VALUE])
 
     dict_values[KPI][KPI_UNCOUPLED_DICT].update(
         {
