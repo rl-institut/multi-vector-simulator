@@ -86,7 +86,7 @@ from src.constants_json_strings import (
     ENERGY_PROVIDERS,
     DSO_FEEDIN,
     AUTO_SINK,
-    EXCESS
+    EXCESS,
 )
 
 # TODO link this to the version and date number @Bachibouzouk

@@ -48,7 +48,7 @@ from src.constants_json_strings import (
     PERIODS,
     BUS_SUFFIX,
     UNIT_MINUTE,
-    ENERGY_VECTOR
+    ENERGY_VECTOR,
 )
 from .constants import TYPE_STR
 
@@ -210,6 +210,7 @@ def test_define_transformer_for_peak_demand_pricing():
                 INFLOW_DIRECTION: "a_direction",
                 OUTFLOW_DIRECTION: "b_direction",
                 PEAK_DEMAND_PRICING: {VALUE: 60},
+                UNIT: "unit",
             }
         },
     }
