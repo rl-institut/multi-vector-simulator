@@ -211,6 +211,7 @@ def test_define_transformer_for_peak_demand_pricing():
                 OUTFLOW_DIRECTION: "b_direction",
                 PEAK_DEMAND_PRICING: {VALUE: 60},
                 UNIT: "unit",
+                ENERGY_VECTOR: "a_vector"
             }
         },
     }
