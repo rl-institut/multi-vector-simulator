@@ -999,7 +999,6 @@ def get_name_or_names_of_in_or_output_bus(bus):
 
 
 def determine_dispatch_price(dict_values, price, source):
-
     # check if multiple busses are provided
     # for each bus, read time series for dispatch_price if a file name has been
     # provided in energy price
@@ -1041,18 +1040,12 @@ def determine_dispatch_price(dict_values, price, source):
         source.update({DISPATCH_PRICE: {VALUE: price[VALUE], UNIT: price[UNIT]}})
 
     if type(source[DISPATCH_PRICE][VALUE]) == pd.Series:
-        logging.warning(
-            "Attention! %s is created, with a price defined as a timeseries (average: %s). "
-            "If this is DSO supply, this could be improved. Please refer to Issue #23.",
-            source[LABEL],
-            source[DISPATCH_PRICE][VALUE].mean(),
+        logging.debug(
+            f"{source[LABEL]} was created, with a price defined as a timeseries (average: {source[DISPATCH_PRICE][VALUE].mean()})."
         )
     else:
-        logging.warning(
-            "Attention! %s is created, with a price of %s."
-            "If this is DSO supply, this could be improved. Please refer to Issue #23. ",
-            source[LABEL],
-            source[DISPATCH_PRICE][VALUE],
+        logging.debug(
+            f"{source[LABEL]} was created, with a price of {source[DISPATCH_PRICE][VALUE]}."
         )
     return
 
