@@ -48,6 +48,7 @@ from src.constants_json_strings import (
     PERIODS,
     BUS_SUFFIX,
     UNIT_MINUTE,
+    ENERGY_VECTOR
 )
 from .constants import TYPE_STR
 
@@ -234,6 +235,7 @@ def test_define_transformer_for_peak_demand_pricing():
         INPUT_BUS_NAME,
         OUTPUT_BUS_NAME,
         EFFICIENCY,
+        ENERGY_VECTOR,
     ]:
         assert k in dict_test[ENERGY_CONVERSION][transformer_name]
     assert (
