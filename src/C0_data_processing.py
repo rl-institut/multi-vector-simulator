@@ -878,17 +878,14 @@ def define_transformer_for_peak_demand_pricing(
         AVAILABILITY_DISPATCH: timeseries_availability,
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
-        SPECIFIC_COSTS: {
-            VALUE: 0,
-            UNIT: CURR + "/" + dict_dso[UNIT],
-        },
+        SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
         SPECIFIC_COSTS_OM: {
             VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE],
             UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
         },
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
-        ENERGY_VECTOR: dict_dso[ENERGY_VECTOR]
+        ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
     }
 
     dict_values[ENERGY_CONVERSION].update({transformer_name: default_dso_transformer})
