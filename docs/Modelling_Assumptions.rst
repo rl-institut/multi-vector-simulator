@@ -40,3 +40,16 @@ Energy excess is allowed to take place on each of the systems energy busses.
 This means that there are assumed to be sufficient vents (heat) or transistors (electricity) to dump excess (waste) generation.
 Excess generation can only take place when a non-dispatchable source is present or if an asset can supply energy without any fuel or dispatch costs.
 
+
+Limitations
+-----------
+
+Perfect foresight
+#################
+- Battery charge
+
+Infeasible dispatch of assets
+#############################
+
+- Energy consumption and feed-in at the same time
+- Bi-directional inverters
