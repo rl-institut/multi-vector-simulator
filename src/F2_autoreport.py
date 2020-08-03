@@ -544,7 +544,8 @@ def ready_flows_plots(dict_dataseries, json_results_file):
 def insert_pie_plots(
     title_of_plot, names, values, color_scheme, plot_id, print_only=False
 ):
-    title_of_plot = textwrap.wrap(title_of_plot, width=50)
+    # Wrap the text of the title into next line if it exceeds the length given below
+    title_of_plot = textwrap.wrap(title_of_plot, width=75)
     title_of_plot = "<br>".join(title_of_plot)
 
     fig = go.Figure(
