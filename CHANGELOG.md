@@ -22,7 +22,8 @@ Here is a template for new release sections
 ### Added
 -
 ### Changed
--
+- Updated to disagregated `oemof-solph==0.4.1`, which required changing the `requirements.txt` as well as the usage of `oemof` within the MVS (#405)
+
 ### Removed
 -
 
