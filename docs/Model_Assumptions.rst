@@ -74,7 +74,7 @@ but also for the maximum peak demand (load, eg. kW power) towards the DSO grid w
 
 In the MVS, this information is gathered for the `energyProviders` with:
 
-    - :const:`src.constants_json_strings.PEAK_DEMAND_PRICING_PERIOD` as the period used in peak demand
+    - :const:`src.constants_json_strings.PEAK_DEMAND_PRICING_PERIOD` as the period used in peak demand pricing. Possible is 1 (yearly), 2 (half-yearly), 3 (each trimester), 4 (quaterly), 6 (every 2 months) and 12 (each month). If you have a `simulation_duration` < 365 days, the periods will still be set up assuming a year! This means, that if you are simulating 14 days, you will never be able to have more than one peak demand pricing period in place.
 
     - :const:`src.constants_json_strings.PEAK_DEMAND_PRICING` as the costs per peak load unit, eg. kW
 
