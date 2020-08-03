@@ -36,3 +36,14 @@ Here is how to set that in pycharm
   :width: 600
   :alt: pycharm docstring's format setting
 
+
+Format of Docstrings
+--------------------
+Please add docstrings for every function you add. As docstrings are a powerful means of documentation we give an example here:
+
+Download: :download:`Example docstring <example_docstring.py>`
+
+.. literalinclude:: example_docstring.py
+   :language: python
+
+
