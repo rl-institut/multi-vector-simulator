@@ -401,9 +401,7 @@ class TestSourceComponent:
         elif mode == "optimize":
             assert output_bus.nominal_value == None
             if dispatchable == False:
-                assert_series_equal(
-                    output_bus.fix, dict_asset[TIMESERIES_NORMALIZED]
-                )
+                assert_series_equal(output_bus.fix, dict_asset[TIMESERIES_NORMALIZED])
                 assert output_bus.max == []
             if timeseries == "normalized":
                 assert (
