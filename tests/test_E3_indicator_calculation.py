@@ -20,6 +20,8 @@ from src.constants_json_strings import (
     KPI_COST_MATRIX,
     TOTAL_FLOW,
     RENEWABLE_SHARE_DSO,
+DSO_CONSUMPTION,
+    DSO_PEAK_DEMAND_PERIOD
 )
 
 numbers = [10, 15, 20, 25]
@@ -46,19 +48,20 @@ dict_renewable_energy_use = load_json(
     os.path.join("tests", "test_data", "test_json_for_E3.json")
 )
 
+dso = "DSO"
 flow_small = 50
 flow_medium = 100
 renewable_share_dso = 0.1
-dict_renewable_energy_use[ENERGY_PRODUCTION]["DSO_consumption_period_1"][TOTAL_FLOW][
+dict_renewable_energy_use[ENERGY_PRODUCTION][dso + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + "_1"][TOTAL_FLOW][
     VALUE
 ] = flow_small
-dict_renewable_energy_use[ENERGY_PRODUCTION]["DSO_consumption_period_2"][TOTAL_FLOW][
+dict_renewable_energy_use[ENERGY_PRODUCTION][dso + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + "_2"][TOTAL_FLOW][
     VALUE
 ] = flow_small
 dict_renewable_energy_use[ENERGY_PRODUCTION]["pv_plant_01"][TOTAL_FLOW][
     VALUE
 ] = flow_medium
-dict_renewable_energy_use[ENERGY_PROVIDERS]["DSO"][RENEWABLE_SHARE_DSO][
+dict_renewable_energy_use[ENERGY_PROVIDERS][dso][RENEWABLE_SHARE_DSO][
     VALUE
 ] = renewable_share_dso
 exp_res = flow_medium + (flow_small * 2 * renewable_share_dso)
