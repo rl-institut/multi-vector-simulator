@@ -610,7 +610,7 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
             ]
 
         # Remove negative values (such as the feed-in sinks) from the dict
-        pie_data_dict = {k: v for (k, v) in pie_data_dict.items() if v >= 0}
+        pie_data_dict = {k: v for (k, v) in pie_data_dict.items() if v > 0}
 
         # Get the names and values for the pie chart from the above dict
         names_plot = list(pie_data_dict.keys())
