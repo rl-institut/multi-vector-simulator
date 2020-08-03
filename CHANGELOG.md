@@ -31,6 +31,7 @@ Here is a template for new release sections
 - Add required parameter "unit" to energyProviders.csv. Used for defining the units of the peak demand pricing transformer. (#454)
 - Updated `F2` for new DSO/excess sink structure: DSO feedin and excess sink removal from demands now universal (#454)
 - Replace `logging.warning` for dispatch price of sources in case of DSOs - this is now only an `logging.info`
+- Added global variables for KPI connected to renewable energy use (TOTAL_RENEWABLE_GENERATION_IN_LES = "Total internal renewable generation", TOTAL_NON_RENEWABLE_GENERATION_IN_LES = "Total internal non-renewable generation", TOTAL_RENEWABLE_ENERGY_USE = "Total renewable energy use", TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use") (#454)
 
 ### Removed
 -

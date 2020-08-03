@@ -121,7 +121,7 @@ class TestGeneralEvaluation:
         for k in kpi_list:
             assert k in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
             assert k in dict_renewable_energy_use[KPI][KPI_SCALARS_DICT]
-        
+
         """
         e3 json has to be adapted for this to work
         assert (
