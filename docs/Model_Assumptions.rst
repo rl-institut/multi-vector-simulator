@@ -5,7 +5,7 @@ Moddeling Assumptions of the MVS
 Component models
 ----------------
 
-The component models of the MVS result from the used python-library `oemof-solph` for energy moddeling.
+The component models of the MVS result from the used python-library `oemof-solph` for energy modeling.
 
 It requires component models to be simplified and linearized.
 This is the reason that the MVS can provide a pre-feasibility study of a specific system setup,
