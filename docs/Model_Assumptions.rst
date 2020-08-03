@@ -34,7 +34,7 @@ Dispatchable conversion assets
 ##############################
 `Examples`:
     - Diesel generator
-    - Electric transformers (rectifiers, inverters
+    - Electric transformers (rectifiers, inverters)
 
 Energy excess
 #############
