@@ -571,7 +571,7 @@ def insert_pie_plots(
         height=500,
         width=700,
         autosize=True,
-        legend=dict(orientation="v", y=0.5, yanchor="middle", x=0.9, xanchor="right",),
+        legend=dict(orientation="v", y=0.5, yanchor="middle", x=0.95, xanchor="right",),
         margin=dict(l=10, r=10, b=50,),
         uniformtext_minsize=18,
     )
@@ -581,7 +581,7 @@ def insert_pie_plots(
         html.Img(
             className="print-only dash-plot",
             src="data:image/png;base64,{}".format(
-                base64.b64encode(fig.to_image(format="png", width=600)).decode(),
+                base64.b64encode(fig.to_image(format="png", width=1000)).decode(),
             ),
         )
     ]
@@ -637,7 +637,7 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
         # Below loop determines the first part of the plot title, according to the kpi being plotted
         if "annuity" in kp_indic:
             kpi_part = "Annuity Costs ("
-            scheme_choosen = px.colors.cyclical.Edge
+            scheme_choosen = px.colors.qualitative.Set1
         elif "investment" in kp_indic:
             kpi_part = "Upfront Investment Costs ("
             scheme_choosen = px.colors.diverging.BrBG
@@ -651,6 +651,7 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
             + str(round(total_for_title, 2))
             + "$): "
             + json_results_file[PROJECT_DATA][PROJECT_NAME]
+            + ", "
             + json_results_file[PROJECT_DATA][SCENARIO_NAME]
         )
 
