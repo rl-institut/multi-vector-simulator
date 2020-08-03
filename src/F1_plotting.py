@@ -451,7 +451,7 @@ def draw_graph(
 
     """
     import networkx as nx
-    import oemof.graph as graph
+    import oemof.network.graph as graph
 
     grph = graph.create_nx_graph(energysystem)
 
