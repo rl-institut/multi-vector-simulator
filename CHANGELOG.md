@@ -21,6 +21,7 @@ Here is a template for new release sections
 
 ### Added
 - `Model_Assumptions` added, including outline for component models, bulletpoints on limitations, energyProviders and peak demand pricing model. (#454)
+- Proposal for a file where the default values of input parameters are defined (`constant_valid_intervals.py`). Might also be of use to automatically update the parameter descriptions in readthedocs?
 
 ### Changed
 - Definition of busses from assets: Now all INFLOW_DIRECTION / OUTFLOW_DIRECTION are translated into ENERGY_BUSSES (#454, #387)
