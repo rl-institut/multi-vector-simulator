@@ -27,7 +27,6 @@ from src.constants_json_strings import (
     KPI_SCALAR_MATRIX,
 )
 
-
 from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
@@ -118,7 +117,7 @@ class TestNetworkx:
         ),
     )
     def test_if_networkx_graph_is_stored_save_plot_true(self, m_args):
-        main()
+        main(overwrite=True, display_output="warning")
         assert (
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
         )
@@ -145,7 +144,7 @@ class TestNetworkx:
         ),
     )
     def test_if_networkx_graph_is_stored_save_plot_false(self, m_args):
-        main()
+        main(overwrite=True, display_output="warning")
         assert (
             os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
         )

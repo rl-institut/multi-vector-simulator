@@ -20,6 +20,15 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+-
+### Changed
+-
+### Removed
+-
+
+## [0.3.1] - 2020-07-30
+
+### Added
 - Release protocol in CONTRIBUTING.md file (#353)
 - Custom heat demand profile generation (#371)
 - Add custom solar thermal collector generation profile (#370)
@@ -42,6 +51,10 @@ Here is a template for new release sections
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 - File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
+ - Add Plotly-based blots (line diagrams for energy flows and bar charts) to `F2_autoreport.py` (#439)
+- LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
+- Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case uvtgv. note: file not provided so far (#474)
+- Benchmark test for simple case grid and diesel without test for fuel consumption (#386)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -73,7 +86,13 @@ Here is a template for new release sections
 - Added arguments `"-f", "-log", "warning"` to all `parse_args` and `main()` in `tests` (#456)
 - File `Developing.rst` with new description of tests and conventions (#456)
 - Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
-
+- Created function to read version number and date from file instead of importing it from module
+ (#463)
+- Fixed E0.store_results_matrix(), now available types: 'str', 'bool', 'None', dict (with key VALUE), else ('int'/'float'). If KPI not in asset, no value is attributed. Added test for function (#468, #470)
+- Fixed main() calls in 'test_F1_plotting.py' (#468)
+- Added `pyppdf==0.0.12` to `requirements.txt` (#473)
+- Tests for A0: Now new dirs are only created if not existant
+- Function `A0.check_output_folder()`, now after `shutil.rmtree` we still `try-except os.mkdirs`, this fixes local issues with `FileExistsError`.  (#474)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
@@ -82,6 +101,8 @@ Here is a template for new release sections
 - `tests/test_benchmark.py` module (#401)
 - Outdated table of tests of MVS `docs/tables/table_tests.csv` (#456)
 - Removed function C0.complete_missing_cost_data() as this should be covered by A1 for csv files (#379)
+- Old plots in `F2_autoreport.py` generated with matplotlib (#439)
+- Parameter `restore_from_oemof_file` from all files (inputs, tests) (#483)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
@@ -92,6 +113,10 @@ Here is a template for new release sections
 - Input folder `tests/inputs` with simple example scenario (#420)
 - Description of storage efficiency in readthedocs (#457)
 - Bug connected to global variables (#356)
+- MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
+- Adapted benchmark tests input folders to template (#386)
+- Local failing pytests (`FileExistsError`) on Ubuntu and Win10 (#474, #483)
+- 9 Warnings due to excess parameter `restore_from_oemof_file` (#483)
 
 ## [0.3.0] - 2020-06-08
 

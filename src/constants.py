@@ -195,7 +195,6 @@ REQUIRED_JSON_PARAMETERS = {
         STORE_NX_GRAPH,
         STORE_OEMOF_RESULTS,
         TIMESTEP,
-        RESTORE_FROM_OEMOF_FILE,
     ],
 }
 # references for which parameters must be present either in the json or csv input method
@@ -247,6 +246,9 @@ DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
     "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1},
     "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87},
 }
+
+# dict keys in results_json file
+TIMESERIES = "timeseries"
 
 # key of the dict containing generated plots filesnames in results_json file
 PATHS_TO_PLOTS = "paths_to_plots"
