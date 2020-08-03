@@ -21,6 +21,7 @@ import pandas as pd
 import reverse_geocoder as rg
 import staticmap
 import asyncio
+import textwrap
 
 import pyppdf.patch_pyppeteer
 from pyppeteer import launch
@@ -543,27 +544,44 @@ def ready_flows_plots(dict_dataseries, json_results_file):
 def insert_pie_plots(
     title_of_plot, names, values, color_scheme, plot_id, print_only=False
 ):
+    title_of_plot = textwrap.wrap(title_of_plot, width=50)
+    title_of_plot = "<br>".join(title_of_plot)
 
-    fig = px.pie(values=values, names=names, color_discrete_sequence=color_scheme)
+    fig = go.Figure(
+        go.Pie(
+            labels=names,
+            values=values,
+            textposition="inside",
+            insidetextorientation="radial",
+            texttemplate="%{label} <br>%{percent}",
+            marker=dict(colors=color_scheme),
+        ),
+    )
+
     fig.update_layout(
         title={
             "text": title_of_plot,
-            "y": 0.95,
+            "y": 0.9,
             "x": 0.5,
             "font_size": 26,
             "xanchor": "center",
             "yanchor": "top",
+            "pad": {"r": 5, "l": 5, "b": 5, "t": 5},
         },
+        height=500,
+        width=700,
+        autosize=True,
+        legend=dict(orientation="v", y=0.5, yanchor="middle", x=0.9, xanchor="right",),
+        margin=dict(l=10, r=10, b=50,),
+        uniformtext_minsize=18,
     )
-    fig.update_traces(
-        hoverinfo="label+percent", textposition="inside", textinfo="percent+label"
-    )
+    fig.update_traces(hoverinfo="label+percent", textinfo="label", textfont_size=18)
 
     plot_created = [
         html.Img(
             className="print-only dash-plot",
             src="data:image/png;base64,{}".format(
-                base64.b64encode(fig.to_image(format="png", width=500)).decode(),
+                base64.b64encode(fig.to_image(format="png", width=600)).decode(),
             ),
         )
     ]
