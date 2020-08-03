@@ -1239,10 +1239,6 @@ def create_app(results_json):
                                 "result from capacity and dispatch optimization:"
                             ),
                             make_dash_data_table(df_cost_matrix),
-                            insert_image_array(
-                                results_json[PATHS_TO_PLOTS][PLOTS_COSTS], width=500
-                            ),
-                            # TODO Plots to be generated using Plotly
                             html.Div(
                                 className="add-pie-plots",
                                 children=ready_pie_plots(
