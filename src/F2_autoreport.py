@@ -85,6 +85,10 @@ from src.constants_json_strings import (
     AVERAGE_FLOW,
     TIMESERIES,
     ANNUITY_TOTAL,
+    ENERGY_PROVIDERS,
+    DSO_FEEDIN,
+    AUTO_SINK,
+    EXCESS,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
@@ -757,13 +761,13 @@ def create_app(results_json):
 
     projectName = (
         results_json[PROJECT_DATA][PROJECT_NAME]
-        + "(ID:"
+        + "(ID: "
         + str(results_json[PROJECT_DATA][PROJECT_ID])
         + ")"
     )
     scenarioName = (
         results_json[PROJECT_DATA][SCENARIO_NAME]
-        + "(ID:"
+        + "(ID: "
         + str(results_json[PROJECT_DATA][SCENARIO_ID])
         + ")"
     )
@@ -797,8 +801,19 @@ def create_app(results_json):
     # Creating a dataframe for the demands
     demands = results_json[ENERGY_CONSUMPTION]
 
-    del demands["DSO_feedin"]
-    del demands["Electricity excess"]
+    ## Removing all columns that are not actually from demands
+    drop_list = []
+    for column_label in demands:
+        # Identifies excess sink in demands for removal
+        if EXCESS in column_label:
+            drop_list.append(column_label)
+        # Identifies DSO_feedin sink in demands for removal
+        elif DSO_FEEDIN + AUTO_SINK in column_label:
+            drop_list.append(column_label)
+
+    # Remove droplist items (ie. sinks that are not demands) from data
+    for item in drop_list:
+        del demands[item]
 
     dem_keys = list(demands.keys())
 

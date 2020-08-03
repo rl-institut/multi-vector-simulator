@@ -195,7 +195,6 @@ REQUIRED_JSON_PARAMETERS = {
         STORE_NX_GRAPH,
         STORE_OEMOF_RESULTS,
         TIMESTEP,
-        RESTORE_FROM_OEMOF_FILE,
     ],
 }
 # references for which parameters must be present either in the json or csv input method
@@ -223,6 +222,12 @@ TYPE_NONE = "None"
 TYPE_FLOAT = "float"
 
 EXTRA_CSV_PARAMETERS = {
+    UNIT: {
+        DEFAULT_VALUE: "NA",
+        UNIT: TYPE_STR,
+        WARNING_TEXT: "defines the unit of power provided by a DSO (Values: str). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
+    },
     MAXIMUM_CAP: {
         DEFAULT_VALUE: None,
         UNIT: TYPE_NONE,

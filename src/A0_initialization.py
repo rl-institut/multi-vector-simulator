@@ -216,21 +216,22 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
                 )
             )
         else:
+            # Pre-existing folder is be deleted
             logging.info("Removing existing output folder " + path_output_folder)
-            # might not work on windows
             shutil.rmtree(path_output_folder, ignore_errors=True)
 
-            logging.info("Creating output folder " + path_output_folder)
-            os.makedirs(path_output_folder)
-
-            logging.info('Creating folder "inputs" in output folder.')
-            shutil.copytree(path_input_folder, path_output_folder_inputs)
-    else:
+    try:
+        # trying to create path_output_folder
+        os.makedirs(path_output_folder, exist_ok=True)
         logging.info("Creating output folder " + path_output_folder)
-        os.makedirs(path_output_folder)
+    except OSError as error:
+        # In case that path_output_folder already exists
+        logging.info(
+            "It was not possible to create the output folder " + path_output_folder
+        )
 
-        logging.info('Creating folder "inputs" in output folder.')
-        shutil.copytree(path_input_folder, path_output_folder_inputs)
+    logging.info('Creating folder "inputs" in output folder.')
+    shutil.copytree(path_input_folder, path_output_folder_inputs)
 
 
 def process_user_arguments(

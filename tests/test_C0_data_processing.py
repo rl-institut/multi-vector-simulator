@@ -6,8 +6,23 @@ import src.C0_data_processing as C0
 from src.constants_json_strings import (
     UNIT,
     ENERGY_PROVIDERS,
+    ENERGY_STORAGE,
+    ENERGY_CONSUMPTION,
+    ENERGY_PRODUCTION,
+    ENERGY_CONVERSION,
+    ENERGY_BUSSES,
+    OUTFLOW_DIRECTION,
+    INFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
+    OPTIMIZE_CAP,
+    INSTALLED_CAP,
+    PEAK_DEMAND_PRICING,
+    AVAILABILITY_DISPATCH,
+    OEMOF_ASSET_TYPE,
+    INPUT_BUS_NAME,
+    OUTPUT_BUS_NAME,
+    EFFICIENCY,
     TAX,
     VALUE,
     LABEL,
@@ -31,6 +46,9 @@ from src.constants_json_strings import (
     LIFETIME_SPECIFIC_COST_OM,
     LIFETIME_PRICE_DISPATCH,
     PERIODS,
+    BUS_SUFFIX,
+    UNIT_MINUTE,
+    ENERGY_VECTOR,
 )
 from .constants import TYPE_STR
 
@@ -140,18 +158,274 @@ def test_determine_lifetime_price_dispatch_is_other():
         C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
 
-def test_define_dso_sinks_and_sources_raises_PeakDemandPricingPeriodsOnlyForYear():
-    dict_test = {
-        ENERGY_PROVIDERS: {"a_dso": {PEAK_DEMAND_PRICING_PERIOD: {VALUE: 2}}},
-        SIMULATION_SETTINGS: {EVALUATED_PERIOD: {VALUE: 30}},
+start_date = pd.Timestamp("2018-01-01 00:00:00")
+dict_test_avilability = {
+    SIMULATION_SETTINGS: {
+        TIME_INDEX: pd.date_range(
+            start=start_date, periods=8760, freq=str(60) + UNIT_MINUTE
+        ),
+        START_DATE: start_date,
+        TIMESTEP: {VALUE: 60},
     }
-    with pytest.raises(ValueError):
-        C0.define_dso_sinks_and_sources(dict_test, "a_dso")
+}
+
+
+def test_define_availability_of_peak_demand_pricing_assets_yearly():
+    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
+        dict_test_avilability, 1, 12
+    )
+    assert len(dict_availability_timeseries) == 1
+    assert dict_availability_timeseries[1].values.sum() == 8760
+
+
+def test_define_availability_of_peak_demand_pricing_assets_monthly():
+    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
+        dict_test_avilability, 12, 1
+    )
+    assert len(dict_availability_timeseries) == 12
+    assert dict_availability_timeseries[1].values.sum() == 31 * 24
+    total = 0
+    for key in dict_availability_timeseries:
+        total += dict_availability_timeseries[key].values.sum()
+    assert total == 8760
+
+
+def test_define_availability_of_peak_demand_pricing_assets_quarterly():
+    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
+        dict_test_avilability, 4, 3
+    )
+    assert len(dict_availability_timeseries) == 4
+    total = 0
+    for key in dict_availability_timeseries:
+        total += dict_availability_timeseries[key].values.sum()
+    assert total == 8760
+
+
+def test_define_transformer_for_peak_demand_pricing():
+    dict_test = {
+        ENERGY_CONVERSION: {},
+        ENERGY_PROVIDERS: {
+            "dso": {
+                LABEL: "a_label",
+                INFLOW_DIRECTION: "a_direction",
+                OUTFLOW_DIRECTION: "b_direction",
+                PEAK_DEMAND_PRICING: {VALUE: 60},
+                UNIT: "unit",
+                ENERGY_VECTOR: "a_vector",
+            }
+        },
+    }
+    dict_test_dso = dict_test[ENERGY_PROVIDERS]["dso"].copy()
+    transformer_name = "a_name"
+    timeseries_availability = pd.Series()
+    C0.define_transformer_for_peak_demand_pricing(
+        dict_test, dict_test_dso, transformer_name, timeseries_availability
+    )
+    assert transformer_name in dict_test[ENERGY_CONVERSION]
+    for k in [
+        LABEL,
+        OPTIMIZE_CAP,
+        INSTALLED_CAP,
+        INFLOW_DIRECTION,
+        OUTFLOW_DIRECTION,
+        AVAILABILITY_DISPATCH,
+        DISPATCH_PRICE,
+        SPECIFIC_COSTS,
+        DEVELOPMENT_COSTS,
+        SPECIFIC_COSTS_OM,
+        OEMOF_ASSET_TYPE,
+        INPUT_BUS_NAME,
+        OUTPUT_BUS_NAME,
+        EFFICIENCY,
+        ENERGY_VECTOR,
+    ]:
+        assert k in dict_test[ENERGY_CONVERSION][transformer_name]
+    assert (
+        dict_test[ENERGY_CONVERSION][transformer_name][SPECIFIC_COSTS_OM][VALUE]
+        == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE]
+    )
+
+
+def test_define_energyBusses():
+    asset_names = ["asset_name_" + str(i) for i in range(0, 6)]
+    in_bus_names = ["in_bus_name_" + str(i) for i in range(0, 6)]
+    out_bus_names = ["out_bus_name_" + str(i) for i in range(0, 6)]
+
+    dict_test = {
+        ENERGY_PROVIDERS: {
+            asset_names[0]: {
+                LABEL: asset_names[0],
+                OUTFLOW_DIRECTION: out_bus_names[0],
+                INFLOW_DIRECTION: in_bus_names[0],
+            }
+        },
+        ENERGY_STORAGE: {
+            asset_names[1]: {
+                LABEL: asset_names[1],
+                OUTFLOW_DIRECTION: out_bus_names[1],
+                INFLOW_DIRECTION: in_bus_names[1],
+            }
+        },
+        ENERGY_CONSUMPTION: {
+            asset_names[2]: {LABEL: asset_names[2], INFLOW_DIRECTION: in_bus_names[2]}
+        },
+        ENERGY_PRODUCTION: {
+            asset_names[3]: {LABEL: asset_names[3], OUTFLOW_DIRECTION: out_bus_names[2]}
+        },
+        ENERGY_CONVERSION: {
+            asset_names[4]: {
+                LABEL: asset_names[4],
+                OUTFLOW_DIRECTION: out_bus_names[3],
+                INFLOW_DIRECTION: in_bus_names[3],
+            },
+            asset_names[5]: {
+                LABEL: asset_names[5],
+                OUTFLOW_DIRECTION: [out_bus_names[4], out_bus_names[5]],
+                INFLOW_DIRECTION: [in_bus_names[4], in_bus_names[5]],
+            },
+        },
+    }
+
+    C0.define_busses(dict_test)
+    assert ENERGY_BUSSES in dict_test.keys()
+    for k in in_bus_names:
+        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
+    for k in out_bus_names:
+        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
+
+
+def test_add_busses_of_asset_depending_on_in_out_direction_single():
+    bus_names = ["bus_name_" + str(i) for i in range(1, 3)]
+    asset_name = "asset"
+    asset_label = "asset_label"
+    dict_test = {
+        ENERGY_BUSSES: {},
+        ENERGY_CONVERSION: {
+            asset_name: {
+                LABEL: asset_label,
+                OUTFLOW_DIRECTION: bus_names[0],
+                INFLOW_DIRECTION: bus_names[1],
+            }
+        },
+    }
+    C0.add_busses_of_asset_depending_on_in_out_direction(
+        dict_test, dict_test[ENERGY_CONVERSION][asset_name], asset_name
+    )
+    for k in bus_names:
+        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
+    for bus in dict_test[ENERGY_BUSSES].keys():
+        assert asset_name in dict_test[ENERGY_BUSSES][bus].keys()
+        assert asset_label in dict_test[ENERGY_BUSSES][bus][asset_name]
+
+
+def test_update_bus():
+    bus_name = "bus_name"
+    asset_name = "asset"
+    asset_label = "asset_label"
+    dict_test = {
+        ENERGY_BUSSES: {},
+        ENERGY_CONVERSION: {
+            asset_name: {LABEL: asset_label, OUTFLOW_DIRECTION: bus_name}
+        },
+    }
+    bus_label = C0.bus_suffix(bus_name)
+    C0.update_bus(
+        dict_values=dict_test,
+        bus=bus_name,
+        asset_key=asset_name,
+        asset_label=asset_label,
+    )
+    assert bus_label in dict_test[ENERGY_BUSSES]
+    assert asset_name in dict_test[ENERGY_BUSSES][bus_label]
+    assert asset_label in dict_test[ENERGY_BUSSES][bus_label][asset_name]
+
+
+def test_bus_suffix_functions():
+    name = "name"
+    bus_name = C0.bus_suffix(name)
+    assert name == C0.remove_bus_suffix(bus_name)
+
+
+def test_bus_suffix_correct():
+    bus = "a"
+    bus_name = C0.bus_suffix(bus)
+    assert bus_name == bus + BUS_SUFFIX
+
+
+def test_apply_function_to_single_or_list_apply_to_single():
+    def multiply(parameter):
+        parameter_processed = 2 * parameter
+        return parameter_processed
+
+    parameter = 1
+    parameter_processed = C0.apply_function_to_single_or_list(multiply, parameter)
+    assert parameter_processed == 2
+
+
+def test_apply_function_to_single_or_list_apply_to_list():
+    def multiply(parameter):
+        parameter_processed = 2 * parameter
+        return parameter_processed
+
+    parameter = [1, 1]
+    parameter_processed = C0.apply_function_to_single_or_list(multiply, parameter)
+    assert parameter_processed == [2, 2]
+
+
+def test_determine_months_in_a_peak_demand_pricing_period_not_valid():
+    with pytest.raises(C0.InvalidPeakDemandPricingPeriods):
+        C0.determine_months_in_a_peak_demand_pricing_period(5, 365)
+
+
+def test_determine_months_in_a_peak_demand_pricing_period_valid():
+    months_in_a_period = C0.determine_months_in_a_peak_demand_pricing_period(4, 365)
+    assert months_in_a_period == 3
+
+
+def test_get_name_or_names_of_in_or_output_bus_single():
+    bus = "bus"
+    bus_with_suffix = C0.bus_suffix(bus)
+    bus_name = C0.get_name_or_names_of_in_or_output_bus(bus)
+    assert bus_name == bus_with_suffix
+
+
+def test_get_name_or_names_of_in_or_output_bus_list():
+    bus = ["bus1", "bus2"]
+    bus_with_suffix = [C0.bus_suffix(bus[0]), C0.bus_suffix(bus[1])]
+    bus_name = C0.get_name_or_names_of_in_or_output_bus(bus)
+    assert bus_name == bus_with_suffix
+
+
+def test_evaluate_lifetime_costs():
+    settings = {EVALUATED_PERIOD: {VALUE: 10}}
+    economic_data = {
+        PROJECT_DURATION: {VALUE: 20},
+        DISCOUNTFACTOR: {VALUE: 0.1},
+        TAX: {VALUE: 0},
+        CRF: {VALUE: 0.1},
+        ANNUITY_FACTOR: {VALUE: 7},
+    }
+
+    dict_asset = {
+        SPECIFIC_COSTS_OM: {VALUE: 5, UNIT: "unit"},
+        SPECIFIC_COSTS: {VALUE: 100, UNIT: "unit"},
+        DISPATCH_PRICE: {VALUE: 1, UNIT: "unit"},
+        LIFETIME: {VALUE: 10},
+    }
+
+    C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
+
+    for k in [
+        LIFETIME_SPECIFIC_COST,
+        LIFETIME_SPECIFIC_COST_OM,
+        ANNUITY_SPECIFIC_INVESTMENT_AND_OM,
+        SIMULATION_ANNUITY,
+        LIFETIME_PRICE_DISPATCH,
+    ]:
+        assert k in dict_asset
 
 
 """
-
-
 def test_asess_energyVectors_and_add_to_project_data():
     C2.identify_energy_vectors(dict_values)
     assert 1 == 0
@@ -160,8 +434,6 @@ def test_asess_energyVectors_and_add_to_project_data():
 #Create a sink for each energyVector (this actually might be changed in the future - create an excess sink for each bus?)
 def test_create_excess_sinks_for_each_energyVector():
     assert 1 == 0
-
-
 
 #- Add demand sinks to energyVectors (this should actually be changed and demand sinks should be added to bus relative to input_direction, also see issue #179)
 def test_adding_demand_sinks_to_energyVectors():
@@ -219,9 +491,6 @@ def test_generation_of_dso_side():
 
 # Add a source if a conversion object is connected to a new input_direction (bug #186)
 def test_add_source_when_unknown_input_direction():
-    assert 1 == 0
-
-def test_define_energyBusses():
     assert 1 == 0
 
 # Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label

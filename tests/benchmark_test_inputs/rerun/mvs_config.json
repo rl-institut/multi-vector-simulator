@@ -880,6 +880,7 @@
     },
     "energyProviders": {
         "DSO": {
+            "unit": "kW",
             "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
@@ -1317,10 +1318,6 @@
         "path_output_folder": "/home/pfduc/Documents/RLI/mvs_eland/MVS_outputs",
         "path_output_folder_inputs": "/home/pfduc/Documents/RLI/mvs_eland/MVS_outputs/inputs",
         "periods": 48,
-        "restore_from_oemof_file": {
-            "unit": "bool",
-            "value": true
-        },
         "start_date": "pandas_Timestamp:2018-01-01 00:00:00",
         "store_nx_graph": {
             "unit": "bool",
