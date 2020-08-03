@@ -483,6 +483,7 @@
     },
     "energyProviders": {
         "DSO": {
+            "unit": "kW",
             "energyVector": "Electricity",
             "energy_price": {
                 "unit": "currency/kWh",

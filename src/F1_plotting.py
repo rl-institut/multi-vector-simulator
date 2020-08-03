@@ -453,6 +453,10 @@ def draw_graph(
     import networkx as nx
     import oemof.network.graph as graph
 
+    # grph = graph.create_nx_graph(
+    #    energysystem, filename=user_input[PATH_OUTPUT_FOLDER] + "network_graph.xml"
+    # )
+
     grph = graph.create_nx_graph(energysystem)
 
     if type(node_color) is dict:
@@ -491,3 +495,68 @@ def draw_graph(
         fig.savefig(
             path, bbox_inches="tight",
         )
+
+
+from src.constants import PLOTS_DEMANDS, PLOTS_RESOURCES
+
+
+def plot_input_timeseries(
+    dict_values,
+    user_input,
+    timeseries,
+    asset_name,
+    column_head="",
+    is_demand_profile=False,
+):
+    r"""
+    This function is called from C0 to plot the input timeseries provided to the MVS.
+    This includes demand profiles, generation profiles as well as timeseries for otherwise scalar values.
+
+    Parameters
+    ----------
+    dict_values: dict
+        Dict with all simulation parameters
+
+    user_input: dict
+        Settings
+
+    timeseries: pd.Series
+        Timeseries to be plotted
+
+    asset_name: str
+        Name of the timeseries to be plotted
+
+    column_head: str
+        Column under which timeseries can be found in the csv
+
+    is_demand_profile: bool
+        Information whether or not the timeseries provided is a demand profile
+
+    Returns
+    -------
+    PNG file with timeseries plot
+
+    """
+    logging.info("Creating plots for asset %s's parameter %s", asset_name, column_head)
+    fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
+    axes_mg = axes
+
+    timeseries.plot(
+        title=asset_name, ax=axes_mg, drawstyle="steps-mid",
+    )
+    axes_mg.set(xlabel="Time", ylabel=column_head)
+    path = os.path.join(
+        user_input[PATH_OUTPUT_FOLDER],
+        "input_timeseries_" + asset_name + "_" + column_head + ".png",
+    )
+    if is_demand_profile is True:
+        dict_values[PATHS_TO_PLOTS][PLOTS_DEMANDS] += [str(path)]
+    else:
+        dict_values[PATHS_TO_PLOTS][PLOTS_RESOURCES] += [str(path)]
+    plt.savefig(
+        path, bbox_inches="tight",
+    )
+
+    plt.close()
+    plt.clf()
+    plt.cla()

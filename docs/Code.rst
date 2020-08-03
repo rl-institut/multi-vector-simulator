@@ -9,6 +9,10 @@ Initialization
    :members:
    :undoc-members:
 
+.. automodule:: src.constants_json_strings
+   :members:
+   :undoc-members:
+
 .. automodule:: src.A0_initialization
    :members:
    :undoc-members:
