@@ -451,7 +451,7 @@ def define_missing_cost_data(dict_values, dict_asset):
 
 def define_busses(dict_values):
     """
-    This function defines the ENERGY_BUSSES that the energy system model is compised of.
+    This function defines the ENERGY_BUSSES that the energy system model is comprised of.
     For that, it adds each new bus defined as INPUT_DIRECTION or OUTPUT_DIRECTION in all assets
     of all the energyAsset types (ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION, ENERGY_PROVIDERS, ENERGY_STORAGE)
 
