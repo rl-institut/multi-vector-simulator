@@ -29,6 +29,7 @@ from src.constants_json_strings import (
     RENEWABLE_ASSET_BOOL,
     RENEWABLE_SHARE_DSO,
     DSO_CONSUMPTION,
+TOTAL_RENEWABLE_GENERATION_IN_LES, TOTAL_NON_RENEWABLE_GENERATION_IN_LES, TOTAL_RENEWABLE_ENERGY_USE, TOTAL_NON_RENEWABLE_ENERGY_USE
 )
 
 
@@ -108,8 +109,8 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
 
     dict_values[KPI][KPI_UNCOUPLED_DICT].update(
         {
-            "Total internal renewable generation": renewable_origin.copy(),
-            "Total internal non-renewable generation": non_renewable_origin.copy(),
+            TOTAL_RENEWABLE_GENERATION_IN_LES: renewable_origin.copy(),
+            TOTAL_NON_RENEWABLE_GENERATION_IN_LES: non_renewable_origin.copy(),
         }
     )
 
@@ -131,16 +132,16 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
 
     dict_values[KPI][KPI_UNCOUPLED_DICT].update(
         {
-            "Total renewable energy use": renewable_origin,
-            "Total non-renewable energy use": non_renewable_origin,
+            TOTAL_RENEWABLE_ENERGY_USE: renewable_origin,
+            TOTAL_NON_RENEWABLE_ENERGY_USE: non_renewable_origin,
         }
     )
 
     for sector_specific_kpi in [
-        "Total internal renewable generation",
-        "Total internal non-renewable generation",
-        "Total renewable energy use",
-        "Total non-renewable energy use",
+        TOTAL_RENEWABLE_GENERATION_IN_LES,
+        TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
+        TOTAL_RENEWABLE_ENERGY_USE,
+        TOTAL_NON_RENEWABLE_ENERGY_USE,
     ]:
         weighting_for_sector_coupled_kpi(dict_values, sector_specific_kpi)
 
@@ -166,19 +167,19 @@ def renewable_share(dict_values):
     kpi_name = "Renewable share"
     dict_renewable_share = {}
     for sector in dict_values[PROJECT_DATA][SECTORS]:
-        total_res = dict_values[KPI][KPI_UNCOUPLED_DICT]["Total renewable energy use"][
+        total_res = dict_values[KPI][KPI_UNCOUPLED_DICT][TOTAL_RENEWABLE_ENERGY_USE][
             sector
         ]
         total_non_res = dict_values[KPI][KPI_UNCOUPLED_DICT][
-            "Total non-renewable energy use"
+            TOTAL_NON_RENEWABLE_ENERGY_USE
         ][sector]
         dict_renewable_share.update(
             {sector: equation_renewable_share(total_res, total_non_res)}
         )
     dict_values[KPI][KPI_UNCOUPLED_DICT].update({kpi_name: dict_renewable_share})
 
-    total_res = dict_values[KPI][KPI_SCALARS_DICT]["Total renewable energy use"]
-    total_non_res = dict_values[KPI][KPI_SCALARS_DICT]["Total non-renewable energy use"]
+    total_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_ENERGY_USE]
+    total_non_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_ENERGY_USE]
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {kpi_name: equation_renewable_share(total_res, total_non_res)}
     )

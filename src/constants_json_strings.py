@@ -204,6 +204,13 @@ COST_INVESTMENT = "costs_investment_over_lifetime"
 # Levelized cost of electricity
 LCOE_ASSET = "levelized_cost_of_energy_of_asset"
 
+
+# Other KPI
+TOTAL_RENEWABLE_GENERATION_IN_LES = "Total internal renewable generation"
+TOTAL_NON_RENEWABLE_GENERATION_IN_LES = "Total internal non-renewable generation"
+TOTAL_RENEWABLE_ENERGY_USE = "Total renewable energy use"
+TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use"
+
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (
     ANNUITY_OM,
