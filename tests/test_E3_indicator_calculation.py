@@ -53,10 +53,7 @@ dso = "DSO"
 flow_small = 50
 flow_medium = 100
 renewable_share_dso = 0.1
-dict_renewable_energy_use[ENERGY_PRODUCTION][dso + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + "_1"][TOTAL_FLOW][
-    VALUE
-] = flow_small
-dict_renewable_energy_use[ENERGY_PRODUCTION][dso + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + "_2"][TOTAL_FLOW][
+dict_renewable_energy_use[ENERGY_PRODUCTION][dso + DSO_CONSUMPTION][TOTAL_FLOW][
     VALUE
 ] = flow_small
 dict_renewable_energy_use[ENERGY_PRODUCTION]["pv_plant_01"][TOTAL_FLOW][
