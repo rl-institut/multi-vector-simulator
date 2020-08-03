@@ -15,6 +15,7 @@ Welcome to Multi-Vector Simulator (MVS)'s documentation!
    Code
    simulating_with_the_mvs
    MVS_parameters
+   Model_Assumptions
    MVS_Outputs
    troubleshooting
 

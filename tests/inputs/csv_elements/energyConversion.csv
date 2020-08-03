@@ -2,7 +2,7 @@
 label,str,Charge Contoller ESS Li-Ion (charge),Charge Contoller ESS Li-Ion (discharge),Solar inverter (mono),Transformer station (DSO) consumption,Transformer station (DSO) feedin,Backup diesel generator
 unit,str,kW,kW,kW,kVA,kVA,kW
 optimizeCap,bool,True,True,True,False,False,True
-maximumCap,None or float,None,None,None,None,None,None
+maximumCap,None or float,None,None,None,None,None,1
 installedCap,kW,0.0,0.0,0.0,1250,1250,0
 age_installed,year,0.0,0.0,0,5,5,0
 lifetime,year,10,10,15,30,30,15
