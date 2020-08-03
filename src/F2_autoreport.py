@@ -584,11 +584,8 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
     columns_list = list(df_pie_data.columns)
     columns_list.remove(LABEL)
 
-    # List of color schemes to be used in the pie plots
-    colors_schemes = ["thermal", "haline", "solar"]
-    print(df_pie_data.to_string())
     # Loop to iterate through the list of columns of the DF which are nothing but the KPIs to be plotted
-    for kp_indic, color in zip(columns_list, colors_schemes):
+    for kp_indic in columns_list:
 
         # Assign an id for the plot
         comp_id = kp_indic + "plot"
@@ -622,13 +619,13 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
         # Below loop determines the first part of the plot title, according to the kpi being plotted
         if "annuity" in kp_indic:
             kpi_part = "Annuity Costs ("
-            scheme_choosen = px.colors.sequential.Aggrnyl
+            scheme_choosen = px.colors.cyclical.Edge
         elif "investment" in kp_indic:
             kpi_part = "Upfront Investment Costs ("
-            scheme_choosen = px.colors.sequential.RdBu
+            scheme_choosen = px.colors.diverging.BrBG
         elif "om" in kp_indic:
             kpi_part = "Operation and Maintenance Costs ("
-            scheme_choosen = px.colors.sequential.haline
+            scheme_choosen = px.colors.sequential.RdBu
 
         # Title of the pie plot
         plot_title = (
