@@ -20,9 +20,12 @@ from src.constants_json_strings import (
     KPI_COST_MATRIX,
     TOTAL_FLOW,
     RENEWABLE_SHARE_DSO,
-DSO_CONSUMPTION,
+    DSO_CONSUMPTION,
     DSO_PEAK_DEMAND_PERIOD,
-TOTAL_RENEWABLE_GENERATION_IN_LES, TOTAL_NON_RENEWABLE_GENERATION_IN_LES, TOTAL_RENEWABLE_ENERGY_USE, TOTAL_NON_RENEWABLE_ENERGY_USE
+    TOTAL_RENEWABLE_GENERATION_IN_LES,
+    TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
+    TOTAL_RENEWABLE_ENERGY_USE,
+    TOTAL_NON_RENEWABLE_ENERGY_USE,
 )
 
 numbers = [10, 15, 20, 25]
@@ -114,7 +117,12 @@ class TestGeneralEvaluation:
     def test_total_renewable_and_non_renewable_origin_of_each_sector(self):
         """ """
         E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
-        kpi_list = [TOTAL_RENEWABLE_GENERATION_IN_LES, TOTAL_NON_RENEWABLE_GENERATION_IN_LES, TOTAL_RENEWABLE_ENERGY_USE, TOTAL_NON_RENEWABLE_ENERGY_USE]
+        kpi_list = [
+            TOTAL_RENEWABLE_GENERATION_IN_LES,
+            TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
+            TOTAL_RENEWABLE_ENERGY_USE,
+            TOTAL_NON_RENEWABLE_ENERGY_USE,
+        ]
         for k in kpi_list:
             assert k in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
             assert k in dict_renewable_energy_use[KPI][KPI_SCALARS_DICT]
