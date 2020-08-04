@@ -312,7 +312,7 @@ def insert_single_plot(
     elif plot_type == "bar":
         # Loop through the label column of the df
         # Plot bars for each parameter with the corresponding value
-        fig.add_trace(go.Bar(name="capacities", x=x_data, y=y_data))
+        fig.add_trace(go.Bar(name="capacities", x=x_data, y=y_data, marker_color=px.colors.qualitative.D3))
 
     styling_dict = dict(
         showgrid=True,
@@ -322,7 +322,7 @@ def insert_single_plot(
         autorange=True,
         linewidth=2,
         ticks="inside",
-        title_font=dict(size=22, family="Courier", color="black"),
+        title_font=dict(size=20, color="black"),
     )
     fig.update_layout(
         xaxis_title=x_axis_name,
