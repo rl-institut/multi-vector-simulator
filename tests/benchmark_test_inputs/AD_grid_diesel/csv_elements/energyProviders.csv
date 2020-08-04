@@ -1,0 +1,13 @@
+,unit,DSO,Diesel
+unit,str,kW,kWh_chem
+energy_price,currency/kWh,0.54,0.1
+feedin_tariff,currency/kWh,0,0
+inflow_direction,str,Electricity (DSO),Electricity (diesel)
+label,str,Electricity grid DSO,Diesel source
+optimizeCap,bool,False
+outflow_direction,str,Electricity (DSO),Electricity (diesel)
+peak_demand_pricing,currency/kW,0,0
+peak_demand_pricing_period,"times per year (1,2,3,4,6,12)",1,1
+type_oemof,str,source,source
+energyVector,str,Electricity,Electricity
+renewable_share,factor,0,0

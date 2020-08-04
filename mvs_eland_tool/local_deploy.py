@@ -130,22 +130,7 @@ def main(**kwargs):
     print("")
     logging.debug("Accessing script: D0_modelling_and_optimization")
     results_meta, results_main = modelling.run_oemof(dict_values)
-    """
-    if dict_values['simulation_settings']['restore_from_oemof_file'] is True:
-        if os.path.isfile(dict_values['simulation_settings']['path_output_folder'] + '/' + "oemof_simulation_results.oemof)is False:
-            print('')
-            logging.debug('Accessing script: D0_modelling_and_optimization')
-            results_meta, results_main = modelling.run_oemof(dict_values)
-        else:
-            logging.debug('Restore the energy system and the results.')
-            import oemof.solph as solph
-            model = solph.EnergySystem()
-            model.restore(dpath=dict_values['simulation_settings']['path_output_folder'],
-                                  filename="oemof_simulation_results.oemof"])
-            results_main = model.results['main']
-            results_meta = model.results['meta']
 
-    # """
     print("")
     logging.debug("Accessing script: E0_evaluation")
     evaluation.evaluate_dict(dict_values, results_main, results_meta)

@@ -20,6 +20,12 @@ from src.constants_json_strings import (
     KPI_COST_MATRIX,
     TOTAL_FLOW,
     RENEWABLE_SHARE_DSO,
+    DSO_CONSUMPTION,
+    DSO_PEAK_DEMAND_PERIOD,
+    TOTAL_RENEWABLE_GENERATION_IN_LES,
+    TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
+    TOTAL_RENEWABLE_ENERGY_USE,
+    TOTAL_NON_RENEWABLE_ENERGY_USE,
 )
 
 numbers = [10, 15, 20, 25]
@@ -46,19 +52,17 @@ dict_renewable_energy_use = load_json(
     os.path.join("tests", "test_data", "test_json_for_E3.json")
 )
 
+dso = "DSO"
 flow_small = 50
 flow_medium = 100
 renewable_share_dso = 0.1
-dict_renewable_energy_use[ENERGY_PRODUCTION]["DSO_consumption_period_1"][TOTAL_FLOW][
-    VALUE
-] = flow_small
-dict_renewable_energy_use[ENERGY_PRODUCTION]["DSO_consumption_period_2"][TOTAL_FLOW][
+dict_renewable_energy_use[ENERGY_PRODUCTION][dso + DSO_CONSUMPTION][TOTAL_FLOW][
     VALUE
 ] = flow_small
 dict_renewable_energy_use[ENERGY_PRODUCTION]["pv_plant_01"][TOTAL_FLOW][
     VALUE
 ] = flow_medium
-dict_renewable_energy_use[ENERGY_PROVIDERS]["DSO"][RENEWABLE_SHARE_DSO][
+dict_renewable_energy_use[ENERGY_PROVIDERS][dso][RENEWABLE_SHARE_DSO][
     VALUE
 ] = renewable_share_dso
 exp_res = flow_medium + (flow_small * 2 * renewable_share_dso)
@@ -113,61 +117,39 @@ class TestGeneralEvaluation:
     def test_total_renewable_and_non_renewable_origin_of_each_sector(self):
         """ """
         E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
-        assert (
-            "Total internal renewable generation"
-            in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
-        )
-        assert (
-            "Total renewable energy use"
-            in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
-        )
-        assert (
-            "Total internal non-renewable generation"
-            in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
-        )
-        assert (
-            "Total non-renewable energy use"
-            in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
-        )
-        assert (
-            "Total internal renewable generation"
-            in dict_renewable_energy_use[KPI][KPI_SCALARS_DICT]
-        )
-        assert (
-            "Total renewable energy use"
-            in dict_renewable_energy_use[KPI][KPI_SCALARS_DICT]
-        )
-        assert (
-            "Total internal non-renewable generation"
-            in dict_renewable_energy_use[KPI][KPI_SCALARS_DICT]
-        )
-        assert (
-            "Total non-renewable energy use"
-            in dict_renewable_energy_use[KPI][KPI_SCALARS_DICT]
-        )
+        kpi_list = [
+            TOTAL_RENEWABLE_GENERATION_IN_LES,
+            TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
+            TOTAL_RENEWABLE_ENERGY_USE,
+            TOTAL_NON_RENEWABLE_ENERGY_USE,
+        ]
+        for k in kpi_list:
+            assert k in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
+            assert k in dict_renewable_energy_use[KPI][KPI_SCALARS_DICT]
+
         """
         e3 json has to be adapted for this to work
         assert (
             dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][
-                "Total internal renewable generation"
+                TOTAL_RENEWABLE_GENERATION_IN_LES
             ]["Electricity"]
             == flow_medium
         )
         assert (
             dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][
-                "Total internal non-renewable generation"
+                TOTAL_NON_RENEWABLE_GENERATION_IN_LES
             ]["Electricity"]
             == 0
         )
         assert (
             dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][
-                "Total renewable energy use"
+                TOTAL_RENEWABLE_ENERGY_USE
             ]["Electricity"]
             == exp_res
         )
         assert (
             dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][
-                "Total non-renewable energy use"
+                TOTAL_NON_RENEWABLE_ENERGY_USE
             ]["Electricity"]
             == exp_non_res
         )

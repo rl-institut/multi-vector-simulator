@@ -317,6 +317,7 @@
     },
     "energyProviders": {
         "DSO": {
+            "unit": "kW",
             "energyVector": "Electricity",
             "energy_price": {
                 "unit": "currency/kWh",
@@ -592,10 +593,6 @@
         "output_lp_file": {
             "unit": "bool",
             "value": false
-        },
-        "restore_from_oemof_file": {
-            "unit": "bool",
-            "value": true
         },
         "start_date": "2018-01-01 00:00:00",
         "store_nx_graph": {

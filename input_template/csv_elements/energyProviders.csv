@@ -1,5 +1,6 @@
 ,unit
 label,str
+unit,str
 optimizeCap,bool
 energy_price,currency/kWh
 feedin_tariff,currency/kWh

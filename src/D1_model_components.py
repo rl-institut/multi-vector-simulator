@@ -18,6 +18,7 @@ from src.constants_json_strings import (
     VALUE,
     LABEL,
     DISPATCH_PRICE,
+    AVAILABILITY_DISPATCH,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
     EFFICIENCY,
@@ -452,16 +453,31 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
 
     else:
         inputs = {kwargs["busses"][dict_asset[INPUT_BUS_NAME]]: solph.Flow()}
-        outputs = {
-            kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
-                investment=solph.Investment(
-                    ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
-                    maximum=dict_asset[MAXIMUM_CAP][VALUE],
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
-                ),
-                variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
-            )
-        }
+        if AVAILABILITY_DISPATCH in dict_asset.keys():
+            # This key is only present in DSO peak demand pricing transformers.
+            outputs = {
+                kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+                    investment=solph.Investment(
+                        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
+                        maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                        existing=dict_asset[INSTALLED_CAP][VALUE],
+                    ),
+                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+                    max=dict_asset[AVAILABILITY_DISPATCH].values,
+                )
+            }
+        else:
+            outputs = {
+                kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+                    investment=solph.Investment(
+                        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
+                        maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                        existing=dict_asset[INSTALLED_CAP][VALUE],
+                    ),
+                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+                )
+            }
+
         efficiencies = {
             kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: dict_asset[EFFICIENCY][VALUE]
         }
@@ -606,8 +622,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
     outputs = {
         kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
             label=dict_asset[LABEL],
-            actual_value=dict_asset[TIMESERIES],
-            fixed=True,
+            fix=dict_asset[TIMESERIES],
             nominal_value=dict_asset[INSTALLED_CAP][VALUE],
             variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
         )
@@ -637,8 +652,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
     outputs = {
         kwargs["busses"][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
             label=dict_asset[LABEL],
-            actual_value=dict_asset[TIMESERIES_NORMALIZED],
-            fixed=True,
+            fix=dict_asset[TIMESERIES_NORMALIZED],
             investment=solph.Investment(
                 ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
@@ -808,13 +822,13 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
         index = 0
         for bus in dict_asset[INPUT_BUS_NAME]:
             inputs[kwargs["busses"][bus]] = solph.Flow(
-                actual_value=dict_asset[TIMESERIES], nominal_value=1, fixed=True
+                fix=dict_asset[TIMESERIES], nominal_value=1
             )
             index += 1
     else:
         inputs = {
             kwargs["busses"][dict_asset[INPUT_BUS_NAME]]: solph.Flow(
-                actual_value=dict_asset[TIMESERIES], nominal_value=1, fixed=True
+                fix=dict_asset[TIMESERIES], nominal_value=1
             )
         }
 

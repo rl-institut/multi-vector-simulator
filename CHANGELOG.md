@@ -20,6 +20,40 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+-
+### Changed
+ - Move and rename json converter and parser to B0 module (#464)
+ - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+
+### Removed
+-
+
+## [0.3.2] 2020-08-04
+
+### Added
+- `Model_Assumptions` added, including outline for component models, bulletpoints on limitations, energyProviders and peak demand pricing model. (#454)
+
+### Changed
+- Definition of busses from assets: Now all INFLOW_DIRECTION / OUTFLOW_DIRECTION are translated into ENERGY_BUSSES (#454, #387)
+- An excess sink is created for each and every bus (#454)
+- Splitting functions in `C0` and adding tests for them: `C0.define_sink()`, `C0.define_source()` and `C0.define_dso_sinks_and_sources()` (#454)
+- Instead of defining multiple DSO sources for modelling peak demand pricing, now a single source is defined and another level added with transformers that, with an availability limited to a peak demand pricing period, only represent the costs of peak demand pricing in the specific period. (#454)
+- Moved function `C0.plot_input_timeseries()` to `F1.plot_input_timeseries()` (#454)
+- Add required parameter "unit" to energyProviders.csv. Used for defining the units of the peak demand pricing transformer. (#454)
+- Updated `F2` for new DSO/excess sink structure: DSO feedin and excess sink removal from demands now universal (#454)
+- Replace `logging.warning` for dispatch price of sources in case of DSOs - this is now only an `logging.info`
+- Added global variables for KPI connected to renewable energy use (TOTAL_RENEWABLE_GENERATION_IN_LES = "Total internal renewable generation", TOTAL_NON_RENEWABLE_GENERATION_IN_LES = "Total internal non-renewable generation", TOTAL_RENEWABLE_ENERGY_USE = "Total renewable energy use", TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use") (#454)
+- Updated to disagregated `oemof-solph==0.4.1`, which required changing the `requirements.txt` as well as the usage of `oemof` within the MVS (#405)
+
+### Removed
+-
+
+### Fixed
+- Peak demand pricing feature (#454)
+
+## [0.3.1] - 2020-07-30
+
+### Added
 - Release protocol in CONTRIBUTING.md file (#353)
 - Custom heat demand profile generation (#371)
 - Add custom solar thermal collector generation profile (#370)
@@ -42,7 +76,10 @@ Here is a template for new release sections
  - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 - File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
+ - Add Plotly-based blots (line diagrams for energy flows and bar charts) to `F2_autoreport.py` (#439)
 - LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
+- Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case uvtgv. note: file not provided so far (#474)
+- Benchmark test for simple case grid and diesel without test for fuel consumption (#386)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -76,9 +113,12 @@ Here is a template for new release sections
 - Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
 - Created function to read version number and date from file instead of importing it from module
  (#463)
- - Move and rename json converter and parser to B0 module (#464)
- - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
-
+- Fixed E0.store_results_matrix(), now available types: 'str', 'bool', 'None', dict (with key VALUE), else ('int'/'float'). If KPI not in asset, no value is attributed. Added test for function (#468, #470)
+- Fixed main() calls in 'test_F1_plotting.py' (#468)
+- Added `pyppdf==0.0.12` to `requirements.txt` (#473)
+- Tests for A0: Now new dirs are only created if not existant
+- Function `A0.check_output_folder()`, now after `shutil.rmtree` we still `try-except os.mkdirs`, this fixes local issues with `FileExistsError`.  (#474)
+- Added `pyppdf==0.0.12` to `requirements.txt` (#473)
 
 ### Removed
 - Selenium to print the automatic project report for help (#407)
@@ -87,6 +127,8 @@ Here is a template for new release sections
 - `tests/test_benchmark.py` module (#401)
 - Outdated table of tests of MVS `docs/tables/table_tests.csv` (#456)
 - Removed function C0.complete_missing_cost_data() as this should be covered by A1 for csv files (#379)
+- Old plots in `F2_autoreport.py` generated with matplotlib (#439)
+- Parameter `restore_from_oemof_file` from all files (inputs, tests) (#483)
 
 ### Fixed
 - Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
@@ -97,6 +139,10 @@ Here is a template for new release sections
 - Input folder `tests/inputs` with simple example scenario (#420)
 - Description of storage efficiency in readthedocs (#457)
 - Bug connected to global variables (#356)
+- MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
+- Adapted benchmark tests input folders to template (#386)
+- Local failing pytests (`FileExistsError`) on Ubuntu and Win10 (#474, #483)
+- 9 Warnings due to excess parameter `restore_from_oemof_file` (#483)
 
 ## [0.3.0] - 2020-06-08
 

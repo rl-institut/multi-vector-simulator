@@ -3,9 +3,9 @@ import shutil
 
 import mock
 
-import src.A0_initialization as initializing
-import src.A1_csv_to_json as load_data_from_csv
-import src.B0_data_input_json as data_input
+import src.A0_initialization as A0
+import src.A1_csv_to_json as A1
+import src.B0_data_input_json as B0
 from src.constants_json_strings import SIMULATION_SETTINGS
 from .constants import (
     JSON_PATH,
@@ -22,7 +22,7 @@ from .constants import (
 
 
 def test_load_json_overwrite_output_folder_from_json():
-    dict_values = data_input.load_json(JSON_PATH, path_output_folder="test")
+    dict_values = B0.load_json(JSON_PATH, path_output_folder="test")
     assert dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER] == "test"
     assert dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER_INPUTS] == os.path.join(
         "test", "inputs"
@@ -30,11 +30,11 @@ def test_load_json_overwrite_output_folder_from_json():
 
 
 def test_load_json_overwrite_input_folder_from_json():
-    dict_values = data_input.load_json(JSON_PATH, path_input_folder="test")
+    dict_values = B0.load_json(JSON_PATH, path_input_folder="test")
     assert dict_values[SIMULATION_SETTINGS][PATH_INPUT_FOLDER] == "test"
 
 
-PARSER = initializing.create_parser()
+PARSER = A0.create_parser()
 
 
 class TestTemporaryJsonFileDisposal:
@@ -59,10 +59,10 @@ class TestTemporaryJsonFileDisposal:
         ),
     )
     def test_load_json_removes_json_file_from_inputs_folder(self, m_args):
-        initializing.process_user_arguments()
+        A0.process_user_arguments()
 
-        load_data_from_csv.create_input_json(input_directory=CSV_PATH, pass_back=True)
-        dict_values = data_input.load_json(
+        A1.create_input_json(input_directory=CSV_PATH, pass_back=True)
+        dict_values = B0.load_json(
             JSON_CSV_PATH, path_output_folder=self.test_out_path, move_copy=True
         )
 
@@ -87,10 +87,10 @@ class TestTemporaryJsonFileDisposal:
         ),
     )
     def test_load_json_copies_json_file_to_output_folder(self, m_args):
-        initializing.process_user_arguments()
+        A0.process_user_arguments()
 
-        load_data_from_csv.create_input_json(input_directory=CSV_PATH, pass_back=True)
-        dict_values = data_input.load_json(
+        A1.create_input_json(input_directory=CSV_PATH, pass_back=True)
+        dict_values = B0.load_json(
             JSON_CSV_PATH, path_output_folder=self.test_out_path, move_copy=True
         )
 
