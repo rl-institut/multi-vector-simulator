@@ -20,6 +20,17 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+-
+### Changed
+ - Move and rename json converter and parser to B0 module (#464)
+ - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+
+### Removed
+-
+
+## [0.3.2] 2020-08-04
+
+### Added
 - `Model_Assumptions` added, including outline for component models, bulletpoints on limitations, energyProviders and peak demand pricing model. (#454)
 
 ### Changed
@@ -32,6 +43,7 @@ Here is a template for new release sections
 - Updated `F2` for new DSO/excess sink structure: DSO feedin and excess sink removal from demands now universal (#454)
 - Replace `logging.warning` for dispatch price of sources in case of DSOs - this is now only an `logging.info`
 - Added global variables for KPI connected to renewable energy use (TOTAL_RENEWABLE_GENERATION_IN_LES = "Total internal renewable generation", TOTAL_NON_RENEWABLE_GENERATION_IN_LES = "Total internal non-renewable generation", TOTAL_RENEWABLE_ENERGY_USE = "Total renewable energy use", TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use") (#454)
+- Updated to disagregated `oemof-solph==0.4.1`, which required changing the `requirements.txt` as well as the usage of `oemof` within the MVS (#405)
 
 ### Removed
 -
