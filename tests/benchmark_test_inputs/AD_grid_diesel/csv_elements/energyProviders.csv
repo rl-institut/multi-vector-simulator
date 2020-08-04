@@ -1,4 +1,5 @@
 ,unit,DSO,Diesel
+unit,str,kW,kWh_chem
 energy_price,currency/kWh,0.54,0.1
 feedin_tariff,currency/kWh,0,0
 inflow_direction,str,Electricity (DSO),Electricity (diesel)

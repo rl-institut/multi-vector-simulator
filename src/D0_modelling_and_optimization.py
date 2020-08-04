@@ -2,7 +2,7 @@ import logging
 import os
 import timeit
 
-import oemof.outputlib as outputlib
+from oemof.solph import processing
 import oemof.solph as solph
 
 import src.D1_model_components as model_components
@@ -299,8 +299,8 @@ class model_building:
         logging.info("Problem solved.")
 
         # add results to the energy system to make it possible to store them.
-        results_main = outputlib.processing.results(local_energy_system)
-        results_meta = outputlib.processing.meta_results(local_energy_system)
+        results_main = processing.results(local_energy_system)
+        results_meta = processing.meta_results(local_energy_system)
 
         model.results["main"] = results_main
         model.results["meta"] = results_meta
