@@ -1240,9 +1240,6 @@ def create_app(results_json):
                             insert_body_text(
                                 "With this, the demands are met with the following dispatch schedules:"
                             ),
-                            insert_body_text(
-                                "a. Flows in the system for a duration of 14 days"
-                            ),
                             html.Div(
                                 children=ready_flows_plots(
                                     dict_dataseries=data_flows,
