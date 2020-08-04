@@ -301,6 +301,18 @@ def insert_single_plot(
     :return: a plot object
     """
     fig = go.Figure()
+
+    styling_dict = dict(
+        showgrid=True,
+        gridwidth=1.5,
+        zeroline=True,
+        mirror=True,
+        autorange=True,
+        linewidth=1,
+        ticks="inside",
+        title_font=dict(size=18, color="black"),
+    )
+
     if plot_type == "line":
         fig.add_trace(
             go.Scatter(
@@ -310,6 +322,22 @@ def insert_single_plot(
                 line=dict(color=color_for_plot, width=2.5),
             )
         )
+        fig.update_layout(
+            xaxis_title=x_axis_name,
+            yaxis_title=y_axis_name,
+            template="simple_white",
+            xaxis=styling_dict,
+            yaxis=styling_dict,
+            title={
+                "text": plot_title,
+                "y": 0.90,
+                "x": 0.5,
+                "font_size": 23,
+                "xanchor": "center",
+                "yanchor": "top",
+            },
+        )
+
     elif plot_type == "bar":
         # Loop through the label column of the df
         # Plot bars for each parameter with the corresponding value
