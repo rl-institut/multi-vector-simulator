@@ -22,6 +22,7 @@ import reverse_geocoder as rg
 import staticmap
 import asyncio
 import textwrap
+import copy
 
 import pyppdf.patch_pyppeteer
 from pyppeteer import launch
@@ -347,11 +348,18 @@ def insert_single_plot(
             legend_title="Components",
         )
 
+    # Specific modifications for print version
+    fig2 = copy.deepcopy(fig)
+    # Make the legend horizontally oriented so as to prevent the legend from being cut off
+    fig2.update_layout(legend=dict(orientation="h", y=-0.3, x=0.5, xanchor="center"))
+
     rendered_plots = [
         html.Img(
             className="print-only dash-plot",
             src="data:image/png;base64,{}".format(
-                base64.b64encode(fig.to_image(format="png", width=1000)).decode(),
+                base64.b64encode(
+                    fig2.to_image(format="png", height=500, width=900)
+                ).decode(),
             ),
         )
     ]
@@ -503,11 +511,19 @@ def insert_flows_plots(
             y=0.5, traceorder="normal", font=dict(family="sans-serif", color="black"),
         ),
     )
+
+    # Specific modifications for print version
+    fig2 = copy.deepcopy(fig)
+    # Make the legend horizontally oriented so as to prevent the legend from being cut off
+    fig2.update_layout(legend=dict(orientation="h", y=-0.3, x=0.5, xanchor="center"))
+
     plot_created = [
         html.Img(
             className="print-only dash-plot",
             src="data:image/png;base64,{}".format(
-                base64.b64encode(fig.to_image(format="png", width=1000)).decode(),
+                base64.b64encode(
+                    fig2.to_image(format="png", height=500, width=900)
+                ).decode(),
             ),
         )
     ]
@@ -592,11 +608,18 @@ def insert_pie_plots(
     )
     fig.update_traces(hoverinfo="label+percent", textinfo="label", textfont_size=18)
 
+    # Specific modifications for print version
+    fig2 = copy.deepcopy(fig)
+    # Make the legend horizontally oriented so as to prevent the legend from being cut off
+    fig2.update_layout(legend=dict(orientation="h", y=-0.1, x=0.5, xanchor="center"))
+
     plot_created = [
         html.Img(
             className="print-only dash-plot",
             src="data:image/png;base64,{}".format(
-                base64.b64encode(fig.to_image(format="png", width=1000)).decode(),
+                base64.b64encode(
+                    fig2.to_image(format="png", height=500, width=900)
+                ).decode(),
             ),
         )
     ]
