@@ -20,6 +20,15 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+-
+### Changed
+-
+### Removed
+-
+
+## [0.3.2] 2020-08-04
+
+### Added
 - `Model_Assumptions` added, including outline for component models, bulletpoints on limitations, energyProviders and peak demand pricing model. (#454)
 
 ### Changed
