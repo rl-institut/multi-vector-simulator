@@ -339,6 +339,7 @@ def insert_single_plot(
             "yanchor": "top",
         },
     )
+
     rendered_plots = [
         html.Img(
             className="print-only dash-plot",
@@ -810,13 +811,14 @@ def create_app(results_json):
         # Identifies DSO_feedin sink in demands for removal
         elif DSO_FEEDIN + AUTO_SINK in column_label:
             drop_list.append(column_label)
+        elif DSO_FEEDIN in column_label:
+            drop_list.append(column_label)
 
     # Remove droplist items (ie. sinks that are not demands) from data
     for item in drop_list:
         del demands[item]
 
     dem_keys = list(demands.keys())
-
     demand_data = {}
 
     for dem in dem_keys:
