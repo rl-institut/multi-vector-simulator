@@ -312,33 +312,40 @@ def insert_single_plot(
     elif plot_type == "bar":
         # Loop through the label column of the df
         # Plot bars for each parameter with the corresponding value
-        fig.add_trace(go.Bar(name="capacities", x=x_data, y=y_data, marker_color=px.colors.qualitative.D3))
+        fig.add_trace(
+            go.Bar(
+                name="capacities",
+                x=x_data,
+                y=y_data,
+                marker_color=px.colors.qualitative.D3,
+            )
+        )
 
-    styling_dict = dict(
-        showgrid=True,
-        gridwidth=1.5,
-        zeroline=True,
-        mirror=True,
-        autorange=True,
-        linewidth=2,
-        ticks="inside",
-        title_font=dict(size=20, color="black"),
-    )
-    fig.update_layout(
-        xaxis_title=x_axis_name,
-        yaxis_title=y_axis_name,
-        template="simple_white",
-        xaxis=styling_dict,
-        yaxis=styling_dict,
-        title={
-            "text": plot_title,
-            "y": 0.90,
-            "x": 0.5,
-            "font_size": 26,
-            "xanchor": "center",
-            "yanchor": "top",
-        },
-    )
+        fig.update_layout(
+            xaxis_title=x_axis_name,
+            yaxis_title=y_axis_name,
+            template="simple_white",
+            xaxis=go.layout.XAxis(
+                showgrid=True,
+                gridwidth=1.5,
+                zeroline=True,
+                mirror=True,
+                autorange=True,
+                linewidth=1,
+                ticks="inside",
+                visible=True,
+            ),
+            yaxis=styling_dict,
+            title={
+                "text": plot_title,
+                "y": 0.90,
+                "x": 0.5,
+                "font_size": 23,
+                "xanchor": "center",
+                "yanchor": "top",
+            },
+            legend_title="Components",
+        )
 
     rendered_plots = [
         html.Img(
@@ -459,7 +466,9 @@ def insert_flows_plots(
         gridwidth=1,
         zeroline=True,
         mirror=True,
-        title_font=dict(size=22, family="Courier", color="black"),
+        title_font=dict(size=18, color="black"),
+        ticks="inside",
+        linewidth=1,
     )
 
     assets_list = list(df_plots_data.columns)
@@ -486,7 +495,7 @@ def insert_flows_plots(
             "text": plot_title,
             "y": 0.90,
             "x": 0.5,
-            "font_size": 26,
+            "font_size": 23,
             "xanchor": "center",
             "yanchor": "top",
         },
@@ -569,7 +578,7 @@ def insert_pie_plots(
             "text": title_of_plot,
             "y": 0.9,
             "x": 0.5,
-            "font_size": 26,
+            "font_size": 23,
             "xanchor": "center",
             "yanchor": "top",
             "pad": {"r": 5, "l": 5, "b": 5, "t": 5},
