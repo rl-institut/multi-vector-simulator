@@ -21,11 +21,16 @@ Here is a template for new release sections
 
 ### Added
 -
+
 ### Changed
- - Move and rename json converter and parser to B0 module (#464)
- - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+- Move and rename json converter and parser to B0 module (#464)
+- Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+- Planned: Enable definition of dispatchable fuel sources
 
 ### Removed
+- 
+
+### Fixed
 -
 
 ## [0.3.2] 2020-08-04
