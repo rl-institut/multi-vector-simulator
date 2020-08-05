@@ -114,6 +114,7 @@ def test_present_value_from_annuity():
     assert PV_from_annuity == annuity * annuity_factor
 
 
+'''
 def test_fuel_price_present_value_without_fuel_price_change():
     """
 
@@ -121,7 +122,7 @@ def test_fuel_price_present_value_without_fuel_price_change():
     """
     C2.fuel_price_present_value(fuel_keys)
     assert fuel_keys["fuel_price"] == 1.3
-
+'''
 
 def test_simulation_annuity_week():
     simulation_annuity = C2.simulation_annuity(365, 7)

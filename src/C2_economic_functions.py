@@ -131,13 +131,23 @@ def present_value_from_annuity(annuity, annuity_factor):
     present_value = annuity * annuity_factor
     return present_value
 
+'''
+Currently unused function.
 
 def fuel_price_present_value(economics,):
     """
     Calculates the present value of the fuel price over the lifetime of the project, taking into consideration the annual price change
 
-    :param economics: dict with fuel data values
+    Parameters
+    ----------
+    economics: dict
+        dict with fuel data values
     :return: present value of the fuel price over the lifetime of the project
+
+    Notes
+    -----
+    Tested with
+    - test_present_value_from_annuity()
     """
     cash_flow_fuel_l = 0
     fuel_price_i = economics["fuel_price"]
@@ -149,7 +159,7 @@ def fuel_price_present_value(economics,):
             cash_flow_fuel_l += fuel_price_i / (1 + economics[DISCOUNTFACTOR]) ** (i)
             fuel_price_i = fuel_price_i * (1 + economics["fuel_price_change_annual"])
         economics.update({"price_fuel": cash_flow_fuel_l * economics[CRF]})
-
+'''
 
 def simulation_annuity(annuity, days):
     """
