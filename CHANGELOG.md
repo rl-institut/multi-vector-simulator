@@ -21,6 +21,8 @@ Here is a template for new release sections
 
 ### Added
 - Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT
+- Logging error message if a cell is left empty for a parameter in the csvs (see `A1`) (#492)
+- Logging error message if a bus connects less then three assets including the excess sink, as in that case the energy system model is likely to be incomplete (`C1.check_for_sufficient_assets_on_busses()`) (#492)
 
 ### Changed
 - Move and rename json converter and parser to B0 module (#464)
