@@ -25,6 +25,7 @@ Here is a template for new release sections
 ### Changed
 - Move and rename json converter and parser to B0 module (#464)
 - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+ - Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
 - Moved function `C0.determine_lifetime_price_dispatch()` to C2 with all its sub-functions.  (#495)
 - Changed calculation of `LIFETIME_PRICE_DISPATCH` for lists and pd.Series (see dosctrings of `C2.get_lifetime_price_dispatch_list`, `C2.get_lifetime_price_dispatch_timeseries`) (#495)
 - Changed dostring format in `C2` to numpy (#495)
