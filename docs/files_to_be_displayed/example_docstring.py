@@ -46,10 +46,12 @@ def example_function(arg1, argN):
     Examples
     --------
     # Here you can write some basic python code that is tested with pytest
-    >>> from mvs_eland import C0_data_processing
-    >>> from C0_data_processing import simulation_settings
-    >>> simulation_settings(simulation_settings=XYZ)
-    simulation_settings  # this is the expected return of the line above
+    >>> import src.C2_economic_functions as e_funcs
+    >>> CAPEX = e_funcs.capex_from_investment(
+    ...    investment_t0=220000, lifetime=20, project_life=20,
+    ...    discount_factor=0.1, tax=0.15)
+    >>> round(CAPEX, 7)
+    253000.0
 
     """
     return pd.DataFrame(...)
