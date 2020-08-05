@@ -291,7 +291,9 @@ def get_lifetime_price_dispatch_list(dispatch_price, economic_data):
 
     Notes
     -----
-    Tested with test_determine_lifetime_price_dispatch_as_list()
+    Tested with
+    - test_determine_lifetime_price_dispatch_as_list()
+    - test_get_lifetime_price_dispatch_list()
     """
     lifetime_price_dispatch = []
     for price_entry in dispatch_price:
@@ -330,7 +332,9 @@ def get_lifetime_price_dispatch_timeseries(dispatch_price, economic_data):
 
     Notes
     -----
-    Tested with test_determine_lifetime_price_dispatch_as_timeseries()
+    Tested with
+    - test_determine_lifetime_price_dispatch_as_timeseries()
+    - test_get_lifetime_price_dispatch_timeseries()
     """
 
     lifetime_price_dispatch = (dispatch_price.multiply(economic_data[ANNUITY_FACTOR][VALUE], fill_value=0)
