@@ -24,6 +24,8 @@ def example_function(arg1, argN):
     -------
     :pandas:`pandas.DataFrame<frame>`
         here comes the description
+    (In case of no return, you can write what the function changes, e.g. updates
+    `variable_x` with `y`.)
 
     Notes
     -----
@@ -50,4 +52,4 @@ def example_function(arg1, argN):
     simulation_settings  # this is the expected return of the line above
 
     """
-    return pd.DataFrame([arg1, argN], axis=1)
+    return pd.DataFrame(...)
