@@ -1,17 +1,17 @@
-,unit,pv_plant_01
-label,str,PV plant (mono)
-unit,str,kWp
-optimizeCap,bool,True
-maximumCap,None or float,1000
-installedCap,kWp,50
-age_installed,year,0
-lifetime,year,30
-development_costs,currency,10000
-specific_costs,currency/unit,7200
-specific_costs_om,currency/unit/year,80
-dispatch_price,currency/kWh,0
-outflow_direction,str,PV plant (mono)
-file_name,str,pv_gen_merra2_2014_eff1_tilt40_az180.csv
-energyVector,str,Electricity
-renewableAsset,bool,True
-type_oemof,str,source
+,unit,pv_plant_01,Fuel
+label,str,PV plant (mono),Fuel
+unit,str,kWp,l
+optimizeCap,bool,True,True
+maximumCap,None or float,1000,None
+installedCap,kWp,50,0
+age_installed,year,0,0
+lifetime,year,30,20
+development_costs,currency,10000,0
+specific_costs,currency/unit,7200,0
+specific_costs_om,currency/unit/year,80,0
+dispatch_price,currency/kWh,0,0.64
+outflow_direction,str,PV plant (mono),Fuel
+file_name,str,pv_gen_merra2_2014_eff1_tilt40_az180.csv,None
+energyVector,str,Electricity,Electricity
+renewableAsset,bool,True,False
+type_oemof,str,source,source

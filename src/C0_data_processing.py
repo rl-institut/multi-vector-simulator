@@ -281,12 +281,15 @@ def energyProduction(dict_values, group):
         )
 
         if FILENAME in dict_values[group][asset]:
-            receive_timeseries_from_csv(
-                dict_values,
-                dict_values[SIMULATION_SETTINGS],
-                dict_values[group][asset],
-                "input",
-            )
+            if dict_values[group][asset][FILENAME] in ["None", None]:
+                dict_values[group][asset].update({DISPATCHABILITY: True})
+            else:
+                receive_timeseries_from_csv(
+                    dict_values,
+                    dict_values[SIMULATION_SETTINGS],
+                    dict_values[group][asset],
+                    "input",
+                )
         # check if maximumCap exists and add it to dict_values
         add_maximum_cap(dict_values, group, asset)
 
