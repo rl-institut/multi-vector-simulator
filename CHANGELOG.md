@@ -187,8 +187,8 @@ Here is a template for new release sections
 tipps for module building, and hint that units in the MVS are not checked (#229)
 - Images for `simulating_with_the_mvs.rst`: images/energy_system.png, images/energy_system_model
 .png, images/folder_structure_inputs.png (#229)
-- Tables for `simulating_with_the_mvs.rst`: tables/example_multiple_inputs_energyConversion.csv
-, tables/example_scalar_as_timeseries_energyConversion.csv (#229)
+- Tables for `simulating_with_the_mvs.rst`: files_to_be_displayed/example_multiple_inputs_energyConversion.csv
+, files_to_be_displayed/example_scalar_as_timeseries_energyConversion.csv (#229)
 - Benchmark test for csv inputs (#254)
 - Benchmark test with only PV and grid (#258)
 - Module F2 for auto-reporting results of MVS simulation (#232)
