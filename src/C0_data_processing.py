@@ -56,8 +56,8 @@ def all(dict_values):
     :return Pre-processed dictionary with all input parameters
 
     """
-    economic_parameters(dict_values[ECONOMIC_DATA])
     retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
+    add_economic_parameters(dict_values[ECONOMIC_DATA])
     identify_energy_vectors(dict_values)
 
     ## Verify inputs
@@ -158,12 +158,24 @@ def retrieve_date_time_info(simulation_settings):
     return simulation_settings
 
 
-def economic_parameters(economic_parameters):
+def add_economic_parameters(economic_parameters):
     """
-    Calculate annuity factor
+    Update economic parameters with annuity factor and CRF
 
-    :param economic_parameters:
-    :return:
+    Parameters
+    ----------
+
+    economic_parameters: dict
+        Economic parameters of the simulation
+
+    Returns
+    -------
+
+    Updated economic parameters
+
+    Notes
+    -----
+    Function tested with test_add_economic_parameters()
     """
 
     economic_parameters.update(

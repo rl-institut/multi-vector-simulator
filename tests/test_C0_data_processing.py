@@ -67,12 +67,12 @@ def test_retrieve_datetimeindex_for_simulation():
     assert simulation_settings[PERIODS] == 24
 
 
-def test_adding_economic_parameters_C2():
+def test_add_economic_parameters():
     economic_parameters = {
         PROJECT_DURATION: {VALUE: 20},
         DISCOUNTFACTOR: {VALUE: 0.15},
     }
-    C0.economic_parameters(economic_parameters)
+    C0.add_economic_parameters(economic_parameters)
     # the actual value of the annuity factor should have been checked in C2
     for k in (ANNUITY_FACTOR, CRF):
         assert k in economic_parameters.keys()
