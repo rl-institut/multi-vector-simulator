@@ -145,7 +145,7 @@ economic_data = {
 
 def test_determine_lifetime_price_dispatch_as_int():
     dict_asset = {DISPATCH_PRICE: {VALUE: 1},
-                  UNIT: "kW"}
+                  UNIT: UNIT}
     C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float) or isinstance(
@@ -163,6 +163,9 @@ def test_determine_lifetime_price_dispatch_as_float():
     assert dict_asset[LIFETIME_PRICE_DISPATCH][VALUE] == 1.5 * annuity_factor
     assert dict_asset[LIFETIME_PRICE_DISPATCH][UNIT] == UNIT + "/" + UNIT_HOUR
 
+def test_get_lifetime_price_dispatch_one_value():
+    lifetime_dispatch_price = C2.get_lifetime_price_dispatch_one_value(1.5, economic_data)
+    assert lifetime_dispatch_price == 1.5 * annuity_factor
 
 def test_determine_lifetime_price_dispatch_as_list():
     dict_asset = {DISPATCH_PRICE: {VALUE: [1.0, 1.0]},
@@ -171,6 +174,10 @@ def test_determine_lifetime_price_dispatch_as_list():
     assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
     assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], list)
     assert dict_asset[LIFETIME_PRICE_DISPATCH][VALUE] == [1 * annuity_factor, 1 * annuity_factor]
+
+def test_get_lifetime_price_dispatch_list():
+    lifetime_dispatch_price = C2.get_lifetime_price_dispatch_list([1.0, 1.0], economic_data)
+    assert lifetime_dispatch_price == [1 * annuity_factor, 1 * annuity_factor]
 
 TEST_START_TIME = "2020-01-01 00:00"
 TEST_PERIODS = 3
@@ -191,6 +198,12 @@ def test_determine_lifetime_price_dispatch_as_timeseries():
     assert dict_asset[LIFETIME_PRICE_DISPATCH][VALUE][1] == 1*annuity_factor
     assert dict_asset[LIFETIME_PRICE_DISPATCH][VALUE][2] == 2*annuity_factor
 
+
+def test_get_lifetime_price_dispatch_timeseries():
+    lifetime_dispatch_price = C2.get_lifetime_price_dispatch_timeseries(pandas_Series, economic_data)
+    assert lifetime_dispatch_price[0] == 0 * annuity_factor
+    assert lifetime_dispatch_price[1] == 1 * annuity_factor
+    assert lifetime_dispatch_price[2] == 2 * annuity_factor
 
 def test_determine_lifetime_price_dispatch_as_list_with_pdSeries():
     dict_asset = {DISPATCH_PRICE: {VALUE: [1.0, pandas_Series]},

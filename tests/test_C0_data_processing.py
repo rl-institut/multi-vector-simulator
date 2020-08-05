@@ -361,6 +361,7 @@ def test_evaluate_lifetime_costs():
         SPECIFIC_COSTS: {VALUE: 100, UNIT: "unit"},
         DISPATCH_PRICE: {VALUE: 1, UNIT: "unit"},
         LIFETIME: {VALUE: 10},
+        UNIT: UNIT
     }
 
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
