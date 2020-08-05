@@ -1,4 +1,3 @@
-from pytest import approx
 import pandas as pd
 
 import pytest
@@ -79,7 +78,7 @@ def test_capex_from_investment_lifetime_smaller_than_project_life():
         discount_factor,
         tax,
     )
-    assert CAPEX == approx(exp_capex_smaller_project_life, rel=1e-3)
+    assert CAPEX == pytest.approx(exp_capex_smaller_project_life, rel=1e-3)
 
 
 def test_capex_from_investment_lifetime_bigger_than_project_life():
@@ -94,7 +93,7 @@ def test_capex_from_investment_lifetime_bigger_than_project_life():
         discount_factor,
         tax,
     )
-    assert CAPEX == approx(exp_capex_bigger_project_life, rel=1e-3)
+    assert CAPEX == pytest.approx(exp_capex_bigger_project_life, rel=1e-3)
 
 
 def test_annuity():
