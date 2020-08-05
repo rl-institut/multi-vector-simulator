@@ -17,9 +17,9 @@ from src.constants import (
 )
 
 from src.constants_json_strings import *
-import src.C1_verification as verify
-import src.C2_economic_functions as economics
-import src.F0_output as output
+import src.C1_verification as C1
+import src.C2_economic_functions as C2
+import src.F0_output as F0
 import src.F1_plotting as F1  # only function F1.plot_input_timeseries()
 
 """
@@ -155,7 +155,7 @@ def economic_parameters(economic_parameters):
     economic_parameters.update(
         {
             ANNUITY_FACTOR: {
-                VALUE: economics.annuity_factor(
+                VALUE: C2.annuity_factor(
                     economic_parameters[PROJECT_DURATION][VALUE],
                     economic_parameters[DISCOUNTFACTOR][VALUE],
                 ),
@@ -167,7 +167,7 @@ def economic_parameters(economic_parameters):
     economic_parameters.update(
         {
             CRF: {
-                VALUE: economics.crf(
+                VALUE: C2.crf(
                     economic_parameters[PROJECT_DURATION][VALUE],
                     economic_parameters[DISCOUNTFACTOR][VALUE],
                 ),
@@ -1253,7 +1253,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             LIFETIME_SPECIFIC_COST: {
-                VALUE: economics.capex_from_investment(
+                VALUE: C2.capex_from_investment(
                     dict_asset[SPECIFIC_COSTS][VALUE],
                     dict_asset[LIFETIME][VALUE],
                     economic_data[PROJECT_DURATION][VALUE],
@@ -1269,7 +1269,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             ANNUITY_SPECIFIC_INVESTMENT_AND_OM: {
-                VALUE: economics.annuity(
+                VALUE: C2.annuity(
                     dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
                     economic_data[CRF][VALUE],
                 )
@@ -1292,7 +1292,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             SIMULATION_ANNUITY: {
-                VALUE: economics.simulation_annuity(
+                VALUE: C2.simulation_annuity(
                     dict_asset[ANNUITY_SPECIFIC_INVESTMENT_AND_OM][VALUE],
                     settings[EVALUATED_PERIOD][VALUE],
                 ),
@@ -1424,7 +1424,7 @@ def receive_timeseries_from_csv(
         unit = dict_asset[input_type][UNIT]
 
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
-    verify.lookup_file(file_path, dict_asset[LABEL])
+    C1.lookup_file(file_path, dict_asset[LABEL])
 
     data_set = pd.read_csv(file_path, sep=",")
 
@@ -1590,7 +1590,7 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
 
     """
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
-    verify.lookup_file(file_path, dict_asset[LABEL])
+    C1.lookup_file(file_path, dict_asset[LABEL])
 
     data_set = pd.read_csv(file_path, sep=",")
     if len(data_set.index) == settings[PERIODS]:
