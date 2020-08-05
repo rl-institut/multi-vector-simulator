@@ -48,11 +48,12 @@ from src.constants_json_strings import (
     LATITUDE,
     PERIODS,
     COUNTRY,
-ENERGY_BUSSES
+    ENERGY_BUSSES,
 )
 
 
 # web-application: valid input directly connected to cell-input
+
 
 def lookup_file(file_path, name):
     """
@@ -273,6 +274,7 @@ def all_valid_intervals(name, value, title):
 
     return
 
+
 def check_for_sufficient_assets_on_busses(dict_values):
     r"""
     Validating model regarding busses - each bus has to have 2+ assets connected to it, exluding energy excess sinks
@@ -287,9 +289,11 @@ def check_for_sufficient_assets_on_busses(dict_values):
     """
     for bus in dict_values[ENERGY_BUSSES]:
         if len(dict_values[ENERGY_BUSSES][bus]) < 3:
-            asset_string = ', '.join(map(str, dict_values[ENERGY_BUSSES][bus].keys()))
-            logging.error(f"Energy system bus {bus} has too few assets connected to it. "
-                          f"The minimal number of assets that need to be connected "
-                          f"so that the bus is not a dead end should be two, excluding the excess sink. "
-                          f"This are the connected assets: {asset_string}")
+            asset_string = ", ".join(map(str, dict_values[ENERGY_BUSSES][bus].keys()))
+            logging.error(
+                f"Energy system bus {bus} has too few assets connected to it. "
+                f"The minimal number of assets that need to be connected "
+                f"so that the bus is not a dead end should be two, excluding the excess sink. "
+                f"This are the connected assets: {asset_string}"
+            )
     return

@@ -76,6 +76,7 @@ def all(dict_values):
 
     return
 
+
 def identify_energy_vectors(dict_values):
     """
     Identifies all energyVectors used in the energy system by checking every entry 'energyVector' of all assets.

@@ -51,7 +51,7 @@ from src.constants import (
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
     DEFAULT_VALUE,
-HEADER
+    HEADER,
 )
 from src.constants_json_strings import (
     LABEL,
@@ -74,7 +74,7 @@ from src.constants_json_strings import (
     MAXIMUM_CAP,
     RENEWABLE_ASSET_BOOL,
     RENEWABLE_SHARE_DSO,
-FILENAME
+    FILENAME,
 )
 from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
@@ -590,8 +590,10 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
     """
     try:
         if np.isnan(value):
-            logging.error(f"Parameter {param} of asset {asset} is missing. "
-                        f"The simulation may continue, but errors during execution or in the results can be expected.")
+            logging.error(
+                f"Parameter {param} of asset {asset} is missing. "
+                f"The simulation may continue, but errors during execution or in the results can be expected."
+            )
     except:
         pass
 
@@ -607,7 +609,11 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
         else:
             dict_string = value.replace("'", '"')
             asset_dict.update({param: json.loads(dict_string)})
-            if FILENAME in asset_dict[param] and HEADER in asset_dict[param] and UNIT in asset_dict[param]:
+            if (
+                FILENAME in asset_dict[param]
+                and HEADER in asset_dict[param]
+                and UNIT in asset_dict[param]
+            ):
                 logging.info(
                     f"Parameter {param} of asset {asset} is defined as a timeseries."
                 )
@@ -617,7 +623,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                     f"bus does not inlude parameters {FILENAME}, {HEADER} and {UNIT} to make the input complete "
                     f"and result in a timeseries."
                 )
-                
+
             # todo: this should result in reading the csv and writing a pd.Series to the param
 
     # If unit should be a string
