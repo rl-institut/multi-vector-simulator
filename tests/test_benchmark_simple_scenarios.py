@@ -14,7 +14,7 @@ import pandas as pd
 import pytest
 
 from mvs_eland_tool import main
-from src.B0_data_input_json import convert_special_types
+from src.B0_data_input_json import convert_from_json_to_special_types
 from src.C0_data_processing import bus_suffix
 
 from .constants import (
