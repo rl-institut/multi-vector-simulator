@@ -57,7 +57,7 @@ The energy providers are the most complex assets in the MVS model. They are comp
 
 With all these components, the DSO can be vizualized as follows:
 
-.. image:: images/Modelling_Assumptions_energyProvider_assets.png
+.. image:: images/Model_Assumptions_energyProvider_assets.png
  :width: 600
 
 Variable energy consumption prices (timeseries)
@@ -81,7 +81,7 @@ In the MVS, this information is gathered for the `energyProviders` with:
 To repesent the peak demand pricing, the MVS adds a "transformer" that is optimized with specific operation and maintainance costs per year equal to the PEAK_DEMAND_PRICING for each of the pricing periods.
 For two peak demand pricing persiods, the resulting dispatch could look as following:
 
-.. image:: images/Modelling_Assumptions_Peak_Demand_Pricing_Dispatch_Graph.png
+.. image:: images/Model_Assumptions_Peak_Demand_Pricing_Dispatch_Graph.png
  :width: 600
 
 Limitations
