@@ -81,13 +81,18 @@ def identify_energy_vectors(dict_values):
     Identifies all energyVectors used in the energy system by checking every entry 'energyVector' of all assets.
     energyVectors later will be used to distribute costs and KPI amongst the sectors (not implemented)
 
-    :param: dict
+    Parameters
+    ----------
+    dict_values: dict
+        All input data in dict format
 
-    All input data in dict format
-
-    :return:
-
+    Returns
+    -------
     Update dict['project_data'] by used sectors
+
+    Notes
+    -----
+    Function tested with test_add_economic_parameters()
     """
     dict_of_sectors = {}
     names_of_sectors = ""
