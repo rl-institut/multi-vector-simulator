@@ -32,7 +32,6 @@ from src.constants_json_strings import (
     SPECIFIC_COSTS,
     LIFETIME,
     SIMULATION_SETTINGS,
-    PEAK_DEMAND_PRICING_PERIOD,
     EVALUATED_PERIOD,
     START_DATE,
     END_DATE,
@@ -48,10 +47,8 @@ from src.constants_json_strings import (
     PERIODS,
     BUS_SUFFIX,
     UNIT_MINUTE,
-    ENERGY_VECTOR,
-UNIT_HOUR
+    ENERGY_VECTOR
 )
-from .constants import TYPE_STR
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 def test_retrieve_datetimeindex_for_simulation():
