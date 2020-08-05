@@ -864,7 +864,7 @@ def create_app(results_json):
     # Creating a dataframe for the demands
     demands = results_json[ENERGY_CONSUMPTION]
 
-    ## Removing all columns that are not actually from demands
+    # Removing all columns that are not actually from demands
     drop_list = []
     for column_label in demands:
         # Identifies excess sink in demands for removal
@@ -876,7 +876,7 @@ def create_app(results_json):
         elif DSO_FEEDIN in column_label:
             drop_list.append(column_label)
 
-    # Remove droplist items (ie. sinks that are not demands) from data
+    # Remove some elements from drop_list (ie. sinks that are not demands) from data
     for item in drop_list:
         del demands[item]
 
@@ -1015,7 +1015,6 @@ def create_app(results_json):
 
     log_file = os.path.join(OUTPUT_FOLDER, "mvs_logfile.log")
     # log_file = "/home/mr/Projects/mvs_eland/MVS_outputs/mvs_logfile.log"
-    print(log_file)
 
     with open(log_file) as log_messages:
         log_messages = log_messages.readlines()
