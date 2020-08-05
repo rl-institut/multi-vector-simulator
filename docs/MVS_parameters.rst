@@ -2,26 +2,122 @@
 Parameters and Definitions in CSV/JSON 
 ======================================
 
-Each parameter is provided with the definition, unit, type and example values as well to make it easy for users to provide custom values for their systems. The format followed is as follows:
+Each parameter is provided with the definition, unit, type and example values as well to make it easy for users to provide custom values for their systems.
 
-**Parameter name**: Definition; unit; type; example value
+|
 
 project_data.csv
 ----------------
 
-**country**: Name of the country where the project is being deployed; str; Norway
+**country**
 
-**latitude**: Latitude coordinate of the project’s geographical location; str; 45.641603
+*Definition*    : Name of the country where the project is being deployed
 
-**longitude**: Longitude coordinate of the project’s geographical location; str; 5.875387
+*Type*          : str
 
-**Project_id**: Users can assign a project ID as per their preference; str; 1
+*Unit*          : None
 
-**Project_name**: Users can assign a project name as per their preference; str, Borg Havn
+*Example*       : Norway
 
-**scenario_id**: Users can assign a scenario id as per their preference; str; 1
+*Restrictions*  : None
 
-**scenario_name**: Users can assign a scenario name as per their preference; str; Warehouse 14
+*Default*       : None
+
+|
+
+**latitude**
+
+*Definition*  : Latitude coordinate of the project’s geographical location
+
+*Type*        : str
+
+*Unit*        : None
+
+*Example*     : 45.641603
+
+*Restrictions*: Numerical values
+
+*Default*     : None
+
+|
+
+**longitude**
+
+*Definition*  : Longitude coordinate of the project’s geographical location
+
+*Type*        : str
+
+*Unit*        : None
+
+*Example*     : 5.875387
+
+*Restrictions*: Numerical values
+
+*Default*     : None
+
+|
+
+**Project_id**
+
+*Definition*  : Users can assign a project ID as per their preference
+
+*Type*        : str
+
+*Unit*        : None
+
+*Example*     : Borg Havn
+
+*Restrictions*: None
+
+*Default*     : 1
+
+|
+
+**Project_name**
+
+*Definition*  : Users can assign a project name as per their preference
+
+*Type*        : str
+
+*Unit*        : None
+
+*Example*     :
+
+*Restrictions*: None
+
+*Default*     : None
+
+|
+
+**scenario_id**
+
+*Definition*  : Users can assign a scenario id as per their preference
+
+*Type*        : str
+
+*Unit*        : None
+
+*Example*     : 1
+
+*Restrictions*: None
+
+*Default*     : None
+
+|
+
+**scenario_name**
+
+*Definition*  : Users can assign a scenario name as per their preference
+
+*Type*        : str
+
+*Unit*        : None
+
+*Example*     : Warehouse 14
+
+*Restrictions*: None
+
+*Default*     : None
 
 
 economic_data.csv
