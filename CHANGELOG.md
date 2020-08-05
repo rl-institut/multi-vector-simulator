@@ -20,6 +20,7 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+- Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT
 - Added tests for C0 functions ()
 
 ### Changed
