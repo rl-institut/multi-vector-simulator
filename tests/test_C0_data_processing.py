@@ -49,6 +49,7 @@ from src.constants_json_strings import (
     BUS_SUFFIX,
     UNIT_MINUTE,
     ENERGY_VECTOR,
+UNIT_HOUR
 )
 from .constants import TYPE_STR
 
@@ -109,54 +110,6 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
         SIMULATION_ANNUITY,
     ):
         assert k in dict_asset.keys()
-
-
-def test_determine_lifetime_price_dispatch_as_int():
-    dict_asset = {DISPATCH_PRICE: {VALUE: 1}}
-    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
-    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float) or isinstance(
-        dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], int
-    )
-
-
-def test_determine_lifetime_price_dispatch_as_float():
-    dict_asset = {DISPATCH_PRICE: {VALUE: 1.5}}
-    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
-    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
-
-
-def test_determine_lifetime_price_dispatch_as_list():
-    dict_asset = {DISPATCH_PRICE: {VALUE: [1.0, 1.0]}}
-    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
-    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
-    # todo this should be here some time, shouldnt it? assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], list)
-
-
-TEST_START_TIME = "2020-01-01 00:00"
-TEST_PERIODS = 3
-VALUES = [0, 1, 2]
-
-pandas_DatetimeIndex = pd.date_range(
-    start=TEST_START_TIME, periods=TEST_PERIODS, freq="60min"
-)
-pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
-
-
-def test_determine_lifetime_price_dispatch_as_timeseries():
-    dict_asset = {DISPATCH_PRICE: {VALUE: pandas_Series}}
-    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
-    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], pd.Series)
-
-
-def test_determine_lifetime_price_dispatch_is_other():
-    dict_asset = {DISPATCH_PRICE: {VALUE: TYPE_STR}}
-    with pytest.raises(ValueError):
-        C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
-
 
 start_date = pd.Timestamp("2018-01-01 00:00:00")
 dict_test_avilability = {

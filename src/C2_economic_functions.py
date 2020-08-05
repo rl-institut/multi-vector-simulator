@@ -14,11 +14,19 @@ Functionalities:
 - calculate effective fuel price cost, in case there is a annual fuel price change (this functionality still has to be checked in this module)
 """
 
+from src.constants import UNIT_HOUR
+
 from src.constants_json_strings import (
     CRF,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
-)
+    ANNUITY_FACTOR,
+    DISPATCH_PRICE,
+    VALUE, UNIT,
+    LIFETIME_PRICE_DISPATCH,
+    )
+
+import pandas as pd
 
 # annuity factor to calculate present value of cash flows
 def annuity_factor(project_life, discount_factor):
@@ -161,3 +169,170 @@ def simulation_annuity(annuity, days):
     """
     simulation_annuity = annuity / 365 * days
     return simulation_annuity
+
+
+def determine_lifetime_price_dispatch(dict_asset, economic_data):
+    """
+    Determines the price of dispatch of an asset LIFETIME_PRICE_DISPATCH and updates the asset info.
+
+    It takes into account the asset's future expenditures due to dispatch. Depending on the price data provided, another function is executed.
+
+    Parameters
+    ----------
+    dict_asset: dict
+        Data of an asset
+
+    economic_data: dict
+        Economic data, including CRF and ANNUITY_FACTOR
+
+    Returns
+    -------
+    Updates asset dict
+
+    Notes
+    -----
+    Tested with
+    - test_determine_lifetime_price_dispatch_as_int()
+    - test_determine_lifetime_price_dispatch_as_float()
+    - test_determine_lifetime_price_dispatch_as_list()
+    - test_determine_lifetime_price_dispatch_as_timeseries ()
+    """
+    # Dispatch price is provided as a scalar value
+    if isinstance(dict_asset[DISPATCH_PRICE][VALUE], float) or isinstance(
+            dict_asset[DISPATCH_PRICE][VALUE], int
+    ):
+        lifetime_price_dispatch = get_lifetime_price_dispatch_one_value(
+            dict_asset[DISPATCH_PRICE][VALUE], economic_data
+        )
+
+    # Multiple dispatch prices are provided as asset is connected to multiple busses
+    elif isinstance(dict_asset[DISPATCH_PRICE][VALUE], list):
+        lifetime_price_dispatch = get_lifetime_price_dispatch_list(
+            dict_asset[DISPATCH_PRICE][VALUE], economic_data
+        )
+
+    # Dispatch price is provided as a timeseries
+    elif isinstance(dict_asset[DISPATCH_PRICE][VALUE], pd.Series):
+        lifetime_price_dispatch = get_lifetime_price_dispatch_timeseries(
+            dict_asset[DISPATCH_PRICE][VALUE], economic_data
+        )
+
+    else:
+        raise ValueError(
+            f"Type of dispatch_price neither int, float, list or pd.Series, but of type {dict_asset[DISPATCH_PRICE][VALUE]}. Is type correct?"
+        )
+
+    # Update asset dict
+    dict_asset.update(
+        {LIFETIME_PRICE_DISPATCH: {VALUE: lifetime_price_dispatch, UNIT: dict_asset[UNIT] + "/" + UNIT_HOUR, }}
+    )
+    return
+
+
+def get_lifetime_price_dispatch_one_value(dispatch_price, economic_data):
+    """
+    Lifetime dispatch price is a scalar value that is calulated with the annuity
+
+    By doing this, the operational expenditures, in the simulation only taken into account for a year,
+    can be compared to the investment costs.
+
+    .. math::
+        lifetime_price_dispatch = DISPATCH_PRICE \cdot ANNUITY_FACTOR
+
+    Parameters
+    ----------
+    dispatch_price: float or int
+        dispatch_price of the asset
+
+    economic_data: dict
+        Economic data
+
+    Returns
+    -------
+    lifetime_price_dispatch: float
+        Float that the asset dict is to be updated with
+
+    Notes
+    -----
+    Tested with
+    - test_determine_lifetime_price_dispatch_as_int()
+    - test_determine_lifetime_price_dispatch_as_float()
+    """
+    lifetime_price_dispatch = (
+            dispatch_price * economic_data[ANNUITY_FACTOR][VALUE]
+    )
+    return lifetime_price_dispatch
+
+
+def get_lifetime_price_dispatch_list(dispatch_price, economic_data):
+    """
+    Determines the lifetime dispatch price in case that the dispatch price is a list.
+
+    The dispatch_price can be a list when for example if there are two input flows to a component, eg. water and electricity.
+    There should be a lifetime_price_dispatch for each of them.
+
+    .. math::
+        lifetime_price_dispatch_i = DISPATCH_PRICE_i \cdot ANNUITY_FACTOR \forall i
+        with i for all list entries
+
+    Parameters
+    ----------
+    dispatch_price: list
+        Dispatch prices of the asset as a list
+
+    economic_data: dict
+        Economic data
+
+    Returns
+    -------
+    lifetime_price_dispatch: list
+        List of floats of lifetime dispatch price that the asset will be updated with
+
+
+    Notes
+    -----
+    Tested with test_determine_lifetime_price_dispatch_as_list()
+    """
+    lifetime_price_dispatch = []
+    for price_entry in dispatch_price:
+        if isinstance(price_entry, float) or isinstance(price_entry, int):
+            lifetime_price_dispatch.append(price_entry * economic_data[ANNUITY_FACTOR][VALUE])
+        elif isinstance(price_entry, pd.Series):
+            lifetime_price_dispatch_entry = get_lifetime_price_dispatch_timeseries(price_entry, economic_data)
+            lifetime_price_dispatch.append(lifetime_price_dispatch_entry)
+        else:
+            raise ValueError(
+                f"Type of a dispatch_price entry of the list is neither int, float or pd.Series, but of type {type(price_entry)}. Is type correct?"
+            )
+
+    return lifetime_price_dispatch
+
+def get_lifetime_price_dispatch_timeseries(dispatch_price, economic_data):
+    """
+    Calculates the lifetime price dispatch for a timeseries.
+
+    The dispatch_price can be a timeseries, eg. in case that there is an hourly pricing.
+
+    .. math::
+        lifetime_price_dispatch(t) = DISPATCH_PRICE(t) \cdot ANNUITY_FACTOR \forall t
+
+    Parameters
+    ----------
+    dispatch_price: pd.Series
+        Dispatch price as a timeseries (eg. electricity prices)
+
+    economic_data: dict
+        Dict of economic data
+
+    Returns
+    -------
+    Lifetime dispatch price that the asset will be updated with
+
+    Notes
+    -----
+    Tested with test_determine_lifetime_price_dispatch_as_timeseries()
+    """
+
+    lifetime_price_dispatch = (dispatch_price.multiply(economic_data[ANNUITY_FACTOR][VALUE], fill_value=0)
+    )
+    return lifetime_price_dispatch

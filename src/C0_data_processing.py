@@ -1241,7 +1241,7 @@ def apply_function_to_single_or_list(function, parameter, **kwargs):
 def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     r"""
     Evaluates specific costs of an asset over the project lifetime. This includes:
-    - LIFETIME_PRICE_DISPATCH (determine_lifetime_price_dispatch)
+    - LIFETIME_PRICE_DISPATCH (C2.determine_lifetime_price_dispatch)
     - LIFETIME_SPECIFIC_COST
     - LIFETIME_SPECIFIC_COST_OM
     - ANNUITY_SPECIFIC_INVESTMENT_AND_OM
@@ -1272,14 +1272,19 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     Returns
     -------
     Updates asset dict with
-    - LIFETIME_PRICE_DISPATCH (determine_lifetime_price_dispatch)
+    - LIFETIME_PRICE_DISPATCH (C2.determine_lifetime_price_dispatch)
     - LIFETIME_SPECIFIC_COST
     - LIFETIME_SPECIFIC_COST_OM
     - ANNUITY_SPECIFIC_INVESTMENT_AND_OM
     - SIMULATION_ANNUITY
+
+    Notes
+    -----
+
+    Tested with test_evaluate_lifetime_costs_adds_all_parameters()
     """
 
-    determine_lifetime_price_dispatch(dict_asset, economic_data)
+    C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
     dict_asset.update(
         {
@@ -1304,7 +1309,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                     dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
                     economic_data[CRF][VALUE],
                 )
-                + dict_asset[SPECIFIC_COSTS_OM][VALUE],  # changes from dispatch_price
+                       + dict_asset[SPECIFIC_COSTS_OM][VALUE],  # changes from dispatch_price
                 UNIT: dict_asset[LIFETIME_SPECIFIC_COST][UNIT] + "/" + UNIT_YEAR,
             }
         }
@@ -1335,97 +1340,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     return
 
 
-def determine_lifetime_price_dispatch(dict_asset, economic_data):
-    """
-    #todo I am not sure that this makes sense. is this used in d0?
-    Parameters
-    ----------
-    dict_asset
-    economic_data
 
-    Returns
-    -------
-
-    """
-    if isinstance(dict_asset[DISPATCH_PRICE][VALUE], float) or isinstance(
-        dict_asset[DISPATCH_PRICE][VALUE], int
-    ):
-        lifetime_price_dispatch = get_lifetime_price_dispatch_one_value(
-            dict_asset, economic_data
-        )
-
-    elif isinstance(dict_asset[DISPATCH_PRICE][VALUE], list):
-        lifetime_price_dispatch = get_lifetime_price_dispatch_list(
-            dict_asset, economic_data
-        )
-
-    elif isinstance(dict_asset[DISPATCH_PRICE][VALUE], pd.Series):
-        lifetime_price_dispatch = get_lifetime_price_dispatch_timeseries(
-            dict_asset, economic_data
-        )
-
-    else:
-        raise ValueError(
-            f"Type of dispatch_price neither int, float, list or pd.Series, but of type {dict_asset[DISPATCH_PRICE][VALUE]}. Is type correct?"
-        )
-
-    dict_asset.update(
-        {LIFETIME_PRICE_DISPATCH: {VALUE: lifetime_price_dispatch, UNIT: "?",}}
-    )
-    return
-
-
-def get_lifetime_price_dispatch_one_value(dict_asset, economic_data):
-    """
-    dispatch_price can be a fix value
-    Returns
-    -------
-
-    """
-    lifetime_price_dispatch = (
-        dict_asset[DISPATCH_PRICE][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
-    )
-    return lifetime_price_dispatch
-
-
-def get_lifetime_price_dispatch_list(dict_asset, economic_data):
-    """
-    dispatch_price can be a list, for example if there are two input flows to a component, eg. water and electricity.
-    Their ratio for providing cooling in kWh therm is fix. There should be a lifetime_price_dispatch for each of them.
-
-    Returns
-    -------
-
-    """
-
-    # if multiple busses are provided, it takes the first dispatch_price (corresponding to the first bus)
-
-    first_value = dict_asset[DISPATCH_PRICE][VALUE][0]
-    if isinstance(first_value, float) or isinstance(first_value, int):
-        dispatch_price = first_value
-    else:
-        dispatch_price = sum(first_value) / len(first_value)
-
-    lifetime_price_dispatch = dispatch_price * economic_data[ANNUITY_FACTOR][VALUE]
-    return lifetime_price_dispatch
-
-
-def get_lifetime_price_dispatch_timeseries(dict_asset, economic_data):
-    """
-    dispatch_price can be a timeseries, eg. in case that there is an hourly pricing
-    Returns
-    -------
-
-    """
-    # take average value of dispatch_price if it is a timeseries
-
-    dispatch_price = sum(dict_asset[DISPATCH_PRICE][VALUE]) / len(
-        dict_asset[DISPATCH_PRICE][VALUE]
-    )
-    lifetime_price_dispatch = (
-        dict_asset[DISPATCH_PRICE][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
-    )
-    return lifetime_price_dispatch
 
 
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
