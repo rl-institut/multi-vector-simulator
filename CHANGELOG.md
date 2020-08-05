@@ -26,7 +26,8 @@ Here is a template for new release sections
 - Move and rename json converter and parser to B0 module (#464)
 - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
 - Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
-- Planned: Enable definition of dispatchable fuel sources
+- Dispatchable (fuel) sources can now be defined by adding a column to the `energyProduction.csv` and setting `file_name==None` (#492)
+- Updated `Model_Assumptions`: Minimal description of dispatchable fuel sources (#492)
 
 ### Removed
 - 
