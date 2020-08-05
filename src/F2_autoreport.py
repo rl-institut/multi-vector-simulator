@@ -328,7 +328,7 @@ def insert_single_plot(
             template="simple_white",
             xaxis=styling_dict,
             yaxis=styling_dict,
-            font_family='sans-serif',
+            font_family="sans-serif",
             title={
                 "text": plot_title,
                 "y": 0.90,
@@ -355,7 +355,7 @@ def insert_single_plot(
             xaxis_title=x_axis_name,
             yaxis_title=y_axis_name,
             template="simple_white",
-            font_family='sans-serif',
+            font_family="sans-serif",
             xaxis=go.layout.XAxis(
                 showgrid=True,
                 gridwidth=1.5,
@@ -526,7 +526,7 @@ def insert_flows_plots(
     fig.update_layout(
         xaxis_title=x_legend,
         yaxis_title=y_legend,
-        font_family='sans-serif',
+        font_family="sans-serif",
         template="simple_white",
         xaxis=styling_dict,
         yaxis=styling_dict,
@@ -628,7 +628,7 @@ def insert_pie_plots(
             "yanchor": "top",
             "pad": {"r": 5, "l": 5, "b": 5, "t": 5},
         },
-        font_family='sans-serif',
+        font_family="sans-serif",
         height=500,
         width=700,
         autosize=True,
@@ -824,13 +824,13 @@ def create_app(results_json):
 
     projectName = (
         results_json[PROJECT_DATA][PROJECT_NAME]
-        + "(ID: "
+        + " (ID: "
         + str(results_json[PROJECT_DATA][PROJECT_ID])
         + ")"
     )
     scenarioName = (
         results_json[PROJECT_DATA][SCENARIO_NAME]
-        + "(ID: "
+        + " (ID: "
         + str(results_json[PROJECT_DATA][SCENARIO_ID])
         + ")"
     )
