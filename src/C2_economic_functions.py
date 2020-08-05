@@ -33,11 +33,27 @@ def annuity_factor(project_life, discount_factor):
     """
     Calculates the annuity factor, which in turn in used to calculate the present value of annuities (instalments)
 
-    :param project_life: time period over which the costs of the system occur
-    :param discount_factor: weighted average cost of capital, which is the after-tax average cost of various capital sources
-    :return: financial value "annuity factor". Dividing a present cost by tha annuity factor returns its annuity, multiplying an annuity with the annuity factor returns its present value
+    Parameters
+    ----------
+
+    project_life: int
+        time period over which the costs of the system occur
+
+    discount_factor: float
+        weighted average cost of capital, which is the after-tax average cost of various capital sources
+
+    Returns
+    -------
+    financial value "annuity factor". Dividing a present cost by tha annuity factor returns its annuity, multiplying an annuity with the annuity factor returns its present value
+
+
+    Notes
+    -----
+
+    .. math::     annuity factor = \frac{1}{discount factor} - \frac{1}{
+        discountfactor \cdot (1 + discount factor) ^ project life}
+    )
     """
-    # discount_rate was replaced here by discount_factor
     annuity_factor = 1 / discount_factor - 1 / (
         discount_factor * (1 + discount_factor) ** project_life
     )
@@ -61,19 +77,40 @@ def crf(project_life, discount_factor):
 
 def capex_from_investment(investment_t0, lifetime, project_life, discount_factor, tax):
     """
-    Calculates the capital expenditures, also known as CapEx. CapEx represent the total funds used to acquire or upgrade an asset.
+    Calculates the capital expenditures, also known as CapEx.
+
+    CapEx represent the total funds used to acquire or upgrade an asset.
     The specific capex is calculated by taking into account all future cash flows connected to the investment into one unit of the asset.
     This includes reinvestments, operation and management costs, dispatch costs as well as a deduction of the residual value at project end.
     The residual value is calculated with a linear depreciation of the last investment, ie. as a even share of the last investment over
     the lifetime of the asset. The remaining value of the asset is translated in a present value and then deducted.
 
-    :param investment_t0: first investment at the beginning of the project made at year 0
-    :param lifetime: time period over which investments and re-investments can occur. can be equal to, longer or shorter than project_life
-    :param project_life: time period over which the costs of the system occur
-    :param discount_factor: weighted average cost of capital, which is the after-tax average cost of various capital sources
-    :param tax: compulsory financial charge paid to the government
-    :return: capital expenditure for an asset over project lifetime
+    Parameters
+    ----------
+    investment_t0: float
+        first investment at the beginning of the project made at year 0
+    lifetime: int
+        time period over which investments and re-investments can occur. can be equal to, longer or shorter than project_life
+    project_life: int
+        time period over which the costs of the system occur
+    discount_factor: float
+        weighted average cost of capital, which is the after-tax average cost of various capital sources
+    tax: float
+        compulsory financial charge paid to the government
+
+    Returns
+    -------
+    capex: float
+        Capital expenditure for an asset over project lifetime
+
+    Notes
+    -----
+    Tested with
+    - test_capex_from_investment_lifetime_equals_project_life()
+    - test_capex_from_investment_lifetime_smaller_than_project_life()
+    - test_capex_from_investment_lifetime_bigger_than_project_life()
     """
+
     # [quantity, investment, installation, weight, lifetime, om, first_investment]
     if project_life == lifetime:
         number_of_investments = 1
@@ -112,9 +149,21 @@ def annuity(present_value, crf):
     """
     Calculates the annuity which is a fixed stream of payments incurred by investments in assets
 
-    :param present_value: current equivalent value of a set of future cash flows for an asset
-    :param crf: ratio used to calculate the present value of an annuity
-    :return: annuity, i.e. payment made at equal intervals
+    Parameters
+    ----------
+    present_value: float
+        current equivalent value of a set of future cash flows for an asset
+    crf: float
+        ratio used to calculate the present value of an annuity
+
+    Returns
+    -------
+    annuity: float
+        annuity, i.e. payment made at equal intervals
+
+    Notes
+    -----
+    Tested with test_annuity()
     """
     annuity = present_value * crf
     return annuity
@@ -124,9 +173,19 @@ def present_value_from_annuity(annuity, annuity_factor):
     """
     Calculates the present value of future instalments from an annuity
 
-    :param annuity: payment made at equal intervals
-    :param annuity_factor: financial value
-    :return: present value of future payments from an annuity
+    Parameters
+    ----------
+
+    annuity: float
+        payment made at equal intervals
+    annuity_factor: float
+        financial value
+
+    Returns
+    -------
+
+    present_value: float
+        present value of future payments from an annuity
     """
     present_value = annuity * annuity_factor
     return present_value
@@ -170,12 +229,21 @@ def simulation_annuity(annuity, days):
 
     Parameters
     ----------
-    annuity
-    days
+    annuity: float
+        Annuity of an asset
+
+    days: int
+        Days to be simulated
 
     Returns
     -------
+    Simulation annuity that considers the lifetime cost for the optimization of one year duration.
 
+    Notes
+    -----
+    Tested with
+    - test_simulation_annuity_week
+    - test_simulation_annuity_year
     """
     simulation_annuity = annuity / 365 * days
     return simulation_annuity
@@ -267,6 +335,7 @@ def get_lifetime_price_dispatch_one_value(dispatch_price, economic_data):
     Tested with
     - test_determine_lifetime_price_dispatch_as_int()
     - test_determine_lifetime_price_dispatch_as_float()
+    - test_get_lifetime_price_dispatch_one_value()
     """
     lifetime_price_dispatch = (
             dispatch_price * economic_data[ANNUITY_FACTOR][VALUE]
