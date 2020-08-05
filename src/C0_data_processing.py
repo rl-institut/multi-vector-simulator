@@ -1309,7 +1309,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                     dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
                     economic_data[CRF][VALUE],
                 )
-                       + dict_asset[SPECIFIC_COSTS_OM][VALUE],  # changes from dispatch_price
+                + dict_asset[SPECIFIC_COSTS_OM][VALUE],  # changes from dispatch_price
                 UNIT: dict_asset[LIFETIME_SPECIFIC_COST][UNIT] + "/" + UNIT_YEAR,
             }
         }
@@ -1338,9 +1338,6 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     )
 
     return
-
-
-
 
 
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,

@@ -22,9 +22,10 @@ from src.constants_json_strings import (
     DISCOUNTFACTOR,
     ANNUITY_FACTOR,
     DISPATCH_PRICE,
-    VALUE, UNIT,
+    VALUE,
+    UNIT,
     LIFETIME_PRICE_DISPATCH,
-    )
+)
 
 import pandas as pd
 
@@ -190,6 +191,7 @@ def present_value_from_annuity(annuity, annuity_factor):
     present_value = annuity * annuity_factor
     return present_value
 
+
 '''
 Currently unused function.
 
@@ -219,6 +221,7 @@ def fuel_price_present_value(economics,):
             fuel_price_i = fuel_price_i * (1 + economics["fuel_price_change_annual"])
         economics.update({"price_fuel": cash_flow_fuel_l * economics[CRF]})
 '''
+
 
 def simulation_annuity(annuity, days):
     """
@@ -277,7 +280,7 @@ def determine_lifetime_price_dispatch(dict_asset, economic_data):
     """
     # Dispatch price is provided as a scalar value
     if isinstance(dict_asset[DISPATCH_PRICE][VALUE], float) or isinstance(
-            dict_asset[DISPATCH_PRICE][VALUE], int
+        dict_asset[DISPATCH_PRICE][VALUE], int
     ):
         lifetime_price_dispatch = get_lifetime_price_dispatch_one_value(
             dict_asset[DISPATCH_PRICE][VALUE], economic_data
@@ -302,7 +305,12 @@ def determine_lifetime_price_dispatch(dict_asset, economic_data):
 
     # Update asset dict
     dict_asset.update(
-        {LIFETIME_PRICE_DISPATCH: {VALUE: lifetime_price_dispatch, UNIT: dict_asset[UNIT] + "/" + UNIT_HOUR, }}
+        {
+            LIFETIME_PRICE_DISPATCH: {
+                VALUE: lifetime_price_dispatch,
+                UNIT: dict_asset[UNIT] + "/" + UNIT_HOUR,
+            }
+        }
     )
     return
 
@@ -337,9 +345,7 @@ def get_lifetime_price_dispatch_one_value(dispatch_price, economic_data):
     - test_determine_lifetime_price_dispatch_as_float()
     - test_get_lifetime_price_dispatch_one_value()
     """
-    lifetime_price_dispatch = (
-            dispatch_price * economic_data[ANNUITY_FACTOR][VALUE]
-    )
+    lifetime_price_dispatch = dispatch_price * economic_data[ANNUITY_FACTOR][VALUE]
     return lifetime_price_dispatch
 
 
@@ -377,9 +383,13 @@ def get_lifetime_price_dispatch_list(dispatch_price, economic_data):
     lifetime_price_dispatch = []
     for price_entry in dispatch_price:
         if isinstance(price_entry, float) or isinstance(price_entry, int):
-            lifetime_price_dispatch.append(price_entry * economic_data[ANNUITY_FACTOR][VALUE])
+            lifetime_price_dispatch.append(
+                price_entry * economic_data[ANNUITY_FACTOR][VALUE]
+            )
         elif isinstance(price_entry, pd.Series):
-            lifetime_price_dispatch_entry = get_lifetime_price_dispatch_timeseries(price_entry, economic_data)
+            lifetime_price_dispatch_entry = get_lifetime_price_dispatch_timeseries(
+                price_entry, economic_data
+            )
             lifetime_price_dispatch.append(lifetime_price_dispatch_entry)
         else:
             raise ValueError(
@@ -387,6 +397,7 @@ def get_lifetime_price_dispatch_list(dispatch_price, economic_data):
             )
 
     return lifetime_price_dispatch
+
 
 def get_lifetime_price_dispatch_timeseries(dispatch_price, economic_data):
     """
@@ -416,6 +427,7 @@ def get_lifetime_price_dispatch_timeseries(dispatch_price, economic_data):
     - test_get_lifetime_price_dispatch_timeseries()
     """
 
-    lifetime_price_dispatch = (dispatch_price.multiply(economic_data[ANNUITY_FACTOR][VALUE], fill_value=0)
+    lifetime_price_dispatch = dispatch_price.multiply(
+        economic_data[ANNUITY_FACTOR][VALUE], fill_value=0
     )
     return lifetime_price_dispatch

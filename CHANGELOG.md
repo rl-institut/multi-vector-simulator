@@ -20,13 +20,15 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
-- Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT
-- Added tests for C0 functions ()
+- Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT (#493)
 
 ### Changed
 - Move and rename json converter and parser to B0 module (#464)
 - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
-- Disaggregated functions in C0 so that they are better to test ()
+- Moved function `C0.determine_lifetime_price_dispatch()` to C2 with all its sub-functions.  (#495)
+- Changed calculation of `LIFETIME_PRICE_DISPATCH` for lists and pd.Series (see dosctrings of `C2.get_lifetime_price_dispatch_list`, `C2.get_lifetime_price_dispatch_timeseries`) (#495)
+- Changed dostring format in `C2` to numpy (#495)
+- Deactivated function `C2.fuel_price_present_value` as it is not used and TBD (#495)
 
 ### Removed
 -

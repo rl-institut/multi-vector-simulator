@@ -47,7 +47,7 @@ from src.constants_json_strings import (
     PERIODS,
     BUS_SUFFIX,
     UNIT_MINUTE,
-    ENERGY_VECTOR
+    ENERGY_VECTOR,
 )
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
@@ -107,6 +107,7 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
         SIMULATION_ANNUITY,
     ):
         assert k in dict_asset.keys()
+
 
 start_date = pd.Timestamp("2018-01-01 00:00:00")
 dict_test_avilability = {
@@ -361,7 +362,7 @@ def test_evaluate_lifetime_costs():
         SPECIFIC_COSTS: {VALUE: 100, UNIT: "unit"},
         DISPATCH_PRICE: {VALUE: 1, UNIT: "unit"},
         LIFETIME: {VALUE: 10},
-        UNIT: UNIT
+        UNIT: UNIT,
     }
 
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
