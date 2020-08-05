@@ -20,10 +20,12 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Added tests for C0 functions ()
+
 ### Changed
- - Move and rename json converter and parser to B0 module (#464)
- - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+- Move and rename json converter and parser to B0 module (#464)
+- Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+- Disaggregated functions in C0 so that they are better to test ()
 
 ### Removed
 -
