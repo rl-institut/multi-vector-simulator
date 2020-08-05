@@ -13,6 +13,7 @@ import dash
 import dash_html_components as html
 import dash_core_components as dcc
 import plotly.graph_objs as go
+import plotly.express as px
 import dash_table
 import folium
 import git
@@ -20,6 +21,8 @@ import pandas as pd
 import reverse_geocoder as rg
 import staticmap
 import asyncio
+import textwrap
+import copy
 
 import pyppdf.patch_pyppeteer
 from pyppeteer import launch
@@ -298,6 +301,18 @@ def insert_single_plot(
     :return: a plot object
     """
     fig = go.Figure()
+
+    styling_dict = dict(
+        showgrid=True,
+        gridwidth=1.5,
+        zeroline=True,
+        mirror=True,
+        autorange=True,
+        linewidth=1,
+        ticks="inside",
+        title_font=dict(size=18, color="black"),
+    )
+
     if plot_type == "line":
         fig.add_trace(
             go.Scatter(
@@ -307,41 +322,74 @@ def insert_single_plot(
                 line=dict(color=color_for_plot, width=2.5),
             )
         )
+        fig.update_layout(
+            xaxis_title=x_axis_name,
+            yaxis_title=y_axis_name,
+            template="simple_white",
+            xaxis=styling_dict,
+            yaxis=styling_dict,
+            font_family="sans-serif",
+            title={
+                "text": plot_title,
+                "y": 0.90,
+                "x": 0.5,
+                "font_size": 23,
+                "xanchor": "center",
+                "yanchor": "top",
+            },
+        )
+
     elif plot_type == "bar":
         # Loop through the label column of the df
         # Plot bars for each parameter with the corresponding value
-        fig.add_trace(go.Bar(name="capacities", x=x_data, y=y_data))
+        fig.add_trace(
+            go.Bar(
+                name="capacities",
+                x=x_data,
+                y=y_data,
+                marker_color=px.colors.qualitative.D3,
+            )
+        )
 
-    styling_dict = dict(
-        showgrid=True,
-        gridwidth=1.5,
-        zeroline=True,
-        mirror=True,
-        autorange=True,
-        linewidth=2,
-        ticks="inside",
-        title_font=dict(size=22, family="Courier", color="black"),
-    )
-    fig.update_layout(
-        xaxis_title=x_axis_name,
-        yaxis_title=y_axis_name,
-        template="simple_white",
-        xaxis=styling_dict,
-        yaxis=styling_dict,
-        title={
-            "text": plot_title,
-            "y": 0.90,
-            "x": 0.5,
-            "font_size": 26,
-            "xanchor": "center",
-            "yanchor": "top",
-        },
-    )
+        fig.update_layout(
+            xaxis_title=x_axis_name,
+            yaxis_title=y_axis_name,
+            template="simple_white",
+            font_family="sans-serif",
+            xaxis=go.layout.XAxis(
+                showgrid=True,
+                gridwidth=1.5,
+                zeroline=True,
+                mirror=True,
+                autorange=True,
+                linewidth=1,
+                ticks="inside",
+                visible=True,
+            ),
+            yaxis=styling_dict,
+            title={
+                "text": plot_title,
+                "y": 0.90,
+                "x": 0.5,
+                "font_size": 23,
+                "xanchor": "center",
+                "yanchor": "top",
+            },
+            legend_title="Components",
+        )
+
+    # Specific modifications for print version
+    fig2 = copy.deepcopy(fig)
+    # Make the legend horizontally oriented so as to prevent the legend from being cut off
+    fig2.update_layout(legend=dict(orientation="h", y=-0.3, x=0.5, xanchor="center"))
+
     rendered_plots = [
         html.Img(
             className="print-only dash-plot",
             src="data:image/png;base64,{}".format(
-                base64.b64encode(fig.to_image(format="png", width=1000)).decode(),
+                base64.b64encode(
+                    fig2.to_image(format="png", height=500, width=900)
+                ).decode(),
             ),
         )
     ]
@@ -456,7 +504,9 @@ def insert_flows_plots(
         gridwidth=1,
         zeroline=True,
         mirror=True,
-        title_font=dict(size=22, family="Courier", color="black"),
+        title_font=dict(size=18, color="black"),
+        ticks="inside",
+        linewidth=1,
     )
 
     assets_list = list(df_plots_data.columns)
@@ -476,6 +526,7 @@ def insert_flows_plots(
     fig.update_layout(
         xaxis_title=x_legend,
         yaxis_title=y_legend,
+        font_family="sans-serif",
         template="simple_white",
         xaxis=styling_dict,
         yaxis=styling_dict,
@@ -483,19 +534,25 @@ def insert_flows_plots(
             "text": plot_title,
             "y": 0.90,
             "x": 0.5,
-            "font_size": 26,
+            "font_size": 23,
             "xanchor": "center",
             "yanchor": "top",
         },
-        legend=dict(
-            y=0.5, traceorder="normal", font=dict(family="sans-serif", color="black"),
-        ),
+        legend=dict(y=0.5, traceorder="normal", font=dict(color="black"),),
     )
+
+    # Specific modifications for print version
+    fig2 = copy.deepcopy(fig)
+    # Make the legend horizontally oriented so as to prevent the legend from being cut off
+    fig2.update_layout(legend=dict(orientation="h", y=-0.3, x=0.5, xanchor="center"))
+
     plot_created = [
         html.Img(
             className="print-only dash-plot",
             src="data:image/png;base64,{}".format(
-                base64.b64encode(fig.to_image(format="png", width=1000)).decode(),
+                base64.b64encode(
+                    fig2.to_image(format="png", height=500, width=900)
+                ).decode(),
             ),
         )
     ]
@@ -541,6 +598,143 @@ def ready_flows_plots(dict_dataseries, json_results_file):
         )
 
     return multi_plots
+
+
+def insert_pie_plots(
+    title_of_plot, names, values, color_scheme, plot_id, print_only=False
+):
+    # Wrap the text of the title into next line if it exceeds the length given below
+    title_of_plot = textwrap.wrap(title_of_plot, width=75)
+    title_of_plot = "<br>".join(title_of_plot)
+
+    fig = go.Figure(
+        go.Pie(
+            labels=names,
+            values=values,
+            textposition="inside",
+            insidetextorientation="radial",
+            texttemplate="%{label} <br>%{percent}",
+            marker=dict(colors=color_scheme),
+        ),
+    )
+
+    fig.update_layout(
+        title={
+            "text": title_of_plot,
+            "y": 0.9,
+            "x": 0.5,
+            "font_size": 23,
+            "xanchor": "center",
+            "yanchor": "top",
+            "pad": {"r": 5, "l": 5, "b": 5, "t": 5},
+        },
+        font_family="sans-serif",
+        height=500,
+        width=700,
+        autosize=True,
+        legend=dict(orientation="v", y=0.5, yanchor="middle", x=0.95, xanchor="right",),
+        margin=dict(l=10, r=10, b=50,),
+        uniformtext_minsize=18,
+    )
+    fig.update_traces(hoverinfo="label+percent", textinfo="label", textfont_size=18)
+
+    # Specific modifications for print version
+    fig2 = copy.deepcopy(fig)
+    # Make the legend horizontally oriented so as to prevent the legend from being cut off
+    fig2.update_layout(legend=dict(orientation="h", y=-0.1, x=0.5, xanchor="center"))
+
+    plot_created = [
+        html.Img(
+            className="print-only dash-plot",
+            src="data:image/png;base64,{}".format(
+                base64.b64encode(
+                    fig2.to_image(format="png", height=500, width=900)
+                ).decode(),
+            ),
+        )
+    ]
+
+    if print_only is False:
+        plot_created.append(
+            dcc.Graph(className="no-print", id=plot_id, figure=fig, responsive=True,)
+        )
+    return html.Div(children=plot_created)
+
+
+def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
+    # Initialize an empty list and a dict for use later in the function
+    pie_plots = []
+    pie_data_dict = {}
+
+    # df_pie_data.reset_index(drop=True, inplace=True)
+    columns_list = list(df_pie_data.columns)
+    columns_list.remove(LABEL)
+
+    # Loop to iterate through the list of columns of the DF which are nothing but the KPIs to be plotted
+    for kp_indic in columns_list:
+
+        # Assign an id for the plot
+        comp_id = kp_indic + "plot"
+
+        kpi_part = ""
+
+        # Make a copy of the DF to make various manipulations for the pie chart plotting
+        df_temp = df_pie_data.copy()
+
+        # Get the total value for each KPI to use in the title of the respective pie chart
+        df_temp2 = df_temp.copy()
+        df_temp2.set_index(LABEL, inplace=True)
+        total_for_title = df_temp2.at["Total", kp_indic]
+
+        # Drop the total row in the dataframe
+        df_temp.drop(df_temp.tail(1).index, inplace=True)
+
+        # Gather the data for each asset for the particular KPI, in a dict
+        for row_index in range(0, len(df_temp)):
+            pie_data_dict[df_temp.at[row_index, LABEL]] = df_temp.at[
+                row_index, kp_indic
+            ]
+
+        # Remove negative values (such as the feed-in sinks) from the dict
+        pie_data_dict = {k: v for (k, v) in pie_data_dict.items() if v > 0}
+
+        # Get the names and values for the pie chart from the above dict
+        names_plot = list(pie_data_dict.keys())
+        values_plot = list(pie_data_dict.values())
+
+        # Below loop determines the first part of the plot title, according to the kpi being plotted
+        if "annuity" in kp_indic:
+            kpi_part = "Annuity Costs ("
+            scheme_choosen = px.colors.qualitative.Set1
+        elif "investment" in kp_indic:
+            kpi_part = "Upfront Investment Costs ("
+            scheme_choosen = px.colors.diverging.BrBG
+        elif "om" in kp_indic:
+            kpi_part = "Operation and Maintenance Costs ("
+            scheme_choosen = px.colors.sequential.RdBu
+
+        # Title of the pie plot
+        plot_title = (
+            kpi_part
+            + str(round(total_for_title, 2))
+            + "$): "
+            + json_results_file[PROJECT_DATA][PROJECT_NAME]
+            + ", "
+            + json_results_file[PROJECT_DATA][SCENARIO_NAME]
+        )
+
+        # Append the plot to the list by calling the plotting function directly
+        pie_plots.append(
+            insert_pie_plots(
+                title_of_plot=plot_title,
+                names=names_plot,
+                values=values_plot,
+                color_scheme=scheme_choosen,
+                plot_id=comp_id,
+                print_only=only_print,
+            )
+        )
+    return pie_plots
 
 
 # Styling of the report
@@ -630,13 +824,13 @@ def create_app(results_json):
 
     projectName = (
         results_json[PROJECT_DATA][PROJECT_NAME]
-        + "(ID: "
+        + " (ID: "
         + str(results_json[PROJECT_DATA][PROJECT_ID])
         + ")"
     )
     scenarioName = (
         results_json[PROJECT_DATA][SCENARIO_NAME]
-        + "(ID: "
+        + " (ID: "
         + str(results_json[PROJECT_DATA][SCENARIO_ID])
         + ")"
     )
@@ -670,7 +864,7 @@ def create_app(results_json):
     # Creating a dataframe for the demands
     demands = results_json[ENERGY_CONSUMPTION]
 
-    ## Removing all columns that are not actually from demands
+    # Removing all columns that are not actually from demands
     drop_list = []
     for column_label in demands:
         # Identifies excess sink in demands for removal
@@ -679,13 +873,14 @@ def create_app(results_json):
         # Identifies DSO_feedin sink in demands for removal
         elif DSO_FEEDIN + AUTO_SINK in column_label:
             drop_list.append(column_label)
+        elif DSO_FEEDIN in column_label:
+            drop_list.append(column_label)
 
-    # Remove droplist items (ie. sinks that are not demands) from data
+    # Remove some elements from drop_list (ie. sinks that are not demands) from data
     for item in drop_list:
         del demands[item]
 
     dem_keys = list(demands.keys())
-
     demand_data = {}
 
     for dem in dem_keys:
@@ -820,7 +1015,6 @@ def create_app(results_json):
 
     log_file = os.path.join(OUTPUT_FOLDER, "mvs_logfile.log")
     # log_file = "/home/mr/Projects/mvs_eland/MVS_outputs/mvs_logfile.log"
-    print(log_file)
 
     with open(log_file) as log_messages:
         log_messages = log_messages.readlines()
@@ -903,6 +1097,23 @@ def create_app(results_json):
         inplace=True,
     )
     df_capacities.reset_index(drop=True, inplace=True)
+
+    # Data preparation operations for generating the pie charts with Plotly
+
+    # Get the cost matrix from the results JSON file into a pandas DF
+    df_kpis = results_json[KPI][KPI_COST_MATRIX]
+
+    # List of the needed parameters
+    costs_needed = [LABEL, ANNUITY_TOTAL, COST_INVESTMENT, COST_OM_TOTAL]
+
+    # Drop all the irrelevant columns
+    df_kpis = df_kpis[costs_needed]
+
+    # Add a row with total of each column, except label
+    df_kpis = df_kpis.append(df_kpis.sum(numeric_only=True), ignore_index=True)
+
+    # Add a label for the row holding the sum of each column
+    df_kpis.iloc[-1, 0] = "Total"
 
     # App layout and populating it with different elements
 
@@ -1092,9 +1303,6 @@ def create_app(results_json):
                             insert_body_text(
                                 "With this, the demands are met with the following dispatch schedules:"
                             ),
-                            insert_body_text(
-                                "a. Flows in the system for a duration of 14 days"
-                            ),
                             html.Div(
                                 children=ready_flows_plots(
                                     dict_dataseries=data_flows,
@@ -1123,10 +1331,14 @@ def create_app(results_json):
                                 "result from capacity and dispatch optimization:"
                             ),
                             make_dash_data_table(df_cost_matrix),
-                            insert_image_array(
-                                results_json[PATHS_TO_PLOTS][PLOTS_COSTS], width=500
-                            )
-                            # TODO Plots to be generated using Plotly
+                            html.Div(
+                                className="add-pie-plots",
+                                children=ready_pie_plots(
+                                    df_pie_data=df_kpis,
+                                    json_results_file=results_json,
+                                    only_print=False,
+                                ),
+                            ),
                         ],
                     ),
                 ],
