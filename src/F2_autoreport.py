@@ -535,9 +535,7 @@ def insert_flows_plots(
             "xanchor": "center",
             "yanchor": "top",
         },
-        legend=dict(
-            y=0.5, traceorder="normal", font=dict(family="sans-serif", color="black"),
-        ),
+        legend=dict(y=0.5, traceorder="normal", font=dict(color="black"),),
     )
 
     # Specific modifications for print version
@@ -822,13 +820,13 @@ def create_app(results_json):
 
     projectName = (
         results_json[PROJECT_DATA][PROJECT_NAME]
-        + " (ID: "
+        + "(ID: "
         + str(results_json[PROJECT_DATA][PROJECT_ID])
         + ")"
     )
     scenarioName = (
         results_json[PROJECT_DATA][SCENARIO_NAME]
-        + " (ID: "
+        + "(ID: "
         + str(results_json[PROJECT_DATA][SCENARIO_ID])
         + ")"
     )
