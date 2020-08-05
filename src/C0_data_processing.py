@@ -17,7 +17,7 @@ from src.constants import (
 )
 
 from src.constants_json_strings import *
-import src.C1_verification as verify
+import src.C1_verification as C1
 import src.C2_economic_functions as economics
 import src.F0_output as output
 import src.F1_plotting as F1  # only function F1.plot_input_timeseries()
@@ -67,14 +67,14 @@ def all(dict_values):
 
     # Adds costs to each asset and sub-asset
     process_all_assets(dict_values)
-
+    C1.check_for_sufficient_assets_on_busses(dict_values)
     output.store_as_json(
         dict_values,
         dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
         "json_input_processed",
     )
-    return
 
+    return
 
 def identify_energy_vectors(dict_values):
     """
@@ -1427,7 +1427,7 @@ def receive_timeseries_from_csv(
         unit = dict_asset[input_type][UNIT]
 
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
-    verify.lookup_file(file_path, dict_asset[LABEL])
+    C1.lookup_file(file_path, dict_asset[LABEL])
 
     data_set = pd.read_csv(file_path, sep=",")
 
@@ -1593,7 +1593,7 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
 
     """
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
-    verify.lookup_file(file_path, dict_asset[LABEL])
+    C1.lookup_file(file_path, dict_asset[LABEL])
 
     data_set = pd.read_csv(file_path, sep=",")
     if len(data_set.index) == settings[PERIODS]:
