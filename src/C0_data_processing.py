@@ -56,8 +56,8 @@ def all(dict_values):
     :return Pre-processed dictionary with all input parameters
 
     """
-    simulation_settings(dict_values[SIMULATION_SETTINGS])
     economic_parameters(dict_values[ECONOMIC_DATA])
+    retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
     identify_energy_vectors(dict_values)
 
     ## Verify inputs
@@ -112,13 +112,27 @@ def identify_energy_vectors(dict_values):
     return
 
 
-def simulation_settings(simulation_settings):
+def retrieve_date_time_info(simulation_settings):
     """
     Updates simulation settings by all time-related parameters.
-    :param: dict
-    Simulation parameters of the input data
-    :return: dict
+    - START_DATE
+    - END_DATE
+    - TIME_INDEX
+    - PERIODS
+
+    Parameters
+    ----------
+    simulation_settings: dict
+        Simulation parameters of the input data
+
+    Returns
+    -------
     Update simulation_settings by start date, end date, timeindex, and number of simulation periods
+
+
+    Notes
+    -----
+    Function tested with test_retrieve_datetimeindex_for_simulation()
     """
     simulation_settings.update(
         {START_DATE: pd.to_datetime(simulation_settings[START_DATE])}

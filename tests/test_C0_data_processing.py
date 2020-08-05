@@ -59,7 +59,7 @@ def test_retrieve_datetimeindex_for_simulation():
         EVALUATED_PERIOD: {VALUE: 1},
         TIMESTEP: {VALUE: 60},
     }
-    C0.simulation_settings(simulation_settings)
+    C0.retrieve_date_time_info(simulation_settings)
     for k in (START_DATE, END_DATE, TIME_INDEX):
         assert k in simulation_settings.keys()
     assert simulation_settings[START_DATE] == pd.Timestamp("2020-01-01 00:00:00")
