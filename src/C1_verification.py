@@ -104,6 +104,45 @@ def check_feedin_tariff(dict_values):
     return
 
 
+def check_time_series_values_between_0_and_1(time_series):
+    r"""
+    Checks whether all values of `time_series` in [0, 1].
+
+    Parameters
+    ----------
+    time_series : pd.Series
+        Time series to be checked.
+
+    Returns
+    -------
+    bool
+        True if values of `time_series` within [0, 1].
+
+    """
+    pass
+
+
+def check_non_dispatchable_source_time_series(dict_values):
+    r"""
+    Raises error if time series of non-dispatchable sources not between [0, 1].
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+
+    Returns
+    -------
+    Indirectly, raises error message in case of time series of non-dispatchable sources
+    not between [0, 1].
+
+    """
+    # go through all non-dispatchable sources (energyProduction: renewableasset==True, any others?)
+
+    # check if values between 0 and 1
+    # check_time_series_values_between_0_and_1(time_series=)
+    pass
+
 def check_input_values(dict_values):
     """
 
