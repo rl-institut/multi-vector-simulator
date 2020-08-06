@@ -1,7 +1,15 @@
 import pytest
 
 import src.C1_verification as C1
-from .constants import JSON_PATH, ENERGY_PROVIDERS, LABEL, FEEDIN_TARIFF, ENERGY_PRICE, UNIT, VALUE
+from .constants import (
+    JSON_PATH,
+    ENERGY_PROVIDERS,
+    LABEL,
+    FEEDIN_TARIFF,
+    ENERGY_PRICE,
+    UNIT,
+    VALUE,
+)
 
 
 def test_lookup_file_existing_file():

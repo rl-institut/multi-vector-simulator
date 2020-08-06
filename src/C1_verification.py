@@ -94,9 +94,7 @@ def check_feedin_tariff(dict_values):
 
     """
     for provider in dict_values[ENERGY_PROVIDERS].keys():
-        feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF][
-            "value"
-        ]
+        feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]["value"]
         electricity_price = dict_values[ENERGY_PROVIDERS][provider][ENERGY_PRICE][
             "value"
         ]
