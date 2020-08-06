@@ -14,7 +14,9 @@ import pandas as pd
 import pytest
 
 from mvs_eland_tool import main
-from src.B0_data_input_json import convert_special_types
+from src.B0_data_input_json import convert_from_json_to_special_types
+from src.C0_data_processing import bus_suffix
+
 from .constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
@@ -22,6 +24,8 @@ from .constants import (
     TEST_REPO_PATH,
     CSV_EXT,
 )
+
+from src.constants_json_strings import EXCESS, AUTO_SINK
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
@@ -54,7 +58,7 @@ class TestACElectricityBus:
 
         df_busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
-            sheet_name="Electricity bus",
+            sheet_name=bus_suffix("Electricity"),
         )
         # make the time the index
         df_busses_flow = df_busses_flow.set_index("Unnamed: 0")
@@ -84,7 +88,7 @@ class TestACElectricityBus:
 
         df_busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
-            sheet_name="Electricity bus",
+            sheet_name=bus_suffix("Electricity"),
         )
         # make the time the index
         df_busses_flow = df_busses_flow.set_index("Unnamed: 0")
@@ -112,10 +116,12 @@ class TestACElectricityBus:
             )
             busses_flow = pd.read_excel(
                 os.path.join(TEST_OUTPUT_PATH, case, "timeseries_all_busses.xlsx"),
-                sheet_name="Electricity bus",
+                sheet_name=bus_suffix("Electricity"),
             )
             # compute the sum of the excess electricity for all timesteps
-            excess[case] = sum(busses_flow["Electricity excess_sink"])
+            excess[case] = sum(
+                busses_flow[bus_suffix("Electricity") + EXCESS + AUTO_SINK]
+            )
         # compare the total excess electricity between the two cases
         assert excess["AB_grid_PV"] < excess["ABE_grid_PV_battery"]
 
@@ -141,7 +147,7 @@ class TestACElectricityBus:
             # read timeseries_all_busses excel file
             busses_flow = pd.read_excel(
                 os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
-                sheet_name="Electricity bus",
+                sheet_name=bus_suffix("Electricity"),
             )
             # make the time the index
             busses_flow = busses_flow.set_index("Unnamed: 0")

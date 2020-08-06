@@ -169,7 +169,7 @@ The feature was tested for following paramters:
 You can see an implemented example here, where the heat pump has a time-dependent efficiency:
 
 .. csv-table:: Example for defining a scalar parameter as a timeseries
-   :file: tables/example_scalar_as_timeseries_energyConversion.csv
+   :file: files_to_be_displayed/example_scalar_as_timeseries_energyConversion.csv
    :widths: 70, 30, 50
    :header-rows: 1
 
@@ -205,7 +205,7 @@ you need to define the efficiencies and dispatch_price costs as a list as well.
 You can see an implemented example here, where the heat pump has a time-dependent efficiency:
 
 .. csv-table:: Example for defining a component with multiple inputs/outputs
-   :file: tables/example_multiple_inputs_energyConversion.csv
+   :file: files_to_be_displayed/example_multiple_inputs_energyConversion.csv
    :widths: 70, 30, 50
    :header-rows: 1
 

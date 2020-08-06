@@ -578,6 +578,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
             logging.info(
                 f"Parameter {param} of asset {asset} is defined as a timeseries."
             )
+            # todo: this should result in reading the csv and writing a pd.Series to the param
 
     elif row[UNIT] == TYPE_STR:
         asset_dict.update({param: value})
