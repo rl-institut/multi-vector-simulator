@@ -5,7 +5,7 @@ In A1/B0, the input parameters were parsed to str/bool/float/int. This module
 tests whether the parameters are in correct value ranges:
 - Display error message when wrong type
 - Display error message when outside defined range
-- Display error message when feed-in tariff > electriciy price (would cause loop, see #119)
+- Display error message when feed-in tariff > electricity price (would cause loop, see #119)
 
 """
 
@@ -87,9 +87,17 @@ def check_feedin_tariff(dict_values):
 
     Returns
     -------
+    Indirectly, raises error message in case of feed-in tariff > energy price of any
+    asset in 'energyProvider.csv'.
 
     """
-    pass
+    for provider in dict_values["energyProviders"].keys():
+        feedin_tariff = dict_values["energyProviders"][provider]["feedin_tariff"]["value"]
+        electricity_price = dict_values["energyProviders"][provider]["energy_price"]["value"]
+        if feedin_tariff > electricity_price:
+            msg = f"Feed-in tariff > energy price of energy provider asset '{dict_values['energyProviders'][provider]['label']}' would cause an unbound solution."
+            raise ValueError(msg)
+    return
 
 def check_input_values(dict_values):
     """
