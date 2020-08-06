@@ -92,12 +92,17 @@ def check_feedin_tariff(dict_values):
 
     """
     for provider in dict_values["energyProviders"].keys():
-        feedin_tariff = dict_values["energyProviders"][provider]["feedin_tariff"]["value"]
-        electricity_price = dict_values["energyProviders"][provider]["energy_price"]["value"]
+        feedin_tariff = dict_values["energyProviders"][provider]["feedin_tariff"][
+            "value"
+        ]
+        electricity_price = dict_values["energyProviders"][provider]["energy_price"][
+            "value"
+        ]
         if feedin_tariff > electricity_price:
             msg = f"Feed-in tariff > energy price of energy provider asset '{dict_values['energyProviders'][provider]['label']}' would cause an unbound solution."
             raise ValueError(msg)
     return
+
 
 def check_input_values(dict_values):
     """
