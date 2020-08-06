@@ -89,6 +89,8 @@ def get_costs(dict_asset, economic_data):
             costs_total = add_costs_and_total(
                 dict_asset, COST_INVESTMENT, costs_investment, costs_total
             )
+        else:
+            dict_asset.update({COST_INVESTMENT: {VALUE: 0.0}})
 
         if (
             all_list_in_dict(
@@ -106,6 +108,8 @@ def get_costs(dict_asset, economic_data):
             costs_total = add_costs_and_total(
                 dict_asset, COST_UPFRONT, costs_upfront, costs_total
             )
+        else:
+            dict_asset.update({COST_UPFRONT: {VALUE: 0.0}})
 
         if (
             all_list_in_dict(dict_asset, [ANNUAL_TOTAL_FLOW, LIFETIME_PRICE_DISPATCH])

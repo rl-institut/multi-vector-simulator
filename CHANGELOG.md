@@ -20,10 +20,13 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT
+- Display error message when feed-in tariff > electricity price of any  asset in 'energyProvider.csv'. (#497)
+
 ### Changed
  - Move and rename json converter and parser to B0 module (#464)
  - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+ - Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
 
 ### Removed
 -
