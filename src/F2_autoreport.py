@@ -276,6 +276,14 @@ def insert_log_messages(log_dict):
     )
 
 
+def save_plots_to_disk(
+    fig_obj, file_name, file_path, width=None, height=None, scale=None
+):
+    file_name = file_name + "_plotly" + ".png"
+    fig_obj.write_image(file_path + "/" + file_name, width=width, height=height)
+    return
+
+
 def insert_single_plot(
     x_data,
     y_data,
