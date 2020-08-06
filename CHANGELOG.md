@@ -21,7 +21,7 @@ Here is a template for new release sections
 
 ### Added
 - Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT
-- Requirement for time series of non-dispatchable sources: values betw. 0 and 1. ()
+- Requirement for time series of non-dispatchable sources: values betw. 0 and 1. (#498)
 
 ### Changed
  - Move and rename json converter and parser to B0 module (#464)
@@ -31,7 +31,7 @@ Here is a template for new release sections
 ### Removed
 -
 ### Fixed
-- optimizedAddCap of non-dispatchable sources: multiply maximumCap by max(timeseries(kWh/kWp)) to fix issue #446 ()
+- optimizedAddCap of non-dispatchable sources: multiply maximumCap by max(timeseries(kWh/kWp)) to fix issue #446 (#498)
 
 ## [0.3.2] 2020-08-04
 
