@@ -609,7 +609,14 @@ def ready_flows_plots(dict_dataseries, json_results_file):
 
 
 def insert_pie_plots(
-    title_of_plot, names, values, color_scheme, plot_id, print_only=False
+    title_of_plot,
+    names,
+    values,
+    color_scheme,
+    plot_id,
+    print_only=False,
+    name_file=None,
+    path_file=None,
 ):
     # Wrap the text of the title into next line if it exceeds the length given below
     title_of_plot = textwrap.wrap(title_of_plot, width=75)
@@ -645,6 +652,16 @@ def insert_pie_plots(
         uniformtext_minsize=18,
     )
     fig.update_traces(hoverinfo="label+percent", textinfo="label", textfont_size=18)
+
+    # Function call to save the Plotly plot to the disk
+    save_plots_to_disk(
+        fig_obj=fig,
+        file_path=path_file,
+        file_name=name_file,
+        width=1200,
+        height=600,
+        scale=5,
+    )
 
     # Specific modifications for print version
     fig2 = copy.deepcopy(fig)
@@ -713,13 +730,16 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
         # Below loop determines the first part of the plot title, according to the kpi being plotted
         if "annuity" in kp_indic:
             kpi_part = "Annuity Costs ("
+            file_name = "annuity"
             scheme_choosen = px.colors.qualitative.Set1
         elif "investment" in kp_indic:
             kpi_part = "Upfront Investment Costs ("
             scheme_choosen = px.colors.diverging.BrBG
+            file_name = "upfront_investment_costs"
         elif "om" in kp_indic:
             kpi_part = "Operation and Maintenance Costs ("
             scheme_choosen = px.colors.sequential.RdBu
+            file_name = "operation_and_maintainance_costs"
 
         # Title of the pie plot
         plot_title = (
@@ -740,6 +760,8 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
                 color_scheme=scheme_choosen,
                 plot_id=comp_id,
                 print_only=only_print,
+                name_file=file_name,
+                path_file=json_results_file[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
             )
         )
     return pie_plots
