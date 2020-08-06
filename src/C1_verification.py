@@ -5,6 +5,7 @@ In A1/B0, the input parameters were parsed to str/bool/float/int. This module
 tests whether the parameters are in correct value ranges:
 - Display error message when wrong type
 - Display error message when outside defined range
+- Display error message when feed-in tariff > electriciy price (would cause loop, see #119)
 
 """
 
@@ -74,6 +75,21 @@ def lookup_file(file_path, name):
         raise FileNotFoundError(msg)
     return
 
+
+def check_feedin_tariff(dict_values):
+    r"""
+    Raises error if feed-in tariff > energy price of any asset in 'energyProvider.csv'.
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+
+    Returns
+    -------
+
+    """
+    pass
 
 def check_input_values(dict_values):
     """
