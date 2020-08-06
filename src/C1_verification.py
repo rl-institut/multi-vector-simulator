@@ -99,7 +99,7 @@ def check_feedin_tariff(dict_values):
             "value"
         ]
         if feedin_tariff > electricity_price:
-            msg = f"Feed-in tariff > energy price of energy provider asset '{dict_values['energyProviders'][provider]['label']}' would cause an unbound solution."
+            msg = f"Feed-in tariff > energy price of energy provider asset '{dict_values['energyProviders'][provider]['label']}' would cause an unbound solution and terminate the optimization."
             raise ValueError(msg)
     return
 
