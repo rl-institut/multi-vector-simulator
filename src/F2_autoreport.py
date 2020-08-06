@@ -277,10 +277,11 @@ def insert_log_messages(log_dict):
 
 
 def save_plots_to_disk(
-    fig_obj, file_name, file_path, width=None, height=None, scale=None
+    fig_obj, file_name, file_path_dict, width=None, height=None, scale=None
 ):
+    file_path = file_path_dict[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
     file_name = file_name + "_plotly" + ".png"
-    fig_obj.write_image(file_path + "/" + file_name, width=width, height=height)
+    fig_obj.write_image(file_path + "/" + file_name, width=width, height=height, scale=scale)
     return
 
 
@@ -409,7 +410,7 @@ def insert_single_plot(
     return html.Div(children=rendered_plots)
 
 
-def ready_single_plots(df_pd, dict_of_labels, only_print=False):
+def ready_single_plots(df_pd, dict_of_labels, only_print=False, results_file=None):
     """This function prepares the data for plotting line and bar plots.
     :param df_pd: pandas DF
     :param only_print: bool, default = False
@@ -440,6 +441,7 @@ def ready_single_plots(df_pd, dict_of_labels, only_print=False):
                 id_plot=comp_id,
                 print_only=only_print,
                 color_for_plot=color_plot,
+                path_file=results_file
             )
         )
     return plots
@@ -473,6 +475,7 @@ def ready_capacities_plots(df_kpis, json_results_file, only_print=False):
         y_axis_name="Capacities",
         id_plot="capacities-plot",
         print_only=only_print,
+        path_file=json_results_file
     )
     return plot
 
@@ -616,7 +619,7 @@ def insert_pie_plots(
     plot_id,
     print_only=False,
     name_file=None,
-    path_file=None,
+    path_file_dict=None,
 ):
     # Wrap the text of the title into next line if it exceeds the length given below
     title_of_plot = textwrap.wrap(title_of_plot, width=75)
@@ -656,7 +659,7 @@ def insert_pie_plots(
     # Function call to save the Plotly plot to the disk
     save_plots_to_disk(
         fig_obj=fig,
-        file_path=path_file,
+        file_path_dict=path_file_dict,
         file_name=name_file,
         width=1200,
         height=600,
@@ -761,7 +764,7 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
                 plot_id=comp_id,
                 print_only=only_print,
                 name_file=file_name,
-                path_file=json_results_file[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
+                path_file_dict=json_results_file
             )
         )
     return pie_plots
@@ -1295,13 +1298,13 @@ def create_app(results_json):
                             make_dash_data_table(df_dem),
                             html.Div(
                                 children=ready_single_plots(
-                                    df_all_demands, dict_plot_labels
+                                    df_all_demands, dict_plot_labels, results_file=results_json
                                 )
                             ),
                             html.H4("Resources"),
                             html.Div(
                                 children=ready_single_plots(
-                                    df_all_res, dict_plot_labels
+                                    df_all_res, dict_plot_labels, results_file=results_json
                                 )
                             ),
                         ],
