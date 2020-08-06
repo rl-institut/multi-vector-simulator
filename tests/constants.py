@@ -41,6 +41,40 @@ from src.constants import (
     PATHS_TO_PLOTS,
 )
 
+from src.constants_json_strings import (
+    PROJECT_DURATION,
+    DISCOUNTFACTOR,
+    TAX,
+    LABEL,
+    CURR,
+    DISPATCH_PRICE,
+    SPECIFIC_COSTS_OM,
+    DEVELOPMENT_COSTS,
+    SPECIFIC_COSTS,
+    AGE_INSTALLED,
+    LIFETIME,
+    INSTALLED_CAP,
+    FILENAME,
+    EFFICIENCY,
+    EVALUATED_PERIOD,
+    START_DATE,
+    SOC_INITIAL,
+    SOC_MAX,
+    SOC_MIN,
+    FEEDIN_TARIFF,
+    MAXIMUM_CAP,
+    SCENARIO_NAME,
+    PROJECT_NAME,
+    LONGITUDE,
+    LATITUDE,
+    PERIODS,
+    COUNTRY,
+    ENERGY_PRICE,
+    ENERGY_PROVIDERS,
+    UNIT,
+    VALUE,
+)
+
 TESTS_ON_MASTER = "master"
 TESTS_ON_DEV = "dev"
 
