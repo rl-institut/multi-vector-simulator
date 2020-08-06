@@ -559,6 +559,16 @@ def insert_flows_plots(
         legend=dict(y=0.5, traceorder="normal", font=dict(color="black"),),
     )
 
+    # Function call to save the Plotly plot to the disk
+    save_plots_to_disk(
+        fig_obj=fig,
+        file_path_dict=results_file,
+        file_name=name_of_file,
+        width=1200,
+        height=600,
+        scale=5,
+    )
+
     # Specific modifications for print version
     fig2 = copy.deepcopy(fig)
     # Make the legend horizontally oriented so as to prevent the legend from being cut off
@@ -612,6 +622,8 @@ def ready_flows_plots(dict_dataseries, json_results_file):
                 plot_title=title,
                 pdf_only=False,
                 plot_id=comp_id,
+                results_file=json_results_file,
+                name_of_file=bus + "_flows_in_LES",
             )
         )
 
