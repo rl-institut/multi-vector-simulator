@@ -29,7 +29,7 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
 # please adapt
-simulation_date = "2020-07-30" # used for filenames and folders. non-automatic
+simulation_date = "2020-07-30"  # used for filenames and folders. non-automatic
 path_to_server = "/home/sabine/rl-institut/"
 
 path_to_data_folder = os.path.join(

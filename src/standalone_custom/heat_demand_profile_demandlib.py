@@ -79,6 +79,7 @@ if not os.path.isdir(path_to_results_folder):
     os.mkdir(path_to_results_folder)
     os.mkdir(os.path.join(path_to_results_folder, "plots"))
 
+
 def calculate_heat_demand_time_series(
     year,
     annual_demand,
