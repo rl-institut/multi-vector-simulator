@@ -64,6 +64,8 @@ def all(dict_values):
     # todo check whether input values can be true
     # verify.check_input_values(dict_values)
     # todo Check, whether files (demand, generation) are existing
+    # check electricity price >= feed-in tariff todo: can be integrated into check_input_values() later
+    verify.check_feedin_tariff(dict_values=dict_values)
 
     # Adds costs to each asset and sub-asset
     process_all_assets(dict_values)
