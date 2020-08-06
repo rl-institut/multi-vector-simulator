@@ -43,6 +43,7 @@ def test_check_feedin_tariff_not_greater_energy_price():
     }
     C1.check_feedin_tariff(dict_values)
 
+
 # def test_check_input_values():
 #     pass
 #     # todo note: function is not used so far
