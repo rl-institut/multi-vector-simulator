@@ -82,7 +82,7 @@ def main(json_dict, **kwargs):
     logging.info(welcome_text)
 
     logging.debug("Accessing script: B0_data_input_json")
-    dict_values = data_input.convert_special_types(json_dict)
+    dict_values = data_input.convert_from_json_to_special_types(json_dict)
 
     print("")
     logging.debug("Accessing script: C0_data_processing")

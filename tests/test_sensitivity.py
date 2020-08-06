@@ -10,7 +10,7 @@ import logging
 import os
 
 from mvs_eland_tool import run_simulation
-from src.B0_data_input_json import load_json, convert_special_types
+from src.B0_data_input_json import load_json, convert_from_json_to_special_types
 from .constants import TEST_REPO_PATH
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs_simulation")
@@ -173,7 +173,7 @@ def single_param_variation_analysis(
             )
             # run a simulation with next value of the variable parameter and convert the result to
             # mvs special json type
-            sim_output_json = convert_special_types(
+            sim_output_json = convert_from_json_to_special_types(
                 json.loads(run_simulation(modified_input, display_output="error"))
             )
 

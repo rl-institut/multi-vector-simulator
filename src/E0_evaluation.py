@@ -1,6 +1,6 @@
 import logging
 
-import oemof.outputlib as outputlib
+import oemof.solph as solph
 import pandas as pd
 
 import src.E1_process_results as E1
@@ -52,9 +52,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
     dict_values: dict
         simulation parameters
     results_main: DataFrame
-        oemof simulation results as output by outputlib.processing.results()
+        oemof simulation results as output by processing.results()
     results_meta: DataFrame
-        oemof simulation meta information as output by outputlib.processing.meta_results()
+        oemof simulation meta information as output by processing.meta_results()
 
     Returns
     -------
@@ -73,7 +73,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     # Store all information related to busses in bus_data
     for bus in dict_values[ENERGY_BUSSES]:
         # Read all energy flows from busses
-        bus_data.update({bus: outputlib.views.node(results_main, bus)})
+        bus_data.update({bus: solph.views.node(results_main, bus)})
 
     # Evaluate timeseries and store to a large DataFrame for each bus:
     E1.get_timeseries_per_bus(dict_values, bus_data)
@@ -82,7 +82,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     for storage in dict_values[ENERGY_STORAGE]:
         bus_data.update(
             {
-                dict_values[ENERGY_STORAGE][storage][LABEL]: outputlib.views.node(
+                dict_values[ENERGY_STORAGE][storage][LABEL]: solph.views.node(
                     results_main, dict_values[ENERGY_STORAGE][storage][LABEL],
                 )
             }
@@ -146,6 +146,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     E3.all_totals(dict_values)
 
     # Processing further KPI
+    # todo : reactivate function
     E3.total_renewable_and_non_renewable_energy_origin(dict_values)
     E3.renewable_share(dict_values)
 

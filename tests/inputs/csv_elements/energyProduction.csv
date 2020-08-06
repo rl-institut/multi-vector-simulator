@@ -2,8 +2,8 @@
 label,str,PV plant (mono)
 unit,str,kWp
 optimizeCap,bool,True
-maximumCap,None or float, 1000
-installedCap,kWp,1500
+maximumCap,None or float,1000
+installedCap,kWp,50
 age_installed,year,0
 lifetime,year,30
 development_costs,currency,10000

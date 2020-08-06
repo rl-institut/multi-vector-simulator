@@ -1,5 +1,5 @@
 ,unit,storage capacity,input power,output power
-label,str,Storage capacity,discharging_power,discharging_power
+label,str,Storage capacity,charging_power,discharging_power
 unit,str,kWh,kW,kW
 installedCap,kWh,0.0,0,0
 age_installed,year,0,0,0

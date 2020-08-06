@@ -211,17 +211,27 @@ WARNING_TEXT = "warning_text"
 REQUIRED_IN_CSV_ELEMENTS = "required in files"
 DEFAULT_VALUE = "default"
 
+# name of the key linking to the special type of data in a json object
+DATA_TYPE_JSON_KEY = "data_type"
 # possible type of variable stored into the json file
-TYPE_DATETIMEINDEX = "pandas_DatetimeIndex:"
-TYPE_SERIES = "pandas_Series:"
-TYPE_DATAFRAME = "pandas_Dataframe:"
-TYPE_TIMESTAMP = "pandas_Timestamp:"
+TYPE_DATETIMEINDEX = "pandas_DatetimeIndex"
+TYPE_SERIES = "pandas_Series"
+TYPE_DATAFRAME = "pandas_Dataframe"
+TYPE_NDARRAY = "numpy_ndarray"
+TYPE_TIMESTAMP = "pandas_Timestamp"
 TYPE_BOOL = "bool"
+TYPE_INT64 = "numpy_int64"
 TYPE_STR = "str"
 TYPE_NONE = "None"
 TYPE_FLOAT = "float"
 
 EXTRA_CSV_PARAMETERS = {
+    UNIT: {
+        DEFAULT_VALUE: "NA",
+        UNIT: TYPE_STR,
+        WARNING_TEXT: "defines the unit of power provided by a DSO (Values: str). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
+    },
     MAXIMUM_CAP: {
         DEFAULT_VALUE: None,
         UNIT: TYPE_NONE,
