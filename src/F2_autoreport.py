@@ -281,9 +281,8 @@ def save_plots_to_disk(
 ):
     file_path = file_path_dict[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
     file_name = file_name + "_plotly" + ".png"
-    fig_obj.write_image(
-        file_path + "/" + file_name, width=width, height=height, scale=scale
-    )
+    file_path_out = os.path.join(os.path.abspath(file_path), file_name)
+    fig_obj.write_image(file_path_out, width=width, height=height, scale=scale)
     return
 
 
