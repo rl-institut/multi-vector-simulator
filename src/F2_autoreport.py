@@ -349,7 +349,7 @@ def insert_single_plot(
             },
         )
 
-        name_file = 'input_timeseries_' + plot_title + '_'
+        name_file = "input_timeseries_" + plot_title
 
     elif plot_type == "bar":
         # Loop through the label column of the df
@@ -658,7 +658,7 @@ def insert_pie_plots(
         width=700,
         autosize=True,
         legend=dict(orientation="v", y=0.5, yanchor="middle", x=0.95, xanchor="right",),
-        margin=dict(l=10, r=10, b=50,),
+        margin=dict(l=10, r=10, b=50, pad=2),
         uniformtext_minsize=18,
     )
     fig.update_traces(hoverinfo="label+percent", textinfo="label", textfont_size=18)
@@ -670,7 +670,7 @@ def insert_pie_plots(
         file_name=name_file,
         width=1200,
         height=600,
-        scale=5,
+        scale=6,
     )
 
     # Specific modifications for print version
