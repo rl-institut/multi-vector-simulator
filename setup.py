@@ -134,8 +134,8 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
         "oemof.solph==0.4.1",
-        "oemof.network==0.4.0rc0",
-        "oemof.tools==0.4.0",
+        "matplotlib",
+        "pygraphviz>=1.5",
     ],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
