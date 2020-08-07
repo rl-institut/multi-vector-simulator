@@ -133,9 +133,11 @@ setup(
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        "oemof.solph==0.4.1",
-        "matplotlib",
-        "pygraphviz>=1.5",
+        "oemof.solph == 0.4.1",
+        "matplotlib >= 3",
+        "pandas >= 0.24.0,  <= 1.0.5",
+        "pygraphviz >= 1.5",
+        "openpyxl"
     ],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
@@ -145,7 +147,20 @@ setup(
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
-    extras_require={"dev": ["check-manifest"], "test": ["coverage"],},  # Optional
+    extras_require={
+        "dev": ["check-manifest"],
+        "test": ["coverage"],
+        "report": [
+            "dash",
+            "folium >= 0.10.1",
+            "gitpython",
+            "reverse_geocoder",
+            "staticmap",
+            "pyppeteer",
+            "psutil",
+        ],
+
+    },  # Optional
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     #
