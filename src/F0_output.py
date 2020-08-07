@@ -7,7 +7,14 @@ import pandas as pd
 from src.B0_data_input_json import convert_from_special_types_to_json
 from src.E1_process_results import get_units_of_cost_matrix_entries
 import src.F1_plotting as F1_plots
-import src.F2_autoreport as autoreport
+
+try:
+    import src.F2_autoreport as autoreport
+    AUTOREPORT = True
+except ModuleNotFoundError:
+    logging.warning("The reporting feature is disabled")
+    AUTOREPORT = False
+
 from src.constants import (
     SIMULATION_SETTINGS,
     PATH_OUTPUT_FOLDER,
@@ -74,11 +81,20 @@ def evaluate_dict(dict_values, path_pdf_report=None, path_png_figs=None):
         "json_with_results",
     )
 
+<<<<<<< HEAD
     # generate png figures
     if path_png_figs is not None:
         # plot demand timeseries
         F1_plots.plot_timeseries(
             dict_values, data_type=DEMANDS, file_path=path_png_figs
+=======
+    # generate a pdf report
+    if path_pdf_report is not None and AUTOREPORT is True:
+        app = autoreport.create_app(dict_values)
+        autoreport.print_pdf(app, path_pdf_report=path_pdf_report)
+        logging.info(
+            "Generating PDF report of the simulation: {}".format(path_pdf_report)
+>>>>>>> 382f124... Skip import of F2_autoreport upon MonduleNotFoundError
         )
         # plot demand timeseries for the first 2 weeks only
         F1_plots.plot_timeseries(
