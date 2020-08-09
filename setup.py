@@ -133,7 +133,7 @@ setup(
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        "oemof.solph == 0.4.1",
+        "oemof.solph >= 0.4.1",
         "matplotlib >= 3",
         "pandas >= 0.24.0,  <= 1.0.5",
         "pygraphviz >= 1.5",
@@ -151,7 +151,7 @@ setup(
         "dev": ["check-manifest"],
         "test": ["coverage"],
         "report": [
-            "dash",
+            "dash >= 1.11.0",
             "folium >= 0.10.1",
             "gitpython",
             "reverse_geocoder",
