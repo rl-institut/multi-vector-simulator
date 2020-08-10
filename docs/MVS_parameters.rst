@@ -4,175 +4,347 @@ Parameters and Definitions in CSV/JSON
 
 Each parameter is provided with the definition, unit, type and example values as well to make it easy for users to provide custom values for their systems.
 
-|
-
 project_data.csv
 ----------------
-
 country
-######
+#######
 
-*Definition*    : Name of the country where the project is being deployed
-
-*Type*          : str
-
-*Unit*          : None
-
-*Example*       : Norway
-
-*Restrictions*  : None
-
-*Default*       : None
+:Definition: Name of the country where the project is being deployed
+:Type: str
+:Unit: None
+:Example: Norway
+:Restrictions: None
+:Default: None
 
 |
 
-**latitude**
+latitude
+########
 
-*Definition*  : Latitude coordinate of the project’s geographical location
-
-*Type*        : str
-
-*Unit*        : None
-
-*Example*     : 45.641603
-
-*Restrictions*: Numerical values
-
-*Default*     : None
+:Definition: Latitude coordinate of the project’s geographical location
+:Type: str
+:Unit: None
+:Example: 45.641603
+:Restrictions: Numerical values
+:Default: None
 
 |
 
-**longitude**
+longitude
+#########
 
-*Definition*  : Longitude coordinate of the project’s geographical location
-
-*Type*        : str
-
-*Unit*        : None
-
-*Example*     : 5.875387
-
-*Restrictions*: Numerical values
-
-*Default*     : None
+:Definition: Longitude coordinate of the project’s geographical location
+:Type: str
+:Unit: None
+:Example: 5.875387
+:Restrictions: Numerical values
+:Default: None
 
 |
 
-**Project_id**
+Project_id
+##########
 
-*Definition*  : Users can assign a project ID as per their preference
-
-*Type*        : str
-
-*Unit*        : None
-
-*Example*     : Borg Havn
-
-*Restrictions*: None
-
-*Default*     : 1
+:Definition: Users can assign a project ID as per their preference
+:Type: str
+:Unit: None
+:Example: Borg Havn
+:Restrictions: None
+:Default: 1
 
 |
 
-**Project_name**
+Project_name
+############
 
-*Definition*  : Users can assign a project name as per their preference
-
-*Type*        : str
-
-*Unit*        : None
-
-*Example*     :
-
-*Restrictions*: None
-
-*Default*     : None
+:Definition: Users can assign a project name as per their preference
+:Type: str
+:Unit: None
+:Example:
+:Restrictions: None
+:Default: None
 
 |
 
-**scenario_id**
+scenario_id
+###########
 
-*Definition*  : Users can assign a scenario id as per their preference
-
-*Type*        : str
-
-*Unit*        : None
-
-*Example*     : 1
-
-*Restrictions*: None
-
-*Default*     : None
+:Definition: Users can assign a scenario id as per their preference
+:Type: str
+:Unit: None
+:Example: 1
+:Restrictions: None
+:Default: None
 
 |
 
-**scenario_name**
+scenario_name
+#############
 
-*Definition*  : Users can assign a scenario name as per their preference
+:Definition: Users can assign a scenario name as per their preference
+:Type: str
+:Unit: None
+:Example: Warehouse 14
+:Restrictions: None
+:Default: None
 
-*Type*        : str
-
-*Unit*        : None
-
-*Example*     : Warehouse 14
-
-*Restrictions*: None
-
-*Default*     : None
-
+|
 
 economic_data.csv
 -----------------
 
-**currency**: The currency of the country where the project is implemented. For example, in the case of Germany, the value is EUR. For Norway, it is NOK. 
+currency
+########
 
-**discount_factor**: Discount factor is the factor which accounts for the depreciation in the value of money in the future, compared to the current value of the same money. The common method is to calculate the weighted average cost of capital (WACC) and use it as the discount rate.
+:Definition: The currency of the country where the project is implemented.
+:Type: str
+:Unit: None
+:Example: EUR (if the country is Germany)
+:Restrictions: None
+:Default: None
 
-**Project_duration**: The name of years the project is intended to be operational. The project duration also sets the installation time of the assets used in the simulation. After the project ends these assets are 'sold' and the refund is charged against the initial investment costs.
+|
 
-**tax**: Tax factor. 
+discount_factor
+###############
+
+:Definition: Discount factor is the factor which accounts for the depreciation in the value of money in the future, compared to the current value of the same money. The common method is to calculate the weighted average cost of capital (WACC) and use it as the discount rate.
+:Type: str
+:Unit: None
+:Example: EUR (if the country is Germany)
+:Restrictions: None
+:Default: None
+
+|
+
+Project_duration
+################
+
+:Definition: The name of years the project is intended to be operational. The project duration also sets the installation time of the assets used in the simulation. After the project ends these assets are 'sold' and the refund is charged against the initial investment costs.
+:Type: str
+:Unit: None
+:Example:
+:Restrictions: None
+:Default: None
+
+|
+
+tax
+###
+
+:Definition: Tax factor
+:Type: str
+:Unit: None
+:Example:
+:Restrictions: None
+:Default: None
+
+|
 
 simulation_settings.csv
 -----------------------
 
-**display_output**: [Developer setting] Default value is "debug"
+display_output
+##############
 
-**evaluated_period**: The number of days for which the simulation is to be run.
+:Definition: [Developer setting]
+:Type: str
+:Unit: None
+:Example:
+:Restrictions: None
+:Default: debug
 
-**output_lp_file**: Acceptable values are either True or False. Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user to peer ‘under the hood’ to understand how the program optimizes for the solution.
+|
 
-**restore_from_oemof_file**: [Developer setting] Allows the developer to check the OEMOF file where the results are stored and edit the simulation parameters in it. (not integrated yet!)
+evaluated_period
+################
 
-**start_date**: The data and time on which the simulation starts at the first step. Acceptable format is YYYY-MM-DD HH:MM:SS. E.g.: 2018-01-01 00:00:00
+:Definition: The number of days for which the simulation is to be run.
+:Type: str
+:Unit: None
+:Example:
+:Restrictions: None
+:Default:
 
-**store_oemof_results**: [Developer setting] Acceptable values are either True or False. Assigning True would enable the results to be stored in a OEMOF file. 
+|
 
-**timestep**: Length of the timesteps. Acceptable values in minutes. This is currently only tested for 60-minute intervals.
+output_lp_file
+##############
+
+:Definition: Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user to peer ‘under the hood’ to understand how the program optimizes for the solution.
+:Type: str
+:Unit: None
+:Example:
+:Restrictions: Acceptable values are either True or False
+:Default:
+
+|
+
+start_date
+##########
+
+:Definition: The data and time on which the simulation starts at the first step.
+:Type: str
+:Unit: None
+:Example: 2018-01-01 00:00:00
+:Restrictions: Acceptable format is YYYY-MM-DD HH:MM:SS
+:Default:
+
+|
+
+store_oemof_results
+###################
+
+:Definition: [Developer setting] Assigning True would enable the results to be stored in a OEMOF file.
+:Type: str
+:Unit: None
+:Example: 2018-01-01 00:00:00
+:Restrictions: Acceptable values are either True or False
+:Default:
+
+|
+
+timestep
+########
+
+:Definition: Length of the timesteps.
+:Type: str
+:Unit: None
+:Example: None
+:Restrictions: None
+:Default: None
+
+|
 
 Common Parameters in the CSV/JSON files and in energyConversion.csv:
 --------------------------------------------------------------------
 
-**First row of the csv (C1, E1, D1...)**: Input the names of the conversion components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
+First row of the csv (C1, E1, D1...)
+####################################
 
-**age_installed**: The number of years the asset has already been in operation
+Input the names of the conversion components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
 
-**development_costs**: A fixed cost to implement the asset, eg. planning costs which do not depend on the (optimized) asset capacity (€)
+age_installed
+#############
 
-**specific_costs**: Actual CAPEX of the asset (€/kW), ie. specific investment costs
+:Definition: The number of years the asset has already been in operation.
+:Type: str
+:Unit: None
+:Example:
+:Restrictions:
+:Default:
 
-**efficiency**: Ratio of energy output/energy input
+|
 
-**Inflow_direction**: The bus/component from which the energyVector is arriving into the asset
+development_costs
+#################
 
-**installedCap**: The already existing installed capacity in-place, which will also be replaced after its lifetime (kW)
+:Definition: A fixed cost to implement the asset, eg. planning costs which do not depend on the (optimized) asset capacity
+:Type: Numerical
+:Unit:  €
+:Example: 200
+:Restrictions: None
+:Default: None
 
-**maximumCap**: The maximum installable capacity
+|
 
-**label**: Name of the asset
+specific_costs
+##############
 
-**lifetime**: Number of operational years of the asset until it has to be replaced
+:Definition: Actual CAPEX of the asset, i.e., specific investment costs
+:Type: str
+:Unit: €/kW
+:Example: None
+:Restrictions: None
+:Default: None
 
-**cost_om**: Specific annual OPEX of the asset (€/kW/year)
+|
+
+efficiency
+##########
+
+:Definition: Ratio of energy output/energy input
+:Type: str
+:Unit: None
+:Example: None
+:Restrictions: None
+:Default: None
+
+|
+
+Inflow_direction
+################
+
+:Definition: The bus/component from which the energyVector is arriving into the asset.
+:Type: str
+:Unit: None
+:Example: None
+:Restrictions: None
+:Default: None
+
+|
+
+installedCap
+############
+
+:Definition: The already existing installed capacity in-place, which will also be replaced after its lifetime
+:Type: None
+:Unit: kW
+:Example: None
+:Restrictions: None
+:Default: None
+
+|
+
+
+maximumCap
+##########
+
+:Definition: The maximum installable capacity.
+:Type: None
+:Unit: kW
+:Example: None
+:Restrictions: None
+:Default: None
+
+|
+
+label
+#####
+
+:Definition: Name of the asset
+:Type: str
+:Unit: None
+:Example: None
+:Restrictions: None
+:Default: None
+
+|
+
+lifetime
+########
+
+:Definition: Number of operational years of the asset until it has to be replaced.
+:Type: None
+:Unit: None
+:Example: None
+:Restrictions: None
+:Default: None
+
+|
+
+cost_om
+#######
+
+:Definition: Specific annual OPEX of the asset.
+:Type: None
+:Unit: €/kW/year
+:Example: None
+:Restrictions: None
+:Default: None
+
+|
+
 
 **dispatch_price**: Variable cost associated with a flow through/from the asset (€/kWh). In "storage_xx.csv" only the columns "input power" and "output power"
 require a value, in column "storage capacity" dispatch_price should be set to NaN.
