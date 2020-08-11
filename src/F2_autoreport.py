@@ -255,11 +255,20 @@ def insert_headings(heading_text):
 
 # Functions that creates paragraphs
 def insert_body_text(body_of_text):
+    r"""
+    This function is for rendering blocks of text within the sub-sections.
+
+    Parameters
+    ----------
+    body_of_text: str
+        Typically a single-line or paragraph of text.
+
+    Returns
+    -------
+    html.P()
+        A html element that renders the paragraph of text in the Dash app layout.
     """
-    This function is for rendering blocks of text
-    parameters: paragraph (string)
-    returns: a html element with a paragraph
-    """
+
     return html.P(className="cell large-11 blockoftext", children=body_of_text)
 
 
@@ -280,11 +289,22 @@ def insert_image_array(img_list, width=500):
 
 
 def insert_log_messages(log_dict):
-    """ This function inserts logging messages that arise during the simulation, such as warnings and error messages,
+    r"""
+    This function inserts logging messages that arise during the simulation, such as warnings and error messages,
     into the autoreport.
-    :param log_dict: dict, containing the logging messages
-    :return: html.Div() element
+    
+    Parameters
+    ----------
+    log_dict: dict
+        A dictionary containing the logging messages collected during the simulation.
+
+    Returns
+    -------
+    html.Div()
+        This html element holds the children html elements that produce the lists of warnings and error messages
+        for both print and screen versions of the auto-report.
     """
+
     return html.Div(
         children=[
             # this will be displayed only in the app
