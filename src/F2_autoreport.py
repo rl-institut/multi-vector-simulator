@@ -291,7 +291,7 @@ def insert_image_array(img_list, width=500):
 def insert_log_messages(log_dict):
     r"""
     This function inserts logging messages that arise during the simulation, such as warnings and error messages,
-    into the autoreport.
+    into the auto-report.
     
     Parameters
     ----------
@@ -333,6 +333,41 @@ def insert_log_messages(log_dict):
 def save_plots_to_disk(
     fig_obj, file_name, file_path_dict, width=None, height=None, scale=None
 ):
+    r"""
+    This function saves the plots generated using the Plotly library in this module to the outputs folder.
+
+    Parameters
+    ----------
+    fig_obj:
+        Figure object of the plotly plots
+
+    ...
+
+    file_name: str
+
+    ...
+
+    file_path_dict: json
+        This is the results JSON file which also has the path to the output folder, given by the user.
+
+    ...
+
+    width: int or float
+        The width of the picture to be saved in pixels.
+    ...
+
+    height: int or float
+        The height of the picture to be saved in pixels.
+    ...
+
+    scale: int or float
+        The scale by which the plotly image ought to be multiplied.
+
+    Returns
+    -------
+    Nothing is returned. This function call results in the plots being saved as .png images to the disk.
+    """
+
     file_path = file_path_dict[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
     file_name = file_name + "_plotly" + ".png"
     file_path_out = os.path.join(os.path.abspath(file_path), file_name)
