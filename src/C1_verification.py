@@ -49,6 +49,8 @@ from src.constants_json_strings import (
     LATITUDE,
     PERIODS,
     COUNTRY,
+    ENERGY_PRICE,
+    ENERGY_PROVIDERS,
 )
 
 
@@ -91,15 +93,13 @@ def check_feedin_tariff(dict_values):
     asset in 'energyProvider.csv'.
 
     """
-    for provider in dict_values["energyProviders"].keys():
-        feedin_tariff = dict_values["energyProviders"][provider]["feedin_tariff"][
-            "value"
-        ]
-        electricity_price = dict_values["energyProviders"][provider]["energy_price"][
+    for provider in dict_values[ENERGY_PROVIDERS].keys():
+        feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]["value"]
+        electricity_price = dict_values[ENERGY_PROVIDERS][provider][ENERGY_PRICE][
             "value"
         ]
         if feedin_tariff > electricity_price:
-            msg = f"Feed-in tariff > energy price of energy provider asset '{dict_values['energyProviders'][provider]['label']}' would cause an unbound solution and terminate the optimization."
+            msg = f"Feed-in tariff > energy price of energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}' would cause an unbound solution and terminate the optimization."
             raise ValueError(msg)
     return
 

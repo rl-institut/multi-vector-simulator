@@ -32,7 +32,6 @@ from src.constants_json_strings import (
     SPECIFIC_COSTS,
     LIFETIME,
     SIMULATION_SETTINGS,
-    PEAK_DEMAND_PRICING_PERIOD,
     EVALUATED_PERIOD,
     START_DATE,
     END_DATE,
@@ -50,7 +49,6 @@ from src.constants_json_strings import (
     UNIT_MINUTE,
     ENERGY_VECTOR,
 )
-from .constants import TYPE_STR
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 def test_retrieve_datetimeindex_for_simulation():
@@ -59,7 +57,7 @@ def test_retrieve_datetimeindex_for_simulation():
         EVALUATED_PERIOD: {VALUE: 1},
         TIMESTEP: {VALUE: 60},
     }
-    C0.simulation_settings(simulation_settings)
+    C0.retrieve_date_time_info(simulation_settings)
     for k in (START_DATE, END_DATE, TIME_INDEX):
         assert k in simulation_settings.keys()
     assert simulation_settings[START_DATE] == pd.Timestamp("2020-01-01 00:00:00")
@@ -67,12 +65,12 @@ def test_retrieve_datetimeindex_for_simulation():
     assert simulation_settings[PERIODS] == 24
 
 
-def test_adding_economic_parameters_C2():
+def test_add_economic_parameters():
     economic_parameters = {
         PROJECT_DURATION: {VALUE: 20},
         DISCOUNTFACTOR: {VALUE: 0.15},
     }
-    C0.economic_parameters(economic_parameters)
+    C0.add_economic_parameters(economic_parameters)
     # the actual value of the annuity factor should have been checked in C2
     for k in (ANNUITY_FACTOR, CRF):
         assert k in economic_parameters.keys()
@@ -109,53 +107,6 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
         SIMULATION_ANNUITY,
     ):
         assert k in dict_asset.keys()
-
-
-def test_determine_lifetime_price_dispatch_as_int():
-    dict_asset = {DISPATCH_PRICE: {VALUE: 1}}
-    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
-    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float) or isinstance(
-        dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], int
-    )
-
-
-def test_determine_lifetime_price_dispatch_as_float():
-    dict_asset = {DISPATCH_PRICE: {VALUE: 1.5}}
-    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
-    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
-
-
-def test_determine_lifetime_price_dispatch_as_list():
-    dict_asset = {DISPATCH_PRICE: {VALUE: [1.0, 1.0]}}
-    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
-    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], float)
-    # todo this should be here some time, shouldnt it? assert isinstance(dict_asset[LIFETIME_OPEX_VAR][VALUE], list)
-
-
-TEST_START_TIME = "2020-01-01 00:00"
-TEST_PERIODS = 3
-VALUES = [0, 1, 2]
-
-pandas_DatetimeIndex = pd.date_range(
-    start=TEST_START_TIME, periods=TEST_PERIODS, freq="60min"
-)
-pandas_Series = pd.Series(VALUES, index=pandas_DatetimeIndex)
-
-
-def test_determine_lifetime_price_dispatch_as_timeseries():
-    dict_asset = {DISPATCH_PRICE: {VALUE: pandas_Series}}
-    C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
-    assert LIFETIME_PRICE_DISPATCH in dict_asset.keys()
-    assert isinstance(dict_asset[LIFETIME_PRICE_DISPATCH][VALUE], pd.Series)
-
-
-def test_determine_lifetime_price_dispatch_is_other():
-    dict_asset = {DISPATCH_PRICE: {VALUE: TYPE_STR}}
-    with pytest.raises(ValueError):
-        C0.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
 
 start_date = pd.Timestamp("2018-01-01 00:00:00")
@@ -411,6 +362,7 @@ def test_evaluate_lifetime_costs():
         SPECIFIC_COSTS: {VALUE: 100, UNIT: "unit"},
         DISPATCH_PRICE: {VALUE: 1, UNIT: "unit"},
         LIFETIME: {VALUE: 10},
+        UNIT: UNIT,
     }
 
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
