@@ -271,23 +271,6 @@ def insert_body_text(body_of_text):
 
     return html.P(className="cell large-11 blockoftext", children=body_of_text)
 
-
-def insert_image_array(img_list, width=500):
-    return html.Div(
-        className="image-array",
-        children=[
-            html.Img(
-                className="graphs_ts",
-                src="data:image/png;base64,{}".format(
-                    base64.b64encode(open(ts, "rb").read()).decode()
-                ),
-                width="{}px".format(width),
-            )
-            for ts in img_list
-        ],
-    )
-
-
 def insert_log_messages(log_dict):
     r"""
     This function inserts logging messages that arise during the simulation, such as warnings and error messages,
