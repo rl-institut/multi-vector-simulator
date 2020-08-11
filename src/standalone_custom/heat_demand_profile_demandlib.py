@@ -47,7 +47,7 @@ path_to_data_folder = os.path.join(
 )
 path_to_results_folder = os.path.join(
     path_to_server,
-    "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/2020-07-23_heat_demand",
+    "04_Projekte/250_E-Land/03-Projektinhalte/WP4.4_MVS/03_Pilots/03_UVTgv_Romania/02_Data_Aquisition/2020-08-06_heat_demand",
 )
 
 time_zone = "Europe/Bucharest"
@@ -66,13 +66,18 @@ annual_demand_gas = gas_consumption * efficiency_gas_boiler  # in kWh
 # add annual collectors heat to annual demand
 filename_coll = os.path.join(
     path_to_data_folder,
-    "2020-06-17_solar_thermal_collector",
+    "2020-07-30_solar_thermal_collector",
     "solar_thermal_collectors_heat.csv",
 )
 collectors_heat = pd.read_csv(filename_coll, index_col=0, header=0).sum().sum()
 annual_demand = annual_demand_gas + collectors_heat  # in kWh
 
 filename_heat_demand = os.path.join(path_to_results_folder, "heat_demand.csv")
+
+# create folders if not existent
+if not os.path.isdir(path_to_results_folder):
+    os.mkdir(path_to_results_folder)
+    os.mkdir(os.path.join(path_to_results_folder, "plots"))
 
 
 def calculate_heat_demand_time_series(
