@@ -20,7 +20,7 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
-- Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT
+- Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT (#493)
 - Display error message when feed-in tariff > electricity price of any  asset in 'energyProvider.csv'. (#497)
 
 ### Changed
@@ -28,6 +28,11 @@ Here is a template for new release sections
 - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
 - Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
 - Replaced parameter strings by variables (#500)
+- Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
+- Moved function `C0.determine_lifetime_price_dispatch()` to C2 with all its sub-functions.  (#495)
+- Changed calculation of `LIFETIME_PRICE_DISPATCH` for lists and pd.Series (see dosctrings of `C2.get_lifetime_price_dispatch_list`, `C2.get_lifetime_price_dispatch_timeseries`) (#495)
+- Changed dostring format in `C2` to numpy (#495)
+- Deactivated function `C2.fuel_price_present_value` as it is not used and TBD (#495)
 
 ### Removed
 -

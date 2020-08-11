@@ -17,9 +17,9 @@ from src.constants import (
 )
 
 from src.constants_json_strings import *
-import src.C1_verification as verify
-import src.C2_economic_functions as economics
-import src.F0_output as output
+import src.C1_verification as C1
+import src.C2_economic_functions as C2
+import src.F0_output as F0
 import src.F1_plotting as F1  # only function F1.plot_input_timeseries()
 
 """
@@ -56,21 +56,21 @@ def all(dict_values):
     :return Pre-processed dictionary with all input parameters
 
     """
-    simulation_settings(dict_values[SIMULATION_SETTINGS])
-    economic_parameters(dict_values[ECONOMIC_DATA])
+    retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
+    add_economic_parameters(dict_values[ECONOMIC_DATA])
     identify_energy_vectors(dict_values)
 
     ## Verify inputs
     # todo check whether input values can be true
-    # verify.check_input_values(dict_values)
+    # C1.check_input_values(dict_values)
     # todo Check, whether files (demand, generation) are existing
     # check electricity price >= feed-in tariff todo: can be integrated into check_input_values() later
-    verify.check_feedin_tariff(dict_values=dict_values)
+    C1.check_feedin_tariff(dict_values=dict_values)
 
     # Adds costs to each asset and sub-asset
     process_all_assets(dict_values)
 
-    output.store_as_json(
+    F0.store_as_json(
         dict_values,
         dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
         "json_input_processed",
@@ -83,13 +83,18 @@ def identify_energy_vectors(dict_values):
     Identifies all energyVectors used in the energy system by checking every entry 'energyVector' of all assets.
     energyVectors later will be used to distribute costs and KPI amongst the sectors (not implemented)
 
-    :param: dict
+    Parameters
+    ----------
+    dict_values: dict
+        All input data in dict format
 
-    All input data in dict format
-
-    :return:
-
+    Returns
+    -------
     Update dict['project_data'] by used sectors
+
+    Notes
+    -----
+    Function tested with test_add_economic_parameters()
     """
     dict_of_sectors = {}
     names_of_sectors = ""
@@ -114,13 +119,27 @@ def identify_energy_vectors(dict_values):
     return
 
 
-def simulation_settings(simulation_settings):
+def retrieve_date_time_info(simulation_settings):
     """
     Updates simulation settings by all time-related parameters.
-    :param: dict
-    Simulation parameters of the input data
-    :return: dict
+    - START_DATE
+    - END_DATE
+    - TIME_INDEX
+    - PERIODS
+
+    Parameters
+    ----------
+    simulation_settings: dict
+        Simulation parameters of the input data
+
+    Returns
+    -------
     Update simulation_settings by start date, end date, timeindex, and number of simulation periods
+
+
+    Notes
+    -----
+    Function tested with test_retrieve_datetimeindex_for_simulation()
     """
     simulation_settings.update(
         {START_DATE: pd.to_datetime(simulation_settings[START_DATE])}
@@ -146,18 +165,30 @@ def simulation_settings(simulation_settings):
     return simulation_settings
 
 
-def economic_parameters(economic_parameters):
+def add_economic_parameters(economic_parameters):
     """
-    Calculate annuity factor
+    Update economic parameters with annuity factor and CRF
 
-    :param economic_parameters:
-    :return:
+    Parameters
+    ----------
+
+    economic_parameters: dict
+        Economic parameters of the simulation
+
+    Returns
+    -------
+
+    Updated economic parameters
+
+    Notes
+    -----
+    Function tested with test_add_economic_parameters()
     """
 
     economic_parameters.update(
         {
             ANNUITY_FACTOR: {
-                VALUE: economics.annuity_factor(
+                VALUE: C2.annuity_factor(
                     economic_parameters[PROJECT_DURATION][VALUE],
                     economic_parameters[DISCOUNTFACTOR][VALUE],
                 ),
@@ -169,7 +200,7 @@ def economic_parameters(economic_parameters):
     economic_parameters.update(
         {
             CRF: {
-                VALUE: economics.crf(
+                VALUE: C2.crf(
                     economic_parameters[PROJECT_DURATION][VALUE],
                     economic_parameters[DISCOUNTFACTOR][VALUE],
                 ),
@@ -1212,7 +1243,7 @@ def apply_function_to_single_or_list(function, parameter, **kwargs):
 def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     r"""
     Evaluates specific costs of an asset over the project lifetime. This includes:
-    - LIFETIME_PRICE_DISPATCH (determine_lifetime_price_dispatch)
+    - LIFETIME_PRICE_DISPATCH (C2.determine_lifetime_price_dispatch)
     - LIFETIME_SPECIFIC_COST
     - LIFETIME_SPECIFIC_COST_OM
     - ANNUITY_SPECIFIC_INVESTMENT_AND_OM
@@ -1243,19 +1274,24 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     Returns
     -------
     Updates asset dict with
-    - LIFETIME_PRICE_DISPATCH (determine_lifetime_price_dispatch)
+    - LIFETIME_PRICE_DISPATCH (C2.determine_lifetime_price_dispatch)
     - LIFETIME_SPECIFIC_COST
     - LIFETIME_SPECIFIC_COST_OM
     - ANNUITY_SPECIFIC_INVESTMENT_AND_OM
     - SIMULATION_ANNUITY
+
+    Notes
+    -----
+
+    Tested with test_evaluate_lifetime_costs_adds_all_parameters()
     """
 
-    determine_lifetime_price_dispatch(dict_asset, economic_data)
+    C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
     dict_asset.update(
         {
             LIFETIME_SPECIFIC_COST: {
-                VALUE: economics.capex_from_investment(
+                VALUE: C2.capex_from_investment(
                     dict_asset[SPECIFIC_COSTS][VALUE],
                     dict_asset[LIFETIME][VALUE],
                     economic_data[PROJECT_DURATION][VALUE],
@@ -1271,7 +1307,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             ANNUITY_SPECIFIC_INVESTMENT_AND_OM: {
-                VALUE: economics.annuity(
+                VALUE: C2.annuity(
                     dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
                     economic_data[CRF][VALUE],
                 )
@@ -1294,7 +1330,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     dict_asset.update(
         {
             SIMULATION_ANNUITY: {
-                VALUE: economics.simulation_annuity(
+                VALUE: C2.simulation_annuity(
                     dict_asset[ANNUITY_SPECIFIC_INVESTMENT_AND_OM][VALUE],
                     settings[EVALUATED_PERIOD][VALUE],
                 ),
@@ -1304,99 +1340,6 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     )
 
     return
-
-
-def determine_lifetime_price_dispatch(dict_asset, economic_data):
-    """
-    #todo I am not sure that this makes sense. is this used in d0?
-    Parameters
-    ----------
-    dict_asset
-    economic_data
-
-    Returns
-    -------
-
-    """
-    if isinstance(dict_asset[DISPATCH_PRICE][VALUE], float) or isinstance(
-        dict_asset[DISPATCH_PRICE][VALUE], int
-    ):
-        lifetime_price_dispatch = get_lifetime_price_dispatch_one_value(
-            dict_asset, economic_data
-        )
-
-    elif isinstance(dict_asset[DISPATCH_PRICE][VALUE], list):
-        lifetime_price_dispatch = get_lifetime_price_dispatch_list(
-            dict_asset, economic_data
-        )
-
-    elif isinstance(dict_asset[DISPATCH_PRICE][VALUE], pd.Series):
-        lifetime_price_dispatch = get_lifetime_price_dispatch_timeseries(
-            dict_asset, economic_data
-        )
-
-    else:
-        raise ValueError(
-            f"Type of dispatch_price neither int, float, list or pd.Series, but of type {dict_asset[DISPATCH_PRICE][VALUE]}. Is type correct?"
-        )
-
-    dict_asset.update(
-        {LIFETIME_PRICE_DISPATCH: {VALUE: lifetime_price_dispatch, UNIT: "?",}}
-    )
-    return
-
-
-def get_lifetime_price_dispatch_one_value(dict_asset, economic_data):
-    """
-    dispatch_price can be a fix value
-    Returns
-    -------
-
-    """
-    lifetime_price_dispatch = (
-        dict_asset[DISPATCH_PRICE][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
-    )
-    return lifetime_price_dispatch
-
-
-def get_lifetime_price_dispatch_list(dict_asset, economic_data):
-    """
-    dispatch_price can be a list, for example if there are two input flows to a component, eg. water and electricity.
-    Their ratio for providing cooling in kWh therm is fix. There should be a lifetime_price_dispatch for each of them.
-
-    Returns
-    -------
-
-    """
-
-    # if multiple busses are provided, it takes the first dispatch_price (corresponding to the first bus)
-
-    first_value = dict_asset[DISPATCH_PRICE][VALUE][0]
-    if isinstance(first_value, float) or isinstance(first_value, int):
-        dispatch_price = first_value
-    else:
-        dispatch_price = sum(first_value) / len(first_value)
-
-    lifetime_price_dispatch = dispatch_price * economic_data[ANNUITY_FACTOR][VALUE]
-    return lifetime_price_dispatch
-
-
-def get_lifetime_price_dispatch_timeseries(dict_asset, economic_data):
-    """
-    dispatch_price can be a timeseries, eg. in case that there is an hourly pricing
-    Returns
-    -------
-
-    """
-    # take average value of dispatch_price if it is a timeseries
-
-    dispatch_price = sum(dict_asset[DISPATCH_PRICE][VALUE]) / len(
-        dict_asset[DISPATCH_PRICE][VALUE]
-    )
-    lifetime_price_dispatch = (
-        dict_asset[DISPATCH_PRICE][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
-    )
-    return lifetime_price_dispatch
 
 
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
@@ -1426,7 +1369,7 @@ def receive_timeseries_from_csv(
         unit = dict_asset[input_type][UNIT]
 
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
-    verify.lookup_file(file_path, dict_asset[LABEL])
+    C1.lookup_file(file_path, dict_asset[LABEL])
 
     data_set = pd.read_csv(file_path, sep=",")
 
@@ -1592,7 +1535,7 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
 
     """
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
-    verify.lookup_file(file_path, dict_asset[LABEL])
+    C1.lookup_file(file_path, dict_asset[LABEL])
 
     data_set = pd.read_csv(file_path, sep=",")
     if len(data_set.index) == settings[PERIODS]:
