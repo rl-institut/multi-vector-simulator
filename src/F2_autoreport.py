@@ -189,6 +189,31 @@ def make_dash_data_table(df, title=None):
 
 
 def insert_subsection(title, content, **kwargs):
+    r"""
+    Inserts sub-sections within the Dash app layout, such as Input data, simulation results, etc.
+
+    Parameters
+    ----------
+    title : str
+        This is the title or heading of the subsection.
+
+    ...
+
+    content : list
+        This is typically a list of html elements or function calls returning html elements, that make up the
+        body of the sub-section.
+
+     ...
+
+    kwargs : Any possible optional arguments such as styles, etc.
+
+    Returns
+    -------
+    html.Div()
+        This returns the sub-section of the report including the tile and other information within the sub-section.
+
+
+    """
     if "className" in kwargs:
         className = "cell subsection {}".format(kwargs.pop("className"))
     else:
@@ -209,11 +234,20 @@ def insert_subsection(title, content, **kwargs):
 
 # Function that creates the headings
 def insert_headings(heading_text):
-    """
+    r"""
     This function is for creating the headings such as information, input data, etc.
-    parameters: string
-    returns: a html element with the heading_text encsased in a container
+
+    Parameters
+    ----------
+    heading_text: str
+        Big headings for several sub-sections.
+
+    Returns
+    -------
+    html.P()
+        A html element with the heading text encased container.
     """
+
     return html.H2(
         className="cell", children=heading_text, style={"page-break-after": "avoid"}
     )
