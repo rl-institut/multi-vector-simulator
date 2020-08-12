@@ -115,6 +115,7 @@ async def _print_pdf_from_chrome(path_pdf_report):
     -------
     Does not return anything, but saves a PDF file in file path provided by the user.
     """
+
     browser = await launch()
     page = await browser.newPage()
     await page.goto("http://127.0.0.1:8050", {"waitUntil": "networkidle0"})
@@ -132,11 +133,11 @@ def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
 
     Parameters
     ----------
-    app: handle to a dash app
+    app: instance of the Dash class of the dash library
         Default: None
 
     path_pdf_report: str
-        path where the pdf report should ba saved
+        Path where the pdf report should be saved.
 
     Returns
     -------
@@ -368,6 +369,7 @@ def save_plots_to_disk(
         Figure object of the plotly plots
 
     file_name: str
+        The name of the PNG image of the plot to be saved in the output folder.
 
     file_path_dict: json
         This is the results JSON file which also has the path to the output folder, given by the user.
