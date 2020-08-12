@@ -155,7 +155,27 @@ def open_in_browser(app, timeout=600):
 
 
 def make_dash_data_table(df, title=None):
-    """Function that creates a Dash DataTable from a Pandas dataframe"""
+    r"""
+    Function that creates a Dash DataTable from a Pandas dataframe.
+
+    Parameters
+    ----------
+    df: :pandas:`pandas.DataFrame<frame>`
+        This dataframe holds the data from which the dash table is to be created.
+
+    ...
+
+    title: str
+        An optional title for the table.
+        Default: None
+
+    Returns
+    -------
+    html.Div()
+        This element contains the title of the dash table and the dash table itself encased in a
+        child html.Div() element.
+
+    """
     content = [
         html.Div(
             className="tableplay",
@@ -555,12 +575,34 @@ def insert_single_plot(
 
 
 def ready_single_plots(df_pd, dict_of_labels, only_print=False, results_file=None):
-    """This function prepares the data for plotting line and bar plots.
-    :param df_pd: pandas DF
-    :param only_print: bool, default = False
-    :param dict_of_labels: dict
-    :return: plots of the parameters passed
+    r"""
+    This function prepares the data for and calls insert_single_plot for plotting line and bar plots.
+
+    Parameters
+    ----------
+    df_pd: :pandas:`pandas.DataFrame<frame>`
+
+    ...
+
+    dict_of_labels: dict
+        Dictionary holding the titles to be used for the plots generated.
+
+    ...
+
+    only_print: bool
+        Default: False
+
+    ...
+
+    results_file: json results file
+        This is the JSON results file that contains the user-specified path where the plots are to be saved as images.
+        Default: None
+
+    Returns
+    -------
+
     """
+
     list_of_keys = list(df_pd.columns)
     list_of_keys.remove("timestamp")
     plots = []
