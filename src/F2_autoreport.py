@@ -115,11 +115,15 @@ async def _print_pdf_from_chrome(path_pdf_report):
 
 
 def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
-    """Run the dash app in a thread an print a pdf before exiting
+    r"""Runs the dash app in a thread and print a pdf before exiting
 
     Parameters
     ----------
     app: handle to a dash app
+        Default: None
+
+    ...
+
     path_pdf_report: str
         path where the pdf report should ba saved
 
@@ -337,14 +341,17 @@ def save_plots_to_disk(
 
     width: int or float
         The width of the picture to be saved in pixels.
+        Default: None
     ...
 
     height: int or float
         The height of the picture to be saved in pixels.
+        Default: None
     ...
 
     scale: int or float
         The scale by which the plotly image ought to be multiplied.
+        Default: None
 
     Returns
     -------
