@@ -122,8 +122,6 @@ def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
     app: handle to a dash app
         Default: None
 
-    ...
-
     path_pdf_report: str
         path where the pdf report should ba saved
 
@@ -162,8 +160,6 @@ def make_dash_data_table(df, title=None):
     ----------
     df: :pandas:`pandas.DataFrame<frame>`
         This dataframe holds the data from which the dash table is to be created.
-
-    ...
 
     title: str
         An optional title for the table.
@@ -221,13 +217,9 @@ def insert_subsection(title, content, **kwargs):
     title : str
         This is the title or heading of the subsection.
 
-    ...
-
     content : list
         This is typically a list of html elements or function calls returning html elements, that make up the
         body of the sub-section.
-
-     ...
 
     kwargs : Any possible optional arguments such as styles, etc.
 
@@ -405,12 +397,8 @@ def insert_single_plot(
     x_data: list, or pandas series
         The list of abscissas of the data required for plotting.
 
-    ...
-
     y_data: list, or pandas series, or list of lists
         The list of ordinates of the data required for plotting.
-
-    ...
 
     plot_type: str, "line" or "bar"
         This parameter decides which type of plot will be plotted by this function.
@@ -422,36 +410,26 @@ def insert_single_plot(
         The title of the plot generated.
         Default: None
 
-    ...
-
     x_axis_name: str
         Default: None
 
-    ...
-
     y_axis_name: str
         Default: None
-
-    ...
 
     id_plot: str
         Id of the graph. Each plot gets an unique ID which can be used to manipulate the plot later.
         Default: None
 
-    ...
-
     print_only: bool
         Used to determine if a web version of the plot is to be generated or not.
         Default: False
-    ...
 
     color_for_plot: str
         This is string of the hex value of the color to be applied for the plot.
         Default: "#0A2342"
 
-    ...
-
-    path_file: str
+    path_file: json results file
+        The .json results file containing the user-specified output folde path needed to save the plots to disk.
         Default: None
 
     Returns
@@ -582,17 +560,11 @@ def ready_single_plots(df_pd, dict_of_labels, only_print=False, results_file=Non
     ----------
     df_pd: :pandas:`pandas.DataFrame<frame>`
 
-    ...
-
     dict_of_labels: dict
         Dictionary holding the titles to be used for the plots generated.
 
-    ...
-
     only_print: bool
         Default: False
-
-    ...
 
     results_file: json results file
         This is the JSON results file that contains the user-specified path where the plots are to be saved as images.
