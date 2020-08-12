@@ -102,6 +102,19 @@ CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
 
 
 async def _print_pdf_from_chrome(path_pdf_report):
+    r"""
+    This function generates the PDF report from the web app rendered on a Chromimum-based browser.
+
+    Parameters
+    ----------
+    path_pdf_report: os.path
+        Path and filename to which the pdf report should be stored
+        Default: Default: os.path.join(OUTPUT_FOLDER, "out.pdf")
+
+    Returns
+    -------
+    Does not return anything, but saves a PDF file in file path provided by the user.
+    """
     browser = await launch()
     page = await browser.newPage()
     await page.goto("http://127.0.0.1:8050", {"waitUntil": "networkidle0"})
@@ -606,13 +619,30 @@ def ready_single_plots(df_pd, dict_of_labels, only_print=False, results_file=Non
 
 
 def ready_capacities_plots(df_kpis, json_results_file, only_print=False):
-    """ This function prepares the data to be used for plotting the capacities bar plots, from the simulation results
+    r""" Call function to produce capacities bar plot and return the plot.
+
+    This function prepares the data to be used for plotting the capacities bar plots, from the simulation results
     and calls the appropriate plotting function that generates the plots.
-    :param df_kpis: pandas DF
-    :param json_results_file: JSON file
-    :param only_print: boolean
-    :return plot
+
+    Parameters
+    ----------
+    df_kpis: :pandas:`pandas.DataFrame<frame>`
+        This dataframe holds the data required for the capacities bar plot.
+
+    json_results_file: json
+        This is the results file, output of the simulation.
+
+    only_print: bool
+        Default: False
+        Setting this value true results in the function creating only the plot for the PDF report, but not the web app
+        version of the auto-report.
+
+    Returns
+    -------
+    plot: list
+        This list holds the html.Div element(s) which themselves contain the plotly plots.
     """
+
     x_values = []
     y_values = []
 
@@ -946,7 +976,21 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
 
 
 def create_app(results_json):
-    # Initialize the app
+    r"""Initializes the app and calls all the other functions, resulting in the web app as well as pdf.
+
+    This function specifies the layout of the web app, loads the external styling sheets, prepares the necessary data
+    from the json results file, calls all the helper functions on the data, resulting in the auto-report.
+
+    Parameters
+    ----------
+    results_json: json results file
+        This file is the result of the simulation and contains all the data necessary to generate the auto-report.
+
+    Returns
+    -------
+    app: instance of the Dash class within the dash library
+        This app holds together all the html elements wrapped in Python, necessary for the rendering of the auto-report.
+    """
 
     # external CSS stylesheets
     external_stylesheets = [
