@@ -300,6 +300,7 @@ def insert_body_text(body_of_text):
 
     return html.P(className="cell large-11 blockoftext", children=body_of_text)
 
+
 def insert_log_messages(log_dict):
     r"""
     This function inserts logging messages that arise during the simulation, such as warnings and error messages,
@@ -350,29 +351,21 @@ def save_plots_to_disk(
 
     Parameters
     ----------
-    fig_obj:
+    fig_obj: instance of the classes of the Plotly go library used to generate the plots in this auto-report
         Figure object of the plotly plots
 
-    ...
-
     file_name: str
-
-    ...
 
     file_path_dict: json
         This is the results JSON file which also has the path to the output folder, given by the user.
 
-    ...
-
     width: int or float
         The width of the picture to be saved in pixels.
         Default: None
-    ...
 
     height: int or float
         The height of the picture to be saved in pixels.
         Default: None
-    ...
 
     scale: int or float
         The scale by which the plotly image ought to be multiplied.
@@ -416,8 +409,6 @@ def insert_single_plot(
     plot_type: str, "line" or "bar"
         This parameter decides which type of plot will be plotted by this function.
         Default: None
-
-    ...
 
     plot_title: str
         The title of the plot generated.
@@ -572,6 +563,7 @@ def ready_single_plots(df_pd, dict_of_labels, only_print=False, results_file=Non
     Parameters
     ----------
     df_pd: :pandas:`pandas.DataFrame<frame>`
+        The dataframe containing all of the data to be plotted.
 
     dict_of_labels: dict
         Dictionary holding the titles to be used for the plots generated.
@@ -585,7 +577,8 @@ def ready_single_plots(df_pd, dict_of_labels, only_print=False, results_file=Non
 
     Returns
     -------
-
+    plots: list
+        This list holds the html.Div elements which have the plots encased.
     """
 
     list_of_keys = list(df_pd.columns)
@@ -633,9 +626,9 @@ def ready_capacities_plots(df_kpis, json_results_file, only_print=False):
         This is the results file, output of the simulation.
 
     only_print: bool
-        Default: False
         Setting this value true results in the function creating only the plot for the PDF report, but not the web app
         version of the auto-report.
+        Default: False
 
     Returns
     -------
