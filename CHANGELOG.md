@@ -24,6 +24,7 @@ Here is a template for new release sections
 - Display error message when feed-in tariff > electricity price of any  asset in 'energyProvider.csv'. (#497)
 - Added pie plots created using Plotly library to the auto-report (#482) 
 - Added functions to `F2_autoreport.py` that save the images of plots generated using Plotly to `MVS_outputs` folder as `.png` (#499)
+- Inserted doc-strings in the definitions of all the functions in `F2_autoreport.py` (#505)
 
 ### Changed
  - Move and rename json converter and parser to B0 module (#464)
@@ -39,6 +40,7 @@ Here is a template for new release sections
 - Changed calculation of `LIFETIME_PRICE_DISPATCH` for lists and pd.Series (see dosctrings of `C2.get_lifetime_price_dispatch_list`, `C2.get_lifetime_price_dispatch_timeseries`) (#495)
 - Changed dostring format in `C2` to numpy (#495)
 - Deactivated function `C2.fuel_price_present_value` as it is not used and TBD (#495)
+- Modified the doc-strings in the definitions of some functions to abide by the formatting rules of numpy doc-strings (#505)
 
 ### Removed
 -

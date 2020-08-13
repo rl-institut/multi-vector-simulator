@@ -102,6 +102,20 @@ CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
 
 
 async def _print_pdf_from_chrome(path_pdf_report):
+    r"""
+    This function generates the PDF report from the web app rendered on a Chromimum-based browser.
+
+    Parameters
+    ----------
+    path_pdf_report: os.path
+        Path and filename to which the pdf report should be stored
+        Default: Default: os.path.join(OUTPUT_FOLDER, "out.pdf")
+
+    Returns
+    -------
+    Does not return anything, but saves a PDF file in file path provided by the user.
+    """
+
     browser = await launch()
     page = await browser.newPage()
     await page.goto("http://127.0.0.1:8050", {"waitUntil": "networkidle0"})
@@ -115,13 +129,15 @@ async def _print_pdf_from_chrome(path_pdf_report):
 
 
 def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
-    """Run the dash app in a thread an print a pdf before exiting
+    r"""Runs the dash app in a thread and print a pdf before exiting
 
     Parameters
     ----------
-    app: handle to a dash app
+    app: instance of the Dash class of the dash library
+        Default: None
+
     path_pdf_report: str
-        path where the pdf report should ba saved
+        Path where the pdf report should be saved.
 
     Returns
     -------
@@ -142,7 +158,20 @@ def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
 
 
 def open_in_browser(app, timeout=600):
-    """Run the dash app in a thread an open a browser window"""
+    r"""Runs the dash app in a thread an open a browser window
+
+    Parameters
+    ----------
+    app: instance of the Dash class, part of the dash library
+
+    timeout: int or float
+        Specifies the number of seconds that the web app should be open in the browser before timing out.
+
+    Returns
+    -------
+    Nothing, but the web app version of the auto-report is displayed in a browser.
+    """
+
     td = threading.Thread(target=app.run_server)
     td.daemon = True
     td.start()
@@ -151,7 +180,25 @@ def open_in_browser(app, timeout=600):
 
 
 def make_dash_data_table(df, title=None):
-    """Function that creates a Dash DataTable from a Pandas dataframe"""
+    r"""
+    Function that creates a Dash DataTable from a Pandas dataframe.
+
+    Parameters
+    ----------
+    df: :pandas:`pandas.DataFrame<frame>`
+        This dataframe holds the data from which the dash table is to be created.
+
+    title: str
+        An optional title for the table.
+        Default: None
+
+    Returns
+    -------
+    html.Div()
+        This element contains the title of the dash table and the dash table itself encased in a
+        child html.Div() element.
+
+    """
     content = [
         html.Div(
             className="tableplay",
@@ -189,6 +236,27 @@ def make_dash_data_table(df, title=None):
 
 
 def insert_subsection(title, content, **kwargs):
+    r"""
+    Inserts sub-sections within the Dash app layout, such as Input data, simulation results, etc.
+
+    Parameters
+    ----------
+    title : str
+        This is the title or heading of the subsection.
+
+    content : list
+        This is typically a list of html elements or function calls returning html elements, that make up the
+        body of the sub-section.
+
+    kwargs : Any possible optional arguments such as styles, etc.
+
+    Returns
+    -------
+    html.Div()
+        This returns the sub-section of the report including the tile and other information within the sub-section.
+
+
+    """
     if "className" in kwargs:
         className = "cell subsection {}".format(kwargs.pop("className"))
     else:
@@ -209,11 +277,20 @@ def insert_subsection(title, content, **kwargs):
 
 # Function that creates the headings
 def insert_headings(heading_text):
-    """
+    r"""
     This function is for creating the headings such as information, input data, etc.
-    parameters: string
-    returns: a html element with the heading_text encsased in a container
+
+    Parameters
+    ----------
+    heading_text: str
+        Big headings for several sub-sections.
+
+    Returns
+    -------
+    html.P()
+        A html element with the heading text encased container.
     """
+
     return html.H2(
         className="cell", children=heading_text, style={"page-break-after": "avoid"}
     )
@@ -221,36 +298,40 @@ def insert_headings(heading_text):
 
 # Functions that creates paragraphs
 def insert_body_text(body_of_text):
+    r"""
+    This function is for rendering blocks of text within the sub-sections.
+
+    Parameters
+    ----------
+    body_of_text: str
+        Typically a single-line or paragraph of text.
+
+    Returns
+    -------
+    html.P()
+        A html element that renders the paragraph of text in the Dash app layout.
     """
-    This function is for rendering blocks of text
-    parameters: paragraph (string)
-    returns: a html element with a paragraph
-    """
+
     return html.P(className="cell large-11 blockoftext", children=body_of_text)
 
 
-def insert_image_array(img_list, width=500):
-    return html.Div(
-        className="image-array",
-        children=[
-            html.Img(
-                className="graphs_ts",
-                src="data:image/png;base64,{}".format(
-                    base64.b64encode(open(ts, "rb").read()).decode()
-                ),
-                width="{}px".format(width),
-            )
-            for ts in img_list
-        ],
-    )
-
-
 def insert_log_messages(log_dict):
-    """ This function inserts logging messages that arise during the simulation, such as warnings and error messages,
-    into the autoreport.
-    :param log_dict: dict, containing the logging messages
-    :return: html.Div() element
+    r"""
+    This function inserts logging messages that arise during the simulation, such as warnings and error messages,
+    into the auto-report.
+    
+    Parameters
+    ----------
+    log_dict: dict
+        A dictionary containing the logging messages collected during the simulation.
+
+    Returns
+    -------
+    html.Div()
+        This html element holds the children html elements that produce the lists of warnings and error messages
+        for both print and screen versions of the auto-report.
     """
+
     return html.Div(
         children=[
             # this will be displayed only in the app
@@ -279,6 +360,37 @@ def insert_log_messages(log_dict):
 def save_plots_to_disk(
     fig_obj, file_name, file_path_dict, width=None, height=None, scale=None
 ):
+    r"""
+    This function saves the plots generated using the Plotly library in this module to the outputs folder.
+
+    Parameters
+    ----------
+    fig_obj: instance of the classes of the Plotly go library used to generate the plots in this auto-report
+        Figure object of the plotly plots
+
+    file_name: str
+        The name of the PNG image of the plot to be saved in the output folder.
+
+    file_path_dict: json
+        This is the results JSON file which also has the path to the output folder, given by the user.
+
+    width: int or float
+        The width of the picture to be saved in pixels.
+        Default: None
+
+    height: int or float
+        The height of the picture to be saved in pixels.
+        Default: None
+
+    scale: int or float
+        The scale by which the plotly image ought to be multiplied.
+        Default: None
+
+    Returns
+    -------
+    Nothing is returned. This function call results in the plots being saved as .png images to the disk.
+    """
+
     file_path = file_path_dict[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
     file_name = file_name + "_plotly" + ".png"
     file_path_out = os.path.join(os.path.abspath(file_path), file_name)
@@ -298,18 +410,52 @@ def insert_single_plot(
     color_for_plot="#0A2342",
     path_file=None,
 ):
-    """ Function to create plots using the Plotly library and replace the plots already generated by the
-    matplotlib library, in the web app version of the auto-report.
-    :param color_for_plot: string of color hex
-    :param print_only: bool, default value is False
-    :param plot_title: str
-    :param y_axis_name: str
-    :param x_axis_name: str
-    :param id_plot: str, id of the graph. needed to work on the plot later
-    :param x_data: list, or pandas series
-    :param y_data: list, or pandas series, or list of lists
-    :param plot_type: type of the plot (line/bar/pie)
-    :return: a plot object
+    r"""
+    Creates single line plots or bar plots using the Plotly library.
+
+    Parameters
+    ----------
+    x_data: list, or pandas series
+        The list of abscissas of the data required for plotting.
+
+    y_data: list, or pandas series, or list of lists
+        The list of ordinates of the data required for plotting.
+
+    plot_type: str, "line" or "bar"
+        This parameter decides which type of plot will be plotted by this function.
+        Default: None
+
+    plot_title: str
+        The title of the plot generated.
+        Default: None
+
+    x_axis_name: str
+        Default: None
+
+    y_axis_name: str
+        Default: None
+
+    id_plot: str
+        Id of the graph. Each plot gets an unique ID which can be used to manipulate the plot later.
+        Default: None
+
+    print_only: bool
+        Used to determine if a web version of the plot is to be generated or not.
+        Default: False
+
+    color_for_plot: str
+        This is string of the hex value of the color to be applied for the plot.
+        Default: "#0A2342"
+
+    path_file: json results file
+        The .json results file containing the user-specified output folde path needed to save the plots to disk.
+        Default: None
+
+    Returns
+    -------
+    html.Div()
+        This html element contains the plot objects generated by this function in a list.
+
     """
     fig = go.Figure()
 
@@ -426,12 +572,30 @@ def insert_single_plot(
 
 
 def ready_single_plots(df_pd, dict_of_labels, only_print=False, results_file=None):
-    """This function prepares the data for plotting line and bar plots.
-    :param df_pd: pandas DF
-    :param only_print: bool, default = False
-    :param dict_of_labels: dict
-    :return: plots of the parameters passed
+    r"""
+    This function prepares the data for and calls insert_single_plot for plotting line and bar plots.
+
+    Parameters
+    ----------
+    df_pd: :pandas:`pandas.DataFrame<frame>`
+        The dataframe containing all of the data to be plotted.
+
+    dict_of_labels: dict
+        Dictionary holding the titles to be used for the plots generated.
+
+    only_print: bool
+        Default: False
+
+    results_file: json results file
+        This is the JSON results file that contains the user-specified path where the plots are to be saved as images.
+        Default: None
+
+    Returns
+    -------
+    plots: list
+        This list holds the html.Div elements which have the plots encased.
     """
+
     list_of_keys = list(df_pd.columns)
     list_of_keys.remove("timestamp")
     plots = []
@@ -463,13 +627,30 @@ def ready_single_plots(df_pd, dict_of_labels, only_print=False, results_file=Non
 
 
 def ready_capacities_plots(df_kpis, json_results_file, only_print=False):
-    """ This function prepares the data to be used for plotting the capacities bar plots, from the simulation results
+    r""" Call function to produce capacities bar plot and return the plot.
+
+    This function prepares the data to be used for plotting the capacities bar plots, from the simulation results
     and calls the appropriate plotting function that generates the plots.
-    :param df_kpis: pandas DF
-    :param json_results_file: JSON file
-    :param only_print: boolean
-    :return plot
+
+    Parameters
+    ----------
+    df_kpis: :pandas:`pandas.DataFrame<frame>`
+        This dataframe holds the data required for the capacities bar plot.
+
+    json_results_file: json
+        This is the results file, output of the simulation.
+
+    only_print: bool
+        Setting this value true results in the function creating only the plot for the PDF report, but not the web app
+        version of the auto-report.
+        Default: False
+
+    Returns
+    -------
+    plot: list
+        This list holds the html.Div element(s) which themselves contain the plotly plots.
     """
+
     x_values = []
     y_values = []
 
@@ -505,15 +686,44 @@ def insert_flows_plots(
     results_file=None,
     name_of_file=None,
 ):
-    """ This function creates the line plots for the flows through the various assets of the energy system.
-    :param df_plots_data: pandas DF
-    :param x_legend: str
-    :param y_legend: str
-    :param plot_title: str
-    :param pdf_only: bool
-    :param plot_id:
-    :return html.Div element containing the plots produced
+    r"""This function creates the line plots for the flows through the various assets of the energy system.
+
+    Parameters
+    ----------
+    df_plots_data: :pandas:`pandas.DataFrame<frame>`
+
+    x_legend: str
+        Default: None
+
+    y_legend: str
+        Default: None
+
+    plot_title: str
+        Default: None
+
+    pdf_only: bool
+        Default: False
+
+    plot_id: str
+        Unique alphanumeric value assigned to each pie plot, which can be used for further manipulations such as styling,
+        etc., of the plot generated.
+        Default: None
+
+    results_file: json file
+        The simulation results file that contains the data needed for the production of the plots, determination of the
+        path to save outputs and other information necessary for generating the auto-report.
+        Default: None
+
+    name_of_file: str
+        File name to be used when saving the image file of the plot produced in the output folder.
+        Default: None
+
+    Returns
+    -------
+        html.Div() element
+        Contains the list of the flows plots generated, both for the print and web app versions.
     """
+
     fig = go.Figure()
     colors = [
         "#1f77b4",
@@ -602,12 +812,22 @@ def insert_flows_plots(
 
 
 def ready_flows_plots(dict_dataseries, json_results_file):
-    """ This function prepares the data from the results JSON file and then calls the appropriate plotting function
-    to generate the line plots for the optimized flows through various assets of the energy system.
-    :param json_results_file: JSON file, this file holds all the simulation results
-    :param dict_dataseries: dict, typically holds the data for the flows through various assets
-    :return list, this list holds the plots generated
+    r"""This function prepares the data from the results JSON file and then calls the appropriate plotting function.
+
+    Parameters
+    ----------
+    dict_dataseries: dict
+        This dictionary holds the data for the flows through various assets.
+
+    json_results_file: json file
+        This folds stores all the simulation results.
+
+    Returns
+    -------
+        multi_plots: list
+        This list holds all the plots generated by the function calls to the function insert_flows_plots
     """
+
     buses_list = list(dict_dataseries.keys())
     multi_plots = []
     for bus in buses_list:
@@ -650,6 +870,45 @@ def insert_pie_plots(
     name_file=None,
     path_file_dict=None,
 ):
+    r"""Function that creates and returns a html.Div element with a list of the pie plots.
+
+    Parameters
+    ----------
+    title_of_plot: str
+
+    names: list
+        List containing the labels of the pies in the pie plot.
+
+    values: list
+        List containing the values of the labels to be plotted in the pie plot.
+
+    color_scheme: instance of the px.colors class of the Plotly express library
+        This parameter holds the color scheme which is palette of colors (list of hex values) to be applied to the pie
+        plot to be created.
+
+    plot_id: str
+        Unique alphanumeric value assigned to each pie plot, which can be used for further manipulation of the pie plot.
+
+    print_only: bool
+        Setting this value true results in the function creating only the plot for the PDF report, but not the web app
+        version of the auto-report.
+        Default: False
+
+    name_file: str
+        This forms part of the name of the file to be used when saving the image of the plot generated to disk.
+        Default: None
+
+    path_file_dict: json
+        This is the results json file which contains the path defined by the user using which the images of the plots
+        generated are saved in the output folder.
+        Default: None
+
+    Returns
+    -------
+    html.Div() element
+        Contains the list of the pie plots generated, both for the print and web app versions.
+    """
+
     # Wrap the text of the title into next line if it exceeds the length given below
     title_of_plot = textwrap.wrap(title_of_plot, width=75)
     title_of_plot = "<br>".join(title_of_plot)
@@ -719,6 +978,28 @@ def insert_pie_plots(
 
 
 def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
+    r"""Process data for the pie plots and call the relevant functions, resulting in the generation of the pie plots.
+    
+    Parameters
+    ----------
+    df_pie_data: :pandas:`pandas.DataFrame<frame>`
+        This dataframe contains the costs data necessary to create the pie plots.
+
+
+    json_results_file: json
+        This is json file with all the results necessary to create the elements of the autoreport. In this case, it is
+        required to determine the user-provided outputs folder path.
+
+
+    only_print: bool
+        Setting this value true results in the function creating only the plot for the PDF report, but not the web app
+        version of the auto-report.
+        Default: False
+
+    Returns
+    -------
+
+    """
     # Initialize an empty list and a dict for use later in the function
     pie_plots = []
     pie_data_dict = {}
@@ -803,7 +1084,21 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
 
 
 def create_app(results_json):
-    # Initialize the app
+    r"""Initializes the app and calls all the other functions, resulting in the web app as well as pdf.
+
+    This function specifies the layout of the web app, loads the external styling sheets, prepares the necessary data
+    from the json results file, calls all the helper functions on the data, resulting in the auto-report.
+
+    Parameters
+    ----------
+    results_json: json results file
+        This file is the result of the simulation and contains all the data necessary to generate the auto-report.
+
+    Returns
+    -------
+    app: instance of the Dash class within the dash library
+        This app holds together all the html elements wrapped in Python, necessary for the rendering of the auto-report.
+    """
 
     # external CSS stylesheets
     external_stylesheets = [
