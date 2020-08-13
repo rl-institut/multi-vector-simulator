@@ -17,6 +17,7 @@ check if we already have a solution for your OS/distribution:
 Pygraphviz could not be installed with pip. Solution:
 
     sudo apt-get install python3-dev graphviz libgraphviz-dev pkg-config
+    
     pip install pygraphviz
 
 **Windows 10**
