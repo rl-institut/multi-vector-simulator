@@ -41,6 +41,7 @@ Here is a template for new release sections
 - Changed dostring format in `C2` to numpy (#495)
 - Deactivated function `C2.fuel_price_present_value` as it is not used and TBD (#495)
 - Modified the doc-strings in the definitions of some functions to abide by the formatting rules of numpy doc-strings (#505)
+- Suppressed the log messages of the Flask server (for report webapp) (#509) 
 
 ### Removed
 -

@@ -33,6 +33,10 @@ import logging
 pyppeteer_level = logging.WARNING
 logging.getLogger("pyppeteer").setLevel(pyppeteer_level)
 
+# This removes extensive logging in the console for the dash app (it runs on Flask server)
+flask_log = logging.getLogger("werkzeug")
+flask_log.setLevel(logging.ERROR)
+
 from src.constants import (
     PLOTS_BUSSES,
     PATHS_TO_PLOTS,
