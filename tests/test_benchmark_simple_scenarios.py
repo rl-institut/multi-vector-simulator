@@ -12,6 +12,7 @@ import json
 import mock
 import pandas as pd
 import pytest
+import random
 
 from mvs_eland_tool import main
 from src.B0_data_input_json import convert_from_json_to_special_types
@@ -174,7 +175,7 @@ class TestACElectricityBus:
     # todo: Add test for fuel consumption (kWh/l).
 
     @pytest.mark.skipif(
-        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER, TESTS_ON_DEV, "testing_AE"),
         reason="Benchmark test deactivated, set env variable "
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
@@ -195,17 +196,17 @@ class TestACElectricityBus:
             os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
         ) as results:
             data = json.load(results)
-        peak_demand = {
-            "peak_demand_1": data[ENERGY_CONVERSION][
-                "Electricity grid DSO_consumption_period_1"
-            ][OPTIMIZED_ADD_CAP][VALUE],
-            "peak_demand_2": data[ENERGY_CONVERSION][
-                "Electricity grid DSO_consumption_period_2"
-            ][OPTIMIZED_ADD_CAP][VALUE],
-            "peak_demand_3": data[ENERGY_CONVERSION][
-                "Electricity grid DSO_consumption_period_2"
-            ][OPTIMIZED_ADD_CAP][VALUE],
-        }
+        peak_demand = [
+            data[ENERGY_CONVERSION]["Electricity grid DSO_consumption_period_1"][
+                OPTIMIZED_ADD_CAP
+            ][VALUE],
+            data[ENERGY_CONVERSION]["Electricity grid DSO_consumption_period_2"][
+                OPTIMIZED_ADD_CAP
+            ][VALUE],
+            data[ENERGY_CONVERSION]["Electricity grid DSO_consumption_period_2"][
+                OPTIMIZED_ADD_CAP
+            ][VALUE],
+        ]
         # read timeseries_all_busses excel file
         busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
@@ -214,23 +215,37 @@ class TestACElectricityBus:
         # make the time the index
         busses_flow = busses_flow.set_index("Unnamed: 0")
         # read the columns with the values to be used
-        DSO_period_1 = busses_flow["Electricity grid DSO_consumption_period_1"]
-        DSO_period_2 = busses_flow["Electricity grid DSO_consumption_period_2"]
-        DSO_period_3 = busses_flow["Electricity grid DSO_consumption_period_3"]
+        DSO_period = [
+            busses_flow["Electricity grid DSO_consumption_period_1"],
+            busses_flow["Electricity grid DSO_consumption_period_2"],
+            busses_flow["Electricity grid DSO_consumption_period_3"],
+        ]
         demand = busses_flow["demand_01"]
         battery_charge = busses_flow["battery"]
         battery_discharge = (
             abs(busses_flow["demand_01"])
             - busses_flow["Electricity grid DSO_consumption_period_1"]
         )  # todo: replace this by discharge column when implemented
-        # look for peak demand in column
-        for i in range(0, len(DSO_period_1)):
-            if DSO_period_1[i] == peak_demand and abs(demand[i]) < DSO_period_1[i]:
-                assert battery_charge[i] < 0
-            if DSO_period_1[i] == peak_demand and abs(demand[i]) > DSO_period_1[i]:
-                assert battery_discharge[i] > 0
-            if DSO_period_1[i] == peak_demand and DSO_period_1[i - 1] != peak_demand:
-                assert battery_charge[i - 1] < 0
+        # pick few instances
+        instances = [random.randint(1, len(DSO_period[1])) for x in range(0, 60)]
+        # look for peak demand in period
+        for j in range(0, 2):
+            for i in instances:
+                if (
+                    DSO_period[j][i] == peak_demand[j]
+                    and abs(demand[i]) < DSO_period[j][i]
+                ):
+                    assert battery_charge[i] < 0
+                if (
+                    DSO_period[j][i] == peak_demand[j]
+                    and abs(demand[i]) > DSO_period[j][i]
+                ):
+                    assert battery_discharge[i] > 0
+                if (
+                    DSO_period[j][i] == peak_demand[j]
+                    and DSO_period[j][i - 1] != peak_demand[j]
+                ):
+                    assert battery_charge[i - 1] < 0
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
