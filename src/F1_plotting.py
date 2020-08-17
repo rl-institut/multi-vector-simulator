@@ -12,6 +12,7 @@ from src.constants import (
     PLOTS_COSTS,
     PROJECT_DATA,
     LABEL,
+    OUTPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
 )
 from src.constants_json_strings import (
@@ -20,7 +21,12 @@ from src.constants_json_strings import (
     SCENARIO_NAME,
     KPI,
     KPI_COST_MATRIX,
+    ENERGY_CONSUMPTION,
+    TIMESERIES,
+    ENERGY_PRODUCTION,
 )
+
+from src.E1_process_results import convert_demand_to_dataframe
 
 r"""
 Module F1 describes all the functions that create plots.
@@ -39,15 +45,17 @@ def flows(dict_values, user_input, project_data, results_timeseries, bus, interv
     """
     Parameters
     ----------
-    user_input: dict
+    dict_values: dict,
+
+    user_input: dict,
         part of the dict_values that includes the output folders name
-    project_data: dict
+    project_data: dict,
         part of the dict_values that includes Name for setting title of plots
     results_timeseries: pd Dataframe
         Timeseries that is to be plotted
-    bus: str
+    bus: str,
         sector that is to be plotted, ie. energyVectors of the energy system - not each and every bus.
-    interval: int
+    interval: int,
         Time interval in days covered on the x-axis
 
     Returns
@@ -287,8 +295,10 @@ def group_costs(costs, names):
     Calculates the percentage of different asset of the costs and also groups them by asset/DSO source/others
     Parameters
     ----------
-    costs_perc: dict
-        dict relevant cost data, and asset name
+    costs: dict,
+        dict relevant cost data
+    names: dict,
+        dict with asset name
 
     Returns
     -------
@@ -401,6 +411,112 @@ def plot_a_piechart(dict_values, settings, file_name, costs, label, title):
     else:
         logging.debug("No plot for costs created, as remaining costs were 0.")
     return
+
+
+def convert_plot_data_to_dataframe(plot_data_dict, data_type):
+    """
+
+    Parameters
+    ----------
+    plot_data_dict: dict,
+        timeseries for either demand or supply
+    data_type: str,
+        one of "demand" or "supply"
+
+    Returns
+    -------
+    df: pandas:`pandas.DataFrame<frame>`,
+        timeseries for plotting
+    """
+    # Later, this dataframe can be passed to a function directly make the graphs with Plotly
+    df = pd.DataFrame.from_dict(plot_data_dict[data_type], orient="columns")
+
+    # Change the index of the dataframe
+    df.reset_index(level=0, inplace=True)
+    # Rename the timestamp column from 'index' to 'timestamp'
+    df = df.rename(columns={"index": "timestamp"})
+    return df
+
+
+def extract_plot_data_and_title(dict_values, df_dem=None):
+    """Dataframe used for the plots in the report
+
+    Parameters
+    ----------
+    dict_values: dict
+        output values of MVS
+
+    Returns
+    -------
+    :pandas:`pandas.DataFrame<frame>`
+
+    """
+    if df_dem is None:
+        df_dem = convert_demand_to_dataframe(dict_values)
+
+    # Collect the keys of various resources (PV, Wind, etc.)
+    resources = dict_values[ENERGY_PRODUCTION]
+    res_keys = [k for k in resources.keys() if "DSO_" not in k]
+
+    # The below dict will gather all the keys of the various plots for later use in the graphOptions.csv
+    dict_for_plots = {"demands": {}, "supplies": {}}
+    dict_plot_labels = {}
+
+    # The below loop will add all the demands to the dict_for_plots dictionary, including the timeseries values
+    for demand in df_dem.Demands:
+        dict_for_plots["demands"].update(
+            {demand: dict_values[ENERGY_CONSUMPTION][demand][TIMESERIES]}
+        )
+        dict_plot_labels.update(
+            {demand: dict_values[ENERGY_CONSUMPTION][demand][LABEL]}
+        )
+
+    # The below loop will add all the resources to the dict_for_plots dictionary, including the timeseries values
+    for resource in res_keys:
+        dict_for_plots["supplies"].update(
+            {resource: dict_values[ENERGY_PRODUCTION][resource][TIMESERIES]}
+        )
+        dict_plot_labels.update(
+            {resource: dict_values[ENERGY_PRODUCTION][resource][LABEL]}
+        )
+
+    return dict_for_plots, dict_plot_labels
+
+
+def parse_simulation_log(path_log_file=None, log_type="ERROR"):
+    """Gather the log message of a certain type in a given log file
+
+    Parameters
+    ----------
+    path_log_file: str/None,
+        path to the mvs log file
+        Default: None
+    log_type: str,
+        one of "ERROR" or "WARNING"
+        Default: "ERROR"
+
+    Returns
+    -------
+
+    """
+    # Dictionaries to gather non-fatal warning and error messages that appear during the simulation
+    logs_dict = {}
+
+    if path_log_file is None:
+        path_log_file = os.path.join(OUTPUT_FOLDER, "mvs_logfile.log")
+
+    with open(path_log_file) as log_messages:
+        log_messages = log_messages.readlines()
+
+    i = 0
+    for line in log_messages:
+        if log_type in line:
+            i = i + 1
+            substrings = line.split(" - ")
+            message_string = substrings[-1]
+            logs_dict.update({i: message_string})
+
+    return logs_dict
 
 
 def draw_graph(
