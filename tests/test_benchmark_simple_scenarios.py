@@ -161,7 +161,7 @@ class TestACElectricityBus:
                 os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
             ) as results:
                 data = json.load(results)
-            # make sure LCOE_dieset is less than grid price
+            # make sure LCOE_diesel is less than grid price
             assert (
                 data[ENERGY_CONVERSION]["diesel_generator"][
                     "levelized_cost_of_energy_of_asset"
@@ -195,9 +195,17 @@ class TestACElectricityBus:
             os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
         ) as results:
             data = json.load(results)
-        peak_demand = data[ENERGY_CONVERSION][
-            "Electricity grid DSO_consumption_period_1"
-        ][OPTIMIZED_ADD_CAP][VALUE]
+        peak_demand = {
+            "peak_demand_1": data[ENERGY_CONVERSION][
+                "Electricity grid DSO_consumption_period_1"
+            ][OPTIMIZED_ADD_CAP][VALUE],
+            "peak_demand_2": data[ENERGY_CONVERSION][
+                "Electricity grid DSO_consumption_period_2"
+            ][OPTIMIZED_ADD_CAP][VALUE],
+            "peak_demand_3": data[ENERGY_CONVERSION][
+                "Electricity grid DSO_consumption_period_2"
+            ][OPTIMIZED_ADD_CAP][VALUE],
+        }
         # read timeseries_all_busses excel file
         busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
@@ -205,14 +213,16 @@ class TestACElectricityBus:
         )
         # make the time the index
         busses_flow = busses_flow.set_index("Unnamed: 0")
-        # save the columns with the values to be used
+        # read the columns with the values to be used
         DSO_period_1 = busses_flow["Electricity grid DSO_consumption_period_1"]
+        DSO_period_2 = busses_flow["Electricity grid DSO_consumption_period_2"]
+        DSO_period_3 = busses_flow["Electricity grid DSO_consumption_period_3"]
         demand = busses_flow["demand_01"]
         battery_charge = busses_flow["battery"]
         battery_discharge = (
             abs(busses_flow["demand_01"])
             - busses_flow["Electricity grid DSO_consumption_period_1"]
-        ) # todo: replace this by discharge column when implemented
+        )  # todo: replace this by discharge column when implemented
         # look for peak demand in column
         for i in range(0, len(DSO_period_1)):
             if DSO_period_1[i] == peak_demand and abs(demand[i]) < DSO_period_1[i]:
