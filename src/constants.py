@@ -255,7 +255,6 @@ EXTRA_CSV_PARAMETERS = {
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
     "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1},
     "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87},
-    "Heat": {UNIT: "blabla", VALUE: 0.3},
 }
 
 # dict keys in results_json file
