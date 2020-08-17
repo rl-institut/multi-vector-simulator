@@ -167,6 +167,57 @@ class TestACElectricityBus:
             assert sum(busses_flow["Diesel generator"]) == sum(busses_flow["demand_01"])
 
     # todo: Add test for fuel consumption (kWh/l).
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER, TESTS_ON_DEV, "testing_AE"),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_benchmark_AE_grid_battery_peak_pricing(self, margs):
+        # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
+        use_case = "AE_grid_battery_peak_pricing"
+        # define an empty dictionary for excess electricity
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=CSV_EXT,
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+        )
+        # read json with results file
+        with open(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
+        ) as results:
+            data = json.load(results)
+        peak_demand = data["energyConversion"][
+            "Electricity grid DSO_consumption_period_1"
+        ]["optimizedAddCap"]["value"]
+        # read timeseries_all_busses excel file
+        busses_flow = pd.read_excel(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
+            sheet_name=bus_suffix("Electricity"),
+        )
+        # make the time the index
+        busses_flow = busses_flow.set_index("Unnamed: 0")
+        for i in busses_flow["Electricity grid DSO_consumption_period_1"]:
+            if (
+                i == peak_demand
+                and abs(busses_flow["demand_01"])
+                < busses_flow["Electricity grid DSO_consumption_period_1"]
+            ):
+                assert busses_flow["battery"] < 0
+            if (
+                i == peak_demand
+                and abs(busses_flow["demand_01"])
+                > busses_flow["Electricity grid DSO_consumption_period_1"]
+            ):
+                assert (
+                    abs(busses_flow["demand_01"])
+                    - busses_flow["Electricity grid DSO_consumption_period_1"]
+                    > 0
+                )
+
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
