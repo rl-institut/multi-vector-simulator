@@ -3,7 +3,7 @@ age_installed,year,0,0,0
 development_costs,currency,0,0,0
 specific_costs,currency/unit,200,0,0
 c_rate,factor of total capacity (kWh),NA,0.2,1
-efficiency,factor,0,0.8,0.8
+efficiency,factor,0.001,0.8,0.8
 installedCap,unit,500,100,500
 label,str,storage capacity,input power,output power
 lifetime,year,10,10,10
