@@ -15,6 +15,7 @@ from src.constants import (
     INPUT_TYPE,
     OVERWRITE,
     DISPLAY_OUTPUT,
+    SAVE_PNG,
     JSON_FNAME,
     JSON_EXT,
     CSV_ELEMENTS,
