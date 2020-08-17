@@ -72,26 +72,6 @@ def evaluate_dict(dict_values, path_pdf_report=None):
 
         logging.info("Aggregating flows for the %s sector.", sector_name)
 
-        # Plot flows for one sector for the 14 first days
-        F1_plots.flows(
-            dict_values,
-            dict_values[SIMULATION_SETTINGS],
-            dict_values[PROJECT_DATA],
-            dict_values[OPTIMIZED_FLOWS][sector_name + BUS_SUFFIX],
-            sector,
-            14,
-        )
-
-        # Plot flows for one sector for a year
-        F1_plots.flows(
-            dict_values,
-            dict_values[SIMULATION_SETTINGS],
-            dict_values[PROJECT_DATA],
-            dict_values[OPTIMIZED_FLOWS][sector_name + BUS_SUFFIX],
-            sector,
-            365,
-        )
-
         """
         ###
         # Aggregation of demand profiles to total demand
@@ -122,11 +102,17 @@ def evaluate_dict(dict_values, path_pdf_report=None):
     # storing all flows to exel.
     store_timeseries_all_busses_to_excel(dict_values)
 
+    # TODO: change this to give the user to possibility to save figures or not
+    fig_path = None
+
+    # plot power flows in the energy system
+    F1_plots.plot_flows(dict_values, file_path=fig_path)
+
     # plot optimal capacities if there are optimized assets
-    F1_plots.plot_optimized_capacities(dict_values)
+    F1_plots.plot_optimized_capacities(dict_values, file_path=fig_path)
 
     # plot annuity, first-investment and om costs
-    F1_plots.plot_piecharts_of_costs(dict_values)
+    F1_plots.plot_piecharts_of_costs(dict_values, file_path=fig_path)
 
     # Write everything to file with multipe tabs
     store_scalars_to_excel(dict_values)

@@ -39,6 +39,7 @@ from src.constants_json_strings import (
     PEAK_FLOW,
     AVERAGE_FLOW,
     KPI_SCALAR_MATRIX,
+    OPTIMIZED_FLOWS,
 )
 
 from src.E1_process_results import (
@@ -972,6 +973,53 @@ def create_plotly_flow_fig(
         )
 
     return fig
+
+
+def plot_flows(dict_values, file_path=None):
+    """Plotting timeseries of each assets' flow of the energy system
+
+    Parameters
+    ----------
+    dict_values : dict
+        all simulation input and output data up to this point
+
+    file_path: str
+        Path where the image shall be saved if not None
+        Default: None
+
+    Returns
+    -------
+    pie_plots: dict
+       Dict with html DOM id for the figure as keys and :plotly:`plotly.graph_objs.Figure` as values
+    """
+    buses_list = list(dict_values[OPTIMIZED_FLOWS].keys())
+    multi_plots = {}
+    for bus in buses_list:
+        comp_id = bus + "-plot"
+        title = (
+            bus
+            + " flows in LES: "
+            + dict_values[PROJECT_DATA][PROJECT_NAME]
+            + ", "
+            + dict_values[PROJECT_DATA][SCENARIO_NAME]
+        )
+
+        df_data = dict_values[OPTIMIZED_FLOWS][bus]
+        df_data.reset_index(level=0, inplace=True)
+        df_data = df_data.rename(columns={"index": "timestamp"})
+
+        fig = create_plotly_flow_fig(
+            df_plots_data=df_data,
+            x_legend="Time",
+            y_legend=bus + " flow in kWh",
+            plot_title=title,
+            file_path=file_path,
+            file_name=bus + "_flow.png",
+        )
+        if file_path is None:
+            multi_plots[comp_id] = fig
+
+    return multi_plots
 
 
 def create_plotly_cost_fig(
