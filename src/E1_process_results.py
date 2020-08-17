@@ -64,13 +64,13 @@ def get_timeseries_per_bus(dict_values, bus_data):
     ----------
     dict_values : dict
         Contains all input data of the simulation.
-        bus_data : dict Contains information about all busses in a nested dict.
+    bus_data : dict Contains information about all busses in a nested dict.
 
-            1st level keys: bus names;
-            2nd level keys:
+        1st level keys: bus names;
+        2nd level keys:
 
-                'scalars': (pd.Series) (does not exist in all dicts)
-                'sequences': (pd.DataFrame) - contains flows between components and busses
+            'scalars': (pd.Series) (does not exist in all dicts)
+            'sequences': (pd.DataFrame) - contains flows between components and busses
 
     Returns
     -------
@@ -371,7 +371,8 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                     )
                 else:
                     logging.warning(
-                        "Time series peak of asset %s negative or zero! Check timeseries. No optimized capacity derived.",
+                        "Time series peak of asset %s negative or zero! Check timeseries. "
+                        "No optimized capacity derived.",
                         dict_asset[LABEL],
                     )
                     pass
@@ -488,7 +489,7 @@ def convert_demand_to_dataframe(dict_values):
     Parameters
     ----------
     dict_values: dict
-        output valuesof MVS
+        output values of MVS
 
     Returns
     -------

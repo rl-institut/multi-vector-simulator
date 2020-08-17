@@ -38,13 +38,7 @@ flask_log = logging.getLogger("werkzeug")
 flask_log.setLevel(logging.ERROR)
 
 from src.constants import (
-    PLOTS_BUSSES,
-    PATHS_TO_PLOTS,
     PATH_OUTPUT_FOLDER,
-    PLOTS_DEMANDS,
-    PLOTS_RESOURCES,
-    PLOTS_PERFORMANCE,
-    PLOTS_COSTS,
     REPO_PATH,
     REPORT_PATH,
     OUTPUT_FOLDER,
@@ -52,48 +46,25 @@ from src.constants import (
     CSV_ELEMENTS,
     ECONOMIC_DATA,
     PROJECT_DATA,
-    INSTALLED_CAP,
 )
 from src.constants_json_strings import (
-    UNIT,
-    ENERGY_CONVERSION,
-    ENERGY_CONSUMPTION,
-    ENERGY_PRODUCTION,
-    OEMOF_ASSET_TYPE,
     LABEL,
     SECTORS,
     VALUE,
-    ENERGY_VECTOR,
-    OPTIMIZE_CAP,
     SIMULATION_SETTINGS,
     EVALUATED_PERIOD,
     START_DATE,
     TIMESTEP,
-    TIMESERIES_PEAK,
     TOTAL_FLOW,
     ANNUAL_TOTAL_FLOW,
-    OPTIMIZED_ADD_CAP,
     KPI,
     KPI_SCALAR_MATRIX,
-    KPI_COST_MATRIX,
-    COST_TOTAL,
-    COST_OM_TOTAL,
-    COST_INVESTMENT,
-    COST_DISPATCH,
-    COST_OM_FIX,
-    COST_UPFRONT,
     PROJECT_NAME,
     PROJECT_ID,
     SCENARIO_NAME,
     SCENARIO_ID,
     PEAK_FLOW,
     AVERAGE_FLOW,
-    TIMESERIES,
-    ANNUITY_TOTAL,
-    ENERGY_PROVIDERS,
-    DSO_FEEDIN,
-    AUTO_SINK,
-    EXCESS,
 )
 
 from src.E1_process_results import (
@@ -1261,7 +1232,6 @@ def create_app(results_json):
     errors_dict = parse_simulation_log(log_type="ERROR")
 
     # App layout and populating it with different elements
-
     app.layout = html.Div(
         id="main-div",
         className="grid-x align-center",

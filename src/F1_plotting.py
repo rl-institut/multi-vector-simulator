@@ -4,6 +4,9 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 
+import networkx as nx
+import oemof.network.graph as graph
+
 from src.constants import (
     PATHS_TO_PLOTS,
     PLOTS_BUSSES,
@@ -14,7 +17,10 @@ from src.constants import (
     LABEL,
     OUTPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
+    PLOTS_DEMANDS,
+    PLOTS_RESOURCES,
 )
+
 from src.constants_json_strings import (
     SIMULATION_SETTINGS,
     PROJECT_NAME,
@@ -54,13 +60,15 @@ def flows(dict_values, user_input, project_data, results_timeseries, bus, interv
     results_timeseries: pd Dataframe
         Timeseries that is to be plotted
     bus: str,
-        sector that is to be plotted, ie. energyVectors of the energy system - not each and every bus.
+        sector that is to be plotted, ie. energyVectors of the energy system -
+        - not each and every bus.
     interval: int,
         Time interval in days covered on the x-axis
 
     Returns
     -------
-    Plot of "interval" duration on x-axis for all energy flows connected to the main bus supplying the demand of a specific sector
+    Plot of "interval" duration on x-axis for all energy flows connected to the main bus supplying
+    the demand of a specific sector
     """
 
     logging.info("Creating plots for %s sector, %s days", bus, interval)
@@ -121,10 +129,13 @@ def flows(dict_values, user_input, project_data, results_timeseries, bus, interv
 
 
 def capacities(dict_values, user_input, project_data, assets, capacities):
-    """Determines the assets for which the optimized capacity is larger than zero and then plots those capacities in a bar chart.
+    """Determines the assets for which the optimized capacity is larger than zero and then plots
+    those capacities in a bar chart.
 
     Parameters
     ----------
+    dict_values: dict
+        Dict with all simulation parameters
     user_input : dict
         Simulation settings including the output path
     project_data : dict
@@ -190,8 +201,9 @@ def capacities(dict_values, user_input, project_data, assets, capacities):
 
 def evaluate_cost_parameter(dict_values, parameter, file_name):
     """
-    Generates pie plot of a chosen cost parameter, and if one asset is overly present in the cost distribution with 90% of the costs,
-    a pie plot of the distribution of the remaining 10% of the costs.
+    Generates pie plot of a chosen cost parameter, and if one asset is overly present in the cost
+    distribution with 90% of the costs, a pie plot of the distribution of the remaining 10% of
+    the costs.
 
     Parameters
     ----------
@@ -292,7 +304,8 @@ def determine_if_plotting_necessary(parameter_values):
 
 def group_costs(costs, names):
     """
-    Calculates the percentage of different asset of the costs and also groups them by asset/DSO source/others
+    Calculates the percentage of different asset of the costs and also groups them by asset/DSO
+    source/others
     Parameters
     ----------
     costs: dict,
@@ -334,7 +347,8 @@ def group_costs(costs, names):
 
 def recalculate_distribution_of_rest_costs(costs_perc_grouped_pandas):
     """
-    Determines whether there is one major player in the cost distribution, and if so, prepares plotting the remaining percent-
+    Determines whether there is one major player in the cost distribution, and if so, prepares
+    plotting the remaining percent-
 
     Parameters
     ----------
@@ -375,6 +389,8 @@ def plot_a_piechart(dict_values, settings, file_name, costs, label, title):
 
     Parameters
     ----------
+    dict_values: dict
+        Dict with all simulation parameters
     settings: dict
         includes output path
 
@@ -418,9 +434,9 @@ def convert_plot_data_to_dataframe(plot_data_dict, data_type):
 
     Parameters
     ----------
-    plot_data_dict: dict,
+    plot_data_dict: dict
         timeseries for either demand or supply
-    data_type: str,
+    data_type: str
         one of "demand" or "supply"
 
     Returns
@@ -446,6 +462,9 @@ def extract_plot_data_and_title(dict_values, df_dem=None):
     dict_values: dict
         output values of MVS
 
+    df_dem: :pandas:`pandas.DataFrame<frame>`
+        summarized demand information for each demand
+
     Returns
     -------
     :pandas:`pandas.DataFrame<frame>`
@@ -458,11 +477,11 @@ def extract_plot_data_and_title(dict_values, df_dem=None):
     resources = dict_values[ENERGY_PRODUCTION]
     res_keys = [k for k in resources.keys() if "DSO_" not in k]
 
-    # The below dict will gather all the keys of the various plots for later use in the graphOptions.csv
+    # Gather all the keys of the various plots for later use in the graphOptions.csv
     dict_for_plots = {"demands": {}, "supplies": {}}
     dict_plot_labels = {}
 
-    # The below loop will add all the demands to the dict_for_plots dictionary, including the timeseries values
+    # Add all the demands to the dict_for_plots dictionary, including the timeseries values
     for demand in df_dem.Demands:
         dict_for_plots["demands"].update(
             {demand: dict_values[ENERGY_CONSUMPTION][demand][TIMESERIES]}
@@ -471,7 +490,7 @@ def extract_plot_data_and_title(dict_values, df_dem=None):
             {demand: dict_values[ENERGY_CONSUMPTION][demand][LABEL]}
         )
 
-    # The below loop will add all the resources to the dict_for_plots dictionary, including the timeseries values
+    # Add all the resources to the dict_for_plots dictionary, including the timeseries values
     for resource in res_keys:
         dict_for_plots["supplies"].update(
             {resource: dict_values[ENERGY_PRODUCTION][resource][TIMESERIES]}
@@ -488,10 +507,10 @@ def parse_simulation_log(path_log_file=None, log_type="ERROR"):
 
     Parameters
     ----------
-    path_log_file: str/None,
+    path_log_file: str/None
         path to the mvs log file
         Default: None
-    log_type: str,
+    log_type: str
         one of "ERROR" or "WARNING"
         Default: "ERROR"
 
@@ -537,37 +556,33 @@ def draw_graph(
 
     Parameters
     ----------
-    energysystem :
-        param edge_labels:
-    node_color :
-        param edge_color: (Default value = "#eeac7e")
-    plot :
-        param node_size:
-    with_labels :
-        param arrows: (Default value = True)
-    layout :
-        return: (Default value = "dot")
-    user_input :
-        
-    edge_labels :
-         (Default value = True)
-    edge_color :
-         (Default value = "#eeac7e")
-    show_plot :
-         (Default value = True)
-    save_plot :
-         (Default value = True)
-    node_size :
-         (Default value = 5500)
-    arrows :
-         (Default value = True)
+    dict_values: dict
+        Dict with all simulation parameters
+    energysystem:
+    user_input: dict
+    edge_labels: bool
+        Default: True
+    node_color: str
+        Default: "#eeac7e"
+    edge_color: str
+        Default: "#eeac7e"
+    show_plot: bool
+        Default: True
+    save_plot: bool
+        Default: True
+    node_size: int
+        Default: 5500
+    with_labels: bool
+        Default: True
+    arrows: bool
+        Default: True
+    layout: str
+        Default: "dot"
 
     Returns
     -------
 
     """
-    import networkx as nx
-    import oemof.network.graph as graph
 
     # grph = graph.create_nx_graph(
     #    energysystem, filename=user_input[PATH_OUTPUT_FOLDER] + "network_graph.xml"
@@ -613,9 +628,6 @@ def draw_graph(
         )
 
 
-from src.constants import PLOTS_DEMANDS, PLOTS_RESOURCES
-
-
 def plot_input_timeseries(
     dict_values,
     user_input,
@@ -626,7 +638,8 @@ def plot_input_timeseries(
 ):
     r"""
     This function is called from C0 to plot the input timeseries provided to the MVS.
-    This includes demand profiles, generation profiles as well as timeseries for otherwise scalar values.
+    This includes demand profiles, generation profiles as well as timeseries for otherwise scalar
+    values.
 
     Parameters
     ----------
