@@ -26,6 +26,8 @@ from .constants import (
     ENERGY_CONVERSION,
     ENERGY_PROVIDERS,
     VALUE,
+    ENERGY_PRICE,
+    OPTIMIZED_ADD_CAP,
 )
 
 from src.constants_json_strings import EXCESS, AUTO_SINK
@@ -164,7 +166,7 @@ class TestACElectricityBus:
                 data[ENERGY_CONVERSION]["diesel_generator"][
                     "levelized_cost_of_energy_of_asset"
                 ][VALUE]
-                < data[ENERGY_PROVIDERS]["DSO"]["energy_price"][VALUE]
+                < data[ENERGY_PROVIDERS]["DSO"][ENERGY_PRICE][VALUE]
             )
             # make sure grid is not used
             assert sum(busses_flow["Diesel generator"]) == sum(busses_flow["demand_01"])
@@ -193,9 +195,9 @@ class TestACElectricityBus:
             os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
         ) as results:
             data = json.load(results)
-        peak_demand = data["energyConversion"][
+        peak_demand = data[ENERGY_CONVERSION][
             "Electricity grid DSO_consumption_period_1"
-        ]["optimizedAddCap"]["value"]
+        ][OPTIMIZED_ADD_CAP][VALUE]
         # read timeseries_all_busses excel file
         busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),

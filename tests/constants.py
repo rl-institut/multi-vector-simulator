@@ -74,6 +74,7 @@ from src.constants_json_strings import (
     ENERGY_CONVERSION,
     UNIT,
     VALUE,
+    OPTIMIZED_ADD_CAP,
 )
 
 TESTS_ON_MASTER = "master"
