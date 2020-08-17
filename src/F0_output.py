@@ -9,26 +9,14 @@ from src.B0_data_input_json import convert_from_special_types_to_json
 import src.F1_plotting as F1_plots
 import src.F2_autoreport as autoreport
 from src.constants import (
-    TYPE_DATETIMEINDEX,
-    TYPE_SERIES,
-    TYPE_DATAFRAME,
-    TYPE_TIMESTAMP,
     SIMULATION_SETTINGS,
     PROJECT_DATA,
     SECTORS,
     PATH_OUTPUT_FOLDER,
 )
 from src.constants_json_strings import (
-    OPTIMIZED_ADD_CAP,
     KPI,
-    LABEL,
-    KPI_SCALAR_MATRIX,
-    COST_OM_TOTAL,
-    COST_INVESTMENT,
     OPTIMIZED_FLOWS,
-    ANNUITY_TOTAL,
-    OPTIMIZED_FLOWS,
-    BUS_SUFFIX,
 )
 
 r"""
@@ -67,40 +55,17 @@ def evaluate_dict(dict_values, path_pdf_report=None):
         "Summarizing simulation results to results_timeseries and results_scalars_assets."
     )
 
-    for sector in dict_values[PROJECT_DATA][SECTORS]:
-        sector_name = dict_values[PROJECT_DATA][SECTORS][sector]
-
-        logging.info("Aggregating flows for the %s sector.", sector_name)
-
-        """
-        ###
-        # Aggregation of demand profiles to total demand
-        ###
-        This would store demands are twice - as total demand as well as individual demand!
-
-        # Initialize
-        total_demand = pd.Series(
-            [0 for i in dict_values[SIMULATION_SETTINGS][TIME_INDEX]],
-            index=dict_values[SIMULATION_SETTINGS][TIME_INDEX],
-        )
-
-        # Add demands (exclude excess)
-        for asset in dict_values[ENERGY_CONSUMPTION]:
-            # key "energyVector" not included in excess sinks, ie. this filters them out from demand.
-            if ENERGY_VECTOR in dict_values[ENERGY_CONSUMPTION][asset].keys() \
-                    and dict_values[ENERGY_CONSUMPTION][asset][ENERGY_VECTOR] == sector_name:
-                total_demand = (
-                    total_demand + dict_values[ENERGY_CONSUMPTION][asset]["flow"]
-                )
-
-        # todo this should actually link to C0: helpers.bus_suffix
-        dict_values[OPTIMIZED_FLOWS][sector_name + BUS_SUFFIX][
-            "Total demand " + sector_name
-        ] = total_demand
-        """
-
     # storing all flows to exel.
     store_timeseries_all_busses_to_excel(dict_values)
+
+    # Write everything to file with multipe tabs
+    store_scalars_to_excel(dict_values)
+
+    store_as_json(
+        dict_values,
+        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
+        "json_with_results",
+    )
 
     # TODO: change this to give the user to possibility to save figures or not
     fig_path = None
@@ -113,15 +78,6 @@ def evaluate_dict(dict_values, path_pdf_report=None):
 
     # plot annuity, first-investment and om costs
     F1_plots.plot_piecharts_of_costs(dict_values, file_path=fig_path)
-
-    # Write everything to file with multipe tabs
-    store_scalars_to_excel(dict_values)
-
-    store_as_json(
-        dict_values,
-        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-        "json_with_results",
-    )
 
     # generate a pdf report
     if path_pdf_report is not None:
@@ -187,14 +143,6 @@ def store_timeseries_all_busses_to_excel(dict_values):
     ) as open_file:  # doctest: +SKIP
         for bus in dict_values[OPTIMIZED_FLOWS]:
             dict_values[OPTIMIZED_FLOWS][bus].to_excel(open_file, sheet_name=bus)
-            F1_plots.flows(
-                dict_values,
-                dict_values[SIMULATION_SETTINGS],
-                dict_values[PROJECT_DATA],
-                dict_values[OPTIMIZED_FLOWS][bus],
-                bus,
-                365,
-            )
 
     logging.info("Saved flows at busses to: %s.", timeseries_output_file)
     return

@@ -12,10 +12,7 @@ import oemof.network.graph as graph
 
 from src.constants import (
     PATHS_TO_PLOTS,
-    PLOTS_BUSSES,
     PLOTS_NX,
-    PLOTS_PERFORMANCE,
-    PLOTS_COSTS,
     PROJECT_DATA,
     LABEL,
     OUTPUT_FOLDER,
@@ -25,11 +22,9 @@ from src.constants import (
 )
 
 from src.constants_json_strings import (
-    SIMULATION_SETTINGS,
     PROJECT_NAME,
     SCENARIO_NAME,
     KPI,
-    KPI_COST_MATRIX,
     ENERGY_CONSUMPTION,
     TIMESERIES,
     ENERGY_PRODUCTION,
@@ -44,8 +39,6 @@ from src.constants_json_strings import (
 
 from src.E1_process_results import (
     convert_demand_to_dataframe,
-    convert_components_to_dataframe,
-    convert_scalar_matrix_to_dataframe,
     convert_kpi_matrix_to_dataframe,
 )
 
@@ -60,271 +53,6 @@ Module F1 describes all the functions that create plots.
 
 
 logging.getLogger("matplotlib.font_manager").disabled = True
-
-
-def flows(dict_values, user_input, project_data, results_timeseries, bus, interval):
-    """
-    Parameters
-    ----------
-    dict_values: dict
-        Dict with all simulation parameters
-    user_input: dict,
-        part of the dict_values that includes the output folders name
-    project_data: dict,
-        part of the dict_values that includes Name for setting title of plots
-    results_timeseries: pd Dataframe
-        Timeseries that is to be plotted
-    bus: str,
-        sector that is to be plotted, ie. energyVectors of the energy system -
-        - not each and every bus.
-    interval: int,
-        Time interval in days covered on the x-axis
-
-    Returns
-    -------
-    Plot of "interval" duration on x-axis for all energy flows connected to the main bus supplying
-    the demand of a specific sector
-    """
-
-    logging.info("Creating plots for %s sector, %s days", bus, interval)
-    steps = interval * 24
-    flows_les = results_timeseries[0:steps]
-
-    includes_soc = False
-    for column in results_timeseries.columns:
-        if "SOC" in column:
-            includes_soc = True
-            soc_column_name = column
-
-    if includes_soc is True:
-        flows_les = flows_les.drop([soc_column_name], axis=1)
-        fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
-        axes_mg = axes[0]
-    else:
-        fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
-        axes_mg = axes
-
-    flows_les.plot(
-        title=bus
-        + " flows in LES: "
-        + project_data[PROJECT_NAME]
-        + ", "
-        + project_data[SCENARIO_NAME],
-        ax=axes_mg,
-        drawstyle="steps-mid",
-    )
-    axes_mg.set(xlabel="Time", ylabel=bus + " flow in kWh")
-    axes_mg.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
-
-    if includes_soc is True:
-        results_timeseries[soc_column_name][0:steps].plot(
-            ax=axes[1], drawstyle="steps-mid",
-        )
-        ylabel = bus + " SOC"
-
-        axes[1].set(xlabel="Time", ylabel=ylabel)
-        axes[1].legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
-
-    path = os.path.join(
-        user_input[PATH_OUTPUT_FOLDER], bus + "_flows_" + str(interval) + "_days.png",
-    )
-
-    plt.savefig(
-        path, bbox_inches="tight",
-    )
-    # update_list = dict_values[PATHS_TO_PLOTS][PLOTS_BUSSES] + [path]
-    if interval != 14:
-        dict_values[PATHS_TO_PLOTS][PLOTS_BUSSES] += [str(path)]
-
-    plt.close()
-    plt.clf()
-    plt.cla()
-
-    return
-
-
-def evaluate_cost_parameter(dict_values, parameter, file_name):
-    """
-    Generates pie plot of a chosen cost parameter, and if one asset is overly present in the cost
-    distribution with 90% of the costs, a pie plot of the distribution of the remaining 10% of
-    the costs.
-
-    Parameters
-    ----------
-    dict_values: dict
-
-    parameter: cost parameter to be plotted
-
-    file_name: file name that is to be used
-
-    Returns
-    -------
-    pie plot plot of a cost parameter
-    """
-    # Annuity costs plot (only plot if there are values with cost over 0)
-    label = file_name.replace("_", " ")
-
-    process_pie_chart = determine_if_plotting_necessary(
-        dict_values[KPI][KPI_COST_MATRIX][parameter].values
-    )
-
-    if process_pie_chart is True:
-
-        costs_perc_grouped, total = group_costs(
-            dict_values[KPI][KPI_COST_MATRIX][parameter],
-            dict_values[KPI][KPI_COST_MATRIX][LABEL],
-        )
-
-        costs_perc_grouped_pandas = pd.Series(costs_perc_grouped)
-
-        title = (
-            label
-            + " costs ("
-            + str(round(total, 2))
-            + "$): "
-            + dict_values[PROJECT_DATA][PROJECT_NAME]
-            + ", "
-            + dict_values[PROJECT_DATA][SCENARIO_NAME]
-        )
-
-        # plot_a_piechart(
-        #     dict_values,
-        #     dict_values[SIMULATION_SETTINGS],
-        #     file_name,
-        #     costs_perc_grouped_pandas,
-        #     label,
-        #     title,
-        # )
-
-        # if there is a dominant assets, another plot with the remaining assets is created
-        (
-            plot_minor_costs_pie,
-            costs_perc_grouped_minor,
-            rest,
-        ) = recalculate_distribution_of_rest_costs(costs_perc_grouped_pandas)
-        if plot_minor_costs_pie is True:
-            title = (
-                "Minor part of "
-                + label
-                + "("
-                + str(round(rest * 100))
-                + "% of "
-                + str(round(total, 2))
-                + "$): "
-                + dict_values[PROJECT_DATA][PROJECT_NAME]
-                + ", "
-                + dict_values[PROJECT_DATA][SCENARIO_NAME]
-            )
-
-            # plot_a_piechart(
-            #     dict_values,
-            #     dict_values[SIMULATION_SETTINGS],
-            #     file_name + "_minor",
-            #     costs_perc_grouped_minor,
-            #     label + " (minor)",
-            #     title,
-            # )
-    return
-
-
-def determine_if_plotting_necessary(parameter_values):
-    """
-    Determines whether pie plot of a parameter is necessary
-    Parameters
-    ----------
-    parameter_values: list
-        Values of the parameter
-
-    Returns
-    -------
-    True or False
-    """
-    process_pie_chart = False
-    for element in parameter_values:
-        if element is not None and element > 0:
-            process_pie_chart = True
-    return process_pie_chart
-
-
-def group_costs(costs, names):
-    """
-    Calculates the percentage of different asset of the costs and also groups them by asset/DSO
-    source/others
-    Parameters
-    ----------
-    costs: dict,
-        dict relevant cost data
-    names: dict,
-        dict with asset name
-
-    Returns
-    -------
-    Dictionary with costs in groups, ie. into asset/others and DSO as well as total costs
-    """
-    costs = pd.DataFrame(data=costs.values, index=names.values)
-    costs = costs.to_dict()[0]
-
-    # % is calculated
-    total = sum(costs.values())
-    costs_perc = costs.copy()
-    costs_perc.update({n: costs_perc[n] / total for n in costs_perc.keys()})
-
-    # those assets which do not reach 0,5% of total cost are included in 'others'
-    # if there are more than one consumption period, they are grouped in DSO_consumption
-    others = 0
-    DSO_consumption = 0
-    costs_perc_grouped = {}
-    for asset in costs_perc:
-        if "DSO_consumption" in asset:
-            DSO_consumption += costs_perc[asset]
-        elif costs_perc[asset] < 0.005:
-            others += costs_perc[asset]
-        else:
-            costs_perc_grouped[asset] = costs_perc[asset]
-
-    if DSO_consumption > 0:
-        costs_perc_grouped["DSO_consumption"] = DSO_consumption
-    if others > 0:
-        costs_perc_grouped["others"] = others
-    return costs_perc_grouped, total
-
-
-def recalculate_distribution_of_rest_costs(costs_perc_grouped_pandas):
-    """
-    Determines whether there is one major player in the cost distribution, and if so, prepares
-    plotting the remaining percent-
-
-    Parameters
-    ----------
-    costs_perc_grouped_pandas: pd.Series
-        Dataframe with all assets and their share of costs in percent
-
-
-    Returns
-    -------
-    Data frame with minor costs
-    """
-    plot_minor_costs_pie = False
-    for asset in costs_perc_grouped_pandas.index:
-        if costs_perc_grouped_pandas[asset] > 0.8:
-            plot_minor_costs_pie = True
-            major = asset
-
-    if plot_minor_costs_pie is True:
-        costs_perc_grouped_pandas = costs_perc_grouped_pandas.drop([major])
-        rest = costs_perc_grouped_pandas.values.sum()
-        costs_perc_grouped_minor = pd.Series(
-            [
-                costs_perc_grouped_pandas[n] / rest
-                for n in costs_perc_grouped_pandas.index
-            ],
-            index=costs_perc_grouped_pandas.index,
-        )
-    else:
-        costs_perc_grouped_minor = pd.Series()
-        rest = 0
-
-    return plot_minor_costs_pie, costs_perc_grouped_minor, rest
 
 
 def convert_plot_data_to_dataframe(plot_data_dict, data_type):
@@ -623,9 +351,11 @@ def save_plots_to_disk(
     Nothing is returned. This function call results in the plots being saved as .png images to the disk.
     """
 
-    file_name = file_name + "_plotly" + ".png"
+    print("saving to disk")
+    file_name = file_name
     file_path_out = os.path.join(file_path, file_name)
-    fig_obj.write_image(file_path_out, width=width, height=height, scale=scale)
+    with open(file_path_out, "wb") as fp:
+        fig_obj.write_image(fp, width=width, height=height, scale=scale)
 
 
 def get_fig_style_dict():
@@ -842,10 +572,10 @@ def plot_optimized_capacities(
     df_capacities.reset_index(drop=True, inplace=True)
 
     # TODO: determine whether this code is still needed or not
-    # show_optimal_capacities = False
-    # for element in dict_values[KPI][KPI_SCALAR_MATRIX][OPTIMIZED_ADD_CAP].values:
-    #     if element > 0:
-    #         show_optimal_capacities = True
+    show_optimal_capacities = False
+    for element in dict_values[KPI][KPI_SCALAR_MATRIX][OPTIMIZED_ADD_CAP].values:
+        if element > 0:
+            show_optimal_capacities = True
 
     x_values = []
     y_values = []
@@ -872,7 +602,7 @@ def plot_optimized_capacities(
         file_path=file_path,
     )
 
-    return {"capacities_plot": fig}
+    return {"capacities_plot": fig} if show_optimal_capacities is True else {}
 
 
 def create_plotly_flow_fig(
@@ -1023,7 +753,12 @@ def plot_flows(dict_values, file_path=None):
 
 
 def create_plotly_cost_fig(
-    title_of_plot, names, values, color_scheme, file_name="costs.png", file_path=None,
+    title_of_plot,
+    names,
+    values,
+    color_scheme=px.colors.qualitative.Set1,
+    file_name="costs.png",
+    file_path=None,
 ):
     r"""Generate figure of an asset's flow.
 
@@ -1201,3 +936,18 @@ def plot_piecharts_of_costs(dict_values, file_path=None):
             pie_plots[comp_id] = fig
 
     return pie_plots
+
+if __name__ == "__main__":
+    title = "a_title"
+    from tests.constants import TEST_REPO_PATH
+
+    OUTPUT_PATH = os.path.join(TEST_REPO_PATH)
+
+    fig = create_plotly_cost_fig(
+        title_of_plot=title,
+        names=["costs1", "costs2"],
+        values=[None, None],
+        file_name="filename.png",
+        file_path=OUTPUT_PATH,
+    )
+    print(fig["data"][0]["values"])
