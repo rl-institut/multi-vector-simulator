@@ -126,7 +126,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
     plot_optimized_capacities(dict_values)
 
     # plot annuity, first-investment and om costs
-    plot_piecharts_of_costs(dict_values)
+    F1_plots.plot_piecharts_of_costs(dict_values)
 
     # Write everything to file with multipe tabs
     store_scalars_to_excel(dict_values)
@@ -144,34 +144,6 @@ def evaluate_dict(dict_values, path_pdf_report=None):
         logging.info(
             "Generating PDF report of the simulation: {}".format(path_pdf_report)
         )
-
-
-def plot_piecharts_of_costs(dict_values):
-    """
-    Kicks of plotting piecharts of different cost paramameters (ie. annuity and total cost, potentially in the future LCOE)
-    Parameters
-    ----------
-    dict_values : dict
-        all simulation input and output data up to this point
-
-    Returns
-    -------
-    Pie charts for various parameters.
-    """
-
-    # Annuity costs plot (only plot if there are values with cost over 0)
-    F1_plots.evaluate_cost_parameter(dict_values, ANNUITY_TOTAL, "annuity")
-
-    # First-investment costs plot (only plot if there are values with cost over 0)
-    F1_plots.evaluate_cost_parameter(
-        dict_values, COST_INVESTMENT, "upfront_investment_costs"
-    )
-
-    # O&M costs plot (only plot if there are values with cost over 0)
-    F1_plots.evaluate_cost_parameter(
-        dict_values, COST_OM_TOTAL, "operation_and_maintenance_costs"
-    )
-    return
 
 
 def plot_optimized_capacities(dict_values):

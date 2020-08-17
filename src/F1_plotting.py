@@ -35,7 +35,13 @@ from src.constants_json_strings import (
     ENERGY_PRODUCTION,
 )
 
-from src.E1_process_results import convert_demand_to_dataframe
+from src.E1_process_results import (
+    convert_demand_to_dataframe,
+    convert_components_to_dataframe,
+    convert_scalar_matrix_to_dataframe,
+    convert_cost_matrix_to_dataframe,
+    convert_kpi_matrix_to_dataframe,
+)
 
 r"""
 Module F1 describes all the functions that create plots.
@@ -777,7 +783,7 @@ def create_plotly_line_fig(
         Default: None
 
     file_path: str
-        Path where the image shall be saved
+        Path where the image shall be saved if not None
 
     Returns
     -------
@@ -856,7 +862,7 @@ def create_plotly_capacities_fig(
         Default: None
 
     file_path: str
-        Path where the image shall be saved
+        Path where the image shall be saved if not None
 
     Returns
     -------
@@ -948,7 +954,7 @@ def create_plotly_flow_fig(
         Default: "flows.png"
 
     file_path: str
-        Path where the image shall be saved
+        Path where the image shall be saved if not None
         Default: None
 
     Returns
@@ -1045,7 +1051,7 @@ def create_plotly_cost_fig(
         Default: "costs.png"
 
     file_path: str
-        Path where the image shall be saved
+        Path where the image shall be saved if not None
         Default: None
 
     Returns
@@ -1101,3 +1107,101 @@ def create_plotly_cost_fig(
         )
 
     return fig
+
+
+def plot_piecharts_of_costs(dict_values, file_path=None):
+    """Plotting piecharts of different cost parameters (ie. annuity, total cost, etc...)
+
+    Parameters
+    ----------
+    dict_values : dict
+        all simulation input and output data up to this point
+
+    file_path: str
+        Path where the image shall be saved if not None
+        Default: None
+
+    Returns
+    -------
+    pie_plots: dict
+       Dict with html DOM id for the figure as keys and :plotly:`plotly.graph_objs.Figure` as values
+    """
+
+    df_pie_data = convert_kpi_matrix_to_dataframe(dict_values)
+
+    # Initialize an empty list and a dict for use later in the function
+    pie_plots = {}
+    pie_data_dict = {}
+
+    # df_pie_data.reset_index(drop=True, inplace=True)
+    columns_list = list(df_pie_data.columns)
+    columns_list.remove(LABEL)
+
+    # Iterate through the list of columns of the DF which are the KPIs to be plotted
+    for kp_indic in columns_list:
+
+        # Assign an id for the plot
+        comp_id = kp_indic + "plot"
+
+        kpi_part = ""
+
+        # Make a copy of the DF to make various manipulations for the pie chart plotting
+        df_temp = df_pie_data.copy()
+
+        # Get the total value for each KPI to use in the title of the respective pie chart
+        df_temp2 = df_temp.copy()
+        df_temp2.set_index(LABEL, inplace=True)
+        total_for_title = df_temp2.at["Total", kp_indic]
+
+        # Drop the total row in the dataframe
+        df_temp.drop(df_temp.tail(1).index, inplace=True)
+
+        # Gather the data for each asset for the particular KPI, in a dict
+        for row_index in range(0, len(df_temp)):
+            pie_data_dict[df_temp.at[row_index, LABEL]] = df_temp.at[
+                row_index, kp_indic
+            ]
+
+        # Remove negative values (such as the feed-in sinks) from the dict
+        pie_data_dict = {k: v for (k, v) in pie_data_dict.items() if v > 0}
+
+        # Get the names and values for the pie chart from the above dict
+        names_plot = list(pie_data_dict.keys())
+        values_plot = list(pie_data_dict.values())
+
+        # Below loop determines the first part of the plot title, according to the kpi being plotted
+        if "annuity" in kp_indic:
+            kpi_part = "Annuity Costs ("
+            file_name = "annuity"
+            scheme_choosen = px.colors.qualitative.Set1
+        elif "investment" in kp_indic:
+            kpi_part = "Upfront Investment Costs ("
+            file_name = "upfront_investment_costs"
+            scheme_choosen = px.colors.diverging.BrBG
+        elif "om" in kp_indic:
+            kpi_part = "Operation and Maintenance Costs ("
+            file_name = "operation_and_maintainance_costs"
+            scheme_choosen = px.colors.sequential.RdBu
+
+        # Title to add to plot titles
+        project_title = ": {}, {}".format(
+            dict_values[PROJECT_DATA][PROJECT_NAME],
+            dict_values[PROJECT_DATA][SCENARIO_NAME],
+        )
+
+        # Title of the pie plot
+        plot_title = kpi_part + str(round(total_for_title, 2)) + "$) " + project_title
+
+        fig = create_plotly_cost_fig(
+            title_of_plot=plot_title,
+            names=names_plot,
+            values=values_plot,
+            color_scheme=scheme_choosen,
+            file_name=file_name,
+            file_path=file_path,
+        )
+
+        if file_path is None:
+            pie_plots[comp_id] = fig
+
+    return pie_plots

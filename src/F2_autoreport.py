@@ -82,6 +82,7 @@ from src.F1_plotting import (
     create_plotly_capacities_fig,
     create_plotly_flow_fig,
     create_plotly_cost_fig,
+    plot_piecharts_of_costs,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
@@ -361,7 +362,7 @@ def insert_plotly_figure(
         figure object
 
     id_plot: str
-        Id of the graph. Each plot gets an unique ID which can be used to manipulate the plot later.
+        Id of the graph. Should be unique.
         Default: None
 
     print_only: bool
@@ -540,16 +541,13 @@ def ready_flows_plots(dict_values):
     return multi_plots
 
 
-def ready_costs_pie_plots(df_pie_data, project_title, only_print=False):
-    r"""Prepare data for the pie plots and create the figures
+def ready_costs_pie_plots(dict_values, only_print=False):
+    r"""Insert the pie plots in a dash html layout
     
     Parameters
     ----------
-    df_pie_data: :pandas:`pandas.DataFrame<frame>`
-        This dataframe contains the costs data necessary to create the pie plots.
-
-    project_title: str
-        Contains the project and scenario names
+    dict_values: dict
+        Dict with all simulation parameters
 
     only_print: bool
         Setting this value true results in the function creating only the plot for the PDF report,
@@ -559,77 +557,15 @@ def ready_costs_pie_plots(df_pie_data, project_title, only_print=False):
     Returns
     -------
     pie_plots: list
-        List containing the cost pie plots
+        List containing the cost pie plots dash components
 
     """
-    # Initialize an empty list and a dict for use later in the function
-    pie_plots = []
-    pie_data_dict = {}
 
-    # df_pie_data.reset_index(drop=True, inplace=True)
-    columns_list = list(df_pie_data.columns)
-    columns_list.remove(LABEL)
-
-    # Iterate through the list of columns of the DF which are the KPIs to be plotted
-    for kp_indic in columns_list:
-
-        # Assign an id for the plot
-        comp_id = kp_indic + "plot"
-
-        kpi_part = ""
-
-        # Make a copy of the DF to make various manipulations for the pie chart plotting
-        df_temp = df_pie_data.copy()
-
-        # Get the total value for each KPI to use in the title of the respective pie chart
-        df_temp2 = df_temp.copy()
-        df_temp2.set_index(LABEL, inplace=True)
-        total_for_title = df_temp2.at["Total", kp_indic]
-
-        # Drop the total row in the dataframe
-        df_temp.drop(df_temp.tail(1).index, inplace=True)
-
-        # Gather the data for each asset for the particular KPI, in a dict
-        for row_index in range(0, len(df_temp)):
-            pie_data_dict[df_temp.at[row_index, LABEL]] = df_temp.at[
-                row_index, kp_indic
-            ]
-
-        # Remove negative values (such as the feed-in sinks) from the dict
-        pie_data_dict = {k: v for (k, v) in pie_data_dict.items() if v > 0}
-
-        # Get the names and values for the pie chart from the above dict
-        names_plot = list(pie_data_dict.keys())
-        values_plot = list(pie_data_dict.values())
-
-        # Below loop determines the first part of the plot title, according to the kpi being plotted
-        if "annuity" in kp_indic:
-            kpi_part = "Annuity Costs ("
-            file_name = "annuity"
-            scheme_choosen = px.colors.qualitative.Set1
-        elif "investment" in kp_indic:
-            kpi_part = "Upfront Investment Costs ("
-            scheme_choosen = px.colors.diverging.BrBG
-            file_name = "upfront_investment_costs"
-        elif "om" in kp_indic:
-            kpi_part = "Operation and Maintenance Costs ("
-            scheme_choosen = px.colors.sequential.RdBu
-            file_name = "operation_and_maintainance_costs"
-
-        # Title of the pie plot
-        plot_title = kpi_part + str(round(total_for_title, 2)) + "$) " + project_title
-
-        fig = create_plotly_cost_fig(
-            title_of_plot=plot_title,
-            names=names_plot,
-            values=values_plot,
-            color_scheme=scheme_choosen,
-        )
-
-        # Append the plot to the list by calling the plotting function directly
-        pie_plots.append(
-            insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
-        )
+    figs = plot_piecharts_of_costs(dict_values)
+    pie_plots = [
+        insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
+        for comp_id, fig in figs.items()
+    ]
     return pie_plots
 
 
@@ -1018,9 +954,7 @@ def create_app(results_json):
                             html.Div(
                                 className="add-pie-plots",
                                 children=ready_costs_pie_plots(
-                                    df_pie_data=df_kpis,
-                                    project_title=project_title,
-                                    only_print=False,
+                                    dict_values=results_json, only_print=False,
                                 ),
                             ),
                         ],
