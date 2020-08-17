@@ -71,6 +71,7 @@ from src.constants_json_strings import (
     COUNTRY,
     ENERGY_PRICE,
     ENERGY_PROVIDERS,
+    ENERGY_CONVERSION,
     UNIT,
     VALUE,
 )
