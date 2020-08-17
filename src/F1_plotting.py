@@ -689,3 +689,43 @@ def plot_input_timeseries(
     plt.close()
     plt.clf()
     plt.cla()
+
+
+def save_plots_to_disk(
+    fig_obj, file_name, file_path="", width=None, height=None, scale=None
+):
+    r"""
+    This function saves the plots generated using the Plotly library in this module to the outputs folder.
+
+    Parameters
+    ----------
+    fig_obj: instance of the classes of the Plotly go library used to generate the plots in this auto-report
+        Figure object of the plotly plots
+
+    file_name: str
+        The name of the PNG image of the plot to be saved in the output folder.
+
+    file_path: str
+        Path where the image shall be saved
+
+    width: int or float
+        The width of the picture to be saved in pixels.
+        Default: None
+
+    height: int or float
+        The height of the picture to be saved in pixels.
+        Default: None
+
+    scale: int or float
+        The scale by which the plotly image ought to be multiplied.
+        Default: None
+
+    Returns
+    -------
+    Nothing is returned. This function call results in the plots being saved as .png images to the disk.
+    """
+
+    file_name = file_name + "_plotly" + ".png"
+    file_path_out = os.path.join(file_path, file_name)
+    fig_obj.write_image(file_path_out, width=width, height=height, scale=scale)
+

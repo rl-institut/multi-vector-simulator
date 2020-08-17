@@ -345,47 +345,6 @@ def insert_log_messages(log_dict):
     )
 
 
-def save_plots_to_disk(
-    fig_obj, file_name, file_path_dict, width=None, height=None, scale=None
-):
-    r"""
-    This function saves the plots generated using the Plotly library in this module to the outputs folder.
-
-    Parameters
-    ----------
-    fig_obj: instance of the classes of the Plotly go library used to generate the plots in this auto-report
-        Figure object of the plotly plots
-
-    file_name: str
-        The name of the PNG image of the plot to be saved in the output folder.
-
-    file_path_dict: json
-        This is the results JSON file which also has the path to the output folder, given by the user.
-
-    width: int or float
-        The width of the picture to be saved in pixels.
-        Default: None
-
-    height: int or float
-        The height of the picture to be saved in pixels.
-        Default: None
-
-    scale: int or float
-        The scale by which the plotly image ought to be multiplied.
-        Default: None
-
-    Returns
-    -------
-    Nothing is returned. This function call results in the plots being saved as .png images to the disk.
-    """
-
-    file_path = file_path_dict[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
-    file_name = file_name + "_plotly" + ".png"
-    file_path_out = os.path.join(os.path.abspath(file_path), file_name)
-    fig_obj.write_image(file_path_out, width=width, height=height, scale=scale)
-    return
-
-
 def insert_single_plot(
     x_data,
     y_data,
