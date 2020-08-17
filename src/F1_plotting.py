@@ -352,8 +352,11 @@ def save_plots_to_disk(
     Nothing is returned. This function call results in the plots being saved as .png images to the disk.
     """
 
-    print("saving to disk")
-    file_name = file_name
+    if not file_name.endswith("png"):
+        file_name = file_name + ".png"
+
+    logging.info("Saving {} under {}".format(file_name, file_path))
+
     file_path_out = os.path.join(file_path, file_name)
     with open(file_path_out, "wb") as fp:
         fig_obj.write_image(fp, width=width, height=height, scale=scale)

@@ -11,25 +11,24 @@ Usage from root of repository:
 python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]]
                           [-o [PATH_OUTPUT_FOLDER]]
                           [-log [{debug,info,error,warning}]] [-f [OVERWRITE]]
+                          [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
 
 Process MVS arguments
 
 optional arguments:
-
   -h, --help            show this help message and exit
-
   -i [PATH_INPUT_FOLDER]
                         path to the input folder
-
-  -ext [{json,csv}]     type (json or csv) of the input files (default: 'json')
-
+  -ext [{json,csv}]     type (json or csv) of the input files (default: 'json'
   -o [PATH_OUTPUT_FOLDER]
                         path to the output folder for the simulation's results
-
   -log [{debug,info,error,warning}]
                         level of logging in the console
-
   -f [OVERWRITE]        overwrite the output folder if True (default: False)
+  -pdf [PDF_REPORT]     generate a pdf report of the simulation if True
+                        (default: False)
+  -png [SAVE_PNG]       generate png figures of the simulation in the
+                        output_folder if True (default: False)
 
 """
 
@@ -59,6 +58,7 @@ from src.constants import (
     INPUT_TYPE,
     OVERWRITE,
     DISPLAY_OUTPUT,
+    SAVE_PNG,
 )
 from src.constants_json_strings import LABEL
 
@@ -119,6 +119,15 @@ def create_parser():
         "-pdf",
         dest="pdf_report",
         help="generate a pdf report of the simulation if True (default: False)",
+        nargs="?",
+        const=True,
+        default=False,
+        type=bool,
+    )
+    parser.add_argument(
+        "-png",
+        dest=SAVE_PNG,
+        help="generate png figures of the simulation in the output_folder if True (default: False)",
         nargs="?",
         const=True,
         default=False,
@@ -241,6 +250,7 @@ def process_user_arguments(
     overwrite=None,
     pdf_report=None,
     display_output=None,
+    save_png=None,
     lp_file_output=False,
     welcome_text=None,
 ):
@@ -259,6 +269,8 @@ def process_user_arguments(
         (Optional) Can force tool to replace existing output folder (command line "-f")
     :param pdf_report:
         (Optional) Can generate an automatic pdf report of the simulation's results (Command line "-pdf")
+    :param: save_png:
+        (Optional) Can generate png figures with the simulation's results (Command line "-png")
     :param display_output:
         (Optional) Determines which messages are used for terminal output (command line "-log")
             "debug": All logging messages
@@ -302,6 +314,9 @@ def process_user_arguments(
     if display_output is None:
         display_output = args.get(DISPLAY_OUTPUT, DEFAULT_MAIN_KWARGS[DISPLAY_OUTPUT])
 
+    if save_png is None:
+        save_png = args.get(SAVE_PNG, DEFAULT_MAIN_KWARGS[SAVE_PNG])
+
     path_input_file = check_input_folder(path_input_folder, input_type)
     check_output_folder(path_input_folder, path_output_folder, overwrite)
 
@@ -319,6 +334,14 @@ def process_user_arguments(
     if pdf_report is True:
         user_input.update(
             {"path_pdf_report": os.path.join(path_output_folder, PDF_REPORT)}
+        )
+
+    if save_png is True:
+        user_input.update({"path_png_figs": path_output_folder})
+
+    if pdf_report is True and save_png is True:
+        raise ValueError(
+            "The option '-pdf' cannot be used conjointly with the option '-png'"
         )
 
     if display_output == "debug":

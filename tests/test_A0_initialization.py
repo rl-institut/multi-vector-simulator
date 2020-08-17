@@ -21,7 +21,7 @@ from .constants import (
     DEFAULT_OUTPUT_PATH,
     PDF_REPORT,
     PATH_INPUT_FILE,
-    SAVE_PNG
+    SAVE_PNG,
 )
 
 PARSER = A0.create_parser()
@@ -215,7 +215,17 @@ class TestProcessUserArguments:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-i", test_in_path, "-o", test_out_path, "-png", "-pdf"]
+            [
+                "-f",
+                "-log",
+                "warning",
+                "-i",
+                test_in_path,
+                "-o",
+                test_out_path,
+                "-png",
+                "-pdf",
+            ]
         ),
     )
     def test_if_both_pdf_and_png_opt_raises_error(self, m_args):

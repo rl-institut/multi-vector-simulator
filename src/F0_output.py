@@ -31,15 +31,19 @@ The model F0 output defines all functions that store evaluation results to file.
 """
 
 
-def evaluate_dict(dict_values, path_pdf_report=None):
+def evaluate_dict(dict_values, path_pdf_report=None, path_png_figs=None):
     """This is the main function of F0. It calls all functions that prepare the simulation output, ie. Storing all simulation output into excellent files, bar charts, and graphs.
 
     Parameters
     ----------
     dict_values :
         dict Of all input and output parameters up to F0
+
     path_pdf_report : (str)
         if provided, generate a pdf report of the simulation to the given path
+
+    path_png_figs : (str)
+        if provided, generate png figures of the simulation's results to the given path
 
     Returns
     -------
@@ -64,24 +68,22 @@ def evaluate_dict(dict_values, path_pdf_report=None):
         "json_with_results",
     )
 
-    # TODO: change this to give the user to possibility to save figures or not
-    fig_path = None
-
-    if fig_path is not None:
+    # generate png figures
+    if path_png_figs is not None:
         # plot demand timeseries
-        F1_plots.plot_timeseries(dict_values, data_type="demand", file_path=fig_path)
+        F1_plots.plot_timeseries(dict_values, data_type="demand", file_path=path_png_figs)
 
         # plot supply timeseries
-        F1_plots.plot_timeseries(dict_values, data_type="supply", file_path=fig_path)
+        F1_plots.plot_timeseries(dict_values, data_type="supply", file_path=path_png_figs)
 
         # plot power flows in the energy system
-        F1_plots.plot_flows(dict_values, file_path=fig_path)
+        F1_plots.plot_flows(dict_values, file_path=path_png_figs)
 
         # plot optimal capacities if there are optimized assets
-        F1_plots.plot_optimized_capacities(dict_values, file_path=fig_path)
+        F1_plots.plot_optimized_capacities(dict_values, file_path=path_png_figs)
 
         # plot annuity, first-investment and om costs
-        F1_plots.plot_piecharts_of_costs(dict_values, file_path=fig_path)
+        F1_plots.plot_piecharts_of_costs(dict_values, file_path=path_png_figs)
 
     # generate a pdf report
     if path_pdf_report is not None:
