@@ -25,6 +25,7 @@ Here is a template for new release sections
 - Added pie plots created using Plotly library to the auto-report (#482) 
 - Added functions to `F2_autoreport.py` that save the images of plots generated using Plotly to `MVS_outputs` folder as `.png` (#499)
 - Inserted doc-strings in the definitions of all the functions in `F2_autoreport.py` (#505)
+- Benchmark test for peak demand pricing for grid and battery case (#510)
 
 ### Changed
  - Move and rename json converter and parser to B0 module (#464)
