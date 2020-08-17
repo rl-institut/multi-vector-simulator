@@ -123,7 +123,7 @@ def evaluate_dict(dict_values, path_pdf_report=None):
     store_timeseries_all_busses_to_excel(dict_values)
 
     # plot optimal capacities if there are optimized assets
-    plot_optimized_capacities(dict_values)
+    F1_plots.plot_optimized_capacities(dict_values)
 
     # plot annuity, first-investment and om costs
     F1_plots.plot_piecharts_of_costs(dict_values)
@@ -144,37 +144,6 @@ def evaluate_dict(dict_values, path_pdf_report=None):
         logging.info(
             "Generating PDF report of the simulation: {}".format(path_pdf_report)
         )
-
-
-def plot_optimized_capacities(dict_values):
-    """This function determinants whether or not any capacities are added to the optimal system and calls the function plotting those capacities as a bar chart.
-
-    Parameters
-    ----------
-    dict_values :
-        dict Of all input and output parameters up to F0
-
-    Returns
-    -------
-    type
-        Bar chart of capacities
-
-    """
-
-    show_optimal_capacities = False
-    for element in dict_values[KPI][KPI_SCALAR_MATRIX][OPTIMIZED_ADD_CAP].values:
-        if element > 0:
-            show_optimal_capacities = True
-
-    if show_optimal_capacities is True:
-        F1_plots.capacities(
-            dict_values,
-            dict_values[SIMULATION_SETTINGS],
-            dict_values[PROJECT_DATA],
-            dict_values[KPI][KPI_SCALAR_MATRIX][LABEL],
-            dict_values[KPI][KPI_SCALAR_MATRIX][OPTIMIZED_ADD_CAP],
-        )
-    return show_optimal_capacities
 
 
 def store_scalars_to_excel(dict_values):

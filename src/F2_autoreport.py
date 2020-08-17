@@ -79,10 +79,9 @@ from src.F1_plotting import (
     convert_plot_data_to_dataframe,
     parse_simulation_log,
     create_plotly_line_fig,
-    create_plotly_capacities_fig,
     create_plotly_flow_fig,
-    create_plotly_cost_fig,
     plot_piecharts_of_costs,
+    plot_optimized_capacities,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
@@ -455,19 +454,13 @@ def ready_timeseries_plots(df_pd, dict_of_labels, only_print=False):
     return plots
 
 
-def ready_capacities_plots(df_kpis, plot_title="", only_print=False):
-    r""" Call function to produce capacities bar plot and return the plot.
-
-    Prepare the data to be used for plotting the capacities bar plots from the simulation results
-    and calls the appropriate plotting function that generates the plots.
+def ready_capacities_plots(dict_values, only_print=False):
+    r"""Insert the capacities bar plots in a dash html layout
 
     Parameters
     ----------
-    df_kpis: :pandas:`pandas.DataFrame<frame>`
-        This dataframe holds the data required for the capacities bar plot.
-
-    plot_title: str
-        title of the figure
+    dict_values: dict
+        Dict with all simulation parameters
 
     only_print: bool
         Setting this value true results in the function creating only the plot for the PDF report,
@@ -476,28 +469,17 @@ def ready_capacities_plots(df_kpis, plot_title="", only_print=False):
 
     Returns
     -------
-    plot: list
-        This list holds the html.Div element(s) which themselves contain the plotly plots.
+    cap_plots: list
+        List containing the capacities bar plots dash components
+
     """
 
-    x_values = []
-    y_values = []
-
-    for kpi, cap in zip(list(df_kpis["label"]), list(df_kpis["optimizedAddCap"])):
-        if cap > 0:
-            x_values.append(kpi)
-            y_values.append(cap)
-
-    fig = create_plotly_capacities_fig(
-        x_data=x_values,
-        y_data=y_values,
-        plot_title=plot_title,
-        x_axis_name="Items",
-        y_axis_name="Capacities",
-    )
-
-    plot = insert_plotly_figure(fig, id_plot="capacities-plot", print_only=only_print,)
-    return plot
+    figs = plot_optimized_capacities(dict_values)
+    cap_plots = [
+        insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
+        for comp_id, fig in figs.items()
+    ]
+    return cap_plots
 
 
 def ready_flows_plots(dict_values):
@@ -727,14 +709,6 @@ def create_app(results_json):
     df_all_res = convert_plot_data_to_dataframe(dict_for_plots, "supplies")
     df_scalar_matrix = convert_scalar_matrix_to_dataframe(results_json)
     df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
-    df_kpis = convert_kpi_matrix_to_dataframe(results_json)
-
-    # Add dataframe to hold all the KPIs and optimized additional capacities
-    df_capacities = results_json[KPI][KPI_SCALAR_MATRIX]
-    df_capacities.drop(
-        columns=[TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW], inplace=True,
-    )
-    df_capacities.reset_index(drop=True, inplace=True)
 
     warnings_dict = parse_simulation_log(log_type="WARNING")
     errors_dict = parse_simulation_log(log_type="ERROR")
@@ -932,9 +906,7 @@ def create_app(results_json):
                             html.Div(
                                 className="add-cap-plot",
                                 children=ready_capacities_plots(
-                                    df_kpis=df_capacities,
-                                    plot_title="Optimal additional capacities (kW/kWh/kWp)"
-                                    + project_title,
+                                    dict_values=results_json
                                 ),
                             ),
                             insert_body_text(
@@ -996,4 +968,5 @@ if __name__ == "__main__":
     )
 
     test_app = create_app(dict_values)
-    open_in_browser(test_app)
+    # open_in_browser(test_app)
+    test_app.run_server(debug=True)

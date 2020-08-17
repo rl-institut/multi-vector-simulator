@@ -33,13 +33,18 @@ from src.constants_json_strings import (
     ENERGY_CONSUMPTION,
     TIMESERIES,
     ENERGY_PRODUCTION,
+    OPTIMIZED_ADD_CAP,
+    TOTAL_FLOW,
+    ANNUAL_TOTAL_FLOW,
+    PEAK_FLOW,
+    AVERAGE_FLOW,
+    KPI_SCALAR_MATRIX,
 )
 
 from src.E1_process_results import (
     convert_demand_to_dataframe,
     convert_components_to_dataframe,
     convert_scalar_matrix_to_dataframe,
-    convert_cost_matrix_to_dataframe,
     convert_kpi_matrix_to_dataframe,
 )
 
@@ -137,77 +142,6 @@ def flows(dict_values, user_input, project_data, results_timeseries, bus, interv
     return
 
 
-def capacities(dict_values, user_input, project_data, assets, capacities):
-    """Determines the assets for which the optimized capacity is larger than zero and then plots
-    those capacities in a bar chart.
-
-    Parameters
-    ----------
-    dict_values: dict
-        Dict with all simulation parameters
-    user_input : dict
-        Simulation settings including the output path
-    project_data : dict
-        Project data including project name and scenario name
-    assets : list
-        list of asset names
-    capacities : list
-        list of asset capacities
-
-    Returns
-    -------
-    type
-        png with bar chart of optimized capacities
-
-    """
-
-    # only items with an optimal added capacity over 0 are selected
-    indexes = []
-    capacities_added = []
-    i = 0
-    for capacity in capacities:
-        if capacity > 0:
-            indexes.append(i)
-            capacities_added.append(capacity)
-        i += 1
-    i = 0
-    assets_added = []
-    for asset in assets:
-        if i in indexes:
-            assets_added.append(asset)
-        i += 1
-
-    # Data frame definition and plotting
-    dfcapacities = pd.DataFrame()
-    dfcapacities["items"] = assets_added
-    dfcapacities["capacities"] = capacities_added
-
-    logging.info("Creating bar-chart for components capacities")
-
-    dfcapacities.plot.bar(
-        x="items",
-        y="capacities",
-        title="Optimal additional capacities (kW/kWh/kWp): "
-        + project_data[PROJECT_NAME]
-        + ", "
-        + project_data[SCENARIO_NAME],
-    )
-
-    path = os.path.join(
-        user_input[PATH_OUTPUT_FOLDER], "optimal_additional_capacities.png"
-    )
-    plt.savefig(
-        path, bbox_inches="tight",
-    )
-
-    dict_values[PATHS_TO_PLOTS][PLOTS_PERFORMANCE] += [str(path)]
-    plt.close()
-    plt.clf()
-    plt.cla()
-
-    return
-
-
 def evaluate_cost_parameter(dict_values, parameter, file_name):
     """
     Generates pie plot of a chosen cost parameter, and if one asset is overly present in the cost
@@ -252,14 +186,14 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
             + dict_values[PROJECT_DATA][SCENARIO_NAME]
         )
 
-        plot_a_piechart(
-            dict_values,
-            dict_values[SIMULATION_SETTINGS],
-            file_name,
-            costs_perc_grouped_pandas,
-            label,
-            title,
-        )
+        # plot_a_piechart(
+        #     dict_values,
+        #     dict_values[SIMULATION_SETTINGS],
+        #     file_name,
+        #     costs_perc_grouped_pandas,
+        #     label,
+        #     title,
+        # )
 
         # if there is a dominant assets, another plot with the remaining assets is created
         (
@@ -281,14 +215,14 @@ def evaluate_cost_parameter(dict_values, parameter, file_name):
                 + dict_values[PROJECT_DATA][SCENARIO_NAME]
             )
 
-            plot_a_piechart(
-                dict_values,
-                dict_values[SIMULATION_SETTINGS],
-                file_name + "_minor",
-                costs_perc_grouped_minor,
-                label + " (minor)",
-                title,
-            )
+            # plot_a_piechart(
+            #     dict_values,
+            #     dict_values[SIMULATION_SETTINGS],
+            #     file_name + "_minor",
+            #     costs_perc_grouped_minor,
+            #     label + " (minor)",
+            #     title,
+            # )
     return
 
 
@@ -390,52 +324,6 @@ def recalculate_distribution_of_rest_costs(costs_perc_grouped_pandas):
         rest = 0
 
     return plot_minor_costs_pie, costs_perc_grouped_minor, rest
-
-
-def plot_a_piechart(dict_values, settings, file_name, costs, label, title):
-    """
-    plots a pie chart of a dataset
-
-    Parameters
-    ----------
-    dict_values: dict
-        Dict with all simulation parameters
-    settings: dict
-        includes output path
-
-    file_name: str
-        name of the plot
-
-    costs: pd.DataFrame
-        cost data
-
-    label: str
-        label of the pie chart, ie. cost type
-
-    title: str
-        title of the pie chart
-
-    Returns
-    -------
-    Pie chart of a dataset
-
-    """
-    if costs.empty is False:
-        logging.info("Creating pie-chart for total " + label)
-        costs.plot.pie(
-            title=title, autopct="%1.1f%%", subplots=True,
-        )
-        path = os.path.join(settings[PATH_OUTPUT_FOLDER], file_name + ".png")
-        plt.savefig(
-            path, bbox_inches="tight",
-        )
-        dict_values[PATHS_TO_PLOTS][PLOTS_COSTS] += [str(path)]
-        plt.close()
-        plt.clf()
-        plt.cla()
-    else:
-        logging.debug("No plot for costs created, as remaining costs were 0.")
-    return
 
 
 def convert_plot_data_to_dataframe(plot_data_dict, data_type):
@@ -924,6 +812,66 @@ def create_plotly_capacities_fig(
         )
 
     return fig
+
+
+def plot_optimized_capacities(
+    dict_values, file_path=None,
+):
+    """Plot capacities as a bar chart.
+
+    Parameters
+    ----------
+    dict_values :
+        dict Of all input and output parameters up to F0
+
+    file_path: str
+        Path where the image shall be saved if not None
+        Default: None
+
+    Returns
+    -------
+    Dict with html DOM id for the figure as key and :plotly:`plotly.graph_objs.Figure` as value
+    """
+
+    # Add dataframe to hold all the KPIs and optimized additional capacities
+    df_capacities = dict_values[KPI][KPI_SCALAR_MATRIX]
+    df_capacities.drop(
+        columns=[TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW], inplace=True,
+    )
+    df_capacities.reset_index(drop=True, inplace=True)
+
+    # TODO: determine whether this code is still needed or not
+    # show_optimal_capacities = False
+    # for element in dict_values[KPI][KPI_SCALAR_MATRIX][OPTIMIZED_ADD_CAP].values:
+    #     if element > 0:
+    #         show_optimal_capacities = True
+
+    x_values = []
+    y_values = []
+
+    for kpi, cap in zip(
+        list(df_capacities[LABEL]), list(df_capacities[OPTIMIZED_ADD_CAP])
+    ):
+        if cap > 0:
+            x_values.append(kpi)
+            y_values.append(cap)
+
+    # Title to add to plot titles
+    project_title = ": {}, {}".format(
+        dict_values[PROJECT_DATA][PROJECT_NAME],
+        dict_values[PROJECT_DATA][SCENARIO_NAME],
+    )
+
+    fig = create_plotly_capacities_fig(
+        x_data=x_values,
+        y_data=y_values,
+        plot_title="Optimal additional capacities (kW/kWh/kWp)" + project_title,
+        x_axis_name="Items",
+        y_axis_name="Capacities",
+        file_path=file_path,
+    )
+
+    return {"capacities_plot": fig}
 
 
 def create_plotly_flow_fig(
