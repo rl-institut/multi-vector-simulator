@@ -927,7 +927,7 @@ def create_plotly_flow_fig(
     file_name="flows.png",
     file_path=None,
 ):
-    r"""Generate figure an asset's flow.
+    r"""Generate figure of an asset's flow.
 
     Parameters
     ----------

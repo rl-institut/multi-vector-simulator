@@ -65,6 +65,7 @@ from src.constants_json_strings import (
     SCENARIO_ID,
     PEAK_FLOW,
     AVERAGE_FLOW,
+    OPTIMIZED_FLOWS,
 )
 
 from src.E1_process_results import (
@@ -453,10 +454,10 @@ def ready_timeseries_plots(df_pd, dict_of_labels, only_print=False):
     return plots
 
 
-def ready_capacities_plots(df_kpis, json_results_file, only_print=False):
+def ready_capacities_plots(df_kpis, plot_title="", only_print=False):
     r""" Call function to produce capacities bar plot and return the plot.
 
-    This function prepares the data to be used for plotting the capacities bar plots, from the simulation results
+    Prepare the data to be used for plotting the capacities bar plots from the simulation results
     and calls the appropriate plotting function that generates the plots.
 
     Parameters
@@ -464,12 +465,12 @@ def ready_capacities_plots(df_kpis, json_results_file, only_print=False):
     df_kpis: :pandas:`pandas.DataFrame<frame>`
         This dataframe holds the data required for the capacities bar plot.
 
-    json_results_file: json
-        This is the results file, output of the simulation.
+    plot_title: str
+        title of the figure
 
     only_print: bool
-        Setting this value true results in the function creating only the plot for the PDF report, but not the web app
-        version of the auto-report.
+        Setting this value true results in the function creating only the plot for the PDF report,
+        but not the web app version of the auto-report.
         Default: False
 
     Returns
@@ -486,19 +487,18 @@ def ready_capacities_plots(df_kpis, json_results_file, only_print=False):
             x_values.append(kpi)
             y_values.append(cap)
 
-    plot = insert_single_plot(
+    fig = create_plotly_capacities_fig(
         x_data=x_values,
         y_data=y_values,
-        plot_type="bar",
-        plot_title="Optimal additional capacities (kW/kWh/kWp): "
-        + json_results_file[PROJECT_DATA][PROJECT_NAME]
-        + ", "
-        + json_results_file[PROJECT_DATA][SCENARIO_NAME],
+        plot_title=plot_title,
         x_axis_name="Items",
-        y_axis_name="Capacities",
+        y_axis_name="Capacities"
+    )
+
+    plot = insert_plotly_figure(
+        fig,
         id_plot="capacities-plot",
         print_only=only_print,
-        path_file=json_results_file,
     )
     return plot
 
@@ -1129,8 +1129,10 @@ def create_app(results_json):
                                 className="add-cap-plot",
                                 children=ready_capacities_plots(
                                     df_kpis=df_capacities,
-                                    json_results_file=results_json,
-                                    only_print=False,
+                                    plot_title="Optimal additional capacities (kW/kWh/kWp): "
+                                    + results_json[PROJECT_DATA][PROJECT_NAME]
+                                    + ", "
+                                    + results_json[PROJECT_DATA][SCENARIO_NAME]
                                 ),
                             ),
                             insert_body_text(
