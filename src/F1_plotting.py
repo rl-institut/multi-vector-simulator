@@ -62,6 +62,7 @@ def convert_plot_data_to_dataframe(plot_data_dict, data_type):
     ----------
     plot_data_dict: dict
         timeseries for either demand or supply
+
     data_type: str
         one of "demand" or "supply"
 
@@ -439,7 +440,7 @@ def create_plotly_line_fig(
         },
     )
 
-    name_file = "input_timeseries_" + plot_title
+    name_file = "input_timeseries_" + plot_title + ".png"
 
     if file_path is not None:
 
@@ -454,6 +455,63 @@ def create_plotly_line_fig(
         )
 
     return fig
+
+
+def plot_timeseries(dict_values, data_type="demand", file_path=None):
+    r"""Plot timeseries as line chart.
+
+    Parameters
+    ----------
+    dict_values :
+        dict Of all input and output parameters up to F0
+
+    data_type: str
+        one of "demand" or "supply"
+        Default: "demand"
+
+    file_path: str
+        Path where the image shall be saved if not None
+        Default: None
+
+    Returns
+    -------
+    Dict with html DOM id for the figure as key and :plotly:`plotly.graph_objs.Figure` as value
+    """
+
+    df_dem = convert_demand_to_dataframe(dict_values)
+    dict_for_plots, dict_plot_labels = extract_plot_data_and_title(
+        dict_values, df_dem=df_dem
+    )
+
+    df_pd = convert_plot_data_to_dataframe(dict_for_plots, data_type)
+
+    list_of_keys = list(df_pd.columns)
+    list_of_keys.remove("timestamp")
+    plots = {}
+    # TODO if the number of plots is larger than this list, it will not plot more
+    colors_list = [
+        "royalblue",
+        "#3C5233",
+        "firebrick",
+        "#002500",
+        "#DEB841",
+        "#4F3130",
+    ]
+    for (component, color_plot) in zip(list_of_keys, colors_list):
+        comp_id = component + "-plot"
+        fig = create_plotly_line_fig(
+            x_data=df_pd["timestamp"],
+            y_data=df_pd[component],
+            plot_title=dict_plot_labels[component],
+            x_axis_name="Time",
+            y_axis_name="kW",
+            color_for_plot=color_plot,
+            file_path=file_path,
+        )
+        if file_path is None:
+            plots[comp_id] = fig
+
+    return plots
 
 
 def create_plotly_capacities_fig(
@@ -571,12 +629,6 @@ def plot_optimized_capacities(
     )
     df_capacities.reset_index(drop=True, inplace=True)
 
-    # TODO: determine whether this code is still needed or not
-    show_optimal_capacities = False
-    for element in dict_values[KPI][KPI_SCALAR_MATRIX][OPTIMIZED_ADD_CAP].values:
-        if element > 0:
-            show_optimal_capacities = True
-
     x_values = []
     y_values = []
 
@@ -602,7 +654,7 @@ def plot_optimized_capacities(
         file_path=file_path,
     )
 
-    return {"capacities_plot": fig} if show_optimal_capacities is True else {}
+    return {"capacities_plot": fig}
 
 
 def create_plotly_flow_fig(
@@ -774,8 +826,8 @@ def create_plotly_cost_fig(
         List containing the values of the labels to be plotted in the pie plot.
 
     color_scheme: instance of the px.colors class of the Plotly express library
-        This parameter holds the color scheme which is palette of colors (list of hex values) to be applied to the pie
-        plot to be created.
+        This parameter holds the color scheme which is palette of colors (list of hex values) to be
+        applied to the pie plot to be created.
 
     file_name: str
         Name of the image file.
@@ -936,6 +988,7 @@ def plot_piecharts_of_costs(dict_values, file_path=None):
             pie_plots[comp_id] = fig
 
     return pie_plots
+
 
 if __name__ == "__main__":
     title = "a_title"

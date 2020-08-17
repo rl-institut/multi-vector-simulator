@@ -2,7 +2,6 @@ import json
 import logging
 import os
 
-import numpy
 import pandas as pd
 
 from src.B0_data_input_json import convert_from_special_types_to_json
@@ -10,8 +9,6 @@ import src.F1_plotting as F1_plots
 import src.F2_autoreport as autoreport
 from src.constants import (
     SIMULATION_SETTINGS,
-    PROJECT_DATA,
-    SECTORS,
     PATH_OUTPUT_FOLDER,
 )
 from src.constants_json_strings import (
@@ -70,14 +67,21 @@ def evaluate_dict(dict_values, path_pdf_report=None):
     # TODO: change this to give the user to possibility to save figures or not
     fig_path = None
 
-    # plot power flows in the energy system
-    F1_plots.plot_flows(dict_values, file_path=fig_path)
+    if fig_path is not None:
+        # plot demand timeseries
+        F1_plots.plot_timeseries(dict_values, data_type="demand", file_path=fig_path)
 
-    # plot optimal capacities if there are optimized assets
-    F1_plots.plot_optimized_capacities(dict_values, file_path=fig_path)
+        # plot supply timeseries
+        F1_plots.plot_timeseries(dict_values, data_type="supply", file_path=fig_path)
 
-    # plot annuity, first-investment and om costs
-    F1_plots.plot_piecharts_of_costs(dict_values, file_path=fig_path)
+        # plot power flows in the energy system
+        F1_plots.plot_flows(dict_values, file_path=fig_path)
+
+        # plot optimal capacities if there are optimized assets
+        F1_plots.plot_optimized_capacities(dict_values, file_path=fig_path)
+
+        # plot annuity, first-investment and om costs
+        F1_plots.plot_piecharts_of_costs(dict_values, file_path=fig_path)
 
     # generate a pdf report
     if path_pdf_report is not None:

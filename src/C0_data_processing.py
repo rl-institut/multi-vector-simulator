@@ -20,7 +20,6 @@ from src.constants_json_strings import *
 import src.C1_verification as C1
 import src.C2_economic_functions as C2
 import src.F0_output as F0
-import src.F1_plotting as F1  # only function F1.plot_input_timeseries()
 
 """
 Module C0 prepares the data red from csv or json for simulation, ie. pre-processes it. 
@@ -806,13 +805,6 @@ def add_a_transformer_for_each_peak_demand_pricing_period(
             timeseries_availability=dict_availability_timeseries[key],
         )
 
-        F1.plot_input_timeseries(
-            dict_values=dict_values,
-            user_input=dict_values[SIMULATION_SETTINGS],
-            timeseries=dict_availability_timeseries[key],
-            asset_name="Availability of " + transformer_name,
-        )
-
         list_of_dso_energyConversion_assets.append(transformer_name)
 
     logging.debug(
@@ -1454,26 +1446,6 @@ def receive_timeseries_from_csv(
                 )
             if any(dict_asset[TIMESERIES_NORMALIZED].values) < 0:
                 logging.warning("Error, %s timeseries negative.", dict_asset[LABEL])
-
-    # plot all timeseries that are red into simulation input
-    try:
-        F1.plot_input_timeseries(
-            dict_values=dict_values,
-            user_input=settings,
-            timeseries=dict_asset[TIMESERIES],
-            asset_name=dict_asset[LABEL],
-            column_head=header,
-            is_demand_profile=is_demand_profile,
-        )
-    except:
-        F1.plot_input_timeseries(
-            dict_values=dict_values,
-            user_input=settings,
-            timeseries=dict_asset[input_type][VALUE],
-            asset_name=dict_asset[LABEL],
-            column_head=header,
-            is_demand_profile=is_demand_profile,
-        )
 
 
 def treat_multiple_flows(dict_asset, dict_values, parameter):

@@ -12,8 +12,6 @@ import webbrowser
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
-import plotly.graph_objs as go
-import plotly.express as px
 import dash_table
 import folium
 import git
@@ -37,7 +35,6 @@ flask_log = logging.getLogger("werkzeug")
 flask_log.setLevel(logging.ERROR)
 
 from src.constants import (
-    PATH_OUTPUT_FOLDER,
     REPO_PATH,
     REPORT_PATH,
     OUTPUT_FOLDER,
@@ -66,10 +63,8 @@ from src.E1_process_results import (
     convert_cost_matrix_to_dataframe,
 )
 from src.F1_plotting import (
-    extract_plot_data_and_title,
-    convert_plot_data_to_dataframe,
     parse_simulation_log,
-    create_plotly_line_fig,
+    plot_timeseries,
     plot_piecharts_of_costs,
     plot_optimized_capacities,
     plot_flows,
@@ -394,54 +389,34 @@ def insert_plotly_figure(
     return html.Div(children=rendered_plots)
 
 
-def ready_timeseries_plots(df_pd, dict_of_labels, only_print=False):
-    r"""
-    This function prepares the data for and calls insert_single_plot for plotting line and bar plots.
+def ready_timeseries_plots(dict_values, data_type="demand", only_print=False):
+    r"""Insert the timeseries line plots in a dash html layout.
 
     Parameters
     ----------
-    df_pd: :pandas:`pandas.DataFrame<frame>`
-        The dataframe containing all of the data to be plotted.
+    dict_values: dict
+        Dict with all simulation parameters
 
-    dict_of_labels: dict
-        Dictionary holding the titles to be used for the plots generated.
+    data_type: str
+        one of "demand" or "supply"
+        Default: "demand"
 
     only_print: bool
+        Setting this value true results in the function creating only the plot for the PDF report,
+        but not the web app version of the auto-report.
         Default: False
-
-    results_file: json results file
-        This is the JSON results file that contains the user-specified path where the plots are to be saved as images.
-        Default: None
 
     Returns
     -------
     plots: list
-        This list holds the html.Div elements which have the plots encased.
+        List containing the timeseries line plots dash components
     """
 
-    list_of_keys = list(df_pd.columns)
-    list_of_keys.remove("timestamp")
-    plots = []
-    # TODO if the number of plots is larger than this list, it will not plot more
-    colors_list = [
-        "royalblue",
-        "#3C5233",
-        "firebrick",
-        "#002500",
-        "#DEB841",
-        "#4F3130",
+    figs = plot_timeseries(dict_values, data_type)
+    plots = [
+        insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
+        for comp_id, fig in figs.items()
     ]
-    for (component, color_plot) in zip(list_of_keys, colors_list):
-        comp_id = component + "-plot"
-        fig = create_plotly_line_fig(
-            x_data=df_pd["timestamp"],
-            y_data=df_pd[component],
-            plot_title=dict_of_labels[component],
-            x_axis_name="Time",
-            y_axis_name="kW",
-            color_for_plot=color_plot,
-        )
-        plots.append(insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print))
     return plots
 
 
@@ -462,7 +437,6 @@ def ready_capacities_plots(dict_values, only_print=False):
     -------
     cap_plots: list
         List containing the capacities bar plots dash components
-
     """
 
     figs = plot_optimized_capacities(dict_values)
@@ -636,12 +610,6 @@ def create_app(results_json):
         + ")"
     )
 
-    # Title to add to plot titles
-    project_title = ": {}, {}".format(
-        dict_values[PROJECT_DATA][PROJECT_NAME],
-        dict_values[PROJECT_DATA][SCENARIO_NAME],
-    )
-
     scenarioName = (
         results_json[PROJECT_DATA][SCENARIO_NAME]
         + " (ID: "
@@ -676,13 +644,7 @@ def create_app(results_json):
         sec_list += "\n" + f"\u2022 {sec.upper()}"
 
     df_dem = convert_demand_to_dataframe(results_json)
-    dict_for_plots, dict_plot_labels = extract_plot_data_and_title(
-        results_json, df_dem=df_dem
-    )
-
     df_comp = convert_components_to_dataframe(results_json)
-    df_all_demands = convert_plot_data_to_dataframe(dict_for_plots, "demands")
-    df_all_res = convert_plot_data_to_dataframe(dict_for_plots, "supplies")
     df_scalar_matrix = convert_scalar_matrix_to_dataframe(results_json)
     df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
 
@@ -837,15 +799,11 @@ def create_app(results_json):
                             ),
                             make_dash_data_table(df_dem),
                             html.Div(
-                                children=ready_timeseries_plots(
-                                    df_all_demands, dict_plot_labels,
-                                )
+                                children=ready_timeseries_plots(results_json, "demand")
                             ),
                             html.H4("Resources"),
                             html.Div(
-                                children=ready_timeseries_plots(
-                                    df_all_res, dict_plot_labels,
-                                )
+                                children=ready_timeseries_plots(results_json, "supply")
                             ),
                         ],
                     ),
