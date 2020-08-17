@@ -212,7 +212,7 @@ class TestACElectricityBus:
         battery_discharge = (
             abs(busses_flow["demand_01"])
             - busses_flow["Electricity grid DSO_consumption_period_1"]
-        )
+        ) # todo: replace this by discharge column when implemented
         # look for peak demand in column
         for i in range(0, len(DSO_period_1)):
             if DSO_period_1[i] == peak_demand and abs(demand[i]) < DSO_period_1[i]:
