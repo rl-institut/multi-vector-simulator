@@ -169,7 +169,7 @@ class TestACElectricityBus:
     # todo: Add test for fuel consumption (kWh/l).
 
     @pytest.mark.skipif(
-        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER, TESTS_ON_DEV, "testing_AE"),
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
         reason="Benchmark test deactivated, set env variable "
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
