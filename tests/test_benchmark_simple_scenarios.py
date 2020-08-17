@@ -200,23 +200,22 @@ class TestACElectricityBus:
         )
         # make the time the index
         busses_flow = busses_flow.set_index("Unnamed: 0")
-        for i in busses_flow["Electricity grid DSO_consumption_period_1"]:
-            if (
-                i == peak_demand
-                and abs(busses_flow["demand_01"])
-                < busses_flow["Electricity grid DSO_consumption_period_1"]
-            ):
-                assert busses_flow["battery"] < 0
-            if (
-                i == peak_demand
-                and abs(busses_flow["demand_01"])
-                > busses_flow["Electricity grid DSO_consumption_period_1"]
-            ):
-                assert (
-                    abs(busses_flow["demand_01"])
-                    - busses_flow["Electricity grid DSO_consumption_period_1"]
-                    > 0
-                )
+        # save the columns with the values to be used
+        DSO_period_1 = busses_flow["Electricity grid DSO_consumption_period_1"]
+        demand = busses_flow["demand_01"]
+        battery_charge = busses_flow["battery"]
+        battery_discharge = (
+            abs(busses_flow["demand_01"])
+            - busses_flow["Electricity grid DSO_consumption_period_1"]
+        )
+        # look for peak demand in column
+        for i in range(0, len(DSO_period_1)):
+            if DSO_period_1[i] == peak_demand and abs(demand[i]) < DSO_period_1[i]:
+                assert battery_charge[i] < 0
+            if DSO_period_1[i] == peak_demand and abs(demand[i]) > DSO_period_1[i]:
+                assert battery_discharge[i] > 0
+            if DSO_period_1[i] == peak_demand and DSO_period_1[i - 1] != peak_demand:
+                assert battery_charge[i - 1] < 0
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
