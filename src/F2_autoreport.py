@@ -21,7 +21,6 @@ import pandas as pd
 import reverse_geocoder as rg
 import staticmap
 import asyncio
-import textwrap
 import copy
 
 import pyppdf.patch_pyppeteer
@@ -82,6 +81,7 @@ from src.F1_plotting import (
     create_plotly_line_fig,
     create_plotly_capacities_fig,
     create_plotly_flow_fig,
+    create_plotly_cost_fig,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
@@ -450,7 +450,7 @@ def ready_timeseries_plots(df_pd, dict_of_labels, only_print=False):
             y_axis_name="kW",
             color_for_plot=color_plot,
         )
-        plots.append(insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print,))
+        plots.append(insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print))
     return plots
 
 
@@ -492,14 +492,10 @@ def ready_capacities_plots(df_kpis, plot_title="", only_print=False):
         y_data=y_values,
         plot_title=plot_title,
         x_axis_name="Items",
-        y_axis_name="Capacities"
+        y_axis_name="Capacities",
     )
 
-    plot = insert_plotly_figure(
-        fig,
-        id_plot="capacities-plot",
-        print_only=only_print,
-    )
+    plot = insert_plotly_figure(fig, id_plot="capacities-plot", print_only=only_print,)
     return plot
 
 
@@ -539,157 +535,31 @@ def ready_flows_plots(dict_values):
             y_legend=bus + " flow in kWh",
             plot_title=title,
         )
-        multi_plots.append(
-            insert_plotly_figure(
-                fig,
-                pdf_only=False,
-                plot_id=comp_id,
-                file_path=dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-                file_name=bus + "_flows_in_LES",
-            )
-        )
+        multi_plots.append(insert_plotly_figure(fig, print_only=False, id_plot=comp_id))
 
     return multi_plots
 
 
-def insert_pie_plots(
-    title_of_plot,
-    names,
-    values,
-    color_scheme,
-    plot_id,
-    print_only=False,
-    name_file=None,
-    path_file_dict=None,
-):
-    r"""Function that creates and returns a html.Div element with a list of the pie plots.
-
-    Parameters
-    ----------
-    title_of_plot: str
-
-    names: list
-        List containing the labels of the pies in the pie plot.
-
-    values: list
-        List containing the values of the labels to be plotted in the pie plot.
-
-    color_scheme: instance of the px.colors class of the Plotly express library
-        This parameter holds the color scheme which is palette of colors (list of hex values) to be applied to the pie
-        plot to be created.
-
-    plot_id: str
-        Unique alphanumeric value assigned to each pie plot, which can be used for further manipulation of the pie plot.
-
-    print_only: bool
-        Setting this value true results in the function creating only the plot for the PDF report, but not the web app
-        version of the auto-report.
-        Default: False
-
-    name_file: str
-        This forms part of the name of the file to be used when saving the image of the plot generated to disk.
-        Default: None
-
-    path_file_dict: json
-        This is the results json file which contains the path defined by the user using which the images of the plots
-        generated are saved in the output folder.
-        Default: None
-
-    Returns
-    -------
-    html.Div() element
-        Contains the list of the pie plots generated, both for the print and web app versions.
-    """
-
-    # Wrap the text of the title into next line if it exceeds the length given below
-    title_of_plot = textwrap.wrap(title_of_plot, width=75)
-    title_of_plot = "<br>".join(title_of_plot)
-
-    fig = go.Figure(
-        go.Pie(
-            labels=names,
-            values=values,
-            textposition="inside",
-            insidetextorientation="radial",
-            texttemplate="%{label} <br>%{percent}",
-            marker=dict(colors=color_scheme),
-        ),
-    )
-
-    fig.update_layout(
-        title={
-            "text": title_of_plot,
-            "y": 0.9,
-            "x": 0.5,
-            "font_size": 23,
-            "xanchor": "center",
-            "yanchor": "top",
-            "pad": {"r": 5, "l": 5, "b": 5, "t": 5},
-        },
-        font_family="sans-serif",
-        height=500,
-        width=700,
-        autosize=True,
-        legend=dict(orientation="v", y=0.5, yanchor="middle", x=0.95, xanchor="right",),
-        margin=dict(l=10, r=10, b=50, pad=2),
-        uniformtext_minsize=18,
-    )
-    fig.update_traces(hoverinfo="label+percent", textinfo="label", textfont_size=18)
-
-    # Function call to save the Plotly plot to the disk
-    save_plots_to_disk(
-        fig_obj=fig,
-        file_path_dict=path_file_dict,
-        file_name=name_file,
-        width=1200,
-        height=600,
-        scale=6,
-    )
-
-    # Specific modifications for print version
-    fig2 = copy.deepcopy(fig)
-    # Make the legend horizontally oriented so as to prevent the legend from being cut off
-    fig2.update_layout(legend=dict(orientation="h", y=-0.1, x=0.5, xanchor="center"))
-
-    plot_created = [
-        html.Img(
-            className="print-only dash-plot",
-            src="data:image/png;base64,{}".format(
-                base64.b64encode(
-                    fig2.to_image(format="png", height=500, width=900)
-                ).decode(),
-            ),
-        )
-    ]
-
-    if print_only is False:
-        plot_created.append(
-            dcc.Graph(className="no-print", id=plot_id, figure=fig, responsive=True,)
-        )
-    return html.Div(children=plot_created)
-
-
-def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
-    r"""Process data for the pie plots and call the relevant functions, resulting in the generation of the pie plots.
+def ready_costs_pie_plots(df_pie_data, project_title, only_print=False):
+    r"""Prepare data for the pie plots and create the figures
     
     Parameters
     ----------
     df_pie_data: :pandas:`pandas.DataFrame<frame>`
         This dataframe contains the costs data necessary to create the pie plots.
 
-
-    json_results_file: json
-        This is json file with all the results necessary to create the elements of the autoreport. In this case, it is
-        required to determine the user-provided outputs folder path.
-
+    project_title: str
+        Contains the project and scenario names
 
     only_print: bool
-        Setting this value true results in the function creating only the plot for the PDF report, but not the web app
-        version of the auto-report.
+        Setting this value true results in the function creating only the plot for the PDF report,
+        but not the web app version of the auto-report.
         Default: False
 
     Returns
     -------
+    pie_plots: list
+        List containing the cost pie plots
 
     """
     # Initialize an empty list and a dict for use later in the function
@@ -700,7 +570,7 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
     columns_list = list(df_pie_data.columns)
     columns_list.remove(LABEL)
 
-    # Loop to iterate through the list of columns of the DF which are nothing but the KPIs to be plotted
+    # Iterate through the list of columns of the DF which are the KPIs to be plotted
     for kp_indic in columns_list:
 
         # Assign an id for the plot
@@ -747,27 +617,18 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
             file_name = "operation_and_maintainance_costs"
 
         # Title of the pie plot
-        plot_title = (
-            kpi_part
-            + str(round(total_for_title, 2))
-            + "$): "
-            + json_results_file[PROJECT_DATA][PROJECT_NAME]
-            + ", "
-            + json_results_file[PROJECT_DATA][SCENARIO_NAME]
+        plot_title = kpi_part + str(round(total_for_title, 2)) + "$) " + project_title
+
+        fig = create_plotly_cost_fig(
+            title_of_plot=plot_title,
+            names=names_plot,
+            values=values_plot,
+            color_scheme=scheme_choosen,
         )
 
         # Append the plot to the list by calling the plotting function directly
         pie_plots.append(
-            insert_pie_plots(
-                title_of_plot=plot_title,
-                names=names_plot,
-                values=values_plot,
-                color_scheme=scheme_choosen,
-                plot_id=comp_id,
-                print_only=only_print,
-                name_file=file_name,
-                path_file_dict=json_results_file,
-            )
+            insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
         )
     return pie_plots
 
@@ -880,6 +741,13 @@ def create_app(results_json):
         + str(results_json[PROJECT_DATA][PROJECT_ID])
         + ")"
     )
+
+    # Title to add to plot titles
+    project_title = ": {}, {}".format(
+        dict_values[PROJECT_DATA][PROJECT_NAME],
+        dict_values[PROJECT_DATA][SCENARIO_NAME],
+    )
+
     scenarioName = (
         results_json[PROJECT_DATA][SCENARIO_NAME]
         + " (ID: "
@@ -1129,10 +997,8 @@ def create_app(results_json):
                                 className="add-cap-plot",
                                 children=ready_capacities_plots(
                                     df_kpis=df_capacities,
-                                    plot_title="Optimal additional capacities (kW/kWh/kWp): "
-                                    + results_json[PROJECT_DATA][PROJECT_NAME]
-                                    + ", "
-                                    + results_json[PROJECT_DATA][SCENARIO_NAME]
+                                    plot_title="Optimal additional capacities (kW/kWh/kWp)"
+                                    + project_title,
                                 ),
                             ),
                             insert_body_text(
@@ -1151,9 +1017,9 @@ def create_app(results_json):
                             make_dash_data_table(df_cost_matrix),
                             html.Div(
                                 className="add-pie-plots",
-                                children=ready_pie_plots(
+                                children=ready_costs_pie_plots(
                                     df_pie_data=df_kpis,
-                                    json_results_file=results_json,
+                                    project_title=project_title,
                                     only_print=False,
                                 ),
                             ),

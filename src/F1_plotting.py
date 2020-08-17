@@ -1,5 +1,6 @@
 import logging
 import os
+import textwrap
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -859,7 +860,7 @@ def create_plotly_capacities_fig(
 
     Returns
     -------
-    fig :plotly:`plotly.graph_objs.Figure`
+    fig: :plotly:`plotly.graph_objs.Figure`
         figure object
     """
     fig = go.Figure()
@@ -952,8 +953,8 @@ def create_plotly_flow_fig(
 
     Returns
     -------
-        html.Div() element
-        Contains the list of the flows plots generated, both for the print and web app versions.
+    fig: :plotly:`plotly.graph_objs.Figure`
+        figure object
     """
 
     fig = go.Figure()
@@ -1004,6 +1005,89 @@ def create_plotly_flow_fig(
         },
         legend=dict(y=0.5, traceorder="normal", font=dict(color="black"),),
     )
+
+    if file_path is not None:
+        # Function call to save the Plotly plot to the disk
+        save_plots_to_disk(
+            fig_obj=fig,
+            file_path=file_path,
+            file_name=file_name,
+            width=1200,
+            height=600,
+            scale=5,
+        )
+
+    return fig
+
+
+def create_plotly_cost_fig(
+    title_of_plot, names, values, color_scheme, file_name="costs.png", file_path=None,
+):
+    r"""Generate figure of an asset's flow.
+
+    Parameters
+    ----------
+    title_of_plot: str
+        title of the figure
+
+    names: list
+        List containing the labels of the slices in the pie plot.
+
+    values: list
+        List containing the values of the labels to be plotted in the pie plot.
+
+    color_scheme: instance of the px.colors class of the Plotly express library
+        This parameter holds the color scheme which is palette of colors (list of hex values) to be applied to the pie
+        plot to be created.
+
+    file_name: str
+        Name of the image file.
+        Default: "costs.png"
+
+    file_path: str
+        Path where the image shall be saved
+        Default: None
+
+    Returns
+    -------
+    fig: :plotly:`plotly.graph_objs.Figure`
+        figure object
+    """
+
+    # Wrap the text of the title into next line if it exceeds the length given below
+    title_of_plot = textwrap.wrap(title_of_plot, width=75)
+    title_of_plot = "<br>".join(title_of_plot)
+
+    fig = go.Figure(
+        go.Pie(
+            labels=names,
+            values=values,
+            textposition="inside",
+            insidetextorientation="radial",
+            texttemplate="%{label} <br>%{percent}",
+            marker=dict(colors=color_scheme),
+        ),
+    )
+
+    fig.update_layout(
+        title={
+            "text": title_of_plot,
+            "y": 0.9,
+            "x": 0.5,
+            "font_size": 23,
+            "xanchor": "center",
+            "yanchor": "top",
+            "pad": {"r": 5, "l": 5, "b": 5, "t": 5},
+        },
+        font_family="sans-serif",
+        height=500,
+        width=700,
+        autosize=True,
+        legend=dict(orientation="v", y=0.5, yanchor="middle", x=0.95, xanchor="right",),
+        margin=dict(l=10, r=10, b=50, pad=2),
+        uniformtext_minsize=18,
+    )
+    fig.update_traces(hoverinfo="label+percent", textinfo="label", textfont_size=18)
 
     if file_path is not None:
         # Function call to save the Plotly plot to the disk
