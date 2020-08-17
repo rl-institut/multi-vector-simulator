@@ -37,6 +37,7 @@ flask_log.setLevel(logging.ERROR)
 from src.constants import (
     REPO_PATH,
     REPORT_PATH,
+    PATH_OUTPUT_FOLDER,
     OUTPUT_FOLDER,
     INPUTS_COPY,
     CSV_ELEMENTS,
@@ -650,8 +651,13 @@ def create_app(results_json):
     df_scalar_matrix = convert_scalar_matrix_to_dataframe(results_json)
     df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
 
-    warnings_dict = parse_simulation_log(log_type="WARNING")
-    errors_dict = parse_simulation_log(log_type="ERROR")
+    output_path = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
+    warnings_dict = parse_simulation_log(
+        path_log_file=os.path.join(output_path, "mvs_logfile.log"), log_type="WARNING",
+    )
+    errors_dict = parse_simulation_log(
+        path_log_file=os.path.join(output_path, "mvs_logfile.log"), log_type="ERROR",
+    )
 
     # App layout and populating it with different elements
     app.layout = html.Div(
@@ -801,11 +807,11 @@ def create_app(results_json):
                             ),
                             make_dash_data_table(df_dem),
                             html.Div(
-                                children=ready_timeseries_plots(results_json, "demand")
+                                children=ready_timeseries_plots(results_json, DEMANDS)
                             ),
                             html.H4("Resources"),
                             html.Div(
-                                children=ready_timeseries_plots(results_json, "supply")
+                                children=ready_timeseries_plots(results_json, SUPPLIES)
                             ),
                         ],
                     ),
