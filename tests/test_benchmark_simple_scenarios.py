@@ -23,6 +23,9 @@ from .constants import (
     TESTS_ON_DEV,
     TEST_REPO_PATH,
     CSV_EXT,
+    ENERGY_CONVERSION,
+    ENERGY_PROVIDERS,
+    VALUE,
 )
 
 from src.constants_json_strings import EXCESS, AUTO_SINK
@@ -158,10 +161,10 @@ class TestACElectricityBus:
                 data = json.load(results)
             # make sure LCOE_dieset is less than grid price
             assert (
-                data["energyConversion"]["diesel_generator"][
+                data[ENERGY_CONVERSION]["diesel_generator"][
                     "levelized_cost_of_energy_of_asset"
-                ]["value"]
-                < data["energyProviders"]["DSO"]["energy_price"]["value"]
+                ][VALUE]
+                < data[ENERGY_PROVIDERS]["DSO"]["energy_price"][VALUE]
             )
             # make sure grid is not used
             assert sum(busses_flow["Diesel generator"]) == sum(busses_flow["demand_01"])
