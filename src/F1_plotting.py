@@ -737,13 +737,13 @@ def get_fig_style_dict():
         showgrid=True,
         gridwidth=1.5,
         zeroline=True,
-        mirror=True,
         autorange=True,
         linewidth=1,
         ticks="inside",
         title_font=dict(size=18, color="black"),
     )
     return styling_dict
+
 
 def create_plotly_line_fig(
     x_data,
@@ -775,13 +775,8 @@ def create_plotly_line_fig(
     y_axis_name: str
         Default: None
 
-    color_for_plot: str
-        This is string of the hex value of the color to be applied for the plot.
-        Default: "#0A2342"
-
-    file_path: json results file
-        The .json results file containing the user-specified output folde path needed to save the plots to disk.
-        Default: None
+    file_path: str
+        Path where the image shall be saved
 
     Returns
     -------
@@ -791,6 +786,7 @@ def create_plotly_line_fig(
     fig = go.Figure()
 
     styling_dict = get_fig_style_dict()
+    styling_dict["mirror"] = True
 
     fig.add_trace(
         go.Scatter(
@@ -835,12 +831,7 @@ def create_plotly_line_fig(
 
 
 def create_plotly_capacities_fig(
-    x_data,
-    y_data,
-    plot_title=None,
-    x_axis_name=None,
-    y_axis_name=None,
-    file_path=None,
+    x_data, y_data, plot_title=None, x_axis_name=None, y_axis_name=None, file_path=None,
 ):
     r"""
     Create figure for specific capacities barplot
@@ -863,9 +854,8 @@ def create_plotly_capacities_fig(
     y_axis_name: str
         Default: None
 
-    file_path: json results file
-        The .json results file containing the user-specified output folde path needed to save the plots to disk.
-        Default: None
+    file_path: str
+        Path where the image shall be saved
 
     Returns
     -------
@@ -875,6 +865,7 @@ def create_plotly_capacities_fig(
     fig = go.Figure()
 
     styling_dict = get_fig_style_dict()
+    styling_dict["mirror"] = True
 
     fig.add_trace(
         go.Bar(
@@ -920,6 +911,106 @@ def create_plotly_capacities_fig(
             fig_obj=fig,
             file_path=file_path,
             file_name=name_file,
+            width=1200,
+            height=600,
+            scale=5,
+        )
+
+    return fig
+
+
+def create_plotly_flow_fig(
+    df_plots_data,
+    x_legend=None,
+    y_legend=None,
+    plot_title=None,
+    file_name="flows.png",
+    file_path=None,
+):
+    r"""Generate figure an asset's flow.
+
+    Parameters
+    ----------
+    df_plots_data: :pandas:`pandas.DataFrame<frame>`
+        dataFrame with timeseries of the asset's energy flow
+    x_legend: str
+        Default: None
+
+    y_legend: str
+        Default: None
+
+    plot_title: str
+        Default: None
+
+    file_name: str
+        Name of the image file.
+        Default: "flows.png"
+
+    file_path: str
+        Path where the image shall be saved
+        Default: None
+
+    Returns
+    -------
+        html.Div() element
+        Contains the list of the flows plots generated, both for the print and web app versions.
+    """
+
+    fig = go.Figure()
+    # TODO: if number of asset is larger than this list, the surnumerrous will not be plotted
+    colors = [
+        "#1f77b4",
+        "#ff7f0e",
+        "#2ca02c",
+        "#d62728",
+        "#9467bd",
+        "#8c564b",
+        "#e377c2",
+        "#7f7f7f",
+        "#bcbd22",
+        "#17becf",
+    ]
+    styling_dict = get_fig_style_dict()
+    styling_dict["gridwidth"] = 1.0
+
+    assets_list = list(df_plots_data.columns)
+    assets_list.remove("timestamp")
+
+    for asset, new_color in zip(assets_list, colors):
+        fig.add_trace(
+            go.Scatter(
+                x=df_plots_data["timestamp"],
+                y=df_plots_data[asset],
+                mode="lines",
+                line=dict(color=new_color, width=2.5),
+                name=asset,
+            )
+        )
+
+    fig.update_layout(
+        xaxis_title=x_legend,
+        yaxis_title=y_legend,
+        font_family="sans-serif",
+        template="simple_white",
+        xaxis=styling_dict,
+        yaxis=styling_dict,
+        title={
+            "text": plot_title,
+            "y": 0.90,
+            "x": 0.5,
+            "font_size": 23,
+            "xanchor": "center",
+            "yanchor": "top",
+        },
+        legend=dict(y=0.5, traceorder="normal", font=dict(color="black"),),
+    )
+
+    if file_path is not None:
+        # Function call to save the Plotly plot to the disk
+        save_plots_to_disk(
+            fig_obj=fig,
+            file_path=file_path,
+            file_name=file_name,
             width=1200,
             height=600,
             scale=5,

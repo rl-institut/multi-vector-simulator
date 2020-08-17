@@ -78,8 +78,9 @@ from src.F1_plotting import (
     extract_plot_data_and_title,
     convert_plot_data_to_dataframe,
     parse_simulation_log,
-    create_plotly_line_fig
-    create_plotly_capacities_fig
+    create_plotly_line_fig,
+    create_plotly_capacities_fig,
+    create_plotly_flow_fig,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
@@ -348,16 +349,14 @@ def insert_log_messages(log_dict):
 
 
 def insert_plotly_figure(
-    fig,
-    id_plot=None,
-    print_only=False,
+    fig, id_plot=None, print_only=False,
 ):
     r"""
     Insert a plotly figure in a dash app layout
 
     Parameters
     ----------
-    fig :plotly:`plotly.graph_objs.Figure`
+    fig: :plotly:`plotly.graph_objs.Figure`
         figure object
 
     id_plot: str
@@ -403,7 +402,7 @@ def insert_plotly_figure(
     return html.Div(children=rendered_plots)
 
 
-def ready_single_plots(df_pd, dict_of_labels, only_print=False, results_file=None):
+def ready_timeseries_plots(df_pd, dict_of_labels, only_print=False):
     r"""
     This function prepares the data for and calls insert_single_plot for plotting line and bar plots.
 
@@ -431,6 +430,7 @@ def ready_single_plots(df_pd, dict_of_labels, only_print=False, results_file=Non
     list_of_keys = list(df_pd.columns)
     list_of_keys.remove("timestamp")
     plots = []
+    # TODO if the number of plots is larger than this list, it will not plot more
     colors_list = [
         "royalblue",
         "#3C5233",
@@ -441,20 +441,15 @@ def ready_single_plots(df_pd, dict_of_labels, only_print=False, results_file=Non
     ]
     for (component, color_plot) in zip(list_of_keys, colors_list):
         comp_id = component + "-plot"
-        plots.append(
-            insert_single_plot(
-                x_data=df_pd["timestamp"],
-                y_data=df_pd[component],
-                plot_type="line",
-                plot_title=dict_of_labels[component],
-                x_axis_name="Time",
-                y_axis_name="kW",
-                id_plot=comp_id,
-                print_only=only_print,
-                color_for_plot=color_plot,
-                path_file=results_file,
-            )
+        fig = create_plotly_line_fig(
+            x_data=df_pd["timestamp"],
+            y_data=df_pd[component],
+            plot_title=dict_of_labels[component],
+            x_axis_name="Time",
+            y_axis_name="kW",
+            color_for_plot=color_plot,
         )
+        plots.append(insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print,))
     return plots
 
 
@@ -508,151 +503,13 @@ def ready_capacities_plots(df_kpis, json_results_file, only_print=False):
     return plot
 
 
-def insert_flows_plots(
-    df_plots_data,
-    x_legend=None,
-    y_legend=None,
-    plot_title=None,
-    pdf_only=False,
-    plot_id=None,
-    results_file=None,
-    name_of_file=None,
-):
-    r"""This function creates the line plots for the flows through the various assets of the energy system.
+def ready_flows_plots(dict_values):
+    r"""Generate figure for each assets' flow of the energy system.
 
     Parameters
     ----------
-    df_plots_data: :pandas:`pandas.DataFrame<frame>`
-
-    x_legend: str
-        Default: None
-
-    y_legend: str
-        Default: None
-
-    plot_title: str
-        Default: None
-
-    pdf_only: bool
-        Default: False
-
-    plot_id: str
-        Unique alphanumeric value assigned to each pie plot, which can be used for further manipulations such as styling,
-        etc., of the plot generated.
-        Default: None
-
-    results_file: json file
-        The simulation results file that contains the data needed for the production of the plots, determination of the
-        path to save outputs and other information necessary for generating the auto-report.
-        Default: None
-
-    name_of_file: str
-        File name to be used when saving the image file of the plot produced in the output folder.
-        Default: None
-
-    Returns
-    -------
-        html.Div() element
-        Contains the list of the flows plots generated, both for the print and web app versions.
-    """
-
-    fig = go.Figure()
-    colors = [
-        "#1f77b4",
-        "#ff7f0e",
-        "#2ca02c",
-        "#d62728",
-        "#9467bd",
-        "#8c564b",
-        "#e377c2",
-        "#7f7f7f",
-        "#bcbd22",
-        "#17becf",
-    ]
-    styling_dict = dict(
-        showgrid=True,
-        gridwidth=1,
-        zeroline=True,
-        mirror=True,
-        title_font=dict(size=18, color="black"),
-        ticks="inside",
-        linewidth=1,
-    )
-
-    assets_list = list(df_plots_data.columns)
-    assets_list.remove("timestamp")
-
-    for asset, new_color in zip(assets_list, colors):
-        fig.add_trace(
-            go.Scatter(
-                x=df_plots_data["timestamp"],
-                y=df_plots_data[asset],
-                mode="lines",
-                line=dict(color=new_color, width=2.5),
-                name=asset,
-            )
-        )
-
-    fig.update_layout(
-        xaxis_title=x_legend,
-        yaxis_title=y_legend,
-        font_family="sans-serif",
-        template="simple_white",
-        xaxis=styling_dict,
-        yaxis=styling_dict,
-        title={
-            "text": plot_title,
-            "y": 0.90,
-            "x": 0.5,
-            "font_size": 23,
-            "xanchor": "center",
-            "yanchor": "top",
-        },
-        legend=dict(y=0.5, traceorder="normal", font=dict(color="black"),),
-    )
-
-    # Function call to save the Plotly plot to the disk
-    save_plots_to_disk(
-        fig_obj=fig,
-        file_path_dict=results_file,
-        file_name=name_of_file,
-        width=1200,
-        height=600,
-        scale=5,
-    )
-
-    # Specific modifications for print version
-    fig2 = copy.deepcopy(fig)
-    # Make the legend horizontally oriented so as to prevent the legend from being cut off
-    fig2.update_layout(legend=dict(orientation="h", y=-0.3, x=0.5, xanchor="center"))
-
-    plot_created = [
-        html.Img(
-            className="print-only dash-plot",
-            src="data:image/png;base64,{}".format(
-                base64.b64encode(
-                    fig2.to_image(format="png", height=500, width=900)
-                ).decode(),
-            ),
-        )
-    ]
-    if pdf_only is False:
-        plot_created.append(
-            dcc.Graph(className="no-print", id=plot_id, figure=fig, responsive=True,)
-        )
-    return html.Div(children=plot_created)
-
-
-def ready_flows_plots(dict_dataseries, json_results_file):
-    r"""This function prepares the data from the results JSON file and then calls the appropriate plotting function.
-
-    Parameters
-    ----------
-    dict_dataseries: dict
-        This dictionary holds the data for the flows through various assets.
-
-    json_results_file: json file
-        This folds stores all the simulation results.
+    dict_values: dict
+        Dict with all simulation parameters
 
     Returns
     -------
@@ -660,32 +517,35 @@ def ready_flows_plots(dict_dataseries, json_results_file):
         This list holds all the plots generated by the function calls to the function insert_flows_plots
     """
 
-    buses_list = list(dict_dataseries.keys())
+    buses_list = list(dict_values[OPTIMIZED_FLOWS].keys())
     multi_plots = []
     for bus in buses_list:
         comp_id = bus + "-plot"
         title = (
             bus
             + " flows in LES: "
-            + json_results_file[PROJECT_DATA][PROJECT_NAME]
+            + dict_values[PROJECT_DATA][PROJECT_NAME]
             + ", "
-            + json_results_file[PROJECT_DATA][SCENARIO_NAME]
+            + dict_values[PROJECT_DATA][SCENARIO_NAME]
         )
 
-        df_data = json_results_file["optimizedFlows"][bus]
+        df_data = dict_values[OPTIMIZED_FLOWS][bus]
         df_data.reset_index(level=0, inplace=True)
         df_data = df_data.rename(columns={"index": "timestamp"})
 
+        fig = create_plotly_flow_fig(
+            df_plots_data=df_data,
+            x_legend="Time",
+            y_legend=bus + " flow in kWh",
+            plot_title=title,
+        )
         multi_plots.append(
-            insert_flows_plots(
-                df_plots_data=df_data,
-                x_legend="Time",
-                y_legend=bus + " flow in kWh",
-                plot_title=title,
+            insert_plotly_figure(
+                fig,
                 pdf_only=False,
                 plot_id=comp_id,
-                results_file=json_results_file,
-                name_of_file=bus + "_flows_in_LES",
+                file_path=dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
+                file_name=bus + "_flows_in_LES",
             )
         )
 
@@ -1223,18 +1083,14 @@ def create_app(results_json):
                             ),
                             make_dash_data_table(df_dem),
                             html.Div(
-                                children=ready_single_plots(
-                                    df_all_demands,
-                                    dict_plot_labels,
-                                    results_file=results_json,
+                                children=ready_timeseries_plots(
+                                    df_all_demands, dict_plot_labels,
                                 )
                             ),
                             html.H4("Resources"),
                             html.Div(
-                                children=ready_single_plots(
-                                    df_all_res,
-                                    dict_plot_labels,
-                                    results_file=results_json,
+                                children=ready_timeseries_plots(
+                                    df_all_res, dict_plot_labels,
                                 )
                             ),
                         ],
@@ -1267,10 +1123,7 @@ def create_app(results_json):
                                 "With this, the demands are met with the following dispatch schedules:"
                             ),
                             html.Div(
-                                children=ready_flows_plots(
-                                    dict_dataseries=data_flows,
-                                    json_results_file=results_json,
-                                )
+                                children=ready_flows_plots(dict_values=results_json,)
                             ),
                             html.Div(
                                 className="add-cap-plot",
