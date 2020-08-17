@@ -3,6 +3,8 @@ import os
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import plotly.graph_objs as go
+import plotly.express as px
 
 import networkx as nx
 import oemof.network.graph as graph
@@ -51,8 +53,8 @@ def flows(dict_values, user_input, project_data, results_timeseries, bus, interv
     """
     Parameters
     ----------
-    dict_values: dict,
-
+    dict_values: dict
+        Dict with all simulation parameters
     user_input: dict,
         part of the dict_values that includes the output folders name
     project_data: dict,
@@ -729,3 +731,198 @@ def save_plots_to_disk(
     file_path_out = os.path.join(file_path, file_name)
     fig_obj.write_image(file_path_out, width=width, height=height, scale=scale)
 
+
+def get_fig_style_dict():
+    styling_dict = dict(
+        showgrid=True,
+        gridwidth=1.5,
+        zeroline=True,
+        mirror=True,
+        autorange=True,
+        linewidth=1,
+        ticks="inside",
+        title_font=dict(size=18, color="black"),
+    )
+    return styling_dict
+
+def create_plotly_line_fig(
+    x_data,
+    y_data,
+    plot_title=None,
+    x_axis_name=None,
+    y_axis_name=None,
+    color_for_plot="#0A2342",
+    file_path=None,
+):
+    r"""
+    Create figure for generic timeseries lineplots
+
+    Parameters
+    ----------
+    x_data: list, or pandas series
+        The list of abscissas of the data required for plotting.
+
+    y_data: list, or pandas series, or list of lists
+        The list of ordinates of the data required for plotting.
+
+    plot_title: str
+        The title of the plot generated.
+        Default: None
+
+    x_axis_name: str
+        Default: None
+
+    y_axis_name: str
+        Default: None
+
+    color_for_plot: str
+        This is string of the hex value of the color to be applied for the plot.
+        Default: "#0A2342"
+
+    file_path: json results file
+        The .json results file containing the user-specified output folde path needed to save the plots to disk.
+        Default: None
+
+    Returns
+    -------
+    fig :plotly:`plotly.graph_objs.Figure`
+        figure object
+    """
+    fig = go.Figure()
+
+    styling_dict = get_fig_style_dict()
+
+    fig.add_trace(
+        go.Scatter(
+            x=x_data,
+            y=y_data,
+            mode="lines",
+            line=dict(color=color_for_plot, width=2.5),
+        )
+    )
+    fig.update_layout(
+        xaxis_title=x_axis_name,
+        yaxis_title=y_axis_name,
+        template="simple_white",
+        xaxis=styling_dict,
+        yaxis=styling_dict,
+        font_family="sans-serif",
+        title={
+            "text": plot_title,
+            "y": 0.90,
+            "x": 0.5,
+            "font_size": 23,
+            "xanchor": "center",
+            "yanchor": "top",
+        },
+    )
+
+    name_file = "input_timeseries_" + plot_title
+
+    if file_path is not None:
+
+        # Function call to save the Plotly plot to the disk
+        save_plots_to_disk(
+            fig_obj=fig,
+            file_path=file_path,
+            file_name=name_file,
+            width=1200,
+            height=600,
+            scale=5,
+        )
+
+    return fig
+
+
+def create_plotly_capacities_fig(
+    x_data,
+    y_data,
+    plot_title=None,
+    x_axis_name=None,
+    y_axis_name=None,
+    file_path=None,
+):
+    r"""
+    Create figure for specific capacities barplot
+
+    Parameters
+    ----------
+    x_data: list, or pandas series
+        The list of abscissas of the data required for plotting.
+
+    y_data: list, or pandas series, or list of lists
+        The list of ordinates of the data required for plotting.
+
+    plot_title: str
+        The title of the plot generated.
+        Default: None
+
+    x_axis_name: str
+        Default: None
+
+    y_axis_name: str
+        Default: None
+
+    file_path: json results file
+        The .json results file containing the user-specified output folde path needed to save the plots to disk.
+        Default: None
+
+    Returns
+    -------
+    fig :plotly:`plotly.graph_objs.Figure`
+        figure object
+    """
+    fig = go.Figure()
+
+    styling_dict = get_fig_style_dict()
+
+    fig.add_trace(
+        go.Bar(
+            name="capacities",
+            x=x_data,
+            y=y_data,
+            marker_color=px.colors.qualitative.D3,
+        )
+    )
+
+    fig.update_layout(
+        xaxis_title=x_axis_name,
+        yaxis_title=y_axis_name,
+        template="simple_white",
+        font_family="sans-serif",
+        # TODO use styling dict
+        xaxis=go.layout.XAxis(
+            showgrid=True,
+            gridwidth=1.5,
+            zeroline=True,
+            mirror=True,
+            autorange=True,
+            linewidth=1,
+            ticks="inside",
+            visible=True,
+        ),
+        yaxis=styling_dict,
+        title={
+            "text": plot_title,
+            "y": 0.90,
+            "x": 0.5,
+            "font_size": 23,
+            "xanchor": "center",
+            "yanchor": "top",
+        },
+        legend_title="Components",
+    )
+    name_file = "optimal_additional_capacities"
+
+    if file_path is not None:
+        # Function call to save the Plotly plot to the disk
+        save_plots_to_disk(
+            fig_obj=fig,
+            file_path=file_path,
+            file_name=name_file,
+            width=1200,
+            height=600,
+            scale=5,
+        )
+
+    return fig
