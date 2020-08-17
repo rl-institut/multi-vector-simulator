@@ -35,6 +35,8 @@ from src.constants_json_strings import (
     AVERAGE_FLOW,
     KPI_SCALAR_MATRIX,
     OPTIMIZED_FLOWS,
+    DEMANDS,
+    SUPPLIES,
 )
 
 from src.E1_process_results import (
@@ -64,7 +66,7 @@ def convert_plot_data_to_dataframe(plot_data_dict, data_type):
         timeseries for either demand or supply
 
     data_type: str
-        one of "demand" or "supply"
+        one of DEMANDS or SUPPLIES
 
     Returns
     -------
@@ -105,12 +107,12 @@ def extract_plot_data_and_title(dict_values, df_dem=None):
     res_keys = [k for k in resources.keys() if "DSO_" not in k]
 
     # Gather all the keys of the various plots for later use in the graphOptions.csv
-    dict_for_plots = {"demands": {}, "supplies": {}}
+    dict_for_plots = {DEMANDS: {}, SUPPLIES: {}}
     dict_plot_labels = {}
 
     # Add all the demands to the dict_for_plots dictionary, including the timeseries values
     for demand in df_dem.Demands:
-        dict_for_plots["demands"].update(
+        dict_for_plots[DEMANDS].update(
             {demand: dict_values[ENERGY_CONSUMPTION][demand][TIMESERIES]}
         )
         dict_plot_labels.update(
@@ -119,7 +121,7 @@ def extract_plot_data_and_title(dict_values, df_dem=None):
 
     # Add all the resources to the dict_for_plots dictionary, including the timeseries values
     for resource in res_keys:
-        dict_for_plots["supplies"].update(
+        dict_for_plots[SUPPLIES].update(
             {resource: dict_values[ENERGY_PRODUCTION][resource][TIMESERIES]}
         )
         dict_plot_labels.update(
@@ -460,7 +462,7 @@ def create_plotly_line_fig(
     return fig
 
 
-def plot_timeseries(dict_values, data_type="demand", file_path=None):
+def plot_timeseries(dict_values, data_type=DEMANDS, file_path=None):
     r"""Plot timeseries as line chart.
 
     Parameters
@@ -469,8 +471,8 @@ def plot_timeseries(dict_values, data_type="demand", file_path=None):
         dict Of all input and output parameters up to F0
 
     data_type: str
-        one of "demand" or "supply"
-        Default: "demand"
+        one of DEMANDS or SUPPLIES
+        Default: DEMANDS
 
     file_path: str
         Path where the image shall be saved if not None

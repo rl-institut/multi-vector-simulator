@@ -54,6 +54,8 @@ from src.constants_json_strings import (
     PROJECT_ID,
     SCENARIO_NAME,
     SCENARIO_ID,
+    DEMANDS,
+    SUPPLIES,
 )
 
 from src.E1_process_results import (
@@ -389,7 +391,7 @@ def insert_plotly_figure(
     return html.Div(children=rendered_plots)
 
 
-def ready_timeseries_plots(dict_values, data_type="demand", only_print=False):
+def ready_timeseries_plots(dict_values, data_type=DEMANDS, only_print=False):
     r"""Insert the timeseries line plots in a dash html layout.
 
     Parameters
@@ -398,8 +400,8 @@ def ready_timeseries_plots(dict_values, data_type="demand", only_print=False):
         Dict with all simulation parameters
 
     data_type: str
-        one of "demand" or "supply"
-        Default: "demand"
+        one of DEMANDS or SUPPLIES
+        Default: DEMANDS
 
     only_print: bool
         Setting this value true results in the function creating only the plot for the PDF report,
