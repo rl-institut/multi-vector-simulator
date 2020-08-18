@@ -484,7 +484,7 @@ def add_info_flows(settings, dict_asset, flow):
 
 
 def convert_demand_to_dataframe(dict_values):
-    """
+    """Dataframe used for the demands table of the report
 
     Parameters
     ----------

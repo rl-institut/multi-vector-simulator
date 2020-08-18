@@ -993,19 +993,3 @@ def plot_piecharts_of_costs(dict_values, file_path=None):
             pie_plots[comp_id] = fig
 
     return pie_plots
-
-
-if __name__ == "__main__":
-    title = "a_title"
-    from tests.constants import TEST_REPO_PATH
-
-    OUTPUT_PATH = os.path.join(TEST_REPO_PATH)
-
-    fig = create_plotly_cost_fig(
-        title_of_plot=title,
-        names=["costs1", "costs2"],
-        values=[None, None],
-        file_name="filename.png",
-        file_path=OUTPUT_PATH,
-    )
-    print(fig["data"][0]["values"])
