@@ -519,8 +519,15 @@ def plot_timeseries(dict_values, data_type=DEMANDS, file_path=None):
     return plots
 
 
-def create_plotly_capacities_fig(
-    x_data, y_data, plot_title=None, x_axis_name=None, y_axis_name=None, file_path=None,
+def create_plotly_barplot_fig(
+    x_data,
+    y_data,
+    plot_title=None,
+    trace_name="",
+    x_axis_name=None,
+    y_axis_name=None,
+    file_name="barplot.png",
+    file_path=None,
 ):
     r"""
     Create figure for specific capacities barplot
@@ -537,11 +544,19 @@ def create_plotly_capacities_fig(
         The title of the plot generated.
         Default: None
 
+    trace_name: str
+        Sets the trace name. The trace name appear as the legend item and on hover.
+        Default: ""
+
     x_axis_name: str
         Default: None
 
     y_axis_name: str
         Default: None
+
+    file_name: str
+        Name of the image file.
+        Default: "barplot.png"
 
     file_path: str
         Path where the image shall be saved if not None
@@ -558,7 +573,7 @@ def create_plotly_capacities_fig(
 
     fig.add_trace(
         go.Bar(
-            name="capacities",
+            name=trace_name,
             x=x_data,
             y=y_data,
             marker_color=px.colors.qualitative.D3,
@@ -592,14 +607,13 @@ def create_plotly_capacities_fig(
         },
         legend_title="Components",
     )
-    name_file = "optimal_additional_capacities"
 
     if file_path is not None:
         # Function call to save the Plotly plot to the disk
         save_plots_to_disk(
             fig_obj=fig,
             file_path=file_path,
-            file_name=name_file,
+            file_name=file_name,
             width=1200,
             height=600,
             scale=5,
@@ -650,12 +664,16 @@ def plot_optimized_capacities(
         dict_values[PROJECT_DATA][SCENARIO_NAME],
     )
 
-    fig = create_plotly_capacities_fig(
+    name_file = "optimal_additional_capacities"
+
+    fig = create_plotly_barplot_fig(
         x_data=x_values,
         y_data=y_values,
         plot_title="Optimal additional capacities (kW/kWh/kWp)" + project_title,
+        trace_name="capacities",
         x_axis_name="Items",
         y_axis_name="Capacities",
+        file_name=name_file,
         file_path=file_path,
     )
 
