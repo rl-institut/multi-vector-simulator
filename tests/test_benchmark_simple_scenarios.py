@@ -215,7 +215,7 @@ class TestACElectricityBus:
         # make the time the index
         busses_flow = busses_flow.set_index("Unnamed: 0")
         # read the columns with the values to be used
-        DSO_period = [
+        DSO_period_s = [
             busses_flow["Electricity grid DSO_consumption_period_1"],
             busses_flow["Electricity grid DSO_consumption_period_2"],
             busses_flow["Electricity grid DSO_consumption_period_3"],
