@@ -26,7 +26,7 @@ Here is a template for new release sections
 - Added functions to `F2_autoreport.py` that save the images of plots generated using Plotly to `MVS_outputs` folder as `.png` (#499)
 - Inserted doc-strings in the definitions of all the functions in `F2_autoreport.py` (#505)
 - Functions in F1 to create plotly static `.png` files (#512)
-- Functions in F1 to generate figures of simulation results (#512)
+- New argument for MVS execution: `-png` to store plotly graphs to file (#512)
 
 ### Changed
  - Move and rename json converter and parser to B0 module (#464)
@@ -49,7 +49,7 @@ Here is a template for new release sections
 
 ### Removed
 - Functions to generate plots with matplotlib in F1 (#512)
-
+- Many tests that checked if matplot lib plots were stored to file, not replaced by new tests for storing plotly graphs to file (#512)
 ## [0.3.2] 2020-08-04
 
 ### Added
