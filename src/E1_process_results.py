@@ -562,7 +562,7 @@ def convert_components_to_dataframe(dict_values):
     comp2_keys = list(components2.keys())
 
     components = {}
-
+    # Defining the columns of the table to be printed
     for comps in comp1_keys:
         components.update(
             {
@@ -597,7 +597,7 @@ def convert_components_to_dataframe(dict_values):
             "Energy Vector",
             UNIT,
             "Installed Capcity",
-            "Optimization",
+            "Capacity optimization",
         ],
     )
     df_comp.index.name = "Component"
@@ -605,9 +605,9 @@ def convert_components_to_dataframe(dict_values):
 
     for i in range(len(df_comp)):
         if df_comp.at[i, "Optimization"]:
-            df_comp.iloc[i, df_comp.columns.get_loc("Optimization")] = "Yes"
+            df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "Yes"
         else:
-            df_comp.iloc[i, df_comp.columns.get_loc("Optimization")] = "No"
+            df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "No"
 
     return df_comp
 
@@ -680,7 +680,7 @@ def convert_cost_matrix_to_dataframe(dict_values):
     df_cost_matrix = df_cost_matrix.rename(
         columns={
             LABEL: "Component",
-            COST_TOTAL: "CAP",
+            COST_TOTAL: "Total costs",
             COST_UPFRONT: "Upfront Investment Costs",
         }
     )
