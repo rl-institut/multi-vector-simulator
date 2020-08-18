@@ -29,6 +29,7 @@ from .constants import (
     VALUE,
     ENERGY_PRICE,
     OPTIMIZED_ADD_CAP,
+    LCOE_ASSET,
 )
 
 from src.constants_json_strings import EXCESS, AUTO_SINK
@@ -164,9 +165,7 @@ class TestACElectricityBus:
                 data = json.load(results)
             # make sure LCOE_diesel is less than grid price
             assert (
-                data[ENERGY_CONVERSION]["diesel_generator"][
-                    "levelized_cost_of_energy_of_asset"
-                ][VALUE]
+                data[ENERGY_CONVERSION]["diesel_generator"][LCOE_ASSET][VALUE]
                 < data[ENERGY_PROVIDERS]["DSO"][ENERGY_PRICE][VALUE]
             )
             # make sure grid is not used
@@ -175,7 +174,7 @@ class TestACElectricityBus:
     # todo: Add test for fuel consumption (kWh/l).
 
     @pytest.mark.skipif(
-        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER, TESTS_ON_DEV, "testing_AE"),
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
         reason="Benchmark test deactivated, set env variable "
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
