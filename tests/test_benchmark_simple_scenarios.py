@@ -13,6 +13,7 @@ import mock
 import pandas as pd
 import pytest
 
+from pytest import approx
 from mvs_eland_tool import main
 from src.B0_data_input_json import convert_from_json_to_special_types
 from src.C0_data_processing import bus_suffix
@@ -25,7 +26,7 @@ from .constants import (
     CSV_EXT,
 )
 
-from src.constants_json_strings import EXCESS, AUTO_SINK, ENERGY_CONVERSION, ENERGY_PROVIDERS, VALUE, LCOE_ASSET
+from src.constants_json_strings import EXCESS, AUTO_SINK, ENERGY_CONVERSION, ENERGY_PROVIDERS, VALUE, LCOE_ASSET, ENERGY_CONSUMPTION, FLOW
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
@@ -144,25 +145,23 @@ class TestACElectricityBus:
             input_type=CSV_EXT,
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
         )
-        # read timeseries_all_busses excel file
-        busses_flow = pd.read_excel(
-            os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
-            sheet_name=bus_suffix("Electricity"),
-        )
-        # make the time the index
-        busses_flow = busses_flow.set_index("Unnamed: 0")
+
         # read json with results file
         with open(
             os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
         ) as results:
             data = json.load(results)
-        # make sure LCOE_dieset is less than grid price
+
+        # make sure LCOE_dieset is less than grid price, so that below test makes sense
         assert (
             data[ENERGY_CONVERSION]["diesel_generator"][LCOE_ASSET][VALUE]
             < data[ENERGY_PROVIDERS]["DSO"]["energy_price"][VALUE]
         )
-        # make sure grid is not used
-        assert sum(busses_flow["Diesel generator"]) == abs(sum(busses_flow["demand_01"]))
+
+        # make sure grid is not used, ie. that diesel generator supplies all demand
+        diesel_generator = data[ENERGY_CONVERSION]["diesel_generator"][FLOW]["data"]
+        demand = data[ENERGY_CONSUMPTION]["demand_01"][FLOW]["data"]
+        assert sum(diesel_generator) == approx(sum(demand), rel=1e-3)
 
     # todo: Add test for fuel consumption (kWh/l).
     def teardown_method(self):
