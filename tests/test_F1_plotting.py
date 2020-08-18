@@ -178,7 +178,7 @@ class TestFileCreation:
         # )
 
     def test_if_pie_charts_of_costs_is_stored(self):
-        F1.create_plotly_cost_fig(
+        F1.create_plotly_piechart_fig(
             title_of_plot="a_title",
             names=["costs1", "costs2"],
             values=[0.2, 0.8],
