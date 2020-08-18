@@ -75,6 +75,7 @@ from src.constants_json_strings import (
     UNIT,
     VALUE,
     OPTIMIZED_ADD_CAP,
+    LCOE_ASSET,
 )
 
 TESTS_ON_MASTER = "master"
