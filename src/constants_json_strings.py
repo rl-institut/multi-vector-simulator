@@ -224,4 +224,4 @@ KPI_SCALARS = (
 )
 
 DEMANDS = "demands"
-SUPPLIES = "supplies"
+RESOURCES = "resources"

@@ -15,7 +15,7 @@ from src.constants_json_strings import (
     KPI,
     OPTIMIZED_FLOWS,
     DEMANDS,
-    SUPPLIES,
+    RESOURCES,
 )
 
 r"""
@@ -79,7 +79,7 @@ def evaluate_dict(dict_values, path_pdf_report=None, path_png_figs=None):
 
         # plot supply timeseries
         F1_plots.plot_timeseries(
-            dict_values, data_type=SUPPLIES, file_path=path_png_figs
+            dict_values, data_type=RESOURCES, file_path=path_png_figs
         )
 
         # plot power flows in the energy system

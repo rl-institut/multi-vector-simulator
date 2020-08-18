@@ -56,7 +56,7 @@ from src.constants_json_strings import (
     SCENARIO_NAME,
     SCENARIO_ID,
     DEMANDS,
-    SUPPLIES,
+    RESOURCES,
 )
 
 from src.E1_process_results import (
@@ -401,7 +401,7 @@ def ready_timeseries_plots(dict_values, data_type=DEMANDS, only_print=False):
         Dict with all simulation parameters
 
     data_type: str
-        one of DEMANDS or SUPPLIES
+        one of DEMANDS or RESOURCES
         Default: DEMANDS
 
     only_print: bool
@@ -811,7 +811,7 @@ def create_app(results_json):
                             ),
                             html.H4("Resources"),
                             html.Div(
-                                children=ready_timeseries_plots(results_json, SUPPLIES)
+                                children=ready_timeseries_plots(results_json, RESOURCES)
                             ),
                         ],
                     ),
