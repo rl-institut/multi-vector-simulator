@@ -38,13 +38,7 @@ flask_log = logging.getLogger("werkzeug")
 flask_log.setLevel(logging.ERROR)
 
 from src.constants import (
-    PLOTS_BUSSES,
-    PATHS_TO_PLOTS,
     PATH_OUTPUT_FOLDER,
-    PLOTS_DEMANDS,
-    PLOTS_RESOURCES,
-    PLOTS_PERFORMANCE,
-    PLOTS_COSTS,
     REPO_PATH,
     REPORT_PATH,
     OUTPUT_FOLDER,
@@ -52,48 +46,38 @@ from src.constants import (
     CSV_ELEMENTS,
     ECONOMIC_DATA,
     PROJECT_DATA,
-    INSTALLED_CAP,
 )
 from src.constants_json_strings import (
-    UNIT,
-    ENERGY_CONVERSION,
-    ENERGY_CONSUMPTION,
-    ENERGY_PRODUCTION,
-    OEMOF_ASSET_TYPE,
     LABEL,
     SECTORS,
     VALUE,
-    ENERGY_VECTOR,
-    OPTIMIZE_CAP,
     SIMULATION_SETTINGS,
     EVALUATED_PERIOD,
     START_DATE,
     TIMESTEP,
-    TIMESERIES_PEAK,
     TOTAL_FLOW,
     ANNUAL_TOTAL_FLOW,
-    OPTIMIZED_ADD_CAP,
     KPI,
     KPI_SCALAR_MATRIX,
-    KPI_COST_MATRIX,
-    COST_TOTAL,
-    COST_OM_TOTAL,
-    COST_INVESTMENT,
-    COST_DISPATCH,
-    COST_OM_FIX,
-    COST_UPFRONT,
     PROJECT_NAME,
     PROJECT_ID,
     SCENARIO_NAME,
     SCENARIO_ID,
     PEAK_FLOW,
     AVERAGE_FLOW,
-    TIMESERIES,
-    ANNUITY_TOTAL,
-    ENERGY_PROVIDERS,
-    DSO_FEEDIN,
-    AUTO_SINK,
-    EXCESS,
+)
+
+from src.E1_process_results import (
+    convert_demand_to_dataframe,
+    convert_components_to_dataframe,
+    convert_scalar_matrix_to_dataframe,
+    convert_cost_matrix_to_dataframe,
+    convert_kpi_matrix_to_dataframe,
+)
+from src.F1_plotting import (
+    extract_plot_data_and_title,
+    convert_plot_data_to_dataframe,
+    parse_simulation_log,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
@@ -1125,22 +1109,22 @@ def create_app(results_json):
     dfprojectData = pd.DataFrame.from_dict(results_json[PROJECT_DATA])
     dfeconomicData = pd.DataFrame.from_dict(results_json[ECONOMIC_DATA]).loc[VALUE]
 
-    # Obtaining the coordinates of the project location
-    coordinates = (
+    # Obtaining the latlong of the project location
+    latlong = (
         float(dfprojectData.latitude),
         float(dfprojectData.longitude),
     )
 
     # Determining the geographical location of the project
-    geoList = rg.search(coordinates)
+    geoList = rg.search(latlong)
     geoDict = geoList[0]
     location = geoDict["name"]
 
     # Adds a map to the Dash app
-    mapy = folium.Map(location=coordinates, zoom_start=14)
+    mapy = folium.Map(location=latlong, zoom_start=14)
     tooltip = "Click here for more info"
     folium.Marker(
-        coordinates,
+        latlong,
         popup="Location of the project",
         tooltip=tooltip,
         icon=folium.Icon(color="red", icon="glyphicon glyphicon-flash"),
@@ -1149,8 +1133,8 @@ def create_app(results_json):
 
     # Adds a staticmap to the PDF
 
-    longitude = coordinates[1]
-    latitude = coordinates[0]
+    longitude = latlong[1]
+    latitude = latlong[0]
     coords = longitude, latitude
 
     map_static = staticmap.StaticMap(600, 600, 80)
@@ -1178,6 +1162,9 @@ def create_app(results_json):
         "Start date": results_json[SIMULATION_SETTINGS][START_DATE],
         "Timestep length": results_json[SIMULATION_SETTINGS][TIMESTEP][VALUE],
     }
+
+    # Dict that gathers all the flows through various buses
+    data_flows = results_json["optimizedFlows"]
 
     df_simsettings = pd.DataFrame(
         list(dict_simsettings.items()), columns=["Setting", "Value"]
@@ -1222,262 +1209,29 @@ def create_app(results_json):
     for sec in sectors:
         sec_list += "\n" + f"\u2022 {sec.upper()}"
 
-    # Creating a dataframe for the demands
-    demands = results_json[ENERGY_CONSUMPTION]
-
-    # Removing all columns that are not actually from demands
-    drop_list = []
-    for column_label in demands:
-        # Identifies excess sink in demands for removal
-        if EXCESS in column_label:
-            drop_list.append(column_label)
-        # Identifies DSO_feedin sink in demands for removal
-        elif DSO_FEEDIN + AUTO_SINK in column_label:
-            drop_list.append(column_label)
-        elif DSO_FEEDIN in column_label:
-            drop_list.append(column_label)
-
-    # Remove some elements from drop_list (ie. sinks that are not demands) from data
-    for item in drop_list:
-        del demands[item]
-
-    dem_keys = list(demands.keys())
-    demand_data = {}
-
-    for dem in dem_keys:
-        demand_data.update(
-            {
-                dem: [
-                    demands[dem][UNIT],
-                    demands[dem][TIMESERIES_PEAK][VALUE],
-                    demands[dem]["timeseries_average"][VALUE],
-                    demands[dem]["timeseries_total"][VALUE],
-                ]
-            }
-        )
-
-    df_dem = pd.DataFrame.from_dict(
-        demand_data,
-        orient="index",
-        columns=[UNIT, "Peak Demand", "Mean Demand", "Total Demand per annum"],
-    )
-    df_dem.index.name = "Demands"
-    df_dem = df_dem.reset_index()
-    df_dem = df_dem.round(2)
-
-    # Creating a DF for the components table
-
-    components1 = results_json[ENERGY_PRODUCTION]
-    components2 = results_json[ENERGY_CONVERSION]
-
-    comp1_keys = list(components1.keys())
-    comp2_keys = list(components2.keys())
-
-    components = {}
-
-    for comps in comp1_keys:
-        components.update(
-            {
-                comps: [
-                    components1[comps][OEMOF_ASSET_TYPE],
-                    "Electricity",
-                    # components1[comps][ENERGY_VECTOR],
-                    components1[comps][UNIT],
-                    components1[comps][INSTALLED_CAP][VALUE],
-                    components1[comps][OPTIMIZE_CAP][VALUE],
-                ]
-            }
-        )
-    for comps in comp2_keys:
-        components.update(
-            {
-                comps: [
-                    components2[comps][OEMOF_ASSET_TYPE],
-                    components2[comps][ENERGY_VECTOR],
-                    components2[comps][UNIT],
-                    components2[comps][INSTALLED_CAP][VALUE],
-                    components2[comps][OPTIMIZE_CAP][VALUE],
-                ]
-            }
-        )
-
-    df_comp = pd.DataFrame.from_dict(
-        components,
-        orient="index",
-        columns=[
-            "Type of Component",
-            "Energy Vector",
-            UNIT,
-            "Installed Capcity",
-            "Optimization",
-        ],
-    )
-    df_comp.index.name = "Component"
-    df_comp = df_comp.reset_index()
-
-    for i in range(len(df_comp)):
-        if df_comp.at[i, "Optimization"]:
-            df_comp.iloc[i, df_comp.columns.get_loc("Optimization")] = "Yes"
-        else:
-            df_comp.iloc[i, df_comp.columns.get_loc("Optimization")] = "No"
-
-    # Creating a Pandas dataframe for the components optimization results table
-
-    # Read in the scalar matrix as pandas dataframe
-    df_scalar_matrix = results_json[KPI][KPI_SCALAR_MATRIX]
-
-    # Changing the index to a sequence of 0,1,2...
-    df_scalar_matrix = df_scalar_matrix.reset_index()
-
-    # Dropping irrelevant columns from the dataframe
-    df_scalar_matrix = df_scalar_matrix.drop(
-        ["index", TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW], axis=1
+    df_dem = convert_demand_to_dataframe(results_json)
+    dict_for_plots, dict_plot_labels = extract_plot_data_and_title(
+        results_json, df_dem=df_dem
     )
 
-    # Renaming the columns
-    df_scalar_matrix = df_scalar_matrix.rename(
-        columns={
-            LABEL: "Component/Parameter",
-            OPTIMIZED_ADD_CAP: "CAP",
-            ANNUAL_TOTAL_FLOW: "Aggregated Flow",
-        }
-    )
-    # Rounding the numeric values to two significant digits
-    df_scalar_matrix = df_scalar_matrix.round(2)
-
-    # Creating a Pandas dataframe for the costs' results
-
-    # Read in the cost matrix as a pandas dataframe
-    df_cost_matrix = results_json[KPI][KPI_COST_MATRIX]
-
-    # Changing the index to a sequence of 0,1,2...
-    df_cost_matrix = df_cost_matrix.reset_index()
-
-    # Drop some irrelevant columns from the dataframe
-    df_cost_matrix = df_cost_matrix.drop(
-        ["index", COST_OM_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM_FIX,], axis=1,
-    )
-
-    # Rename some of the column names
-    df_cost_matrix = df_cost_matrix.rename(
-        columns={
-            LABEL: "Component",
-            COST_TOTAL: "CAP",
-            COST_UPFRONT: "Upfront Investment Costs",
-        }
-    )
-
-    # Round the numeric values to two significant digits
-    df_cost_matrix = df_cost_matrix.round(2)
-
-    # Dictionaries to gather non-fatal warning and error messages that appear during the simulation
-    warnings_dict = {}
-    errors_dict = {}
-
-    log_file = os.path.join(OUTPUT_FOLDER, "mvs_logfile.log")
-    # log_file = "/home/mr/Projects/mvs_eland/MVS_outputs/mvs_logfile.log"
-
-    with open(log_file) as log_messages:
-        log_messages = log_messages.readlines()
-
-    i = 0
-    for line in log_messages:
-        if "WARNING" in line:
-            i = i + 1
-            substrings = line.split(" - ")
-            message_string = substrings[-1]
-            warnings_dict.update({i: message_string})
-        elif "ERROR" in line:
-            i = i + 1
-            substrings = line.split(" - ")
-            message_string = substrings[-1]
-            errors_dict.update({i: message_string})
-
-    # Build a pandas dataframe with the data for the various demands
-
-    # The below dict will gather all the keys of the various plots for later use in the graphOptions.csv
-    dict_for_plots = {"demands": {}, "supplies": {}}
-    dict_plot_labels = {}
-
-    # demands is a dict with all the info for the demands
-    # dem_keys is a list of keys of the demands dict
-
-    # The below loop will add all the demands to the dict_for_plots dictionary, including the timeseries values
-    for demand in dem_keys:
-        dict_for_plots["demands"].update(
-            {demand: results_json[ENERGY_CONSUMPTION][demand][TIMESERIES]}
-        )
-        dict_plot_labels.update(
-            {demand: results_json[ENERGY_CONSUMPTION][demand]["label"]}
-        )
-
-    # Later, this dataframe can be passed to a function directly make the graphs with Plotly
-    df_all_demands = pd.DataFrame.from_dict(dict_for_plots["demands"], orient="columns")
-
-    # Change the index of the dataframe
-    df_all_demands.reset_index(level=0, inplace=True)
-    # Rename the timestamp column from 'index' to 'timestamp'
-    df_all_demands = df_all_demands.rename(columns={"index": "timestamp"})
-
-    # Collect the keys of various resources (PV, Wind, etc.)
-    resources = results_json[ENERGY_PRODUCTION]
-
-    # List of resources (includes DSOs, which need to be removed)
-    res_keys = list(resources.keys())
-    for res in res_keys:
-        if "DSO_" in res:
-            del resources[res]
-
-    # List of resources (with the DSOs deleted)
-    res_keys = list(resources.keys())
-
-    # The below loop will add all the resources to the dict_for_plots dictionary, including the timeseries values
-    for resource in res_keys:
-        dict_for_plots["supplies"].update(
-            {resource: results_json[ENERGY_PRODUCTION][resource][TIMESERIES]}
-        )
-        dict_plot_labels.update(
-            {resource: results_json[ENERGY_PRODUCTION][resource]["label"]}
-        )
-
-    # Later, this dataframe can be passed to a function directly make the graphs with Plotly
-    df_all_res = pd.DataFrame.from_dict(dict_for_plots["supplies"], orient="columns")
-
-    # Change the index of the dataframe
-    df_all_res.reset_index(level=0, inplace=True)
-    # Rename the timestamp column from 'index' to 'timestamp'
-    df_all_res = df_all_res.rename(columns={"index": "timestamp"})
-
-    # Dict that gathers all the flows through various buses
-    data_flows = results_json["optimizedFlows"]
+    df_comp = convert_components_to_dataframe(results_json)
+    df_all_demands = convert_plot_data_to_dataframe(dict_for_plots, "demands")
+    df_all_res = convert_plot_data_to_dataframe(dict_for_plots, "supplies")
+    df_scalar_matrix = convert_scalar_matrix_to_dataframe(results_json)
+    df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
+    df_kpis = convert_kpi_matrix_to_dataframe(results_json)
 
     # Add dataframe to hold all the KPIs and optimized additional capacities
     df_capacities = results_json[KPI][KPI_SCALAR_MATRIX]
     df_capacities.drop(
-        columns=["total_flow", "annual_total_flow", "peak_flow", "average_flow"],
-        inplace=True,
+        columns=[TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW], inplace=True,
     )
     df_capacities.reset_index(drop=True, inplace=True)
 
-    # Data preparation operations for generating the pie charts with Plotly
-
-    # Get the cost matrix from the results JSON file into a pandas DF
-    df_kpis = results_json[KPI][KPI_COST_MATRIX]
-
-    # List of the needed parameters
-    costs_needed = [LABEL, ANNUITY_TOTAL, COST_INVESTMENT, COST_OM_TOTAL]
-
-    # Drop all the irrelevant columns
-    df_kpis = df_kpis[costs_needed]
-
-    # Add a row with total of each column, except label
-    df_kpis = df_kpis.append(df_kpis.sum(numeric_only=True), ignore_index=True)
-
-    # Add a label for the row holding the sum of each column
-    df_kpis.iloc[-1, 0] = "Total"
+    warnings_dict = parse_simulation_log(log_type="WARNING")
+    errors_dict = parse_simulation_log(log_type="ERROR")
 
     # App layout and populating it with different elements
-
     app.layout = html.Div(
         id="main-div",
         className="grid-x align-center",
