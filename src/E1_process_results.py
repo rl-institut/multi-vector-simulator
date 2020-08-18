@@ -17,6 +17,7 @@ from src.constants_json_strings import (
     UNIT,
     SIMULATION_SETTINGS,
     VALUE,
+FLOW,
     LABEL,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
@@ -451,7 +452,7 @@ def add_info_flows(settings, dict_asset, flow):
     total_flow = sum(flow)
     dict_asset.update(
         {
-            "flow": flow,
+            FLOW: flow,
             TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
             ANNUAL_TOTAL_FLOW: {
                 VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
