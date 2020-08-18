@@ -84,7 +84,7 @@ def convert_plot_data_to_dataframe(plot_data_dict, data_type):
 
 
 def extract_plot_data_and_title(dict_values, df_dem=None):
-    """Dataframe used for the plots in the report
+    """Dataframe used for the plots of demands and resources timeseries in the report
 
     Parameters
     ----------

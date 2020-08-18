@@ -599,9 +599,6 @@ def create_app(results_json):
         "Timestep length": results_json[SIMULATION_SETTINGS][TIMESTEP][VALUE],
     }
 
-    # Dict that gathers all the flows through various buses
-    data_flows = results_json["optimizedFlows"]
-
     df_simsettings = pd.DataFrame(
         list(dict_simsettings.items()), columns=["Setting", "Value"]
     )
