@@ -339,11 +339,6 @@ def process_user_arguments(
     if save_png is True:
         user_input.update({"path_png_figs": path_output_folder})
 
-    if pdf_report is True and save_png is True:
-        raise ValueError(
-            "The option '-pdf' cannot be used conjointly with the option '-png'"
-        )
-
     if display_output == "debug":
         screen_level = logging.DEBUG
     elif display_output == "info":

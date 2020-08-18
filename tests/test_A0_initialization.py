@@ -228,10 +228,10 @@ class TestProcessUserArguments:
             ]
         ),
     )
-    def test_if_both_pdf_and_png_opt_raises_error(self, m_args):
-
-        with pytest.raises(ValueError):
-            user_inputs = A0.process_user_arguments()
+    def test_if_both_pdf_and_png_opt_raises_no_error(self, m_args):
+        user_inputs = A0.process_user_arguments()
+        assert "path_png_figs" in user_inputs.keys()
+        assert "path_pdf_report" in user_inputs.keys()
 
     def teardown_method(self):
         if os.path.exists(self.test_out_path):
