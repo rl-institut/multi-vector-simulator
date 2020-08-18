@@ -215,36 +215,36 @@ class TestACElectricityBus:
         # make the time the index
         busses_flow = busses_flow.set_index("Unnamed: 0")
         # read the columns with the values to be used
-        DSO_period_s = [
+        DSO_periods = [
             busses_flow["Electricity grid DSO_consumption_period_1"],
             busses_flow["Electricity grid DSO_consumption_period_2"],
             busses_flow["Electricity grid DSO_consumption_period_3"],
         ]
         demand = busses_flow["demand_01"]
         battery_charge = busses_flow["battery"]
-         #todo storage_discharge calculation should be replaced by timeseries as soon as that is stored to excel or if json is accessed
+        # todo storage_discharge calculation should be replaced by timeseries as soon as that is stored to excel or if json is accessed
         battery_discharge = (
             abs(busses_flow["demand_01"])
-            - busses_flow["Electricity grid DSO_consumption_period_1"] - busses_flow["Electricity grid DSO_consumption_period_2"] - busses_flow["Electricity grid DSO_consumption_period_3"]
+            - busses_flow["Electricity grid DSO_consumption_period_1"]
+            - busses_flow["Electricity grid DSO_consumption_period_2"]
+            - busses_flow["Electricity grid DSO_consumption_period_3"]
         )  # todo: replace this by discharge column when implemented
-        # pick few instances
-        instances = [random.randint(1, len(DSO_period[1])) for x in range(0, 60)]
         # look for peak demand in period
         for j in range(0, 2):
-            for i in instances:
+            for i in range(0, len(DSO_periods[1])):
                 if (
-                    DSO_period[j][i] == peak_demand[j]
-                    and abs(demand[i]) < DSO_period[j][i]
+                    DSO_periods[j][i] == peak_demand[j]
+                    and abs(demand[i]) < DSO_periods[j][i]
                 ):
                     assert battery_charge[i] < 0
                 if (
-                    DSO_period[j][i] == peak_demand[j]
-                    and abs(demand[i]) > DSO_period[j][i]
+                    DSO_periods[j][i] == peak_demand[j]
+                    and abs(demand[i]) > DSO_periods[j][i]
                 ):
                     assert battery_discharge[i] > 0
                 if (
-                    DSO_period[j][i] == peak_demand[j]
-                    and DSO_period[j][i - 1] != peak_demand[j]
+                    DSO_periods[j][i] == peak_demand[j]
+                    and DSO_periods[j][i - 1] != peak_demand[j]
                 ):
                     assert battery_charge[i - 1] < 0
 
