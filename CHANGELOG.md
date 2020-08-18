@@ -29,7 +29,9 @@ Here is a template for new release sections
 - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
 - Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
 - Dispatchable (fuel) sources can now be defined by adding a column to the `energyProduction.csv` and setting `file_name==None` (#492)
-- Updated `Model_Assumptions`: Minimal description of dispatchable fuel sources (#492)
+- Updated `Model_Assumptions.rst`: Minimal description of dispatchable fuel sources (#492)
+- `tests/inputs` energyAssets are updated (#492)
+- Fixed test_benchmark_AD_grid_diesel() - now this one tests fuel source and diesel at once (#492)
 
 ### Removed
 - 
