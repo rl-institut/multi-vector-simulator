@@ -573,10 +573,7 @@ def create_plotly_barplot_fig(
 
     fig.add_trace(
         go.Bar(
-            name=trace_name,
-            x=x_data,
-            y=y_data,
-            marker_color=px.colors.qualitative.D3,
+            name=trace_name, x=x_data, y=y_data, marker_color=px.colors.qualitative.D3,
         )
     )
 
@@ -827,7 +824,7 @@ def plot_flows(dict_values, file_path=None):
     return multi_plots
 
 
-def create_plotly_cost_fig(
+def create_plotly_piechart_fig(
     title_of_plot,
     names,
     values,
@@ -835,7 +832,7 @@ def create_plotly_cost_fig(
     file_name="costs.png",
     file_path=None,
 ):
-    r"""Generate figure of an asset's flow.
+    r"""Generate figure with piechart plot.
 
     Parameters
     ----------
@@ -998,7 +995,7 @@ def plot_piecharts_of_costs(dict_values, file_path=None):
         # Title of the pie plot
         plot_title = kpi_part + str(round(total_for_title, 2)) + "$) " + project_title
 
-        fig = create_plotly_cost_fig(
+        fig = create_plotly_piechart_fig(
             title_of_plot=plot_title,
             names=names_plot,
             values=values_plot,
