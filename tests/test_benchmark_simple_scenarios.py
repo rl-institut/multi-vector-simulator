@@ -224,7 +224,7 @@ class TestACElectricityBus:
         battery_charge = busses_flow["battery"]
         battery_discharge = (
             abs(busses_flow["demand_01"])
-            - busses_flow["Electricity grid DSO_consumption_period_1"]
+            - busses_flow["Electricity grid DSO_consumption_period_1"] - busses_flow["Electricity grid DSO_consumption_period_2"] - busses_flow["Electricity grid DSO_consumption_period_3"]
         )  # todo: replace this by discharge column when implemented
         # pick few instances
         instances = [random.randint(1, len(DSO_period[1])) for x in range(0, 60)]
