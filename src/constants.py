@@ -44,6 +44,7 @@ PATH_OUTPUT_FOLDER_INPUTS = "path_output_folder_inputs"
 INPUT_TYPE = "input_type"
 OVERWRITE = "overwrite"
 DISPLAY_OUTPUT = "display_output"
+SAVE_PNG = "save_png"
 
 USER_INPUT_ARGUMENTS = (
     PATH_INPUT_FILE,
@@ -57,6 +58,7 @@ USER_INPUT_ARGUMENTS = (
 DEFAULT_MAIN_KWARGS = dict(
     overwrite=False,
     pdf_report=False,
+    save_png=False,
     input_type=JSON_EXT,
     path_input_folder=DEFAULT_INPUT_PATH,
     path_output_folder=DEFAULT_OUTPUT_PATH,
