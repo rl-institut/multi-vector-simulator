@@ -41,7 +41,7 @@ from src.constants_json_strings import (
 
 from src.E1_process_results import (
     convert_demand_to_dataframe,
-    convert_kpi_matrix_to_dataframe,
+    convert_costs_to_dataframe,
 )
 
 r"""
@@ -930,7 +930,7 @@ def plot_piecharts_of_costs(dict_values, file_path=None):
        Dict with html DOM id for the figure as keys and :plotly:`plotly.graph_objs.Figure` as values
     """
 
-    df_pie_data = convert_kpi_matrix_to_dataframe(dict_values)
+    df_pie_data = convert_costs_to_dataframe(dict_values)
 
     # Initialize an empty list and a dict for use later in the function
     pie_plots = {}

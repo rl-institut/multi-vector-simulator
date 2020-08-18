@@ -690,8 +690,8 @@ def convert_cost_matrix_to_dataframe(dict_values):
     return df_cost_matrix
 
 
-def convert_kpi_matrix_to_dataframe(dict_values):
-    """Dataframe used for the kpi table of the report
+def convert_costs_to_dataframe(dict_values):
+    """Dataframe used for the costs piecharts of the report
 
     Parameters
     ----------
@@ -704,18 +704,20 @@ def convert_kpi_matrix_to_dataframe(dict_values):
 
     """
     # Get the cost matrix from the results JSON file into a pandas DF
-    df_kpis = dict_values[KPI][KPI_COST_MATRIX]
+    df_pie_plot = dict_values[KPI][KPI_COST_MATRIX]
 
     # List of the needed parameters
     costs_needed = [LABEL, ANNUITY_TOTAL, COST_INVESTMENT, COST_OM_TOTAL]
 
     # Drop all the irrelevant columns
-    df_kpis = df_kpis[costs_needed]
+    df_pie_plot = df_pie_plot[costs_needed]
 
     # Add a row with total of each column, except label
-    df_kpis = df_kpis.append(df_kpis.sum(numeric_only=True), ignore_index=True)
+    df_pie_plot = df_pie_plot.append(
+        df_pie_plot.sum(numeric_only=True), ignore_index=True
+    )
 
     # Add a label for the row holding the sum of each column
-    df_kpis.iloc[-1, 0] = "Total"
+    df_pie_plot.iloc[-1, 0] = "Total"
 
-    return df_kpis
+    return df_pie_plot
