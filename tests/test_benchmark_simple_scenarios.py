@@ -26,7 +26,16 @@ from .constants import (
     CSV_EXT,
 )
 
-from src.constants_json_strings import EXCESS, AUTO_SINK, ENERGY_CONVERSION, ENERGY_PROVIDERS, VALUE, LCOE_ASSET, ENERGY_CONSUMPTION, FLOW
+from src.constants_json_strings import (
+    EXCESS,
+    AUTO_SINK,
+    ENERGY_CONVERSION,
+    ENERGY_PROVIDERS,
+    VALUE,
+    LCOE_ASSET,
+    ENERGY_CONSUMPTION,
+    FLOW,
+)
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
@@ -131,9 +140,7 @@ class TestACElectricityBus:
         reason="Benchmark test deactivated, set env variable "
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
-    @mock.patch(
-        "argparse.ArgumentParser.parse_args", return_value=argparse.Namespace()
-    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AD_grid_diesel(self, margs):
         # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
         use_case = "AD_grid_diesel"

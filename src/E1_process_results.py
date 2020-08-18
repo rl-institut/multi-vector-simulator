@@ -17,7 +17,7 @@ from src.constants_json_strings import (
     UNIT,
     SIMULATION_SETTINGS,
     VALUE,
-FLOW,
+    FLOW,
     LABEL,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
