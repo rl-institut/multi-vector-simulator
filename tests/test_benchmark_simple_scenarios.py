@@ -222,6 +222,7 @@ class TestACElectricityBus:
         ]
         demand = busses_flow["demand_01"]
         battery_charge = busses_flow["battery"]
+         #todo storage_discharge calculation should be replaced by timeseries as soon as that is stored to excel or if json is accessed
         battery_discharge = (
             abs(busses_flow["demand_01"])
             - busses_flow["Electricity grid DSO_consumption_period_1"] - busses_flow["Electricity grid DSO_consumption_period_2"] - busses_flow["Electricity grid DSO_consumption_period_3"]
