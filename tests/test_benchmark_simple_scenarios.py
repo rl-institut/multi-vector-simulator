@@ -15,7 +15,7 @@ import pytest
 
 from pytest import approx
 from mvs_eland_tool import main
-from src.B0_data_input_json import convert_from_json_to_special_types
+from src.B0_data_input_json import load_json
 from src.C0_data_processing import bus_suffix
 
 from .constants import (
@@ -154,10 +154,7 @@ class TestACElectricityBus:
         )
 
         # read json with results file
-        with open(
-            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
-        ) as results:
-            data = json.load(results)
+        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"))
 
         # make sure LCOE_diesel is less than grid price, so that below test makes sense
         assert (
@@ -166,8 +163,8 @@ class TestACElectricityBus:
         )
 
         # make sure grid is not used, ie. that diesel generator supplies all demand
-        diesel_generator = data[ENERGY_CONVERSION]["diesel_generator"][FLOW]["data"]
-        demand = data[ENERGY_CONSUMPTION]["demand_01"][FLOW]["data"]
+        diesel_generator = data[ENERGY_CONVERSION]["diesel_generator"][FLOW]
+        demand = data[ENERGY_CONSUMPTION]["demand_01"][FLOW]
         assert sum(diesel_generator) == approx(sum(demand), rel=1e-3)
 
     # todo: Add test for fuel consumption (kWh/l).
