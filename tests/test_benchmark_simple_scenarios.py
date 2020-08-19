@@ -229,7 +229,7 @@ class TestACElectricityBus:
             - busses_flow["Electricity grid DSO_consumption_period_3"]
         )  # todo: replace this by discharge column when implemented
         # look for peak demand in period
-        for j in range(0, 2):
+        for j in range(0, 3):
             for i in range(0, len(DSO_periods[1])):
                 if (
                     DSO_periods[j][i] == peak_demand[j]
