@@ -97,6 +97,9 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     ):
         assert k in dict_asset
 
+def test_calculate_costs_upfront():
+    costs = E2.calculate_costs_upfront(specific_costs=100, capacity=5, development_costs=200)
+    assert costs == 700
 
 def test_add_costs_and_total():
     """Tests if new costs are adding to current costs correctly and if dict_asset is being updated accordingly."""

@@ -100,10 +100,10 @@ def get_costs(dict_asset, economic_data):
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
         ):
             # investments including fix prices, only upfront costs at t=0
-            costs_upfront = (
-                dict_asset[OPTIMIZED_ADD_CAP][VALUE]
-                * dict_asset[SPECIFIC_COSTS][VALUE]
-                + dict_asset[DEVELOPMENT_COSTS][VALUE]
+            costs_upfront = calculate_costs_upfront(
+                capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
+                specific_costs = dict_asset[SPECIFIC_COSTS][VALUE],
+                development_costs= dict_asset[DEVELOPMENT_COSTS][VALUE]
             )
             costs_total = add_costs_and_total(
                 dict_asset, COST_UPFRONT, costs_upfront, costs_total
@@ -180,6 +180,29 @@ def get_costs(dict_asset, economic_data):
         )
     return
 
+def calculate_costs_upfront(specific_costs, capacity, development_costs):
+    r"""
+    Calculate upfront costs of an investment, ie. the investment in year 0.
+
+    Parameters
+    ----------
+    specific_costs: float
+        Specific per-unit investment costs of an asset
+
+    capacity: float
+        Capacity to be installed
+
+    development_costs: float
+        Fix development costs, ie. an expense not related to the capacity that is installed. Could be planning costs of the plant.
+
+    Returns
+    -------
+    costs_upfront: float
+        Upfront investment costs in year 0
+
+    """
+    costs_upfront = specific_costs * capacity + development_costs
+    return costs_upfront
 
 def add_costs_and_total(dict_asset, name, value, total_costs):
     total_costs += value
