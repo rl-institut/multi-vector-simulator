@@ -22,13 +22,15 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Docstrings for E2 (#520)
+- New constant variable: `SIMULATION_RESULTS="simulation_results"` (#520)
+
 ### Changed
 -
 ### Removed
 -
 ### Fixed
--
+- Calculation of `cost_upfront` required a multiplication (#520)
 
 ## [0.3.3] - 2020-08-19
 
