@@ -159,7 +159,7 @@ class TestACElectricityBus:
         ) as results:
             data = json.load(results)
 
-        # make sure LCOE_dieset is less than grid price, so that below test makes sense
+        # make sure LCOE_diesel is less than grid price, so that below test makes sense
         assert (
             data[ENERGY_CONVERSION]["diesel_generator"][LCOE_ASSET][VALUE]
             < data[ENERGY_PROVIDERS]["DSO"]["energy_price"][VALUE]
