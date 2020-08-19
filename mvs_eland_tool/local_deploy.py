@@ -137,7 +137,9 @@ def main(**kwargs):
 
     logging.debug("Accessing script: F0_outputs")
     output_processing.evaluate_dict(
-        dict_values, path_pdf_report=user_input.get("path_pdf_report", None)
+        dict_values,
+        path_pdf_report=user_input.get("path_pdf_report", None),
+        path_png_figs=user_input.get("path_png_figs", None),
     )
     return 1
 

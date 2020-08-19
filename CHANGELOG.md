@@ -25,6 +25,8 @@ Here is a template for new release sections
 - Added pie plots created using Plotly library to the auto-report (#482) 
 - Added functions to `F2_autoreport.py` that save the images of plots generated using Plotly to `MVS_outputs` folder as `.png` (#499)
 - Inserted doc-strings in the definitions of all the functions in `F2_autoreport.py` (#505)
+- Functions in F1 to create plotly static `.png` files (#512)
+- New argument for MVS execution: `-png` to store plotly graphs to file (#512)
 - Benchmark test for peak demand pricing for grid and battery case (#510)
 
 ### Changed
@@ -43,10 +45,12 @@ Here is a template for new release sections
 - Deactivated function `C2.fuel_price_present_value` as it is not used and TBD (#495)
 - Modified the doc-strings in the definitions of some functions to abide by the formatting rules of numpy doc-strings (#505)
 - Suppressed the log messages of the Flask server (for report webapp) (#509) 
+- Move bulk data preparation code for report from F2 into E1 and F1 modules and into functions (#511, #512)
+ - F2 now calls functions from F1 to prepare the figures of the report (#512)
 
 ### Removed
--
-
+- Functions to generate plots with matplotlib in F1 (#512)
+- Many tests that checked if matplot lib plots were stored to file, not replaced by new tests for storing plotly graphs to file (#512)
 ## [0.3.2] 2020-08-04
 
 ### Added
