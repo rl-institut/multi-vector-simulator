@@ -32,7 +32,6 @@ import json
 import logging
 import os
 import warnings
-import numpy as np
 import pandas as pd
 
 from src.constants import (
@@ -588,14 +587,10 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
     Returns
     -------
     """
-    try:
-        if np.isnan(value):
-            logging.error(
-                f"Parameter {param} of asset {asset} is missing. "
-                f"The simulation may continue, but errors during execution or in the results can be expected."
-            )
-    except:
-        pass
+    if pd.isnull(value):
+        logging.error(
+            f"Parametr {param} of asset {asset} is missing. "
+            f"The simulation may continue, but errors during execution or in the results can be expected.")
 
     if isinstance(value, str) and ("{" in value or "}" in value):
         # if parameter defined as dictionary
