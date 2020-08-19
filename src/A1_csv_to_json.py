@@ -590,7 +590,8 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
     if pd.isnull(value):
         logging.error(
             f"Parametr {param} of asset {asset} is missing. "
-            f"The simulation may continue, but errors during execution or in the results can be expected.")
+            f"The simulation may continue, but errors during execution or in the results can be expected."
+        )
 
     if isinstance(value, str) and ("{" in value or "}" in value):
         # if parameter defined as dictionary

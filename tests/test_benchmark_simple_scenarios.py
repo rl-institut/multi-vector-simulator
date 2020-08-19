@@ -154,7 +154,9 @@ class TestACElectricityBus:
         )
 
         # read json with results file
-        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"))
+        data = load_json(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json")
+        )
 
         # make sure LCOE_diesel is less than grid price, so that below test makes sense
         assert (
