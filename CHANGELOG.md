@@ -60,6 +60,7 @@ Here is a template for new release sections
 
 ### Fixed
 - Image path for readthedocs (Model_Assumpation.rst) (#492)
+- Calculation of `cost_upfront` required a multiplication
 
 ## [0.3.2] 2020-08-04
 
