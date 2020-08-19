@@ -38,11 +38,14 @@ from .constants import (
     TEST_REPO_PATH,
     DICT_PLOTS,
     PDF_REPORT,
+    DATA_TYPE_JSON_KEY,
     TYPE_DATETIMEINDEX,
     TYPE_DATAFRAME,
     TYPE_SERIES,
+    TYPE_NDARRAY,
     TYPE_TIMESTAMP,
     TYPE_BOOL,
+    TYPE_INT64,
     TYPE_STR,
     PATH_OUTPUT_FOLDER,
 )
@@ -66,13 +69,13 @@ SCALAR = 2
 JSON_TEST_DICTIONARY = {
     TYPE_BOOL: True,
     TYPE_STR: "str",
-    "numpy_int64": np.int64(SCALAR),
-    "pandas_DatetimeIndex": pandas_DatetimeIndex,
-    "pandas_Timestamp": pd.Timestamp(START_TIME),
-    "pandas_series": pandas_Series,
+    TYPE_INT64: np.int64(SCALAR),
+    TYPE_DATETIMEINDEX: pandas_DatetimeIndex,
+    TYPE_TIMESTAMP: pd.Timestamp(START_TIME),
+    TYPE_SERIES: pandas_Series,
     "pandas_series_tuple_name": pandas_Series_tuple_name,
-    "numpy_array": np.array(VALUES),
-    "pandas_Dataframe": pandas_Dataframe,
+    TYPE_NDARRAY: np.array(VALUES),
+    TYPE_DATAFRAME: pandas_Dataframe,
 }
 
 UNKNOWN_TYPE = np.float32(SCALAR / 10)
@@ -97,36 +100,6 @@ class TestFileCreation:
         if os.path.exists(OUTPUT_PATH):
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
         os.mkdir(OUTPUT_PATH)
-
-    def test_store_barchart_for_capacities_no_additional_capacities(self):
-        """ """
-        dict_scalar_capacities = {
-            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
-            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
-            KPI: {
-                KPI_SCALAR_MATRIX: pd.DataFrame(
-                    {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [0, 0]}
-                )
-            },
-        }
-        dict_scalar_capacities.update(copy.deepcopy(DICT_PLOTS))
-        show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
-        assert show_optimal_capacities is False
-
-    def test_store_barchart_for_capacities_with_additional_capacities(self):
-        """ """
-        dict_scalar_capacities = {
-            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
-            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
-            KPI: {
-                KPI_SCALAR_MATRIX: pd.DataFrame(
-                    {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [1, 2]}
-                )
-            },
-        }
-        dict_scalar_capacities.update(copy.deepcopy(DICT_PLOTS))
-        show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
-        assert show_optimal_capacities is True
 
     def test_store_scalars_to_excel_two_tabs_dict(self):
         """ """
@@ -163,10 +136,10 @@ class TestFileCreation:
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses.xlsx"))
             is True
         )
-        assert (
-            os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
-            is True
-        )
+        # assert (
+        #     os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
+        #     is True
+        # )
 
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         """ """
@@ -182,14 +155,14 @@ class TestFileCreation:
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses.xlsx"))
             is True
         )
-        assert (
-            os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
-            is True
-        )
-        assert (
-            os.path.exists(os.path.join(OUTPUT_PATH, "b_bus_flows_365_days.png"))
-            is True
-        )
+        # assert (
+        #     os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
+        #     is True
+        # )
+        # assert (
+        #     os.path.exists(os.path.join(OUTPUT_PATH, "b_bus_flows_365_days.png"))
+        #     is True
+        # )
 
     def test_store_dict_into_json(self):
         """ """
@@ -253,50 +226,64 @@ class TestDictionaryToJsonConversion:
 
     def test_processing_dict_for_json_export_parse_numpy_int64(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["numpy_int64"])
+        expr = B0.convert_from_special_types_to_json(
+            JSON_TEST_DICTIONARY["numpy_int64"]
+        )
         assert expr == SCALAR
 
     def test_processing_dict_for_json_export_parse_pandas_DatetimeIndex(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_DatetimeIndex"])
-        assert (
-            expr
-            == TYPE_DATETIMEINDEX
-            + '{"columns":[0],"index":[1577836800000,1577840400000,1577844000000],"data":[[1577836800000],[1577840400000],[1577844000000]]}'
+        expr = B0.convert_from_special_types_to_json(
+            JSON_TEST_DICTIONARY[TYPE_DATETIMEINDEX]
         )
+        assert expr == {
+            DATA_TYPE_JSON_KEY: TYPE_DATETIMEINDEX,
+            "columns": [0],
+            "index": [1577836800000, 1577840400000, 1577844000000],
+            "data": [[1577836800000], [1577840400000], [1577844000000]],
+        }
 
     def test_processing_dict_for_json_export_parse_pandas_Timestamp(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_Timestamp"])
-        assert expr == TYPE_TIMESTAMP + "2020-01-01 00:00:00"
+        expr = B0.convert_from_special_types_to_json(
+            JSON_TEST_DICTIONARY[TYPE_TIMESTAMP]
+        )
+        assert expr == {
+            DATA_TYPE_JSON_KEY: TYPE_TIMESTAMP,
+            "value": "2020-01-01 00:00:00",
+        }
 
     def test_processing_dict_for_json_export_parse_pandas_series(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_series"])
-        assert (
-            expr
-            == TYPE_SERIES
-            + '{"name":null,"index":[1577836800000,1577840400000,1577844000000],"data":[0,1,2]}'
-        )
+        expr = B0.convert_from_special_types_to_json(JSON_TEST_DICTIONARY[TYPE_SERIES])
+        assert expr == {
+            DATA_TYPE_JSON_KEY: TYPE_SERIES,
+            "name": None,
+            "index": [1577836800000, 1577840400000, 1577844000000],
+            "data": [0, 1, 2],
+        }
 
     def test_processing_dict_for_json_export_parse_numpy_array(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["numpy_array"])
-        assert expr == '{"array": [0, 1, 2]}'
+        expr = B0.convert_from_special_types_to_json(JSON_TEST_DICTIONARY[TYPE_NDARRAY])
+        assert expr == {DATA_TYPE_JSON_KEY: TYPE_NDARRAY, "value": [0, 1, 2]}
 
     def test_processing_dict_for_json_export_parse_pandas_Dataframe(self):
         """ """
-        expr = F0.convert(JSON_TEST_DICTIONARY["pandas_Dataframe"])
-        assert (
-            expr
-            == TYPE_DATAFRAME
-            + '{"columns":["a","b"],"index":[0,1,2],"data":[[0,0],[1,1],[2,2]]}'
+        expr = B0.convert_from_special_types_to_json(
+            JSON_TEST_DICTIONARY[TYPE_DATAFRAME]
         )
+        assert expr == {
+            DATA_TYPE_JSON_KEY: TYPE_DATAFRAME,
+            "columns": ["a", "b"],
+            "index": [0, 1, 2],
+            "data": [[0, 0], [1, 1], [2, 2]],
+        }
 
     def test_processing_dict_for_json_export_parse_unknown(self):
         """ """
         with pytest.raises(TypeError):
-            F0.convert(UNKNOWN_TYPE)
+            B0.convert_from_special_types_to_json(UNKNOWN_TYPE)
 
     def teardown_class(self):
         """ """
@@ -320,7 +307,7 @@ class TestLoadDictionaryFromJson:
 
     def test_load_json_parse_pandas_series(self):
         """ """
-        k = "pandas_series"
+        k = TYPE_SERIES
         assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
 
     def test_load_json_parse_pandas_series_tuple_name(self):
@@ -330,22 +317,23 @@ class TestLoadDictionaryFromJson:
 
     def test_load_json_parse_numpy_array(self):
         """ """
-        k = "numpy_array"
+        k = TYPE_NDARRAY
         assert np.array_equal(self.value_dict[k], JSON_TEST_DICTIONARY[k])
 
     def test_load_json_export_parse_pandas_Dataframe(self):
         """ """
-        k = "pandas_Dataframe"
+        k = TYPE_DATAFRAME
         assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
 
     def test_load_json_export_parse_pandas_DatatimeIndex(self):
         """ """
-        k = "pandas_DatetimeIndex"
+        k = TYPE_DATETIMEINDEX
         assert self.value_dict[k].equals(JSON_TEST_DICTIONARY[k])
+        assert hasattr(self.value_dict[k], "freq")
 
     def test_load_json_export_parse_pandas_Timestamp(self):
         """ """
-        k = "pandas_Timestamp"
+        k = TYPE_TIMESTAMP
         assert self.value_dict[k] == JSON_TEST_DICTIONARY[k]
 
     def teardown_class(self):

@@ -44,6 +44,7 @@ PATH_OUTPUT_FOLDER_INPUTS = "path_output_folder_inputs"
 INPUT_TYPE = "input_type"
 OVERWRITE = "overwrite"
 DISPLAY_OUTPUT = "display_output"
+SAVE_PNG = "save_png"
 
 USER_INPUT_ARGUMENTS = (
     PATH_INPUT_FILE,
@@ -57,6 +58,7 @@ USER_INPUT_ARGUMENTS = (
 DEFAULT_MAIN_KWARGS = dict(
     overwrite=False,
     pdf_report=False,
+    save_png=False,
     input_type=JSON_EXT,
     path_input_folder=DEFAULT_INPUT_PATH,
     path_output_folder=DEFAULT_OUTPUT_PATH,
@@ -211,12 +213,16 @@ WARNING_TEXT = "warning_text"
 REQUIRED_IN_CSV_ELEMENTS = "required in files"
 DEFAULT_VALUE = "default"
 
+# name of the key linking to the special type of data in a json object
+DATA_TYPE_JSON_KEY = "data_type"
 # possible type of variable stored into the json file
-TYPE_DATETIMEINDEX = "pandas_DatetimeIndex:"
-TYPE_SERIES = "pandas_Series:"
-TYPE_DATAFRAME = "pandas_Dataframe:"
-TYPE_TIMESTAMP = "pandas_Timestamp:"
+TYPE_DATETIMEINDEX = "pandas_DatetimeIndex"
+TYPE_SERIES = "pandas_Series"
+TYPE_DATAFRAME = "pandas_Dataframe"
+TYPE_NDARRAY = "numpy_ndarray"
+TYPE_TIMESTAMP = "pandas_Timestamp"
 TYPE_BOOL = "bool"
+TYPE_INT64 = "numpy_int64"
 TYPE_STR = "str"
 TYPE_NONE = "None"
 TYPE_FLOAT = "float"

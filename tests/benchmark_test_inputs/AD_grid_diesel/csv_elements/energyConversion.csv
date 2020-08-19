@@ -14,3 +14,4 @@ outflow_direction,str,Electricity,Electricity
 energyVector,str,Electricity,Electricity
 type_oemof,str,transformer,transformer
 unit,str,kVA,kVA
+maximumCap,float or None,None,None

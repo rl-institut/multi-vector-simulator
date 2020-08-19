@@ -15,7 +15,54 @@ Here is a template for new release sections
 -
 ### Removed
 -
+### Fixed
+-
 ```
+
+## [0.3.3] - 2020-08-19
+
+### Added
+- Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT (#493)
+- Display error message when feed-in tariff > electricity price of any  asset in 'energyProvider.csv'. (#497)
+- Added pie plots created using Plotly library to the auto-report (#482) 
+- Added functions to `F2_autoreport.py` that save the images of plots generated using Plotly to `MVS_outputs` folder as `.png` (#499)
+- Inserted docstrings in the definitions of all the functions in `F2_autoreport.py` (#505)
+- Functions in F1 to create plotly static `.png` files (#512)
+- New argument for MVS execution: `-png` to store plotly graphs to file (#512)
+- Benchmark test for peak demand pricing for grid and battery case (#510)
+- Logging error message if a cell is left empty for a parameter in the csvs (see `A1`) (#492)
+- Logging error message if a bus connects less then three assets including the excess sink, as in that case the energy system model is likely to be incomplete (`C1.check_for_sufficient_assets_on_busses()`) (#492)
+
+### Changed
+- Move and rename json converter and parser to B0 module (#464)
+- Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+- Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
+- Changed styling of plots, mainly how legends appear in the PDF report (#482) 
+- Move and rename json converter and parser to B0 module (#464)
+- Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+- Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
+- Replaced parameter strings by variables (#500)
+- Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
+- Moved function `C0.determine_lifetime_price_dispatch()` to C2 with all its sub-functions.  (#495)
+- Changed calculation of `LIFETIME_PRICE_DISPATCH` for lists and pd.Series (see dosctrings of `C2.get_lifetime_price_dispatch_list`, `C2.get_lifetime_price_dispatch_timeseries`) (#495)
+- Changed dostring format in `C2` to numpy (#495)
+- Deactivated function `C2.fuel_price_present_value` as it is not used and TBD (#495)
+- Modified the doc-strings in the definitions of some functions to abide by the formatting rules of numpy doc-strings (#505)
+- Suppressed the log messages of the Flask server (for report webapp) (#509) 
+- Move bulk data preparation code for report from F2 into E1 and F1 modules and into functions (#511, #512)
+- F2 now calls functions from F1 to prepare the figures of the report (#512)
+- Dispatchable (fuel) sources can now be defined by adding a column to the `energyProduction.csv` and setting `file_name==None` (#492)
+- Updated `Model_Assumptions.rst`: Minimal description of dispatchable fuel sources (#492)
+- `tests/inputs` energyAssets are updated (#492)
+- Fixed test_benchmark_AD_grid_diesel() - now this one tests fuel source and diesel at once (#492)
+
+### Removed
+- Functions to generate plots with matplotlib in F1 (#512)
+- Many tests that checked if matplot lib plots were stored to file, not replaced by new tests for storing plotly graphs to file (#512)
+
+### Fixed
+- Image path for readthedocs (Model_Assumpation.rst) (#492)
+
 
 ## [0.3.2] 2020-08-04
 
@@ -69,7 +116,9 @@ Here is a template for new release sections
 - Add Plotly-based blots (line diagrams for energy flows and bar charts) to `F2_autoreport.py` (#439)
 - LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
 - Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case UVtgV. note: file not provided so far (#474)
+- Solar generation profiles with option of using monitored weather data (ambient temp, ghi, dhi) at the use case uvtgv. note: file not provided so far (#475)
 - Benchmark test for simple case grid and diesel without test for fuel consumption (#386)
+- Example docstring to readthedocs (#489)
 
 ### Changed
 - Use selenium to print the automatic project report, `python mvs_report.py -h` for help (#356)
@@ -175,8 +224,8 @@ Here is a template for new release sections
 tipps for module building, and hint that units in the MVS are not checked (#229)
 - Images for `simulating_with_the_mvs.rst`: images/energy_system.png, images/energy_system_model
 .png, images/folder_structure_inputs.png (#229)
-- Tables for `simulating_with_the_mvs.rst`: tables/example_multiple_inputs_energyConversion.csv
-, tables/example_scalar_as_timeseries_energyConversion.csv (#229)
+- Tables for `simulating_with_the_mvs.rst`: files_to_be_displayed/example_multiple_inputs_energyConversion.csv
+, files_to_be_displayed/example_scalar_as_timeseries_energyConversion.csv (#229)
 - Benchmark test for csv inputs (#254)
 - Benchmark test with only PV and grid (#258)
 - Module F2 for auto-reporting results of MVS simulation (#232)

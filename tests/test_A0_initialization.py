@@ -21,6 +21,7 @@ from .constants import (
     DEFAULT_OUTPUT_PATH,
     PDF_REPORT,
     PATH_INPUT_FILE,
+    SAVE_PNG,
 )
 
 PARSER = A0.create_parser()
@@ -186,6 +187,7 @@ class TestProcessUserArguments:
         assert user_inputs["path_pdf_report"] == os.path.join(
             self.test_out_path, PDF_REPORT
         )
+        assert "path_png_figs" not in user_inputs.keys()
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
@@ -198,6 +200,38 @@ class TestProcessUserArguments:
     ):
         user_inputs = A0.process_user_arguments()
         assert "path_pdf_report" not in user_inputs.keys()
+
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            ["-f", "-log", "warning", "-i", test_in_path, "-o", test_out_path, "-png"]
+        ),
+    )
+    def test_if_png_pdf_not_active(self, m_args):
+        user_inputs = A0.process_user_arguments()
+        assert "path_png_figs" in user_inputs.keys()
+        assert "path_pdf_report" not in user_inputs.keys()
+
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            [
+                "-f",
+                "-log",
+                "warning",
+                "-i",
+                test_in_path,
+                "-o",
+                test_out_path,
+                "-png",
+                "-pdf",
+            ]
+        ),
+    )
+    def test_if_both_pdf_and_png_opt_raises_no_error(self, m_args):
+        user_inputs = A0.process_user_arguments()
+        assert "path_png_figs" in user_inputs.keys()
+        assert "path_pdf_report" in user_inputs.keys()
 
     def teardown_method(self):
         if os.path.exists(self.test_out_path):
@@ -271,6 +305,10 @@ class TestCommandLineInput:
     def test_pdf_report_activation(self):
         parsed = self.parser.parse_args(["-pdf"])
         assert parsed.pdf_report is True
+
+    def test_png_activation(self):
+        parsed = self.parser.parse_args(["-png"])
+        assert parsed.save_png is True
 
     def test_log_assignation(self):
         parsed = self.parser.parse_args(["-log", "debug"])

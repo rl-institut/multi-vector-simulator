@@ -14,27 +14,46 @@ import pandas as pd
 
 from src.constants import TYPE_NONE
 from src.constants_json_strings import (
-    UNIT,
-    SIMULATION_SETTINGS,
-    VALUE,
-    LABEL,
-    OPTIMIZE_CAP,
+    FLOW,
     INSTALLED_CAP,
-    EVALUATED_PERIOD,
     INPUT_POWER,
     OUTPUT_POWER,
     STORAGE_CAPACITY,
     TIME_INDEX,
-    TIMESERIES_PEAK,
     INPUT_BUS_NAME,
     OUTPUT_BUS_NAME,
-    ANNUAL_TOTAL_FLOW,
-    OPTIMIZED_ADD_CAP,
     KPI_SCALARS_DICT,
+    OPTIMIZED_FLOWS,
+    UNIT,
+    ENERGY_CONSUMPTION,
+    LABEL,
+    VALUE,
+    OPTIMIZE_CAP,
+    SIMULATION_SETTINGS,
+    EVALUATED_PERIOD,
+    TIMESERIES_PEAK,
+    DSO_FEEDIN,
+    AUTO_SINK,
+    EXCESS,
+    ENERGY_CONVERSION,
+    ENERGY_PRODUCTION,
+    OEMOF_ASSET_TYPE,
+    ENERGY_VECTOR,
+    KPI,
+    KPI_COST_MATRIX,
+    KPI_SCALAR_MATRIX,
     TOTAL_FLOW,
     PEAK_FLOW,
     AVERAGE_FLOW,
-    OPTIMIZED_FLOWS,
+    OPTIMIZED_ADD_CAP,
+    ANNUAL_TOTAL_FLOW,
+    COST_OM_TOTAL,
+    COST_INVESTMENT,
+    COST_DISPATCH,
+    COST_OM_FIX,
+    COST_TOTAL,
+    COST_UPFRONT,
+    ANNUITY_TOTAL,
 )
 
 
@@ -46,13 +65,13 @@ def get_timeseries_per_bus(dict_values, bus_data):
     ----------
     dict_values : dict
         Contains all input data of the simulation.
-        bus_data : dict Contains information about all busses in a nested dict.
+    bus_data : dict Contains information about all busses in a nested dict.
 
-            1st level keys: bus names;
-            2nd level keys:
+        1st level keys: bus names;
+        2nd level keys:
 
-                'scalars': (pd.Series) (does not exist in all dicts)
-                'sequences': (pd.DataFrame) - contains flows between components and busses
+            'scalars': (pd.Series) (does not exist in all dicts)
+            'sequences': (pd.DataFrame) - contains flows between components and busses
 
     Returns
     -------
@@ -353,7 +372,8 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
                     )
                 else:
                     logging.warning(
-                        "Time series peak of asset %s negative or zero! Check timeseries. No optimized capacity derived.",
+                        "Time series peak of asset %s negative or zero! Check timeseries. "
+                        "No optimized capacity derived.",
                         dict_asset[LABEL],
                     )
                     pass
@@ -451,7 +471,7 @@ def add_info_flows(settings, dict_asset, flow):
     total_flow = sum(flow)
     dict_asset.update(
         {
-            "flow": flow,
+            FLOW: flow,
             TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
             ANNUAL_TOTAL_FLOW: {
                 VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
@@ -462,3 +482,243 @@ def add_info_flows(settings, dict_asset, flow):
         }
     )
     return
+
+
+def convert_demand_to_dataframe(dict_values):
+    """Dataframe used for the demands table of the report
+
+    Parameters
+    ----------
+    dict_values: dict
+        output values of MVS
+
+    Returns
+    -------
+    :pandas:`pandas.DataFrame<frame>`
+
+    """
+    # Creating a dataframe for the demands
+    demands = dict_values[ENERGY_CONSUMPTION]
+
+    # Removing all columns that are not actually from demands
+    drop_list = []
+    for column_label in demands:
+        # Identifies excess sink in demands for removal
+        if EXCESS in column_label:
+            drop_list.append(column_label)
+        # Identifies DSO_feedin sink in demands for removal
+        elif DSO_FEEDIN + AUTO_SINK in column_label:
+            drop_list.append(column_label)
+        elif DSO_FEEDIN in column_label:
+            drop_list.append(column_label)
+
+    # Remove some elements from drop_list (ie. sinks that are not demands) from data
+    for item in drop_list:
+        del demands[item]
+
+    demand_data = {}
+
+    for dem in list(demands.keys()):
+        demand_data.update(
+            {
+                dem: [
+                    demands[dem][UNIT],
+                    demands[dem][TIMESERIES_PEAK][VALUE],
+                    demands[dem]["timeseries_average"][VALUE],
+                    demands[dem]["timeseries_total"][VALUE],
+                ]
+            }
+        )
+
+    df_dem = pd.DataFrame.from_dict(
+        demand_data,
+        orient="index",
+        columns=[UNIT, "Peak Demand", "Mean Demand", "Total Demand per annum"],
+    )
+    df_dem.index.name = "Demands"
+    df_dem = df_dem.reset_index()
+    df_dem = df_dem.round(2)
+
+    return df_dem
+
+
+def convert_components_to_dataframe(dict_values):
+    """Dataframe used for the component table of the report
+
+    Parameters
+    ----------
+    dict_values: dict
+        output values of MVS
+
+    Returns
+    -------
+    :pandas:`pandas.DataFrame<frame>`
+
+    """
+
+    components1 = dict_values[ENERGY_PRODUCTION]
+    components2 = dict_values[ENERGY_CONVERSION]
+
+    comp1_keys = list(components1.keys())
+    comp2_keys = list(components2.keys())
+
+    components = {}
+    # Defining the columns of the table to be printed
+    for comps in comp1_keys:
+        components.update(
+            {
+                comps: [
+                    components1[comps][OEMOF_ASSET_TYPE],
+                    "Electricity",
+                    # components1[comps][ENERGY_VECTOR],
+                    components1[comps][UNIT],
+                    components1[comps][INSTALLED_CAP][VALUE],
+                    components1[comps][OPTIMIZE_CAP][VALUE],
+                ]
+            }
+        )
+    for comps in comp2_keys:
+        components.update(
+            {
+                comps: [
+                    components2[comps][OEMOF_ASSET_TYPE],
+                    components2[comps][ENERGY_VECTOR],
+                    components2[comps][UNIT],
+                    components2[comps][INSTALLED_CAP][VALUE],
+                    components2[comps][OPTIMIZE_CAP][VALUE],
+                ]
+            }
+        )
+
+    df_comp = pd.DataFrame.from_dict(
+        components,
+        orient="index",
+        columns=[
+            "Type of Component",
+            "Energy Vector",
+            UNIT,
+            "Installed Capcity",
+            "Capacity optimization",
+        ],
+    )
+    df_comp.index.name = "Component"
+    df_comp = df_comp.reset_index()
+
+    for i in range(len(df_comp)):
+        if df_comp.at[i, "Optimization"]:
+            df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "Yes"
+        else:
+            df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "No"
+
+    return df_comp
+
+
+def convert_scalar_matrix_to_dataframe(dict_values):
+    """Dataframe used for the scalar matrix table of the report
+
+    Parameters
+    ----------
+    dict_values: dict
+        output values of MVS
+
+    Returns
+    -------
+    :pandas:`pandas.DataFrame<frame>`
+
+    """
+
+    # Read in the scalar matrix as pandas dataframe
+    df_scalar_matrix = dict_values[KPI][KPI_SCALAR_MATRIX]
+
+    # Changing the index to a sequence of 0,1,2...
+    df_scalar_matrix = df_scalar_matrix.reset_index()
+
+    # Dropping irrelevant columns from the dataframe
+    df_scalar_matrix = df_scalar_matrix.drop(
+        ["index", TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW], axis=1
+    )
+
+    # Renaming the columns
+    df_scalar_matrix = df_scalar_matrix.rename(
+        columns={
+            LABEL: "Component/Parameter",
+            OPTIMIZED_ADD_CAP: "CAP",
+            ANNUAL_TOTAL_FLOW: "Aggregated Flow",
+        }
+    )
+    # Rounding the numeric values to two significant digits
+    df_scalar_matrix = df_scalar_matrix.round(2)
+
+    return df_scalar_matrix
+
+
+def convert_cost_matrix_to_dataframe(dict_values):
+    """Dataframe used for the cost matrix table of the report
+
+    Parameters
+    ----------
+    dict_values: dict
+        output values of MVS
+
+    Returns
+    -------
+    :pandas:`pandas.DataFrame<frame>`
+
+    """
+
+    # Read in the cost matrix as a pandas dataframe
+    df_cost_matrix = dict_values[KPI][KPI_COST_MATRIX]
+
+    # Changing the index to a sequence of 0,1,2...
+    df_cost_matrix = df_cost_matrix.reset_index()
+
+    # Drop some irrelevant columns from the dataframe
+    df_cost_matrix = df_cost_matrix.drop(
+        ["index", COST_OM_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM_FIX], axis=1,
+    )
+
+    # Rename some of the column names
+    df_cost_matrix = df_cost_matrix.rename(
+        columns={
+            LABEL: "Component",
+            COST_TOTAL: "Total costs",
+            COST_UPFRONT: "Upfront Investment Costs",
+        }
+    )
+
+    # Round the numeric values to two significant digits
+    df_cost_matrix = df_cost_matrix.round(2)
+    return df_cost_matrix
+
+
+def convert_costs_to_dataframe(dict_values):
+    """Dataframe used for the costs piecharts of the report
+
+    Parameters
+    ----------
+    dict_values: dict
+        output values of MVS
+
+    Returns
+    -------
+    :pandas:`pandas.DataFrame<frame>`
+
+    """
+    # Get the cost matrix from the results JSON file into a pandas DF
+    df_pie_plot = dict_values[KPI][KPI_COST_MATRIX]
+
+    # List of the needed parameters
+    costs_needed = [LABEL, ANNUITY_TOTAL, COST_INVESTMENT, COST_OM_TOTAL]
+
+    # Drop all the irrelevant columns
+    df_pie_plot = df_pie_plot[costs_needed]
+
+    # Add a row with total of each column, except label
+    df_pie_plot = df_pie_plot.append(
+        df_pie_plot.sum(numeric_only=True), ignore_index=True
+    )
+
+    # Add a label for the row holding the sum of each column
+    df_pie_plot.iloc[-1, 0] = "Total"
+
+    return df_pie_plot
