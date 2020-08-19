@@ -15,16 +15,29 @@ Here is a template for new release sections
 -
 ### Removed
 -
+### Fixed
+-
 ```
 
 ## [Unreleased]
+
+### Added
+-
+### Changed
+-
+### Removed
+-
+### Fixed
+-
+
+## [0.3.3] - 2020-08-19
 
 ### Added
 - Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT (#493)
 - Display error message when feed-in tariff > electricity price of any  asset in 'energyProvider.csv'. (#497)
 - Added pie plots created using Plotly library to the auto-report (#482) 
 - Added functions to `F2_autoreport.py` that save the images of plots generated using Plotly to `MVS_outputs` folder as `.png` (#499)
-- Inserted doc-strings in the definitions of all the functions in `F2_autoreport.py` (#505)
+- Inserted docstrings in the definitions of all the functions in `F2_autoreport.py` (#505)
 - Functions in F1 to create plotly static `.png` files (#512)
 - New argument for MVS execution: `-png` to store plotly graphs to file (#512)
 - Benchmark test for peak demand pricing for grid and battery case (#510)
@@ -84,10 +97,11 @@ Here is a template for new release sections
 ### Fixed
 - Peak demand pricing feature (#454)
 
+
 ## [0.3.1] - 2020-07-30
 
 ### Added
-- Release protocol in CONTRIBUTING.md file (#353)
+- Release protocol in `CONTRIBUTING.md` file (#353)
 - Custom heat demand profile generation (#371)
 - Add custom solar thermal collector generation profile (#370)
 - Input template folder for easy generation of new simulations (#374), later also for tests of the input folder
@@ -105,13 +119,13 @@ Here is a template for new release sections
 - New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
 - `.readthedocs.yml` configuration file (#435, #436)
 - Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
-- Tests for LCOE function in test_E2_economics (#438)
+- Tests for LCOE function in `test_E2_economics` (#438)
 - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
-- File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
+- File `constants_output.py` to contain all keys included in `scalars.xlsx` (#453)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
 - Add Plotly-based blots (line diagrams for energy flows and bar charts) to `F2_autoreport.py` (#439)
 - LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
-- Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case uvtgv. note: file not provided so far (#474)
+- Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case UVtgV. note: file not provided so far (#474)
 - Solar generation profiles with option of using monitored weather data (ambient temp, ghi, dhi) at the use case uvtgv. note: file not provided so far (#475)
 - Benchmark test for simple case grid and diesel without test for fuel consumption (#386)
 - Example docstring to readthedocs (#489)
@@ -121,10 +135,10 @@ Here is a template for new release sections
 - Sort parameters in csv´s within the input folder (#374)
 - Change relative folder path to absolute in tests files (#396)
 - Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
-- Improve styling of the pfd report (#369)
+- Improve styling of the pdf report (#369)
 - `LIST_OF_NEW_PARAMETERS` renamed `EXTRA_CSV_PARAMETERS` and moved from `A1` to `constants.py
 ` (#384)
-- Order of parameters in tests/inputs, fixed missing parameters  (#384)
+- Order of parameters in `tests/inputs`, fixed missing parameters  (#384)
 - Only a single output flow for sources (instead of multiple possible) as discussed in #149  (#391)
 - Move `existing` parameter into Investment objects of D1 components (was before added to output flow) (#391)
 - Use pyppeteers instead of selenium to emulate the webbrowser and print the pdf report
@@ -140,16 +154,16 @@ Here is a template for new release sections
 - Add `ìnputs` folder to `.gitignore` (#401)
 - Readthedocs links to simple scenario `tests/inputs` (#420)
 - Adapt and add logging messages for components added to the model in D1 (#429)
-- Moved list of keys to be printed in "scalars.xlsx" to "constants_output.py" (#453)
-- Renamed "peak_flow" to `PEAK_FLOW` and "average_flow" to `AVERAGE_FLOW` (#453)
-- Changed function "E2.lcoe_asset()" and its tests, now processes one asset at a time (#453)
-- Added arguments `"-f", "-log", "warning"` to all `parse_args` and `main()` in `tests` (#456)
+- Moved list of keys to be printed in `scalars.xlsx` to `constants_output.py` (#453)
+- Renamed `"peak_flow"` to `PEAK_FLOW` and `"average_flow"` to `AVERAGE_FLOW` (#453)
+- Changed function `E2.lcoe_asset()` and its tests, now processes one asset at a time (#453)
+- Added arguments ``-f`, `-log`, `warning`` to all `parse_args` and `main()` in `tests` (#456)
 - File `Developing.rst` with new description of tests and conventions (#456)
-- Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
+- Added a `setup_class` (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
 - Created function to read version number and date from file instead of importing it from module
  (#463)
-- Fixed E0.store_results_matrix(), now available types: 'str', 'bool', 'None', dict (with key VALUE), else ('int'/'float'). If KPI not in asset, no value is attributed. Added test for function (#468, #470)
-- Fixed main() calls in 'test_F1_plotting.py' (#468)
+- Fixed `E0.store_results_matrix()`, now available types: `str`, `bool`, `None`, dict (with key VALUE), else (`int`/`float`). If KPI not in asset, no value is attributed. Added test for function (#468, #470)
+- Fixed `main()` calls in `test_F1_plotting.py` (#468)
 - Added `pyppdf==0.0.12` to `requirements.txt` (#473)
 - Tests for A0: Now new dirs are only created if not existant
 - Function `A0.check_output_folder()`, now after `shutil.rmtree` we still `try-except os.mkdirs`, this fixes local issues with `FileExistsError`.  (#474)
@@ -161,19 +175,18 @@ Here is a template for new release sections
 - `inputs` folder (#401)
 - `tests/test_benchmark.py` module (#401)
 - Outdated table of tests of MVS `docs/tables/table_tests.csv` (#456)
-- Removed function C0.complete_missing_cost_data() as this should be covered by A1 for csv files (#379)
+- Removed function `C0.complete_missing_cost_data()` as this should be covered by A1 for csv files (#379)
 - Old plots in `F2_autoreport.py` generated with matplotlib (#439)
 - Parameter `restore_from_oemof_file` from all files (inputs, tests) (#483)
+- Deleted columns from `fixcost.csv` as this is currently not used (#362)
 
 ### Fixed
-- Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
-- Issue #357 Bug connected to global variables (#356)
-- Issue #168 Duplicate of timeseries files (#388)
+- Bug connected to global variables (#356)
+- Duplicate of timeseries files (#388)
 - Warnings from local readthedocs compilation (#426)
-- Issue #430 Bug on local install (#437)
+- Bug on local install (#437)
 - Input folder `tests/inputs` with simple example scenario (#420)
 - Description of storage efficiency in readthedocs (#457)
-- Bug connected to global variables (#356)
 - MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
 - Adapted benchmark tests input folders to template (#386)
 - Local failing pytests (`FileExistsError`) on Ubuntu and Win10 (#474, #483)
