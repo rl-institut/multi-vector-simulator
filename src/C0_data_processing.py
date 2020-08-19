@@ -319,7 +319,7 @@ def energyProduction(dict_values, group):
         )
 
         if FILENAME in dict_values[group][asset]:
-            if dict_values[group][asset][FILENAME] in ["None", None]:
+            if dict_values[group][asset][FILENAME] in ("None", None):
                 dict_values[group][asset].update({DISPATCHABILITY: True})
             else:
                 receive_timeseries_from_csv(
