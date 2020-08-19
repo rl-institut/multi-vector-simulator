@@ -32,7 +32,6 @@ import json
 import logging
 import os
 import warnings
-
 import pandas as pd
 
 from src.constants import (
@@ -51,6 +50,7 @@ from src.constants import (
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
     DEFAULT_VALUE,
+    HEADER,
 )
 from src.constants_json_strings import (
     LABEL,
@@ -73,6 +73,7 @@ from src.constants_json_strings import (
     MAXIMUM_CAP,
     RENEWABLE_ASSET_BOOL,
     RENEWABLE_SHARE_DSO,
+    FILENAME,
 )
 from src.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
@@ -563,6 +564,35 @@ def check_for_official_extra_parameters(
 
 
 def conversion(value, asset_dict, row, param, asset, filename=""):
+    r"""
+    This function converts the input given in the csv to the dict used in the MVS.
+    
+    When using json files, they are already provided parsed like this functions output.
+    
+    Parameters
+    ----------
+    value: Misc.
+        Value to be parsed
+        
+    asset_dict: dict
+        Dict of asset that is to be filled with data
+        
+    row:
+    param: str 
+        Parameter that is currently parsed
+    
+    asset
+    filename
+
+    Returns
+    -------
+    """
+    if pd.isnull(value):
+        logging.error(
+            f"Parametr {param} of asset {asset} is missing. "
+            f"The simulation may continue, but errors during execution or in the results can be expected."
+        )
+
     if isinstance(value, str) and ("{" in value or "}" in value):
         # if parameter defined as dictionary
         # example: input,str,"{'file_name':'pv_gen_merra2_2014_eff1_tilt40_az180.csv','header':'kW','unit':'kW'}"
@@ -575,19 +605,33 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
         else:
             dict_string = value.replace("'", '"')
             asset_dict.update({param: json.loads(dict_string)})
-            logging.info(
-                f"Parameter {param} of asset {asset} is defined as a timeseries."
-            )
+            if (
+                FILENAME in asset_dict[param]
+                and HEADER in asset_dict[param]
+                and UNIT in asset_dict[param]
+            ):
+                logging.info(
+                    f"Parameter {param} of asset {asset} is defined as a timeseries."
+                )
+            else:
+                logging.warning(
+                    f"Parameter {param} of asset {asset} is defined as a dict, "
+                    f"bus does not inlude parameters {FILENAME}, {HEADER} and {UNIT} to make the input complete "
+                    f"and result in a timeseries."
+                )
+
             # todo: this should result in reading the csv and writing a pd.Series to the param
 
+    # If unit should be a string
     elif row[UNIT] == TYPE_STR:
         asset_dict.update({param: value})
 
     else:
+        # If unit should be a bool
         if row[UNIT] == TYPE_BOOL:
-            if value in ["True", "true", "T", "t", "1"]:
+            if value in [True, "True", "true", "T", "t", "1"]:
                 value = True
-            elif value in ["False", "false", "F", "f", "0"]:
+            elif value in [False, "False", "false", "F", "f", "0"]:
                 value = False
             else:
                 logging.warning(
@@ -604,6 +648,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                     value = float(value)
 
         asset_dict.update({param: {VALUE: value, UNIT: row[UNIT]}})
+
     return asset_dict
 
 

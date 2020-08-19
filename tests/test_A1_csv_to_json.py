@@ -2,6 +2,7 @@ import os
 
 import pytest
 import pandas as pd
+import numpy as np
 
 import src.A1_csv_to_json as A1
 import src.B0_data_input_json as data_input
@@ -46,6 +47,7 @@ CSV_LIST = {
 }
 
 CONVERSION_TYPE = {
+    "param_str_empty": np.nan,
     "param_str": "one",
     "param_factor": {UNIT: "factor", VALUE: 1.04},
     "param_cur": {UNIT: "currency/kWh", VALUE: 18.9},

@@ -20,6 +20,7 @@ from src.constants_json_strings import *
 import src.C1_verification as C1
 import src.C2_economic_functions as C2
 import src.F0_output as F0
+import src.F1_plotting as F1  # only function F1.plot_input_timeseries()
 
 """
 Module C0 prepares the data red from csv or json for simulation, ie. pre-processes it. 
@@ -63,17 +64,22 @@ def all(dict_values):
     # todo check whether input values can be true
     # C1.check_input_values(dict_values)
     # todo Check, whether files (demand, generation) are existing
+
     # check electricity price >= feed-in tariff todo: can be integrated into check_input_values() later
     C1.check_feedin_tariff(dict_values=dict_values)
 
     # Adds costs to each asset and sub-asset
     process_all_assets(dict_values)
 
+    # Perform basic (limited) check for moduel completeness
+    C1.check_for_sufficient_assets_on_busses(dict_values)
+
     F0.store_as_json(
         dict_values,
         dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
         "json_input_processed",
     )
+
     return
 
 
@@ -313,12 +319,15 @@ def energyProduction(dict_values, group):
         )
 
         if FILENAME in dict_values[group][asset]:
-            receive_timeseries_from_csv(
-                dict_values,
-                dict_values[SIMULATION_SETTINGS],
-                dict_values[group][asset],
-                "input",
-            )
+            if dict_values[group][asset][FILENAME] in ("None", None):
+                dict_values[group][asset].update({DISPATCHABILITY: True})
+            else:
+                receive_timeseries_from_csv(
+                    dict_values,
+                    dict_values[SIMULATION_SETTINGS],
+                    dict_values[group][asset],
+                    "input",
+                )
         # check if maximumCap exists and add it to dict_values
         add_maximum_cap(dict_values, group, asset)
 

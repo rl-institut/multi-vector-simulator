@@ -28,12 +28,14 @@ Here is a template for new release sections
 - Functions in F1 to create plotly static `.png` files (#512)
 - New argument for MVS execution: `-png` to store plotly graphs to file (#512)
 - Benchmark test for peak demand pricing for grid and battery case (#510)
+- Logging error message if a cell is left empty for a parameter in the csvs (see `A1`) (#492)
+- Logging error message if a bus connects less then three assets including the excess sink, as in that case the energy system model is likely to be incomplete (`C1.check_for_sufficient_assets_on_busses()`) (#492)
 
 ### Changed
- - Move and rename json converter and parser to B0 module (#464)
- - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
- - Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
- - Changed styling of plots, mainly how legends appear in the PDF report (#482) 
+- Move and rename json converter and parser to B0 module (#464)
+- Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+- Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
+- Changed styling of plots, mainly how legends appear in the PDF report (#482) 
 - Move and rename json converter and parser to B0 module (#464)
 - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
 - Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
@@ -46,11 +48,19 @@ Here is a template for new release sections
 - Modified the doc-strings in the definitions of some functions to abide by the formatting rules of numpy doc-strings (#505)
 - Suppressed the log messages of the Flask server (for report webapp) (#509) 
 - Move bulk data preparation code for report from F2 into E1 and F1 modules and into functions (#511, #512)
- - F2 now calls functions from F1 to prepare the figures of the report (#512)
+- F2 now calls functions from F1 to prepare the figures of the report (#512)
+- Dispatchable (fuel) sources can now be defined by adding a column to the `energyProduction.csv` and setting `file_name==None` (#492)
+- Updated `Model_Assumptions.rst`: Minimal description of dispatchable fuel sources (#492)
+- `tests/inputs` energyAssets are updated (#492)
+- Fixed test_benchmark_AD_grid_diesel() - now this one tests fuel source and diesel at once (#492)
 
 ### Removed
 - Functions to generate plots with matplotlib in F1 (#512)
 - Many tests that checked if matplot lib plots were stored to file, not replaced by new tests for storing plotly graphs to file (#512)
+
+### Fixed
+- Image path for readthedocs (Model_Assumpation.rst) (#492)
+
 ## [0.3.2] 2020-08-04
 
 ### Added
@@ -85,18 +95,18 @@ Here is a template for new release sections
 - Test to verify that input folders have all required parameters (#398)
 - New `dict` `REQUIRED_MVS_PARAMETERS` to gather the required parameters from the csv or json
  input type (#398)
- - `utils.py` module in `src` to gather the functions `find_input_folders` and `compare_input_parameters_with_reference` which can be used to find and validate input folders (#398)
+- `utils.py` module in `src` to gather the functions `find_input_folders` and `compare_input_parameters_with_reference` which can be used to find and validate input folders (#398)
 - Code and test for checking for new parameters in csv and raising warning message if not defined (`A1.check_for_newly_added_parameters`). This then also adds a default value to the new parameter  (#384)
 - Exception if an energyVector does not have internal generation or consumption from a DSO, and is only supplied by energy conversion from another sector: renewable share = 0. (#384)
- - Tests for source components in D1 (#391)
- - Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
- - Pyppeteer package for OS X users in troubleshooting (#414)
- - Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
- - New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
- - `.readthedocs.yml` configuration file (#435, #436)
- - Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
- - Tests for LCOE function in test_E2_economics (#438)
- - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
+- Tests for source components in D1 (#391)
+- Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
+- Pyppeteer package for OS X users in troubleshooting (#414)
+- Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
+- New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
+- `.readthedocs.yml` configuration file (#435, #436)
+- Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
+- Tests for LCOE function in test_E2_economics (#438)
+- Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
 - File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
 - Add Plotly-based blots (line diagrams for energy flows and bar charts) to `F2_autoreport.py` (#439)

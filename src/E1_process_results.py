@@ -14,6 +14,7 @@ import pandas as pd
 
 from src.constants import TYPE_NONE
 from src.constants_json_strings import (
+    FLOW,
     INSTALLED_CAP,
     INPUT_POWER,
     OUTPUT_POWER,
@@ -470,7 +471,7 @@ def add_info_flows(settings, dict_asset, flow):
     total_flow = sum(flow)
     dict_asset.update(
         {
-            "flow": flow,
+            FLOW: flow,
             TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
             ANNUAL_TOTAL_FLOW: {
                 VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
