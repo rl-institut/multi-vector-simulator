@@ -101,8 +101,7 @@ def get_costs(dict_asset, economic_data):
         ):
             # investments including fix prices, only upfront costs at t=0
             costs_upfront = (
-                dict_asset[OPTIMIZED_ADD_CAP][VALUE]
-                * dict_asset[SPECIFIC_COSTS][VALUE]
+                dict_asset[OPTIMIZED_ADD_CAP][VALUE] * dict_asset[SPECIFIC_COSTS][VALUE]
                 + dict_asset[DEVELOPMENT_COSTS][VALUE]
             )
             costs_total = add_costs_and_total(
