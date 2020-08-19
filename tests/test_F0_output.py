@@ -101,36 +101,6 @@ class TestFileCreation:
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
         os.mkdir(OUTPUT_PATH)
 
-    def test_store_barchart_for_capacities_no_additional_capacities(self):
-        """ """
-        dict_scalar_capacities = {
-            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
-            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
-            KPI: {
-                KPI_SCALAR_MATRIX: pd.DataFrame(
-                    {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [0, 0]}
-                )
-            },
-        }
-        dict_scalar_capacities.update(copy.deepcopy(DICT_PLOTS))
-        show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
-        assert show_optimal_capacities is False
-
-    def test_store_barchart_for_capacities_with_additional_capacities(self):
-        """ """
-        dict_scalar_capacities = {
-            SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
-            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
-            KPI: {
-                KPI_SCALAR_MATRIX: pd.DataFrame(
-                    {LABEL: ["asset_a", "asset_b"], OPTIMIZED_ADD_CAP: [1, 2]}
-                )
-            },
-        }
-        dict_scalar_capacities.update(copy.deepcopy(DICT_PLOTS))
-        show_optimal_capacities = F0.plot_optimized_capacities(dict_scalar_capacities)
-        assert show_optimal_capacities is True
-
     def test_store_scalars_to_excel_two_tabs_dict(self):
         """ """
         dict_scalars_two_tabs_dict = {
@@ -166,10 +136,10 @@ class TestFileCreation:
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses.xlsx"))
             is True
         )
-        assert (
-            os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
-            is True
-        )
+        # assert (
+        #     os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
+        #     is True
+        # )
 
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         """ """
@@ -185,14 +155,14 @@ class TestFileCreation:
             os.path.exists(os.path.join(OUTPUT_PATH, "timeseries_all_busses.xlsx"))
             is True
         )
-        assert (
-            os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
-            is True
-        )
-        assert (
-            os.path.exists(os.path.join(OUTPUT_PATH, "b_bus_flows_365_days.png"))
-            is True
-        )
+        # assert (
+        #     os.path.exists(os.path.join(OUTPUT_PATH, "a_bus_flows_365_days.png"))
+        #     is True
+        # )
+        # assert (
+        #     os.path.exists(os.path.join(OUTPUT_PATH, "b_bus_flows_365_days.png"))
+        #     is True
+        # )
 
     def test_store_dict_into_json(self):
         """ """

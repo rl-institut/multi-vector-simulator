@@ -223,3 +223,6 @@ KPI_SCALARS = (
     COST_TOTAL,
     COST_UPFRONT,
 )
+
+DEMANDS = "demands"
+RESOURCES = "resources"

@@ -12,8 +12,6 @@ import webbrowser
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
-import plotly.graph_objs as go
-import plotly.express as px
 import dash_table
 import folium
 import git
@@ -21,7 +19,6 @@ import pandas as pd
 import reverse_geocoder as rg
 import staticmap
 import asyncio
-import textwrap
 import copy
 
 import pyppdf.patch_pyppeteer
@@ -33,63 +30,47 @@ import logging
 pyppeteer_level = logging.WARNING
 logging.getLogger("pyppeteer").setLevel(pyppeteer_level)
 
+# This removes extensive logging in the console for the dash app (it runs on Flask server)
+flask_log = logging.getLogger("werkzeug")
+flask_log.setLevel(logging.ERROR)
+
 from src.constants import (
-    PLOTS_BUSSES,
-    PATHS_TO_PLOTS,
-    PATH_OUTPUT_FOLDER,
-    PLOTS_DEMANDS,
-    PLOTS_RESOURCES,
-    PLOTS_PERFORMANCE,
-    PLOTS_COSTS,
     REPO_PATH,
     REPORT_PATH,
+    PATH_OUTPUT_FOLDER,
     OUTPUT_FOLDER,
     INPUTS_COPY,
     CSV_ELEMENTS,
     ECONOMIC_DATA,
     PROJECT_DATA,
-    INSTALLED_CAP,
 )
 from src.constants_json_strings import (
-    UNIT,
-    ENERGY_CONVERSION,
-    ENERGY_CONSUMPTION,
-    ENERGY_PRODUCTION,
-    OEMOF_ASSET_TYPE,
-    LABEL,
     SECTORS,
     VALUE,
-    ENERGY_VECTOR,
-    OPTIMIZE_CAP,
     SIMULATION_SETTINGS,
     EVALUATED_PERIOD,
     START_DATE,
     TIMESTEP,
-    TIMESERIES_PEAK,
-    TOTAL_FLOW,
-    ANNUAL_TOTAL_FLOW,
-    OPTIMIZED_ADD_CAP,
-    KPI,
-    KPI_SCALAR_MATRIX,
-    KPI_COST_MATRIX,
-    COST_TOTAL,
-    COST_OM_TOTAL,
-    COST_INVESTMENT,
-    COST_DISPATCH,
-    COST_OM_FIX,
-    COST_UPFRONT,
     PROJECT_NAME,
     PROJECT_ID,
     SCENARIO_NAME,
     SCENARIO_ID,
-    PEAK_FLOW,
-    AVERAGE_FLOW,
-    TIMESERIES,
-    ANNUITY_TOTAL,
-    ENERGY_PROVIDERS,
-    DSO_FEEDIN,
-    AUTO_SINK,
-    EXCESS,
+    DEMANDS,
+    RESOURCES,
+)
+
+from src.E1_process_results import (
+    convert_demand_to_dataframe,
+    convert_components_to_dataframe,
+    convert_scalar_matrix_to_dataframe,
+    convert_cost_matrix_to_dataframe,
+)
+from src.F1_plotting import (
+    parse_simulation_log,
+    plot_timeseries,
+    plot_piecharts_of_costs,
+    plot_optimized_capacities,
+    plot_flows,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
@@ -102,6 +83,20 @@ CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
 
 
 async def _print_pdf_from_chrome(path_pdf_report):
+    r"""
+    This function generates the PDF report from the web app rendered on a Chromimum-based browser.
+
+    Parameters
+    ----------
+    path_pdf_report: os.path
+        Path and filename to which the pdf report should be stored
+        Default: Default: os.path.join(OUTPUT_FOLDER, "out.pdf")
+
+    Returns
+    -------
+    Does not return anything, but saves a PDF file in file path provided by the user.
+    """
+
     browser = await launch()
     page = await browser.newPage()
     await page.goto("http://127.0.0.1:8050", {"waitUntil": "networkidle0"})
@@ -115,13 +110,15 @@ async def _print_pdf_from_chrome(path_pdf_report):
 
 
 def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
-    """Run the dash app in a thread an print a pdf before exiting
+    r"""Runs the dash app in a thread and print a pdf before exiting
 
     Parameters
     ----------
-    app: handle to a dash app
+    app: instance of the Dash class of the dash library
+        Default: None
+
     path_pdf_report: str
-        path where the pdf report should ba saved
+        Path where the pdf report should be saved.
 
     Returns
     -------
@@ -142,7 +139,20 @@ def print_pdf(app=None, path_pdf_report=os.path.join(OUTPUT_FOLDER, "out.pdf")):
 
 
 def open_in_browser(app, timeout=600):
-    """Run the dash app in a thread an open a browser window"""
+    r"""Runs the dash app in a thread an open a browser window
+
+    Parameters
+    ----------
+    app: instance of the Dash class, part of the dash library
+
+    timeout: int or float
+        Specifies the number of seconds that the web app should be open in the browser before timing out.
+
+    Returns
+    -------
+    Nothing, but the web app version of the auto-report is displayed in a browser.
+    """
+
     td = threading.Thread(target=app.run_server)
     td.daemon = True
     td.start()
@@ -151,7 +161,25 @@ def open_in_browser(app, timeout=600):
 
 
 def make_dash_data_table(df, title=None):
-    """Function that creates a Dash DataTable from a Pandas dataframe"""
+    r"""
+    Function that creates a Dash DataTable from a Pandas dataframe.
+
+    Parameters
+    ----------
+    df: :pandas:`pandas.DataFrame<frame>`
+        This dataframe holds the data from which the dash table is to be created.
+
+    title: str
+        An optional title for the table.
+        Default: None
+
+    Returns
+    -------
+    html.Div()
+        This element contains the title of the dash table and the dash table itself encased in a
+        child html.Div() element.
+
+    """
     content = [
         html.Div(
             className="tableplay",
@@ -189,6 +217,27 @@ def make_dash_data_table(df, title=None):
 
 
 def insert_subsection(title, content, **kwargs):
+    r"""
+    Inserts sub-sections within the Dash app layout, such as Input data, simulation results, etc.
+
+    Parameters
+    ----------
+    title : str
+        This is the title or heading of the subsection.
+
+    content : list
+        This is typically a list of html elements or function calls returning html elements, that make up the
+        body of the sub-section.
+
+    kwargs : Any possible optional arguments such as styles, etc.
+
+    Returns
+    -------
+    html.Div()
+        This returns the sub-section of the report including the tile and other information within the sub-section.
+
+
+    """
     if "className" in kwargs:
         className = "cell subsection {}".format(kwargs.pop("className"))
     else:
@@ -209,11 +258,20 @@ def insert_subsection(title, content, **kwargs):
 
 # Function that creates the headings
 def insert_headings(heading_text):
-    """
+    r"""
     This function is for creating the headings such as information, input data, etc.
-    parameters: string
-    returns: a html element with the heading_text encsased in a container
+
+    Parameters
+    ----------
+    heading_text: str
+        Big headings for several sub-sections.
+
+    Returns
+    -------
+    html.P()
+        A html element with the heading text encased container.
     """
+
     return html.H2(
         className="cell", children=heading_text, style={"page-break-after": "avoid"}
     )
@@ -221,36 +279,40 @@ def insert_headings(heading_text):
 
 # Functions that creates paragraphs
 def insert_body_text(body_of_text):
+    r"""
+    This function is for rendering blocks of text within the sub-sections.
+
+    Parameters
+    ----------
+    body_of_text: str
+        Typically a single-line or paragraph of text.
+
+    Returns
+    -------
+    html.P()
+        A html element that renders the paragraph of text in the Dash app layout.
     """
-    This function is for rendering blocks of text
-    parameters: paragraph (string)
-    returns: a html element with a paragraph
-    """
+
     return html.P(className="cell large-11 blockoftext", children=body_of_text)
 
 
-def insert_image_array(img_list, width=500):
-    return html.Div(
-        className="image-array",
-        children=[
-            html.Img(
-                className="graphs_ts",
-                src="data:image/png;base64,{}".format(
-                    base64.b64encode(open(ts, "rb").read()).decode()
-                ),
-                width="{}px".format(width),
-            )
-            for ts in img_list
-        ],
-    )
-
-
 def insert_log_messages(log_dict):
-    """ This function inserts logging messages that arise during the simulation, such as warnings and error messages,
-    into the autoreport.
-    :param log_dict: dict, containing the logging messages
-    :return: html.Div() element
+    r"""
+    This function inserts logging messages that arise during the simulation, such as warnings and error messages,
+    into the auto-report.
+    
+    Parameters
+    ----------
+    log_dict: dict
+        A dictionary containing the logging messages collected during the simulation.
+
+    Returns
+    -------
+    html.Div()
+        This html element holds the children html elements that produce the lists of warnings and error messages
+        for both print and screen versions of the auto-report.
     """
+
     return html.Div(
         children=[
             # this will be displayed only in the app
@@ -276,113 +338,40 @@ def insert_log_messages(log_dict):
     )
 
 
-def insert_single_plot(
-    x_data,
-    y_data,
-    plot_type=None,
-    plot_title=None,
-    x_axis_name=None,
-    y_axis_name=None,
-    id_plot=None,
-    print_only=False,
-    color_for_plot="#0A2342",
+def insert_plotly_figure(
+    fig, id_plot=None, print_only=False,
 ):
-    """ Function to create plots using the Plotly library and replace the plots already generated by the
-    matplotlib library, in the web app version of the auto-report.
-    :param color_for_plot: string of color hex
-    :param print_only: bool, default value is False
-    :param plot_title: str
-    :param y_axis_name: str
-    :param x_axis_name: str
-    :param id_plot: str, id of the graph. needed to work on the plot later
-    :param x_data: list, or pandas series
-    :param y_data: list, or pandas series, or list of lists
-    :param plot_type: type of the plot (line/bar/pie)
-    :return: a plot object
+    r"""
+    Insert a plotly figure in a dash app layout
+
+    Parameters
+    ----------
+    fig: :plotly:`plotly.graph_objs.Figure`
+        figure object
+
+    id_plot: str
+        Id of the graph. Should be unique.
+        Default: None
+
+    print_only: bool
+        Used to determine if a web version of the plot is to be generated or not.
+        Default: False
+
+    Returns
+    -------
+    :dash:`dash_html_components.Div`
+        Html Div component containing an image for the print-only version and a plotly figure for
+        the online (no-print) app (in the app the user can interact with plotly figure,
+        whereas the image is static).
+
     """
-    fig = go.Figure()
 
-    styling_dict = dict(
-        showgrid=True,
-        gridwidth=1.5,
-        zeroline=True,
-        mirror=True,
-        autorange=True,
-        linewidth=1,
-        ticks="inside",
-        title_font=dict(size=18, color="black"),
-    )
-
-    if plot_type == "line":
-        fig.add_trace(
-            go.Scatter(
-                x=x_data,
-                y=y_data,
-                mode="lines",
-                line=dict(color=color_for_plot, width=2.5),
-            )
-        )
-        fig.update_layout(
-            xaxis_title=x_axis_name,
-            yaxis_title=y_axis_name,
-            template="simple_white",
-            xaxis=styling_dict,
-            yaxis=styling_dict,
-            font_family="sans-serif",
-            title={
-                "text": plot_title,
-                "y": 0.90,
-                "x": 0.5,
-                "font_size": 23,
-                "xanchor": "center",
-                "yanchor": "top",
-            },
-        )
-
-    elif plot_type == "bar":
-        # Loop through the label column of the df
-        # Plot bars for each parameter with the corresponding value
-        fig.add_trace(
-            go.Bar(
-                name="capacities",
-                x=x_data,
-                y=y_data,
-                marker_color=px.colors.qualitative.D3,
-            )
-        )
-
-        fig.update_layout(
-            xaxis_title=x_axis_name,
-            yaxis_title=y_axis_name,
-            template="simple_white",
-            font_family="sans-serif",
-            xaxis=go.layout.XAxis(
-                showgrid=True,
-                gridwidth=1.5,
-                zeroline=True,
-                mirror=True,
-                autorange=True,
-                linewidth=1,
-                ticks="inside",
-                visible=True,
-            ),
-            yaxis=styling_dict,
-            title={
-                "text": plot_title,
-                "y": 0.90,
-                "x": 0.5,
-                "font_size": 23,
-                "xanchor": "center",
-                "yanchor": "top",
-            },
-            legend_title="Components",
-        )
-
-    # Specific modifications for print version
+    # Specific modifications for print-only version
     fig2 = copy.deepcopy(fig)
     # Make the legend horizontally oriented so as to prevent the legend from being cut off
     fig2.update_layout(legend=dict(orientation="h", y=-0.3, x=0.5, xanchor="center"))
 
+    # Static image for the pdf report
     rendered_plots = [
         html.Img(
             className="print-only dash-plot",
@@ -393,6 +382,8 @@ def insert_single_plot(
             ),
         )
     ]
+
+    # Dynamic plotly figure for the app
     if print_only is False:
         rendered_plots.append(
             dcc.Graph(className="no-print", id=id_plot, figure=fig, responsive=True,)
@@ -401,339 +392,115 @@ def insert_single_plot(
     return html.Div(children=rendered_plots)
 
 
-def ready_single_plots(df_pd, dict_of_labels, only_print=False):
-    """This function prepares the data for plotting line and bar plots.
-    :param df_pd: pandas DF
-    :param only_print: bool, default = False
-    :param dict_of_labels: dict
-    :return: plots of the parameters passed
+def ready_timeseries_plots(dict_values, data_type=DEMANDS, only_print=False):
+    r"""Insert the timeseries line plots in a dash html layout.
+
+    Parameters
+    ----------
+    dict_values: dict
+        Dict with all simulation parameters
+
+    data_type: str
+        one of DEMANDS or RESOURCES
+        Default: DEMANDS
+
+    only_print: bool
+        Setting this value true results in the function creating only the plot for the PDF report,
+        but not the web app version of the auto-report.
+        Default: False
+
+    Returns
+    -------
+    plots: list
+        List containing the timeseries line plots dash components
     """
-    list_of_keys = list(df_pd.columns)
-    list_of_keys.remove("timestamp")
-    plots = []
-    colors_list = [
-        "royalblue",
-        "#3C5233",
-        "firebrick",
-        "#002500",
-        "#DEB841",
-        "#4F3130",
+
+    figs = plot_timeseries(dict_values, data_type)
+    plots = [
+        insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
+        for comp_id, fig in figs.items()
     ]
-    for (component, color_plot) in zip(list_of_keys, colors_list):
-        comp_id = component + "-plot"
-        plots.append(
-            insert_single_plot(
-                x_data=df_pd["timestamp"],
-                y_data=df_pd[component],
-                plot_type="line",
-                plot_title=dict_of_labels[component],
-                x_axis_name="Time",
-                y_axis_name="kW",
-                id_plot=comp_id,
-                print_only=only_print,
-                color_for_plot=color_plot,
-            )
-        )
     return plots
 
 
-def ready_capacities_plots(df_kpis, json_results_file, only_print=False):
-    """ This function prepares the data to be used for plotting the capacities bar plots, from the simulation results
-    and calls the appropriate plotting function that generates the plots.
-    :param df_kpis: pandas DF
-    :param json_results_file: JSON file
-    :param only_print: boolean
-    :return plot
+def ready_capacities_plots(dict_values, only_print=False):
+    r"""Insert the capacities bar plots in a dash html layout
+
+    Parameters
+    ----------
+    dict_values: dict
+        Dict with all simulation parameters
+
+    only_print: bool
+        Setting this value true results in the function creating only the plot for the PDF report,
+        but not the web app version of the auto-report.
+        Default: False
+
+    Returns
+    -------
+    cap_plots: list
+        List containing the capacities bar plots dash components
     """
-    x_values = []
-    y_values = []
 
-    for kpi, cap in zip(list(df_kpis["label"]), list(df_kpis["optimizedAddCap"])):
-        if cap > 0:
-            x_values.append(kpi)
-            y_values.append(cap)
-
-    plot = insert_single_plot(
-        x_data=x_values,
-        y_data=y_values,
-        plot_type="bar",
-        plot_title="Optimal additional capacities (kW/kWh/kWp): "
-        + json_results_file[PROJECT_DATA][PROJECT_NAME]
-        + ", "
-        + json_results_file[PROJECT_DATA][SCENARIO_NAME],
-        x_axis_name="Items",
-        y_axis_name="Capacities",
-        id_plot="capacities-plot",
-        print_only=only_print,
-    )
-    return plot
-
-
-def insert_flows_plots(
-    df_plots_data,
-    x_legend=None,
-    y_legend=None,
-    plot_title=None,
-    pdf_only=False,
-    plot_id=None,
-):
-    """ This function creates the line plots for the flows through the various assets of the energy system.
-    :param df_plots_data: pandas DF
-    :param x_legend: str
-    :param y_legend: str
-    :param plot_title: str
-    :param pdf_only: bool
-    :param plot_id:
-    :return html.Div element containing the plots produced
-    """
-    fig = go.Figure()
-    colors = [
-        "#1f77b4",
-        "#ff7f0e",
-        "#2ca02c",
-        "#d62728",
-        "#9467bd",
-        "#8c564b",
-        "#e377c2",
-        "#7f7f7f",
-        "#bcbd22",
-        "#17becf",
+    figs = plot_optimized_capacities(dict_values)
+    cap_plots = [
+        insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
+        for comp_id, fig in figs.items()
     ]
-    styling_dict = dict(
-        showgrid=True,
-        gridwidth=1,
-        zeroline=True,
-        mirror=True,
-        title_font=dict(size=18, color="black"),
-        ticks="inside",
-        linewidth=1,
-    )
-
-    assets_list = list(df_plots_data.columns)
-    assets_list.remove("timestamp")
-
-    for asset, new_color in zip(assets_list, colors):
-        fig.add_trace(
-            go.Scatter(
-                x=df_plots_data["timestamp"],
-                y=df_plots_data[asset],
-                mode="lines",
-                line=dict(color=new_color, width=2.5),
-                name=asset,
-            )
-        )
-
-    fig.update_layout(
-        xaxis_title=x_legend,
-        yaxis_title=y_legend,
-        font_family="sans-serif",
-        template="simple_white",
-        xaxis=styling_dict,
-        yaxis=styling_dict,
-        title={
-            "text": plot_title,
-            "y": 0.90,
-            "x": 0.5,
-            "font_size": 23,
-            "xanchor": "center",
-            "yanchor": "top",
-        },
-        legend=dict(y=0.5, traceorder="normal", font=dict(color="black"),),
-    )
-
-    # Specific modifications for print version
-    fig2 = copy.deepcopy(fig)
-    # Make the legend horizontally oriented so as to prevent the legend from being cut off
-    fig2.update_layout(legend=dict(orientation="h", y=-0.3, x=0.5, xanchor="center"))
-
-    plot_created = [
-        html.Img(
-            className="print-only dash-plot",
-            src="data:image/png;base64,{}".format(
-                base64.b64encode(
-                    fig2.to_image(format="png", height=500, width=900)
-                ).decode(),
-            ),
-        )
-    ]
-    if pdf_only is False:
-        plot_created.append(
-            dcc.Graph(className="no-print", id=plot_id, figure=fig, responsive=True,)
-        )
-    return html.Div(children=plot_created)
+    return cap_plots
 
 
-def ready_flows_plots(dict_dataseries, json_results_file):
-    """ This function prepares the data from the results JSON file and then calls the appropriate plotting function
-    to generate the line plots for the optimized flows through various assets of the energy system.
-    :param json_results_file: JSON file, this file holds all the simulation results
-    :param dict_dataseries: dict, typically holds the data for the flows through various assets
-    :return list, this list holds the plots generated
+def ready_flows_plots(dict_values, only_print=False):
+    r"""Generate figure for each assets' flow of the energy system.
+
+    Parameters
+    ----------
+    dict_values: dict
+        Dict with all simulation parameters
+
+    only_print: bool
+        Setting this value true results in the function creating only the plot for the PDF report,
+        but not the web app version of the auto-report.
+        Default: False
+
+    Returns
+    -------
+    multi_plots: list
+        List containing the assets' timeseries plots as dash components
     """
-    buses_list = list(dict_dataseries.keys())
-    multi_plots = []
-    for bus in buses_list:
-        comp_id = bus + "-plot"
-        title = (
-            bus
-            + " flows in LES: "
-            + json_results_file[PROJECT_DATA][PROJECT_NAME]
-            + ", "
-            + json_results_file[PROJECT_DATA][SCENARIO_NAME]
-        )
 
-        df_data = json_results_file["optimizedFlows"][bus]
-        df_data.reset_index(level=0, inplace=True)
-        df_data = df_data.rename(columns={"index": "timestamp"})
-
-        multi_plots.append(
-            insert_flows_plots(
-                df_plots_data=df_data,
-                x_legend="Time",
-                y_legend=bus + " flow in kWh",
-                plot_title=title,
-                pdf_only=False,
-                plot_id=comp_id,
-            )
-        )
-
+    figs = plot_flows(dict_values)
+    multi_plots = [
+        insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
+        for comp_id, fig in figs.items()
+    ]
     return multi_plots
 
 
-def insert_pie_plots(
-    title_of_plot, names, values, color_scheme, plot_id, print_only=False
-):
-    # Wrap the text of the title into next line if it exceeds the length given below
-    title_of_plot = textwrap.wrap(title_of_plot, width=75)
-    title_of_plot = "<br>".join(title_of_plot)
+def ready_costs_pie_plots(dict_values, only_print=False):
+    r"""Insert the pie plots in a dash html layout
+    
+    Parameters
+    ----------
+    dict_values: dict
+        Dict with all simulation parameters
 
-    fig = go.Figure(
-        go.Pie(
-            labels=names,
-            values=values,
-            textposition="inside",
-            insidetextorientation="radial",
-            texttemplate="%{label} <br>%{percent}",
-            marker=dict(colors=color_scheme),
-        ),
-    )
+    only_print: bool
+        Setting this value true results in the function creating only the plot for the PDF report,
+        but not the web app version of the auto-report.
+        Default: False
 
-    fig.update_layout(
-        title={
-            "text": title_of_plot,
-            "y": 0.9,
-            "x": 0.5,
-            "font_size": 23,
-            "xanchor": "center",
-            "yanchor": "top",
-            "pad": {"r": 5, "l": 5, "b": 5, "t": 5},
-        },
-        font_family="sans-serif",
-        height=500,
-        width=700,
-        autosize=True,
-        legend=dict(orientation="v", y=0.5, yanchor="middle", x=0.95, xanchor="right",),
-        margin=dict(l=10, r=10, b=50,),
-        uniformtext_minsize=18,
-    )
-    fig.update_traces(hoverinfo="label+percent", textinfo="label", textfont_size=18)
+    Returns
+    -------
+    pie_plots: list
+        List containing the cost pie plots dash components
+    """
 
-    # Specific modifications for print version
-    fig2 = copy.deepcopy(fig)
-    # Make the legend horizontally oriented so as to prevent the legend from being cut off
-    fig2.update_layout(legend=dict(orientation="h", y=-0.1, x=0.5, xanchor="center"))
-
-    plot_created = [
-        html.Img(
-            className="print-only dash-plot",
-            src="data:image/png;base64,{}".format(
-                base64.b64encode(
-                    fig2.to_image(format="png", height=500, width=900)
-                ).decode(),
-            ),
-        )
+    figs = plot_piecharts_of_costs(dict_values)
+    pie_plots = [
+        insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
+        for comp_id, fig in figs.items()
     ]
-
-    if print_only is False:
-        plot_created.append(
-            dcc.Graph(className="no-print", id=plot_id, figure=fig, responsive=True,)
-        )
-    return html.Div(children=plot_created)
-
-
-def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
-    # Initialize an empty list and a dict for use later in the function
-    pie_plots = []
-    pie_data_dict = {}
-
-    # df_pie_data.reset_index(drop=True, inplace=True)
-    columns_list = list(df_pie_data.columns)
-    columns_list.remove(LABEL)
-
-    # Loop to iterate through the list of columns of the DF which are nothing but the KPIs to be plotted
-    for kp_indic in columns_list:
-
-        # Assign an id for the plot
-        comp_id = kp_indic + "plot"
-
-        kpi_part = ""
-
-        # Make a copy of the DF to make various manipulations for the pie chart plotting
-        df_temp = df_pie_data.copy()
-
-        # Get the total value for each KPI to use in the title of the respective pie chart
-        df_temp2 = df_temp.copy()
-        df_temp2.set_index(LABEL, inplace=True)
-        total_for_title = df_temp2.at["Total", kp_indic]
-
-        # Drop the total row in the dataframe
-        df_temp.drop(df_temp.tail(1).index, inplace=True)
-
-        # Gather the data for each asset for the particular KPI, in a dict
-        for row_index in range(0, len(df_temp)):
-            pie_data_dict[df_temp.at[row_index, LABEL]] = df_temp.at[
-                row_index, kp_indic
-            ]
-
-        # Remove negative values (such as the feed-in sinks) from the dict
-        pie_data_dict = {k: v for (k, v) in pie_data_dict.items() if v > 0}
-
-        # Get the names and values for the pie chart from the above dict
-        names_plot = list(pie_data_dict.keys())
-        values_plot = list(pie_data_dict.values())
-
-        # Below loop determines the first part of the plot title, according to the kpi being plotted
-        if "annuity" in kp_indic:
-            kpi_part = "Annuity Costs ("
-            scheme_choosen = px.colors.qualitative.Set1
-        elif "investment" in kp_indic:
-            kpi_part = "Upfront Investment Costs ("
-            scheme_choosen = px.colors.diverging.BrBG
-        elif "om" in kp_indic:
-            kpi_part = "Operation and Maintenance Costs ("
-            scheme_choosen = px.colors.sequential.RdBu
-
-        # Title of the pie plot
-        plot_title = (
-            kpi_part
-            + str(round(total_for_title, 2))
-            + "$): "
-            + json_results_file[PROJECT_DATA][PROJECT_NAME]
-            + ", "
-            + json_results_file[PROJECT_DATA][SCENARIO_NAME]
-        )
-
-        # Append the plot to the list by calling the plotting function directly
-        pie_plots.append(
-            insert_pie_plots(
-                title_of_plot=plot_title,
-                names=names_plot,
-                values=values_plot,
-                color_scheme=scheme_choosen,
-                plot_id=comp_id,
-                print_only=only_print,
-            )
-        )
     return pie_plots
 
 
@@ -741,7 +508,21 @@ def ready_pie_plots(df_pie_data, json_results_file, only_print=False):
 
 
 def create_app(results_json):
-    # Initialize the app
+    r"""Initializes the app and calls all the other functions, resulting in the web app as well as pdf.
+
+    This function specifies the layout of the web app, loads the external styling sheets, prepares the necessary data
+    from the json results file, calls all the helper functions on the data, resulting in the auto-report.
+
+    Parameters
+    ----------
+    results_json: json results file
+        This file is the result of the simulation and contains all the data necessary to generate the auto-report.
+
+    Returns
+    -------
+    app: instance of the Dash class within the dash library
+        This app holds together all the html elements wrapped in Python, necessary for the rendering of the auto-report.
+    """
 
     # external CSS stylesheets
     external_stylesheets = [
@@ -764,22 +545,22 @@ def create_app(results_json):
     dfprojectData = pd.DataFrame.from_dict(results_json[PROJECT_DATA])
     dfeconomicData = pd.DataFrame.from_dict(results_json[ECONOMIC_DATA]).loc[VALUE]
 
-    # Obtaining the coordinates of the project location
-    coordinates = (
+    # Obtaining the latlong of the project location
+    latlong = (
         float(dfprojectData.latitude),
         float(dfprojectData.longitude),
     )
 
     # Determining the geographical location of the project
-    geoList = rg.search(coordinates)
+    geoList = rg.search(latlong)
     geoDict = geoList[0]
     location = geoDict["name"]
 
     # Adds a map to the Dash app
-    mapy = folium.Map(location=coordinates, zoom_start=14)
+    mapy = folium.Map(location=latlong, zoom_start=14)
     tooltip = "Click here for more info"
     folium.Marker(
-        coordinates,
+        latlong,
         popup="Location of the project",
         tooltip=tooltip,
         icon=folium.Icon(color="red", icon="glyphicon glyphicon-flash"),
@@ -788,8 +569,8 @@ def create_app(results_json):
 
     # Adds a staticmap to the PDF
 
-    longitude = coordinates[1]
-    latitude = coordinates[0]
+    longitude = latlong[1]
+    latitude = latlong[0]
     coords = longitude, latitude
 
     map_static = staticmap.StaticMap(600, 600, 80)
@@ -828,6 +609,7 @@ def create_app(results_json):
         + str(results_json[PROJECT_DATA][PROJECT_ID])
         + ")"
     )
+
     scenarioName = (
         results_json[PROJECT_DATA][SCENARIO_NAME]
         + " (ID: "
@@ -861,262 +643,20 @@ def create_app(results_json):
     for sec in sectors:
         sec_list += "\n" + f"\u2022 {sec.upper()}"
 
-    # Creating a dataframe for the demands
-    demands = results_json[ENERGY_CONSUMPTION]
+    df_dem = convert_demand_to_dataframe(results_json)
+    df_comp = convert_components_to_dataframe(results_json)
+    df_scalar_matrix = convert_scalar_matrix_to_dataframe(results_json)
+    df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
 
-    # Removing all columns that are not actually from demands
-    drop_list = []
-    for column_label in demands:
-        # Identifies excess sink in demands for removal
-        if EXCESS in column_label:
-            drop_list.append(column_label)
-        # Identifies DSO_feedin sink in demands for removal
-        elif DSO_FEEDIN + AUTO_SINK in column_label:
-            drop_list.append(column_label)
-        elif DSO_FEEDIN in column_label:
-            drop_list.append(column_label)
-
-    # Remove some elements from drop_list (ie. sinks that are not demands) from data
-    for item in drop_list:
-        del demands[item]
-
-    dem_keys = list(demands.keys())
-    demand_data = {}
-
-    for dem in dem_keys:
-        demand_data.update(
-            {
-                dem: [
-                    demands[dem][UNIT],
-                    demands[dem][TIMESERIES_PEAK][VALUE],
-                    demands[dem]["timeseries_average"][VALUE],
-                    demands[dem]["timeseries_total"][VALUE],
-                ]
-            }
-        )
-
-    df_dem = pd.DataFrame.from_dict(
-        demand_data,
-        orient="index",
-        columns=[UNIT, "Peak Demand", "Mean Demand", "Total Demand per annum"],
+    output_path = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
+    warnings_dict = parse_simulation_log(
+        path_log_file=os.path.join(output_path, "mvs_logfile.log"), log_type="WARNING",
     )
-    df_dem.index.name = "Demands"
-    df_dem = df_dem.reset_index()
-    df_dem = df_dem.round(2)
-
-    # Creating a DF for the components table
-
-    components1 = results_json[ENERGY_PRODUCTION]
-    components2 = results_json[ENERGY_CONVERSION]
-
-    comp1_keys = list(components1.keys())
-    comp2_keys = list(components2.keys())
-
-    components = {}
-
-    for comps in comp1_keys:
-        components.update(
-            {
-                comps: [
-                    components1[comps][OEMOF_ASSET_TYPE],
-                    "Electricity",
-                    # components1[comps][ENERGY_VECTOR],
-                    components1[comps][UNIT],
-                    components1[comps][INSTALLED_CAP][VALUE],
-                    components1[comps][OPTIMIZE_CAP][VALUE],
-                ]
-            }
-        )
-    for comps in comp2_keys:
-        components.update(
-            {
-                comps: [
-                    components2[comps][OEMOF_ASSET_TYPE],
-                    components2[comps][ENERGY_VECTOR],
-                    components2[comps][UNIT],
-                    components2[comps][INSTALLED_CAP][VALUE],
-                    components2[comps][OPTIMIZE_CAP][VALUE],
-                ]
-            }
-        )
-
-    df_comp = pd.DataFrame.from_dict(
-        components,
-        orient="index",
-        columns=[
-            "Type of Component",
-            "Energy Vector",
-            UNIT,
-            "Installed Capcity",
-            "Optimization",
-        ],
+    errors_dict = parse_simulation_log(
+        path_log_file=os.path.join(output_path, "mvs_logfile.log"), log_type="ERROR",
     )
-    df_comp.index.name = "Component"
-    df_comp = df_comp.reset_index()
-
-    for i in range(len(df_comp)):
-        if df_comp.at[i, "Optimization"]:
-            df_comp.iloc[i, df_comp.columns.get_loc("Optimization")] = "Yes"
-        else:
-            df_comp.iloc[i, df_comp.columns.get_loc("Optimization")] = "No"
-
-    # Creating a Pandas dataframe for the components optimization results table
-
-    # Read in the scalar matrix as pandas dataframe
-    df_scalar_matrix = results_json[KPI][KPI_SCALAR_MATRIX]
-
-    # Changing the index to a sequence of 0,1,2...
-    df_scalar_matrix = df_scalar_matrix.reset_index()
-
-    # Dropping irrelevant columns from the dataframe
-    df_scalar_matrix = df_scalar_matrix.drop(
-        ["index", TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW], axis=1
-    )
-
-    # Renaming the columns
-    df_scalar_matrix = df_scalar_matrix.rename(
-        columns={
-            LABEL: "Component/Parameter",
-            OPTIMIZED_ADD_CAP: "CAP",
-            ANNUAL_TOTAL_FLOW: "Aggregated Flow",
-        }
-    )
-    # Rounding the numeric values to two significant digits
-    df_scalar_matrix = df_scalar_matrix.round(2)
-
-    # Creating a Pandas dataframe for the costs' results
-
-    # Read in the cost matrix as a pandas dataframe
-    df_cost_matrix = results_json[KPI][KPI_COST_MATRIX]
-
-    # Changing the index to a sequence of 0,1,2...
-    df_cost_matrix = df_cost_matrix.reset_index()
-
-    # Drop some irrelevant columns from the dataframe
-    df_cost_matrix = df_cost_matrix.drop(
-        ["index", COST_OM_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM_FIX,], axis=1,
-    )
-
-    # Rename some of the column names
-    df_cost_matrix = df_cost_matrix.rename(
-        columns={
-            LABEL: "Component",
-            COST_TOTAL: "CAP",
-            COST_UPFRONT: "Upfront Investment Costs",
-        }
-    )
-
-    # Round the numeric values to two significant digits
-    df_cost_matrix = df_cost_matrix.round(2)
-
-    # Dictionaries to gather non-fatal warning and error messages that appear during the simulation
-    warnings_dict = {}
-    errors_dict = {}
-
-    log_file = os.path.join(OUTPUT_FOLDER, "mvs_logfile.log")
-    # log_file = "/home/mr/Projects/mvs_eland/MVS_outputs/mvs_logfile.log"
-
-    with open(log_file) as log_messages:
-        log_messages = log_messages.readlines()
-
-    i = 0
-    for line in log_messages:
-        if "WARNING" in line:
-            i = i + 1
-            substrings = line.split(" - ")
-            message_string = substrings[-1]
-            warnings_dict.update({i: message_string})
-        elif "ERROR" in line:
-            i = i + 1
-            substrings = line.split(" - ")
-            message_string = substrings[-1]
-            errors_dict.update({i: message_string})
-
-    # Build a pandas dataframe with the data for the various demands
-
-    # The below dict will gather all the keys of the various plots for later use in the graphOptions.csv
-    dict_for_plots = {"demands": {}, "supplies": {}}
-    dict_plot_labels = {}
-
-    # demands is a dict with all the info for the demands
-    # dem_keys is a list of keys of the demands dict
-
-    # The below loop will add all the demands to the dict_for_plots dictionary, including the timeseries values
-    for demand in dem_keys:
-        dict_for_plots["demands"].update(
-            {demand: results_json[ENERGY_CONSUMPTION][demand][TIMESERIES]}
-        )
-        dict_plot_labels.update(
-            {demand: results_json[ENERGY_CONSUMPTION][demand]["label"]}
-        )
-
-    # Later, this dataframe can be passed to a function directly make the graphs with Plotly
-    df_all_demands = pd.DataFrame.from_dict(dict_for_plots["demands"], orient="columns")
-
-    # Change the index of the dataframe
-    df_all_demands.reset_index(level=0, inplace=True)
-    # Rename the timestamp column from 'index' to 'timestamp'
-    df_all_demands = df_all_demands.rename(columns={"index": "timestamp"})
-
-    # Collect the keys of various resources (PV, Wind, etc.)
-    resources = results_json[ENERGY_PRODUCTION]
-
-    # List of resources (includes DSOs, which need to be removed)
-    res_keys = list(resources.keys())
-    for res in res_keys:
-        if "DSO_" in res:
-            del resources[res]
-
-    # List of resources (with the DSOs deleted)
-    res_keys = list(resources.keys())
-
-    # The below loop will add all the resources to the dict_for_plots dictionary, including the timeseries values
-    for resource in res_keys:
-        dict_for_plots["supplies"].update(
-            {resource: results_json[ENERGY_PRODUCTION][resource][TIMESERIES]}
-        )
-        dict_plot_labels.update(
-            {resource: results_json[ENERGY_PRODUCTION][resource]["label"]}
-        )
-
-    # Later, this dataframe can be passed to a function directly make the graphs with Plotly
-    df_all_res = pd.DataFrame.from_dict(dict_for_plots["supplies"], orient="columns")
-
-    # Change the index of the dataframe
-    df_all_res.reset_index(level=0, inplace=True)
-    # Rename the timestamp column from 'index' to 'timestamp'
-    df_all_res = df_all_res.rename(columns={"index": "timestamp"})
-
-    # Dict that gathers all the flows through various buses
-    data_flows = results_json["optimizedFlows"]
-
-    # Add dataframe to hold all the KPIs and optimized additional capacities
-    df_capacities = results_json[KPI][KPI_SCALAR_MATRIX]
-    df_capacities.drop(
-        columns=["total_flow", "annual_total_flow", "peak_flow", "average_flow"],
-        inplace=True,
-    )
-    df_capacities.reset_index(drop=True, inplace=True)
-
-    # Data preparation operations for generating the pie charts with Plotly
-
-    # Get the cost matrix from the results JSON file into a pandas DF
-    df_kpis = results_json[KPI][KPI_COST_MATRIX]
-
-    # List of the needed parameters
-    costs_needed = [LABEL, ANNUITY_TOTAL, COST_INVESTMENT, COST_OM_TOTAL]
-
-    # Drop all the irrelevant columns
-    df_kpis = df_kpis[costs_needed]
-
-    # Add a row with total of each column, except label
-    df_kpis = df_kpis.append(df_kpis.sum(numeric_only=True), ignore_index=True)
-
-    # Add a label for the row holding the sum of each column
-    df_kpis.iloc[-1, 0] = "Total"
 
     # App layout and populating it with different elements
-
     app.layout = html.Div(
         id="main-div",
         className="grid-x align-center",
@@ -1264,15 +804,11 @@ def create_app(results_json):
                             ),
                             make_dash_data_table(df_dem),
                             html.Div(
-                                children=ready_single_plots(
-                                    df_all_demands, dict_plot_labels
-                                )
+                                children=ready_timeseries_plots(results_json, DEMANDS)
                             ),
                             html.H4("Resources"),
                             html.Div(
-                                children=ready_single_plots(
-                                    df_all_res, dict_plot_labels
-                                )
+                                children=ready_timeseries_plots(results_json, RESOURCES)
                             ),
                         ],
                     ),
@@ -1304,17 +840,12 @@ def create_app(results_json):
                                 "With this, the demands are met with the following dispatch schedules:"
                             ),
                             html.Div(
-                                children=ready_flows_plots(
-                                    dict_dataseries=data_flows,
-                                    json_results_file=results_json,
-                                )
+                                children=ready_flows_plots(dict_values=results_json,)
                             ),
                             html.Div(
                                 className="add-cap-plot",
                                 children=ready_capacities_plots(
-                                    df_kpis=df_capacities,
-                                    json_results_file=results_json,
-                                    only_print=False,
+                                    dict_values=results_json
                                 ),
                             ),
                             insert_body_text(
@@ -1333,10 +864,8 @@ def create_app(results_json):
                             make_dash_data_table(df_cost_matrix),
                             html.Div(
                                 className="add-pie-plots",
-                                children=ready_pie_plots(
-                                    df_pie_data=df_kpis,
-                                    json_results_file=results_json,
-                                    only_print=False,
+                                children=ready_costs_pie_plots(
+                                    dict_values=results_json, only_print=False,
                                 ),
                             ),
                         ],
@@ -1378,4 +907,5 @@ if __name__ == "__main__":
     )
 
     test_app = create_app(dict_values)
-    open_in_browser(test_app)
+    # open_in_browser(test_app)
+    test_app.run_server(debug=True)
