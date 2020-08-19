@@ -228,24 +228,33 @@ class TestACElectricityBus:
             - busses_flow["Electricity grid DSO_consumption_period_2"]
             - busses_flow["Electricity grid DSO_consumption_period_3"]
         )  # todo: replace this by discharge column when implemented
+
         # look for peak demand in period
         for j in range(0, 3):
             for i in range(0, len(DSO_periods[1])):
+                # When the DSO is supplying peak demand while demand is smaller then supplied electricity.
+                # Then, the battery is charged.
                 if (
                     DSO_periods[j][i] == peak_demand[j]
                     and abs(demand[i]) < DSO_periods[j][i]
                 ):
-                    assert battery_charge[i] < 0
+                    assert abs(battery_charge[i]) > 0
+                # When DSO supplies peak demand and demand is larger then the peak demand,
+                # Then, the battery has to be discharged
                 if (
                     DSO_periods[j][i] == peak_demand[j]
                     and abs(demand[i]) > DSO_periods[j][i]
                 ):
-                    assert battery_discharge[i] > 0
+                    assert abs(battery_discharge[i]) > 0
+                # If DSO supplies peak demand and the demand is larger then the supply,
+                # then, in the previous timestep the battery must be charged,
+                # as long as in the previous timestep the demand was smaller then the supply.
                 if (
                     DSO_periods[j][i] == peak_demand[j]
-                    and DSO_periods[j][i - 1] != peak_demand[j]
+                    and abs(demand[i]) > DSO_periods[j][i]
+                    and DSO_periods[j][i - 1] > abs(demand[i - 1])
                 ):
-                    assert battery_charge[i - 1] < 0
+                    assert abs(battery_charge[i - 1]) > 0
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
