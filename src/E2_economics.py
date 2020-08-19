@@ -62,9 +62,7 @@ def get_costs(dict_asset, economic_data):
     if isinstance(dict_asset, dict) and not (
         dict_asset[LABEL]
         in [
-            "settings",
             ECONOMIC_DATA,
-            "electricity_demand",
             SIMULATION_SETTINGS,
             SIMULATION_RESULTS,
         ]
