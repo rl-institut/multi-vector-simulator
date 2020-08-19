@@ -325,4 +325,3 @@ def check_for_sufficient_assets_on_busses(dict_values):
                 f"so that the bus is not a dead end should be two, excluding the excess sink. "
                 f"These are the connected assets: {asset_string}"
             )
-    return
