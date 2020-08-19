@@ -188,6 +188,23 @@ def add_costs_and_total(dict_asset, name, value, total_costs):
 
 
 def all_list_in_dict(dict_asset, list):
+    r"""
+    Checks if all items of a list are withing the keys of a dictionary
+
+    Parameters
+    ----------
+    dict_asset: dict
+        Dict with the keys to be evaluated
+
+    list: list
+        List of keys (parameter in strings) that should be in dict
+
+    Returns
+    -------
+    boolean: bool
+        True: All items in keys of the dict
+        False: At least one item is not in keys of the dict
+    """
     boolean = all([name in dict_asset for name in list]) is True
     return boolean
 
