@@ -1,0 +1,13 @@
+,unit,DSO
+unit,str,kW
+energy_price,currency/kWh,0.54
+feedin_tariff,currency/kWh,0.4
+inflow_direction,str,Electricity
+label,str,Electricity grid DSO
+optimizeCap,bool,True
+outflow_direction,str,Electricity
+peak_demand_pricing,currency/kW,15
+peak_demand_pricing_period,"times per year (1,2,3,4,6,12)",3
+type_oemof,str,source
+energyVector,str,Electricity
+renewable_share,factor,0.1

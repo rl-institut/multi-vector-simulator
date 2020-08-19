@@ -27,6 +27,7 @@ Here is a template for new release sections
 - Inserted doc-strings in the definitions of all the functions in `F2_autoreport.py` (#505)
 - Functions in F1 to create plotly static `.png` files (#512)
 - New argument for MVS execution: `-png` to store plotly graphs to file (#512)
+- Benchmark test for peak demand pricing for grid and battery case (#510)
 - Logging error message if a cell is left empty for a parameter in the csvs (see `A1`) (#492)
 - Logging error message if a bus connects less then three assets including the excess sink, as in that case the energy system model is likely to be incomplete (`C1.check_for_sufficient_assets_on_busses()`) (#492)
 

@@ -12,6 +12,7 @@ import json
 import mock
 import pandas as pd
 import pytest
+import random
 
 from pytest import approx
 from mvs_eland_tool import main
@@ -24,6 +25,12 @@ from .constants import (
     TESTS_ON_DEV,
     TEST_REPO_PATH,
     CSV_EXT,
+    ENERGY_CONVERSION,
+    ENERGY_PROVIDERS,
+    VALUE,
+    ENERGY_PRICE,
+    OPTIMIZED_ADD_CAP,
+    LCOE_ASSET,
 )
 
 from src.constants_json_strings import (
@@ -170,6 +177,90 @@ class TestACElectricityBus:
         assert sum(diesel_generator) == approx(sum(demand), rel=1e-3)
 
     # todo: Add test for fuel consumption (kWh/l).
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_benchmark_AE_grid_battery_peak_pricing(self, margs):
+        # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
+        use_case = "AE_grid_battery_peak_pricing"
+        # define an empty dictionary for excess electricity
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=CSV_EXT,
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+        )
+        # read json with results file
+        with open(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
+        ) as results:
+            data = json.load(results)
+        peak_demand = [
+            data[ENERGY_CONVERSION]["Electricity grid DSO_consumption_period_1"][
+                OPTIMIZED_ADD_CAP
+            ][VALUE],
+            data[ENERGY_CONVERSION]["Electricity grid DSO_consumption_period_2"][
+                OPTIMIZED_ADD_CAP
+            ][VALUE],
+            data[ENERGY_CONVERSION]["Electricity grid DSO_consumption_period_2"][
+                OPTIMIZED_ADD_CAP
+            ][VALUE],
+        ]
+        # read timeseries_all_busses excel file
+        busses_flow = pd.read_excel(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
+            sheet_name=bus_suffix("Electricity"),
+        )
+        # make the time the index
+        busses_flow = busses_flow.set_index("Unnamed: 0")
+        # read the columns with the values to be used
+        DSO_periods = [
+            busses_flow["Electricity grid DSO_consumption_period_1"],
+            busses_flow["Electricity grid DSO_consumption_period_2"],
+            busses_flow["Electricity grid DSO_consumption_period_3"],
+        ]
+        demand = busses_flow["demand_01"]
+        battery_charge = busses_flow["battery"]
+        # todo storage_discharge calculation should be replaced by timeseries as soon as that is stored to excel or if json is accessed
+        battery_discharge = (
+            abs(busses_flow["demand_01"])
+            - busses_flow["Electricity grid DSO_consumption_period_1"]
+            - busses_flow["Electricity grid DSO_consumption_period_2"]
+            - busses_flow["Electricity grid DSO_consumption_period_3"]
+        )  # todo: replace this by discharge column when implemented
+
+        # look for peak demand in period
+        for j in range(0, 3):
+            for i in range(0, len(DSO_periods[1])):
+                # When the DSO is supplying peak demand while demand is smaller then supplied electricity.
+                # Then, the battery is charged.
+                if (
+                    DSO_periods[j][i] == peak_demand[j]
+                    and abs(demand[i]) < DSO_periods[j][i]
+                ):
+                    assert abs(battery_charge[i]) > 0
+                # When DSO supplies peak demand and demand is larger then the peak demand,
+                # Then, the battery has to be discharged
+                if (
+                    DSO_periods[j][i] == peak_demand[j]
+                    and abs(demand[i]) > DSO_periods[j][i]
+                ):
+                    assert abs(battery_discharge[i]) > 0
+                # If DSO supplies peak demand and the demand is larger then the supply,
+                # then, in the previous timestep the battery must be charged,
+                # as long as in the previous timestep the demand was smaller then the supply.
+                if (
+                    DSO_periods[j][i] == peak_demand[j]
+                    and abs(demand[i]) > DSO_periods[j][i]
+                    and DSO_periods[j][i - 1] > abs(demand[i - 1])
+                ):
+                    assert abs(battery_charge[i - 1]) > 0
+
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
