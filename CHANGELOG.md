@@ -17,14 +17,23 @@ Here is a template for new release sections
 -
 ```
 
-## [Unreleased]
+## Unreleased
+
+### Added
+
+### Changed
+
+### Removed
+
+
+## [0.3.3] - 2020-08-19
 
 ### Added
 - Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT (#493)
 - Display error message when feed-in tariff > electricity price of any  asset in 'energyProvider.csv'. (#497)
 - Added pie plots created using Plotly library to the auto-report (#482) 
 - Added functions to `F2_autoreport.py` that save the images of plots generated using Plotly to `MVS_outputs` folder as `.png` (#499)
-- Inserted doc-strings in the definitions of all the functions in `F2_autoreport.py` (#505)
+- Inserted docstrings in the definitions of all the functions in `F2_autoreport.py` (#505)
 - Functions in F1 to create plotly static `.png` files (#512)
 - New argument for MVS execution: `-png` to store plotly graphs to file (#512)
 - Benchmark test for peak demand pricing for grid and battery case (#510)
