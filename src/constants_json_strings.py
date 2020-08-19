@@ -170,6 +170,8 @@ BUS_SUFFIX = " bus"
 # Parameters added in post-processing #
 #######################################
 
+SIMULATION_RESULTS = "simulation_results"
+
 # Names for KPI output
 KPI = "kpi"
 KPI_SCALARS_DICT = "scalars"

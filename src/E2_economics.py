@@ -35,6 +35,7 @@ from src.constants_json_strings import (
     OUTPUT_POWER,
     INPUT_POWER,
     STORAGE_CAPACITY,
+SIMULATION_RESULTS
 )
 
 r"""
@@ -65,7 +66,7 @@ def get_costs(dict_asset, economic_data):
             ECONOMIC_DATA,
             "electricity_demand",
             SIMULATION_SETTINGS,
-            "simulation_results",
+            SIMULATION_RESULTS,
         ]
     ):
         logging.debug("Calculating costs of asset %s", dict_asset[LABEL])

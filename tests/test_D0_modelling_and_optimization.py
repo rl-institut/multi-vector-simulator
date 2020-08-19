@@ -19,6 +19,7 @@ from src.constants_json_strings import (
     STORE_OEMOF_RESULTS,
     STORE_NX_GRAPH,
     OUTPUT_LP_FILE,
+SIMULATION_RESULTS
 )
 from .constants import (
     TEST_REPO_PATH,
@@ -44,11 +45,11 @@ def teardown_function():
 
 
 def test_if_model_building_time_measured_and_stored():
-    dict_values = {"simulation_results": {}}
+    dict_values = {SIMULATION_RESULTS: {}}
     start = D0.timer.initalize()
     D0.timer.stop(dict_values, start)
-    assert "modelling_time" in dict_values["simulation_results"]
-    assert isinstance(dict_values["simulation_results"]["modelling_time"], float)
+    assert "modelling_time" in dict_values[SIMULATION_RESULTS]
+    assert isinstance(dict_values[SIMULATION_RESULTS]["modelling_time"], float)
 
 
 START_TIME = "2020-01-01 00:00"
@@ -168,4 +169,4 @@ def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false():
 def test_if_simulation_results_added_to_dict_values():
     D0.run_oemof(dict_values)
     for k in (LABEL, "objective_value", "simulation_time"):
-        assert k in dict_values["simulation_results"].keys()
+        assert k in dict_values[SIMULATION_RESULTS].keys()
