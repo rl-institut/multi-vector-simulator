@@ -111,8 +111,6 @@ def capex_from_investment(investment_t0, lifetime, project_life, discount_factor
     - test_capex_from_investment_lifetime_smaller_than_project_life()
     - test_capex_from_investment_lifetime_bigger_than_project_life()
     """
-
-    # [quantity, investment, installation, weight, lifetime, om, first_investment]
     if project_life == lifetime:
         number_of_investments = 1
     else:
@@ -145,6 +143,77 @@ def capex_from_investment(investment_t0, lifetime, project_life, discount_factor
 
     return capex
 
+# costs with import tax at t=0
+#first_time_investment = investment_costs_at_t0 * (1 + tax)
+
+def replacement_costs(age_of_asset, project_lifetime, asset_lifetime, first_time_investment, discount_factor):
+    r"""
+    Calculating the replacement costs of an asset
+
+    Parameters
+    ----------
+    age_of_asset: int
+        Age of an asset already installed
+
+    project_lifetime: int
+        Project duration
+
+    asset_lifetime: int
+        Lifetime of an asset
+
+    first_time_investment: float
+        Investment cost of an asset to be installed
+
+    discount_factor: float
+        Discount factor of a project
+
+    Returns
+    -------
+    Per-unit replacement costs of an asset. If age_asset == 0, they need to be added to the lifetime_specific_costs of the asset.
+    If age_asset != 0, it will be needed to calculate the future investment costs of a previously installed asset.
+    """
+    
+    # Calculate number of investments
+    if project_lifetime+age_of_asset == asset_lifetime:
+        number_of_investments = 1
+    else:
+        number_of_investments = int(round((project_lifetime+age_of_asset) / asset_lifetime + 0.5))
+
+    replacement_costs = 0
+
+    # In case the asset_lifetime is larger then
+    latest_investment = first_time_investment
+    # Starting from first investment (in the past for installed capacities)
+    year = - age_of_asset
+
+    present_value_of_capital_expentitures = pd.Series([latest_investment], index=[year])
+
+    # Looping over replacements, excluding first_time_investment in year (0 - age_of_asset)
+    for count_of_replacements in range(1, number_of_investments):
+        # replacements taking place after an asset ends its lifetime
+        year += asset_lifetime
+
+        # Update latest_investment (to be used for residual value)
+        latest_investment = first_time_investment / (
+                (1 + discount_factor) ** (year)
+            )
+        # Add latest investment to replacement costs
+        replacement_costs += latest_investment
+        # Update cash flow projection (specific)
+        present_value_of_capital_expentitures.update({year: latest_investment})
+
+    # Calculation of residual value / value at project end
+    if year + age_of_asset > project_lifetime:
+        # the residual of the capex at the end of the simulation time takes into
+        linear_depreciation_last_investment = latest_investment / asset_lifetime
+        # account the value of the money by deviding by (1 + discount_factor) ** (project_life)
+        value_at_project_end = linear_depreciation_last_investment * (year + age_of_asset - project_lifetime) / (1 + discount_factor) ** (project_lifetime)
+        # Subtraction of component value at end of life with last replacement (= number_of_investments - 1)
+        replacement_costs -= value_at_project_end
+        # Update cash flow projection (specific)
+        present_value_of_capital_expentitures.update({project_lifetime: -value_at_project_end})
+
+    return replacement_costs
 
 def annuity(present_value, crf):
     """
