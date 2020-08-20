@@ -5,6 +5,7 @@ import src.E2_economics as E2
 
 from src.constants_json_strings import (
     UNIT,
+    FLOW,
     CURR,
     DEVELOPMENT_COSTS,
     SPECIFIC_COSTS,
@@ -47,6 +48,7 @@ dict_asset = {
 
 dict_economic = {
     CRF: {VALUE: 0.07264891149004721, UNIT: "?"},
+    CURR: "Euro"
 }
 
 dict_values = {
