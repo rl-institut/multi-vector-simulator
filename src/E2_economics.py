@@ -37,8 +37,9 @@ from src.constants_json_strings import (
     OUTPUT_POWER,
     INPUT_POWER,
     STORAGE_CAPACITY,
-SIMULATION_RESULTS,
-FLOW
+    COST_REPLACEMENT,
+    SIMULATION_RESULTS,
+    FLOW
 )
 
 r"""
@@ -70,128 +71,114 @@ class MissingParametersForEconomicEvaluation(UserWarning):
     pass
 
 def get_costs(dict_asset, economic_data):
-    if isinstance(dict_asset, dict) and not (
-        dict_asset[LABEL]
-        in [
-            ECONOMIC_DATA,
-            SIMULATION_SETTINGS,
-            SIMULATION_RESULTS,
-        ]
-    ):
-        logging.debug("Calculating costs of asset %s", dict_asset[LABEL])
-        costs_total = 0
-        cost_om = 0
-        # Calculation of connected parameters:
-        if (
-            all_list_in_dict(
-                dict_asset,
-                [LIFETIME_SPECIFIC_COST, DEVELOPMENT_COSTS, OPTIMIZED_ADD_CAP],
-            )
-            is True
-            and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
-        ):
-            # total investments including fix prices
-            costs_investment_lifetime = calculate_costs_investment(
-                specific_cost=dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
-                capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE], 
-                development_costs=dict_asset[DEVELOPMENT_COSTS][VALUE])
-            
-            costs_total = add_costs_and_total(
-                dict_asset, COST_INVESTMENT, costs_investment_lifetime, costs_total
-            )
-        else:
-            dict_asset.update({COST_INVESTMENT: {VALUE: 0.0}})
+    r"""
+    Calculates economic KPI of the asset handed to the function
 
-        if (
-            all_list_in_dict(
-                dict_asset, [SPECIFIC_COSTS, DEVELOPMENT_COSTS, OPTIMIZED_ADD_CAP]
-            )
-            is True
-            and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
-        ):
-            # investments including fix prices, only upfront costs at t=0
-            costs_investment_upfront = calculate_costs_investment(
-                capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
-                specific_cost = dict_asset[SPECIFIC_COSTS][VALUE],
-                development_costs= dict_asset[DEVELOPMENT_COSTS][VALUE]
-            )
-            costs_total = add_costs_and_total(
-                dict_asset, COST_UPFRONT, costs_investment_upfront, costs_total
-            )
-        else:
-            dict_asset.update({COST_UPFRONT: {VALUE: 0.0}})
+    Parameters
+    ----------
+    dict_asset: dict
+        Asset to be evaluated.
+        Warning messages in place in case that the asset should not be evaluated.
 
-        if (
-            all_list_in_dict(dict_asset, [FLOW, LIFETIME_PRICE_DISPATCH])
-            is True
-        ):
-            costs_price_dispatch = calculate_dispatch_expenditures(
-                dispatch_price=dict_asset[LIFETIME_PRICE_DISPATCH][VALUE],
-                flow=dict_asset[FLOW],
-                asset=dict_asset[LABEL])
+    economic_data: dict
+        Economic data of the project
 
-            costs_total = add_costs_and_total(
-                dict_asset, COST_DISPATCH, costs_price_dispatch, costs_total
-            )
-            cost_om = add_costs_and_total(
-                dict_asset, COST_DISPATCH, costs_price_dispatch, cost_om
-            )
+    Returns
+    -------
+    Updated dict_asset with following KPI:
+    - COST_INVESTMENT
+    - COST_UPFRONT
+    - COST_REPLACEMENT
+    - COST_TOTAL
+    - COST_OM
+    - COST_DISPATCH
+    - COST_OPERATIONAL_TOTAL
+    - ANNUITY_TOTAL
+    - ANNUITY_OM
+    """
 
-        # todo actually, price is probably not the label, but dispatch_price
-        if all_list_in_dict(dict_asset, ["price", ANNUAL_TOTAL_FLOW]) is True:
-            costs_energy = (
-                dict_asset["price"][VALUE] * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]
-            )
-            cost_om = add_costs_and_total(
-                dict_asset, "costs_energy", costs_energy, cost_om
-            )
+    logging.debug("Calculating costs of asset %s", dict_asset[LABEL])
 
-        if (
-            all_list_in_dict(
-                dict_asset,
-                [
-                    ANNUAL_TOTAL_FLOW,
-                    LIFETIME_PRICE_DISPATCH,
-                    INSTALLED_CAP,
-                    OPTIMIZED_ADD_CAP,
-                ],
-            )
-            is True
-        ):
-            cap = dict_asset[INSTALLED_CAP][VALUE]
-            if OPTIMIZED_ADD_CAP in dict_asset:
-                cap += dict_asset[OPTIMIZED_ADD_CAP][VALUE]
+    # helper for developing get_costs() and E modules
+    if not isinstance(dict_asset, dict):
+        logging.warning(f"Function E2.get_costs() is used on {dict_asset}, eventhough it is not a dict. Check loops in E modules.")
 
-            costs_cost_om = dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE] * cap
-            costs_total = add_costs_and_total(
-                dict_asset, COST_OM_FIX, costs_cost_om, costs_total
-            )
-            cost_om = add_costs_and_total(
-                dict_asset, COST_OM_FIX, costs_cost_om, cost_om
-            )
+    # helper for developing get_costs() and E modules
+    if dict_asset[LABEL] in [ECONOMIC_DATA, SIMULATION_SETTINGS, SIMULATION_RESULTS]:
+        logging.warning(f"Function E2.get_costs() is used on {dict_asset[LABEL]}, eventhough it should not be applied to it. Check loops in E modules.")
 
-        dict_asset.update(
-            {
-                COST_TOTAL: {VALUE: costs_total, UNIT: CURR},
-                COST_OM_TOTAL: {VALUE: cost_om, UNIT: CURR},
-            }
     # Testing, if the dict_asset includes all parameters necessary for the proceeding evaluation
-    all_list_in_dict(dict_asset, [LIFETIME_SPECIFIC_COST, OPTIMIZED_ADD_CAP, DEVELOPMENT_COSTS, SPECIFIC_COSTS])
+    all_list_in_dict(dict_asset, [LIFETIME_SPECIFIC_COST, OPTIMIZED_ADD_CAP, DEVELOPMENT_COSTS, SPECIFIC_COSTS, LIFETIME_PRICE_DISPATCH, FLOW])
 
+    ## Total investment costs including investments into the asset and development costs ##
+    costs_investment_lifetime = calculate_costs_investment(
+        specific_cost=dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
+        capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
+        development_costs=dict_asset[DEVELOPMENT_COSTS][VALUE])
+
+    dict_asset.update({COST_INVESTMENT: {VALUE: costs_investment_lifetime,
+                                         UNIT: economic_data[CURR]}})
+
+    ## Part of the investment costs to be paid upfront at t=0 ##
+    costs_investment_upfront = calculate_costs_investment(
+        capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
+        specific_cost = dict_asset[SPECIFIC_COSTS][VALUE],
+        development_costs= dict_asset[DEVELOPMENT_COSTS][VALUE]
         )
 
-        dict_asset.update(
-            {
-                ANNUITY_TOTAL: {
-                    VALUE: dict_asset[COST_TOTAL][VALUE] * economic_data[CRF][VALUE],
-                    UNIT: CURR + "/" + UNIT_YEAR,
-                },
-                ANNUITY_OM: {
-                    VALUE: dict_asset[COST_OM_TOTAL][VALUE] * economic_data[CRF][VALUE],
-                    UNIT: CURR + "/" + UNIT_YEAR,
-                },
-            }
+    dict_asset.update({COST_UPFRONT: {VALUE: costs_investment_upfront,
+                                      UNIT: economic_data[CURR]}})
+
+    ## Part of the investment costs to be paid due to replacements ##
+    #todo: the current costs would not include replacement costs of existing capacities!
+    costs_replacement = calculate_costs_replacement(dict_asset[COST_INVESTMENT][VALUE], dict_asset[COST_UPFRONT][VALUE])
+    dict_asset.update({COST_REPLACEMENT: {VALUE: costs_replacement,
+                                          UNIT: economic_data[CURR]}})
+
+    ## Operation and management expenditures over the project lifetime ##
+    calculate_operation_and_management_expenditures(
+        specific_om_cost=dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE],
+        installed_capacity=dict_asset[INSTALLED_CAP][VALUE],
+        optimized_add_capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE])
+    dict_asset.update({COST_OM: {VALUE: calculate_operation_and_management_expenditures,
+                                 UNIT: economic_data[CURR]}})
+
+    ## Dispatch expenditures of the asset over the project lifetime
+    #todo this does not apply for storage capacities!
+    costs_price_dispatch = calculate_dispatch_expenditures(
+        dispatch_price=dict_asset[LIFETIME_PRICE_DISPATCH][VALUE],
+        flow=dict_asset[FLOW],
+        asset=dict_asset[LABEL])
+
+    dict_asset.update({COST_DISPATCH: {VALUE: costs_price_dispatch,
+                                       UNIT: economic_data[CURR]}})
+
+    # Total operational expenditures over the lifetime
+    total_operational_expenditures = calculate_total_operational_expenditures(dict_asset[COST_OM][VALUE], dict_asset[COST_DISPATCH][VALUE])
+    dict_asset.update({COST_OPERATIONAL_TOTAL: {VALUE: total_operational_expenditures}})
+
+    # todo is this doing anything, though?
+    # todo actually, price is probably not the label, but dispatch_price
+    if all_list_in_dict(dict_asset, ["price", ANNUAL_TOTAL_FLOW]) is True:
+        costs_energy = (
+            dict_asset["price"][VALUE] * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]
         )
+
+    total_asset_costs_over_lifetime = calculate_total_asset_costs_over_lifetime(dict_asset[COST_INVESTMENT], dict_asset[COST_OPERATIONAL_TOTAL])
+    dict_asset.update({COST_TOTAL: {VALUE: total_asset_costs_over_lifetime, UNIT: economic_data[CURR]}})
+
+    dict_asset.update(
+        {
+            ANNUITY_TOTAL: {
+                VALUE: dict_asset[COST_TOTAL][VALUE] * economic_data[CRF][VALUE],
+                UNIT: CURR + "/" + UNIT_YEAR,
+            },
+            ANNUITY_OM: {
+                VALUE: dict_asset[COST_OPERATIONAL_TOTAL][VALUE] * economic_data[CRF][VALUE],
+                UNIT: CURR + "/" + UNIT_YEAR,
+            },
+        }
+    )
     return
 
 def calculate_total_asset_costs_over_lifetime(costs_investment, cost_operational_expenditures):
@@ -375,7 +362,6 @@ def all_list_in_dict(dict_asset, list):
             f"Asset {dict_asset[LABEL]} is missing parameters for the economic evaluation: {missing_parameters}."
             f"These parameters are needed for E2.get_costs(). Please check the E modules.")
     return boolean
-
 
 def lcoe_assets(dict_asset, asset_group):
     """

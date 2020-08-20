@@ -75,78 +75,59 @@ def crf(project_life, discount_factor):
     )
     return crf
 
-
-def capex_from_investment(investment_t0, lifetime, project_life, discount_factor, tax):
+def capex_from_investment(investment_t0, lifetime, project_life, discount_factor, tax, age_of_asset):
     """
-    Calculates the capital expenditures, also known as CapEx.
+     Calculates the capital expenditures, also known as CapEx.
 
-    CapEx represent the total funds used to acquire or upgrade an asset.
-    The specific capex is calculated by taking into account all future cash flows connected to the investment into one unit of the asset.
-    This includes reinvestments, operation and management costs, dispatch costs as well as a deduction of the residual value at project end.
-    The residual value is calculated with a linear depreciation of the last investment, ie. as a even share of the last investment over
-    the lifetime of the asset. The remaining value of the asset is translated in a present value and then deducted.
+     CapEx represent the total funds used to acquire or upgrade an asset.
+     The specific capex is calculated by taking into account all future cash flows connected to the investment into one unit of the asset.
+     This includes reinvestments, operation and management costs, dispatch costs as well as a deduction of the residual value at project end.
+     The residual value is calculated with a linear depreciation of the last investment, ie. as a even share of the last investment over
+     the lifetime of the asset. The remaining value of the asset is translated in a present value and then deducted.
 
-    Parameters
-    ----------
-    investment_t0: float
-        first investment at the beginning of the project made at year 0
-    lifetime: int
-        time period over which investments and re-investments can occur. can be equal to, longer or shorter than project_life
-    project_life: int
-        time period over which the costs of the system occur
-    discount_factor: float
-        weighted average cost of capital, which is the after-tax average cost of various capital sources
-    tax: float
-        compulsory financial charge paid to the government
+     Parameters
+     ----------
+     investment_t0: float
+         first investment at the beginning of the project made at year 0
+     lifetime: int
+         time period over which investments and re-investments can occur. can be equal to, longer or shorter than project_life
+     project_life: int
+         time period over which the costs of the system occur
+     discount_factor: float
+         weighted average cost of capital, which is the after-tax average cost of various capital sources
+     tax: float
+         compulsory financial charge paid to the government
 
-    Returns
-    -------
-    capex: float
-        Capital expenditure for an asset over project lifetime
+     Returns
+     -------
+     specific_capex: float
+         Specific capital expenditure for an asset over project lifetime
 
-    Notes
-    -----
-    Tested with
-    - test_capex_from_investment_lifetime_equals_project_life()
-    - test_capex_from_investment_lifetime_smaller_than_project_life()
-    - test_capex_from_investment_lifetime_bigger_than_project_life()
-    """
-    if project_life == lifetime:
-        number_of_investments = 1
-    else:
-        number_of_investments = int(round(project_life / lifetime + 0.5))
-    # costs with quantity and import tax at t=0
+     specific_replacement_costs_optimized: float
+        Specific replacement costs for the asset capacity to be optimized, needed for E2
+
+     specific_replacement_costs_already_installed: float
+        replacement costs per unit for the currently already installed assets, needed for E2
+
+     Notes
+     -----
+     Tested with
+     - test_capex_from_investment_lifetime_equals_project_life()
+     - test_capex_from_investment_lifetime_smaller_than_project_life()
+     - test_capex_from_investment_lifetime_bigger_than_project_life()
+     """
+
     first_time_investment = investment_t0 * (1 + tax)
+    # Specific replacement costs for the asset capacity to be optimized
+    specific_replacement_costs_optimized = get_replacement_costs(0, project_life, lifetime, first_time_investment, discount_factor)
+    # Specific capex for the optimization
+    specific_capex = first_time_investment + specific_replacement_costs_optimized
 
-    for count_of_replacements in range(0, number_of_investments):
-        # Very first investment is in year 0
-        if count_of_replacements == 0:
-            capex = first_time_investment
-        else:
-            # replacements taking place in year = number_of_replacement * lifetime
-            if count_of_replacements * lifetime != project_life:
-                capex = capex + first_time_investment / (
-                    (1 + discount_factor) ** (count_of_replacements * lifetime)
-                )
+    # Calculating the replacement costs per unit for the currently already installed assets
+    specific_replacement_costs_already_installed = get_replacement_costs(age_of_asset, project_life, lifetime, first_time_investment, discount_factor)
+    return specific_capex, specific_replacement_costs_optimized, specific_replacement_costs_already_installed
 
-    # Subtraction of component value at end of life with last replacement (= number_of_investments - 1)
-    if number_of_investments * lifetime > project_life:
-        last_investment = first_time_investment / (
-            (1 + discount_factor) ** ((number_of_investments - 1) * lifetime)
-        )
-        # the residual of the capex at the end of the simulation time takes into
-        # account the value of the money by deviding by (1 + discount_factor) ** (project_life)
-        linear_depreciation_last_investment = last_investment / lifetime
-        capex = capex - linear_depreciation_last_investment * (
-            number_of_investments * lifetime - project_life
-        ) / (1 + discount_factor) ** (project_life)
-
-    return capex
-
-# costs with import tax at t=0
-#first_time_investment = investment_costs_at_t0 * (1 + tax)
-
-def replacement_costs(age_of_asset, project_lifetime, asset_lifetime, first_time_investment, discount_factor):
+def get_replacement_costs(age_of_asset, project_lifetime, asset_lifetime, first_time_investment, discount_factor):
     r"""
     Calculating the replacement costs of an asset
 
@@ -200,7 +181,7 @@ def replacement_costs(age_of_asset, project_lifetime, asset_lifetime, first_time
         # Add latest investment to replacement costs
         replacement_costs += latest_investment
         # Update cash flow projection (specific)
-        present_value_of_capital_expentitures.update({year: latest_investment})
+        present_value_of_capital_expentitures[year] = latest_investment
 
     # Calculation of residual value / value at project end
     if year + age_of_asset > project_lifetime:
@@ -211,7 +192,7 @@ def replacement_costs(age_of_asset, project_lifetime, asset_lifetime, first_time
         # Subtraction of component value at end of life with last replacement (= number_of_investments - 1)
         replacement_costs -= value_at_project_end
         # Update cash flow projection (specific)
-        present_value_of_capital_expentitures.update({project_lifetime: -value_at_project_end})
+        present_value_of_capital_expentitures[project_lifetime] = - value_at_project_end
 
     return replacement_costs
 
