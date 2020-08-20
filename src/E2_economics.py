@@ -64,6 +64,11 @@ class UnexpectedValueError(UserWarning):
     """Exception raised for value errors during economic post-processing"""
     pass
 
+
+class MissingParametersForEconomicEvaluation(UserWarning):
+    "Warning if one or more parameters are missing for economic post-processing  of an asset"
+    pass
+
 def get_costs(dict_asset, economic_data):
     if isinstance(dict_asset, dict) and not (
         dict_asset[LABEL]
