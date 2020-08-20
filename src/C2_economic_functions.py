@@ -187,7 +187,7 @@ def get_replacement_costs(
     # Starting from first investment (in the past for installed capacities)
     year = -age_of_asset
 
-    present_value_of_capital_expentitures = pd.Series([latest_investment], index=[year])
+    present_value_of_capital_expenditures = pd.Series([latest_investment], index=[year])
 
     # Looping over replacements, excluding first_time_investment in year (0 - age_of_asset)
     for count_of_replacements in range(1, number_of_investments):
@@ -199,22 +199,23 @@ def get_replacement_costs(
         # Add latest investment to replacement costs
         replacement_costs += latest_investment
         # Update cash flow projection (specific)
-        present_value_of_capital_expentitures[year] = latest_investment
+        present_value_of_capital_expenditures[year] = latest_investment
 
     # Calculation of residual value / value at project end
-    if year + age_of_asset > project_lifetime:
+    year += asset_lifetime
+    if year > project_lifetime:
         # the residual of the capex at the end of the simulation time takes into
         linear_depreciation_last_investment = latest_investment / asset_lifetime
         # account the value of the money by deviding by (1 + discount_factor) ** (project_life)
         value_at_project_end = (
             linear_depreciation_last_investment
-            * (year + age_of_asset - project_lifetime)
+            * (year - project_lifetime)
             / (1 + discount_factor) ** (project_lifetime)
         )
         # Subtraction of component value at end of life with last replacement (= number_of_investments - 1)
         replacement_costs -= value_at_project_end
         # Update cash flow projection (specific)
-        present_value_of_capital_expentitures[project_lifetime] = -value_at_project_end
+        present_value_of_capital_expenditures[project_lifetime] = -value_at_project_end
 
     return replacement_costs
 
