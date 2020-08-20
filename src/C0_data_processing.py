@@ -702,7 +702,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         output_bus_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]
         + DSO_PEAK_DEMAND_BUS_NAME,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
-        energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR]
+        energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
     )
 
     # define feed-in sink of the DSO
@@ -935,7 +935,9 @@ def define_transformer_for_peak_demand_pricing(
     return
 
 
-def define_source(dict_values, asset_key, output_bus_direction, energy_vector, **kwargs):
+def define_source(
+    dict_values, asset_key, output_bus_direction, energy_vector, **kwargs
+):
     f"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
 
@@ -979,7 +981,7 @@ def define_source(dict_values, asset_key, output_bus_direction, energy_vector, *
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         MAXIMUM_CAP: {VALUE: None, UNIT: "?"},
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
-        ENERGY_VECTOR: energy_vector
+        ENERGY_VECTOR: energy_vector,
     }
 
     for item in kwargs:
