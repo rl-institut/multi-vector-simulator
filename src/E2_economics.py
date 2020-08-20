@@ -1,4 +1,6 @@
 import logging
+import pandas as pd
+import warnings
 
 from src.constants_json_strings import (
     UNIT,
@@ -35,7 +37,8 @@ from src.constants_json_strings import (
     OUTPUT_POWER,
     INPUT_POWER,
     STORAGE_CAPACITY,
-SIMULATION_RESULTS
+SIMULATION_RESULTS,
+FLOW
 )
 
 r"""
@@ -56,6 +59,10 @@ The module processes the simulation results regarding economic parameters:
 - calculate levelised cost of energy
 - calculate levelised cost of energy carriers (electricity, H2, heat)
 """
+
+class UnexpectedValueError(UserWarning):
+    """Exception raised for value errors during economic post-processing"""
+    pass
 
 def get_costs(dict_asset, economic_data):
     if isinstance(dict_asset, dict) and not (
@@ -100,7 +107,7 @@ def get_costs(dict_asset, economic_data):
             # investments including fix prices, only upfront costs at t=0
             costs_investment_upfront = calculate_costs_investment(
                 capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
-                specific_costs = dict_asset[SPECIFIC_COSTS][VALUE],
+                specific_cost = dict_asset[SPECIFIC_COSTS][VALUE],
                 development_costs= dict_asset[DEVELOPMENT_COSTS][VALUE]
             )
             costs_total = add_costs_and_total(
@@ -110,13 +117,14 @@ def get_costs(dict_asset, economic_data):
             dict_asset.update({COST_UPFRONT: {VALUE: 0.0}})
 
         if (
-            all_list_in_dict(dict_asset, [ANNUAL_TOTAL_FLOW, LIFETIME_PRICE_DISPATCH])
+            all_list_in_dict(dict_asset, [FLOW, LIFETIME_PRICE_DISPATCH])
             is True
         ):
-            costs_price_dispatch = (
-                dict_asset[LIFETIME_PRICE_DISPATCH][VALUE]
-                * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]
-            )
+            costs_price_dispatch = calculate_dispatch_expenditures(
+                dispatch_price=dict_asset[LIFETIME_PRICE_DISPATCH][VALUE],
+                flow=dict_asset[FLOW],
+                asset=dict_asset[LABEL])
+
             costs_total = add_costs_and_total(
                 dict_asset, COST_DISPATCH, costs_price_dispatch, costs_total
             )
@@ -177,6 +185,40 @@ def get_costs(dict_asset, economic_data):
             }
         )
     return
+
+def calculate_dispatch_expenditures(dispatch_price, flow, asset):
+    r"""
+    Calculated the expenditures connected to an asset due to its dispatch
+
+    Parameters
+    ----------
+    dispatch_price: float, int or pd.Series
+        Dispatch price of an asset (variable costs), ie. how much has to be paid for each unit of dispatch
+        Raises error if type does not match
+        a) lifetime_price_dispatch (taking into account all years of operation)
+        b) price_dispatch (taking into account one year of operation)
+
+    flow: pd.Series
+        Dispatch of the asset
+
+    asset: str
+        Label of the asset
+
+    Returns
+    -------
+    a) Total dispatch expenditures of an asset
+    b) Annual dispatch expenditures of an asset
+    """
+    if isinstance(dispatch_price, float) or isinstance(dispatch_price, int):
+        dispatch_expenditures= dispatch_price * sum(flow)
+    elif isinstance(dispatch_price, pd.Series):
+        dispatch_expenditures = sum(dispatch_price*flow)
+    else:
+        raise UnexpectedValueError(
+            f"The dispatch price of asset {asset} is neither float nor pd.Series but {type(dispatch_price)}."
+            f"Please adapt E2.calculate_dispatch_costs() to evaluate the dispatch_expenditures of the asset.")
+
+    return dispatch_expenditures
 
 def calculate_costs_investment(specific_cost, capacity, development_costs):
     r"""

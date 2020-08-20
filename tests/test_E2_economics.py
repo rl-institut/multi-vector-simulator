@@ -1,3 +1,6 @@
+import pandas as pd
+import pytest
+
 import src.E2_economics as E2
 
 from src.constants_json_strings import (
@@ -98,8 +101,23 @@ def test_all_cost_info_parameters_added_to_dict_asset():
         assert k in dict_asset
 
 def test_calculate_costs_investment():
-    costs = E2.calculate_costs_investment(specific_costs=100, capacity=5, development_costs=200)
+    costs = E2.calculate_costs_investment(specific_cost=100, capacity=5, development_costs=200)
     assert costs == 700
+
+asset = "an_asset"
+flow = pd.Series([1,1,1])
+def test_calculate_annual_dispatch_expenditures_float():
+    dispatch_expenditure = E2.calculate_dispatch_expenditures(dispatch_price=1, flow=flow, asset=asset)
+    assert dispatch_expenditure == 3
+
+def test_calculate_annual_dispatch_expenditures_pd_Series():
+    dispatch_price = pd.Series([1, 2, 3])
+    dispatch_expenditure = E2.calculate_dispatch_expenditures(dispatch_price, flow, asset)
+    assert dispatch_expenditure == 6
+
+def test_calculate_annual_dispatch_expenditures_else():
+    with pytest.raises(E2.UnexpectedValueError):
+            E2.calculate_dispatch_expenditures([1, 2], flow, asset)
 
 def test_add_costs_and_total():
     """Tests if new costs are adding to current costs correctly and if dict_asset is being updated accordingly."""
