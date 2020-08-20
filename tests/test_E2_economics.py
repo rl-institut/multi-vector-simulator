@@ -151,16 +151,6 @@ def test_calculate_annual_dispatch_expenditures_else():
     with pytest.raises(E2.UnexpectedValueError):
             E2.calculate_dispatch_expenditures([1, 2], flow, asset)
 
-def test_add_costs_and_total():
-    """Tests if new costs are adding to current costs correctly and if dict_asset is being updated accordingly."""
-    current_costs = 10000
-    new_cost = 5000
-    total_costs = E2.add_costs_and_total(
-        dict_asset, "new_cost", new_cost, current_costs
-    )
-    assert total_costs == new_cost + current_costs
-    assert "new_cost" in dict_asset
-
 def test_all_list_in_dict_passes_as_all_keys_included():
     """Tests whether looking for list items in dict_asset is plausible."""
     list_true = [ANNUAL_TOTAL_FLOW, OPTIMIZED_ADD_CAP]
