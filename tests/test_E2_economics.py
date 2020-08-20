@@ -104,6 +104,11 @@ def test_calculate_costs_replacement():
     cost_replacement = E2.calculate_costs_replacement(costs_investment=700, costs_upfront=500)
     assert cost_replacement == 200
 
+def test_calculate_operation_and_management_expenditures():
+    operation_and_management_expenditures = E2.calculate_operation_and_management_expenditures(
+        specific_om_cost=5, capacity=10)
+    assert operation_and_management_expenditures == 50
+
 def test_calculate_costs_investment():
     costs = E2.calculate_costs_investment(specific_cost=100, capacity=5, development_costs=200)
     assert costs == 700

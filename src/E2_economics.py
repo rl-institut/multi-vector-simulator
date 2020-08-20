@@ -268,6 +268,28 @@ def calculate_costs_replacement(costs_investment, costs_upfront):
     costs_replacements = costs_investment - costs_upfront
     return costs_replacements
 
+def calculate_operation_and_management_expenditures(specific_om_cost, capacity):
+    r"""
+    Calculates operation and management expenditures
+
+    Parameters
+    ----------
+    specific_om_cost: float
+        a) specific operation and management costs per unit in year 0
+        b) specific operation and management costs per unit for the whole project lifetime
+
+    capacity: float
+        Capacity installed
+
+    Returns
+    -------
+    costs_operation_and_management: float
+        a) Operation and management expenditures in year 0
+        b) Total operation and management expenditures over the project lifetime
+    """
+    costs_operation_and_management = specific_om_cost * capacity
+    return costs_operation_and_management
+
 def add_costs_and_total(dict_asset, name, value, total_costs):
     total_costs += value
     dict_asset.update({name: {VALUE: value}})
