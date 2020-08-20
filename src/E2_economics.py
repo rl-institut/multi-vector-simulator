@@ -344,12 +344,6 @@ def calculate_total_operational_expenditures(operation_and_management_expenditur
     total_operatinal_expenditures = operation_and_management_expenditures + dispatch_expenditures
     return total_operatinal_expenditures
 
-def add_costs_and_total(dict_asset, name, value, total_costs):
-    total_costs += value
-    dict_asset.update({name: {VALUE: value}})
-    return total_costs
-
-
 def all_list_in_dict(dict_asset, list):
     r"""
     Checks if all items of a list are withing the keys of a dictionary
