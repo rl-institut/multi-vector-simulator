@@ -170,6 +170,9 @@ def get_costs(dict_asset, economic_data):
                 COST_TOTAL: {VALUE: costs_total, UNIT: CURR},
                 COST_OM_TOTAL: {VALUE: cost_om, UNIT: CURR},
             }
+    # Testing, if the dict_asset includes all parameters necessary for the proceeding evaluation
+    all_list_in_dict(dict_asset, [LIFETIME_SPECIFIC_COST, OPTIMIZED_ADD_CAP, DEVELOPMENT_COSTS, SPECIFIC_COSTS])
+
         )
 
         dict_asset.update(
@@ -338,6 +341,17 @@ def all_list_in_dict(dict_asset, list):
         False: At least one item is not in keys of the dict
     """
     boolean = all([name in dict_asset for name in list]) is True
+    if boolean is False:
+        missing_parameters = []
+        for name in list:
+            if name in dict_asset:
+                pass
+            else:
+                missing_parameters.append(name)
+        missing_parameters = ', '.join(map(str, missing_parameters))
+        raise MissingParametersForEconomicEvaluation(
+            f"Asset {dict_asset[LABEL]} is missing parameters for the economic evaluation: {missing_parameters}."
+            f"These parameters are needed for E2.get_costs(). Please check the E modules.")
     return boolean
 
 

@@ -147,16 +147,16 @@ def test_add_costs_and_total():
 
 def test_all_list_in_dict_passes_as_all_keys_included():
     """Tests whether looking for list items in dict_asset is plausible."""
-    list_true = ["annual_total_flow", OPTIMIZED_ADD_CAP]
+    list_true = [ANNUAL_TOTAL_FLOW, OPTIMIZED_ADD_CAP]
     boolean = E2.all_list_in_dict(dict_asset, list_true)
     assert boolean is True
 
-
 def test_all_list_in_dict_fails_due_to_not_included_keys():
     """Tests whether looking for list items in dict_asset is plausible."""
-    list_false = ["flow", OPTIMIZED_ADD_CAP]
-    boolean = E2.all_list_in_dict(dict_asset, list_false)
-    assert boolean is False
+    list_false = [FLOW, OPTIMIZED_ADD_CAP]
+    with pytest.raises(E2.MissingParametersForEconomicEvaluation):
+        boolean = E2.all_list_in_dict(dict_asset, list_false)
+        assert boolean is False
 
 
 def test_calculation_of_lcoe_of_asset_total_flow_is_0():
