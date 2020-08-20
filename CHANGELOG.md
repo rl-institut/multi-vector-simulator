@@ -25,6 +25,7 @@ Here is a template for new release sections
 - Docstrings for E2 (#520)
 - New constant variable: `SIMULATION_RESULTS="simulation_results"` (#520)
 - Explicit calculation of replacement costs (`C2.get_replacement_costs()`), so that they can be used in `E2` for installed capacities and optimal additional capacities (#520)
+- New constant variable: JSON_WITH_RESULTS="json_with_results.json" (#520)
 
 ### Changed
 - Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
