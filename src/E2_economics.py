@@ -39,7 +39,10 @@ from src.constants_json_strings import (
     STORAGE_CAPACITY,
     COST_REPLACEMENT,
     SIMULATION_RESULTS,
-    FLOW
+    FLOW,
+SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
+
 )
 
 r"""
@@ -149,7 +152,6 @@ def get_costs(dict_asset, economic_data):
                                  UNIT: economic_data[CURR]}})
 
     ## Dispatch expenditures of the asset over the project lifetime
-    #todo this does not apply for storage capacities!
     costs_dispatch = calculate_dispatch_expenditures(
         dispatch_price=dict_asset[LIFETIME_PRICE_DISPATCH][VALUE],
         flow=dict_asset[FLOW],
@@ -162,14 +164,8 @@ def get_costs(dict_asset, economic_data):
     total_operational_expenditures = calculate_total_operational_expenditures(dict_asset[COST_OM][VALUE], dict_asset[COST_DISPATCH][VALUE])
     dict_asset.update({COST_OPERATIONAL_TOTAL: {VALUE: total_operational_expenditures}})
 
-    # todo is this doing anything, though?
-    # todo actually, price is probably not the label, but dispatch_price
-    if all_list_in_dict(dict_asset, ["price", ANNUAL_TOTAL_FLOW]) is True:
-        costs_energy = (
-            dict_asset["price"][VALUE] * dict_asset[ANNUAL_TOTAL_FLOW][VALUE]
-        )
-
-    total_asset_costs_over_lifetime = calculate_total_asset_costs_over_lifetime(dict_asset[COST_INVESTMENT], dict_asset[COST_OPERATIONAL_TOTAL])
+    # Total costs of the assets, capital and operational
+    total_asset_costs_over_lifetime = calculate_total_asset_costs_over_lifetime(dict_asset[COST_INVESTMENT][VALUE], dict_asset[COST_OPERATIONAL_TOTAL][VALUE])
     dict_asset.update({COST_TOTAL: {VALUE: total_asset_costs_over_lifetime, UNIT: economic_data[CURR]}})
 
     dict_asset.update(
@@ -387,9 +383,7 @@ def all_list_in_dict(dict_asset, list):
     if boolean is False:
         missing_parameters = []
         for name in list:
-            if name in dict_asset:
-                pass
-            else:
+            if name not in dict_asset:
                 missing_parameters.append(name)
         missing_parameters = ', '.join(map(str, missing_parameters))
         raise MissingParametersForEconomicEvaluation(
