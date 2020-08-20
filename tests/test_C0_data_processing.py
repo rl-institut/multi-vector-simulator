@@ -24,6 +24,7 @@ from src.constants_json_strings import (
     OUTPUT_BUS_NAME,
     EFFICIENCY,
     TAX,
+AGE_INSTALLED,
     VALUE,
     LABEL,
     DISPATCH_PRICE,
@@ -95,7 +96,8 @@ dict_asset = {
     DISPATCH_PRICE: {VALUE: 1},
     DEVELOPMENT_COSTS: {VALUE: 1},
     LIFETIME: {VALUE: 20},
-    UNIT: "a_unit",
+    UNIT: "a_unit",AGE_INSTALLED: {VALUE: 0}
+
 }
 
 
@@ -107,6 +109,8 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
         LIFETIME_SPECIFIC_COST_OM,
         LIFETIME_PRICE_DISPATCH,
         SIMULATION_ANNUITY,
+        SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
+        SPECIFIC_REPLACEMENT_COSTS_INSTALLED
     ):
         assert k in dict_asset.keys()
 
@@ -365,6 +369,7 @@ def test_evaluate_lifetime_costs():
         DISPATCH_PRICE: {VALUE: 1, UNIT: "unit"},
         LIFETIME: {VALUE: 10},
         UNIT: UNIT,
+        AGE_INSTALLED: {VALUE: 0}
     }
 
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
