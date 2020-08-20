@@ -66,7 +66,11 @@ def test_capex_from_investment_lifetime_equals_project_life():
 
     Tests whether the MVS is correctly calculating the capital expenditure of the project if the lifetime is equal to project_life
     """
-    specific_capex,    specific_replacement_costs_optimized,    specific_replacement_costs_installed = C2.capex_from_investment(
+    (
+        specific_capex,
+        specific_replacement_costs_optimized,
+        specific_replacement_costs_installed,
+    ) = C2.capex_from_investment(
         investment_t0,
         lifetime["equal project life"],
         project_life,
@@ -78,12 +82,17 @@ def test_capex_from_investment_lifetime_equals_project_life():
     assert specific_replacement_costs_optimized == specific_replacement_costs_installed
     assert specific_replacement_costs_installed == 0
 
+
 def test_capex_from_investment_lifetime_smaller_than_project_life():
     """
 
     Tests whether the MVS is correctly calculating the capital expenditure of the project if the lifetime is smaller than project_life
     """
-    specific_capex,   specific_replacement_costs_optimized,    specific_replacement_costs_installed = C2.capex_from_investment(
+    (
+        specific_capex,
+        specific_replacement_costs_optimized,
+        specific_replacement_costs_installed,
+    ) = C2.capex_from_investment(
         investment_t0,
         lifetime["smaller project life"],
         project_life,
@@ -101,7 +110,11 @@ def test_capex_from_investment_lifetime_bigger_than_project_life():
 
     Tests whether the MVS is correctly calculating the capital expenditure of the project if the lifetime is bigger than project_life
     """
-    specific_capex,    specific_replacement_costs_optimized,    specific_replacement_costs_installed = C2.capex_from_investment(
+    (
+        specific_capex,
+        specific_replacement_costs_optimized,
+        specific_replacement_costs_installed,
+    ) = C2.capex_from_investment(
         investment_t0,
         lifetime["bigger project life"],
         project_life,
@@ -113,6 +126,7 @@ def test_capex_from_investment_lifetime_bigger_than_project_life():
     assert specific_replacement_costs_optimized == specific_replacement_costs_installed
     assert specific_replacement_costs_optimized < 0
 
+
 def test_annuity():
     """
 
@@ -121,37 +135,41 @@ def test_annuity():
     A = C2.annuity(present_value, crf)
     assert A == present_value * crf
 
+
 def test_get_replacement_costs_equal_lifetimes():
     replacement_costs = C2.get_replacement_costs(
-    age_of_asset=0,
-    project_lifetime=10,
-    asset_lifetime=10,
-    first_time_investment=100,
-    discount_factor=1,
-)
+        age_of_asset=0,
+        project_lifetime=10,
+        asset_lifetime=10,
+        first_time_investment=100,
+        discount_factor=1,
+    )
     assert replacement_costs == 0
+
 
 def test_get_replacement_costs_one_reinvestment():
     replacement_costs = C2.get_replacement_costs(
-    age_of_asset=5,
-    project_lifetime=10,
-    asset_lifetime=10,
-    first_time_investment=100,
-    discount_factor=0,
-)
-    exp = 100 - 100/10*5
+        age_of_asset=5,
+        project_lifetime=10,
+        asset_lifetime=10,
+        first_time_investment=100,
+        discount_factor=0,
+    )
+    exp = 100 - 100 / 10 * 5
     assert replacement_costs == exp
+
 
 def test_get_replacement_costs_no_reinvestment_residual():
     replacement_costs = C2.get_replacement_costs(
-    age_of_asset=5,
-    project_lifetime=10,
-    asset_lifetime=20,
-    first_time_investment=100,
-    discount_factor=0,
-)
-    exp = -100/20*5
+        age_of_asset=5,
+        project_lifetime=10,
+        asset_lifetime=20,
+        first_time_investment=100,
+        discount_factor=0,
+    )
+    exp = -100 / 20 * 5
     assert replacement_costs == exp
+
 
 def test_present_value_from_annuity():
     """
