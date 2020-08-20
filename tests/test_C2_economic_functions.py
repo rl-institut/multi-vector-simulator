@@ -72,6 +72,7 @@ def test_capex_from_investment_lifetime_equals_project_life():
         project_life,
         discount_factor,
         tax,
+        age_of_asset=0,
     )
     assert round(CAPEX, 7) == exp_capex_equal_project_life
 
@@ -87,6 +88,7 @@ def test_capex_from_investment_lifetime_smaller_than_project_life():
         project_life,
         discount_factor,
         tax,
+        age_of_asset=0,
     )
     assert CAPEX == pytest.approx(exp_capex_smaller_project_life, rel=1e-3)
 
@@ -102,6 +104,7 @@ def test_capex_from_investment_lifetime_bigger_than_project_life():
         project_life,
         discount_factor,
         tax,
+        age_of_asset=0,
     )
     assert CAPEX == pytest.approx(exp_capex_bigger_project_life, rel=1e-3)
 
