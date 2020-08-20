@@ -57,7 +57,6 @@ The module processes the simulation results regarding economic parameters:
 - calculate levelised cost of energy carriers (electricity, H2, heat)
 """
 
-
 def get_costs(dict_asset, economic_data):
     if isinstance(dict_asset, dict) and not (
         dict_asset[LABEL]
@@ -80,13 +79,13 @@ def get_costs(dict_asset, economic_data):
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
         ):
             # total investments including fix prices
-            costs_investment = (
-                dict_asset[OPTIMIZED_ADD_CAP][VALUE]
-                * dict_asset[LIFETIME_SPECIFIC_COST][VALUE]
-                + dict_asset[DEVELOPMENT_COSTS][VALUE]
-            )
+            costs_investment_lifetime = calculate_costs_investment(
+                specific_cost=dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
+                capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE], 
+                development_costs=dict_asset[DEVELOPMENT_COSTS][VALUE])
+            
             costs_total = add_costs_and_total(
-                dict_asset, COST_INVESTMENT, costs_investment, costs_total
+                dict_asset, COST_INVESTMENT, costs_investment_lifetime, costs_total
             )
         else:
             dict_asset.update({COST_INVESTMENT: {VALUE: 0.0}})
@@ -99,13 +98,13 @@ def get_costs(dict_asset, economic_data):
             and dict_asset[OPTIMIZED_ADD_CAP][VALUE] > 0
         ):
             # investments including fix prices, only upfront costs at t=0
-            costs_upfront = calculate_costs_upfront(
+            costs_investment_upfront = calculate_costs_investment(
                 capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
                 specific_costs = dict_asset[SPECIFIC_COSTS][VALUE],
                 development_costs= dict_asset[DEVELOPMENT_COSTS][VALUE]
             )
             costs_total = add_costs_and_total(
-                dict_asset, COST_UPFRONT, costs_upfront, costs_total
+                dict_asset, COST_UPFRONT, costs_investment_upfront, costs_total
             )
         else:
             dict_asset.update({COST_UPFRONT: {VALUE: 0.0}})
@@ -179,14 +178,17 @@ def get_costs(dict_asset, economic_data):
         )
     return
 
-def calculate_costs_upfront(specific_costs, capacity, development_costs):
+def calculate_costs_investment(specific_cost, capacity, development_costs):
     r"""
-    Calculate upfront costs of an investment, ie. the investment in year 0.
+    Calculate investment costs of an asset
+    Depending on the specific_cost provided,
+    either the total lifetime investment costs or the upfront investment costs are calculated,
 
     Parameters
     ----------
-    specific_costs: float
-        Specific per-unit investment costs of an asset
+    specific_cost: float
+        a) Specific per-unit investment costs of an asset over its lifetime, including all replacement costs
+        b) Specific per-unit investment costs of an asset in year 0
 
     capacity: float
         Capacity to be installed
@@ -196,12 +198,13 @@ def calculate_costs_upfront(specific_costs, capacity, development_costs):
 
     Returns
     -------
-    costs_upfront: float
-        Upfront investment costs in year 0
+    costs_investment: float
+        a) Total investment costs of an asset over its lifetime, including all replacement costs
+        b) Upfront investment costs in year 0
 
     """
-    costs_upfront = specific_costs * capacity + development_costs
-    return costs_upfront
+    costs_investment = specific_cost * capacity + development_costs
+    return costs_investment
 
 def add_costs_and_total(dict_asset, name, value, total_costs):
     total_costs += value

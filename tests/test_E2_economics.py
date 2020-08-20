@@ -97,8 +97,8 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     ):
         assert k in dict_asset
 
-def test_calculate_costs_upfront():
-    costs = E2.calculate_costs_upfront(specific_costs=100, capacity=5, development_costs=200)
+def test_calculate_costs_investment():
+    costs = E2.calculate_costs_investment(specific_costs=100, capacity=5, development_costs=200)
     assert costs == 700
 
 def test_add_costs_and_total():
