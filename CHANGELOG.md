@@ -75,7 +75,6 @@ Here is a template for new release sections
 
 ### Fixed
 - Image path for readthedocs (Model_Assumpation.rst) (#492)
-- Calculation of `cost_upfront` required a multiplication
 
 ## [0.3.2] 2020-08-04
 
@@ -203,8 +202,8 @@ Here is a template for new release sections
 ### Changed
 - Test input files (#343)
 - All parameters of the json/csv input files are now defined by constant variables (i.e, `CRATE="crate"` instead of string `"crate"`) (#346)
-- Use "is" instead of "==" in if clauses for True, False and None (#346)
-- Categorize constants in 'constants_json_strings.py' (#347)
+- Use `is` instead of `==` in if clauses for True, False and None (#346)
+- Categorize constants in `constants_json_strings.py` (#347)
 - Renaming CAPEX_FIX = "capex_fix" into COST_DEVELOPMENT = "development_costs" (#347, #350)
 - Renaming CAPEX_VAR = "capex_var" into SPECIFIC_COST = "specific_costs" (#347, #350)
 - Renaming OPEX_FIX = "opex_fix" into SPECIFIC_COST_OM = "specific_costs_om" (#347, #350)
@@ -286,7 +285,7 @@ tipps for module building, and hint that units in the MVS are not checked (#229)
 
  
 ### Removed
-- Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´, as well as from all input
+- Removed parameter `oemof_file_name` from `simulation_settings.csv`, as well as from all input
  files etc. The name is hardcoded now (#150)
 
 ### Fixed
