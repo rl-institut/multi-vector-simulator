@@ -31,6 +31,7 @@ from .constants import (
     ENERGY_PRICE,
     OPTIMIZED_ADD_CAP,
     LCOE_ASSET,
+    JSON_WITH_RESULTS,
 )
 
 from src.constants_json_strings import (
@@ -161,9 +162,7 @@ class TestACElectricityBus:
         )
 
         # read json with results file
-        data = load_json(
-            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json")
-        )
+        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
 
         # make sure LCOE_diesel is less than grid price, so that below test makes sense
         assert (
@@ -197,7 +196,7 @@ class TestACElectricityBus:
         )
         # read json with results file
         with open(
-            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
+            os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS), "r"
         ) as results:
             data = json.load(results)
         peak_demand = [

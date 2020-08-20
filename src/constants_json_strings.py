@@ -215,7 +215,6 @@ COST_REPLACEMENT = "Replacement costs during project lifetime"
 # Levelized cost of electricity
 LCOE_ASSET = "levelized_cost_of_energy_of_asset"
 
-
 # Other KPI
 TOTAL_RENEWABLE_GENERATION_IN_LES = "Total internal renewable generation"
 TOTAL_NON_RENEWABLE_GENERATION_IN_LES = "Total internal non-renewable generation"

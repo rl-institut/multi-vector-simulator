@@ -1,7 +1,7 @@
 import os
 import argparse
 
-from src.constants import REPO_PATH, REPORT_PATH, OUTPUT_FOLDER, PDF_REPORT
+from src.constants import REPO_PATH, REPORT_PATH, OUTPUT_FOLDER, PDF_REPORT, JSON_WITH_RESULTS
 from src.B0_data_input_json import load_json
 from src.F2_autoreport import create_app, open_in_browser, print_pdf
 
@@ -47,7 +47,7 @@ def report_arg_parser():
         nargs="?",
         type=str,
         help="path to the simulation result json file 'json_with_results.json'",
-        default=os.path.join(REPO_PATH, OUTPUT_FOLDER, "json_with_results.json"),
+        default=os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS),
     )
     parser.add_argument(
         "-o",

@@ -27,7 +27,7 @@ from src.constants_json_strings import (
     KPI,
     ENERGY_CONSUMPTION,
     TIMESERIES,
-DISPATCHABILITY,
+    DISPATCHABILITY,
     ENERGY_PRODUCTION,
     OPTIMIZED_ADD_CAP,
     TOTAL_FLOW,

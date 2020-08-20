@@ -43,6 +43,7 @@ from src.constants import (
     CSV_ELEMENTS,
     ECONOMIC_DATA,
     PROJECT_DATA,
+    JSON_WITH_RESULTS,
 )
 from src.constants_json_strings import (
     SECTORS,
@@ -902,9 +903,7 @@ if __name__ == "__main__":
     from src.constants import REPO_PATH, OUTPUT_FOLDER
     from src.B0_data_input_json import load_json
 
-    dict_values = load_json(
-        os.path.join(REPO_PATH, OUTPUT_FOLDER, "json_with_results.json")
-    )
+    dict_values = load_json(os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS))
 
     test_app = create_app(dict_values)
     # open_in_browser(test_app)
