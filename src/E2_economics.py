@@ -276,7 +276,7 @@ def calculate_costs_replacement(costs_investment, costs_upfront):
     costs_replacements = costs_investment - costs_upfront
     return costs_replacements
 
-def calculate_operation_and_management_expenditures(specific_om_cost, capacity):
+def calculate_operation_and_management_expenditures(specific_om_cost, installed_capacity, optimized_add_capacity):
     r"""
     Calculates operation and management expenditures
 
@@ -286,8 +286,11 @@ def calculate_operation_and_management_expenditures(specific_om_cost, capacity):
         a) specific operation and management costs per unit in year 0
         b) specific operation and management costs per unit for the whole project lifetime
 
-    capacity: float
-        Capacity installed
+    installed_capacity: float
+        Capacity installed initially
+
+    optimized_add_capacity: float
+        Capacity installed within the optimization scenario
 
     Returns
     -------
@@ -295,7 +298,7 @@ def calculate_operation_and_management_expenditures(specific_om_cost, capacity):
         a) Operation and management expenditures in year 0
         b) Total operation and management expenditures over the project lifetime
     """
-    costs_operation_and_management = specific_om_cost * capacity
+    costs_operation_and_management = specific_om_cost * (installed_capacity + optimized_add_capacity)
     return costs_operation_and_management
 
 def calculate_total_operational_expenditures(operation_and_management_expenditures, dispatch_expenditures):
