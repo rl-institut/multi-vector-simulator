@@ -196,13 +196,14 @@ ANNUITY_TOTAL = "annuity_total"
 
 # Costs - Total per asset
 COST_TOTAL = "costs_total"
-COST_OM_TOTAL = "costs_om_total"
-COST_OM_FIX = "costs_cost_om"  # Fix asset operation/management costs per year, not depending on use
+COST_OPERATIONAL_TOTAL = "costs_om_total"
+COST_OM = "costs_cost_om"  # Fix asset operation/management costs per year, not depending on use
 COST_DISPATCH = (
     "costs_dispatch"  # Variable asset operation/management costs, depending on dispatch
 )
-COST_UPFRONT = "costs_upfront_in_year_zero"
 COST_INVESTMENT = "costs_investment_over_lifetime"
+COST_UPFRONT = "costs_upfront_in_year_zero"
+COST_REPLACEMENT = "Replacement costs during project lifetime"
 
 # Levelized cost of electricity
 LCOE_ASSET = "levelized_cost_of_energy_of_asset"
@@ -219,8 +220,8 @@ KPI_SCALARS = (
     ANNUITY_OM,
     ANNUITY_TOTAL,
     COST_INVESTMENT,
-    COST_OM_TOTAL,
-    COST_OM_FIX,
+    COST_OPERATIONAL_TOTAL,
+    COST_OM,
     COST_DISPATCH,
     COST_TOTAL,
     COST_UPFRONT,

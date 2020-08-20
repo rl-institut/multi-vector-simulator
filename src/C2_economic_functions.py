@@ -172,7 +172,7 @@ def replacement_costs(age_of_asset, project_lifetime, asset_lifetime, first_time
     Per-unit replacement costs of an asset. If age_asset == 0, they need to be added to the lifetime_specific_costs of the asset.
     If age_asset != 0, it will be needed to calculate the future investment costs of a previously installed asset.
     """
-    
+
     # Calculate number of investments
     if project_lifetime+age_of_asset == asset_lifetime:
         number_of_investments = 1
