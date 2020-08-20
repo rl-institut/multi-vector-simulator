@@ -110,17 +110,8 @@ def get_costs(dict_asset, economic_data):
     # Testing, if the dict_asset includes all parameters necessary for the proceeding evaluation
     all_list_in_dict(dict_asset, [LIFETIME_SPECIFIC_COST, OPTIMIZED_ADD_CAP, DEVELOPMENT_COSTS, SPECIFIC_COSTS, LIFETIME_PRICE_DISPATCH, FLOW])
 
-    ## Total investment costs including investments into the asset and development costs ##
-    costs_investment_lifetime = calculate_costs_investment(
-        specific_cost=dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
-        capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
-        development_costs=dict_asset[DEVELOPMENT_COSTS][VALUE])
-
-    dict_asset.update({COST_INVESTMENT: {VALUE: costs_investment_lifetime,
-                                         UNIT: economic_data[CURR]}})
-
     ## Part of the investment costs to be paid upfront at t=0 ##
-    costs_investment_upfront = calculate_costs_investment(
+    costs_investment_upfront = calculate_costs_upfront_investment(
         capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
         specific_cost = dict_asset[SPECIFIC_COSTS][VALUE],
         development_costs= dict_asset[DEVELOPMENT_COSTS][VALUE]
@@ -130,10 +121,24 @@ def get_costs(dict_asset, economic_data):
                                       UNIT: economic_data[CURR]}})
 
     ## Part of the investment costs to be paid due to replacements ##
-    #todo: the current costs would not include replacement costs of existing capacities!
-    costs_replacement = calculate_costs_replacement(dict_asset[COST_INVESTMENT][VALUE], dict_asset[COST_UPFRONT][VALUE])
+    costs_replacement = calculate_costs_replacement(
+        specific_replacement_of_initial_capacity=dict_asset[SPECIFIC_REPLACEMENT_COSTS_INSTALLED][VALUE],
+        specific_replacement_of_optimized_capacity=dict_asset[SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED][VALUE],
+        initial_capacity=dict_asset[INSTALLED_CAP][VALUE],
+        optimized_capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE])
+
     dict_asset.update({COST_REPLACEMENT: {VALUE: costs_replacement,
                                           UNIT: economic_data[CURR]}})
+
+    ## Total investment costs including investments into the asset, replacement costs and development costs ##
+    costs_investment_lifetime = calculate_total_capital_costs(
+        upfront=dict_asset[COST_UPFRONT][VALUE],
+        replacement=dict_asset[COST_REPLACEMENT][VALUE],
+        development=dict_asset[DEVELOPMENT_COSTS][VALUE])
+
+    dict_asset.update({COST_INVESTMENT: {VALUE: costs_investment_lifetime,
+                                         UNIT: economic_data[CURR]}})
+
 
     ## Operation and management expenditures over the project lifetime ##
     operation_and_management_expenditures = calculate_operation_and_management_expenditures(
@@ -235,7 +240,7 @@ def calculate_dispatch_expenditures(dispatch_price, flow, asset):
 
     return dispatch_expenditures
 
-def calculate_costs_investment(specific_cost, capacity, development_costs):
+def calculate_costs_upfront_investment(specific_cost, capacity, development_costs):
     r"""
     Calculate investment costs of an asset
     Depending on the specific_cost provided,
@@ -260,27 +265,56 @@ def calculate_costs_investment(specific_cost, capacity, development_costs):
         b) Upfront investment costs in year 0
 
     """
-    costs_investment = specific_cost * capacity + development_costs
-    return costs_investment
+    costs_upfront_investment = specific_cost * capacity + development_costs
+    return costs_upfront_investment
 
-def calculate_costs_replacement(costs_investment, costs_upfront):
+def calculate_total_capital_costs(upfront, replacement, development):
+    r"""
+    Calculated total capital expenditures
+
+    Parameters
+    ----------
+    upfront: float
+        Upfront investments at t=0
+
+    replacement: float
+        Replacement costs of pre-installed and new assets
+
+    development: float
+        Development costs for asset
+
+    Returns
+    -------
+    cost_total_investment: float
+        Total capital costs
+    """
+    cost_total_investment = upfront + replacement + development
+    return cost_total_investment
+
+def calculate_costs_replacement(specific_replacement_of_initial_capacity, specific_replacement_of_optimized_capacity, initial_capacity, optimized_capacity):
     r"""
     Calculates (the present value of) the replacement costs over the project lifetime
 
     Parameters
     ----------
-    costs_investment: float
-        Investment costs over project lifetime
+    specific_replacement_of_initial_capacity: float
+        Per-unit replacement costs of an asset that was pre-existing at the location
 
-    costs_upfront: float
-        Upfront investment costs in year 0
+    specific_replacement_of_optimized_capacity: float
+        Per-unit replacement costs of an asset that is to be installed
+
+    initial_capacity: float
+        Initial capacity installed
+
+    optimized_capacity: float
+        Add capacity to be installed, as optimized
 
     Returns
     -------
     costs_replacements: float
         Aggregated replacement costs over the project lifetime
     """
-    costs_replacements = costs_investment - costs_upfront
+    costs_replacements = specific_replacement_of_initial_capacity * initial_capacity + specific_replacement_of_optimized_capacity * optimized_capacity
     return costs_replacements
 
 def calculate_operation_and_management_expenditures(specific_om_cost, installed_capacity, optimized_add_capacity):

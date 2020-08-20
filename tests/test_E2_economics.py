@@ -31,6 +31,8 @@ from src.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
     TOTAL_FLOW,
+SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED
 )
 
 dict_asset = {
@@ -39,6 +41,8 @@ dict_asset = {
     SPECIFIC_COSTS: {VALUE: 0, UNIT: "currency/kW"},
     INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
     DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
+SPECIFIC_REPLACEMENT_COSTS_INSTALLED: {VALUE: 0, UNIT: CURR},
+SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED: {VALUE: 0, UNIT: CURR},
     LIFETIME_SPECIFIC_COST: {VALUE: 0.0, UNIT: "currency/kW"},
     LIFETIME_SPECIFIC_COST_OM: {VALUE: 0.0, UNIT: "currency/ye"},
     LIFETIME_PRICE_DISPATCH: {VALUE: -5.505932460595773, UNIT: "?"},
@@ -103,8 +107,8 @@ def test_all_cost_info_parameters_added_to_dict_asset():
         assert k in dict_asset
 
 def test_calculate_costs_replacement():
-    cost_replacement = E2.calculate_costs_replacement(costs_investment=700, costs_upfront=500)
-    assert cost_replacement == 200
+    cost_replacement = E2.calculate_costs_replacement(specific_replacement_of_initial_capacity=5, specific_replacement_of_optimized_capacity=10,initial_capacity=1,optimized_capacity=10)
+    assert cost_replacement == 5*1+10*10
 
 def test_calculate_operation_and_management_expenditures():
     operation_and_management_expenditures = E2.calculate_operation_and_management_expenditures(
@@ -115,9 +119,13 @@ def test_calculate_total_asset_costs_over_lifetime():
     total = E2.calculate_total_asset_costs_over_lifetime(costs_investment=300, cost_operational_expenditures=200)
     assert total == 500
 
-def test_calculate_costs_investment():
-    costs = E2.calculate_costs_investment(specific_cost=100, capacity=5, development_costs=200)
+def test_calculate_costs_upfront_investment():
+    costs = E2.calculate_costs_upfront_investment(specific_cost=100, capacity=5, development_costs=200)
     assert costs == 700
+
+def test_calculate_total_capital_costs():
+    total_capital_expenditure = E2.calculate_total_capital_costs(upfront=300, replacement=100, development=100)
+    assert total_capital_expenditure == 500
 
 def test_calculate_total_operational_expenditures():
     total_operational_expenditures = E2.calculate_total_operational_expenditures(
