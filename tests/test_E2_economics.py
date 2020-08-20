@@ -22,7 +22,7 @@ from src.constants_json_strings import (
     ANNUITY_OM,
     ANNUITY_TOTAL,
     COST_TOTAL,
-AGE_INSTALLED,
+    AGE_INSTALLED,
     COST_OPERATIONAL_TOTAL,
     COST_DISPATCH,
     COST_OM,
@@ -32,8 +32,8 @@ AGE_INSTALLED,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
     TOTAL_FLOW,
-SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
-SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED
+    SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+    SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
 )
 
 dict_asset = {
@@ -42,21 +42,17 @@ dict_asset = {
     SPECIFIC_COSTS: {VALUE: 0, UNIT: "currency/kW"},
     INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
     DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
-SPECIFIC_REPLACEMENT_COSTS_INSTALLED: {VALUE: 0, UNIT: CURR},
-SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED: {VALUE: 0, UNIT: CURR},
+    SPECIFIC_REPLACEMENT_COSTS_INSTALLED: {VALUE: 0, UNIT: CURR},
+    SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED: {VALUE: 0, UNIT: CURR},
     LIFETIME_SPECIFIC_COST: {VALUE: 0.0, UNIT: "currency/kW"},
     LIFETIME_SPECIFIC_COST_OM: {VALUE: 0.0, UNIT: "currency/ye"},
     LIFETIME_PRICE_DISPATCH: {VALUE: -5.505932460595773, UNIT: "?"},
     ANNUAL_TOTAL_FLOW: {VALUE: 0.0, UNIT: "kWh"},
     OPTIMIZED_ADD_CAP: {VALUE: 0, UNIT: "?"},
-    FLOW: pd.Series([1,1,1]),
-
+    FLOW: pd.Series([1, 1, 1]),
 }
 
-dict_economic = {
-    CRF: {VALUE: 0.07264891149004721, UNIT: "?"},
-    CURR: "Euro"
-}
+dict_economic = {CRF: {VALUE: 0.07264891149004721, UNIT: "?"}, CURR: "Euro"}
 
 dict_values = {
     ENERGY_PRODUCTION: {
@@ -100,62 +96,91 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     """Tests whether the function get_costs is adding all the calculated costs to dict_asset."""
     E2.get_costs(dict_asset, dict_economic)
     for k in (
-            COST_DISPATCH,
-            COST_OM,
-            COST_TOTAL,
-            COST_OPERATIONAL_TOTAL,
-            ANNUITY_TOTAL,
-            ANNUITY_OM,
+        COST_DISPATCH,
+        COST_OM,
+        COST_TOTAL,
+        COST_OPERATIONAL_TOTAL,
+        ANNUITY_TOTAL,
+        ANNUITY_OM,
     ):
         assert k in dict_asset
 
+
 def test_calculate_costs_replacement():
-    cost_replacement = E2.calculate_costs_replacement(specific_replacement_of_initial_capacity=5, specific_replacement_of_optimized_capacity=10,initial_capacity=1,optimized_capacity=10)
-    assert cost_replacement == 5*1+10*10
+    cost_replacement = E2.calculate_costs_replacement(
+        specific_replacement_of_initial_capacity=5,
+        specific_replacement_of_optimized_capacity=10,
+        initial_capacity=1,
+        optimized_capacity=10,
+    )
+    assert cost_replacement == 5 * 1 + 10 * 10
+
 
 def test_calculate_operation_and_management_expenditures():
     operation_and_management_expenditures = E2.calculate_operation_and_management_expenditures(
-        specific_om_cost=5, installed_capacity=10, optimized_add_capacity=10)
+        specific_om_cost=5, installed_capacity=10, optimized_add_capacity=10
+    )
     assert operation_and_management_expenditures == 100
 
+
 def test_calculate_total_asset_costs_over_lifetime():
-    total = E2.calculate_total_asset_costs_over_lifetime(costs_investment=300, cost_operational_expenditures=200)
+    total = E2.calculate_total_asset_costs_over_lifetime(
+        costs_investment=300, cost_operational_expenditures=200
+    )
     assert total == 500
 
+
 def test_calculate_costs_upfront_investment():
-    costs = E2.calculate_costs_upfront_investment(specific_cost=100, capacity=5, development_costs=200)
+    costs = E2.calculate_costs_upfront_investment(
+        specific_cost=100, capacity=5, development_costs=200
+    )
     assert costs == 700
 
+
 def test_calculate_total_capital_costs():
-    total_capital_expenditure = E2.calculate_total_capital_costs(upfront=300, replacement=100, development=100)
+    total_capital_expenditure = E2.calculate_total_capital_costs(
+        upfront=300, replacement=100, development=100
+    )
     assert total_capital_expenditure == 500
+
 
 def test_calculate_total_operational_expenditures():
     total_operational_expenditures = E2.calculate_total_operational_expenditures(
-        operation_and_management_expenditures=100,
-        dispatch_expenditures=500)
+        operation_and_management_expenditures=100, dispatch_expenditures=500
+    )
     assert total_operational_expenditures == 600
 
+
 asset = "an_asset"
-flow = pd.Series([1,1,1])
+flow = pd.Series([1, 1, 1])
+
+
 def test_calculate_annual_dispatch_expenditures_float():
-    dispatch_expenditure = E2.calculate_dispatch_expenditures(dispatch_price=1, flow=flow, asset=asset)
+    dispatch_expenditure = E2.calculate_dispatch_expenditures(
+        dispatch_price=1, flow=flow, asset=asset
+    )
     assert dispatch_expenditure == 3
+
 
 def test_calculate_annual_dispatch_expenditures_pd_Series():
     dispatch_price = pd.Series([1, 2, 3])
-    dispatch_expenditure = E2.calculate_dispatch_expenditures(dispatch_price, flow, asset)
+    dispatch_expenditure = E2.calculate_dispatch_expenditures(
+        dispatch_price, flow, asset
+    )
     assert dispatch_expenditure == 6
+
 
 def test_calculate_annual_dispatch_expenditures_else():
     with pytest.raises(E2.UnexpectedValueError):
-            E2.calculate_dispatch_expenditures([1, 2], flow, asset)
+        E2.calculate_dispatch_expenditures([1, 2], flow, asset)
+
 
 def test_all_list_in_dict_passes_as_all_keys_included():
     """Tests whether looking for list items in dict_asset is plausible."""
     list_true = [ANNUAL_TOTAL_FLOW, OPTIMIZED_ADD_CAP]
     boolean = E2.all_list_in_dict(dict_asset, list_true)
     assert boolean is True
+
 
 def test_all_list_in_dict_fails_due_to_not_included_keys():
     """Tests whether looking for list items in dict_asset is plausible."""

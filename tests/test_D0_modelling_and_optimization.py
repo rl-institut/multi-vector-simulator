@@ -19,7 +19,7 @@ from src.constants_json_strings import (
     STORE_OEMOF_RESULTS,
     STORE_NX_GRAPH,
     OUTPUT_LP_FILE,
-SIMULATION_RESULTS
+    SIMULATION_RESULTS,
 )
 from .constants import (
     TEST_REPO_PATH,

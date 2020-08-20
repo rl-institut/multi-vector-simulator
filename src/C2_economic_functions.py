@@ -75,7 +75,10 @@ def crf(project_life, discount_factor):
     )
     return crf
 
-def capex_from_investment(investment_t0, lifetime, project_life, discount_factor, tax, age_of_asset):
+
+def capex_from_investment(
+    investment_t0, lifetime, project_life, discount_factor, tax, age_of_asset
+):
     """
      Calculates the capital expenditures, also known as CapEx.
 
@@ -119,15 +122,30 @@ def capex_from_investment(investment_t0, lifetime, project_life, discount_factor
 
     first_time_investment = investment_t0 * (1 + tax)
     # Specific replacement costs for the asset capacity to be optimized
-    specific_replacement_costs_optimized = get_replacement_costs(0, project_life, lifetime, first_time_investment, discount_factor)
+    specific_replacement_costs_optimized = get_replacement_costs(
+        0, project_life, lifetime, first_time_investment, discount_factor
+    )
     # Specific capex for the optimization
     specific_capex = first_time_investment + specific_replacement_costs_optimized
 
-    specific_replacement_costs_installed = get_replacement_costs(age_of_asset, project_life, lifetime, first_time_investment, discount_factor)
+    specific_replacement_costs_installed = get_replacement_costs(
+        age_of_asset, project_life, lifetime, first_time_investment, discount_factor
+    )
     # Calculating the replacement costs per unit for the currently already installed assets
-    return specific_capex, specific_replacement_costs_optimized, specific_replacement_costs_installed
+    return (
+        specific_capex,
+        specific_replacement_costs_optimized,
+        specific_replacement_costs_installed,
+    )
 
-def get_replacement_costs(age_of_asset, project_lifetime, asset_lifetime, first_time_investment, discount_factor):
+
+def get_replacement_costs(
+    age_of_asset,
+    project_lifetime,
+    asset_lifetime,
+    first_time_investment,
+    discount_factor,
+):
     r"""
     Calculating the replacement costs of an asset
 
@@ -155,17 +173,19 @@ def get_replacement_costs(age_of_asset, project_lifetime, asset_lifetime, first_
     """
 
     # Calculate number of investments
-    if project_lifetime+age_of_asset == asset_lifetime:
+    if project_lifetime + age_of_asset == asset_lifetime:
         number_of_investments = 1
     else:
-        number_of_investments = int(round((project_lifetime+age_of_asset) / asset_lifetime + 0.5))
+        number_of_investments = int(
+            round((project_lifetime + age_of_asset) / asset_lifetime + 0.5)
+        )
 
     replacement_costs = 0
 
     # In case the asset_lifetime is larger then
     latest_investment = first_time_investment
     # Starting from first investment (in the past for installed capacities)
-    year = - age_of_asset
+    year = -age_of_asset
 
     present_value_of_capital_expentitures = pd.Series([latest_investment], index=[year])
 
@@ -175,9 +195,7 @@ def get_replacement_costs(age_of_asset, project_lifetime, asset_lifetime, first_
         year += asset_lifetime
 
         # Update latest_investment (to be used for residual value)
-        latest_investment = first_time_investment / (
-                (1 + discount_factor) ** (year)
-            )
+        latest_investment = first_time_investment / ((1 + discount_factor) ** (year))
         # Add latest investment to replacement costs
         replacement_costs += latest_investment
         # Update cash flow projection (specific)
@@ -188,13 +206,18 @@ def get_replacement_costs(age_of_asset, project_lifetime, asset_lifetime, first_
         # the residual of the capex at the end of the simulation time takes into
         linear_depreciation_last_investment = latest_investment / asset_lifetime
         # account the value of the money by deviding by (1 + discount_factor) ** (project_life)
-        value_at_project_end = linear_depreciation_last_investment * (year + age_of_asset - project_lifetime) / (1 + discount_factor) ** (project_lifetime)
+        value_at_project_end = (
+            linear_depreciation_last_investment
+            * (year + age_of_asset - project_lifetime)
+            / (1 + discount_factor) ** (project_lifetime)
+        )
         # Subtraction of component value at end of life with last replacement (= number_of_investments - 1)
         replacement_costs -= value_at_project_end
         # Update cash flow projection (specific)
-        present_value_of_capital_expentitures[project_lifetime] = - value_at_project_end
+        present_value_of_capital_expentitures[project_lifetime] = -value_at_project_end
 
     return replacement_costs
+
 
 def annuity(present_value, crf):
     """

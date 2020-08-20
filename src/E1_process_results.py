@@ -674,7 +674,8 @@ def convert_cost_matrix_to_dataframe(dict_values):
 
     # Drop some irrelevant columns from the dataframe
     df_cost_matrix = df_cost_matrix.drop(
-        ["index", COST_OPERATIONAL_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM], axis=1,
+        ["index", COST_OPERATIONAL_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM],
+        axis=1,
     )
 
     # Rename some of the column names

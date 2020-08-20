@@ -40,9 +40,8 @@ from src.constants_json_strings import (
     COST_REPLACEMENT,
     SIMULATION_RESULTS,
     FLOW,
-SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
-SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
-
+    SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+    SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
 )
 
 r"""
@@ -64,14 +63,17 @@ The module processes the simulation results regarding economic parameters:
 - calculate levelised cost of energy carriers (electricity, H2, heat)
 """
 
+
 class UnexpectedValueError(UserWarning):
     """Exception raised for value errors during economic post-processing"""
+
     pass
 
 
 class MissingParametersForEconomicEvaluation(UserWarning):
     "Warning if one or more parameters are missing for economic post-processing  of an asset"
     pass
+
 
 def get_costs(dict_asset, economic_data):
     r"""
@@ -104,69 +106,111 @@ def get_costs(dict_asset, economic_data):
 
     # helper for developing get_costs() and E modules
     if not isinstance(dict_asset, dict):
-        logging.warning(f"Function E2.get_costs() is used on {dict_asset}, eventhough it is not a dict. Check loops in E modules.")
+        logging.warning(
+            f"Function E2.get_costs() is used on {dict_asset}, eventhough it is not a dict. Check loops in E modules."
+        )
 
     # helper for developing get_costs() and E modules
     if dict_asset[LABEL] in [ECONOMIC_DATA, SIMULATION_SETTINGS, SIMULATION_RESULTS]:
-        logging.warning(f"Function E2.get_costs() is used on {dict_asset[LABEL]}, eventhough it should not be applied to it. Check loops in E modules.")
+        logging.warning(
+            f"Function E2.get_costs() is used on {dict_asset[LABEL]}, eventhough it should not be applied to it. Check loops in E modules."
+        )
 
     # Testing, if the dict_asset includes all parameters necessary for the proceeding evaluation
-    all_list_in_dict(dict_asset, [LIFETIME_SPECIFIC_COST, OPTIMIZED_ADD_CAP, DEVELOPMENT_COSTS, SPECIFIC_COSTS, LIFETIME_PRICE_DISPATCH, FLOW])
+    all_list_in_dict(
+        dict_asset,
+        [
+            LIFETIME_SPECIFIC_COST,
+            OPTIMIZED_ADD_CAP,
+            DEVELOPMENT_COSTS,
+            SPECIFIC_COSTS,
+            LIFETIME_PRICE_DISPATCH,
+            FLOW,
+        ],
+    )
 
     ## Part of the investment costs to be paid upfront at t=0 ##
     costs_investment_upfront = calculate_costs_upfront_investment(
         capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
-        specific_cost = dict_asset[SPECIFIC_COSTS][VALUE],
-        development_costs= dict_asset[DEVELOPMENT_COSTS][VALUE]
-        )
+        specific_cost=dict_asset[SPECIFIC_COSTS][VALUE],
+        development_costs=dict_asset[DEVELOPMENT_COSTS][VALUE],
+    )
 
-    dict_asset.update({COST_UPFRONT: {VALUE: costs_investment_upfront,
-                                      UNIT: economic_data[CURR]}})
+    dict_asset.update(
+        {COST_UPFRONT: {VALUE: costs_investment_upfront, UNIT: economic_data[CURR]}}
+    )
 
     ## Part of the investment costs to be paid due to replacements ##
     costs_replacement = calculate_costs_replacement(
-        specific_replacement_of_initial_capacity=dict_asset[SPECIFIC_REPLACEMENT_COSTS_INSTALLED][VALUE],
-        specific_replacement_of_optimized_capacity=dict_asset[SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED][VALUE],
+        specific_replacement_of_initial_capacity=dict_asset[
+            SPECIFIC_REPLACEMENT_COSTS_INSTALLED
+        ][VALUE],
+        specific_replacement_of_optimized_capacity=dict_asset[
+            SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED
+        ][VALUE],
         initial_capacity=dict_asset[INSTALLED_CAP][VALUE],
-        optimized_capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE])
+        optimized_capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
+    )
 
-    dict_asset.update({COST_REPLACEMENT: {VALUE: costs_replacement,
-                                          UNIT: economic_data[CURR]}})
+    dict_asset.update(
+        {COST_REPLACEMENT: {VALUE: costs_replacement, UNIT: economic_data[CURR]}}
+    )
 
     ## Total investment costs including investments into the asset, replacement costs and development costs ##
     costs_investment_lifetime = calculate_total_capital_costs(
         upfront=dict_asset[COST_UPFRONT][VALUE],
         replacement=dict_asset[COST_REPLACEMENT][VALUE],
-        development=dict_asset[DEVELOPMENT_COSTS][VALUE])
+        development=dict_asset[DEVELOPMENT_COSTS][VALUE],
+    )
 
-    dict_asset.update({COST_INVESTMENT: {VALUE: costs_investment_lifetime,
-                                         UNIT: economic_data[CURR]}})
-
+    dict_asset.update(
+        {COST_INVESTMENT: {VALUE: costs_investment_lifetime, UNIT: economic_data[CURR]}}
+    )
 
     ## Operation and management expenditures over the project lifetime ##
     operation_and_management_expenditures = calculate_operation_and_management_expenditures(
         specific_om_cost=dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE],
         installed_capacity=dict_asset[INSTALLED_CAP][VALUE],
-        optimized_add_capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE])
-    dict_asset.update({COST_OM: {VALUE: operation_and_management_expenditures,
-                                 UNIT: economic_data[CURR]}})
+        optimized_add_capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
+    )
+    dict_asset.update(
+        {
+            COST_OM: {
+                VALUE: operation_and_management_expenditures,
+                UNIT: economic_data[CURR],
+            }
+        }
+    )
 
     ## Dispatch expenditures of the asset over the project lifetime
     costs_dispatch = calculate_dispatch_expenditures(
         dispatch_price=dict_asset[LIFETIME_PRICE_DISPATCH][VALUE],
         flow=dict_asset[FLOW],
-        asset=dict_asset[LABEL])
+        asset=dict_asset[LABEL],
+    )
 
-    dict_asset.update({COST_DISPATCH: {VALUE: costs_dispatch,
-                                       UNIT: economic_data[CURR]}})
+    dict_asset.update(
+        {COST_DISPATCH: {VALUE: costs_dispatch, UNIT: economic_data[CURR]}}
+    )
 
     # Total operational expenditures over the lifetime
-    total_operational_expenditures = calculate_total_operational_expenditures(dict_asset[COST_OM][VALUE], dict_asset[COST_DISPATCH][VALUE])
+    total_operational_expenditures = calculate_total_operational_expenditures(
+        dict_asset[COST_OM][VALUE], dict_asset[COST_DISPATCH][VALUE]
+    )
     dict_asset.update({COST_OPERATIONAL_TOTAL: {VALUE: total_operational_expenditures}})
 
     # Total costs of the assets, capital and operational
-    total_asset_costs_over_lifetime = calculate_total_asset_costs_over_lifetime(dict_asset[COST_INVESTMENT][VALUE], dict_asset[COST_OPERATIONAL_TOTAL][VALUE])
-    dict_asset.update({COST_TOTAL: {VALUE: total_asset_costs_over_lifetime, UNIT: economic_data[CURR]}})
+    total_asset_costs_over_lifetime = calculate_total_asset_costs_over_lifetime(
+        dict_asset[COST_INVESTMENT][VALUE], dict_asset[COST_OPERATIONAL_TOTAL][VALUE]
+    )
+    dict_asset.update(
+        {
+            COST_TOTAL: {
+                VALUE: total_asset_costs_over_lifetime,
+                UNIT: economic_data[CURR],
+            }
+        }
+    )
 
     dict_asset.update(
         {
@@ -175,14 +219,18 @@ def get_costs(dict_asset, economic_data):
                 UNIT: CURR + "/" + UNIT_YEAR,
             },
             ANNUITY_OM: {
-                VALUE: dict_asset[COST_OPERATIONAL_TOTAL][VALUE] * economic_data[CRF][VALUE],
+                VALUE: dict_asset[COST_OPERATIONAL_TOTAL][VALUE]
+                * economic_data[CRF][VALUE],
                 UNIT: CURR + "/" + UNIT_YEAR,
             },
         }
     )
     return
 
-def calculate_total_asset_costs_over_lifetime(costs_investment, cost_operational_expenditures):
+
+def calculate_total_asset_costs_over_lifetime(
+    costs_investment, cost_operational_expenditures
+):
     r"""
     Calculates costs of an asset over whole lifetime
 
@@ -201,6 +249,7 @@ def calculate_total_asset_costs_over_lifetime(costs_investment, cost_operational
     """
     total_asset_costs_over_lifetime = costs_investment + cost_operational_expenditures
     return total_asset_costs_over_lifetime
+
 
 def calculate_dispatch_expenditures(dispatch_price, flow, asset):
     r"""
@@ -226,15 +275,17 @@ def calculate_dispatch_expenditures(dispatch_price, flow, asset):
     b) Annual dispatch expenditures of an asset
     """
     if isinstance(dispatch_price, float) or isinstance(dispatch_price, int):
-        dispatch_expenditures= dispatch_price * sum(flow)
+        dispatch_expenditures = dispatch_price * sum(flow)
     elif isinstance(dispatch_price, pd.Series):
-        dispatch_expenditures = sum(dispatch_price*flow)
+        dispatch_expenditures = sum(dispatch_price * flow)
     else:
         raise UnexpectedValueError(
             f"The dispatch price of asset {asset} is neither float nor pd.Series but {type(dispatch_price)}."
-            f"Please adapt E2.calculate_dispatch_costs() to evaluate the dispatch_expenditures of the asset.")
+            f"Please adapt E2.calculate_dispatch_costs() to evaluate the dispatch_expenditures of the asset."
+        )
 
     return dispatch_expenditures
+
 
 def calculate_costs_upfront_investment(specific_cost, capacity, development_costs):
     r"""
@@ -264,6 +315,7 @@ def calculate_costs_upfront_investment(specific_cost, capacity, development_cost
     costs_upfront_investment = specific_cost * capacity + development_costs
     return costs_upfront_investment
 
+
 def calculate_total_capital_costs(upfront, replacement, development):
     r"""
     Calculated total capital expenditures
@@ -287,7 +339,13 @@ def calculate_total_capital_costs(upfront, replacement, development):
     cost_total_investment = upfront + replacement + development
     return cost_total_investment
 
-def calculate_costs_replacement(specific_replacement_of_initial_capacity, specific_replacement_of_optimized_capacity, initial_capacity, optimized_capacity):
+
+def calculate_costs_replacement(
+    specific_replacement_of_initial_capacity,
+    specific_replacement_of_optimized_capacity,
+    initial_capacity,
+    optimized_capacity,
+):
     r"""
     Calculates (the present value of) the replacement costs over the project lifetime
 
@@ -310,10 +368,16 @@ def calculate_costs_replacement(specific_replacement_of_initial_capacity, specif
     costs_replacements: float
         Aggregated replacement costs over the project lifetime
     """
-    costs_replacements = specific_replacement_of_initial_capacity * initial_capacity + specific_replacement_of_optimized_capacity * optimized_capacity
+    costs_replacements = (
+        specific_replacement_of_initial_capacity * initial_capacity
+        + specific_replacement_of_optimized_capacity * optimized_capacity
+    )
     return costs_replacements
 
-def calculate_operation_and_management_expenditures(specific_om_cost, installed_capacity, optimized_add_capacity):
+
+def calculate_operation_and_management_expenditures(
+    specific_om_cost, installed_capacity, optimized_add_capacity
+):
     r"""
     Calculates operation and management expenditures
 
@@ -335,10 +399,15 @@ def calculate_operation_and_management_expenditures(specific_om_cost, installed_
         a) Operation and management expenditures in year 0
         b) Total operation and management expenditures over the project lifetime
     """
-    costs_operation_and_management = specific_om_cost * (installed_capacity + optimized_add_capacity)
+    costs_operation_and_management = specific_om_cost * (
+        installed_capacity + optimized_add_capacity
+    )
     return costs_operation_and_management
 
-def calculate_total_operational_expenditures(operation_and_management_expenditures, dispatch_expenditures):
+
+def calculate_total_operational_expenditures(
+    operation_and_management_expenditures, dispatch_expenditures
+):
     r"""
     Calculated total expenditures of an asset (operational costs)
 
@@ -358,8 +427,11 @@ def calculate_total_operational_expenditures(operation_and_management_expenditur
         a) total operational expenditures per annum for installed capacity
         b) total operational expenditures for whole project lifetime for installed capacity
     """
-    total_operatinal_expenditures = operation_and_management_expenditures + dispatch_expenditures
+    total_operatinal_expenditures = (
+        operation_and_management_expenditures + dispatch_expenditures
+    )
     return total_operatinal_expenditures
+
 
 def all_list_in_dict(dict_asset, list):
     r"""
@@ -385,11 +457,13 @@ def all_list_in_dict(dict_asset, list):
         for name in list:
             if name not in dict_asset:
                 missing_parameters.append(name)
-        missing_parameters = ', '.join(map(str, missing_parameters))
+        missing_parameters = ", ".join(map(str, missing_parameters))
         raise MissingParametersForEconomicEvaluation(
             f"Asset {dict_asset[LABEL]} is missing parameters for the economic evaluation: {missing_parameters}."
-            f"These parameters are needed for E2.get_costs(). Please check the E modules.")
+            f"These parameters are needed for E2.get_costs(). Please check the E modules."
+        )
     return boolean
+
 
 def lcoe_assets(dict_asset, asset_group):
     """

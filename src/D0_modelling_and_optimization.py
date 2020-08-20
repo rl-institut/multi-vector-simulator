@@ -23,7 +23,7 @@ from src.constants_json_strings import (
     STORE_NX_GRAPH,
     OUTPUT_LP_FILE,
     STORE_OEMOF_RESULTS,
-SIMULATION_RESULTS
+    SIMULATION_RESULTS,
 )
 
 """
