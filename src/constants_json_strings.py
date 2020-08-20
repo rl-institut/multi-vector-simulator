@@ -135,6 +135,9 @@ ANNUITY_SPECIFIC_INVESTMENT_AND_OM = (
 )
 SIMULATION_ANNUITY = "simulation_annuity"
 
+SPECIFIC_REPLACEMENT_COSTS_INSTALLED = "Specific replacement costs of installed capacity"
+SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED = "Specific replacement costs of optimized capacity"
+
 # Other Parameters
 SECTORS = "sectors"
 OUTFLOW_DIRECTION = "outflow_direction"

@@ -475,6 +475,7 @@ def define_missing_cost_data(dict_values, dict_asset):
         SPECIFIC_COSTS_OM: {VALUE: 0, UNIT: CURR + "/" + UNIT_YEAR},
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + UNIT + "/" + UNIT_YEAR},
         LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: UNIT_YEAR,},
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR, }
     }
 
     # checks that an asset has all cost parameters needed for evaluation.
@@ -921,6 +922,7 @@ def define_transformer_for_peak_demand_pricing(
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR}
     }
 
     dict_values[ENERGY_CONVERSION].update({transformer_name: default_dso_transformer})
@@ -971,6 +973,7 @@ def define_source(dict_values, asset_key, output_bus_direction, **kwargs):
         },
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         MAXIMUM_CAP: {VALUE: None, UNIT: "?"},
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR, }
     }
 
     for item in kwargs:
@@ -1129,6 +1132,7 @@ def define_sink(dict_values, asset_name, price, input_bus_name, **kwargs):
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
             UNIT: UNIT_YEAR,
         },
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,}
     }
 
     # check if multiple busses are provided
@@ -1280,7 +1284,8 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     - LIFETIME_SPECIFIC_COST_OM
     - ANNUITY_SPECIFIC_INVESTMENT_AND_OM
     - SIMULATION_ANNUITY
-
+    - SPECIFIC_REPLACEMENT_COSTS_INSTALLED
+    - SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED
     Notes
     -----
 
@@ -1289,16 +1294,37 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
     C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
+    specific_capex, specific_replacement_costs_optimized, specific_replacement_costs_already_installed = C2.capex_from_investment(
+        investment_t0 = dict_asset[SPECIFIC_COSTS][VALUE],
+        lifetime = dict_asset[LIFETIME][VALUE],
+        project_life= economic_data[PROJECT_DURATION][VALUE],
+        discount_factor= economic_data[DISCOUNTFACTOR][VALUE],
+        tax= economic_data[TAX][VALUE],
+        age_of_asset= dict_asset[AGE_INSTALLED][VALUE]
+    )
+
     dict_asset.update(
         {
             LIFETIME_SPECIFIC_COST: {
-                VALUE: C2.capex_from_investment(
-                    dict_asset[SPECIFIC_COSTS][VALUE],
-                    dict_asset[LIFETIME][VALUE],
-                    economic_data[PROJECT_DURATION][VALUE],
-                    economic_data[DISCOUNTFACTOR][VALUE],
-                    economic_data[TAX][VALUE],
-                ),
+                VALUE: specific_capex,
+                UNIT: dict_asset[SPECIFIC_COSTS][UNIT],
+            }
+        }
+    )
+
+    dict_asset.update(
+        {
+            SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED: {
+                VALUE: specific_replacement_costs_optimized,
+                UNIT: dict_asset[SPECIFIC_COSTS][UNIT],
+            }
+        }
+    )
+
+    dict_asset.update(
+        {
+            SPECIFIC_REPLACEMENT_COSTS_INSTALLED: {
+                VALUE: specific_replacement_costs_already_installed,
                 UNIT: dict_asset[SPECIFIC_COSTS][UNIT],
             }
         }
