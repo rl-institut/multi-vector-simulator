@@ -1303,6 +1303,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         age_of_asset= dict_asset[AGE_INSTALLED][VALUE]
     )
 
+
     dict_asset.update(
         {
             LIFETIME_SPECIFIC_COST: {

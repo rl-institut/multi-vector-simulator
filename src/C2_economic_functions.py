@@ -123,9 +123,9 @@ def capex_from_investment(investment_t0, lifetime, project_life, discount_factor
     # Specific capex for the optimization
     specific_capex = first_time_investment + specific_replacement_costs_optimized
 
+    specific_replacement_costs_installed = get_replacement_costs(age_of_asset, project_life, lifetime, first_time_investment, discount_factor)
     # Calculating the replacement costs per unit for the currently already installed assets
-    specific_replacement_costs_already_installed = get_replacement_costs(age_of_asset, project_life, lifetime, first_time_investment, discount_factor)
-    return specific_capex, specific_replacement_costs_optimized, specific_replacement_costs_already_installed
+    return specific_capex, specific_replacement_costs_optimized, specific_replacement_costs_installed
 
 def get_replacement_costs(age_of_asset, project_lifetime, asset_lifetime, first_time_investment, discount_factor):
     r"""
