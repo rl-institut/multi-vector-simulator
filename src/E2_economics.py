@@ -290,6 +290,29 @@ def calculate_operation_and_management_expenditures(specific_om_cost, capacity):
     costs_operation_and_management = specific_om_cost * capacity
     return costs_operation_and_management
 
+def calculate_total_operational_expenditures(operation_and_management_expenditures, dispatch_expenditures):
+    r"""
+    Calculated total expenditures of an asset (operational costs)
+
+    Parameters
+    ----------
+    operation_and_management_expenditures: float
+        a) operation and management expenditures per annum for the installed capacity
+        b) operation and management expenditures for whole project lifetime for the installed capacity
+
+    dispatch_expenditures: float
+        a) dispatch expenditures per annum for the installed capacity
+        b) dispatch expenditures for whole project lifetime for the installed capacity
+
+    Returns
+    -------
+    total_operatinal_expenditures: float
+        a) total operational expenditures per annum for installed capacity
+        b) total operational expenditures for whole project lifetime for installed capacity
+    """
+    total_operatinal_expenditures = operation_and_management_expenditures + dispatch_expenditures
+    return total_operatinal_expenditures
+
 def add_costs_and_total(dict_asset, name, value, total_costs):
     total_costs += value
     dict_asset.update({name: {VALUE: value}})

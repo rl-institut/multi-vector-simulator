@@ -113,6 +113,12 @@ def test_calculate_costs_investment():
     costs = E2.calculate_costs_investment(specific_cost=100, capacity=5, development_costs=200)
     assert costs == 700
 
+def test_calculate_total_operational_expenditures():
+    total_operational_expenditures = E2.calculate_total_operational_expenditures(
+        operation_and_management_expenditures=100,
+        dispatch_expenditures=500)
+    assert total_operational_expenditures == 600
+
 asset = "an_asset"
 flow = pd.Series([1,1,1])
 def test_calculate_annual_dispatch_expenditures_float():
