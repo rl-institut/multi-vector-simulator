@@ -22,6 +22,7 @@ from src.constants_json_strings import (
     ANNUITY_OM,
     ANNUITY_TOTAL,
     COST_TOTAL,
+AGE_INSTALLED,
     COST_OPERATIONAL_TOTAL,
     COST_DISPATCH,
     COST_OM,
@@ -48,6 +49,8 @@ SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED: {VALUE: 0, UNIT: CURR},
     LIFETIME_PRICE_DISPATCH: {VALUE: -5.505932460595773, UNIT: "?"},
     ANNUAL_TOTAL_FLOW: {VALUE: 0.0, UNIT: "kWh"},
     OPTIMIZED_ADD_CAP: {VALUE: 0, UNIT: "?"},
+    FLOW: pd.Series([1,1,1]),
+
 }
 
 dict_economic = {
@@ -166,7 +169,7 @@ def test_all_list_in_dict_passes_as_all_keys_included():
 
 def test_all_list_in_dict_fails_due_to_not_included_keys():
     """Tests whether looking for list items in dict_asset is plausible."""
-    list_false = [FLOW, OPTIMIZED_ADD_CAP]
+    list_false = [AGE_INSTALLED, OPTIMIZED_ADD_CAP]
     with pytest.raises(E2.MissingParametersForEconomicEvaluation):
         boolean = E2.all_list_in_dict(dict_asset, list_false)
         assert boolean is False
