@@ -136,21 +136,21 @@ def get_costs(dict_asset, economic_data):
                                           UNIT: economic_data[CURR]}})
 
     ## Operation and management expenditures over the project lifetime ##
-    calculate_operation_and_management_expenditures(
+    operation_and_management_expenditures = calculate_operation_and_management_expenditures(
         specific_om_cost=dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE],
         installed_capacity=dict_asset[INSTALLED_CAP][VALUE],
         optimized_add_capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE])
-    dict_asset.update({COST_OM: {VALUE: calculate_operation_and_management_expenditures,
+    dict_asset.update({COST_OM: {VALUE: operation_and_management_expenditures,
                                  UNIT: economic_data[CURR]}})
 
     ## Dispatch expenditures of the asset over the project lifetime
     #todo this does not apply for storage capacities!
-    costs_price_dispatch = calculate_dispatch_expenditures(
+    costs_dispatch = calculate_dispatch_expenditures(
         dispatch_price=dict_asset[LIFETIME_PRICE_DISPATCH][VALUE],
         flow=dict_asset[FLOW],
         asset=dict_asset[LABEL])
 
-    dict_asset.update({COST_DISPATCH: {VALUE: costs_price_dispatch,
+    dict_asset.update({COST_DISPATCH: {VALUE: costs_dispatch,
                                        UNIT: economic_data[CURR]}})
 
     # Total operational expenditures over the lifetime
