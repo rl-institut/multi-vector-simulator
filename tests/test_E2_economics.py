@@ -100,6 +100,10 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     ):
         assert k in dict_asset
 
+def test_calculate_costs_replacement():
+    cost_replacement = E2.calculate_costs_replacement(costs_investment=700, costs_upfront=500)
+    assert cost_replacement == 200
+
 def test_calculate_costs_investment():
     costs = E2.calculate_costs_investment(specific_cost=100, capacity=5, development_costs=200)
     assert costs == 700

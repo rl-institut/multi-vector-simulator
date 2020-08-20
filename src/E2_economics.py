@@ -248,6 +248,26 @@ def calculate_costs_investment(specific_cost, capacity, development_costs):
     costs_investment = specific_cost * capacity + development_costs
     return costs_investment
 
+def calculate_costs_replacement(costs_investment, costs_upfront):
+    r"""
+    Calculates (the present value of) the replacement costs over the project lifetime
+
+    Parameters
+    ----------
+    costs_investment: float
+        Investment costs over project lifetime
+
+    costs_upfront: float
+        Upfront investment costs in year 0
+
+    Returns
+    -------
+    costs_replacements: float
+        Aggregated replacement costs over the project lifetime
+    """
+    costs_replacements = costs_investment - costs_upfront
+    return costs_replacements
+
 def add_costs_and_total(dict_asset, name, value, total_costs):
     total_costs += value
     dict_asset.update({name: {VALUE: value}})
