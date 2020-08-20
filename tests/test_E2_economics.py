@@ -111,6 +111,10 @@ def test_calculate_operation_and_management_expenditures():
         specific_om_cost=5, installed_capacity=10, optimized_add_capacity=10)
     assert operation_and_management_expenditures == 100
 
+def test_calculate_total_asset_costs_over_lifetime():
+    total = E2.calculate_total_asset_costs_over_lifetime(costs_investment=300, cost_operational_expenditures=200)
+    assert total == 500
+
 def test_calculate_costs_investment():
     costs = E2.calculate_costs_investment(specific_cost=100, capacity=5, development_costs=200)
     assert costs == 700
@@ -145,7 +149,6 @@ def test_add_costs_and_total():
     )
     assert total_costs == new_cost + current_costs
     assert "new_cost" in dict_asset
-
 
 def test_all_list_in_dict_passes_as_all_keys_included():
     """Tests whether looking for list items in dict_asset is plausible."""

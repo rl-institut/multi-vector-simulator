@@ -194,6 +194,26 @@ def get_costs(dict_asset, economic_data):
         )
     return
 
+def calculate_total_asset_costs_over_lifetime(costs_investment, cost_operational_expenditures):
+    r"""
+    Calculates costs of an asset over whole lifetime
+
+    Parameters
+    ----------
+    costs_investment: float
+        Investment costs over whole lifetime
+
+    cost_operational_expenditures: float
+        Operation and management as well as dispatch expenditures over whole lifetime
+
+    Returns
+    -------
+    total_asset_costs_over_lifetime: float
+        costs of an asset over whole lifetime, including upfront investment costs, development costs, replacement costs, operation and management expenditures, dispatch expenditures
+    """
+    total_asset_costs_over_lifetime = costs_investment + cost_operational_expenditures
+    return total_asset_costs_over_lifetime
+
 def calculate_dispatch_expenditures(dispatch_price, flow, asset):
     r"""
     Calculated the expenditures connected to an asset due to its dispatch
