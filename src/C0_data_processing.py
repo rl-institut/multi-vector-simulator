@@ -20,7 +20,6 @@ from src.constants_json_strings import *
 import src.C1_verification as C1
 import src.C2_economic_functions as C2
 import src.F0_output as F0
-import src.F1_plotting as F1  # only function F1.plot_input_timeseries()
 
 """
 Module C0 prepares the data red from csv or json for simulation, ie. pre-processes it. 
@@ -328,6 +327,8 @@ def energyProduction(dict_values, group):
                     dict_values[group][asset],
                     "input",
                 )
+                # If Filename defines the generation timeseries, then we have an asset with a lack of dispatchability
+                dict_values[group][asset].update({DISPATCHABILITY: False})
         # check if maximumCap exists and add it to dict_values
         add_maximum_cap(dict_values, group, asset)
 
