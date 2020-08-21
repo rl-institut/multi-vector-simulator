@@ -136,10 +136,10 @@ ANNUITY_SPECIFIC_INVESTMENT_AND_OM = (
 SIMULATION_ANNUITY = "simulation_annuity"
 
 SPECIFIC_REPLACEMENT_COSTS_INSTALLED = (
-    "Specific replacement costs of installed capacity"
+    "Specific_replacement_costs_of_installed_capacity"
 )
 SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED = (
-    "Specific replacement costs of optimized capacity"
+    "Specific_replacement_costs_of_optimized_capacity"
 )
 
 # Other Parameters
@@ -210,7 +210,7 @@ COST_DISPATCH = (
 )
 COST_INVESTMENT = "costs_investment_over_lifetime"
 COST_UPFRONT = "costs_upfront_in_year_zero"
-COST_REPLACEMENT = "Replacement costs during project lifetime"
+COST_REPLACEMENT = "Replacement_costs_during_project_lifetime"
 
 # Levelized cost of electricity
 LCOE_ASSET = "levelized_cost_of_energy_of_asset"
