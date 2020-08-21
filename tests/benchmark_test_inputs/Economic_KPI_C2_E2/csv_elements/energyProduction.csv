@@ -1,0 +1,17 @@
+,unit,pv_plant_01,Diesel source
+age_installed,year,0,0
+development_costs,currency,2,0
+specific_costs,currency/unit,500,0
+file_name,str,pv_solar_input.csv,None
+installedCap,kWp,1,0
+maximumCap, kWp,None,None
+label,str,PV plant (mono),Diesel source
+lifetime,year,20,30
+specific_costs_om,currency/unit/year,5,0
+dispatch_price,currency/kWh,0.01,0.15
+optimizeCap,bool,False,True
+outflow_direction,str,Electricity,DG
+type_oemof,str,source,source
+unit,str,kWp,kWh_therm
+energyVector,str,Electricity,Electricity
+renewableAsset,bool,True,False
