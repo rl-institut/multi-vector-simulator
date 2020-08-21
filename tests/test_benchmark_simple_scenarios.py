@@ -42,6 +42,7 @@ from src.constants_json_strings import (
     LCOE_ASSET,
     ENERGY_CONSUMPTION,
     FLOW,
+    EFFICIENCY,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -149,9 +150,7 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AD_grid_diesel(self, margs):
-        # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
         use_case = "AD_grid_diesel"
-        # define an empty dictionary for excess electricity
         main(
             overwrite=True,
             display_output="warning",
@@ -185,9 +184,7 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AE_grid_battery_peak_pricing(self, margs):
-        # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
         use_case = "AE_grid_battery_peak_pricing"
-        # define an empty dictionary for excess electricity
         main(
             overwrite=True,
             display_output="warning",
@@ -260,6 +257,49 @@ class TestACElectricityBus:
                     and DSO_periods[j][i - 1] > abs(demand[i - 1])
                 ):
                     assert abs(battery_charge[i - 1]) > 0
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_benchmark_AFG_grid_heatpump_heat(self, margs):
+        use_case = "AFG_grid_heatpump_heat"
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=CSV_EXT,
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+        )
+        # read json with results file
+        with open(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
+        ) as results:
+            data = json.load(results)
+        # read excel sheet with time series
+        busses_flow = pd.read_excel(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
+            sheet_name=bus_suffix("Heat"),
+        )
+        # compare cost of using heat pump with electricity price to heat price
+        if (
+            data[ENERGY_PROVIDERS]["Electricity DSO"][ENERGY_PRICE][VALUE]
+            / data[ENERGY_CONVERSION]["heat_pump"][EFFICIENCY][VALUE]
+            > data[ENERGY_PROVIDERS]["Heat DSO"][ENERGY_PRICE][VALUE]
+        ):
+            assert sum(busses_flow["Gas_consumption_period"]) == approx(
+                abs(sum(busses_flow["demand_heat"]))
+            )
+        if (
+            data[ENERGY_PROVIDERS]["Electricity DSO"][ENERGY_PRICE][VALUE]
+            / data[ENERGY_CONVERSION]["heat_pump"][EFFICIENCY][VALUE]
+            < data[ENERGY_PROVIDERS]["Heat DSO"][ENERGY_PRICE][VALUE]
+        ):
+            assert sum(busses_flow["heat_pump"]) == approx(
+                abs(sum(busses_flow["demand_heat"]))
+            )
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
