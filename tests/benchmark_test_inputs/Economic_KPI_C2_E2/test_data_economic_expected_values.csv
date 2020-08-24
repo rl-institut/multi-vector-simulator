@@ -1,27 +1,4 @@
-,diesel_generator,pv_plant_01,storage capacity,input power,output power
-group,energyConversion,energyProduction,energyStorage,energyStorage,energyStorage
-age_installed,0,0,0,0,0
-development_costs,0,2,0,0,0
-specific_costs,100,500,500,200,300
-installedCap,1,1,1,1,1
-specific_costs_om,5,5,5,0,0
-dispatch_price,0,0.01,NA,0,0
-lifetime,30,20,10,10,10
-lifetime_specific_cost_om,,,,,
-lifetime_price_dispatch,,,,,
-lifetime_specific_cost,,,,,
-annuity_of_specific_investment_costs_and_specific_annual_om,,,,,
-simulation_annuity,,,,,
-Specific_replacement_costs_of_installed_capacity,,,,,
-Specific_replacement_costs_of_optimized_capacity,,,,,
-optimizedAddCap,,,,,
-annuity_om,,,,,
-annuity_total,,,,,
-costs_total,,,,,
-costs_om_total,,,,,
-costs_cost_om,,,,,
-costs_dispatch,,,,,
-costs_investment_over_lifetime,,,,,
-costs_upfront_in_year_zero,,,,,
-Replacement_costs_during_project_lifetime,,,,,
-levelized_cost_of_energy_of_asset,,,,,
+economic data,
+project life,20
+discount factor,0.08
+annuity factor,9.818147407

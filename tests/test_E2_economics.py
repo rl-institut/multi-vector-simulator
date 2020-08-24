@@ -10,6 +10,8 @@ from src.constants_json_strings import (
     DEVELOPMENT_COSTS,
     SPECIFIC_COSTS,
     DISPATCH_PRICE,
+DISCOUNTFACTOR,
+    ANNUITY_FACTOR,
     VALUE,
     LABEL,
     INSTALLED_CAP,
@@ -33,6 +35,7 @@ from src.constants_json_strings import (
     ENERGY_STORAGE,
     TOTAL_FLOW,
     SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+    PROJECT_DURATION,
     SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
 )
 
@@ -52,7 +55,21 @@ dict_asset = {
     FLOW: pd.Series([1, 1, 1]),
 }
 
-dict_economic = {CRF: {VALUE: 0.07264891149004721, UNIT: "?"}, CURR: "Euro"}
+import src.C2_economic_functions as C2
+dict_economic = {CURR: "Euro",
+                 DISCOUNTFACTOR: {VALUE: 0.08},
+                 PROJECT_DURATION: {VALUE: 20}}
+
+dict_economic.update({
+    ANNUITY_FACTOR:
+        {VALUE: C2.annuity_factor(
+            project_life=dict_economic[PROJECT_DURATION][VALUE],
+            discount_factor=dict_economic[DISCOUNTFACTOR][VALUE])},
+    CRF:
+        {VALUE: C2.crf(
+            project_life=dict_economic[PROJECT_DURATION][VALUE],
+            discount_factor=dict_economic[DISCOUNTFACTOR][VALUE])}})
+
 
 dict_values = {
     ENERGY_PRODUCTION: {
@@ -94,6 +111,7 @@ exp_lcoe_battery_1 = (1000 + 30000 + 25000) / 240000
 
 def test_all_cost_info_parameters_added_to_dict_asset():
     """Tests whether the function get_costs is adding all the calculated costs to dict_asset."""
+    print(dict_economic)
     E2.get_costs(dict_asset, dict_economic)
     for k in (
         COST_DISPATCH,
@@ -105,6 +123,7 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     ):
         assert k in dict_asset
 
+test_all_cost_info_parameters_added_to_dict_asset()
 
 def test_calculate_costs_replacement():
     cost_replacement = E2.calculate_costs_replacement(
