@@ -690,7 +690,6 @@ def convert_cost_matrix_to_dataframe(dict_values):
     df_cost_matrix = df_cost_matrix.round(2)
     return df_cost_matrix
 
-
 def convert_costs_to_dataframe(dict_values):
     """Dataframe used for the costs piecharts of the report
 
@@ -722,3 +721,35 @@ def convert_costs_to_dataframe(dict_values):
     df_pie_plot.iloc[-1, 0] = "Total"
 
     return df_pie_plot
+
+def convert_scalars_to_dataframe(dict_values):
+    """
+    Processes the scalar system-wide KPI so that they can be included in the report
+
+    Parameters
+    ----------
+    dict_values: dict
+        output values of MVS
+
+    Returns
+    -------
+    kpi_scalars_dataframe: :pandas:`pandas.DataFrame<frame>`
+        Dataframe to be displayed as a table in the report
+
+    Notes
+    -----
+    Currently, as the KPI_SCALARS_DICT does not hold any units, the table printed in the report is unit-les.
+    """
+    kpi_scalars_dataframe = pd.DataFrame(dict_values[KPI][KPI_SCALARS_DICT], index=[VALUE])
+    kpi_names = kpi_scalars_dataframe.columns
+    kpi_scalars_dataframe = kpi_scalars_dataframe.transpose()
+    kpi_scalars_dataframe[KPI] = kpi_names
+
+    # get a list of the columns
+    col_list = list(kpi_scalars_dataframe)
+    # use this handy way to swap the elements
+    col_list[0], col_list[1] = col_list[1], col_list[0]
+    # assign back, the order will now be swapped
+    kpi_scalars_dataframe.columns = col_list
+
+    return kpi_scalars_dataframe

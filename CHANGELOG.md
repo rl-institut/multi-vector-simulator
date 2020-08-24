@@ -27,6 +27,7 @@ Here is a template for new release sections
 - Explicit calculation of replacement costs (`C2.get_replacement_costs()`), so that they can be used in `E2` for installed capacities and optimal additional capacities (#520)
 - New constant variable: JSON_WITH_RESULTS="json_with_results.json" (#520)
 - Benchmark test "Economic_KPI_C2_E2" to test economic evaluations in C2 and E2 (#520)
+- System KPI now printed in automatic report (section "Energy system key performance indicators"), draft version without units and 
 
 ### Changed
 - Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
