@@ -1,7 +1,13 @@
 import os
 import argparse
 
-from src.constants import REPO_PATH, REPORT_PATH, OUTPUT_FOLDER, PDF_REPORT, JSON_WITH_RESULTS
+from src.constants import (
+    REPO_PATH,
+    REPORT_PATH,
+    OUTPUT_FOLDER,
+    PDF_REPORT,
+    JSON_WITH_RESULTS,
+)
 from src.B0_data_input_json import load_json
 from src.F2_autoreport import create_app, open_in_browser, print_pdf
 
