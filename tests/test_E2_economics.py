@@ -214,8 +214,8 @@ def test_calculation_of_lcoe_of_asset_total_flow_is_0():
     for group in [ENERGY_CONVERSION, ENERGY_STORAGE]:
         for asset in dict_values[group]:
             E2.lcoe_assets(dict_values[group][asset], group)
-    assert dict_values[ENERGY_CONVERSION]["inverter"][LCOE_ASSET][VALUE] is None
-    assert dict_values[ENERGY_STORAGE]["battery_2"][LCOE_ASSET][VALUE] is None
+    assert dict_values[ENERGY_CONVERSION]["inverter"][LCOE_ASSET][VALUE] is 0
+    assert dict_values[ENERGY_STORAGE]["battery_2"][LCOE_ASSET][VALUE] is 0
 
 
 def test_calculation_of_lcoe_asset_storage_flow_not_0_provider_flow_not_0():

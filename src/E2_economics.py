@@ -486,7 +486,7 @@ def lcoe_assets(dict_asset, asset_group):
 
     elif asset_group == ENERGY_STORAGE:
         if dict_asset[OUTPUT_POWER][TOTAL_FLOW][VALUE] == 0:
-            dict_asset.update({LCOE_ASSET: {VALUE: None, UNIT: "currency/kWh"}})
+            dict_asset.update({LCOE_ASSET: {VALUE: 0, UNIT: "currency/kWh"}})
         else:
             storage_annuity = (
                 dict_asset[INPUT_POWER][ANNUITY_TOTAL][VALUE]
@@ -497,7 +497,7 @@ def lcoe_assets(dict_asset, asset_group):
             dict_asset.update({LCOE_ASSET: {VALUE: lcoe_a, UNIT: "currency/kWh"}})
 
     elif dict_asset[TOTAL_FLOW][VALUE] == 0.0:
-        dict_asset.update({LCOE_ASSET: {VALUE: None, UNIT: "currency/kWh"}})
+        dict_asset.update({LCOE_ASSET: {VALUE: 0, UNIT: "currency/kWh"}})
     else:
         lcoe_a = dict_asset[ANNUITY_TOTAL][VALUE] / dict_asset[TOTAL_FLOW][VALUE]
         dict_asset.update({LCOE_ASSET: {VALUE: lcoe_a, UNIT: "currency/kWh"}})
