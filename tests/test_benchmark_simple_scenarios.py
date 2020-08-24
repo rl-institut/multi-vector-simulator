@@ -31,8 +31,9 @@ from .constants import (
     ENERGY_PRICE,
     OPTIMIZED_ADD_CAP,
     LCOE_ASSET,
-    JSON_WITH_RESULTS,
 )
+
+from src.constants import JSON_WITH_RESULTS
 
 from src.constants_json_strings import (
     EXCESS,
