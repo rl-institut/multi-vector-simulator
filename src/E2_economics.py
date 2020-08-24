@@ -461,6 +461,7 @@ def all_list_in_dict(dict_asset, list):
         )
     return boolean
 
+
 def lcoe_assets(dict_asset, asset_group):
     """
     Calculates the levelized cost of electricity (lcoe) of each asset. [Follow this link for information](docs/MVS_Outputs.rst)
