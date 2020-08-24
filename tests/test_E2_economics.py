@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 
+import src.C2_economic_functions as C2
 import src.E2_economics as E2
 
 from src.constants_json_strings import (
@@ -55,7 +56,6 @@ dict_asset = {
     FLOW: pd.Series([1, 1, 1]),
 }
 
-import src.C2_economic_functions as C2
 dict_economic = {CURR: "Euro",
                  DISCOUNTFACTOR: {VALUE: 0.08},
                  PROJECT_DURATION: {VALUE: 20}}
@@ -123,6 +123,7 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     ):
         assert k in dict_asset
 
+
 test_all_cost_info_parameters_added_to_dict_asset()
 
 def test_calculate_costs_replacement():
@@ -158,9 +159,9 @@ def test_calculate_costs_upfront_investment():
 
 def test_calculate_total_capital_costs():
     total_capital_expenditure = E2.calculate_total_capital_costs(
-        upfront=300, replacement=100, development=100
+        upfront=300, replacement=100
     )
-    assert total_capital_expenditure == 500
+    assert total_capital_expenditure == 400
 
 
 def test_calculate_total_operational_expenditures():

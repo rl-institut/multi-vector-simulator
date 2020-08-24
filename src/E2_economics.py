@@ -159,8 +159,7 @@ def get_costs(dict_asset, economic_data):
     ## Total investment costs including investments into the asset, replacement costs and development costs ##
     costs_investment_lifetime = calculate_total_capital_costs(
         upfront=dict_asset[COST_UPFRONT][VALUE],
-        replacement=dict_asset[COST_REPLACEMENT][VALUE],
-        development=dict_asset[DEVELOPMENT_COSTS][VALUE],
+        replacement=dict_asset[COST_REPLACEMENT][VALUE]
     )
 
     dict_asset.update(
@@ -316,29 +315,26 @@ def calculate_costs_upfront_investment(specific_cost, capacity, development_cost
     return costs_upfront_investment
 
 
-def calculate_total_capital_costs(upfront, replacement, development):
+def calculate_total_capital_costs(upfront, replacement):
     r"""
     Calculated total capital expenditures
 
     Parameters
     ----------
     upfront: float
-        Upfront investments at t=0
+        Upfront investments at t=0, including development costs
 
     replacement: float
         Replacement costs of pre-installed and new assets
 
-    development: float
-        Development costs for asset
 
     Returns
     -------
     cost_total_investment: float
         Total capital costs
     """
-    cost_total_investment = upfront + replacement + development
+    cost_total_investment = upfront + replacement
     return cost_total_investment
-
 
 def calculate_costs_replacement(
     specific_replacement_of_initial_capacity,
@@ -373,7 +369,6 @@ def calculate_costs_replacement(
         + specific_replacement_of_optimized_capacity * optimized_capacity
     )
     return costs_replacements
-
 
 def calculate_operation_and_management_expenditures(
     specific_om_cost, installed_capacity, optimized_add_capacity
@@ -463,7 +458,6 @@ def all_list_in_dict(dict_asset, list):
             f"These parameters are needed for E2.get_costs(). Please check the E modules."
         )
     return boolean
-
 
 def lcoe_assets(dict_asset, asset_group):
     """
