@@ -211,7 +211,7 @@ class Test_Economic_KPI:
 
         # Store to csv to enable manual check, eg. of LCOE_A. Only previously empty rows have been changed.
         expected_values.drop("flow").to_csv(
-            os.path.join(TEST_INPUT_PATH, use_case, expected_value_file), sep=","
+            os.path.join(TEST_OUTPUT_PATH, use_case, expected_value_file), sep=","
         )
 
         # Check if asset costs were correctly calculated in C2 and E2
