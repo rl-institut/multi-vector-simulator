@@ -374,6 +374,7 @@ def test_evaluate_lifetime_costs():
 
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
 
+    # Note: Only the relevant keys are tested here. The valid calculation of the costs is tested with test_benchmark_KPI.py, Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
     for k in [
         LIFETIME_SPECIFIC_COST,
         LIFETIME_SPECIFIC_COST_OM,

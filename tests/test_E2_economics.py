@@ -11,7 +11,7 @@ from src.constants_json_strings import (
     DEVELOPMENT_COSTS,
     SPECIFIC_COSTS,
     DISPATCH_PRICE,
-DISCOUNTFACTOR,
+    DISCOUNTFACTOR,
     ANNUITY_FACTOR,
     VALUE,
     LABEL,
@@ -59,19 +59,28 @@ dict_asset = {
     FLOW: pd.Series([1, 1, 1]),
 }
 
-dict_economic = {CURR: "Euro",
-                 DISCOUNTFACTOR: {VALUE: 0.08},
-                 PROJECT_DURATION: {VALUE: 20}}
+dict_economic = {
+    CURR: "Euro",
+    DISCOUNTFACTOR: {VALUE: 0.08},
+    PROJECT_DURATION: {VALUE: 20},
+}
 
-dict_economic.update({
-    ANNUITY_FACTOR:
-        {VALUE: C2.annuity_factor(
-            project_life=dict_economic[PROJECT_DURATION][VALUE],
-            discount_factor=dict_economic[DISCOUNTFACTOR][VALUE])},
-    CRF:
-        {VALUE: C2.crf(
-            project_life=dict_economic[PROJECT_DURATION][VALUE],
-            discount_factor=dict_economic[DISCOUNTFACTOR][VALUE])}})
+dict_economic.update(
+    {
+        ANNUITY_FACTOR: {
+            VALUE: C2.annuity_factor(
+                project_life=dict_economic[PROJECT_DURATION][VALUE],
+                discount_factor=dict_economic[DISCOUNTFACTOR][VALUE],
+            )
+        },
+        CRF: {
+            VALUE: C2.crf(
+                project_life=dict_economic[PROJECT_DURATION][VALUE],
+                discount_factor=dict_economic[DISCOUNTFACTOR][VALUE],
+            )
+        },
+    }
+)
 
 
 dict_values = {
@@ -116,6 +125,8 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     """Tests whether the function get_costs is adding all the calculated costs to dict_asset."""
     print(dict_economic)
     E2.get_costs(dict_asset, dict_economic)
+
+    # Note: The valid calculation of the costs is tested with test_benchmark_KPI.py, Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
     for k in (
         COST_DISPATCH,
         COST_OM,
@@ -128,6 +139,7 @@ def test_all_cost_info_parameters_added_to_dict_asset():
 
 
 test_all_cost_info_parameters_added_to_dict_asset()
+
 
 def test_calculate_costs_replacement():
     cost_replacement = E2.calculate_costs_replacement(
