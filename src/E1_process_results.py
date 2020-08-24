@@ -744,12 +744,6 @@ def convert_scalars_to_dataframe(dict_values):
     kpi_names = kpi_scalars_dataframe.columns
     kpi_scalars_dataframe = kpi_scalars_dataframe.transpose()
     kpi_scalars_dataframe[KPI] = kpi_names
-
-    # get a list of the columns
-    col_list = list(kpi_scalars_dataframe)
-    # use this handy way to swap the elements
-    col_list[0], col_list[1] = col_list[1], col_list[0]
-    # assign back, the order will now be swapped
-    kpi_scalars_dataframe.columns = col_list
+    kpi_scalars_dataframe = kpi_scalars_dataframe[[KPI, VALUE]]
 
     return kpi_scalars_dataframe
