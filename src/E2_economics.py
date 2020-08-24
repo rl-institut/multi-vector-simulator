@@ -159,7 +159,7 @@ def get_costs(dict_asset, economic_data):
     ## Total investment costs including investments into the asset, replacement costs and development costs ##
     costs_investment_lifetime = calculate_total_capital_costs(
         upfront=dict_asset[COST_UPFRONT][VALUE],
-        replacement=dict_asset[COST_REPLACEMENT][VALUE]
+        replacement=dict_asset[COST_REPLACEMENT][VALUE],
     )
 
     dict_asset.update(
@@ -336,6 +336,7 @@ def calculate_total_capital_costs(upfront, replacement):
     cost_total_investment = upfront + replacement
     return cost_total_investment
 
+
 def calculate_costs_replacement(
     specific_replacement_of_initial_capacity,
     specific_replacement_of_optimized_capacity,
@@ -369,6 +370,7 @@ def calculate_costs_replacement(
         + specific_replacement_of_optimized_capacity * optimized_capacity
     )
     return costs_replacements
+
 
 def calculate_operation_and_management_expenditures(
     specific_om_cost, installed_capacity, optimized_add_capacity
@@ -459,6 +461,7 @@ def all_list_in_dict(dict_asset, list):
         )
     return boolean
 
+
 def lcoe_assets(dict_asset, asset_group):
     """
     Calculates the levelized cost of electricity (lcoe) of each asset. [Follow this link for information](docs/MVS_Outputs.rst)
@@ -472,28 +475,45 @@ def lcoe_assets(dict_asset, asset_group):
 
     Returns
     -------
+    Updates the asset dictionary with the calculated LCOE_ASSET.
+    Storages have four values LCOE_ASSET: One for the overall storage including all costs, and one each for the components.
+
+    Notes
+    -----
+
+    ..:math: LCOE_ASSET = \frac{A}{ E_{throughput} }
+
+    If  E_{throughput} == 0, LCOE_ASSET = 0.
 
     """
 
-    if asset_group == ENERGY_CONSUMPTION:
-        dict_asset.update({LCOE_ASSET: {VALUE: 0, UNIT: "currency/kWh"}})
+    lcoe_a = 0
 
-    elif asset_group == ENERGY_STORAGE:
-        if dict_asset[OUTPUT_POWER][TOTAL_FLOW][VALUE] == 0:
-            dict_asset.update({LCOE_ASSET: {VALUE: 0, UNIT: "currency/kWh"}})
-        else:
+    if asset_group == ENERGY_STORAGE:
+        if dict_asset[OUTPUT_POWER][TOTAL_FLOW][VALUE] > 0:
             storage_annuity = (
                 dict_asset[INPUT_POWER][ANNUITY_TOTAL][VALUE]
                 + dict_asset[OUTPUT_POWER][ANNUITY_TOTAL][VALUE]
                 + dict_asset[STORAGE_CAPACITY][ANNUITY_TOTAL][VALUE]
             )
             lcoe_a = storage_annuity / dict_asset[OUTPUT_POWER][TOTAL_FLOW][VALUE]
-            dict_asset.update({LCOE_ASSET: {VALUE: lcoe_a, UNIT: "currency/kWh"}})
 
-    elif dict_asset[TOTAL_FLOW][VALUE] == 0.0:
-        dict_asset.update({LCOE_ASSET: {VALUE: 0, UNIT: "currency/kWh"}})
-    else:
+        for component in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
+            if dict_asset[component][TOTAL_FLOW][VALUE] > 0:
+                lcoe_a_component = (
+                    dict_asset[component][ANNUITY_TOTAL][VALUE]
+                    / dict_asset[component][TOTAL_FLOW][VALUE]
+                )
+                dict_asset[component].update(
+                    {LCOE_ASSET: {VALUE: lcoe_a_component, UNIT: CURR + "/kWh"}}
+                )
+            else:
+                dict_asset[component].update(
+                    {LCOE_ASSET: {VALUE: 0, UNIT: CURR + "/kWh"}}
+                )
+
+    elif dict_asset[TOTAL_FLOW][VALUE] > 0:
         lcoe_a = dict_asset[ANNUITY_TOTAL][VALUE] / dict_asset[TOTAL_FLOW][VALUE]
-        dict_asset.update({LCOE_ASSET: {VALUE: lcoe_a, UNIT: "currency/kWh"}})
 
+    dict_asset.update({LCOE_ASSET: {VALUE: lcoe_a, UNIT: CURR + "/kWh"}})
     return

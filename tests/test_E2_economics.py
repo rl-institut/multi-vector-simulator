@@ -34,6 +34,9 @@ DISCOUNTFACTOR,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    STORAGE_CAPACITY,
     TOTAL_FLOW,
     SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
     PROJECT_DURATION,
@@ -232,3 +235,5 @@ def test_calculation_of_lcoe_asset_storage_flow_not_0_provider_flow_not_0():
         dict_values[ENERGY_STORAGE]["battery_1"][LCOE_ASSET][VALUE]
         == exp_lcoe_battery_1
     )
+    for component in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
+        assert LCOE_ASSET in dict_values[ENERGY_STORAGE]["battery_1"][component]
