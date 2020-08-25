@@ -511,7 +511,7 @@ def plot_timeseries(dict_values, data_type=DEMANDS, max_days=None, file_path=Non
     ]
 
     if max_days is not None:
-        max_date = df_pd["timestamp"][0] + pd.Timedelta('{} day'.format(max_days))
+        max_date = df_pd["timestamp"][0] + pd.Timedelta("{} day".format(max_days))
         df_pd = df_pd.loc[df_pd["timestamp"] < max_date]
         title_addendum = " ({} days)".format(max_days)
     else:
