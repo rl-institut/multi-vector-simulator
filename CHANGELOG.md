@@ -27,6 +27,7 @@ Here is a template for new release sections
 - Explicit calculation of replacement costs (`C2.get_replacement_costs()`), so that they can be used in `E2` for installed capacities and optimal additional capacities (#520)
 - New constant variable: JSON_WITH_RESULTS="json_with_results.json" (#520)
 - Benchmark test "Economic_KPI_C2_E2" to test economic evaluations in C2 and E2 (#520)
+- Possibility to add an upper bound  on the number of days to display in a timeseries' plot (#526)
 - System KPI now printed in automatic report (section "Energy system key performance indicators"), draft (#525)
 - Added units to system-wide cost KPI in excel and in report. Some of these changes might need to be reworked when elaborating on units for the report (#525, bce277cc74730a7a7645d463f6623f2ead72d785)
 - `References.rst` to the readthedocs, which should gather all the references of the MVS (#525)
@@ -44,11 +45,13 @@ Here is a template for new release sections
 - Changed and added pytests in for `C2` (#520)
 - All energyProviders that have key `FILENAME` (and, therefore, a timeseries), are now of `DISPATCHABILITY = False`(#520)
 - Changed structure of `E2.lcoe_assets()` so that each asset has a defined LCOE_ASSET. If `sum(FLOW)==0` of an asset, the LCOE_ASSET (utilization LCOE) is defined to be 0 (#520)
+- Color lists for plots are provided by user and are not hard coded anymore (#527)
 - Order of pages in the readthedocs.io (#525)
 
 ### Removed
 - `E2.add_costs_and_total`() (#520)
 - Calculation of energy expenditures using `price` (#520)
+- Function `F1.plot_input_timeseries` which is based on matplotlib
 
 ### Fixed
 - Calculation of `cost_upfront` required a multiplication (#520)

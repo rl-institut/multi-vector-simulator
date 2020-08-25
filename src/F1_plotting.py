@@ -259,67 +259,38 @@ def draw_graph(
         )
 
 
-def plot_input_timeseries(
-    dict_values,
-    user_input,
-    timeseries,
-    asset_name,
-    column_head="",
-    is_demand_profile=False,
-):
-    r"""
-    This function is called from C0 to plot the input timeseries provided to the MVS.
-    This includes demand profiles, generation profiles as well as timeseries for otherwise scalar
-    values.
+def get_color(idx_line, color_list=None):
+    """Pick a color within a color list with periodic boundary conditions
 
     Parameters
     ----------
-    dict_values: dict
-        Dict with all simulation parameters
+    idx_line: int
+        index of the line in a plot for which a color is required
 
-    user_input: dict
-        Settings
-
-    timeseries: pd.Series
-        Timeseries to be plotted
-
-    asset_name: str
-        Name of the timeseries to be plotted
-
-    column_head: str
-        Column under which timeseries can be found in the csv
-
-    is_demand_profile: bool
-        Information whether or not the timeseries provided is a demand profile
+    colors: list of str or list to tuple (hexadecimal or rbg code)
+        list of colors
+        Default: None
 
     Returns
     -------
-    PNG file with timeseries plot
+    The color in the color list corresponding to the index modulo the color list length
 
     """
-    logging.info("Creating plots for asset %s's parameter %s", asset_name, column_head)
-    fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
-    axes_mg = axes
-
-    timeseries.plot(
-        title=asset_name, ax=axes_mg, drawstyle="steps-mid",
-    )
-    axes_mg.set(xlabel="Time", ylabel=column_head)
-    path = os.path.join(
-        user_input[PATH_OUTPUT_FOLDER],
-        "input_timeseries_" + asset_name + "_" + column_head + ".png",
-    )
-    if is_demand_profile is True:
-        dict_values[PATHS_TO_PLOTS][PLOTS_DEMANDS] += [str(path)]
-    else:
-        dict_values[PATHS_TO_PLOTS][PLOTS_RESOURCES] += [str(path)]
-    plt.savefig(
-        path, bbox_inches="tight",
-    )
-
-    plt.close()
-    plt.clf()
-    plt.cla()
+    if color_list is None:
+        color_list = (
+            "#1f77b4",
+            "#ff7f0e",
+            "#2ca02c",
+            "#d62728",
+            "#9467bd",
+            "#8c564b",
+            "#e377c2",
+            "#7f7f7f",
+            "#bcbd22",
+            "#17becf",
+        )
+    n_colors = len(color_list)
+    return color_list[idx_line % n_colors]
 
 
 def save_plots_to_disk(
@@ -464,7 +435,9 @@ def create_plotly_line_fig(
     return fig
 
 
-def plot_timeseries(dict_values, data_type=DEMANDS, file_path=None):
+def plot_timeseries(
+    dict_values, data_type=DEMANDS, max_days=None, color_list=None, file_path=None
+):
     r"""Plot timeseries as line chart.
 
     Parameters
@@ -475,6 +448,13 @@ def plot_timeseries(dict_values, data_type=DEMANDS, file_path=None):
     data_type: str
         one of DEMANDS or RESOURCES
         Default: DEMANDS
+
+    max_days: int
+        maximal number of days the timeserie should be displayed for
+
+    color_list: list of str or list to tuple (hexadecimal or rbg code)
+        list of colors
+        Default: None
 
     file_path: str
         Path where the image shall be saved if not None
@@ -495,24 +475,23 @@ def plot_timeseries(dict_values, data_type=DEMANDS, file_path=None):
     list_of_keys = list(df_pd.columns)
     list_of_keys.remove("timestamp")
     plots = {}
-    # TODO if the number of plots is larger than this list, it will not plot more
-    colors_list = [
-        "royalblue",
-        "#3C5233",
-        "firebrick",
-        "#002500",
-        "#DEB841",
-        "#4F3130",
-    ]
-    for (component, color_plot) in zip(list_of_keys, colors_list):
+
+    if max_days is not None:
+        max_date = df_pd["timestamp"][0] + pd.Timedelta("{} day".format(max_days))
+        df_pd = df_pd.loc[df_pd["timestamp"] < max_date]
+        title_addendum = " ({} days)".format(max_days)
+    else:
+        title_addendum = ""
+
+    for i, component in enumerate(list_of_keys):
         comp_id = component + "-plot"
         fig = create_plotly_line_fig(
             x_data=df_pd["timestamp"],
             y_data=df_pd[component],
-            plot_title=dict_plot_labels[component],
+            plot_title="{}{}".format(dict_plot_labels[component], title_addendum),
             x_axis_name="Time",
             y_axis_name="kW",
-            color_for_plot=color_plot,
+            color_for_plot=get_color(i, color_list),
             file_path=file_path,
         )
         if file_path is None:
@@ -684,6 +663,7 @@ def create_plotly_flow_fig(
     x_legend=None,
     y_legend=None,
     plot_title=None,
+    color_list=None,
     file_name="flows.png",
     file_path=None,
 ):
@@ -702,6 +682,10 @@ def create_plotly_flow_fig(
     plot_title: str
         Default: None
 
+    color_list: list of str or list to tuple (hexadecimal or rbg code)
+        list of colors
+        Default: None
+
     file_name: str
         Name of the image file.
         Default: "flows.png"
@@ -717,32 +701,19 @@ def create_plotly_flow_fig(
     """
 
     fig = go.Figure()
-    # TODO: if number of asset is larger than this list, the surnumerrous will not be plotted
-    colors = [
-        "#1f77b4",
-        "#ff7f0e",
-        "#2ca02c",
-        "#d62728",
-        "#9467bd",
-        "#8c564b",
-        "#e377c2",
-        "#7f7f7f",
-        "#bcbd22",
-        "#17becf",
-    ]
     styling_dict = get_fig_style_dict()
     styling_dict["gridwidth"] = 1.0
 
     assets_list = list(df_plots_data.columns)
     assets_list.remove("timestamp")
 
-    for asset, new_color in zip(assets_list, colors):
+    for i, asset in enumerate(assets_list):
         fig.add_trace(
             go.Scatter(
                 x=df_plots_data["timestamp"],
                 y=df_plots_data[asset],
                 mode="lines",
-                line=dict(color=new_color, width=2.5),
+                line=dict(color=get_color(i, color_list), width=2.5),
                 name=asset,
             )
         )

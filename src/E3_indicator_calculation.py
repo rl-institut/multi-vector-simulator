@@ -322,6 +322,7 @@ def equation_renewable_share(total_res, total_non_res):
 def equation_degree_of_autonomy():
     return degree_of_autonomy
 
+
 def assert_aggregated_flows_of_energy_conversion_equivalent(dict_values):
     """
     Determines the aggregated flows in between the sectors, taking into account the value of different energy carriers.

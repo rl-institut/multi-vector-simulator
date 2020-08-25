@@ -152,13 +152,13 @@ def get_replacement_costs(
     Parameters
     ----------
     age_of_asset: int
-        Age of an asset already installed
+        Age in years of an already installed asset
 
     project_lifetime: int
-        Project duration
+        Project duration in years
 
     asset_lifetime: int
-        Lifetime of an asset
+        Lifetime of an asset in years
 
     first_time_investment: float
         Investment cost of an asset to be installed
@@ -169,10 +169,10 @@ def get_replacement_costs(
     Returns
     -------
     Per-unit replacement costs of an asset. If age_asset == 0, they need to be added to the lifetime_specific_costs of the asset.
-    If age_asset != 0, it will be needed to calculate the future investment costs of a previously installed asset.
+    If age_asset > 0, it will be needed to calculate the future investment costs of a previously installed asset.
     """
 
-    # Calculate number of investments
+    # Calculate number of investments' rounds
     if project_lifetime + age_of_asset == asset_lifetime:
         number_of_investments = 1
     else:
@@ -210,7 +210,7 @@ def get_replacement_costs(
     if year > project_lifetime:
         # the residual of the capex at the end of the simulation time takes into
         linear_depreciation_last_investment = latest_investment / asset_lifetime
-        # account the value of the money by deviding by (1 + discount_factor) ** (project_life)
+        # account the value of the money by dividing by (1 + discount_factor) ** (project_life)
         value_at_project_end = (
             linear_depreciation_last_investment
             * (year - project_lifetime)
