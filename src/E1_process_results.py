@@ -769,7 +769,7 @@ def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
     dict_economic:
         Economic project data
 
-    KPI_COST_MATRIX_ENTRIES:
+    kpi_list:
         List of cost matrix entries
 
     Returns
