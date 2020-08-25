@@ -25,6 +25,7 @@ from src.constants_json_strings import (
     KPI_SCALARS_DICT,
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
+    LCOE_ASSET,
     TOTAL_FLOW,
     RENEWABLE_ASSET_BOOL,
     RENEWABLE_SHARE_DSO,
@@ -49,9 +50,26 @@ def all_totals(dict_values):
     type
         List of all total cost parameters for the project
 
+    Notes
+    -----
+
+    The totals are calculated for following parameters:
+    - costs_total
+    - costs_om_total
+    - costs_investment_over_lifetime
+    - costs_upfront_in_year_zero
+    - costs_dispatch
+    - costs_cost_om
+    - annuity_total
+    - annuity_om
+
+    The levelized_cost_of_energy_of_asset are dropped from the list,
+    as they do not hold any actual meaning for the whole energy system.
+    The LCOE of the energy system is calculated seperately.
+
     """
     for column in dict_values[KPI][KPI_COST_MATRIX].columns:
-        if column != LABEL:
+        if column not in [LABEL, LCOE_ASSET]:
             dict_values[KPI][KPI_SCALARS_DICT].update(
                 {column: dict_values[KPI][KPI_COST_MATRIX][column].sum()}
             )

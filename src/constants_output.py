@@ -13,6 +13,7 @@ from src.constants import (
     COST_OM,
     ANNUITY_TOTAL,
     ANNUITY_OM,
+    UNIT,
     LCOE_ASSET,
     INSTALLED_CAP,
     OPTIMIZED_ADD_CAP,
@@ -39,12 +40,14 @@ KPI_COST_MATRIX_ENTRIES = [
     ANNUITY_OM,
     LCOE_ASSET,
 ]
+
 ########################
 # Tab "scalar_matrix"  #
 ########################
 
 KPI_SCALAR_MATRIX_ENTRIES = [
     LABEL,
+    UNIT,
     INSTALLED_CAP,
     OPTIMIZED_ADD_CAP,
     TOTAL_FLOW,

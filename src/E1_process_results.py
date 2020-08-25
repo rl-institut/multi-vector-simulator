@@ -14,6 +14,7 @@ import pandas as pd
 
 from src.constants import TYPE_NONE
 from src.constants_json_strings import (
+ECONOMIC_DATA,
     FLOW,
     INSTALLED_CAP,
     INPUT_POWER,
@@ -25,6 +26,8 @@ from src.constants_json_strings import (
     KPI_SCALARS_DICT,
     OPTIMIZED_FLOWS,
     UNIT,
+    CURR,
+    UNIT_YEAR,
     ENERGY_CONSUMPTION,
     LABEL,
     VALUE,
@@ -54,8 +57,11 @@ from src.constants_json_strings import (
     COST_TOTAL,
     COST_UPFRONT,
     ANNUITY_TOTAL,
+    ANNUITY_OM,
+    LCOE_ASSET,
 )
 
+from src.constants_output import KPI_COST_MATRIX_ENTRIES
 
 def get_timeseries_per_bus(dict_values, bus_data):
     r"""
@@ -740,10 +746,53 @@ def convert_scalars_to_dataframe(dict_values):
     -----
     Currently, as the KPI_SCALARS_DICT does not hold any units, the table printed in the report is unit-les.
     """
+
+    units_cost_kpi = get_units_of_cost_matrix_entries(dict_values[ECONOMIC_DATA], dict_values[KPI][KPI_SCALARS_DICT])
+
     kpi_scalars_dataframe = pd.DataFrame(dict_values[KPI][KPI_SCALARS_DICT], index=[VALUE])
     kpi_names = kpi_scalars_dataframe.columns
     kpi_scalars_dataframe = kpi_scalars_dataframe.transpose()
     kpi_scalars_dataframe[KPI] = kpi_names
-    kpi_scalars_dataframe = kpi_scalars_dataframe[[KPI, VALUE]]
+    kpi_scalars_dataframe[UNIT] = units_cost_kpi
+    kpi_scalars_dataframe = kpi_scalars_dataframe[[KPI, UNIT, VALUE]]
 
     return kpi_scalars_dataframe
+
+def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
+    """
+    Determines the units of the costs KPI to be stored to :pandas: DataFrame.
+
+    Parameters
+    ----------
+    dict_economic:
+        Economic project data
+
+    KPI_COST_MATRIX_ENTRIES:
+        List of cost matrix entries
+
+    Returns
+    -------
+    unit_list: list
+        List of units for the :pandas: DataFrame to be created
+    """
+
+    unit_list = []
+    kpi_cost_unit_dict = {
+        LABEL: None,
+        UNIT: None,
+        COST_TOTAL: dict_economic[CURR],
+        COST_OPERATIONAL_TOTAL: dict_economic[CURR],
+        COST_INVESTMENT: dict_economic[CURR],
+        COST_UPFRONT: dict_economic[CURR],
+        COST_DISPATCH: dict_economic[CURR],
+        COST_OM: dict_economic[CURR],
+        ANNUITY_TOTAL: dict_economic[CURR] + "/" + UNIT_YEAR,
+        ANNUITY_OM: dict_economic[CURR] + "/" + UNIT_YEAR,
+        LCOE_ASSET: dict_economic[CURR] + "/" + "energy carrier unit",
+    }
+    for key in kpi_list:
+        if key not in kpi_cost_unit_dict:
+            unit_list.append("NA")
+        else:
+            unit_list.append(kpi_cost_unit_dict[key])
+    return unit_list

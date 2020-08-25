@@ -29,6 +29,18 @@ from src.constants_json_strings import (
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
     OPTIMIZED_FLOWS,
+    LABEL,
+    COST_TOTAL,
+    COST_OPERATIONAL_TOTAL,
+    COST_INVESTMENT,
+    COST_UPFRONT,
+    COST_DISPATCH,
+    COST_OM,
+    ANNUITY_TOTAL,
+    ANNUITY_OM,
+    LCOE_ASSET,
+    UNIT_YEAR,
+CURR,
 )
 
 from src.constants_output import KPI_COST_MATRIX_ENTRIES, KPI_SCALAR_MATRIX_ENTRIES
@@ -42,7 +54,6 @@ Module E0 evaluates the oemof results and calculates the KPI
 - define dictionary entry for cost matrix
 - store all results to matrix
 """
-
 
 def evaluate_dict(dict_values, results_main, results_meta):
     """
@@ -60,6 +71,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     -------
 
     """
+
     dict_values.update(
         {
             KPI: {
@@ -69,6 +81,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
             }
         }
     )
+
     bus_data = {}
     # Store all information related to busses in bus_data
     for bus in dict_values[ENERGY_BUSSES]:
@@ -152,7 +165,6 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     logging.info("Evaluating optimized capacities and dispatch.")
     return
-
 
 def store_result_matrix(dict_kpi, dict_asset):
     """
