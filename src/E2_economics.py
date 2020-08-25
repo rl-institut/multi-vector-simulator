@@ -129,7 +129,7 @@ def get_costs(dict_asset, economic_data):
         ],
     )
 
-    ## Part of the investment costs to be paid upfront at t=0 ##
+    # Part of the investment costs to be paid upfront at t=0
     costs_investment_upfront = calculate_costs_upfront_investment(
         capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
         specific_cost=dict_asset[SPECIFIC_COSTS][VALUE],
@@ -140,7 +140,7 @@ def get_costs(dict_asset, economic_data):
         {COST_UPFRONT: {VALUE: costs_investment_upfront, UNIT: economic_data[CURR]}}
     )
 
-    ## Part of the investment costs to be paid due to replacements ##
+    # Part of the investment costs to be paid due to replacements
     costs_replacement = calculate_costs_replacement(
         specific_replacement_of_initial_capacity=dict_asset[
             SPECIFIC_REPLACEMENT_COSTS_INSTALLED
@@ -156,7 +156,7 @@ def get_costs(dict_asset, economic_data):
         {COST_REPLACEMENT: {VALUE: costs_replacement, UNIT: economic_data[CURR]}}
     )
 
-    ## Total investment costs including investments into the asset, replacement costs and development costs ##
+    # Total investment costs including investments into the asset, replacement costs and development costs
     costs_investment_lifetime = calculate_total_capital_costs(
         upfront=dict_asset[COST_UPFRONT][VALUE],
         replacement=dict_asset[COST_REPLACEMENT][VALUE],
@@ -166,7 +166,7 @@ def get_costs(dict_asset, economic_data):
         {COST_INVESTMENT: {VALUE: costs_investment_lifetime, UNIT: economic_data[CURR]}}
     )
 
-    ## Operation and management expenditures over the project lifetime ##
+    # Operation and management expenditures over the project lifetime
     operation_and_management_expenditures = calculate_operation_and_management_expenditures(
         specific_om_cost=dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE],
         installed_capacity=dict_asset[INSTALLED_CAP][VALUE],
@@ -231,7 +231,7 @@ def calculate_total_asset_costs_over_lifetime(
     costs_investment, cost_operational_expenditures
 ):
     r"""
-    Calculates costs of an asset over whole lifetime
+    Calculate costs of an asset over whole lifetime
 
     Parameters
     ----------
@@ -252,7 +252,7 @@ def calculate_total_asset_costs_over_lifetime(
 
 def calculate_dispatch_expenditures(dispatch_price, flow, asset):
     r"""
-    Calculated the expenditures connected to an asset due to its dispatch
+    Calculate the expenditures connected to an asset due to its dispatch
 
     Parameters
     ----------
@@ -290,7 +290,7 @@ def calculate_costs_upfront_investment(specific_cost, capacity, development_cost
     r"""
     Calculate investment costs of an asset
     Depending on the specific_cost provided,
-    either the total lifetime investment costs or the upfront investment costs are calculated,
+    either the total asset's lifetime investment costs or the upfront investment costs are calculated,
 
     Parameters
     ----------
@@ -302,7 +302,7 @@ def calculate_costs_upfront_investment(specific_cost, capacity, development_cost
         Capacity to be installed
 
     development_costs: float
-        Fix development costs, ie. an expense not related to the capacity that is installed. Could be planning costs of the plant.
+        Fix development costs, ie. an expense not related to the capacity that is installed. Could be planning costs of the asset.
 
     Returns
     -------
@@ -317,7 +317,7 @@ def calculate_costs_upfront_investment(specific_cost, capacity, development_cost
 
 def calculate_total_capital_costs(upfront, replacement):
     r"""
-    Calculated total capital expenditures
+    Calculate total capital expenditures
 
     Parameters
     ----------
@@ -344,7 +344,7 @@ def calculate_costs_replacement(
     optimized_capacity,
 ):
     r"""
-    Calculates (the present value of) the replacement costs over the project lifetime
+    Calculate (the present value of) the replacement costs over the project lifetime
 
     Parameters
     ----------
@@ -406,7 +406,7 @@ def calculate_total_operational_expenditures(
     operation_and_management_expenditures, dispatch_expenditures
 ):
     r"""
-    Calculated total expenditures of an asset (operational costs)
+    Calculate total expenditures of an asset (operational costs)
 
     Parameters
     ----------
@@ -420,14 +420,14 @@ def calculate_total_operational_expenditures(
 
     Returns
     -------
-    total_operatinal_expenditures: float
+    total_operational_expenditures: float
         a) total operational expenditures per annum for installed capacity
         b) total operational expenditures for whole project lifetime for installed capacity
     """
-    total_operatinal_expenditures = (
+    total_operational_expenditures = (
         operation_and_management_expenditures + dispatch_expenditures
     )
-    return total_operatinal_expenditures
+    return total_operational_expenditures
 
 
 def all_list_in_dict(dict_asset, list):
