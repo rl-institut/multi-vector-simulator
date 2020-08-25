@@ -292,11 +292,7 @@ class TestACElectricityBus:
             assert sum(busses_flow["Gas_consumption_period"]) == approx(
                 abs(sum(busses_flow["demand_heat"]))
             )
-        if (
-            data[ENERGY_PROVIDERS]["Electricity DSO"][ENERGY_PRICE][VALUE]
-            / data[ENERGY_CONVERSION]["heat_pump"][EFFICIENCY][VALUE]
-            < data[ENERGY_PROVIDERS]["Heat DSO"][ENERGY_PRICE][VALUE]
-        ):
+        else:
             assert sum(busses_flow["heat_pump"]) == approx(
                 abs(sum(busses_flow["demand_heat"]))
             )
