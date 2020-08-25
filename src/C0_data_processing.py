@@ -225,6 +225,7 @@ def process_all_assets(dict_values):
     define_busses(dict_values)
 
     # Define all excess sinks for each energy bus
+    auto_sinks = []
     for bus_name in dict_values[ENERGY_BUSSES]:
         define_sink(
             dict_values=dict_values,
@@ -232,9 +233,13 @@ def process_all_assets(dict_values):
             price={VALUE: 0, UNIT: CURR + "/" + UNIT},
             input_bus_name=bus_name,
         )
+        auto_sinks.append(bus_name + EXCESS)
         logging.debug(
             "Created excess sink for energy bus %s", bus_name,
         )
+    # Needed for E3.total_demand_each_sector(), but location is not perfect as it is more about the model then the settings.
+    # Decided against implementing a new major 1st level category in json to avoid an excessive datatree.
+    dict_values[SIMULATION_SETTINGS].update({EXCESS+AUTO_SINK: auto_sinks})
 
     # process all energyAssets:
     # Attention! Order of asset_groups important. for energyProviders/energyConversion sinks and sources
