@@ -39,6 +39,7 @@ Here is a template for new release sections
 ### Removed
 - `E2.add_costs_and_total`() (#520)
 - Calculation of energy expenditures using `price` (#520)
+- Function `F1.plot_input_timeseries` which is based on matplotlib
 
 ### Fixed
 - Calculation of `cost_upfront` required a multiplication (#520)
