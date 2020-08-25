@@ -10,16 +10,22 @@ In module E3 the technical KPI are evaluated:
 - calculate degree of autonomy me
 - calculate degree of sector coupling
 """
+import logging
 
 from src.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
 from src.constants import PROJECT_DATA
 from src.constants_json_strings import (
     VALUE,
     LABEL,
+    SIMULATION_SETTINGS,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
     ENERGY_PROVIDERS,
+    ENERGY_CONSUMPTION,
+    CONNECTED_FEEDIN_SINK,
     SECTORS,
+    EXCESS,
+    AUTO_SINK,
     ENERGY_VECTOR,
     KPI,
     KPI_SCALARS_DICT,
@@ -79,6 +85,7 @@ def all_totals(dict_values):
 
 def total_demand_each_sector(dict_values):
     """
+    Calculation of the total demand of each sector
 
     Parameters
     ----------
@@ -87,10 +94,69 @@ def total_demand_each_sector(dict_values):
 
     Returns
     -------
-
+    Updated KPI_SCALARS_DICT with
+    - total demand of each energy carrier (original unit)
+    - total demand of each energy carrier (electricity equivalent) 
+    - total demand in electricity equivalent
     """
+
+    # Define empty dict to gather the total demand of each energy carrier
+    total_demand_dict = {}
+    for sector in dict_values[PROJECT_DATA][SECTORS]:
+        total_demand_dict.update({sector: 0})
+
+    # determine all dso feedin sinks that should not be evaluated for the total demand
+    dso_feedin_sinks = []
+    for dso in dict_values[ENERGY_PROVIDERS]:
+        dso_feedin_sinks.append(dict_values[ENERGY_PROVIDERS][dso][CONNECTED_FEEDIN_SINK])
+
+    # Loop though energy consumption assets to determine those that are demand
+    for consumption_asset in dict_values[ENERGY_CONSUMPTION]:
+        # Do not process feedin sinks but only demands
+        if consumption_asset not in dso_feedin_sinks and consumption_asset not in dict_values[SIMULATION_SETTINGS][EXCESS+AUTO_SINK]:
+            # get name of energy carrier
+            energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_asset][ENERGY_VECTOR]
+            # check if energy carrier in total_demand dict
+            # (might be unnecessary, check where dict_values[PROJECT_DATA][SECTORS] are defined)
+            if energy_carrier not in total_demand_dict:
+                logging.error(f"Energy vector {energy_carrier} not in known energy sectors. Please double check.")
+            else:
+                total_demand_dict.update({energy_carrier: total_demand_dict[energy_carrier]+dict_values[ENERGY_CONSUMPTION][consumption_asset][TOTAL_FLOW][VALUE]})
+
+    # Write total demand per energy carrier as well as its electricity equivalent to dict_values
+    total_demand_label = "total demand"
+    total_demand_electricity_equivalent = 0
+    for energy_carrier in total_demand_dict:
+        energy_carrier_label = label_total_demand_energy_carrier(energy_carrier)
+        # Define total demand of electricity carrier in original unit
+        dict_values[KPI][KPI_SCALARS_DICT].update(
+            {
+                energy_carrier_label: total_demand_dict[energy_carrier]
+            }  
+        )
+        # Define total energy carrier demand in electricity equivalent
+        dict_values[KPI][KPI_SCALARS_DICT].update(
+            {
+                add_suffix_electricity_equivalent(energy_carrier_label): total_demand_dict[energy_carrier] * DEFAULT_WEIGHTS_ENERGY_CARRIERS[energy_carrier][VALUE]
+            }  
+        )
+        # Add to total demand in electricity equivalent
+        total_demand_electricity_equivalent += dict_values[KPI][KPI_SCALARS_DICT][add_suffix_electricity_equivalent(energy_carrier_label)]
+    # Define total demand in electricity equivalent
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {
+            add_suffix_electricity_equivalent(total_demand_label): total_demand_electricity_equivalent
+        }
+    )
     return
 
+def label_total_demand_energy_carrier(energy_carrier):
+    label = f"Total demand of {energy_carrier}"
+    return label
+
+def add_suffix_electricity_equivalent(label):
+    label = label + "_electricity_equivalent"
+    return label
 
 def total_renewable_and_non_renewable_energy_origin(dict_values):
     """Identifies all renewable generation assets and summs up their total generation to total renewable generation
