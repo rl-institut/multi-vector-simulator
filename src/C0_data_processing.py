@@ -1469,8 +1469,8 @@ def receive_timeseries_from_csv(
         dict_asset.update(
             {
                 TIMESERIES_PEAK: {VALUE: max(dict_asset[TIMESERIES]), UNIT: unit,},
-                "timeseries_total": {VALUE: sum(dict_asset[TIMESERIES]), UNIT: unit,},
-                "timeseries_average": {
+                TIMESERIES_TOTAL: {VALUE: sum(dict_asset[TIMESERIES]), UNIT: unit,},
+                TIMESERIES_AVERAGE: {
                     VALUE: sum(dict_asset[TIMESERIES]) / len(dict_asset[TIMESERIES]),
                     UNIT: unit,
                 },

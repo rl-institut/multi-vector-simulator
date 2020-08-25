@@ -27,6 +27,7 @@ from src.constants_json_strings import (
     KPI_COST_MATRIX,
     LCOE_ASSET,
     TOTAL_FLOW,
+    TIMESERIES_TOTAL,
     RENEWABLE_ASSET_BOOL,
     RENEWABLE_SHARE_DSO,
     DSO_CONSUMPTION,

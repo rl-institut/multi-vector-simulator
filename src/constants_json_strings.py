@@ -121,6 +121,8 @@ TIME_INDEX = "time_index"
 TIMESERIES = "timeseries"
 TIMESERIES_NORMALIZED = "timeseries_normalized"
 TIMESERIES_PEAK = "timeseries_peak"
+TIMESERIES_TOTAL = "timeseries_total"
+TIMESERIES_AVERAGE = "timeseries_average"
 
 # Pre-processing cost parameters
 ANNUITY_FACTOR = "annuity_factor"

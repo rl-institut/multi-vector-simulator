@@ -35,6 +35,8 @@ ECONOMIC_DATA,
     SIMULATION_SETTINGS,
     EVALUATED_PERIOD,
     TIMESERIES_PEAK,
+    TIMESERIES_TOTAL,
+    TIMESERIES_AVERAGE,
     DSO_FEEDIN,
     AUTO_SINK,
     EXCESS,
@@ -530,8 +532,8 @@ def convert_demand_to_dataframe(dict_values):
                 dem: [
                     demands[dem][UNIT],
                     demands[dem][TIMESERIES_PEAK][VALUE],
-                    demands[dem]["timeseries_average"][VALUE],
-                    demands[dem]["timeseries_total"][VALUE],
+                    demands[dem][TIMESERIES_AVERAGE][VALUE],
+                    demands[dem][TIMESERIES_TOTAL][VALUE],
                 ]
             }
         )
