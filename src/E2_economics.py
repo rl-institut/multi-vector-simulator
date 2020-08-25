@@ -181,7 +181,7 @@ def get_costs(dict_asset, economic_data):
         }
     )
 
-    ## Dispatch expenditures of the asset over the project lifetime
+    # Dispatch expenditures of the asset over the project lifetime
     costs_dispatch = calculate_dispatch_expenditures(
         dispatch_price=dict_asset[LIFETIME_PRICE_DISPATCH][VALUE],
         flow=dict_asset[FLOW],
