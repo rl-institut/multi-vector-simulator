@@ -513,12 +513,16 @@ def plot_timeseries(dict_values, data_type=DEMANDS, max_days=None, file_path=Non
     if max_days is not None:
         max_date = df_pd["timestamp"][0] + pd.Timedelta('{} day'.format(max_days))
         df_pd = df_pd.loc[df_pd["timestamp"] < max_date]
+        title_addendum = " ({} days)".format(max_days)
+    else:
+        title_addendum = ""
+
     for (component, color_plot) in zip(list_of_keys, colors_list):
         comp_id = component + "-plot"
         fig = create_plotly_line_fig(
             x_data=df_pd["timestamp"],
             y_data=df_pd[component],
-            plot_title=dict_plot_labels[component],
+            plot_title="{}{}".format(dict_plot_labels[component], title_addendum),
             x_axis_name="Time",
             y_axis_name="kW",
             color_for_plot=color_plot,
