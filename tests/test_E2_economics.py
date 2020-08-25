@@ -123,7 +123,6 @@ exp_lcoe_battery_1 = (1000 + 30000 + 25000) / 240000
 
 def test_all_cost_info_parameters_added_to_dict_asset():
     """Tests whether the function get_costs is adding all the calculated costs to dict_asset."""
-    print(dict_economic)
     E2.get_costs(dict_asset, dict_economic)
 
     # Note: The valid calculation of the costs is tested with test_benchmark_KPI.py, Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
