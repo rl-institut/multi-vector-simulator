@@ -351,7 +351,7 @@ def calculate_costs_replacement(
         Initial capacity installed
 
     optimized_capacity: float
-        Add capacity to be installed, as optimized
+        Additional capacity to be installed, as optimized
 
     Returns
     -------
