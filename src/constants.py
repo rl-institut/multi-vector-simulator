@@ -254,9 +254,11 @@ EXTRA_CSV_PARAMETERS = {
     },
 }
 
+ENERGY_CARRIER_UNIT = "energy_carrier_unit"
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
-    "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1},
-    "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87},
+    "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1, ENERGY_CARRIER_UNIT: "kWh_el"},
+    "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87, ENERGY_CARRIER_UNIT: "kgH2"},
+    "Heat": {UNIT: "KWh_eleq/kWh_therm", VALUE: 1, ENERGY_CARRIER_UNIT: "kWh_therm"}
 }
 
 # dict keys in results_json file
