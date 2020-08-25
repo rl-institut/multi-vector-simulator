@@ -437,7 +437,9 @@ def create_plotly_line_fig(
     return fig
 
 
-def plot_timeseries(dict_values, data_type=DEMANDS, max_days=None, file_path=None):
+def plot_timeseries(
+    dict_values, data_type=DEMANDS, max_days=None, color_list=None, file_path=None
+):
     r"""Plot timeseries as line chart.
 
     Parameters
@@ -451,6 +453,10 @@ def plot_timeseries(dict_values, data_type=DEMANDS, max_days=None, file_path=Non
 
     max_days: int
         maximal number of days the timeserie should be displayed for
+
+    color_list: list of str or list to tuple (hexadecimal or rbg code)
+        list of colors
+        Default: None
 
     file_path: str
         Path where the image shall be saved if not None
@@ -471,15 +477,6 @@ def plot_timeseries(dict_values, data_type=DEMANDS, max_days=None, file_path=Non
     list_of_keys = list(df_pd.columns)
     list_of_keys.remove("timestamp")
     plots = {}
-    # TODO if the number of plots is larger than this list, it will not plot more
-    colors_list = [
-        "royalblue",
-        "#3C5233",
-        "firebrick",
-        "#002500",
-        "#DEB841",
-        "#4F3130",
-    ]
 
     if max_days is not None:
         max_date = df_pd["timestamp"][0] + pd.Timedelta("{} day".format(max_days))
@@ -488,7 +485,7 @@ def plot_timeseries(dict_values, data_type=DEMANDS, max_days=None, file_path=Non
     else:
         title_addendum = ""
 
-    for (component, color_plot) in zip(list_of_keys, colors_list):
+    for i, component in enumerate(list_of_keys):
         comp_id = component + "-plot"
         fig = create_plotly_line_fig(
             x_data=df_pd["timestamp"],
@@ -496,7 +493,7 @@ def plot_timeseries(dict_values, data_type=DEMANDS, max_days=None, file_path=Non
             plot_title="{}{}".format(dict_plot_labels[component], title_addendum),
             x_axis_name="Time",
             y_axis_name="kW",
-            color_for_plot=color_plot,
+            color_for_plot=get_color(i, color_list),
             file_path=file_path,
         )
         if file_path is None:
@@ -668,6 +665,7 @@ def create_plotly_flow_fig(
     x_legend=None,
     y_legend=None,
     plot_title=None,
+    color_list=None,
     file_name="flows.png",
     file_path=None,
 ):
@@ -686,6 +684,10 @@ def create_plotly_flow_fig(
     plot_title: str
         Default: None
 
+    color_list: list of str or list to tuple (hexadecimal or rbg code)
+        list of colors
+        Default: None
+
     file_name: str
         Name of the image file.
         Default: "flows.png"
@@ -701,32 +703,19 @@ def create_plotly_flow_fig(
     """
 
     fig = go.Figure()
-    # TODO: if number of asset is larger than this list, the surnumerrous will not be plotted
-    colors = [
-        "#1f77b4",
-        "#ff7f0e",
-        "#2ca02c",
-        "#d62728",
-        "#9467bd",
-        "#8c564b",
-        "#e377c2",
-        "#7f7f7f",
-        "#bcbd22",
-        "#17becf",
-    ]
     styling_dict = get_fig_style_dict()
     styling_dict["gridwidth"] = 1.0
 
     assets_list = list(df_plots_data.columns)
     assets_list.remove("timestamp")
 
-    for asset, new_color in zip(assets_list, colors):
+    for i, asset in enumerate(assets_list):
         fig.add_trace(
             go.Scatter(
                 x=df_plots_data["timestamp"],
                 y=df_plots_data[asset],
                 mode="lines",
-                line=dict(color=new_color, width=2.5),
+                line=dict(color=get_color(i, color_list), width=2.5),
                 name=asset,
             )
         )
