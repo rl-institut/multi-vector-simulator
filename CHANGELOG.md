@@ -25,9 +25,7 @@ Here is a template for new release sections
 - Docstrings for E2 (#520)
 - New constant variable: `SIMULATION_RESULTS="simulation_results"` (#520)
 - Explicit calculation of replacement costs (`C2.get_replacement_costs()`), so that they can be used in `E2` for installed capacities and optimal additional capacities (#520)
-- New constant variables: 
-    - JSON_WITH_RESULTS="json_with_results.json" (#520)
-    - TIMESERIES_TOTAL, TIMESERIES_AVERAGE (#525)
+- New constant variable: JSON_WITH_RESULTS="json_with_results.json" (#520)
 - Benchmark test "Economic_KPI_C2_E2" to test economic evaluations in C2 and E2 (#520)
 - System KPI now printed in automatic report (section "Energy system key performance indicators"), draft (#525)
 - Added units to system-wide cost KPI in excel and in report. Some of these changes might need to be reworked when elaborating on units for the report (#525, bce277cc74730a7a7645d463f6623f2ead72d785)
@@ -38,6 +36,7 @@ Here is a template for new release sections
     - LCOE per energy carrier `E3.add_levelized_cost_of_energy_carriers()` (#525)
 - Default values for energy carrier "Heat" for `DEFAULT_WEIGHTS_ENERGY_CARRIERS` with `{UNIT: "KWh_eleq/kWh_therm", VALUE: 1}`. This is still TBD, as there is no source for this ratio yet (#525)
 - Default unit for energy carriers defined in `DEFAULT_WEIGHTS_ENERGY_CARRIERS`: ENERGY_CARRIER_UNIT. Might be used to define the units of flows and LCOE. (#525)
+- New constant variables: TIMESERIES_TOTAL, TIMESERIES_AVERAGE, LOGFILE (#525)
 
 ### Changed
 - Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
