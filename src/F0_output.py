@@ -76,10 +76,18 @@ def evaluate_dict(dict_values, path_pdf_report=None, path_png_figs=None):
         F1_plots.plot_timeseries(
             dict_values, data_type=DEMANDS, file_path=path_png_figs
         )
+        # plot demand timeseries for the first 2 weeks only
+        F1_plots.plot_timeseries(
+            dict_values, data_type=DEMANDS, max_days=14, file_path=path_png_figs
+        )
 
         # plot supply timeseries
         F1_plots.plot_timeseries(
             dict_values, data_type=RESOURCES, file_path=path_png_figs
+        )
+        # plot supply timeseries for the first 2 weeks only
+        F1_plots.plot_timeseries(
+            dict_values, data_type=RESOURCES, max_days=14, file_path=path_png_figs
         )
 
         # plot power flows in the energy system

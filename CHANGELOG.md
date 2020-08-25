@@ -19,6 +19,35 @@ Here is a template for new release sections
 -
 ```
 
+## [Unreleased]
+
+### Added
+- Docstrings for E2 (#520)
+- New constant variable: `SIMULATION_RESULTS="simulation_results"` (#520)
+- Explicit calculation of replacement costs (`C2.get_replacement_costs()`), so that they can be used in `E2` for installed capacities and optimal additional capacities (#520)
+- New constant variable: JSON_WITH_RESULTS="json_with_results.json" (#520)
+- Benchmark test "Economic_KPI_C2_E2" to test economic evaluations in C2 and E2 (#520)
+- Possibility to add an upper bound  on the number of days to display in a timeseries' plot (#526)
+
+### Changed
+- Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
+- Added pytest for many `E2` functions (#520)
+- Changed and added pytests in for `C2` (#520)
+- All energyProviders that have key `FILENAME` (and, therefore, a timeseries), are now of `DISPATCHABILITY = False`(#520)
+- Changed structure of `E2.lcoe_assets()` so that each asset has a defined LCOE_ASSET. If `sum(FLOW)==0` of an asset, the LCOE_ASSET (utilization LCOE) is defined to be 0 (#520)
+- Color lists for plots are provided by user and are not hard coded anymore (#527)
+
+### Removed
+- `E2.add_costs_and_total`() (#520)
+- Calculation of energy expenditures using `price` (#520)
+- Function `F1.plot_input_timeseries` which is based on matplotlib
+
+### Fixed
+- Calculation of `cost_upfront` required a multiplication (#520)
+- Fixed `E2.convert_components_to_dataframe()`, Key error (#520)
+- Fixed `F1.extract_plot_data_and_title()`, Key error (#520)
+- Fixed hard-coded energy vector of ENERGY_PRODUCTION units in E1.convert_components_to_dataframe(#520)
+
 ## [0.3.3] - 2020-08-19
 
 ### Added
@@ -62,7 +91,6 @@ Here is a template for new release sections
 
 ### Fixed
 - Image path for readthedocs (Model_Assumpation.rst) (#492)
-
 
 ## [0.3.2] 2020-08-04
 

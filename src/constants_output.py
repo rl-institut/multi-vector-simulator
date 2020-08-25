@@ -6,11 +6,11 @@ and add them to the list to make them appear in the excel output sheet "scalars"
 
 from src.constants import (
     COST_TOTAL,
-    COST_OM_TOTAL,
+    COST_OPERATIONAL_TOTAL,
     COST_INVESTMENT,
     COST_UPFRONT,
     COST_DISPATCH,
-    COST_OM_FIX,
+    COST_OM,
     ANNUITY_TOTAL,
     ANNUITY_OM,
     LCOE_ASSET,
@@ -30,11 +30,11 @@ from src.constants_json_strings import LABEL
 KPI_COST_MATRIX_ENTRIES = [
     LABEL,
     COST_TOTAL,
-    COST_OM_TOTAL,
+    COST_OPERATIONAL_TOTAL,
     COST_INVESTMENT,
     COST_UPFRONT,
     COST_DISPATCH,
-    COST_OM_FIX,
+    COST_OM,
     ANNUITY_TOTAL,
     ANNUITY_OM,
     LCOE_ASSET,

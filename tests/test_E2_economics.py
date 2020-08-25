@@ -1,11 +1,18 @@
+import pandas as pd
+import pytest
+
+import src.C2_economic_functions as C2
 import src.E2_economics as E2
 
 from src.constants_json_strings import (
     UNIT,
+    FLOW,
     CURR,
     DEVELOPMENT_COSTS,
     SPECIFIC_COSTS,
     DISPATCH_PRICE,
+    DISCOUNTFACTOR,
+    ANNUITY_FACTOR,
     VALUE,
     LABEL,
     INSTALLED_CAP,
@@ -18,15 +25,22 @@ from src.constants_json_strings import (
     ANNUITY_OM,
     ANNUITY_TOTAL,
     COST_TOTAL,
-    COST_OM_TOTAL,
+    AGE_INSTALLED,
+    COST_OPERATIONAL_TOTAL,
     COST_DISPATCH,
-    COST_OM_FIX,
+    COST_OM,
     LCOE_ASSET,
     ENERGY_CONSUMPTION,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    STORAGE_CAPACITY,
     TOTAL_FLOW,
+    SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+    PROJECT_DURATION,
+    SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
 )
 
 dict_asset = {
@@ -35,16 +49,39 @@ dict_asset = {
     SPECIFIC_COSTS: {VALUE: 0, UNIT: "currency/kW"},
     INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},
     DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
+    SPECIFIC_REPLACEMENT_COSTS_INSTALLED: {VALUE: 0, UNIT: CURR},
+    SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED: {VALUE: 0, UNIT: CURR},
     LIFETIME_SPECIFIC_COST: {VALUE: 0.0, UNIT: "currency/kW"},
     LIFETIME_SPECIFIC_COST_OM: {VALUE: 0.0, UNIT: "currency/ye"},
     LIFETIME_PRICE_DISPATCH: {VALUE: -5.505932460595773, UNIT: "?"},
     ANNUAL_TOTAL_FLOW: {VALUE: 0.0, UNIT: "kWh"},
     OPTIMIZED_ADD_CAP: {VALUE: 0, UNIT: "?"},
+    FLOW: pd.Series([1, 1, 1]),
 }
 
 dict_economic = {
-    CRF: {VALUE: 0.07264891149004721, UNIT: "?"},
+    CURR: "Euro",
+    DISCOUNTFACTOR: {VALUE: 0.08},
+    PROJECT_DURATION: {VALUE: 20},
 }
+
+dict_economic.update(
+    {
+        ANNUITY_FACTOR: {
+            VALUE: C2.annuity_factor(
+                project_life=dict_economic[PROJECT_DURATION][VALUE],
+                discount_factor=dict_economic[DISCOUNTFACTOR][VALUE],
+            )
+        },
+        CRF: {
+            VALUE: C2.crf(
+                project_life=dict_economic[PROJECT_DURATION][VALUE],
+                discount_factor=dict_economic[DISCOUNTFACTOR][VALUE],
+            )
+        },
+    }
+)
+
 
 dict_values = {
     ENERGY_PRODUCTION: {
@@ -86,41 +123,106 @@ exp_lcoe_battery_1 = (1000 + 30000 + 25000) / 240000
 
 def test_all_cost_info_parameters_added_to_dict_asset():
     """Tests whether the function get_costs is adding all the calculated costs to dict_asset."""
+    print(dict_economic)
     E2.get_costs(dict_asset, dict_economic)
+
+    # Note: The valid calculation of the costs is tested with test_benchmark_KPI.py, Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
     for k in (
         COST_DISPATCH,
-        COST_OM_FIX,
+        COST_OM,
         COST_TOTAL,
-        COST_OM_TOTAL,
+        COST_OPERATIONAL_TOTAL,
         ANNUITY_TOTAL,
         ANNUITY_OM,
     ):
         assert k in dict_asset
 
 
-def test_add_costs_and_total():
-    """Tests if new costs are adding to current costs correctly and if dict_asset is being updated accordingly."""
-    current_costs = 10000
-    new_cost = 5000
-    total_costs = E2.add_costs_and_total(
-        dict_asset, "new_cost", new_cost, current_costs
+test_all_cost_info_parameters_added_to_dict_asset()
+
+
+def test_calculate_costs_replacement():
+    cost_replacement = E2.calculate_costs_replacement(
+        specific_replacement_of_initial_capacity=5,
+        specific_replacement_of_optimized_capacity=10,
+        initial_capacity=1,
+        optimized_capacity=10,
     )
-    assert total_costs == new_cost + current_costs
-    assert "new_cost" in dict_asset
+    assert cost_replacement == 5 * 1 + 10 * 10
+
+
+def test_calculate_operation_and_management_expenditures():
+    operation_and_management_expenditures = E2.calculate_operation_and_management_expenditures(
+        specific_om_cost=5, installed_capacity=10, optimized_add_capacity=10
+    )
+    assert operation_and_management_expenditures == 100
+
+
+def test_calculate_total_asset_costs_over_lifetime():
+    total = E2.calculate_total_asset_costs_over_lifetime(
+        costs_investment=300, cost_operational_expenditures=200
+    )
+    assert total == 500
+
+
+def test_calculate_costs_upfront_investment():
+    costs = E2.calculate_costs_upfront_investment(
+        specific_cost=100, capacity=5, development_costs=200
+    )
+    assert costs == 700
+
+
+def test_calculate_total_capital_costs():
+    total_capital_expenditure = E2.calculate_total_capital_costs(
+        upfront=300, replacement=100
+    )
+    assert total_capital_expenditure == 400
+
+
+def test_calculate_total_operational_expenditures():
+    total_operational_expenditures = E2.calculate_total_operational_expenditures(
+        operation_and_management_expenditures=100, dispatch_expenditures=500
+    )
+    assert total_operational_expenditures == 600
+
+
+asset = "an_asset"
+flow = pd.Series([1, 1, 1])
+
+
+def test_calculate_annual_dispatch_expenditures_float():
+    dispatch_expenditure = E2.calculate_dispatch_expenditures(
+        dispatch_price=1, flow=flow, asset=asset
+    )
+    assert dispatch_expenditure == 3
+
+
+def test_calculate_annual_dispatch_expenditures_pd_Series():
+    dispatch_price = pd.Series([1, 2, 3])
+    dispatch_expenditure = E2.calculate_dispatch_expenditures(
+        dispatch_price, flow, asset
+    )
+    assert dispatch_expenditure == 6
+
+
+def test_calculate_annual_dispatch_expenditures_else():
+    with pytest.raises(E2.UnexpectedValueError):
+        E2.calculate_dispatch_expenditures([1, 2], flow, asset)
 
 
 def test_all_list_in_dict_passes_as_all_keys_included():
     """Tests whether looking for list items in dict_asset is plausible."""
-    list_true = ["annual_total_flow", OPTIMIZED_ADD_CAP]
+    list_true = [ANNUAL_TOTAL_FLOW, OPTIMIZED_ADD_CAP]
     boolean = E2.all_list_in_dict(dict_asset, list_true)
     assert boolean is True
 
 
 def test_all_list_in_dict_fails_due_to_not_included_keys():
     """Tests whether looking for list items in dict_asset is plausible."""
-    list_false = ["flow", OPTIMIZED_ADD_CAP]
-    boolean = E2.all_list_in_dict(dict_asset, list_false)
-    assert boolean is False
+    list_false = [AGE_INSTALLED, OPTIMIZED_ADD_CAP]
+    with pytest.raises(E2.MissingParametersForEconomicEvaluation):
+        boolean = E2.all_list_in_dict(dict_asset, list_false)
+        assert boolean is False
 
 
 def test_calculation_of_lcoe_of_asset_total_flow_is_0():
@@ -128,8 +230,8 @@ def test_calculation_of_lcoe_of_asset_total_flow_is_0():
     for group in [ENERGY_CONVERSION, ENERGY_STORAGE]:
         for asset in dict_values[group]:
             E2.lcoe_assets(dict_values[group][asset], group)
-    assert dict_values[ENERGY_CONVERSION]["inverter"][LCOE_ASSET][VALUE] is None
-    assert dict_values[ENERGY_STORAGE]["battery_2"][LCOE_ASSET][VALUE] is None
+    assert dict_values[ENERGY_CONVERSION]["inverter"][LCOE_ASSET][VALUE] is 0
+    assert dict_values[ENERGY_STORAGE]["battery_2"][LCOE_ASSET][VALUE] is 0
 
 
 def test_calculation_of_lcoe_asset_storage_flow_not_0_provider_flow_not_0():
@@ -145,3 +247,5 @@ def test_calculation_of_lcoe_asset_storage_flow_not_0_provider_flow_not_0():
         dict_values[ENERGY_STORAGE]["battery_1"][LCOE_ASSET][VALUE]
         == exp_lcoe_battery_1
     )
+    for component in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
+        assert LCOE_ASSET in dict_values[ENERGY_STORAGE]["battery_1"][component]

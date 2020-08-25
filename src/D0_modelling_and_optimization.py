@@ -23,6 +23,7 @@ from src.constants_json_strings import (
     STORE_NX_GRAPH,
     OUTPUT_LP_FILE,
     STORE_OEMOF_RESULTS,
+    SIMULATION_RESULTS,
 )
 
 """
@@ -307,8 +308,8 @@ class model_building:
 
         dict_values.update(
             {
-                "simulation_results": {
-                    LABEL: "simulation_results",
+                SIMULATION_RESULTS: {
+                    LABEL: SIMULATION_RESULTS,
                     "objective_value": results_meta["objective"],
                     "simulation_time": round(results_meta["solver"]["Time"], 2),
                 }
@@ -316,7 +317,7 @@ class model_building:
         )
         logging.info(
             "Simulation time: %s minutes.",
-            round(dict_values["simulation_results"]["simulation_time"] / 60, 2),
+            round(dict_values[SIMULATION_RESULTS]["simulation_time"] / 60, 2),
         )
         return model, results_main, results_main
 
@@ -366,7 +367,7 @@ class timer:
         Parameters
         ----------
         dict_values: dict
-            Dict of simulation including "simulation_results" key
+            Dict of simulation including SIMULATION_RESULTS key
         start: timestamp
             start time of timer
 
@@ -375,10 +376,10 @@ class timer:
         Simulation time in dict_values
         """
         duration = timeit.default_timer() - start
-        dict_values["simulation_results"].update({"modelling_time": round(duration, 2)})
+        dict_values[SIMULATION_RESULTS].update({"modelling_time": round(duration, 2)})
 
         logging.info(
             "Moddeling time: %s minutes.",
-            round(dict_values["simulation_results"]["modelling_time"] / 60, 2),
+            round(dict_values[SIMULATION_RESULTS]["modelling_time"] / 60, 2),
         )
         return

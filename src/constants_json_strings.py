@@ -135,6 +135,13 @@ ANNUITY_SPECIFIC_INVESTMENT_AND_OM = (
 )
 SIMULATION_ANNUITY = "simulation_annuity"
 
+SPECIFIC_REPLACEMENT_COSTS_INSTALLED = (
+    "Specific_replacement_costs_of_installed_capacity"
+)
+SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED = (
+    "Specific_replacement_costs_of_optimized_capacity"
+)
+
 # Other Parameters
 SECTORS = "sectors"
 OUTFLOW_DIRECTION = "outflow_direction"
@@ -170,6 +177,8 @@ BUS_SUFFIX = " bus"
 # Parameters added in post-processing #
 #######################################
 
+SIMULATION_RESULTS = "simulation_results"
+
 # Names for KPI output
 KPI = "kpi"
 KPI_SCALARS_DICT = "scalars"
@@ -194,17 +203,17 @@ ANNUITY_TOTAL = "annuity_total"
 
 # Costs - Total per asset
 COST_TOTAL = "costs_total"
-COST_OM_TOTAL = "costs_om_total"
-COST_OM_FIX = "costs_cost_om"  # Fix asset operation/management costs per year, not depending on use
+COST_OPERATIONAL_TOTAL = "costs_om_total"
+COST_OM = "costs_cost_om"  # Fix asset operation/management costs per year, not depending on use
 COST_DISPATCH = (
     "costs_dispatch"  # Variable asset operation/management costs, depending on dispatch
 )
-COST_UPFRONT = "costs_upfront_in_year_zero"
 COST_INVESTMENT = "costs_investment_over_lifetime"
+COST_UPFRONT = "costs_upfront_in_year_zero"
+COST_REPLACEMENT = "Replacement_costs_during_project_lifetime"
 
 # Levelized cost of electricity
 LCOE_ASSET = "levelized_cost_of_energy_of_asset"
-
 
 # Other KPI
 TOTAL_RENEWABLE_GENERATION_IN_LES = "Total internal renewable generation"
@@ -217,8 +226,8 @@ KPI_SCALARS = (
     ANNUITY_OM,
     ANNUITY_TOTAL,
     COST_INVESTMENT,
-    COST_OM_TOTAL,
-    COST_OM_FIX,
+    COST_OPERATIONAL_TOTAL,
+    COST_OM,
     COST_DISPATCH,
     COST_TOTAL,
     COST_UPFRONT,
