@@ -158,6 +158,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     E3.all_totals(dict_values)
     E3.total_demand_each_sector(dict_values)
+    E3.add_levelized_cost_of_energy_carriers(dict_values)
     E3.total_renewable_and_non_renewable_energy_origin(dict_values)
     E3.renewable_share(dict_values)
 

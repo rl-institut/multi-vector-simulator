@@ -17,12 +17,14 @@ from src.constants import PROJECT_DATA
 from src.constants_json_strings import (
     VALUE,
     LABEL,
+    ECONOMIC_DATA,
     SIMULATION_SETTINGS,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
     ENERGY_PROVIDERS,
     ENERGY_CONSUMPTION,
     CONNECTED_FEEDIN_SINK,
+    CRF,
     SECTORS,
     EXCESS,
     AUTO_SINK,
@@ -32,6 +34,7 @@ from src.constants_json_strings import (
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
     LCOE_ASSET,
+    COST_TOTAL,
     TOTAL_FLOW,
     TIMESERIES_TOTAL,
     RENEWABLE_ASSET_BOOL,
@@ -400,6 +403,119 @@ def equation_co2_emissions(dict_values):
         )
     return co2_emissions
 
+def add_levelized_cost_of_energy_carriers(dict_values):
+    r"""
+    Adds levelized costs of all energy carriers and overall system to the scalar KPI.
+    
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation inputs and results
+
+    Returns
+    -------
+    Updates KPI_SCALAR_DICT
+    """
+    # Abbreviate costs accessed
+    NPC = dict_values[KPI][KPI_SCALARS_DICT][COST_TOTAL]
+
+    # Get total demand in electricity equivalent
+    total_demand_electricity_equivalent = dict_values[KPI][KPI_SCALARS_DICT][add_suffix_electricity_equivalent("total demand")]
+
+    # Loop through all energy carriers
+    for energy_carrier in dict_values[PROJECT_DATA][SECTORS]:
+        # Get energy carrier specific values
+        energy_carrier_label = label_total_demand_energy_carrier(energy_carrier)
+        total_flow_energy_carrier_eleq = dict_values[KPI][KPI_SCALARS_DICT][energy_carrier_label]
+        total_flow_energy_carrier = dict_values[KPI][KPI_SCALARS_DICT][add_suffix_electricity_equivalent(energy_carrier_label)]
+        # Calculate LCOE of energy carrier
+        lcoe_energy_carrier, attributed_costs = equation_levelized_cost_of_energy_carrier(
+            cost_total=NPC,
+            crf=dict_values[ECONOMIC_DATA][CRF][VALUE],
+            total_flow_energy_carrier_eleq=total_flow_energy_carrier_eleq,
+            total_flow_energy_carrier=total_flow_energy_carrier,
+            total_demand_electricity_equivalent=total_demand_electricity_equivalent
+        )
+
+        # Update dict_values with ATTRIBUTED_COSTS and LCOE_energy_carrier
+        dict_values[KPI][KPI_SCALARS_DICT].update(
+            {
+                f"Attributed costs of {energy_carrier}": attributed_costs,
+                f"Levelized costs of energy equivalent of {energy_carrier}": lcoe_energy_carrier
+            }
+        )
+        logging.debug(f"Determined LCOE of energy carrier {energy_carrier}: {round(lcoe_energy_carrier, 2)}")
+
+    # Total demand
+    lcoe_energy_carrier, attributed_costs = equation_levelized_cost_of_energy_carrier(
+        cost_total=NPC,
+        crf=dict_values[ECONOMIC_DATA][CRF][VALUE],
+        total_flow_energy_carrier_eleq=total_demand_electricity_equivalent,
+        total_flow_energy_carrier=total_demand_electricity_equivalent,
+        total_demand_electricity_equivalent=total_demand_electricity_equivalent
+    )
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {
+            f"Levelized costs of energy equivalent": lcoe_energy_carrier
+        }
+    )
+    logging.debug(f"Determined LCOE of energy: {round(lcoe_energy_carrier, 2)}")
+    logging.info("Calculated LCOE of the energy system.")
+    return
+
+
+
+def equation_levelized_cost_of_energy_carrier(cost_total, crf, total_flow_energy_carrier_eleq, total_demand_electricity_equivalent, total_flow_energy_carrier):
+    r"""
+    Calculates LCOE of each energy carrier of the system.
+
+    Based on distributing the NPC of the energy system over the total weighted energy demand of the local energy system.
+    This avoids that a conversion asset has to be defined as being used for a specific sector only,
+    or that an energy production asset (eg. electricity) which is mainly used for powering energy conversion assets for another energy carrier (eg. H2)
+    are increasing the costs of the first energy carrier (electricity),
+    eventhough the costs should be attributed to the costs of the end-use of generation.
+
+    Parameters
+    ----------
+    cost_total: float
+
+    crf: float
+
+    total_flow_energy_carrier_eleq: float
+
+    total_demand_electricity_equivalent: float
+
+    total_flow_energy_carrier:float
+
+    Returns
+    -------
+        lcoe_energy_carrier: float
+            Levelized costs of an energy carrier in a sector coupled system
+    
+        attributed_costs: float
+            Costs attributed to a specific energy carrier
+
+    Notes
+    -----
+    Please refer to the conference paper presented at the CIRED Workshop Berlin (see readthedocs) for more detail.
+
+    The costs attributed to an energy carrier are calculated from the ratio of electricity equivalent of the energy carrier demand in focus to the electricity equivalent of the total demand:
+
+    .. math: attributed costs = NPC \cdot \frac{Total electricity equivalent of energy carrier demand}{Total electricity equivalent of demand}
+
+    The LCOE sets these attributed costs in relation to the energy carrier demand (in its original unit):
+
+    .. math: LCOE energy carrier = \frac{attributed costs \cdot CRF}{total energy carrier demand}
+
+    """
+    attributed_costs = 0
+
+    if total_demand_electricity_equivalent > 0:
+        attributed_costs = cost_total * total_flow_energy_carrier_eleq / total_demand_electricity_equivalent
+
+    if total_flow_energy_carrier > 0:
+        lcoe_energy_carrier = attributed_costs * crf /total_flow_energy_carrier
+    return lcoe_energy_carrier, attributed_costs
 
 def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
     """Calculates the weighted kpi for a specific kpi_name
