@@ -20,7 +20,6 @@ from src.constants_json_strings import *
 import src.C1_verification as C1
 import src.C2_economic_functions as C2
 import src.F0_output as F0
-import src.F1_plotting as F1  # only function F1.plot_input_timeseries()
 
 """
 Module C0 prepares the data red from csv or json for simulation, ie. pre-processes it. 
@@ -328,6 +327,8 @@ def energyProduction(dict_values, group):
                     dict_values[group][asset],
                     "input",
                 )
+                # If Filename defines the generation timeseries, then we have an asset with a lack of dispatchability
+                dict_values[group][asset].update({DISPATCHABILITY: False})
         # check if maximumCap exists and add it to dict_values
         add_maximum_cap(dict_values, group, asset)
 
@@ -475,6 +476,7 @@ def define_missing_cost_data(dict_values, dict_asset):
         SPECIFIC_COSTS_OM: {VALUE: 0, UNIT: CURR + "/" + UNIT_YEAR},
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + UNIT + "/" + UNIT_YEAR},
         LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: UNIT_YEAR,},
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
     }
 
     # checks that an asset has all cost parameters needed for evaluation.
@@ -700,6 +702,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         output_bus_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]
         + DSO_PEAK_DEMAND_BUS_NAME,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
+        energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
     )
 
     # define feed-in sink of the DSO
@@ -921,6 +924,7 @@ def define_transformer_for_peak_demand_pricing(
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
     }
 
     dict_values[ENERGY_CONVERSION].update({transformer_name: default_dso_transformer})
@@ -931,7 +935,9 @@ def define_transformer_for_peak_demand_pricing(
     return
 
 
-def define_source(dict_values, asset_key, output_bus_direction, **kwargs):
+def define_source(
+    dict_values, asset_key, output_bus_direction, energy_vector, **kwargs
+):
     f"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
 
@@ -942,7 +948,10 @@ def define_source(dict_values, asset_key, output_bus_direction, **kwargs):
 
     asset_key: str
         key under which the asset is stored in the asset group
-        
+    
+    energy_vector: str
+        Energy vector the new asset should belong to 
+
     kwargs: Misc.
         Kwargs that can overwrite the default values.
         Typical kwargs:
@@ -971,6 +980,8 @@ def define_source(dict_values, asset_key, output_bus_direction, **kwargs):
         },
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         MAXIMUM_CAP: {VALUE: None, UNIT: "?"},
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
+        ENERGY_VECTOR: energy_vector,
     }
 
     for item in kwargs:
@@ -1129,6 +1140,7 @@ def define_sink(dict_values, asset_name, price, input_bus_name, **kwargs):
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
             UNIT: UNIT_YEAR,
         },
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
     }
 
     # check if multiple busses are provided
@@ -1280,7 +1292,8 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     - LIFETIME_SPECIFIC_COST_OM
     - ANNUITY_SPECIFIC_INVESTMENT_AND_OM
     - SIMULATION_ANNUITY
-
+    - SPECIFIC_REPLACEMENT_COSTS_INSTALLED
+    - SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED
     Notes
     -----
 
@@ -1289,16 +1302,41 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 
     C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
+    (
+        specific_capex,
+        specific_replacement_costs_optimized,
+        specific_replacement_costs_already_installed,
+    ) = C2.capex_from_investment(
+        investment_t0=dict_asset[SPECIFIC_COSTS][VALUE],
+        lifetime=dict_asset[LIFETIME][VALUE],
+        project_life=economic_data[PROJECT_DURATION][VALUE],
+        discount_factor=economic_data[DISCOUNTFACTOR][VALUE],
+        tax=economic_data[TAX][VALUE],
+        age_of_asset=dict_asset[AGE_INSTALLED][VALUE],
+    )
+
     dict_asset.update(
         {
             LIFETIME_SPECIFIC_COST: {
-                VALUE: C2.capex_from_investment(
-                    dict_asset[SPECIFIC_COSTS][VALUE],
-                    dict_asset[LIFETIME][VALUE],
-                    economic_data[PROJECT_DURATION][VALUE],
-                    economic_data[DISCOUNTFACTOR][VALUE],
-                    economic_data[TAX][VALUE],
-                ),
+                VALUE: specific_capex,
+                UNIT: dict_asset[SPECIFIC_COSTS][UNIT],
+            }
+        }
+    )
+
+    dict_asset.update(
+        {
+            SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED: {
+                VALUE: specific_replacement_costs_optimized,
+                UNIT: dict_asset[SPECIFIC_COSTS][UNIT],
+            }
+        }
+    )
+
+    dict_asset.update(
+        {
+            SPECIFIC_REPLACEMENT_COSTS_INSTALLED: {
+                VALUE: specific_replacement_costs_already_installed,
                 UNIT: dict_asset[SPECIFIC_COSTS][UNIT],
             }
         }

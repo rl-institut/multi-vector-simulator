@@ -47,10 +47,10 @@ from src.constants_json_strings import (
     AVERAGE_FLOW,
     OPTIMIZED_ADD_CAP,
     ANNUAL_TOTAL_FLOW,
-    COST_OM_TOTAL,
+    COST_OPERATIONAL_TOTAL,
     COST_INVESTMENT,
     COST_DISPATCH,
-    COST_OM_FIX,
+    COST_OM,
     COST_TOTAL,
     COST_UPFRONT,
     ANNUITY_TOTAL,
@@ -569,8 +569,7 @@ def convert_components_to_dataframe(dict_values):
             {
                 comps: [
                     components1[comps][OEMOF_ASSET_TYPE],
-                    "Electricity",
-                    # components1[comps][ENERGY_VECTOR],
+                    components1[comps][ENERGY_VECTOR],
                     components1[comps][UNIT],
                     components1[comps][INSTALLED_CAP][VALUE],
                     components1[comps][OPTIMIZE_CAP][VALUE],
@@ -605,7 +604,7 @@ def convert_components_to_dataframe(dict_values):
     df_comp = df_comp.reset_index()
 
     for i in range(len(df_comp)):
-        if df_comp.at[i, "Optimization"]:
+        if df_comp.at[i, "Capacity optimization"] is True:
             df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "Yes"
         else:
             df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "No"
@@ -674,7 +673,8 @@ def convert_cost_matrix_to_dataframe(dict_values):
 
     # Drop some irrelevant columns from the dataframe
     df_cost_matrix = df_cost_matrix.drop(
-        ["index", COST_OM_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM_FIX], axis=1,
+        ["index", COST_OPERATIONAL_TOTAL, COST_INVESTMENT, COST_DISPATCH, COST_OM],
+        axis=1,
     )
 
     # Rename some of the column names
@@ -708,7 +708,7 @@ def convert_costs_to_dataframe(dict_values):
     df_pie_plot = dict_values[KPI][KPI_COST_MATRIX]
 
     # List of the needed parameters
-    costs_needed = [LABEL, ANNUITY_TOTAL, COST_INVESTMENT, COST_OM_TOTAL]
+    costs_needed = [LABEL, ANNUITY_TOTAL, COST_INVESTMENT, COST_OPERATIONAL_TOTAL]
 
     # Drop all the irrelevant columns
     df_pie_plot = df_pie_plot[costs_needed]

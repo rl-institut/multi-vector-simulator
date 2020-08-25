@@ -27,6 +27,7 @@ from src.constants_json_strings import (
     KPI,
     ENERGY_CONSUMPTION,
     TIMESERIES,
+    DISPATCHABILITY,
     ENERGY_PRODUCTION,
     OPTIMIZED_ADD_CAP,
     TOTAL_FLOW,
@@ -103,8 +104,11 @@ def extract_plot_data_and_title(dict_values, df_dem=None):
         df_dem = convert_demand_to_dataframe(dict_values)
 
     # Collect the keys of various resources (PV, Wind, etc.)
-    resources = dict_values[ENERGY_PRODUCTION]
-    res_keys = [k for k in resources.keys() if "DSO_" not in k]
+    resources = dict_values[ENERGY_PRODUCTION].copy()
+    res_keys = []
+    for k in resources.keys():
+        if resources[k][DISPATCHABILITY] is False:
+            res_keys.append(k)
 
     # Gather all the keys of the various plots for later use in the graphOptions.csv
     dict_for_plots = {DEMANDS: {}, RESOURCES: {}}
