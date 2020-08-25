@@ -376,7 +376,7 @@ def calculate_operation_and_management_expenditures(
     specific_om_cost, installed_capacity, optimized_add_capacity
 ):
     r"""
-    Calculates operation and management expenditures
+    Calculate operation and management expenditures
 
     Parameters
     ----------
