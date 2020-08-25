@@ -261,69 +261,6 @@ def draw_graph(
         )
 
 
-def plot_input_timeseries(
-    dict_values,
-    user_input,
-    timeseries,
-    asset_name,
-    column_head="",
-    is_demand_profile=False,
-):
-    r"""
-    This function is called from C0 to plot the input timeseries provided to the MVS.
-    This includes demand profiles, generation profiles as well as timeseries for otherwise scalar
-    values.
-
-    Parameters
-    ----------
-    dict_values: dict
-        Dict with all simulation parameters
-
-    user_input: dict
-        Settings
-
-    timeseries: pd.Series
-        Timeseries to be plotted
-
-    asset_name: str
-        Name of the timeseries to be plotted
-
-    column_head: str
-        Column under which timeseries can be found in the csv
-
-    is_demand_profile: bool
-        Information whether or not the timeseries provided is a demand profile
-
-    Returns
-    -------
-    PNG file with timeseries plot
-
-    """
-    logging.info("Creating plots for asset %s's parameter %s", asset_name, column_head)
-    fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
-    axes_mg = axes
-
-    timeseries.plot(
-        title=asset_name, ax=axes_mg, drawstyle="steps-mid",
-    )
-    axes_mg.set(xlabel="Time", ylabel=column_head)
-    path = os.path.join(
-        user_input[PATH_OUTPUT_FOLDER],
-        "input_timeseries_" + asset_name + "_" + column_head + ".png",
-    )
-    if is_demand_profile is True:
-        dict_values[PATHS_TO_PLOTS][PLOTS_DEMANDS] += [str(path)]
-    else:
-        dict_values[PATHS_TO_PLOTS][PLOTS_RESOURCES] += [str(path)]
-    plt.savefig(
-        path, bbox_inches="tight",
-    )
-
-    plt.close()
-    plt.clf()
-    plt.cla()
-
-
 def save_plots_to_disk(
     fig_obj, file_name, file_path="", width=None, height=None, scale=None
 ):
@@ -466,7 +403,7 @@ def create_plotly_line_fig(
     return fig
 
 
-def plot_timeseries(dict_values, data_type=DEMANDS, file_path=None):
+def plot_timeseries(dict_values, data_type=DEMANDS, max_days=None, file_path=None):
     r"""Plot timeseries as line chart.
 
     Parameters
@@ -477,6 +414,9 @@ def plot_timeseries(dict_values, data_type=DEMANDS, file_path=None):
     data_type: str
         one of DEMANDS or RESOURCES
         Default: DEMANDS
+
+    max_days: int
+        maximal number of days the timeserie should be displayed for
 
     file_path: str
         Path where the image shall be saved if not None
@@ -506,12 +446,20 @@ def plot_timeseries(dict_values, data_type=DEMANDS, file_path=None):
         "#DEB841",
         "#4F3130",
     ]
+
+    if max_days is not None:
+        max_date = df_pd["timestamp"][0] + pd.Timedelta("{} day".format(max_days))
+        df_pd = df_pd.loc[df_pd["timestamp"] < max_date]
+        title_addendum = " ({} days)".format(max_days)
+    else:
+        title_addendum = ""
+
     for (component, color_plot) in zip(list_of_keys, colors_list):
         comp_id = component + "-plot"
         fig = create_plotly_line_fig(
             x_data=df_pd["timestamp"],
             y_data=df_pd[component],
-            plot_title=dict_plot_labels[component],
+            plot_title="{}{}".format(dict_plot_labels[component], title_addendum),
             x_axis_name="Time",
             y_axis_name="kW",
             color_for_plot=color_plot,
