@@ -35,6 +35,7 @@ Here is a template for new release sections
 - Changed and added pytests in for `C2` (#520)
 - All energyProviders that have key `FILENAME` (and, therefore, a timeseries), are now of `DISPATCHABILITY = False`(#520)
 - Changed structure of `E2.lcoe_assets()` so that each asset has a defined LCOE_ASSET. If `sum(FLOW)==0` of an asset, the LCOE_ASSET (utilization LCOE) is defined to be 0 (#520)
+- Color lists for plots are provided by user and are not hard coded anymore (#527)
 
 ### Removed
 - `E2.add_costs_and_total`() (#520)
