@@ -466,7 +466,7 @@ def create_plotly_line_fig(
     return fig
 
 
-def plot_timeseries(dict_values, data_type=DEMANDS, file_path=None):
+def plot_timeseries(dict_values, data_type=DEMANDS, max_days=None, file_path=None):
     r"""Plot timeseries as line chart.
 
     Parameters
@@ -477,6 +477,9 @@ def plot_timeseries(dict_values, data_type=DEMANDS, file_path=None):
     data_type: str
         one of DEMANDS or RESOURCES
         Default: DEMANDS
+
+    max_days: int
+        maximal number of days the timeserie should be displayed for
 
     file_path: str
         Path where the image shall be saved if not None
@@ -506,6 +509,10 @@ def plot_timeseries(dict_values, data_type=DEMANDS, file_path=None):
         "#DEB841",
         "#4F3130",
     ]
+
+    if max_days is not None:
+        max_date = df_pd["timestamp"][0] + pd.Timedelta('{} day'.format(max_days))
+        df_pd = df_pd.loc[df_pd["timestamp"] < max_date]
     for (component, color_plot) in zip(list_of_keys, colors_list):
         comp_id = component + "-plot"
         fig = create_plotly_line_fig(
