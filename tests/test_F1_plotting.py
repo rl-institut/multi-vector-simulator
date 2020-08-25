@@ -191,3 +191,8 @@ class TestFileCreation:
         """ """
         if os.path.exists(OUTPUT_PATH):
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+
+
+def test_get_color_is_cyclic():
+    colors = [1, 2, 3]
+    assert F1.get_color(3, colors) == colors[0]

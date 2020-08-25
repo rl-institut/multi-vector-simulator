@@ -261,6 +261,40 @@ def draw_graph(
         )
 
 
+def get_color(idx_line, color_list=None):
+    """Pick a color within a color list with periodic boundary conditions
+
+    Parameters
+    ----------
+    idx_line: int
+        index of the line in a plot for which a color is required
+
+    colors: list of str or list to tuple (hexadecimal or rbg code)
+        list of colors
+        Default: None
+
+    Returns
+    -------
+    The color in the color list corresponding to the index modulo the color list length
+
+    """
+    if color_list is None:
+        color_list = (
+            "#1f77b4",
+            "#ff7f0e",
+            "#2ca02c",
+            "#d62728",
+            "#9467bd",
+            "#8c564b",
+            "#e377c2",
+            "#7f7f7f",
+            "#bcbd22",
+            "#17becf",
+        )
+    n_colors = len(color_list)
+    return color_list[idx_line % n_colors]
+
+
 def save_plots_to_disk(
     fig_obj, file_name, file_path="", width=None, height=None, scale=None
 ):
