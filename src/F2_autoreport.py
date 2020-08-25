@@ -44,6 +44,7 @@ from src.constants import (
     ECONOMIC_DATA,
     PROJECT_DATA,
     JSON_WITH_RESULTS,
+    LOGFILE
 )
 from src.constants_json_strings import (
     SECTORS,
@@ -653,10 +654,10 @@ def create_app(results_json):
 
     output_path = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
     warnings_dict = parse_simulation_log(
-        path_log_file=os.path.join(output_path, "mvs_logfile.log"), log_type="WARNING",
+        path_log_file=os.path.join(output_path, LOGFILE), log_type="WARNING",
     )
     errors_dict = parse_simulation_log(
-        path_log_file=os.path.join(output_path, "mvs_logfile.log"), log_type="ERROR",
+        path_log_file=os.path.join(output_path, LOGFILE), log_type="ERROR",
     )
 
     # App layout and populating it with different elements

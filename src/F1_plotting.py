@@ -19,6 +19,7 @@ from src.constants import (
     PATH_OUTPUT_FOLDER,
     PLOTS_DEMANDS,
     PLOTS_RESOURCES,
+    LOGFILE
 )
 
 from src.constants_json_strings import (
@@ -152,7 +153,7 @@ def parse_simulation_log(path_log_file=None, log_type="ERROR"):
     logs_dict = {}
 
     if path_log_file is None:
-        path_log_file = os.path.join(OUTPUT_FOLDER, "mvs_logfile.log")
+        path_log_file = os.path.join(OUTPUT_FOLDER, LOGFILE)
 
     with open(path_log_file) as log_messages:
         log_messages = log_messages.readlines()

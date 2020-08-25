@@ -26,6 +26,8 @@ TIME_SERIES = "time_series"
 OUTPUT_FOLDER = "MVS_outputs"
 # name of the folder containing the copied content of the input folder within the output folder
 INPUTS_COPY = INPUT_FOLDER
+# name of the MVS log file
+LOGFILE = "mvs_logfile.log"
 # name of the automatically generated pdf report
 PDF_REPORT = "simulation_report.pdf"
 # path of the pdf report path

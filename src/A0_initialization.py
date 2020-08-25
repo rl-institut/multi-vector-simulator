@@ -59,6 +59,7 @@ from src.constants import (
     OVERWRITE,
     DISPLAY_OUTPUT,
     SAVE_PNG,
+    LOGFILE
 )
 from src.constants_json_strings import LABEL
 
@@ -353,7 +354,7 @@ def process_user_arguments(
     # Define logging settings and path for saving log
     logger.define_logging(
         logpath=path_output_folder,
-        logfile="mvs_logfile.log",
+        logfile=LOGFILE,
         file_level=logging.DEBUG,
         screen_level=screen_level,
     )
