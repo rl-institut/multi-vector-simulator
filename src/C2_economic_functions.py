@@ -13,6 +13,8 @@ Functionalities:
 - calculate present costs based on annuity
 - calculate effective fuel price cost, in case there is a annual fuel price change (this functionality still has to be checked in this module)
 """
+import logging
+import pandas as pd
 
 from src.constants import UNIT_HOUR
 
@@ -26,8 +28,6 @@ from src.constants_json_strings import (
     UNIT,
     LIFETIME_PRICE_DISPATCH,
 )
-
-import pandas as pd
 
 # annuity factor to calculate present value of cash flows
 def annuity_factor(project_life, discount_factor):
@@ -182,10 +182,14 @@ def get_replacement_costs(
 
     replacement_costs = 0
 
-    # In case the asset_lifetime is larger then
+    # Latest investment is first investment
     latest_investment = first_time_investment
     # Starting from first investment (in the past for installed capacities)
     year = -age_of_asset
+    if abs(year) >= asset_lifetime:
+        logging.error(f"The age of the asset is with {age_of_asset} lower or equal then the {asset_lifetime}. "
+                      f"This does not make sense, as a replacement is imminent or should already have happened."
+                      f"Please check this value.")
 
     present_value_of_capital_expenditures = pd.Series([latest_investment], index=[year])
 
