@@ -205,7 +205,7 @@ def test_calculate_annual_dispatch_expenditures_pd_Series():
 
 
 def test_calculate_annual_dispatch_expenditures_else():
-    with pytest.raises(E2.UnexpectedValueError):
+    with pytest.raises(TypeError):
         E2.calculate_dispatch_expenditures([1, 2], flow, asset)
 
 

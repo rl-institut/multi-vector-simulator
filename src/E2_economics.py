@@ -63,13 +63,6 @@ The module processes the simulation results regarding economic parameters:
 - calculate levelised cost of energy carriers (electricity, H2, heat)
 """
 
-
-class UnexpectedValueError(UserWarning):
-    """Exception raised for value errors during economic post-processing"""
-
-    pass
-
-
 class MissingParametersForEconomicEvaluation(UserWarning):
     "Warning if one or more parameters are missing for economic post-processing  of an asset"
     pass
@@ -278,7 +271,7 @@ def calculate_dispatch_expenditures(dispatch_price, flow, asset):
     elif isinstance(dispatch_price, pd.Series):
         dispatch_expenditures = sum(dispatch_price * flow)
     else:
-        raise UnexpectedValueError(
+        raise TypeError(
             f"The dispatch price of asset {asset} is neither float nor pd.Series but {type(dispatch_price)}."
             f"Please adapt E2.calculate_dispatch_costs() to evaluate the dispatch_expenditures of the asset."
         )
