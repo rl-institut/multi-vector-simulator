@@ -107,7 +107,7 @@ def extract_plot_data_and_title(dict_values, df_dem=None):
     resources = dict_values[ENERGY_PRODUCTION].copy()
     res_keys = []
     for k in resources.keys():
-        if resources[k][DISPATCHABILITY] == False:
+        if resources[k][DISPATCHABILITY] is False:
             res_keys.append(k)
 
     # Gather all the keys of the various plots for later use in the graphOptions.csv
