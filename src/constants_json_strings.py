@@ -222,6 +222,7 @@ TOTAL_RENEWABLE_GENERATION_IN_LES = "Total internal renewable generation"
 TOTAL_NON_RENEWABLE_GENERATION_IN_LES = "Total internal non-renewable generation"
 TOTAL_RENEWABLE_ENERGY_USE = "Total renewable energy use"
 TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use"
+RENEWABLE_SHARE = "Renewable_share"
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (

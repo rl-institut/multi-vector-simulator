@@ -44,6 +44,7 @@ from src.constants_json_strings import (
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_ENERGY_USE,
+RENEWABLE_SHARE,
 )
 
 
@@ -281,7 +282,6 @@ def renewable_share(dict_values):
         updated dict_values with renewable share of a specific sector
 
     """
-    kpi_name = "Renewable share"
     dict_renewable_share = {}
     for sector in dict_values[PROJECT_DATA][SECTORS]:
         total_res = dict_values[KPI][KPI_UNCOUPLED_DICT][TOTAL_RENEWABLE_ENERGY_USE][
@@ -293,12 +293,12 @@ def renewable_share(dict_values):
         dict_renewable_share.update(
             {sector: equation_renewable_share(total_res, total_non_res)}
         )
-    dict_values[KPI][KPI_UNCOUPLED_DICT].update({kpi_name: dict_renewable_share})
+    dict_values[KPI][KPI_UNCOUPLED_DICT].update({RENEWABLE_SHARE: dict_renewable_share})
 
     total_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_ENERGY_USE]
     total_non_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_ENERGY_USE]
     dict_values[KPI][KPI_SCALARS_DICT].update(
-        {kpi_name: equation_renewable_share(total_res, total_non_res)}
+        {RENEWABLE_SHARE: equation_renewable_share(total_res, total_non_res)}
     )
     return
 
