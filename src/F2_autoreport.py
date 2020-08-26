@@ -44,7 +44,7 @@ from src.constants import (
     ECONOMIC_DATA,
     PROJECT_DATA,
     JSON_WITH_RESULTS,
-    LOGFILE
+    LOGFILE,
 )
 from src.constants_json_strings import (
     SECTORS,

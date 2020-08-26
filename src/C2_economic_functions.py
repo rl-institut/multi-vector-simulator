@@ -187,9 +187,11 @@ def get_replacement_costs(
     # Starting from first investment (in the past for installed capacities)
     year = -age_of_asset
     if abs(year) >= asset_lifetime:
-        logging.error(f"The age of the asset is with {age_of_asset} lower or equal then the {asset_lifetime}. "
-                      f"This does not make sense, as a replacement is imminent or should already have happened."
-                      f"Please check this value.")
+        logging.error(
+            f"The age of the asset is with {age_of_asset} lower or equal then the {asset_lifetime}. "
+            f"This does not make sense, as a replacement is imminent or should already have happened."
+            f"Please check this value."
+        )
 
     present_value_of_capital_expenditures = pd.Series([latest_investment], index=[year])
 

@@ -40,7 +40,7 @@ from src.constants_json_strings import (
     ANNUITY_OM,
     LCOE_ASSET,
     UNIT_YEAR,
-CURR,
+    CURR,
 )
 
 from src.constants_output import KPI_COST_MATRIX_ENTRIES, KPI_SCALAR_MATRIX_ENTRIES

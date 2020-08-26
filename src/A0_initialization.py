@@ -59,7 +59,7 @@ from src.constants import (
     OVERWRITE,
     DISPLAY_OUTPUT,
     SAVE_PNG,
-    LOGFILE
+    LOGFILE,
 )
 from src.constants_json_strings import LABEL
 

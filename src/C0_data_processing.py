@@ -239,7 +239,7 @@ def process_all_assets(dict_values):
         )
     # Needed for E3.total_demand_each_sector(), but location is not perfect as it is more about the model then the settings.
     # Decided against implementing a new major 1st level category in json to avoid an excessive datatree.
-    dict_values[SIMULATION_SETTINGS].update({EXCESS+AUTO_SINK: auto_sinks})
+    dict_values[SIMULATION_SETTINGS].update({EXCESS + AUTO_SINK: auto_sinks})
 
     # process all energyAssets:
     # Attention! Order of asset_groups important. for energyProviders/energyConversion sinks and sources

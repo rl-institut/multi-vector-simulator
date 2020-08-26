@@ -19,7 +19,8 @@ from src.constants_json_strings import (
     DEMANDS,
     RESOURCES,
     KPI_SCALARS_DICT,
-    ECONOMIC_DATA)
+    ECONOMIC_DATA,
+)
 
 r"""
 Module F0 Output
@@ -132,7 +133,9 @@ def store_scalars_to_excel(dict_values):
             # Transpose results and add units to the entries
             if kpi_set == KPI_SCALARS_DICT:
                 data = data.transpose()
-                units_cost_kpi = get_units_of_cost_matrix_entries(dict_values[ECONOMIC_DATA], dict_values[KPI][kpi_set])
+                units_cost_kpi = get_units_of_cost_matrix_entries(
+                    dict_values[ECONOMIC_DATA], dict_values[KPI][kpi_set]
+                )
                 data[UNIT] = units_cost_kpi
 
             data.to_excel(open_file, sheet_name=kpi_set)

@@ -28,7 +28,7 @@ Here is a template for new release sections
 - New constant variable: JSON_WITH_RESULTS="json_with_results.json" (#520)
 - Benchmark test "Economic_KPI_C2_E2" to test economic evaluations in C2 and E2 (#520)
 - System KPI now printed in automatic report (section "Energy system key performance indicators"), draft (#525)
-- Added units to system-wide cost KPI in excel and in report. Some of these changes might need to be reworked when elaborating on units for the report (#525, bce277cc74730a7a7645d463f6623f2ead72d785)
+- Added units to system-wide cost KPI in excel and in report. Some of these changes might need to be reworked when elaborating on units for the report (#525)
 - `References.rst` to the readthedocs, which should gather all the references of the MVS (#525)
 - New system-wide KPI:
     - Demand per energy carrier, in original unit and electricity equivalent with `E3.total_demand_each_sector()` (#525)

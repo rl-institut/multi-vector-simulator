@@ -19,7 +19,7 @@ from src.constants import (
     PATH_OUTPUT_FOLDER,
     PLOTS_DEMANDS,
     PLOTS_RESOURCES,
-    LOGFILE
+    LOGFILE,
 )
 
 from src.constants_json_strings import (

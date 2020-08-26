@@ -14,7 +14,7 @@ import pandas as pd
 
 from src.constants import TYPE_NONE
 from src.constants_json_strings import (
-ECONOMIC_DATA,
+    ECONOMIC_DATA,
     FLOW,
     INSTALLED_CAP,
     INPUT_POWER,
@@ -64,6 +64,7 @@ ECONOMIC_DATA,
 )
 
 from src.constants_output import KPI_COST_MATRIX_ENTRIES
+
 
 def get_timeseries_per_bus(dict_values, bus_data):
     r"""
@@ -698,6 +699,7 @@ def convert_cost_matrix_to_dataframe(dict_values):
     df_cost_matrix = df_cost_matrix.round(2)
     return df_cost_matrix
 
+
 def convert_costs_to_dataframe(dict_values):
     """Dataframe used for the costs piecharts of the report
 
@@ -730,6 +732,7 @@ def convert_costs_to_dataframe(dict_values):
 
     return df_pie_plot
 
+
 def convert_scalars_to_dataframe(dict_values):
     """
     Processes the scalar system-wide KPI so that they can be included in the report
@@ -749,9 +752,13 @@ def convert_scalars_to_dataframe(dict_values):
     Currently, as the KPI_SCALARS_DICT does not hold any units, the table printed in the report is unit-les.
     """
 
-    units_cost_kpi = get_units_of_cost_matrix_entries(dict_values[ECONOMIC_DATA], dict_values[KPI][KPI_SCALARS_DICT])
+    units_cost_kpi = get_units_of_cost_matrix_entries(
+        dict_values[ECONOMIC_DATA], dict_values[KPI][KPI_SCALARS_DICT]
+    )
 
-    kpi_scalars_dataframe = pd.DataFrame(dict_values[KPI][KPI_SCALARS_DICT], index=[VALUE])
+    kpi_scalars_dataframe = pd.DataFrame(
+        dict_values[KPI][KPI_SCALARS_DICT], index=[VALUE]
+    )
     kpi_names = kpi_scalars_dataframe.columns
     kpi_scalars_dataframe = kpi_scalars_dataframe.transpose()
     kpi_scalars_dataframe[KPI] = kpi_names
@@ -759,6 +766,7 @@ def convert_scalars_to_dataframe(dict_values):
     kpi_scalars_dataframe = kpi_scalars_dataframe[[KPI, UNIT, VALUE]]
 
     return kpi_scalars_dataframe
+
 
 def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
     """

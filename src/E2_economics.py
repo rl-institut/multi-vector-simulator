@@ -63,6 +63,7 @@ The module processes the simulation results regarding economic parameters:
 - calculate levelised cost of energy carriers (electricity, H2, heat)
 """
 
+
 class MissingParametersForEconomicEvaluation(UserWarning):
     "Warning if one or more parameters are missing for economic post-processing  of an asset"
     pass
@@ -453,6 +454,7 @@ def all_list_in_dict(dict_asset, list):
             f"These parameters are needed for E2.get_costs(). Please check the E modules."
         )
     return boolean
+
 
 def lcoe_assets(dict_asset, asset_group):
     """
