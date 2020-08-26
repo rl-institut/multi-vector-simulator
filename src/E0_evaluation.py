@@ -162,9 +162,11 @@ def evaluate_dict(dict_values, results_main, results_meta):
     E3.add_levelized_cost_of_energy_carriers(dict_values)
     E3.total_renewable_and_non_renewable_energy_origin(dict_values)
     E3.renewable_share(dict_values)
+    # E3.add_degree_of_sector_coupling(dict_values) feature not finished
 
     logging.info("Evaluating optimized capacities and dispatch.")
     return
+
 
 def store_result_matrix(dict_kpi, dict_asset):
     """

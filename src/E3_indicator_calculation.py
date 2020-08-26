@@ -268,7 +268,6 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
     logging.info("Calculated renewable share of the LES.")
     return
 
-
 def renewable_share(dict_values):
     """Determination of renewable share of one sector
 
@@ -358,12 +357,11 @@ def equation_renewable_share(total_res, total_non_res):
 def equation_degree_of_autonomy():
     return degree_of_autonomy
 
-
-def assert_aggregated_flows_of_energy_conversion_equivalent(dict_values):
-
+def add_degree_of_sector_coupling(dict_values):
     """
-    Determines the aggregated flows in between the sectors, taking into account the value of different energy carriers.
-    This will be used to calculate the degree of sector coupling at the pilot sites.
+    Determines the aggregated flows in between the sectors and the Degree of Sector Coupling.
+
+    Takes into account the value of different energy carriers.
 
     Parameters
     ----------
@@ -379,19 +377,35 @@ def assert_aggregated_flows_of_energy_conversion_equivalent(dict_values):
             with i are conversion assets
 
     """
+    # todo actually only flows that transform an energy carrier from oone energy vector to the next should be added
+    # maybe energyBusses helps?
     total_flow_of_energy_conversion_equivalent = 0
     for asset in dict_values[ENERGY_CONVERSION]:
         sector = dict_values[ENERGY_CONVERSION][asset][ENERGY_VECTOR]
         total_flow_of_energy_conversion_equivalent += (
-            dict_values[ENERGY_CONVERSION][asset]["total_aggregated_flow"]
+            dict_values[ENERGY_CONVERSION][asset][TOTAL_FLOW][VALUE]
             * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector][VALUE]
         )
 
     dict_values[KPI][KPI_SCALARS_DICT].update(
-        {
-            "total_energy_conversion_flow": total_flow_of_energy_conversion_equivalent
-        }  # needs units!
+        {"total_energy_conversion_flow": total_flow_of_energy_conversion_equivalent}
     )
+    logging.debug("Determined total energy conversion flow in electricity equivalent.")
+
+    # Calculate degree of sector coupling
+    degree_of_sector_coupling = equation_degree_of_sector_coupling(
+        total_flow_of_energy_conversion_equivalent,
+        dict_values[KPI][KPI_SCALARS_DICT][
+            add_suffix_electricity_equivalent("total demand")
+        ],
+    )
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {"Degree of sector coupling": degree_of_sector_coupling}
+    )
+    logging.debug(
+        f"Calculated the Degree of Sector Coupling: {round(degree_of_sector_coupling)}"
+    )
+    logging.info("Calculated the DSC for the LES.")
     return total_flow_of_energy_conversion_equivalent
 
 
