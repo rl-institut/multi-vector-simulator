@@ -1302,7 +1302,10 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     Notes
     -----
 
-    Tested with test_evaluate_lifetime_costs_adds_all_parameters()
+    Tested with:
+    - test_evaluate_lifetime_costs_adds_all_parameters()
+    - Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
+
     """
 
     C2.determine_lifetime_price_dispatch(dict_asset, economic_data)

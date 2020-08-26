@@ -94,6 +94,11 @@ def get_costs(dict_asset, economic_data):
     - COST_OPERATIONAL_TOTAL
     - ANNUITY_TOTAL
     - ANNUITY_OM
+
+    Tested with:
+    - test_all_cost_info_parameters_added_to_dict_asset()
+    - Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
+
     """
 
     logging.debug("Calculating costs of asset %s", dict_asset[LABEL])

@@ -77,7 +77,6 @@ def all_totals(dict_values):
     The levelized_cost_of_energy_of_asset are dropped from the list,
     as they do not hold any actual meaning for the whole energy system.
     The LCOE of the energy system is calculated seperately.
-
     """
     for column in dict_values[KPI][KPI_COST_MATRIX].columns:
         if column not in [LABEL, LCOE_ASSET]:
@@ -200,6 +199,10 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
     type
         Updated dict_values with total internal/overall renewable and non-renewable energy origin
 
+    Notes
+    -----
+    Tested with
+    - test_total_renewable_and_non_renewable_origin_of_each_sector()
     """
     dict_values[KPI].update({KPI_UNCOUPLED_DICT: {}})
 
@@ -281,6 +284,8 @@ def renewable_share(dict_values):
     type
         updated dict_values with renewable share of a specific sector
 
+    Tested with
+    - test_renewable_share_one_sector
     """
     dict_renewable_share = {}
     for sector in dict_values[PROJECT_DATA][SECTORS]:
@@ -337,6 +342,11 @@ def equation_renewable_share(total_res, total_non_res):
         As for now this is relative to generation, but not consumption of energy, the renewable share can not be larger 1. If in future however the renewable share is calculated relative to the energy consumption, a renewable share larger 1 is possible in case of overly high renewable gerneation within the system that is later fed into the DSO grid.
         If there is no generation or consumption from a DSO withing an energyVector and supply is solely reached by energy conversion from another vector, the renewable share is defined to be zero.
 
+    Tested with:
+    - test_renewable_share_equation_no_generation()
+    - test_renewable_share_equation_below_1()
+    - test_renewable_share_equation_is_0()
+    - test_renewable_share_equation_is_1()
     """
     if total_res + total_non_res > 0:
         renewable_share = total_res / (total_non_res + total_res)
