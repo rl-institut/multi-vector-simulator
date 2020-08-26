@@ -270,7 +270,7 @@ PATHS_TO_PLOTS = "paths_to_plots"
 # keys' names of dict containing generated plots filenames
 PLOTS_DEMANDS = "demands"
 PLOTS_RESOURCES = "resources"
-PLOTS_NX = "nx"
+PLOTS_ES = "graphviz"
 PLOTS_PERFORMANCE = "performance"
 PLOTS_COSTS = "costs"
 PLOTS_BUSSES = "flows_on_busses"
@@ -281,7 +281,7 @@ DICT_PLOTS = {
         PLOTS_BUSSES: [],
         PLOTS_DEMANDS: [],
         PLOTS_RESOURCES: [],
-        PLOTS_NX: [],
+        PLOTS_ES: [],
         PLOTS_PERFORMANCE: [],
         PLOTS_COSTS: [],
     }

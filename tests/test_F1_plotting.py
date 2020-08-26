@@ -14,7 +14,7 @@ from src.constants import (
     PATHS_TO_PLOTS,
     PLOTS_DEMANDS,
     PLOTS_RESOURCES,
-    PLOTS_NX,
+    PLOTS_ES,
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
     CSV_EXT,
@@ -47,7 +47,7 @@ dict_values = {
         PLOTS_BUSSES: [],
         PLOTS_DEMANDS: [],
         PLOTS_RESOURCES: [],
-        PLOTS_NX: [],
+        PLOTS_ES: [],
         PLOTS_PERFORMANCE: [],
         PLOTS_COSTS: [],
     }
