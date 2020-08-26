@@ -28,6 +28,8 @@ Here is a template for new release sections
 - New constant variable: JSON_WITH_RESULTS="json_with_results.json" (#520)
 - Benchmark test "Economic_KPI_C2_E2" to test economic evaluations in C2 and E2 (#520)
 - Possibility to add an upper bound  on the number of days to display in a timeseries' plot (#526)
+- Graph of the energy system to the report (#528)
+- Function to encode images into dash app's layout (#528)
 
 ### Changed
 - Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
@@ -36,11 +38,15 @@ Here is a template for new release sections
 - All energyProviders that have key `FILENAME` (and, therefore, a timeseries), are now of `DISPATCHABILITY = False`(#520)
 - Changed structure of `E2.lcoe_assets()` so that each asset has a defined LCOE_ASSET. If `sum(FLOW)==0` of an asset, the LCOE_ASSET (utilization LCOE) is defined to be 0 (#520)
 - Color lists for plots are provided by user and are not hard coded anymore (#527)
+- Replace function `F1.draw_graph` by the class `F1.ESGraph` and use `graphviz` instead of
+ `networkx` to draw the graph (#528) 
+- Rename variable `PLOTS_NX` to `PLOTS_ES` (#528)
 
 ### Removed
 - `E2.add_costs_and_total`() (#520)
 - Calculation of energy expenditures using `price` (#520)
-- Function `F1.plot_input_timeseries` which is based on matplotlib
+- Function `F1.plot_input_timeseries` which is based on `matplotlib` (#527)
+- Dependency to `matplotlib` (#528)
 
 ### Fixed
 - Calculation of `cost_upfront` required a multiplication (#520)
