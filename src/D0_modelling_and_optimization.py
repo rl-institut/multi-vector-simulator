@@ -6,7 +6,7 @@ from oemof.solph import processing
 import oemof.solph as solph
 
 import src.D1_model_components as model_components
-from src.constants import PATH_OUTPUT_FOLDER
+from src.constants import PATH_OUTPUT_FOLDER, ES_GRAPH, PATHS_TO_PLOTS, PLOTS_ES
 from src.constants_json_strings import (
     ENERGY_BUSSES,
     OEMOF_ASSET_TYPE,
@@ -196,14 +196,14 @@ class model_building:
 
     def plot_networkx_graph(dict_values, model):
         """
-        Plots a networkx graph of the energy system if that graph is to be displayed or stored.
+        Plots a graph of the energy system if that graph is to be displayed or stored.
 
         Parameters
         ----------
         dict_values: dict
             All simulation inputs
 
-        model: object
+        model: `oemof.solph.network.EnergySystem`
             oemof-solph object for energy system model
 
         Returns
@@ -214,18 +214,21 @@ class model_building:
             dict_values[SIMULATION_SETTINGS][DISPLAY_NX_GRAPH][VALUE] is True
             or dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH][VALUE] is True
         ):
-            from src.F1_plotting import draw_graph
+            from src.F1_plotting import ESGraph
 
-            draw_graph(
-                dict_values,
-                model,
-                node_color={},
-                show_plot=dict_values[SIMULATION_SETTINGS][DISPLAY_NX_GRAPH][VALUE],
-                save_plot=dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH][VALUE],
-                user_input=dict_values[SIMULATION_SETTINGS],
+            fpath = os.path.join(
+                dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], ES_GRAPH
             )
-            logging.debug("Created networkx graph of the energy system.")
-        return
+            dict_values[PATHS_TO_PLOTS][PLOTS_ES] += [str(fpath)]
+
+            # Draw the energy system
+            graph = ESGraph(model, filepath=fpath,)
+            logging.debug("Created graph of the energy system.")
+
+            if dict_values[SIMULATION_SETTINGS][DISPLAY_NX_GRAPH][VALUE] is True:
+                graph.view()
+            if dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH][VALUE] is True:
+                graph.render()
 
     def add_constraints():
         """
