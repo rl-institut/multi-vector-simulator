@@ -193,3 +193,13 @@ class TestFileCreation:
 def test_get_color_is_cyclic():
     colors = [1, 2, 3]
     assert F1.get_color(3, colors) == colors[0]
+
+
+def test_fixed_width_text_smaller_than_limit_returns_text():
+    txt = "12345"
+    assert txt == F1.fixed_width_text(txt, char_num=10)
+
+
+def test_fixed_width_text_smaller_than_limit_returns_text():
+    txt = "12345"
+    assert F1.fixed_width_text(txt, char_num=2) == "12\n34\n5"
