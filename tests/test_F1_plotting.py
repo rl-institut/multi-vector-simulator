@@ -39,6 +39,7 @@ from .constants import (
     CSV_ELEMENTS,
     CSV_FNAME,
     DICT_PLOTS,
+    ES_GRAPH,
 )
 
 dict_values = {
@@ -121,9 +122,7 @@ class TestNetworkx:
     )
     def test_if_networkx_graph_is_stored_save_plot_true(self, m_args):
         main(overwrite=True, display_output="warning")
-        assert (
-            os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
-        )
+        assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)) is True
 
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
@@ -148,9 +147,7 @@ class TestNetworkx:
     )
     def test_if_networkx_graph_is_stored_save_plot_false(self, m_args):
         main(overwrite=True, display_output="warning")
-        assert (
-            os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
-        )
+        assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)) is False
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):

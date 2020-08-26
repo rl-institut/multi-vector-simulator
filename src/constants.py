@@ -262,6 +262,9 @@ DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
 # dict keys in results_json file
 TIMESERIES = "timeseries"
 
+# filename of the energy system graph
+ES_GRAPH = "energy_system_graph.png"
+
 # key of the dict containing generated plots filesnames in results_json file
 PATHS_TO_PLOTS = "paths_to_plots"
 # keys' names of dict containing generated plots filenames
