@@ -2,7 +2,6 @@ import logging
 import os
 import textwrap
 
-import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.express as px
@@ -48,9 +47,6 @@ Module F1 describes all the functions that create plots.
 - creating pie chart for cost data
 - creating network graph for the model brackets only working on Ubuntu
 """
-
-
-logging.getLogger("matplotlib.font_manager").disabled = True
 
 
 def convert_plot_data_to_dataframe(plot_data_dict, data_type):
