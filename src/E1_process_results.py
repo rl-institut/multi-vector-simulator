@@ -613,7 +613,7 @@ def convert_components_to_dataframe(dict_values):
     df_comp = df_comp.reset_index()
 
     for i in range(len(df_comp)):
-        if df_comp.at[i, "Capacity optimization"]:
+        if df_comp.at[i, "Capacity optimization"] is True:
             df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "Yes"
         else:
             df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "No"
@@ -777,7 +777,7 @@ def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
     dict_economic:
         Economic project data
 
-    KPI_COST_MATRIX_ENTRIES:
+    kpi_list:
         List of cost matrix entries
 
     Returns
