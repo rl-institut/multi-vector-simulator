@@ -658,6 +658,8 @@ def create_app(results_json):
         os.path.join(REPORT_PATH, "assets", "proj_map_static.png")
     )
 
+    ENERGY_SYSTEM_GRAPH = encode_image_file(results_json[PATHS_TO_PLOTS][PLOTS_ES][0])
+
     # Determining the sectors which were simulated
 
     sectors = list(results_json[PROJECT_DATA][SECTORS].keys())
@@ -759,7 +761,7 @@ def create_app(results_json):
                                 "be found in the appendix."
                             ),
                             html.Div(
-                                className="grid-x ",
+                                className="grid-x",
                                 id="location-map-div",
                                 children=[
                                     html.Div(
@@ -810,6 +812,19 @@ def create_app(results_json):
                                 ],
                             ),
                             make_dash_data_table(df_simsettings, "Simulation Settings"),
+                            html.Div(
+                                className="grid-x",
+                                id="energy-system-graph-div",
+                                children=[
+                                    html.H4(["Energy system"]),
+                                    html.Img(
+                                        src="data:image/png;base64,{}".format(
+                                            ENERGY_SYSTEM_GRAPH.decode()
+                                        ),
+                                        alt="Energy System Graph",
+                                    ),
+                                ],
+                            ),
                         ],
                     ),
                     insert_subsection(
