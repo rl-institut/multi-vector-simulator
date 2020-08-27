@@ -63,8 +63,6 @@ LATITUDE = "latitude"
 
 # Project data and simulation settings (true/false)
 SIMULATION_SETTINGS = "simulation_settings"
-DISPLAY_NX_GRAPH = "display_nx_graph"
-STORE_NX_GRAPH = "store_nx_graph"
 OUTPUT_LP_FILE = "output_lp_file"
 STORE_OEMOF_RESULTS = "store_oemof_results"
 PROJECT_NAME = "project_name"

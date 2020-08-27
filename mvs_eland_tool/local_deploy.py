@@ -127,9 +127,16 @@ def main(**kwargs):
     logging.debug("Accessing script: C0_data_processing")
     data_processing.all(dict_values)
 
+    if "path_pdf_report" in user_input or "path_png_figs" in user_input:
+        save_energy_system_graph = True
+    else:
+        save_energy_system_graph = False
+
     print("")
     logging.debug("Accessing script: D0_modelling_and_optimization")
-    results_meta, results_main = modelling.run_oemof(dict_values)
+    results_meta, results_main = modelling.run_oemof(
+        dict_values, save_energy_system_graph=save_energy_system_graph
+    )
 
     print("")
     logging.debug("Accessing script: E0_evaluation")
