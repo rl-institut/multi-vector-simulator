@@ -566,7 +566,7 @@ def create_app(results_json):
     )
 
     # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
-    dfprojectData = pd.DataFrame.from_dict(results_json[PROJECT_DATA])
+    dfprojectData = pd.DataFrame.from_dict(results_json[PROJECT_DATA]).iloc[0]
     dfeconomicData = pd.DataFrame.from_dict(results_json[ECONOMIC_DATA]).loc[VALUE]
 
     # Obtaining the latlong of the project location
