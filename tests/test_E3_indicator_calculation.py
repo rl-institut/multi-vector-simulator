@@ -35,7 +35,7 @@ from src.constants_json_strings import (
     TOTAL_DEMAND,
     SUFFIX_ELECTRICITY_EQUIVALENT,
     ATTRIBUTED_COSTS,
-    LCOeleq
+    LCOeleq,
 )
 
 electricity = "Electricity"
@@ -299,73 +299,129 @@ dict_values = {
             COST_TOTAL: npc,
             TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
             TOTAL_DEMAND + electricity: total_demand,
-            TOTAL_DEMAND + electricity + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand
+            TOTAL_DEMAND + electricity + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
+        }
+    },
+    PROJECT_DATA: {SECTORS: {electricity: electricity}},
+}
 
-        }},
-    PROJECT_DATA: {SECTORS: {electricity: electricity}}}
 
 def test_add_levelized_cost_of_energy_carriers_one_sector():
     E3.add_levelized_cost_of_energy_carriers(dict_values)
 
-    exp = {ATTRIBUTED_COSTS+electricity: 1000,
-           LCOeleq+electricity: 1000*dict_values[ECONOMIC_DATA][CRF][VALUE]/total_demand,
-           LCOeleq: 1000*dict_values[ECONOMIC_DATA][CRF][VALUE]/total_demand}
+    exp = {
+        ATTRIBUTED_COSTS + electricity: 1000,
+        LCOeleq
+        + electricity: 1000 * dict_values[ECONOMIC_DATA][CRF][VALUE] / total_demand,
+        LCOeleq: 1000 * dict_values[ECONOMIC_DATA][CRF][VALUE] / total_demand,
+    }
 
     for kpi in [ATTRIBUTED_COSTS, LCOeleq]:
-        assert kpi+electricity in dict_values[KPI][KPI_SCALARS_DICT]
-        assert dict_values[KPI][KPI_SCALARS_DICT][kpi+electricity] == exp[kpi+electricity]
+        assert kpi + electricity in dict_values[KPI][KPI_SCALARS_DICT]
+        assert (
+            dict_values[KPI][KPI_SCALARS_DICT][kpi + electricity]
+            == exp[kpi + electricity]
+        )
 
     assert LCOeleq in dict_values[KPI][KPI_SCALARS_DICT]
     assert dict_values[KPI][KPI_SCALARS_DICT][LCOeleq] == exp[LCOeleq]
+
 
 def test_add_levelized_cost_of_energy_carriers_two_sectors():
     dict_values[KPI][KPI_SCALARS_DICT].update({TOTAL_DEMAND + h2: 100})
-    dict_values[KPI][KPI_SCALARS_DICT].update({TOTAL_DEMAND + h2 + SUFFIX_ELECTRICITY_EQUIVALENT:
-                                                   dict_values[KPI][KPI_SCALARS_DICT][
-                                                       TOTAL_DEMAND + h2 ]*  DEFAULT_WEIGHTS_ENERGY_CARRIERS[h2][VALUE]})
-    dict_values[KPI][KPI_SCALARS_DICT].update({TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT:
-                                               dict_values[KPI][KPI_SCALARS_DICT][TOTAL_DEMAND+electricity+SUFFIX_ELECTRICITY_EQUIVALENT]+
-                                               dict_values[KPI][KPI_SCALARS_DICT][
-                                                   TOTAL_DEMAND + h2 + SUFFIX_ELECTRICITY_EQUIVALENT]
-                                               })
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {
+            TOTAL_DEMAND
+            + h2
+            + SUFFIX_ELECTRICITY_EQUIVALENT: dict_values[KPI][KPI_SCALARS_DICT][
+                TOTAL_DEMAND + h2
+            ]
+            * DEFAULT_WEIGHTS_ENERGY_CARRIERS[h2][VALUE]
+        }
+    )
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {
+            TOTAL_DEMAND
+            + SUFFIX_ELECTRICITY_EQUIVALENT: dict_values[KPI][KPI_SCALARS_DICT][
+                TOTAL_DEMAND + electricity + SUFFIX_ELECTRICITY_EQUIVALENT
+            ]
+            + dict_values[KPI][KPI_SCALARS_DICT][
+                TOTAL_DEMAND + h2 + SUFFIX_ELECTRICITY_EQUIVALENT
+            ]
+        }
+    )
     dict_values[PROJECT_DATA][SECTORS].update({h2: h2})
     E3.add_levelized_cost_of_energy_carriers(dict_values)
 
-    exp = {ATTRIBUTED_COSTS + electricity: 1000*dict_values[KPI][KPI_SCALARS_DICT][
-                                                   TOTAL_DEMAND + electricity + SUFFIX_ELECTRICITY_EQUIVALENT]/dict_values[KPI][KPI_SCALARS_DICT][
-                                                   TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT],
-           ATTRIBUTED_COSTS + h2: 1000*dict_values[KPI][KPI_SCALARS_DICT][
-                                                   TOTAL_DEMAND + h2 + SUFFIX_ELECTRICITY_EQUIVALENT]/dict_values[KPI][KPI_SCALARS_DICT][
-                                                   TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT]}
-    exp.update({
-           LCOeleq+electricity: dict_values[KPI][KPI_SCALARS_DICT][ATTRIBUTED_COSTS+electricity]*dict_values[ECONOMIC_DATA][CRF][VALUE]/dict_values[KPI][KPI_SCALARS_DICT][
-                                                   TOTAL_DEMAND + electricity],
-           LCOeleq + electricity: dict_values[KPI][KPI_SCALARS_DICT][ATTRIBUTED_COSTS+h2] * dict_values[ECONOMIC_DATA][CRF][VALUE] / dict_values[KPI][KPI_SCALARS_DICT][
-                                                   TOTAL_DEMAND + h2],
-
-           LCOeleq: 1000*dict_values[ECONOMIC_DATA][CRF][VALUE]/dict_values[KPI][KPI_SCALARS_DICT][
-                                                   TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT]})
+    exp = {
+        ATTRIBUTED_COSTS
+        + electricity: 1000
+        * dict_values[KPI][KPI_SCALARS_DICT][
+            TOTAL_DEMAND + electricity + SUFFIX_ELECTRICITY_EQUIVALENT
+        ]
+        / dict_values[KPI][KPI_SCALARS_DICT][
+            TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+        ],
+        ATTRIBUTED_COSTS
+        + h2: 1000
+        * dict_values[KPI][KPI_SCALARS_DICT][
+            TOTAL_DEMAND + h2 + SUFFIX_ELECTRICITY_EQUIVALENT
+        ]
+        / dict_values[KPI][KPI_SCALARS_DICT][
+            TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+        ],
+    }
+    exp.update(
+        {
+            LCOeleq
+            + electricity: dict_values[KPI][KPI_SCALARS_DICT][
+                ATTRIBUTED_COSTS + electricity
+            ]
+            * dict_values[ECONOMIC_DATA][CRF][VALUE]
+            / dict_values[KPI][KPI_SCALARS_DICT][TOTAL_DEMAND + electricity],
+            LCOeleq
+            + electricity: dict_values[KPI][KPI_SCALARS_DICT][ATTRIBUTED_COSTS + h2]
+            * dict_values[ECONOMIC_DATA][CRF][VALUE]
+            / dict_values[KPI][KPI_SCALARS_DICT][TOTAL_DEMAND + h2],
+            LCOeleq: 1000
+            * dict_values[ECONOMIC_DATA][CRF][VALUE]
+            / dict_values[KPI][KPI_SCALARS_DICT][
+                TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+            ],
+        }
+    )
 
     for kpi in [ATTRIBUTED_COSTS, LCOeleq]:
-        assert kpi+electricity in dict_values[KPI][KPI_SCALARS_DICT]
-        assert dict_values[KPI][KPI_SCALARS_DICT][kpi+electricity] == exp[kpi+electricity]
+        assert kpi + electricity in dict_values[KPI][KPI_SCALARS_DICT]
+        assert (
+            dict_values[KPI][KPI_SCALARS_DICT][kpi + electricity]
+            == exp[kpi + electricity]
+        )
 
     assert LCOeleq in dict_values[KPI][KPI_SCALARS_DICT]
     assert dict_values[KPI][KPI_SCALARS_DICT][LCOeleq] == exp[LCOeleq]
 
+
 def test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equivalent_larger_0_total_flow_energy_carrier_larger_0():
-    lcoe_energy_carrier, attributed_costs = E3.equation_levelized_cost_of_energy_carrier(
+    (
+        lcoe_energy_carrier,
+        attributed_costs,
+    ) = E3.equation_levelized_cost_of_energy_carrier(
         cost_total=1000,
         crf=0.1,
         total_flow_energy_carrier_eleq=500,
         total_demand_electricity_equivalent=1000,
         total_flow_energy_carrier=100,
     )
-    assert attributed_costs == 500/1000 * 1000
+    assert attributed_costs == 500 / 1000 * 1000
     assert lcoe_energy_carrier == 500 * 0.1 / 100
 
+
 def test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equivalent_larger_0_total_flow_energy_carrier_is_0():
-    lcoe_energy_carrier, attributed_costs = E3.equation_levelized_cost_of_energy_carrier(
+    (
+        lcoe_energy_carrier,
+        attributed_costs,
+    ) = E3.equation_levelized_cost_of_energy_carrier(
         cost_total=1000,
         crf=0.1,
         total_flow_energy_carrier_eleq=0,
@@ -375,8 +431,12 @@ def test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equi
     assert attributed_costs == 0
     assert lcoe_energy_carrier == 0
 
+
 def test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equivalent_is_0_total_flow_energy_carrier_is_0():
-    lcoe_energy_carrier, attributed_costs = E3.equation_levelized_cost_of_energy_carrier(
+    (
+        lcoe_energy_carrier,
+        attributed_costs,
+    ) = E3.equation_levelized_cost_of_energy_carrier(
         cost_total=1000,
         crf=0.1,
         total_flow_energy_carrier_eleq=0,
