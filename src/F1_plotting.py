@@ -233,6 +233,10 @@ class ESGraph:
         Returns
         -------
         None: render the generated dot graph in the filepath
+        
+        Notes
+        --------
+        When new oemof-solph asset types are added to the available types in the MVS, this function needs to be updated, so that it can render the asset in the graph.
         """
         file_name, file_ext = os.path.splitext(filepath)
 

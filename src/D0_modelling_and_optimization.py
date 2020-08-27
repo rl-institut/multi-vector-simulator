@@ -223,7 +223,7 @@ class model_building:
 
             # Draw the energy system
             graph = ESGraph(model, filepath=fpath,)
-            logging.debug("Created graph of the energy system.")
+            logging.debug("Created graph of the energy system model.")
 
             if dict_values[SIMULATION_SETTINGS][DISPLAY_NX_GRAPH][VALUE] is True:
                 graph.view()
