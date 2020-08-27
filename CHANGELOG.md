@@ -42,8 +42,7 @@ Here is a template for new release sections
  `networkx` to draw the graph of the energy system model (#528) 
 - Rename variable `PLOTS_NX` to `PLOTS_ES` (#528)
 - Changed `requirements.txt` (removing and updating dependencies) (#528)
-- A png of the energy system model graph is only saved if either `-png` or `-pdf` options are
- chosen (#530)
+- A png of the energy system model graph is only saved if either `-png` or `-pdf` options are chosen (#530)
 
 ### Removed
 - `E2.add_costs_and_total`() (#520)
