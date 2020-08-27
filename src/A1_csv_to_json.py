@@ -643,10 +643,11 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                 value = None
             else:
                 try:
-                    value = int(value)
-                except:
                     value = float(value)
-
+                    if value.is_integer() is True:
+                        value = int(value)
+                except:
+                    value = int(value)
         asset_dict.update({param: {VALUE: value, UNIT: row[UNIT]}})
 
     return asset_dict
