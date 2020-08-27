@@ -19,7 +19,6 @@ from src.constants_json_strings import (
     SIMULATION_SETTINGS,
     LABEL,
     TIME_INDEX,
-    DISPLAY_NX_GRAPH,
     STORE_NX_GRAPH,
     OUTPUT_LP_FILE,
     STORE_OEMOF_RESULTS,

@@ -2013,10 +2013,6 @@
         }
     },
     "simulation_settings": {
-        "display_nx_graph": {
-            "unit": "bool",
-            "value": false
-        },
         "end_date": "pandas_Timestamp:2018-01-02 23:00:00",
         "evaluated_period": {
             "unit": "days",
