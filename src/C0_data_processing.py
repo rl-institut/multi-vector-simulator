@@ -61,11 +61,11 @@ def all(dict_values):
     # C1.check_input_values(dict_values)
     # todo Check, whether files (demand, generation) are existing
 
-    # check electricity price >= feed-in tariff todo: can be integrated into check_input_values() later
-    C1.check_feedin_tariff(dict_values=dict_values)
-
     # Adds costs to each asset and sub-asset
     process_all_assets(dict_values)
+
+    # check electricity price >= feed-in tariff todo: can be integrated into check_input_values() later
+    C1.check_feedin_tariff(dict_values=dict_values)
 
     # Perform basic (limited) check for moduel completeness
     C1.check_for_sufficient_assets_on_busses(dict_values)
