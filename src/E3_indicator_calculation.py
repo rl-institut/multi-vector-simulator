@@ -106,6 +106,12 @@ def total_demand_each_sector(dict_values):
     - total demand of each energy carrier (original unit)
     - total demand of each energy carrier (electricity equivalent) 
     - total demand in electricity equivalent
+
+    Notes
+    -----
+    Tested with
+    - test_add_levelized_cost_of_energy_carriers_one_sector()
+    - test_add_levelized_cost_of_energy_carriers_two_sectors()
     """
 
     # Define empty dict to gather the total demand of each energy carrier
@@ -565,6 +571,10 @@ def equation_levelized_cost_of_energy_carrier(
 
     .. math: LCOE energy carrier = \frac{attributed costs \cdot CRF}{total energy carrier demand}
 
+    Tested with:
+    - test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equivalent_larger_0_total_flow_energy_carrier_larger_0()
+    - test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equivalent_larger_0_total_flow_energy_carrier_is_0()
+    - test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equivalent_is_0_total_flow_energy_carrier_is_0()
     """
     attributed_costs = 0
 
@@ -577,6 +587,8 @@ def equation_levelized_cost_of_energy_carrier(
 
     if total_flow_energy_carrier > 0:
         lcoe_energy_carrier = attributed_costs * crf / total_flow_energy_carrier
+    else:
+        lcoe_energy_carrier = 0
     return lcoe_energy_carrier, attributed_costs
 
 
