@@ -214,7 +214,7 @@ class model_building:
             dict_values[SIMULATION_SETTINGS][DISPLAY_NX_GRAPH][VALUE] is True
             or dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH][VALUE] is True
         ):
-            from src.F1_plotting import ESGraph
+            from src.F1_plotting import ESGraphRenderer
 
             fpath = os.path.join(
                 dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], ES_GRAPH
@@ -222,7 +222,7 @@ class model_building:
             dict_values[PATHS_TO_PLOTS][PLOTS_ES] += [str(fpath)]
 
             # Draw the energy system
-            graph = ESGraph(model, filepath=fpath,)
+            graph = ESGraphRenderer(model, filepath=fpath,)
             logging.debug("Created graph of the energy system model.")
 
             if dict_values[SIMULATION_SETTINGS][DISPLAY_NX_GRAPH][VALUE] is True:

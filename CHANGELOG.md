@@ -38,7 +38,7 @@ Here is a template for new release sections
 - All energyProviders that have key `FILENAME` (and, therefore, a timeseries), are now of `DISPATCHABILITY = False`(#520)
 - Changed structure of `E2.lcoe_assets()` so that each asset has a defined LCOE_ASSET. If `sum(FLOW)==0` of an asset, the LCOE_ASSET (utilization LCOE) is defined to be 0 (#520)
 - Color lists for plots are provided by user and are not hard coded anymore (#527)
-- Replace function `F1.draw_graph` by the class `F1.ESGraph` and use `graphviz` instead of
+- Replace function `F1.draw_graph` by the class `F1.ESGraphRenderer` and use `graphviz` instead of
  `networkx` to draw the graph of the energy system model (#528) 
 - Rename variable `PLOTS_NX` to `PLOTS_ES` (#528)
 - Changed `requirements.txt` (removing and updating dependencies) (#528)

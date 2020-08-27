@@ -200,7 +200,7 @@ def fixed_width_text(text, char_num=10):
     return answer
 
 
-class ESGraph:
+class ESGraphRenderer:
     def __init__(
         self,
         energy_system=None,
