@@ -14,7 +14,7 @@ from src.constants import (
     PATHS_TO_PLOTS,
     PLOTS_DEMANDS,
     PLOTS_RESOURCES,
-    PLOTS_NX,
+    PLOTS_ES,
     PLOTS_PERFORMANCE,
     PLOTS_COSTS,
     CSV_EXT,
@@ -39,6 +39,7 @@ from .constants import (
     CSV_ELEMENTS,
     CSV_FNAME,
     DICT_PLOTS,
+    ES_GRAPH,
 )
 
 dict_values = {
@@ -46,7 +47,7 @@ dict_values = {
         PLOTS_BUSSES: [],
         PLOTS_DEMANDS: [],
         PLOTS_RESOURCES: [],
-        PLOTS_NX: [],
+        PLOTS_ES: [],
         PLOTS_PERFORMANCE: [],
         PLOTS_COSTS: [],
     }
@@ -121,9 +122,7 @@ class TestNetworkx:
     )
     def test_if_networkx_graph_is_stored_save_plot_true(self, m_args):
         main(overwrite=True, display_output="warning")
-        assert (
-            os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is True
-        )
+        assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)) is True
 
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
@@ -148,9 +147,7 @@ class TestNetworkx:
     )
     def test_if_networkx_graph_is_stored_save_plot_false(self, m_args):
         main(overwrite=True, display_output="warning")
-        assert (
-            os.path.exists(os.path.join(TEST_OUTPUT_PATH, "network_graph.png")) is False
-        )
+        assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)) is False
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
@@ -196,3 +193,13 @@ class TestFileCreation:
 def test_get_color_is_cyclic():
     colors = [1, 2, 3]
     assert F1.get_color(3, colors) == colors[0]
+
+
+def test_fixed_width_text_smaller_than_limit_returns_text():
+    txt = "12345"
+    assert txt == F1.fixed_width_text(txt, char_num=10)
+
+
+def test_fixed_width_text_smaller_than_limit_returns_text():
+    txt = "12345"
+    assert F1.fixed_width_text(txt, char_num=2) == "12\n34\n5"
