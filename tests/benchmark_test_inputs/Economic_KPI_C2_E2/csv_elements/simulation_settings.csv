@@ -5,5 +5,3 @@ output_lp_file,bool,True
 start_date,str,2018-01-01 00:00:00
 store_oemof_results,bool,True
 timestep,minutes,60
-display_nx_graph,bool,False
-store_nx_graph,bool,True

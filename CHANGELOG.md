@@ -42,12 +42,14 @@ Here is a template for new release sections
  `networkx` to draw the graph of the energy system model (#528) 
 - Rename variable `PLOTS_NX` to `PLOTS_ES` (#528)
 - Changed `requirements.txt` (removing and updating dependencies) (#528)
+- A png of the energy system model graph is only saved if either `-png` or `-pdf` options are chosen (#530)
 
 ### Removed
 - `E2.add_costs_and_total`() (#520)
 - Calculation of energy expenditures using `price` (#520)
 - Function `F1.plot_input_timeseries` which is based on `matplotlib` (#527)
 - Dependency to `matplotlib` (#528)
+- Remove `STORE_NX_GRAPH` and `DISPLAY_NX_GRAPH` variables (#530)
 
 ### Fixed
 - Calculation of `cost_upfront` required a multiplication (#520)
