@@ -234,7 +234,7 @@ class TestACElectricityBus:
         # look for peak demand in period
         for j in range(0, 3):
             for i in range(0, len(DSO_periods[1])):
-                # When the DSO is supplying peak demand while demand is smaller then supplied electricity.
+                # When the DSO is supplying peak demand while demand is smaller than supplied electricity.
                 # Then, the battery is charged.
                 if (
                     DSO_periods[j][i] == peak_demand[j]
