@@ -52,6 +52,8 @@ from src.constants_json_strings import (
     ENERGY_PRICE,
     ENERGY_PROVIDERS,
     ENERGY_BUSSES,
+    VALUE,
+    FLOW,
 )
 
 
@@ -95,13 +97,29 @@ def check_feedin_tariff(dict_values):
 
     """
     for provider in dict_values[ENERGY_PROVIDERS].keys():
-        feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]["value"]
-        electricity_price = dict_values[ENERGY_PROVIDERS][provider][ENERGY_PRICE][
-            "value"
-        ]
-        if feedin_tariff > electricity_price:
-            msg = f"Feed-in tariff > energy price of energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}' would cause an unbound solution and terminate the optimization."
-            raise ValueError(msg)
+        feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]
+        electricity_price = dict_values[ENERGY_PROVIDERS][provider][ENERGY_PRICE]
+        if VALUE in feedin_tariff and VALUE in electricity_price:
+            diff = feedin_tariff[VALUE] - electricity_price[VALUE]
+            if diff > 0:
+                msg = f"Feed-in tariff > energy price for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}' would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
+                raise ValueError(msg)
+        else:
+            for i in range(0, len(electricity_price)):
+                diff[i] = feedin_tariff[VALUE] - electricity_price[i]
+                boolean = [k > 0 for k in
+                           diff.values]  # True if there is an instance where feed-in tariff > electricity_price
+                if any(boolean) == True:
+                    instances = sum(boolean)  # Count instances
+                    msg = f"Feed-in tariff > energy price in {instances} during the simulation time for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'. This would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
+                    raise ValueError(msg)
+        # feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]["value"]
+        # electricity_price = dict_values[ENERGY_PROVIDERS][provider][ENERGY_PRICE][
+        #     "value"
+        # ]
+        # if feedin_tariff > electricity_price:
+        #     msg = f"Feed-in tariff > energy price of energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}' would cause an unbound solution and terminate the optimization."
+        #     raise ValueError(msg)
     return
 
 
