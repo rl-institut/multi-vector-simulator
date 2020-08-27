@@ -268,17 +268,21 @@ class ESGraphRenderer:
                 self.add_bus(nd.label)
                 # keep the bus reference for drawing edges later
                 self.busses.append(nd)
-            if isinstance(nd, oemof.solph.network.Sink):
+            elif isinstance(nd, oemof.solph.network.Sink):
                 self.add_sink(nd.label)
-
-            if isinstance(nd, oemof.solph.network.Source):
+            elif isinstance(nd, oemof.solph.network.Source):
                 self.add_source(nd.label)
-
-            if isinstance(nd, oemof.solph.network.Transformer):
+            elif isinstance(nd, oemof.solph.network.Transformer):
                 self.add_transformer(nd.label)
-
-            if isinstance(nd, oemof.solph.components.GenericStorage):
+            elif isinstance(nd, oemof.solph.components.GenericStorage):
                 self.add_storage(nd.label)
+            else:
+                logging.warning(
+                    "The component {} of type {} is not implemented in the rendering "
+                    "function of the energy model network graph drawer. It will be "
+                    "rendered as an ellipse".format(nd.label, type(nd))
+                )
+                self.add_component(nd.label)
 
         # draw the edges between the nodes based on each bus inputs/outputs
         for bus in self.busses:
@@ -348,6 +352,15 @@ class ESGraphRenderer:
             shape="rectangle",
             style="rounded",
             fontsize="10",
+        )
+
+    def add_component(self, label="component", subgraph=None):
+        if subgraph is None:
+            dot = self.dot
+        else:
+            dot = subgraph
+        dot.node(
+            fixed_width_text(label, char_num=self.txt_width), fontsize="10",
         )
 
     def connect(self, a, b):
