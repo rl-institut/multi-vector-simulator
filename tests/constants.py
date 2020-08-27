@@ -40,6 +40,7 @@ from src.constants import (
     TYPE_STR,
     TYPE_NONE,
     PATHS_TO_PLOTS,
+    ES_GRAPH,
 )
 
 from src.constants_json_strings import (

@@ -38,9 +38,11 @@ from src.constants import (
     REPO_PATH,
     REPORT_PATH,
     PATH_OUTPUT_FOLDER,
+    PATHS_TO_PLOTS,
     OUTPUT_FOLDER,
     INPUTS_COPY,
     CSV_ELEMENTS,
+    PLOTS_ES,
     ECONOMIC_DATA,
     PROJECT_DATA,
     JSON_WITH_RESULTS,
@@ -505,9 +507,30 @@ def ready_costs_pie_plots(dict_values, only_print=False):
     return pie_plots
 
 
+def encode_image_file(img_path):
+    """Encode image files to load them in the dash layout under img html tag
+
+    Parameters
+    ----------
+    img_path: str
+        path to the image file
+
+    Returns
+    -------
+    encoded_img: bytes
+        encoded bytes of the image file
+
+    """
+
+    try:
+        with open(img_path, "rb") as ifs:
+            encoded_img = base64.b64encode(ifs.read())
+    except FileNotFoundError:
+        encoded_img = base64.b64encode(bytes())
+    return encoded_img
+
+
 # Styling of the report
-
-
 def create_app(results_json):
     r"""Initializes the app and calls all the other functions, resulting in the web app as well as pdf.
 
@@ -627,15 +650,15 @@ def create_app(results_json):
 
     simDate = time.strftime("%Y-%m-%d")
 
-    ELAND_LOGO = base64.b64encode(
-        open(
-            os.path.join(REPORT_PATH, "assets", "logo-eland-original.jpg"), "rb"
-        ).read()
+    ELAND_LOGO = encode_image_file(
+        os.path.join(REPORT_PATH, "assets", "logo-eland-original.jpg")
     )
 
-    MAP_STATIC = base64.b64encode(
-        open(os.path.join(REPORT_PATH, "assets", "proj_map_static.png"), "rb").read()
+    MAP_STATIC = encode_image_file(
+        os.path.join(REPORT_PATH, "assets", "proj_map_static.png")
     )
+
+    ENERGY_SYSTEM_GRAPH = encode_image_file(results_json[PATHS_TO_PLOTS][PLOTS_ES][0])
 
     # Determining the sectors which were simulated
 
@@ -738,7 +761,7 @@ def create_app(results_json):
                                 "be found in the appendix."
                             ),
                             html.Div(
-                                className="grid-x ",
+                                className="grid-x",
                                 id="location-map-div",
                                 children=[
                                     html.Div(
@@ -789,6 +812,19 @@ def create_app(results_json):
                                 ],
                             ),
                             make_dash_data_table(df_simsettings, "Simulation Settings"),
+                            html.Div(
+                                className="grid-x",
+                                id="energy-system-graph-div",
+                                children=[
+                                    html.H4(["Energy system"]),
+                                    html.Img(
+                                        src="data:image/png;base64,{}".format(
+                                            ENERGY_SYSTEM_GRAPH.decode()
+                                        ),
+                                        alt="Energy System Graph",
+                                    ),
+                                ],
+                            ),
                         ],
                     ),
                     insert_subsection(

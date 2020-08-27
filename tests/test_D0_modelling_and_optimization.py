@@ -21,10 +21,7 @@ from src.constants_json_strings import (
     OUTPUT_LP_FILE,
     SIMULATION_RESULTS,
 )
-from .constants import (
-    TEST_REPO_PATH,
-    PATH_OUTPUT_FOLDER,
-)
+from .constants import TEST_REPO_PATH, PATH_OUTPUT_FOLDER, ES_GRAPH
 
 json_path = os.path.join("tests", "test_data", "test_data_for_D0.json")
 
@@ -101,7 +98,7 @@ def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0
         )
 
 
-path_networkx = os.path.join(TEST_OUTPUT_PATH, "network_graph.png")
+path_networkx = os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)
 
 
 def test_networkx_graph_requested_store_nx_graph_true():
