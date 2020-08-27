@@ -44,7 +44,7 @@ from src.constants_json_strings import (
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_ENERGY_USE,
-RENEWABLE_SHARE,
+    RENEWABLE_SHARE,
 )
 
 
@@ -268,6 +268,7 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
     logging.info("Calculated renewable share of the LES.")
     return
 
+
 def renewable_share(dict_values):
     """Determination of renewable share of one sector
 
@@ -356,6 +357,7 @@ def equation_renewable_share(total_res, total_non_res):
 
 def equation_degree_of_autonomy():
     return degree_of_autonomy
+
 
 def add_degree_of_sector_coupling(dict_values):
     """

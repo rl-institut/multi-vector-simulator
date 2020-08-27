@@ -136,6 +136,7 @@ def test_all_cost_info_parameters_added_to_dict_asset():
     ):
         assert k in dict_asset
 
+
 def test_calculate_costs_replacement():
     cost_replacement = E2.calculate_costs_replacement(
         specific_replacement_of_initial_capacity=5,
