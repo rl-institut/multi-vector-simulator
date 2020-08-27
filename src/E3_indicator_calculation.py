@@ -234,21 +234,21 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
         }
     )
 
-    for DSO in dict_values[ENERGY_PROVIDERS]:
-        sector = dict_values[ENERGY_PROVIDERS][DSO][ENERGY_VECTOR]
+    for dso in dict_values[ENERGY_PROVIDERS]:
+        sector = dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR]
 
         # Get source connected to the specific DSO in question
-        DSO_source_name = DSO + DSO_CONSUMPTION
+        DSO_source_name = dso + DSO_CONSUMPTION
 
         # Add renewable share of energy consumption from DSO to the renewable origin (total)
         renewable_origin[sector] += (
             dict_values[ENERGY_PRODUCTION][DSO_source_name][TOTAL_FLOW][VALUE]
-            * dict_values[ENERGY_PROVIDERS][DSO][RENEWABLE_SHARE_DSO][VALUE]
+            * dict_values[ENERGY_PROVIDERS][dso][RENEWABLE_SHARE_DSO][VALUE]
         )
 
         non_renewable_origin[sector] += dict_values[ENERGY_PRODUCTION][DSO_source_name][
             TOTAL_FLOW
-        ][VALUE] * (1 - dict_values[ENERGY_PROVIDERS][DSO][RENEWABLE_SHARE_DSO][VALUE])
+        ][VALUE] * (1 - dict_values[ENERGY_PROVIDERS][dso][RENEWABLE_SHARE_DSO][VALUE])
 
     dict_values[KPI][KPI_UNCOUPLED_DICT].update(
         {
