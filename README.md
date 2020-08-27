@@ -8,17 +8,23 @@ Rights: [Reiner Lemoine Institut (Berlin)](https://reiner-lemoine-institut.de/)
 
 The multi-vector simulator (MVS) allows the evaluation of local sector-coupled energy systems that include the energy carriers electricity, heat and/or gas. The MVS has three main features:
 
-Firstly, an analysis of the current energy system, which can be set up automatically from a choice of components, including its costs and performance parameters. As a second step, near-future investments into power generation and storage assets can be optimized aiming at least-cost supply of electricity and heat. Lastly, future energy supply scenarios that integrate emerging technologies helping to meet sustainability goals and decrease adverse climate effects, e.g. through high renewable energy shares or sector-coupling technologies, can be evaluated.
+- Analysis of an energy system model, which can be defined from csv or json files, including its
+ costs and performance parameters.
+ - Near-future investments into power generation and storage assets can be optimized aiming at
+  least-cost supply of electricity and heat.
+ - Future energy supply scenarios that integrate emerging technologies helping to meet sustainability goals and decrease adverse climate effects can be evaluated, e.g. through high renewable energy shares or sector-coupling technologies.
 
 The tool is being developed within the scope of the H2020 project E-LAND (Integrated multi-vector management system for Energy isLANDs, project homepage [HERE](https://elandh2020.eu/)). A graphical user interface for the MVS will be integrated.
 
 *Latest release*
-Check the [latest release](https://github.com/rl-institut/mvs_eland/releases/latest), and includes the working code of the MVS using json as an input. It is not validated and test coverage is still 0%. Please check the [CHANGELOG.md](https://github.com/rl-institut/mvs_eland/blob/master/CHANGELOG.md) for past updates and changes.
+Check the [latest release](https://github.com/rl-institut/mvs_eland/releases/latest). Please check the [CHANGELOG.md](https://github.com/rl-institut/mvs_eland/blob/master/CHANGELOG.md) for past updates and changes.
 
-*Upcoming*
-As the MVS is still under development, many changes will still occur in the code as well as code structure. If you want to try the MVS, please make sure to check this project regularly. A new release is planned for end of January ([Issue](https://github.com/rl-institut/mvs_eland/issues/51), [Milestone](https://github.com/rl-institut/mvs_eland/milestone/1)). 
+*Disclaimer*
+As the MVS is still under development, changes might still occur in the code as well as code
+ structure. If you want to try the MVS, please make sure to check this project regularly.
 
-For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in turn might not be tested. You find the changelog [HERE](https://github.com/rl-institut/mvs_eland/blob/dev/CHANGELOG.md).
+For advanced programmers: You can also use the `dev` branch that includes the latest updates and
+ changes. You find the changelog [HERE](https://github.com/rl-institut/mvs_eland/blob/dev/CHANGELOG.md).
 
 # Getting started
 
@@ -78,17 +84,34 @@ To set up the MVS, follow the steps below:
 
 * Test if the MVS is running by executing
 
-    `python mvs_tool.py`
+    `python mvs_tool.py -i tests/inputs`
     
 * You can also run all existing tests by executing
 
     `pip install -r tests/test_requirements.txt`
     
-    `pytest`
+    `pytest tests/`
     
 ## Using the MVS
 
 To run the MVS with custom inputs you have several options:
+
+##### 0) Use the default settings
+
+If you create a folder named `inputs` at the root of the repository (you can use the folder
+`input_template` for inspiration) it will be taken as default input folder and you can simply run
+
+    `python mvs_tool.py`
+
+A default output folder will be created, if you run the same simulation several time you would
+ have to either overwrite the existing output file with
+
+    `python mvs_tool.py -f`
+
+Or provide another output folder's path
+
+  `python mvs_tool.py -o <path_to_other_output_folder>`
+
 
 ##### 1) Use the command line
 
@@ -138,7 +161,7 @@ the report should appear in your browser (at http://127.0.0.1:8050) as an intera
 You can then print the report via your browser print functionality (ctrl+p), however the layout of
  the pdf report is only well optimized for chrome or chromimum browser.
 
-It is also possible to automatically print the report as pdf by using the option `-pdf`. By default
+It is also possible to automatically save the report as pdf by using the option `-pdf`. By default
 , it will
 save the report in the `report` folder. See`python mvs_report.py -h` for more information about
 possible options. The css and images used to make the report pretty should be located under
