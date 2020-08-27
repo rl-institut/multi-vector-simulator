@@ -104,11 +104,29 @@ def check_feedin_tariff(dict_values):
             if diff > 0:
                 msg = f"Feed-in tariff > energy price for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}' would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
                 raise ValueError(msg)
-        else:
+        elif VALUE in feedin_tariff and VALUE not in electricity_price:
             for i in range(0, len(electricity_price)):
                 diff[i] = feedin_tariff[VALUE] - electricity_price[i]
                 boolean = [k > 0 for k in
                            diff.values]  # True if there is an instance where feed-in tariff > electricity_price
+                if any(boolean) == True:
+                    instances = sum(boolean)  # Count instances
+                    msg = f"Feed-in tariff > energy price in {instances} during the simulation time for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'. This would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
+                    raise ValueError(msg)
+        elif VALUE not in feedin_tariff and VALUE in electricity_price:
+            for i in range(0, len(feedin_tariff)):
+                diff[i] = feedin_tariff[i] - electricity_price[VALUE]
+                boolean = [k > 0 for k in
+                           diff.values]  # True if there is an instance where feed-in tariff > electricity_price
+                if any(boolean) == True:
+                    instances = sum(boolean)  # Count instances
+                    msg = f"Feed-in tariff > energy price in {instances} during the simulation time for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'. This would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
+                    raise ValueError(msg)
+        else:
+            for i in range(0, len(feedin_tariff)):
+                diff[i] = feedin_tariff[i] - electricity_price[i]
+                boolean = [k > 0 for k in
+                           diff.values]  # True if there is an instance where feedin tarrif > electricity_price
                 if any(boolean) == True:
                     instances = sum(boolean)  # Count instances
                     msg = f"Feed-in tariff > energy price in {instances} during the simulation time for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'. This would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
