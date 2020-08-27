@@ -591,10 +591,6 @@
             "value": false
         },
         "start_date": "2018-01-01 00:00:00",
-        "store_nx_graph": {
-            "unit": "bool",
-            "value": false
-        },
         "store_oemof_results": {
             "unit": "bool",
             "value": true

@@ -1315,10 +1315,6 @@
         "path_output_folder_inputs": "/home/pfduc/Documents/RLI/mvs_eland/MVS_outputs/inputs",
         "periods": 48,
         "start_date": "pandas_Timestamp:2018-01-01 00:00:00",
-        "store_nx_graph": {
-            "unit": "bool",
-            "value": false
-        },
         "store_oemof_results": {
             "unit": "bool",
             "value": true
