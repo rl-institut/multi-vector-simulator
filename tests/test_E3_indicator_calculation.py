@@ -160,6 +160,50 @@ def test_renewable_share_one_sector():
         == exp
     )
 
+
+def test_renewable_share_two_sectors():
+    # Add second sector to dict_renewable_energy_use
+    dso_h2 = "DSO_H2"
+    h2 = "H2"
+    dict_renewable_energy_use[ENERGY_PRODUCTION].update({
+        dso_h2 + DSO_CONSUMPTION: {
+            ENERGY_VECTOR: h2,
+            TOTAL_FLOW: {
+                VALUE: flow_small
+            }
+        }})
+    dict_renewable_energy_use[ENERGY_PROVIDERS].update({
+        dso_h2: {
+            RENEWABLE_SHARE_DSO: {VALUE: 0},
+            ENERGY_VECTOR: h2}})
+    dict_renewable_energy_use[PROJECT_DATA][SECTORS].update({h2: h2})
+
+    E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
+    E3.renewable_share(dict_renewable_energy_use)
+    assert (
+        RENEWABLE_SHARE in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
+    )
+
+    exp_total_res = flow_medium + flow_small * renewable_share_dso
+    exp_total_non_res_el = flow_small * (1-renewable_share_dso)
+    exp_total_non_res_h2 = flow_small * DEFAULT_WEIGHTS_ENERGY_CARRIERS[h2][VALUE]
+
+    exp_res = exp_total_res / (exp_total_non_res_el + exp_total_non_res_h2 + exp_total_res)
+
+    exp_res_sector = {
+        electricity: exp_total_res / (exp_total_non_res_el + exp_total_res),
+        h2: 0 / (exp_total_non_res_h2)}
+
+    for k in [electricity, h2]:
+        assert (k  in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE])
+        assert dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE][k] == exp_res_sector[k]
+
+    assert (
+        dict_renewable_energy_use[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE]
+        == exp_res
+    )
+
+
 def test_renewable_share_equation_is_1():
     """ """
     tot_res = 100
