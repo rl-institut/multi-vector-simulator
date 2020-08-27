@@ -208,6 +208,7 @@ class ESGraphRenderer:
         img_format=None,
         legend=True,
         txt_width=10,
+        txt_fontsize=10,
         **kwargs
     ):
         """Draw the energy system with Graphviz.
@@ -230,6 +231,14 @@ class ESGraphRenderer:
             specify, whether a legend will be added to the graph or not
             Default: False
 
+        txt_width: int
+            max number of characters in a line before a line break
+            Default: 10
+
+         txt_fontsize: int
+            fontsize of the image's text (components labels)
+            Default: 10
+
         Returns
         -------
         None: render the generated dot graph in the filepath
@@ -248,6 +257,7 @@ class ESGraphRenderer:
 
         self.dot = graphviz.Digraph(filename=file_name, format=img_format, **kwargs)
         self.txt_width = txt_width
+        self.txt_fontsize = str(txt_fontsize)
         self.busses = []
 
         if legend is True:
@@ -317,7 +327,7 @@ class ESGraphRenderer:
         dot.node(
             fixed_width_text(label, char_num=self.txt_width),
             shape="trapezium",
-            fontsize="10",
+            fontsize=self.txt_fontsize,
         )
 
     def add_source(self, label="Source", subgraph=None):
@@ -328,7 +338,7 @@ class ESGraphRenderer:
         dot.node(
             fixed_width_text(label, char_num=self.txt_width),
             shape="invtrapezium",
-            fontsize="10",
+            fontsize=self.txt_fontsize,
         )
 
     def add_transformer(self, label="Transformer", subgraph=None):
@@ -339,7 +349,7 @@ class ESGraphRenderer:
         dot.node(
             fixed_width_text(label, char_num=self.txt_width),
             shape="rectangle",
-            fontsize="10",
+            fontsize=self.txt_fontsize,
         )
 
     def add_storage(self, label="Storage", subgraph=None):
@@ -351,7 +361,7 @@ class ESGraphRenderer:
             fixed_width_text(label, char_num=self.txt_width),
             shape="rectangle",
             style="rounded",
-            fontsize="10",
+            fontsize=self.txt_fontsize,
         )
 
     def add_component(self, label="component", subgraph=None):
@@ -360,7 +370,8 @@ class ESGraphRenderer:
         else:
             dot = subgraph
         dot.node(
-            fixed_width_text(label, char_num=self.txt_width), fontsize="10",
+            fixed_width_text(label, char_num=self.txt_width),
+            fontsize=self.txt_fontsize,
         )
 
     def connect(self, a, b):
