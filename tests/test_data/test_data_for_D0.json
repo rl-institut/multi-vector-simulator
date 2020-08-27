@@ -1993,7 +1993,7 @@
             "D:\\PycharmProjects\\mvs_eland\\MVS_outputs\\input_timeseries_Shore power (docked ships)_kW.png"
         ],
         "flows_on_busses": [],
-        "nx": [],
+        "graphviz": [],
         "performance": [],
         "resources": [
             "D:\\PycharmProjects\\mvs_eland\\MVS_outputs\\input_timeseries_PV plant (mono)_kW.png"

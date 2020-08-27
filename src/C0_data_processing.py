@@ -1,12 +1,9 @@
 import logging
 import os
-import shutil
 import sys
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
-logging.getLogger("matplotlib.font_manager").disabled = True
 
 from src.constants import (
     TIME_SERIES,

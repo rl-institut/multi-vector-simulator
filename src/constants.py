@@ -266,12 +266,15 @@ DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
 # dict keys in results_json file
 TIMESERIES = "timeseries"
 
+# filename of the energy system graph
+ES_GRAPH = "energy_system_graph.png"
+
 # key of the dict containing generated plots filesnames in results_json file
 PATHS_TO_PLOTS = "paths_to_plots"
 # keys' names of dict containing generated plots filenames
 PLOTS_DEMANDS = "demands"
 PLOTS_RESOURCES = "resources"
-PLOTS_NX = "nx"
+PLOTS_ES = "graphviz"
 PLOTS_PERFORMANCE = "performance"
 PLOTS_COSTS = "costs"
 PLOTS_BUSSES = "flows_on_busses"
@@ -282,7 +285,7 @@ DICT_PLOTS = {
         PLOTS_BUSSES: [],
         PLOTS_DEMANDS: [],
         PLOTS_RESOURCES: [],
-        PLOTS_NX: [],
+        PLOTS_ES: [],
         PLOTS_PERFORMANCE: [],
         PLOTS_COSTS: [],
     }
