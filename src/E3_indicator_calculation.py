@@ -45,6 +45,11 @@ from src.constants_json_strings import (
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_ENERGY_USE,
     RENEWABLE_SHARE,
+TOTAL_DEMAND,
+SUFFIX_ELECTRICITY_EQUIVALENT,
+LCOeleq,
+ATTRIBUTED_COSTS,
+DEGREE_OF_SECTOR_COUPLING
 )
 
 
@@ -144,47 +149,31 @@ def total_demand_each_sector(dict_values):
                 )
 
     # Write total demand per energy carrier as well as its electricity equivalent to dict_values
-    total_demand_label = "total demand"
     total_demand_electricity_equivalent = 0
     for energy_carrier in total_demand_dict:
-        energy_carrier_label = label_total_demand_energy_carrier(energy_carrier)
         # Define total demand of electricity carrier in original unit
         dict_values[KPI][KPI_SCALARS_DICT].update(
-            {energy_carrier_label: total_demand_dict[energy_carrier]}
+            {TOTAL_DEMAND + energy_carrier: total_demand_dict[energy_carrier]}
         )
         # Define total energy carrier demand in electricity equivalent
         dict_values[KPI][KPI_SCALARS_DICT].update(
             {
-                add_suffix_electricity_equivalent(
-                    energy_carrier_label
-                ): total_demand_dict[energy_carrier]
+                TOTAL_DEMAND + energy_carrier + SUFFIX_ELECTRICITY_EQUIVALENT
+                : total_demand_dict[energy_carrier]
                 * DEFAULT_WEIGHTS_ENERGY_CARRIERS[energy_carrier][VALUE]
             }
         )
         # Add to total demand in electricity equivalent
         total_demand_electricity_equivalent += dict_values[KPI][KPI_SCALARS_DICT][
-            add_suffix_electricity_equivalent(energy_carrier_label)
+            TOTAL_DEMAND + energy_carrier +SUFFIX_ELECTRICITY_EQUIVALENT
         ]
     # Define total demand in electricity equivalent
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {
-            add_suffix_electricity_equivalent(
-                total_demand_label
-            ): total_demand_electricity_equivalent
+            TOTAL_DEMAND+SUFFIX_ELECTRICITY_EQUIVALENT: total_demand_electricity_equivalent
         }
     )
     return
-
-
-def label_total_demand_energy_carrier(energy_carrier):
-    label = f"Total demand of {energy_carrier}"
-    return label
-
-
-def add_suffix_electricity_equivalent(label):
-    label = label + "_electricity_equivalent"
-    return label
-
 
 def total_renewable_and_non_renewable_energy_origin(dict_values):
     """Identifies all renewable generation assets and summs up their total generation to total renewable generation
@@ -398,16 +387,16 @@ def add_degree_of_sector_coupling(dict_values):
     degree_of_sector_coupling = equation_degree_of_sector_coupling(
         total_flow_of_energy_conversion_equivalent,
         dict_values[KPI][KPI_SCALARS_DICT][
-            add_suffix_electricity_equivalent("total demand")
+            TOTAL_DEMAND+SUFFIX_ELECTRICITY_EQUIVALENT
         ],
     )
     dict_values[KPI][KPI_SCALARS_DICT].update(
-        {"Degree of sector coupling": degree_of_sector_coupling}
+        {DEGREE_OF_SECTOR_COUPLING: degree_of_sector_coupling}
     )
     logging.debug(
-        f"Calculated the Degree of Sector Coupling: {round(degree_of_sector_coupling)}"
+        f"Calculated the {DEGREE_OF_SECTOR_COUPLING}: {round(degree_of_sector_coupling)}"
     )
-    logging.info("Calculated the DSC for the LES.")
+    logging.info(f"Calculated the {DEGREE_OF_SECTOR_COUPLING} for the LES.")
     return total_flow_of_energy_conversion_equivalent
 
 
@@ -476,18 +465,18 @@ def add_levelized_cost_of_energy_carriers(dict_values):
 
     # Get total demand in electricity equivalent
     total_demand_electricity_equivalent = dict_values[KPI][KPI_SCALARS_DICT][
-        add_suffix_electricity_equivalent("total demand")
+        TOTAL_DEMAND+SUFFIX_ELECTRICITY_EQUIVALENT
     ]
 
     # Loop through all energy carriers
     for energy_carrier in dict_values[PROJECT_DATA][SECTORS]:
         # Get energy carrier specific values
-        energy_carrier_label = label_total_demand_energy_carrier(energy_carrier)
+        energy_carrier_label = TOTAL_DEMAND + energy_carrier
         total_flow_energy_carrier_eleq = dict_values[KPI][KPI_SCALARS_DICT][
             energy_carrier_label
         ]
         total_flow_energy_carrier = dict_values[KPI][KPI_SCALARS_DICT][
-            add_suffix_electricity_equivalent(energy_carrier_label)
+            energy_carrier_label+SUFFIX_ELECTRICITY_EQUIVALENT
         ]
         # Calculate LCOE of energy carrier
         (
@@ -504,12 +493,12 @@ def add_levelized_cost_of_energy_carriers(dict_values):
         # Update dict_values with ATTRIBUTED_COSTS and LCOE_energy_carrier
         dict_values[KPI][KPI_SCALARS_DICT].update(
             {
-                f"Attributed costs of {energy_carrier}": attributed_costs,
-                f"Levelized costs of energy equivalent of {energy_carrier}": lcoe_energy_carrier,
+                ATTRIBUTED_COSTS+energy_carrier: attributed_costs,
+                LCOeleq+energy_carrier: lcoe_energy_carrier,
             }
         )
         logging.debug(
-            f"Determined LCOE of energy carrier {energy_carrier}: {round(lcoe_energy_carrier, 2)}"
+            f"Determined {LCOeleq} {energy_carrier}: {round(lcoe_energy_carrier, 2)}"
         )
 
     # Total demand
@@ -521,9 +510,9 @@ def add_levelized_cost_of_energy_carriers(dict_values):
         total_demand_electricity_equivalent=total_demand_electricity_equivalent,
     )
     dict_values[KPI][KPI_SCALARS_DICT].update(
-        {f"Levelized costs of energy equivalent": lcoe_energy_carrier}
+        {LCOeleq: lcoe_energy_carrier}
     )
-    logging.debug(f"Determined LCOE of energy: {round(lcoe_energy_carrier, 2)}")
+    logging.debug(f"Determined {LCOeleq}: {round(lcoe_energy_carrier, 2)}")
     logging.info("Calculated LCOE of the energy system.")
     return
 

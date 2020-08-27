@@ -224,6 +224,13 @@ TOTAL_RENEWABLE_ENERGY_USE = "Total renewable energy use"
 TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use"
 RENEWABLE_SHARE = "Renewable_share"
 
+TOTAL_DEMAND = "Total_demand"
+SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
+ATTRIBUTED_COSTS = "Attributed costs"
+LCOeleq = "Levelized costs of electricity equivalent"
+
+DEGREE_OF_SECTOR_COUPLING = "Degree of sector coupling"
+
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (
     ANNUITY_OM,
