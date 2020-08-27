@@ -43,7 +43,7 @@ Here is a template for new release sections
 - Rename variable `PLOTS_NX` to `PLOTS_ES` (#528)
 - Changed `requirements.txt` (removing and updating dependencies) (#528)
 - A png of the energy system model graph is only saved if either `-png` or `-pdf` options are chosen (#530)
-- Accepting string "TRUE"/"FALSE" now for boolean parameters ()
+- Accepting string "TRUE"/"FALSE" now for boolean parameters (#534)
 
 ### Removed
 - `E2.add_costs_and_total`() (#520)
@@ -57,6 +57,7 @@ Here is a template for new release sections
 - Fixed `E2.convert_components_to_dataframe()`, Key error (#520)
 - Fixed `F1.extract_plot_data_and_title()`, Key error (#520)
 - Fixed hard-coded energy vector of ENERGY_PRODUCTION units in E1.convert_components_to_dataframe(#520)
+- Generating report for multiple sectors (#534)
 
 ## [0.3.3] - 2020-08-19
 
