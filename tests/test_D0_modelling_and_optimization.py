@@ -98,7 +98,7 @@ def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0
         )
 
 
-path_networkx = os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)
+PATH_ES_GRAPH = os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)
 
 
 def test_networkx_graph_requested_store_nx_graph_true():
@@ -106,9 +106,8 @@ def test_networkx_graph_requested_store_nx_graph_true():
     D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH].update({VALUE: True})
-    D0.model_building.plot_networkx_graph(dict_values, model)
-    assert os.path.exists(path_networkx) is True
+    D0.model_building.plot_networkx_graph(dict_values, model, save_energy_system_graph=True)
+    assert os.path.exists(PATH_ES_GRAPH) is True
 
 
 def test_networkx_graph_requested_store_nx_graph_false():
@@ -116,9 +115,8 @@ def test_networkx_graph_requested_store_nx_graph_false():
     D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH].update({VALUE: False})
-    D0.model_building.plot_networkx_graph(dict_values, model)
-    assert os.path.exists(path_networkx) is False
+    D0.model_building.plot_networkx_graph(dict_values, model, save_energy_system_graph=False)
+    assert os.path.exists(PATH_ES_GRAPH) is False
 
 
 import oemof.solph as solph
