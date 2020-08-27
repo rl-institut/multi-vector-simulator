@@ -566,7 +566,11 @@ def create_app(results_json):
     )
 
     # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
-    dfprojectData = pd.DataFrame.from_dict(results_json[PROJECT_DATA])
+
+    # .iloc[0] is used as PROJECT_DATA includes SECTORS, which can have multiple entries.
+    # Pased to a DF, we have multiple rows - for eah sector one row.
+    # This messes up reading the data from the DF later, so we only take one row which then contains all relevant data.
+    dfprojectData = pd.DataFrame.from_dict(results_json[PROJECT_DATA]).iloc[0]
     dfeconomicData = pd.DataFrame.from_dict(results_json[ECONOMIC_DATA]).loc[VALUE]
 
     # Obtaining the latlong of the project location
