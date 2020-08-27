@@ -26,7 +26,6 @@ from src.constants_json_strings import (
     SCENARIO_NAME,
     KPI,
     KPI_SCALAR_MATRIX,
-    SIMULATION_SETTINGS,
 )
 
 from .constants import (
@@ -34,11 +33,9 @@ from .constants import (
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
     PATH_OUTPUT_FOLDER,
+    INPUT_FOLDER,
     TEST_INPUT_DIRECTORY,
     DUMMY_CSV_PATH,
-    CSV_ELEMENTS,
-    CSV_FNAME,
-    DICT_PLOTS,
     ES_GRAPH,
 )
 
@@ -59,16 +56,9 @@ INTERVAL = 2
 OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
 PARSER = initializing.create_parser()
-TEST_INPUT_PATH_NX_TRUE = os.path.join(
-    TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_F1_plot_nx_true"
-)
-TEST_JSON_PATH_NX_TRUE = os.path.join(TEST_INPUT_PATH_NX_TRUE, CSV_ELEMENTS, CSV_FNAME)
 
-TEST_INPUT_PATH_NX_FALSE = os.path.join(
-    TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_F1_plot_nx_false"
-)
-TEST_JSON_PATH_NX_FALSE = os.path.join(
-    TEST_INPUT_PATH_NX_FALSE, CSV_ELEMENTS, CSV_FNAME
+TEST_INPUT_PATH = os.path.join(
+    TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_F1_plot_es_graph"
 )
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "F1_outputs")
@@ -112,15 +102,16 @@ class TestNetworkx:
                 "-log",
                 "warning",
                 "-i",
-                TEST_INPUT_PATH_NX_TRUE,
+                TEST_INPUT_PATH,
                 "-o",
                 TEST_OUTPUT_PATH,
                 "-ext",
                 CSV_EXT,
+                "-png",
             ]
         ),
     )
-    def test_if_networkx_graph_is_stored_save_plot_true(self, m_args):
+    def test_if_energy_system_network_graph_is_stored_if_png_option(self, m_args):
         main(overwrite=True, display_output="warning")
         assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)) is True
 
@@ -137,7 +128,33 @@ class TestNetworkx:
                 "-log",
                 "warning",
                 "-i",
-                TEST_INPUT_PATH_NX_FALSE,
+                TEST_INPUT_PATH,
+                "-o",
+                TEST_OUTPUT_PATH,
+                "-ext",
+                CSV_EXT,
+                "-pdf",
+            ]
+        ),
+    )
+    def test_if_energy_system_network_graph_is_stored_if_pdf_option(self, m_args):
+        main(overwrite=True, display_output="warning")
+        assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)) is True
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            [
+                "-f",
+                "-log",
+                "warning",
+                "-i",
+                TEST_INPUT_PATH,
                 "-o",
                 TEST_OUTPUT_PATH,
                 "-ext",
@@ -145,7 +162,9 @@ class TestNetworkx:
             ]
         ),
     )
-    def test_if_networkx_graph_is_stored_save_plot_false(self, m_args):
+    def test_if_energy_system_network_graph_is_stored_if_no_pdf_nor_png_option(
+        self, m_args
+    ):
         main(overwrite=True, display_output="warning")
         assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)) is False
 

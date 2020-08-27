@@ -19,8 +19,6 @@ from src.constants_json_strings import (
     SIMULATION_SETTINGS,
     LABEL,
     TIME_INDEX,
-    DISPLAY_NX_GRAPH,
-    STORE_NX_GRAPH,
     OUTPUT_LP_FILE,
     STORE_OEMOF_RESULTS,
     SIMULATION_RESULTS,
@@ -54,7 +52,7 @@ class UnknownOemofAssetType(ValueError):
     pass
 
 
-def run_oemof(dict_values):
+def run_oemof(dict_values, save_energy_system_graph=False):
     """
     Creates and solves energy system model generated from excel template inputs.
     Each component is included by calling its constructor function in D1_model_components.
@@ -79,7 +77,9 @@ def run_oemof(dict_values):
         dict_values, dict_model, model
     )
 
-    model_building.plot_networkx_graph(dict_values, model)
+    model_building.plot_networkx_graph(
+        dict_values, model, save_energy_system_graph=save_energy_system_graph
+    )
 
     logging.debug("Creating oemof model based on created components and busses...")
     local_energy_system = solph.Model(model)
@@ -194,7 +194,7 @@ class model_building:
         logging.debug("All components added.")
         return model
 
-    def plot_networkx_graph(dict_values, model):
+    def plot_networkx_graph(dict_values, model, save_energy_system_graph=False):
         """
         Plots a graph of the energy system if that graph is to be displayed or stored.
 
@@ -206,14 +206,15 @@ class model_building:
         model: `oemof.solph.network.EnergySystem`
             oemof-solph object for energy system model
 
+        save_energy_system_graph: bool
+            if True, save the graph in the mvs output folder
+            Default: False
+
         Returns
         -------
         None
         """
-        if (
-            dict_values[SIMULATION_SETTINGS][DISPLAY_NX_GRAPH][VALUE] is True
-            or dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH][VALUE] is True
-        ):
+        if save_energy_system_graph is True:
             from src.F1_plotting import ESGraphRenderer
 
             fpath = os.path.join(
@@ -221,14 +222,11 @@ class model_building:
             )
             dict_values[PATHS_TO_PLOTS][PLOTS_ES] += [str(fpath)]
 
-            # Draw the energy system
-            graph = ESGraphRenderer(model, filepath=fpath,)
+            # Draw the energy system model
+            graph = ESGraphRenderer(model, filepath=fpath)
             logging.debug("Created graph of the energy system model.")
 
-            if dict_values[SIMULATION_SETTINGS][DISPLAY_NX_GRAPH][VALUE] is True:
-                graph.view()
-            if dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH][VALUE] is True:
-                graph.render()
+            graph.render()
 
     def add_constraints():
         """
