@@ -105,7 +105,9 @@ def check_feedin_tariff(dict_values):
                 msg = f"Feed-in tariff > energy price for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}' would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
                 raise ValueError(msg)
             else:
-                logging.debug(f"Feed-in tariff < energy price for energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'")
+                logging.debug(
+                    f"Feed-in tariff < energy price for energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'"
+                )
         else:
             diff = feedin_tariff - electricity_price
             boolean = [
@@ -117,7 +119,8 @@ def check_feedin_tariff(dict_values):
                 raise ValueError(msg)
             else:
                 logging.debug(
-                    f"Feed-in tariff < energy price for energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'")
+                    f"Feed-in tariff < energy price for energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'"
+                )
 
     return
 
