@@ -105,6 +105,10 @@ SOC_INITIAL = "soc_initial"
 SOC_MAX = "soc_max"
 SOC_MIN = "soc_min"
 
+# Constraints
+CONSTRAINTS = "constraints"
+MINIMAL_RENEWABLE_SHARE = "minimal_renewable_share"
+
 #######################################
 # Parameters added in pre-processing #
 #######################################
