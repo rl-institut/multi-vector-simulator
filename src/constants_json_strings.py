@@ -123,6 +123,8 @@ TIME_INDEX = "time_index"
 TIMESERIES = "timeseries"
 TIMESERIES_NORMALIZED = "timeseries_normalized"
 TIMESERIES_PEAK = "timeseries_peak"
+TIMESERIES_TOTAL = "timeseries_total"
+TIMESERIES_AVERAGE = "timeseries_average"
 
 # Pre-processing cost parameters
 ANNUITY_FACTOR = "annuity_factor"
@@ -222,6 +224,14 @@ TOTAL_RENEWABLE_GENERATION_IN_LES = "Total internal renewable generation"
 TOTAL_NON_RENEWABLE_GENERATION_IN_LES = "Total internal non-renewable generation"
 TOTAL_RENEWABLE_ENERGY_USE = "Total renewable energy use"
 TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use"
+RENEWABLE_SHARE = "Renewable_share"
+
+TOTAL_DEMAND = "Total_demand"
+SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
+ATTRIBUTED_COSTS = "Attributed costs"
+LCOeleq = "Levelized costs of electricity equivalent"
+
+DEGREE_OF_SECTOR_COUPLING = "Degree of sector coupling"
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (

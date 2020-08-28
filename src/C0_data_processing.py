@@ -268,6 +268,7 @@ def process_all_assets(dict_values):
     define_busses(dict_values)
 
     # Define all excess sinks for each energy bus
+    auto_sinks = []
     for bus_name in dict_values[ENERGY_BUSSES]:
         define_sink(
             dict_values=dict_values,
@@ -275,9 +276,13 @@ def process_all_assets(dict_values):
             price={VALUE: 0, UNIT: CURR + "/" + UNIT},
             input_bus_name=bus_name,
         )
+        auto_sinks.append(bus_name + EXCESS)
         logging.debug(
             "Created excess sink for energy bus %s", bus_name,
         )
+    # Needed for E3.total_demand_each_sector(), but location is not perfect as it is more about the model then the settings.
+    # Decided against implementing a new major 1st level category in json to avoid an excessive datatree.
+    dict_values[SIMULATION_SETTINGS].update({EXCESS + AUTO_SINK: auto_sinks})
 
     # process all energyAssets:
     # Attention! Order of asset_groups important. for energyProviders/energyConversion sinks and sources
@@ -1343,7 +1348,10 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     Notes
     -----
 
-    Tested with test_evaluate_lifetime_costs_adds_all_parameters()
+    Tested with:
+    - test_evaluate_lifetime_costs_adds_all_parameters()
+    - Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
+
     """
 
     C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
@@ -1515,8 +1523,8 @@ def receive_timeseries_from_csv(
         dict_asset.update(
             {
                 TIMESERIES_PEAK: {VALUE: max(dict_asset[TIMESERIES]), UNIT: unit,},
-                "timeseries_total": {VALUE: sum(dict_asset[TIMESERIES]), UNIT: unit,},
-                "timeseries_average": {
+                TIMESERIES_TOTAL: {VALUE: sum(dict_asset[TIMESERIES]), UNIT: unit,},
+                TIMESERIES_AVERAGE: {
                     VALUE: sum(dict_asset[TIMESERIES]) / len(dict_asset[TIMESERIES]),
                     UNIT: unit,
                 },

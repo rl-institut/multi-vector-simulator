@@ -31,6 +31,18 @@ from src.constants_json_strings import (
     KPI_SCALAR_MATRIX,
     KPI_SCALARS_DICT,
     OPTIMIZED_FLOWS,
+    LABEL,
+    COST_TOTAL,
+    COST_OPERATIONAL_TOTAL,
+    COST_INVESTMENT,
+    COST_UPFRONT,
+    COST_DISPATCH,
+    COST_OM,
+    ANNUITY_TOTAL,
+    ANNUITY_OM,
+    LCOE_ASSET,
+    UNIT_YEAR,
+    CURR,
 )
 
 from src.constants_output import KPI_COST_MATRIX_ENTRIES, KPI_SCALAR_MATRIX_ENTRIES
@@ -62,6 +74,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     -------
 
     """
+
     dict_values.update(
         {
             KPI: {
@@ -71,12 +84,14 @@ def evaluate_dict(dict_values, results_main, results_meta):
             }
         }
     )
+
     bus_data = {}
     # Store all information related to busses in bus_data
     for bus in dict_values[ENERGY_BUSSES]:
         # Read all energy flows from busses
         bus_data.update({bus: solph.views.node(results_main, bus)})
 
+    logging.info("Evaluating optimized capacities and dispatch.")
     # Evaluate timeseries and store to a large DataFrame for each bus:
     E1.get_timeseries_per_bus(dict_values, bus_data)
 
@@ -145,15 +160,17 @@ def evaluate_dict(dict_values, results_main, results_meta):
             E2.lcoe_assets(dict_values[group][asset], group)
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
+    logging.info("Evaluating key performance indicators of the system")
     E3.all_totals(dict_values)
-
-    logging.info("Evaluating optimized capacities and dispatch.")
-    # Processing further KPI
-    # todo : reactivate function
+    E3.total_demand_each_sector(dict_values)
+    E3.add_levelized_cost_of_energy_carriers(dict_values)
     E3.total_renewable_and_non_renewable_energy_origin(dict_values)
     E3.renewable_share(dict_values)
+    # E3.add_degree_of_sector_coupling(dict_values) feature not finished
+
 
     # Tests and checks
+    logging.info("Running validity checks.")
     E4.minimal_renewable_share_test(dict_values)
     return
 

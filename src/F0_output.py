@@ -5,6 +5,7 @@ import os
 import pandas as pd
 
 from src.B0_data_input_json import convert_from_special_types_to_json
+from src.E1_process_results import get_units_of_cost_matrix_entries
 import src.F1_plotting as F1_plots
 import src.F2_autoreport as autoreport
 from src.constants import (
@@ -12,10 +13,13 @@ from src.constants import (
     PATH_OUTPUT_FOLDER,
 )
 from src.constants_json_strings import (
+    UNIT,
     KPI,
     OPTIMIZED_FLOWS,
     DEMANDS,
     RESOURCES,
+    KPI_SCALARS_DICT,
+    ECONOMIC_DATA,
 )
 
 r"""
@@ -123,17 +127,26 @@ def store_scalars_to_excel(dict_values):
 
     """
     results_scalar_output_file = "/scalars" + ".xlsx"
+
     with pd.ExcelWriter(
         dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
         + results_scalar_output_file
     ) as open_file:  # doctest: +SKIP
         for kpi_set in dict_values[KPI]:
             if isinstance(dict_values[KPI][kpi_set], dict):
-                data = pd.DataFrame([dict_values[KPI][kpi_set]]).to_excel(
-                    open_file, sheet_name=kpi_set
-                )
+                data = pd.DataFrame([dict_values[KPI][kpi_set]])
             else:
-                dict_values[KPI][kpi_set].to_excel(open_file, sheet_name=kpi_set)
+                data = dict_values[KPI][kpi_set]
+
+            # Transpose results and add units to the entries
+            if kpi_set == KPI_SCALARS_DICT:
+                data = data.transpose()
+                units_cost_kpi = get_units_of_cost_matrix_entries(
+                    dict_values[ECONOMIC_DATA], dict_values[KPI][kpi_set]
+                )
+                data[UNIT] = units_cost_kpi
+
+            data.to_excel(open_file, sheet_name=kpi_set)
             logging.info(
                 "Saved scalar results to: %s, tab %s.",
                 results_scalar_output_file,

@@ -631,9 +631,9 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
     else:
         # If unit should be a bool
         if row[UNIT] == TYPE_BOOL:
-            if value in [True, "True", "true", "T", "t", "1"]:
+            if value in [True, "TRUE", "True", "true", "T", "t", "1"]:
                 value = True
-            elif value in [False, "False", "false", "F", "f", "0"]:
+            elif value in [False, "FALSE", "False", "false", "F", "f", "0"]:
                 value = False
             else:
                 logging.warning(
