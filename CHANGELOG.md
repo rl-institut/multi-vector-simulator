@@ -58,6 +58,8 @@ Here is a template for new release sections
 - Fixed `F1.extract_plot_data_and_title()`, Key error (#520)
 - Fixed hard-coded energy vector of ENERGY_PRODUCTION units in E1.convert_components_to_dataframe(#520)
 - Generating report for multiple sectors (#534)
+- Quick fix to read a timeseries for `"price"` in `C0.define_source()` (#524)
+- Fix `C1.check_feedin_tariff()`: Now also applyable to timeseries of feed-in tariff or electricity prices (#524)
 
 ## [0.3.3] - 2020-08-19
 
