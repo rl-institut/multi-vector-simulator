@@ -151,6 +151,12 @@ def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
     Returns
     -------
     None
+
+    Notes
+    -----
+    Tested with:
+    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass()
+    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fails()
     """
     if energy_carrier not in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
         raise UnknownEnergyCarrier(
