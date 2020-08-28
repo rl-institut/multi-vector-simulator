@@ -259,7 +259,7 @@ class TestACElectricityBus:
                     assert abs(battery_charge[i - 1]) > 0
 
     @pytest.mark.skipif(
-        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER, TESTS_ON_DEV, "testing_AFG"),
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
         reason="Benchmark test deactivated, set env variable "
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
