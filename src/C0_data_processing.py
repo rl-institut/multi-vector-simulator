@@ -1004,13 +1004,16 @@ def define_source(
             )
         if item == "price":
             if FILENAME in kwargs[item] and HEADER in kwargs[item]:
-                kwargs[item].update({VALUE:
-                    get_timeseries_multiple_flows(
-                        dict_values[SIMULATION_SETTINGS],
-                        default_source_dict,
-                        kwargs[item][FILENAME],
-                        kwargs[item][HEADER],
-                )})
+                kwargs[item].update(
+                    {
+                        VALUE: get_timeseries_multiple_flows(
+                            dict_values[SIMULATION_SETTINGS],
+                            default_source_dict,
+                            kwargs[item][FILENAME],
+                            kwargs[item][HEADER],
+                        )
+                    }
+                )
             determine_dispatch_price(dict_values, kwargs[item], default_source_dict)
 
     dict_values[ENERGY_PRODUCTION].update({asset_key: default_source_dict})
