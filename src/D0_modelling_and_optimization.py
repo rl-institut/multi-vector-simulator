@@ -15,6 +15,7 @@ from src.constants_json_strings import (
     OEMOF_SINK,
     OEMOF_SOURCE,
     OEMOF_TRANSFORMER,
+    OEMOF_BUSSES,
     VALUE,
     SIMULATION_SETTINGS,
     LABEL,
@@ -121,11 +122,11 @@ class model_building:
 
         # this dictionary will include all generated oemof objects
         dict_model = {
-            "busses": {},
-            "sinks": {},
-            "sources": {},
-            "transformers": {},
-            "storages": {},
+            OEMOF_BUSSES: {},
+            OEMOF_SINK: {},
+            OEMOF_SOURCE: {},
+            OEMOF_TRANSFORMER: {},
+            OEMOF_GEN_STORAGE: {},
         }
 
         return model, dict_model
