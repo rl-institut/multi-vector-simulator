@@ -5,7 +5,7 @@ import timeit
 from oemof.solph import processing
 import oemof.solph as solph
 
-import src.D1_model_components as model_components
+import src.D1_model_components as D1
 from src.constants import PATH_OUTPUT_FOLDER, ES_GRAPH, PATHS_TO_PLOTS, PLOTS_ES
 from src.constants_json_strings import (
     ENERGY_BUSSES,
@@ -153,7 +153,7 @@ class model_building:
 
         # Busses have to be defined first
         for bus in dict_values[ENERGY_BUSSES]:
-            model_components.bus(model, bus, **dict_model)
+            D1.bus(model, bus, **dict_model)
 
         # Adding step by step all assets defined within the asset groups
         for asset_group in ACCEPTED_ASSETS_FOR_ASSET_GROUPS:
@@ -164,19 +164,19 @@ class model_building:
                     if type in ACCEPTED_ASSETS_FOR_ASSET_GROUPS[asset_group]:
                         # if so, then the appropriate function of D1 should be called
                         if type == OEMOF_TRANSFORMER:
-                            model_components.transformer(
+                            D1.transformer(
                                 model, dict_values[asset_group][asset], **dict_model
                             )
                         elif type == OEMOF_SINK:
-                            model_components.sink(
+                            D1.sink(
                                 model, dict_values[asset_group][asset], **dict_model
                             )
                         elif type == OEMOF_SOURCE:
-                            model_components.source(
+                            D1.source(
                                 model, dict_values[asset_group][asset], **dict_model
                             )
                         elif type == OEMOF_GEN_STORAGE:
-                            model_components.storage(
+                            D1.storage(
                                 model, dict_values[asset_group][asset], **dict_model
                             )
                         else:
