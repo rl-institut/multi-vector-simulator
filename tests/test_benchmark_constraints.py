@@ -53,15 +53,15 @@ class Test_Constraints:
         -----
         With this benchmark test, the minimal renewable share constraint is validated.
         Constraint_minimal_renewable_share_0 does not have a minimal renewable share.
-        Constraint_minimal_renewable_share_50 has a minimal renewable share of 50%.
-        If the renewable share of Constraint_minimal_renewable_share_0 is lower than 50%,
-        but the one of Constraint_minimal_renewable_share_50 is 50%, then the benchmark test passes.
+        Constraint_minimal_renewable_share_50 has a minimal renewable share of 70%.
+        If the renewable share of Constraint_minimal_renewable_share_0 is lower than 70%,
+        but the one of Constraint_minimal_renewable_share_50 is 70%, then the benchmark test passes.
         """
 
-        # define the two cases needed for comparison (no minimal renewable share) and (minimal renewable share of 50%)
+        # define the two cases needed for comparison (no minimal renewable share) and (minimal renewable share of 70%)
         use_case = [
             "Constraint_minimal_renewable_share_0",
-            "Constraint_minimal_renewable_share_50",
+            "Constraint_minimal_renewable_share_70",
         ]
         # define an empty dictionary for excess electricity
         renewable_shares = {}
@@ -75,7 +75,7 @@ class Test_Constraints:
                 path_output_folder=os.path.join(TEST_OUTPUT_PATH, case),
             )
             data = load_json(
-                os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS)
+                os.path.join(TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS)
             )
             renewable_shares.update(
                 {case: data[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE]}
@@ -83,13 +83,11 @@ class Test_Constraints:
             minimal_renewable_shares.update(
                 {case: data[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE]}
             )
-            assert minimal_renewable_shares[case] <= pytest.approx(
-                renewable_shares[case], rel=1e-6
-            )
 
-        assert renewable_shares[use_case[0]] < pytest.approx(
-            renewable_shares[use_case[1]]
-        )
+            assert minimal_renewable_shares[case] < renewable_shares[case] + 10**(-6)
+
+        assert renewable_shares[use_case[0]] < renewable_shares[use_case[1]]
+
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):

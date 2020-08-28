@@ -9,7 +9,7 @@ label,str,PV plant (mono)
 lifetime,year,30
 specific_costs_om,currency/unit/year,0
 dispatch_price,currency/kWh,0
-optimizeCap,bool,False
+optimizeCap,bool,True
 outflow_direction,str,Electricity
 type_oemof,str,source
 unit,str,kWp

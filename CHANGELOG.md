@@ -44,6 +44,7 @@ Here is a template for new release sections
 - New required input csv: `constraints.csv` including possible constraints for the energy system. Added to all input folders. (#538)
 - Added error message: New energy carriers always have to be added to `DEFAULT_WEIGHTS_ENERGY_CARRIERS` (`C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS()`, applied to `ENERGY_VECTOR` and to fuel sources) (#538)
 - Added minimal renewable share contraint though  `D2.constraint_minimal_renewable_share()` and added description of the constraint in `Model_Assumptions.rst` (#538)
+- Benchmark test for minimal renewable share constraint (#538)
 
 ### Changed
 - Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
