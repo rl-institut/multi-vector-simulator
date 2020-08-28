@@ -30,6 +30,16 @@ Here is a template for new release sections
 - Possibility to add an upper bound  on the number of days to display in a timeseries' plot (#526)
 - Graph of the energy system model to the report (#528)
 - Function to encode images into dash app's layout (#528)
+- System KPI now printed in automatic report (section "Energy system key performance indicators"), draft (#525)
+- Added units to system-wide cost KPI in excel and in report. Some of these changes might need to be reworked when elaborating on units for the report (#525)
+- `References.rst` to the readthedocs, which should gather all the references of the MVS (#525)
+- New system-wide KPI:
+    - Demand per energy carrier, in original unit and electricity equivalent with `E3.total_demand_each_sector()` (#525)
+    - Attributed cost per energy carrier, related to the its share in the total demand equivalent  with `E3.total_demand_each_sector()` (#525)
+    - LCOE per energy carrier `E3.add_levelized_cost_of_energy_carriers()` (#525)
+- Default values for energy carrier "Heat" for `DEFAULT_WEIGHTS_ENERGY_CARRIERS` with `{UNIT: "KWh_eleq/kWh_therm", VALUE: 1}`. This is still TBD, as there is no source for this ratio yet (#525)
+- Default unit for energy carriers defined in `DEFAULT_WEIGHTS_ENERGY_CARRIERS`: ENERGY_CARRIER_UNIT. Might be used to define the units of flows and LCOE. (#525)
+- New constant variables: TIMESERIES_TOTAL, TIMESERIES_AVERAGE, LOGFILE, RENEWABLE_SHARE, TOTAL_DEMAND, SUFFIX_ELECTRICITY_EQUIVALENT, ATTRIBUTED_COSTS, LCOeleq, DEGREE_OF_SECTOR_COUPLING (#525)
 
 ### Changed
 - Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
@@ -44,6 +54,8 @@ Here is a template for new release sections
 - Changed `requirements.txt` (removing and updating dependencies) (#528)
 - A png of the energy system model graph is only saved if either `-png` or `-pdf` options are chosen (#530)
 - Accepting string "TRUE"/"FALSE" now for boolean parameters (#534)
+- Order of pages in the readthedocs.io (#525)
+- Reactivated KPI: Renewable share. Updated pytests (#525)
 
 ### Removed
 - `E2.add_costs_and_total`() (#520)

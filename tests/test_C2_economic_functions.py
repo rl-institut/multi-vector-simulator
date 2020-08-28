@@ -155,6 +155,7 @@ def test_get_replacement_costs_one_reinvestment():
         first_time_investment=100,
         discount_factor=0,
     )
+    # Investment in year 5 - present value of residual value = Investment in year 5 / Asset lifetime * used years
     exp = 100 - 100 / 10 * 5
     assert replacement_costs == exp
 

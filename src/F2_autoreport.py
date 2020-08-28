@@ -46,6 +46,7 @@ from src.constants import (
     ECONOMIC_DATA,
     PROJECT_DATA,
     JSON_WITH_RESULTS,
+    LOGFILE,
 )
 from src.constants_json_strings import (
     SECTORS,
@@ -67,6 +68,7 @@ from src.E1_process_results import (
     convert_components_to_dataframe,
     convert_scalar_matrix_to_dataframe,
     convert_cost_matrix_to_dataframe,
+    convert_scalars_to_dataframe,
 )
 from src.F1_plotting import (
     parse_simulation_log,
@@ -675,13 +677,14 @@ def create_app(results_json):
     df_comp = convert_components_to_dataframe(results_json)
     df_scalar_matrix = convert_scalar_matrix_to_dataframe(results_json)
     df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
+    df_kpi_scalars = convert_scalars_to_dataframe(results_json)
 
     output_path = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
     warnings_dict = parse_simulation_log(
-        path_log_file=os.path.join(output_path, "mvs_logfile.log"), log_type="WARNING",
+        path_log_file=os.path.join(output_path, LOGFILE), log_type="WARNING",
     )
     errors_dict = parse_simulation_log(
-        path_log_file=os.path.join(output_path, "mvs_logfile.log"), log_type="ERROR",
+        path_log_file=os.path.join(output_path, LOGFILE), log_type="ERROR",
     )
 
     # App layout and populating it with different elements
@@ -909,6 +912,17 @@ def create_app(results_json):
                                     dict_values=results_json, only_print=False,
                                 ),
                             ),
+                        ],
+                    ),
+                    insert_subsection(
+                        title="Energy system key performance indicators",
+                        content=[
+                            insert_body_text(
+                                f"In the following the key performance indicators of the of {projectName}, "
+                                f"scenario {scenarioName} are displayed. For more information on their definition, "
+                                f"please reference `mvs-eland.readthedocs.io`."
+                            ),
+                            make_dash_data_table(df_kpi_scalars),
                         ],
                     ),
                 ],

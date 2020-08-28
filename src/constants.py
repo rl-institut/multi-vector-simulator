@@ -26,6 +26,8 @@ TIME_SERIES = "time_series"
 OUTPUT_FOLDER = "MVS_outputs"
 # name of the folder containing the copied content of the input folder within the output folder
 INPUTS_COPY = INPUT_FOLDER
+# name of the MVS log file
+LOGFILE = "mvs_logfile.log"
 # name of the automatically generated pdf report
 PDF_REPORT = "simulation_report.pdf"
 # path of the pdf report path
@@ -250,9 +252,11 @@ EXTRA_CSV_PARAMETERS = {
     },
 }
 
+ENERGY_CARRIER_UNIT = "energy_carrier_unit"
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
-    "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1},
-    "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87},
+    "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1, ENERGY_CARRIER_UNIT: "kWh_el"},
+    "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87, ENERGY_CARRIER_UNIT: "kgH2"},
+    "Heat": {UNIT: "KWh_eleq/kWh_therm", VALUE: 1, ENERGY_CARRIER_UNIT: "kWh_therm"},
 }
 
 # dict keys in results_json file

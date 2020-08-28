@@ -64,12 +64,6 @@ The module processes the simulation results regarding economic parameters:
 """
 
 
-class UnexpectedValueError(UserWarning):
-    """Exception raised for value errors during economic post-processing"""
-
-    pass
-
-
 class MissingParametersForEconomicEvaluation(UserWarning):
     "Warning if one or more parameters are missing for economic post-processing  of an asset"
     pass
@@ -100,6 +94,11 @@ def get_costs(dict_asset, economic_data):
     - COST_OPERATIONAL_TOTAL
     - ANNUITY_TOTAL
     - ANNUITY_OM
+
+    Tested with:
+    - test_all_cost_info_parameters_added_to_dict_asset()
+    - Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
+
     """
 
     logging.debug("Calculating costs of asset %s", dict_asset[LABEL])
@@ -278,7 +277,7 @@ def calculate_dispatch_expenditures(dispatch_price, flow, asset):
     elif isinstance(dispatch_price, pd.Series):
         dispatch_expenditures = sum(dispatch_price * flow)
     else:
-        raise UnexpectedValueError(
+        raise TypeError(
             f"The dispatch price of asset {asset} is neither float nor pd.Series but {type(dispatch_price)}."
             f"Please adapt E2.calculate_dispatch_costs() to evaluate the dispatch_expenditures of the asset."
         )
@@ -358,7 +357,7 @@ def calculate_costs_replacement(
         Initial capacity installed
 
     optimized_capacity: float
-        Add capacity to be installed, as optimized
+        Additional capacity to be installed, as optimized
 
     Returns
     -------
