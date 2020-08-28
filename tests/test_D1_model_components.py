@@ -302,10 +302,7 @@ class TestSinkComponent:
         dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
-            model=self.model,
-            dict_asset=dict_asset,
-            sink=self.sinks,
-            bus=self.busses,
+            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -317,10 +314,7 @@ class TestSinkComponent:
         dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
-            model=self.model,
-            dict_asset=dict_asset,
-            sink=self.sinks,
-            bus=self.busses,
+            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -331,10 +325,7 @@ class TestSinkComponent:
         dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_single"]
 
         D1.sink_dispatchable(
-            model=self.model,
-            dict_asset=dict_asset,
-            sink=self.sinks,
-            bus=self.busses,
+            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -345,10 +336,7 @@ class TestSinkComponent:
         dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_multiple"]
 
         D1.sink_dispatchable(
-            model=self.model,
-            dict_asset=dict_asset,
-            sink=self.sinks,
-            bus=self.busses,
+            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
