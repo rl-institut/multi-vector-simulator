@@ -96,10 +96,7 @@ def extract_plot_data_and_title(dict_values, df_dem=None):
 
     # Collect the keys of various resources (PV, Wind, etc.)
     resources = dict_values[ENERGY_PRODUCTION].copy()
-    res_keys = []
-    for k in resources.keys():
-        if resources[k][DISPATCHABILITY] is False:
-            res_keys.append(k)
+    res_keys = [k for k in resources.keys() if resources[k][DISPATCHABILITY] is False]
 
     # Gather all the keys of the various plots for later use in the graphOptions.csv
     dict_for_plots = {DEMANDS: {}, RESOURCES: {}}
@@ -146,7 +143,7 @@ def parse_simulation_log(path_log_file=None, log_type="ERROR"):
     logs_dict = {}
 
     if path_log_file is None:
-        path_log_file = os.path.join(OUTPUT_FOLDER, "mvs_logfile.log")
+        path_log_file = os.path.join(OUTPUT_FOLDER, LOGFILE)
 
     with open(path_log_file) as log_messages:
         log_messages = log_messages.readlines()
