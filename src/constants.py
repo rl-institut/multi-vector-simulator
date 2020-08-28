@@ -261,7 +261,7 @@ DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
     "H2": {
         UNIT: "kWh_eleq/kgH2",
         VALUE: 32.87,
-        ENERGY_CARRIER_UNIT: "kgH2"
+        ENERGY_CARRIER_UNIT: "kgH2",
     },  # https://epact.energy.gov/fuel-conversion-factors
     "Diesel": {
         UNIT: "kWh_eleq/l",

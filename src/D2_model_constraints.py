@@ -101,6 +101,8 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
     .. math::
         minimal renewable factor <= \frac{\sum renewable generation \cdot weighting factor}{\sum renewable generation \cdot weighting factor + \sum non-renewable generation \cdot weighting factor}
 
+    Tested with:
+    - Test_Constraints.test_benchmark_minimal_renewable_share_constraint()
     """
 
     # Keys for dicts renewable_assets and non_renewable_assets

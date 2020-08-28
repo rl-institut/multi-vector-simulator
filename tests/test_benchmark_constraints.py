@@ -74,9 +74,7 @@ class Test_Constraints:
                 input_type=CSV_EXT,
                 path_output_folder=os.path.join(TEST_OUTPUT_PATH, case),
             )
-            data = load_json(
-                os.path.join(TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS)
-            )
+            data = load_json(os.path.join(TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS))
             renewable_shares.update(
                 {case: data[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE]}
             )
@@ -84,10 +82,9 @@ class Test_Constraints:
                 {case: data[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE]}
             )
 
-            assert minimal_renewable_shares[case] < renewable_shares[case] + 10**(-6)
+            assert minimal_renewable_shares[case] < renewable_shares[case] + 10 ** (-6)
 
         assert renewable_shares[use_case[0]] < renewable_shares[use_case[1]]
-
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
