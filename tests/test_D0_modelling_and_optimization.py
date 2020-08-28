@@ -10,6 +10,10 @@ from src.B0_data_input_json import load_json
 from src.constants_json_strings import (
     ENERGY_BUSSES,
     ENERGY_CONSUMPTION,
+    OEMOF_BUSSES,
+    OEMOF_SOURCE,
+    OEMOF_SINK,
+    OEMOF_GEN_STORAGE,
     OEMOF_TRANSFORMER,
     OEMOF_ASSET_TYPE,
     LABEL,
@@ -69,10 +73,9 @@ def test_if_model_building_time_measured_and_stored():
     assert "modelling_time" in dict_values[SIMULATION_RESULTS]
     assert isinstance(dict_values[SIMULATION_RESULTS]["modelling_time"], float)
 
-
 def test_energysystem_initialized(dict_values_minimal):
     model, dict_model = D0.model_building.initialize(dict_values_minimal)
-    for k in ("busses", "sinks", "sources", "transformers", "storages"):
+    for k in (OEMOF_BUSSES, OEMOF_SINK, OEMOF_SOURCE, OEMOF_TRANSFORMER, OEMOF_GEN_STORAGE):
         assert k in dict_model.keys()
     assert isinstance(model, oemof.solph.network.EnergySystem)
 
