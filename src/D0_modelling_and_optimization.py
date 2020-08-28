@@ -6,6 +6,8 @@ from oemof.solph import processing
 import oemof.solph as solph
 
 import src.D1_model_components as D1
+import src.D2_model_constraints as D2
+
 from src.constants import PATH_OUTPUT_FOLDER, ES_GRAPH, PATHS_TO_PLOTS, PLOTS_ES
 from src.constants_json_strings import (
     ENERGY_BUSSES,
@@ -86,7 +88,9 @@ def run_oemof(dict_values, save_energy_system_graph=False):
     local_energy_system = solph.Model(model)
     logging.debug("Created oemof model based on created components and busses.")
 
-    model_building.add_constraints()
+    local_energy_system = D2.add_constraints(
+        local_energy_system, dict_values, dict_model
+    )
 
     model_building.store_lp_file(dict_values, local_energy_system)
 
@@ -228,23 +232,6 @@ class model_building:
             logging.debug("Created graph of the energy system model.")
 
             graph.render()
-
-    def add_constraints():
-        """
-        Adding constraints to the existing oemof/pyomo energy model. Currently, there are no existing constraints.
-
-        Returns
-        -------
-        None
-        """
-        logging.info("Adding constraints to oemof model...")
-        """
-        Stability constraint
-        include constraint linking two converters (ie "in/out")
-        Minimal renewable share constraint
-        """
-        logging.debug("All constraints added.")
-        return
 
     def store_lp_file(dict_values, local_energy_system):
         """
