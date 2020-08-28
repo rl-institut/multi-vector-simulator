@@ -7,6 +7,8 @@ import src.E1_process_results as E1
 import src.E2_economics as E2
 import src.E3_indicator_calculation as E3
 
+import src.E4_verification_of_constraints as E4
+
 from src.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,
@@ -145,12 +147,14 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     E3.all_totals(dict_values)
 
+    logging.info("Evaluating optimized capacities and dispatch.")
     # Processing further KPI
     # todo : reactivate function
     E3.total_renewable_and_non_renewable_energy_origin(dict_values)
     E3.renewable_share(dict_values)
 
-    logging.info("Evaluating optimized capacities and dispatch.")
+    # Tests and checks
+    E4.minimal_renewable_share_test(dict_values)
     return
 
 
