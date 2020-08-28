@@ -254,7 +254,18 @@ EXTRA_CSV_PARAMETERS = {
 
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
     "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1},
-    "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87},
+    "H2": {
+        UNIT: "kWh_eleq/kgH2",
+        VALUE: 32.87,
+    },  # https://epact.energy.gov/fuel-conversion-factors
+    "Diesel": {
+        UNIT: "kWh_eleq/l",
+        VALUE: 8.20,
+    },  # https://epact.energy.gov/fuel-conversion-factors, convertion gallon->4.546092 l
+    "Gas": {
+        UNIT: "kWh_eleq/m3",
+        VALUE: 5.38,
+    },  # https://epact.energy.gov/fuel-conversion-factors, convertion gallon->4.546092 l
 }
 
 # dict keys in results_json file
