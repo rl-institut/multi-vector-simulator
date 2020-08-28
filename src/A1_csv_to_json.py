@@ -651,7 +651,6 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                 except:
                     value = int(value)
         asset_dict.update({param: {VALUE: value, UNIT: row[UNIT]}})
-
     return asset_dict
 
 
