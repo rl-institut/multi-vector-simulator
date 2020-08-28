@@ -30,6 +30,10 @@ Here is a template for new release sections
 - Possibility to add an upper bound  on the number of days to display in a timeseries' plot (#526)
 - Graph of the energy system model to the report (#528)
 - Function to encode images into dash app's layout (#528)
+- New constant variable: OEMOF_BUSSES, MINIMAL_RENEWABLE_SHARE, CONSTRAINTS (#538)
+- New required input csv: `constraints.csv` including possible constraints for the energy system. Added to all input folders. (#538)
+- Added error message: New energy carriers always have to be added to `DEFAULT_WEIGHTS_ENERGY_CARRIERS` (`C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS()`, applied to `ENERGY_VECTOR` and to fuel sources) (#538)
+- Added minimal renewable share contraint though  `D2.constraint_minimal_renewable_share()` and added description of the constraint in `Model_Assumptions.rst` (#538)
 
 ### Changed
 - Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
@@ -43,6 +47,8 @@ Here is a template for new release sections
 - Rename variable `PLOTS_NX` to `PLOTS_ES` (#528)
 - Changed `requirements.txt` (removing and updating dependencies) (#528)
 - A png of the energy system model graph is only saved if either `-png` or `-pdf` options are chosen (#530)
+- Extended `DEFAULT_WEIGHTS_ENERGY_CARRIERS` by `Diesel` and `Gas`, added explaination in `Model_Assumptions.rs` (#538)
+- Create `dict_model` with constant variables in `D0` and update in `D1` (#538)
 
 ### Removed
 - `E2.add_costs_and_total`() (#520)
@@ -55,8 +61,8 @@ Here is a template for new release sections
 - Calculation of `cost_upfront` required a multiplication (#520)
 - Fixed `E2.convert_components_to_dataframe()`, Key error (#520)
 - Fixed `F1.extract_plot_data_and_title()`, Key error (#520)
-- Fixed hard-coded energy vector of ENERGY_PRODUCTION units in E1.convert_components_to_dataframe(#520)
-- Fixed parsing issue in `A1.conversion()` ()
+- Fixed hard-coded energy vector of `ENERGY_PRODUCTION` units in `E1.convert_components_to_dataframe` (#520)
+- Fixed parsing issue in `A1.conversion()`, incl. pytest (#538)
 
 ## [0.3.3] - 2020-08-19
 
