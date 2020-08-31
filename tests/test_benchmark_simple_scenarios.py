@@ -67,6 +67,9 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AB_grid_pv(self, margs):
+        r"""
+        Benchmark test for simple case grid connected PV. Since the PV is already installed, this tests makes sure that the PV generation is totally used to supply the load and the rest in take from the grid.
+        """
         use_case = "AB_grid_PV"
         main(
             overwrite=True,
@@ -97,6 +100,9 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AE_grid_battery(self, margs):
+        r"""
+        Benchmark test for simple case grid and battery scenario. The grid should solely be used to feed the load.
+        """
         use_case = "AE_grid_battery"
         main(
             overwrite=True,
@@ -122,6 +128,9 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_ABE_grid_pv_bat(self, margs):
+        r"""
+        Benchmark test for using a grid connected PV system with storage. In this case, the excess production should be used to charge the battery.
+        """
         # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
         use_case = ["AB_grid_PV", "ABE_grid_PV_battery"]
         # define an empty dictionary for excess electricity
@@ -152,6 +161,9 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AD_grid_diesel(self, margs):
+        r"""
+        Benchmark test for using a diesel generator with the electricity grid. In this benchmark test, the LCOE of the diesel generator is made less than the grid price and so it is solely used to supply the load.
+        """
         use_case = "AD_grid_diesel"
         main(
             overwrite=True,
@@ -184,6 +196,9 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AE_grid_battery_peak_pricing(self, margs):
+        r"""
+        Benchmark test for electricity grid peak demand pricing. To evaluate this, a battery is used. The battery should be charged at instances before the grid supplies peak demand. The battery is discharged when demand is higher than peak demand and charged when demand is smaller than peak demand.
+        """
         use_case = "AE_grid_battery_peak_pricing"
         main(
             overwrite=True,
