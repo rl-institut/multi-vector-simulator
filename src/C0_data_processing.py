@@ -1058,7 +1058,6 @@ def determine_dispatch_price(dict_values, price, source):
     # check if multiple busses are provided
     # for each bus, read time series for dispatch_price if a file name has been
     # provided in energy price
-    print(price)
     if isinstance(price[VALUE], list):
         source.update({DISPATCH_PRICE: {VALUE: [], UNIT: price[UNIT]}})
         values_info = []
