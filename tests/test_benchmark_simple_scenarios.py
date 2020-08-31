@@ -12,7 +12,6 @@ import json
 import mock
 import pandas as pd
 import pytest
-import random
 
 from pytest import approx
 from mvs_eland_tool import main
