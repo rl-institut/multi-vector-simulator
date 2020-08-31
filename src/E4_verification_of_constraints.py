@@ -44,6 +44,7 @@ def minimal_renewable_share_test(dict_values):
                 logging.error(
                     f"ATTENTION: Minimal renewable share criterion NOT fullfilled! The deviation is {round(deviation,5)}."
                 )
+                return False
 
         else:
             logging.debug(
