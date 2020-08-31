@@ -265,6 +265,9 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AFG_grid_heatpump_heat(self, margs):
+        r"""
+        Benchmark test for a sector-coupled energy system, including electricity and heat demand. As an sector-coupling asset, a heat pump is used. Both an electricity and heat DSO are present. The electricity tariff is defined as a timeseries. When...
+        """
         use_case = "AFG_grid_heatpump_heat"
         main(
             overwrite=True,
