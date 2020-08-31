@@ -84,6 +84,7 @@ class Test_Constraints:
 
             assert minimal_renewable_shares[case] < renewable_shares[case] + 10 ** (-6)
 
+        assert renewable_shares[use_case[0]] < minimal_renewable_shares[use_case[1]]
         assert renewable_shares[use_case[0]] < renewable_shares[use_case[1]]
 
     def teardown_method(self):
