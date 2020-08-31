@@ -296,7 +296,10 @@ class TestACElectricityBus:
             ):
                 assert busses_flow["Gas_consumption_period"][i] == approx(
                     abs(busses_flow["demand_heat"][i])
-                )
+                ), f"Eventhough the marginal costs to use the heat pump are higher then the heat DSO price with {electricity_price[i]
+                / data[ENERGY_CONVERSION]["heat_pump"][EFFICIENCY][VALUE]} comp. data[ENERGY_PROVIDERS]["Heat DSO"][ENERGY_PRICE][VALUE]}, the heat DSO is not solely used for energy supply."
+                
+I am a bit confused with the names here - is it a heat dso or a gas dso ("Gas_consumption_period") that we are talking about here? 
             else:
                 assert busses_flow["heat_pump"][i] == approx(
                     abs(busses_flow["demand_heat"][i])
