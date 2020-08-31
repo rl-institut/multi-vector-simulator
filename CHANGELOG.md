@@ -73,6 +73,7 @@ Here is a template for new release sections
 - Generating report for multiple sectors (#534)
 - Quick fix to read a timeseries for `"price"` in `C0.define_source()` (#524)
 - Fix `C1.check_feedin_tariff()`: Now also applyable to timeseries of feed-in tariff or electricity prices (#524)
+- Fix reading timeseries for parameters in `C0` ()
 
 ## [0.3.3] - 2020-08-19
 
