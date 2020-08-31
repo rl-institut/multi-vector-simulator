@@ -284,7 +284,10 @@ def energyConversion(dict_values, group):
         add_maximum_cap(dict_values=dict_values, group=group, asset=asset)
 
         # in case there is only one parameter provided (input bus and one output bus)
-        if FILENAME in dict_values[group][asset][EFFICIENCY] and HEADER in dict_values[group][asset][EFFICIENCY]:
+        if (
+            FILENAME in dict_values[group][asset][EFFICIENCY]
+            and HEADER in dict_values[group][asset][EFFICIENCY]
+        ):
             receive_timeseries_from_csv(
                 dict_values,
                 dict_values[SIMULATION_SETTINGS],

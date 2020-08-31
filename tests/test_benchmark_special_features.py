@@ -26,10 +26,20 @@ from .constants import (
 
 from src.constants import JSON_WITH_RESULTS, TIME_SERIES
 
-from src.constants_json_strings import ENERGY_PROVIDERS, ENERGY_PRODUCTION, ENERGY_CONVERSION, EFFICIENCY, VALUE, DSO_CONSUMPTION, DISPATCH_PRICE, ENERGY_PRICE
+from src.constants_json_strings import (
+    ENERGY_PROVIDERS,
+    ENERGY_PRODUCTION,
+    ENERGY_CONVERSION,
+    EFFICIENCY,
+    VALUE,
+    DSO_CONSUMPTION,
+    DISPATCH_PRICE,
+    ENERGY_PRICE,
+)
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
+
 
 class Test_Parameter_Parsing:
     def setup_method(self):
@@ -62,18 +72,26 @@ class Test_Parameter_Parsing:
 
         # read csv with expected values of the timeseries
         csv_file = "parameter_timeseries.csv"
-        csv_data = pd.read_csv(os.path.join(TEST_INPUT_PATH, use_case, TIME_SERIES, csv_file))
+        csv_data = pd.read_csv(
+            os.path.join(TEST_INPUT_PATH, use_case, TIME_SERIES, csv_file)
+        )
 
         # constant variables
         diesel = "diesel_generator"
-        dso="DSO"
-        diesel_efficiency="diesel_efficiency"
-        electricity_price="electricity_price"
+        dso = "DSO"
+        diesel_efficiency = "diesel_efficiency"
+        electricity_price = "electricity_price"
 
         for k in range(0, len(csv_data[diesel_efficiency])):
-            assert data[ENERGY_CONVERSION][diesel][EFFICIENCY][VALUE][k] == pytest.approx(csv_data[diesel_efficiency][k], rel=1e-6)
-            assert data[ENERGY_PROVIDERS][dso][ENERGY_PRICE][VALUE][k] == pytest.approx(csv_data[electricity_price][k], rel=1e-6)
-            assert data[ENERGY_PRODUCTION][dso+DSO_CONSUMPTION][DISPATCH_PRICE][VALUE][k] == pytest.approx(csv_data[electricity_price][k], rel=1e-6)
+            assert data[ENERGY_CONVERSION][diesel][EFFICIENCY][VALUE][
+                k
+            ] == pytest.approx(csv_data[diesel_efficiency][k], rel=1e-6)
+            assert data[ENERGY_PROVIDERS][dso][ENERGY_PRICE][VALUE][k] == pytest.approx(
+                csv_data[electricity_price][k], rel=1e-6
+            )
+            assert data[ENERGY_PRODUCTION][dso + DSO_CONSUMPTION][DISPATCH_PRICE][
+                VALUE
+            ][k] == pytest.approx(csv_data[electricity_price][k], rel=1e-6)
 
     def test_benchmark_feature_input_flows_as_list(self, margs):
         r"""
