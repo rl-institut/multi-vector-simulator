@@ -387,6 +387,21 @@ def test_evaluate_lifetime_costs():
         assert k in dict_asset
 
 
+def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass():
+    # Function only needs to pass
+    C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+        "Electricity", "asset_group", "asset"
+    )
+    assert 1 == 1
+
+
+def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fail():
+    with pytest.raises(C0.UnknownEnergyCarrier):
+        C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+            "Bio-Diesel", "asset_group", "asset"
+        )
+
+
 """
 def test_asess_energyVectors_and_add_to_project_data():
     C2.identify_energy_vectors(dict_values)

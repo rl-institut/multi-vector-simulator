@@ -26,7 +26,7 @@ OEMOF_TRANSFORMER = "transformer"
 OEMOF_GEN_STORAGE = "storage"
 OEMOF_SOURCE = "source"
 OEMOF_SINK = "sink"
-# OEMOF_BUSSES = "bus"
+OEMOF_BUSSES = "bus"
 
 # Dict generated from above defined strings
 ACCEPTED_ASSETS_FOR_ASSET_GROUPS = {
@@ -104,6 +104,10 @@ STORAGE_CAPACITY = "storage capacity"
 SOC_INITIAL = "soc_initial"
 SOC_MAX = "soc_max"
 SOC_MIN = "soc_min"
+
+# Constraints
+CONSTRAINTS = "constraints"
+MINIMAL_RENEWABLE_SHARE = "minimal_renewable_share"
 
 #######################################
 # Parameters added in pre-processing #
