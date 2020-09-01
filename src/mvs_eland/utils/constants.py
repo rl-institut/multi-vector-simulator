@@ -2,8 +2,10 @@ import os
 
 from mvs_eland.utils.constants_json_strings import *
 
-# path to the root of this repository (assumes this file is in src folder)
-REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# path to the root of this repository (assumes this file is in src/mvs_eland/utils folder)
+REPO_PATH = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
 # name of the default input folder
 INPUT_FOLDER = "inputs"
 # name of the template input folder
