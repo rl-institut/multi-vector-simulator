@@ -44,7 +44,7 @@ import mvs_eland.F0_output as output_processing
 from mvs_eland_tool.version import version_num, version_date
 
 
-def main(json_dict, **kwargs):
+def run_simulation(json_dict, **kwargs):
     r"""
     Starts MVS tool simulation from an input json file
 
