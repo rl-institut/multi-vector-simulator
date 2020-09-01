@@ -14,7 +14,7 @@ before_install:
 
 # command to install dependencies
 install:
-  - pip install -r tests/test_requirements.txt
+  - pip install -r requirements/test.txt
   - pip install -e .[report]
 
 # commands to run tests 

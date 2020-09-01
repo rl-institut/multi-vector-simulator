@@ -55,7 +55,7 @@ To set up the MVS, follow the steps below:
 
 * Install required packages from requirements.txt file using pip
 
-    `pip install -r requirements.txt`
+    `pip install -r requirements/default.txt`
 
 * Test if that the cbc solver is properly installed by typing
 
@@ -88,7 +88,7 @@ To set up the MVS, follow the steps below:
     
 * You can also run all existing tests by executing
 
-    `pip install -r tests/test_requirements.txt`
+    `pip install -r requirements/test.txt`
     
     `pytest tests/`
     
