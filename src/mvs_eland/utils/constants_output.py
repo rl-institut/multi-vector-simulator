@@ -4,7 +4,7 @@ One should simply import new KPI names from constants.py or constants_json_strin
 and add them to the list to make them appear in the excel output sheet "scalars".
 """
 
-from src.constants import (
+from src.mvs_eland.utils.constants import (
     COST_TOTAL,
     COST_OPERATIONAL_TOTAL,
     COST_INVESTMENT,
