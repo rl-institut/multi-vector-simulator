@@ -620,8 +620,11 @@ def plot_timeseries(
     plots = {}
 
     if max_days is not None:
-        max_date = df_pd["timestamp"][0] + pd.Timedelta("{} day".format(max_days))
-        df_pd = df_pd.loc[df_pd["timestamp"] < max_date]
+        if df_pd["timestamp"].empty:
+            logging.warning("The timeseries for {} are empty".format(data_type))
+        else:
+            max_date = df_pd["timestamp"][0] + pd.Timedelta("{} day".format(max_days))
+            df_pd = df_pd.loc[df_pd["timestamp"] < max_date]
         title_addendum = " ({} days)".format(max_days)
     else:
         title_addendum = ""
