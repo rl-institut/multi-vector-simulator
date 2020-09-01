@@ -307,7 +307,6 @@ def test_create_json_from_csv_storage_raises_WrongParameterWarning_for_wrong_val
 
 
 def test_create_json_from_csv_storage_raises_WrongStorageColumn():
-
     with pytest.raises(A1.WrongStorageColumn):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
@@ -315,6 +314,26 @@ def test_create_json_from_csv_storage_raises_WrongStorageColumn():
             parameters=[AGE_INSTALLED, DEVELOPMENT_COSTS],
             asset_is_a_storage=True,
         )
+
+
+def test_create_json_from_csv_float_int_parsing():
+    exp = {
+        "param1": {UNIT: "years", VALUE: 50.0},
+        "param2": {UNIT: "factor", VALUE: 0.2},
+        "param3": {UNIT: "currency", VALUE: 65.5},
+    }
+    json = A1.create_json_from_csv(
+        DUMMY_CSV_PATH,
+        "csv_float_int",
+        parameters=["param1", "param2", "param3"],
+        asset_is_a_storage=False,
+    )
+    for param in exp:
+        assert json["csv_float_int"]["col1"][param][VALUE] == exp[param][VALUE]
+
+    assert type(json["csv_float_int"]["col1"]["param1"][VALUE]) is int
+    assert type(json["csv_float_int"]["col1"]["param2"][VALUE]) is float
+    assert type(json["csv_float_int"]["col1"]["param3"][VALUE]) is float
 
 
 def teardown_function():

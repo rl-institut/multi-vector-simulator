@@ -42,6 +42,7 @@ from src.constants import (
     SIMULATION_SETTINGS,
     ECONOMIC_DATA,
     PROJECT_DATA,
+    CONSTRAINTS,
     STORAGE_FILENAME,
     TYPE_BOOL,
     TYPE_STR,
@@ -198,7 +199,7 @@ def create_json_from_csv(
     One csv file is loaded and it's parameters are checked. The csv file is
     then converted to a dictionary; the name of the csv file is used as the
     main key of the dictionary. Exceptions are made for the files
-    ["economic_data", "project", "project_data", "simulation_settings"], here
+    ["economic_data", "project", "project_data", "simulation_settings", "constraints"], here
     no main key is added. Another exception is made for the file
     "energyStorage". When this file is processed, the according "storage"
     files (names of the "storage" columns in "energyStorage" are called and
@@ -475,6 +476,7 @@ def create_json_from_csv(
         ECONOMIC_DATA,
         PROJECT_DATA,
         SIMULATION_SETTINGS,
+        CONSTRAINTS,
     ]:
         return single_dict
     elif asset_is_a_storage is True:
@@ -643,12 +645,12 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                 value = None
             else:
                 try:
-                    value = int(value)
-                except:
                     value = float(value)
-
+                    if value.is_integer() is True:
+                        value = int(value)
+                except:
+                    value = int(value)
         asset_dict.update({param: {VALUE: value, UNIT: row[UNIT]}})
-
     return asset_dict
 
 

@@ -11,6 +11,7 @@ from src.constants import (
     PATH_OUTPUT_FOLDER,
     TYPE_BOOL,
     HEADER,
+    DEFAULT_WEIGHTS_ENERGY_CARRIERS,
 )
 
 from src.constants_json_strings import *
@@ -40,6 +41,11 @@ Module C0 prepares the data red from csv or json for simulation, ie. pre-process
 
 class InvalidPeakDemandPricingPeriods(ValueError):
     # Exeption if an input is not valid
+    pass
+
+
+class UnknownEnergyCarrier(ValueError):
+    # Exception if an energy carrier is not in DEFAULT_WEIGHTS_ENERGY_CARRIERS
     pass
 
 
@@ -107,6 +113,9 @@ def identify_energy_vectors(dict_values):
             ):
                 energy_vector_name = dict_values[level1][level2][ENERGY_VECTOR]
                 if energy_vector_name not in dict_of_sectors.keys():
+                    check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+                        energy_vector_name, level1, level2
+                    )
                     dict_of_sectors.update(
                         {energy_vector_name: energy_vector_name.replace("_", " ")}
                     )
@@ -118,6 +127,43 @@ def identify_energy_vectors(dict_values):
         names_of_sectors[:-2],
     )
     return
+
+
+def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+    energy_carrier, asset_group, asset
+):
+    r"""
+    Raises an error message if an energy vector is unknown.
+
+    It then needs to be added to the DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py
+
+    Parameters
+    ----------
+    energy_carrier: str
+        Name of the energy carrier
+
+    asset_group: str
+        Name of the asset group
+
+    asset: str
+        Name of the asset
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    Tested with:
+    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass()
+    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fails()
+    """
+    if energy_carrier not in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
+        raise UnknownEnergyCarrier(
+            f"The energy carrier {energy_carrier} of asset group {asset_group}, asset {asset} is unknown, "
+            f"as it is not defined within the DEFAULT_WEIGHTS_ENERGY_CARRIERS."
+            f"Please check the energy carrier, or update the DEFAULT_WEIGHTS_ENERGY_CARRIERS in contants.py (dev)."
+        )
 
 
 def retrieve_date_time_info(simulation_settings):
@@ -322,6 +368,9 @@ def energyProduction(dict_values, group):
         if FILENAME in dict_values[group][asset]:
             if dict_values[group][asset][FILENAME] in ("None", None):
                 dict_values[group][asset].update({DISPATCHABILITY: True})
+                check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+                    asset, group, asset
+                )
             else:
                 receive_timeseries_from_csv(
                     dict_values,

@@ -70,6 +70,7 @@ DEFAULT_MAIN_KWARGS = dict(
 # list of csv filename which must be present within the CSV_ELEMENTS folder with the parameters
 # associated to each of these filenames
 REQUIRED_CSV_PARAMETERS = {
+    CONSTRAINTS: [MINIMAL_RENEWABLE_SHARE],
     ENERGY_CONSUMPTION: [
         DSM,
         FILENAME,
@@ -178,6 +179,7 @@ REQUIRED_JSON_PARAMETERS = {
     ENERGY_PROVIDERS: None,
     ENERGY_STORAGE: None,
     FIX_COST: None,
+    CONSTRAINTS: [MINIMAL_RENEWABLE_SHARE],
     PROJECT_DATA: [
         COUNTRY,
         LABEL,
@@ -255,8 +257,22 @@ EXTRA_CSV_PARAMETERS = {
 ENERGY_CARRIER_UNIT = "energy_carrier_unit"
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
     "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1, ENERGY_CARRIER_UNIT: "kWh_el"},
-    "H2": {UNIT: "kWh_eleq/kgH2", VALUE: 32.87, ENERGY_CARRIER_UNIT: "kgH2"},
     "Heat": {UNIT: "KWh_eleq/kWh_therm", VALUE: 1, ENERGY_CARRIER_UNIT: "kWh_therm"},
+    "H2": {
+        UNIT: "kWh_eleq/kgH2",
+        VALUE: 32.87,
+        ENERGY_CARRIER_UNIT: "kgH2",
+    },  # https://epact.energy.gov/fuel-conversion-factors
+    "Diesel": {
+        UNIT: "kWh_eleq/l",
+        VALUE: 8.20,
+        ENERGY_CARRIER_UNIT: "l",
+    },  # https://epact.energy.gov/fuel-conversion-factors, convertion gallon->4.546092 l
+    "Gas": {
+        UNIT: "kWh_eleq/m3",
+        VALUE: 5.38,
+        ENERGY_CARRIER_UNIT: "l",
+    },  # https://epact.energy.gov/fuel-conversion-factors, convertion gallon->4.546092 l
 }
 
 # dict keys in results_json file

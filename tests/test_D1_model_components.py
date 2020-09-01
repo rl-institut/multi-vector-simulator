@@ -16,6 +16,11 @@ from src.constants_json_strings import (
     ENERGY_CONSUMPTION,
     ENERGY_STORAGE,
     ENERGY_PRODUCTION,
+    OEMOF_BUSSES,
+    OEMOF_SOURCE,
+    OEMOF_SINK,
+    OEMOF_GEN_STORAGE,
+    OEMOF_TRANSFORMER,
     DISPATCH_PRICE,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
@@ -127,8 +132,8 @@ class TestTransformerComponent:
         D1.transformer(
             model=self.model,
             dict_asset=dict_asset,
-            transformers=self.transformers,
-            busses=self.busses,
+            transformer=self.transformers,
+            bus=self.busses,
         )
 
         # only one output and one input bus
@@ -148,8 +153,8 @@ class TestTransformerComponent:
         D1.transformer(
             model=self.model,
             dict_asset=dict_asset,
-            transformers=self.transformers,
-            busses=self.busses,
+            transformer=self.transformers,
+            bus=self.busses,
         )
 
         # one output bus and two input busses
@@ -172,8 +177,8 @@ class TestTransformerComponent:
         D1.transformer(
             model=self.model,
             dict_asset=dict_asset,
-            transformers=self.transformers,
-            busses=self.busses,
+            transformer=self.transformers,
+            bus=self.busses,
         )
 
         # only one output and one input bus
@@ -194,8 +199,8 @@ class TestTransformerComponent:
         # D1.transformer(
         #     model=self.model,
         #     dict_asset=dict_asset,
-        #     transformers=self.transformers,
-        #     busses=self.busses,
+        #     transformer=self.transformers,
+        #     bus=self.busses,
         # )
         #
         # # one output bus and two input busses
@@ -297,10 +302,7 @@ class TestSinkComponent:
         dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
-            model=self.model,
-            dict_asset=dict_asset,
-            sinks=self.sinks,
-            busses=self.busses,
+            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -312,10 +314,7 @@ class TestSinkComponent:
         dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
-            model=self.model,
-            dict_asset=dict_asset,
-            sinks=self.sinks,
-            busses=self.busses,
+            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -326,10 +325,7 @@ class TestSinkComponent:
         dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_single"]
 
         D1.sink_dispatchable(
-            model=self.model,
-            dict_asset=dict_asset,
-            sinks=self.sinks,
-            busses=self.busses,
+            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -340,10 +336,7 @@ class TestSinkComponent:
         dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_multiple"]
 
         D1.sink_dispatchable(
-            model=self.model,
-            dict_asset=dict_asset,
-            sinks=self.sinks,
-            busses=self.busses,
+            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -446,8 +439,8 @@ class TestSourceComponent:
         D1.source(
             model=self.model,
             dict_asset=dict_asset,
-            sources=self.sources,
-            busses=self.busses,
+            source=self.sources,
+            bus=self.busses,
         )
 
         # checks done with helper function (see func for more information)
@@ -466,8 +459,8 @@ class TestSourceComponent:
         D1.source(
             model=self.model,
             dict_asset=dict_asset,
-            sources=self.sources,
-            busses=self.busses,
+            source=self.sources,
+            bus=self.busses,
         )
 
         # checks done with helper function (see func for more information)
@@ -484,8 +477,8 @@ class TestSourceComponent:
         D1.source(
             model=self.model,
             dict_asset=dict_asset,
-            sources=self.sources,
-            busses=self.busses,
+            source=self.sources,
+            bus=self.busses,
         )
 
         # checks done with helper function (see func for more information)
@@ -504,8 +497,8 @@ class TestSourceComponent:
         D1.source(
             model=self.model,
             dict_asset=dict_asset,
-            sources=self.sources,
-            busses=self.busses,
+            source=self.sources,
+            bus=self.busses,
         )
         # checks done with helper function (see func for more information)
         self.helper_test_source_in_model_and_dict(
@@ -523,8 +516,8 @@ class TestSourceComponent:
         D1.source(
             model=self.model,
             dict_asset=dict_asset,
-            sources=self.sources,
-            busses=self.busses,
+            source=self.sources,
+            bus=self.busses,
         )
         # checks done with helper function (see func for more information)
         self.helper_test_source_in_model_and_dict(
@@ -542,8 +535,8 @@ class TestSourceComponent:
         D1.source(
             model=self.model,
             dict_asset=dict_asset,
-            sources=self.sources,
-            busses=self.busses,
+            source=self.sources,
+            bus=self.busses,
         )
         # checks done with helper function (see func for more information)
         self.helper_test_source_in_model_and_dict(
@@ -571,8 +564,8 @@ class TestStorageComponent:
         D1.storage(
             model=self.model,
             dict_asset=dict_asset,
-            busses=self.busses,
-            storages=self.storages,
+            bus=self.busses,
+            storage=self.storages,
         )
 
         # self.storages should contain the storage (key = label, value = storage object)
@@ -627,8 +620,8 @@ class TestStorageComponent:
         D1.storage(
             model=self.model,
             dict_asset=dict_asset,
-            busses=self.busses,
-            storages=self.storages,
+            bus=self.busses,
+            storage=self.storages,
         )
 
         # self.storages should contain the storage (key = label, value = storage object)
@@ -678,7 +671,7 @@ class TestBusFunction:
     def test_bus_add_to_empty_dict(self):
         label = "Test bus"
         busses = {}
-        D1.bus(model=self.model, name=label, busses=busses)
+        D1.bus(model=self.model, name=label, bus=busses)
 
         # self.model should contain the test bus
         assert self.model.entities[-1].label == label
@@ -690,7 +683,7 @@ class TestBusFunction:
 
     def test_bus_add_to_not_empty_dict(self):
         label = "Test bus 2"
-        D1.bus(model=self.model, name=label, busses=self.busses)
+        D1.bus(model=self.model, name=label, bus=self.busses)
 
         # self.model should contain the test bus
         assert self.model.entities[-1].label == label
@@ -715,6 +708,6 @@ def test_check_optimize_cap_raise_error(get_json, get_model, get_busses):
             dict_asset=test_asset,
             func_constant=D1.transformer_constant_efficiency_fix,
             func_optimize=D1.transformer_constant_efficiency_optimize,
-            busses=busses,
+            bus=busses,
             transformers={},
         )

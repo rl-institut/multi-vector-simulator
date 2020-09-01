@@ -40,8 +40,14 @@ Here is a template for new release sections
 - Default values for energy carrier "Heat" for `DEFAULT_WEIGHTS_ENERGY_CARRIERS` with `{UNIT: "KWh_eleq/kWh_therm", VALUE: 1}`. This is still TBD, as there is no source for this ratio yet (#525)
 - Default unit for energy carriers defined in `DEFAULT_WEIGHTS_ENERGY_CARRIERS`: ENERGY_CARRIER_UNIT. Might be used to define the units of flows and LCOE. (#525)
 - New constant variables: TIMESERIES_TOTAL, TIMESERIES_AVERAGE, LOGFILE, RENEWABLE_SHARE, TOTAL_DEMAND, SUFFIX_ELECTRICITY_EQUIVALENT, ATTRIBUTED_COSTS, LCOeleq, DEGREE_OF_SECTOR_COUPLING (#525)
+- New constant variable: OEMOF_BUSSES, MINIMAL_RENEWABLE_SHARE, CONSTRAINTS (#538)
+- New required input csv: `constraints.csv` including possible constraints for the energy system. Added to all input folders. (#538)
+- Added error message: New energy carriers always have to be added to `DEFAULT_WEIGHTS_ENERGY_CARRIERS` (`C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS()`, applied to `ENERGY_VECTOR` and to fuel sources) (#538)
+- Added minimal renewable share contraint though  `D2.constraint_minimal_renewable_share()` and added description of the constraint in `Model_Assumptions.rst` (#538)
+- Benchmark test for minimal renewable share constraint (#538)
 - Benchmark test `test_benchmark_AFG_grid_heatpump_heat` for a sector-coupled energy system, including electricity and heat, with a heat pump and an energy price as time series (#524)
 - Benchmark test descriptions for `test_benchmark_simple_scenarios.py` (#524)
+
 
 ### Changed
 - Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
@@ -58,6 +64,8 @@ Here is a template for new release sections
 - Accepting string "TRUE"/"FALSE" now for boolean parameters (#534)
 - Order of pages in the readthedocs.io (#525)
 - Reactivated KPI: Renewable share. Updated pytests (#525)
+- Extended `DEFAULT_WEIGHTS_ENERGY_CARRIERS` by `Diesel` and `Gas`, added explaination in `Model_Assumptions.rs` (#538)
+- Create `dict_model` with constant variables in `D0` and update in `D1` (#538)
 
 ### Removed
 - `E2.add_costs_and_total`() (#520)
@@ -72,6 +80,8 @@ Here is a template for new release sections
 - Fixed `F1.extract_plot_data_and_title()`, Key error (#520)
 - Fixed hard-coded energy vector of ENERGY_PRODUCTION units in E1.convert_components_to_dataframe(#520)
 - Generating report for multiple sectors (#534)
+- Fixed hard-coded energy vector of `ENERGY_PRODUCTION` units in `E1.convert_components_to_dataframe` (#520)
+- Fixed parsing issue in `A1.conversion()`, incl. pytest (#538)
 - Quick fix to read a timeseries for `"price"` in `C0.define_source()` (#524)
 - Fix `C1.check_feedin_tariff()`: Now also applyable to timeseries of feed-in tariff or electricity prices (#524)
 

@@ -5,7 +5,9 @@ import timeit
 from oemof.solph import processing
 import oemof.solph as solph
 
-import src.D1_model_components as model_components
+import src.D1_model_components as D1
+import src.D2_model_constraints as D2
+
 from src.constants import PATH_OUTPUT_FOLDER, ES_GRAPH, PATHS_TO_PLOTS, PLOTS_ES
 from src.constants_json_strings import (
     ENERGY_BUSSES,
@@ -15,6 +17,7 @@ from src.constants_json_strings import (
     OEMOF_SINK,
     OEMOF_SOURCE,
     OEMOF_TRANSFORMER,
+    OEMOF_BUSSES,
     VALUE,
     SIMULATION_SETTINGS,
     LABEL,
@@ -85,7 +88,9 @@ def run_oemof(dict_values, save_energy_system_graph=False):
     local_energy_system = solph.Model(model)
     logging.debug("Created oemof model based on created components and busses.")
 
-    model_building.add_constraints()
+    local_energy_system = D2.add_constraints(
+        local_energy_system, dict_values, dict_model
+    )
 
     model_building.store_lp_file(dict_values, local_energy_system)
 
@@ -121,11 +126,11 @@ class model_building:
 
         # this dictionary will include all generated oemof objects
         dict_model = {
-            "busses": {},
-            "sinks": {},
-            "sources": {},
-            "transformers": {},
-            "storages": {},
+            OEMOF_BUSSES: {},
+            OEMOF_SINK: {},
+            OEMOF_SOURCE: {},
+            OEMOF_TRANSFORMER: {},
+            OEMOF_GEN_STORAGE: {},
         }
 
         return model, dict_model
@@ -152,7 +157,7 @@ class model_building:
 
         # Busses have to be defined first
         for bus in dict_values[ENERGY_BUSSES]:
-            model_components.bus(model, bus, **dict_model)
+            D1.bus(model, bus, **dict_model)
 
         # Adding step by step all assets defined within the asset groups
         for asset_group in ACCEPTED_ASSETS_FOR_ASSET_GROUPS:
@@ -163,19 +168,19 @@ class model_building:
                     if type in ACCEPTED_ASSETS_FOR_ASSET_GROUPS[asset_group]:
                         # if so, then the appropriate function of D1 should be called
                         if type == OEMOF_TRANSFORMER:
-                            model_components.transformer(
+                            D1.transformer(
                                 model, dict_values[asset_group][asset], **dict_model
                             )
                         elif type == OEMOF_SINK:
-                            model_components.sink(
+                            D1.sink(
                                 model, dict_values[asset_group][asset], **dict_model
                             )
                         elif type == OEMOF_SOURCE:
-                            model_components.source(
+                            D1.source(
                                 model, dict_values[asset_group][asset], **dict_model
                             )
                         elif type == OEMOF_GEN_STORAGE:
-                            model_components.storage(
+                            D1.storage(
                                 model, dict_values[asset_group][asset], **dict_model
                             )
                         else:
@@ -227,23 +232,6 @@ class model_building:
             logging.debug("Created graph of the energy system model.")
 
             graph.render()
-
-    def add_constraints():
-        """
-        Adding constraints to the existing oemof/pyomo energy model. Currently, there are no existing constraints.
-
-        Returns
-        -------
-        None
-        """
-        logging.info("Adding constraints to oemof model...")
-        """
-        Stability constraint
-        include constraint linking two converters (ie "in/out")
-        Minimal renewable share constraint
-        """
-        logging.debug("All constraints added.")
-        return
 
     def store_lp_file(dict_values, local_energy_system):
         """

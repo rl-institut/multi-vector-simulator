@@ -36,7 +36,9 @@ def test_input_folder_csv_files_have_required_parameters(input_folder):
     else:
         for k in comparison[MISSING_PARAMETERS_KEY].keys():
             for el in comparison[MISSING_PARAMETERS_KEY][k]:
-                assert el in EXTRA_CSV_PARAMETERS
+                assert (
+                    el in EXTRA_CSV_PARAMETERS
+                ), f"Key {el} is not in {EXTRA_PARAMETERS_KEY}, but is in {MISSING_PARAMETERS_KEY} in the folder {input_folder}."
 
     if TEMPLATE_INPUT_FOLDER in input_folder:
         if EXTRA_PARAMETERS_KEY in comparison:
@@ -56,4 +58,6 @@ def test_input_folder_json_file_have_required_parameters(input_folder):
     """
     if os.path.exists(os.path.join(input_folder, JSON_FNAME)):
         comparison = compare_input_parameters_with_reference(input_folder, ext=JSON_EXT)
-        assert MISSING_PARAMETERS_KEY not in comparison
+        assert (
+            MISSING_PARAMETERS_KEY not in comparison
+        ), f"In path {input_folder}, the key {MISSING_PARAMETERS_KEY} is included."
