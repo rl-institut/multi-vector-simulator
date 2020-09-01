@@ -136,8 +136,8 @@ setup(
         "oemof.solph >= 0.4.1",
         "matplotlib >= 3",
         "pandas >= 0.24.0,  <= 1.0.5",
-        "pygraphviz >= 1.5",
-        "openpyxl",
+        "graphviz >= 0.14.1",
+        "openpyxl >= 3.0.5",
     ],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
