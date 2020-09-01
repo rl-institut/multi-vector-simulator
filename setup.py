@@ -19,10 +19,29 @@ exec(open(path.join(here, "src", "mvs_eland", "version.py")).read(), main_namesp
 with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
+
+def parse_requirements_file(filename):
+    with open(filename, encoding="utf-8") as fid:
+        requires = []
+        for line in fid.readlines():
+            if line:
+                # requirements for those browsing PyPI
+                requires.append(
+                    line.strip().replace(">=", " >= ").replace("==", " == ")
+                )
+    return requires
+
+
+# Read the requirement files
+req_path = path.join(here, "requirements")
+INSTALL_REQUIRES = parse_requirements_file(path.join(req_path, "default.txt"))
+EXTRA_REQUIRES = {
+    dep: parse_requirements_file(path.join(req_path, dep + ".txt"))
+    for dep in ["docs", "report", "test"]
+}
+
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
-
-
 setup(
     # This is the name of your project. The first time you publish this
     # package, this name will be registered for you. It will determine how
@@ -132,13 +151,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=[
-        "oemof.solph >= 0.4.1",
-        "matplotlib >= 3",
-        "pandas >= 0.24.0,  <= 1.0.5",
-        "graphviz >= 0.14.1",
-        "openpyxl >= 3.0.5",
-    ],  # Optional
+    install_requires=INSTALL_REQUIRES,  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:
@@ -147,20 +160,7 @@ setup(
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
-    extras_require={
-        "dev": ["check-manifest"],
-        "test": ["coverage"],
-        "report": [
-            "dash >= 1.11.0",
-            "kaleido >= 0.0.2",
-            "folium >= 0.10.1",
-            "gitpython",
-            "reverse_geocoder",
-            "staticmap",
-            "pyppeteer",
-            "psutil",
-        ],
-    },  # Optional
+    extras_require=EXTRA_REQUIRES,
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     #
