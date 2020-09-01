@@ -2,7 +2,7 @@ import os
 import shutil
 import pandas as pd
 
-from .constants import TEST_REPO_PATH
+from _constants import TEST_REPO_PATH
 
 
 def test_shutil_remove_folder_recursively():

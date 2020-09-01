@@ -1,8 +1,6 @@
-import src.D2_model_constraints as D2
+import mvs_eland.D2_model_constraints as D2
 
-from src.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
-
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     OEMOF_SOURCE,
     OEMOF_BUSSES,
     ENERGY_PRODUCTION,
@@ -14,8 +12,6 @@ from src.constants_json_strings import (
     DSO_CONSUMPTION,
     RENEWABLE_SHARE_DSO,
     RENEWABLE_ASSET_BOOL,
-    CONSTRAINTS,
-    MINIMAL_RENEWABLE_SHARE,
 )
 
 

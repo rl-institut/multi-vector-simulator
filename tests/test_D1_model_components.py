@@ -7,8 +7,8 @@ import pytest
 from pandas.util.testing import assert_series_equal
 
 # internal imports
-import src.D1_model_components as D1
-from src.constants_json_strings import (
+import mvs_eland.D1_model_components as D1
+from mvs_eland.utils.constants_json_strings import (
     UNIT,
     VALUE,
     LABEL,
@@ -16,11 +16,6 @@ from src.constants_json_strings import (
     ENERGY_CONSUMPTION,
     ENERGY_STORAGE,
     ENERGY_PRODUCTION,
-    OEMOF_BUSSES,
-    OEMOF_SOURCE,
-    OEMOF_SINK,
-    OEMOF_GEN_STORAGE,
-    OEMOF_TRANSFORMER,
     DISPATCH_PRICE,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
@@ -36,9 +31,13 @@ from src.constants_json_strings import (
     SIMULATION_ANNUITY,
     MAXIMUM_CAP,
 )
-from .constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
+from _constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
-D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D1.json",)
+D1_JSON = os.path.join(
+    TEST_REPO_PATH,
+    TEST_INPUT_DIRECTORY,
+    "test_data_for_D1.json",
+)
 
 # fixtures that help creating variables and data needed for the tests
 @pytest.fixture()
@@ -190,7 +189,9 @@ class TestTransformerComponent:
             optimize=False, dict_asset=dict_asset
         )
 
-    def test_transformer_fix_cap_multiple_input_busses(self,):
+    def test_transformer_fix_cap_multiple_input_busses(
+        self,
+    ):
         ## todo fix after decision on busses see todo in func above
         # dict_asset = self.dict_values[ENERGY_CONVERSION ][
         #     "transformer_fix_multiple_input_busses"
@@ -302,7 +303,10 @@ class TestSinkComponent:
         dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
-            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
+            model=self.model,
+            dict_asset=dict_asset,
+            sink=self.sinks,
+            bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -314,7 +318,10 @@ class TestSinkComponent:
         dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
-            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
+            model=self.model,
+            dict_asset=dict_asset,
+            sink=self.sinks,
+            bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -325,7 +332,10 @@ class TestSinkComponent:
         dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_single"]
 
         D1.sink_dispatchable(
-            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
+            model=self.model,
+            dict_asset=dict_asset,
+            sink=self.sinks,
+            bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -336,7 +346,10 @@ class TestSinkComponent:
         dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_multiple"]
 
         D1.sink_dispatchable(
-            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
+            model=self.model,
+            dict_asset=dict_asset,
+            sink=self.sinks,
+            bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -489,7 +502,9 @@ class TestSourceComponent:
             timeseries="normalized",
         )
 
-    def test_source_dispatchable_optimize_timeseries_not_normalized_timeseries(self,):
+    def test_source_dispatchable_optimize_timeseries_not_normalized_timeseries(
+        self,
+    ):
         dict_asset = self.dict_values[ENERGY_PRODUCTION]["dispatchable_source_optimize"]
         dict_asset[TIMESERIES] = self.time_series
         dict_asset[TIMESERIES_PEAK] = {"unit": "kWp/H", "value": self.time_series.max()}

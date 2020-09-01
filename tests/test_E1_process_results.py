@@ -1,5 +1,5 @@
-# from .constants import JSON_PATH
-import src.E1_process_results as E1
+# from _constants import JSON_PATH
+import mvs_eland.E1_process_results as E1
 
 # Note: test functions might be summed up in classes..
 

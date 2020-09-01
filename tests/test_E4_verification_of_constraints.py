@@ -1,11 +1,6 @@
-import os
+import mvs_eland.E4_verification_of_constraints as E4
 
-import pandas as pd
-import pytest
-
-import src.E4_verification_of_constraints as E4
-
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     CONSTRAINTS,
     MINIMAL_RENEWABLE_SHARE,
     VALUE,

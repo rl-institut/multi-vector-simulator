@@ -47,6 +47,8 @@ Here is a template for new release sections
 - Benchmark test for minimal renewable share constraint (#538)
 - Benchmark test `test_benchmark_AFG_grid_heatpump_heat` for a sector-coupled energy system, including electricity and heat, with a heat pump and an energy price as time series (#524)
 - Benchmark test descriptions for `test_benchmark_simple_scenarios.py` (#524)
+- Create `src/mvs_eland/utils` subpackage (contains `constants.py`, `constants_json_string.py
+`, `constants_output.py` (#501)
 
 
 ### Changed
@@ -66,6 +68,15 @@ Here is a template for new release sections
 - Reactivated KPI: Renewable share. Updated pytests (#525)
 - Extended `DEFAULT_WEIGHTS_ENERGY_CARRIERS` by `Diesel` and `Gas`, added explaination in `Model_Assumptions.rs` (#538)
 - Create `dict_model` with constant variables in `D0` and update in `D1` (#538)
+- Separate the installation of the packages needed for the report generation from the mvs
+ simulation (#501)
+- Move all source files in `srv/mvs_eland` (#501)
+- Move the content of the previous `src/utils.py` module to  `src/mvs_eland/utils/__init__.py` (#501)
+- Rename `tests/constants.py` --> `tests/_constants.py` (#501)
+- Refactor modules calls (mostly `src.` is replaced by `mvs_eland.`) (#501)
+- Move `mvs_eland_tool` folder's content in `src/mvs_eland` (#501)
+- Gather all requirements files in a `requirements` folder and read the requirement from there for `setup.py` (#501)
+- Update `install_requires` and `extra_requires` in `setup.py` (#501)
 
 ### Removed
 - `E2.add_costs_and_total`() (#520)
@@ -73,6 +84,8 @@ Here is a template for new release sections
 - Function `F1.plot_input_timeseries` which is based on `matplotlib` (#527)
 - Dependency to `matplotlib` (#528)
 - Remove `STORE_NX_GRAPH` and `DISPLAY_NX_GRAPH` variables (#530)
+- Remove `tests/__init__.py` (#501)
+- Delete `mvs_eland_tool` folder (#501)
 
 ### Fixed
 - Calculation of `cost_upfront` required a multiplication (#520)
@@ -85,6 +98,7 @@ Here is a template for new release sections
 - Quick fix to read a timeseries for `"price"` in `C0.define_source()` (#524)
 - Fix `C1.check_feedin_tariff()`: Now also applyable to timeseries of feed-in tariff or electricity prices (#524)
 - Add a warning message if the timeseries of demands or resources are empty (#543)
+- Fix failing KPI test (due to newer pandas version) (#501)
 
 ## [0.3.3] - 2020-08-19
 

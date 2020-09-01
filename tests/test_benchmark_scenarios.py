@@ -14,27 +14,22 @@ import pandas as pd
 import pytest
 
 from pytest import approx
-from mvs_eland_tool import main
-from src.B0_data_input_json import load_json
-from src.C0_data_processing import bus_suffix
+from mvs_eland.cli import main
+from mvs_eland.B0_data_input_json import load_json
+from mvs_eland.C0_data_processing import bus_suffix
 
-from .constants import (
+from _constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
-    TESTS_ON_DEV,
     TEST_REPO_PATH,
     CSV_EXT,
-    ENERGY_CONVERSION,
-    ENERGY_PROVIDERS,
-    VALUE,
     ENERGY_PRICE,
     OPTIMIZED_ADD_CAP,
-    LCOE_ASSET,
 )
 
-from src.constants import JSON_WITH_RESULTS
+from mvs_eland.utils.constants import JSON_WITH_RESULTS
 
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     EXCESS,
     AUTO_SINK,
     ENERGY_CONVERSION,

@@ -1,15 +1,14 @@
 import os
 import shutil
-import copy
 
 import mock
 import pandas as pd
 import pytest
 
-import src.A0_initialization as initializing
-import src.F1_plotting as F1
-from mvs_eland_tool import main
-from src.constants import (
+import mvs_eland.A0_initialization as initializing
+import mvs_eland.F1_plotting as F1
+from mvs_eland.cli import main
+from mvs_eland.utils.constants import (
     PLOTS_BUSSES,
     PATHS_TO_PLOTS,
     PLOTS_DEMANDS,
@@ -19,7 +18,7 @@ from src.constants import (
     PLOTS_COSTS,
     CSV_EXT,
 )
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     LABEL,
     OPTIMIZED_ADD_CAP,
     PROJECT_NAME,
@@ -28,12 +27,11 @@ from src.constants_json_strings import (
     KPI_SCALAR_MATRIX,
 )
 
-from .constants import (
+from _constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
     PATH_OUTPUT_FOLDER,
-    INPUT_FOLDER,
     TEST_INPUT_DIRECTORY,
     DUMMY_CSV_PATH,
     ES_GRAPH,
@@ -193,6 +191,10 @@ class TestFileCreation:
         #     is True
         # )
 
+    @pytest.mark.skipif(
+        F1.PLOTLY_INSTALLED is False,
+        reason="Test deactivated because plotly package is not installed",
+    )
     def test_if_pie_charts_of_costs_is_stored(self):
         F1.create_plotly_piechart_fig(
             title_of_plot="a_title",

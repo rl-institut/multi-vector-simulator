@@ -1,7 +1,7 @@
 import pytest
 
-import src.C1_verification as C1
-from .constants import (
+import mvs_eland.C1_verification as C1
+from _constants import (
     JSON_PATH,
     ENERGY_PROVIDERS,
     LABEL,
