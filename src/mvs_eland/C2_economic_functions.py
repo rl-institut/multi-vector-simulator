@@ -77,45 +77,45 @@ def capex_from_investment(
     investment_t0, lifetime, project_life, discount_factor, tax, age_of_asset
 ):
     """
-     Calculates the capital expenditures, also known as CapEx.
+    Calculates the capital expenditures, also known as CapEx.
 
-     CapEx represent the total funds used to acquire or upgrade an asset.
-     The specific capex is calculated by taking into account all future cash flows connected to the investment into one unit of the asset.
-     This includes reinvestments, operation and management costs, dispatch costs as well as a deduction of the residual value at project end.
-     The residual value is calculated with a linear depreciation of the last investment, ie. as a even share of the last investment over
-     the lifetime of the asset. The remaining value of the asset is translated in a present value and then deducted.
+    CapEx represent the total funds used to acquire or upgrade an asset.
+    The specific capex is calculated by taking into account all future cash flows connected to the investment into one unit of the asset.
+    This includes reinvestments, operation and management costs, dispatch costs as well as a deduction of the residual value at project end.
+    The residual value is calculated with a linear depreciation of the last investment, ie. as a even share of the last investment over
+    the lifetime of the asset. The remaining value of the asset is translated in a present value and then deducted.
 
-     Parameters
-     ----------
-     investment_t0: float
-         first investment at the beginning of the project made at year 0
-     lifetime: int
-         time period over which investments and re-investments can occur. can be equal to, longer or shorter than project_life
-     project_life: int
-         time period over which the costs of the system occur
-     discount_factor: float
-         weighted average cost of capital, which is the after-tax average cost of various capital sources
-     tax: float
-         compulsory financial charge paid to the government
+    Parameters
+    ----------
+    investment_t0: float
+        first investment at the beginning of the project made at year 0
+    lifetime: int
+        time period over which investments and re-investments can occur. can be equal to, longer or shorter than project_life
+    project_life: int
+        time period over which the costs of the system occur
+    discount_factor: float
+        weighted average cost of capital, which is the after-tax average cost of various capital sources
+    tax: float
+        compulsory financial charge paid to the government
 
-     Returns
-     -------
-     specific_capex: float
-         Specific capital expenditure for an asset over project lifetime
+    Returns
+    -------
+    specific_capex: float
+        Specific capital expenditure for an asset over project lifetime
 
-     specific_replacement_costs_optimized: float
-        Specific replacement costs for the asset capacity to be optimized, needed for E2
+    specific_replacement_costs_optimized: float
+       Specific replacement costs for the asset capacity to be optimized, needed for E2
 
-     specific_replacement_costs_already_installed: float
-        replacement costs per unit for the currently already installed assets, needed for E2
+    specific_replacement_costs_already_installed: float
+       replacement costs per unit for the currently already installed assets, needed for E2
 
-     Notes
-     -----
-     Tested with
-     - test_capex_from_investment_lifetime_equals_project_life()
-     - test_capex_from_investment_lifetime_smaller_than_project_life()
-     - test_capex_from_investment_lifetime_bigger_than_project_life()
-     """
+    Notes
+    -----
+    Tested with
+    - test_capex_from_investment_lifetime_equals_project_life()
+    - test_capex_from_investment_lifetime_smaller_than_project_life()
+    - test_capex_from_investment_lifetime_bigger_than_project_life()
+    """
 
     first_time_investment = investment_t0 * (1 + tax)
     # Specific replacement costs for the asset capacity to be optimized

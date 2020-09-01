@@ -103,7 +103,7 @@ def total_demand_each_sector(dict_values):
     -------
     Updated KPI_SCALARS_DICT with
     - total demand of each energy carrier (original unit)
-    - total demand of each energy carrier (electricity equivalent) 
+    - total demand of each energy carrier (electricity equivalent)
     - total demand in electricity equivalent
 
     Notes
@@ -458,7 +458,7 @@ def equation_co2_emissions(dict_values):
 def add_levelized_cost_of_energy_carriers(dict_values):
     r"""
     Adds levelized costs of all energy carriers and overall system to the scalar KPI.
-    
+
     Parameters
     ----------
     dict_values: dict
@@ -555,7 +555,7 @@ def equation_levelized_cost_of_energy_carrier(
     -------
         lcoe_energy_carrier: float
             Levelized costs of an energy carrier in a sector coupled system
-    
+
         attributed_costs: float
             Costs attributed to a specific energy carrier
 

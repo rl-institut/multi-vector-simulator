@@ -148,8 +148,10 @@ def test_calculate_costs_replacement():
 
 
 def test_calculate_operation_and_management_expenditures():
-    operation_and_management_expenditures = E2.calculate_operation_and_management_expenditures(
-        specific_om_cost=5, installed_capacity=10, optimized_add_capacity=10
+    operation_and_management_expenditures = (
+        E2.calculate_operation_and_management_expenditures(
+            specific_om_cost=5, installed_capacity=10, optimized_add_capacity=10
+        )
     )
     assert operation_and_management_expenditures == 100
 

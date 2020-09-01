@@ -123,7 +123,10 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
         """ """
         dict_timeseries_test_one_bus = {
-            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
+            PROJECT_DATA: {
+                PROJECT_NAME: "a_project",
+                SCENARIO_NAME: "a_scenario",
+            },
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             OPTIMIZED_FLOWS: {"a_bus": BUS},
         }
@@ -141,7 +144,10 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         """ """
         dict_timeseries_test_two_busses = {
-            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
+            PROJECT_DATA: {
+                PROJECT_NAME: "a_project",
+                SCENARIO_NAME: "a_scenario",
+            },
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             OPTIMIZED_FLOWS: {"a_bus": BUS, "b_bus": BUS},
         }

@@ -106,7 +106,8 @@ class WrongStorageColumn(ValueError):
 
 
 def create_input_json(
-    input_directory, pass_back=True,
+    input_directory,
+    pass_back=True,
 ):
     """Convert csv files to json file as input for the simulation.
 
@@ -564,21 +565,21 @@ def check_for_official_extra_parameters(
 def conversion(value, asset_dict, row, param, asset, filename=""):
     r"""
     This function converts the input given in the csv to the dict used in the MVS.
-    
+
     When using json files, they are already provided parsed like this functions output.
-    
+
     Parameters
     ----------
     value: Misc.
         Value to be parsed
-        
+
     asset_dict: dict
         Dict of asset that is to be filled with data
-        
+
     row:
-    param: str 
+    param: str
         Parameter that is currently parsed
-    
+
     asset
     filename
 

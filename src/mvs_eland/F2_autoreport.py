@@ -304,7 +304,7 @@ def insert_log_messages(log_dict):
     r"""
     This function inserts logging messages that arise during the simulation, such as warnings and error messages,
     into the auto-report.
-    
+
     Parameters
     ----------
     log_dict: dict
@@ -343,7 +343,9 @@ def insert_log_messages(log_dict):
 
 
 def insert_plotly_figure(
-    fig, id_plot=None, print_only=False,
+    fig,
+    id_plot=None,
+    print_only=False,
 ):
     r"""
     Insert a plotly figure in a dash app layout
@@ -390,7 +392,12 @@ def insert_plotly_figure(
     # Dynamic plotly figure for the app
     if print_only is False:
         rendered_plots.append(
-            dcc.Graph(className="no-print", id=id_plot, figure=fig, responsive=True,)
+            dcc.Graph(
+                className="no-print",
+                id=id_plot,
+                figure=fig,
+                responsive=True,
+            )
         )
 
     return html.Div(children=rendered_plots)
@@ -483,7 +490,7 @@ def ready_flows_plots(dict_values, only_print=False):
 
 def ready_costs_pie_plots(dict_values, only_print=False):
     r"""Insert the pie plots in a dash html layout
-    
+
     Parameters
     ----------
     dict_values: dict
@@ -680,10 +687,12 @@ def create_app(results_json):
 
     output_path = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
     warnings_dict = parse_simulation_log(
-        path_log_file=os.path.join(output_path, LOGFILE), log_type="WARNING",
+        path_log_file=os.path.join(output_path, LOGFILE),
+        log_type="WARNING",
     )
     errors_dict = parse_simulation_log(
-        path_log_file=os.path.join(output_path, LOGFILE), log_type="ERROR",
+        path_log_file=os.path.join(output_path, LOGFILE),
+        log_type="ERROR",
     )
 
     # App layout and populating it with different elements
@@ -883,7 +892,9 @@ def create_app(results_json):
                                 "With this, the demands are met with the following dispatch schedules:"
                             ),
                             html.Div(
-                                children=ready_flows_plots(dict_values=results_json,)
+                                children=ready_flows_plots(
+                                    dict_values=results_json,
+                                )
                             ),
                             html.Div(
                                 className="add-cap-plot",
@@ -908,7 +919,8 @@ def create_app(results_json):
                             html.Div(
                                 className="add-pie-plots",
                                 children=ready_costs_pie_plots(
-                                    dict_values=results_json, only_print=False,
+                                    dict_values=results_json,
+                                    only_print=False,
                                 ),
                             ),
                         ],
@@ -931,7 +943,9 @@ def create_app(results_json):
                 children=[
                     html.Div(
                         className="cell",
-                        children=[insert_headings(heading_text="Logging Messages"),],
+                        children=[
+                            insert_headings(heading_text="Logging Messages"),
+                        ],
                     ),
                     html.Div(
                         children=[

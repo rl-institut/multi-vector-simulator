@@ -249,7 +249,7 @@ class ESGraphRenderer:
         Returns
         -------
         None: render the generated dot graph in the filepath
-        
+
         Notes
         --------
         When new oemof-solph asset types are added to the available types in the MVS, this function needs to be updated, so that it can render the asset in the graph.
@@ -710,7 +710,10 @@ def create_plotly_barplot_fig(
 
     fig.add_trace(
         go.Bar(
-            name=trace_name, x=x_data, y=y_data, marker_color=px.colors.qualitative.D3,
+            name=trace_name,
+            x=x_data,
+            y=y_data,
+            marker_color=px.colors.qualitative.D3,
         )
     )
 
@@ -757,7 +760,8 @@ def create_plotly_barplot_fig(
 
 
 def plot_optimized_capacities(
-    dict_values, file_path=None,
+    dict_values,
+    file_path=None,
 ):
     """Plot capacities as a bar chart.
 
@@ -778,7 +782,8 @@ def plot_optimized_capacities(
     # Add dataframe to hold all the KPIs and optimized additional capacities
     df_capacities = dict_values[KPI][KPI_SCALAR_MATRIX]
     df_capacities.drop(
-        columns=[TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW], inplace=True,
+        columns=[TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW],
+        inplace=True,
     )
     df_capacities.reset_index(drop=True, inplace=True)
 
@@ -889,7 +894,11 @@ def create_plotly_flow_fig(
             "xanchor": "center",
             "yanchor": "top",
         },
-        legend=dict(y=0.5, traceorder="normal", font=dict(color="black"),),
+        legend=dict(
+            y=0.5,
+            traceorder="normal",
+            font=dict(color="black"),
+        ),
     )
 
     if file_path is not None:
@@ -1025,7 +1034,13 @@ def create_plotly_piechart_fig(
         height=500,
         width=700,
         autosize=True,
-        legend=dict(orientation="v", y=0.5, yanchor="middle", x=0.95, xanchor="right",),
+        legend=dict(
+            orientation="v",
+            y=0.5,
+            yanchor="middle",
+            x=0.95,
+            xanchor="right",
+        ),
         margin=dict(l=10, r=10, b=50, pad=2),
         uniformtext_minsize=18,
     )

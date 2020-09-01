@@ -46,24 +46,24 @@ from mvs_eland.version import version_num, version_date
 
 def run_simulation(json_dict, **kwargs):
     r"""
-    Starts MVS tool simulation from an input json file
+     Starts MVS tool simulation from an input json file
 
-    Parameters
-   -----------
-    json_dict: dict
-        json from http request
+     Parameters
+    -----------
+     json_dict: dict
+         json from http request
 
-    Other Parameters
-    ----------------
-    pdf_report: bool, optional
-        Can generate an automatic pdf report of the simulation's results (True) or not (False)
-        Default: False.
-    display_output : str, optional
-        Sets the level of displayed logging messages.
-        Options: "debug", "info", "warning", "error". Default: "info".
-    lp_file_output : bool, optional
-        Specifies whether linear equation system generated is saved as lp file.
-        Default: False.
+     Other Parameters
+     ----------------
+     pdf_report: bool, optional
+         Can generate an automatic pdf report of the simulation's results (True) or not (False)
+         Default: False.
+     display_output : str, optional
+         Sets the level of displayed logging messages.
+         Options: "debug", "info", "warning", "error". Default: "info".
+     lp_file_output : bool, optional
+         Specifies whether linear equation system generated is saved as lp file.
+         Default: False.
     """
 
     welcome_text = (
