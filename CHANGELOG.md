@@ -84,6 +84,7 @@ Here is a template for new release sections
 - Fixed parsing issue in `A1.conversion()`, incl. pytest (#538)
 - Quick fix to read a timeseries for `"price"` in `C0.define_source()` (#524)
 - Fix `C1.check_feedin_tariff()`: Now also applyable to timeseries of feed-in tariff or electricity prices (#524)
+- Add a warning message if the timeseries of demands or resources are empty (#543)
 
 ## [0.3.3] - 2020-08-19
 
