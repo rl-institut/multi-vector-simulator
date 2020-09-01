@@ -152,6 +152,7 @@ setup(
         "test": ["coverage"],
         "report": [
             "dash >= 1.11.0",
+            "kaleido >= 0.0.2",
             "folium >= 0.10.1",
             "gitpython",
             "reverse_geocoder",
