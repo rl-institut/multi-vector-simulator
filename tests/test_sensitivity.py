@@ -9,7 +9,7 @@ import json
 import logging
 import os
 
-from mvs_eland_tool import run_simulation
+from mvs_eland.server import run_simulation
 from mvs_eland.B0_data_input_json import load_json, convert_from_json_to_special_types
 from _constants import TEST_REPO_PATH
 

@@ -3,7 +3,7 @@ This is the main file of the tool "Multi-vector simulation tool".
 
 Tool structure:
 
-(parent)    mvs_eland_tool.py
+(parent)    mvs_eland.py
 (child)     --A0_initialization.py
 
 (child)      --B0_data_input.py
@@ -37,7 +37,7 @@ import mvs_eland.C0_data_processing as data_processing
 import mvs_eland.D0_modelling_and_optimization as modelling
 import mvs_eland.E0_evaluation as evaluation
 import mvs_eland.F0_output as output_processing
-from mvs_eland_tool.version import version_num, version_date
+from mvs_eland.version import version_num, version_date
 from mvs_eland.utils.constants import (
     CSV_ELEMENTS,
     CSV_EXT,

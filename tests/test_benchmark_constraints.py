@@ -10,7 +10,7 @@ import shutil
 
 import mock
 
-from mvs_eland_tool import main
+from mvs_eland.cli import main
 from mvs_eland.B0_data_input_json import load_json
 
 from _constants import (

@@ -12,7 +12,7 @@ import mock
 import pandas as pd
 import pytest
 
-from mvs_eland_tool import main
+from mvs_eland.cli import main
 from mvs_eland.B0_data_input_json import load_json
 import mvs_eland.C2_economic_functions as C2
 

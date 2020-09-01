@@ -7,7 +7,7 @@ import pytest
 
 import mvs_eland.A0_initialization as initializing
 import mvs_eland.F1_plotting as F1
-from mvs_eland_tool import main
+from mvs_eland.cli import main
 from mvs_eland.utils.constants import (
     PLOTS_BUSSES,
     PATHS_TO_PLOTS,

@@ -5,7 +5,7 @@ import mock
 import pytest
 
 import mvs_eland.A0_initialization as A0
-from mvs_eland_tool import main
+from mvs_eland.cli import main
 from _constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
