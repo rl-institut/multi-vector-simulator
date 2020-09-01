@@ -90,7 +90,7 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url="https://github.com/smartie2076/mvs_eland",  # Optional
+    url="https://github.com/rl-institut/mvs_eland",  # Optional
     # This should be your name or the name of the organization which owns the
     # project.
     author="Reiner Lemoine Institut",  # Optional
@@ -138,7 +138,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=find_packages("mvs_eland"),  # Required
+    packages=find_packages(include=["mvs_eland"]),  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you
@@ -197,7 +197,7 @@ setup(
     # maintainers, and where to support the project financially. The key is
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
-        "Bug Reports": "https://github.com/smartie2076/mvs_eland/issues",
-        "Source": "https://github.com/smartie2076/mvs_eland",
+        "Bug Reports": "https://github.com/rl-institut/mvs_eland/issues",
+        "Source": "https://github.com/rl-institut/mvs_eland",
     },
 )
