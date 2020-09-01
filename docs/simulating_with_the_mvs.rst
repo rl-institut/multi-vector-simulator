@@ -173,7 +173,7 @@ You can see an implemented example here, where the heat pump has a time-dependen
    :widths: 70, 30, 50
    :header-rows: 1
 
-Also, the benchmark test in tests/benchmark_test_inputs/AFG_grid_heatpump_heat provides exemplary data for adding a time series for a parameter (energy_price in this case).
+The benchmark test in `tests/benchmark_test_inputs/AFG_grid_heatpump_heat` (:TestACElectricityBus.test_benchmark_AFG_grid_heatpump_heat:) provides a complete set of input data for adding a time series for a parameter (`energy_price `in this case).
 
 The features were integrated with `Pull Request #63 <https://github.com/rl-institut/mvs_eland/pull/63>`_.
 For more information, you might also reference following issues:
