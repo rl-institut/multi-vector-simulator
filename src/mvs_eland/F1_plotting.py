@@ -3,8 +3,18 @@ import os
 import textwrap
 
 import pandas as pd
-import plotly.graph_objs as go
-import plotly.express as px
+
+PLOTLY_INSTALLED = False
+try:
+    import plotly.graph_objs as go
+    import plotly.express as px
+
+    PLOTLY_INSTALLED = True
+except ModuleNotFoundError:
+    logging.warning(
+        "You have installed the minimal configuration, if you want to output images "
+        "please run the command <TODO>"
+    )
 
 import graphviz
 import oemof
@@ -947,7 +957,7 @@ def create_plotly_piechart_fig(
     title_of_plot,
     names,
     values,
-    color_scheme=px.colors.qualitative.Set1,
+    color_scheme=None,
     file_name="costs.png",
     file_path=None,
 ):
@@ -967,6 +977,7 @@ def create_plotly_piechart_fig(
     color_scheme: instance of the px.colors class of the Plotly express library
         This parameter holds the color scheme which is palette of colors (list of hex values) to be
         applied to the pie plot to be created.
+        Default: None
 
     file_name: str
         Name of the image file.
@@ -981,6 +992,9 @@ def create_plotly_piechart_fig(
     fig: :plotly:`plotly.graph_objs.Figure`
         figure object
     """
+
+    if color_scheme is None:
+        color_scheme = px.colors.qualitative.Set1
 
     # Wrap the text of the title into next line if it exceeds the length given below
     title_of_plot = textwrap.wrap(title_of_plot, width=75)

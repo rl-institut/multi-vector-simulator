@@ -191,6 +191,10 @@ class TestFileCreation:
         #     is True
         # )
 
+    @pytest.mark.skipif(
+        F1.PLOTLY_INSTALLED is False,
+        reason="Test deactivated because plotly package is not installed",
+    )
     def test_if_pie_charts_of_costs_is_stored(self):
         F1.create_plotly_piechart_fig(
             title_of_plot="a_title",
