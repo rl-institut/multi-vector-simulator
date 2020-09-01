@@ -45,6 +45,9 @@ Here is a template for new release sections
 - Added error message: New energy carriers always have to be added to `DEFAULT_WEIGHTS_ENERGY_CARRIERS` (`C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS()`, applied to `ENERGY_VECTOR` and to fuel sources) (#538)
 - Added minimal renewable share contraint though  `D2.constraint_minimal_renewable_share()` and added description of the constraint in `Model_Assumptions.rst` (#538)
 - Benchmark test for minimal renewable share constraint (#538)
+- Benchmark test `test_benchmark_AFG_grid_heatpump_heat` for a sector-coupled energy system, including electricity and heat, with a heat pump and an energy price as time series (#524)
+- Benchmark test descriptions for `test_benchmark_simple_scenarios.py` (#524)
+
 
 ### Changed
 - Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
@@ -79,6 +82,8 @@ Here is a template for new release sections
 - Generating report for multiple sectors (#534)
 - Fixed hard-coded energy vector of `ENERGY_PRODUCTION` units in `E1.convert_components_to_dataframe` (#520)
 - Fixed parsing issue in `A1.conversion()`, incl. pytest (#538)
+- Quick fix to read a timeseries for `"price"` in `C0.define_source()` (#524)
+- Fix `C1.check_feedin_tariff()`: Now also applyable to timeseries of feed-in tariff or electricity prices (#524)
 
 ## [0.3.3] - 2020-08-19
 

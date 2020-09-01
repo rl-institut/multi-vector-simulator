@@ -12,7 +12,6 @@ import json
 import mock
 import pandas as pd
 import pytest
-import random
 
 from pytest import approx
 from mvs_eland_tool import main
@@ -44,6 +43,7 @@ from src.constants_json_strings import (
     LCOE_ASSET,
     ENERGY_CONSUMPTION,
     FLOW,
+    EFFICIENCY,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -66,6 +66,9 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AB_grid_pv(self, margs):
+        r"""
+        Benchmark test for simple case grid connected PV. Since the PV is already installed, this tests makes sure that the PV generation is totally used to supply the load and the rest in take from the grid.
+        """
         use_case = "AB_grid_PV"
         main(
             overwrite=True,
@@ -96,6 +99,9 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AE_grid_battery(self, margs):
+        r"""
+        Benchmark test for simple case grid and battery scenario. The grid should solely be used to feed the load.
+        """
         use_case = "AE_grid_battery"
         main(
             overwrite=True,
@@ -121,6 +127,9 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_ABE_grid_pv_bat(self, margs):
+        r"""
+        Benchmark test for using a grid connected PV system with storage. In this case, the excess production should be used to charge the battery.
+        """
         # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
         use_case = ["AB_grid_PV", "ABE_grid_PV_battery"]
         # define an empty dictionary for excess electricity
@@ -151,9 +160,10 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AD_grid_diesel(self, margs):
-        # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
+        r"""
+        Benchmark test for using a diesel generator with the electricity grid. In this benchmark test, the LCOE of the diesel generator is made less than the grid price and so it is solely used to supply the load.
+        """
         use_case = "AD_grid_diesel"
-        # define an empty dictionary for excess electricity
         main(
             overwrite=True,
             display_output="warning",
@@ -185,9 +195,10 @@ class TestACElectricityBus:
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AE_grid_battery_peak_pricing(self, margs):
-        # define the two cases needed for comparison (grid + PV) and (grid + PV + battery)
+        r"""
+        Benchmark test for electricity grid peak demand pricing. To evaluate this, a battery is used. The battery should be charged at instances before the grid supplies peak demand. The battery is discharged when demand is higher than peak demand and charged when demand is smaller than peak demand.
+        """
         use_case = "AE_grid_battery_peak_pricing"
-        # define an empty dictionary for excess electricity
         main(
             overwrite=True,
             display_output="warning",
@@ -237,7 +248,7 @@ class TestACElectricityBus:
         # look for peak demand in period
         for j in range(0, 3):
             for i in range(0, len(DSO_periods[1])):
-                # When the DSO is supplying peak demand while demand is smaller then supplied electricity.
+                # When the DSO is supplying peak demand while demand is smaller than supplied electricity.
                 # Then, the battery is charged.
                 if (
                     DSO_periods[j][i] == peak_demand[j]
@@ -260,6 +271,57 @@ class TestACElectricityBus:
                     and DSO_periods[j][i - 1] > abs(demand[i - 1])
                 ):
                     assert abs(battery_charge[i - 1]) > 0
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_benchmark_AFG_grid_heatpump_heat(self, margs):
+        r"""
+        Benchmark test for a sector coupled energy system, including electricity and heat demand. A heat pump is used as a sector coupling asset. Both an electricity and heat DSO are present. The electricity tariff is defined as a time series. The heat pump is only used when its cost (energy_price/efficiency) is less than the heat DSO price.
+        """
+        use_case = "AFG_grid_heatpump_heat"
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=CSV_EXT,
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+        )
+        # read json with results file
+        with open(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
+        ) as results:
+            data = json.load(results)
+        # read excel sheet with time series
+        busses_flow = pd.read_excel(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
+            sheet_name=bus_suffix("Heat"),
+        )
+        # create dict with electricity prices
+        electricity_price = data[ENERGY_PROVIDERS]["Electricity DSO"][ENERGY_PRICE][
+            VALUE
+        ]["data"]
+        # compare cost of using heat pump with electricity price to heat price
+        cost_of_using_heatpump = "electricity_price[i] / data[ENERGY_CONVERSION]['heat_pump'][EFFICIENCY][VALUE] comp.data[ENERGY_PROVIDERS]['Heat DSO'][ENERGY_PRICE][VALUE]"
+        cost_of_using_heat_dso = (
+            "data[ENERGY_PROVIDERS]['Heat DSO'][ENERGY_PRICE][VALUE]"
+        )
+        for i in range(0, len(electricity_price)):
+            if (
+                electricity_price[i]
+                / data[ENERGY_CONVERSION]["heat_pump"][EFFICIENCY][VALUE]
+                > data[ENERGY_PROVIDERS]["Heat DSO"][ENERGY_PRICE][VALUE]
+            ):
+                assert busses_flow["Heat DSO_consumption_period"][i] == approx(
+                    abs(busses_flow["demand_heat"][i])
+                ), f"Even though the marginal costs to use the heat pump are higher than the heat DSO price with {cost_of_using_heatpump} comp. {cost_of_using_heat_dso}, the heat DSO is not solely used for energy supply."
+            else:
+                assert busses_flow["heat_pump"][i] == approx(
+                    abs(busses_flow["demand_heat"][i])
+                )
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
