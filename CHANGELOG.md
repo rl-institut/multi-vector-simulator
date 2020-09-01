@@ -19,7 +19,7 @@ Here is a template for new release sections
 -
 ```
 
-## [Unreleased]
+## [0.4.0] - 2020-09-01
 
 ### Added
 - Docstrings for E2 (#520)
