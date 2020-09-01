@@ -114,7 +114,7 @@ class TestNetworkx:
         assert os.path.exists(os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)) is True
 
     @pytest.mark.skipif(
-        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER) or True,
         reason="Benchmark test deactivated, set env variable "
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
