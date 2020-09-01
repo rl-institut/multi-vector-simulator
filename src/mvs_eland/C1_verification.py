@@ -14,14 +14,14 @@ import os
 
 import pandas as pd
 
-from src.constants import (
+from mvs_eland.utils.constants import (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     DISPLAY_OUTPUT,
     OVERWRITE,
 )
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     PROJECT_DURATION,
     DISCOUNTFACTOR,
     TAX,
@@ -53,7 +53,6 @@ from src.constants_json_strings import (
     ENERGY_PROVIDERS,
     ENERGY_BUSSES,
     VALUE,
-    FLOW,
 )
 
 

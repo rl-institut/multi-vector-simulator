@@ -5,7 +5,7 @@ import sys
 import pandas as pd
 
 
-from src.constants import (
+from mvs_eland.utils.constants import (
     TIME_SERIES,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
@@ -14,10 +14,10 @@ from src.constants import (
     DEFAULT_WEIGHTS_ENERGY_CARRIERS,
 )
 
-from src.constants_json_strings import *
-import src.C1_verification as C1
-import src.C2_economic_functions as C2
-import src.F0_output as F0
+from mvs_eland.utils.constants_json_strings import *
+import mvs_eland.C1_verification as C1
+import mvs_eland.C2_economic_functions as C2
+import mvs_eland.F0_output as F0
 
 """
 Module C0 prepares the data red from csv or json for simulation, ie. pre-processes it. 

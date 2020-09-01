@@ -1,18 +1,16 @@
 import os
 import pytest
 
-from src.constants import REPO_PATH, EXTRA_CSV_PARAMETERS
-from .constants import (
-    TEST_REPO_PATH,
+from mvs_eland.utils.constants import REPO_PATH, EXTRA_CSV_PARAMETERS
+from _constants import (
     TEMPLATE_INPUT_FOLDER,
-    TEMPLATE_INPUT_PATH,
     JSON_EXT,
     CSV_EXT,
     JSON_FNAME,
     MISSING_PARAMETERS_KEY,
     EXTRA_PARAMETERS_KEY,
 )
-from src.utils import (
+from mvs_eland.utils import (
     find_csv_input_folders,
     find_json_input_folders,
     compare_input_parameters_with_reference,

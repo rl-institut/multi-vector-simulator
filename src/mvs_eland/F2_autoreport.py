@@ -21,7 +21,6 @@ import staticmap
 import asyncio
 import copy
 
-import pyppdf.patch_pyppeteer
 from pyppeteer import launch
 
 # This removes extensive logging in the console for pyppeteer.
@@ -34,7 +33,7 @@ logging.getLogger("pyppeteer").setLevel(pyppeteer_level)
 flask_log = logging.getLogger("werkzeug")
 flask_log.setLevel(logging.ERROR)
 
-from src.constants import (
+from mvs_eland.utils.constants import (
     REPO_PATH,
     REPORT_PATH,
     PATH_OUTPUT_FOLDER,
@@ -48,7 +47,7 @@ from src.constants import (
     JSON_WITH_RESULTS,
     LOGFILE,
 )
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     SECTORS,
     VALUE,
     SIMULATION_SETTINGS,
@@ -63,14 +62,14 @@ from src.constants_json_strings import (
     RESOURCES,
 )
 
-from src.E1_process_results import (
+from mvs_eland.E1_process_results import (
     convert_demand_to_dataframe,
     convert_components_to_dataframe,
     convert_scalar_matrix_to_dataframe,
     convert_cost_matrix_to_dataframe,
     convert_scalars_to_dataframe,
 )
-from src.F1_plotting import (
+from mvs_eland.F1_plotting import (
     parse_simulation_log,
     plot_timeseries,
     plot_piecharts_of_costs,
@@ -79,7 +78,7 @@ from src.F1_plotting import (
 )
 
 # TODO link this to the version and date number @Bachibouzouk
-from src.utils import get_version_info
+from mvs_eland.utils import get_version_info
 
 version_num, version_date = get_version_info()
 
@@ -954,8 +953,8 @@ def create_app(results_json):
 
 
 if __name__ == "__main__":
-    from src.constants import REPO_PATH, OUTPUT_FOLDER
-    from src.B0_data_input_json import load_json
+    from mvs_eland.utils.constants import REPO_PATH, OUTPUT_FOLDER
+    from mvs_eland.B0_data_input_json import load_json
 
     dict_values = load_json(os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS))
 

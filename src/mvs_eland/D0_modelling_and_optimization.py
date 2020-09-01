@@ -5,11 +5,16 @@ import timeit
 from oemof.solph import processing
 import oemof.solph as solph
 
-import src.D1_model_components as D1
-import src.D2_model_constraints as D2
+import mvs_eland.D1_model_components as D1
+import mvs_eland.D2_model_constraints as D2
 
-from src.constants import PATH_OUTPUT_FOLDER, ES_GRAPH, PATHS_TO_PLOTS, PLOTS_ES
-from src.constants_json_strings import (
+from mvs_eland.utils.constants import (
+    PATH_OUTPUT_FOLDER,
+    ES_GRAPH,
+    PATHS_TO_PLOTS,
+    PLOTS_ES,
+)
+from mvs_eland.utils.constants_json_strings import (
     ENERGY_BUSSES,
     OEMOF_ASSET_TYPE,
     ACCEPTED_ASSETS_FOR_ASSET_GROUPS,
@@ -220,7 +225,7 @@ class model_building:
         None
         """
         if save_energy_system_graph is True:
-            from src.F1_plotting import ESGraphRenderer
+            from mvs_eland.F1_plotting import ESGraphRenderer
 
             fpath = os.path.join(
                 dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], ES_GRAPH

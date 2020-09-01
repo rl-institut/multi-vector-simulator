@@ -12,9 +12,9 @@ In module E3 the technical KPI are evaluated:
 """
 import logging
 
-from src.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
-from src.constants import PROJECT_DATA
-from src.constants_json_strings import (
+from mvs_eland.utils.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
+from mvs_eland.utils.constants import PROJECT_DATA
+from mvs_eland.utils.constants_json_strings import (
     VALUE,
     LABEL,
     ECONOMIC_DATA,
@@ -36,7 +36,6 @@ from src.constants_json_strings import (
     LCOE_ASSET,
     COST_TOTAL,
     TOTAL_FLOW,
-    TIMESERIES_TOTAL,
     RENEWABLE_ASSET_BOOL,
     RENEWABLE_SHARE_DSO,
     DSO_CONSUMPTION,

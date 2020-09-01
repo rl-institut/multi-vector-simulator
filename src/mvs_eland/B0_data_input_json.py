@@ -5,9 +5,9 @@ import os
 import numpy as np
 import pandas as pd
 
-from src.constants_json_strings import VALUE
+from mvs_eland.utils.constants_json_strings import VALUE
 
-from src.constants import (
+from mvs_eland.utils.constants import (
     CSV_FNAME,
     INPUTS_COPY,
     PATHS_TO_PLOTS,

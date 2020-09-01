@@ -7,30 +7,23 @@ What should differ between the different functions is the input file
 import argparse
 import os
 import shutil
-import json
 
 import mock
 import pandas as pd
 import pytest
-import random
 
-from pytest import approx
 from mvs_eland_tool import main
-from src.B0_data_input_json import load_json
-import src.C2_economic_functions as C2
+from mvs_eland.B0_data_input_json import load_json
+import mvs_eland.C2_economic_functions as C2
 
-from .constants import (
+from _constants import (
     TEST_REPO_PATH,
     CSV_EXT,
 )
 
-from src.constants import JSON_WITH_RESULTS
+from mvs_eland.utils.constants import JSON_WITH_RESULTS
 
-from src.constants_json_strings import (
-    ENERGY_CONVERSION,
-    ENERGY_PROVIDERS,
-    ENERGY_STORAGE,
-    ENERGY_CONSUMPTION,
+from mvs_eland.utils.constants_json_strings import (
     INPUT_POWER,
     OUTPUT_POWER,
     STORAGE_CAPACITY,

@@ -16,12 +16,9 @@ Functionalities:
 import logging
 import pandas as pd
 
-from src.constants import UNIT_HOUR
+from mvs_eland.utils.constants import UNIT_HOUR
 
-from src.constants_json_strings import (
-    CRF,
-    PROJECT_DURATION,
-    DISCOUNTFACTOR,
+from mvs_eland.utils.constants_json_strings import (
     ANNUITY_FACTOR,
     DISPATCH_PRICE,
     VALUE,

@@ -7,8 +7,8 @@ import pytest
 from pandas.util.testing import assert_series_equal
 
 # internal imports
-import src.D1_model_components as D1
-from src.constants_json_strings import (
+import mvs_eland.D1_model_components as D1
+from mvs_eland.utils.constants_json_strings import (
     UNIT,
     VALUE,
     LABEL,
@@ -16,11 +16,6 @@ from src.constants_json_strings import (
     ENERGY_CONSUMPTION,
     ENERGY_STORAGE,
     ENERGY_PRODUCTION,
-    OEMOF_BUSSES,
-    OEMOF_SOURCE,
-    OEMOF_SINK,
-    OEMOF_GEN_STORAGE,
-    OEMOF_TRANSFORMER,
     DISPATCH_PRICE,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
@@ -36,7 +31,7 @@ from src.constants_json_strings import (
     SIMULATION_ANNUITY,
     MAXIMUM_CAP,
 )
-from .constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
+from _constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
 D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D1.json",)
 

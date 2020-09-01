@@ -36,11 +36,11 @@ child-sub:  Sub-child function, feeds only back to child functions
 import logging
 
 # Loading all child functions
-import src.B0_data_input_json as data_input
-import src.C0_data_processing as data_processing
-import src.D0_modelling_and_optimization as modelling
-import src.E0_evaluation as evaluation
-import src.F0_output as output_processing
+import mvs_eland.B0_data_input_json as data_input
+import mvs_eland.C0_data_processing as data_processing
+import mvs_eland.D0_modelling_and_optimization as modelling
+import mvs_eland.E0_evaluation as evaluation
+import mvs_eland.F0_output as output_processing
 from mvs_eland_tool.version import version_num, version_date
 
 

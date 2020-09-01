@@ -1,5 +1,5 @@
 import logging
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     CONSTRAINTS,
     MINIMAL_RENEWABLE_SHARE,
     VALUE,

@@ -14,7 +14,7 @@ import logging
 
 import oemof.solph as solph
 
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     VALUE,
     LABEL,
     DISPATCH_PRICE,

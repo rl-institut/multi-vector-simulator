@@ -9,13 +9,13 @@ import plotly.express as px
 import graphviz
 import oemof
 
-from src.constants import (
+from mvs_eland.utils.constants import (
     PROJECT_DATA,
     LABEL,
     OUTPUT_FOLDER,
 )
 
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     PROJECT_NAME,
     SCENARIO_NAME,
     KPI,
@@ -34,7 +34,7 @@ from src.constants_json_strings import (
     RESOURCES,
 )
 
-from src.E1_process_results import (
+from mvs_eland.E1_process_results import (
     convert_demand_to_dataframe,
     convert_costs_to_dataframe,
 )

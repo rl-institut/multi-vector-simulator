@@ -5,9 +5,9 @@ import oemof.solph
 import pandas as pd
 import pytest
 
-import src.D0_modelling_and_optimization as D0
-from src.B0_data_input_json import load_json
-from src.constants_json_strings import (
+import mvs_eland.D0_modelling_and_optimization as D0
+from mvs_eland.B0_data_input_json import load_json
+from mvs_eland.utils.constants_json_strings import (
     ENERGY_BUSSES,
     ENERGY_CONSUMPTION,
     OEMOF_BUSSES,
@@ -24,7 +24,7 @@ from src.constants_json_strings import (
     OUTPUT_LP_FILE,
     SIMULATION_RESULTS,
 )
-from .constants import (
+from _constants import (
     TEST_REPO_PATH,
     PATH_OUTPUT_FOLDER,
     TEST_INPUT_DIRECTORY,
@@ -107,7 +107,7 @@ def test_error_raise_WrongOemofAssetForGroupError_if_oemof_asset_type_not_accept
         )
 
 
-from src.constants_json_strings import ACCEPTED_ASSETS_FOR_ASSET_GROUPS
+from mvs_eland.utils.constants_json_strings import ACCEPTED_ASSETS_FOR_ASSET_GROUPS
 
 
 def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0(

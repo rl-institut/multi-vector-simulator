@@ -18,22 +18,19 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import src.A0_initialization as initializing
-import src.B0_data_input_json as B0
-import src.F0_output as F0
+import mvs_eland.A0_initialization as initializing
+import mvs_eland.B0_data_input_json as B0
+import mvs_eland.F0_output as F0
 from mvs_eland_tool import main
-from src.constants_json_strings import (
-    LABEL,
+from mvs_eland.utils.constants_json_strings import (
     PROJECT_DATA,
     SIMULATION_SETTINGS,
-    OPTIMIZED_ADD_CAP,
     PROJECT_NAME,
     SCENARIO_NAME,
     KPI,
-    KPI_SCALAR_MATRIX,
     OPTIMIZED_FLOWS,
 )
-from .constants import (
+from _constants import (
     EXECUTE_TESTS_ON,
     TEST_REPO_PATH,
     DICT_PLOTS,

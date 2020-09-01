@@ -9,13 +9,10 @@ constraints should be tested in-code (examples) and by comparing the lp file gen
 import logging
 import pyomo.environ as po
 
-from src.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
+from mvs_eland.utils.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
 
-from src.constants_json_strings import (
-    OEMOF_GEN_STORAGE,
-    OEMOF_SINK,
+from mvs_eland.utils.constants_json_strings import (
     OEMOF_SOURCE,
-    OEMOF_TRANSFORMER,
     OEMOF_BUSSES,
     ENERGY_PRODUCTION,
     ENERGY_PROVIDERS,

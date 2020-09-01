@@ -3,13 +3,13 @@ import logging
 import oemof.solph as solph
 import pandas as pd
 
-import src.E1_process_results as E1
-import src.E2_economics as E2
-import src.E3_indicator_calculation as E3
+import mvs_eland.E1_process_results as E1
+import mvs_eland.E2_economics as E2
+import mvs_eland.E3_indicator_calculation as E3
 
-import src.E4_verification_of_constraints as E4
+import mvs_eland.E4_verification_of_constraints as E4
 
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
@@ -19,7 +19,6 @@ from src.constants_json_strings import (
     VALUE,
     SIMULATION_SETTINGS,
     ECONOMIC_DATA,
-    LABEL,
     INPUT_POWER,
     OUTPUT_POWER,
     STORAGE_CAPACITY,
@@ -32,20 +31,12 @@ from src.constants_json_strings import (
     KPI_SCALARS_DICT,
     OPTIMIZED_FLOWS,
     LABEL,
-    COST_TOTAL,
-    COST_OPERATIONAL_TOTAL,
-    COST_INVESTMENT,
-    COST_UPFRONT,
-    COST_DISPATCH,
-    COST_OM,
-    ANNUITY_TOTAL,
-    ANNUITY_OM,
-    LCOE_ASSET,
-    UNIT_YEAR,
-    CURR,
 )
 
-from src.constants_output import KPI_COST_MATRIX_ENTRIES, KPI_SCALAR_MATRIX_ENTRIES
+from mvs_eland.utils.constants_output import (
+    KPI_COST_MATRIX_ENTRIES,
+    KPI_SCALAR_MATRIX_ENTRIES,
+)
 
 r"""
 Module E0 evaluation

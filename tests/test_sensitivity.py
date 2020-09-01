@@ -10,8 +10,8 @@ import logging
 import os
 
 from mvs_eland_tool import run_simulation
-from src.B0_data_input_json import load_json, convert_from_json_to_special_types
-from .constants import TEST_REPO_PATH
+from mvs_eland.B0_data_input_json import load_json, convert_from_json_to_special_types
+from _constants import TEST_REPO_PATH
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs_simulation")
 

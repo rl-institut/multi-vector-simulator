@@ -4,9 +4,9 @@ import shutil
 import mock
 import pytest
 
-import src.A0_initialization as A0
+import mvs_eland.A0_initialization as A0
 from mvs_eland_tool import main
-from .constants import (
+from _constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
@@ -21,7 +21,6 @@ from .constants import (
     DEFAULT_OUTPUT_PATH,
     PDF_REPORT,
     PATH_INPUT_FILE,
-    SAVE_PNG,
 )
 
 PARSER = A0.create_parser()

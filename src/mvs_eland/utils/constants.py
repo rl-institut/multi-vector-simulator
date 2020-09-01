@@ -1,6 +1,6 @@
 import os
 
-from src.constants_json_strings import *
+from mvs_eland.utils.constants_json_strings import *
 
 # path to the root of this repository (assumes this file is in src folder)
 REPO_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

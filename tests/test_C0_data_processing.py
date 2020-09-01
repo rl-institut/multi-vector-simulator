@@ -1,9 +1,9 @@
 import pandas as pd
 import pytest
 
-import src.C0_data_processing as C0
+import mvs_eland.C0_data_processing as C0
 
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     UNIT,
     ENERGY_PROVIDERS,
     ENERGY_STORAGE,

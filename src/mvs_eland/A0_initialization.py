@@ -39,7 +39,7 @@ import shutil
 
 from oemof.tools import logger
 
-from src.constants import (
+from mvs_eland.utils.constants import (
     REPO_PATH,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
@@ -61,7 +61,7 @@ from src.constants import (
     SAVE_PNG,
     LOGFILE,
 )
-from src.constants_json_strings import LABEL
+from mvs_eland.utils.constants_json_strings import LABEL
 
 
 def create_parser():

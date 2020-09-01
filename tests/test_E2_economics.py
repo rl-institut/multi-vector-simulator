@@ -1,10 +1,10 @@
 import pandas as pd
 import pytest
 
-import src.C2_economic_functions as C2
-import src.E2_economics as E2
+import mvs_eland.C2_economic_functions as C2
+import mvs_eland.E2_economics as E2
 
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     UNIT,
     FLOW,
     CURR,
