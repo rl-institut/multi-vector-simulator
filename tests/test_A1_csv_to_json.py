@@ -4,12 +4,17 @@ import pytest
 import pandas as pd
 import numpy as np
 
-import src.A1_csv_to_json as A1
-import src.B0_data_input_json as data_input
+import mvs_eland.A1_csv_to_json as A1
+import mvs_eland.B0_data_input_json as data_input
 
-from src.constants import WARNING_TEXT, REQUIRED_IN_CSV_ELEMENTS, DEFAULT_VALUE, HEADER
+from mvs_eland.utils.constants import (
+    WARNING_TEXT,
+    REQUIRED_IN_CSV_ELEMENTS,
+    DEFAULT_VALUE,
+    HEADER,
+)
 
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     UNIT,
     VALUE,
     DISPATCH_PRICE,
@@ -22,7 +27,7 @@ from src.constants_json_strings import (
     SOC_MAX,
     SOC_MIN,
 )
-from .constants import (
+from _constants import (
     CSV_PATH,
     CSV_FNAME,
     DUMMY_CSV_PATH,
@@ -35,7 +40,10 @@ CSV_PARAMETERS = ["param1", "param2"]
 
 CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {VALUE: 21, UNIT: "factor"}}}
 CSV_TIMESERIES = {
-    "param1": {VALUE: {FILENAME: "test_time_series.csv", HEADER: "power"}, UNIT: "kW",}
+    "param1": {
+        VALUE: {FILENAME: "test_time_series.csv", HEADER: "power"},
+        UNIT: "kW",
+    }
 }
 
 CSV_LIST = {
@@ -307,7 +315,6 @@ def test_create_json_from_csv_storage_raises_WrongParameterWarning_for_wrong_val
 
 
 def test_create_json_from_csv_storage_raises_WrongStorageColumn():
-
     with pytest.raises(A1.WrongStorageColumn):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
@@ -315,6 +322,26 @@ def test_create_json_from_csv_storage_raises_WrongStorageColumn():
             parameters=[AGE_INSTALLED, DEVELOPMENT_COSTS],
             asset_is_a_storage=True,
         )
+
+
+def test_create_json_from_csv_float_int_parsing():
+    exp = {
+        "param1": {UNIT: "years", VALUE: 50.0},
+        "param2": {UNIT: "factor", VALUE: 0.2},
+        "param3": {UNIT: "currency", VALUE: 65.5},
+    }
+    json = A1.create_json_from_csv(
+        DUMMY_CSV_PATH,
+        "csv_float_int",
+        parameters=["param1", "param2", "param3"],
+        asset_is_a_storage=False,
+    )
+    for param in exp:
+        assert json["csv_float_int"]["col1"][param][VALUE] == exp[param][VALUE]
+
+    assert type(json["csv_float_int"]["col1"]["param1"][VALUE]) is int
+    assert type(json["csv_float_int"]["col1"]["param2"][VALUE]) is float
+    assert type(json["csv_float_int"]["col1"]["param3"][VALUE]) is float
 
 
 def teardown_function():

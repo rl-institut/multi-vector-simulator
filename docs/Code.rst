@@ -9,7 +9,7 @@ Initialization
    :members:
    :undoc-members:
 
-.. automodule:: src.constants_json_strings
+.. automodule:: mvs_eland.utils.constants_json_strings
    :members:
    :undoc-members:
 

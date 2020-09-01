@@ -1,9 +1,9 @@
 import pandas as pd
 import pytest
 
-import src.C0_data_processing as C0
+import mvs_eland.C0_data_processing as C0
 
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     UNIT,
     ENERGY_PROVIDERS,
     ENERGY_STORAGE,
@@ -24,11 +24,14 @@ from src.constants_json_strings import (
     OUTPUT_BUS_NAME,
     EFFICIENCY,
     TAX,
+    AGE_INSTALLED,
     VALUE,
     LABEL,
     DISPATCH_PRICE,
     SPECIFIC_COSTS_OM,
     DEVELOPMENT_COSTS,
+    SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+    SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
     SPECIFIC_COSTS,
     LIFETIME,
     SIMULATION_SETTINGS,
@@ -94,6 +97,7 @@ dict_asset = {
     DEVELOPMENT_COSTS: {VALUE: 1},
     LIFETIME: {VALUE: 20},
     UNIT: "a_unit",
+    AGE_INSTALLED: {VALUE: 0},
 }
 
 
@@ -105,6 +109,8 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
         LIFETIME_SPECIFIC_COST_OM,
         LIFETIME_PRICE_DISPATCH,
         SIMULATION_ANNUITY,
+        SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
+        SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
     ):
         assert k in dict_asset.keys()
 
@@ -363,18 +369,37 @@ def test_evaluate_lifetime_costs():
         DISPATCH_PRICE: {VALUE: 1, UNIT: "unit"},
         LIFETIME: {VALUE: 10},
         UNIT: UNIT,
+        AGE_INSTALLED: {VALUE: 0},
     }
 
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
 
+    # Note: Only the relevant keys are tested here. The valid calculation of the costs is tested with test_benchmark_KPI.py, Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
     for k in [
         LIFETIME_SPECIFIC_COST,
         LIFETIME_SPECIFIC_COST_OM,
         ANNUITY_SPECIFIC_INVESTMENT_AND_OM,
         SIMULATION_ANNUITY,
         LIFETIME_PRICE_DISPATCH,
+        SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+        SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
     ]:
         assert k in dict_asset
+
+
+def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass():
+    # Function only needs to pass
+    C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+        "Electricity", "asset_group", "asset"
+    )
+    assert 1 == 1
+
+
+def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fail():
+    with pytest.raises(C0.UnknownEnergyCarrier):
+        C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+            "Bio-Diesel", "asset_group", "asset"
+        )
 
 
 """

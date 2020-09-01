@@ -19,6 +19,87 @@ Here is a template for new release sections
 -
 ```
 
+## [0.4.0] - 2020-09-01
+
+### Added
+- Docstrings for E2 (#520)
+- New constant variable: `SIMULATION_RESULTS="simulation_results"` (#520)
+- Explicit calculation of replacement costs (`C2.get_replacement_costs()`), so that they can be used in `E2` for installed capacities and optimal additional capacities (#520)
+- New constant variable: JSON_WITH_RESULTS="json_with_results.json" (#520)
+- Benchmark test "Economic_KPI_C2_E2" to test economic evaluations in C2 and E2 (#520)
+- Possibility to add an upper bound  on the number of days to display in a timeseries' plot (#526)
+- Graph of the energy system model to the report (#528)
+- Function to encode images into dash app's layout (#528)
+- System KPI now printed in automatic report (section "Energy system key performance indicators"), draft (#525)
+- Added units to system-wide cost KPI in excel and in report. Some of these changes might need to be reworked when elaborating on units for the report (#525)
+- `References.rst` to the readthedocs, which should gather all the references of the MVS (#525)
+- New system-wide KPI:
+    - Demand per energy carrier, in original unit and electricity equivalent with `E3.total_demand_each_sector()` (#525)
+    - Attributed cost per energy carrier, related to the its share in the total demand equivalent  with `E3.total_demand_each_sector()` (#525)
+    - LCOE per energy carrier `E3.add_levelized_cost_of_energy_carriers()` (#525)
+- Default values for energy carrier "Heat" for `DEFAULT_WEIGHTS_ENERGY_CARRIERS` with `{UNIT: "KWh_eleq/kWh_therm", VALUE: 1}`. This is still TBD, as there is no source for this ratio yet (#525)
+- Default unit for energy carriers defined in `DEFAULT_WEIGHTS_ENERGY_CARRIERS`: ENERGY_CARRIER_UNIT. Might be used to define the units of flows and LCOE. (#525)
+- New constant variables: TIMESERIES_TOTAL, TIMESERIES_AVERAGE, LOGFILE, RENEWABLE_SHARE, TOTAL_DEMAND, SUFFIX_ELECTRICITY_EQUIVALENT, ATTRIBUTED_COSTS, LCOeleq, DEGREE_OF_SECTOR_COUPLING (#525)
+- New constant variable: OEMOF_BUSSES, MINIMAL_RENEWABLE_SHARE, CONSTRAINTS (#538)
+- New required input csv: `constraints.csv` including possible constraints for the energy system. Added to all input folders. (#538)
+- Added error message: New energy carriers always have to be added to `DEFAULT_WEIGHTS_ENERGY_CARRIERS` (`C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS()`, applied to `ENERGY_VECTOR` and to fuel sources) (#538)
+- Added minimal renewable share contraint though  `D2.constraint_minimal_renewable_share()` and added description of the constraint in `Model_Assumptions.rst` (#538)
+- Benchmark test for minimal renewable share constraint (#538)
+- Benchmark test `test_benchmark_AFG_grid_heatpump_heat` for a sector-coupled energy system, including electricity and heat, with a heat pump and an energy price as time series (#524)
+- Benchmark test descriptions for `test_benchmark_simple_scenarios.py` (#524)
+- Create `src/mvs_eland/utils` subpackage (contains `constants.py`, `constants_json_string.py
+`, `constants_output.py` (#501)
+
+
+### Changed
+- Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
+- Added pytest for many `E2` functions (#520)
+- Changed and added pytests in for `C2` (#520)
+- All energyProviders that have key `FILENAME` (and, therefore, a timeseries), are now of `DISPATCHABILITY = False`(#520)
+- Changed structure of `E2.lcoe_assets()` so that each asset has a defined LCOE_ASSET. If `sum(FLOW)==0` of an asset, the LCOE_ASSET (utilization LCOE) is defined to be 0 (#520)
+- Color lists for plots are provided by user and are not hard coded anymore (#527)
+- Replace function `F1.draw_graph` by the class `F1.ESGraphRenderer` and use `graphviz` instead of
+ `networkx` to draw the graph of the energy system model (#528) 
+- Rename variable `PLOTS_NX` to `PLOTS_ES` (#528)
+- Changed `requirements.txt` (removing and updating dependencies) (#528)
+- A png of the energy system model graph is only saved if either `-png` or `-pdf` options are chosen (#530)
+- Accepting string "TRUE"/"FALSE" now for boolean parameters (#534)
+- Order of pages in the readthedocs.io (#525)
+- Reactivated KPI: Renewable share. Updated pytests (#525)
+- Extended `DEFAULT_WEIGHTS_ENERGY_CARRIERS` by `Diesel` and `Gas`, added explaination in `Model_Assumptions.rs` (#538)
+- Create `dict_model` with constant variables in `D0` and update in `D1` (#538)
+- Separate the installation of the packages needed for the report generation from the mvs
+ simulation (#501)
+- Move all source files in `srv/mvs_eland` (#501)
+- Move the content of the previous `src/utils.py` module to  `src/mvs_eland/utils/__init__.py` (#501)
+- Rename `tests/constants.py` --> `tests/_constants.py` (#501)
+- Refactor modules calls (mostly `src.` is replaced by `mvs_eland.`) (#501)
+- Move `mvs_eland_tool` folder's content in `src/mvs_eland` (#501)
+- Gather all requirements files in a `requirements` folder and read the requirement from there for `setup.py` (#501)
+- Update `install_requires` and `extra_requires` in `setup.py` (#501)
+
+### Removed
+- `E2.add_costs_and_total`() (#520)
+- Calculation of energy expenditures using `price` (#520)
+- Function `F1.plot_input_timeseries` which is based on `matplotlib` (#527)
+- Dependency to `matplotlib` (#528)
+- Remove `STORE_NX_GRAPH` and `DISPLAY_NX_GRAPH` variables (#530)
+- Remove `tests/__init__.py` (#501)
+- Delete `mvs_eland_tool` folder (#501)
+
+### Fixed
+- Calculation of `cost_upfront` required a multiplication (#520)
+- Fixed `E2.convert_components_to_dataframe()`, Key error (#520)
+- Fixed `F1.extract_plot_data_and_title()`, Key error (#520)
+- Fixed hard-coded energy vector of ENERGY_PRODUCTION units in E1.convert_components_to_dataframe(#520)
+- Generating report for multiple sectors (#534)
+- Fixed hard-coded energy vector of `ENERGY_PRODUCTION` units in `E1.convert_components_to_dataframe` (#520)
+- Fixed parsing issue in `A1.conversion()`, incl. pytest (#538)
+- Quick fix to read a timeseries for `"price"` in `C0.define_source()` (#524)
+- Fix `C1.check_feedin_tariff()`: Now also applyable to timeseries of feed-in tariff or electricity prices (#524)
+- Add a warning message if the timeseries of demands or resources are empty (#543)
+- Fix failing KPI test (due to newer pandas version) (#501)
+
 ## [0.3.3] - 2020-08-19
 
 ### Added
@@ -62,7 +143,6 @@ Here is a template for new release sections
 
 ### Fixed
 - Image path for readthedocs (Model_Assumpation.rst) (#492)
-
 
 ## [0.3.2] 2020-08-04
 

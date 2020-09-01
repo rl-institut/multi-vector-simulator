@@ -1,0 +1,9 @@
+,unit,demand_elec,demand_heat
+dsm,str,False,False
+file_name,str,demand_elec.csv,demand_heat.csv
+label,str,demand_elec,demand_heat
+type_asset,str,demand,demand
+type_oemof,str,sink,sink
+energyVector,str,Electricity,Heat
+inflow_direction,str,Electricity,Heat
+unit,str,kW,kWh

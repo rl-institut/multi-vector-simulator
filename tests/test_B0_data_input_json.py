@@ -3,11 +3,11 @@ import shutil
 
 import mock
 
-import src.A0_initialization as A0
-import src.A1_csv_to_json as A1
-import src.B0_data_input_json as B0
-from src.constants_json_strings import SIMULATION_SETTINGS
-from .constants import (
+import mvs_eland.A0_initialization as A0
+import mvs_eland.A1_csv_to_json as A1
+import mvs_eland.B0_data_input_json as B0
+from mvs_eland.utils.constants_json_strings import SIMULATION_SETTINGS
+from _constants import (
     JSON_PATH,
     CSV_PATH,
     CSV_FNAME,
@@ -66,9 +66,26 @@ class TestTemporaryJsonFileDisposal:
             JSON_CSV_PATH, path_output_folder=self.test_out_path, move_copy=True
         )
 
-        assert os.path.exists(os.path.join(CSV_PATH, CSV_ELEMENTS, CSV_FNAME,)) is False
+        assert (
+            os.path.exists(
+                os.path.join(
+                    CSV_PATH,
+                    CSV_ELEMENTS,
+                    CSV_FNAME,
+                )
+            )
+            is False
+        )
 
-        assert os.path.exists(os.path.join(CSV_PATH, CSV_FNAME,)) is False
+        assert (
+            os.path.exists(
+                os.path.join(
+                    CSV_PATH,
+                    CSV_FNAME,
+                )
+            )
+            is False
+        )
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
