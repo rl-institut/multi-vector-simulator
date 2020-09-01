@@ -13,7 +13,7 @@ here = path.abspath(path.dirname(__file__))
 
 # Get the version number without triggering __init__
 main_namespace = {}
-exec(open(path.join(here, "mvs_eland_tool", "version.py")).read(), main_namespace)
+exec(open(path.join(here, "src", "mvs_eland", "version.py")).read(), main_namespace)
 
 # Get the long description from the README file
 with open(path.join(here, "README.md"), encoding="utf-8") as f:
@@ -35,7 +35,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name="mvs_tool",  # Required
+    name="mvs_eland",  # Required
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
     #
@@ -109,7 +109,7 @@ setup(
     keywords="multi-vector local-energy-systems",  # Optional
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
-    # package_dir={"": "src"},  # Optional
+    package_dir={"": "src"},  # Optional
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
     #
@@ -119,7 +119,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=["src", "mvs_eland_tool"],  # Required
+    packages=find_packages("mvs_eland"),  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you
@@ -137,7 +137,7 @@ setup(
         "matplotlib >= 3",
         "pandas >= 0.24.0,  <= 1.0.5",
         "pygraphviz >= 1.5",
-        "openpyxl"
+        "openpyxl",
     ],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
@@ -159,7 +159,6 @@ setup(
             "pyppeteer",
             "psutil",
         ],
-
     },  # Optional
     # If there are data files included in your packages that need to be
     # installed, specify them here.
