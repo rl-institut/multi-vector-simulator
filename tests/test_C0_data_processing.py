@@ -51,6 +51,7 @@ from mvs_eland.utils.constants_json_strings import (
     BUS_SUFFIX,
     UNIT_MINUTE,
     ENERGY_VECTOR,
+ASSET_DICT,
 )
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
@@ -207,13 +208,14 @@ def test_define_energyBusses():
     asset_names = ["asset_name_" + str(i) for i in range(0, 6)]
     in_bus_names = ["in_bus_name_" + str(i) for i in range(0, 6)]
     out_bus_names = ["out_bus_name_" + str(i) for i in range(0, 6)]
-
+    energy_vector = "Electricity"
     dict_test = {
         ENERGY_PROVIDERS: {
             asset_names[0]: {
                 LABEL: asset_names[0],
                 OUTFLOW_DIRECTION: out_bus_names[0],
                 INFLOW_DIRECTION: in_bus_names[0],
+                ENERGY_VECTOR: energy_vector
             }
         },
         ENERGY_STORAGE: {
@@ -221,24 +223,27 @@ def test_define_energyBusses():
                 LABEL: asset_names[1],
                 OUTFLOW_DIRECTION: out_bus_names[1],
                 INFLOW_DIRECTION: in_bus_names[1],
+                ENERGY_VECTOR: energy_vector,
             }
         },
         ENERGY_CONSUMPTION: {
-            asset_names[2]: {LABEL: asset_names[2], INFLOW_DIRECTION: in_bus_names[2]}
+            asset_names[2]: {LABEL: asset_names[2], INFLOW_DIRECTION: in_bus_names[2], ENERGY_VECTOR: energy_vector}
         },
         ENERGY_PRODUCTION: {
-            asset_names[3]: {LABEL: asset_names[3], OUTFLOW_DIRECTION: out_bus_names[2]}
+            asset_names[3]: {LABEL: asset_names[3], OUTFLOW_DIRECTION: out_bus_names[2], ENERGY_VECTOR: energy_vector}
         },
         ENERGY_CONVERSION: {
             asset_names[4]: {
                 LABEL: asset_names[4],
                 OUTFLOW_DIRECTION: out_bus_names[3],
                 INFLOW_DIRECTION: in_bus_names[3],
+                ENERGY_VECTOR: energy_vector
             },
             asset_names[5]: {
                 LABEL: asset_names[5],
                 OUTFLOW_DIRECTION: [out_bus_names[4], out_bus_names[5]],
                 INFLOW_DIRECTION: [in_bus_names[4], in_bus_names[5]],
+                ENERGY_VECTOR: energy_vector
             },
         },
     }
@@ -255,6 +260,7 @@ def test_add_busses_of_asset_depending_on_in_out_direction_single():
     bus_names = ["bus_name_" + str(i) for i in range(1, 3)]
     asset_name = "asset"
     asset_label = "asset_label"
+    energy_vector = "Electricity"
     dict_test = {
         ENERGY_BUSSES: {},
         ENERGY_CONVERSION: {
@@ -262,6 +268,7 @@ def test_add_busses_of_asset_depending_on_in_out_direction_single():
                 LABEL: asset_label,
                 OUTFLOW_DIRECTION: bus_names[0],
                 INFLOW_DIRECTION: bus_names[1],
+                ENERGY_VECTOR: energy_vector
             }
         },
     }
@@ -271,18 +278,19 @@ def test_add_busses_of_asset_depending_on_in_out_direction_single():
     for k in bus_names:
         assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
     for bus in dict_test[ENERGY_BUSSES].keys():
-        assert asset_name in dict_test[ENERGY_BUSSES][bus].keys()
-        assert asset_label in dict_test[ENERGY_BUSSES][bus][asset_name]
+        assert asset_name in dict_test[ENERGY_BUSSES][bus][ASSET_DICT].keys()
+        assert dict_test[ENERGY_BUSSES][bus][ASSET_DICT][asset_name] == asset_label
 
 
 def test_update_bus():
     bus_name = "bus_name"
     asset_name = "asset"
     asset_label = "asset_label"
+    energy_vector = "Electricity"
     dict_test = {
         ENERGY_BUSSES: {},
         ENERGY_CONVERSION: {
-            asset_name: {LABEL: asset_label, OUTFLOW_DIRECTION: bus_name}
+            asset_name: {LABEL: asset_label, OUTFLOW_DIRECTION: bus_name, ENERGY_VECTOR: energy_vector}
         },
     }
     bus_label = C0.bus_suffix(bus_name)
@@ -291,10 +299,12 @@ def test_update_bus():
         bus=bus_name,
         asset_key=asset_name,
         asset_label=asset_label,
+        energy_vector=energy_vector
     )
     assert bus_label in dict_test[ENERGY_BUSSES]
-    assert asset_name in dict_test[ENERGY_BUSSES][bus_label]
-    assert asset_label in dict_test[ENERGY_BUSSES][bus_label][asset_name]
+    assert asset_name in dict_test[ENERGY_BUSSES][bus_label][ASSET_DICT]
+    assert dict_test[ENERGY_BUSSES][bus_label][ASSET_DICT][asset_name] == asset_label
+    assert dict_test[ENERGY_BUSSES][bus_label][ENERGY_VECTOR] == energy_vector
 
 
 def test_bus_suffix_functions():
