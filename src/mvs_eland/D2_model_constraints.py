@@ -277,9 +277,9 @@ def prepare_constraint_minimal_renewable_share(
     )
 
     dso_sources = []
-    for DSO in dict_values[ENERGY_PROVIDERS]:
+    for dso in dict_values[ENERGY_PROVIDERS]:
         # Get source connected to the specific DSO in question
-        DSO_source_name = DSO + DSO_CONSUMPTION
+        DSO_source_name = dso + DSO_CONSUMPTION
 
         # Add DSO to both renewable and nonrenewable assets (as only a share of their supply may be renewable)
         dso_sources.append(DSO_source_name)
@@ -296,7 +296,7 @@ def prepare_constraint_minimal_renewable_share(
                     weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
                         dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
                     ][VALUE],
-                    renewable_share_asset_flow: dict_values[ENERGY_PROVIDERS][DSO][
+                    renewable_share_asset_flow: dict_values[ENERGY_PROVIDERS][dso][
                         RENEWABLE_SHARE_DSO
                     ][VALUE],
                 }
@@ -314,7 +314,7 @@ def prepare_constraint_minimal_renewable_share(
                     weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
                         dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
                     ][VALUE],
-                    renewable_share_asset_flow: dict_values[ENERGY_PROVIDERS][DSO][
+                    renewable_share_asset_flow: dict_values[ENERGY_PROVIDERS][dso][
                         RENEWABLE_SHARE_DSO
                     ][VALUE],
                 }
