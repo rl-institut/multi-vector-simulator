@@ -19,6 +19,17 @@ Here is a template for new release sections
 -
 ```
 
+## [Unreleased]
+
+### Added
+-
+### Changed
+-
+### Removed
+-
+### Fixed
+- `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)
+
 ## [0.4.0] - 2020-09-01
 
 ### Added
