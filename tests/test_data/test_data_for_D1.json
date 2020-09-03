@@ -1,5 +1,9 @@
 {
-
+    "constraints": {
+        "minimal_renewable_share": {
+            "unit": "factor",
+            "value": 0
+        }},
     "energyConsumption": {
         "non_dispatchable_single": {
             "input_bus_name": "Electricity bus",

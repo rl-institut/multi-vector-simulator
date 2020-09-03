@@ -7,6 +7,8 @@ import src.E1_process_results as E1
 import src.E2_economics as E2
 import src.E3_indicator_calculation as E3
 
+import src.E4_verification_of_constraints as E4
+
 from src.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,
@@ -89,6 +91,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         # Read all energy flows from busses
         bus_data.update({bus: solph.views.node(results_main, bus)})
 
+    logging.info("Evaluating optimized capacities and dispatch.")
     # Evaluate timeseries and store to a large DataFrame for each bus:
     E1.get_timeseries_per_bus(dict_values, bus_data)
 
@@ -157,6 +160,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
             E2.lcoe_assets(dict_values[group][asset], group)
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
+    logging.info("Evaluating key performance indicators of the system")
     E3.all_totals(dict_values)
     E3.total_demand_each_sector(dict_values)
     E3.add_levelized_cost_of_energy_carriers(dict_values)
@@ -164,7 +168,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
     E3.renewable_share(dict_values)
     # E3.add_degree_of_sector_coupling(dict_values) feature not finished
 
-    logging.info("Evaluating optimized capacities and dispatch.")
+    # Tests and checks
+    logging.info("Running validity checks.")
+    E4.minimal_renewable_share_test(dict_values)
     return
 
 

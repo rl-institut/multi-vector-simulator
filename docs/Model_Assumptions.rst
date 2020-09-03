@@ -35,6 +35,15 @@ They are added by adding a column in `energyProviders.CSV`, and setting file_nam
 DSOs, eventhough also dispatchable sources of generation, should be added via `energyProviders.csv`,
 as there are some additional features available then.
 
+Both DSOs and the additional fuel sources are limited to following options:
+- Electricity
+- Heat
+- H2
+- Diesel
+- Gas
+
+This is as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined. This definition is currently hard-coded in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. With new energy carriers necessary, the list can easily be extended. Please see below for more information.
+
 Dispatchable conversion assets
 ##############################
 
@@ -90,6 +99,79 @@ For two peak demand pricing persiods, the resulting dispatch could look as follo
 
 .. image:: images/Model_Assumptions_Peak_Demand_Pricing_Dispatch_Graph.png
  :width: 600
+
+Constraints
+-----------
+
+Constraints are controlled with the file `constraints.csv`.
+
+Minimal renewable share constraint
+##################################
+
+The minimal renewable share constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal renewable share defined within the constraint. The renewable share of the optimized energy system may also be higher then the minimal renewable share.
+
+The minimal renewable share is applied to the minimal renewable share of the whole, sector-coupled energy system, but not specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
+
+.. math:
+        minimal renewable factor <= \frac{\sum renewable generation \cdot weighting factor}{\sum renewable generation \cdot weighting factor + \sum non-renewable generation \cdot weighting factor}
+
+
+:Deactivating the constraint:
+
+The minimal renewable share constraint is deactivated by defining following row in `constraints.csv` as follows:
+
+```minimal_renewable_share,factor,0```
+
+:Activating the constraint:
+
+The constraint is enabled when the value of the minimal renewable share factor is above 0 in `constraints.csv`:
+
+```minimal_renewable_share,factor,0.3```
+
+
+Depending on the energy system, especially when working assets which are not to be capacity-optimized, it is possible that the minimal renewable share criterion can not be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimize_Cap` to `True`, and then investigate further.
+Also, if you are aiming at very high minimal renewable shares, the simulation time can increase drastically. If you do not get a result after a maximum of 20 Minutes, you should consider terminating the simulation and trying with a lower minimum renewable share.
+
+The minimum renewable share is introduced to the energy system by `D2.constraint_minimal_renewable_share()` and a validation test is performed with `E4.minimal_renewable_share_test()`.
+
+Weighting of energy carriers
+----------------------------
+
+To be able to calculate sector-wide key performance indicators, it is necessary to weight energy carriers depending on their usable potential. With the conference paper handed in to the CIRED workshop we propose a methodolgy comparable to Gasoline Gallon Equivalents. This definition is currently hard-coded in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be atted to its list. Unknown carriers raise an `UnknownEnergyCarrier` Error.
+
+Following conversion factors and energy carriers are defined:
+
+.. list-table:: Weights of energy carriers
+   :widths: 50 25 25 25
+   :header-rows: 1
+
+   * - Energy carrier
+     - Energy carrier unit
+     - Conversion factor unit
+     - Value of conversion factor
+   * - Electricity
+     - kWh_el
+     - kWh_eleq/kWh_el
+     - 1
+   * - Heat
+     - kWh_therm
+     - kWh_eleq/kWh_therm
+     - 1
+   * - H2
+     - kg
+     - kWh_eleq/kg
+     - 32.87
+   * - Diesel
+     - l
+     - kWh_eleq/l
+     - 8.20
+   * - Gas
+     - l
+     - kWh_eleq/l
+     - 5.38
+
+The confersion factors are derived from their `Gasoline Gallon Equivalents.<https://epact.energy.gov/fuel-conversion-factors>`_
+
 
 Limitations
 -----------
