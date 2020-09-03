@@ -689,7 +689,7 @@ def remove_bus_suffix(bus_label):
     return bus_direction
 
 
-def update_bus(bus, dict_values, asset_key, asset_label):
+def update_bus(bus, dict_values, asset_key, asset_label, energy_vector):
     """
     Checks if an bus is already included in ENERGY_BUSSES and otherwise adds it.
     Adds asset key and label to list of assets attached to a bus.
@@ -708,18 +708,33 @@ def update_bus(bus, dict_values, asset_key, asset_label):
     asset_label: str
         Label of the asset
 
+    energy_vector: str
+        Energy vector of the asset
+        - Output flow of an energy conversion asset (disregard energy vector if the assets inflow direction is connected to the bus)
+        - Input flow of a sink
+        - Output flow of a source
+        - Energy vector of a storage
+
     Returns
     -------
     Updated dict_values[ENERGY_BUSSES], optionally with new busses and/or by adding an asset to a bus
+
+    EnergyBusses now has following keys: LABEL, ENERGY_VECTOR, ASSET_DICT
     """
     bus_label = bus_suffix(bus)
 
     if bus_label not in dict_values[ENERGY_BUSSES]:
         # add bus to asset group energyBusses
-        dict_values[ENERGY_BUSSES].update({bus_label: {}})
+        dict_values[ENERGY_BUSSES].update({bus_label: {LABEL: bus_label,
+                                                 ENERGY_VECTOR: energy_vector,
+                                                 ASSET_DICT: {}}})
+
+    else:
+        if dict_values[ENERGY_BUSSES][bus_label][ENERGY_VECTOR] is None:
+            dict_values[ENERGY_BUSSES][bus_label].update({ENERGY_VECTOR: energy_vector})
 
     # Asset should added to respective bus
-    dict_values[ENERGY_BUSSES][bus_label].update({asset_key: asset_label})
+    dict_values[ENERGY_BUSSES][bus_label][ASSET_DICT].update({asset_key: asset_label})
     logging.debug("Added asset %s to bus %s", asset_label, bus_label)
     return
 

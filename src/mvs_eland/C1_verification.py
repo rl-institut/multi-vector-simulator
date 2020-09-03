@@ -53,6 +53,7 @@ from mvs_eland.utils.constants_json_strings import (
     ENERGY_PROVIDERS,
     ENERGY_BUSSES,
     VALUE,
+    ASSET_DICT,
 )
 
 
@@ -335,8 +336,8 @@ def check_for_sufficient_assets_on_busses(dict_values):
     Logging error message if test fails
     """
     for bus in dict_values[ENERGY_BUSSES]:
-        if len(dict_values[ENERGY_BUSSES][bus]) < 3:
-            asset_string = ", ".join(map(str, dict_values[ENERGY_BUSSES][bus].keys()))
+        if len(dict_values[ENERGY_BUSSES][bus][ASSET_DICT]) < 3:
+            asset_string = ", ".join(map(str, dict_values[ENERGY_BUSSES][bus][ASSET_DICT].keys()))
             logging.error(
                 f"Energy system bus {bus} has too few assets connected to it. "
                 f"The minimal number of assets that need to be connected "
