@@ -102,6 +102,7 @@ class Test_Parameter_Parsing:
         # read json with results file
         data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
 
+    '''
     def test_benchmark_feature_output_flows_as_list(self, margs):
         r"""
         Notes
@@ -121,6 +122,7 @@ class Test_Parameter_Parsing:
 
         # read json with results file
         data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
+    '''
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):

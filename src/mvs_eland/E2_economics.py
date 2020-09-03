@@ -285,7 +285,9 @@ def calculate_dispatch_expenditures(dispatch_price, flow, asset):
         # Dispatch price is defined as a list, ie. the asset has multiple flows
         dispatch_expenditures = 0
         for list_price in dispatch_price:
-            partial_dispatch_expenditures = calculate_dispatch_expenditures(list_price, flow, asset+" (list entry)")
+            partial_dispatch_expenditures = calculate_dispatch_expenditures(
+                list_price, flow, asset + " (list entry)"
+            )
             dispatch_expenditures += partial_dispatch_expenditures
     else:
         raise TypeError(

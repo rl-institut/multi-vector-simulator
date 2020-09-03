@@ -22,14 +22,16 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
-- Benchmark test `test_benchmark_feature_parameters_as_timeseries` to ensure that parameters can always also be defined as a timeseries. Applied to `efficiency` of an energyConversion asset and `electricity_price` of an energyProduction asset () 
+- Benchmark test `test_benchmark_feature_parameters_as_timeseries` to ensure that parameters can always also be defined as a timeseries. Applied to `efficiency` of an energyConversion asset and `electricity_price` of an energyProduction asset (#542)
 
 ### Changed
--
+- Changed `E2.calculate_dispatch_expenditures()` so that it can process parameters defined as lists (#542)
+
 ### Removed
 -
+
 ### Fixed
-- Fix reading timeseries for parameters in `C0` ()
+- Fix reading timeseries for parameters in `C0` (#542)
 
 
 ## [0.4.0] - 2020-09-01

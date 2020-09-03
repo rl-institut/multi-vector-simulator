@@ -202,6 +202,7 @@ def test_calculate_annual_dispatch_expenditures_pd_Series():
     )
     assert dispatch_expenditure == 6
 
+
 def test_calculate_annual_dispatch_expenditures_else():
     with pytest.raises(TypeError):
         E2.calculate_dispatch_expenditures("str", flow, asset)
@@ -213,17 +214,20 @@ def test_calculate_annual_dispatch_expenditures_list_scalars():
     )
     assert dispatch_expenditure == 6
 
+
 def test_calculate_annual_dispatch_expenditures_list_pd_series():
     dispatch_expenditure = E2.calculate_dispatch_expenditures(
         dispatch_price=[1, pd.Series([1, 2, 3])], flow=flow, asset=asset
     )
     assert dispatch_expenditure == 9
 
+
 def test_calculate_annual_dispatch_expenditures_list_error():
     with pytest.raises(TypeError):
         dispatch_expenditure = E2.calculate_dispatch_expenditures(
-        dispatch_price=[1, [1,2]], flow=flow, asset=asset
-    )
+            dispatch_price=[1, [1, 2]], flow=flow, asset=asset
+        )
+
 
 def test_all_list_in_dict_passes_as_all_keys_included():
     """Tests whether looking for list items in dict_asset is plausible."""
