@@ -1,0 +1,8 @@
+dash>=1.11.0
+kaleido>=0.0.2
+folium>=0.10.1
+gitpython>=3.1.1
+reverse_geocoder>=1.5.1
+staticmap>=0.5.4
+pyppeteer>=0.2.2
+psutil>=5.7.0

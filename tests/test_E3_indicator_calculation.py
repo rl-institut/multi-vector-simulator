@@ -1,14 +1,12 @@
-import os
-
 import pandas as pd
 import pytest
 
-import src.E3_indicator_calculation as E3
-from src.constants import (
+import mvs_eland.E3_indicator_calculation as E3
+from mvs_eland.utils.constants import (
     DEFAULT_WEIGHTS_ENERGY_CARRIERS,
     PROJECT_DATA,
 )
-from src.constants_json_strings import (
+from mvs_eland.utils.constants_json_strings import (
     ECONOMIC_DATA,
     ENERGY_PRODUCTION,
     ENERGY_PROVIDERS,
@@ -69,7 +67,6 @@ def test_totalling_scalars_values():
 
 
 # for this test_total_renewable_and_non_renewable_origin_of_each_sector test
-from src.B0_data_input_json import load_json
 
 dso = "DSO"
 pv_plant = "PV_plant"

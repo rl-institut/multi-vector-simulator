@@ -18,22 +18,19 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import src.A0_initialization as initializing
-import src.B0_data_input_json as B0
-import src.F0_output as F0
-from mvs_eland_tool import main
-from src.constants_json_strings import (
-    LABEL,
+import mvs_eland.A0_initialization as initializing
+import mvs_eland.B0_data_input_json as B0
+import mvs_eland.F0_output as F0
+from mvs_eland.cli import main
+from mvs_eland.utils.constants_json_strings import (
     PROJECT_DATA,
     SIMULATION_SETTINGS,
-    OPTIMIZED_ADD_CAP,
     PROJECT_NAME,
     SCENARIO_NAME,
     KPI,
-    KPI_SCALAR_MATRIX,
     OPTIMIZED_FLOWS,
 )
-from .constants import (
+from _constants import (
     EXECUTE_TESTS_ON,
     TEST_REPO_PATH,
     DICT_PLOTS,
@@ -126,7 +123,10 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_one_bus(self):
         """ """
         dict_timeseries_test_one_bus = {
-            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
+            PROJECT_DATA: {
+                PROJECT_NAME: "a_project",
+                SCENARIO_NAME: "a_scenario",
+            },
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             OPTIMIZED_FLOWS: {"a_bus": BUS},
         }
@@ -144,7 +144,10 @@ class TestFileCreation:
     def test_store_each_bus_timeseries_to_excel_and_png_two_busses(self):
         """ """
         dict_timeseries_test_two_busses = {
-            PROJECT_DATA: {PROJECT_NAME: "a_project", SCENARIO_NAME: "a_scenario",},
+            PROJECT_DATA: {
+                PROJECT_NAME: "a_project",
+                SCENARIO_NAME: "a_scenario",
+            },
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             OPTIMIZED_FLOWS: {"a_bus": BUS, "b_bus": BUS},
         }
