@@ -274,10 +274,19 @@ def calculate_dispatch_expenditures(dispatch_price, flow, asset):
     a) Total dispatch expenditures of an asset
     b) Annual dispatch expenditures of an asset
     """
+
     if isinstance(dispatch_price, float) or isinstance(dispatch_price, int):
+        # Dispatch price is a scalar
         dispatch_expenditures = dispatch_price * sum(flow)
     elif isinstance(dispatch_price, pd.Series):
+        # Dispatch price is defined as a timeseries
         dispatch_expenditures = sum(dispatch_price * flow)
+    elif isinstance(dispatch_price, list):
+        # Dispatch price is defined as a list, ie. the asset has multiple flows
+        dispatch_expenditures = 0
+        for list_price in dispatch_price:
+            partial_dispatch_expenditures = calculate_dispatch_expenditures(list_price, flow, asset+" (list entry)")
+            dispatch_expenditures += partial_dispatch_expenditures
     else:
         raise TypeError(
             f"The dispatch price of asset {asset} is neither float nor pd.Series but {type(dispatch_price)}."
