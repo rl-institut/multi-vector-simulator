@@ -45,6 +45,7 @@ from mvs_eland.utils.constants_json_strings import (
     TOTAL_NON_RENEWABLE_ENERGY_USE,
     RENEWABLE_SHARE,
     TOTAL_DEMAND,
+    TOTAL_EXCESS,
     SUFFIX_ELECTRICITY_EQUIVALENT,
     LCOeleq,
     ATTRIBUTED_COSTS,
@@ -90,9 +91,11 @@ def all_totals(dict_values):
     return
 
 
-def total_demand_each_sector(dict_values):
+def total_demand_and_excess_each_sector(dict_values):
     """
-    Calculation of the total demand of each sector
+    Calculation of the total demand and total excess of each sector
+
+    Both in original energy carrier unit and electricity equivalent
 
     Parameters
     ----------
@@ -105,6 +108,9 @@ def total_demand_each_sector(dict_values):
     - total demand of each energy carrier (original unit)
     - total demand of each energy carrier (electricity equivalent)
     - total demand in electricity equivalent
+    - total excess of each energy carrier (original unit)
+    - total excess of each energy carrier (electricity equivalent)
+    - total excess in electricity equivalent
 
     Notes
     -----
@@ -115,8 +121,10 @@ def total_demand_each_sector(dict_values):
 
     # Define empty dict to gather the total demand of each energy carrier
     total_demand_dict = {}
+    total_excess_dict = {}
     for sector in dict_values[PROJECT_DATA][SECTORS]:
         total_demand_dict.update({sector: 0})
+        total_excess_dict.update({sector: 0})
 
     # determine all dso feedin sinks that should not be evaluated for the total demand
     dso_feedin_sinks = []
@@ -127,13 +135,10 @@ def total_demand_each_sector(dict_values):
 
     # Loop though energy consumption assets to determine those that are demand
     for consumption_asset in dict_values[ENERGY_CONSUMPTION]:
-        # Do not process feedin sinks but only demands
-        if (
-            consumption_asset not in dso_feedin_sinks
-            and consumption_asset
-            not in dict_values[SIMULATION_SETTINGS][EXCESS + AUTO_SINK]
-        ):
+        # Do not process feedin sinks neither for excess nor for demands
+        if consumption_asset not in dso_feedin_sinks:
             # get name of energy carrier
+            print(dict_values[ENERGY_CONSUMPTION][consumption_asset][LABEL], dict_values[ENERGY_CONSUMPTION][consumption_asset].keys())
             energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_asset][
                 ENERGY_VECTOR
             ]
@@ -143,6 +148,22 @@ def total_demand_each_sector(dict_values):
                 logging.error(
                     f"Energy vector {energy_carrier} not in known energy sectors. Please double check."
                 )
+                total_demand_dict.update({energy_carrier: {}})
+
+            # Evaluate excess
+            if (
+                consumption_asset
+                in dict_values[SIMULATION_SETTINGS][EXCESS + AUTO_SINK]
+            ):
+                total_excess_dict.update(
+                    {
+                        energy_carrier: total_excess_dict[energy_carrier]
+                        + dict_values[ENERGY_CONSUMPTION][consumption_asset][
+                            TOTAL_FLOW
+                        ][VALUE]
+                    }
+                )
+            # Evaluate demands
             else:
                 total_demand_dict.update(
                     {
@@ -153,34 +174,72 @@ def total_demand_each_sector(dict_values):
                     }
                 )
 
+    # Append total demand in electricity equivalent to kpi
+    calculate_electricity_equivalent_for_a_set_of_aggregated_values(
+        dict_values, total_demand_dict, kpi_name=TOTAL_DEMAND
+    )
+
+    # Append total excess in electricity equivalent to kpi
+    calculate_electricity_equivalent_for_a_set_of_aggregated_values(
+        dict_values, total_demand_dict, kpi_name=TOTAL_EXCESS
+    )
+
+    return
+
+
+def calculate_electricity_equivalent_for_a_set_of_aggregated_values(
+    dict_values, dict_of_aggregated_flows, kpi_name
+):
+    r"""
+    Calculates the electricity equivalent for a dict of aggregated flows and writes it to the KPI
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation parameters
+
+    dict_of_aggregated_flows: dict
+        Dict of aggragated flows, with keys of energy carriers.
+
+    kpi_name: str
+        Name of the KPI to write to the results
+
+    Returns
+    -------
+    Updated dict_values.
+    """
+
+    # For totalling aggregated electricity equivalents
+    total_electricity_equivalent = 0
+
     # Write total demand per energy carrier as well as its electricity equivalent to dict_values
-    total_demand_electricity_equivalent = 0
-    for energy_carrier in total_demand_dict:
-        # Define total demand of electricity carrier in original unit
+    for energy_carrier in dict_of_aggregated_flows:
+        # Define total aggregated flow of energy carrier in original unit
         dict_values[KPI][KPI_SCALARS_DICT].update(
-            {TOTAL_DEMAND + energy_carrier: total_demand_dict[energy_carrier]}
+            {kpi_name + energy_carrier: dict_of_aggregated_flows[energy_carrier]}
         )
-        # Define total energy carrier demand in electricity equivalent
+        # Define total aggregated flow of energy carrier in electricity equivalent
         dict_values[KPI][KPI_SCALARS_DICT].update(
             {
-                TOTAL_DEMAND
+                kpi_name
                 + energy_carrier
-                + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand_dict[energy_carrier]
+                + SUFFIX_ELECTRICITY_EQUIVALENT: dict_of_aggregated_flows[
+                    energy_carrier
+                ]
                 * DEFAULT_WEIGHTS_ENERGY_CARRIERS[energy_carrier][VALUE]
             }
         )
-        # Add to total demand in electricity equivalent
-        total_demand_electricity_equivalent += dict_values[KPI][KPI_SCALARS_DICT][
-            TOTAL_DEMAND + energy_carrier + SUFFIX_ELECTRICITY_EQUIVALENT
+        # Add to total aggregated flow in electricity equivalent
+        total_electricity_equivalent += dict_values[KPI][KPI_SCALARS_DICT][
+            kpi_name + energy_carrier + SUFFIX_ELECTRICITY_EQUIVALENT
         ]
-    # Define total demand in electricity equivalent
+
+    # Define total aggregated flow in electricity equivalent
     dict_values[KPI][KPI_SCALARS_DICT].update(
-        {
-            TOTAL_DEMAND
-            + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand_electricity_equivalent
-        }
+        {kpi_name + SUFFIX_ELECTRICITY_EQUIVALENT: total_electricity_equivalent}
     )
-    return
+    logging.info
+    return total_electricity_equivalent
 
 
 def total_renewable_and_non_renewable_energy_origin(dict_values):
