@@ -264,23 +264,11 @@ def process_all_assets(dict_values):
     :param dict_values:
     :return:
     """
-    #
+    # Define all busses based on the in- and outflow directions of the assets in the input data
     define_busses(dict_values)
-
     # Define all excess sinks for each energy bus
-    auto_sinks = []
-    for bus_name in dict_values[ENERGY_BUSSES]:
-        define_sink(
-            dict_values=dict_values,
-            asset_name=bus_name + EXCESS,
-            price={VALUE: 0, UNIT: CURR + "/" + UNIT},
-            input_bus_name=bus_name,
-        )
-        auto_sinks.append(bus_name + EXCESS)
-        logging.debug(
-            "Created excess sink for energy bus %s",
-            bus_name,
-        )
+    auto_sinks = define_excess_sinks(dict_values)
+
     # Needed for E3.total_demand_each_sector(), but location is not perfect as it is more about the model then the settings.
     # Decided against implementing a new major 1st level category in json to avoid an excessive datatree.
     dict_values[SIMULATION_SETTINGS].update({EXCESS + AUTO_SINK: auto_sinks})
@@ -310,6 +298,36 @@ def process_all_assets(dict_values):
     logging.info("Processed cost data and added economic values.")
     return
 
+def define_excess_sinks(dict_values):
+    r"""
+    Defines energy excess sinks for each bus
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation parameters
+
+    Returns
+    -------
+    Updates dict_values
+    """
+    auto_sinks = []
+    for bus_name in dict_values[ENERGY_BUSSES]:
+        excess_sink_name = bus_name + EXCESS
+        define_sink(
+            dict_values=dict_values,
+            asset_name=excess_sink_name,
+            price={VALUE: 0, UNIT: CURR + "/" + UNIT},
+            input_bus_name=bus_name,
+            energy_vector=dict_values[ENERGY_BUSSES][bus_name][ENERGY_VECTOR]
+        )
+        dict_values[ENERGY_BUSSES][bus_name].update({EXCESS: excess_sink_name})
+        auto_sinks.append(excess_sink_name)
+        logging.debug(
+            "Created excess sink for energy bus %s",
+            bus_name,
+        )
+    return auto_sinks
 
 def energyConversion(dict_values, group):
     """Add lifetime capex (incl. replacement costs), calculate annuity (incl. om), and simulation annuity to each asset
@@ -616,8 +634,10 @@ def add_busses_of_asset_depending_on_in_out_direction(
         # This is the parameter that will be added to dict_asset as the bus_name_key
         if direction == INFLOW_DIRECTION:
             bus_name_key = INPUT_BUS_NAME
+            energy_vector = None
         else:
             bus_name_key = OUTPUT_BUS_NAME
+            energy_vector = dict_asset[ENERGY_VECTOR]
 
         # Check if the asset has an INFLOW_DIRECTION or OUTFLOW_DIRECTION
         if direction in dict_asset:
@@ -636,6 +656,7 @@ def add_busses_of_asset_depending_on_in_out_direction(
                         dict_values=dict_values,
                         asset_key=asset_key,
                         asset_label=dict_asset[LABEL],
+                        energy_vector=energy_vector
                     )
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_list})
@@ -647,6 +668,7 @@ def add_busses_of_asset_depending_on_in_out_direction(
                     dict_values=dict_values,
                     asset_key=asset_key,
                     asset_label=dict_asset[LABEL],
+                    energy_vector=energy_vector
                 )
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_suffix(bus)})
@@ -792,6 +814,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         price=dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
         input_bus_name=dict_values[ENERGY_PROVIDERS][dso][INPUT_BUS_NAME],
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
+        energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR]
     )
 
     dict_values[ENERGY_PROVIDERS][dso].update(
@@ -1112,6 +1135,7 @@ def define_source(
         dict_values=dict_values,
         asset_key=asset_key,
         asset_label=default_source_dict[LABEL],
+        energy_vector=energy_vector
     )
     return
 
@@ -1190,7 +1214,7 @@ def determine_dispatch_price(dict_values, price, source):
     return
 
 
-def define_sink(dict_values, asset_name, price, input_bus_name, **kwargs):
+def define_sink(dict_values, asset_name, price, input_bus_name, energy_vector, **kwargs):
     r"""
     This automatically defines a sink for an oemof-sink object. The sinks are added to the energyConsumption assets.
 
@@ -1241,6 +1265,7 @@ def define_sink(dict_values, asset_name, price, input_bus_name, **kwargs):
             VALUE: 0,
             UNIT: UNIT_YEAR,
         },
+        ENERGY_VECTOR: energy_vector
     }
 
     # check if multiple busses are provided
@@ -1320,6 +1345,7 @@ def define_sink(dict_values, asset_name, price, input_bus_name, **kwargs):
         dict_values=dict_values,
         asset_key=asset_name,
         asset_label=sink[LABEL],
+        energy_vector=None
     )
 
     return
