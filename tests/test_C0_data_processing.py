@@ -51,7 +51,7 @@ from mvs_eland.utils.constants_json_strings import (
     BUS_SUFFIX,
     UNIT_MINUTE,
     ENERGY_VECTOR,
-ASSET_DICT,
+    ASSET_DICT,
 )
 
 # process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
@@ -215,7 +215,7 @@ def test_define_energyBusses():
                 LABEL: asset_names[0],
                 OUTFLOW_DIRECTION: out_bus_names[0],
                 INFLOW_DIRECTION: in_bus_names[0],
-                ENERGY_VECTOR: energy_vector
+                ENERGY_VECTOR: energy_vector,
             }
         },
         ENERGY_STORAGE: {
@@ -227,23 +227,31 @@ def test_define_energyBusses():
             }
         },
         ENERGY_CONSUMPTION: {
-            asset_names[2]: {LABEL: asset_names[2], INFLOW_DIRECTION: in_bus_names[2], ENERGY_VECTOR: energy_vector}
+            asset_names[2]: {
+                LABEL: asset_names[2],
+                INFLOW_DIRECTION: in_bus_names[2],
+                ENERGY_VECTOR: energy_vector,
+            }
         },
         ENERGY_PRODUCTION: {
-            asset_names[3]: {LABEL: asset_names[3], OUTFLOW_DIRECTION: out_bus_names[2], ENERGY_VECTOR: energy_vector}
+            asset_names[3]: {
+                LABEL: asset_names[3],
+                OUTFLOW_DIRECTION: out_bus_names[2],
+                ENERGY_VECTOR: energy_vector,
+            }
         },
         ENERGY_CONVERSION: {
             asset_names[4]: {
                 LABEL: asset_names[4],
                 OUTFLOW_DIRECTION: out_bus_names[3],
                 INFLOW_DIRECTION: in_bus_names[3],
-                ENERGY_VECTOR: energy_vector
+                ENERGY_VECTOR: energy_vector,
             },
             asset_names[5]: {
                 LABEL: asset_names[5],
                 OUTFLOW_DIRECTION: [out_bus_names[4], out_bus_names[5]],
                 INFLOW_DIRECTION: [in_bus_names[4], in_bus_names[5]],
-                ENERGY_VECTOR: energy_vector
+                ENERGY_VECTOR: energy_vector,
             },
         },
     }
@@ -268,7 +276,7 @@ def test_add_busses_of_asset_depending_on_in_out_direction_single():
                 LABEL: asset_label,
                 OUTFLOW_DIRECTION: bus_names[0],
                 INFLOW_DIRECTION: bus_names[1],
-                ENERGY_VECTOR: energy_vector
+                ENERGY_VECTOR: energy_vector,
             }
         },
     }
@@ -290,7 +298,11 @@ def test_update_bus():
     dict_test = {
         ENERGY_BUSSES: {},
         ENERGY_CONVERSION: {
-            asset_name: {LABEL: asset_label, OUTFLOW_DIRECTION: bus_name, ENERGY_VECTOR: energy_vector}
+            asset_name: {
+                LABEL: asset_label,
+                OUTFLOW_DIRECTION: bus_name,
+                ENERGY_VECTOR: energy_vector,
+            }
         },
     }
     bus_label = C0.bus_suffix(bus_name)
@@ -299,7 +311,7 @@ def test_update_bus():
         bus=bus_name,
         asset_key=asset_name,
         asset_label=asset_label,
-        energy_vector=energy_vector
+        energy_vector=energy_vector,
     )
     assert bus_label in dict_test[ENERGY_BUSSES]
     assert asset_name in dict_test[ENERGY_BUSSES][bus_label][ASSET_DICT]

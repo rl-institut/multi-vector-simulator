@@ -66,26 +66,9 @@ class TestTemporaryJsonFileDisposal:
             JSON_CSV_PATH, path_output_folder=self.test_out_path, move_copy=True
         )
 
-        assert (
-            os.path.exists(
-                os.path.join(
-                    CSV_PATH,
-                    CSV_ELEMENTS,
-                    CSV_FNAME,
-                )
-            )
-            is False
-        )
+        assert os.path.exists(os.path.join(CSV_PATH, CSV_ELEMENTS, CSV_FNAME,)) is False
 
-        assert (
-            os.path.exists(
-                os.path.join(
-                    CSV_PATH,
-                    CSV_FNAME,
-                )
-            )
-            is False
-        )
+        assert os.path.exists(os.path.join(CSV_PATH, CSV_FNAME,)) is False
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",

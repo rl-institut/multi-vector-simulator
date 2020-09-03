@@ -91,8 +91,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         bus_data.update(
             {
                 dict_values[ENERGY_STORAGE][storage][LABEL]: solph.views.node(
-                    results_main,
-                    dict_values[ENERGY_STORAGE][storage][LABEL],
+                    results_main, dict_values[ENERGY_STORAGE][storage][LABEL],
                 )
             }
         )
@@ -146,9 +145,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:
             E1.get_results(
-                dict_values[SIMULATION_SETTINGS],
-                bus_data,
-                dict_values[group][asset],
+                dict_values[SIMULATION_SETTINGS], bus_data, dict_values[group][asset],
             )
             E2.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
             E2.lcoe_assets(dict_values[group][asset], group)

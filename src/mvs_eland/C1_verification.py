@@ -337,7 +337,9 @@ def check_for_sufficient_assets_on_busses(dict_values):
     """
     for bus in dict_values[ENERGY_BUSSES]:
         if len(dict_values[ENERGY_BUSSES][bus][ASSET_DICT]) < 3:
-            asset_string = ", ".join(map(str, dict_values[ENERGY_BUSSES][bus][ASSET_DICT].keys()))
+            asset_string = ", ".join(
+                map(str, dict_values[ENERGY_BUSSES][bus][ASSET_DICT].keys())
+            )
             logging.error(
                 f"Energy system bus {bus} has too few assets connected to it. "
                 f"The minimal number of assets that need to be connected "

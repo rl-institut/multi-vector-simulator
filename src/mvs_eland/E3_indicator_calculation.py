@@ -138,7 +138,10 @@ def total_demand_and_excess_each_sector(dict_values):
         # Do not process feedin sinks neither for excess nor for demands
         if consumption_asset not in dso_feedin_sinks:
             # get name of energy carrier
-            print(dict_values[ENERGY_CONSUMPTION][consumption_asset][LABEL], dict_values[ENERGY_CONSUMPTION][consumption_asset].keys())
+            print(
+                dict_values[ENERGY_CONSUMPTION][consumption_asset][LABEL],
+                dict_values[ENERGY_CONSUMPTION][consumption_asset].keys(),
+            )
             energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_asset][
                 ENERGY_VECTOR
             ]
