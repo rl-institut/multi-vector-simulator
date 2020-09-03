@@ -23,6 +23,8 @@ from mvs_eland.utils.constants_json_strings import (
     STORE_OEMOF_RESULTS,
     OUTPUT_LP_FILE,
     SIMULATION_RESULTS,
+    ASSET_DICT,
+    ENERGY_VECTOR,
 )
 from _constants import (
     TEST_REPO_PATH,
@@ -52,7 +54,13 @@ def dict_values_minimal():
 
     return {
         SIMULATION_SETTINGS: {TIME_INDEX: pandas_DatetimeIndex},
-        ENERGY_BUSSES: "bus",
+        ENERGY_BUSSES: {
+            "bus": {
+                LABEL: "bus",
+                ENERGY_VECTOR: "Electricity",
+                ASSET_DICT: {"asset": "asset_label"},
+            }
+        },
     }
 
 
