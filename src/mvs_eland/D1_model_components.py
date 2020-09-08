@@ -177,7 +177,7 @@ def sink(model, dict_asset, **kwargs):
     if TIMESERIES in dict_asset:
         sink_non_dispatchable(model, dict_asset, **kwargs)
     else:
-        sink_dispatchable(model, dict_asset, **kwargs)
+        sink_dispatchable_optimize(model, dict_asset, **kwargs)
     return
 
 
@@ -778,9 +778,12 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
     return
 
 
-def sink_dispatchable(model, dict_asset, **kwargs):
+def sink_dispatchable_optimize(model, dict_asset, **kwargs):
     r"""
     Defines a dispatchable sink.
+
+    The dispatchable sink is capacity-optimized, without any costs connected to the capacity of the asset.
+    Applications of this asset type are: Feed-in sink, excess sink.
 
     See :py:func:`~.sink` for more information, including parameters.
 
@@ -797,6 +800,7 @@ def sink_dispatchable(model, dict_asset, **kwargs):
             inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
                 label=dict_asset[LABEL],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE][index],
+                investment=solph.Investment()
             )
             index += 1
     else:
@@ -804,6 +808,7 @@ def sink_dispatchable(model, dict_asset, **kwargs):
             kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME]]: solph.Flow(
                 label=dict_asset[LABEL],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+                investment=solph.Investment()
             )
         }
 
