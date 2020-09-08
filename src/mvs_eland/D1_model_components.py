@@ -700,7 +700,10 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                 / dict_asset[TIMESERIES_PEAK][VALUE],
             )
         }
-        source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
+        source_dispatchable = solph.Source(
+            label=dict_asset[LABEL],
+            outputs=outputs,
+        )
     else:
         if TIMESERIES in dict_asset:
             logging.info(
@@ -722,7 +725,10 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
         }
-        source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
+        source_dispatchable = solph.Source(
+            label=dict_asset[LABEL],
+            outputs=outputs,
+        )
     model.add(source_dispatchable)
     kwargs[OEMOF_SOURCE].update({dict_asset[LABEL]: source_dispatchable})
     logging.debug(
@@ -751,7 +757,10 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
         }
-        source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
+        source_dispatchable = solph.Source(
+            label=dict_asset[LABEL],
+            outputs=outputs,
+        )
     else:
         if TIMESERIES in dict_asset:
             logging.info(
@@ -769,7 +778,10 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
         }
-        source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
+        source_dispatchable = solph.Source(
+            label=dict_asset[LABEL],
+            outputs=outputs,
+        )
     model.add(source_dispatchable)
     kwargs[OEMOF_SOURCE].update({dict_asset[LABEL]: source_dispatchable})
     logging.debug(
@@ -813,7 +825,10 @@ def sink_dispatchable_optimize(model, dict_asset, **kwargs):
         }
 
     # create and add excess electricity sink to micro_grid_system - variable
-    sink_dispatchable = solph.Sink(label=dict_asset[LABEL], inputs=inputs,)
+    sink_dispatchable = solph.Sink(
+        label=dict_asset[LABEL],
+        inputs=inputs,
+    )
     model.add(sink_dispatchable)
     kwargs[OEMOF_SINK].update({dict_asset[LABEL]: sink_dispatchable})
     logging.debug(
@@ -850,7 +865,10 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
         }
 
     # create and add demand sink to micro_grid_system - fixed
-    sink_demand = solph.Sink(label=dict_asset[LABEL], inputs=inputs,)
+    sink_demand = solph.Sink(
+        label=dict_asset[LABEL],
+        inputs=inputs,
+    )
     model.add(sink_demand)
     kwargs[OEMOF_SINK].update({dict_asset[LABEL]: sink_demand})
     logging.debug(
