@@ -145,7 +145,7 @@ def total_demand_and_excess_each_sector(dict_values):
             # (might be unnecessary, check where dict_values[PROJECT_DATA][SECTORS] are defined)
             if energy_carrier not in total_demand_dict:
                 logging.error(
-                    f'Energy vector "{energy_carrier}" not in known energy sectors. Please double check.'
+                    f'Energy vector "{energy_carrier}" of asset {consumption_asset} not in known energy sectors. Please double check.'
                 )
                 total_demand_dict.update({energy_carrier: {}})
 

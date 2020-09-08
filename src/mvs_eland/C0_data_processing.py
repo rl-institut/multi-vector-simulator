@@ -315,17 +315,18 @@ def define_excess_sinks(dict_values):
     auto_sinks = []
     for bus_name in dict_values[ENERGY_BUSSES]:
         excess_sink_name = bus_name + EXCESS
+        energy_vector = dict_values[ENERGY_BUSSES][bus_name][ENERGY_VECTOR]
         define_sink(
             dict_values=dict_values,
             asset_name=excess_sink_name,
             price={VALUE: 0, UNIT: CURR + "/" + UNIT},
             input_bus_name=bus_name,
-            energy_vector=dict_values[ENERGY_BUSSES][bus_name][ENERGY_VECTOR],
+            energy_vector=energy_vector,
         )
         dict_values[ENERGY_BUSSES][bus_name].update({EXCESS: excess_sink_name})
         auto_sinks.append(excess_sink_name)
         logging.debug(
-            "Created excess sink for energy bus %s", bus_name,
+            f"Created excess sink for energy bus {bus_name}, connected to {ENERGY_VECTOR} {energy_vector}."
         )
     return auto_sinks
 
@@ -623,16 +624,14 @@ def add_busses_of_asset_depending_on_in_out_direction(
     Updated dict_values with potentially additional busses of the energy system.
     Updated dict_asset with the input_bus_name
     """
-
     for direction in [INFLOW_DIRECTION, OUTFLOW_DIRECTION]:
         # This is the parameter that will be added to dict_asset as the bus_name_key
         if direction == INFLOW_DIRECTION:
             bus_name_key = INPUT_BUS_NAME
-            energy_vector = None
         else:
             bus_name_key = OUTPUT_BUS_NAME
-            energy_vector = dict_asset[ENERGY_VECTOR]
 
+        energy_vector = dict_asset[ENERGY_VECTOR]
         # Check if the asset has an INFLOW_DIRECTION or OUTFLOW_DIRECTION
         if direction in dict_asset:
             bus = dict_asset[direction]
@@ -1255,6 +1254,9 @@ def define_sink(
         ENERGY_VECTOR: energy_vector,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
     }
+
+    if energy_vector is None:
+        raise ValueError(f"The {ENERGY_VECTOR} of the automatically defined sink {asset_name+AUTO_SINK} is invalid: {energy_vector}.")
 
     # check if multiple busses are provided
     # for each bus, read time series for dispatch_price if a file name has been provided in feedin tariff

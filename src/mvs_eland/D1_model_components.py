@@ -302,7 +302,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
             )
     else:
         raise ValueError(
-            f"Input error! '{OPTIMIZE_CAP}' of asset {dict_asset['label']}\n should be True/False but is {dict_asset['optimizeCap']['value']}."
+            f"Input error! '{OPTIMIZE_CAP}' of asset {dict_asset[LABEL]}\n should be True/False but is {dict_asset[OPTIMIZE_CAP][VALUE]}."
         )
     return
 

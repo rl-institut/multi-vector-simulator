@@ -699,7 +699,7 @@ def test_check_optimize_cap_raise_error(get_json, get_model, get_busses):
     test_asset = dict_values[ENERGY_CONVERSION]["test_asset_for_error_raising"]
     test_asset[OPTIMIZE_CAP][VALUE] = "wrong value"
 
-    msg = f"Input error! 'optimize_cap' of asset {test_asset['label']}"
+    msg = f"Input error! '{OPTIMIZE_CAP}' of asset {test_asset[LABEL]}\n should be True/False but is {test_asset[OPTIMIZE_CAP][VALUE]}."
     with pytest.raises(ValueError, match=msg):
         D1.check_optimize_cap(
             model=model,
