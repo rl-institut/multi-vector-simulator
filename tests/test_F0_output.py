@@ -151,7 +151,6 @@ class TestFileCreation:
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             OPTIMIZED_FLOWS: {"a_bus": BUS, "b_bus": BUS},
         }
-        print(DICT_PLOTS)
         dict_timeseries_test_two_busses.update(copy.deepcopy(DICT_PLOTS))
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
         assert (

@@ -153,7 +153,7 @@ INFLOW_DIRECTION = "inflow_direction"
 OUTPUT_BUS_NAME = "output_bus_name"
 INPUT_BUS_NAME = "input_bus_name"
 ENERGY_VECTOR = "energyVector"
-EXCESS = " excess"
+EXCESS = "_excess"
 BUS_SUFFIX = " bus"
 
 # DSO

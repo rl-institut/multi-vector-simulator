@@ -1347,7 +1347,7 @@ def define_sink(
         dict_values=dict_values,
         asset_key=asset_name,
         asset_label=sink[LABEL],
-        energy_vector=None,
+        energy_vector=energy_vector,
     )
 
     return

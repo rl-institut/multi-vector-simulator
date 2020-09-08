@@ -138,10 +138,6 @@ def total_demand_and_excess_each_sector(dict_values):
         # Do not process feedin sinks neither for excess nor for demands
         if consumption_asset not in dso_feedin_sinks:
             # get name of energy carrier
-            print(
-                dict_values[ENERGY_CONSUMPTION][consumption_asset][LABEL],
-                dict_values[ENERGY_CONSUMPTION][consumption_asset].keys(),
-            )
             energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_asset][
                 ENERGY_VECTOR
             ]
@@ -149,7 +145,7 @@ def total_demand_and_excess_each_sector(dict_values):
             # (might be unnecessary, check where dict_values[PROJECT_DATA][SECTORS] are defined)
             if energy_carrier not in total_demand_dict:
                 logging.error(
-                    f"Energy vector {energy_carrier} not in known energy sectors. Please double check."
+                    f'Energy vector "{energy_carrier}" not in known energy sectors. Please double check.'
                 )
                 total_demand_dict.update({energy_carrier: {}})
 
@@ -184,7 +180,7 @@ def total_demand_and_excess_each_sector(dict_values):
 
     # Append total excess in electricity equivalent to kpi
     calculate_electricity_equivalent_for_a_set_of_aggregated_values(
-        dict_values, total_demand_dict, kpi_name=TOTAL_EXCESS
+        dict_values, total_excess_dict, kpi_name=TOTAL_EXCESS
     )
 
     return
