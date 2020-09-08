@@ -147,3 +147,14 @@ def teardown_module():
     for d in (DICT_BEFORE, DICT_AFTER):
         if os.path.exists(d):
             os.remove(d)
+
+
+"""
+from oemof import solph
+energysystem = solph.EnergySystem()
+energysystem.restore(dpath=None, filename=None)
+
+# define an alias for shorter calls below (optional)
+results = energysystem.results["main"]
+storage = energysystem.groups["storage"]
+"""
