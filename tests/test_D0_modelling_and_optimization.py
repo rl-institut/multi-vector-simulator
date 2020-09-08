@@ -7,6 +7,9 @@ import pytest
 
 import mvs_eland.D0_modelling_and_optimization as D0
 from mvs_eland.B0_data_input_json import load_json
+
+from mvs_eland.utils.constants import JSON_FNAME
+
 from mvs_eland.utils.constants_json_strings import (
     ENERGY_BUSSES,
     ENERGY_CONSUMPTION,
@@ -39,7 +42,7 @@ TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 @pytest.fixture
 def dict_values():
     answer = load_json(
-        os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D0.json")
+        os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_for_D0", JSON_FNAME)
     )
     answer[SIMULATION_SETTINGS].update({PATH_OUTPUT_FOLDER: TEST_OUTPUT_PATH})
 

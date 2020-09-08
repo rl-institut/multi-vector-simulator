@@ -8,6 +8,9 @@ from pandas.util.testing import assert_series_equal
 
 # internal imports
 import mvs_eland.D1_model_components as D1
+
+from mvs_eland.utils.constants import JSON_FNAME
+
 from mvs_eland.utils.constants_json_strings import (
     UNIT,
     VALUE,
@@ -33,7 +36,7 @@ from mvs_eland.utils.constants_json_strings import (
 )
 from _constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
-D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "test_data_for_D1.json",)
+D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_for_D1", JSON_FNAME)
 
 # fixtures that help creating variables and data needed for the tests
 @pytest.fixture()
