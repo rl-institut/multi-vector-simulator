@@ -166,12 +166,10 @@ def get_costs(dict_asset, economic_data):
     )
 
     # Operation and management expenditures over the project lifetime
-    operation_and_management_expenditures = (
-        calculate_operation_and_management_expenditures(
-            specific_om_cost=dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE],
-            installed_capacity=dict_asset[INSTALLED_CAP][VALUE],
-            optimized_add_capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
-        )
+    operation_and_management_expenditures = calculate_operation_and_management_expenditures(
+        specific_om_cost=dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE],
+        installed_capacity=dict_asset[INSTALLED_CAP][VALUE],
+        optimized_add_capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
     )
     dict_asset.update(
         {

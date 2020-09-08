@@ -165,13 +165,7 @@ REQUIRED_CSV_PARAMETERS = {
         SCENARIO_ID,
         SCENARIO_NAME,
     ],
-    ECONOMIC_DATA: [
-        CURR,
-        DISCOUNTFACTOR,
-        LABEL,
-        PROJECT_DURATION,
-        TAX,
-    ],
+    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX,],
 }
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder

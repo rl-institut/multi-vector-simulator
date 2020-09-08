@@ -161,7 +161,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
     if OPTIMIZE_CAP in dict_asset:
         if dict_asset[OPTIMIZE_CAP][VALUE] is True:
-            power_charge = storage_bus['scalars'][
+            power_charge = storage_bus["scalars"][
                 ((dict_asset[INPUT_BUS_NAME], dict_asset[LABEL]), "invest")
             ]
             dict_asset[INPUT_POWER].update(
@@ -178,7 +178,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_charge,
             )
 
-            power_discharge = storage_bus['scalars'][
+            power_discharge = storage_bus["scalars"][
                 ((dict_asset[LABEL], dict_asset[OUTPUT_BUS_NAME]), "invest")
             ]
             dict_asset[OUTPUT_POWER].update(
@@ -195,7 +195,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_discharge,
             )
 
-            capacity = storage_bus['scalars'][
+            capacity = storage_bus["scalars"][
                 ((dict_asset[LABEL], TYPE_NONE), "invest")
             ]
             dict_asset[STORAGE_CAPACITY].update(
@@ -438,8 +438,11 @@ def get_optimal_cap(bus, dict_asset, flow_tuple):
 
     """
     if OPTIMIZE_CAP in dict_asset:
-        if dict_asset[OPTIMIZE_CAP][VALUE] is True and (flow_tuple, "invest") in bus['scalars']:
-            optimal_capacity = bus['scalars'][(flow_tuple, "invest")]
+        if (
+            dict_asset[OPTIMIZE_CAP][VALUE] is True
+            and (flow_tuple, "invest") in bus["scalars"]
+        ):
+            optimal_capacity = bus["scalars"][(flow_tuple, "invest")]
 
             if TIMESERIES_PEAK in dict_asset:
                 if dict_asset[TIMESERIES_PEAK][VALUE] > 0:
