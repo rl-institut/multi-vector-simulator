@@ -22,13 +22,22 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Evaluation of excess energy for each of the energy carriers and for the whole system, KPIs: (#555)
+
 ### Changed
--
+- `C1.total_demand_each_sector()` to `C1.total_demand_and_excess_each_sector()`, now also evaluating the excess energy flows (#555)
+- `energyBusses` now is defined by: `LABEL, ASSET_LIST, ENERGY_VECTOR`, all functions using `energyBusses` have been changed to this nomenclature (#555)
+- Energy excess sinks now also have parameter `ENERGY_VECTOR` (#555)
+- `C0.define_sink` now always defines a sink that is capacity-optimized (#555)
+- `D1.sink_dispatchable()`, renamed to `D1.sink_dispatchable_optimize()` now adds a capacity-optimized, dispatchable sink. (#555) 
+- Simulation data `tests/inputs`: Oemof-solph results are not stored (#555)
+
 ### Removed
 -
+
 ### Fixed
 - `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)
+- Feed-in sinks of the DSOs now are capacity-optimized and can actually be used (#555)
 
 ## [0.4.0] - 2020-09-01
 
