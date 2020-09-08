@@ -260,8 +260,7 @@ class model_building:
         if dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE][VALUE] is True:
             logging.debug("Saving to lp-file.")
             local_energy_system.write(
-                path_lp_file,
-                io_options={"symbolic_solver_labels": True},
+                path_lp_file, io_options={"symbolic_solver_labels": True},
             )
         return
 

@@ -36,7 +36,9 @@ from mvs_eland.utils.constants_json_strings import (
 )
 from _constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
-D1_JSON = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_for_D1", JSON_FNAME)
+D1_JSON = os.path.join(
+    TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_for_D1", JSON_FNAME
+)
 
 # fixtures that help creating variables and data needed for the tests
 @pytest.fixture()

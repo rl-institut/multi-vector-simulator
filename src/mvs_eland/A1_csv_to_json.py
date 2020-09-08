@@ -106,8 +106,7 @@ class WrongStorageColumn(ValueError):
 
 
 def create_input_json(
-    input_directory,
-    pass_back=True,
+    input_directory, pass_back=True,
 ):
     """Convert csv files to json file as input for the simulation.
 
