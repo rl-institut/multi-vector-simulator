@@ -1329,22 +1329,13 @@ def define_sink(
             value = price[VALUE]
         sink.update({DISPATCH_PRICE: {VALUE: value, UNIT: price[UNIT]}})
 
-    if SPECIFIC_COSTS in kwargs:
-        sink.update(
-            {
-                SPECIFIC_COSTS: kwargs[SPECIFIC_COSTS],
-                OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
-            }
-        )
-    if SPECIFIC_COSTS_OM in kwargs:
-        sink.update(
-            {
-                SPECIFIC_COSTS_OM: kwargs[SPECIFIC_COSTS_OM],
-                OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
-            }
-        )
-    else:
-        sink.update({OPTIMIZE_CAP: {VALUE: False, UNIT: TYPE_BOOL}})
+    for item in [SPECIFIC_COSTS, SPECIFIC_COSTS_OM]:
+        if item in kwargs:
+            sink.update(
+                {
+                    item: kwargs[item],
+                }
+            )
 
     # update dictionary
     dict_values[ENERGY_CONSUMPTION].update({asset_name: sink})
