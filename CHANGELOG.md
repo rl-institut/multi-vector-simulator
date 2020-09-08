@@ -32,6 +32,7 @@ Here is a template for new release sections
 - `D1.sink_dispatchable()`, renamed to `D1.sink_dispatchable_optimize()` now adds a capacity-optimized, dispatchable sink. (#555) 
 - Simulation data `tests/inputs`: Oemof-solph results are not stored (#555)
 - Changed logging level of some messages from `logging.info` to `logging.debug` (#555)
+- Move and rename json input files for D0 and D1 tests (`test_data_for_D0.json` to `tests/test_data/inputs_for_D0/mvs_config.json`, `test_data_for_D1.json` to `tests/test_data/inputs_for_D1/mvs_config.json`), add required parameters (#555) 
 
 ### Removed
 -
