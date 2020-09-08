@@ -31,6 +31,7 @@ Here is a template for new release sections
 - `C0.define_sink` now always defines a sink that is capacity-optimized (#555)
 - `D1.sink_dispatchable()`, renamed to `D1.sink_dispatchable_optimize()` now adds a capacity-optimized, dispatchable sink. (#555) 
 - Simulation data `tests/inputs`: Oemof-solph results are not stored (#555)
+- Changed logging level of some messages from `logging.info` to `logging.debug` (#555)
 
 ### Removed
 -

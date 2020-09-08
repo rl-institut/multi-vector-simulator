@@ -461,7 +461,7 @@ def create_json_from_csv(
                 )
                 single_dict[column].update(storage_dict)
 
-    logging.info(
+    logging.debug(
         "From file %s following assets are added to the energy system: %s",
         filename,
         asset_name_string[:-2],
