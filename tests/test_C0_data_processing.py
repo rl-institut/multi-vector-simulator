@@ -63,10 +63,10 @@ def test_retrieve_datetimeindex_for_simulation():
     }
     C0.retrieve_date_time_info(simulation_settings)
     for k in (START_DATE, END_DATE, TIME_INDEX):
-        assert k in simulation_settings.keys()
-    assert simulation_settings[START_DATE] == pd.Timestamp("2020-01-01 00:00:00")
-    assert simulation_settings[END_DATE] == pd.Timestamp("2020-01-01 23:00:00")
-    assert simulation_settings[PERIODS] == 24
+        assert k in simulation_settings.keys(), f"Function does not add {k} to the simulation settings."
+    assert simulation_settings[START_DATE] == pd.Timestamp("2020-01-01 00:00:00"), f"Function incorrectly parses the timestamp."
+    assert simulation_settings[END_DATE] == pd.Timestamp("2020-01-01 23:00:00"), f"Function incorrectly parses the timestamp."
+    assert simulation_settings[PERIODS] == 24, f"Function incorrectly identifies the number of evaluated periods."
 
 
 def test_add_economic_parameters():
@@ -77,7 +77,7 @@ def test_add_economic_parameters():
     C0.add_economic_parameters(economic_parameters)
     # the actual value of the annuity factor should have been checked in C2
     for k in (ANNUITY_FACTOR, CRF):
-        assert k in economic_parameters.keys()
+        assert k in economic_parameters.keys(), f"Function does not add {k} to the economic parameters."
 
 
 settings = {EVALUATED_PERIOD: {VALUE: 365}}
@@ -113,7 +113,7 @@ def test_evaluate_lifetime_costs_adds_all_parameters():
         SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
         SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
     ):
-        assert k in dict_asset.keys()
+        assert k in dict_asset.keys(), f"Function does not add {k} to the asset dictionary."
 
 
 start_date = pd.Timestamp("2018-01-01 00:00:00")
@@ -132,15 +132,15 @@ def test_define_availability_of_peak_demand_pricing_assets_yearly():
     dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
         dict_test_avilability, 1, 12
     )
-    assert len(dict_availability_timeseries) == 1
-    assert dict_availability_timeseries[1].values.sum() == 8760
+    assert len(dict_availability_timeseries) == 1, f"Function does not create a single availability_timeseries for the whole year."
+    assert dict_availability_timeseries[1].values.sum() == 8760, f"Availablity of a single dict_availability_timeseries is not ensured for every hour of the year."
 
 
 def test_define_availability_of_peak_demand_pricing_assets_monthly():
     dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
         dict_test_avilability, 12, 1
     )
-    assert len(dict_availability_timeseries) == 12
+    assert len(dict_availability_timeseries) == 12, f"Function does not create a 12 individual availability_timeseries for the whole year."
     assert dict_availability_timeseries[1].values.sum() == 31 * 24
     total = 0
     for key in dict_availability_timeseries:
