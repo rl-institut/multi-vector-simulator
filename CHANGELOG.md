@@ -22,7 +22,7 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
-- Evaluation of excess energy for each of the energy carriers and for the whole system, KPIs: (#555)
+- Evaluation of excess energy for each of the energy carriers and for the whole system. The excess per sector and their energy equivalent may currently be faulty (comp. issue #559) (#555)
 - Debug messages for `C0` tests (#555)
 
 ### Changed
