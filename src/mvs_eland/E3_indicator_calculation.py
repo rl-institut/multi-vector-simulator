@@ -238,7 +238,9 @@ def calculate_electricity_equivalent_for_a_set_of_aggregated_values(
         {kpi_name + SUFFIX_ELECTRICITY_EQUIVALENT: total_electricity_equivalent}
     )
 
-    logging.info(f"The {kpi_name+SUFFIX_ELECTRICITY_EQUIVALENT} of the LES is: {total_electricity_equivalent} kWheleq.")
+    logging.info(
+        f"The {kpi_name+SUFFIX_ELECTRICITY_EQUIVALENT} of the LES is: {total_electricity_equivalent} kWheleq."
+    )
 
     return total_electricity_equivalent
 
