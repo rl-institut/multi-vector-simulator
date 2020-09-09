@@ -296,7 +296,7 @@ def get_results(settings, bus_data, dict_asset, asset_group):
 
     # Determine flows of the asset, also if flows are connected to multiple busses
     if not isinstance(bus_name, list):
-        flow_tuple = get_touple_for_oemof_results(
+        flow_tuple = get_tuple_for_oemof_results(
             dict_asset[LABEL], asset_group, bus_name
         )
 
@@ -313,7 +313,7 @@ def get_results(settings, bus_data, dict_asset, asset_group):
     else:
         # Asset is connected to multiple busses, evaluate all
         for bus_instance in bus_name:
-            flow_tuple = get_touple_for_oemof_results(
+            flow_tuple = get_tuple_for_oemof_results(
                 dict_asset[LABEL], asset_group, bus_instance
             )
             # Get flow information
@@ -365,7 +365,7 @@ def get_parameter_to_be_evaluated_from_oemof_results(asset_group, asset_label):
     return parameter_to_be_evaluated
 
 
-def get_touple_for_oemof_results(asset_label, asset_group, bus):
+def get_tuple_for_oemof_results(asset_label, asset_group, bus):
     r"""
     Determines the tuple with which to access the oemof-solph results
 
@@ -393,7 +393,7 @@ def get_touple_for_oemof_results(asset_label, asset_group, bus):
     Notes
     -----
     Tested with
-    - test_get_touple_for_oemof_results()
+    - test_get_tuple_for_oemof_results()
     """
     # Determine which flux is evaluated for the flow
     if asset_group in asset_groups_defined_by_influx:

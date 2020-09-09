@@ -72,14 +72,14 @@ def test_get_parameter_to_be_evaluated_from_oemof_results():
         assert param == OUTPUT_BUS_NAME
 
 
-def test_get_touple_for_oemof_results():
+def test_get_tuple_for_oemof_results():
     asset_label = "a_label"
     bus = "a_bus"
     for asset_group in E1.asset_groups_defined_by_influx:
-        flux_tuple = E1.get_touple_for_oemof_results(asset_label, asset_group, bus)
+        flux_tuple = E1.get_tuple_for_oemof_results(asset_label, asset_group, bus)
         assert flux_tuple == (bus, asset_label)
     for asset_group in E1.asset_groups_defined_by_outflux:
-        flux_tuple = E1.get_touple_for_oemof_results(asset_label, asset_group, bus)
+        flux_tuple = E1.get_tuple_for_oemof_results(asset_label, asset_group, bus)
         assert flux_tuple == (asset_label, bus)
 
 
