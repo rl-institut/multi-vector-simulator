@@ -65,9 +65,9 @@ from mvs_eland.utils.constants_json_strings import (
 
 # Determines which assets are defined by...
 # a influx from a bus
-asset_groups_defined_by_influx = [ENERGY_CONSUMPTION]
+ASSET_GROUPS_DEFINED_BY_INFLUX = [ENERGY_CONSUMPTION]
 # b outflux into a bus
-asset_groups_defined_by_outflux = [ENERGY_CONVERSION, ENERGY_PRODUCTION]
+ASSET_GROUPS_DEFINED_BY_OUTFLUX = [ENERGY_CONVERSION, ENERGY_PRODUCTION]
 
 
 def get_timeseries_per_bus(dict_values, bus_data):
@@ -351,10 +351,10 @@ def get_parameter_to_be_evaluated_from_oemof_results(asset_group, asset_label):
     Tested by:
     - test_get_parameter_to_be_evaluated_from_oemof_results()
     """
-    if asset_group in asset_groups_defined_by_influx:
+    if asset_group in ASSET_GROUPS_DEFINED_BY_INFLUX:
         parameter_to_be_evaluated = INPUT_BUS_NAME
 
-    elif asset_group in asset_groups_defined_by_outflux:
+    elif asset_group in ASSET_GROUPS_DEFINED_BY_OUTFLUX:
         parameter_to_be_evaluated = OUTPUT_BUS_NAME
 
     else:
@@ -396,9 +396,9 @@ def get_tuple_for_oemof_results(asset_label, asset_group, bus):
     - test_get_tuple_for_oemof_results()
     """
     # Determine which flux is evaluated for the flow
-    if asset_group in asset_groups_defined_by_influx:
+    if asset_group in ASSET_GROUPS_DEFINED_BY_INFLUX:
         flow_tuple = (bus, asset_label)
-    elif asset_group in asset_groups_defined_by_outflux:
+    elif asset_group in ASSET_GROUPS_DEFINED_BY_OUTFLUX:
         flow_tuple = (asset_label, bus)
     else:
         logging.warning(
