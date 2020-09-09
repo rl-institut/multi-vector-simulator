@@ -26,12 +26,12 @@ Here is a template for new release sections
 
 ### Changed
 - `C1.total_demand_each_sector()` to `C1.total_demand_and_excess_each_sector()`, now also evaluating the excess energy flows (#555)
-- `energyBusses` now is defined by: `LABEL, ASSET_LIST, ENERGY_VECTOR`, all functions using `energyBusses` have been changed to this nomenclature (#555)
+- `energyBusses` now is defined by: `LABEL, ASSET_LIST, ENERGY_VECTOR`, all functions using `energyBusses` now follow this nomenclature (#555)
 - Energy excess sinks now also have parameter `ENERGY_VECTOR` (#555)
 - `C0.define_sink` now always defines a sink that is capacity-optimized (#555)
 - `D1.sink_dispatchable()`, renamed to `D1.sink_dispatchable_optimize()` now adds a capacity-optimized, dispatchable sink. (#555) 
 - Simulation data `tests/inputs`: Oemof-solph results are not stored (#555)
-- Changed logging level of some messages from `logging.info` to `logging.debug` (#555)
+- Change logging level of some messages from `logging.info` to `logging.debug` (#555)
 - Move and rename json input files for D0 and D1 tests (`test_data_for_D0.json` to `tests/test_data/inputs_for_D0/mvs_config.json`, `test_data_for_D1.json` to `tests/test_data/inputs_for_D1/mvs_config.json`), add required parameters (#555) 
 - Change requirements/test.txt: `black==19.10b0`, as otherwise there are incompatabilities (#555)
 

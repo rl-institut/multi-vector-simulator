@@ -273,7 +273,7 @@ def get_results(settings, bus_data, dict_asset, asset_group):
         Contains information about the asset.
 
     asset_group: str
-        Asset group the evaluated asset is part of
+       Asset group to which the evaluated asset belongs
 
     Returns
     -------
@@ -288,7 +288,7 @@ def get_results(settings, bus_data, dict_asset, asset_group):
     # Check if the parameter/bus is defined for dict_asset
     if parameter_to_be_evaluated not in dict_asset:
         logging.warning(
-            f"The asset {dict_asset[LCOE_ASSET]} of group {asset_group} should have parameter {parameter_to_be_evaluated}, but it doesn`t."
+            f"The asset {dict_asset[LCOE_ASSET]} of group {asset_group} should contain parameter {parameter_to_be_evaluated}, but it does not."
         )
 
     # Determine bus that needs to be evaluated
@@ -331,12 +331,12 @@ def get_results(settings, bus_data, dict_asset, asset_group):
 
 def get_parameter_to_be_evaluated_from_oemof_results(asset_group, asset_label):
     r"""
-    Determines the parameter that needs to be evaluated to determine an asset`s optimized flow and capacity.
+    Determine the parameter that needs to be evaluated to determine an asset`s optimized flow and capacity.
 
     Parameters
     ----------
     asset_group: str
-        Group that asset belongs to
+        Asset group to which the evaluated asset belongs
 
     asset_label: str
         Label of the asset, needed for log message
@@ -424,7 +424,7 @@ def get_optimal_cap(bus, dict_asset, flow_tuple):
         Contains information about the asset.
 
     flow_tuple : tuple
-        Entry of the oemof-solph outputs to be evaluated
+        Key of the oemof-solph outputs dict mapping the value to be evaluated
 
     possible todos
     --------------

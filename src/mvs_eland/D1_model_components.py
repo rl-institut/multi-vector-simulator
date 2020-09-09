@@ -780,7 +780,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
 
 def sink_dispatchable_optimize(model, dict_asset, **kwargs):
     r"""
-    Defines a dispatchable sink.
+    Define a dispatchable sink.
 
     The dispatchable sink is capacity-optimized, without any costs connected to the capacity of the asset.
     Applications of this asset type are: Feed-in sink, excess sink.
