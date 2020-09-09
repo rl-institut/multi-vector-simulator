@@ -140,23 +140,25 @@ def test_define_availability_of_peak_demand_pricing_assets_monthly():
     dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
         dict_test_avilability, 12, 1
     )
-    assert len(dict_availability_timeseries) == 12, f"Function does not create a 12 individual availability_timeseries for the whole year."
-    assert dict_availability_timeseries[1].values.sum() == 31 * 24
+    assert len(dict_availability_timeseries) == 12, f"Function does not create 12 individual availability_timeseries for the whole year."
+    assert dict_availability_timeseries[1].values.sum() == 31 * 24, f"Availability timeseries that is supposed to be 1 for January alone has an unexpected number of available hours."
     total = 0
     for key in dict_availability_timeseries:
         total += dict_availability_timeseries[key].values.sum()
-    assert total == 8760
+    assert total == 8760, f"Availablity of all 12 availability_timeseries does not insure availability every hour of the year."
+
 
 
 def test_define_availability_of_peak_demand_pricing_assets_quarterly():
     dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
         dict_test_avilability, 4, 3
     )
-    assert len(dict_availability_timeseries) == 4
+    assert len(dict_availability_timeseries) == 4, f"Function does not create 4 individual availability_timeseries for the whole year."
     total = 0
     for key in dict_availability_timeseries:
         total += dict_availability_timeseries[key].values.sum()
-    assert total == 8760
+    assert total == 8760, f"Availablity of all 12 availability_timeseries does not insure availability every hour of the year."
+
 
 
 def test_define_transformer_for_peak_demand_pricing():
@@ -197,11 +199,11 @@ def test_define_transformer_for_peak_demand_pricing():
         EFFICIENCY,
         ENERGY_VECTOR,
     ]:
-        assert k in dict_test[ENERGY_CONVERSION][transformer_name]
+        assert k in dict_test[ENERGY_CONVERSION][transformer_name], f"Function does not add {k} to the asset dictionary of the {transformer_name}."
     assert (
         dict_test[ENERGY_CONVERSION][transformer_name][SPECIFIC_COSTS_OM][VALUE]
         == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE]
-    )
+    ), f"The {SPECIFIC_COSTS_OM} of the newly defined {transformer_name} is not equal to the {PEAK_DEMAND_PRICING} of the energy provider it is defined from."
 
 
 def test_define_energyBusses():
@@ -257,11 +259,11 @@ def test_define_energyBusses():
     }
 
     C0.define_busses(dict_test)
-    assert ENERGY_BUSSES in dict_test.keys()
+    assert ENERGY_BUSSES in dict_test.keys(), f"Parameter {ENERGY_BUSSES} is not added to the dictionary."
     for k in in_bus_names:
-        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
+        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys(), f"Bus {k+BUS_SUFFIX} of the input busses is not added to the {ENERGY_BUSSES}."
     for k in out_bus_names:
-        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
+        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys(), f"Bus {k+BUS_SUFFIX} of the output busses is not added to the {ENERGY_BUSSES}."
 
 
 def test_add_busses_of_asset_depending_on_in_out_direction_single():
@@ -284,10 +286,11 @@ def test_add_busses_of_asset_depending_on_in_out_direction_single():
         dict_test, dict_test[ENERGY_CONVERSION][asset_name], asset_name
     )
     for k in bus_names:
-        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
+        assert k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys(), f"Bus {k+BUS_SUFFIX} is not added to the {ENERGY_BUSSES}."
+
     for bus in dict_test[ENERGY_BUSSES].keys():
-        assert asset_name in dict_test[ENERGY_BUSSES][bus][ASSET_DICT].keys()
-        assert dict_test[ENERGY_BUSSES][bus][ASSET_DICT][asset_name] == asset_label
+        assert asset_name in dict_test[ENERGY_BUSSES][bus][ASSET_DICT].keys(), f"Asset {asset_name} is not included in the asset list of {bus}."
+        assert dict_test[ENERGY_BUSSES][bus][ASSET_DICT][asset_name] == asset_label, f"The asset label of asset {asset_name} in the asset list of {bus} is of unexpected value."
 
 
 def test_update_bus():
@@ -313,22 +316,22 @@ def test_update_bus():
         asset_label=asset_label,
         energy_vector=energy_vector,
     )
-    assert bus_label in dict_test[ENERGY_BUSSES]
-    assert asset_name in dict_test[ENERGY_BUSSES][bus_label][ASSET_DICT]
-    assert dict_test[ENERGY_BUSSES][bus_label][ASSET_DICT][asset_name] == asset_label
-    assert dict_test[ENERGY_BUSSES][bus_label][ENERGY_VECTOR] == energy_vector
+    assert bus_label in dict_test[ENERGY_BUSSES], f"The {bus_label} is not added to the {ENERGY_BUSSES}."
+    assert asset_name in dict_test[ENERGY_BUSSES][bus_label][ASSET_DICT], f"The asset {asset_name} is not added to the list of assets attached to the bus."
+    assert dict_test[ENERGY_BUSSES][bus_label][ASSET_DICT][asset_name] == asset_label, f"The asset {asset_name} is not added with its {LABEL} to the list of assets attached to the bus."
+    assert dict_test[ENERGY_BUSSES][bus_label][ENERGY_VECTOR] == energy_vector, f"The {ENERGY_VECTOR} of the added bus is not of the expected value."
 
 
 def test_bus_suffix_functions():
     name = "name"
     bus_name = C0.bus_suffix(name)
-    assert name == C0.remove_bus_suffix(bus_name)
+    assert name == C0.remove_bus_suffix(bus_name), f"The original bus label is incorrectly defined."
 
 
 def test_bus_suffix_correct():
     bus = "a"
     bus_name = C0.bus_suffix(bus)
-    assert bus_name == bus + BUS_SUFFIX
+    assert bus_name == bus + BUS_SUFFIX, f"The bus name is incorrectly defined from the bus label."
 
 
 def test_apply_function_to_single_or_list_apply_to_single():
@@ -338,7 +341,7 @@ def test_apply_function_to_single_or_list_apply_to_single():
 
     parameter = 1
     parameter_processed = C0.apply_function_to_single_or_list(multiply, parameter)
-    assert parameter_processed == 2
+    assert parameter_processed == 2, f"The multiplication with a single value fails."
 
 
 def test_apply_function_to_single_or_list_apply_to_list():
@@ -348,31 +351,31 @@ def test_apply_function_to_single_or_list_apply_to_list():
 
     parameter = [1, 1]
     parameter_processed = C0.apply_function_to_single_or_list(multiply, parameter)
-    assert parameter_processed == [2, 2]
+    assert parameter_processed == [2, 2], f"The multiplication with a list fails."
 
 
 def test_determine_months_in_a_peak_demand_pricing_period_not_valid():
     with pytest.raises(C0.InvalidPeakDemandPricingPeriods):
-        C0.determine_months_in_a_peak_demand_pricing_period(5, 365)
+        C0.determine_months_in_a_peak_demand_pricing_period(5, 365), f"No C0.InvalidPeakDemandPricingPeriods is raised eventhough an invalid number of pricing periods is requested."
 
 
 def test_determine_months_in_a_peak_demand_pricing_period_valid():
     months_in_a_period = C0.determine_months_in_a_peak_demand_pricing_period(4, 365)
-    assert months_in_a_period == 3
+    assert months_in_a_period == 3, f"The duration, ie. months of the peak demand pricing periods, are calculated incorrectly."
 
 
 def test_get_name_or_names_of_in_or_output_bus_single():
     bus = "bus"
     bus_with_suffix = C0.bus_suffix(bus)
     bus_name = C0.get_name_or_names_of_in_or_output_bus(bus)
-    assert bus_name == bus_with_suffix
+    assert bus_name == bus_with_suffix, f"A bus label with a string value is not appeded by the bus suffix."
 
 
 def test_get_name_or_names_of_in_or_output_bus_list():
     bus = ["bus1", "bus2"]
     bus_with_suffix = [C0.bus_suffix(bus[0]), C0.bus_suffix(bus[1])]
     bus_name = C0.get_name_or_names_of_in_or_output_bus(bus)
-    assert bus_name == bus_with_suffix
+    assert bus_name == bus_with_suffix, f"A list of bus names is not appended by the bus suffix."
 
 
 def test_evaluate_lifetime_costs():
@@ -406,7 +409,7 @@ def test_evaluate_lifetime_costs():
         SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
         SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
     ]:
-        assert k in dict_asset
+        assert k in dict_asset, f"Function does not add {k} to the asset dictionary."
 
 
 def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass():
@@ -414,14 +417,14 @@ def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_p
     C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
         "Electricity", "asset_group", "asset"
     )
-    assert 1 == 1
+    assert 1 == 1, f"The energy carrier `Electricity` is not recognized to be defined in `DEFAULT_WEIGHTS_ENERGY_CARRIERS`."
 
 
 def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fail():
     with pytest.raises(C0.UnknownEnergyCarrier):
         C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
             "Bio-Diesel", "asset_group", "asset"
-        )
+        ), f"The energy carrier `Bio-Diesel` is recognized in the `DEFAULT_WEIGHTS_ENERGY_CARRIERS`, eventhough it should not be defined."
 
 
 """
