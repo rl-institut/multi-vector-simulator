@@ -301,7 +301,7 @@ def process_all_assets(dict_values):
 
 def define_excess_sinks(dict_values):
     r"""
-    Defines energy excess sinks for each bus
+    Define energy excess sinks for each bus
 
     Parameters
     ----------
