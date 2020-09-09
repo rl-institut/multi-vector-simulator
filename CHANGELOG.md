@@ -23,6 +23,7 @@ Here is a template for new release sections
 
 ### Added
 - Evaluation of excess energy for each of the energy carriers and for the whole system, KPIs: (#555)
+- Debug messages for `C0` tests (#555)
 
 ### Changed
 - `C1.total_demand_each_sector()` to `C1.total_demand_and_excess_each_sector()`, now also evaluating the excess energy flows (#555)
