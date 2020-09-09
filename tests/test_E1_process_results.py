@@ -1,6 +1,8 @@
 # from _constants import JSON_PATH
 import mvs_eland.E1_process_results as E1
 
+from mvs_eland.utils.constants_json_strings import *
+
 # Note: test functions might be summed up in classes..
 
 
@@ -55,6 +57,30 @@ def test_get_results_multiple_output_busses():
     pass
     # check if dict_asset is updated. see add_info_flows for keys
     # check optimal capacity
+
+
+def test_get_parameter_to_be_evaluated_from_oemof_results():
+    for asset_group in E1.ASSET_GROUPS_DEFINED_BY_INFLUX:
+        param = E1.get_parameter_to_be_evaluated_from_oemof_results(
+            asset_group, asset_label="a_label"
+        )
+        assert param == INPUT_BUS_NAME
+    for asset_group in E1.ASSET_GROUPS_DEFINED_BY_OUTFLUX:
+        param = E1.get_parameter_to_be_evaluated_from_oemof_results(
+            asset_group, asset_label="a_label"
+        )
+        assert param == OUTPUT_BUS_NAME
+
+
+def test_get_tuple_for_oemof_results():
+    asset_label = "a_label"
+    bus = "a_bus"
+    for asset_group in E1.ASSET_GROUPS_DEFINED_BY_INFLUX:
+        flux_tuple = E1.get_tuple_for_oemof_results(asset_label, asset_group, bus)
+        assert flux_tuple == (bus, asset_label)
+    for asset_group in E1.ASSET_GROUPS_DEFINED_BY_OUTFLUX:
+        flux_tuple = E1.get_tuple_for_oemof_results(asset_label, asset_group, bus)
+        assert flux_tuple == (asset_label, bus)
 
 
 def test_get_optimal_cap_optimize_input_flow_timeseries_peak_provided():

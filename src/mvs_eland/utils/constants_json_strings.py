@@ -153,7 +153,7 @@ INFLOW_DIRECTION = "inflow_direction"
 OUTPUT_BUS_NAME = "output_bus_name"
 INPUT_BUS_NAME = "input_bus_name"
 ENERGY_VECTOR = "energyVector"
-EXCESS = " excess"
+EXCESS = "_excess"
 BUS_SUFFIX = " bus"
 
 # DSO
@@ -174,9 +174,10 @@ DISPATCHABILITY = "dispatchable"
 AVAILABILITY_DISPATCH = "availability_timeseries"
 
 # Sinks
-EXCESS_SINK_POSTFIX = " excess sink"
+EXCESS_SINK_POSTFIX = "_excess_sink"
 
-BUS_SUFFIX = " bus"
+BUS_SUFFIX = "_bus"
+ASSET_DICT = "Asset_list"
 #######################################
 # Parameters added in post-processing #
 #######################################
@@ -227,6 +228,7 @@ TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use"
 RENEWABLE_SHARE = "Renewable_share"
 
 TOTAL_DEMAND = "Total_demand"
+TOTAL_EXCESS = "Total_excess"
 SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
 ATTRIBUTED_COSTS = "Attributed costs"
 LCOeleq = "Levelized costs of electricity equivalent"

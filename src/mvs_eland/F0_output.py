@@ -155,7 +155,7 @@ def store_scalars_to_excel(dict_values):
                 data[UNIT] = units_cost_kpi
 
             data.to_excel(open_file, sheet_name=kpi_set)
-            logging.info(
+            logging.debug(
                 "Saved scalar results to: %s, tab %s.",
                 results_scalar_output_file,
                 kpi_set,
@@ -185,7 +185,7 @@ def store_timeseries_all_busses_to_excel(dict_values):
         for bus in dict_values[OPTIMIZED_FLOWS]:
             dict_values[OPTIMIZED_FLOWS][bus].to_excel(open_file, sheet_name=bus)
 
-    logging.info("Saved flows at busses to: %s.", timeseries_output_file)
+    logging.debug("Saved flows at busses to: %s.", timeseries_output_file)
     return
 
 

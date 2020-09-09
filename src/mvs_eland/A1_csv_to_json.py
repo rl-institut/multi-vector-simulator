@@ -106,8 +106,7 @@ class WrongStorageColumn(ValueError):
 
 
 def create_input_json(
-    input_directory,
-    pass_back=True,
+    input_directory, pass_back=True,
 ):
     """Convert csv files to json file as input for the simulation.
 
@@ -462,7 +461,7 @@ def create_json_from_csv(
                 )
                 single_dict[column].update(storage_dict)
 
-    logging.info(
+    logging.debug(
         "From file %s following assets are added to the energy system: %s",
         filename,
         asset_name_string[:-2],
