@@ -30,17 +30,26 @@
     },
     "energyBusses": {
         "ESS Li-Ion bus": {
+          "label": "ESS Li-Ion bus",
+          "energyVector": "Electricity",
+          "Asset_list": {
             "storage_01": "ESS Li-Ion",
             "storage_charge_controller_in": "Charge Contoller ESS Li-Ion (charge)",
-            "storage_charge_controller_out": "Charge Contoller ESS Li-Ion (discharge)"
+            "storage_charge_controller_out": "Charge Contoller ESS Li-Ion (discharge)"}
         },
         "Electricity (DSO) bus": {
+          "label": "Electricity (DSO) bus",
+          "energyVector": "Electricity",
+          "Asset_list": {
             "DSO_consumption": "DSO_consumption source",
             "DSO_feedin": "DSO_feedin_sink",
             "transformer_station_in": "Transformer station (DSO) consumption",
-            "transformer_station_out": "Transformer station (DSO) feedin"
+            "transformer_station_out": "Transformer station (DSO) feedin"}
         },
         "Electricity bus": {
+          "label": "Electricity bus",
+          "energyVector": "Electricity",
+          "Asset_list": {
             "Electricity excess": "Electricity excess_sink",
             "demand_01": "Harbor",
             "demand_02": "Remaining demand",
@@ -49,11 +58,14 @@
             "storage_charge_controller_in": "Charge Contoller ESS Li-Ion (charge)",
             "storage_charge_controller_out": "Charge Contoller ESS Li-Ion (discharge)",
             "transformer_station_in": "Transformer station (DSO) consumption",
-            "transformer_station_out": "Transformer station (DSO) feedin"
+            "transformer_station_out": "Transformer station (DSO) feedin"}
         },
         "PV plant (mono) bus": {
+          "label": "PV plant (mono) bus",
+          "energyVector": "Electricity",
+          "Asset_list": {
             "pv_plant_01": "PV plant (mono)",
-            "solar_inverter_01": "Solar inverter (mono)"
+            "solar_inverter_01": "Solar inverter (mono)"}
         }
     },
     "energyConsumption": {

@@ -91,8 +91,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         bus_data.update(
             {
                 dict_values[ENERGY_STORAGE][storage][LABEL]: solph.views.node(
-                    results_main,
-                    dict_values[ENERGY_STORAGE][storage][LABEL],
+                    results_main, dict_values[ENERGY_STORAGE][storage][LABEL],
                 )
             }
         )
@@ -146,9 +145,10 @@ def evaluate_dict(dict_values, results_main, results_meta):
     for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:
             E1.get_results(
-                dict_values[SIMULATION_SETTINGS],
-                bus_data,
-                dict_values[group][asset],
+                settings=dict_values[SIMULATION_SETTINGS],
+                bus_data=bus_data,
+                dict_asset=dict_values[group][asset],
+                asset_group=group,
             )
             E2.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
             E2.lcoe_assets(dict_values[group][asset], group)
@@ -156,7 +156,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     logging.info("Evaluating key performance indicators of the system")
     E3.all_totals(dict_values)
-    E3.total_demand_each_sector(dict_values)
+    E3.total_demand_and_excess_each_sector(dict_values)
     E3.add_levelized_cost_of_energy_carriers(dict_values)
     E3.total_renewable_and_non_renewable_energy_origin(dict_values)
     E3.renewable_share(dict_values)

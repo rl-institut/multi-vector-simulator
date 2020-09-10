@@ -14,6 +14,8 @@ from mvs_eland.cli import main
 from mvs_eland.B0_data_input_json import load_json
 
 from _constants import (
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
     TEST_REPO_PATH,
     CSV_EXT,
 )
@@ -40,6 +42,13 @@ class Test_Constraints:
         if os.path.exists(TEST_OUTPUT_PATH) is False:
             os.mkdir(TEST_OUTPUT_PATH)
 
+    # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+    # alone is called
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_minimal_renewable_share_constraint(self, margs):
         r"""
