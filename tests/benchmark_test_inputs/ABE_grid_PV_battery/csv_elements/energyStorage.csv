@@ -1,8 +1,8 @@
 ,unit,storage_01
-inflow_direction,str,battery
+inflow_direction,str,Electricity
 label,str,battery
 optimizeCap,bool,False
-outflow_direction,str,battery
+outflow_direction,str,Electricity
 type_oemof,str,storage
 storage_filename,str,storage_1.csv
 energyVector,str,Electricity

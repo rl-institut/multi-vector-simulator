@@ -13,16 +13,35 @@ here = path.abspath(path.dirname(__file__))
 
 # Get the version number without triggering __init__
 main_namespace = {}
-exec(open(path.join(here, "mvs_eland_tool", "version.py")).read(), main_namespace)
+exec(open(path.join(here, "src", "mvs_eland", "version.py")).read(), main_namespace)
 
 # Get the long description from the README file
 with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
+
+def parse_requirements_file(filename):
+    with open(filename, encoding="utf-8") as fid:
+        requires = []
+        for line in fid.readlines():
+            if line:
+                # requirements for those browsing PyPI
+                requires.append(
+                    line.strip().replace(">=", " >= ").replace("==", " == ")
+                )
+    return requires
+
+
+# Read the requirement files
+req_path = path.join(here, "requirements")
+INSTALL_REQUIRES = parse_requirements_file(path.join(req_path, "default.txt"))
+EXTRA_REQUIRES = {
+    dep: parse_requirements_file(path.join(req_path, dep + ".txt"))
+    for dep in ["docs", "report", "test"]
+}
+
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
-
-
 setup(
     # This is the name of your project. The first time you publish this
     # package, this name will be registered for you. It will determine how
@@ -35,7 +54,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name="mvs_tool",  # Required
+    name="mvs_eland",  # Required
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
     #
@@ -71,7 +90,7 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url="https://github.com/smartie2076/mvs_eland",  # Optional
+    url="https://github.com/rl-institut/mvs_eland",  # Optional
     # This should be your name or the name of the organization which owns the
     # project.
     author="Reiner Lemoine Institut",  # Optional
@@ -109,7 +128,7 @@ setup(
     keywords="multi-vector local-energy-systems",  # Optional
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
-    # package_dir={"": "src"},  # Optional
+    package_dir={"": "src"},  # Optional
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
     #
@@ -119,7 +138,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=["src", "mvs_eland_tool"],  # Required
+    packages=find_packages(include=["mvs_eland"]),  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you
@@ -132,11 +151,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=[
-        "oemof.solph==0.4.1",
-        "oemof.network==0.4.0rc0",
-        "oemof.tools==0.4.0",
-    ],  # Optional
+    install_requires=INSTALL_REQUIRES,  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:
@@ -145,7 +160,7 @@ setup(
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
-    extras_require={"dev": ["check-manifest"], "test": ["coverage"],},  # Optional
+    extras_require=EXTRA_REQUIRES,
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     #
@@ -182,7 +197,7 @@ setup(
     # maintainers, and where to support the project financially. The key is
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
-        "Bug Reports": "https://github.com/smartie2076/mvs_eland/issues",
-        "Source": "https://github.com/smartie2076/mvs_eland",
+        "Bug Reports": "https://github.com/rl-institut/mvs_eland/issues",
+        "Source": "https://github.com/rl-institut/mvs_eland",
     },
 )

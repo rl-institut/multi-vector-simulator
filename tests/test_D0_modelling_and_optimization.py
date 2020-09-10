@@ -5,11 +5,18 @@ import oemof.solph
 import pandas as pd
 import pytest
 
-import src.D0_modelling_and_optimization as D0
-from src.B0_data_input_json import load_json
-from src.constants_json_strings import (
+import mvs_eland.D0_modelling_and_optimization as D0
+from mvs_eland.B0_data_input_json import load_json
+
+from mvs_eland.utils.constants import JSON_FNAME
+
+from mvs_eland.utils.constants_json_strings import (
     ENERGY_BUSSES,
     ENERGY_CONSUMPTION,
+    OEMOF_BUSSES,
+    OEMOF_SOURCE,
+    OEMOF_SINK,
+    OEMOF_GEN_STORAGE,
     OEMOF_TRANSFORMER,
     OEMOF_ASSET_TYPE,
     LABEL,
@@ -17,20 +24,47 @@ from src.constants_json_strings import (
     SIMULATION_SETTINGS,
     TIME_INDEX,
     STORE_OEMOF_RESULTS,
-    STORE_NX_GRAPH,
     OUTPUT_LP_FILE,
+    SIMULATION_RESULTS,
+    ASSET_DICT,
+    ENERGY_VECTOR,
 )
-from .constants import (
+from _constants import (
     TEST_REPO_PATH,
     PATH_OUTPUT_FOLDER,
+    TEST_INPUT_DIRECTORY,
+    ES_GRAPH,
 )
 
-json_path = os.path.join("tests", "test_data", "test_data_for_D0.json")
-
-dict_values = load_json(json_path)
-
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
-dict_values[SIMULATION_SETTINGS].update({PATH_OUTPUT_FOLDER: TEST_OUTPUT_PATH})
+
+
+@pytest.fixture
+def dict_values():
+    answer = load_json(
+        os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_for_D0", JSON_FNAME)
+    )
+    answer[SIMULATION_SETTINGS].update({PATH_OUTPUT_FOLDER: TEST_OUTPUT_PATH})
+
+    return answer
+
+
+@pytest.fixture
+def dict_values_minimal():
+    pandas_DatetimeIndex = pd.date_range(
+        start="2020-01-01 00:00", periods=3, freq="60min"
+    )
+
+    return {
+        SIMULATION_SETTINGS: {TIME_INDEX: pandas_DatetimeIndex},
+        ENERGY_BUSSES: {
+            "bus": {
+                LABEL: "bus",
+                ENERGY_VECTOR: "Electricity",
+                ASSET_DICT: {"asset": "asset_label"},
+            }
+        },
+    }
 
 
 def setup_function():
@@ -44,31 +78,27 @@ def teardown_function():
 
 
 def test_if_model_building_time_measured_and_stored():
-    dict_values = {"simulation_results": {}}
+    dict_values = {SIMULATION_RESULTS: {}}
     start = D0.timer.initalize()
     D0.timer.stop(dict_values, start)
-    assert "modelling_time" in dict_values["simulation_results"]
-    assert isinstance(dict_values["simulation_results"]["modelling_time"], float)
+    assert "modelling_time" in dict_values[SIMULATION_RESULTS]
+    assert isinstance(dict_values[SIMULATION_RESULTS]["modelling_time"], float)
 
 
-START_TIME = "2020-01-01 00:00"
-PERIODS = 3
-pandas_DatetimeIndex = pd.date_range(start=START_TIME, periods=PERIODS, freq="60min")
-
-dict_values_minimal = {
-    SIMULATION_SETTINGS: {TIME_INDEX: pandas_DatetimeIndex},
-    ENERGY_BUSSES: "bus",
-}
-
-
-def test_energysystem_initialized():
+def test_energysystem_initialized(dict_values_minimal):
     model, dict_model = D0.model_building.initialize(dict_values_minimal)
-    for k in ("busses", "sinks", "sources", "transformers", "storages"):
+    for k in (
+        OEMOF_BUSSES,
+        OEMOF_SINK,
+        OEMOF_SOURCE,
+        OEMOF_TRANSFORMER,
+        OEMOF_GEN_STORAGE,
+    ):
         assert k in dict_model.keys()
     assert isinstance(model, oemof.solph.network.EnergySystem)
 
 
-def test_oemof_adding_assets_from_dict_values_passes():
+def test_oemof_adding_assets_from_dict_values_passes(dict_values):
     model, dict_model = D0.model_building.initialize(dict_values)
     D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
@@ -76,7 +106,9 @@ def test_oemof_adding_assets_from_dict_values_passes():
     assert 1 == 1
 
 
-def test_error_raise_WrongOemofAssetForGroupError_if_oemof_asset_type_not_accepted_for_asset_group():
+def test_error_raise_WrongOemofAssetForGroupError_if_oemof_asset_type_not_accepted_for_asset_group(
+    dict_values_minimal,
+):
     model, dict_model = D0.model_building.initialize(dict_values_minimal)
     dict_test = {ENERGY_CONSUMPTION: {"asset": {OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER}}}
     dict_test.update(dict_values_minimal)
@@ -86,10 +118,12 @@ def test_error_raise_WrongOemofAssetForGroupError_if_oemof_asset_type_not_accept
         )
 
 
-from src.constants_json_strings import ACCEPTED_ASSETS_FOR_ASSET_GROUPS
+from mvs_eland.utils.constants_json_strings import ACCEPTED_ASSETS_FOR_ASSET_GROUPS
 
 
-def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0():
+def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0(
+    dict_values_minimal,
+):
     model, dict_model = D0.model_building.initialize(dict_values_minimal)
     dict_test = {ENERGY_CONSUMPTION: {"asset": {OEMOF_ASSET_TYPE: "unknown_type"}}}
     dict_test.update(dict_values_minimal)
@@ -100,27 +134,29 @@ def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0
         )
 
 
-path_networkx = os.path.join(TEST_OUTPUT_PATH, "network_graph.png")
+PATH_ES_GRAPH = os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)
 
 
-def test_networkx_graph_requested_store_nx_graph_true():
+def test_networkx_graph_requested_store_nx_graph_true(dict_values):
     model, dict_model = D0.model_building.initialize(dict_values)
     D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH].update({VALUE: True})
-    D0.model_building.plot_networkx_graph(dict_values, model)
-    assert os.path.exists(path_networkx) is True
+    D0.model_building.plot_networkx_graph(
+        dict_values, model, save_energy_system_graph=True
+    )
+    assert os.path.exists(PATH_ES_GRAPH) is True
 
 
-def test_networkx_graph_requested_store_nx_graph_false():
+def test_networkx_graph_requested_store_nx_graph_false(dict_values):
     model, dict_model = D0.model_building.initialize(dict_values)
     D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    dict_values[SIMULATION_SETTINGS][STORE_NX_GRAPH].update({VALUE: False})
-    D0.model_building.plot_networkx_graph(dict_values, model)
-    assert os.path.exists(path_networkx) is False
+    D0.model_building.plot_networkx_graph(
+        dict_values, model, save_energy_system_graph=False
+    )
+    assert os.path.exists(PATH_ES_GRAPH) is False
 
 
 import oemof.solph as solph
@@ -128,7 +164,7 @@ import oemof.solph as solph
 path_lp_file = os.path.join(TEST_OUTPUT_PATH, "lp_file.lp")
 
 
-def test_if_lp_file_is_stored_to_file_if_output_lp_file_true():
+def test_if_lp_file_is_stored_to_file_if_output_lp_file_true(dict_values):
     model, dict_model = D0.model_building.initialize(dict_values)
     model = D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
@@ -139,7 +175,7 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_true():
     assert os.path.exists(path_lp_file) is True
 
 
-def test_if_lp_file_is_stored_to_file_if_output_lp_file_false():
+def test_if_lp_file_is_stored_to_file_if_output_lp_file_false(dict_values):
     model, dict_model = D0.model_building.initialize(dict_values)
     model = D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
@@ -153,19 +189,19 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_false():
 path_oemof_file = os.path.join(TEST_OUTPUT_PATH, "oemof_simulation_results.oemof")
 
 
-def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_true():
+def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_true(dict_values):
     dict_values[SIMULATION_SETTINGS][STORE_OEMOF_RESULTS].update({VALUE: True})
     D0.run_oemof(dict_values)
     assert os.path.exists(path_oemof_file) is True
 
 
-def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false():
+def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false(dict_values):
     dict_values[SIMULATION_SETTINGS][STORE_OEMOF_RESULTS].update({VALUE: False})
     D0.run_oemof(dict_values)
     assert os.path.exists(path_oemof_file) is False
 
 
-def test_if_simulation_results_added_to_dict_values():
+def test_if_simulation_results_added_to_dict_values(dict_values):
     D0.run_oemof(dict_values)
     for k in (LABEL, "objective_value", "simulation_time"):
-        assert k in dict_values["simulation_results"].keys()
+        assert k in dict_values[SIMULATION_RESULTS].keys()

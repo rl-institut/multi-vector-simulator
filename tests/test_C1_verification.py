@@ -1,7 +1,15 @@
 import pytest
 
-import src.C1_verification as C1
-from .constants import JSON_PATH
+import mvs_eland.C1_verification as C1
+from _constants import (
+    JSON_PATH,
+    ENERGY_PROVIDERS,
+    LABEL,
+    FEEDIN_TARIFF,
+    ENERGY_PRICE,
+    UNIT,
+    VALUE,
+)
 
 
 def test_lookup_file_existing_file():
@@ -19,11 +27,11 @@ def test_lookup_file_non_existing_file_raises_error():
 
 def test_check_feedin_tariff_greater_energy_price():
     dict_values = {
-        "energyProviders": {
+        ENERGY_PROVIDERS: {
             "DSO": {
-                "energy_price": {"unit": "currency/kWh", "value": 0.3},
-                "feedin_tariff": {"unit": "currency/kWh", "value": 0.4},
-                "label": "test DSO",
+                ENERGY_PRICE: {UNIT: "currency/kWh", VALUE: 0.3},
+                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: 0.4},
+                LABEL: "test DSO",
             }
         }
     }
@@ -33,11 +41,11 @@ def test_check_feedin_tariff_greater_energy_price():
 
 def test_check_feedin_tariff_not_greater_energy_price():
     dict_values = {
-        "energyProviders": {
+        ENERGY_PROVIDERS: {
             "DSO": {
-                "energy_price": {"unit": "currency/kWh", "value": 0.5},
-                "feedin_tariff": {"unit": "currency/kWh", "value": 0.4},
-                "label": "test DSO",
+                ENERGY_PRICE: {UNIT: "currency/kWh", VALUE: 0.5},
+                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: 0.4},
+                LABEL: "test DSO",
             }
         }
     }

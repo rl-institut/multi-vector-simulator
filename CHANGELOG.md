@@ -15,24 +15,160 @@ Here is a template for new release sections
 -
 ### Removed
 -
+### Fixed
+-
 ```
 
 ## [Unreleased]
 
 ### Added
-- Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT
-- Display error message when feed-in tariff > electricity price of any  asset in 'energyProvider.csv'. (#497)
+- Evaluation of excess energy for each of the energy carriers and for the whole system. The excess per sector and their energy equivalent may currently be faulty (comp. issue #559) (#555)
+- Debug messages for `C0` tests (#555)
 - Requirement for time series of non-dispatchable sources: values betw. 0 and 1. (#498)
 
 ### Changed
- - Move and rename json converter and parser to B0 module (#464)
- - Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
- - Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
+- `C1.total_demand_each_sector()` to `C1.total_demand_and_excess_each_sector()`, now also evaluating the excess energy flows (#555)
+- `energyBusses` now is defined by: `LABEL, ASSET_LIST, ENERGY_VECTOR`, all functions using `energyBusses` now follow this nomenclature (#555)
+- Energy excess sinks now also have parameter `ENERGY_VECTOR` (#555)
+- `C0.define_sink` now always defines a sink that is capacity-optimized (#555)
+- `D1.sink_dispatchable()`, renamed to `D1.sink_dispatchable_optimize()` now adds a capacity-optimized, dispatchable sink. (#555) 
+- Simulation data `tests/inputs`: Oemof-solph results are not stored (#555)
+- Change logging level of some messages from `logging.info` to `logging.debug` (#555)
+- Move and rename json input files for D0 and D1 tests (`test_data_for_D0.json` to `tests/test_data/inputs_for_D0/mvs_config.json`, `test_data_for_D1.json` to `tests/test_data/inputs_for_D1/mvs_config.json`), add required parameters (#555) 
+- Change requirements/test.txt: `black==19.10b0`, as otherwise there are incompatabilities (#555)
 
 ### Removed
 -
+
 ### Fixed
+- `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)
+- Feed-in sinks of the DSOs now are capacity-optimized and can actually be used (#555)
 - optimizedAddCap of non-dispatchable sources: multiply maximumCap by max(timeseries(kWh/kWp)) to fix issue #446 (#498)
+
+## [0.4.0] - 2020-09-01
+
+### Added
+- Docstrings for E2 (#520)
+- New constant variable: `SIMULATION_RESULTS="simulation_results"` (#520)
+- Explicit calculation of replacement costs (`C2.get_replacement_costs()`), so that they can be used in `E2` for installed capacities and optimal additional capacities (#520)
+- New constant variable: JSON_WITH_RESULTS="json_with_results.json" (#520)
+- Benchmark test "Economic_KPI_C2_E2" to test economic evaluations in C2 and E2 (#520)
+- Possibility to add an upper bound  on the number of days to display in a timeseries' plot (#526)
+- Graph of the energy system model to the report (#528)
+- Function to encode images into dash app's layout (#528)
+- System KPI now printed in automatic report (section "Energy system key performance indicators"), draft (#525)
+- Added units to system-wide cost KPI in excel and in report. Some of these changes might need to be reworked when elaborating on units for the report (#525)
+- `References.rst` to the readthedocs, which should gather all the references of the MVS (#525)
+- New system-wide KPI:
+    - Demand per energy carrier, in original unit and electricity equivalent with `E3.total_demand_each_sector()` (#525)
+    - Attributed cost per energy carrier, related to the its share in the total demand equivalent  with `E3.total_demand_each_sector()` (#525)
+    - LCOE per energy carrier `E3.add_levelized_cost_of_energy_carriers()` (#525)
+- Default values for energy carrier "Heat" for `DEFAULT_WEIGHTS_ENERGY_CARRIERS` with `{UNIT: "KWh_eleq/kWh_therm", VALUE: 1}`. This is still TBD, as there is no source for this ratio yet (#525)
+- Default unit for energy carriers defined in `DEFAULT_WEIGHTS_ENERGY_CARRIERS`: ENERGY_CARRIER_UNIT. Might be used to define the units of flows and LCOE. (#525)
+- New constant variables: TIMESERIES_TOTAL, TIMESERIES_AVERAGE, LOGFILE, RENEWABLE_SHARE, TOTAL_DEMAND, SUFFIX_ELECTRICITY_EQUIVALENT, ATTRIBUTED_COSTS, LCOeleq, DEGREE_OF_SECTOR_COUPLING (#525)
+- New constant variable: OEMOF_BUSSES, MINIMAL_RENEWABLE_SHARE, CONSTRAINTS (#538)
+- New required input csv: `constraints.csv` including possible constraints for the energy system. Added to all input folders. (#538)
+- Added error message: New energy carriers always have to be added to `DEFAULT_WEIGHTS_ENERGY_CARRIERS` (`C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS()`, applied to `ENERGY_VECTOR` and to fuel sources) (#538)
+- Added minimal renewable share contraint though  `D2.constraint_minimal_renewable_share()` and added description of the constraint in `Model_Assumptions.rst` (#538)
+- Benchmark test for minimal renewable share constraint (#538)
+- Benchmark test `test_benchmark_AFG_grid_heatpump_heat` for a sector-coupled energy system, including electricity and heat, with a heat pump and an energy price as time series (#524)
+- Benchmark test descriptions for `test_benchmark_simple_scenarios.py` (#524)
+- Create `src/mvs_eland/utils` subpackage (contains `constants.py`, `constants_json_string.py
+`, `constants_output.py` (#501)
+
+
+### Changed
+- Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
+- Added pytest for many `E2` functions (#520)
+- Changed and added pytests in for `C2` (#520)
+- All energyProviders that have key `FILENAME` (and, therefore, a timeseries), are now of `DISPATCHABILITY = False`(#520)
+- Changed structure of `E2.lcoe_assets()` so that each asset has a defined LCOE_ASSET. If `sum(FLOW)==0` of an asset, the LCOE_ASSET (utilization LCOE) is defined to be 0 (#520)
+- Color lists for plots are provided by user and are not hard coded anymore (#527)
+- Replace function `F1.draw_graph` by the class `F1.ESGraphRenderer` and use `graphviz` instead of
+ `networkx` to draw the graph of the energy system model (#528) 
+- Rename variable `PLOTS_NX` to `PLOTS_ES` (#528)
+- Changed `requirements.txt` (removing and updating dependencies) (#528)
+- A png of the energy system model graph is only saved if either `-png` or `-pdf` options are chosen (#530)
+- Accepting string "TRUE"/"FALSE" now for boolean parameters (#534)
+- Order of pages in the readthedocs.io (#525)
+- Reactivated KPI: Renewable share. Updated pytests (#525)
+- Extended `DEFAULT_WEIGHTS_ENERGY_CARRIERS` by `Diesel` and `Gas`, added explaination in `Model_Assumptions.rs` (#538)
+- Create `dict_model` with constant variables in `D0` and update in `D1` (#538)
+- Separate the installation of the packages needed for the report generation from the mvs
+ simulation (#501)
+- Move all source files in `srv/mvs_eland` (#501)
+- Move the content of the previous `src/utils.py` module to  `src/mvs_eland/utils/__init__.py` (#501)
+- Rename `tests/constants.py` --> `tests/_constants.py` (#501)
+- Refactor modules calls (mostly `src.` is replaced by `mvs_eland.`) (#501)
+- Move `mvs_eland_tool` folder's content in `src/mvs_eland` (#501)
+- Gather all requirements files in a `requirements` folder and read the requirement from there for `setup.py` (#501)
+- Update `install_requires` and `extra_requires` in `setup.py` (#501)
+
+### Removed
+- `E2.add_costs_and_total`() (#520)
+- Calculation of energy expenditures using `price` (#520)
+- Function `F1.plot_input_timeseries` which is based on `matplotlib` (#527)
+- Dependency to `matplotlib` (#528)
+- Remove `STORE_NX_GRAPH` and `DISPLAY_NX_GRAPH` variables (#530)
+- Remove `tests/__init__.py` (#501)
+- Delete `mvs_eland_tool` folder (#501)
+
+### Fixed
+- Calculation of `cost_upfront` required a multiplication (#520)
+- Fixed `E2.convert_components_to_dataframe()`, Key error (#520)
+- Fixed `F1.extract_plot_data_and_title()`, Key error (#520)
+- Fixed hard-coded energy vector of ENERGY_PRODUCTION units in E1.convert_components_to_dataframe(#520)
+- Generating report for multiple sectors (#534)
+- Fixed hard-coded energy vector of `ENERGY_PRODUCTION` units in `E1.convert_components_to_dataframe` (#520)
+- Fixed parsing issue in `A1.conversion()`, incl. pytest (#538)
+- Quick fix to read a timeseries for `"price"` in `C0.define_source()` (#524)
+- Fix `C1.check_feedin_tariff()`: Now also applyable to timeseries of feed-in tariff or electricity prices (#524)
+- Add a warning message if the timeseries of demands or resources are empty (#543)
+- Fix failing KPI test (due to newer pandas version) (#501)
+
+## [0.3.3] - 2020-08-19
+
+### Added
+- Also components that have no investment costs now have a value (of 0) for COST_INVESTMENT and COST_UPFRONT (#493)
+- Display error message when feed-in tariff > electricity price of any  asset in 'energyProvider.csv'. (#497)
+- Added pie plots created using Plotly library to the auto-report (#482) 
+- Added functions to `F2_autoreport.py` that save the images of plots generated using Plotly to `MVS_outputs` folder as `.png` (#499)
+- Inserted docstrings in the definitions of all the functions in `F2_autoreport.py` (#505)
+- Functions in F1 to create plotly static `.png` files (#512)
+- New argument for MVS execution: `-png` to store plotly graphs to file (#512)
+- Benchmark test for peak demand pricing for grid and battery case (#510)
+- Logging error message if a cell is left empty for a parameter in the csvs (see `A1`) (#492)
+- Logging error message if a bus connects less then three assets including the excess sink, as in that case the energy system model is likely to be incomplete (`C1.check_for_sufficient_assets_on_busses()`) (#492)
+
+### Changed
+- Move and rename json converter and parser to B0 module (#464)
+- Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+- Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
+- Changed styling of plots, mainly how legends appear in the PDF report (#482) 
+- Move and rename json converter and parser to B0 module (#464)
+- Modified json converter to avoid stringifying special types such as pandas.Dataframes (#464)
+- Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
+- Replaced parameter strings by variables (#500)
+- Changed the font family used in the plots in F2_autoreport.py and changed the wording of some comments (#496)
+- Moved function `C0.determine_lifetime_price_dispatch()` to C2 with all its sub-functions.  (#495)
+- Changed calculation of `LIFETIME_PRICE_DISPATCH` for lists and pd.Series (see dosctrings of `C2.get_lifetime_price_dispatch_list`, `C2.get_lifetime_price_dispatch_timeseries`) (#495)
+- Changed dostring format in `C2` to numpy (#495)
+- Deactivated function `C2.fuel_price_present_value` as it is not used and TBD (#495)
+- Modified the doc-strings in the definitions of some functions to abide by the formatting rules of numpy doc-strings (#505)
+- Suppressed the log messages of the Flask server (for report webapp) (#509) 
+- Move bulk data preparation code for report from F2 into E1 and F1 modules and into functions (#511, #512)
+- F2 now calls functions from F1 to prepare the figures of the report (#512)
+- Dispatchable (fuel) sources can now be defined by adding a column to the `energyProduction.csv` and setting `file_name==None` (#492)
+- Updated `Model_Assumptions.rst`: Minimal description of dispatchable fuel sources (#492)
+- `tests/inputs` energyAssets are updated (#492)
+- Fixed test_benchmark_AD_grid_diesel() - now this one tests fuel source and diesel at once (#492)
+
+### Removed
+- Functions to generate plots with matplotlib in F1 (#512)
+- Many tests that checked if matplot lib plots were stored to file, not replaced by new tests for storing plotly graphs to file (#512)
+
+### Fixed
+- Image path for readthedocs (Model_Assumpation.rst) (#492)
 
 ## [0.3.2] 2020-08-04
 
@@ -57,10 +193,11 @@ Here is a template for new release sections
 ### Fixed
 - Peak demand pricing feature (#454)
 
+
 ## [0.3.1] - 2020-07-30
 
 ### Added
-- Release protocol in CONTRIBUTING.md file (#353)
+- Release protocol in `CONTRIBUTING.md` file (#353)
 - Custom heat demand profile generation (#371)
 - Add custom solar thermal collector generation profile (#370)
 - Input template folder for easy generation of new simulations (#374), later also for tests of the input folder
@@ -68,23 +205,23 @@ Here is a template for new release sections
 - Test to verify that input folders have all required parameters (#398)
 - New `dict` `REQUIRED_MVS_PARAMETERS` to gather the required parameters from the csv or json
  input type (#398)
- - `utils.py` module in `src` to gather the functions `find_input_folders` and `compare_input_parameters_with_reference` which can be used to find and validate input folders (#398)
+- `utils.py` module in `src` to gather the functions `find_input_folders` and `compare_input_parameters_with_reference` which can be used to find and validate input folders (#398)
 - Code and test for checking for new parameters in csv and raising warning message if not defined (`A1.check_for_newly_added_parameters`). This then also adds a default value to the new parameter  (#384)
 - Exception if an energyVector does not have internal generation or consumption from a DSO, and is only supplied by energy conversion from another sector: renewable share = 0. (#384)
- - Tests for source components in D1 (#391)
- - Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
- - Pyppeteer package for OS X users in troubleshooting (#414)
- - Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
- - New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
- - `.readthedocs.yml` configuration file (#435, #436)
- - Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
- - Tests for LCOE function in test_E2_economics (#438)
- - Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
-- File "constants_output.py" to contain all keys included in "scalars.xlsx" (#453)
+- Tests for source components in D1 (#391)
+- Option `-i` for `python mvs_report.py`, `python mvs_report.py -h` for help (#407)
+- Pyppeteer package for OS X users in troubleshooting (#414)
+- Add an enhancement to the auto-report by printing the log messages such as warnings and errors (#417)
+- New `dict` `REQUIRED_JSON_PARAMETERS` to gather the required parameters from the json input files (#432)
+- `.readthedocs.yml` configuration file (#435, #436)
+- Calculation of levelized cost of energy (`LCOE_ASSET`) of each asset in E2 (#438)
+- Tests for LCOE function in `test_E2_economics` (#438)
+- Output of `scalars.xlsx`now also includes `INSTALLED_CAP` and `LCOE_ASSET`(#438)
+- File `constants_output.py` to contain all keys included in `scalars.xlsx` (#453)
 - Installation help for `pygraphviz` on Win10/64bit systems in `troubleshooting.rst` (#379)
 - Add Plotly-based blots (line diagrams for energy flows and bar charts) to `F2_autoreport.py` (#439)
 - LCOE_ASSET (Levelized Cost of Energy of Asset) explaination in KPI documentation (#458)
-- Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case uvtgv. note: file not provided so far (#474)
+- Heat demand profiles with option of using monitored weather data (ambient temperature) at the use case UVtgV. note: file not provided so far (#474)
 - Solar generation profiles with option of using monitored weather data (ambient temp, ghi, dhi) at the use case uvtgv. note: file not provided so far (#475)
 - Benchmark test for simple case grid and diesel without test for fuel consumption (#386)
 - Example docstring to readthedocs (#489)
@@ -94,10 +231,10 @@ Here is a template for new release sections
 - Sort parameters in csv´s within the input folder (#374)
 - Change relative folder path to absolute in tests files (#396)
 - Replace all variables wacc, discount_factor and project_lifetime in the project (#383)
-- Improve styling of the pfd report (#369)
+- Improve styling of the pdf report (#369)
 - `LIST_OF_NEW_PARAMETERS` renamed `EXTRA_CSV_PARAMETERS` and moved from `A1` to `constants.py
 ` (#384)
-- Order of parameters in tests/inputs, fixed missing parameters  (#384)
+- Order of parameters in `tests/inputs`, fixed missing parameters  (#384)
 - Only a single output flow for sources (instead of multiple possible) as discussed in #149  (#391)
 - Move `existing` parameter into Investment objects of D1 components (was before added to output flow) (#391)
 - Use pyppeteers instead of selenium to emulate the webbrowser and print the pdf report
@@ -113,16 +250,16 @@ Here is a template for new release sections
 - Add `ìnputs` folder to `.gitignore` (#401)
 - Readthedocs links to simple scenario `tests/inputs` (#420)
 - Adapt and add logging messages for components added to the model in D1 (#429)
-- Moved list of keys to be printed in "scalars.xlsx" to "constants_output.py" (#453)
-- Renamed "peak_flow" to `PEAK_FLOW` and "average_flow" to `AVERAGE_FLOW` (#453)
-- Changed function "E2.lcoe_asset()" and its tests, now processes one asset at a time (#453)
-- Added arguments `"-f", "-log", "warning"` to all `parse_args` and `main()` in `tests` (#456)
+- Moved list of keys to be printed in `scalars.xlsx` to `constants_output.py` (#453)
+- Renamed `"peak_flow"` to `PEAK_FLOW` and `"average_flow"` to `AVERAGE_FLOW` (#453)
+- Changed function `E2.lcoe_asset()` and its tests, now processes one asset at a time (#453)
+- Added arguments ``-f`, `-log`, `warning`` to all `parse_args` and `main()` in `tests` (#456)
 - File `Developing.rst` with new description of tests and conventions (#456)
-- Added a setup_class (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
+- Added a `setup_class` (remove dir) to `test_B0.TestTemporaryJsonFileDisposal` (#379)
 - Created function to read version number and date from file instead of importing it from module
  (#463)
-- Fixed E0.store_results_matrix(), now available types: 'str', 'bool', 'None', dict (with key VALUE), else ('int'/'float'). If KPI not in asset, no value is attributed. Added test for function (#468, #470)
-- Fixed main() calls in 'test_F1_plotting.py' (#468)
+- Fixed `E0.store_results_matrix()`, now available types: `str`, `bool`, `None`, dict (with key VALUE), else (`int`/`float`). If KPI not in asset, no value is attributed. Added test for function (#468, #470)
+- Fixed `main()` calls in `test_F1_plotting.py` (#468)
 - Added `pyppdf==0.0.12` to `requirements.txt` (#473)
 - Tests for A0: Now new dirs are only created if not existant
 - Function `A0.check_output_folder()`, now after `shutil.rmtree` we still `try-except os.mkdirs`, this fixes local issues with `FileExistsError`.  (#474)
@@ -134,19 +271,18 @@ Here is a template for new release sections
 - `inputs` folder (#401)
 - `tests/test_benchmark.py` module (#401)
 - Outdated table of tests of MVS `docs/tables/table_tests.csv` (#456)
-- Removed function C0.complete_missing_cost_data() as this should be covered by A1 for csv files (#379)
+- Removed function `C0.complete_missing_cost_data()` as this should be covered by A1 for csv files (#379)
 - Old plots in `F2_autoreport.py` generated with matplotlib (#439)
 - Parameter `restore_from_oemof_file` from all files (inputs, tests) (#483)
+- Deleted columns from `fixcost.csv` as this is currently not used (#362)
 
 ### Fixed
-- Deleted columns from ´fixcost.csv´ as this is currently not used (#362)
-- Issue #357 Bug connected to global variables (#356)
-- Issue #168 Duplicate of timeseries files (#388)
+- Bug connected to global variables (#356)
+- Duplicate of timeseries files (#388)
 - Warnings from local readthedocs compilation (#426)
-- Issue #430 Bug on local install (#437)
+- Bug on local install (#437)
 - Input folder `tests/inputs` with simple example scenario (#420)
 - Description of storage efficiency in readthedocs (#457)
-- Bug connected to global variables (#356)
 - MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
 - Adapted benchmark tests input folders to template (#386)
 - Local failing pytests (`FileExistsError`) on Ubuntu and Win10 (#474, #483)
@@ -160,8 +296,8 @@ Here is a template for new release sections
 ### Changed
 - Test input files (#343)
 - All parameters of the json/csv input files are now defined by constant variables (i.e, `CRATE="crate"` instead of string `"crate"`) (#346)
-- Use "is" instead of "==" in if clauses for True, False and None (#346)
-- Categorize constants in 'constants_json_strings.py' (#347)
+- Use `is` instead of `==` in if clauses for True, False and None (#346)
+- Categorize constants in `constants_json_strings.py` (#347)
 - Renaming CAPEX_FIX = "capex_fix" into COST_DEVELOPMENT = "development_costs" (#347, #350)
 - Renaming CAPEX_VAR = "capex_var" into SPECIFIC_COST = "specific_costs" (#347, #350)
 - Renaming OPEX_FIX = "opex_fix" into SPECIFIC_COST_OM = "specific_costs_om" (#347, #350)
@@ -243,7 +379,7 @@ tipps for module building, and hint that units in the MVS are not checked (#229)
 
  
 ### Removed
-- Removed parameter ´oemof_file_name´ from ´simulation_settings.csv´, as well as from all input
+- Removed parameter `oemof_file_name` from `simulation_settings.csv`, as well as from all input
  files etc. The name is hardcoded now (#150)
 
 ### Fixed
