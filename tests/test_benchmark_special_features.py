@@ -91,6 +91,7 @@ class Test_Parameter_Parsing:
                 VALUE
             ][k] == pytest.approx(csv_data[electricity_price][k], rel=1e-6)
 
+    '''
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
     # alone is called
     @pytest.mark.skipif(
@@ -120,7 +121,7 @@ class Test_Parameter_Parsing:
         data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
 
         assert 1 == 1
-
+    '''
     '''
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
     # alone is called
