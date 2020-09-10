@@ -1712,6 +1712,7 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
     else:
         dict = dict_values[group][asset][subasset]
     if MAXIMUM_CAP in dict:
+        # Check if a maximumCap is defined
         if dict[MAXIMUM_CAP][VALUE] is not None:
             # adapt maximumCap of non-dispatchable sources
             if group == ENERGY_PRODUCTION and dict[RENEWABLE_ASSET_BOOL][VALUE] == True:
