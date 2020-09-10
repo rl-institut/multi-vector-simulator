@@ -72,10 +72,17 @@ this can really only be recommended for advanced users.
 
 There can only be a single Json file in your input folder.
 As some parameters in the Json file link to a time series provided as a CSV,
-the folder "time_series" should be present in your input folder
-and provide all necessary input data that is an timeseries format.
-This can include for example PV generation time series demand time series.
+the folder "time_series" should be present in your input folder, as clarified in the next section.
 
+
+Time series: time_series folder
+###############################
+As some parameters in the Json file or csv files link to a time series provided as a CSV,
+the folder "time_series" should be present in your input folder
+and provide all necessary input time series. This can include for example PV generation
+time series and demand time series. You can provide them as absolute time series or as
+normalized time series. For the latter, make sure that time series of non-dispatchable
+sources only contain values between zero and one ([0, 1]).
 
 Defining an energy system
 -------------------------
