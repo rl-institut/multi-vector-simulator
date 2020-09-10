@@ -81,7 +81,7 @@ As some parameters in the Json file or csv files link to a time series provided 
 the folder "time_series" should be present in your input folder
 and provide all necessary input time series. This can include for example PV generation
 time series and demand time series. You can provide them as absolute time series or as
-normalized time series. For the latter, make sure that time series of non-dispatchable
+normalized time series (unit: kWh/kWp). For the latter, make sure that time series of non-dispatchable
 sources only contain values between zero and one ([0, 1]).
 
 Defining an energy system
