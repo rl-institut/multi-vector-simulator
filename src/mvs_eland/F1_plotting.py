@@ -21,6 +21,7 @@ import oemof
 
 from mvs_eland.utils.constants import (
     PROJECT_DATA,
+    ECONOMIC_DATA,
     LABEL,
     OUTPUT_FOLDER,
 )
@@ -28,6 +29,7 @@ from mvs_eland.utils.constants import (
 from mvs_eland.utils.constants_json_strings import (
     PROJECT_NAME,
     SCENARIO_NAME,
+    CURR,
     KPI,
     ENERGY_CONSUMPTION,
     TIMESERIES,
@@ -1126,7 +1128,14 @@ def plot_piecharts_of_costs(dict_values, file_path=None):
         )
 
         # Title of the pie plot
-        plot_title = kpi_part + str(round(total_for_title, 2)) + "$) " + project_title
+        plot_title = (
+            kpi_part
+            + str(round(total_for_title))
+            + " "
+            + dict_values[ECONOMIC_DATA][CURR]
+            + ") "
+            + project_title
+        )
 
         fig = create_plotly_piechart_fig(
             title_of_plot=plot_title,

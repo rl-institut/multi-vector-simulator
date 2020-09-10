@@ -35,6 +35,7 @@ Here is a template for new release sections
 - Change logging level of some messages from `logging.info` to `logging.debug` (#555)
 - Move and rename json input files for D0 and D1 tests (`test_data_for_D0.json` to `tests/test_data/inputs_for_D0/mvs_config.json`, `test_data_for_D1.json` to `tests/test_data/inputs_for_D1/mvs_config.json`), add required parameters (#555) 
 - Change requirements/test.txt: `black==19.10b0`, as otherwise there are incompatabilities (#555)
+- `F1.plot_piecharts_of_costs()` now cites costs with currect currency and avoids decimal numbers (#561)
 
 ### Removed
 -
@@ -42,6 +43,7 @@ Here is a template for new release sections
 ### Fixed
 - `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)
 - Feed-in sinks of the DSOs now are capacity-optimized and can actually be used (#555)
+- Graphs of the report now use appropriate currency (#561)
 
 ## [0.4.0] - 2020-09-01
 
