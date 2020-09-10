@@ -10,9 +10,11 @@ from mvs_eland.cli import main
 from mvs_eland.B0_data_input_json import load_json
 
 from _constants import (
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
     TEST_REPO_PATH,
+    CSV_EXT,
 )
-
 from mvs_eland.utils.constants import JSON_WITH_RESULTS, TIME_SERIES, CSV_EXT
 
 from mvs_eland.utils.constants_json_strings import (
@@ -37,6 +39,13 @@ class Test_Parameter_Parsing:
         if os.path.exists(TEST_OUTPUT_PATH) is False:
             os.mkdir(TEST_OUTPUT_PATH)
 
+    # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+    # alone is called
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_feature_parameters_as_timeseries(self, margs):
         r"""
@@ -82,6 +91,14 @@ class Test_Parameter_Parsing:
                 VALUE
             ][k] == pytest.approx(csv_data[electricity_price][k], rel=1e-6)
 
+    # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+    # alone is called
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_feature_input_flows_as_list(self, margs):
         r"""
         Notes
@@ -102,7 +119,18 @@ class Test_Parameter_Parsing:
         # read json with results file
         data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
 
+        assert 1 == 1
+
     '''
+    # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+    # alone is called
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+               "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+
     def test_benchmark_feature_output_flows_as_list(self, margs):
         r"""
         Notes
@@ -122,6 +150,7 @@ class Test_Parameter_Parsing:
 
         # read json with results file
         data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
+        assert 1 == 1
     '''
 
     def teardown_method(self):
