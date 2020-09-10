@@ -1714,7 +1714,9 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
         if dict[MAXIMUM_CAP][VALUE] is not None:
             # adapt maximumCap of nocolan-dispatchable sources
             if group == ENERGY_PRODUCTION and dict[RENEWABLE_ASSET_BOOL][VALUE] == True:
-                dict[MAXIMUM_CAP][VALUE] = dict[MAXIMUM_CAP][VALUE] / max(dict[TIMESERIES_NORMALIZED])
+                dict[MAXIMUM_CAP][VALUE] = dict[MAXIMUM_CAP][VALUE] / max(
+                    dict[TIMESERIES_NORMALIZED]
+                )
             # check if maximumCap is greater that installedCap
             if dict[MAXIMUM_CAP][VALUE] < dict[INSTALLED_CAP][VALUE]:
 
