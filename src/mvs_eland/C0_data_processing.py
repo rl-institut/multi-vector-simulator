@@ -20,10 +20,10 @@ import mvs_eland.C2_economic_functions as C2
 import mvs_eland.F0_output as F0
 
 """
-Module C0 prepares the data red from csv or json for simulation, ie. pre-processes it. 
+Module C0 prepares the data read from csv or json for simulation, ie. pre-processes it. 
 - Verify input values with C1
 - Identify energyVectors and write them to project_data/sectors
-- Create create an excess sink for each bus
+- Create an excess sink for each bus
 - Process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
 - Add economic parameters to json with C2
 - Calculate "simulation annuity" used in oemof model
@@ -33,7 +33,7 @@ Module C0 prepares the data red from csv or json for simulation, ie. pre-process
 - Read timeseries of assets and store into json (differ between one-column csv, multi-column csv)
 - Read timeseries for parameter of an asset, eg. efficiency
 - Parse list of inputs/outputs, eg. for chp
-- Define dso sinks, soures, transformer stations (this will be changed due to bug #119), also for peak demand pricing
+- Define dso sinks, sources, transformer stations (this will be changed due to bug #119), also for peak demand pricing
 - Add a source if a conversion object is connected to a new input_direction (bug #186)
 - Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
 """
@@ -1037,7 +1037,7 @@ def define_transformer_for_peak_demand_pricing(
 def define_source(
     dict_values, asset_key, output_bus_direction, energy_vector, **kwargs
 ):
-    f"""
+    r"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
 
     Parameters
@@ -1690,7 +1690,7 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
 
 def add_maximum_cap(dict_values, group, asset, subasset=None):
     """
-    Checks if maximumCap is in the csv file and if not, adds it to the dict
+    Checks if maximumCap is in `dict_values` and if not, adds value None.
 
     Parameters
     ----------
@@ -1699,7 +1699,7 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
     asset: str
         asset name
     subasset: str
-        subasset name
+        subasset name. Default: None.
 
     Returns
     -------
