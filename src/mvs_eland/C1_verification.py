@@ -51,9 +51,12 @@ from mvs_eland.utils.constants_json_strings import (
     COUNTRY,
     ENERGY_PRICE,
     ENERGY_PROVIDERS,
+    ENERGY_PRODUCTION,
     ENERGY_BUSSES,
     VALUE,
     ASSET_DICT,
+    RENEWABLE_ASSET_BOOL,
+    TIMESERIES_NORMALIZED,
 )
 
 
@@ -127,35 +130,52 @@ def check_feedin_tariff(dict_values):
 def check_time_series_values_between_0_and_1(time_series):
     r"""
     Checks whether all values of `time_series` in [0, 1].
+
     Parameters
     ----------
     time_series : pd.Series
         Time series to be checked.
+
     Returns
     -------
     bool
-        True if values of `time_series` within [0, 1].
+        True if values of `time_series` within [0, 1], else False.
+
     """
-    pass
+    boolean = time_series.between(0, 1)
+    if boolean.all() == False:
+        return False
+    else:
+        return True
 
 
 def check_non_dispatchable_source_time_series(dict_values):
     r"""
-    Raises error if time series of non-dispatchable sources not between [0, 1].
+    Raises error if time series of non-dispatchable sources are not between [0, 1].
+
     Parameters
     ----------
     dict_values : dict
         Contains all input data of the simulation.
+
     Returns
     -------
     Indirectly, raises error message in case of time series of non-dispatchable sources
     not between [0, 1].
-    """
-    # go through all non-dispatchable sources (energyProduction: renewableasset==True, any others?)
 
-    # check if values between 0 and 1
-    # check_time_series_values_between_0_and_1(time_series=)
-    pass
+    """
+    # go through all non-dispatchable sources
+    for key, source in dict_values[ENERGY_PRODUCTION].items():
+        if source[RENEWABLE_ASSET_BOOL][VALUE] == True:
+            # check if values between 0 and 1
+            result = check_time_series_values_between_0_and_1(
+                time_series=source[TIMESERIES_NORMALIZED]
+            )
+            if result == False:
+                logging.error(
+                    f"{TIMESERIES_NORMALIZED} of non-dispatchable source {source[LABEL]} contains values out of bounds [0, 1]."
+                )
+                return False
 
 
 def check_input_values(dict_values):
