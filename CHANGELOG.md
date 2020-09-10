@@ -24,7 +24,8 @@ Here is a template for new release sections
 ### Added
 - Evaluation of excess energy for each of the energy carriers and for the whole system. The excess per sector and their energy equivalent may currently be faulty (comp. issue #559) (#555)
 - Debug messages for pytests: `C0`, `D2` (#555, #560)
-- Requirement for time series of non-dispatchable sources: values betw. 0 and 1. (#498)
+- Error message if time series of non-dispatchable sources do not meet requirement: values betw. 0 and 1. (#498)
+- Requirement for time series of non-dispatchable sources in readthedocs (#498)
 
 ### Changed
 - `C1.total_demand_each_sector()` to `C1.total_demand_and_excess_each_sector()`, now also evaluating the excess energy flows (#555)
