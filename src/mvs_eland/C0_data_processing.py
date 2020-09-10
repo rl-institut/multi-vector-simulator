@@ -1713,7 +1713,7 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
         dict = dict_values[group][asset][subasset]
     if MAXIMUM_CAP in dict:
         if dict[MAXIMUM_CAP][VALUE] is not None:
-            # adapt maximumCap of nocolan-dispatchable sources
+            # adapt maximumCap of non-dispatchable sources
             if group == ENERGY_PRODUCTION and dict[RENEWABLE_ASSET_BOOL][VALUE] == True:
                 dict[MAXIMUM_CAP][VALUE] = dict[MAXIMUM_CAP][VALUE] / max(
                     dict[TIMESERIES_NORMALIZED]
