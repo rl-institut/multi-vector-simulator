@@ -289,7 +289,7 @@ def calculate_dispatch_expenditures(dispatch_price, flow, asset):
             dispatch_expenditures += partial_dispatch_expenditures
     else:
         raise TypeError(
-            f"The dispatch price of asset {asset} is neither float nor pd.Series but {type(dispatch_price)}."
+            f"The dispatch price of asset {asset} is neither float, list nor pd.Series but {type(dispatch_price)}."
             f"Please adapt E2.calculate_dispatch_costs() to evaluate the dispatch_expenditures of the asset."
         )
 

@@ -8,6 +8,7 @@ import argparse
 import os
 import shutil
 
+import pytest
 import mock
 
 from mvs_eland.cli import main
