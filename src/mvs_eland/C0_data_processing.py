@@ -1,9 +1,12 @@
 import logging
 import os
+import shutil
 import sys
 
+import matplotlib.pyplot as plt
 import pandas as pd
 
+logging.getLogger("matplotlib.font_manager").disabled = True
 
 from mvs_eland.utils.constants import (
     TIME_SERIES,
@@ -66,6 +69,8 @@ def all(dict_values):
     # todo check whether input values can be true
     # C1.check_input_values(dict_values)
     # todo Check, whether files (demand, generation) are existing
+    # check electricity price >= feed-in tariff todo: can be integrated into check_input_values() later
+    verify.check_feedin_tariff(dict_values=dict_values)
 
     # Adds costs to each asset and sub-asset, adds time series to assets
     process_all_assets(dict_values)
@@ -269,6 +274,7 @@ def process_all_assets(dict_values):
     """
     # Define all busses based on the in- and outflow directions of the assets in the input data
     define_busses(dict_values)
+
     # Define all excess sinks for each energy bus
     auto_sinks = define_excess_sinks(dict_values)
 
@@ -627,6 +633,7 @@ def add_busses_of_asset_depending_on_in_out_direction(
     Updated dict_values with potentially additional busses of the energy system.
     Updated dict_asset with the input_bus_name
     """
+
     for direction in [INFLOW_DIRECTION, OUTFLOW_DIRECTION]:
         # This is the parameter that will be added to dict_asset as the bus_name_key
         if direction == INFLOW_DIRECTION:
@@ -914,6 +921,13 @@ def add_a_transformer_for_each_peak_demand_pricing_period(
             dict_dso=dict_dso,
             transformer_name=transformer_name,
             timeseries_availability=dict_availability_timeseries[key],
+        )
+
+        F1.plot_input_timeseries(
+            dict_values=dict_values,
+            user_input=dict_values[SIMULATION_SETTINGS],
+            timeseries=dict_availability_timeseries[key],
+            asset_name="Availability of " + transformer_name,
         )
 
         list_of_dso_energyConversion_assets.append(transformer_name)
@@ -1494,6 +1508,99 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     return
 
 
+def determine_lifetime_price_dispatch(dict_asset, economic_data):
+    """
+    #todo I am not sure that this makes sense. is this used in d0?
+    Parameters
+    ----------
+    dict_asset
+    economic_data
+
+    Returns
+    -------
+
+    """
+    if isinstance(dict_asset[DISPATCH_PRICE][VALUE], float) or isinstance(
+        dict_asset[DISPATCH_PRICE][VALUE], int
+    ):
+        lifetime_price_dispatch = get_lifetime_price_dispatch_one_value(
+            dict_asset, economic_data
+        )
+
+    elif isinstance(dict_asset[DISPATCH_PRICE][VALUE], list):
+        lifetime_price_dispatch = get_lifetime_price_dispatch_list(
+            dict_asset, economic_data
+        )
+
+    elif isinstance(dict_asset[DISPATCH_PRICE][VALUE], pd.Series):
+        lifetime_price_dispatch = get_lifetime_price_dispatch_timeseries(
+            dict_asset, economic_data
+        )
+
+    else:
+        raise ValueError(
+            f"Type of dispatch_price neither int, float, list or pd.Series, but of type {dict_asset[DISPATCH_PRICE][VALUE]}. Is type correct?"
+        )
+
+    dict_asset.update(
+        {LIFETIME_PRICE_DISPATCH: {VALUE: lifetime_price_dispatch, UNIT: "?",}}
+    )
+    return
+
+
+def get_lifetime_price_dispatch_one_value(dict_asset, economic_data):
+    """
+    dispatch_price can be a fix value
+    Returns
+    -------
+
+    """
+    lifetime_price_dispatch = (
+        dict_asset[DISPATCH_PRICE][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
+    )
+    return lifetime_price_dispatch
+
+
+def get_lifetime_price_dispatch_list(dict_asset, economic_data):
+    """
+    dispatch_price can be a list, for example if there are two input flows to a component, eg. water and electricity.
+    Their ratio for providing cooling in kWh therm is fix. There should be a lifetime_price_dispatch for each of them.
+
+    Returns
+    -------
+
+    """
+
+    # if multiple busses are provided, it takes the first dispatch_price (corresponding to the first bus)
+
+    first_value = dict_asset[DISPATCH_PRICE][VALUE][0]
+    if isinstance(first_value, float) or isinstance(first_value, int):
+        dispatch_price = first_value
+    else:
+        dispatch_price = sum(first_value) / len(first_value)
+
+    lifetime_price_dispatch = dispatch_price * economic_data[ANNUITY_FACTOR][VALUE]
+    return lifetime_price_dispatch
+
+
+def get_lifetime_price_dispatch_timeseries(dict_asset, economic_data):
+    """
+    dispatch_price can be a timeseries, eg. in case that there is an hourly pricing
+    Returns
+    -------
+
+    """
+    # take average value of dispatch_price if it is a timeseries
+
+    dispatch_price = sum(dict_asset[DISPATCH_PRICE][VALUE]) / len(
+        dict_asset[DISPATCH_PRICE][VALUE]
+    )
+    lifetime_price_dispatch = (
+        dict_asset[DISPATCH_PRICE][VALUE] * economic_data[ANNUITY_FACTOR][VALUE]
+    )
+    return lifetime_price_dispatch
+
+
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
 # so additional values like peak, total or average must be calculated. Any other type does not need this additional info.
 def receive_timeseries_from_csv(
@@ -1606,6 +1713,26 @@ def receive_timeseries_from_csv(
                 )
             if any(dict_asset[TIMESERIES_NORMALIZED].values) < 0:
                 logging.warning("Error, %s timeseries negative.", dict_asset[LABEL])
+
+    # plot all timeseries that are red into simulation input
+    try:
+        F1.plot_input_timeseries(
+            dict_values=dict_values,
+            user_input=settings,
+            timeseries=dict_asset[TIMESERIES],
+            asset_name=dict_asset[LABEL],
+            column_head=header,
+            is_demand_profile=is_demand_profile,
+        )
+    except:
+        F1.plot_input_timeseries(
+            dict_values=dict_values,
+            user_input=settings,
+            timeseries=dict_asset[input_type][VALUE],
+            asset_name=dict_asset[LABEL],
+            column_head=header,
+            is_demand_profile=is_demand_profile,
+        )
 
 
 def treat_multiple_flows(dict_asset, dict_values, parameter):

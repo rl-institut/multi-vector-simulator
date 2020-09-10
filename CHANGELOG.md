@@ -283,6 +283,7 @@ Here is a template for new release sections
 - Bug on local install (#437)
 - Input folder `tests/inputs` with simple example scenario (#420)
 - Description of storage efficiency in readthedocs (#457)
+- Bug connected to global variables (#356)
 - MVS can now be run with argument `-pdf` (fix pyppeteer issue) (#473)
 - Adapted benchmark tests input folders to template (#386)
 - Local failing pytests (`FileExistsError`) on Ubuntu and Win10 (#474, #483)
