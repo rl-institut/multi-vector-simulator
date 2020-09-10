@@ -1718,6 +1718,8 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
             if group == ENERGY_PRODUCTION and dict[RENEWABLE_ASSET_BOOL][VALUE] == True:
                 dict[MAXIMUM_CAP][VALUE] = dict[MAXIMUM_CAP][VALUE] / max(
                     dict[TIMESERIES_NORMALIZED]
+                logging.debug(
+                    f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was divided by the peak value of {TIMESERIES_NORMALIZED} as it did not equal 1. This was done as the aimed constraint is to limit the power, not the flow."
                 )
             # check if maximumCap is greater that installedCap
             if dict[MAXIMUM_CAP][VALUE] < dict[INSTALLED_CAP][VALUE]:
