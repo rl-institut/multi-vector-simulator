@@ -36,6 +36,7 @@ Module C0 prepares the data read from csv or json for simulation, ie. pre-proces
 - Define dso sinks, sources, transformer stations (this will be changed due to bug #119), also for peak demand pricing
 - Add a source if a conversion object is connected to a new input_direction (bug #186)
 - Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
+- Multiply `maximumCap` of non-dispatchable sources by max(timeseries(kWh/kWp)) to fix `optimizedAddCap` (see issue #446)
 """
 
 
@@ -1710,8 +1711,11 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
     else:
         dict = dict_values[group][asset][subasset]
     if MAXIMUM_CAP in dict:
-        # check if maximumCap is greater that installedCap
         if dict[MAXIMUM_CAP][VALUE] is not None:
+            # adapt maximumCap of nocolan-dispatchable sources
+            if group == ENERGY_PRODUCTION and dict[RENEWABLE_ASSET_BOOL][VALUE] == True:
+                dict[MAXIMUM_CAP][VALUE] = dict[MAXIMUM_CAP][VALUE] / max(dict[TIMESERIES_NORMALIZED])
+            # check if maximumCap is greater that installedCap
             if dict[MAXIMUM_CAP][VALUE] < dict[INSTALLED_CAP][VALUE]:
 
                 logging.warning(
