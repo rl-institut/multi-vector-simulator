@@ -222,9 +222,10 @@ def test_calculate_annual_dispatch_expenditures_list_pd_series():
 
 def test_calculate_annual_dispatch_expenditures_nested_list():
     dispatch_expenditure = E2.calculate_dispatch_expenditures(
-            dispatch_price=[1, [1, 2]], flow=flow, asset=asset
-        )
-    assert dispatch_expenditure == 3+3+6
+        dispatch_price=[1, [1, 2]], flow=flow, asset=asset
+    )
+    assert dispatch_expenditure == 3 + 3 + 6
+
 
 def test_calculate_annual_dispatch_expenditures_str_error():
     with pytest.raises(TypeError):
