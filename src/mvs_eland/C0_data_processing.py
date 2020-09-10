@@ -1700,7 +1700,8 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
     asset: str
         asset name
     subasset: str
-        subasset name. Default: None.
+        subasset name.
+        Default: None.
 
     Returns
     -------
