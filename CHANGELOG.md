@@ -23,9 +23,10 @@ Here is a template for new release sections
 
 ### Added
 - Evaluation of excess energy for each of the energy carriers and for the whole system. The excess per sector and their energy equivalent may currently be faulty (comp. issue #559) (#555)
-- Debug messages for `C0` tests (#555)
 - Benchmark test `test_benchmark_feature_parameters_as_timeseries` to ensure that parameters can always also be defined as a timeseries. Applied to `efficiency` of an energyConversion asset and `electricity_price` of an energyProduction asset (#542)
 - Input files for benchmark tests `test_benchmark_feature_input_flows_as_list` (`Feature_input_flows_as_list`) and `test_benchmark_feature_output_flows_as_list` (`Feature_output_flows_as_list`), but not the benchmark assertions (#542)
+- Debug messages for pytests: `C0`, `D2` (#555, #560)
+
 
 ### Changed
 - `C1.total_demand_each_sector()` to `C1.total_demand_and_excess_each_sector()`, now also evaluating the excess energy flows (#555)
@@ -37,14 +38,16 @@ Here is a template for new release sections
 - Change logging level of some messages from `logging.info` to `logging.debug` (#555)
 - Move and rename json input files for D0 and D1 tests (`test_data_for_D0.json` to `tests/test_data/inputs_for_D0/mvs_config.json`, `test_data_for_D1.json` to `tests/test_data/inputs_for_D1/mvs_config.json`), add required parameters (#555) 
 - Change requirements/test.txt: `black==19.10b0`, as otherwise there are incompatabilities (#555)
+- `D2.prepare_constraint_minimal_renewable_share`, including logging messages and pytest (#560)
 - Changed `E2.calculate_dispatch_expenditures()` so that it can process parameters defined as lists (#542)
 
 ### Removed
--
+
 
 ### Fixed
 - `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)
 - Feed-in sinks of the DSOs now are capacity-optimized and can actually be used (#555)
+- Incorrectly applied minimal renewable share criterion (#560)
 - Fix reading timeseries for parameters in `C0` (#542)
 
 ## [0.4.0] - 2020-09-01
