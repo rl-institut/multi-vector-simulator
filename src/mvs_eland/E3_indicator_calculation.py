@@ -422,7 +422,7 @@ def equation_degree_of_autonomy():
 
 
 def add_degree_of_sector_coupling(dict_values):
-    """
+    r"""
     Determines the aggregated flows in between the sectors and the Degree of Sector Coupling.
 
     Takes into account the value of different energy carriers.
@@ -436,9 +436,9 @@ def add_degree_of_sector_coupling(dict_values):
     -------
     Energy equivalent of total conversion flows:
 
-    .. math:: E_{conversion,eq} = \sum_{i}{E_{conversion} (i)⋅w_i}
-
-            with i are conversion assets
+    .. math::
+        E_{conversion,eq} = \sum_{i}{E_{conversion} (i) \cdot w_i}
+        with i are conversion assets
 
     """
     # todo actually only flows that transform an energy carrier from oone energy vector to the next should be added
