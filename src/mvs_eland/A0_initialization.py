@@ -280,14 +280,15 @@ def process_user_arguments(
         (Optional) Can force tool to replace existing output folder (command line "-f")
     :param pdf_report:
         (Optional) Can generate an automatic pdf report of the simulation's results (Command line "-pdf")
-    :param: save_png:
+    :param save_png:
         (Optional) Can generate png figures with the simulation's results (Command line "-png")
     :param display_output:
         (Optional) Determines which messages are used for terminal output (command line "-log")
-            "debug": All logging messages
-            "info": All informative messages and warnings (default)
-            "warning": All warnings
-            "error": Only errors
+        Allowed values are
+        "debug": All logging messages,
+        "info": All informative messages and warnings (default),
+        "warning": All warnings,
+        "error": Only errors,
     :param lp_file_output:
         Save linear equation system generated as lp file
     :param welcome_text:
