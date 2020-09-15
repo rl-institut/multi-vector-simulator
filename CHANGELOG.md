@@ -36,6 +36,7 @@ Here is a template for new release sections
 - Move and rename json input files for D0 and D1 tests (`test_data_for_D0.json` to `tests/test_data/inputs_for_D0/mvs_config.json`, `test_data_for_D1.json` to `tests/test_data/inputs_for_D1/mvs_config.json`), add required parameters (#555) 
 - Change requirements/test.txt: `black==19.10b0`, as otherwise there are incompatabilities (#555)
 - `D2.prepare_constraint_minimal_renewable_share`, including logging messages and pytest (#560)
+
 ### Removed
 
 
@@ -44,6 +45,7 @@ Here is a template for new release sections
 - Feed-in sinks of the DSOs now are capacity-optimized and can actually be used (#555)
 - Incorrectly applied minimal renewable share criterion (#560)
 - Pdf report generation (#566)
+- Update fresh install instructions for developers (#565)
 
 ## [0.4.0] - 2020-09-01
 
