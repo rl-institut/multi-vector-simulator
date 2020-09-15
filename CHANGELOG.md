@@ -43,6 +43,7 @@ Here is a template for new release sections
 - `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)
 - Feed-in sinks of the DSOs now are capacity-optimized and can actually be used (#555)
 - Incorrectly applied minimal renewable share criterion (#560)
+- Pdf report generation (#566)
 
 ## [0.4.0] - 2020-09-01
 
