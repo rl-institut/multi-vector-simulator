@@ -36,6 +36,9 @@ Here is a template for new release sections
 - Move and rename json input files for D0 and D1 tests (`test_data_for_D0.json` to `tests/test_data/inputs_for_D0/mvs_config.json`, `test_data_for_D1.json` to `tests/test_data/inputs_for_D1/mvs_config.json`), add required parameters (#555) 
 - Change requirements/test.txt: `black==19.10b0`, as otherwise there are incompatabilities (#555)
 - `D2.prepare_constraint_minimal_renewable_share`, including logging messages and pytest (#560)
+- Change the import path of the modules for automatic docstrings import in `docs/Code.rst` (#564)
+- Fix the docstrings with math expressions (need to add `r` before the `"""` of the docstring
+) (#564)
 
 ### Removed
 
