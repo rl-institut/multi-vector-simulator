@@ -504,7 +504,7 @@ def check_for_official_extra_parameters(
 
     Returns
     -------
-    Updated parameters list and updated dataframe and updated :pandas:`pandas.DataFrame<frame>`
+    Updated parameters list and updated dataframe and updated :class:`pandas.DataFrame<frame>`
     The function through a warning if a new parameter is not defined in the csv but exists inf
     the official_extra_parameters. The parameter will then be set to it's default value.
     """
