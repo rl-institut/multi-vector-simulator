@@ -103,7 +103,9 @@ async def _print_pdf_from_chrome(path_pdf_report):
 
     browser = await launch()
     page = await browser.newPage()
-    await page.goto("http://127.0.0.1:8050", {"waitUntil": "networkidle0"})
+    await page.goto(
+        "http://127.0.0.1:8050", {"waitUntil": "domcontentloaded", "timeout": 120000}
+    )
     await page.waitForSelector("#main-div")
     await page.pdf({"path": path_pdf_report, "format": "A4", "printBackground": True})
     await browser.close()
