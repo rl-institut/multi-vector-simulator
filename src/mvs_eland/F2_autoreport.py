@@ -172,7 +172,7 @@ def make_dash_data_table(df, title=None):
 
     Parameters
     ----------
-    df: :pandas:`pandas.DataFrame<frame>`
+    df: :class:`pandas.DataFrame<frame>`
         This dataframe holds the data from which the dash table is to be created.
 
     title: str
@@ -352,7 +352,7 @@ def insert_plotly_figure(
 
     Parameters
     ----------
-    fig: :plotly:`plotly.graph_objs.Figure`
+    fig: :class:`plotly.graph_objs.Figure`
         figure object
 
     id_plot: str

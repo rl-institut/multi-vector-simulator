@@ -1,9 +1,10 @@
 """
 Defines the strings of different json parameters
-Not defining parameters as strings can be helpful, ig. if
-    if string in dict_values
-Is used, where typos can be very bad for future handling.
+Using variables rather than strings is helpful for typo prevention. A typo in a variable will
+raise an error where the variable was misspelled, whereas a typo in a string (dictionnary key)
+do not nessarily raise an error immediately, making the typo harder to fix.
 """
+
 #####################
 # 1st level of json #
 #####################

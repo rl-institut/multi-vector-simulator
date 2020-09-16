@@ -93,12 +93,12 @@ def extract_plot_data_and_title(dict_values, df_dem=None):
     dict_values: dict
         output values of MVS
 
-    df_dem: :pandas:`pandas.DataFrame<frame>`
+    df_dem: :class:`pandas.DataFrame<frame>`
         summarized demand information for each demand
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
     if df_dem is None:
@@ -538,7 +538,7 @@ def create_plotly_line_fig(
 
     Returns
     -------
-    fig :plotly:`plotly.graph_objs.Figure`
+    fig :class:`plotly.graph_objs.Figure`
         figure object
     """
     fig = go.Figure()
@@ -615,7 +615,7 @@ def plot_timeseries(
 
     Returns
     -------
-    Dict with html DOM id for the figure as key and :plotly:`plotly.graph_objs.Figure` as value
+    Dict with html DOM id for the figure as key and :class:`plotly.graph_objs.Figure` as value
     """
 
     df_dem = convert_demand_to_dataframe(dict_values)
@@ -700,7 +700,7 @@ def create_plotly_barplot_fig(
 
     Returns
     -------
-    fig: :plotly:`plotly.graph_objs.Figure`
+    fig: :class:`plotly.graph_objs.Figure`
         figure object
     """
     fig = go.Figure()
@@ -772,7 +772,7 @@ def plot_optimized_capacities(
 
     Returns
     -------
-    Dict with html DOM id for the figure as key and :plotly:`plotly.graph_objs.Figure` as value
+    Dict with html DOM id for the figure as key and :class:`plotly.graph_objs.Figure` as value
     """
 
     # Add dataframe to hold all the KPIs and optimized additional capacities
@@ -827,7 +827,7 @@ def create_plotly_flow_fig(
 
     Parameters
     ----------
-    df_plots_data: :pandas:`pandas.DataFrame<frame>`
+    df_plots_data: :class:`pandas.DataFrame<frame>`
         dataFrame with timeseries of the asset's energy flow
     x_legend: str
         Default: None
@@ -852,7 +852,7 @@ def create_plotly_flow_fig(
 
     Returns
     -------
-    fig: :plotly:`plotly.graph_objs.Figure`
+    fig: :class:`plotly.graph_objs.Figure`
         figure object
     """
 
@@ -921,7 +921,7 @@ def plot_flows(dict_values, file_path=None):
     Returns
     -------
     pie_plots: dict
-       Dict with html DOM id for the figure as keys and :plotly:`plotly.graph_objs.Figure` as values
+       Dict with html DOM id for the figure as keys and :class:`plotly.graph_objs.Figure` as values
     """
     buses_list = list(dict_values[OPTIMIZED_FLOWS].keys())
     multi_plots = {}
@@ -989,7 +989,7 @@ def create_plotly_piechart_fig(
 
     Returns
     -------
-    fig: :plotly:`plotly.graph_objs.Figure`
+    fig: :class:`plotly.graph_objs.Figure`
         figure object
     """
 
@@ -1060,7 +1060,7 @@ def plot_piecharts_of_costs(dict_values, file_path=None):
     Returns
     -------
     pie_plots: dict
-       Dict with html DOM id for the figure as keys and :plotly:`plotly.graph_objs.Figure` as values
+       Dict with html DOM id for the figure as keys and :class:`plotly.graph_objs.Figure` as values
     """
 
     df_pie_data = convert_costs_to_dataframe(dict_values)
