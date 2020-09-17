@@ -804,6 +804,8 @@ def plot_optimized_capacities(
         if cap > 0:
             x_values.append(kpi)
             y_values.append(cap)
+            if unit == "?":
+                unit = "kW"
             legends.append("{:.0f} {}".format(cap, unit))
 
     # Title to add to plot titles
