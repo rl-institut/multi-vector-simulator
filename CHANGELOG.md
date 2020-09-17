@@ -39,9 +39,10 @@ Here is a template for new release sections
 - Change the import path of the modules for automatic docstrings import in `docs/Code.rst` (#564)
 - Fix the docstrings with math expressions (need to add `r` before the `"""` of the docstring
 ) (#564)
+- Rename the function in F1 module `plot_flows` to `plot_instant_power` (#567)
+- Change flow to power in the instanteous power figures (#567)
 
 ### Removed
-
 
 ### Fixed
 - `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)
