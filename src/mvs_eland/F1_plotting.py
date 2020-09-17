@@ -720,8 +720,11 @@ def create_plotly_barplot_fig(
 
     fig.add_trace(
         go.Bar(
-            name=trace_name, x=x_data, y=y_data,
-            marker_color=px.colors.qualitative.D3,**opts
+            name=trace_name,
+            x=x_data,
+            y=y_data,
+            marker_color=px.colors.qualitative.D3,
+            **opts
         )
     )
 
@@ -798,8 +801,9 @@ def plot_optimized_capacities(
     legends = []
 
     for kpi, cap, unit in zip(
-        list(df_capacities[LABEL]), list(df_capacities[OPTIMIZED_ADD_CAP]), list(df_capacities[
-                                                                                     UNIT])
+        list(df_capacities[LABEL]),
+        list(df_capacities[OPTIMIZED_ADD_CAP]),
+        list(df_capacities[UNIT]),
     ):
         if cap > 0:
             x_values.append(kpi)
