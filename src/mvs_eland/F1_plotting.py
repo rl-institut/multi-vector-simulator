@@ -906,8 +906,8 @@ def create_plotly_flow_fig(
     return fig
 
 
-def plot_flows(dict_values, file_path=None):
-    """Plotting timeseries of each assets' flow of the energy system
+def plot_instant_power(dict_values, file_path=None):
+    """Plotting timeseries of instantaneous power for each assets within the energy system
 
     Parameters
     ----------

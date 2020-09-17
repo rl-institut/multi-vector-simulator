@@ -74,7 +74,7 @@ from mvs_eland.F1_plotting import (
     plot_timeseries,
     plot_piecharts_of_costs,
     plot_optimized_capacities,
-    plot_flows,
+    plot_instant_power,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
@@ -475,7 +475,7 @@ def ready_flows_plots(dict_values, only_print=False):
         List containing the assets' timeseries plots as dash components
     """
 
-    figs = plot_flows(dict_values)
+    figs = plot_instant_power(dict_values)
     multi_plots = [
         insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
         for comp_id, fig in figs.items()
