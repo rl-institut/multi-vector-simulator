@@ -920,7 +920,7 @@ def plot_flows(dict_values, file_path=None):
 
     Returns
     -------
-    pie_plots: dict
+    multi_plots: dict
        Dict with html DOM id for the figure as keys and :class:`plotly.graph_objs.Figure` as values
     """
     buses_list = list(dict_values[OPTIMIZED_FLOWS].keys())
@@ -929,7 +929,7 @@ def plot_flows(dict_values, file_path=None):
         comp_id = bus + "-plot"
         title = (
             bus
-            + " flows in LES: "
+            + " power in LES: "
             + dict_values[PROJECT_DATA][PROJECT_NAME]
             + ", "
             + dict_values[PROJECT_DATA][SCENARIO_NAME]
@@ -942,10 +942,10 @@ def plot_flows(dict_values, file_path=None):
         fig = create_plotly_flow_fig(
             df_plots_data=df_data,
             x_legend="Time",
-            y_legend=bus + " flow in kWh",
+            y_legend=bus + " in kW",
             plot_title=title,
             file_path=file_path,
-            file_name=bus + "_flow.png",
+            file_name=bus + "_power.png",
         )
         if file_path is None:
             multi_plots[comp_id] = fig
