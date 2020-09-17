@@ -24,6 +24,7 @@ Here is a template for new release sections
 ### Added
 - Evaluation of excess energy for each of the energy carriers and for the whole system. The excess per sector and their energy equivalent may currently be faulty (comp. issue #559) (#555)
 - Debug messages for pytests: `C0`, `D2` (#555, #560)
+- Labels on capacity barplot bars (#567)
 
 ### Changed
 - `C1.total_demand_each_sector()` to `C1.total_demand_and_excess_each_sector()`, now also evaluating the excess energy flows (#555)
@@ -39,9 +40,10 @@ Here is a template for new release sections
 - Change the import path of the modules for automatic docstrings import in `docs/Code.rst` (#564)
 - Fix the docstrings with math expressions (need to add `r` before the `"""` of the docstring
 ) (#564)
+- Rename the function in F1 module `plot_flows` to `plot_instant_power` (#567)
+- Change flow to power in the instanteous power figures (#567)
 
 ### Removed
-
 
 ### Fixed
 - `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)

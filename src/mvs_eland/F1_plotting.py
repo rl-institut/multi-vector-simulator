@@ -29,6 +29,7 @@ from mvs_eland.utils.constants_json_strings import (
     PROJECT_NAME,
     SCENARIO_NAME,
     KPI,
+    UNIT,
     ENERGY_CONSUMPTION,
     TIMESERIES,
     DISPATCHABILITY,
@@ -661,6 +662,7 @@ def create_plotly_barplot_fig(
     y_data,
     plot_title=None,
     trace_name="",
+    legends=None,
     x_axis_name=None,
     y_axis_name=None,
     file_name="barplot.png",
@@ -685,6 +687,10 @@ def create_plotly_barplot_fig(
         Sets the trace name. The trace name appear as the legend item and on hover.
         Default: ""
 
+    legends: list, or pandas series
+        The list of the text written within the bars and on hover below the trace_name
+        Default: None
+
     x_axis_name: str
         Default: None
 
@@ -708,9 +714,17 @@ def create_plotly_barplot_fig(
     styling_dict = get_fig_style_dict()
     styling_dict["mirror"] = True
 
+    opts = {}
+    if legends is not None:
+        opts.update(dict(text=legends, textposition="auto"))
+
     fig.add_trace(
         go.Bar(
-            name=trace_name, x=x_data, y=y_data, marker_color=px.colors.qualitative.D3,
+            name=trace_name,
+            x=x_data,
+            y=y_data,
+            marker_color=px.colors.qualitative.D3,
+            **opts
         )
     )
 
@@ -784,13 +798,19 @@ def plot_optimized_capacities(
 
     x_values = []
     y_values = []
+    legends = []
 
-    for kpi, cap in zip(
-        list(df_capacities[LABEL]), list(df_capacities[OPTIMIZED_ADD_CAP])
+    for kpi, cap, unit in zip(
+        list(df_capacities[LABEL]),
+        list(df_capacities[OPTIMIZED_ADD_CAP]),
+        list(df_capacities[UNIT]),
     ):
         if cap > 0:
             x_values.append(kpi)
             y_values.append(cap)
+            if unit == "?":
+                unit = "kW"
+            legends.append("{:.0f} {}".format(cap, unit))
 
     # Title to add to plot titles
     project_title = ": {}, {}".format(
@@ -803,8 +823,9 @@ def plot_optimized_capacities(
     fig = create_plotly_barplot_fig(
         x_data=x_values,
         y_data=y_values,
-        plot_title="Optimal additional capacities (kW/kWh/kWp)" + project_title,
+        plot_title="Optimal additional capacities" + project_title,
         trace_name="capacities",
+        legends=legends,
         x_axis_name="Items",
         y_axis_name="Capacities",
         file_name=name_file,
@@ -906,8 +927,8 @@ def create_plotly_flow_fig(
     return fig
 
 
-def plot_flows(dict_values, file_path=None):
-    """Plotting timeseries of each assets' flow of the energy system
+def plot_instant_power(dict_values, file_path=None):
+    """Plotting timeseries of instantaneous power for each assets within the energy system
 
     Parameters
     ----------
@@ -920,7 +941,7 @@ def plot_flows(dict_values, file_path=None):
 
     Returns
     -------
-    pie_plots: dict
+    multi_plots: dict
        Dict with html DOM id for the figure as keys and :class:`plotly.graph_objs.Figure` as values
     """
     buses_list = list(dict_values[OPTIMIZED_FLOWS].keys())
@@ -929,7 +950,7 @@ def plot_flows(dict_values, file_path=None):
         comp_id = bus + "-plot"
         title = (
             bus
-            + " flows in LES: "
+            + " power in LES: "
             + dict_values[PROJECT_DATA][PROJECT_NAME]
             + ", "
             + dict_values[PROJECT_DATA][SCENARIO_NAME]
@@ -942,10 +963,10 @@ def plot_flows(dict_values, file_path=None):
         fig = create_plotly_flow_fig(
             df_plots_data=df_data,
             x_legend="Time",
-            y_legend=bus + " flow in kWh",
+            y_legend=bus + " in kW",
             plot_title=title,
             file_path=file_path,
-            file_name=bus + "_flow.png",
+            file_name=bus + "_power.png",
         )
         if file_path is None:
             multi_plots[comp_id] = fig
