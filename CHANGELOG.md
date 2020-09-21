@@ -55,8 +55,6 @@ Here is a template for new release sections
 - Change flow to power in the instanteous power figures (#567)
 - `F1.plot_piecharts_of_costs()` now cites costs with currect currency and avoids decimal numbers (#561)
 
-### Removed
-
 ### Fixed
 - `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)
 - Feed-in sinks of the DSOs now are capacity-optimized and can actually be used (#555)
