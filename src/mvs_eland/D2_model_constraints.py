@@ -73,7 +73,7 @@ def add_constraints(local_energy_system, dict_values, dict_model):
 
 
 def constraint_minimal_renewable_share(model, dict_values, dict_model):
-    """
+    r"""
     Resulting in an energy system adhering to a minimal renewable factor.
 
     Please be aware that the renewable factor that has to adhere to the minimal renewable factor is not the one of one specific sector,
@@ -280,21 +280,20 @@ def prepare_constraint_minimal_renewable_share(
     for dso in dict_values[ENERGY_PROVIDERS]:
         # Get source connected to the specific DSO in question
         DSO_source_name = dso + DSO_CONSUMPTION
-
         # Add DSO to both renewable and nonrenewable assets (as only a share of their supply may be renewable)
         dso_sources.append(DSO_source_name)
 
         renewable_assets.update(
             {
-                asset: {
+                DSO_source_name: {
                     oemof_solph_object_asset: dict_model[OEMOF_SOURCE][
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][LABEL]
                     ],
                     oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
-                        dict_values[ENERGY_PRODUCTION][asset][OUTPUT_BUS_NAME]
+                        dict_values[ENERGY_PRODUCTION][DSO_source_name][OUTPUT_BUS_NAME]
                     ],
                     weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
-                        dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
+                        dict_values[ENERGY_PRODUCTION][DSO_source_name][ENERGY_VECTOR]
                     ][VALUE],
                     renewable_share_asset_flow: dict_values[ENERGY_PROVIDERS][dso][
                         RENEWABLE_SHARE_DSO
@@ -304,15 +303,15 @@ def prepare_constraint_minimal_renewable_share(
         )
         non_renewable_assets.update(
             {
-                asset: {
+                DSO_source_name: {
                     oemof_solph_object_asset: dict_model[OEMOF_SOURCE][
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][LABEL]
                     ],
                     oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
-                        dict_values[ENERGY_PRODUCTION][asset][OUTPUT_BUS_NAME]
+                        dict_values[ENERGY_PRODUCTION][DSO_source_name][OUTPUT_BUS_NAME]
                     ],
                     weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
-                        dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
+                        dict_values[ENERGY_PRODUCTION][DSO_source_name][ENERGY_VECTOR]
                     ][VALUE],
                     renewable_share_asset_flow: dict_values[ENERGY_PROVIDERS][dso][
                         RENEWABLE_SHARE_DSO
@@ -327,4 +326,13 @@ def prepare_constraint_minimal_renewable_share(
                 "There is an asset {k} that does not have any information whether it is of renewable origin or not. "
                 "It is neither a DSO source nor a renewable or fuel source."
             )
+
+    renewable_asset_string = ", ".join(map(str, renewable_assets.keys()))
+    non_renewable_asset_string = ", ".join(map(str, non_renewable_assets.keys()))
+
+    logging.debug(f"Data considered for the minimal renewable share constraint:")
+    logging.debug(f"Assets connected to renewable generation: {renewable_asset_string}")
+    logging.debug(
+        f"Assets connected to non-renewable generation: {non_renewable_asset_string}"
+    )
     return renewable_assets, non_renewable_assets

@@ -31,6 +31,7 @@ from mvs_eland.utils.constants_json_strings import (
     SCENARIO_NAME,
     CURR,
     KPI,
+    UNIT,
     ENERGY_CONSUMPTION,
     TIMESERIES,
     DISPATCHABILITY,
@@ -95,12 +96,12 @@ def extract_plot_data_and_title(dict_values, df_dem=None):
     dict_values: dict
         output values of MVS
 
-    df_dem: :pandas:`pandas.DataFrame<frame>`
+    df_dem: :class:`pandas.DataFrame<frame>`
         summarized demand information for each demand
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
     if df_dem is None:
@@ -540,7 +541,7 @@ def create_plotly_line_fig(
 
     Returns
     -------
-    fig :plotly:`plotly.graph_objs.Figure`
+    fig :class:`plotly.graph_objs.Figure`
         figure object
     """
     fig = go.Figure()
@@ -617,7 +618,7 @@ def plot_timeseries(
 
     Returns
     -------
-    Dict with html DOM id for the figure as key and :plotly:`plotly.graph_objs.Figure` as value
+    Dict with html DOM id for the figure as key and :class:`plotly.graph_objs.Figure` as value
     """
 
     df_dem = convert_demand_to_dataframe(dict_values)
@@ -663,6 +664,7 @@ def create_plotly_barplot_fig(
     y_data,
     plot_title=None,
     trace_name="",
+    legends=None,
     x_axis_name=None,
     y_axis_name=None,
     file_name="barplot.png",
@@ -687,6 +689,10 @@ def create_plotly_barplot_fig(
         Sets the trace name. The trace name appear as the legend item and on hover.
         Default: ""
 
+    legends: list, or pandas series
+        The list of the text written within the bars and on hover below the trace_name
+        Default: None
+
     x_axis_name: str
         Default: None
 
@@ -702,7 +708,7 @@ def create_plotly_barplot_fig(
 
     Returns
     -------
-    fig: :plotly:`plotly.graph_objs.Figure`
+    fig: :class:`plotly.graph_objs.Figure`
         figure object
     """
     fig = go.Figure()
@@ -710,9 +716,17 @@ def create_plotly_barplot_fig(
     styling_dict = get_fig_style_dict()
     styling_dict["mirror"] = True
 
+    opts = {}
+    if legends is not None:
+        opts.update(dict(text=legends, textposition="auto"))
+
     fig.add_trace(
         go.Bar(
-            name=trace_name, x=x_data, y=y_data, marker_color=px.colors.qualitative.D3,
+            name=trace_name,
+            x=x_data,
+            y=y_data,
+            marker_color=px.colors.qualitative.D3,
+            **opts
         )
     )
 
@@ -774,7 +788,7 @@ def plot_optimized_capacities(
 
     Returns
     -------
-    Dict with html DOM id for the figure as key and :plotly:`plotly.graph_objs.Figure` as value
+    Dict with html DOM id for the figure as key and :class:`plotly.graph_objs.Figure` as value
     """
 
     # Add dataframe to hold all the KPIs and optimized additional capacities
@@ -786,13 +800,19 @@ def plot_optimized_capacities(
 
     x_values = []
     y_values = []
+    legends = []
 
-    for kpi, cap in zip(
-        list(df_capacities[LABEL]), list(df_capacities[OPTIMIZED_ADD_CAP])
+    for kpi, cap, unit in zip(
+        list(df_capacities[LABEL]),
+        list(df_capacities[OPTIMIZED_ADD_CAP]),
+        list(df_capacities[UNIT]),
     ):
         if cap > 0:
             x_values.append(kpi)
             y_values.append(cap)
+            if unit == "?":
+                unit = "kW"
+            legends.append("{:.0f} {}".format(cap, unit))
 
     # Title to add to plot titles
     project_title = ": {}, {}".format(
@@ -805,8 +825,9 @@ def plot_optimized_capacities(
     fig = create_plotly_barplot_fig(
         x_data=x_values,
         y_data=y_values,
-        plot_title="Optimal additional capacities (kW/kWh/kWp)" + project_title,
+        plot_title="Optimal additional capacities" + project_title,
         trace_name="capacities",
+        legends=legends,
         x_axis_name="Items",
         y_axis_name="Capacities",
         file_name=name_file,
@@ -829,7 +850,7 @@ def create_plotly_flow_fig(
 
     Parameters
     ----------
-    df_plots_data: :pandas:`pandas.DataFrame<frame>`
+    df_plots_data: :class:`pandas.DataFrame<frame>`
         dataFrame with timeseries of the asset's energy flow
     x_legend: str
         Default: None
@@ -854,7 +875,7 @@ def create_plotly_flow_fig(
 
     Returns
     -------
-    fig: :plotly:`plotly.graph_objs.Figure`
+    fig: :class:`plotly.graph_objs.Figure`
         figure object
     """
 
@@ -908,8 +929,8 @@ def create_plotly_flow_fig(
     return fig
 
 
-def plot_flows(dict_values, file_path=None):
-    """Plotting timeseries of each assets' flow of the energy system
+def plot_instant_power(dict_values, file_path=None):
+    """Plotting timeseries of instantaneous power for each assets within the energy system
 
     Parameters
     ----------
@@ -922,8 +943,8 @@ def plot_flows(dict_values, file_path=None):
 
     Returns
     -------
-    pie_plots: dict
-       Dict with html DOM id for the figure as keys and :plotly:`plotly.graph_objs.Figure` as values
+    multi_plots: dict
+       Dict with html DOM id for the figure as keys and :class:`plotly.graph_objs.Figure` as values
     """
     buses_list = list(dict_values[OPTIMIZED_FLOWS].keys())
     multi_plots = {}
@@ -931,7 +952,7 @@ def plot_flows(dict_values, file_path=None):
         comp_id = bus + "-plot"
         title = (
             bus
-            + " flows in LES: "
+            + " power in LES: "
             + dict_values[PROJECT_DATA][PROJECT_NAME]
             + ", "
             + dict_values[PROJECT_DATA][SCENARIO_NAME]
@@ -944,10 +965,10 @@ def plot_flows(dict_values, file_path=None):
         fig = create_plotly_flow_fig(
             df_plots_data=df_data,
             x_legend="Time",
-            y_legend=bus + " flow in kWh",
+            y_legend=bus + " in kW",
             plot_title=title,
             file_path=file_path,
-            file_name=bus + "_flow.png",
+            file_name=bus + "_power.png",
         )
         if file_path is None:
             multi_plots[comp_id] = fig
@@ -991,7 +1012,7 @@ def create_plotly_piechart_fig(
 
     Returns
     -------
-    fig: :plotly:`plotly.graph_objs.Figure`
+    fig: :class:`plotly.graph_objs.Figure`
         figure object
     """
 
@@ -1062,7 +1083,7 @@ def plot_piecharts_of_costs(dict_values, file_path=None):
     Returns
     -------
     pie_plots: dict
-       Dict with html DOM id for the figure as keys and :plotly:`plotly.graph_objs.Figure` as values
+       Dict with html DOM id for the figure as keys and :class:`plotly.graph_objs.Figure` as values
     """
 
     df_pie_data = convert_costs_to_dataframe(dict_values)

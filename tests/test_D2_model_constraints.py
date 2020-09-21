@@ -20,9 +20,13 @@ def test_prepare_constraint_minimal_renewable_share():
     diesel = "Diesel"
     electricity = "Electricity"
     fuel = "Fuel"
-    dso = "DSO"
+    dso_1 = "DSO_1"
+    dso_2 = "DSO_2"
     dict_values = {
-        ENERGY_PROVIDERS: {dso: {LABEL: dso, RENEWABLE_SHARE_DSO: {VALUE: 0.3}}},
+        ENERGY_PROVIDERS: {
+            dso_1: {LABEL: dso_1, RENEWABLE_SHARE_DSO: {VALUE: 0.3}},
+            dso_2: {LABEL: dso_2, RENEWABLE_SHARE_DSO: {VALUE: 0.7}},
+        },
         ENERGY_PRODUCTION: {
             pv_plant: {
                 RENEWABLE_ASSET_BOOL: {VALUE: True},
@@ -36,9 +40,15 @@ def test_prepare_constraint_minimal_renewable_share():
                 OUTPUT_BUS_NAME: fuel,
                 ENERGY_VECTOR: electricity,
             },
-            dso
+            dso_1
             + DSO_CONSUMPTION: {
-                LABEL: dso + DSO_CONSUMPTION,
+                LABEL: dso_1 + DSO_CONSUMPTION,
+                OUTPUT_BUS_NAME: electricity,
+                ENERGY_VECTOR: electricity,
+            },
+            dso_2
+            + DSO_CONSUMPTION: {
+                LABEL: dso_2 + DSO_CONSUMPTION,
                 OUTPUT_BUS_NAME: electricity,
                 ENERGY_VECTOR: electricity,
             },
@@ -48,7 +58,8 @@ def test_prepare_constraint_minimal_renewable_share():
         OEMOF_SOURCE: {
             pv_plant: pv_plant,
             diesel: diesel,
-            dso + DSO_CONSUMPTION: dso + DSO_CONSUMPTION,
+            dso_1 + DSO_CONSUMPTION: dso_1 + DSO_CONSUMPTION,
+            dso_2 + DSO_CONSUMPTION: dso_2 + DSO_CONSUMPTION,
         },
         OEMOF_BUSSES: {electricity: electricity, fuel: fuel},
     }
@@ -69,18 +80,50 @@ def test_prepare_constraint_minimal_renewable_share():
         oemof_solph_object_bus=oemof_solph_object_bus,
     )
 
-    assert pv_plant in renewable_assets
-    assert pv_plant not in non_renewable_assets
-    assert renewable_assets[pv_plant][renewable_share_asset_flow] == 1
-
-    assert diesel in non_renewable_assets
-    assert diesel not in renewable_assets
-    assert non_renewable_assets[diesel][renewable_share_asset_flow] == 0
-
-    assert dso + DSO_CONSUMPTION in renewable_assets
-    assert renewable_assets[dso + DSO_CONSUMPTION][renewable_share_asset_flow] == 0.3
-
-    assert dso + DSO_CONSUMPTION in non_renewable_assets
     assert (
-        non_renewable_assets[dso + DSO_CONSUMPTION][renewable_share_asset_flow] == 0.3
-    )
+        pv_plant in renewable_assets
+    ), f"The {pv_plant} is not added to the renewable assets."
+    assert (
+        pv_plant not in non_renewable_assets
+    ), f"The {pv_plant} is not added to the renewable assets."
+    assert (
+        renewable_assets[pv_plant][renewable_share_asset_flow] == 1
+    ), f"The renewable share of asset {pv_plant} is added incorrectly."
+
+    assert (
+        diesel in non_renewable_assets
+    ), f"The {diesel} is added to the renewable assets."
+    assert (
+        diesel not in renewable_assets
+    ), f"The {diesel} is not added to the non-renewable assets."
+    assert (
+        non_renewable_assets[diesel][renewable_share_asset_flow] == 0
+    ), f"The renewable share of asset {diesel} is added incorrectly."
+
+    assert (
+        dso_1 + DSO_CONSUMPTION in renewable_assets
+    ), f"The {dso_1 + DSO_CONSUMPTION} is not added as a renewable source."
+    assert (
+        renewable_assets[dso_1 + DSO_CONSUMPTION][renewable_share_asset_flow] == 0.3
+    ), f"The renewable share of asset {dso_1 + DSO_CONSUMPTION} is added incorrectly."
+
+    assert (
+        dso_1 + DSO_CONSUMPTION in non_renewable_assets
+    ), f"The {dso_1 + DSO_CONSUMPTION} is not added as a non-renewable source."
+    assert (
+        non_renewable_assets[dso_1 + DSO_CONSUMPTION][renewable_share_asset_flow] == 0.3
+    ), f"The renewable share of asset {dso_1 + DSO_CONSUMPTION} is added incorrectly."
+
+    assert (
+        dso_2 + DSO_CONSUMPTION in renewable_assets
+    ), f"The {dso_2 + DSO_CONSUMPTION} is not added as a renewable source."
+    assert (
+        renewable_assets[dso_2 + DSO_CONSUMPTION][renewable_share_asset_flow] == 0.7
+    ), f"The renewable share of asset {dso_2 + DSO_CONSUMPTION} is added incorrectly."
+
+    assert (
+        dso_2 + DSO_CONSUMPTION in non_renewable_assets
+    ), f"The {dso_2 + DSO_CONSUMPTION} is not added as a non-renewable source."
+    assert (
+        non_renewable_assets[dso_2 + DSO_CONSUMPTION][renewable_share_asset_flow] == 0.7
+    ), f"The renewable share of asset {dso_2 + DSO_CONSUMPTION} is added incorrectly."

@@ -22,7 +22,7 @@ def example_function(arg1, argN):
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
         here comes the description
     (In case of no return, you can write what the function changes, e.g. updates
     `variable_x` with `y`.)

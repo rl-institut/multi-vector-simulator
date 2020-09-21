@@ -103,7 +103,7 @@ def evaluate_dict(dict_values, path_pdf_report=None, path_png_figs=None):
         )
 
         # plot power flows in the energy system
-        F1_plots.plot_flows(dict_values, file_path=path_png_figs)
+        F1_plots.plot_instant_power(dict_values, file_path=path_png_figs)
 
         # plot optimal capacities if there are optimized assets
         F1_plots.plot_optimized_capacities(dict_values, file_path=path_png_figs)
