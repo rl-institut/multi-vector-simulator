@@ -166,12 +166,10 @@ def get_costs(dict_asset, economic_data):
     )
 
     # Operation and management expenditures over the project lifetime
-    operation_and_management_expenditures = (
-        calculate_operation_and_management_expenditures(
-            specific_om_cost=dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE],
-            installed_capacity=dict_asset[INSTALLED_CAP][VALUE],
-            optimized_add_capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
-        )
+    operation_and_management_expenditures = calculate_operation_and_management_expenditures(
+        specific_om_cost=dict_asset[LIFETIME_SPECIFIC_COST_OM][VALUE],
+        installed_capacity=dict_asset[INSTALLED_CAP][VALUE],
+        optimized_add_capacity=dict_asset[OPTIMIZED_ADD_CAP][VALUE],
     )
     dict_asset.update(
         {
@@ -464,8 +462,9 @@ def all_list_in_dict(dict_asset, list):
 
 
 def lcoe_assets(dict_asset, asset_group):
-    """
+    r"""
     Calculates the levelized cost of electricity (lcoe) of each asset. [Follow this link for information](docs/MVS_Outputs.rst)
+
     Parameters
     ----------
     dict_asset: dict
@@ -482,9 +481,10 @@ def lcoe_assets(dict_asset, asset_group):
     Notes
     -----
 
-    ..:math: LCOE_ASSET = \frac{A}{ E_{throughput} }
+    .. math::
 
-    If  E_{throughput} == 0, LCOE_ASSET = 0.
+        LCOE\_ASSET = \frac{A}{ E_{throughput} } \\
+        \textrm{If } E_{throughput} = 0, LCOE\_ASSET = 0
 
     """
 

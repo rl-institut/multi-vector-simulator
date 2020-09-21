@@ -103,7 +103,7 @@ def evaluate_dict(dict_values, path_pdf_report=None, path_png_figs=None):
         )
 
         # plot power flows in the energy system
-        F1_plots.plot_flows(dict_values, file_path=path_png_figs)
+        F1_plots.plot_instant_power(dict_values, file_path=path_png_figs)
 
         # plot optimal capacities if there are optimized assets
         F1_plots.plot_optimized_capacities(dict_values, file_path=path_png_figs)
@@ -155,7 +155,7 @@ def store_scalars_to_excel(dict_values):
                 data[UNIT] = units_cost_kpi
 
             data.to_excel(open_file, sheet_name=kpi_set)
-            logging.info(
+            logging.debug(
                 "Saved scalar results to: %s, tab %s.",
                 results_scalar_output_file,
                 kpi_set,
@@ -185,7 +185,7 @@ def store_timeseries_all_busses_to_excel(dict_values):
         for bus in dict_values[OPTIMIZED_FLOWS]:
             dict_values[OPTIMIZED_FLOWS][bus].to_excel(open_file, sheet_name=bus)
 
-    logging.info("Saved flows at busses to: %s.", timeseries_output_file)
+    logging.debug("Saved flows at busses to: %s.", timeseries_output_file)
     return
 
 

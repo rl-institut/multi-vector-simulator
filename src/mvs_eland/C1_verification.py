@@ -53,6 +53,7 @@ from mvs_eland.utils.constants_json_strings import (
     ENERGY_PROVIDERS,
     ENERGY_BUSSES,
     VALUE,
+    ASSET_DICT,
 )
 
 
@@ -99,7 +100,7 @@ def check_feedin_tariff(dict_values):
         feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]
         electricity_price = dict_values[ENERGY_PROVIDERS][provider][ENERGY_PRICE]
         diff = feedin_tariff[VALUE] - electricity_price[VALUE]
-        if isinstance(diff, float):
+        if isinstance(diff, float) or isinstance(diff, int):
             if diff > 0:
                 msg = f"Feed-in tariff > energy price for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}' would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
                 raise ValueError(msg)
@@ -335,8 +336,10 @@ def check_for_sufficient_assets_on_busses(dict_values):
     Logging error message if test fails
     """
     for bus in dict_values[ENERGY_BUSSES]:
-        if len(dict_values[ENERGY_BUSSES][bus]) < 3:
-            asset_string = ", ".join(map(str, dict_values[ENERGY_BUSSES][bus].keys()))
+        if len(dict_values[ENERGY_BUSSES][bus][ASSET_DICT]) < 3:
+            asset_string = ", ".join(
+                map(str, dict_values[ENERGY_BUSSES][bus][ASSET_DICT].keys())
+            )
             logging.error(
                 f"Energy system bus {bus} has too few assets connected to it. "
                 f"The minimal number of assets that need to be connected "

@@ -106,8 +106,7 @@ class WrongStorageColumn(ValueError):
 
 
 def create_input_json(
-    input_directory,
-    pass_back=True,
+    input_directory, pass_back=True,
 ):
     """Convert csv files to json file as input for the simulation.
 
@@ -462,7 +461,7 @@ def create_json_from_csv(
                 )
                 single_dict[column].update(storage_dict)
 
-    logging.info(
+    logging.debug(
         "From file %s following assets are added to the energy system: %s",
         filename,
         asset_name_string[:-2],
@@ -505,7 +504,7 @@ def check_for_official_extra_parameters(
 
     Returns
     -------
-    Updated parameters list and updated dataframe and updated :pandas:`pandas.DataFrame<frame>`
+    Updated parameters list and updated dataframe and updated :class:`pandas.DataFrame<frame>`
     The function through a warning if a new parameter is not defined in the csv but exists inf
     the official_extra_parameters. The parameter will then be set to it's default value.
     """

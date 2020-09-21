@@ -40,10 +40,7 @@ CSV_PARAMETERS = ["param1", "param2"]
 
 CSV_EXAMPLE = {"col1": {"param1": "val11", "param2": {VALUE: 21, UNIT: "factor"}}}
 CSV_TIMESERIES = {
-    "param1": {
-        VALUE: {FILENAME: "test_time_series.csv", HEADER: "power"},
-        UNIT: "kW",
-    }
+    "param1": {VALUE: {FILENAME: "test_time_series.csv", HEADER: "power"}, UNIT: "kW",}
 }
 
 CSV_LIST = {

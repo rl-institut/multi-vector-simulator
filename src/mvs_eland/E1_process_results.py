@@ -63,6 +63,12 @@ from mvs_eland.utils.constants_json_strings import (
     LCOE_ASSET,
 )
 
+# Determines which assets are defined by...
+# a influx from a bus
+ASSET_GROUPS_DEFINED_BY_INFLUX = [ENERGY_CONSUMPTION]
+# b outflux into a bus
+ASSET_GROUPS_DEFINED_BY_OUTFLUX = [ENERGY_CONVERSION, ENERGY_PRODUCTION]
+
 
 def get_timeseries_per_bus(dict_values, bus_data):
     r"""
@@ -155,7 +161,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
     if OPTIMIZE_CAP in dict_asset:
         if dict_asset[OPTIMIZE_CAP][VALUE] is True:
-            power_charge = storage_bus[KPI_SCALARS_DICT][
+            power_charge = storage_bus["scalars"][
                 ((dict_asset[INPUT_BUS_NAME], dict_asset[LABEL]), "invest")
             ]
             dict_asset[INPUT_POWER].update(
@@ -172,7 +178,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_charge,
             )
 
-            power_discharge = storage_bus[KPI_SCALARS_DICT][
+            power_discharge = storage_bus["scalars"][
                 ((dict_asset[LABEL], dict_asset[OUTPUT_BUS_NAME]), "invest")
             ]
             dict_asset[OUTPUT_POWER].update(
@@ -189,7 +195,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_discharge,
             )
 
-            capacity = storage_bus[KPI_SCALARS_DICT][
+            capacity = storage_bus["scalars"][
                 ((dict_asset[LABEL], TYPE_NONE), "invest")
             ]
             dict_asset[STORAGE_CAPACITY].update(
@@ -244,7 +250,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     return
 
 
-def get_results(settings, bus_data, dict_asset):
+def get_results(settings, bus_data, dict_asset, asset_group):
     r"""
     Reads results of the asset defined in `dict_asset` and stores them in `dict_asset`.
 
@@ -254,6 +260,7 @@ def get_results(settings, bus_data, dict_asset):
         Contains simulation settings from `simulation_settings.csv` with
         additional information like the amount of time steps simulated in the
         optimization ('periods').
+
     bus_data : dict
         Contains information about all busses in a nested dict.
         1st level keys: bus names;
@@ -261,68 +268,147 @@ def get_results(settings, bus_data, dict_asset):
 
             'scalars': (pd.Series) (does not exist in all dicts)
             'sequences': (pd.DataFrame) - contains flows between components and busses
+
     dict_asset : dict
         Contains information about the asset.
+
+    asset_group: str
+       Asset group to which the evaluated asset belongs
 
     Returns
     -------
     Indirectly updates `dict_asset` with results.
 
     """
-    # Check if the component has multiple input or output busses
-    if INPUT_BUS_NAME in dict_asset:
-        input_name = dict_asset[INPUT_BUS_NAME]
-        if not isinstance(input_name, list):
-            get_flow(
-                settings,
-                bus_data[input_name],
-                dict_asset,
-                input_name,
-                direction="input",
+    # Get which parameter/bus needs to be evaluated
+    parameter_to_be_evaluated = get_parameter_to_be_evaluated_from_oemof_results(
+        asset_group, dict_asset[LABEL]
+    )
+
+    # Check if the parameter/bus is defined for dict_asset
+    if parameter_to_be_evaluated not in dict_asset:
+        logging.warning(
+            f"The asset {dict_asset[LCOE_ASSET]} of group {asset_group} should contain parameter {parameter_to_be_evaluated}, but it does not."
+        )
+
+    # Determine bus that needs to be evaluated
+    bus_name = dict_asset[parameter_to_be_evaluated]
+
+    # Determine flows of the asset, also if flows are connected to multiple busses
+    if not isinstance(bus_name, list):
+        flow_tuple = get_tuple_for_oemof_results(
+            dict_asset[LABEL], asset_group, bus_name
+        )
+
+        # Get flow information
+        get_flow(
+            settings=settings,
+            bus=bus_data[bus_name],
+            dict_asset=dict_asset,
+            flow_tuple=flow_tuple,
+        )
+        # Get capacity information
+        get_optimal_cap(bus_data[bus_name], dict_asset, flow_tuple)
+
+    else:
+        # Asset is connected to multiple busses, evaluate all
+        for bus_instance in bus_name:
+            flow_tuple = get_tuple_for_oemof_results(
+                dict_asset[LABEL], asset_group, bus_instance
             )
-        else:
-            for bus in input_name:
-                get_flow(settings, bus_data[bus], dict_asset, bus, direction="input")
-
-    if OUTPUT_BUS_NAME in dict_asset:
-        output_name = dict_asset[OUTPUT_BUS_NAME]
-        if not isinstance(output_name, list):
+            # Get flow information
             get_flow(
-                settings,
-                bus_data[output_name],
-                dict_asset,
-                output_name,
-                direction="output",
+                settings=settings,
+                bus=bus_data[bus_instance],
+                dict_asset=dict_asset,
+                flow_tuple=flow_tuple,
             )
-        else:
-            for bus in output_name:
-                get_flow(settings, bus_data[bus], dict_asset, bus, direction="output")
+            # Get capacity information
+            get_optimal_cap(bus_data[bus_instance], dict_asset, flow_tuple)
 
-    # definie capacities. Check if the component has multiple input or output busses
-    if OUTPUT_BUS_NAME in dict_asset and INPUT_BUS_NAME in dict_asset:
-        if not isinstance(output_name, list):
-            get_optimal_cap(bus_data[output_name], dict_asset, output_name, "output")
-        else:
-            for bus in output_name:
-                get_optimal_cap(bus_data[bus], dict_asset, bus, "output")
-
-    elif INPUT_BUS_NAME in dict_asset:
-        if not isinstance(input_name, list):
-            get_optimal_cap(bus_data[input_name], dict_asset, input_name, "input")
-        else:
-            for bus in input_name:
-                get_optimal_cap(bus_data[bus], dict_asset, bus, "input")
-
-    elif OUTPUT_BUS_NAME in dict_asset:
-        if not isinstance(output_name, list):
-            get_optimal_cap(bus_data[output_name], dict_asset, output_name, "output")
-        else:
-            for bus in output_name:
-                get_optimal_cap(bus_data[bus], dict_asset, bus, "output")
     return
 
 
-def get_optimal_cap(bus, dict_asset, bus_name, direction):
+def get_parameter_to_be_evaluated_from_oemof_results(asset_group, asset_label):
+    r"""
+    Determine the parameter that needs to be evaluated to determine an asset`s optimized flow and capacity.
+
+    Parameters
+    ----------
+    asset_group: str
+        Asset group to which the evaluated asset belongs
+
+    asset_label: str
+        Label of the asset, needed for log message
+
+    Returns
+    -------
+    parameter_to_be_evaluated: str
+        Parameter that will be processed to get the dispatch and capacity of an asset
+
+    Notes
+    -----
+    Tested by:
+    - test_get_parameter_to_be_evaluated_from_oemof_results()
+    """
+    if asset_group in ASSET_GROUPS_DEFINED_BY_INFLUX:
+        parameter_to_be_evaluated = INPUT_BUS_NAME
+
+    elif asset_group in ASSET_GROUPS_DEFINED_BY_OUTFLUX:
+        parameter_to_be_evaluated = OUTPUT_BUS_NAME
+
+    else:
+        logging.warning(
+            f"The asset {asset_label} is of group {asset_group}, which is not defined in E1.get_results()."
+        )
+
+    return parameter_to_be_evaluated
+
+
+def get_tuple_for_oemof_results(asset_label, asset_group, bus):
+    r"""
+    Determines the tuple with which to access the oemof-solph results
+
+    The order of the parameters in the tuple depends on the direction of the flow.
+    If the asset is defined...
+    a) ...by its influx from a bus, the bus has to be named first in the touple
+    b) ...by its outflux into a bus, the asset has to be named first in the touple
+
+    Parameters
+    ----------
+    asset_label: str
+        Name of the asset
+
+    asset_group: str
+        Asset group the asset belongs to
+
+    bus: str
+        Bus that is to be accessed for the asset´s information
+
+    Returns
+    -------
+    flow_tuple: tuple of str
+        Keys to be accessed in the oemof-solph results
+
+    Notes
+    -----
+    Tested with
+    - test_get_tuple_for_oemof_results()
+    """
+    # Determine which flux is evaluated for the flow
+    if asset_group in ASSET_GROUPS_DEFINED_BY_INFLUX:
+        flow_tuple = (bus, asset_label)
+    elif asset_group in ASSET_GROUPS_DEFINED_BY_OUTFLUX:
+        flow_tuple = (asset_label, bus)
+    else:
+        logging.warning(
+            f"The asset {asset_label} is of group {asset_group}, but it is not defined in E1.get_results() which flux is to be evaluated."
+        )
+
+    return flow_tuple
+
+
+def get_optimal_cap(bus, dict_asset, flow_tuple):
     r"""
     Retrieves optimized capacity of asset specified in `dict_asset`.
 
@@ -333,12 +419,12 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
         `dict_asset`. Information about the scalars like investment or initial
         capacity in key 'scalars' (pd.Series) and the flows between the
         component and the busses in key 'sequences' (pd.DataFrame).
+
     dict_asset : dict
         Contains information about the asset.
-    bus_name : str
-        Name of `bus`.
-    direction : str
-        Direction of flow. Options: 'input', 'output'.
+
+    flow_tuple : tuple
+        Key of the oemof-solph outputs dict mapping the value to be evaluated
 
     possible todos
     --------------
@@ -352,19 +438,11 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
 
     """
     if OPTIMIZE_CAP in dict_asset:
-        if dict_asset[OPTIMIZE_CAP][VALUE] is True:
-            if direction == "input":
-                optimal_capacity = bus[KPI_SCALARS_DICT][
-                    ((bus_name, dict_asset[LABEL]), "invest")
-                ]
-            elif direction == "output":
-                optimal_capacity = bus[KPI_SCALARS_DICT][
-                    ((dict_asset[LABEL], bus_name), "invest")
-                ]
-            else:
-                raise ValueError(
-                    f"`direction` should be 'input' or 'output' but is {direction}."
-                )
+        if (
+            dict_asset[OPTIMIZE_CAP][VALUE] is True
+            and (flow_tuple, "invest") in bus["scalars"]
+        ):
+            optimal_capacity = bus["scalars"][(flow_tuple, "invest")]
 
             if TIMESERIES_PEAK in dict_asset:
                 if dict_asset[TIMESERIES_PEAK][VALUE] > 0:
@@ -404,7 +482,7 @@ def get_optimal_cap(bus, dict_asset, bus_name, direction):
     return
 
 
-def get_flow(settings, bus, dict_asset, bus_name, direction):
+def get_flow(settings, bus, dict_asset, flow_tuple):
     r"""
     Adds flow of `bus` and total flow amongst other information to `dict_asset`.
 
@@ -416,16 +494,17 @@ def get_flow(settings, bus, dict_asset, bus_name, direction):
         Contains simulation settings from `simulation_settings.csv` with
         additional information like the amount of time steps simulated in the
         optimization ('periods').
+
     bus : dict
         Contains information about a specific bus. Information about the scalars, if they exist,
             like investment or initial capacity in key 'scalars' (pd.Series) and the
             flows between the component and the bus(ses) in key 'sequences' (pd.DataFrame).
+
     dict_asset : dict
         Contains information about the asset.
-    bus_name : str
-        Name of `bus`.
-    direction : str
-        Direction of flow. Options: 'input', 'output'.
+
+    flow_tuple : tuple
+        Entry of the oemof-solph outputs to be evaluated
 
     Returns
     -------
@@ -434,15 +513,7 @@ def get_flow(settings, bus, dict_asset, bus_name, direction):
     the flow ('average_flow').
 
     """
-    if direction == "input":
-        flow = bus["sequences"][((bus_name, dict_asset[LABEL]), "flow")]
-    elif direction == "output":
-        flow = bus["sequences"][((dict_asset[LABEL], bus_name), "flow")]
-
-    else:
-        raise ValueError(
-            f"`direction` should be 'input' or 'output' but is {direction}."
-        )
+    flow = bus["sequences"][(flow_tuple, "flow")]
     add_info_flows(settings, dict_asset, flow)
 
     logging.debug(
@@ -501,7 +572,7 @@ def convert_demand_to_dataframe(dict_values):
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
     # Creating a dataframe for the demands
@@ -559,7 +630,7 @@ def convert_components_to_dataframe(dict_values):
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
 
@@ -629,7 +700,7 @@ def convert_scalar_matrix_to_dataframe(dict_values):
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
 
@@ -668,7 +739,7 @@ def convert_cost_matrix_to_dataframe(dict_values):
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
 
@@ -708,7 +779,7 @@ def convert_costs_to_dataframe(dict_values):
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
     # Get the cost matrix from the results JSON file into a pandas DF
@@ -742,7 +813,7 @@ def convert_scalars_to_dataframe(dict_values):
 
     Returns
     -------
-    kpi_scalars_dataframe: :pandas:`pandas.DataFrame<frame>`
+    kpi_scalars_dataframe: :class:`pandas.DataFrame<frame>`
         Dataframe to be displayed as a table in the report
 
     Notes
@@ -768,7 +839,7 @@ def convert_scalars_to_dataframe(dict_values):
 
 def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
     """
-    Determines the units of the costs KPI to be stored to :pandas: DataFrame.
+    Determines the units of the costs KPI to be stored to :class: DataFrame.
 
     Parameters
     ----------
@@ -781,7 +852,7 @@ def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
     Returns
     -------
     unit_list: list
-        List of units for the :pandas: DataFrame to be created
+        List of units for the :class: DataFrame to be created
     """
 
     unit_list = []

@@ -19,6 +19,39 @@ Here is a template for new release sections
 -
 ```
 
+## [0.4.1] - 2020-09-21
+
+### Added
+- Evaluation of excess energy for each of the energy carriers and for the whole system. The excess per sector and their energy equivalent may currently be faulty (comp. issue #559) (#555)
+- Debug messages for pytests: `C0`, `D2` (#555, #560)
+- Labels on capacity barplot bars (#567)
+
+### Changed
+- `C1.total_demand_each_sector()` to `C1.total_demand_and_excess_each_sector()`, now also evaluating the excess energy flows (#555)
+- `energyBusses` now is defined by: `LABEL, ASSET_LIST, ENERGY_VECTOR`, all functions using `energyBusses` now follow this nomenclature (#555)
+- Energy excess sinks now also have parameter `ENERGY_VECTOR` (#555)
+- `C0.define_sink` now always defines a sink that is capacity-optimized (#555)
+- `D1.sink_dispatchable()`, renamed to `D1.sink_dispatchable_optimize()` now adds a capacity-optimized, dispatchable sink. (#555) 
+- Simulation data `tests/inputs`: Oemof-solph results are not stored (#555)
+- Change logging level of some messages from `logging.info` to `logging.debug` (#555)
+- Move and rename json input files for D0 and D1 tests (`test_data_for_D0.json` to `tests/test_data/inputs_for_D0/mvs_config.json`, `test_data_for_D1.json` to `tests/test_data/inputs_for_D1/mvs_config.json`), add required parameters (#555) 
+- Change requirements/test.txt: `black==19.10b0`, as otherwise there are incompatabilities (#555)
+- `D2.prepare_constraint_minimal_renewable_share`, including logging messages and pytest (#560)
+- Change the import path of the modules for automatic docstrings import in `docs/Code.rst` (#564)
+- Fix the docstrings with math expressions (need to add `r` before the `"""` of the docstring
+) (#564)
+- Rename the function in F1 module `plot_flows` to `plot_instant_power` (#567)
+- Change flow to power in the instanteous power figures (#567)
+- `F1.plot_piecharts_of_costs()` now cites costs with currect currency and avoids decimal numbers (#561)
+
+### Fixed
+- `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)
+- Feed-in sinks of the DSOs now are capacity-optimized and can actually be used (#555)
+- Incorrectly applied minimal renewable share criterion (#560)
+- Pdf report generation (#566)
+- Update fresh install instructions for developers (#565)
+- Graphs of the report now use appropriate currency (#561)
+
 ## [0.4.0] - 2020-09-01
 
 ### Added

@@ -1,9 +1,10 @@
 """
 Defines the strings of different json parameters
-Not defining parameters as strings can be helpful, ig. if
-    if string in dict_values
-Is used, where typos can be very bad for future handling.
+Using variables rather than strings is helpful for typo prevention. A typo in a variable will
+raise an error where the variable was misspelled, whereas a typo in a string (dictionnary key)
+do not nessarily raise an error immediately, making the typo harder to fix.
 """
+
 #####################
 # 1st level of json #
 #####################
@@ -153,7 +154,7 @@ INFLOW_DIRECTION = "inflow_direction"
 OUTPUT_BUS_NAME = "output_bus_name"
 INPUT_BUS_NAME = "input_bus_name"
 ENERGY_VECTOR = "energyVector"
-EXCESS = " excess"
+EXCESS = "_excess"
 BUS_SUFFIX = " bus"
 
 # DSO
@@ -174,9 +175,10 @@ DISPATCHABILITY = "dispatchable"
 AVAILABILITY_DISPATCH = "availability_timeseries"
 
 # Sinks
-EXCESS_SINK_POSTFIX = " excess sink"
+EXCESS_SINK_POSTFIX = "_excess_sink"
 
-BUS_SUFFIX = " bus"
+BUS_SUFFIX = "_bus"
+ASSET_DICT = "Asset_list"
 #######################################
 # Parameters added in post-processing #
 #######################################
@@ -227,6 +229,7 @@ TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use"
 RENEWABLE_SHARE = "Renewable_share"
 
 TOTAL_DEMAND = "Total_demand"
+TOTAL_EXCESS = "Total_excess"
 SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
 ATTRIBUTED_COSTS = "Attributed costs"
 LCOeleq = "Levelized costs of electricity equivalent"

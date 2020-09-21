@@ -74,7 +74,7 @@ from mvs_eland.F1_plotting import (
     plot_timeseries,
     plot_piecharts_of_costs,
     plot_optimized_capacities,
-    plot_flows,
+    plot_instant_power,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
@@ -103,7 +103,9 @@ async def _print_pdf_from_chrome(path_pdf_report):
 
     browser = await launch()
     page = await browser.newPage()
-    await page.goto("http://127.0.0.1:8050", {"waitUntil": "networkidle0"})
+    await page.goto(
+        "http://127.0.0.1:8050", {"waitUntil": "domcontentloaded", "timeout": 120000}
+    )
     await page.waitForSelector("#main-div")
     await page.pdf({"path": path_pdf_report, "format": "A4", "printBackground": True})
     await browser.close()
@@ -170,7 +172,7 @@ def make_dash_data_table(df, title=None):
 
     Parameters
     ----------
-    df: :pandas:`pandas.DataFrame<frame>`
+    df: :class:`pandas.DataFrame<frame>`
         This dataframe holds the data from which the dash table is to be created.
 
     title: str
@@ -343,16 +345,14 @@ def insert_log_messages(log_dict):
 
 
 def insert_plotly_figure(
-    fig,
-    id_plot=None,
-    print_only=False,
+    fig, id_plot=None, print_only=False,
 ):
     r"""
     Insert a plotly figure in a dash app layout
 
     Parameters
     ----------
-    fig: :plotly:`plotly.graph_objs.Figure`
+    fig: :class:`plotly.graph_objs.Figure`
         figure object
 
     id_plot: str
@@ -392,12 +392,7 @@ def insert_plotly_figure(
     # Dynamic plotly figure for the app
     if print_only is False:
         rendered_plots.append(
-            dcc.Graph(
-                className="no-print",
-                id=id_plot,
-                figure=fig,
-                responsive=True,
-            )
+            dcc.Graph(className="no-print", id=id_plot, figure=fig, responsive=True,)
         )
 
     return html.Div(children=rendered_plots)
@@ -480,7 +475,7 @@ def ready_flows_plots(dict_values, only_print=False):
         List containing the assets' timeseries plots as dash components
     """
 
-    figs = plot_flows(dict_values)
+    figs = plot_instant_power(dict_values)
     multi_plots = [
         insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
         for comp_id, fig in figs.items()
@@ -687,12 +682,10 @@ def create_app(results_json):
 
     output_path = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
     warnings_dict = parse_simulation_log(
-        path_log_file=os.path.join(output_path, LOGFILE),
-        log_type="WARNING",
+        path_log_file=os.path.join(output_path, LOGFILE), log_type="WARNING",
     )
     errors_dict = parse_simulation_log(
-        path_log_file=os.path.join(output_path, LOGFILE),
-        log_type="ERROR",
+        path_log_file=os.path.join(output_path, LOGFILE), log_type="ERROR",
     )
 
     # App layout and populating it with different elements
@@ -892,9 +885,7 @@ def create_app(results_json):
                                 "With this, the demands are met with the following dispatch schedules:"
                             ),
                             html.Div(
-                                children=ready_flows_plots(
-                                    dict_values=results_json,
-                                )
+                                children=ready_flows_plots(dict_values=results_json,)
                             ),
                             html.Div(
                                 className="add-cap-plot",
@@ -919,8 +910,7 @@ def create_app(results_json):
                             html.Div(
                                 className="add-pie-plots",
                                 children=ready_costs_pie_plots(
-                                    dict_values=results_json,
-                                    only_print=False,
+                                    dict_values=results_json, only_print=False,
                                 ),
                             ),
                         ],
@@ -943,9 +933,7 @@ def create_app(results_json):
                 children=[
                     html.Div(
                         className="cell",
-                        children=[
-                            insert_headings(heading_text="Logging Messages"),
-                        ],
+                        children=[insert_headings(heading_text="Logging Messages"),],
                     ),
                     html.Div(
                         children=[
