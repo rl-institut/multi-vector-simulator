@@ -42,6 +42,7 @@ Here is a template for new release sections
 ) (#564)
 - Rename the function in F1 module `plot_flows` to `plot_instant_power` (#567)
 - Change flow to power in the instanteous power figures (#567)
+- `F1.plot_piecharts_of_costs()` now cites costs with currect currency and avoids decimal numbers (#561)
 
 ### Removed
 
@@ -51,6 +52,7 @@ Here is a template for new release sections
 - Incorrectly applied minimal renewable share criterion (#560)
 - Pdf report generation (#566)
 - Update fresh install instructions for developers (#565)
+- Graphs of the report now use appropriate currency (#561)
 
 ## [0.4.0] - 2020-09-01
 
