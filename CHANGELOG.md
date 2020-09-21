@@ -19,7 +19,7 @@ Here is a template for new release sections
 -
 ```
 
-## [Unreleased]
+## [0.4.1] - 2020-09-21
 
 ### Added
 - Evaluation of excess energy for each of the energy carriers and for the whole system. The excess per sector and their energy equivalent may currently be faulty (comp. issue #559) (#555)
@@ -43,8 +43,6 @@ Here is a template for new release sections
 - Rename the function in F1 module `plot_flows` to `plot_instant_power` (#567)
 - Change flow to power in the instanteous power figures (#567)
 - `F1.plot_piecharts_of_costs()` now cites costs with currect currency and avoids decimal numbers (#561)
-
-### Removed
 
 ### Fixed
 - `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)
