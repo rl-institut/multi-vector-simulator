@@ -110,7 +110,7 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Build Tools",
         # Pick your license as you wish
-        "License :: OSI Approved :: GPL License",
+        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         # These classifiers are *not* checked by 'pip install'. See instead
