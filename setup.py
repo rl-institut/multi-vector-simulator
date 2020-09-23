@@ -26,9 +26,7 @@ def parse_requirements_file(filename):
         for line in fid.readlines():
             if line:
                 # requirements for those browsing PyPI
-                requires.append(
-                    line.strip().replace(">=", " >= ").replace("==", " == ")
-                )
+                requires.append(line.strip())
     return requires
 
 
