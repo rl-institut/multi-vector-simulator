@@ -96,7 +96,7 @@ setup(
     author="Reiner Lemoine Institut",  # Optional
     # This should be a valid email address corresponding to the author listed
     # above.
-    # author_email='pypa-dev@googlegroups.com',  # Optional
+    author_email='pypi@rl-institut.de',  # Optional
     # Classifiers help users find your project by categorizing it.
     #
     # For a list of valid classifiers, see https://pypi.org/classifiers/
