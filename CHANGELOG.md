@@ -24,7 +24,7 @@ Here is a template for new release sections
 ### Added
 -
 ### Changed
--
+- Modify `setup.py` to upload the code as package on pypi.org (#570)
 ### Removed
 -
 ### Fixed
