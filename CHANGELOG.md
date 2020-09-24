@@ -28,7 +28,7 @@ Here is a template for new release sections
 ### Removed
 -
 ### Fixed
--
+- Update the release protocol in `CONTRIBUTING.md` file (#576)
 
 ## [0.4.1] - 2020-09-21
 
