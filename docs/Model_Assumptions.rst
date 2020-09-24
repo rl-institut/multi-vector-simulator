@@ -52,6 +52,9 @@ Dispatchable conversion assets
     - Diesel generator
     - Electric transformers (rectifiers, inverters)
 
+In case energy excess is cheaper than investing into higher solar inverter capacities the results will show an optimized inverter capacity that is smaller than the peak generation of installed PV.
+This becomes unrealistic when the excess is very high. In this case, MVS will give a warning.
+
 Energy excess
 #############
 
