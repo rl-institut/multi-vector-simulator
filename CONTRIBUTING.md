@@ -110,9 +110,7 @@ Once you are ready to publish a release, branch off from `dev`
     ```
 For meaning of X, Y and Z version numbers, please refer to this [semantic versioning guidelines](https://semver.org/spec/v2.0.0.html).
 
-In this branch, you should normally only update the version number in the 
-`src/mvs_eland/version.py` and in the `CHANGELOG.md` files, respecting the indicated formats
-. Commit the first one with "Bump version number" as commit message.
+In this branch, you should normally only update the version number in the `src/mvs_eland/version.py` and in the `CHANGELOG.md` files, respecting the indicated formats. Commit the first one with "Bump version number" as commit message.
 
 Your `CHANGELOG.md` file could look like this before the release
 ```
