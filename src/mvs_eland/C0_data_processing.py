@@ -36,6 +36,7 @@ Module C0 prepares the data read from csv or json for simulation, ie. pre-proces
 - Define dso sinks, sources, transformer stations (this will be changed due to bug #119), also for peak demand pricing
 - Add a source if a conversion object is connected to a new input_direction (bug #186)
 - Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
+- Multiply `maximumCap` of non-dispatchable sources by max(timeseries(kWh/kWp)) to fix `optimizedAddCap` (see issue #446)
 """
 
 
@@ -1590,22 +1591,21 @@ def receive_timeseries_from_csv(
             }
         )
 
-        if dict_asset[OPTIMIZE_CAP][VALUE] is True:
-            logging.debug("Normalizing timeseries of %s.", dict_asset[LABEL])
-            dict_asset.update(
-                {
-                    TIMESERIES_NORMALIZED: dict_asset[TIMESERIES]
-                    / dict_asset[TIMESERIES_PEAK][VALUE]
-                }
+        logging.debug("Normalizing timeseries of %s.", dict_asset[LABEL])
+        dict_asset.update(
+            {
+                TIMESERIES_NORMALIZED: dict_asset[TIMESERIES]
+                / dict_asset[TIMESERIES_PEAK][VALUE]
+            }
+        )
+        # just to be sure!
+        if any(dict_asset[TIMESERIES_NORMALIZED].values) > 1:
+            logging.warning(
+                "Error, %s timeseries not normalized, greater than 1.",
+                dict_asset[LABEL],
             )
-            # just to be sure!
-            if any(dict_asset[TIMESERIES_NORMALIZED].values) > 1:
-                logging.warning(
-                    "Error, %s timeseries not normalized, greater than 1.",
-                    dict_asset[LABEL],
-                )
-            if any(dict_asset[TIMESERIES_NORMALIZED].values) < 0:
-                logging.warning("Error, %s timeseries negative.", dict_asset[LABEL])
+        if any(dict_asset[TIMESERIES_NORMALIZED].values) < 0:
+            logging.warning("Error, %s timeseries negative.", dict_asset[LABEL])
 
 
 def treat_multiple_flows(dict_asset, dict_values, parameter):
@@ -1699,20 +1699,34 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
     asset: str
         asset name
     subasset: str
-        subasset name. Default: None.
+        subasset name.
+        Default: None.
 
     Returns
     -------
 
     """
     if subasset is None:
-        dict = dict_values[group][asset]
+        asset_dict = dict_values[group][asset]
     else:
-        dict = dict_values[group][asset][subasset]
-    if MAXIMUM_CAP in dict:
-        # check if maximumCap is greater that installedCap
-        if dict[MAXIMUM_CAP][VALUE] is not None:
-            if dict[MAXIMUM_CAP][VALUE] < dict[INSTALLED_CAP][VALUE]:
+        asset_dict = dict_values[group][asset][subasset]
+    if MAXIMUM_CAP in asset_dict:
+        # Check if a maximumCap is defined
+        if asset_dict[MAXIMUM_CAP][VALUE] is not None:
+            # adapt maximumCap of non-dispatchable sources
+            if (
+                group == ENERGY_PRODUCTION
+                and asset_dict[FILENAME] != None
+                and max(asset_dict[TIMESERIES_NORMALIZED]) != 1
+            ):
+                asset_dict[MAXIMUM_CAP][VALUE] = asset_dict[MAXIMUM_CAP][VALUE] / max(
+                    asset_dict[TIMESERIES_NORMALIZED]
+                )
+                logging.debug(
+                    f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was divided by the peak value of {TIMESERIES_NORMALIZED} as it did not equal 1. This was done as the aimed constraint is to limit the power, not the flow."
+                )
+            # check if maximumCap is greater that installedCap
+            if asset_dict[MAXIMUM_CAP][VALUE] < asset_dict[INSTALLED_CAP][VALUE]:
 
                 logging.warning(
                     f"The stated maximumCap in {group} {asset} is smaller than the "
@@ -1720,14 +1734,14 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
                     "For this simulation, the maximumCap will be "
                     "disregarded and not be used in the simulation"
                 )
-                dict[MAXIMUM_CAP][VALUE] = None
+                asset_dict[MAXIMUM_CAP][VALUE] = None
             # check if maximumCao is 0
-            elif dict[MAXIMUM_CAP][VALUE] == 0:
+            elif asset_dict[MAXIMUM_CAP][VALUE] == 0:
                 logging.warning(
                     f"The stated maximumCap of zero in {group} {asset} is invalid."
                     "For this simulation, the maximumCap will be "
                     "disregarded and not be used in the simulation."
                 )
-                dict[MAXIMUM_CAP][VALUE] = None
+                asset_dict[MAXIMUM_CAP][VALUE] = None
     else:
-        dict.update({MAXIMUM_CAP: {VALUE: None, UNIT: dict[UNIT]}})
+        asset_dict.update({MAXIMUM_CAP: {VALUE: None, UNIT: asset_dict[UNIT]}})
