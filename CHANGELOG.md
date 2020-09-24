@@ -22,7 +22,7 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Instruction to install graphviz on windows in `docs/troubleshooting.rst` (#572)
 ### Changed
 - Modify `setup.py` to upload the code as package on pypi.org (#570)
 ### Removed
