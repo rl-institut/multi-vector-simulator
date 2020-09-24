@@ -9,6 +9,7 @@ from _constants import (
     JSON_FNAME,
     MISSING_PARAMETERS_KEY,
     EXTRA_PARAMETERS_KEY,
+    CSV_ELEMENTS,
 )
 from mvs_eland.utils import (
     find_csv_input_folders,
@@ -29,14 +30,21 @@ def test_input_folder_csv_files_have_required_parameters(input_folder):
     extra parameters besides the required ones
     """
     comparison = compare_input_parameters_with_reference(input_folder, ext=CSV_EXT)
-    if MISSING_PARAMETERS_KEY not in comparison:
-        assert True
-    else:
+    if MISSING_PARAMETERS_KEY in comparison:
         for k in comparison[MISSING_PARAMETERS_KEY].keys():
             for el in comparison[MISSING_PARAMETERS_KEY][k]:
-                assert (
-                    el in EXTRA_CSV_PARAMETERS
-                ), f"Key {el} is not in {EXTRA_PARAMETERS_KEY}, but is in {MISSING_PARAMETERS_KEY} in the folder {input_folder}."
+                try:
+                    assert el in EXTRA_CSV_PARAMETERS
+                except AssertionError:
+                    raise AssertionError(
+                        f"Parameter '{el}' is missing in you csv input files although it is required. It "
+                        f"should be added in the appropriate file of the folder '{input_folder}"
+                        f"/{CSV_ELEMENTS}' or listed in the dict 'EXTRA_CSV_PARAMETERS' in "
+                        f"src/mvs_eland/utils/constants.py. The csv required parameters are listed in "
+                        f"the dict 'REQUIRED_CSV_PARAMETERS' in the aforementionned constant.py "
+                        f"file.\n\nSee previous exception in the pytest log for more details on "
+                        f"this error."
+                    )
 
     if TEMPLATE_INPUT_FOLDER in input_folder:
         if EXTRA_PARAMETERS_KEY in comparison:
