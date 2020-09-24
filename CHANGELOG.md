@@ -16,12 +16,13 @@ Here is a template for new release sections
 ### Removed
 -
 ### Fixed
-- optimizedAddCap of non-dispatchable sources: multiply maximumCap by max(timeseries(kWh/kWp)) to fix issue #446 (#498)
+-
 ```
 
 ## [Unreleased]
 
 ### Added
+- Instruction to install graphviz on windows in `docs/troubleshooting.rst` (#572)
 - Error message if time series of non-dispatchable sources do not meet requirement: values betw. 0 and 1. (#498)
 - Requirement for time series of non-dispatchable sources in readthedocs (#498)
 
@@ -30,7 +31,8 @@ Here is a template for new release sections
 ### Removed
 -
 ### Fixed
--
+- Update the release protocol in `CONTRIBUTING.md` file (#576)
+- optimizedAddCap of non-dispatchable sources: multiply maximumCap by max(timeseries(kWh/kWp)) to fix issue #446 (#498)
 
 ## [0.4.1] - 2020-09-21
 
