@@ -26,9 +26,7 @@ def parse_requirements_file(filename):
         for line in fid.readlines():
             if line:
                 # requirements for those browsing PyPI
-                requires.append(
-                    line.strip().replace(">=", " >= ").replace("==", " == ")
-                )
+                requires.append(line.strip())
     return requires
 
 
@@ -96,7 +94,7 @@ setup(
     author="Reiner Lemoine Institut",  # Optional
     # This should be a valid email address corresponding to the author listed
     # above.
-    # author_email='pypa-dev@googlegroups.com',  # Optional
+    author_email="pypi@rl-institut.de",  # Optional
     # Classifiers help users find your project by categorizing it.
     #
     # For a list of valid classifiers, see https://pypi.org/classifiers/
@@ -110,7 +108,7 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Build Tools",
         # Pick your license as you wish
-        "License :: OSI Approved :: GPL License",
+        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         # These classifiers are *not* checked by 'pip install'. See instead
@@ -138,7 +136,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=find_packages(include=["mvs_eland"]),  # Required
+    packages=["mvs_eland"],  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you
