@@ -28,7 +28,7 @@ from mvs_eland.utils.constants_json_strings import (
 
 # annuity factor to calculate present value of cash flows
 def annuity_factor(project_life, discount_factor):
-    """
+    r"""
     Calculates the annuity factor, which in turn in used to calculate the present value of annuities (instalments)
 
     Parameters
@@ -36,21 +36,25 @@ def annuity_factor(project_life, discount_factor):
 
     project_life: int
         time period over which the costs of the system occur
-
     discount_factor: float
         weighted average cost of capital, which is the after-tax average cost of various capital sources
 
     Returns
     -------
-    financial value "annuity factor". Dividing a present cost by tha annuity factor returns its annuity, multiplying an annuity with the annuity factor returns its present value
+    annuity_factor: float
+        financial value "annuity factor".
+        Dividing a present cost by tha annuity factor returns its annuity,
+        multiplying an annuity with the annuity factor returns its present value
 
 
     Notes
     -----
 
-    .. math::     annuity factor = \frac{1}{discount factor} - \frac{1}{
-        discountfactor \cdot (1 + discount factor) ^ project life}
-    )
+    .. math::
+
+        annuity factor = \frac{1}{discount factor} - \frac{1}{
+        discountfactor \cdot (1 + discount factor)^{project life}}
+
     """
     annuity_factor = 1 / discount_factor - 1 / (
         discount_factor * (1 + discount_factor) ** project_life
@@ -427,15 +431,16 @@ def get_lifetime_price_dispatch_one_value(dispatch_price, economic_data):
 
 
 def get_lifetime_price_dispatch_list(dispatch_price, economic_data):
-    """
+    r"""
     Determines the lifetime dispatch price in case that the dispatch price is a list.
 
     The dispatch_price can be a list when for example if there are two input flows to a component, eg. water and electricity.
     There should be a lifetime_price_dispatch for each of them.
 
     .. math::
-        lifetime_price_dispatch_i = DISPATCH_PRICE_i \cdot ANNUITY_FACTOR \forall i
-        with i for all list entries
+        lifetime\_price\_dispatch\_i = DISPATCH\_PRICE\_i \cdot ANNUITY\_FACTOR \forall i
+
+    with :math:`i` for all list entries
 
     Parameters
     ----------
@@ -477,17 +482,16 @@ def get_lifetime_price_dispatch_list(dispatch_price, economic_data):
 
 
 def get_lifetime_price_dispatch_timeseries(dispatch_price, economic_data):
-    """
+    r"""
     Calculates the lifetime price dispatch for a timeseries.
-
     The dispatch_price can be a timeseries, eg. in case that there is an hourly pricing.
-
     .. math::
-        lifetime_price_dispatch(t) = DISPATCH_PRICE(t) \cdot ANNUITY_FACTOR \forall t
+
+        lifetime\_price\_dispatch(t) = DISPATCH\_PRICE(t) \cdot ANNUITY\_FACTOR \forall t
 
     Parameters
     ----------
-    dispatch_price: pd.Series
+    dispatch_price: :class:`pandas.Series`
         Dispatch price as a timeseries (eg. electricity prices)
 
     economic_data: dict
@@ -495,13 +499,15 @@ def get_lifetime_price_dispatch_timeseries(dispatch_price, economic_data):
 
     Returns
     -------
-    Lifetime dispatch price that the asset will be updated with
+    lifetime_price_dispatch: float
+        Lifetime dispatch price that the asset will be updated with
 
     Notes
     -----
     Tested with
-    - test_determine_lifetime_price_dispatch_as_timeseries()
-    - test_get_lifetime_price_dispatch_timeseries()
+        - test_determine_lifetime_price_dispatch_as_timeseries()
+        - test_get_lifetime_price_dispatch_timeseries()
+
     """
 
     lifetime_price_dispatch = dispatch_price.multiply(

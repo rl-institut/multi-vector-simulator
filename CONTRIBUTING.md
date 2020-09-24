@@ -4,7 +4,10 @@
 
 - [Git](https://git-scm.com/)
 
-
+- Install the dev requirements with
+```bash
+pip install -e .[test,dev]
+```
 ### Philosophy
 
 Development of a feature for this repository should follow the workflow described 
@@ -46,21 +49,16 @@ If your branch does not exist on the remote server yet, git will provide you wit
 
 #### Step 3: Run tests locally
 
-To install all packages required for the integration tests locally:
+To install all packages required for the integration tests locally (if not done yet):
 ```bash
-pip install -r tests/test_requirements.txt
+pip install -r requirements/test.txt
 ```
 
 **!!! Important !!!**: You also need to install the mvs package locally in develop mode:
 ```bash
-python setup.py develop
-```
-Otherwise your changes will not be perceived by the tests unless you run `python setup.py install` each time.
-
-```bash
 pip install -e .
 ```
-should work as well.
+Otherwise your changes will not be perceived by the tests.
 
 Please run the tests locally before pushing your feature to the developer branch. You do that by running:
 ```bash
@@ -180,11 +178,25 @@ Finally, [create a release](https://help.github.com/en/github/administering-a-re
 
 ## Contributing to Readthedocs
 
+You need to first install the required packages
+
+```bash
+pip install -r requirements/docs.txt
+```
+
 Readthedocs of the MVS is compiled with the content of folder "docs". After editing, execute
 
     cd docs
+
+and then
+
     make html
 
-To update the html pages of readthedocs. Then you can commit, push and pull it like normal code. 
+To update the html pages of readthedocs. You will find the html files them under `docs/_build/html`
+and can open them in your favorite browser. After you are done editing, you can commit, push and
+ pull it like normal code.
+
+Note: the compilation of certain docstrings requires latex amsmath package, if it is not
+ available on your local computer, the math expression will not render nicely.
 
 An introduction to creating the readthedocs with Sphinx is given here: https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html.

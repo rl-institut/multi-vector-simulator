@@ -74,7 +74,7 @@ from mvs_eland.F1_plotting import (
     plot_timeseries,
     plot_piecharts_of_costs,
     plot_optimized_capacities,
-    plot_flows,
+    plot_instant_power,
 )
 
 # TODO link this to the version and date number @Bachibouzouk
@@ -103,7 +103,9 @@ async def _print_pdf_from_chrome(path_pdf_report):
 
     browser = await launch()
     page = await browser.newPage()
-    await page.goto("http://127.0.0.1:8050", {"waitUntil": "networkidle0"})
+    await page.goto(
+        "http://127.0.0.1:8050", {"waitUntil": "domcontentloaded", "timeout": 120000}
+    )
     await page.waitForSelector("#main-div")
     await page.pdf({"path": path_pdf_report, "format": "A4", "printBackground": True})
     await browser.close()
@@ -170,7 +172,7 @@ def make_dash_data_table(df, title=None):
 
     Parameters
     ----------
-    df: :pandas:`pandas.DataFrame<frame>`
+    df: :class:`pandas.DataFrame<frame>`
         This dataframe holds the data from which the dash table is to be created.
 
     title: str
@@ -350,7 +352,7 @@ def insert_plotly_figure(
 
     Parameters
     ----------
-    fig: :plotly:`plotly.graph_objs.Figure`
+    fig: :class:`plotly.graph_objs.Figure`
         figure object
 
     id_plot: str
@@ -473,7 +475,7 @@ def ready_flows_plots(dict_values, only_print=False):
         List containing the assets' timeseries plots as dash components
     """
 
-    figs = plot_flows(dict_values)
+    figs = plot_instant_power(dict_values)
     multi_plots = [
         insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
         for comp_id, fig in figs.items()
