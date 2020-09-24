@@ -1591,22 +1591,21 @@ def receive_timeseries_from_csv(
             }
         )
 
-        if dict_asset[OPTIMIZE_CAP][VALUE] is True:
-            logging.debug("Normalizing timeseries of %s.", dict_asset[LABEL])
-            dict_asset.update(
-                {
-                    TIMESERIES_NORMALIZED: dict_asset[TIMESERIES]
-                    / dict_asset[TIMESERIES_PEAK][VALUE]
-                }
+        logging.debug("Normalizing timeseries of %s.", dict_asset[LABEL])
+        dict_asset.update(
+            {
+                TIMESERIES_NORMALIZED: dict_asset[TIMESERIES]
+                / dict_asset[TIMESERIES_PEAK][VALUE]
+            }
+        )
+        # just to be sure!
+        if any(dict_asset[TIMESERIES_NORMALIZED].values) > 1:
+            logging.warning(
+                "Error, %s timeseries not normalized, greater than 1.",
+                dict_asset[LABEL],
             )
-            # just to be sure!
-            if any(dict_asset[TIMESERIES_NORMALIZED].values) > 1:
-                logging.warning(
-                    "Error, %s timeseries not normalized, greater than 1.",
-                    dict_asset[LABEL],
-                )
-            if any(dict_asset[TIMESERIES_NORMALIZED].values) < 0:
-                logging.warning("Error, %s timeseries negative.", dict_asset[LABEL])
+        if any(dict_asset[TIMESERIES_NORMALIZED].values) < 0:
+            logging.warning("Error, %s timeseries negative.", dict_asset[LABEL])
 
 
 def treat_multiple_flows(dict_asset, dict_values, parameter):
