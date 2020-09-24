@@ -73,7 +73,7 @@ def evaluate_dict(dict_values, path_pdf_report=None, path_png_figs=None):
     # storing all flows to exel.
     store_timeseries_all_busses_to_excel(dict_values)
 
-    # Write everything to file with multipe tabs
+    # Write everything to file with multiple tabs
     store_scalars_to_excel(dict_values)
 
     store_as_json(
