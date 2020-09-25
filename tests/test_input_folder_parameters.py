@@ -50,9 +50,15 @@ def test_input_folder_csv_files_have_required_parameters(input_folder):
         if EXTRA_PARAMETERS_KEY in comparison:
             for k in comparison[EXTRA_PARAMETERS_KEY].keys():
                 for el in comparison[EXTRA_PARAMETERS_KEY][k]:
-                    assert el in EXTRA_CSV_PARAMETERS
-        else:
-            assert True
+                    try:
+                        assert el in EXTRA_CSV_PARAMETERS
+                    except AssertionError:
+                        raise AssertionError(
+                            f"\n\nParameter '{el}' is an extra parameter in the file '{input_folder}/"
+                            f"{CSV_ELEMENTS}/{k}'. The '{TEMPLATE_INPUT_FOLDER}' folder should only "
+                            f"contain the required parameters and no extra parameters.\n\nSee "
+                            f"previous exception in the pytest log for more details on this error."
+                        )
 
 
 @pytest.mark.parametrize("input_folder", TEST_JSON_INPUT_FOLDERS)
