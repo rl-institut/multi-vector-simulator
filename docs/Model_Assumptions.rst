@@ -52,9 +52,6 @@ Dispatchable conversion assets
     - Diesel generator
     - Electric transformers (rectifiers, inverters)
 
-In case energy excess is cheaper than investing into higher solar inverter capacities the results will show an optimized inverter capacity that is smaller than the peak generation of installed PV.
-This becomes unrealistic when the excess is very high. In this case, MVS will give a warning.
-
 Energy excess
 #############
 
@@ -62,6 +59,9 @@ An energy excess sink is placed on each of the LES energy busses, and therefore 
 This means that there are assumed to be sufficient vents (heat) or transistors (electricity) to dump excess (waste) generation.
 Excess generation can only take place when a non-dispatchable source is present or if an asset can supply energy without any fuel or dispatch costs.
 
+In case of excessive excess energy, a warning is given that it seems to be cheaper to have high excess generation than investing into more capacities.
+High excess energy can for example result into an optimized inverter capacity that is smaller than the peak generation of installed PV.
+This becomes unrealistic when the excess is very high.
 
 Energy providers (DSOs)
 -----------------------
