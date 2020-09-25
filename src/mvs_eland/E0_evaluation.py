@@ -154,6 +154,21 @@ def evaluate_dict(dict_values, results_main, results_meta):
             E2.lcoe_assets(dict_values[group][asset], group)
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
+    # detect excessive excess generation in any bus
+    for bus_label, bus_df in dict_values[OPTIMIZED_FLOWS].items():
+        # disregard excess sinks
+        cols = [col for col in bus_df.columns if "excess" not in col]
+        df = pd.DataFrame(bus_df[cols].sum(), columns=["sum"])
+        # get total in- and outflow of bus
+        total_inflow_bus = df[df > 0].dropna().sum().values[0]
+        total_outflow_bus = df[df < 0].dropna().sum().values[0]
+        if not total_inflow_bus == 0:
+            # give a warning in case ratio > 0.9
+            ratio = total_outflow_bus / total_inflow_bus
+            if ratio < 0.9:
+                msg = f"Attention, on bus {bus_label} there is an excessive excess generation. It seems to be cheaper to have this excess generation than to install more capacities that forward the energy carrier to other busses (if those assets can be optimized)."
+                logging.warning(msg)
+
     logging.info("Evaluating key performance indicators of the system")
     E3.all_totals(dict_values)
     E3.total_demand_and_excess_each_sector(dict_values)
