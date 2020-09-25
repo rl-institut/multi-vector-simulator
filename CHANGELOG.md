@@ -24,6 +24,7 @@ Here is a template for new release sections
 - Instruction to install graphviz on windows in `docs/troubleshooting.rst` (#572)
 - Error message if time series of non-dispatchable sources do not meet requirement: values betw. 0 and 1. (#498)
 - Requirement for time series of non-dispatchable sources in readthedocs (#498)
+- Provide a warning in case of excessive excess generation (#498)
 
 ### Changed
 - Modify `setup.py` to upload the code as package on pypi.org (#570)
