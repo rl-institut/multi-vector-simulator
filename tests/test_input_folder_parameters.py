@@ -38,7 +38,7 @@ def test_input_folder_csv_files_have_required_parameters(input_folder):
                 except AssertionError:
                     raise AssertionError(
                         f"Parameter '{el}' is missing in you csv input files although it is required. It "
-                        f"should be added in the appropriate file of the folder '{input_folder}"
+                        f"should be added in the '{k}.csv' file of the folder '{input_folder}"
                         f"/{CSV_ELEMENTS}' or listed in the dict 'EXTRA_CSV_PARAMETERS' in "
                         f"src/mvs_eland/utils/constants.py. The csv required parameters are listed in "
                         f"the dict 'REQUIRED_CSV_PARAMETERS' in the aforementionned constant.py "
