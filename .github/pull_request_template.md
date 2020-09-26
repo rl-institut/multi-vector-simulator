@@ -5,7 +5,7 @@ Fix #Issue
 
 The following steps were realized, as well (if applies):
 - [ ] Use in-line comments to explain your code
-- [ ] Write docstrings to your code
+- [ ] Write docstrings to your code ([example docstring](https://mvs-eland.readthedocs.io/en/latest/Developing.html#format-of-docstrings))
 - [ ] For new functionalities: Explain in readthedocs
 - [ ] Write test(s) for your new patch of code (pytests, assertion debug messages)
 - [ ] Update the CHANGELOG.md
