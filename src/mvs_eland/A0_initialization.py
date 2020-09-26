@@ -1,4 +1,4 @@
-"""
+r"""
 Module A0_initialization defines functions to parse user inputs to the MVS simulation.
     - Display welcome message with current version number
     - Parse command line arguments and set default values for MVS parameters if not provided
@@ -8,27 +8,37 @@ Module A0_initialization defines functions to parse user inputs to the MVS simul
 
 Usage from root of repository:
 
-python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]]
-                          [-o [PATH_OUTPUT_FOLDER]]
-                          [-log [{debug,info,error,warning}]] [-f [OVERWRITE]]
-                          [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
+.. code-block:: bash
+
+    python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]] [-o [PATH_OUTPUT_FOLDER]]
+    [-log [{debug,info,error,warning}]] [-f [OVERWRITE]] [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
 
 Process MVS arguments
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -i [PATH_INPUT_FOLDER]
-                        path to the input folder
-  -ext [{json,csv}]     type (json or csv) of the input files (default: 'json'
-  -o [PATH_OUTPUT_FOLDER]
-                        path to the output folder for the simulation's results
-  -log [{debug,info,error,warning}]
-                        level of logging in the console
-  -f [OVERWRITE]        overwrite the output folder if True (default: False)
-  -pdf [PDF_REPORT]     generate a pdf report of the simulation if True
-                        (default: False)
-  -png [SAVE_PNG]       generate png figures of the simulation in the
-                        output_folder if True (default: False)
+    -h, --help
+        show this help message and exit
+
+    -i [PATH_INPUT_FOLDER]
+        path to the input folder
+
+    -ext [{json,csv}]
+        type (json or csv) of the input files (default: 'json')
+
+    -o [PATH_OUTPUT_FOLDER]
+        path to the output folder for the simulation's results
+
+    -log [{debug,info,error,warning}]
+        level of logging in the console
+
+    -f [OVERWRITE]
+        overwrite the output folder if True (default: False)
+
+    -pdf [PDF_REPORT]
+        generate a pdf report of the simulation if True (default: False)
+
+    -png [SAVE_PNG]
+        generate png figures of the simulation in the output_folder if True (default: False)
 
 """
 
@@ -270,14 +280,15 @@ def process_user_arguments(
         (Optional) Can force tool to replace existing output folder (command line "-f")
     :param pdf_report:
         (Optional) Can generate an automatic pdf report of the simulation's results (Command line "-pdf")
-    :param: save_png:
+    :param save_png:
         (Optional) Can generate png figures with the simulation's results (Command line "-png")
     :param display_output:
         (Optional) Determines which messages are used for terminal output (command line "-log")
-            "debug": All logging messages
-            "info": All informative messages and warnings (default)
-            "warning": All warnings
-            "error": Only errors
+        Allowed values are
+        "debug": All logging messages,
+        "info": All informative messages and warnings (default),
+        "warning": All warnings,
+        "error": Only errors,
     :param lp_file_output:
         Save linear equation system generated as lp file
     :param welcome_text:

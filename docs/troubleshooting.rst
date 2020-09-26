@@ -34,6 +34,9 @@ If you have conda installed, activate your environment and run
 
     conda install -c alubbock graphviz pygraphviz
 
+Then you need to configure the `dot` command on your computer to be able to use graphviz
+
+    dot -c
 
 Python package "xlrd"
 #####################

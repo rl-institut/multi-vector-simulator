@@ -473,8 +473,9 @@ def all_list_in_dict(dict_asset, list):
 
 
 def lcoe_assets(dict_asset, asset_group):
-    """
+    r"""
     Calculates the levelized cost of electricity (lcoe) of each asset. [Follow this link for information](docs/MVS_Outputs.rst)
+
     Parameters
     ----------
     dict_asset: dict
@@ -491,9 +492,10 @@ def lcoe_assets(dict_asset, asset_group):
     Notes
     -----
 
-    ..:math: LCOE_ASSET = \frac{A}{ E_{throughput} }
+    .. math::
 
-    If  E_{throughput} == 0, LCOE_ASSET = 0.
+        LCOE\_ASSET = \frac{A}{ E_{throughput} } \\
+        \textrm{If } E_{throughput} = 0, LCOE\_ASSET = 0
 
     """
 

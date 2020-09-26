@@ -73,7 +73,7 @@ def add_constraints(local_energy_system, dict_values, dict_model):
 
 
 def constraint_minimal_renewable_share(model, dict_values, dict_model):
-    """
+    r"""
     Resulting in an energy system adhering to a minimal renewable factor.
 
     Please be aware that the renewable factor that has to adhere to the minimal renewable factor is not the one of one specific sector,

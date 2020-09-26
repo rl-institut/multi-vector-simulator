@@ -572,7 +572,7 @@ def convert_demand_to_dataframe(dict_values):
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
     # Creating a dataframe for the demands
@@ -630,7 +630,7 @@ def convert_components_to_dataframe(dict_values):
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
 
@@ -700,7 +700,7 @@ def convert_scalar_matrix_to_dataframe(dict_values):
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
 
@@ -739,7 +739,7 @@ def convert_cost_matrix_to_dataframe(dict_values):
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
 
@@ -779,7 +779,7 @@ def convert_costs_to_dataframe(dict_values):
 
     Returns
     -------
-    :pandas:`pandas.DataFrame<frame>`
+    :class:`pandas.DataFrame<frame>`
 
     """
     # Get the cost matrix from the results JSON file into a pandas DF
@@ -813,7 +813,7 @@ def convert_scalars_to_dataframe(dict_values):
 
     Returns
     -------
-    kpi_scalars_dataframe: :pandas:`pandas.DataFrame<frame>`
+    kpi_scalars_dataframe: :class:`pandas.DataFrame<frame>`
         Dataframe to be displayed as a table in the report
 
     Notes
@@ -839,7 +839,7 @@ def convert_scalars_to_dataframe(dict_values):
 
 def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
     """
-    Determines the units of the costs KPI to be stored to :pandas: DataFrame.
+    Determines the units of the costs KPI to be stored to :class: DataFrame.
 
     Parameters
     ----------
@@ -852,7 +852,7 @@ def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
     Returns
     -------
     unit_list: list
-        List of units for the :pandas: DataFrame to be created
+        List of units for the :class: DataFrame to be created
     """
 
     unit_list = []

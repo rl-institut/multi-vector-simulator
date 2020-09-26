@@ -22,10 +22,26 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
-- Evaluation of excess energy for each of the energy carriers and for the whole system. The excess per sector and their energy equivalent may currently be faulty (comp. issue #559) (#555)
+- Instruction to install graphviz on windows in `docs/troubleshooting.rst` (#572)
 - Benchmark test `test_benchmark_feature_parameters_as_timeseries` to ensure that parameters can always also be defined as a timeseries. Applied to `efficiency` of an energyConversion asset and `electricity_price` of an energyProduction asset (#542)
 - Input files for benchmark tests `test_benchmark_feature_input_flows_as_list` (`Feature_input_flows_as_list`) and `test_benchmark_feature_output_flows_as_list` (`Feature_output_flows_as_list`), but not the benchmark assertions (#542)
+### Changed
+- Modify `setup.py` to upload the code as package on pypi.org (#570)
+- Improve message when the `tests/test_input_folder_parameters.py` fails (#578)
+- Changed `E2.calculate_dispatch_expenditures()` so that it can process parameters defined as lists (#542)
+
+### Removed
+-
+### Fixed
+- Update the release protocol in `CONTRIBUTING.md` file (#576)
+- Fix reading timeseries for parameters in `C0` (#542)
+
+## [0.4.1] - 2020-09-21
+
+### Added
+- Evaluation of excess energy for each of the energy carriers and for the whole system. The excess per sector and their energy equivalent may currently be faulty (comp. issue #559) (#555)
 - Debug messages for pytests: `C0`, `D2` (#555, #560)
+- Labels on capacity barplot bars (#567)
 
 
 ### Changed
@@ -39,16 +55,22 @@ Here is a template for new release sections
 - Move and rename json input files for D0 and D1 tests (`test_data_for_D0.json` to `tests/test_data/inputs_for_D0/mvs_config.json`, `test_data_for_D1.json` to `tests/test_data/inputs_for_D1/mvs_config.json`), add required parameters (#555) 
 - Change requirements/test.txt: `black==19.10b0`, as otherwise there are incompatabilities (#555)
 - `D2.prepare_constraint_minimal_renewable_share`, including logging messages and pytest (#560)
-- Changed `E2.calculate_dispatch_expenditures()` so that it can process parameters defined as lists (#542)
 
 ### Removed
-
+- Change the import path of the modules for automatic docstrings import in `docs/Code.rst` (#564)
+- Fix the docstrings with math expressions (need to add `r` before the `"""` of the docstring
+) (#564)
+- Rename the function in F1 module `plot_flows` to `plot_instant_power` (#567)
+- Change flow to power in the instanteous power figures (#567)
+- `F1.plot_piecharts_of_costs()` now cites costs with currect currency and avoids decimal numbers (#561)
 
 ### Fixed
 - `C1.check_feedin_tariff()` now also accepts `isinstance(diff, int)` (#552)
 - Feed-in sinks of the DSOs now are capacity-optimized and can actually be used (#555)
 - Incorrectly applied minimal renewable share criterion (#560)
-- Fix reading timeseries for parameters in `C0` (#542)
+- Pdf report generation (#566)
+- Update fresh install instructions for developers (#565)
+- Graphs of the report now use appropriate currency (#561)
 
 ## [0.4.0] - 2020-09-01
 
