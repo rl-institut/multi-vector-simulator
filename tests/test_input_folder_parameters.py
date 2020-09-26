@@ -71,7 +71,6 @@ def test_input_folder_json_file_have_required_parameters(input_folder):
     if os.path.exists(os.path.join(input_folder, JSON_FNAME)):
         comparison = compare_input_parameters_with_reference(input_folder, ext=JSON_EXT)
         assert MISSING_PARAMETERS_KEY not in comparison, (
-            f"In path {input_folder}, the following parameters are missing:"
-            f" {MISSING_PARAMETERS_KEY} is included: "
+            f"In path {input_folder}/{JSON_FNAME}, the following parameters are missing:"
             + str(comparison[MISSING_PARAMETERS_KEY])
         )
