@@ -28,6 +28,8 @@ Here is a template for new release sections
 
 ### Changed
 - Modify `setup.py` to upload the code as package on pypi.org (#570)
+- Improve message when the `tests/test_input_folder_parameters.py` fails (#578)
+
 ### Removed
 -
 ### Fixed
