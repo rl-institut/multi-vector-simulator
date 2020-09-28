@@ -8,11 +8,11 @@ age_installed
 #############
 
 :Definition: The number of years the asset has already been in operation.
-:Type: nu
+:Type: Numeric
 :Unit: None
-:Example:
-:Restrictions:
-:Default:
+:Example: 12
+:Restrictions: None
+:Default: None
 
 |
 
@@ -20,7 +20,7 @@ cost_om
 #######
 
 :Definition: Specific annual OPEX of the asset.
-:Type: None
+:Type: Numeric
 :Unit: €/kW/year
 :Example: None
 :Restrictions: None
@@ -60,7 +60,7 @@ c-rate
 :Unit:
 :Example:
 :Restrictions: Only the columns "input power" and "output power" require a value, in column "storage capacity" c_rate should be set to NaN.
-:Default:
+:Default: None
 
 |
 
@@ -350,7 +350,7 @@ Project_id
 ##########
 
 :Definition: Users can assign a project ID as per their preference
-:Type: str
+:Type: Alpanumeric
 :Unit: None
 :Example: Borg Havn
 :Restrictions: None
@@ -362,7 +362,7 @@ Project_name
 ############
 
 :Definition: Users can assign a project name as per their preference
-:Type: str
+:Type: Alphanumeric
 :Unit: None
 :Example:
 :Restrictions: None
@@ -374,7 +374,7 @@ scenario_id
 ###########
 
 :Definition: Users can assign a scenario id as per their preference
-:Type: str
+:Type: Alphanumeric
 :Unit: None
 :Example: 1
 :Restrictions: None
@@ -386,7 +386,7 @@ scenario_name
 #############
 
 :Definition: Users can assign a scenario name as per their preference
-:Type: str
+:Type: Alphanumeric
 :Unit: None
 :Example: Warehouse 14
 :Restrictions: None
@@ -402,7 +402,7 @@ soc_initial
 :Unit:
 :Example:
 :Restrictions: Acceptable values are either None or the factor. Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_initial should be set to NaN.
-:Default:
+:Default: None
 
 |
 
@@ -414,7 +414,7 @@ soc_max
 :Unit:
 :Example:
 :Restrictions: Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_max should be set to NaN.
-:Default:
+:Default: None
 
 |
 
@@ -426,7 +426,7 @@ soc_min
 :Unit:
 :Example:
 :Restrictions: Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_min should be set to NaN.
-:Default:
+:Default: None
 
 |
 
@@ -450,7 +450,7 @@ start_date
 :Unit: None
 :Example: 2018-01-01 00:00:00
 :Restrictions: Acceptable format is YYYY-MM-DD HH:MM:SS
-:Default:
+:Default: None
 
 |
 
@@ -493,7 +493,7 @@ tax
 timestep
 ########
 
-:Definition: Length of the timesteps.
+:Definition: Length of the time-steps.
 :Type: str
 :Unit: None
 :Example: None
@@ -526,24 +526,27 @@ type_oemof
 
 |
 
+.. _unit_label:
+
 unit
 ####
 
 :Definition: Unit associated with the capacity of the component.
 :Type:
-:Unit:
+:Unit: None
 :Example: Storage could have units like kW or kWh, transformer station could have kVA, and so on.
-:Restrictions: None
+:Restrictions: Appropriate scientific unit
 :Default: None
 
 ----------------
 project_data.csv
 ----------------
 
-The file `project_data.csv` includes following parameters:
+The file `project_data.csv` includes the following parameters:
 
-* <`latitude`>_
+see :ref:`unit_label`
 
+-----------------
 economic_data.csv
 -----------------
 
