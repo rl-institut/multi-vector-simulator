@@ -4,6 +4,8 @@ Parameters and Definitions in CSVs/JSON
 
 Below is the list of all the parameters of MVS, sorted in alphabetical order. Each parameter is provided with the definition, unit, type and example values as well to make it easy for users to provide custom values for their systems.
 
+.. _age_ins-label:
+
 age_installed
 #############
 
@@ -15,6 +17,8 @@ age_installed
 :Default: None
 
 |
+
+.. _cost_om-label:
 
 cost_om
 #######
@@ -28,6 +32,8 @@ cost_om
 
 |
 
+.. _country-label:
+
 country
 #######
 
@@ -39,6 +45,8 @@ country
 :Default: None
 
 |
+
+.. _currency-label:
 
 currency
 ########
@@ -52,6 +60,8 @@ currency
 
 |
 
+.. _crate-label:
+
 c-rate
 ######
 
@@ -63,6 +73,8 @@ c-rate
 :Default: None
 
 |
+
+.. _developmentcosts-label:
 
 development_costs
 #################
@@ -76,6 +88,8 @@ development_costs
 
 |
 
+.. _discountfactor-label:
+
 discount_factor
 ###############
 
@@ -87,6 +101,8 @@ discount_factor
 :Default: None
 
 |
+
+.. _dispatchprice-label:
 
 dispatch_price
 ##############
@@ -100,6 +116,8 @@ dispatch_price
 
 |
 
+.. _displayoutput-label:
+
 display_output
 ##############
 
@@ -111,6 +129,8 @@ display_output
 :Default: debug
 
 |
+
+.. _dsm-label:
 
 dsm
 ###
@@ -124,6 +144,8 @@ dsm
 
 |
 
+.. _efficiency-label:
+
 efficiency
 ##########
 
@@ -135,6 +157,8 @@ efficiency
 :Default: None
 
 |
+
+.. _energyprice-label:
 
 energy_price
 ############
@@ -148,6 +172,8 @@ energy_price
 
 |
 
+.. _evaluatedperiod-label:
+
 evaluated_period
 ################
 
@@ -159,6 +185,8 @@ evaluated_period
 :Default:
 
 |
+
+.. _energyvector-label:
 
 energyVector
 ############
@@ -172,6 +200,8 @@ energyVector
 
 |
 
+.. _feedintariff-label:
+
 feedin_tariff
 #############
 
@@ -183,6 +213,8 @@ feedin_tariff
 :Default:
 
 |
+
+.. _filename-label:
 
 file_name
 #########
@@ -196,6 +228,8 @@ file_name
 
 |
 
+.. _inflowdirection-label:
+
 inflow_direction
 ################
 
@@ -207,6 +241,8 @@ inflow_direction
 :Default: None
 
 |
+
+.. _installedcap-label:
 
 installedCap
 ############
@@ -220,6 +256,8 @@ installedCap
 
 |
 
+.. _labl-label:
+
 label
 #####
 
@@ -227,10 +265,12 @@ label
 :Type: str
 :Unit: None
 :Example: None
-:Restrictions: None
+:Restrictions: Input the names in a computer readable format, i.e., with underscores instead of spaces, no special characters (eg. pv_plant_01)
 :Default: None
 
 |
+
+.. _latitude-label:
 
 latitude
 ########
@@ -244,6 +284,8 @@ latitude
 
 |
 
+.. _lifetime-label:
+
 lifetime
 ########
 
@@ -255,6 +297,8 @@ lifetime
 :Default: None
 
 |
+
+.. _longitude-label:
 
 longitude
 #########
@@ -268,6 +312,8 @@ longitude
 
 |
 
+.. _maxcap-label:
+
 maximumCap
 ##########
 
@@ -279,6 +325,22 @@ maximumCap
 :Default: None
 
 |
+
+.. _minrenshare-label:
+
+minimal_renewable_share
+#######################
+
+:Definition: The minimum share of energy supplied by renewable generation in the optimized energy system.
+:Type: Numeric
+:Unit: factor
+:Example: 0.7
+:Restrictions: Between 0 and 1
+:Default: None
+
+|
+
+.. _optimizecap-label:
 
 optimizeCap
 ###########
@@ -292,6 +354,8 @@ optimizeCap
 
 |
 
+.. _outputlpfile-label:
+
 output_lp_file
 ##############
 
@@ -303,6 +367,8 @@ output_lp_file
 :Default:
 
 |
+
+.. _outflowdirec-label:
 
 outflow_direction
 #################
@@ -316,6 +382,8 @@ outflow_direction
 
 |
 
+.. _peakdemand-label:
+
 peak_demand_pricing
 ###################
 
@@ -328,11 +396,21 @@ peak_demand_pricing
 
 |
 
-**Peak_demand_pricing_period**: Number of reference periods in one year for the peak demand pricing. Only one of the following are acceptable values: 1 (yearly), 2, 3 ,4, 6, 12 (monthly).
+.. _peakdemandperiod-label:
+
 Peak_demand_pricing_period
 ##########################
 
+:Definition: Number of reference periods in one year for the peak demand pricing. Only one of the following are acceptable values: 1 (yearly), 2, 3 ,4, 6, 12 (monthly).
+:Type:
+:Unit:
+:Example:
+:Restrictions:
+:Default:
 
+|
+
+.. _projectduration-label:
 
 Project_duration
 ################
@@ -346,17 +424,21 @@ Project_duration
 
 |
 
+.. _projectid-label:
+
 Project_id
 ##########
 
 :Definition: Users can assign a project ID as per their preference
-:Type: Alpanumeric
+:Type: Alphanumeric
 :Unit: None
 :Example: Borg Havn
 :Restrictions: None
 :Default: 1
 
 |
+
+.. _projectname-label:
 
 Project_name
 ############
@@ -370,6 +452,8 @@ Project_name
 
 |
 
+.. _scenarioid-label:
+
 scenario_id
 ###########
 
@@ -381,6 +465,8 @@ scenario_id
 :Default: None
 
 |
+
+.. _scenarioname-label:
 
 scenario_name
 #############
@@ -394,6 +480,8 @@ scenario_name
 
 |
 
+.. _socin-label:
+
 soc_initial
 ###########
 
@@ -405,6 +493,8 @@ soc_initial
 :Default: None
 
 |
+
+.. _socmax-label:
 
 soc_max
 #######
@@ -418,6 +508,8 @@ soc_max
 
 |
 
+.. _socmin-label:
+
 soc_min
 #######
 
@@ -429,6 +521,8 @@ soc_min
 :Default: None
 
 |
+
+.. _specificcosts-label:
 
 specific_costs
 ##############
@@ -442,6 +536,8 @@ specific_costs
 
 |
 
+.. _startdate-label:
+
 start_date
 ##########
 
@@ -453,6 +549,8 @@ start_date
 :Default: None
 
 |
+
+.. _storagefilename-label:
 
 storage_filename
 ################
@@ -466,6 +564,8 @@ storage_filename
 
 |
 
+.. _storeoemoefresults-label:
+
 store_oemof_results
 ###################
 
@@ -477,6 +577,8 @@ store_oemof_results
 :Default:
 
 |
+
+.. _tax-label:
 
 tax
 ###
@@ -490,6 +592,8 @@ tax
 
 |
 
+.. _timestep-label:
+
 timestep
 ########
 
@@ -501,6 +605,8 @@ timestep
 :Default: None
 
 |
+
+.. _typeasset-label:
 
 type_asset
 ##########
@@ -514,6 +620,8 @@ type_asset
 
 |
 
+.. _typeoemof-label:
+
 type_oemof
 ##########
 
@@ -526,7 +634,7 @@ type_oemof
 
 |
 
-.. _unit_label:
+.. _unit-label:
 
 unit
 ####
@@ -538,20 +646,72 @@ unit
 :Restrictions: Appropriate scientific unit
 :Default: None
 
+---------------
+constraints.csv
+---------------
+
+The file `constraints.csv` includes the following parameter(s):
+
+* :ref:`minrenshare-label`
+
+-----------------
+economic_data.csv
+-----------------
+
+The file `economic_data.csv` includes the following parameters:
+
+* :ref:`labl-label`
+* :ref:`currency-label`
+* :ref:`projectduration-label`
+* :ref:`discountfactor-label`
+* :ref:`tax-label`
+
+---------------------
+energyConsumption.csv
+---------------------
+
+The file `energyConsumption.csv` includes the following parameters:
+
+* :ref:`labl-label`
+* :ref:`unit-label`
+* :ref:`inflowdirection-label`
+* :ref:`energyvector-label`
+* :ref:`filename-label`
+* :ref:`typeasset-label`
+* :ref:`typeoemof-label`
+* :ref:`dsm-label`
+
 ----------------
 project_data.csv
 ----------------
 
 The file `project_data.csv` includes the following parameters:
 
-see :ref:`unit_label`
+* :ref:`labl-label`
+* :ref:`country-label`
+* :ref:`latitude-label`
+* :ref:`longitude-label`
+* :ref:`projectid-label`
+* :ref:`projectname-label`
+* :ref:`scenarioid-label`
+* :ref:`scenarioname-label`
 
------------------
-economic_data.csv
------------------
-
+-----------------------
 simulation_settings.csv
 -----------------------
+
+The file `simulation_settings.csv` includes the following parameters:
+
+* :ref:`labl-label`
+
+start_date
+evaluated_period
+timestep
+output_lp_file
+store_oemof_results
+
+
+
 
 
 Common Parameters in the CSV/JSON files and in energyConversion.csv:
@@ -567,18 +727,8 @@ energyProduction.csv
 
 **First row of the csv (C1, E1, D1...)**: Input the names of the production components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
 
-
-
-
 energyProviders.csv
 -------------------
-
-
-energyConsumption.csv
----------------------
-
-**First row of the csv (C1, E1, D1...)**: Input the names of the consumption components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
-
 
 energyStorage.csv
 -----------------
