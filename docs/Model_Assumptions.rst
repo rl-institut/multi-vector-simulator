@@ -246,6 +246,9 @@ Perfect foresight
 
 Extension of KPIs
 #################
+:Limitation: Some important KPIs, usually required by developers, are currently not implemented in the MVS.
+:Reason: The MVS tool is a work in progress and this can still be addressed in the future.
+:Implications: The absence of such indicators might affect decision-making.
 
 Random excess energy distribution
 #################################
