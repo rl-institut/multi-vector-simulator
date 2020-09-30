@@ -36,7 +36,7 @@ Module C0 prepares the data read from csv or json for simulation, ie. pre-proces
 - Define dso sinks, sources, transformer stations (this will be changed due to bug #119), also for peak demand pricing
 - Add a source if a conversion object is connected to a new input_direction (bug #186)
 - Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
-- Multiply `maximumCap` of non-dispatchable sources by max(timeseries(kWh/kWp)) to fix `optimizedAddCap` (see issue #446)
+- Multiply `maximumCap` of non-dispatchable sources by max(timeseries(kWh/kWp)) as the `maximumCap` is limiting the flow but we want to limit the installed capacity (see issue #446)
 """
 
 
