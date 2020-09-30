@@ -7,7 +7,7 @@ import mvs_eland.E1_process_results as E1
 import mvs_eland.E2_economics as E2
 import mvs_eland.E3_indicator_calculation as E3
 
-import mvs_eland.E4_verification_of_constraints as E4
+import mvs_eland.E4_verification as E4
 
 from mvs_eland.utils.constants_json_strings import (
     UNIT,
