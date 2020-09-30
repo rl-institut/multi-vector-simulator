@@ -94,10 +94,9 @@ def get_json():
 
 
 def test_check_non_dispatchable_source_time_series_passes(get_json):
-    # with open(os.path.join(JSON_PATH)) as json_file:
-    #     dict_values = json.load(json_file)
     dict_values = get_json(pd.Series([0, 0.22, 0.5, 0.99, 1]))
-    C1.check_non_dispatchable_source_time_series(dict_values=dict_values)
+    return_value = C1.check_non_dispatchable_source_time_series(dict_values=dict_values)
+    assert return_value == True
 
 
 def test_check_non_dispatchable_source_time_series_results_in_error_msg(get_json):
