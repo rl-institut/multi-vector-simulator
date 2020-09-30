@@ -14,7 +14,7 @@ from _constants import (
     VALUE,
 )
 from mvs_eland.utils.constants_json_strings import (
-    TIMESERIES_NORMALIZED,
+    TIMESERIES,
     RENEWABLE_ASSET_BOOL,
     ENERGY_PRODUCTION,
 )
@@ -87,7 +87,7 @@ def get_json():
     def _add_time_series_to_dict_values(ts):
         for key, source in dict_values[ENERGY_PRODUCTION].items():
             if source[RENEWABLE_ASSET_BOOL][VALUE] == True:
-                dict_values[ENERGY_PRODUCTION][key][TIMESERIES_NORMALIZED] = ts
+                dict_values[ENERGY_PRODUCTION][key][TIMESERIES] = ts
         return dict_values
 
     return _add_time_series_to_dict_values

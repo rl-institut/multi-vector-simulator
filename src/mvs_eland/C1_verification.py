@@ -56,7 +56,7 @@ from mvs_eland.utils.constants_json_strings import (
     VALUE,
     ASSET_DICT,
     RENEWABLE_ASSET_BOOL,
-    TIMESERIES_NORMALIZED,
+    TIMESERIES,
 )
 
 
@@ -167,16 +167,16 @@ def check_non_dispatchable_source_time_series(dict_values):
     # go through all non-dispatchable sources
     for key, source in dict_values[ENERGY_PRODUCTION].items():
         if (
-            TIMESERIES_NORMALIZED in source
+            TIMESERIES in source
             and source[RENEWABLE_ASSET_BOOL][VALUE] == True
         ):
             # check if values between 0 and 1
             result = check_time_series_values_between_0_and_1(
-                time_series=source[TIMESERIES_NORMALIZED]
+                time_series=source[TIMESERIES]
             )
             if result == False:
                 logging.error(
-                    f"{TIMESERIES_NORMALIZED} of non-dispatchable source {source[LABEL]} contains values out of bounds [0, 1]."
+                    f"{TIMESERIES} of non-dispatchable source {source[LABEL]} contains values out of bounds [0, 1]."
                 )
                 return False
 
