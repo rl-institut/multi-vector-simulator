@@ -23,9 +23,13 @@ Here is a template for new release sections
 
 ### Added
 - Instruction to install graphviz on windows in `docs/troubleshooting.rst` (#572)
+
+
 ### Changed
 - Modify `setup.py` to upload the code as package on pypi.org (#570)
 - Improve message when the `tests/test_input_folder_parameters.py` fails (#578)
+- Modify PR template to precise to add assert message and link to example docstring 
+- Update CONTRIBUTING to add a "Write test for your code" section before the "Run tests locally" one (#579)
 
 ### Removed
 -
