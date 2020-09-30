@@ -176,12 +176,84 @@ The confersion factors are derived from their `Gasoline Gallon Equivalents.<http
 Limitations
 -----------
 
+Currently, the MVS tool is still a work in progress. Running simulations with different component combinations might reveal some of its limitations. Some of the latter can be inherited while others can still be addressed. A limitation can result in drawbacks, but can also be beneficial in other perspectives. The following table lists the MVS limitations based on their type.
+
+.. list-table:: Limitations
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - Type
+     - Limitation
+     - Link
+   * - Inherited
+     - Disregard of some real life constraint
+     - 
+   * - Inherited
+     - Simplified asset model
+     - 
+   * - Inherited
+     - No degradation
+     - 
+   * - Inherited
+     - Perfect foresight
+     - 
+   * - Can be addressed
+     - Extension of KPIs
+     - 
+   * - Can be addressed
+     - Random excess energy distribution
+     - 
+   * - Can be addressed
+     - Renewable energy share defintion
+     - 
+   * - Can be addressed
+     - Energy carrier rating
+     -      
+   * - Can be addressed
+     - Energy shortage or grid interruption
+     - 
+   * - Can be addressed
+     - Generic cost definitions
+     -  
+   * - Can be addressed
+     - Unlinked one technical unit transformers
+     -      
+     
+Disregard of some real life constraint
+######################################
+
+Simplified asset model
+######################
+
+No degradation
+##############
+
 Perfect foresight
 #################
 - Battery charge
 
+Extension of KPIs
+#################
+
+Random excess energy distribution
+#################################
+
+Renewable energy share defintion
+################################
+
+Energy carrier rating
+#####################
+
+Energy shortage or grid interruption
+####################################
+
+Generic cost definitions
+########################
+
+Unlinked one technical unit transformers
+########################################
+
 Infeasible dispatch of assets
 #############################
-
 - Energy consumption and feed-in at the same time
 - Bi-directional inverters
