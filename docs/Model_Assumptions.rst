@@ -224,10 +224,13 @@ Disregard of some real life constraint
 ######################################
 :Limitation: Some real life constraint are not taken into consideration in the MVS.
 :Reason: The MVS is based oemof-solph python library and uses its generic components to set up an energy system, which allow unidirectional flows only. 
-:Implications: This means that the MVS might result in infeasible dispatch of assets. For instance, the battery might be charged by the rectifier and discharged by the inverter at the same time step t. Another case that could occur is feeding the grid and consuming from it at the same time t. If those constraints were to be implemented, the optimization problem would become a non-linear one.
+:Implications: This means that the MVS might result in unfeasible dispatch of assets. For instance, the battery might be charged by the rectifier and discharged by the inverter at the same time step t. Another case that could occur is feeding the grid and consuming from it at the same time t. If those constraints were to be implemented, the optimization problem would become a non-linear one.
 
 Simplified asset model
 ######################
+:Limitation: The MVS simplifies the modelling of some assets.
+:Reason: The MVS is based oemof-solph python library and uses its generic components to set up an energy system.
+:Implications: Simplifying the implementation of some component specifications can be beneficial for the ease of the model, however, it contributes to the lack of realism and might result in impractical values. For instance, generators and transformers are modelled without their efficiency curve, turbines without ramp rates, and thermal storage is currently implemented like battery storage.
 
 No degradation
 ##############
