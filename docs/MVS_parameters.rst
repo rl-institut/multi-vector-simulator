@@ -7,12 +7,12 @@ Below is the list of all the parameters of MVS, sorted in alphabetical order. Ea
 .. _age_ins-label:
 
 age_installed
-#############
+******************
 
 :Definition: The number of years the asset has already been in operation.
 :Type: Numeric
 :Unit: Years
-:Example: 12
+:Example: 10
 :Restrictions: None
 :Default: None
 
@@ -21,7 +21,7 @@ age_installed
 .. _country-label:
 
 country
-#######
+********
 
 :Definition: Name of the country where the project is being deployed
 :Type: str
@@ -35,7 +35,7 @@ country
 .. _currency-label:
 
 currency
-########
+************
 
 :Definition: The currency of the country where the project is implemented.
 :Type: str
@@ -49,12 +49,12 @@ currency
 .. _crate-label:
 
 c-rate
-######
+*********
 
 :Definition: C-rate is the rate at which the storage can charge or discharge relative to the nominal capacity of the storage. A c-rate of 1 implies that the battery can discharge or charge completely in a single timestep.
 :Type: Numeric
 :Unit: factor of total capacity (kWh)
-:Example: None
+:Example: *storage capacity*: NaN, *input power*: 1, *output power*: 1
 :Restrictions: Only the columns "input power" and "output power" require a value, in column "storage capacity" c_rate should be set to NaN.
 :Default: None
 
@@ -63,12 +63,12 @@ c-rate
 .. _developmentcosts-label:
 
 development_costs
-#################
+********************
 
-:Definition: A fixed cost to implement the asset, eg. planning costs which do not depend on the (optimized) asset capacity
+:Definition: A fixed cost to implement the asset, eg. planning costs which do not depend on the (optimized) asset capacity.
 :Type: Numeric
 :Unit: currency
-:Example: 200
+:Example: 10000
 :Restrictions: None
 :Default: None
 
@@ -77,12 +77,12 @@ development_costs
 .. _discountfactor-label:
 
 discount_factor
-###############
+*******************
 
 :Definition: Discount factor is the factor which accounts for the depreciation in the value of money in the future, compared to the current value of the same money. The common method is to calculate the weighted average cost of capital (WACC) and use it as the discount rate.
 :Type: Numeric
 :Unit: Factor
-:Example: None
+:Example: 0.06
 :Restrictions: None
 :Default: None
 
@@ -91,55 +91,41 @@ discount_factor
 .. _dispatchprice-label:
 
 dispatch_price
-##############
+****************
 
 :Definition: Variable cost associated with a flow through/from the asset (€/kWh).
 :Type: Numeric
 :Unit: currency/kWh
-:Example:
+:Example: 0.64
 :Restrictions: In "storage_xx.csv" only the columns "input power" and "output power" require a value, in column "storage capacity" dispatch_price should be set to NaN.
 :Default: None
-
-|
-
-.. _displayoutput-label:
-
-display_output
-##############
-
-:Definition: [Developer setting]
-:Type: str
-:Unit: None
-:Example:
-:Restrictions: None
-:Default: debug
 
 |
 
 .. _dsm-label:
 
 dsm
-###
+*****
 
 :Definition: Stands for Demand Side Management. Currently, not implemented.
-:Type:
-:Unit:
-:Example:
+:Type: str
+:Unit: Boolean value
+:Example: False
 :Restrictions: Acceptable values are either True or False.
-:Default:
+:Default: None
 
 |
 
 .. _efficiency-label:
 
 efficiency
-##########
+*************
 
 :Definition: Ratio of energy output/energy input. The battery efficiency is the ratio of the energy taken out from the battery, to the energy put in the battery. It means that it is not possible to retrieve as much energy as provided to the battery due to the discharge losses. The efficiency of the "input power" and "ouput power" columns should be set equal to the charge and dischage efficiencies respectively, while the "storage capacity" efficiency should be equal to the storage self-discharge/decay, which is usually in the range of 0 to 0.05.
-:Type: str
-:Unit: None
-:Example: None
-:Restrictions: None
+:Type: Numeric
+:Unit: Factor
+:Example: 0.9500000000000001
+:Restrictions: Between 0 and 1.
 :Default: None
 
 |
@@ -147,82 +133,82 @@ efficiency
 .. _energyprice-label:
 
 energy_price
-############
+**************
 
-:Definition: Price of electricity sourced from the utility grid (€/kWh)
-:Type:
-:Unit:
-:Example:
-:Restrictions:
-:Default:
+:Definition: Price of electricity sourced from the utility grid.
+:Type: Numeric
+:Unit: currency/kWh (for e.g.: €/kWh)
+:Example: 0.1
+:Restrictions: None
+:Default: None
 
 |
 
 .. _evaluatedperiod-label:
 
 evaluated_period
-################
+******************
 
 :Definition: The number of days for which the simulation is to be run.
-:Type: str
-:Unit: None
-:Example:
+:Type: Numeric
+:Unit: Days
+:Example: 365
 :Restrictions: None
-:Default:
+:Default: None
 
 |
 
 .. _energyvector-label:
 
 energyVector
-############
+***************
 
-:Definition: Energy commodity. E.g.: Electricity, heat, bio-gas, etc.
-:Type:
-:Unit:
-:Example:
-:Restrictions:
-:Default:
+:Definition: Energy commodity.
+:Type: str
+:Unit: None
+:Example: Electricity (or heat, bio-gas, etc.)
+:Restrictions: None
+:Default: None
 
 |
 
 .. _feedintariff-label:
 
 feedin_tariff
-#############
+***************
 
-:Definition: Price received for feeding electricity into the grid (€/kWh)
-:Type:
-:Unit:
-:Example:
-:Restrictions:
-:Default:
+:Definition: Price received for feeding electricity into the grid.
+:Type: Numeric
+:Unit: currency/kWh
+:Example: 0.0
+:Restrictions: None
+:Default: None
 
 |
 
 .. _filename-label:
 
 file_name
-#########
+***********
 
 :Definition: Name of the csv file containing the input PV generation time-series. E.g.: filename.csv
-:Type:
-:Unit:
-:Example:
-:Restrictions:
-:Default:
+:Type: str
+:Unit: None
+:Example: demand_harbor.csv
+:Restrictions: None
+:Default: None
 
 |
 
 .. _inflowdirection-label:
 
 inflow_direction
-################
+*******************
 
 :Definition: The bus/component from which the energyVector is arriving into the asset.
 :Type: str
 :Unit: None
-:Example: None
+:Example: Electricity
 :Restrictions: None
 :Default: None
 
@@ -231,13 +217,13 @@ inflow_direction
 .. _installedcap-label:
 
 installedCap
-############
+*************
 
-:Definition: The already existing installed capacity in-place, which will also be replaced after its lifetime
-:Type: None
-:Unit: kW
-:Example: None
-:Restrictions: None
+:Definition: The already existing installed capacity in-place, which will also be replaced after its lifetime.
+:Type: Numeric
+:Unit: kWp
+:Example: 50
+:Restrictions: Each component in the energyProduction.csv should have a value.
 :Default: None
 
 |
@@ -245,13 +231,13 @@ installedCap
 .. _labl-label:
 
 label
-#####
+*********
 
 :Definition: Name of the asset
 :Type: str
 :Unit: None
-:Example: None
-:Restrictions: Input the names in a computer readable format, i.e., with underscores instead of spaces, no special characters (eg. pv_plant_01)
+:Example: Electricity grid DSO
+:Restrictions: Input the names in a computer readable format, preferably with underscores instead of spaces, and avoiding special characters (eg. pv_plant_01)
 :Default: None
 
 |
@@ -259,13 +245,13 @@ label
 .. _latitude-label:
 
 latitude
-########
+**********
 
-:Definition: Latitude coordinate of the project’s geographical location
-:Type: str
+:Definition: Latitude coordinate of the project’s geographical location.
+:Type: Numeric
 :Unit: None
 :Example: 45.641603
-:Restrictions: Numerical values
+:Restrictions: Should follow geographical convention
 :Default: None
 
 |
@@ -273,12 +259,12 @@ latitude
 .. _lifetime-label:
 
 lifetime
-########
+************
 
 :Definition: Number of operational years of the asset until it has to be replaced.
-:Type: None
-:Unit: None
-:Example: None
+:Type: Numeric
+:Unit: Year
+:Example: 30
 :Restrictions: None
 :Default: None
 
@@ -287,13 +273,13 @@ lifetime
 .. _longitude-label:
 
 longitude
-#########
+**********
 
-:Definition: Longitude coordinate of the project’s geographical location
-:Type: str
+:Definition: Longitude coordinate of the project’s geographical location.
+:Type: Numeric
 :Unit: None
-:Example: 5.875387
-:Restrictions: Numerical values
+:Example: 10.95787
+:Restrictions: Should follow geographical convention
 :Default: None
 
 |
@@ -301,12 +287,12 @@ longitude
 .. _maxcap-label:
 
 maximumCap
-##########
+***********
 
 :Definition: The maximum installable capacity.
-:Type: None
-:Unit: kW
-:Example: None
+:Type: Alphanumeric
+:Unit: None or float
+:Example: 1000
 :Restrictions: None
 :Default: None
 
@@ -315,7 +301,7 @@ maximumCap
 .. _minrenshare-label:
 
 minimal_renewable_share
-#######################
+*************************
 
 :Definition: The minimum share of energy supplied by renewable generation in the optimized energy system.
 :Type: Numeric
@@ -329,82 +315,82 @@ minimal_renewable_share
 .. _optimizecap-label:
 
 optimizeCap
-###########
+************
 
-:Definition: ‘True’ if the user wants to perform capacity optimization for various components
-:Type:
-:Unit:
-:Example:
+:Definition: ‘True’ if the user wants to perform capacity optimization for various components as part of the simulation.
+:Type: str
+:Unit: Boolean value
+:Example: True
 :Restrictions: Permissible values are either True or False
-:Default:
+:Default: None
 
 |
 
 .. _outputlpfile-label:
 
 output_lp_file
-##############
+***************
 
 :Definition: Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user to peer ‘under the hood’ to understand how the program optimizes for the solution.
 :Type: str
-:Unit: None
-:Example:
+:Unit: Boolean
+:Example: False
 :Restrictions: Acceptable values are either True or False
-:Default:
+:Default: None
 
 |
 
 .. _outflowdirec-label:
 
 outflow_direction
-#################
+*******************
 
 :Definition: The bus/component to which the energyVector is leaving, from the asset.
-:Type:
-:Unit:
-:Example:
-:Restrictions:
-:Default:
+:Type: str
+:Unit: None
+:Example: PV plant (mono)
+:Restrictions: None
+:Default: None
 
 |
 
 .. _peakdemand-label:
 
 peak_demand_pricing
-###################
+********************
 
 :Definition: Price to be paid additionally for energy-consumption based on the peak demand of a period.
 :Type: Numeric
-:Unit: €/kW
-:Example:
-:Restrictions:
-:Default:
+:Unit: currency/kW
+:Example: 60
+:Restrictions: None
+:Default: None
 
 |
 
 .. _peakdemandperiod-label:
 
 Peak_demand_pricing_period
-##########################
+***************************
 
 :Definition: Number of reference periods in one year for the peak demand pricing. Only one of the following are acceptable values: 1 (yearly), 2, 3 ,4, 6, 12 (monthly).
-:Type:
-:Unit:
-:Example:
-:Restrictions:
-:Default:
+:Type: Numeric
+:Unit: times per year (1,2,3,4,6,12)
+:Example: 2
+:Restrictions: Should be one of the following values: 1,2,3,4,6, or 12
+:Default: None
 
 |
 
 .. _projectduration-label:
 
 Project_duration
-################
+*******************
 
 :Definition: The name of years the project is intended to be operational. The project duration also sets the installation time of the assets used in the simulation. After the project ends these assets are 'sold' and the refund is charged against the initial investment costs.
-:Type: str
-:Unit: None
-:Example:
+:Type: Numeric
+:Unit: Years
+:Example: 30
 :Restrictions: None
 :Default: None
 
@@ -413,37 +399,49 @@ Project_duration
 .. _projectid-label:
 
 Project_id
-##########
+***********
 
-:Definition: Users can assign a project ID as per their preference
+:Definition: Users can assign a project ID as per their preference.
 :Type: Alphanumeric
 :Unit: None
-:Example: Borg Havn
+:Example: 1
 :Restrictions: None
-:Default: 1
+:Default: None
 
 |
 
 .. _projectname-label:
 
 Project_name
-############
+**************
 
-:Definition: Users can assign a project name as per their preference
+:Definition: Users can assign a project name as per their preference.
 :Type: Alphanumeric
 :Unit: None
-:Example:
+:Example: Borg Havn
 :Restrictions: None
 :Default: None
 
 |
 
+.. _renshare-label:
+
+renewable_share
+*****************
+
+:Definition: The share of renewables in the generation mix of the energy supplied by the DSO (utility).
+:Type: Numeric
+:Unit: Factor
+:Example: 0.1
+:Restrictions: Between 0 and 1
+:Default: None
+
 .. _scenarioid-label:
 
 scenario_id
-###########
+*************
 
-:Definition: Users can assign a scenario id as per their preference
+:Definition: Users can assign a scenario id as per their preference.
 :Type: Alphanumeric
 :Unit: None
 :Example: 1
@@ -455,9 +453,9 @@ scenario_id
 .. _scenarioname-label:
 
 scenario_name
-#############
+***************
 
-:Definition: Users can assign a scenario name as per their preference
+:Definition: Users can assign a scenario name as per their preference.
 :Type: Alphanumeric
 :Unit: None
 :Example: Warehouse 14
@@ -469,12 +467,12 @@ scenario_name
 .. _socin-label:
 
 soc_initial
-###########
+***********
 
 :Definition: The level of charge (as a factor of the actual capacity) in the storage in the zeroth time-step.
-:Type:
-:Unit:
-:Example:
+:Type: Numeric
+:Unit: None or factor
+:Example: *storage capacity*: None, *input power*: NaN
 :Restrictions: Acceptable values are either None or the factor. Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_initial should be set to NaN.
 :Default: None
 
@@ -483,12 +481,12 @@ soc_initial
 .. _socmax-label:
 
 soc_max
-#######
+********
 
 :Definition: The maximum permissible level of charge in the battery (generally, it is when the battery is filled to its nominal capacity), represented by the value 1.0. Users can  also specify a certain value as a factor of the actual capacity.
-:Type:
-:Unit:
-:Example:
+:Type: Numeric
+:Unit: Factor
+:Example: 1.0
 :Restrictions: Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_max should be set to NaN.
 :Default: None
 
@@ -497,12 +495,12 @@ soc_max
 .. _socmin-label:
 
 soc_min
-#######
+************
 
 :Definition: The minimum permissible level of charge in the battery as a factor of the nominal capacity of the battery.
-:Type:
-:Unit:
-:Example:
+:Type: Numeric
+:Unit: Factor
+:Example: 0.2
 :Restrictions: Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_min should be set to NaN.
 :Default: None
 
@@ -511,12 +509,12 @@ soc_min
 .. _specificcosts-label:
 
 specific_costs
-##############
+*****************
 
 :Definition: Actual CAPEX of the asset, i.e., specific investment costs
-:Type: str
+:Type: Numeric
 :Unit: currency/unit (e.g.: €/kW)
-:Example: None
+:Example: 4000
 :Restrictions: None
 :Default: None
 
@@ -525,12 +523,12 @@ specific_costs
 .. _specificomcosts-label:
 
 specific_costs_om
-#################
+******************
 
-:Definition: Actual OPEX of the asset, i.e., specific operational and maintenance costs
+:Definition: Actual OPEX of the asset, i.e., specific operational and maintenance costs.
 :Type: Numeric
 :Unit: currency/unit/year
-:Example: None
+:Example: 0
 :Restrictions: None
 :Default: None
 
@@ -539,7 +537,7 @@ specific_costs_om
 .. _startdate-label:
 
 start_date
-##########
+************
 
 :Definition: The data and time on which the simulation starts at the first step.
 :Type: str
@@ -553,40 +551,40 @@ start_date
 .. _storagefilename-label:
 
 storage_filename
-################
+******************
 
 :Definition: Corresponding to the values in C1, D1, E1… cells, enter the correct CSV filename which hosts the parameters of the corresponding storage component.
-:Type:
-:Unit:
-:Example:
-:Restrictions:
-:Default:
+:Type: str
+:Unit: None
+:Example: storage_01.csv
+:Restrictions: Follows the convention of 'storage_xx.csv' where 'xx' is a number
+:Default: None
 
 |
 
 .. _storeoemoefresults-label:
 
 store_oemof_results
-###################
+********************
 
 :Definition: [Developer setting] Assigning True would enable the results to be stored in a OEMOF file.
 :Type: str
-:Unit: None
-:Example: 2018-01-01 00:00:00
+:Unit: Boolean
+:Example: False
 :Restrictions: Acceptable values are either True or False
-:Default:
+:Default: None
 
 |
 
 .. _tax-label:
 
 tax
-###
+***
 
-:Definition: Tax factor
-:Type: str
-:Unit: None
-:Example:
+:Definition: Tax factor.
+:Type: Numeric
+:Unit: Factor
+:Example: 0.0
 :Restrictions: None
 :Default: None
 
@@ -595,12 +593,12 @@ tax
 .. _timestep-label:
 
 timestep
-########
+****************
 
 :Definition: Length of the time-steps.
-:Type: str
-:Unit: None
-:Example: None
+:Type: Numeric
+:Unit: Minutes
+:Example: 60
 :Restrictions: None
 :Default: None
 
@@ -609,13 +607,13 @@ timestep
 .. _typeasset-label:
 
 type_asset
-##########
+*****************
 
-:Definition:
+:Definition: The type of the component.
 :Type: str
 :Unit: None
-:Example: None
-:Restrictions: None
+:Example: demand
+:Restrictions: *demand*
 :Default: None
 
 |
@@ -623,40 +621,42 @@ type_asset
 .. _typeoemof-label:
 
 type_oemof
-##########
+*******************
 
 :Definition: Input the type of OEMOF component. For example, a PV plant would be a source, a solar inverter would be a transformer, etc.  The “type_oemof” will later on be determined through the EPA.
-:Type:
-:Unit:
-:Example:
-:Restrictions:
-:Default:
+:Type: str
+:Unit: None
+:Example: sink
+:Restrictions: *sink* or *source* or one of the other component classes of OEMOF.
+:Default: None
 
 |
 
 .. _unit-label:
 
 unit
-####
+****
 
 :Definition: Unit associated with the capacity of the component.
-:Type:
-:Unit: None
+:Type: str
+:Unit: NA
 :Example: Storage could have units like kW or kWh, transformer station could have kVA, and so on.
 :Restrictions: Appropriate scientific unit
 :Default: None
 
----------------
+===========================
+Parameters in each CSV file
+===========================
+
 constraints.csv
----------------
+###############
 
 The file `constraints.csv` includes the following parameter(s):
 
 * :ref:`minrenshare-label`
 
------------------
 economic_data.csv
------------------
+#################
 
 The file `economic_data.csv` includes the following parameters:
 
@@ -666,9 +666,8 @@ The file `economic_data.csv` includes the following parameters:
 * :ref:`discountfactor-label`
 * :ref:`tax-label`
 
----------------------
 energyConsumption.csv
----------------------
+#####################
 
 The file `energyConsumption.csv` includes the following parameters:
 
@@ -681,9 +680,8 @@ The file `energyConsumption.csv` includes the following parameters:
 * :ref:`typeoemof-label`
 * :ref:`dsm-label`
 
---------------------
 energyConversion.csv
---------------------
+####################
 
 The file `energyConversion.csv` includes the following parameters:
 
@@ -703,9 +701,8 @@ The file `energyConversion.csv` includes the following parameters:
 * :ref:`energyvector-label`
 * :ref:`typeoemof-label`
 
---------------------
 energyProduction.csv
---------------------
+####################
 
 The file `energyProduction.csv` includes the following parameters:
 
@@ -725,9 +722,8 @@ The file `energyProduction.csv` includes the following parameters:
 * :ref:`energyvector-label`
 * :ref:`typeoemof-label`
 
--------------------
 energyProviders.csv
--------------------
+###################
 
 The file `energyProviders.csv` includes the following parameters:
 
@@ -738,15 +734,14 @@ The file `energyProviders.csv` includes the following parameters:
 * :ref:`feedintariff-label`
 * :ref:`peakdemand-label`
 * :ref:`peakdemandperiod-label`
-* :ref:`minrenshare-label`
+* :ref:`renshare-label`
 * :ref:`inflowdirection-label`
 * :ref:`outflowdirec-label`
 * :ref:`energyvector-label`
 * :ref:`typeoemof-label`
 
------------------
 energyStorage.csv
------------------
+#################
 
 The file `energyStorage.csv` includes the following parameters:
 
@@ -758,10 +753,10 @@ The file `energyStorage.csv` includes the following parameters:
 * :ref:`energyvector-label`
 * :ref:`typeoemof-label`
 
------------
 fixcost.csv
------------
+###########
 
+The parameters must be filled for all three columns/components namely: *distribution_grid*, *engineering* and *operation*.
 The file `fixcost.csv` includes the following parameters:
 
 * :ref:`labl-label`
@@ -772,9 +767,8 @@ The file `fixcost.csv` includes the following parameters:
 * :ref:`specificomcosts-label`
 * :ref:`dispatchprice-label`
 
-----------------
 project_data.csv
-----------------
+################
 
 The file `project_data.csv` includes the following parameters:
 
@@ -787,9 +781,8 @@ The file `project_data.csv` includes the following parameters:
 * :ref:`scenarioid-label`
 * :ref:`scenarioname-label`
 
------------------------
 simulation_settings.csv
------------------------
+#######################
 
 The file `simulation_settings.csv` includes the following parameters:
 
@@ -800,9 +793,8 @@ The file `simulation_settings.csv` includes the following parameters:
 * :ref:`outputlpfile-label`
 * :ref:`storeoemoefresults-label`
 
---------------
 storage_xx.csv
---------------
+##############
 
 The "xx" in the storage filename is the number identifying the storage. It depends on the number of storage components (such as batteries, etc.) present in the system. For e.g., there should be two storage files named storage_01.csv and storage_02.csv if the system contains two storage components.
 The file `storage_xx.csv` contains the following parameters:
