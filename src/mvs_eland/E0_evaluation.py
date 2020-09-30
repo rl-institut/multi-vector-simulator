@@ -166,7 +166,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
             # give a warning in case ratio > 0.9
             ratio = total_outflow_bus / total_inflow_bus
             if ratio < 0.9:
-                msg = f"Attention, on bus {bus_label} there is an excessive excess generation. It seems to be cheaper to have this excess generation than to install more capacities that forward the energy carrier to other busses (if those assets can be optimized)."
+                msg = f"Attention, on bus {bus_label} there is an excessive excess generation, totalling up to {round((1-ratio)*100)}% of the inflows. It seems to be cheaper to have this excess generation than to install more capacities that forward the energy carrier to other busses (if those assets can be optimized)."
                 logging.warning(msg)
 
     logging.info("Evaluating key performance indicators of the system")
