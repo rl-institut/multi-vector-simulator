@@ -48,7 +48,7 @@ If your branch does not exist on the remote server yet, git will provide you wit
 
 #### Step 3.1: Write test for your code
 
-It is important to write some test(s) to test that the feature you introduce works the way you want it to. In future development, your test(s) could always be ran an ensure your feature still works properly
+It is important to write some test(s) to test that the feature you introduce works the way you want it to. In future development, your test(s) could always be ran to ensure your feature still works properly.
 
 Look at the files existing in the `tests` folder if the test for your new feature could be placed
  in one of the existing test modules. If not, you can create your own module (the only requirement

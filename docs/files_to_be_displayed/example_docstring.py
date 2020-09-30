@@ -38,7 +38,9 @@ def example_function(arg1, argN):
         P: power [W], :math:`\rho`: density [kg/m³], d: diameter [m],
         v: wind speed [m/s], cp: power coefficient
 
-    You can also indicate here which tests are covering this function
+    You can also indicate here which tests are covering this function:
+    This function is tested with:
+    - tests.test_example_function()
 
     References
     ----------
