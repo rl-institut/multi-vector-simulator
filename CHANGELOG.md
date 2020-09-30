@@ -23,13 +23,14 @@ Here is a template for new release sections
 
 ### Added
 - Instruction to install graphviz on windows in `docs/troubleshooting.rst` (#572)
-
+- `E-Land_Requirements.rst`: Official E-Land requirement list as well as progress on functional and non-functional requirements
 
 ### Changed
 - Modify `setup.py` to upload the code as package on pypi.org (#570)
 - Improve message when the `tests/test_input_folder_parameters.py` fails (#578)
 - Modify PR template to precise to add assert message and link to example docstring 
 - Update CONTRIBUTING to add a "Write test for your code" section before the "Run tests locally" one (#579)
+- Order of readthedocs content 
 
 ### Removed
 -
