@@ -187,7 +187,7 @@ Currently, the MVS tool is still a work in progress. Running simulations with di
      - Link
    * - Inherited
      - Disregard of some real life constraint
-     - 
+     - :ref:`disregard`
    * - Inherited
      - Simplified asset model
      - 
@@ -218,7 +218,8 @@ Currently, the MVS tool is still a work in progress. Running simulations with di
    * - Can be addressed
      - Unlinked one technical unit transformers
      -      
-     
+
+.. _disregard:
 Disregard of some real life constraint
 ######################################
 
