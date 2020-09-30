@@ -252,6 +252,9 @@ Extension of KPIs
 
 Random excess energy distribution
 #################################
+:Limitation: There is random excess distribution between the feed-in sink and the excess sink when no feed-in-tariff is assumed in the system.
+:Reason: Since there is no feed-in-tariff to benefit from, the MVS randomly distributes the excess energy between the feed-in and excess sinks.
+:Implications: This distribution of excess energy changes when running several simulations for the same input files.
 
 Renewable energy share defintion
 ################################
