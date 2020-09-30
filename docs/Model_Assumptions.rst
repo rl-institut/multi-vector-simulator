@@ -264,6 +264,9 @@ Renewable energy share defintion
 
 Energy carrier rating
 #####################
+:Limitation: The MVS assumes a usable potential/energy content rating for every energy carrier.
+:Reason: This is an approach that the MVS currently uses.
+:Implications: By weighing the energy carriers according to their energy content (Gasoline Gallon Equivalent (GGE)), the MVS might result in values that can't be directly assessed. Those ratings affect the calaculation of the levelized cost of the energy carriers, but also the minimum renewable energy share constraint.
 
 Energy shortage or grid interruption
 ####################################
