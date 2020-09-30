@@ -649,14 +649,14 @@ Parameters in each CSV file
 ===========================
 
 constraints.csv
-###############
+******************
 
 The file `constraints.csv` includes the following parameter(s):
 
 * :ref:`minrenshare-label`
 
 economic_data.csv
-#################
+*******************
 
 The file `economic_data.csv` includes the following parameters:
 
@@ -667,7 +667,7 @@ The file `economic_data.csv` includes the following parameters:
 * :ref:`tax-label`
 
 energyConsumption.csv
-#####################
+***********************
 
 The file `energyConsumption.csv` includes the following parameters:
 
@@ -681,7 +681,7 @@ The file `energyConsumption.csv` includes the following parameters:
 * :ref:`dsm-label`
 
 energyConversion.csv
-####################
+**********************
 
 The file `energyConversion.csv` includes the following parameters:
 
@@ -702,7 +702,7 @@ The file `energyConversion.csv` includes the following parameters:
 * :ref:`typeoemof-label`
 
 energyProduction.csv
-####################
+**********************
 
 The file `energyProduction.csv` includes the following parameters:
 
@@ -723,7 +723,7 @@ The file `energyProduction.csv` includes the following parameters:
 * :ref:`typeoemof-label`
 
 energyProviders.csv
-###################
+*********************
 
 The file `energyProviders.csv` includes the following parameters:
 
@@ -741,7 +741,7 @@ The file `energyProviders.csv` includes the following parameters:
 * :ref:`typeoemof-label`
 
 energyStorage.csv
-#################
+******************
 
 The file `energyStorage.csv` includes the following parameters:
 
@@ -754,7 +754,7 @@ The file `energyStorage.csv` includes the following parameters:
 * :ref:`typeoemof-label`
 
 fixcost.csv
-###########
+************
 
 The parameters must be filled for all three columns/components namely: *distribution_grid*, *engineering* and *operation*.
 The file `fixcost.csv` includes the following parameters:
@@ -768,7 +768,7 @@ The file `fixcost.csv` includes the following parameters:
 * :ref:`dispatchprice-label`
 
 project_data.csv
-################
+*****************
 
 The file `project_data.csv` includes the following parameters:
 
@@ -782,7 +782,7 @@ The file `project_data.csv` includes the following parameters:
 * :ref:`scenarioname-label`
 
 simulation_settings.csv
-#######################
+************************
 
 The file `simulation_settings.csv` includes the following parameters:
 
@@ -794,7 +794,7 @@ The file `simulation_settings.csv` includes the following parameters:
 * :ref:`storeoemoefresults-label`
 
 storage_xx.csv
-##############
+***************
 
 The "xx" in the storage filename is the number identifying the storage. It depends on the number of storage components (such as batteries, etc.) present in the system. For e.g., there should be two storage files named storage_01.csv and storage_02.csv if the system contains two storage components.
 The file `storage_xx.csv` contains the following parameters:
