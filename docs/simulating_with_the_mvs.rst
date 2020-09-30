@@ -58,6 +58,17 @@ please also refer to the definition of parameters that you can find here: `stabl
 Please note that the allowed separators for csv files are located in `src/constants.py` under the
 `CSV_SEPARATORS` variable. Currently only `[",", ";", "&"]` are allowed.
 
+
+Time series: time_series folder
+###############################
+As some parameters in the csv files link to a time series provided as a CSV,
+the folder "time_series" should be present in your input folder
+and provide all necessary input time series. This can include for example PV generation
+time series and demand time series. You can provide them as absolute time series or as
+normalized time series (unit: kWh/kWp). For the latter, make sure that time series of non-dispatchable
+sources only contain values between zero and one ([0, 1]).
+
+
 Json file: mvs_config.json
 ##########################
 
@@ -74,15 +85,6 @@ There can only be a single Json file in your input folder.
 As some parameters in the Json file link to a time series provided as a CSV,
 the folder "time_series" should be present in your input folder, as clarified in the next section.
 
-
-Time series: time_series folder
-###############################
-As some parameters in the Json file or csv files link to a time series provided as a CSV,
-the folder "time_series" should be present in your input folder
-and provide all necessary input time series. This can include for example PV generation
-time series and demand time series. You can provide them as absolute time series or as
-normalized time series (unit: kWh/kWp). For the latter, make sure that time series of non-dispatchable
-sources only contain values between zero and one ([0, 1]).
 
 Defining an energy system
 -------------------------
