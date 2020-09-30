@@ -1,0 +1,17 @@
+,unit,diesel_generator
+age_installed,year,0
+development_costs,currency,0
+specific_costs,currency/kW,100
+efficiency,factor,0.34
+inflow_direction,str,DG
+installedCap,kW,1
+label,str,Diesel generator
+lifetime,year,30
+specific_costs_om,currency/kW/year,5
+dispatch_price,currency/kWh,0
+optimizeCap,bool,False
+outflow_direction,str,Electricity
+energyVector,str,Electricity
+type_oemof,str,transformer
+unit,str,kW
+maximumCap,float or None,None

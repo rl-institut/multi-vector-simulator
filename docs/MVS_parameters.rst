@@ -71,6 +71,8 @@ development_costs
 :Example: 10000
 :Restrictions: None
 :Default: None
+=======
+**start_date**: The data and time on which the simulation starts at the first step. Acceptable format is YYYY-MM-DD HH:MM:SS. E.g.: 2018-01-01 00:00:00
 
 |
 

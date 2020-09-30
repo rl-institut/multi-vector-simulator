@@ -6,12 +6,12 @@ import shutil
 import mock
 import pandas as pd
 
-import src.A0_initialization as A0
-import src.B0_data_input_json as B0
-import src.C0_data_processing as C0
-import src.D0_modelling_and_optimization as D0
-import src.E0_evaluation as E0
-from src.constants_json_strings import (
+import mvs_eland.A0_initialization as A0
+import mvs_eland.B0_data_input_json as B0
+import mvs_eland.C0_data_processing as C0
+import mvs_eland.D0_modelling_and_optimization as D0
+import mvs_eland.E0_evaluation as E0
+from mvs_eland.utils.constants_json_strings import (
     VALUE,
     KPI,
     KPI_SCALARS,
@@ -20,7 +20,7 @@ from src.constants_json_strings import (
     KPI_SCALARS_DICT,
     OPTIMIZED_FLOWS,
 )
-from .constants import (
+from _constants import (
     TEST_REPO_PATH,
     INPUT_FOLDER,
     PATH_INPUT_FILE,
@@ -147,3 +147,14 @@ def teardown_module():
     for d in (DICT_BEFORE, DICT_AFTER):
         if os.path.exists(d):
             os.remove(d)
+
+
+"""
+from oemof import solph
+energysystem = solph.EnergySystem()
+energysystem.restore(dpath=None, filename=None)
+
+# define an alias for shorter calls below (optional)
+results = energysystem.results["main"]
+storage = energysystem.groups["storage"]
+"""
