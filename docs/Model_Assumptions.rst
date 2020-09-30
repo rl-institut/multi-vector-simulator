@@ -258,6 +258,9 @@ Random excess energy distribution
 
 Renewable energy share defintion
 ################################
+:Limitation: The current renewable energy share depends on the share of renewable energy production assets directly feeding the load.
+:Reason: The MVS tool is a work in progress and this can still be addressed in the future.
+:Implications: This might result in different values when comparing them to other models.
 
 Energy carrier rating
 #####################
