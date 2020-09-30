@@ -412,8 +412,16 @@ NF-MVS-01 - MVS pre-processing tools for LES optimization model input
 
 :Verification and Measurement: The requirement is validated by observing the system under test when an operator attempts to input/modify the model parameters.
 
-:Target: User can adjust input parameters without any further support Related Functional
+:Target: User can adjust input parameters without any further support
 
+:Progress: Done
+
+:Progress message: Internally, the MVS uses pd.DataFrames to set up the energy system model.
+However, for data exchange with the end-user the input files, ie. the csv or json file is essential.
+As the end user will use the MVS though the EPA, the data format that the MVS uses becomes unrelevant.
+It was decided to use a json file as an exchange medium between the EPA and the MVS.
+
+:ToDo: None
 
 NF-MVS-02 - MVS post-processing tools for LES optimization model output/results
 ###############################################################################
@@ -428,6 +436,19 @@ NF-MVS-02 - MVS post-processing tools for LES optimization model output/results
 
 :Target: User can extract the results in a way that can be directly used for the users purpose
 
+:Progress: Done
+
+:Progress message:
+
+The post-processing of results ensures that important KPI can be provided for the energy system optimization.
+There are three output formats of the MVS:
+
+* For the end-user of the standalone application, an automatic report is generated that makes scenario evaluation easy
+* For a developer of the standalone application, the results are also provided as excel files and pngs.
+* For the EPA, the results are provided in a json format to be displayed interactively in their environment
+
+:ToDo: Improving the outputs is a continuing task.
+
 NF-MVS-03 - Communication interface between MVS and ESB
 #######################################################
 
@@ -441,6 +462,16 @@ NF-MVS-03 - Communication interface between MVS and ESB
 
 :Target: Send/receive requests that can be processed without information loss
 
+:Progress: In process
+
+:Progress message:
+
+After discussion, there is no direct interface of the ESB and the MVS.
+The MVS is a standalone application that must be usable without the ESB.
+To ease end-user use, the EPA (Energy Planning Application) is developed.
+It sends inputs in json format to the MVS, and receives a json file with the results back.
+
+:ToDo: The EPA development is a continous process.
 
 NF-MVS-04 - Unit commitment time step restriction
 #################################################
@@ -455,6 +486,12 @@ NF-MVS-04 - Unit commitment time step restriction
 
 :Target: Timestep width of 1 hour
 
+:Progress: Done
+
+:Progress message: The MVS can be run for a variable number of days. The time series have to be provided on an hourly basis.
+
+:ToDo: A wish from the end-users war a finer resolution of eg. 15-minute time steps. This possiblility still has to be explored.
+
 NF-MVS-05 - Interface for technical parameters and model
 ########################################################
 
@@ -467,6 +504,12 @@ NF-MVS-05 - Interface for technical parameters and model
 :Verification and Measurement: Technical variable in ESM object being not NAN.
 
 :Target: N/A
+
+:Progress: Done
+
+:Progress message: The MVS uses the input parameters to compile the component models. This is also tested using pytests and benchmark tests.
+
+:ToDo: None
 
 
 NF-MVS-06 - Interface for economic parameters and model
@@ -481,3 +524,9 @@ NF-MVS-06 - Interface for economic parameters and model
 :Verification and Measurement: Cost variable in ESM object being not NAN.
 
 :Target: N/A
+
+:Progress: In progress
+
+:Progress message: The MVS uses the input parameters to compile the component models. This is also tested using pytests and benchmark tests.
+
+:ToDo: A benchmark tests regarding the investment model and the cost post-processing should be added.
