@@ -276,6 +276,9 @@ Energy shortage or grid interruption
 
 Generic cost definitions
 ########################
+:Limitation: The MVS includes development costs, specific costs, O&M costs and disptach costs.
+:Reason: The MVS assumes those costs only for simplification.
+:Implications: This could lead to a rough estimation of the entire project costs.
 
 Unlinked one technical unit transformers
 ########################################
