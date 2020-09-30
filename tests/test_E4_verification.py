@@ -1,4 +1,4 @@
-import mvs_eland.E4_verification_of_constraints as E4
+import mvs_eland.E4_verification as E4
 
 from mvs_eland.utils.constants_json_strings import (
     CONSTRAINTS,
@@ -35,3 +35,5 @@ def test_minimal_renewable_share_test_fails():
     }
     return_value = E4.minimal_renewable_share_test(dict_values)
     assert return_value == False
+
+

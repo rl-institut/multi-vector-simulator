@@ -54,3 +54,4 @@ def minimal_renewable_share_test(dict_values):
         pass
 
     return
+
