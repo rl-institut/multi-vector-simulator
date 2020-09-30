@@ -35,5 +35,3 @@ def test_minimal_renewable_share_test_fails():
     }
     return_value = E4.minimal_renewable_share_test(dict_values)
     assert return_value == False
-
-
