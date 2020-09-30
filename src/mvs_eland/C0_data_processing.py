@@ -1717,11 +1717,9 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
             if (
                 group == ENERGY_PRODUCTION
                 and asset_dict[FILENAME] != None
-                and max(asset_dict[TIMESERIES_NORMALIZED]) != 1
+                and asset_dict[TIMESERIES_PEAK][VALUE] != None
             ):
-                asset_dict[MAXIMUM_CAP][VALUE] = asset_dict[MAXIMUM_CAP][VALUE] / max(
-                    asset_dict[TIMESERIES_NORMALIZED]
-                )
+                asset_dict[MAXIMUM_CAP][VALUE] = asset_dict[MAXIMUM_CAP][VALUE] / asset_dict[TIMESERIES_PEAK][VALUE]
                 logging.debug(
                     f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was divided by the peak value of {TIMESERIES_NORMALIZED} as it did not equal 1. This was done as the aimed constraint is to limit the power, not the flow."
                 )
