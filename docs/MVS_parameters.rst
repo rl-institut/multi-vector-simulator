@@ -11,22 +11,8 @@ age_installed
 
 :Definition: The number of years the asset has already been in operation.
 :Type: Numeric
-:Unit: None
+:Unit: Years
 :Example: 12
-:Restrictions: None
-:Default: None
-
-|
-
-.. _cost_om-label:
-
-cost_om
-#######
-
-:Definition: Specific annual OPEX of the asset.
-:Type: Numeric
-:Unit: €/kW/year
-:Example: None
 :Restrictions: None
 :Default: None
 
@@ -66,9 +52,9 @@ c-rate
 ######
 
 :Definition: C-rate is the rate at which the storage can charge or discharge relative to the nominal capacity of the storage. A c-rate of 1 implies that the battery can discharge or charge completely in a single timestep.
-:Type:
-:Unit:
-:Example:
+:Type: Numeric
+:Unit: factor of total capacity (kWh)
+:Example: None
 :Restrictions: Only the columns "input power" and "output power" require a value, in column "storage capacity" c_rate should be set to NaN.
 :Default: None
 
@@ -80,8 +66,8 @@ development_costs
 #################
 
 :Definition: A fixed cost to implement the asset, eg. planning costs which do not depend on the (optimized) asset capacity
-:Type: Numerical
-:Unit:  €
+:Type: Numeric
+:Unit: currency
 :Example: 200
 :Restrictions: None
 :Default: None
@@ -94,9 +80,9 @@ discount_factor
 ###############
 
 :Definition: Discount factor is the factor which accounts for the depreciation in the value of money in the future, compared to the current value of the same money. The common method is to calculate the weighted average cost of capital (WACC) and use it as the discount rate.
-:Type: str
-:Unit: None
-:Example: EUR (if the country is Germany)
+:Type: Numeric
+:Unit: Factor
+:Example: None
 :Restrictions: None
 :Default: None
 
@@ -108,7 +94,7 @@ dispatch_price
 ##############
 
 :Definition: Variable cost associated with a flow through/from the asset (€/kWh).
-:Type: numeric value
+:Type: Numeric
 :Unit: currency/kWh
 :Example:
 :Restrictions: In "storage_xx.csv" only the columns "input power" and "output power" require a value, in column "storage capacity" dispatch_price should be set to NaN.
@@ -139,7 +125,7 @@ dsm
 :Type:
 :Unit:
 :Example:
-:Restrictions: Acceptable values are either True or False
+:Restrictions: Acceptable values are either True or False.
 :Default:
 
 |
@@ -149,7 +135,7 @@ dsm
 efficiency
 ##########
 
-:Definition: Ratio of energy output/energy input
+:Definition: Ratio of energy output/energy input. The battery efficiency is the ratio of the energy taken out from the battery, to the energy put in the battery. It means that it is not possible to retrieve as much energy as provided to the battery due to the discharge losses. The efficiency of the "input power" and "ouput power" columns should be set equal to the charge and dischage efficiencies respectively, while the "storage capacity" efficiency should be equal to the storage self-discharge/decay, which is usually in the range of 0 to 0.05.
 :Type: str
 :Unit: None
 :Example: None
@@ -387,9 +373,9 @@ outflow_direction
 peak_demand_pricing
 ###################
 
-:Definition: Price to be paid additionally for energy-consumption based on the peak demand of a period (€/kW).
-:Type:
-:Unit:
+:Definition: Price to be paid additionally for energy-consumption based on the peak demand of a period.
+:Type: Numeric
+:Unit: €/kW
 :Example:
 :Restrictions:
 :Default:
@@ -529,7 +515,21 @@ specific_costs
 
 :Definition: Actual CAPEX of the asset, i.e., specific investment costs
 :Type: str
-:Unit: €/kW
+:Unit: currency/unit (e.g.: €/kW)
+:Example: None
+:Restrictions: None
+:Default: None
+
+|
+
+.. _specificomcosts-label:
+
+specific_costs_om
+#################
+
+:Definition: Actual OPEX of the asset, i.e., specific operational and maintenance costs
+:Type: Numeric
+:Unit: currency/unit/year
 :Example: None
 :Restrictions: None
 :Default: None
@@ -681,6 +681,97 @@ The file `energyConsumption.csv` includes the following parameters:
 * :ref:`typeoemof-label`
 * :ref:`dsm-label`
 
+--------------------
+energyConversion.csv
+--------------------
+
+The file `energyConversion.csv` includes the following parameters:
+
+* :ref:`labl-label`
+* :ref:`unit-label`
+* :ref:`optimizecap-label`
+* :ref:`installedcap-label`
+* :ref:`age_ins-label`
+* :ref:`lifetime-label`
+* :ref:`developmentcosts-label`
+* :ref:`specificcosts-label`
+* :ref:`specificomcosts-label`
+* :ref:`dispatchprice-label`
+* :ref:`efficiency-label`
+* :ref:`inflowdirection-label`
+* :ref:`outflowdirec-label`
+* :ref:`energyvector-label`
+* :ref:`typeoemof-label`
+
+--------------------
+energyProduction.csv
+--------------------
+
+The file `energyProduction.csv` includes the following parameters:
+
+* :ref:`labl-label`
+* :ref:`unit-label`
+* :ref:`optimizecap-label`
+* :ref:`maxcap-label`
+* :ref:`installedcap-label`
+* :ref:`age_ins-label`
+* :ref:`lifetime-label`
+* :ref:`developmentcosts-label`
+* :ref:`specificcosts-label`
+* :ref:`specificomcosts-label`
+* :ref:`dispatchprice-label`
+* :ref:`outflowdirec-label`
+* :ref:`filename-label`
+* :ref:`energyvector-label`
+* :ref:`typeoemof-label`
+
+-------------------
+energyProviders.csv
+-------------------
+
+The file `energyProviders.csv` includes the following parameters:
+
+* :ref:`labl-label`
+* :ref:`unit-label`
+* :ref:`optimizecap-label`
+* :ref:`energyprice-label`
+* :ref:`feedintariff-label`
+* :ref:`peakdemand-label`
+* :ref:`peakdemandperiod-label`
+* :ref:`minrenshare-label`
+* :ref:`inflowdirection-label`
+* :ref:`outflowdirec-label`
+* :ref:`energyvector-label`
+* :ref:`typeoemof-label`
+
+-----------------
+energyStorage.csv
+-----------------
+
+The file `energyStorage.csv` includes the following parameters:
+
+* :ref:`labl-label`
+* :ref:`optimizecap-label`
+* :ref:`inflowdirection-label`
+* :ref:`outflowdirec-label`
+* :ref:`storagefilename-label`
+* :ref:`energyvector-label`
+* :ref:`typeoemof-label`
+
+-----------
+fixcost.csv
+-----------
+
+The file `fixcost.csv` includes the following parameters:
+
+* :ref:`labl-label`
+* :ref:`age_ins-label`
+* :ref:`lifetime-label`
+* :ref:`developmentcosts-label`
+* :ref:`specificcosts-label`
+* :ref:`specificomcosts-label`
+* :ref:`dispatchprice-label`
+
 ----------------
 project_data.csv
 ----------------
@@ -703,39 +794,30 @@ simulation_settings.csv
 The file `simulation_settings.csv` includes the following parameters:
 
 * :ref:`labl-label`
+* :ref:`startdate-label`
+* :ref:`evaluatedperiod-label`
+* :ref:`timestep-label`
+* :ref:`outputlpfile-label`
+* :ref:`storeoemoefresults-label`
 
-start_date
-evaluated_period
-timestep
-output_lp_file
-store_oemof_results
-
-
-
-
-
-Common Parameters in the CSV/JSON files and in energyConversion.csv:
---------------------------------------------------------------------
-
-First row of the csv (C1, E1, D1...)
-------------------------------------
-
-Input the names of the conversion components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
-
-energyProduction.csv
---------------------
-
-**First row of the csv (C1, E1, D1...)**: Input the names of the production components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
-
-energyProviders.csv
--------------------
-
-energyStorage.csv
------------------
-
-**First row of the csv (C1, E1, D1...)**: Input the names of the storage components in a computer readable format, ie. with underscores instead of spaces, no special characters (eg. pv_plant_01)
-
+--------------
 storage_xx.csv
 --------------
 
-**efficiency**: The battery efficiency is the ratio of the energy taken out from the battery, to the energy put in the battery. It means that it is not possible to retrieve as much energy as provided to the battery due to the discharge losses. The efficiency of the "input power" and "ouput power" columns should be set equal to the charge and dischage efficiencies respectively, while the "storage capacity" efficiency should be equal to the storage self-discharge/decay, which is usually in the range of 0 to 0.05.
+The "xx" in the storage filename is the number identifying the storage. It depends on the number of storage components (such as batteries, etc.) present in the system. For e.g., there should be two storage files named storage_01.csv and storage_02.csv if the system contains two storage components.
+The file `storage_xx.csv` contains the following parameters:
+
+* :ref:`labl-label`
+* :ref:`unit-label`
+* :ref:`installedcap-label`
+* :ref:`age_ins-label`
+* :ref:`lifetime-label`
+* :ref:`developmentcosts-label`
+* :ref:`specificcosts-label`
+* :ref:`specificomcosts-label`
+* :ref:`dispatchprice-label`
+* :ref:`crate-label`
+* :ref:`efficiency-label`
+* :ref:`socin-label`
+* :ref:`socmax-label`
+* :ref:`socmin-label`
