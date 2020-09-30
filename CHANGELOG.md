@@ -34,7 +34,7 @@ Here is a template for new release sections
 -
 ### Fixed
 - Update the release protocol in `CONTRIBUTING.md` file (#576)
-- optimizedAddCap of non-dispatchable sources: multiply maximumCap by max(timeseries(kWh/kWp)) to fix issue #446 (#562, #498)
+- `optimizedAddCap` of non-dispatchable sources: multiply `maximumCap` by `max(timeseries(kWh/kWp))` to fix issue #446 (#562, #498)
 -`timeseries_normalized` are calculated for all `timeseries` of non-dispatchable sources now (before only if `optimizeCap==True`) (#562, #498)
 
 ## [0.4.1] - 2020-09-21
