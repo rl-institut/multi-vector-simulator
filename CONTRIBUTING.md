@@ -4,7 +4,10 @@
 
 - [Git](https://git-scm.com/)
 
-
+- Install the dev requirements with
+```bash
+pip install -e .[test,dev]
+```
 ### Philosophy
 
 Development of a feature for this repository should follow the workflow described 
@@ -43,24 +46,33 @@ git push
 ```
 If your branch does not exist on the remote server yet, git will provide you with instructions, simply follow them.
 
+#### Step 3.1: Write test for your code
 
-#### Step 3: Run tests locally
+It is important to write some test(s) to test that the feature you introduce works the way you want it to. In future development, your test(s) could always be ran to ensure your feature still works properly.
 
-To install all packages required for the integration tests locally:
+Look at the files existing in the `tests` folder if the test for your new feature could be placed
+ in one of the existing test modules. If not, you can create your own module (the only requirement
+  is that it must starts with `test_`).
+
+When you test with `assert` you can add a string message which will be displayed if the test
+ fails (`assert <condition>, <string message>`). It could be very useful to understand what exactly
+ went wrong in the test for a developer 6 months from now.
+ If you are testing a function in a module, it would be nice to indicate in the docstring of this
+  function (under the section `Notes`) that this test exist, cf [example docstring](https://mvs-eland.readthedocs.io/en/latest/Developing.html#format-of-docstrings)!
+
+
+#### Step 3.2: Run tests locally
+
+To install all packages required for the integration tests locally (if not done yet):
 ```bash
-pip install -r tests/test_requirements.txt
+pip install -r requirements/test.txt
 ```
 
 **!!! Important !!!**: You also need to install the mvs package locally in develop mode:
 ```bash
-python setup.py develop
-```
-Otherwise your changes will not be perceived by the tests unless you run `python setup.py install` each time.
-
-```bash
 pip install -e .
 ```
-should work as well.
+Otherwise your changes will not be perceived by the tests.
 
 Please run the tests locally before pushing your feature to the developer branch. You do that by running:
 ```bash
@@ -112,7 +124,7 @@ Once you are ready to publish a release, branch off from `dev`
     ```
 For meaning of X, Y and Z version numbers, please refer to this [semantic versioning guidelines](https://semver.org/spec/v2.0.0.html).
 
-In this branch, you should normally only update the version number in the `CHANGELOG.md` and `setup.py` files.
+In this branch, you should normally only update the version number in the `src/mvs_eland/version.py` and in the `CHANGELOG.md` files, respecting the indicated formats. Commit the first one with "Bump version number" as commit message.
 
 Your `CHANGELOG.md` file could look like this before the release
 ```
@@ -150,6 +162,7 @@ Simply replace `unreleased` by `X.Y.Z` and add the date of release in [ISO forma
 ### Removed
 - some stuff
 ```
+Commit this with "Update changelog" as commit message.
 
 After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it in `master`.
 
@@ -169,7 +182,7 @@ git checkout dev
 ```
 git merge release/vX.Y.Z
 ```
-And push your these updates to the remote
+And push your these updates to the remote version of dev
 ```
 git push
 ```
@@ -180,11 +193,25 @@ Finally, [create a release](https://help.github.com/en/github/administering-a-re
 
 ## Contributing to Readthedocs
 
+You need to first install the required packages
+
+```bash
+pip install -r requirements/docs.txt
+```
+
 Readthedocs of the MVS is compiled with the content of folder "docs". After editing, execute
 
     cd docs
+
+and then
+
     make html
 
-To update the html pages of readthedocs. Then you can commit, push and pull it like normal code. 
+To update the html pages of readthedocs. You will find the html files them under `docs/_build/html`
+and can open them in your favorite browser. After you are done editing, you can commit, push and
+ pull it like normal code.
+
+Note: the compilation of certain docstrings requires latex amsmath package, if it is not
+ available on your local computer, the math expression will not render nicely.
 
 An introduction to creating the readthedocs with Sphinx is given here: https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html.
