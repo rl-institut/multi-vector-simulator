@@ -224,7 +224,7 @@ Disregard of some real life constraint
 ######################################
 :Limitation: Some real life constraint are not taken into consideration in the MVS.
 :Reason: The MVS is based oemof-solph python library and uses its generic components to set up an energy system, which allow unidirectional flows only. 
-:Implications: This means that the MVS might result in a case in which the battery is being charged by the rectifier and discharged by the inverter at the same time step t. Another case that could occur is feeding the grid and consuming from it at the same time t. If those constraints were to be included, the optimization problem would become a non-linear one.
+:Implications: This means that the MVS might result in infeasible dispatch of assets. For instance, the battery might be charged by the rectifier and discharged by the inverter at the same time step t. Another case that could occur is feeding the grid and consuming from it at the same time t. If those constraints were to be implemented, the optimization problem would become a non-linear one.
 
 Simplified asset model
 ######################
@@ -266,8 +266,3 @@ Unlinked one technical unit transformers
     - Linear Transformer (one input, n outputs)
     - Storage (one input, one output)
 :Implications: Since one input is only allowed, such technical units are modelled as two separate transformers that are currently unlinked in the MVS (e.g., hybrid inverter, heat pump, distribution transformer, etc.). This means that the costs (and sometimes capacities) of those transformers are either replicated or divided between them.
-
-Infeasible dispatch of assets
-#############################
-- Energy consumption and feed-in at the same time
-- Bi-directional inverters
