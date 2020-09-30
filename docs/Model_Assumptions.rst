@@ -234,7 +234,9 @@ No degradation
 
 Perfect foresight
 #################
-- Battery charge
+:Limitation: The optimal solution of the energy system is based on perfect foresight.
+:Reason: As oemof-solph, as well as the MVS, know the generation and demand profiles for the whole simulation time and solve the optimization problem based on a linear equation system, the solver knows their dispatch for certain, whereas in reality the generation and demand could only be forecasted.
+:Implications: The perfect foresight can lead to suspicious dispatch of assets, for example charging of a battery right before a (in real-life) random blackout occurs. The systems optimized with the MVS therefore, represent their optimal potential, which in reality could not be reached. The MVS has thus a tendency to underestimate the needed battery capacity or the minimal state of charge for backup purposes, and also designs the PV system and backup power according to perfect forecasts. In reality, operational margins would need to be added.
 
 Extension of KPIs
 #################
