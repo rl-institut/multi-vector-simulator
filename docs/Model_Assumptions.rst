@@ -176,7 +176,7 @@ The confersion factors are derived from their `Gasoline Gallon Equivalents.<http
 Limitations
 -----------
 
-When running simulations with the MVS, there are certain pecurilarities to be aware of. The pecurilarities can be considered as limitations, of which some are merely assumptions and others drawbacks of the model. Some of those are inherited due to the nature of the MVS and its underlying modules, and some can still be addressed in the future during the MVS development process, which is still ongoing. The following table lists the MVS limitations based on their type.
+When running simulations with the MVS, there are certain peculiarities to be aware of. The peculiarities can be considered as limitations, some of which are merely assumptions and others drawbacks of the model. Some of those are inherited due to the nature of the MVS and its underlying modules, and some can still be addressed in the future during the MVS development process, which is still ongoing. The following table lists the MVS limitations based on their type.
 
 .. list-table:: Limitations
    :widths: 25 25 25
