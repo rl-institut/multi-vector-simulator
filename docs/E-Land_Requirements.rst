@@ -14,6 +14,20 @@ FUN-MVS-01 - Solving an energy system optimization model
 
 :Priority:  HIGH
 
+:Progress: In progress
+
+:Progress message:
+
+The MVS can solve energy system planning optimization problems and identify the optimal additional capacities of chosen assets.
+
+:ToDo:
+
+There are still parts of the MVS that can be improved and some features are not integrated yet, but this is covered by the requirements below.
+There are two benchmark tests that should be added to complete this:
+
+* Investment optimization benchmark tests - check if expected capacities are installed, eg. for PV.
+* Economic evaluation benchmark test - check if NPC and LCOE are calculated correctly
+
 FUN-MVS-02 - Automatic setting up of an energy system optimization model
 ########################################################################
 
@@ -22,6 +36,16 @@ FUN-MVS-02 - Automatic setting up of an energy system optimization model
 :Rationale: Currently MVS supports the Oemof model. The rationale is to support external entities or users with no experience in Oemof, by automatically generating the respective Oemof model for the agreed format
 
 :Priority:  HIGH
+
+:Progress: In progress
+
+:Progress message:
+
+The MVS accepts simulation data provided as csv files and automatically sets up an energy system.
+
+:ToDo:
+
+Reading data from json files can still be improved, especially as the interface of the EPA/MVS will change the json file again.
 
 FUN-MVS-03 - Manual setting up an energy system optimization model
 ##################################################################
@@ -32,6 +56,23 @@ FUN-MVS-03 - Manual setting up an energy system optimization model
 
 :Priority:  LOW
 
+:Progress: Done
+
+:Progress message:
+
+It is possible to add as many components as needed to the energy model that is to be simulated with the MVS.
+They can be devided into following types:
+
+* Energy providers
+* energy production
+* energy consumption
+* energy conversion
+* energy storage
+
+Details on how to model different assets are included in the model assumptions, specifically the `component models <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#component-models>`_.
+
+:ToDo: None
+
 FUN-MVS-04 - Optimisation Results
 #################################
 
@@ -40,6 +81,29 @@ FUN-MVS-04 - Optimisation Results
 :Rationale:  Basic operation of MVS.
 
 :Priority:  HIGH
+
+:Progress: In progress
+
+:Progress message:
+
+The results of the MVS simulation is post-processed. Following information is already compiled:
+
+* Capex and opex per asset
+* NPC and annuity of the energy system
+* Aggregated energy flows as well as peak flows of each asset
+* Renewable share of the assets
+* LCOE of the energy system
+
+:ToDo:
+
+Open to implement is still:
+
+* Degree of sector-coupling
+* Degree of autonomy (energy balance)
+* Percentage of self-supply (hourly)
+* Percentage of self-consumption (hourly)
+* Benchmark test for LCOE (one sector, multiple sectors with different conversion factors)
+* Excess energy evaluation needs to be benchmark-tested
 
 FUN-MVS-05 - Production Assets
 ##############################
@@ -50,6 +114,23 @@ FUN-MVS-05 - Production Assets
 
 :Priority:  HIGH
 
+:Progress: In-progress
+
+:Progress message:
+
+The MVS already considers
+
+* PV plants, wind plants
+* BESS
+
+:ToDo:
+
+Thermal storages are for now defined analogously to electrical storages.
+It could be considered whether we should actually use the new oemof_thermal object.
+It is not clear how this would fit into the EPA data bank.
+
+A CHP with fix ratio between the heat and electricity output can already be simulated.
+For a chp with a variable ration between those two outputs, we need to add the specific chp asset to the possible inputs.
 
 FUN-MVS-06 - Assets of Energy Conversion
 ########################################
@@ -60,6 +141,19 @@ FUN-MVS-06 - Assets of Energy Conversion
 
 :Priority:  LOW
 
+:Progress: In-progress
+
+:Progress message:
+
+The MVS already covers generic conversion assets. This includes generators, transformers, heat pumps and similar.
+
+:ToDo:
+
+A CHP with a variable share of heat and electricity output is currently not implemented. It could be added as a new oemof asset type.
+
+When using two conversion objects to emulate a bidirectional conversion assets, their capacity should be interdependent. This is currently not the case.
+
+
 FUN-MVS-07 - Optimisation goal
 ##############################
 
@@ -69,6 +163,20 @@ FUN-MVS-07 - Optimisation goal
 
 :Priority:  HIGH
 
+:Progress: In progress
+
+:Progress message:
+
+In general, the MVS aims to minimize the energy supply cost of the local energy system. Additionally, following constraint can be activated:
+
+* Minimal renewable share constraint (see `here <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#minimal-renewable-share-constraint>`_)
+
+:ToDo:
+
+Some constraints still have to be added:
+
+* Minimal degree of automonomy
+* Maximum C02 emission constraint
 
 FUN-MVS-08 - Electricity cost model
 ###################################
@@ -78,6 +186,18 @@ FUN-MVS-08 - Electricity cost model
 :Rationale:  Information necessary for building the MVS Multi-vector Model.
 
 :Priority:  HIGH
+
+:Progress: Done
+
+:Progress message:
+
+The different constraints regarding the electricity DSO can be considered:
+
+a) The energy price as well as the feed-in tariff of a DSO can be provided as a time series
+b) Peak demand pricing can be considered (see `here <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#peak-demand-pricing>`_)
+c) The transformer station limitation can, but does not have to be added.
+
+:ToDo: None
 
 
 FUN-MVS-09 - Load profiles
@@ -89,6 +209,12 @@ FUN-MVS-09 - Load profiles
 
 :Priority:  HIGH
 
+:Progress: Done
+
+:Progress message: The MVS can be provided with a variable number of energy consumption profiles, that can be connected to variable busses.
+
+:ToDo: None
+
 FUN-MVS-10 - DH cost model
 ##########################
 
@@ -97,6 +223,12 @@ FUN-MVS-10 - DH cost model
 :Rationale:  Information necessary for building the MVS Multi-vector Model.
 
 :Priority:  HIGH
+
+:Progress: Done
+
+:Progress message: Same as for **FUN-MVS-08 - Electricity cost model**
+
+:ToDo: None
 
 
 FUN-MVS-11 - PV data
@@ -108,6 +240,25 @@ FUN-MVS-11 - PV data
 
 :Priority:  HIGH
 
+:Progress: In progress (minimal requirement met)
+
+:Progress message:
+
+To simulate a PV, the MVS model requires following data from the end-user:
+
+* (Historical) specific generation profile (in kWh/kWp)
+
+Optionally, an inverter that has specific efficiency can be connected to the PV.
+
+:ToDo:
+
+To ease the data input for the end-user, more processing could be included here. For example, the `pvfeedinlib` could be used with following data:
+
+* Longitude and latitude
+* Module or efficiency
+* Performance ratio
+
+This could also be implemented in the EPA.
 
 FUN-MVS-12 - Battery data
 #########################
@@ -118,6 +269,26 @@ FUN-MVS-12 - Battery data
 
 :Priority:  HIGH
 
+:Progress: In progress (minimal requirement met)
+
+:Progress message:
+
+For the MVS, the type of the BESS does not matter. Important are the technical parameters:
+
+* C-rate
+* Max and min state of charge (SOC)
+* Max. depth of discharge (DOD)
+* Charge- and discharge efficiency (constant or time series)
+* Self-discharge rate
+
+Optionally, it is possible to add an inverter.
+
+Historical data is not subject to the MVS for batteries.
+
+:ToDo:
+
+Defining default values for the BESS (possibly requirement a)) could also take place in the EPA.
+
 FUN-MVS-13 - CHP data
 #####################
 
@@ -127,15 +298,41 @@ FUN-MVS-13 - CHP data
 
 :Priority:  LOW
 
+:Progress: In progess (minimal requirement met)
+
+:Progress message:
+
+A simple CHP model is already included in the MVS. It considers a fix ratio between thermal and electric output.
+
+:ToDo:
+
+For a variable ratio between heat and electricity output, a new, specific oemof asset would need to be added.
+
 FUN-MVS-14 - Thermal storage data
 #################################
 
-:Description: For calculations involving CHP assets Thermal Storage assets, the MVS model shall be provided with: a) Charging and discharging efficiencies, b. Max/Min SOC, initial SOC
+:Description: For calculations involving Thermal Storage assets, the MVS model shall be provided with: a) Charging and discharging efficiencies, b. Max/Min SOC, initial SOC
 
 :Rationale:  Information necessary for building the MVS Multi-Vector Model.
 
 :Priority:  LOW
 
+:Progress: In progress (minimal requirement met)
+
+:Progress message:
+
+It is possible to simulate thermal storage assets with the MVS that are simulated analogeously to the BESS, which fullfills the requirement. They are defined by:
+
+* Charging and discharging efficiencies
+* Max/Min SOC
+
+
+:ToDo:
+
+The definition of an initial SOC of the thermal storages was dropped, as this does not seem relevant considering the project duration of 20 a.
+
+The simplification of a thermal storage asset as basically a BESS can be especially difficult for the end user, in case that the input data needed can not be estimated.
+One should consider using the oemof.thermal thermal storage object.
 
 FUN-MVS-15 - Autonomous operation data
 ######################################
@@ -146,6 +343,14 @@ FUN-MVS-15 - Autonomous operation data
 
 :Priority:  HIGH
 
+:Progress: Not started
+
+:Progress message: This requirement was not addressed yet.
+
+:ToDo:
+
+This requirement can be translated into a constraint that needs to be added to the MVS.
+It should be addresses after the other constraints as well as the KPI regarding autonomy are integrated.
 
 FUN-MVS-16 - Economic data
 ##########################
@@ -156,6 +361,21 @@ FUN-MVS-16 - Economic data
 
 :Priority:  HIGH
 
+:Progress: Done
+
+:Progress message:
+
+The MVS receives economic data from the end-user. This includes:
+
+* Specific investment costs of assets (CAPEX/kW)
+* Dispatch costs of assets
+* Annual operation and management costs (OPEX/kWh, constant or time series))
+* Currency
+* Tax
+* Weighted Average Cost of Capital (WACC).
+
+:ToDo: None
+
 FUN-MVS-17 - Constraints
 ########################
 
@@ -165,6 +385,18 @@ FUN-MVS-17 - Constraints
 
 :Priority:  HIGH
 
+:Progress: In progress
+
+:Progress message:
+
+To address the sizing constraint, the attribute `maximumCap` was introduced. This will limit the optimized capacity, even if this results in higher energy supply costs.
+
+:ToDo:
+
+It was decided at the beginning of the project that the operating reserve constraint will be developed in cooperation with the end-users.
+
+A cost constraint is for now disregarded. As always the cheapest supply solution is identified, limiting the overall NPC would only result in infeasible solutions and a termination of the MVS.
+Cost constraints considering specific technologies can be covered by adapting the `maximumCap`.
 
 Non-Functional Requirements
 ---------------------------
