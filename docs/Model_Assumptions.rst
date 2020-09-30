@@ -270,6 +270,9 @@ Energy carrier rating
 
 Energy shortage or grid interruption
 ####################################
+:Limitation: The MVS assumes no shortage or grid interruption in the system.
+:Reason: 
+:Implications: Electricity shortages due to power cuts might happen in real life. The MVS currently omits this scenario which might implicate unreasonable results. If a system is self-sufficient but relies on grid-connected PV systems, the latter stop feeding the load if any power cuts occur and the battery storage systems might not be enough to serve the load (energy shortage).
 
 Generic cost definitions
 ########################
