@@ -232,7 +232,7 @@ To archieve that one flow has to be zero when the other is larger zero, one woul
 .. math: E_{in} \cdot E_{out} = 0
 
 However, this relation creates a non-linear problem and can not be implemented in `oemof-solph`. 
-:Implications: This means that the MVS might result in unfeasible dispatch of assets. For instance, the battery might be charged by the rectifier and discharged by the inverter at the same time step t. Another case that could occur is feeding the grid and consuming from it at the same time t. If those constraints were to be implemented, the optimization problem would become a non-linear one.
+:Implications: This limitation means that the MVS might result in unfeasible dispatch of assets. For instance, the a bus might supplied by a rectifier and itself supply an inverter at the same time step t, which can logically not be if these assets are part of one physical bi-directional inverter. Another case that could occur is feeding the grid and consuming from it at the same time t.
 
 Simplified asset model
 ######################
