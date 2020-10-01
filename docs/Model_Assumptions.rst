@@ -239,13 +239,15 @@ This limitation means that the MVS might result in unfeasible dispatch of assets
 .. _simplified-label:
 Simplified asset model
 ######################
-:Limitation: The MVS simplifies the component model of some assets.
+:Limitation:
+The MVS simplifies the component model of some assets.
+    * Generators have an efficiency that is not load-dependent
+    * Storage have a charging efficiency that is not SOC-dependent
 
-* Generators have an efficiency that is not load-dependent
-* Storage have a charging efficiency that is not SOC-dependent
-
-:Reason: The MVS is based oemof-solph python library and uses its generic components to set up an energy system. Transformers and storages cannot have variable efficiencies.
-:Implications: Simplifying the implementation of some component specifications can be beneficial for the ease of the model, however, it contributes to the lack of realism and might result in less accurate values. The MVS accepts the decreased level of detail in return for a quick evaluation of its scenarios, which are often only used for a pre-feasibility analysis. 
+:Reason:
+The MVS is based oemof-solph python library and uses its generic components to set up an energy system. Transformers and storages cannot have variable efficiencies.
+:Implications:
+Simplifying the implementation of some component specifications can be beneficial for the ease of the model, however, it contributes to the lack of realism and might result in less accurate values. The MVS accepts the decreased level of detail in return for a quick evaluation of its scenarios, which are often only used for a pre-feasibility analysis. 
 
 .. _degradation-label:
 No degradation
