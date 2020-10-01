@@ -352,7 +352,9 @@ def energyConversion(dict_values, group):
             dict_values[group][asset],
         )
         # check if maximumCap exists and add it to dict_values
-        process_maximum_cap_constraint(dict_values=dict_values, group=group, asset=asset)
+        process_maximum_cap_constraint(
+            dict_values=dict_values, group=group, asset=asset
+        )
 
         # in case there is only one parameter provided (input bus and one output bus)
         if (
