@@ -176,7 +176,7 @@ The confersion factors are derived from their `Gasoline Gallon Equivalents.<http
 Limitations
 -----------
 
-When running simulations with the MVS, there are certain peculiarities to be aware of. The peculiarities can be considered as limitations, some of which are merely assumptions and others drawbacks of the model. Some of those are inherited due to the nature of the MVS and its underlying modules, and some can still be addressed in the future during the MVS development process, which is still ongoing. The following table lists the MVS limitations based on their type.
+When running simulations with the MVS, there are certain peculiarities to be aware of. The peculiarities can be considered as limitations, some of which are merely assumptions and others are drawbacks of the model. Some of those are inherited due to the nature of the MVS and its underlying modules, and some can still be addressed in the future during the MVS development process, which is still ongoing. The following table lists the MVS limitations based on their type.
 
 .. list-table:: Limitations
    :widths: 25 25 25
@@ -222,36 +222,34 @@ When running simulations with the MVS, there are certain peculiarities to be awa
 .. _disregard-label:
 Disregard of some real life constraint
 ######################################
-:Limitation: The real life constraint of the dispatch of assets, that it is not possible to have two flows in opposite directions in the same time step, is not adhered to in the MVS.
-:Reason:
-
- The MVS is based on the python library `oemof-solph`. Its generic components are used to set up the energy system. As a ground rule the components of `oemof-solph` are uni-directional. This means that for an asset that is bi-directional (physically for an inverter and logically for consumption/feedin from/to the grid), two transformer objects have to be used. 
- 
+:Limitation: The real life constraint of the dispatch of assets, that it is not possible to have two flows in opposite directions at the same time step, is not adhered to in the MVS.
+:Reason: The MVS is based on the python library `oemof-solph`. Its generic components are used to set up the energy system. As a ground rule, the components of `oemof-solph` are uni-directional. This means that for an asset that is bi-directional (physically for an inverter and logically for consumption/feed-in from/to the grid), two transformer objects have to be used. 
 To archieve that one flow has to be zero when the other is larger zero, one would have to implement following relation:
 
-.. math: E_{in} \cdot E_{out} = 0
+.. math:: 
+        E_{in} \cdot E_{out} = 0
 
-However, this relation creates a non-linear problem and can not be implemented in `oemof-solph`. 
-:Implications: This limitation means that the MVS might result in unfeasible dispatch of assets. For instance, the a bus might supplied by a rectifier and itself supply an inverter at the same time step t, which can logically not be if these assets are part of one physical bi-directional inverter. Another case that could occur is feeding the grid and consuming from it at the same time t.
+However, this relation creates a non-linear problem and can not be implemented in `oemof-solph`.
+
+:Implications: This limitation means that the MVS might result in unfeasible dispatch of assets. For instance, a bus might be supplied by a rectifier and itself supplying an inverter at the same time step t, which cannot logically happen if these assets are part of one physical bi-directional inverter. Another case that could occur is feeding the grid and consuming from it at the same time t.
 
 .. _simplified-label:
 Simplified asset model
 ######################
-:Limitation: 
-
-The MVS simplifies the component model of some assets.
+:Limitation: The MVS simplifies the component model of some assets.
 
 * Generators have an efficiency that is not load-dependent
 * Storage have a charging efficiency that is not SOC-dependent
-:Reason: The MVS is based oemof-solph python library and uses its generic components to set up an energy system. Transformers and storages can not have variable efficiencies.
-:Implications: Simplifying the implementation of some component specifications can be beneficial for the ease of the model, however, it contributes to the lack of realism and might result in impractical values. The MVS accepts the decreased level of detail in return for a quick evaluation of it`s scenarios, that are in itself only used for a pre-feasibility analysis. 
+
+:Reason: The MVS is based oemof-solph python library and uses its generic components to set up an energy system. Transformers and storages cannot have variable efficiencies.
+:Implications: Simplifying the implementation of some component specifications can be beneficial for the ease of the model, however, it contributes to the lack of realism and might result in less accurate values. The MVS accepts the decreased level of detail in return for a quick evaluation of its scenarios, which are often only used for a pre-feasibility analysis. 
 
 .. _degradation-label:
 No degradation
 ##############
 :Limitation: The MVS does not degrade the generation of a production asset over the lifetime of the project.
 :Reason: The simulation of the MVS is only based on a single reference year, and it is not possible to take into account multi-year degradation of asset efficiency. 
-:Implications: This results in an overestimation of the energy generated by the asset, which implies that the calculation of some other results might be unrealistic (e.g., overestimation of feed-in energy).
+:Implications: This results in an overestimation of the energy generated by the asset, which implies that the calculation of some other results might also be overestimated (e.g., overestimation of feed-in energy).
 
 .. _perfectforesight-label:
 Perfect foresight
@@ -263,7 +261,7 @@ Perfect foresight
 .. _kpi-label:
 Extension of KPIs
 #################
-:Limitation: Some important KPIs, usually required by developers, are currently not implemented in the MVS.
+:Limitation: Some important KPIs, usually required by developers like the internal rate of return (IRR), payback period or return on equity (ROE), are currently not implemented in the MVS.
 :Reason: The MVS tool is a work in progress and this can still be addressed in the future.
 :Implications: The absence of such indicators might affect decision-making.
 
@@ -272,10 +270,7 @@ Random excess energy distribution
 #################################
 :Limitation: There is random excess distribution between the feed-in sink and the excess sink when no feed-in-tariff is assumed in the system.
 :Reason: Since there is no feed-in-tariff to benefit from, the MVS randomly distributes the excess energy between the feed-in and excess sinks. As such, the distribution of excess energy changes when running several simulations for the same input files. 
-:Implications: 
-
-On the first glance, the distribution of excess energy onto both feed-in sind and excess sink may seem off to the end-user. Other than these inconviniences, there are no real implications that affect the capacity and dispatch optimization. 
-
+:Implications: On the first glance, the distribution of excess energy onto both feed-in sink and excess sink may seem off to the end-user. Other than these inconveniences, there are no real implications that affect the capacity and dispatch optimization. 
 When a degree of self-supply and self-consumption is defined, the limitation might tarnish these results.
 
 .. _reshare-label:
