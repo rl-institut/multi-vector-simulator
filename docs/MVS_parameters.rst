@@ -20,7 +20,7 @@ age_installed
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _country-label:
 
@@ -34,7 +34,7 @@ country
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _currency-label:
 
@@ -48,7 +48,7 @@ currency
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _crate-label:
 
@@ -62,7 +62,7 @@ c-rate
 :Restrictions: Only the columns "input power" and "output power" require a value, in column "storage capacity" c_rate should be set to NaN.
 :Default: None
 
-|
+----
 
 .. _developmentcosts-label:
 
@@ -76,7 +76,7 @@ development_costs
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _discountfactor-label:
 
@@ -90,7 +90,7 @@ discount_factor
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _dispatchprice-label:
 
@@ -104,7 +104,7 @@ dispatch_price
 :Restrictions: In "storage_xx.csv" only the columns "input power" and "output power" require a value, in column "storage capacity" dispatch_price should be set to NaN.
 :Default: None
 
-|
+----
 
 .. _dsm-label:
 
@@ -118,7 +118,7 @@ dsm
 :Restrictions: Acceptable values are either True or False.
 :Default: None
 
-|
+----
 
 .. _efficiency-label:
 
@@ -132,7 +132,7 @@ efficiency
 :Restrictions: Between 0 and 1.
 :Default: None
 
-|
+----
 
 .. _energyprice-label:
 
@@ -146,7 +146,7 @@ energy_price
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _evaluatedperiod-label:
 
@@ -160,7 +160,7 @@ evaluated_period
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _energyvector-label:
 
@@ -174,7 +174,7 @@ energyVector
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _feedintariff-label:
 
@@ -188,7 +188,7 @@ feedin_tariff
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _filename-label:
 
@@ -202,7 +202,7 @@ file_name
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _inflowdirection-label:
 
@@ -216,7 +216,7 @@ inflow_direction
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _installedcap-label:
 
@@ -230,7 +230,7 @@ installedCap
 :Restrictions: Each component in the energyProduction.csv should have a value.
 :Default: None
 
-|
+----
 
 .. _labl-label:
 
@@ -244,7 +244,7 @@ label
 :Restrictions: Input the names in a computer readable format, preferably with underscores instead of spaces, and avoiding special characters (eg. pv_plant_01)
 :Default: None
 
-|
+----
 
 .. _latitude-label:
 
@@ -258,7 +258,7 @@ latitude
 :Restrictions: Should follow geographical convention
 :Default: None
 
-|
+----
 
 .. _lifetime-label:
 
@@ -272,7 +272,7 @@ lifetime
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _longitude-label:
 
@@ -286,7 +286,7 @@ longitude
 :Restrictions: Should follow geographical convention
 :Default: None
 
-|
+----
 
 .. _maxcap-label:
 
@@ -300,7 +300,7 @@ maximumCap
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _minrenshare-label:
 
@@ -314,7 +314,7 @@ minimal_renewable_share
 :Restrictions: Between 0 and 1
 :Default: None
 
-|
+----
 
 .. _optimizecap-label:
 
@@ -328,7 +328,7 @@ optimizeCap
 :Restrictions: Permissible values are either True or False
 :Default: None
 
-|
+----
 
 .. _outputlpfile-label:
 
@@ -342,7 +342,7 @@ output_lp_file
 :Restrictions: Acceptable values are either True or False
 :Default: None
 
-|
+----
 
 .. _outflowdirec-label:
 
@@ -356,7 +356,7 @@ outflow_direction
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _peakdemand-label:
 
@@ -370,7 +370,7 @@ peak_demand_pricing
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _peakdemandperiod-label:
 
@@ -384,7 +384,7 @@ Peak_demand_pricing_period
 :Restrictions: Should be one of the following values: 1,2,3,4,6, or 12
 :Default: None
 
-|
+----
 
 .. _projectduration-label:
 
@@ -398,7 +398,7 @@ Project_duration
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _projectid-label:
 
@@ -412,7 +412,7 @@ Project_id
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _projectname-label:
 
@@ -426,7 +426,7 @@ Project_name
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _renshare-label:
 
@@ -452,7 +452,7 @@ scenario_id
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _scenarioname-label:
 
@@ -466,7 +466,7 @@ scenario_name
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _socin-label:
 
@@ -480,7 +480,7 @@ soc_initial
 :Restrictions: Acceptable values are either None or the factor. Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_initial should be set to NaN.
 :Default: None
 
-|
+----
 
 .. _socmax-label:
 
@@ -494,7 +494,7 @@ soc_max
 :Restrictions: Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_max should be set to NaN.
 :Default: None
 
-|
+----
 
 .. _socmin-label:
 
@@ -508,7 +508,7 @@ soc_min
 :Restrictions: Only the column "storage capacity" requires a value, in column "input power" and "output power" soc_min should be set to NaN.
 :Default: None
 
-|
+----
 
 .. _specificcosts-label:
 
@@ -522,7 +522,7 @@ specific_costs
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _specificomcosts-label:
 
@@ -536,7 +536,7 @@ specific_costs_om
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _startdate-label:
 
@@ -550,7 +550,7 @@ start_date
 :Restrictions: Acceptable format is YYYY-MM-DD HH:MM:SS
 :Default: None
 
-|
+----
 
 .. _storagefilename-label:
 
@@ -564,7 +564,7 @@ storage_filename
 :Restrictions: Follows the convention of 'storage_xx.csv' where 'xx' is a number
 :Default: None
 
-|
+----
 
 .. _storeoemoefresults-label:
 
@@ -578,7 +578,7 @@ store_oemof_results
 :Restrictions: Acceptable values are either True or False
 :Default: None
 
-|
+----
 
 .. _tax-label:
 
@@ -592,7 +592,7 @@ tax
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _timestep-label:
 
@@ -606,7 +606,7 @@ timestep
 :Restrictions: None
 :Default: None
 
-|
+----
 
 .. _typeasset-label:
 
@@ -620,7 +620,7 @@ type_asset
 :Restrictions: *demand*
 :Default: None
 
-|
+----
 
 .. _typeoemof-label:
 
@@ -634,7 +634,7 @@ type_oemof
 :Restrictions: *sink* or *source* or one of the other component classes of OEMOF.
 :Default: None
 
-|
+----
 
 .. _unit-label:
 
