@@ -40,7 +40,7 @@ currency
 :Definition: The currency of the country where the project is implemented.
 :Type: str
 :Unit: None
-:Example: EUR (if the country is Germany)
+:Example: EUR
 :Restrictions: None
 :Default: None
 
