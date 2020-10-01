@@ -187,7 +187,7 @@ When running simulations with the MVS, there are certain peculiarities to be awa
      - Link
    * - Inherited
      - Disregard of some real life constraint
-     - :ref:`disregard`
+     - :ref:disregard
    * - Inherited
      - Simplified asset model
      - 
