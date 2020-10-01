@@ -217,7 +217,7 @@ When running simulations with the MVS, there are certain peculiarities to be awa
      -  :ref:generic-label
    * - Can be addressed
      - Unlinked one technical unit transformers
-     - :ref:unlinked-label     
+     - :ref:unlinked    
 
 .. _disregard-label:
 Disregard of some real life constraint
@@ -306,7 +306,7 @@ Generic cost definitions
 :Reason: The MVS assumes those costs only for simplification.
 :Implications: This could lead to a rough estimation of the entire project costs.
 
-.. _unlinked-label:
+.. _unlinked:
 Unlinked one technical unit transformers
 ########################################
 :Limitation: Some components should be modelled as separate transformers in the MVS while in real life they are one technical unit.
