@@ -22,7 +22,7 @@ Tool structure:
 (child)     --E0_evaluation.py
 (child sub)    --E1_process_results.py
 (child sub)    --E2_verification_of_constraints.py
-(child sub)    --E4_verification_of_constraints.py
+(child sub)    --E4_verification.py
 
 (child)    --F0_output.py
 (child sub)    --F1_plotting.py

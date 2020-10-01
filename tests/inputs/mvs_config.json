@@ -315,6 +315,10 @@
                 "unit": "bool",
                 "value": true
             },
+            "renewableAsset": {
+                "unit": "bool",
+                "value": true
+            },
             "outflow_direction": "PV plant (mono)",
             "type_oemof": "source",
             "unit": "kWp"
