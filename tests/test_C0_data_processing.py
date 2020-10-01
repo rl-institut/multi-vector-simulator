@@ -16,7 +16,9 @@ from mvs_eland.utils.constants_json_strings import (
     PROJECT_DURATION,
     DISCOUNTFACTOR,
     OPTIMIZE_CAP,
+    MAXIMUM_CAP,
     INSTALLED_CAP,
+    FILENAME,
     PEAK_DEMAND_PRICING,
     AVAILABILITY_DISPATCH,
     OEMOF_ASSET_TYPE,
@@ -43,6 +45,7 @@ from mvs_eland.utils.constants_json_strings import (
     ANNUITY_FACTOR,
     SIMULATION_ANNUITY,
     LIFETIME_SPECIFIC_COST,
+    TIMESERIES_PEAK,
     CRF,
     ANNUITY_SPECIFIC_INVESTMENT_AND_OM,
     LIFETIME_SPECIFIC_COST_OM,
@@ -485,6 +488,153 @@ def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_f
         C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
             "Bio-Diesel", "asset_group", "asset"
         ), f"The energy carrier `Bio-Diesel` is recognized in the `DEFAULT_WEIGHTS_ENERGY_CARRIERS`, eventhough it should not be defined."
+
+
+group = "GROUP"
+asset = "ASSET"
+subasset = "SUBASSET"
+unit = "kW"
+installed_cap = 50
+
+def test_process_maximum_cap_constraint_maximumCap_undefined():
+    """If no maximum cap is defined previously, it is defined as none."""
+    dict_values = {group: {asset: {UNIT: unit}}}
+    C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
+    assert (
+        MAXIMUM_CAP in dict_values[group][asset]
+    ), f"The function does not add a MAXIMUM_CAP to the asset dictionary."
+    assert (
+        dict_values[group][asset][MAXIMUM_CAP][VALUE] == None
+    ), f"Eventhough there is no limit imposed to the asset capacity, its maximumCap is defined to be {dict_values[group][asset][MAXIMUM_CAP][VALUE]}."
+    assert (
+        dict_values[group][asset][MAXIMUM_CAP][UNIT] == unit
+    ), f"The maximumCap is in {dict_values[group][asset][MAXIMUM_CAP][UNIT]}, while the asset itself has unit {dict_values[group][asset][UNIT]}."
+
+
+def test_process_maximum_cap_constraint_maximumCap_is_None():
+    """The asset has a maximumCap==None, and a unit is added."""
+    dict_values = {group: {asset: {UNIT: unit, MAXIMUM_CAP: {VALUE: None}}}}
+    C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
+    assert (
+        dict_values[group][asset][MAXIMUM_CAP][VALUE] == None
+    ), f"Eventhough there is no limit imposed to the asset capacity, its maximumCap is defined to be {dict_values[group][asset][MAXIMUM_CAP][VALUE]}."
+    assert (
+        dict_values[group][asset][MAXIMUM_CAP][UNIT] == unit
+    ), f"The maximumCap is in {dict_values[group][asset][MAXIMUM_CAP][UNIT]}, while the asset itself has unit {dict_values[group][asset][UNIT]}."
+
+
+
+def test_process_maximum_cap_constraint_maximumCap_is_int():
+    """The asset has a maximumCap of int, and a unit is added."""
+    maxCap = 100
+    dict_values = {group: {asset: {UNIT: unit, INSTALLED_CAP: {VALUE: installed_cap}, MAXIMUM_CAP: {VALUE: maxCap}}}}
+    C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
+    assert (
+        dict_values[group][asset][MAXIMUM_CAP][VALUE] == maxCap
+    ), f"The initial maximumCap defined by the end-user ({maxCap}) is overwritten by a different value ({dict_values[group][asset][MAXIMUM_CAP][VALUE]})."
+    assert (
+        dict_values[group][asset][MAXIMUM_CAP][UNIT] == unit
+    ), f"The maximumCap is in {dict_values[group][asset][MAXIMUM_CAP][UNIT]}, while the asset itself has unit {dict_values[group][asset][UNIT]}."
+
+
+
+
+def test_process_maximum_cap_constraint_maximumCap_is_float():
+    """The asset has a maximumCap of float, and a unit is added"""
+    maxCap = 100.1
+    dict_values = {group: {asset: {UNIT: unit, INSTALLED_CAP: {VALUE: installed_cap}, MAXIMUM_CAP: {VALUE: maxCap}}}}
+    C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
+    assert (
+        dict_values[group][asset][MAXIMUM_CAP][VALUE] == maxCap
+    ), f"The initial maximumCap defined by the end-user ({maxCap}) is overwritten by a different value ({dict_values[group][asset][MAXIMUM_CAP][VALUE]})."
+    assert (
+        dict_values[group][asset][MAXIMUM_CAP][UNIT] == unit
+    ), f"The maximumCap is in {dict_values[group][asset][MAXIMUM_CAP][UNIT]}, while the asset itself has unit {dict_values[group][asset][UNIT]}."
+
+
+def test_process_maximum_cap_constraint_maximumCap_is_0():
+    """The asset has no maximumCapacity, and the entry is translated into a unit-value pair."""
+    maxCap = 0
+
+    dict_values = {group: {asset: {UNIT: unit, INSTALLED_CAP: {VALUE: installed_cap}, MAXIMUM_CAP: {VALUE: maxCap}}}}
+    with pytest.warns(UserWarning):
+        C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
+        assert dict_values[group][asset][MAXIMUM_CAP][VALUE] == None, f"The initial maximumCap defined by the end-user ({maxCap}) is overwritten by a different value ({dict_values[group][asset][MAXIMUM_CAP][VALUE]})."
+
+
+def test_process_maximum_cap_constraint_maximumCap_is_int_smaller_than_installed_cap():
+    """"The asset has a maximumCap < installedCap which is invalid and being ignored."""
+    maxCap = 10
+    dict_values = {group: {asset: {UNIT: unit, INSTALLED_CAP: {VALUE: installed_cap}, MAXIMUM_CAP: {VALUE: maxCap}}}}
+    with pytest.warns(UserWarning):
+        C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
+        assert (
+            dict_values[group][asset][MAXIMUM_CAP][VALUE] == None
+        ), f"The invalid input is not ignored by defining maximumCap as None."
+
+def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_fuel_source():
+    """The asset belongs to the energy production group, but is a dispatchable fuel source. The maximumCap is processed as usual."""
+    group = ENERGY_PRODUCTION
+    maxCap = 100
+    dict_values = {
+        group: {
+            asset: {
+                LABEL: asset,
+                UNIT: unit,
+                INSTALLED_CAP: {VALUE: installed_cap},
+                MAXIMUM_CAP: {VALUE: maxCap},
+                FILENAME: None,
+            }
+        }
+    }
+    C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
+    assert (
+        dict_values[group][asset][MAXIMUM_CAP][VALUE] == maxCap
+    ), f"The initial maximumCap defined by the end-user ({maxCap}) is overwritten by a different value ({dict_values[group][asset][MAXIMUM_CAP][VALUE]})."
+
+def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_non_dispatchable_asset():
+    """The asset belongs to the energy production group, and is a non-dispatchable asset.
+    As the maximumCap is used to define the maximum capacity of an asset, but used in oemof-solph to limit a flow, the value has to be translated."""
+    timeseries_peak = 0.8
+    group = ENERGY_PRODUCTION
+    maxCap = 100
+    dict_values = {
+        group: {
+            asset: {
+                LABEL: asset,
+                UNIT: unit,
+                INSTALLED_CAP: {VALUE: installed_cap},
+                MAXIMUM_CAP: {VALUE: maxCap},
+                FILENAME: "a_name",
+                TIMESERIES_PEAK: {VALUE: timeseries_peak},
+            }
+        }
+    }
+    C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
+    assert (
+        dict_values[group][asset][MAXIMUM_CAP][VALUE] == maxCap * timeseries_peak
+    ), f"The initial maximumCap defined by the end-user ({maxCap}) is overwritten by a different value ({dict_values[group][asset][MAXIMUM_CAP][VALUE]})."
+
+def test_process_maximum_cap_constraint_subasset():
+    """For storages, the subassets have to be processes. This tests the procedure examplary."""
+    dict_values = {
+        group: {
+            asset: {
+                subasset: {
+                LABEL: asset,
+                UNIT: unit,
+                MAXIMUM_CAP: {VALUE: None},
+            }}
+        }
+    }
+
+    C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=subasset)
+    assert (
+        dict_values[group][asset][subasset][MAXIMUM_CAP][VALUE] == None
+    ), f"The function does not change the previously defined MAXIMUM_CAP."
+    assert (
+        dict_values[group][asset][subasset][MAXIMUM_CAP][UNIT] == unit
+    ), f"The maximumCap is in {dict_values[group][asset][subasset][MAXIMUM_CAP][UNIT]}, while the asset itself has unit {dict_values[group][asset][subasset][UNIT]}."
 
 
 """
