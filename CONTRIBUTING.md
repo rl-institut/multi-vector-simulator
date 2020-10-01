@@ -46,8 +46,22 @@ git push
 ```
 If your branch does not exist on the remote server yet, git will provide you with instructions, simply follow them.
 
+#### Step 3.1: Write test for your code
 
-#### Step 3: Run tests locally
+It is important to write some test(s) to test that the feature you introduce works the way you want it to. In future development, your test(s) could always be ran to ensure your feature still works properly.
+
+Look at the files existing in the `tests` folder if the test for your new feature could be placed
+ in one of the existing test modules. If not, you can create your own module (the only requirement
+  is that it must starts with `test_`).
+
+When you test with `assert` you can add a string message which will be displayed if the test
+ fails (`assert <condition>, <string message>`). It could be very useful to understand what exactly
+ went wrong in the test for a developer 6 months from now.
+ If you are testing a function in a module, it would be nice to indicate in the docstring of this
+  function (under the section `Notes`) that this test exist, cf [example docstring](https://mvs-eland.readthedocs.io/en/latest/Developing.html#format-of-docstrings)!
+
+
+#### Step 3.2: Run tests locally
 
 To install all packages required for the integration tests locally (if not done yet):
 ```bash
