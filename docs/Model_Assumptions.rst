@@ -222,7 +222,7 @@ When running simulations with the MVS, there are certain peculiarities to be awa
 .. _disregard:
 Disregard of some real life constraint
 ######################################
-:Limitation: Some real life constraint are not taken into consideration in the MVS.
+:Limitation: The real life constraint of the dispatch of assets, that it is not possible to have two flows in opposite directions in the same time step, is not adhered to in the MVS.
 :Reason: The MVS is based oemof-solph python library and uses its generic components to set up an energy system, which allow unidirectional flows only. 
 :Implications: This means that the MVS might result in unfeasible dispatch of assets. For instance, the battery might be charged by the rectifier and discharged by the inverter at the same time step t. Another case that could occur is feeding the grid and consuming from it at the same time t. If those constraints were to be implemented, the optimization problem would become a non-linear one.
 
