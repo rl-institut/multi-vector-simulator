@@ -31,6 +31,7 @@ Here is a template for new release sections
 - Improve message when the `tests/test_input_folder_parameters.py` fails (#578)
 - Modify PR template to precise to add assert message and link to example docstring 
 - Update CONTRIBUTING to add a "Write test for your code" section before the "Run tests locally" one (#579)
+- Modified readthedocs page describing the parameters of MVS (#479)
 - Changed `E2.calculate_dispatch_expenditures()` so that it can process parameters defined as lists (#542)
 
 ### Removed
