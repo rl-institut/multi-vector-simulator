@@ -324,7 +324,7 @@ This might result in different values when comparing them to other models. Anoth
 Energy carrier rating
 #####################
 :Limitation: 
-The MVS assumes a usable potential/energy content rating for every energy carrier.
+The MVS assumes a usable potential/energy content rating for every energy carrier. The current version assumes that 1 kWh thermal is equivalent to 1 kWh electricity.
 
 :Reason: 
 This is an approach that the MVS currently uses.
