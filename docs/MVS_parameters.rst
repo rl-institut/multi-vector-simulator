@@ -17,7 +17,7 @@ age_installed
 :Type: Numeric
 :Unit: Years
 :Example: 10
-:Restrictions: None
+:Restrictions: Natural numbers
 :Default: None
 
 ----
@@ -73,7 +73,7 @@ development_costs
 :Type: Numeric
 :Unit: currency
 :Example: 10000
-:Restrictions: None
+:Restrictions: Positive real numbers
 :Default: None
 
 ----
