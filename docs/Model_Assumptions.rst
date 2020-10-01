@@ -223,7 +223,15 @@ When running simulations with the MVS, there are certain peculiarities to be awa
 Disregard of some real life constraint
 ######################################
 :Limitation: The real life constraint of the dispatch of assets, that it is not possible to have two flows in opposite directions in the same time step, is not adhered to in the MVS.
-:Reason: The MVS is based oemof-solph python library and uses its generic components to set up an energy system, which allow unidirectional flows only. 
+:Reason:
+
+ The MVS is based on the python library `oemof-solph`. Its generic components are used to set up the energy system. As a ground rule the components of `oemof-solph` are uni-directional. This means that for an asset that is bi-directional (physically for an inverter and logically for consumption/feedin from/to the grid), two transformer objects have to be used. 
+ 
+To archieve that one flow has to be zero when the other is larger zero, one would have to implement following relation:
+
+.. math: E_{in} \cdot E_{out} = 0
+
+However, this relation creates a non-linear problem and can not be implemented in `oemof-solph`. 
 :Implications: This means that the MVS might result in unfeasible dispatch of assets. For instance, the battery might be charged by the rectifier and discharged by the inverter at the same time step t. Another case that could occur is feeding the grid and consuming from it at the same time t. If those constraints were to be implemented, the optimization problem would become a non-linear one.
 
 Simplified asset model
