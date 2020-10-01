@@ -1698,15 +1698,30 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
     ----------
     dict_values: dict
         dictionary of all assets
+
+    group: str
+        Group that the asset belongs to (str). Used to acces sub-asset data and for error messages.
+
     asset: str
         asset name
+
     subasset: str
         subasset name.
         Default: None.
 
     Returns
     -------
+    Updates the asset dictionary.
 
+    * Unit of MaximumCap is asset unit
+
+    If MaximumCap is changed depends on its value:
+    * If MaximumCap not in asset dict: MaximumCap == None
+    * If MaximumCap < installed Cap: invalid, MaximumCap == None
+    * If MaximumCap == 0: invalid, MaximumCap == None
+    * If MaximumCap > installedCap and group != energyProviders: pass
+    * If MaximumCap > installedCap and group == energyProviders and filename not in asset_dict: pass
+    * If MaximumCap > installedCap and group == energyProviders and filename in asset_dict (non-dispatchable assets): MaximumCap == MaximumCap/peak(timeseries)
     """
     if subasset is None:
         asset_dict = dict_values[group][asset]
