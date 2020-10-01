@@ -28,6 +28,7 @@ Here is a template for new release sections
 - Error message if time series of non-dispatchable sources do not meet requirement: values betw. 0 and 1. (#498)
 - Requirement for time series of non-dispatchable sources in readthedocs (#498)
 - Provide a warning in case of excessive excess generation (#498)
+- Pytests for `C0.add_maximum_cap()`, renamed function into `C0.process_maximum_cap_constraint()` (#498)
 
 ### Changed
 - Modify `setup.py` to upload the code as package on pypi.org (#570)
@@ -35,7 +36,7 @@ Here is a template for new release sections
 - Modify PR template to precise to add assert message and link to example docstring 
 - Update CONTRIBUTING to add a "Write test for your code" section before the "Run tests locally" one (#579)
 - Changed `E2.calculate_dispatch_expenditures()` so that it can process parameters defined as lists (#542)
-- Rename E4 to E4_verification.py (#498)
+- Rename `E4` to `E4_verification.py` (#498)
 
 ### Removed
 -
@@ -43,7 +44,7 @@ Here is a template for new release sections
 ### Fixed
 - Update the release protocol in `CONTRIBUTING.md` file (#576)
 - Fix reading timeseries for parameters in `C0` (#542)
-- `optimizedAddCap` of non-dispatchable sources: multiply `maximumCap` by `max(timeseries(kWh/kWp))` to fix issue #446 (#562, #498)
+- Constraint for `optimizedAddCap` of non-dispatchable sources: multiply `maximumCap` by `max(timeseries(kWh/kWp))` to fix issue #446 (#562, #498)
 -`timeseries_normalized` are calculated for all `timeseries` of non-dispatchable sources now (before only if `optimizeCap==True`) (#562, #498)
 
 ## [0.4.1] - 2020-09-21
