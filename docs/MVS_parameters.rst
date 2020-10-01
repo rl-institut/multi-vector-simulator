@@ -59,7 +59,7 @@ c-rate
 :Type: Numeric
 :Unit: factor of total capacity (kWh)
 :Example: *storage capacity*: NaN, *input power*: 1, *output power*: 1
-:Restrictions: Only the columns "input power" and "output power" require a value, in column "storage capacity" c_rate should be set to NaN.
+:Restrictions: Only the columns "input power" and "output power" require a value, in column "storage capacity" c_rate should be set to NaN. The C-rate has to be in [0,1].
 :Default: None
 
 ----
