@@ -310,14 +310,15 @@ The current renewable energy share depends on the share of renewable energy prod
 
 .. math:: 
         RES = \frac{\sum_i E_{RE,generation}(i) \cdot w_i}{\sum_i E_{RE,generation}(i) \cdot w_i + \sum_k E_{nonRE,generation}(k) \cdot w_k}
-        i: renewable energy asset
-        k: non-renewable energy asser
+
+i: renewable energy asset
+k: non-renewable energy asser
 
 :Reason:
 The MVS tool is a work in progress and this can still be addressed in the future.
 
 :Implications:
-This might result in different values when comparing them to other models.
+This might result in different values when comparing them to other models. Another way to calculate it is by considering the share of energy consumption supplied from renewable sources.
 
 .. _carrier-label:
 Energy carrier rating
