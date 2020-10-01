@@ -81,10 +81,10 @@ def detect_excessive_excess_generation_in_bus(dict_values):
         df = pd.DataFrame(bus_df[cols].sum(), columns=["sum"])
         # get total in- and outflow of bus
         total_inflow_bus = df[df > 0].dropna().sum().values[0]
-        total_outflow_bus = df[df < 0].dropna().sum().values[0]
+        total_outflow_bus = abs(df[df < 0].dropna().sum().values[0])
         if not total_inflow_bus == 0:
             # give a warning in case ratio > 0.9
             ratio = total_outflow_bus / total_inflow_bus
             if ratio < 0.9:
-                msg = f"Attention, on bus {bus_label} there is an excessive excess generation, totalling up to {round((1 - ratio) * 100)}% of the inflows. It seems to be cheaper to have this excess generation than to install more capacities that forward the energy carrier to other busses (if those assets can be optimized)."
+                msg = f"Attention, on bus {bus_label} there is an excessive excess generation, totalling up to {round((1 - ratio) * 100)}% of the inflows. The total inflows are {round(total_inflow_bus)} and outflows {round(total_outflow_bus)}  It seems to be cheaper to have this excess generation than to install more capacities that forward the energy carrier to other busses (if those assets can be optimized)."
                 logging.warning(msg)
