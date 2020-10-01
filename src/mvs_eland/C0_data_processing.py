@@ -3,7 +3,7 @@ import os
 import sys
 
 import pandas as pd
-
+import warnings
 
 from mvs_eland.utils.constants import (
     TIME_SERIES,
@@ -352,7 +352,7 @@ def energyConversion(dict_values, group):
             dict_values[group][asset],
         )
         # check if maximumCap exists and add it to dict_values
-        add_maximum_cap(dict_values=dict_values, group=group, asset=asset)
+        process_maximum_cap_constraint(dict_values=dict_values, group=group, asset=asset)
 
         # in case there is only one parameter provided (input bus and one output bus)
         if (
@@ -410,7 +410,7 @@ def energyProduction(dict_values, group):
                 # If Filename defines the generation timeseries, then we have an asset with a lack of dispatchability
                 dict_values[group][asset].update({DISPATCHABILITY: False})
         # check if maximumCap exists and add it to dict_values
-        add_maximum_cap(dict_values, group, asset)
+        process_maximum_cap_constraint(dict_values, group, asset)
 
     return
 
@@ -459,7 +459,7 @@ def energyStorage(dict_values, group):
                         dict_values[group][asset][subasset], dict_values, parameter
                     )
             # check if maximumCap exists and add it to dict_values
-            add_maximum_cap(dict_values, group, asset, subasset)
+            process_maximum_cap_constraint(dict_values, group, asset, subasset)
 
         # define input and output bus names
         dict_values[group][asset].update(
@@ -1690,7 +1690,7 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
         sys.exit()
 
 
-def add_maximum_cap(dict_values, group, asset, subasset=None):
+def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     """
     Checks if maximumCap is in `dict_values` and if not, adds value None.
 
@@ -1727,38 +1727,40 @@ def add_maximum_cap(dict_values, group, asset, subasset=None):
         asset_dict = dict_values[group][asset]
     else:
         asset_dict = dict_values[group][asset][subasset]
-    if MAXIMUM_CAP in asset_dict:
-        # Check if a maximumCap is defined
+
+    # Check if a maximumCap is defined
+    if MAXIMUM_CAP not in asset_dict:
+        asset_dict.update({MAXIMUM_CAP: {VALUE: None}})
+    else:
         if asset_dict[MAXIMUM_CAP][VALUE] is not None:
             # adapt maximumCap of non-dispatchable sources
-            if (
-                group == ENERGY_PRODUCTION
-                and asset_dict[FILENAME] != None
-                and asset_dict[TIMESERIES_PEAK][VALUE] != None
-            ):
+            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] != None:
                 asset_dict[MAXIMUM_CAP][VALUE] = (
-                    asset_dict[MAXIMUM_CAP][VALUE] / asset_dict[TIMESERIES_PEAK][VALUE]
+                    asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
                 )
                 logging.debug(
-                    f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was divided by the peak value of {TIMESERIES_NORMALIZED} as it did not equal 1. This was done as the aimed constraint is to limit the power, not the flow."
+                    f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES}. This was done as the aimed constraint is to limit the power, not the flow."
                 )
             # check if maximumCap is greater that installedCap
             if asset_dict[MAXIMUM_CAP][VALUE] < asset_dict[INSTALLED_CAP][VALUE]:
-
-                logging.warning(
+                message = (
                     f"The stated maximumCap in {group} {asset} is smaller than the "
                     "installedCap. Please enter a greater maximumCap."
                     "For this simulation, the maximumCap will be "
                     "disregarded and not be used in the simulation"
                 )
+                warnings.warn(UserWarning(message))
+                logging.warning(message)
                 asset_dict[MAXIMUM_CAP][VALUE] = None
-            # check if maximumCao is 0
+            # check if maximumCap is 0
             elif asset_dict[MAXIMUM_CAP][VALUE] == 0:
-                logging.warning(
+                message = (
                     f"The stated maximumCap of zero in {group} {asset} is invalid."
                     "For this simulation, the maximumCap will be "
                     "disregarded and not be used in the simulation."
                 )
+                warnings.warn(UserWarning(message))
+                logging.warning(message)
                 asset_dict[MAXIMUM_CAP][VALUE] = None
-    else:
-        asset_dict.update({MAXIMUM_CAP: {VALUE: None, UNIT: asset_dict[UNIT]}})
+
+    asset_dict[MAXIMUM_CAP].update({UNIT: asset_dict[UNIT]})
