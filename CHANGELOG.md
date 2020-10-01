@@ -46,6 +46,7 @@ Here is a template for new release sections
 - Fix reading timeseries for parameters in `C0` (#542)
 - Constraint for `optimizedAddCap` of non-dispatchable sources: multiply `maximumCap` by `max(timeseries(kWh/kWp))` to fix issue #446 (#562, #498)
 -`timeseries_normalized` are calculated for all `timeseries` of non-dispatchable sources now (before only if `optimizeCap==True`) (#562, #498)
+- Input files of benchmark test `Test_Constraints.test_benchmark_minimal_renewable_share_constraint()` (#498)
 
 ## [0.4.1] - 2020-09-21
 
