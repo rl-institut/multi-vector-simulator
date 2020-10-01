@@ -134,31 +134,54 @@ def test_all_cost_info_parameters_added_to_dict_asset():
         ANNUITY_TOTAL,
         ANNUITY_OM,
     ):
-        assert k in dict_asset
+        assert (
+            k in dict_asset
+        ), f"Attribute {k} is not in the asset dictionary, eventhough it should have been added."
 
 
 def test_calculate_costs_replacement():
+    """Tests whether replacement costs both for existing and future capacities were calculated correctly"""
+    installed_capacity = 1
+    specific_replacement_costs_of_installed_cap = 5
+    optimized_add_capacity = 10
+    specific_replacement_costs_of_optimized_cap = 10
+
     cost_replacement = E2.calculate_costs_replacement(
-        specific_replacement_of_initial_capacity=5,
-        specific_replacement_of_optimized_capacity=10,
-        initial_capacity=1,
-        optimized_capacity=10,
+        specific_replacement_of_initial_capacity=specific_replacement_costs_of_installed_cap,
+        specific_replacement_of_optimized_capacity=specific_replacement_costs_of_optimized_cap,
+        initial_capacity=installed_capacity,
+        optimized_capacity=optimized_add_capacity,
     )
-    assert cost_replacement == 5 * 1 + 10 * 10
+    assert (
+        cost_replacement
+        == specific_replacement_costs_of_installed_cap * installed_capacity
+        + specific_replacement_costs_of_optimized_cap * optimized_add_capacity
+    ), f"With {cost_replacement}, the total replacement costs are not equal to the sum of the replacement costs of each pre-installed ({specific_replacement_costs_of_installed_cap * installed_capacity}) and additional capacity ({specific_replacement_costs_of_optimized_cap * optimized_add_capacity})."
 
 
 def test_calculate_operation_and_management_expenditures():
+    installed_capacity = 10
+    optimized_add_capacity = 10
+    specific_om_cost = 5
     operation_and_management_expenditures = E2.calculate_operation_and_management_expenditures(
-        specific_om_cost=5, installed_capacity=10, optimized_add_capacity=10
+        specific_om_cost=specific_om_cost,
+        installed_capacity=installed_capacity,
+        optimized_add_capacity=optimized_add_capacity,
     )
-    assert operation_and_management_expenditures == 100
+    assert operation_and_management_expenditures == specific_om_cost * (
+        installed_capacity + optimized_add_capacity
+    ), f"With {operation_and_management_expenditures}, the OM costs are not equal to the sum of the capacities ({installed_capacity+optimized_add_capacity}) times the specific costs ({specific_om_cost})."
 
 
 def test_calculate_total_asset_costs_over_lifetime():
+    investment_costs = 300
+    om_costs = 200
     total = E2.calculate_total_asset_costs_over_lifetime(
-        costs_investment=300, cost_operational_expenditures=200
+        costs_investment=investment_costs, cost_operational_expenditures=om_costs
     )
-    assert total == 500
+    assert (
+        total == investment_costs + om_costs
+    ), f"The total costs are with {total} not equal to the sum of the investment ({investment_costs}) and OM ({om_costs}) costs."
 
 
 def test_calculate_costs_upfront_investment():
@@ -202,8 +225,44 @@ def test_calculate_annual_dispatch_expenditures_pd_Series():
 
 
 def test_calculate_annual_dispatch_expenditures_else():
+    """Test if error is raised if the dispatch price is provided as a str."""
     with pytest.raises(TypeError):
-        E2.calculate_dispatch_expenditures([1, 2], flow, asset)
+        E2.calculate_dispatch_expenditures("str", flow, asset)
+
+
+def test_calculate_annual_dispatch_expenditures_list_scalars():
+    dispatch_expenditure = E2.calculate_dispatch_expenditures(
+        dispatch_price=[1, 1], flow=flow, asset=asset
+    )
+    assert (
+        dispatch_expenditure == 6
+    ), f"The total dispatch expenditures ({dispatch_expenditure}) are not equal to the expected value if the dispatch price is provided as a list. "
+
+
+def test_calculate_annual_dispatch_expenditures_list_pd_series():
+    dispatch_expenditure = E2.calculate_dispatch_expenditures(
+        dispatch_price=[1, pd.Series([1, 2, 3])], flow=flow, asset=asset
+    )
+    assert (
+        dispatch_expenditure == 9
+    ), f"The total dispatch expenditures ({dispatch_expenditure}) are not equal to the expected value if the dispatch price is provided as a list with a nested pd.Series. "
+
+
+def test_calculate_annual_dispatch_expenditures_nested_list():
+    dispatch_expenditure = E2.calculate_dispatch_expenditures(
+        dispatch_price=[1, [1, 2]], flow=flow, asset=asset
+    )
+    assert (
+        dispatch_expenditure == 3 + 3 + 6
+    ), f"The total dispatch expenditures ({dispatch_expenditure}) are not equal to the expected value if the dispatch price is provided as a list with a nested list. "
+
+
+def test_calculate_annual_dispatch_expenditures_str_error():
+    """Tests if a error is raised when a list with a nested list and a str value is provided as a dispatch price."""
+    with pytest.raises(TypeError):
+        dispatch_expenditure = E2.calculate_dispatch_expenditures(
+            dispatch_price=[1, ["hi", 2]], flow=flow, asset=asset
+        )
 
 
 def test_all_list_in_dict_passes_as_all_keys_included():

@@ -190,6 +190,8 @@ For more information, you might also reference following issues:
 
 - Parameters can now be a time series (eg. efficiency of a converter, electricity prices) (`Issue #37 <https://github.com/rl-institut/mvs_eland/issue/37>`_, `Issue #82 <https://github.com/rl-institut/mvs_eland/issue/82>`_)
 
+The feature is tested with benchmark test `test_benchmark_feature_parameters_as_timeseries()`.
+
 Using multiple in- or output busses
 ###################################
 

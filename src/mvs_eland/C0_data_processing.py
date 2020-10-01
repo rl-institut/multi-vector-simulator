@@ -10,6 +10,7 @@ from mvs_eland.utils.constants import (
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     TYPE_BOOL,
+    FILENAME,
     HEADER,
     DEFAULT_WEIGHTS_ENERGY_CARRIERS,
 )
@@ -354,7 +355,10 @@ def energyConversion(dict_values, group):
         add_maximum_cap(dict_values=dict_values, group=group, asset=asset)
 
         # in case there is only one parameter provided (input bus and one output bus)
-        if isinstance(dict_values[group][asset][EFFICIENCY][VALUE], dict):
+        if (
+            FILENAME in dict_values[group][asset][EFFICIENCY]
+            and HEADER in dict_values[group][asset][EFFICIENCY]
+        ):
             receive_timeseries_from_csv(
                 dict_values,
                 dict_values[SIMULATION_SETTINGS],
@@ -1517,8 +1521,8 @@ def receive_timeseries_from_csv(
         file_name = dict_asset[FILENAME]
         unit = dict_asset[UNIT] + "/" + UNIT_HOUR
     else:
-        file_name = dict_asset[input_type][VALUE][FILENAME]
-        header = dict_asset[input_type][VALUE][HEADER]
+        file_name = dict_asset[input_type][FILENAME]
+        header = dict_asset[input_type][HEADER]
         unit = dict_asset[input_type][UNIT]
 
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
@@ -1539,7 +1543,6 @@ def receive_timeseries_from_csv(
                 }
             )
         else:
-            dict_asset[input_type]["value_info"] = dict_asset[input_type][VALUE]
             dict_asset[input_type][VALUE] = pd.Series(
                 data_set[header].values, index=settings[TIME_INDEX]
             )
@@ -1556,7 +1559,6 @@ def receive_timeseries_from_csv(
                 }
             )
         else:
-            dict_asset[input_type]["value_info"] = dict_asset[input_type][VALUE]
             dict_asset[input_type][VALUE] = pd.Series(
                 data_set[header][0 : len(settings[TIME_INDEX])].values,
                 index=settings[TIME_INDEX],
