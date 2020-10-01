@@ -236,7 +236,12 @@ However, this relation creates a non-linear problem and can not be implemented i
 
 Simplified asset model
 ######################
-:Limitation: The MVS simplifies the modelling of some assets.
+:Limitation: 
+
+The MVS simplifies the component model of some assets.
+
+* Generators have an efficiency that is not load-dependent
+* Storage have a charging efficiency that is not SOC-dependent
 :Reason: The MVS is based oemof-solph python library and uses its generic components to set up an energy system.
 :Implications: Simplifying the implementation of some component specifications can be beneficial for the ease of the model, however, it contributes to the lack of realism and might result in impractical values. For instance, generators and transformers are modelled without their efficiency curve, turbines without ramp rates, and thermal storage is currently implemented like battery storage.
 
