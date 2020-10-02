@@ -2,7 +2,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest)](https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.com/rl-institut/mvs_eland.svg?branch=dev)](https://travis-ci.com/rl-institut/mvs_eland)
-[![Coverage Status](https://coveralls.io/repos/github/rl-institut/mvs_eland/badge.svg)](https://coveralls.io/github/rl-institut/mvs_eland)
+[![Coverage Status](https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg)](https://coveralls.io/github/rl-institut/multi-vector-simulator)
 
 Rights: [Reiner Lemoine Institut (Berlin)](https://reiner-lemoine-institut.de/)
 
