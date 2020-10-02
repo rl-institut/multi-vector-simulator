@@ -72,7 +72,11 @@ from multi_vector_simulator.utils.constants_json_strings import (
     STORAGE_CAPACITY,
     FILENAME,
 )
-from multi_vector_simulator.utils.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
+from multi_vector_simulator.utils.constants_json_strings import (
+    UNIT,
+    VALUE,
+    ENERGY_STORAGE,
+)
 
 
 class MissingParameterError(ValueError):

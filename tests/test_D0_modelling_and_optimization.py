@@ -118,7 +118,9 @@ def test_error_raise_WrongOemofAssetForGroupError_if_oemof_asset_type_not_accept
         )
 
 
-from multi_vector_simulator.utils.constants_json_strings import ACCEPTED_ASSETS_FOR_ASSET_GROUPS
+from multi_vector_simulator.utils.constants_json_strings import (
+    ACCEPTED_ASSETS_FOR_ASSET_GROUPS,
+)
 
 
 def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0(

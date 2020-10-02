@@ -10,7 +10,10 @@ import logging
 import os
 
 from multi_vector_simulator.server import run_simulation
-from multi_vector_simulator.B0_data_input_json import load_json, convert_from_json_to_special_types
+from multi_vector_simulator.B0_data_input_json import (
+    load_json,
+    convert_from_json_to_special_types,
+)
 from _constants import TEST_REPO_PATH
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs_simulation")

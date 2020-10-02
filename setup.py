@@ -13,7 +13,10 @@ here = path.abspath(path.dirname(__file__))
 
 # Get the version number without triggering __init__
 main_namespace = {}
-exec(open(path.join(here, "src", "multi_vector_simulator", "version.py")).read(), main_namespace)
+exec(
+    open(path.join(here, "src", "multi_vector_simulator", "version.py")).read(),
+    main_namespace,
+)
 
 # Get the long description from the README file
 with open(path.join(here, "README.md"), encoding="utf-8") as f:

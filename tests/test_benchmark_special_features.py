@@ -15,7 +15,11 @@ from _constants import (
     TEST_REPO_PATH,
     CSV_EXT,
 )
-from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS, TIME_SERIES, CSV_EXT
+from multi_vector_simulator.utils.constants import (
+    JSON_WITH_RESULTS,
+    TIME_SERIES,
+    CSV_EXT,
+)
 
 from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PROVIDERS,
