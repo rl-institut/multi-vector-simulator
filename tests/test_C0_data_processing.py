@@ -1,9 +1,9 @@
 import pandas as pd
 import pytest
 
-import mvs_eland.C0_data_processing as C0
+import multi_vector_simulator.C0_data_processing as C0
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     ENERGY_PROVIDERS,
     ENERGY_STORAGE,

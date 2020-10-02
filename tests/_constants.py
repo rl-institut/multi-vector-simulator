@@ -1,4 +1,4 @@
-from mvs_eland.utils.constants import *
+from multi_vector_simulator.utils.constants import *
 
 TESTS_ON_MASTER = "master"
 TESTS_ON_DEV = "dev"

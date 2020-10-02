@@ -5,8 +5,8 @@ import mock
 
 import multi_vector_simulator.A0_initialization as A0
 import multi_vector_simulator.A1_csv_to_json as A1
-import mvs_eland.B0_data_input_json as B0
-from mvs_eland.utils.constants_json_strings import SIMULATION_SETTINGS
+import multi_vector_simulator.B0_data_input_json as B0
+from multi_vector_simulator.utils.constants_json_strings import SIMULATION_SETTINGS
 from _constants import (
     JSON_PATH,
     CSV_PATH,
