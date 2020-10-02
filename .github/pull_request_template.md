@@ -19,4 +19,4 @@ The following steps were realized, as well (if applies):
 
 :x: Check not applicable to this PR
 
-<sub>*For more information on how to contribute check the [CONTRIBUTING.md](https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md).*<sub>
+<sub>*For more information on how to contribute check the [CONTRIBUTING.md](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CONTRIBUTING.md).*<sub>

@@ -113,7 +113,7 @@ The previous steps could be performed even before you solved the issue, to let o
 
 Once you are satisfied with your PR you should ask someone to review it. Before that please lint
  your code with [Black](https://github.com/psf/black) (run `black . --exclude docs/`) and
-  described succinctly what you have done in the [CHANGELOG](https://github.com/rl-institut/mvs_eland/blob/dev/CHANGELOG.md) file (indicating the number of the PR in parenthesis after
+  described succinctly what you have done in the [CHANGELOG](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md) file (indicating the number of the PR in parenthesis after
   the description, not the number of the issue).
 
 ## Release protocol
@@ -124,7 +124,7 @@ Once you are ready to publish a release, branch off from `dev`
     ```
 For meaning of X, Y and Z version numbers, please refer to this [semantic versioning guidelines](https://semver.org/spec/v2.0.0.html).
 
-In this branch, you should normally only update the version number in the `src/mvs_eland/version.py` and in the `CHANGELOG.md` files, respecting the indicated formats. Commit the first one with "Bump version number" as commit message.
+In this branch, you should normally only update the version number in the `src/multi-vector-simulator/version.py` and in the `CHANGELOG.md` files, respecting the indicated formats. Commit the first one with "Bump version number" as commit message.
 
 Your `CHANGELOG.md` file could look like this before the release
 ```

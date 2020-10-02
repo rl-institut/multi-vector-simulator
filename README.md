@@ -17,14 +17,14 @@ The multi-vector simulator (MVS) allows the evaluation of local sector-coupled e
 The tool is being developed within the scope of the H2020 project E-LAND (Integrated multi-vector management system for Energy isLANDs, project homepage [HERE](https://elandh2020.eu/)). A graphical user interface for the MVS will be integrated.
 
 *Latest release*
-Check the [latest release](https://github.com/rl-institut/mvs_eland/releases/latest). Please check the [CHANGELOG.md](https://github.com/rl-institut/mvs_eland/blob/master/CHANGELOG.md) for past updates and changes.
+Check the [latest release](https://github.com/rl-institut/multi-vector-simulator/releases/latest). Please check the [CHANGELOG.md](https://github.com/rl-institut/multi-vector-simulator/blob/master/CHANGELOG.md) for past updates and changes.
 
 *Disclaimer*
 As the MVS is still under development, changes might still occur in the code as well as code
  structure. If you want to try the MVS, please make sure to check this project regularly.
 
 For advanced programmers: You can also use the `dev` branch that includes the latest updates and
- changes. You find the changelog [HERE](https://github.com/rl-institut/mvs_eland/blob/dev/CHANGELOG.md).
+ changes. You find the changelog [HERE](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md).
 
 # Getting started
 
@@ -38,11 +38,11 @@ To set up the MVS, follow the steps below:
 
 * If python3 is not pre-installed: Install miniconda (for python 3.7: https://docs.conda.io/en/latest/miniconda.html)
 
-* Clone or download the latest [MVS release](https://github.com/rl-institut/mvs_eland/releases)
+* Clone or download the latest [MVS release](https://github.com/rl-institut/multi-vector-simulator/releases)
 
-    `git clone https://github.com/rl-institut/mvs_eland.git`
+    `git clone https://github.com/rl-institut/multi-vector-simulator.git`
 
-    and move to the `mvs_eland` folder
+    and move to the `multi-vector-simulator` folder
 
 * Download the [cbc-solver](https://projects.coin-or.org/Cbc) into your system from https://ampl.com/dl/open/cbc/ and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables  (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights). 
 
@@ -78,7 +78,7 @@ To set up the MVS, follow the steps below:
 
     ```
     
-* Install the mvs_eland package locally
+* Install the multi-vector-simulator package locally
 
     `python setup.py install`
 
@@ -169,4 +169,4 @@ possible options. The css and images used to make the report pretty should be lo
 
 ## Contributing
 
-If you want to contribute to this project, please read [CONTRIBUTING.md](https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md). For less experienced github users we propose a workflow [HERE](https://github.com/rl-institut/mvs_eland/wiki/Examplary-Workflow).
+If you want to contribute to this project, please read [CONTRIBUTING.md](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CONTRIBUTING.md). For less experienced github users we propose a workflow [HERE](https://github.com/rl-institut/multi-vector-simulator/wiki/Examplary-Workflow).
