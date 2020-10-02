@@ -2,8 +2,8 @@ import pandas as pd
 
 import pytest
 
-from mvs_eland.utils.constants import TYPE_STR, UNIT_HOUR
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants import TYPE_STR, UNIT_HOUR
+from multi_vector_simulator.utils.constants_json_strings import (
     DISPATCH_PRICE,
     VALUE,
     UNIT,
@@ -14,7 +14,7 @@ from mvs_eland.utils.constants_json_strings import (
     DISCOUNTFACTOR,
     TAX,
 )
-import mvs_eland.C2_economic_functions as C2
+import multi_vector_simulator.C2_economic_functions as C2
 
 project_life = 20
 discount_factor = 0.1

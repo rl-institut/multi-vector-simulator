@@ -1,6 +1,6 @@
 import logging
 import pandas as pd
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     CONSTRAINTS,
     MINIMAL_RENEWABLE_SHARE,
     VALUE,

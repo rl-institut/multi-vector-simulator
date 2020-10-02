@@ -3,8 +3,8 @@ import shutil
 
 import mock
 
-import mvs_eland.A0_initialization as A0
-import mvs_eland.A1_csv_to_json as A1
+import multi_vector_simulator.A0_initialization as A0
+import multi_vector_simulator.A1_csv_to_json as A1
 import mvs_eland.B0_data_input_json as B0
 from mvs_eland.utils.constants_json_strings import SIMULATION_SETTINGS
 from _constants import (

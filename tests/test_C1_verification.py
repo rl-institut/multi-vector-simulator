@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import json
 
-import mvs_eland.C1_verification as C1
+import multi_vector_simulator.C1_verification as C1
 from _constants import (
     JSON_PATH,
     ENERGY_PROVIDERS,
@@ -13,7 +13,7 @@ from _constants import (
     UNIT,
     VALUE,
 )
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
     RENEWABLE_ASSET_BOOL,
     ENERGY_PRODUCTION,

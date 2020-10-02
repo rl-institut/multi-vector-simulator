@@ -14,9 +14,9 @@ import pandas as pd
 import pytest
 
 from pytest import approx
-from mvs_eland.cli import main
-from mvs_eland.B0_data_input_json import load_json
-from mvs_eland.C0_data_processing import bus_suffix
+from multi_vector_simulator.cli import main
+from multi_vector_simulator.B0_data_input_json import load_json
+from multi_vector_simulator.C0_data_processing import bus_suffix
 
 from _constants import (
     EXECUTE_TESTS_ON,
@@ -27,9 +27,9 @@ from _constants import (
     OPTIMIZED_ADD_CAP,
 )
 
-from mvs_eland.utils.constants import JSON_WITH_RESULTS
+from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     EXCESS,
     AUTO_SINK,
     ENERGY_CONVERSION,

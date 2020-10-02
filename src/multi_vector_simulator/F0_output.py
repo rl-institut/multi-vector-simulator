@@ -4,23 +4,23 @@ import os
 
 import pandas as pd
 
-from mvs_eland.B0_data_input_json import convert_from_special_types_to_json
-from mvs_eland.E1_process_results import get_units_of_cost_matrix_entries
-import mvs_eland.F1_plotting as F1_plots
+from multi_vector_simulator.B0_data_input_json import convert_from_special_types_to_json
+from multi_vector_simulator.E1_process_results import get_units_of_cost_matrix_entries
+import multi_vector_simulator.F1_plotting as F1_plots
 
 try:
-    import mvs_eland.F2_autoreport as autoreport
+    import multi_vector_simulator.F2_autoreport as autoreport
 
     AUTOREPORT = True
 except ModuleNotFoundError:
     logging.warning("The reporting feature is disabled")
     AUTOREPORT = False
 
-from mvs_eland.utils.constants import (
+from multi_vector_simulator.utils.constants import (
     SIMULATION_SETTINGS,
     PATH_OUTPUT_FOLDER,
 )
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     KPI,
     OPTIMIZED_FLOWS,

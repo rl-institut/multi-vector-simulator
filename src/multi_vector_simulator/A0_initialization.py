@@ -49,7 +49,7 @@ import shutil
 
 from oemof.tools import logger
 
-from mvs_eland.utils.constants import (
+from multi_vector_simulator.utils.constants import (
     REPO_PATH,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
@@ -71,7 +71,7 @@ from mvs_eland.utils.constants import (
     SAVE_PNG,
     LOGFILE,
 )
-from mvs_eland.utils.constants_json_strings import LABEL
+from multi_vector_simulator.utils.constants_json_strings import LABEL
 
 
 def create_parser():

@@ -4,8 +4,8 @@ import shutil
 import mock
 import pytest
 
-import mvs_eland.A0_initialization as A0
-from mvs_eland.cli import main
+import multi_vector_simulator.A0_initialization as A0
+from multi_vector_simulator.cli import main
 from _constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,

@@ -16,9 +16,9 @@ Functionalities:
 import logging
 import pandas as pd
 
-from mvs_eland.utils.constants import UNIT_HOUR
+from multi_vector_simulator.utils.constants import UNIT_HOUR
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     ANNUITY_FACTOR,
     DISPATCH_PRICE,
     VALUE,

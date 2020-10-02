@@ -9,9 +9,9 @@ constraints should be tested in-code (examples) and by comparing the lp file gen
 import logging
 import pyomo.environ as po
 
-from mvs_eland.utils.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
+from multi_vector_simulator.utils.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_SOURCE,
     OEMOF_BUSSES,
     ENERGY_PRODUCTION,

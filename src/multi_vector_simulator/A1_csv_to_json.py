@@ -34,7 +34,7 @@ import os
 import warnings
 import pandas as pd
 
-from mvs_eland.utils.constants import (
+from multi_vector_simulator.utils.constants import (
     CSV_FNAME,
     CSV_SEPARATORS,
     REQUIRED_CSV_FILES,
@@ -53,7 +53,7 @@ from mvs_eland.utils.constants import (
     DEFAULT_VALUE,
     HEADER,
 )
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     LABEL,
     SPECIFIC_COSTS_OM,
     DEVELOPMENT_COSTS,
@@ -72,7 +72,7 @@ from mvs_eland.utils.constants_json_strings import (
     STORAGE_CAPACITY,
     FILENAME,
 )
-from mvs_eland.utils.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
+from multi_vector_simulator.utils.constants_json_strings import UNIT, VALUE, ENERGY_STORAGE
 
 
 class MissingParameterError(ValueError):
