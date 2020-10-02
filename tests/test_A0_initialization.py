@@ -249,7 +249,7 @@ def test_check_input_path_posix():
     assert folder == os.path.join(JSON_PATH)
 
 
-TEST_OUTPUT_PATH = os.path.join(".", "tests", "other")
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "other")
 
 
 class TestCommandLineInput:
@@ -337,7 +337,7 @@ class TestCommandLineInput:
                 "-log",
                 "warning",
                 "-i",
-                os.path.join("tests", "inputs"),
+                os.path.join(TEST_REPO_PATH, "inputs"),
                 "-o",
                 TEST_OUTPUT_PATH,
             ]
