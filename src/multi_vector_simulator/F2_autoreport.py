@@ -77,10 +77,7 @@ from multi_vector_simulator.F1_plotting import (
     plot_instant_power,
 )
 
-# TODO link this to the version and date number @Bachibouzouk
-from multi_vector_simulator.utils import get_version_info
-
-version_num, version_date = get_version_info()
+from multi_vector_simulator.version import version_num, version_date
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
