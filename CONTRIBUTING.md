@@ -58,7 +58,7 @@ When you test with `assert` you can add a string message which will be displayed
  fails (`assert <condition>, <string message>`). It could be very useful to understand what exactly
  went wrong in the test for a developer 6 months from now.
  If you are testing a function in a module, it would be nice to indicate in the docstring of this
-  function (under the section `Notes`) that this test exist, cf [example docstring](https://mvs-eland.readthedocs.io/en/latest/Developing.html#format-of-docstrings)!
+  function (under the section `Notes`) that this test exist, cf [example docstring](https://multi-vector-simulator.readthedocs.io/en/latest/Developing.html#format-of-docstrings)!
 
 
 #### Step 3.2: Run tests locally
