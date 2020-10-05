@@ -22,20 +22,49 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+- `E-Land_Requirements.rst`: Official E-Land requirement list as well as progress on functional and non-functional requirements (#590)
+
+### Changed
+- Order of readthedocs content (#590)
+
+### Removed
+
+### Fixed
+
+## [0.5.0] - 2020-10-05
+
+### Added
 - Instruction to install graphviz on windows in `docs/troubleshooting.rst` (#572)
-- `E-Land_Requirements.rst`: Official E-Land requirement list as well as progress on functional and non-functional requirements
+- Benchmark test `test_benchmark_feature_parameters_as_timeseries` to ensure that parameters can always also be defined as a timeseries. Applied to `efficiency` of an energyConversion asset and `electricity_price` of an energyProduction asset (#542)
+- Input files for benchmark tests `test_benchmark_feature_input_flows_as_list` (`Feature_input_flows_as_list`) and `test_benchmark_feature_output_flows_as_list` (`Feature_output_flows_as_list`), but not the benchmark assertions (#542)
+- Error message if time series of non-dispatchable sources do not meet requirement: values betw. 0 and 1. (#498)
+- Requirement for time series of non-dispatchable sources in readthedocs (#498)
+- Provide a warning in case of excessive excess generation (#498)
+- Pytests for `C0.add_maximum_cap()`, renamed function into `C0.process_maximum_cap_constraint()` (#498)
 
 ### Changed
 - Modify `setup.py` to upload the code as package on pypi.org (#570)
 - Improve message when the `tests/test_input_folder_parameters.py` fails (#578)
 - Modify PR template to precise to add assert message and link to example docstring 
 - Update CONTRIBUTING to add a "Write test for your code" section before the "Run tests locally" one (#579)
-- Order of readthedocs content 
+- Modified readthedocs page describing the parameters of MVS (#479)
+- Changed `E2.calculate_dispatch_expenditures()` so that it can process parameters defined as lists (#542)
+- Rename `E4` to `E4_verification.py` (#498)
+- Rename package name `mvs_eland` to `multi-vector-simulator` in `setup.py` (#587)
+- Rename `src/mvs_eland` to `src/multi_vector_simulator` (#587)
+- Rename repository from `mvs_eland` to `multi-vector-simulator` (#587)
+- Refactor modules calls (`mvs_eland.` is replaced by `multi_vector_simulator.`) (#587)
+- Update `README.md` and `CONTRIBUTING.md` replacing `mvs_eland` or `mvs-eland` by `multi-vector-simulator` (#587)
 
 ### Removed
--
+- Remove unused function `mvs_eland.utils.get_version_info` (#587)
+
 ### Fixed
 - Update the release protocol in `CONTRIBUTING.md` file (#576)
+- Fix reading timeseries for parameters in `C0` (#542)
+- Constraint for `optimizedAddCap` of non-dispatchable sources: multiply `maximumCap` by `max(timeseries(kWh/kWp))` to fix issue #446 (#562, #498)
+-`timeseries_normalized` are calculated for all `timeseries` of non-dispatchable sources now (before only if `optimizeCap==True`) (#562, #498)
+- Input files of benchmark test `Test_Constraints.test_benchmark_minimal_renewable_share_constraint()` (#498)
 
 ## [0.4.1] - 2020-09-21
 
@@ -121,7 +150,7 @@ Here is a template for new release sections
 - Create `dict_model` with constant variables in `D0` and update in `D1` (#538)
 - Separate the installation of the packages needed for the report generation from the mvs
  simulation (#501)
-- Move all source files in `srv/mvs_eland` (#501)
+- Move all source files in `src/mvs_eland` (#501)
 - Move the content of the previous `src/utils.py` module to  `src/mvs_eland/utils/__init__.py` (#501)
 - Rename `tests/constants.py` --> `tests/_constants.py` (#501)
 - Refactor modules calls (mostly `src.` is replaced by `mvs_eland.`) (#501)

@@ -4,17 +4,17 @@ import pytest
 import pandas as pd
 import numpy as np
 
-import mvs_eland.A1_csv_to_json as A1
-import mvs_eland.B0_data_input_json as data_input
+import multi_vector_simulator.A1_csv_to_json as A1
+import multi_vector_simulator.B0_data_input_json as data_input
 
-from mvs_eland.utils.constants import (
+from multi_vector_simulator.utils.constants import (
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
     DEFAULT_VALUE,
     HEADER,
 )
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     VALUE,
     DISPATCH_PRICE,
