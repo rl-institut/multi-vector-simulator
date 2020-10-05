@@ -38,9 +38,14 @@ Here is a template for new release sections
 - Modified readthedocs page describing the parameters of MVS (#479)
 - Changed `E2.calculate_dispatch_expenditures()` so that it can process parameters defined as lists (#542)
 - Rename `E4` to `E4_verification.py` (#498)
+- Rename package name `mvs_eland` to `multi-vector-simulator` in `setup.py` (#587)
+- Rename `src/mvs_eland` to `src/multi_vector_simulator` (#587)
+- Rename repository from `mvs_eland` to `multi-vector-simulator` (#587)
+- Refactor modules calls (`mvs_eland.` is replaced by `multi_vector_simulator.`) (#587)
+- Update `README.md` and `CONTRIBUTING.md` replacing `mvs_eland` or `mvs-eland` by `multi-vector-simulator` (#587)
 
 ### Removed
--
+- Remove unused function `mvs_eland.utils.get_version_info` (#587)
 
 ### Fixed
 - Update the release protocol in `CONTRIBUTING.md` file (#576)
@@ -133,7 +138,7 @@ Here is a template for new release sections
 - Create `dict_model` with constant variables in `D0` and update in `D1` (#538)
 - Separate the installation of the packages needed for the report generation from the mvs
  simulation (#501)
-- Move all source files in `srv/mvs_eland` (#501)
+- Move all source files in `src/mvs_eland` (#501)
 - Move the content of the previous `src/utils.py` module to  `src/mvs_eland/utils/__init__.py` (#501)
 - Rename `tests/constants.py` --> `tests/_constants.py` (#501)
 - Refactor modules calls (mostly `src.` is replaced by `mvs_eland.`) (#501)

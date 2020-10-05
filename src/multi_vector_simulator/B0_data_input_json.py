@@ -5,9 +5,9 @@ import os
 import numpy as np
 import pandas as pd
 
-from mvs_eland.utils.constants_json_strings import VALUE
+from multi_vector_simulator.utils.constants_json_strings import VALUE
 
-from mvs_eland.utils.constants import (
+from multi_vector_simulator.utils.constants import (
     CSV_FNAME,
     INPUTS_COPY,
     PATHS_TO_PLOTS,

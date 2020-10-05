@@ -6,8 +6,8 @@ import mock
 import pandas as pd
 import pytest
 
-from mvs_eland.cli import main
-from mvs_eland.B0_data_input_json import load_json
+from multi_vector_simulator.cli import main
+from multi_vector_simulator.B0_data_input_json import load_json
 
 from _constants import (
     EXECUTE_TESTS_ON,
@@ -15,9 +15,13 @@ from _constants import (
     TEST_REPO_PATH,
     CSV_EXT,
 )
-from mvs_eland.utils.constants import JSON_WITH_RESULTS, TIME_SERIES, CSV_EXT
+from multi_vector_simulator.utils.constants import (
+    JSON_WITH_RESULTS,
+    TIME_SERIES,
+    CSV_EXT,
+)
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PROVIDERS,
     ENERGY_PRODUCTION,
     ENERGY_CONVERSION,

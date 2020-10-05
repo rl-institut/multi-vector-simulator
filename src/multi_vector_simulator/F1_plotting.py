@@ -19,14 +19,14 @@ except ModuleNotFoundError:
 import graphviz
 import oemof
 
-from mvs_eland.utils.constants import (
+from multi_vector_simulator.utils.constants import (
     PROJECT_DATA,
     ECONOMIC_DATA,
     LABEL,
     OUTPUT_FOLDER,
 )
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_NAME,
     SCENARIO_NAME,
     CURR,
@@ -47,7 +47,7 @@ from mvs_eland.utils.constants_json_strings import (
     RESOURCES,
 )
 
-from mvs_eland.E1_process_results import (
+from multi_vector_simulator.E1_process_results import (
     convert_demand_to_dataframe,
     convert_costs_to_dataframe,
 )

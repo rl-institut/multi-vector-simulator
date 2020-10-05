@@ -33,7 +33,7 @@ logging.getLogger("pyppeteer").setLevel(pyppeteer_level)
 flask_log = logging.getLogger("werkzeug")
 flask_log.setLevel(logging.ERROR)
 
-from mvs_eland.utils.constants import (
+from multi_vector_simulator.utils.constants import (
     REPO_PATH,
     REPORT_PATH,
     PATH_OUTPUT_FOLDER,
@@ -47,7 +47,7 @@ from mvs_eland.utils.constants import (
     JSON_WITH_RESULTS,
     LOGFILE,
 )
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     SECTORS,
     VALUE,
     SIMULATION_SETTINGS,
@@ -62,14 +62,14 @@ from mvs_eland.utils.constants_json_strings import (
     RESOURCES,
 )
 
-from mvs_eland.E1_process_results import (
+from multi_vector_simulator.E1_process_results import (
     convert_demand_to_dataframe,
     convert_components_to_dataframe,
     convert_scalar_matrix_to_dataframe,
     convert_cost_matrix_to_dataframe,
     convert_scalars_to_dataframe,
 )
-from mvs_eland.F1_plotting import (
+from multi_vector_simulator.F1_plotting import (
     parse_simulation_log,
     plot_timeseries,
     plot_piecharts_of_costs,
@@ -77,10 +77,7 @@ from mvs_eland.F1_plotting import (
     plot_instant_power,
 )
 
-# TODO link this to the version and date number @Bachibouzouk
-from mvs_eland.utils import get_version_info
-
-version_num, version_date = get_version_info()
+from multi_vector_simulator.version import version_num, version_date
 
 OUTPUT_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
@@ -955,8 +952,8 @@ def create_app(results_json):
 
 
 if __name__ == "__main__":
-    from mvs_eland.utils.constants import REPO_PATH, OUTPUT_FOLDER
-    from mvs_eland.B0_data_input_json import load_json
+    from multi_vector_simulator.utils.constants import REPO_PATH, OUTPUT_FOLDER
+    from multi_vector_simulator.B0_data_input_json import load_json
 
     dict_values = load_json(os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS))
 

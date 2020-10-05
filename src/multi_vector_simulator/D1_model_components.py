@@ -14,7 +14,7 @@ import logging
 
 import oemof.solph as solph
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
     LABEL,
     DISPATCH_PRICE,

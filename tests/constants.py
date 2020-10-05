@@ -1,7 +1,7 @@
 import os
 
 # import constants from src
-from mvs_eland.utils.constants import (
+from multi_vector_simulator.utils.constants import (
     INPUT_FOLDER,
     JSON_FNAME,
     CSV_ELEMENTS,

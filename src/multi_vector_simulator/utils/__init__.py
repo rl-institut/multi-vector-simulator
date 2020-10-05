@@ -15,21 +15,6 @@ from .constants import (
 )
 
 
-def get_version_info():
-    """Return the version number and date
-
-    Returns
-    -------
-    version number and date as tuple
-    """
-    main_namespace = {}
-    exec(
-        open(os.path.join(REPO_PATH, "src", "mvs_eland", "version.py")).read(),
-        main_namespace,
-    )
-    return main_namespace["version_num"], main_namespace["version_date"]
-
-
 def find_json_input_folders(
     path, specific_file_name=JSON_FNAME, ignore_folders=(OUTPUT_FOLDER,)
 ):

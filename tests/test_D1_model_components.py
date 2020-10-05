@@ -7,11 +7,11 @@ import pytest
 from pandas.util.testing import assert_series_equal
 
 # internal imports
-import mvs_eland.D1_model_components as D1
+import multi_vector_simulator.D1_model_components as D1
 
-from mvs_eland.utils.constants import JSON_FNAME
+from multi_vector_simulator.utils.constants import JSON_FNAME
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     VALUE,
     LABEL,

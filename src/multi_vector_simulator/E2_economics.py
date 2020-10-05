@@ -2,7 +2,7 @@ import logging
 import pandas as pd
 import warnings
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     CURR,
     UNIT_YEAR,

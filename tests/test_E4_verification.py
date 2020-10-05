@@ -1,6 +1,6 @@
-import mvs_eland.E4_verification as E4
+import multi_vector_simulator.E4_verification as E4
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     CONSTRAINTS,
     MINIMAL_RENEWABLE_SHARE,
     VALUE,

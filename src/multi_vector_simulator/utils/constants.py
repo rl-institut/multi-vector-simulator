@@ -1,6 +1,6 @@
 import os
 
-from mvs_eland.utils.constants_json_strings import *
+from multi_vector_simulator.utils.constants_json_strings import *
 
 # path to the root of this repository (assumes this file is in src/mvs_eland/utils folder)
 REPO_PATH = os.path.dirname(

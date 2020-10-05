@@ -3,13 +3,13 @@ import logging
 import oemof.solph as solph
 import pandas as pd
 
-import mvs_eland.E1_process_results as E1
-import mvs_eland.E2_economics as E2
-import mvs_eland.E3_indicator_calculation as E3
+import multi_vector_simulator.E1_process_results as E1
+import multi_vector_simulator.E2_economics as E2
+import multi_vector_simulator.E3_indicator_calculation as E3
 
-import mvs_eland.E4_verification as E4
+import multi_vector_simulator.E4_verification as E4
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
@@ -33,7 +33,7 @@ from mvs_eland.utils.constants_json_strings import (
     LABEL,
 )
 
-from mvs_eland.utils.constants_output import (
+from multi_vector_simulator.utils.constants_output import (
     KPI_COST_MATRIX_ENTRIES,
     KPI_SCALAR_MATRIX_ENTRIES,
 )

@@ -13,7 +13,10 @@ here = path.abspath(path.dirname(__file__))
 
 # Get the version number without triggering __init__
 main_namespace = {}
-exec(open(path.join(here, "src", "mvs_eland", "version.py")).read(), main_namespace)
+exec(
+    open(path.join(here, "src", "multi_vector_simulator", "version.py")).read(),
+    main_namespace,
+)
 
 # Get the long description from the README file
 with open(path.join(here, "README.md"), encoding="utf-8") as f:
@@ -52,7 +55,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name="mvs_eland",  # Required
+    name="multi-vector-simulator",  # Required
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
     #
@@ -88,7 +91,7 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url="https://github.com/rl-institut/mvs_eland",  # Optional
+    url="https://github.com/rl-institut/multi-vector-simulator",  # Optional
     # This should be your name or the name of the organization which owns the
     # project.
     author="Reiner Lemoine Institut",  # Optional
@@ -136,7 +139,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=["mvs_eland"],  # Required
+    packages=["multi_vector_simulator", "multi_vector_simulator.utils"],  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you
@@ -195,7 +198,7 @@ setup(
     # maintainers, and where to support the project financially. The key is
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
-        "Bug Reports": "https://github.com/rl-institut/mvs_eland/issues",
-        "Source": "https://github.com/rl-institut/mvs_eland",
+        "Bug Reports": "https://github.com/rl-institut/multi-vector-simulator/issues",
+        "Source": "https://github.com/rl-institut/multi-vector-simulator",
     },
 )

@@ -14,14 +14,14 @@ import os
 
 import pandas as pd
 
-from mvs_eland.utils.constants import (
+from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     DISPLAY_OUTPUT,
     OVERWRITE,
 )
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DURATION,
     DISCOUNTFACTOR,
     TAX,

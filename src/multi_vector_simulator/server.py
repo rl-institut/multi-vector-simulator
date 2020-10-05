@@ -3,7 +3,7 @@ This is the main file of the tool "Multi-vector simulation tool".
 
 Tool structure:
 
-(parent)    mvs_eland.py
+(parent)    multi_vector_simulator.py
 
 (child)    constants.py
 
@@ -36,12 +36,12 @@ child-sub:  Sub-child function, feeds only back to child functions
 import logging
 
 # Loading all child functions
-import mvs_eland.B0_data_input_json as data_input
-import mvs_eland.C0_data_processing as data_processing
-import mvs_eland.D0_modelling_and_optimization as modelling
-import mvs_eland.E0_evaluation as evaluation
-import mvs_eland.F0_output as output_processing
-from mvs_eland.version import version_num, version_date
+import multi_vector_simulator.B0_data_input_json as data_input
+import multi_vector_simulator.C0_data_processing as data_processing
+import multi_vector_simulator.D0_modelling_and_optimization as modelling
+import multi_vector_simulator.E0_evaluation as evaluation
+import multi_vector_simulator.F0_output as output_processing
+from multi_vector_simulator.version import version_num, version_date
 
 
 def run_simulation(json_dict, **kwargs):

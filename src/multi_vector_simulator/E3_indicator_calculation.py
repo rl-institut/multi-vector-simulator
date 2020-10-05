@@ -12,9 +12,9 @@ In module E3 the technical KPI are evaluated:
 """
 import logging
 
-from mvs_eland.utils.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
-from mvs_eland.utils.constants import PROJECT_DATA
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
+from multi_vector_simulator.utils.constants import PROJECT_DATA
+from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
     LABEL,
     ECONOMIC_DATA,
