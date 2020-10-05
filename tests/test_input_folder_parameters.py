@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from mvs_eland.utils.constants import REPO_PATH, EXTRA_CSV_PARAMETERS
+from multi_vector_simulator.utils.constants import REPO_PATH, EXTRA_CSV_PARAMETERS
 from _constants import (
     TEMPLATE_INPUT_FOLDER,
     JSON_EXT,
@@ -11,7 +11,7 @@ from _constants import (
     EXTRA_PARAMETERS_KEY,
     CSV_ELEMENTS,
 )
-from mvs_eland.utils import (
+from multi_vector_simulator.utils import (
     find_csv_input_folders,
     find_json_input_folders,
     compare_input_parameters_with_reference,

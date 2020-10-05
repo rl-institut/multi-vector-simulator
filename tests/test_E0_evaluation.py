@@ -6,12 +6,12 @@ import shutil
 import mock
 import pandas as pd
 
-import mvs_eland.A0_initialization as A0
-import mvs_eland.B0_data_input_json as B0
-import mvs_eland.C0_data_processing as C0
-import mvs_eland.D0_modelling_and_optimization as D0
-import mvs_eland.E0_evaluation as E0
-from mvs_eland.utils.constants_json_strings import (
+import multi_vector_simulator.A0_initialization as A0
+import multi_vector_simulator.B0_data_input_json as B0
+import multi_vector_simulator.C0_data_processing as C0
+import multi_vector_simulator.D0_modelling_and_optimization as D0
+import multi_vector_simulator.E0_evaluation as E0
+from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
     KPI,
     KPI_SCALARS,

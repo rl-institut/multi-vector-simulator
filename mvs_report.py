@@ -1,15 +1,15 @@
 import os
 import argparse
 
-from mvs_eland.utils.constants import (
+from multi_vector_simulator.utils.constants import (
     REPO_PATH,
     REPORT_PATH,
     OUTPUT_FOLDER,
     PDF_REPORT,
     JSON_WITH_RESULTS,
 )
-from mvs_eland.B0_data_input_json import load_json
-from mvs_eland.F2_autoreport import create_app, open_in_browser, print_pdf
+from multi_vector_simulator.B0_data_input_json import load_json
+from multi_vector_simulator.F2_autoreport import create_app, open_in_browser, print_pdf
 
 ARG_PDF = "print_report"
 ARG_REPORT_PATH = "report_path"

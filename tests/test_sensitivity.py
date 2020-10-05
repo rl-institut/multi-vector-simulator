@@ -9,8 +9,11 @@ import json
 import logging
 import os
 
-from mvs_eland.server import run_simulation
-from mvs_eland.B0_data_input_json import load_json, convert_from_json_to_special_types
+from multi_vector_simulator.server import run_simulation
+from multi_vector_simulator.B0_data_input_json import (
+    load_json,
+    convert_from_json_to_special_types,
+)
 from _constants import TEST_REPO_PATH
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs_simulation")
@@ -135,7 +138,7 @@ def single_param_variation_analysis(
     ----------
     param_values: list of values (type can vary)
     json_input: path or dict
-        input parameters for the mvs_eland simulation
+        input parameters for the multi-vector simulation
     json_path_to_param_value: tuple or str
         succession of keys which lead the value of the parameter to vary in the json_input dict
         potentially nested structure. The order of keys is to be read from left to right. In the

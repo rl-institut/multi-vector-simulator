@@ -1,12 +1,12 @@
 import pandas as pd
 import pytest
 
-import mvs_eland.E3_indicator_calculation as E3
-from mvs_eland.utils.constants import (
+import multi_vector_simulator.E3_indicator_calculation as E3
+from multi_vector_simulator.utils.constants import (
     DEFAULT_WEIGHTS_ENERGY_CARRIERS,
     PROJECT_DATA,
 )
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     ECONOMIC_DATA,
     ENERGY_PRODUCTION,
     ENERGY_PROVIDERS,

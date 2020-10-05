@@ -1,6 +1,6 @@
-import mvs_eland.D2_model_constraints as D2
+import multi_vector_simulator.D2_model_constraints as D2
 
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_SOURCE,
     OEMOF_BUSSES,
     ENERGY_PRODUCTION,

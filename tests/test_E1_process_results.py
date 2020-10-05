@@ -1,7 +1,7 @@
 # from _constants import JSON_PATH
-import mvs_eland.E1_process_results as E1
+import multi_vector_simulator.E1_process_results as E1
 
-from mvs_eland.utils.constants_json_strings import *
+from multi_vector_simulator.utils.constants_json_strings import *
 
 # Note: test functions might be summed up in classes..
 
