@@ -22,6 +22,16 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [0.5.0] - 2020-10-05
+
+### Added
 - Instruction to install graphviz on windows in `docs/troubleshooting.rst` (#572)
 - Benchmark test `test_benchmark_feature_parameters_as_timeseries` to ensure that parameters can always also be defined as a timeseries. Applied to `efficiency` of an energyConversion asset and `electricity_price` of an energyProduction asset (#542)
 - Input files for benchmark tests `test_benchmark_feature_input_flows_as_list` (`Feature_input_flows_as_list`) and `test_benchmark_feature_output_flows_as_list` (`Feature_output_flows_as_list`), but not the benchmark assertions (#542)
