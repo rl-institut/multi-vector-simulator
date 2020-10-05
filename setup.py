@@ -13,7 +13,10 @@ here = path.abspath(path.dirname(__file__))
 
 # Get the version number without triggering __init__
 main_namespace = {}
-exec(open(path.join(here, "src", "mvs_eland", "version.py")).read(), main_namespace)
+exec(
+    open(path.join(here, "src", "multi_vector_simulator", "version.py")).read(),
+    main_namespace,
+)
 
 # Get the long description from the README file
 with open(path.join(here, "README.md"), encoding="utf-8") as f:
@@ -26,9 +29,7 @@ def parse_requirements_file(filename):
         for line in fid.readlines():
             if line:
                 # requirements for those browsing PyPI
-                requires.append(
-                    line.strip().replace(">=", " >= ").replace("==", " == ")
-                )
+                requires.append(line.strip())
     return requires
 
 
@@ -54,7 +55,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name="mvs_eland",  # Required
+    name="multi-vector-simulator",  # Required
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
     #
@@ -90,13 +91,13 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url="https://github.com/rl-institut/mvs_eland",  # Optional
+    url="https://github.com/rl-institut/multi-vector-simulator",  # Optional
     # This should be your name or the name of the organization which owns the
     # project.
     author="Reiner Lemoine Institut",  # Optional
     # This should be a valid email address corresponding to the author listed
     # above.
-    # author_email='pypa-dev@googlegroups.com',  # Optional
+    author_email="pypi@rl-institut.de",  # Optional
     # Classifiers help users find your project by categorizing it.
     #
     # For a list of valid classifiers, see https://pypi.org/classifiers/
@@ -110,7 +111,7 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Build Tools",
         # Pick your license as you wish
-        "License :: OSI Approved :: GPL License",
+        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         # These classifiers are *not* checked by 'pip install'. See instead
@@ -138,7 +139,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=find_packages(include=["mvs_eland"]),  # Required
+    packages=["multi_vector_simulator", "multi_vector_simulator.utils"],  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you
@@ -197,7 +198,7 @@ setup(
     # maintainers, and where to support the project financially. The key is
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
-        "Bug Reports": "https://github.com/rl-institut/mvs_eland/issues",
-        "Source": "https://github.com/rl-institut/mvs_eland",
+        "Bug Reports": "https://github.com/rl-institut/multi-vector-simulator/issues",
+        "Source": "https://github.com/rl-institut/multi-vector-simulator",
     },
 )
