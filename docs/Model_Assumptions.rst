@@ -190,10 +190,10 @@ When running simulations with the MVS, there are certain peculiarities to be awa
      - Link
    * - Inherited
      - Disregard of some real life constraint
-     - :ref:disregard-label
+     - :ref: disregard-label
    * - Inherited
      - Simplified asset model
-     - :ref:simplified-label
+     - :ref: simplified-label
    * - Inherited
      - No degradation
      - :ref:degradation-label
@@ -220,7 +220,7 @@ When running simulations with the MVS, there are certain peculiarities to be awa
      -  :ref:generic-label
    * - Can be addressed
      - Unlinked transformers of one technical unit
-     - :ref:unlinked    
+     - :ref: unlinked    
 
 .. _disregard-label:
 Disregard of some real life constraint
