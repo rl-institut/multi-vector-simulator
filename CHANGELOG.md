@@ -43,6 +43,7 @@ Here is a template for new release sections
 - Rename repository from `mvs_eland` to `multi-vector-simulator` (#587)
 - Refactor modules calls (`mvs_eland.` is replaced by `multi_vector_simulator.`) (#587)
 - Update `README.md` and `CONTRIBUTING.md` replacing `mvs_eland` or `mvs-eland` by `multi-vector-simulator` (#587)
+
 ### Removed
 - Remove unused function `mvs_eland.utils.get_version_info` (#587)
 
