@@ -330,8 +330,9 @@ The MVS assumes those costs only for simplification.
 :Implications:
 This could lead to a rough estimation of the entire project costs.
 
-.. _unlinked-label: Unlinked transformers of one technical unit
-###############################################################
+.. _unlinked-label: 
+Unlinked transformers of one technical unit
+###########################################
 :Limitation:
 Some components should be modelled as separate transformers in the MVS while in real life they are one technical unit.
 
