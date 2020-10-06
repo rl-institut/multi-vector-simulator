@@ -39,6 +39,7 @@ Here is a template for new release sections
 - Requirement for time series of non-dispatchable sources in readthedocs (#498)
 - Provide a warning in case of excessive excess generation (#498)
 - Pytests for `C0.add_maximum_cap()`, renamed function into `C0.process_maximum_cap_constraint()` (#498)
+- Description of the inherited MVS limitations as well as the ones that can be addressed (#580)
 
 ### Changed
 - Modify `setup.py` to upload the code as package on pypi.org (#570)
