@@ -208,7 +208,7 @@ Disregard of some real life constraint
 The real life constraint of the dispatch of assets, that it is not possible to have two flows in opposite directions at the same time step, is not adhered to in the MVS.
 
 :Reason: 
-The MVS is based on the python library `oemof-solph`. Its generic components are used to set up the energy system. As a ground rule, the components of `oemof-solph` are uni-directional. This means that for an asset that is bi-directional (physically for an inverter and logically for consumption/feed-in from/to the grid), two transformer objects have to be used. 
+The MVS is based on the python library `oemof-solph`. Its generic components are used to set up the energy system. As a ground rule, the components of `oemof-solph` are unidirectional. This means that for an asset that is bidirectional (physically for an inverter and logically for consumption/feed-in from/to the grid), two transformer objects have to be used. 
 To archieve that one flow has to be zero when the other is larger zero, one would have to implement following relation:
 
 .. math:: 
@@ -335,12 +335,7 @@ Unlinked transformers of one technical unit
 Some components should be modelled as separate transformers in the MVS while in real life they are one technical unit.
 
 :Reason:
-The MVS uses oemof-solph's generic components listed here below:
-
-    - Sink (one input, no output)
-    - Source (one output, no input)
-    - Linear Transformer (one input, n outputs)
-    - Storage (one input, one output)
+The MVS uses oemof-solph's generic components which are unidirectional so for a bidirectional asset, two transformer objects have to be used.
 
 :Implications: 
 Since one input is only allowed, such technical units are modelled as two separate transformers that are currently unlinked in the MVS (e.g., hybrid inverter, heat pump, distribution transformer, etc.). This raises a difficulty to define costs in the input data. It also results in two optimized capacities for one logical unit.
