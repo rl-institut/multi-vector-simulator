@@ -19,6 +19,7 @@ Welcome to Multi-Vector Simulator (MVS)'s documentation!
    Developing
    Code
    troubleshooting
+   Model_equations
 
 ==================
 Indices and tables
