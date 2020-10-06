@@ -4,8 +4,8 @@ import shutil
 import mock
 import pytest
 
-import mvs_eland.A0_initialization as A0
-from mvs_eland.cli import main
+import multi_vector_simulator.A0_initialization as A0
+from multi_vector_simulator.cli import main
 from _constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
@@ -249,7 +249,7 @@ def test_check_input_path_posix():
     assert folder == os.path.join(JSON_PATH)
 
 
-TEST_OUTPUT_PATH = os.path.join(".", "tests", "other")
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "other")
 
 
 class TestCommandLineInput:
@@ -337,7 +337,7 @@ class TestCommandLineInput:
                 "-log",
                 "warning",
                 "-i",
-                os.path.join("tests", "inputs"),
+                os.path.join(TEST_REPO_PATH, "inputs"),
                 "-o",
                 TEST_OUTPUT_PATH,
             ]

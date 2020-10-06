@@ -5,7 +5,7 @@ Fix #Issue
 
 The following steps were realized, as well (if applies):
 - [ ] Use in-line comments to explain your code
-- [ ] Write docstrings to your code ([example docstring](https://mvs-eland.readthedocs.io/en/latest/Developing.html#format-of-docstrings))
+- [ ] Write docstrings to your code ([example docstring](https://multi-vector-simulator.readthedocs.io/en/latest/Developing.html#format-of-docstrings))
 - [ ] For new functionalities: Explain in readthedocs
 - [ ] Write test(s) for your new patch of code (pytests, assertion debug messages)
 - [ ] Update the CHANGELOG.md
@@ -19,4 +19,4 @@ The following steps were realized, as well (if applies):
 
 :x: Check not applicable to this PR
 
-<sub>*For more information on how to contribute check the [CONTRIBUTING.md](https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md).*<sub>
+<sub>*For more information on how to contribute check the [CONTRIBUTING.md](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CONTRIBUTING.md).*<sub>

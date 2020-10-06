@@ -5,10 +5,10 @@ import mock
 import pandas as pd
 import pytest
 
-import mvs_eland.A0_initialization as initializing
-import mvs_eland.F1_plotting as F1
-from mvs_eland.cli import main
-from mvs_eland.utils.constants import (
+import multi_vector_simulator.A0_initialization as initializing
+import multi_vector_simulator.F1_plotting as F1
+from multi_vector_simulator.cli import main
+from multi_vector_simulator.utils.constants import (
     PLOTS_BUSSES,
     PATHS_TO_PLOTS,
     PLOTS_DEMANDS,
@@ -18,7 +18,7 @@ from mvs_eland.utils.constants import (
     PLOTS_COSTS,
     CSV_EXT,
 )
-from mvs_eland.utils.constants_json_strings import (
+from multi_vector_simulator.utils.constants_json_strings import (
     LABEL,
     OPTIMIZED_ADD_CAP,
     PROJECT_NAME,

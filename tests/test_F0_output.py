@@ -18,11 +18,11 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import mvs_eland.A0_initialization as initializing
-import mvs_eland.B0_data_input_json as B0
-import mvs_eland.F0_output as F0
-from mvs_eland.cli import main
-from mvs_eland.utils.constants_json_strings import (
+import multi_vector_simulator.A0_initialization as initializing
+import multi_vector_simulator.B0_data_input_json as B0
+import multi_vector_simulator.F0_output as F0
+from multi_vector_simulator.cli import main
+from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DATA,
     SIMULATION_SETTINGS,
     PROJECT_NAME,
@@ -145,6 +145,7 @@ class TestFileCreation:
             SIMULATION_SETTINGS: {PATH_OUTPUT_FOLDER: OUTPUT_PATH},
             OPTIMIZED_FLOWS: {"a_bus": BUS, "b_bus": BUS},
         }
+
         dict_timeseries_test_two_busses.update(copy.deepcopy(DICT_PLOTS))
         F0.store_timeseries_all_busses_to_excel(dict_timeseries_test_two_busses)
         assert (
