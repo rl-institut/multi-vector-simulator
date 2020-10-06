@@ -198,8 +198,6 @@ When running simulations with the MVS, there are certain peculiarities to be awa
    * - 
      - Energy shortage or grid interruption
    * - 
-     - Generic cost definitions
-   * - 
      - Unlinked transformers of one technical unit :ref:unlinked-label
 
 Disregard of some real life constraint
@@ -318,17 +316,6 @@ The aim of the MVS does not cover this scenario.
 
 :Implications:
 Electricity shortages due to power cuts might happen in real life and the MVS currently omits this scenario. If a system is self-sufficient but relies on grid-connected PV systems, the latter stop feeding the load if any power cuts occur and the battery storage systems might not be enough to serve the load (energy shortage).
-
-Generic cost definitions
-########################
-:Limitation:
-The MVS includes development costs, specific costs, O&M costs and disptach costs.
-
-:Reason:
-The MVS assumes those costs only for simplification.
-
-:Implications:
-This could lead to a rough estimation of the entire project costs.
 
 .. _unlinked-label: 
 Unlinked transformers of one technical unit
