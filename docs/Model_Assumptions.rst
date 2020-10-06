@@ -334,7 +334,7 @@ This could lead to a rough estimation of the entire project costs.
 Unlinked transformers of one technical unit
 ###########################################
 :Limitation:
-Some components should be modelled as separate transformers in the MVS while in real life they are one technical unit.
+Two transformer objects representing one technical unit in real life are currently unlinked in terms of capacity and attributed costs.
 
 :Reason:
 The MVS uses oemof-solph's generic components which are unidirectional so for a bidirectional asset, two transformer objects have to be used.
