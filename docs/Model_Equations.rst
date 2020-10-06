@@ -13,7 +13,11 @@ Linear programming is a mathematical modelling and optimization technique for a 
         E_i(t) \geq 0    \forall t
 
 i: asset
+
 a_i: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]
+
 CAP_i: assetcapacity [kWp,kW,kWh]
+
 c_{var,i}: variable operational or dispatch cost [currency/kWh, currency/L]
+
 E_i(t): asset dispatch [kWh]
