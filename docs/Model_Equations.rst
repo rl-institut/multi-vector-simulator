@@ -9,10 +9,10 @@ Linear programming is a mathematical modelling and optimization technique for a 
 
 .. math::
         min Z = \sum_i a_i \cdot CAP_i + \sum_i \sum_t c_{var,i} \cdot E_i(t)
-        
+.. math::        
         CAP_i \geq 0
-        
-        E_i(t) \geq 0    \forall t
+.. math::        
+        E_i(t) \geq 0  \qquad  \forall t
 
 i: asset
 
