@@ -12,6 +12,7 @@ Welcome to Multi-Vector Simulator (MVS)'s documentation!
    Overview
    References
    Model_Assumptions
+   Model_Equations
    simulating_with_the_mvs
    MVS_parameters
    MVS_Outputs
@@ -19,7 +20,6 @@ Welcome to Multi-Vector Simulator (MVS)'s documentation!
    Developing
    Code
    troubleshooting
-   Model_Equations
 
 ==================
 Indices and tables
