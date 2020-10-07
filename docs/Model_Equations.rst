@@ -16,13 +16,13 @@ Linear programming is a mathematical modelling and optimization technique for a 
 
 i: asset
 
-a_i: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]
+a~i: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]
 
-CAP_i: assetcapacity [kWp,kW,kWh]
+CAP~i: assetcapacity [kWp, kW, kWh]
 
-c_{var,i}: variable operational or dispatch cost [currency/kWh, currency/L]
+c~{var,i}: variable operational or dispatch cost [currency/kWh, currency/L]
 
-E_i(t): asset dispatch [kWh]
+E~i(t): asset dispatch [kWh]
 
 The annual cost function of each asset includes the capital expenditure (investment cost) and residual value, as well as the operating expenses of each asset. It is expressed as follows:
 
@@ -31,17 +31,17 @@ The annual cost function of each asset includes the capital expenditure (investm
 .. math:: 
         CRF(T) = \frac{d \cdot (1+d)^T}{(1+d)^t - 1}
 
-capex_i: specific investment costs [currency/unit]
+capex~i: specific investment costs [currency/unit]
 
 n: number of replacements of an asset within project lifetime T
 
-t_a: asset lifetime [years]
+t~a: asset lifetime [years]
 
 CRF: capital recovery factor
 
-c_{res,i}: residual value of asset i at the end of project lifetime T [currency/unit]
+c~{res,i}: residual value of asset i at the end of project lifetime T [currency/unit]
 
-opex_i: annual operational and management costs [currency/unit/year]
+opex~i: annual operational and management costs [currency/unit/year]
 
 d: discount factor
 
