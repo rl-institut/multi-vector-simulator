@@ -19,7 +19,7 @@ Here is a template for new release sections
 -
 ```
 
-## [0.5.1] - 20XX-MM-DD
+## [Unreleased]
 
 ### Added
 - Add tests for `E4.detect_excessive_excess_generation_in_bus()` (#591)
