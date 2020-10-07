@@ -22,7 +22,7 @@ Here is a template for new release sections
 ## [0.4.1] - 2020-09-21
 
 ### Added
-
+- Add tests for `E4.detect_excessive_excess_generation_in_bus()` (#591)
 ### Changed
 
 ### Removed
