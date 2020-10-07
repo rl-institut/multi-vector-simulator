@@ -22,7 +22,8 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
-- Add tests for `E4.detect_excessive_excess_generation_in_bus()` (#591)
+- Add pytests for `E4.detect_excessive_excess_generation_in_bus()` (#591)
+
 ### Changed
 
 ### Removed
