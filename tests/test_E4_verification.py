@@ -40,7 +40,7 @@ def test_minimal_renewable_share_test_fails():
 
 
 def test_detect_excessive_excess_generation_in_bus_warning_is_logged(caplog):
-    """A logging.warning is printed due to excess generation. """
+    """A logging.warning is printed due to excessive excess generation. """
     bus_label = "Test_bus"
     dict_values = {
         "optimizedFlows": {
@@ -52,13 +52,13 @@ def test_detect_excessive_excess_generation_in_bus_warning_is_logged(caplog):
     with caplog.at_level(logging.WARNING):
         E4.detect_excessive_excess_generation_in_bus(dict_values=dict_values)
     assert (
-        f"Attention, on bus {bus_label} there is an excessive excess generation"
+        f"Attention, on bus {bus_label} there is excessive excess generation"
         in caplog.text
-    ), f"An intended warning is not logged although there is excess generation."
+    ), f"An intended warning is not logged although there is excessive excess generation."
 
 
 def test_detect_excessive_excess_generation_in_bus_no_excess(caplog):
-    """No excess generation takes place. """
+    """No excessive excess generation takes place. """
     bus_label = "Test_bus"
     dict_values = {
         "optimizedFlows": {
@@ -75,11 +75,11 @@ def test_detect_excessive_excess_generation_in_bus_no_excess(caplog):
         E4.detect_excessive_excess_generation_in_bus(dict_values=dict_values)
     assert (
         caplog.text == ""
-    ), f"A warning is logged although there is no excess generation."
+    ), f"A warning is logged although there is no excessive excess generation."
 
 
 def test_detect_excessive_excess_generation_in_bus_several_busses_two_warnings(caplog):
-    """Excess generation takes place in two busses. """
+    """Excessive excess generation takes place in two busses. """
     dict_values = {
         "optimizedFlows": {
             "Bus_without_excess": pd.DataFrame(
@@ -104,4 +104,4 @@ def test_detect_excessive_excess_generation_in_bus_several_busses_two_warnings(c
         in caplog.text
         and f"Attention, on bus Bus_with_excess_2 there is an excessive excess generation"
         in caplog.text
-    ), f"One or two intended warnings are missing although there is excess generation in two busses."
+    ), f"One or two intended warnings are missing although there is excessive excess generation in two busses."
