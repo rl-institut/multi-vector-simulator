@@ -27,7 +27,7 @@ E_i(t): asset dispatch [kWh]
 The annual cost function of each asset includes the capital expenditure (investment cost) and residual value, as well as the operating expenses of each asset. It is expressed as follows:
 
 .. math:: 
-        a_i = (capex_i + \sum_{k=1}^{n} \frac{capex_i}{(1+d)^{k \cdot t_a}} - c_{res,i}) \cdot CRF(T) + opex_i
+        a_i = \left( capex_i + \sum_{k=1}^{n} \frac{capex_i}{(1+d)^{k \cdot t_a}} - c_{res,i} \right) \cdot CRF(T) + opex_i
 .. math:: 
         CRF(T) = \frac{d \cdot (1+d)^T}{(1+d)^t - 1}
 
