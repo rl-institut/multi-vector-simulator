@@ -5,7 +5,7 @@ Set of Model Equations
 Economic Dispatch
 -----------------
 
-Linear programming is a mathematical modelling and optimization technique for a system of a linear objective function subject to linear constraints. The goal of a linear programming problem is to find the optimal value for the objective function, be it a maximum or a minimum. The MVS is based on oemof-solph, which in turn uses Pyomo to create a linear problem. The economic dispatch problem in the MVS has the objective of minimizing the production cost by allocating the total demand among the generating units. The equation is the following:
+Linear programming is a mathematical modelling and optimization technique for a system of a linear objective function subject to linear constraints. The goal of a linear programming problem is to find the optimal value for the objective function, be it a maximum or a minimum. The MVS is based on oemof-solph, which in turn uses Pyomo to create a linear problem. The economic dispatch problem in the MVS has the objective of minimizing the production cost by allocating the total demand among the generating units at each time step. The equation is the following:
 
 .. math::
         min Z = \sum_i a_i \cdot CAP_i + \sum_i \sum_t c_{var,i} \cdot E_i(t)
@@ -56,3 +56,28 @@ The residual value is also known as salvage value and it represents an estimate 
 
 .. math::
         c_{res,i} = \frac{capex_i}{(1+d)^{n \cdot t_a}} \cdot \frac{1}{T} \cdot \frac{(n+1) \cdot t_a - T}{(1+d)^T}
+
+
+Energy Balance Equation
+-----------------------
+
+One main constraint that the optimization model is subject to is the energy balance equation. The latter maintains equality between the incoming energy into a bus and the outgoing energy from that bus. This balancing equation is applicable to all bus types, be it electrical, thermal, hydrogen or any other energy carrier.
+
+.. math::
+        \sum E_{in,i}(t) - \sum E_{out,i}(t) = 0
+
+E_{in,i}: energy flowing from the asset to the bus
+
+E_{out,i}: energy flowing from the bus to the asset
+
+`or`
+
+.. math::
+        \sum E_{in,i}(t) - \sum E_{out,j}(t) = 0
+
+E_{in,i}: energy flowing from asset i to the bus
+
+E_{out,j}: energy flowing from the bus to asset j
+
+It is very important to note that assets i and j can be the same asset (e.g., battery) however, one of the energy flowing values E_{in} or E_{out} should be zero at the same time step t.
+
