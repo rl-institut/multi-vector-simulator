@@ -10,15 +10,16 @@ Welcome to Multi-Vector Simulator (MVS)'s documentation!
 
 .. toctree::
    Overview
-   References
+   Installation
+   simulating_with_the_mvs
    Model_Assumptions
    Model_Equations
-   simulating_with_the_mvs
    MVS_parameters
    MVS_Outputs
-   Installation
-   Developing
+   E-Land_Requirements
    Code
+   References
+   Developing
    troubleshooting
 
 ==================

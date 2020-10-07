@@ -19,11 +19,13 @@ Here is a template for new release sections
 -
 ```
 
-## [0.4.1] - 2020-09-21
+## [Unreleased]
 
 ### Added
+- `E-Land_Requirements.rst`: Official E-Land requirement list as well as progress on functional and non-functional requirements (#590)
 
 ### Changed
+- Order of readthedocs content (#590)
 
 ### Removed
 
