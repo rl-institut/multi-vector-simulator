@@ -36,11 +36,13 @@ MVS Validation Plan
 
 The adopted validation plan is part of the MVS’ entire development process and is based on three main validation types: conceptual model validation, model verification and operational validity. Following some in-depth research, a validation approach is chosen for the MVS, through which the most appropriate validation techniques are applied to the MVS so that it gains the necessary credibility.
 
-*Conceptual model validation* consists of looking into the underlying theories and assumptions. Therefore, the conceptual validation scheme includes a comprehensive review of the generated equations by the oemof python library and the components’ models. Next step is to try and adapt them to one pilot project with specific constraints. Tracing and examining the flowchart is also considered as part of this validation type. The aim is to assess the reasonability of the model behavior through pre-requisite knowledge. 
+*Conceptual model validation* consists of looking into the underlying theories and assumptions. Therefore, the conceptual validation scheme includes a comprehensive review of the generated equations by the oemof-solph python library and the components’ models. Next step is to try and adapt them to one pilot project with specific constraints. Tracing and examining the flowchart is also considered as part of this validation type. The aim is to assess the reasonability of the model behavior through pre-requisite knowledge; this technique is known as face validity. 
 
-*Model verification* is related to computer programming and looks into whether the code is a correct representation of the conceptual model. To accomplish that, integration tests for each module will be written to assert that the output is as expected. The simulation will also be run several times for the same input data to double check the results. 
+*Model verification* is related to computer programming and looks into whether the code is a correct representation of the conceptual model. To accomplish this, static testing methods are used to validate the output with respect to an input. Unit tests and integration tests, using proof of correctness techniques, are integrated within the code and evaluate the output of the MVS for any change occuring as they are automated. Unit tests target a single unit such as an individual component, while integration tests target more general parts such as entire modules. Finally, it is very important to make sure that Pytest, the chosen framework for functional testing, always goes through.
 
-*Operational validity* determines if the model’s output is within the required accuracy. In order to achieve that, several validation techniques are used, namely:
+*Operational validity* assess the model’s output with respect to the required accuracy. In order to achieve that, several validation techniques are used, namely:
+
+* Graphical displays
 
 *	Benchmark testing, through which scenarios are created with different constraints and component combinations, and the output is calculated and compared to the expected one;
   
