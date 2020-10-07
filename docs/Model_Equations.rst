@@ -23,3 +23,26 @@ CAP_i: assetcapacity [kWp,kW,kWh]
 c_{var,i}: variable operational or dispatch cost [currency/kWh, currency/L]
 
 E_i(t): asset dispatch [kWh]
+
+The annual cost function of each asset includes the capital expenditure (investment cost) and residual value, as well as the operating expenses of each asset. It is expressed as follows:
+
+.. math:: 
+        a_i = (capex_i + \sum_{k=1}^{n} \frac{capex_i}{(1+d)^{k \cdot t_a}} - c_{res,i}) \cdot CRF(T) + opex_i
+.. math:: 
+        CRF(T) = \frac{d \cdot (1+d)^T}{(1+d)^t - 1}
+
+capex_i: specific investment costs [currency/unit]
+
+n: number of replacements of an asset within project lifetime T
+
+t_a: asset lifetime [years]
+
+CRF: capital recovery factor
+
+c_{res,i}: residual value of asset i at the end of project lifetime T [currency/unit]
+
+opex_i: annual operational and management costs [currency/unit/year]
+
+d: discount factor
+
+T: project lifetime [years]
