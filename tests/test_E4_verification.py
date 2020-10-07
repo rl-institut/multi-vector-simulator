@@ -80,19 +80,23 @@ def test_detect_excessive_excess_generation_in_bus_no_excess(caplog):
 
 def test_detect_excessive_excess_generation_in_bus_several_busses_two_warnings(caplog):
     """Excessive excess generation takes place in two busses. """
+    excessive_excess_bus_1, excessive_excess_bus_2 = (
+        "Bus_excessive_excess_1",
+        "Bus_excessive_excess_2",
+    )
     dict_values = {
         "optimizedFlows": {
-            "Bus_without_excess": pd.DataFrame(
+            "Bus_no_excessive_excess": pd.DataFrame(
                 {
                     "inflow": [1, 2, 3],
                     "outflow": [-1, -1.9, -2.5],
                     "excess": [0, 0.1, 0.5],
                 }
             ),
-            "Bus_with_excess_1": pd.DataFrame(
+            excessive_excess_bus_1: pd.DataFrame(
                 {"inflow": [1, 2, 3], "outflow": [-1, -1, -2], "excess": [0, 1, 1],}
             ),
-            "Bus_with_excess_2": pd.DataFrame(
+            excessive_excess_bus_2: pd.DataFrame(
                 {"inflow": [1, 2, 3], "outflow": [-1, -1, -1], "excess": [0, 1, 2],}
             ),
         }
@@ -100,8 +104,8 @@ def test_detect_excessive_excess_generation_in_bus_several_busses_two_warnings(c
     with caplog.at_level(logging.WARNING):
         E4.detect_excessive_excess_generation_in_bus(dict_values=dict_values)
     assert (
-        f"Attention, on bus Bus_with_excess_1 there is an excessive excess generation"
+        f"Attention, on bus {excessive_excess_bus_1} there is excessive excess generation"
         in caplog.text
-        and f"Attention, on bus Bus_with_excess_2 there is an excessive excess generation"
+        and f"Attention, on bus {excessive_excess_bus_2} there is excessive excess generation"
         in caplog.text
     ), f"One or two intended warnings are missing although there is excessive excess generation in two busses."
