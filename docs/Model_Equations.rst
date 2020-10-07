@@ -16,7 +16,7 @@ Linear programming is a mathematical modelling and optimization technique for a 
 
 i: asset
 
-a~i: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]
+a<sub>i</sub>: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]
 
 CAP~i: assetcapacity [kWp, kW, kWh]
 
