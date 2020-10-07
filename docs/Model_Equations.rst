@@ -46,3 +46,13 @@ opex_i: annual operational and management costs [currency/unit/year]
 d: discount factor
 
 T: project lifetime [years]
+
+The CRF is a ratio used to calculate the present value of the the annuity. The discount factor can be replaced by the weighted average cost of capital (WACC), calculated by the user. The lifetime of the asset t_a and the lifetime of the project T can be different from each other; hence, the number of replacements n is estimated using the equation below:
+
+.. math::
+        n = round \left( \frac{T}{t_a} + 0.5 \right) - 1
+        
+The residual value is also known as salvage value and it represents an estimate of the monetary value of an asset at the end of the project lifetime T. The MVS considers a linear depreciation over T and accounts for the time value of money by using the following equation:
+
+.. math::
+        c_{res,i} = \frac{capex_i}{(1+d)^{n \cdot t_a}} \cdot \frac{1}{T} \cdot \frac{(n+1) \cdot t_a - T}{(1+d)^T}
