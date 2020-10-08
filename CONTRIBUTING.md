@@ -118,78 +118,56 @@ Once you are satisfied with your PR you should ask someone to review it. Before 
 
 ## Release protocol
 
-Once you are ready to publish a release, branch off from `dev`
+### Before the release
+
+1. Create a release branch by branching off from `dev`
     ```bash
     git checkout -b release/vX.Y.Z dev
     ```
-For meaning of X, Y and Z version numbers, please refer to this [semantic versioning guidelines](https://semver.org/spec/v2.0.0.html).
+    For meaning of X, Y and Z version numbers, please refer to this [semantic versioning guidelines](https://semver.org/spec/v2.0.0.html).
+2. In your release branch, update the version number in [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py) (commit message: "Bump version number") and
+in [`CHANGELOG.md`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md) in the in 1. indicated format.
+3. Add the date of release in the `Changelog.md` in [ISO format](https://xkcd.com/1179/).
+4. After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it into `master`.
 
-In this branch, you should normally only update the version number in the `src/multi-vector-simulator/version.py` and in the `CHANGELOG.md` files, respecting the indicated formats. Commit the first one with "Bump version number" as commit message.
+### The actual release
+1. Open a working python3 virtual environment and make sure you have the latest versions of setuptools and wheel installed:
+`python3 -m pip install --user --upgrade setuptools wheel twine`
+3. Make sure you are in `master` and the latest commit you want to release and create the package:
+`python3 setup.py sdist bdist_wheel`
+4. Check the package with twine: `python3 -m twine check dist/*` If errors occur, fix them before the release or postpone.
+5. Create a [release tag](https://github.com/rl-institut/multi-vector-simulator/releases) on github.
+Please choose `master` as target and use `vX.Y.Z` as tag version. In the description field simply copy-paste the content of the `CHANGELOG`descriptions for this release and you're done!
+For help look into the [github release description](https://help.github.com/en/github/administering-a-repository/creating-releases).
+6. Pull `master` to your local repository and check if the new tag is there. (If you do not see the tag type `git fetch`.)
+7. Test your package:
+    1. Test the upload on test.pypi.org
+        ` twine upload --repository testpypi dist/*`
+    2. Test the installation: `pip install -i https://test.pypi.org/simple/ multi-vector-simulator --no-deps`
+    3. Then open a python console and try
+        `>>>from multi_vector_simulator import cli`
+8. If everything works as expected you can now upload the package version to PyPI
+    1. Check the credentials of our pypi@rl-institut.de account on https://pypi.org.
+    1. Type `twine upload dist/*`
+    2. Enter `__token__` for username and your pypi token for password. 
 
-Your `CHANGELOG.md` file could look like this before the release
+### After the release
+
+1. Locally, merge `release/vX.Y.Z` into `dev` and push to the remote version of dev.
+--> The idea is to avoid creating a merge commit in `dev` (because `master` would otherwise have two merge commits for this release once you merge the next release).
+2. Set version for next release in [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py) of the `dev`: for example `0.5.1dev`
+3. Add the structure for a new `unreleased` version to the [`CHANGELOG.md`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md) in `dev`:
 ```
 ## [unreleased]
 
 ### Added
-- feature 1
-- feature 2
-### Changed 
-- thing 1
-- thing 2
-### Removed
-- some stuff
-```
-
-Simply replace `unreleased` by `X.Y.Z` and add the date of release in [ISO format](https://xkcd.com/1179/), then add the structure for a new `unreleased` version
-
-```
-## [unreleased]
-
-### Added
 -
 ### Changed 
 -
 ### Removed
 -
-
-## [X.Y.Z] - 20**-**-**
-### Added
-- feature 1
-- feature 2
-### Changed 
-- thing 1
-- thing 2
-### Removed
-- some stuff
-```
-Commit this with "Update changelog" as commit message.
-
-After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it in `master`.
-
-Locally, merge `release/vX.Y.Z` into `dev`
-```
-git checkout release/vX.Y.Z
 ```
 
-```
-git pull
-```
-    
-```
-git checkout dev
-```
-
-```
-git merge release/vX.Y.Z
-```
-And push your these updates to the remote version of dev
-```
-git push
-```
-
-The idea behind this procedure is to avoid creating a merge commit in `dev` (because `master` would otherwise have two merge commit for this release once you merge the next release).
-
-Finally, [create a release](https://help.github.com/en/github/administering-a-repository/creating-releases) on github. Please choose master as the target for the tag and format the tag as `vX.Y.Z`. In the description field simply copy-paste the content of the `CHANGELOG`descriptions for this release and you're done!
 
 ## Contributing to Readthedocs
 
