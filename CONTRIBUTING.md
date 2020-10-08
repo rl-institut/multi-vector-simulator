@@ -133,6 +133,7 @@ in [`CHANGELOG.md`](https://github.com/rl-institut/multi-vector-simulator/blob/d
 ### The actual release
 1. Open a working python3 virtual environment and make sure you have the latest versions of setuptools and wheel installed:
 `python3 -m pip install --user --upgrade setuptools wheel twine`
+2. Delete `build/` and `dist/` directory to avoid errors.
 3. Make sure you are in `master` and the latest commit you want to release and create the package:
 `python3 setup.py sdist bdist_wheel`
 4. Check the package with twine: `python3 -m twine check dist/*` If errors occur, fix them before the release or postpone.
