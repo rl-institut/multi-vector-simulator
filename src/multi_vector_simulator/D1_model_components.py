@@ -6,7 +6,7 @@ Module D1 includes all functions that are required to build an oemof model with 
 - add sink objects (fix, to be optimized, dispatchable, non-dispatchable)
 - add storage objects (fix, to be optimized)
 - add multiple input/output busses if required for each of the assets
-- add oemof component parameters as scalar or timeseries values
+- add oemof component parameters as scalar or time series values
 
 """
 
@@ -336,20 +336,19 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
     ):
         if isinstance(dict_asset[INPUT_BUS_NAME], list):
             inputs = {}
-            index = 0
             for bus in dict_asset[INPUT_BUS_NAME]:
-                variable_costs = dict_asset[DISPATCH_PRICE][VALUE][index]
-                inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
+                inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow()
+            outputs = {
+                kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
                     nominal_value=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=variable_costs,
+                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                 )
-                index += 1
-            outputs = {kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow()}
-            efficiencies = {}
-            for i in range(len(dict_asset[EFFICIENCY][VALUE])):
-                efficiencies[kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME][i]]] = (
-                    1 / dict_asset[EFFICIENCY][VALUE][i]
-                )
+            }
+            efficiencies = {
+                kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: dict_asset[
+                    EFFICIENCY
+                ][VALUE]
+            }
 
         else:
             inputs = {kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME]]: solph.Flow()}
@@ -414,11 +413,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             inputs = {}
             index = 0
             for bus in dict_asset[INPUT_BUS_NAME]:
-                variable_costs = dict_asset[DISPATCH_PRICE][VALUE][index]
-                inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=variable_costs,
-                )
+                inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow()
                 index += 1
             outputs = {
                 kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
@@ -430,11 +425,11 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                 )
             }
-            efficiencies = {}
-            for i in range(len(dict_asset[EFFICIENCY][VALUE])):
-                efficiencies[
-                    kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME][i]]
-                ] = 1 / (dict_asset[EFFICIENCY][VALUE][i])
+            efficiencies = {
+                kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: dict_asset[
+                    EFFICIENCY
+                ][VALUE]
+            }
 
         else:
             inputs = {kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME]]: solph.Flow()}
