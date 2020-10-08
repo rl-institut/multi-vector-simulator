@@ -154,6 +154,9 @@ def create_input_json(
         if filename in REQUIRED_CSV_FILES:
             list_assets.append(filename)
             single_dict = create_json_from_csv(input_directory, filename)
+            if filename in ["project_data", "economic_data", "simulation_settings"]:
+                # use filename as label
+                single_dict[filename][LABEL] = filename
             input_json.update(single_dict)
         elif "storage_" in filename:
             list_assets.append(filename)
