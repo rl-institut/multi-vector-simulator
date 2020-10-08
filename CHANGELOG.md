@@ -23,6 +23,7 @@ Here is a template for new release sections
 
 ### Added
 - `E-Land_Requirements.rst`: Official E-Land requirement list as well as progress on functional and non-functional requirements (#590)
+- Add pytests for `E4.detect_excessive_excess_generation_in_bus()` (#591)
 
 ### Changed
 - Order of readthedocs content (#590)
