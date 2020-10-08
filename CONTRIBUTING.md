@@ -127,6 +127,7 @@ Once you are satisfied with your PR you should ask someone to review it. Before 
     For meaning of X, Y and Z version numbers, please refer to this [semantic versioning guidelines](https://semver.org/spec/v2.0.0.html).
 2. In your release branch, update the version number in [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py) (commit message: "Bump version number") and
 in [`CHANGELOG.md`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md) in the in the format indicated under 1.
+Attention: Please work with release candidates (add `rc1` to the `version_num`, for example `v0.5.0rc1`) before the actual release, as a release with a specific version number can only be done once.
 3. Add the date of release in the `Changelog.md` in [ISO format](https://xkcd.com/1179/).
 4. After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it into `master`.
 
@@ -151,6 +152,8 @@ For help look into the [github release description](https://help.github.com/en/g
     1. Check the credentials of our pypi@rl-institut.de account on https://pypi.org.
     2. Type `twine upload dist/*`
     3. Enter `__token__` for username and your pypi token for password. 
+9. If your release candidate works well you can now do the actual release: start from step 2 in "Before the release" and remove `rcX` from [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py).
+If you notice errors in the uploaded package, fix them and bump up `rc1` to `rc2` until you don't see any more mistakes.
 
 ### After the release
 
