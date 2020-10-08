@@ -130,7 +130,7 @@ in [`CHANGELOG.md`](https://github.com/rl-institut/multi-vector-simulator/blob/d
 3. Add the date of release in the `Changelog.md` in [ISO format](https://xkcd.com/1179/).
 4. After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it into `master`.
 
-### The actual release
+### The actual release on pypi.org
 1. Open a working python3 virtual environment and make sure you have the latest versions of setuptools and wheel installed:
 `python3 -m pip install --user --upgrade setuptools wheel twine`
 2. Delete `build/` and `dist/` directory to avoid errors.
