@@ -118,7 +118,7 @@ Once you are satisfied with your PR you should ask someone to review it. Before 
 
 ## Release protocol
 
-### Before the release
+### Before the release on pypi.org
 
 1. Create a release branch by branching off from `dev`
     ```bash
