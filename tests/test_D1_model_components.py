@@ -243,11 +243,6 @@ class TestTransformerComponent:
             "transformer_fix_multiple_output_busses"
         ]
 
-    ### tests for transformer with time dependent efficiency
-    def test_transformer_efficiency_time_series_optimize_cap_multiple_input_busses(
-        self,
-    ):
-        pass
         D1.transformer(
             model=self.model,
             dict_asset=dict_asset,
@@ -255,25 +250,10 @@ class TestTransformerComponent:
             bus=self.busses,
         )
 
-    def test_transformer_efficiency_time_series_optimize_cap_multiple_output_busses(
-        self,
-    ):
-        pass
         # one output bus and two input busses
         assert len([str(i) for i in self.model.entities[-1].outputs]) == 2
         assert len([str(i) for i in self.model.entities[-1].inputs]) == 1
 
-    def test_transformer_efficiency_time_series_optimize_cap_single_busses(self):
-        pass
-
-    def test_transformer_efficiency_time_series_fix_cap_multiple_input_busses(self):
-        pass
-
-    def test_transformer_efficiency_time_series_fix_cap_multiple_output_busses(self):
-        pass
-
-    def test_transformer_efficiency_time_series_fix_cap_single_busses(self):
-        pass
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
             optimize=False, dict_asset=dict_asset, multiple_outputs=True
