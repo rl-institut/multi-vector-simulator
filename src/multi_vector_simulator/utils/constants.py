@@ -148,7 +148,6 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     SIMULATION_SETTINGS: [
         EVALUATED_PERIOD,
-        LABEL,
         OUTPUT_LP_FILE,
         STORE_OEMOF_RESULTS,
         START_DATE,
@@ -157,7 +156,6 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     PROJECT_DATA: [
         COUNTRY,
-        LABEL,
         LATITUDE,
         LONGITUDE,
         PROJECT_ID,
@@ -165,7 +163,7 @@ REQUIRED_CSV_PARAMETERS = {
         SCENARIO_ID,
         SCENARIO_NAME,
     ],
-    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX,],
+    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, PROJECT_DURATION, TAX,],
 }
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
