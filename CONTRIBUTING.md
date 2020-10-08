@@ -150,7 +150,7 @@ For help look into the [github release description](https://help.github.com/en/g
 8. If everything works as expected you can now upload the package version to PyPI
     1. Check the credentials of our pypi@rl-institut.de account on https://pypi.org.
     2. Type `twine upload dist/*`
-    2. Enter `__token__` for username and your pypi token for password. 
+    3. Enter `__token__` for username and your pypi token for password. 
 
 ### After the release
 
