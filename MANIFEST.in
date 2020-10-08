@@ -1,0 +1,3 @@
+graft  input_template
+graft  tests/inputs
+graft  report
