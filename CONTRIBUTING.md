@@ -126,7 +126,7 @@ Once you are satisfied with your PR you should ask someone to review it. Before 
     ```
     For meaning of X, Y and Z version numbers, please refer to this [semantic versioning guidelines](https://semver.org/spec/v2.0.0.html).
 2. In your release branch, update the version number in [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py) (commit message: "Bump version number") and
-in [`CHANGELOG.md`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md) in the in 1. indicated format.
+in [`CHANGELOG.md`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md) in the in the format indicated under 1.
 3. Add the date of release in the `Changelog.md` in [ISO format](https://xkcd.com/1179/).
 4. After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it into `master`.
 
