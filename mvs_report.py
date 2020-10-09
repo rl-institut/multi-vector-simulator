@@ -3,7 +3,7 @@ import argparse
 
 from multi_vector_simulator.utils.constants import (
     REPO_PATH,
-    REPORT_PATH,
+    REPORT_FOLDER,
     OUTPUT_FOLDER,
     PDF_REPORT,
     JSON_WITH_RESULTS,
@@ -13,7 +13,7 @@ from multi_vector_simulator.F2_autoreport import create_app, open_in_browser, pr
 
 ARG_PDF = "print_report"
 ARG_REPORT_PATH = "report_path"
-SIM_OUTPUT_PATH = "output_folder"
+PATH_SIM_OUTPUT = "output_folder"
 
 
 def report_arg_parser():
@@ -49,7 +49,7 @@ def report_arg_parser():
     )
     parser.add_argument(
         "-i",
-        dest=SIM_OUTPUT_PATH,
+        dest=PATH_SIM_OUTPUT,
         nargs="?",
         type=str,
         help="path to the simulation result json file 'json_with_results.json'",
@@ -61,7 +61,7 @@ def report_arg_parser():
         nargs="?",
         type=str,
         help="path to save the pdf report",
-        default=os.path.join(REPORT_PATH, PDF_REPORT),
+        default="",
     )
     return parser
 
@@ -74,17 +74,28 @@ if __name__ == "__main__":
     print(args)
     bool_print_report = args.get(ARG_PDF)
     report_path = args.get(ARG_REPORT_PATH)
-    fname = args.get(SIM_OUTPUT_PATH)
+    fname = args.get(PATH_SIM_OUTPUT)
+
+    # if the user only provided the path to the folder, we complete with default json file
+    if os.path.isdir(fname) is True:
+        fname = os.path.join(fname, JSON_WITH_RESULTS)
 
     if os.path.exists(fname) is False:
         raise FileNotFoundError(
             "{} not found. You need to run a simulation to generate the data to report"
-            "see `python mvs_tool.py -h` for help"
+            "see `python mvs_tool.py -h` for help".format(fname)
         )
     else:
+        # path to the mvs simulation output files
+        path_sim_output = os.path.dirname(fname)
+
+        # if report path is not specified it will be included in the mvs simulation outputs folder
+        if report_path == "":
+            report_path = os.path.join(path_sim_output, REPORT_FOLDER)
+
         # load the results of a simulation
         dict_values = load_json(fname)
-        test_app = create_app(dict_values)
+        test_app = create_app(dict_values, path_sim_output=path_sim_output)
         banner = "*" * 40
         print(banner + "\nPress ctrl+c to stop the report server\n" + banner)
         if bool_print_report is True:
