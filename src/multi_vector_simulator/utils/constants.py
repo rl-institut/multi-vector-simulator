@@ -32,8 +32,10 @@ INPUTS_COPY = INPUT_FOLDER
 LOGFILE = "mvs_logfile.log"
 # name of the automatically generated pdf report
 PDF_REPORT = "simulation_report.pdf"
+
 # path of the pdf report path
-REPORT_PATH = os.path.join(REPO_PATH, "report")
+REPORT_FOLDER = "report"
+ASSET_FOLDER = "assets"
 
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
