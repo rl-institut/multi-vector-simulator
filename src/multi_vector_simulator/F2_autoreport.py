@@ -33,6 +33,8 @@ logging.getLogger("pyppeteer").setLevel(pyppeteer_level)
 flask_log = logging.getLogger("werkzeug")
 flask_log.setLevel(logging.ERROR)
 
+from multi_vector_simulator.utils import copy_report_assets
+
 from multi_vector_simulator.utils.constants import (
     REPO_PATH,
     PATH_OUTPUT_FOLDER,
@@ -555,12 +557,7 @@ def create_app(results_json, path_sim_output=None):
         path_sim_output = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
 
     # create a "report" folder containing an "asset" folder
-    asset_folder = os.path.join(path_sim_output, "report")
-    if os.path.exists(asset_folder) is False:
-        os.mkdir(asset_folder)
-    asset_folder = os.path.join(asset_folder, "assets")
-    if os.path.exists(asset_folder) is False:
-        os.mkdir(asset_folder)
+    asset_folder = copy_report_assets(path_sim_output)
 
     # external CSS stylesheets
     external_stylesheets = [
