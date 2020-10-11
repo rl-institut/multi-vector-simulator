@@ -118,7 +118,7 @@ Once you are satisfied with your PR you should ask someone to review it. Before 
 
 ## Release protocol
 
-### Before the release on pypi.org
+### Before the release
 
 1. Create a release branch by branching off from `dev`
     ```bash
@@ -131,7 +131,7 @@ Attention: Please work with release candidates (add `rc1` to the `version_num`, 
 3. Add the date of release in the `Changelog.md` in [ISO format](https://xkcd.com/1179/).
 4. After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it into `master`.
 
-### The actual release on pypi.org
+### The actual release
 1. Open a working python3 virtual environment and make sure you have the latest versions of setuptools and wheel installed:
 `python3 -m pip install --upgrade setuptools wheel twine`
 2. Delete `build/` and `dist/` directories (from previous release) to avoid errors.
