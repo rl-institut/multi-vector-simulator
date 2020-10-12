@@ -74,6 +74,6 @@ The following table lists the implemented benchmark tests which cover several fe
    * - Electrical Grid + Battery + Peak Demand Pricing
      - Battery is charged at times of peak demand and used when demand is larger
    * - Electrical Grid (Price as Time Series) + Heat Pump + Heat Grid
-     - Heat pump is used when :math:`\frac{electricity\_price}{COP} \lt heat\_grid\_price`
+     - Heat pump is used when :math:`\frac{electricity price}{COP} \lt heat grid price`
      
 More tests can still be implemented with regard to the investment model within the MVS. Also, components with two input sources can also be tested.
