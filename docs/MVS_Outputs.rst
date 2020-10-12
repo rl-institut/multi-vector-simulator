@@ -63,7 +63,7 @@ The LCOElectricity are then calculated with:
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
 Levelized Cost of Energy of Asset (LCOE_ASSET)
-################################
+##############################################
 
 This KPI measures the cost of generating 1 kWh for each asset in the system.
 It can be used to assess and compare the available alternative methods of energy production.
@@ -81,7 +81,7 @@ by dividing the total annuity :math:`a_i` of the asset :math:`i` by the total fl
 For assets in energyStorage, the MVS sums the annuity for `storage capacity` :math:`a_{i,sc}`, `input power` $a_i_ip$ and `output power` :math:`a_i_op` and divides it by the `output power` total flow :math:`\sum{t} E_i_op(t)`.
 
 .. math::
-        LCOE\_ASSET{i} = \frac{a_i_sc + a_i_ip + a_i_op}{\sum^{t} E_i_op(t)}
+        LCOE\_ASSET{i} = \frac{a_i_sc + a_i_ip + a_i_op}{\sum^{t}{E_i_op(t)}}
 
 If the total flow is 0 in any of the previous cases, then the LCOE_ASSET is set to None.
 
