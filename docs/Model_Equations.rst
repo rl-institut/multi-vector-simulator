@@ -32,7 +32,7 @@ The annual cost function of each asset includes the capital expenditure (investm
 .. math:: 
         CRF(T) = \frac{d \cdot (1+d)^T}{(1+d)^t - 1}
         
-
+.. math::
         capex_i \text{: specific investment costs [currency/unit]}
 
         n \text{: number of replacements of an asset within project lifetime T}
@@ -63,16 +63,7 @@ The residual value is also known as salvage value and it represents an estimate 
 Energy Balance Equation
 -----------------------
 
-One main constraint that the optimization model is subject to is the energy balance equation. The latter maintains equality between the incoming energy into a bus and the outgoing energy from that bus. This balancing equation is applicable to all bus types, be it electrical, thermal, hydrogen or any other energy carrier.
-
-.. math::
-        \sum E_{in,i}(t) - \sum E_{out,i}(t) = 0
-
-E_{in,i}: energy flowing from the asset to the bus
-
-E_{out,i}: energy flowing from the bus to the asset
-
-`or`
+One main constraint that the optimization model is subject to is the energy balance equation. The latter maintains equality between the incoming energy into a bus and the outgoing energy from that bus. This balancing equation is applicable to all bus types, be it electrical, thermal, hydrogen or for any other energy carrier.
 
 .. math::
         \sum E_{in,i}(t) - \sum E_{out,j}(t) = 0
