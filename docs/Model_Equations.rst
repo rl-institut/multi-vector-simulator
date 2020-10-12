@@ -14,15 +14,15 @@ Linear programming is a mathematical modelling and optimization technique for a 
 .. math::        
         E_i(t) \geq 0  \qquad  \forall t
 
-i: asset
+        i \text{: asset}
 
-a_i: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]
+        a_i \text{: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]}
 
-CAP_i: assetcapacity [kWp, kW, kWh]
+        CAP_i \text{: asset capacity [kWp, kW, kWh]}
 
-c_{var,i}: variable operational or dispatch cost [currency/kWh, currency/L]
+        c_{var,i} \text{: variable operational or dispatch cost [currency/kWh, currency/L]}
 
-E_i(t): asset dispatch [kWh]
+        E_i(t) \text{: asset dispatch [kWh]}
 
 The annual cost function of each asset includes the capital expenditure (investment cost) and residual value, as well as the operating expenses of each asset. It is expressed as follows:
 
@@ -31,21 +31,21 @@ The annual cost function of each asset includes the capital expenditure (investm
 .. math:: 
         CRF(T) = \frac{d \cdot (1+d)^T}{(1+d)^t - 1}
 
-capex_i: specific investment costs [currency/unit]
+        capex_i \text{: specific investment costs [currency/unit]}
 
-n: number of replacements of an asset within project lifetime T
+        n \text{: number of replacements of an asset within project lifetime T}
 
-t_a: asset lifetime [years]
+        t_a \text{: asset lifetime [years]}
 
-CRF: capital recovery factor
+        CRF \text{: capital recovery factor}
 
-c_{res,i}: residual value of asset i at the end of project lifetime T [currency/unit]
+        c_{res,i} \text{: residual value of asset i at the end of project lifetime T [currency/unit]}
 
-opex_i: annual operational and management costs [currency/unit/year]
+        opex_i \text{: annual operational and management costs [currency/unit/year]}
 
-d: discount factor
+        d \text{: discount factor}
 
-T: project lifetime [years]
+        T \text{: project lifetime [years]}
 
 The CRF is a ratio used to calculate the present value of the the annuity. The discount factor can be replaced by the weighted average cost of capital (WACC), calculated by the user. The lifetime of the asset t_a and the lifetime of the project T can be different from each other; hence, the number of replacements n is estimated using the equation below:
 
