@@ -62,36 +62,36 @@ The LCOElectricity are then calculated with:
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
-Levelized Cost of Energy of Asset (LCOE_ASSET)
+Levelized Cost of Energy of Asset (LCOE ASSET)
 ##############################################
 
 This KPI measures the cost of generating 1 kWh for each asset in the system.
 It can be used to assess and compare the available alternative methods of energy production.
-The levelized cost of energy of an asset (LCOE_ASSET) is usually obtained
+The levelized cost of energy of an asset (LCOE ASSET) is usually obtained
 by looking at the lifetime costs of building and operating the asset per unit of total energy throughput of an asset
 over the assumed lifetime [currency/kWh].
 
 Since not all assets are production assets, the MVS distinguishes between the type of assets.
-For assets in energyConversion and energyProduction the MVS calculates the LCOE_ASSET
+For assets in energyConversion and energyProduction the MVS calculates the LCOE ASSET
 by dividing the total annuity :math:`a_i` of the asset :math:`i` by the total flow :math:`\sum{t} E_i(t)`.
 
 .. math::
-        LCOE\_ASSET{i} = \frac{a_i}{\sum^{t} E_i(t)}
+        LCOE~ASSET_i = \frac{a_i}{\sum^{t} E_i(t)}
   
-For assets in energyStorage, the MVS sums the annuity for `storage capacity` :math:`a_{i,sc}`, `input power` $a_i_ip$ and `output power` :math:`a_i_op` and divides it by the `output power` total flow :math:`\sum{t} E_i_op(t)`.
+For assets in energyStorage, the MVS sums the annuity for `storage capacity` :math:`a_{i,sc}`, `input power` $a_{i,ip}$ and `output power` :math:`a_{i,op}` and divides it by the `output power` total flow :math:`\sum{t} E_{i,op}(t)`.
 
 .. math::
-        LCOE\_ASSET{i} = \frac{a_i_sc + a_i_ip + a_i_op}{\sum^{t}{E_i_op(t)}}
+        LCOE~ASSET_i = \frac{a_{i,sc} + a_{i,ip} + a_{i,op}}{\sum^{t}{E_{i,op}(t)}}
 
-If the total flow is 0 in any of the previous cases, then the LCOE_ASSET is set to None.
+If the total flow is 0 in any of the previous cases, then the LCOE ASSET is set to None.
 
 .. math::
-        LCOE\_ASSET{i} = None
+        LCOE~ASSET{i} = None
   
-For assets in energyConsumption, the MVS outputs 0 for the LCOE_ASSET.
+For assets in energyConsumption, the MVS outputs 0 for the LCOE ASSET.
 
 .. math::
-        LCOE\_ASSET{i} = 0
+        LCOE~ASSET{i} = 0
 
 
 Technical data
@@ -108,11 +108,11 @@ Describes the share of the MES demand that is supplied from renewable sources.
 .. math::
         RES &=\frac{\sum_i {E_{RES,generation} (i)⋅w_i}}{\sum_j {E_{generation}(j)⋅w_j}+\sum_k {E_{grid} (k)}}
 
-        with &i \epsilon [PV,Geothermal,…]
+        with &i \epsilon \text{[PV,Geothermal,…]}
 
-        &j \epsilon [generation assets 1,2,…]
+        &j \epsilon \text{[generation assets 1,2,…]}
 
-        &k \epsilon [DSO 1,2…]
+        &k \epsilon \text{[DSO 1,2…]}
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
