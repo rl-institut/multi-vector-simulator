@@ -23,6 +23,7 @@ Here is a template for new release sections
 
 ### Added
 - `E-Land_Requirements.rst`: Official E-Land requirement list as well as progress on functional and non-functional requirements (#590)
+- Add pytests for `E4.detect_excessive_excess_generation_in_bus()` (#591)
 
 ### Changed
 - Order of readthedocs content (#590)
@@ -30,6 +31,7 @@ Here is a template for new release sections
 ### Removed
 
 ### Fixed
+- RTD entry for defining parameters as timeseries (#597)
 
 ## [0.5.0] - 2020-10-05
 
@@ -41,6 +43,7 @@ Here is a template for new release sections
 - Requirement for time series of non-dispatchable sources in readthedocs (#498)
 - Provide a warning in case of excessive excess generation (#498)
 - Pytests for `C0.add_maximum_cap()`, renamed function into `C0.process_maximum_cap_constraint()` (#498)
+- Description of the inherited MVS limitations as well as the ones that can be addressed (#580)
 
 ### Changed
 - Modify `setup.py` to upload the code as package on pypi.org (#570)
