@@ -52,3 +52,28 @@ The adopted validation plan is part of the MVS’ entire development process and
   
 *	Sensitivity analysis, through which input-output transformations are studied to show the impact of changing the values of some input parameters.
 
+Implemented Tests
+#################
+
+The following table lists the implemented benchmark tests which cover several features of the MVS.
+
+.. list-table:: Benchmark Tests
+   :widths: 25 25
+   :header-rows: 1
+
+   * - Benchmark Test
+     - Expected Result
+   * - Electrical Grid + PV
+     - Maximum use of PV to serve the demand and the rest is compensated from the grid
+   * - Electrical Grid + PV + Battery
+     - Reduced excess energy compared to Grid + PV scenario to charge the battery
+   * - Electrical Grid + Diesel Generator
+     - The diesel generator is only used if its LCOE is less than the grid price
+   * - Electrical Grid + Battery
+     - The grid is only used to feed the load
+   * - Electrical Grid + Battery + Peak Demand Pricing
+     - Battery is charged at times of peak demand and used when demand is larger
+   * - Electrical Grid (Price as Time Series) + Heat Pump + Heat Grid
+     - Heat pump is used when :math:`\frac{electricity\_price}{COP} \lt heat\_grid\_price`
+     
+More tests can still be implemented with regard to the investment model within the MVS. Also, components with two input sources can also be tested.
