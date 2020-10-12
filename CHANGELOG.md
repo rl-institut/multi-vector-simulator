@@ -31,6 +31,7 @@ Here is a template for new release sections
 ### Removed
 
 ### Fixed
+- RTD entry for defining parameters as timeseries (#597)
 
 ## [0.5.0] - 2020-10-05
 
