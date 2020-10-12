@@ -14,7 +14,7 @@ Linear programming is a mathematical modelling and optimization technique for a 
 .. math::        
         E_i(t) \geq 0  \qquad  \forall t
         
-
+.. math::
         i \text{: asset}
 
         a_i \text{: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]}
