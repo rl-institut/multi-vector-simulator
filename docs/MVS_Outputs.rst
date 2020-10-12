@@ -70,22 +70,22 @@ This KPI measures the cost of generating 1 kWh for each asset in the system. It 
 Since not all assets are production assets, the MVS distinguishes between the type of assets. For assets in energyConversion and energyProduction the MVS calculates the LCOE_ASSET by dividing the total annuity $a_i$ of the asset $i$ by the total flow $\sum{t} E_i(t)$.
 
 .. math::
-  LCOE\_ASSET{i} = \frac{a_i}{\sum^{t} E_i(t)} 
+        LCOE\_ASSET{i} = \frac{a_i}{\sum^{t} E_i(t)}
   
 For assets in energyStorage, the MVS sums the annuity for "storage capacity" $a_i_sc$, "input power" $a_i_ip$ and "output power" $a_i_op$ and divides it by the "output power" total flow $\sum{t} E_i_op(t)$.
 
 .. math::
-  LCOE\_ASSET{i} = \frac{a_i_sc + a_i_ip + a_i_op}{\sum^{t} E_i_op(t)} 
+        LCOE\_ASSET{i} = \frac{a_i_sc + a_i_ip + a_i_op}{\sum^{t} E_i_op(t)}
 
 If the total flow is 0 in any of the previous cases, then the LCOE_ASSET is set to None.
 
 .. math::
-  LCOE\_ASSET{i} = None
+        LCOE\_ASSET{i} = None
   
 For assets in energyConsumption, the MVS outputs 0 for the LCOE_ASSET.
 
 .. math::
-  LCOE\_ASSET{i} = 0
+        LCOE\_ASSET{i} = 0
 
 
 Technical data
@@ -100,10 +100,13 @@ Renewable share (RES)
 Describes the share of the MES demand that is supplied from renewable sources.
 
 .. math::
-  RES =\frac{\sum_i {E_{RES,generation} (i)⋅w_i}}{\sum_j {E_{generation}(j)⋅w_j}+\sum_k {E_{grid} (k)}}
-  with i \epsilon [PV,Geothermal,…]
-  and j \epsilon [generation assets 1,2,…]
-  and  k \epsilon [DSO 1,2…]
+        RES &=\frac{\sum_i {E_{RES,generation} (i)⋅w_i}}{\sum_j {E_{generation}(j)⋅w_j}+\sum_k {E_{grid} (k)}}
+
+        with &i \epsilon [PV,Geothermal,…]
+
+        &j \epsilon [generation assets 1,2,…]
+
+        &k \epsilon [DSO 1,2…]
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
@@ -114,8 +117,9 @@ The total C02 emissions of the MES in question can be calculated
 with all aggregated energy flows from the generation assets and their subsequent emission factor:
 
 .. math::
-  CO2 Emissions= \sum_i {E_{gen} (i)⋅CO2_{eq} (i)}
-  with i \epsilon [generation assets 1,2,…]
+        CO2 Emissions &= \sum_i {E_{gen} (i)⋅CO2_{eq} (i)}
+
+        with &i \epsilon [generation assets 1,2,…]
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
@@ -139,8 +143,9 @@ this fact does not define how strongly interconnected its sectors are.
 To measure this, we propose to compare the energy flows in between the sectors to the energy demand supplied:
 
 .. math::
-   DSC=\frac{\sum_{i,j}{E_{conversion} (i,j)⋅w_i}}{\sum_i {E_{demand} (i)⋅w_i}}
-   with i,j \epsilon [Electricity,H2…]
+        DSC & =\frac{\sum_{i,j}{E_{conversion} (i,j)⋅w_i}}{\sum_i {E_{demand} (i)⋅w_i}}
+
+        With & i,j \epsilon [Electricity,H2…]
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
