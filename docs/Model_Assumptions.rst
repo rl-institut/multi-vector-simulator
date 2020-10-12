@@ -348,9 +348,9 @@ The equation to calculate the share also includes the energy carrier rating as d
 .. math:: 
         RES = \frac{\sum_i E_{RE,generation}(i) \cdot w_i}{\sum_i E_{RE,generation}(i) \cdot w_i + \sum_k E_{nonRE,generation}(k) \cdot w_k}
 
-i: renewable energy asset
+        i \text{: renewable energy asset}
 
-k: non-renewable energy asset
+        k \text{: non-renewable energy asset}
 
 :Reason:
 The MVS tool is a work in progress and this can still be addressed in the future.
