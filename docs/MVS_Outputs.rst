@@ -108,7 +108,7 @@ Describes the share of the MES demand that is supplied from renewable sources.
 .. math::
         RES &=\frac{\sum_i {E_{RES,generation} (i) \cdot w_i}}{\sum_j {E_{generation}(j) \cdot w_j}+\sum_k {E_{grid} (k)}}
 
-        with &i \epsilon \text{[PV,Geothermal,…]}
+        \text{with~} &i \epsilon \text{[PV,Geothermal,…]}
 
         &j \epsilon \text{[generation assets 1,2,…]}
 
@@ -125,7 +125,7 @@ with all aggregated energy flows from the generation assets and their subsequent
 .. math::
         CO2 Emissions &= \sum_i {E_{gen} (i) \cdot CO2_{eq} (i)}
 
-        with &i \epsilon \text{[generation assets 1,2,…]}
+        \text{with~} &i \epsilon \text{[generation assets 1,2,…]}
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
@@ -151,7 +151,7 @@ To measure this, we propose to compare the energy flows in between the sectors t
 .. math::
         DSC & =\frac{\sum_{i,j}{E_{conversion} (i,j) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
-        With & i,j \epsilon \text{[Electricity,H2…]}
+        \text{with~} & i,j \epsilon \text{[Electricity,H2…]}
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
