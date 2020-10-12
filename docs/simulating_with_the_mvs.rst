@@ -185,7 +185,7 @@ You can see an implemented example here, where the heat pump has a time-dependen
 
 The feature is tested with benchmark test `test_benchmark_feature_parameters_as_timeseries()`.
 
-Example input files, where at least one parameter is defined as a timeseries, be found here:
+Example input files, where at least one parameter is defined as a time series, can be found here:
 
 * `First example <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AFG_grid_heatpump_heat>`_: Defines the `energy_price` (`file <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/benchmark_test_inputs/AFG_grid_heatpump_heat/csv_elements/energyProviders.csv>`_) of an energy provider as a time series
 
