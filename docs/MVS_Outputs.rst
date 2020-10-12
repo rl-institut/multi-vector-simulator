@@ -106,7 +106,7 @@ Renewable share (RES)
 Describes the share of the MES demand that is supplied from renewable sources.
 
 .. math::
-        RES &=\frac{\sum_i {E_{RES,generation} (i)⋅w_i}}{\sum_j {E_{generation}(j)⋅w_j}+\sum_k {E_{grid} (k)}}
+        RES &=\frac{\sum_i {E_{RES,generation} (i) \cdot w_i}}{\sum_j {E_{generation}(j) \cdot w_j}+\sum_k {E_{grid} (k)}}
 
         with &i \epsilon \text{[PV,Geothermal,…]}
 
@@ -123,9 +123,9 @@ The total C02 emissions of the MES in question can be calculated
 with all aggregated energy flows from the generation assets and their subsequent emission factor:
 
 .. math::
-        CO2 Emissions &= \sum_i {E_{gen} (i)⋅CO2_{eq} (i)}
+        CO2 Emissions &= \sum_i {E_{gen} (i) \cdot CO2_{eq} (i)}
 
-        with &i \epsilon [generation assets 1,2,…]
+        with &i \epsilon \text{[generation assets 1,2,…]}
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
@@ -149,9 +149,9 @@ this fact does not define how strongly interconnected its sectors are.
 To measure this, we propose to compare the energy flows in between the sectors to the energy demand supplied:
 
 .. math::
-        DSC & =\frac{\sum_{i,j}{E_{conversion} (i,j)⋅w_i}}{\sum_i {E_{demand} (i)⋅w_i}}
+        DSC & =\frac{\sum_{i,j}{E_{conversion} (i,j) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
-        With & i,j \epsilon [Electricity,H2…]
+        With & i,j \epsilon \text{[Electricity,H2…]}
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
