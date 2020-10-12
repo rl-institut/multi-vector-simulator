@@ -13,10 +13,11 @@ Linear programming is a mathematical modelling and optimization technique for a 
         CAP_i \geq 0
 .. math::        
         E_i(t) \geq 0  \qquad  \forall t
+        
 
-i \text{: asset}
+        i \text{: asset}
 
-a_i \text{: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]}
+        a_i \text{: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]}
 
         CAP_i \text{: asset capacity [kWp, kW, kWh]}
 
@@ -30,6 +31,7 @@ The annual cost function of each asset includes the capital expenditure (investm
         a_i = \left( capex_i + \sum_{k=1}^{n} \frac{capex_i}{(1+d)^{k \cdot t_a}} - c_{res,i} \right) \cdot CRF(T) + opex_i
 .. math:: 
         CRF(T) = \frac{d \cdot (1+d)^T}{(1+d)^t - 1}
+        
 
         capex_i \text{: specific investment costs [currency/unit]}
 
