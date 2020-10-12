@@ -348,7 +348,7 @@ The equation to calculate the share also includes the energy carrier rating as d
 .. math:: 
         RES &= \frac{\sum_i E_{RE,generation}(i) \cdot w_i}{\sum_i E_{RE,generation}(i) \cdot w_i + \sum_k E_{nonRE,generation}(k) \cdot w_k}
 
-        with & i \text{: renewable energy asset}
+        \text{with~} & i \text{: renewable energy asset}
 
         & k \text{: non-renewable energy asset}
 
