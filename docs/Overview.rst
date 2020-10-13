@@ -88,3 +88,10 @@ For sensitivity analysis, the behaviour of the MVS is studied by testing the eff
      - Expected Result
    * - Comparing FIT to LCOE_ASSET
      - Invest is maximum allowed capacity of asset for FIT values larger than LCOE_ASSET
+     
+Comparison to Other Models
+##########################
+
+So far, the MVS' results for a sector coupled system (electricity + hydrogen) are compared to those of HOMER for the same exact system. This comparison is important to highlight the similarities and differences between the two optimization models. On the electricity side, most of the values are comparable and in the same order of magnitude. The differences mainly show on the hydrogen part in terms of investment in an electrolyzer capacity (component linking the two sectors) and the values related to that. On another note, both models have different approaches for calculating the value of the levelized cost of a certain energy carrier and therefore the values are apart. 
+
+This validation method is very much in practice. However, one model cannot absolutely validate another model or claim that one is better than the other. This is why the focus should be on testing the correctness, appropriateness and accuracy of a model vis-à-vis its purpose. Since the MVS is an open source tool, it is important to use a validated model for comparison, but also similar open source tools like urbs and Calliope for instance.
