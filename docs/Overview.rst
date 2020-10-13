@@ -55,12 +55,12 @@ The adopted validation plan is part of the MVS’ entire development process and
 Implemented Tests
 #################
 
-Unit tests and integration tests are gauged by using test coverage measurement. The MVS covers so far 80% of the modules and sub-modules as seen in the next figure. It also shows that the build is passing.
+Unit tests and integration tests are gauged by using test coverage measurement. The MVS covers so far 80% of the modules and sub-modules as seen in the next figure. Since those tests are automated, this coverage is updated for any changes in the model. The figure also shows that the build is currently passing.
 
 .. image:: images/Test_coverage.png
  :width: 200
 
-The following table lists the implemented benchmark tests which cover several features of the MVS.
+A benchmark is a point of reference against which results are compared to assess the operational validity of a model. Benchmark tests are not automated like unit and integration tests, hence it is necessary to check that they are passing for any implemented changes in the model. The following table lists the implemented benchmark tests which cover several features and functionalities of the MVS.
 
 .. list-table:: Benchmark Tests
    :widths: 25 25
