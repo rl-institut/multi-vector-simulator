@@ -57,6 +57,9 @@ Implemented Tests
 
 Unit tests and integration tests are gauged by using test coverage measurement. The MVS covers so far 80% of the modules and sub-modules as seen in the next figure.
 
+.. image:: images/Test_coverage.png
+ :width: 200
+
 The following table lists the implemented benchmark tests which cover several features of the MVS.
 
 .. list-table:: Benchmark Tests
