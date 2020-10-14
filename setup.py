@@ -7,7 +7,7 @@ https://github.com/pypa/sampleproject
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
-from os import path
+from os import path, listdir
 
 here = path.abspath(path.dirname(__file__))
 
@@ -179,7 +179,16 @@ setup(
         (
             "assets",
             ["report/assets/logo-eland-original.jpg", "report/assets/styles.css"],
-        )
+        ),
+        ("inputs", ["tests/inputs/mvs_config.json"]),
+        (
+            "inputs/time_series",
+            [
+                path.join("tests", "inputs", "time_series", fn)
+                for fn in listdir("tests/inputs/time_series")
+                if fn.endswith(".csv")
+            ],
+        ),
     ],  # Optional
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
