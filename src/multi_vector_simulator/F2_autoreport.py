@@ -614,7 +614,7 @@ def create_app(results_json, path_sim_output=None):
     marker = staticmap.CircleMarker(coords, "#13074f", 15)
     map_static.add_marker(marker)
     map_image = map_static.render(zoom=14)
-    map_image.save(os.path.join(REPORT_PATH, "assets", "proj_map_static.png"))
+    map_image.save(os.path.join(asset_folder, "proj_map_static.png"))
 
     dict_projectdata = {
         "Country": dfprojectData.country,
