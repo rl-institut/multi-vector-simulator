@@ -38,24 +38,21 @@ To set up the MVS, follow the steps below:
 
 * If python3 is not pre-installed: Install miniconda (for python 3.7: https://docs.conda.io/en/latest/miniconda.html)
 
-* Clone or download the latest [MVS release](https://github.com/rl-institut/multi-vector-simulator/releases)
-
-    `git clone https://github.com/rl-institut/multi-vector-simulator.git`
-
-    and move to the `multi-vector-simulator` folder
-
-* Download the [cbc-solver](https://projects.coin-or.org/Cbc) into your system from https://ampl.com/dl/open/cbc/ and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables  (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights). 
-
-    You can also follow the [steps](https://oemof.readthedocs.io/en/latest/installation_and_setup.html) from the oemof setup instructions
-
 * Open Anaconda prompt (or other software as Pycharm) to create and activate a virtual environment
 
     `conda create -n [your_env_name] python=3.6`
     `activate [your env_name]`
 
-* Install required packages from requirements.txt file using pip
 
-    `pip install -r requirements/default.txt`
+* Install the latest [MVS release](https://github.com/rl-institut/multi-vector-simulator/releases)
+
+    `pip install multi-vector-simulator`
+
+
+* Download the [cbc-solver](https://projects.coin-or.org/Cbc) into your system from https://ampl.com/dl/open/cbc/ and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables  (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights). 
+
+    You can also follow the [steps](https://oemof.readthedocs.io/en/latest/installation_and_setup.html) from the oemof setup instructions
+
 
 * Test if that the cbc solver is properly installed by typing
 
@@ -77,47 +74,23 @@ To set up the MVS, follow the steps below:
     *****************************
 
     ```
-    
-* Install the multi-vector-simulator package locally
 
-    `python setup.py install`
+* Test if the MVS installation was successful by executing
 
-* Test if the MVS is running by executing
+    `mvs_tool`
 
-    `python mvs_tool.py -i tests/inputs`
-    
-* You can also run all existing tests by executing
-
-    `pip install -r requirements/test.txt`
-    
-    `pytest tests/`
+This should create a folder `MVS_outputs` with the example simulation's results
     
 ## Using the MVS
 
 To run the MVS with custom inputs you have several options:
 
-##### 0) Use the default settings
 
-If you create a folder named `inputs` at the root of the repository (you can use the folder
-`input_template` for inspiration) it will be taken as default input folder and you can simply run
-
-    `python mvs_tool.py`
-
-A default output folder will be created, if you run the same simulation several time you would
- have to either overwrite the existing output file with
-
-    `python mvs_tool.py -f`
-
-Or provide another output folder's path
-
-  `python mvs_tool.py -o <path_to_other_output_folder>`
-
-
-##### 1) Use the command line
+##### Use the command line
 
 Edit the json input file (or csv files) and run
 
-  `python mvs_tool.py -i path_input_folder -ext json -o path_output_folder`
+    `mvs_tool -i path_input_folder -ext json -o path_output_folder`
 
 With 
 `path_input_folder`: path to folder with input data,
@@ -126,45 +99,90 @@ With
 
 and `path_output_folder`: path of the folder where simulation results should be stored.
 
-For more information about the possible command lines
+For more information about the possible command lines options
 
-`python mvs_tool.py -h`
+    `mvs_tool -h`
 
-##### 2) Use the `main()` function
+##### Use the `main()` function
+
+You can also execute the mvs within a script, for this you need to import
+
+```
+from multi_vector_simulator.cli import main
+
+```
+The possible arguments to this functions are:
+- `overwrite` (bool): Determines whether to replace existing results in `path_output_folder` with the results of the current simulation (True) or not (False) (Command line "-f"). Default: `False`.
+- `input_type` (str): Defines whether the input is taken from the `mvs_config.json` file ("json") or from csv files ('csv') located within <path_input_folder>/csv_elements/ (Command line "-ext"). Default: `json`.
+- `path_input_folder` (str): The path to the directory where the input CSVs/JSON files are located. Default: `inputs/` (Command line "-i").
+- `path_output_folder` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands (Command line "-o"). Default: `MVS_outputs/`.
+- `display_output` (str): Sets the level of displayed logging messages. Options: "debug", "info", "warning", "error". Default: "info".
+- `lp_file_output` (bool): Specifies whether linear equation system generated is saved as lp file. Default: False.
+- `pdf_report` (bool): Specify whether pdf report of the simulation's results is generated or not (Command line "-pdf"). Default: False.
+- `param save_png` (bool): Specify whether png figures with the simulation's results are generated or not (Command line "-png"). Default: False.
+
 
 Edit the csv files (or, for devs, the json file) and run the `main()` function. The following `kwargs` are possible:
 
-- `overwrite` (bool): Determines whether to replace existing results in `path_output_folder` with the results of the current simulation (True) or not (False). Default: `False`.
-- `input_type` (str): Defines whether the input is taken from the `mvs_config.json` file ("json") or from csv files ('csv') located within <path_input_folder>/csv_elements/. Default: `json`.
-- `path_input_folder` (str): The path to the directory where the input CSVs/JSON files are located. Default: `inputs/`.
-- `path_output_folder` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands. Default: `MVS_outputs/`.
-- `display_output` (str): Sets the level of displayed logging messages. Options: "debug", "info", "warning", "error". Default: "info".
-- `lp_file_output` (bool): Specifies whether linear equation system generated is saved as lp file. Default: False.
 
-## Generate pdf report
+##### Default settings
 
-### directly after running a simulation
+If you execute the `mvs_tool` command in a path where there is a folder named `inputs` (you can use the folder
+`input_template` for inspiration) this folder will be taken as default input folder and you can simply run
 
-Use the option `-pdf` in the command line  `python mvs_tool.py` to generate a pdf report in the
- simulation's output folder (default in `MVS_outputs/simulation_report.pdf`):
+    `mvs_tool`
 
- `python mvs_tool.py -pdf`
+A default output folder will be created, if you run the same simulation several time you would
+ have to either overwrite the existing output file with
+
+    `mvs_tool -f`
+
+Or provide another output folder's path
+
+    `mvs_tool -o <path_to_other_output_folder>`
+
+## Generate pdf report or an app in your browser to visualise the results of the simulation
+
+To use the report feature you need to install extra dependencies first
+
+    `pip install multi-vector-simulator[report]`
+
+### Generate a report after running a simulation
+
+Use the option `-pdf` in the command line  `mvs_tool` to generate a pdf report in the
+ simulation's output folder (by default in `MVS_outputs/report/simulation_report.pdf`):
+
+    `mvs_tool -pdf`
+
+### Generate only the figures of a simulation's results
+
+Use the option `-png` in the command line  `mvs_tool` to generate png figures of the results in the
+ simulation's output folder (by default in `MVS_outputs/`):
+
+    `mvs_tool -png`
+
 
 ### post-processing
 To generate a report of the simulation's results, run the following command **after** a simulation
  generated an output folder:
  
-`python mvs_report.py`
+    `mvs_report -i path_simulation_output_folder -o path_pdf_report`
 
-the report should appear in your browser (at http://127.0.0.1:8050) as an interactive Plotly Dash app.
+where `path_simulation_output_folder` should link to the folder of your simulation's output, or directly to a json file (default `MVS_outputs/json_input_processed.json`)
+and `path_pdf_report` is the path where the report should be saved as a pdf file.
+
+
+The report should appear in your browser (at http://127.0.0.1:8050) as an interactive Plotly Dash app.
 
 You can then print the report via your browser print functionality (ctrl+p), however the layout of
  the pdf report is only well optimized for chrome or chromimum browser.
 
-It is also possible to automatically save the report as pdf by using the option `-pdf`. By default
-, it will
-save the report in the `report` folder. See`python mvs_report.py -h` for more information about
-possible options. The css and images used to make the report pretty should be located under
+It is also possible to automatically save the report as pdf by using the option `-pdf`
+
+    `mvs_report -i path_simulation_output_folder -pdf`
+
+By default, it will save the report in a `report` folder within your simulation's output folder default (`MVS_outputs/report/`).
+See `mvs_report.py -h` for more information about possible options. The css and images used to make the report pretty should be located under
 `report/assets`.
 
 ## Contributing
