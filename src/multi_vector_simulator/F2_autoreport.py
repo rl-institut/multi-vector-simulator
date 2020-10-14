@@ -14,7 +14,6 @@ import dash_html_components as html
 import dash_core_components as dcc
 import dash_table
 import folium
-import git
 import pandas as pd
 import reverse_geocoder as rg
 import staticmap
@@ -654,12 +653,6 @@ def create_app(results_json, path_sim_output=None):
         + ")"
     )
 
-    releaseDesign = "0.0x"
-
-    # Getting the branch ID
-    repo = git.Repo(search_parent_directories=True)
-    # TODO: also extract branch name
-    branchID = repo.head.object.hexsha
 
     simDate = time.strftime("%Y-%m-%d")
 
@@ -715,7 +708,6 @@ def create_app(results_json, path_sim_output=None):
                         className="cell imp_info",
                         children=[
                             html.P(f"MVS Release: {version_num} ({version_date})"),
-                            html.P(f"Branch-id: {branchID}"),
                             html.P(f"Simulation date: {simDate}"),
                             html.Div(
                                 className="cell imp_info2",
