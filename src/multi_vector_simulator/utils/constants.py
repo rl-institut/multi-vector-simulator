@@ -302,7 +302,7 @@ DICT_PLOTS = {
         PLOTS_BUSSES: [],
         PLOTS_DEMANDS: [],
         PLOTS_RESOURCES: [],
-        PLOTS_ES: [],
+        PLOTS_ES: "",
         PLOTS_PERFORMANCE: [],
         PLOTS_COSTS: [],
     }

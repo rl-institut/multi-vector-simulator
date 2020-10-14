@@ -662,7 +662,7 @@ def create_app(results_json, path_sim_output=None):
 
     MAP_STATIC = encode_image_file(os.path.join(asset_folder, "proj_map_static.png"))
 
-    ENERGY_SYSTEM_GRAPH = encode_image_file(results_json[PATHS_TO_PLOTS][PLOTS_ES][0])
+    ENERGY_SYSTEM_GRAPH = encode_image_file(results_json[PATHS_TO_PLOTS][PLOTS_ES])
 
     # Determining the sectors which were simulated
 
