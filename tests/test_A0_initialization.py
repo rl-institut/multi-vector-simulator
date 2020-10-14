@@ -20,6 +20,7 @@ from _constants import (
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
     PDF_REPORT,
+    REPORT_FOLDER,
     PATH_INPUT_FILE,
 )
 
@@ -184,7 +185,7 @@ class TestProcessUserArguments:
     def test_if_pdf_opt_the_key_path_pdf_report_exists_in_user_inputs(self, m_args):
         user_inputs = A0.process_user_arguments()
         assert user_inputs["path_pdf_report"] == os.path.join(
-            self.test_out_path, PDF_REPORT
+            self.test_out_path, REPORT_FOLDER, PDF_REPORT
         )
         assert "path_png_figs" not in user_inputs.keys()
 
