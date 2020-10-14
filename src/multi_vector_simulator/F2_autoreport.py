@@ -570,7 +570,7 @@ def create_app(results_json, path_sim_output=None):
     ]
 
     app = dash.Dash(
-        __name__, assets_folder=asset_folder, external_stylesheets=external_stylesheets,
+        assets_folder=asset_folder, external_stylesheets=external_stylesheets,
     )
 
     # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
@@ -652,7 +652,6 @@ def create_app(results_json, path_sim_output=None):
         + str(results_json[PROJECT_DATA][SCENARIO_ID])
         + ")"
     )
-
 
     simDate = time.strftime("%Y-%m-%d")
 
