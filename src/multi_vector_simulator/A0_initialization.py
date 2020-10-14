@@ -52,6 +52,7 @@ from oemof.tools import logger
 
 from multi_vector_simulator.utils.constants import (
     REPO_PATH,
+    PACKAGE_PATH,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
     JSON_FNAME,
@@ -59,6 +60,7 @@ from multi_vector_simulator.utils.constants import (
     JSON_EXT,
     CSV_EXT,
     CSV_ELEMENTS,
+    INPUT_FOLDER,
     INPUTS_COPY,
     DEFAULT_MAIN_KWARGS,
     PDF_REPORT,
@@ -219,15 +221,12 @@ def check_input_folder(path_input_folder, input_type):
     :return: the json filename which will be used as input of the simulation
     """
 
-    # make the path absolute
-    if REPO_PATH not in os.path.abspath(path_input_folder):
-        path_input_folder = os.path.join(REPO_PATH, path_input_folder)
-
     logging.debug("Checking for inputs files")
 
     if input_type == JSON_EXT:
         path_input_file = os.path.join(path_input_folder, JSON_FNAME)
         if os.path.exists(path_input_file) is False:
+
             raise (
                 FileNotFoundError(
                     "Missing input json file!\n"
@@ -272,12 +271,6 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
     :param overwrite: boolean indicating what to do if the output folder exists already
     :return: the path to the folder stored in the output folder as copy of the input folder
     """
-
-    # make the path absolute
-    if REPO_PATH not in os.path.abspath(path_input_folder):
-        path_input_folder = os.path.join(REPO_PATH, path_input_folder)
-    if REPO_PATH not in os.path.abspath(path_output_folder):
-        path_output_folder = os.path.join(REPO_PATH, path_output_folder)
 
     path_output_folder_inputs = os.path.join(path_output_folder, INPUTS_COPY)
 
@@ -387,6 +380,13 @@ def process_user_arguments(
     if save_png is None:
         save_png = args.get(SAVE_PNG, DEFAULT_MAIN_KWARGS[SAVE_PNG])
 
+    # if the default input file does not exist, use package default input file
+    if (
+        path_input_folder == DEFAULT_INPUT_PATH
+        and os.path.exists(os.path.join(path_input_folder, JSON_FNAME)) is False
+    ):
+        path_input_folder = os.path.join(PACKAGE_PATH, INPUT_FOLDER)
+
     path_input_file = check_input_folder(path_input_folder, input_type)
     check_output_folder(path_input_folder, path_output_folder, overwrite)
 
@@ -403,7 +403,11 @@ def process_user_arguments(
 
     if pdf_report is True:
         user_input.update(
-            {"path_pdf_report": os.path.join(path_output_folder, PDF_REPORT)}
+            {
+                "path_pdf_report": os.path.join(
+                    path_output_folder, REPORT_FOLDER, PDF_REPORT
+                )
+            }
         )
 
     if save_png is True:
