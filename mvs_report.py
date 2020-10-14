@@ -16,54 +16,6 @@ ARG_REPORT_PATH = "report_path"
 PATH_SIM_OUTPUT = "output_folder"
 
 
-def report_arg_parser():
-    """Create a command line argument parser for MVS
-
-    usage: python mvs_report.py [-h] [-pdf [PRINT_REPORT]] [-i [OUTPUT_FOLDER]]
-                                [-o [REPORT_PATH]]
-
-    Display the report of a MVS simulation
-
-    optional arguments:
-      -h, --help           show this help message and exit
-      -pdf [PRINT_REPORT]  print the report as pdf (default: False)
-      -i [OUTPUT_FOLDER]   path to the simulation result json file
-                           'json_with_results.json'
-      -o [REPORT_PATH]     path to save the pdf report
-
-
-    :return: parser
-    """
-    parser = argparse.ArgumentParser(
-        prog="python mvs_report.py",
-        description="Display the report of a MVS simulation",
-    )
-    parser.add_argument(
-        "-pdf",
-        dest=ARG_PDF,
-        help="print the report as pdf (default: False)",
-        nargs="?",
-        const=True,
-        default=False,
-        type=bool,
-    )
-    parser.add_argument(
-        "-i",
-        dest=PATH_SIM_OUTPUT,
-        nargs="?",
-        type=str,
-        help="path to the simulation result json file 'json_with_results.json'",
-        default=os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS),
-    )
-    parser.add_argument(
-        "-o",
-        dest=ARG_REPORT_PATH,
-        nargs="?",
-        type=str,
-        help="path to save the pdf report",
-        default="",
-    )
-    return parser
 
 
 if __name__ == "__main__":

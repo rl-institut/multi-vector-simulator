@@ -49,6 +49,7 @@ import shutil
 
 from oemof.tools import logger
 
+
 from multi_vector_simulator.utils.constants import (
     REPO_PATH,
     DEFAULT_INPUT_PATH,
@@ -70,6 +71,13 @@ from multi_vector_simulator.utils.constants import (
     DISPLAY_OUTPUT,
     SAVE_PNG,
     LOGFILE,
+    REPORT_FOLDER,
+    OUTPUT_FOLDER,
+    PDF_REPORT,
+    JSON_WITH_RESULTS,
+    ARG_PDF,
+    ARG_REPORT_PATH,
+    PATH_SIM_OUTPUT,
 )
 from multi_vector_simulator.utils.constants_json_strings import LABEL
 
@@ -143,6 +151,56 @@ def create_parser():
         const=True,
         default=False,
         type=bool,
+    )
+    return parser
+
+
+def report_arg_parser():
+    """Create a command line argument parser for MVS
+
+    usage: python mvs_report.py [-h] [-pdf [PRINT_REPORT]] [-i [OUTPUT_FOLDER]]
+                                [-o [REPORT_PATH]]
+
+    Display the report of a MVS simulation
+
+    optional arguments:
+      -h, --help           show this help message and exit
+      -pdf [PRINT_REPORT]  print the report as pdf (default: False)
+      -i [OUTPUT_FOLDER]   path to the simulation result json file
+                           'json_with_results.json'
+      -o [REPORT_PATH]     path to save the pdf report
+
+
+    :return: parser
+    """
+    parser = argparse.ArgumentParser(
+        prog="python mvs_report.py",
+        description="Display the report of a MVS simulation",
+    )
+    parser.add_argument(
+        "-pdf",
+        dest=ARG_PDF,
+        help="print the report as pdf (default: False)",
+        nargs="?",
+        const=True,
+        default=False,
+        type=bool,
+    )
+    parser.add_argument(
+        "-i",
+        dest=PATH_SIM_OUTPUT,
+        nargs="?",
+        type=str,
+        help="path to the simulation result json file 'json_with_results.json'",
+        default=os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS),
+    )
+    parser.add_argument(
+        "-o",
+        dest=ARG_REPORT_PATH,
+        nargs="?",
+        type=str,
+        help="path to save the pdf report",
+        default="",
     )
     return parser
 
