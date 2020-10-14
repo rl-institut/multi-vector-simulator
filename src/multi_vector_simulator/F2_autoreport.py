@@ -782,8 +782,7 @@ def create_app(results_json, path_sim_output=None):
                                             html.Iframe(
                                                 srcDoc=open(
                                                     os.path.join(
-                                                        asset_folder,
-                                                        "proj_map",
+                                                        asset_folder, "proj_map",
                                                     ),
                                                     "r",
                                                 ).read(),
@@ -795,7 +794,7 @@ def create_app(results_json, path_sim_output=None):
                                                 },
                                             ),
                                             html.Div(
-                                                className="staticimagepdf",
+                                                className="staticimagepdf print-only",
                                                 children=[
                                                     insert_body_text(
                                                         "The blue dot in the below map indicates "
