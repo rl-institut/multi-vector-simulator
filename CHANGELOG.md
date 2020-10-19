@@ -28,7 +28,7 @@ Here is a template for new release sections
 
 ### Changed
 - Order of readthedocs content (#590)
-- Update validation plan description (#593)
+- Update validation plan description in RTD (#593)
 
 ### Removed
 
