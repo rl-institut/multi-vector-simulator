@@ -155,6 +155,47 @@ To measure this, we propose to compare the energy flows in between the sectors t
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
+Self consumption (SC)
+###############################
+
+The self consumption describes the fraction of all renewable energy that is consumed by the system itself.
+
+.. math::
+        SC &=\frac{\sum_{i,j} {E_{generation} (i,j) \cdot w_i} - E_{gridfeedin}(i,j) \cdot w_i}{\sum_{i,j} {E_{generation} (i,j) \cdot w_i}}
+
+        \text{with~} &i \epsilon \text{[PV,Geothermal,…]}
+
+        &j \epsilon \text{[generation assets 1,2,…]}
+
+[1] https://www.sciencedirect.com/science/article/pii/S0960148119315216
+[2] https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf
+
+self_sufficiency (SS)
+###############################
+
+The self sufficiency describes the fraction of the total demand that can be covered by renewable generated energy see [1] and [2]
+
+.. math::
+        SS &=\frac{\sum_{i,j} {E_{generation} (i,j) \cdot w_i} - E_{gridfeedin}(i,j) \cdot w_i}{\sum_i {E_{demand} (i) \cdot w_i}}
+
+        \text{with~} &i \epsilon \text{[PV,Geothermal,…]}
+
+        &j \epsilon \text{[generation assets 1,2,…]}
+
+
+Electrical Autonomy (EA)
+###############################
+
+The degree of electrical autonomy describes the relation of the total renewale generated energy to the total demand of the system. See [2]
+
+.. math::
+        EA &=\frac{\sum_{i,j} {E_{generation} (i,j) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+
+        \text{with~} &i \epsilon \text{[PV,Geothermal,…]}
+
+        &j \epsilon \text{[generation assets 1,2,…]}
+
+
 Onsite energy fraction
 ######################
 
