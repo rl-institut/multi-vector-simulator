@@ -76,24 +76,24 @@ from multi_vector_simulator.utils.constants_json_strings import (
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
 
-dict_economic = {
+DICT_ECONOMIC = {
     CURR: "Euro",
     DISCOUNTFACTOR: {VALUE: 0.08},
     PROJECT_DURATION: {VALUE: 20},
 }
 
-dict_economic.update(
+DICT_ECONOMIC.update(
     {
         ANNUITY_FACTOR: {
             VALUE: C2.annuity_factor(
-                project_life=dict_economic[PROJECT_DURATION][VALUE],
-                discount_factor=dict_economic[DISCOUNTFACTOR][VALUE],
+                project_life=DICT_ECONOMIC[PROJECT_DURATION][VALUE],
+                discount_factor=DICT_ECONOMIC[DISCOUNTFACTOR][VALUE],
             )
         },
         CRF: {
             VALUE: C2.crf(
-                project_life=dict_economic[PROJECT_DURATION][VALUE],
-                discount_factor=dict_economic[DISCOUNTFACTOR][VALUE],
+                project_life=DICT_ECONOMIC[PROJECT_DURATION][VALUE],
+                discount_factor=DICT_ECONOMIC[DISCOUNTFACTOR][VALUE],
             )
         },
     }
