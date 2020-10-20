@@ -184,7 +184,7 @@ The self sufficiency describes the fraction of the total demand that can be cove
 
 
 Electrical Autonomy (EA)
-###############################
+###################
 
 The degree of electrical autonomy describes the relation of the total renewale generated energy to the total demand of the system. See [2]
 
