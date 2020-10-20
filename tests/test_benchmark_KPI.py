@@ -163,15 +163,6 @@ class Test_Economic_KPI:
             sep=",",
             index_col=0,
         )
-        # Define numbers in the csv as int/floats instead of str, but leave row "group" as a string
-        groups = expected_values.loc["group"]
-        # need to transpose the DataFrame before applying the conversion and retranspose after
-        # the conversion because it does not follow the tidy data principle
-        # see https://en.wikipedia.org/wiki/Tidy_data for more info
-        expected_values = expected_values.T.apply(
-            pd.to_numeric, errors="ignore", downcast="integer"
-        ).T
-        expected_values.loc["group"] = groups
         expected_values.loc[FLOW] = [0, 0, 0, 0, 0]
 
         KEYS_TO_BE_EVALUATED = [
