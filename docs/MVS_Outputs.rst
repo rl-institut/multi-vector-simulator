@@ -170,8 +170,8 @@ The self-consumption describes the fraction of all renewable energy that is cons
 [1] https://www.sciencedirect.com/science/article/pii/S0960148119315216
 [2] https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf
 
-self_sufficiency (SS)
-###############################
+Self-sufficiency (SS)
+###############
 
 The self sufficiency describes the fraction of the total demand that can be covered by renewable generated energy see [1] and [2]
 
