@@ -155,8 +155,8 @@ To measure this, we propose to compare the energy flows in between the sectors t
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
-Self consumption (SC)
-###############################
+Self-consumption (SC)
+ ################
 
 The self-consumption describes the fraction of all renewable energy that is consumed by the system itself.
 
