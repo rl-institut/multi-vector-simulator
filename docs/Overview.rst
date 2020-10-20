@@ -52,8 +52,8 @@ The adopted validation plan is part of the MVS’ entire development process and
   
 *	Sensitivity analysis, through which input-output transformations are studied to show the impact of changing the values of some input parameters.
 
-Implemented Tests
-#################
+Validation techniques applied to the MVS
+###############################
 
 Unit tests and integration tests are gauged by using test coverage measurement. The MVS covers so far 80% of the modules and sub-modules as seen in the next figure. Since those tests are automated, this coverage is updated for any changes in the model. The figure also shows that the build is currently passing.
 
