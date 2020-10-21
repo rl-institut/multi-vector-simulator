@@ -28,8 +28,10 @@ Here is a template for new release sections
 
 ### Changed
 - Order of readthedocs content (#590)
+- Column headers of csv input files need to be unique amongst all files, info added to documentation (#602)
 
 ### Removed
+- Parameter label from input csv files; label is now set by filenames (`project_data`, `economic_data`, `simulation_settings`) and column headers (`energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
 
 ### Fixed
 - RTD entry for defining parameters as timeseries (#597)
