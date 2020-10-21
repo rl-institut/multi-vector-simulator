@@ -227,15 +227,18 @@ class Test_Economic_KPI:
         )
 
         # Check if asset costs were correctly calculated in C2 and E2
-        for asset in expected_values.columns:
+        for asset in expected_values.index:
+
+            asset_group = expected_values.loc[asset, "group"]
+
             # determine asset dictionary (special for storages)
             if asset in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
-                asset_data = data[expected_values[asset]["group"]]["storage_01"][asset]
+                asset_data = data[asset_group]["storage_01"][asset]
             else:
-                asset_data = data[expected_values[asset]["group"]][asset]
+                asset_data = data[asset_group][asset]
             # assertion
             for key in KEYS_TO_BE_EVALUATED:
-                assert expected_values[asset][key] == pytest.approx(
+                assert expected_values.loc[asset, key] == pytest.approx(
                     asset_data[key][VALUE], rel=1e-3
                 ), f"Parameter {key} of asset {asset} is not of expected value."
 
