@@ -17,7 +17,6 @@
             "unit": "factor",
             "value": 0.06
         },
-        "label": "economic_data",
         "project_duration": {
             "unit": "year",
             "value": 30
@@ -1292,7 +1291,6 @@
     },
     "project_data": {
         "country": "Norway",
-        "label": "project_data",
         "latitude": "59.17905",
         "longitude": "10.95787",
         "project_id": "1",
@@ -1309,7 +1307,6 @@
             "unit": "days",
             "value": 2
         },
-        "label": "simulation_settings",
         "output_lp_file": {
             "unit": "bool",
             "value": false
