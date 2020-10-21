@@ -187,7 +187,7 @@ def create_input_json(
     with open(output_filename, "w") as outfile:
         json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
     logging.info(
-        f"Json file created successully from csv's and stored into {output_filename}\n"
+        f"Json file created successfully from csv's and stored into {output_filename}\n"
     )
     logging.debug("Json created successfully from csv.")
     if pass_back:
