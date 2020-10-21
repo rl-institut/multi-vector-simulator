@@ -472,14 +472,14 @@ More tests can still be implemented with regard to:
 Sensitivity Analysis Tests
 ##########################
 
-For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. The implemented sensitivity analysis test is shown here below with the resulting graph. More information can be found `here <https://repository.tudelft.nl/islandora/object/uuid%3A50c283c7-64c9-4470-8063-140b56f18cfe?collection=education>`_ on page 54.
+For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff (FIT) for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. The implemented sensitivity analysis test is shown here below with the resulting graph. More information can be found `here <https://repository.tudelft.nl/islandora/object/uuid%3A50c283c7-64c9-4470-8063-140b56f18cfe?collection=education>`_ on page 54.
 
-* Comparing FIT to LCOE_ASSET: Invest is maximum allowed capacity of asset for FIT values larger than LCOE_ASSET
+* Comparing FIT to LCOE_ASSET: Investment in maximum allowed capacity of asset for FIT values larger than LCOE_ASSET
 
 .. image:: images/Sensitivity_1.png
  :width: 200
 
-This test can be translated into a benchmark test so that it becomes automatized. The idea is to check that for every value of the feed-in-tariff greater than LCOE_ASSET, the MVS is investing in the entire allowed maximum capacity of the asset. More input-output transformations for sensitivity analyses can be investigated such as:
+This test can be translated into a benchmark test so that it becomes automatized. The idea is to check that for every value of FIT greater than LCOE_ASSET, the MVS is investing in the entire allowed maximum capacity of the asset. More input-output transformations for sensitivity analyses can be investigated such as:
 
 * Checking the randomness of supply between the electricity grid and a diesel generator when fuel_price/generator_efficiency is equal to electricity_price/transformer_efficiency
 
