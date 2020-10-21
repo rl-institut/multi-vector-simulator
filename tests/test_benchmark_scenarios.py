@@ -296,9 +296,9 @@ class TestACElectricityBus:
             sheet_name=bus_suffix("Heat"),
         )
         # create dict with electricity prices
-        electricity_price = data[ENERGY_PROVIDERS]["Grid_DSO"][ENERGY_PRICE][
-            VALUE
-        ]["data"]
+        electricity_price = data[ENERGY_PROVIDERS]["Grid_DSO"][ENERGY_PRICE][VALUE][
+            "data"
+        ]
         # compare cost of using heat pump with electricity price to heat price
         cost_of_using_heatpump = "electricity_price[i] / data[ENERGY_CONVERSION]['heat_pump'][EFFICIENCY][VALUE] comp.data[ENERGY_PROVIDERS]['Heat_DSO'][ENERGY_PRICE][VALUE]"
         cost_of_using_heat_dso = (
