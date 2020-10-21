@@ -119,7 +119,7 @@ The possible arguments to this functions are:
 - `display_output` (str): Sets the level of displayed logging messages. Options: "debug", "info", "warning", "error". Default: "info".
 - `lp_file_output` (bool): Specifies whether linear equation system generated is saved as lp file. Default: False.
 - `pdf_report` (bool): Specify whether pdf report of the simulation's results is generated or not (Command line "-pdf"). Default: False.
-- `param save_png` (bool): Specify whether png figures with the simulation's results are generated or not (Command line "-png"). Default: False.
+- `save_png` (bool): Specify whether png figures with the simulation's results are generated or not (Command line "-png"). Default: False.
 
 
 Edit the csv files (or, for devs, the json file) and run the `main()` function. The following `kwargs` are possible:
