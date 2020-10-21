@@ -441,7 +441,7 @@ As mentioned in :ref:`validation-plan`, the MVS is validated using three validat
 Unit and Integration Tests
 ##########################
 
-Unit tests and integration tests are gauged by using test coverage measurement. The MVS covers so far 80% of the modules and sub-modules as seen in the next figure. Since those tests are automated, this coverage is updated for any changes in the model.
+The goal is to have unit tests for each single function of the MVS, and integration tests for the larger modules. Unit tests and integration tests are gauged by using test coverage measurement. Examples of those tests can be found `here <https://github.com/rl-institut/multi-vector-simulator/tree/validation_plan/tests>`_  and it is possible to distinguish them from other tests from the nomination that refers to the names of the source modules (e.g., A0, A1, B0, etc.). The MVS covers so far 80% of the modules and sub-modules as seen in the next figure. Since those tests are automated, this coverage is updated for any changes in the model.
 
 .. image:: images/Test_coverage.png
  :width: 200
