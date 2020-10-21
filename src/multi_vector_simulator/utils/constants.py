@@ -41,7 +41,7 @@ ASSET_FOLDER = "assets"
 # variables used for the pdf report parser
 ARG_PDF = "print_report"
 ARG_REPORT_PATH = "report_path"
-PATH_SIM_OUTPUT = "output_folder"
+ARG_PATH_SIM_OUTPUT = "output_folder"
 
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)

@@ -79,7 +79,7 @@ from multi_vector_simulator.utils.constants import (
     JSON_WITH_RESULTS,
     ARG_PDF,
     ARG_REPORT_PATH,
-    PATH_SIM_OUTPUT,
+    ARG_PATH_SIM_OUTPUT,
 )
 from multi_vector_simulator.utils.constants_json_strings import LABEL
 
@@ -190,7 +190,7 @@ def report_arg_parser():
     )
     parser.add_argument(
         "-i",
-        dest=PATH_SIM_OUTPUT,
+        dest=ARG_PATH_SIM_OUTPUT,
         nargs="?",
         type=str,
         help="path to the simulation result json file 'json_with_results.json'",

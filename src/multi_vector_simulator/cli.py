@@ -54,7 +54,7 @@ from multi_vector_simulator.utils.constants import (
     PDF_REPORT,
     ARG_PDF,
     ARG_REPORT_PATH,
-    PATH_SIM_OUTPUT,
+    ARG_PATH_SIM_OUTPUT,
 )
 
 
@@ -197,7 +197,7 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
     if pdf is None:
         pdf = args.get(ARG_PDF, False)
     if path_simulation_output_json is None:
-        path_simulation_output_json = args.get(PATH_SIM_OUTPUT)
+        path_simulation_output_json = args.get(ARG_PATH_SIM_OUTPUT)
 
     if path_pdf_report is None:
         path_pdf_report = args.get(ARG_REPORT_PATH)
