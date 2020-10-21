@@ -453,15 +453,15 @@ A benchmark is a point of reference against which results are compared to assess
 
 * Electricity Grid + PV (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AB_grid_PV>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L63>`_): Maximum use of PV to serve the demand and the rest is compensated from the grid
    
-* Electricity Grid + PV + Battery: Reduced excess energy compared to Grid + PV scenario to charge the battery
+* Electricity Grid + PV + Battery (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/ABE_grid_PV_battery>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L124>`_): Reduced excess energy compared to Grid + PV scenario to charge the battery
    
-* Electricity Grid + Diesel Generator: The diesel generator is only used if its LCOE is less than the grid price
+* Electricity Grid + Diesel Generator (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AD_grid_diesel>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L157>`_): The diesel generator is only used if its LCOE is less than the grid price
    
-* Electricity Grid + Battery: The grid is only used to feed the load
+* Electricity Grid + Battery (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AE_grid_battery>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L96>`_): The grid is only used to feed the load
    
-* Electricity Grid + Battery + Peak Demand Pricing: Battery is charged at times of peak demand and used when demand is larger
+* Electricity Grid + Battery + Peak Demand Pricing (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AE_grid_battery_peak_pricing>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L192>`_): Battery is charged at times of peak demand and used when demand is larger
    
-* Electricity Grid (Price as Time Series) + Heat Pump + Heat Grid: Heat pump is used when electricity_price/COP is less than the heat grid price
+* Electricity Grid (Price as Time Series) + Heat Pump + Heat Grid (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AFG_grid_heatpump_heat>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L276>`_): Heat pump is used when electricity_price/COP is less than the heat grid price
      
 More tests can still be implemented with regard to:
 
