@@ -695,7 +695,6 @@ def add_storage_components(storage_filename, input_directory):
             SPECIFIC_COSTS,
             EFFICIENCY,
             INSTALLED_CAP,
-            LABEL,
             LIFETIME,
             SPECIFIC_COSTS_OM,
             UNIT,
