@@ -163,7 +163,7 @@ class Test_Economic_KPI:
             sep=",",
             index_col=0,
         )
-        expected_values.loc[FLOW] = [0, 0, 0, 0, 0]
+
 
         KEYS_TO_BE_EVALUATED = [
             LIFETIME_SPECIFIC_COST_OM,
@@ -186,45 +186,50 @@ class Test_Economic_KPI:
             LCOE_ASSET,
         ]
 
-        # Derive expected values dependent on actual dispatch of the asset(s)
-        for asset in expected_values.columns:
-            # determine asset dictionary (special for storages)
-            if asset in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
-                asset_data = data[expected_values[asset]["group"]]["storage_01"][asset]
-            else:
-                asset_data = data[expected_values[asset]["group"]][asset]
-            # Get dispatch of the assets
-            expected_values[asset][FLOW] = asset_data[FLOW]
-            # Calculate cost parameters that are dependent on the flow
-            expected_values[asset][COST_DISPATCH] = expected_values[asset][
-                LIFETIME_PRICE_DISPATCH
-            ] * sum(expected_values[asset][FLOW])
-            expected_values[asset][COST_OPERATIONAL_TOTAL] = (
-                expected_values[asset][COST_DISPATCH] + expected_values[asset][COST_OM]
-            )
-            expected_values[asset][COST_TOTAL] = (
-                expected_values[asset][COST_OPERATIONAL_TOTAL]
-                + expected_values[asset][COST_INVESTMENT]
-            )
-            # Process cost
-            expected_values[asset][ANNUITY_OM] = (
-                expected_values[asset][COST_OPERATIONAL_TOTAL]
-                * dict_economic[CRF][VALUE]
-            )
-            expected_values[asset][ANNUITY_TOTAL] = (
-                expected_values[asset][COST_TOTAL] * dict_economic[CRF][VALUE]
-            )
-            if sum(expected_values[asset][FLOW]) == 0:
-                expected_values[asset][LCOE_ASSET] = 0
-            else:
-                expected_values[asset][LCOE_ASSET] = expected_values[asset][
-                    ANNUITY_TOTAL
-                ] / sum(expected_values[asset][FLOW])
-
-        # Store to csv to enable manual check, eg. of LCOE_A. Only previously empty rows have been changed.
-        expected_values.drop("flow").to_csv(
-            os.path.join(TEST_OUTPUT_PATH, use_case, expected_value_file), sep=","
-        )
+        # # Derive expected values dependent on actual dispatch of the asset(s)
+        # for asset in expected_values.columns:
+        #     # determine asset dictionary (special for storages)
+        #     result_key = expected_values[asset]["group"]
+        #
+        #     if asset in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
+        #         asset_data = data[result_key]["storage_01"][asset]
+        #     else:
+        #         asset_data = data[result_key][asset]
+        #
+        #     # Get dispatch of the assets
+        #     expected_values[asset][FLOW] = asset_data[FLOW]
+        #
+        #     # Calculate cost parameters that are dependent on the flow
+        #     expected_values[asset][COST_DISPATCH] = expected_values[asset][
+        #         LIFETIME_PRICE_DISPATCH
+        #     ] * sum(expected_values[asset][FLOW])
+        #     expected_values[asset][COST_OPERATIONAL_TOTAL] = (
+        #         expected_values[asset][COST_DISPATCH] + expected_values[asset][COST_OM]
+        #     )
+        #     expected_values[asset][COST_TOTAL] = (
+        #         expected_values[asset][COST_OPERATIONAL_TOTAL]
+        #         + expected_values[asset][COST_INVESTMENT]
+        #     )
+        #
+        #     # Process cost
+        #     expected_values[asset][ANNUITY_OM] = (
+        #         expected_values[asset][COST_OPERATIONAL_TOTAL]
+        #         * DICT_ECONOMIC[CRF][VALUE]
+        #     )
+        #     expected_values[asset][ANNUITY_TOTAL] = (
+        #         expected_values[asset][COST_TOTAL] * DICT_ECONOMIC[CRF][VALUE]
+        #     )
+        #     if sum(expected_values[asset][FLOW]) == 0:
+        #         expected_values[asset][LCOE_ASSET] = 0
+        #     else:
+        #         expected_values[asset][LCOE_ASSET] = expected_values[asset][
+        #             ANNUITY_TOTAL
+        #         ] / sum(expected_values[asset][FLOW])
+        #
+        # # Store to csv to enable manual check, eg. of LCOE_A. Only previously empty rows have been changed.
+        # expected_values.drop("flow").to_csv(
+        #     os.path.join(TEST_OUTPUT_PATH, use_case, expected_value_file), sep=","
+        # )
 
         # Check if asset costs were correctly calculated in C2 and E2
         for asset in expected_values.index:
