@@ -179,7 +179,8 @@ def copy_report_assets(path_destination_folder):
 
     Parameters
     ----------
-    path_destination_folder
+    path_destination_folder: str
+        path where the default report css files and logo should be copied
 
     Returns
     -------
