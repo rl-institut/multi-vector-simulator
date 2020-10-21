@@ -414,3 +414,76 @@ It also results in two optimized capacities for one logical unit.
 
 This limitation is to be addressed with a constraint which links both capacities of one logical unit,
 and therefore solves both the problem to attribute costs and the previously differing capacities.
+
+.. _validation-methodology:
+
+Validation Methodology
+----------------------
+
+As mentioned in :ref:`validation-plan`, the MVS is validated using three validation methods: conceptual model validation, model verification and operational validity.
+
+**Conceptual model validation** consists of looking into the underlying theories and assumptions. Therefore, the conceptual validation scheme includes a comprehensive review of the generated equations by the oemof-solph python library and the components’ models. Next step is to try and adapt them to a sector coupled example with specific constraints. Tracing and examining the flowchart is also considered as part of this validation type :ref:`RST Flowchart`. The aim is to assess the reasonability of the model behavior through pre-requisite knowledge; this technique is known as face validity. 
+
+**Model verification** is related to computer programming and looks into whether the code is a correct representation of the conceptual model. To accomplish this, static testing methods are used to validate the output with respect to an input. Unit tests and integration tests, using proof of correctness techniques, are integrated within the code and evaluate the output of the MVS for any change occuring as they are automated. Unit tests target a single unit such as an individual component, while integration tests target more general parts such as entire modules. Both tests are implemented as pytests for the MVS, which allows automatized testing. 
+
+**Operational validity** assesses the model’s output with respect to the required accuracy. In order to achieve that, several validation techniques are used, namely:
+
+* **Graphical display**, which is the use of model generated or own graphs for result interpretation. Graphs are simultaneously used with other validation techniques to inspect the results;
+
+*	**Benchmark testing**, through which scenarios are created with different constraints and component combinations, and the output is calculated and compared to the expected one to evaluate the performance of the model;
+  
+*	**Extreme scenarios** (e.g., drastic meteorological conditions, very high costs, etc.) are created to make sure the simulation runs through and check if the output behavior is still valid by the use of graphs and qualitative analysis;
+  
+*	**Comparison to other validated model**, which compares the results of a case study simulated with the model at hand to the results of a validated optimization model in order to identify the similarities and differences in results;
+  
+*	**Sensitivity analysis**, through which input-output transformations are studied to show the impact of changing the values of some input parameters.
+
+Validation techniques applied to the MVS
+########################################
+
+Unit tests and integration tests are gauged by using test coverage measurement. The MVS covers so far 80% of the modules and sub-modules as seen in the next figure. Since those tests are automated, this coverage is updated for any changes in the model.
+
+.. image:: images/Test_coverage.png
+ :width: 200
+
+A benchmark is a point of reference against which results are compared to assess the operational validity of a model. Benchmark tests are not automated like unit and integration tests, hence it is necessary to check that they are passing for any implemented changes in the model. The following table lists the implemented benchmark tests which cover several features and functionalities of the MVS.
+
+.. list-table:: Benchmark Tests
+   :widths: 25 25
+   :header-rows: 1
+
+   * - Benchmark Test
+     - Expected Result
+   * - Electrical Grid + PV
+     - Maximum use of PV to serve the demand and the rest is compensated from the grid
+   * - Electrical Grid + PV + Battery
+     - Reduced excess energy compared to Grid + PV scenario to charge the battery
+   * - Electrical Grid + Diesel Generator
+     - The diesel generator is only used if its LCOE is less than the grid price
+   * - Electrical Grid + Battery
+     - The grid is only used to feed the load
+   * - Electrical Grid + Battery + Peak Demand Pricing
+     - Battery is charged at times of peak demand and used when demand is larger
+   * - Electrical Grid (Price as Time Series) + Heat Pump + Heat Grid
+     - Heat pump is used when electricity_price/COP is less than the heat grid price
+     
+More tests can still be implemented with regard to the investment model within the MVS. Also, components with two input sources can also be tested.
+
+For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. More input-output transformations can be investigated such as checking the randomness of supply between the electrical grid and a diesel generator when fuel_price/generator_efficiency is equal to electricity_price/transformer_efficiency. Another sensitivity analysis case could be used to know if a diesel generator actually replaces the consumption from the grid at times of peak demand--i.e., dispatch_price is less or equal to peak_demand_charge. The table below lists the implemented sensitivity analysis tests.
+
+.. list-table:: Sensitivity Analyses
+   :widths: 25 25
+   :header-rows: 1
+
+   * - Sensitivity Analysis Test
+     - Expected Result
+   * - Comparing FIT to LCOE_ASSET
+     - Invest is maximum allowed capacity of asset for FIT values larger than LCOE_ASSET
+     
+Comparison to Other Models
+##########################
+
+So far, the MVS' results for a sector coupled system (electricity + hydrogen) are compared to those of HOMER for the same exact system. This comparison is important to highlight the similarities and differences between the two optimization models. On the electricity side, most of the values are comparable and in the same order of magnitude. The differences mainly show on the hydrogen part in terms of investment in an electrolyzer capacity (component linking the two sectors) and the values related to that. On another note, both models have different approaches for calculating the value of the levelized cost of a certain energy carrier and therefore the values are apart. 
+
+This validation method is very much in practice. However, one model cannot absolutely validate another model or claim that one is better than the other. This is why the focus should be on testing the correctness, appropriateness and accuracy of a model vis-à-vis its purpose. Since the MVS is an open source tool, it is important to use a validated model for comparison, but also similar open source tools like urbs and Calliope for instance.
+
