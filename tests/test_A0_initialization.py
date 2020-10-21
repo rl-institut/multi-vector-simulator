@@ -24,7 +24,7 @@ from _constants import (
     PATH_INPUT_FILE,
 )
 
-PARSER = A0.create_parser()
+PARSER = A0.mvs_arg_parser()
 
 
 class TestProcessUserArguments:
@@ -255,7 +255,7 @@ TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "other")
 
 class TestCommandLineInput:
 
-    parser = A0.create_parser()
+    parser = A0.mvs_arg_parser()
 
     def test_input_folder(self):
         parsed = self.parser.parse_args(["-i", "input_folder"])

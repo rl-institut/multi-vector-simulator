@@ -84,7 +84,7 @@ from multi_vector_simulator.utils.constants import (
 from multi_vector_simulator.utils.constants_json_strings import LABEL
 
 
-def create_parser():
+def mvs_arg_parser():
     """Create a command line argument parser for MVS
 
     :return: parser
@@ -350,7 +350,7 @@ def process_user_arguments(
     logging.debug("Get user inputs from console")
 
     # Parse the arguments from the command line
-    parser = create_parser()
+    parser = mvs_arg_parser()
     args = vars(parser.parse_args())
 
     # Give priority from user input kwargs over command line arguments
