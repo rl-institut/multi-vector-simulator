@@ -448,7 +448,7 @@ Unit tests and integration tests are gauged by using test coverage measurement. 
 
 A benchmark is a point of reference against which results are compared to assess the operational validity of a model. Benchmark tests are also automated like unit and integration tests, hence it is necessary to check that they are always passing for any implemented changes in the model. The implemented benchmark tests, which cover several features and functionalities of the MVS, are listed here below.
 
-* Electricity Grid + PV ([data](multi-vector-simulator/tests/benchmark_test_inputs/AB_grid_PV/)/[pytest](https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L63): Maximum use of PV to serve the demand and the rest is compensated from the grid
+* Electricity Grid + PV [data](multi-vector-simulator/tests/benchmark_test_inputs/AB_grid_PV/) and [pytest](https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L63): Maximum use of PV to serve the demand and the rest is compensated from the grid
    
 * Electricity Grid + PV + Battery: Reduced excess energy compared to Grid + PV scenario to charge the battery
    
