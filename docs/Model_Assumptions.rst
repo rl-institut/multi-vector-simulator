@@ -446,39 +446,25 @@ Unit tests and integration tests are gauged by using test coverage measurement. 
 .. image:: images/Test_coverage.png
  :width: 200
 
-A benchmark is a point of reference against which results are compared to assess the operational validity of a model. Benchmark tests are also automated like unit and integration tests, hence it is necessary to check that they are always passing for any implemented changes in the model. The following table lists the implemented benchmark tests which cover several features and functionalities of the MVS.
+A benchmark is a point of reference against which results are compared to assess the operational validity of a model. Benchmark tests are also automated like unit and integration tests, hence it is necessary to check that they are always passing for any implemented changes in the model. The implemented benchmark tests, which cover several features and functionalities of the MVS, are listed here below.
 
-.. list-table:: Benchmark Tests
-   :widths: 25 25
-   :header-rows: 1
-
-   * - Benchmark Test
-     - Expected Result
-   * - Electricity Grid + PV
-     - Maximum use of PV to serve the demand and the rest is compensated from the grid
-   * - Electricity Grid + PV + Battery
-     - Reduced excess energy compared to Grid + PV scenario to charge the battery
-   * - Electricity Grid + Diesel Generator
-     - The diesel generator is only used if its LCOE is less than the grid price
-   * - Electricity Grid + Battery
-     - The grid is only used to feed the load
-   * - Electricity Grid + Battery + Peak Demand Pricing
-     - Battery is charged at times of peak demand and used when demand is larger
-   * - Electricity Grid (Price as Time Series) + Heat Pump + Heat Grid
-     - Heat pump is used when electricity_price/COP is less than the heat grid price
+* Electricity Grid + PV: Maximum use of PV to serve the demand and the rest is compensated from the grid
+   
+* Electricity Grid + PV + Battery: Reduced excess energy compared to Grid + PV scenario to charge the battery
+   
+* Electricity Grid + Diesel Generator: The diesel generator is only used if its LCOE is less than the grid price
+   
+* Electricity Grid + Battery: The grid is only used to feed the load
+   
+* Electricity Grid + Battery + Peak Demand Pricing: Battery is charged at times of peak demand and used when demand is larger
+   
+* Electricity Grid (Price as Time Series) + Heat Pump + Heat Grid: Heat pump is used when electricity_price/COP is less than the heat grid price
      
 More tests can still be implemented with regard to the investment model within the MVS. Also, components with two input sources can also be tested.
 
-For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. More input-output transformations can be investigated such as checking the randomness of supply between the electricity grid and a diesel generator when fuel_price/generator_efficiency is equal to electricity_price/transformer_efficiency. Another sensitivity analysis case could be used to know if a diesel generator actually replaces the consumption from the grid at times of peak demand--i.e., dispatch_price is less or equal to peak_demand_charge. The table below lists the implemented sensitivity analysis tests.
+For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. More input-output transformations can be investigated such as checking the randomness of supply between the electricity grid and a diesel generator when fuel_price/generator_efficiency is equal to electricity_price/transformer_efficiency. Another sensitivity analysis case could be used to know if a diesel generator actually replaces the consumption from the grid at times of peak demand--i.e., dispatch_price is less or equal to peak_demand_charge. The implemented sensitivity analysis tests are shown here below.
 
-.. list-table:: Sensitivity Analyses
-   :widths: 25 25
-   :header-rows: 1
-
-   * - Sensitivity Analysis Test
-     - Expected Result
-   * - Comparing FIT to LCOE_ASSET
-     - Invest is maximum allowed capacity of asset for FIT values larger than LCOE_ASSET
+* Comparing FIT to LCOE_ASSET: Invest is maximum allowed capacity of asset for FIT values larger than LCOE_ASSET
      
 Comparison to Other Models
 ##########################
