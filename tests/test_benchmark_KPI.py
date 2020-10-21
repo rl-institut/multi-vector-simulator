@@ -262,8 +262,9 @@ class Test_Economic_KPI:
         )
         aggregated_demand = demand.sum()[0]
 
-        # Compute the aggregated_annuity
+        # Compute the aggregated annuity and costs (NPC)
         aggregated_annuity = 0
+        aggregated_costs = 0
 
         for asset_group in (ENERGY_CONSUMPTION, ENERGY_PRODUCTION, ENERGY_STORAGE):
             for asset in data[asset_group]:
@@ -272,9 +273,11 @@ class Test_Economic_KPI:
                     for storage_type in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
                         asset_data = data[asset_group][asset][storage_type]
                         aggregated_annuity += asset_data[ANNUITY_TOTAL][VALUE]
+                        aggregated_costs += asset_data[COST_TOTAL][VALUE]
                 else:
                     asset_data = data[asset_group][asset]
                     aggregated_annuity += asset_data[ANNUITY_TOTAL][VALUE]
+                    aggregated_costs += asset_data[COST_TOTAL][VALUE]
 
         # Compute the lcoe for this simple case (single demand)
         lcoe = aggregated_annuity / aggregated_demand
@@ -283,7 +286,12 @@ class Test_Economic_KPI:
         ]
         assert lcoe == pytest.approx(
             mvs_lcoe, rel=1e-2
-        ), f"Parameter {LCOE_ASSET} of asset is not of expected value (benchmark of {lcoe} versus computed value of {mvs_lcoe}."
+        ), f"Parameter {LCOE_ASSET} of system is not of expected value (benchmark of {lcoe} versus computed value of {mvs_lcoe}."
+
+        mvs_costs = data[KPI][KPI_SCALARS_DICT]["costs_total"]
+        assert aggregated_costs == pytest.approx(
+            mvs_costs, rel=1e-2
+        ), f"Parameter {COST_TOTAL} of system is not of expected value (benchmark of {aggregated_costs} versus computed value of {mvs_costs}."
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
