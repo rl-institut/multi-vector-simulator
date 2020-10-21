@@ -438,13 +438,16 @@ As mentioned in :ref:`validation-plan`, the MVS is validated using three validat
   
 *	**Sensitivity analysis**, through which input-output transformations are studied to show the impact of changing the values of some input parameters.
 
-Validation techniques applied to the MVS
-########################################
+Unit and Integration Tests
+##########################
 
 Unit tests and integration tests are gauged by using test coverage measurement. The MVS covers so far 80% of the modules and sub-modules as seen in the next figure. Since those tests are automated, this coverage is updated for any changes in the model.
 
 .. image:: images/Test_coverage.png
  :width: 200
+
+Benchmark Tests
+###############
 
 A benchmark is a point of reference against which results are compared to assess the operational validity of a model. Benchmark tests are also automated like unit and integration tests, hence it is necessary to check that they are always passing for any implemented changes in the model. The implemented benchmark tests, which cover several features and functionalities of the MVS, are listed here below.
 
@@ -466,10 +469,19 @@ More tests can still be implemented with regard to:
 
 * Components with two input sources
 
-For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. More input-output transformations can be investigated such as checking the randomness of supply between the electricity grid and a diesel generator when fuel_price/generator_efficiency is equal to electricity_price/transformer_efficiency. Another sensitivity analysis case could be used to know if a diesel generator actually replaces the consumption from the grid at times of peak demand--i.e., dispatch_price is less or equal to peak_demand_charge. The implemented sensitivity analysis tests are shown here below.
+Sensitivity Analysis Tests
+##########################
+
+For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. The implemented sensitivity analysis tests are shown here below.
 
 * Comparing FIT to LCOE_ASSET: Invest is maximum allowed capacity of asset for FIT values larger than LCOE_ASSET
      
+More input-output transformations can be investigated such as:
+
+* Checking the randomness of supply between the electricity grid and a diesel generator when fuel_price/generator_efficiency is equal to electricity_price/transformer_efficiency
+
+* Checking if a diesel generator actually replaces the consumption from the grid at times of peak demand--i.e., dispatch_price is less or equal to peak_demand_charge
+
 Comparison to Other Models
 ##########################
 
