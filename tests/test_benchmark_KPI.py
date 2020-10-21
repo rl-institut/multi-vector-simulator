@@ -20,8 +20,10 @@ import multi_vector_simulator.C2_economic_functions as C2
 from _constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
+    JSON_WITH_RESULTS,
     TEST_REPO_PATH,
     CSV_EXT,
+    TIME_SERIES,
 )
 
 from multi_vector_simulator.utils.constants import (
@@ -71,6 +73,14 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_GENERATION_IN_LES,
+    ENERGY_CONVERSION,
+    ENERGY_CONSUMPTION,
+    ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
+    ENERGY_BUSSES,
+    ENERGY_PROVIDERS,
+    KPI,
+    KPI_SCALARS_DICT,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -231,12 +241,12 @@ class Test_Economic_KPI:
         #     os.path.join(TEST_OUTPUT_PATH, use_case, expected_value_file), sep=","
         # )
 
-        # Check if asset costs were correctly calculated in C2 and E2
+        # Compare asset costs calculated in C2 and E2 with benchmark data from csv file
         for asset in expected_values.index:
 
             asset_group = expected_values.loc[asset, "group"]
 
-            # determine asset dictionary (special for storages)
+            # determine asset dictionnary (special for storages)
             if asset in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
                 asset_data = data[asset_group]["storage_01"][asset]
             else:
@@ -246,6 +256,34 @@ class Test_Economic_KPI:
                 assert expected_values.loc[asset, key] == pytest.approx(
                     asset_data[key][VALUE], rel=1e-3
                 ), f"Parameter {key} of asset {asset} is not of expected value."
+
+        demand = pd.read_csv(
+            os.path.join(TEST_INPUT_PATH, use_case, TIME_SERIES, "demand.csv"), sep=",",
+        )
+        aggregated_demand = demand.sum()[0]
+
+        # Compute the aggregated_annuity
+        aggregated_annuity = 0
+
+        for asset_group in (ENERGY_CONSUMPTION, ENERGY_PRODUCTION, ENERGY_STORAGE):
+            for asset in data[asset_group]:
+                # for storage we look at the annuity of the in and out flows and storage capacity
+                if asset_group == ENERGY_STORAGE:
+                    for storage_type in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
+                        asset_data = data[asset_group][asset][storage_type]
+                        aggregated_annuity += asset_data[ANNUITY_TOTAL][VALUE]
+                else:
+                    asset_data = data[asset_group][asset]
+                    aggregated_annuity += asset_data[ANNUITY_TOTAL][VALUE]
+
+        # Compute the lcoe for this simple case (single demand)
+        lcoe = aggregated_annuity / aggregated_demand
+        mvs_lcoe = data[KPI][KPI_SCALARS_DICT][
+            "Levelized costs of electricity equivalent"
+        ]
+        assert lcoe == pytest.approx(
+            mvs_lcoe, rel=1e-2
+        ), f"Parameter {LCOE_ASSET} of asset is not of expected value (benchmark of {lcoe} versus computed value of {mvs_lcoe}."
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
