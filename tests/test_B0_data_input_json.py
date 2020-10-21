@@ -34,7 +34,7 @@ def test_load_json_overwrite_input_folder_from_json():
     assert dict_values[SIMULATION_SETTINGS][PATH_INPUT_FOLDER] == "test"
 
 
-PARSER = A0.create_parser()
+PARSER = A0.mvs_arg_parser()
 
 
 class TestTemporaryJsonFileDisposal:

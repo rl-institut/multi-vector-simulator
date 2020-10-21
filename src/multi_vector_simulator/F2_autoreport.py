@@ -14,7 +14,6 @@ import dash_html_components as html
 import dash_core_components as dcc
 import dash_table
 import folium
-import git
 import pandas as pd
 import reverse_geocoder as rg
 import staticmap
@@ -33,9 +32,10 @@ logging.getLogger("pyppeteer").setLevel(pyppeteer_level)
 flask_log = logging.getLogger("werkzeug")
 flask_log.setLevel(logging.ERROR)
 
+from multi_vector_simulator.utils import copy_report_assets
+
 from multi_vector_simulator.utils.constants import (
     REPO_PATH,
-    REPORT_PATH,
     PATH_OUTPUT_FOLDER,
     PATHS_TO_PLOTS,
     OUTPUT_FOLDER,
@@ -531,7 +531,7 @@ def encode_image_file(img_path):
 
 
 # Styling of the report
-def create_app(results_json):
+def create_app(results_json, path_sim_output=None):
     r"""Initializes the app and calls all the other functions, resulting in the web app as well as pdf.
 
     This function specifies the layout of the web app, loads the external styling sheets, prepares the necessary data
@@ -542,11 +542,21 @@ def create_app(results_json):
     results_json: json results file
         This file is the result of the simulation and contains all the data necessary to generate the auto-report.
 
+    path_sim_output: str
+        Path to the mvs simulation's output files' folder
+        Default: output path saved in the result_json
+
     Returns
     -------
     app: instance of the Dash class within the dash library
         This app holds together all the html elements wrapped in Python, necessary for the rendering of the auto-report.
     """
+
+    if path_sim_output is None:
+        path_sim_output = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
+
+    # create a "report" folder containing an "asset" folder
+    asset_folder = copy_report_assets(path_sim_output)
 
     # external CSS stylesheets
     external_stylesheets = [
@@ -560,9 +570,7 @@ def create_app(results_json):
     ]
 
     app = dash.Dash(
-        __name__,
-        assets_folder=os.path.join(REPORT_PATH, "assets"),
-        external_stylesheets=external_stylesheets,
+        assets_folder=asset_folder, external_stylesheets=external_stylesheets,
     )
 
     # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
@@ -593,7 +601,7 @@ def create_app(results_json):
         tooltip=tooltip,
         icon=folium.Icon(color="red", icon="glyphicon glyphicon-flash"),
     ).add_to(mapy)
-    mapy.save(os.path.join(REPORT_PATH, "assets", "proj_map"))
+    mapy.save(os.path.join(asset_folder, "proj_map"))
 
     # Adds a staticmap to the PDF
 
@@ -605,7 +613,7 @@ def create_app(results_json):
     marker = staticmap.CircleMarker(coords, "#13074f", 15)
     map_static.add_marker(marker)
     map_image = map_static.render(zoom=14)
-    map_image.save(os.path.join(REPORT_PATH, "assets", "proj_map_static.png"))
+    map_image.save(os.path.join(asset_folder, "proj_map_static.png"))
 
     dict_projectdata = {
         "Country": dfprojectData.country,
@@ -645,24 +653,15 @@ def create_app(results_json):
         + ")"
     )
 
-    releaseDesign = "0.0x"
-
-    # Getting the branch ID
-    repo = git.Repo(search_parent_directories=True)
-    # TODO: also extract branch name
-    branchID = repo.head.object.hexsha
-
     simDate = time.strftime("%Y-%m-%d")
 
     ELAND_LOGO = encode_image_file(
-        os.path.join(REPORT_PATH, "assets", "logo-eland-original.jpg")
+        os.path.join(asset_folder, "logo-eland-original.jpg")
     )
 
-    MAP_STATIC = encode_image_file(
-        os.path.join(REPORT_PATH, "assets", "proj_map_static.png")
-    )
+    MAP_STATIC = encode_image_file(os.path.join(asset_folder, "proj_map_static.png"))
 
-    ENERGY_SYSTEM_GRAPH = encode_image_file(results_json[PATHS_TO_PLOTS][PLOTS_ES][0])
+    ENERGY_SYSTEM_GRAPH = encode_image_file(results_json[PATHS_TO_PLOTS][PLOTS_ES])
 
     # Determining the sectors which were simulated
 
@@ -677,12 +676,11 @@ def create_app(results_json):
     df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
     df_kpi_scalars = convert_scalars_to_dataframe(results_json)
 
-    output_path = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
     warnings_dict = parse_simulation_log(
-        path_log_file=os.path.join(output_path, LOGFILE), log_type="WARNING",
+        path_log_file=os.path.join(path_sim_output, LOGFILE), log_type="WARNING",
     )
     errors_dict = parse_simulation_log(
-        path_log_file=os.path.join(output_path, LOGFILE), log_type="ERROR",
+        path_log_file=os.path.join(path_sim_output, LOGFILE), log_type="ERROR",
     )
 
     # App layout and populating it with different elements
@@ -709,7 +707,6 @@ def create_app(results_json):
                         className="cell imp_info",
                         children=[
                             html.P(f"MVS Release: {version_num} ({version_date})"),
-                            html.P(f"Branch-id: {branchID}"),
                             html.P(f"Simulation date: {simDate}"),
                             html.Div(
                                 className="cell imp_info2",
@@ -776,9 +773,7 @@ def create_app(results_json):
                                             html.Iframe(
                                                 srcDoc=open(
                                                     os.path.join(
-                                                        REPORT_PATH,
-                                                        "assets",
-                                                        "proj_map",
+                                                        asset_folder, "proj_map",
                                                     ),
                                                     "r",
                                                 ).read(),
@@ -790,7 +785,7 @@ def create_app(results_json):
                                                 },
                                             ),
                                             html.Div(
-                                                className="staticimagepdf",
+                                                className="staticimagepdf print-only",
                                                 children=[
                                                     insert_body_text(
                                                         "The blue dot in the below map indicates "
