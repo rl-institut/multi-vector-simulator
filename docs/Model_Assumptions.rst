@@ -472,10 +472,13 @@ More tests can still be implemented with regard to:
 Sensitivity Analysis Tests
 ##########################
 
-For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. The implemented sensitivity analysis tests are shown here below.
+For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. The implemented sensitivity analysis test is shown here below with the resulting graph.
 
 * Comparing FIT to LCOE_ASSET: Invest is maximum allowed capacity of asset for FIT values larger than LCOE_ASSET
-     
+
+.. image:: images/Sensitivity_1.png
+ :width: 200
+
 More input-output transformations can be investigated such as:
 
 * Checking the randomness of supply between the electricity grid and a diesel generator when fuel_price/generator_efficiency is equal to electricity_price/transformer_efficiency
