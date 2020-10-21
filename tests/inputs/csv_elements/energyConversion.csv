@@ -1,5 +1,4 @@
-,unit,storage_charge_controller_in,storage_charge_controller_out,solar_inverter_01,transformer_station_in,transformer_station_out,diesel_generator
-label,str,Charge Contoller ESS Li-Ion (charge),Charge Contoller ESS Li-Ion (discharge),Solar inverter (mono),Transformer station (DSO) consumption,Transformer station (DSO) feedin,Backup diesel generator
+,unit,Charge_contoller_ESS_Li-Ion_(charge),Charge_contoller_ESS_Li-Ion_(discharge),solar_inverter_(mono),transformer_station_(DSO)_consumption,Transformer_station_(DSO)_feedin,Backup_diesel_generator
 unit,str,kW,kW,kW,kVA,kVA,kW
 optimizeCap,bool,True,True,True,False,False,True
 maximumCap,None or float,None,None,None,None,None,1

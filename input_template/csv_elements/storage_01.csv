@@ -1,5 +1,4 @@
 ,unit,storage capacity,input power,output power
-label,str,,,
 unit,str,,,
 installedCap,unit,,,
 age_installed,year,,,

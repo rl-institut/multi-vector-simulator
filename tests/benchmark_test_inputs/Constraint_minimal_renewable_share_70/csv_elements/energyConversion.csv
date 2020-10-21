@@ -6,7 +6,6 @@ efficiency,factor
 inflow_direction,str
 installedCap,kW
 maximumCap,kW
-label,str
 lifetime,year
 specific_costs_om,currency/kW/year
 dispatch_price,currency/kWh
