@@ -164,6 +164,12 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
 
     """Display the report of a MVS simulation
 
+    Command line use:
+
+    .. code-block:: bash
+
+        mvs_report [-h] [-i [PATH_SIM_OUTPUT]] [-o [REPORT_PATH]] [-pdf]
+
     optional command line arguments:
       -h, --help           show this help message and exit
       -pdf [PRINT_REPORT]  print the report as pdf (default: False)

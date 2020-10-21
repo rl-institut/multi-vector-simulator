@@ -13,6 +13,13 @@ Usage from root of repository:
     python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]] [-o [PATH_OUTPUT_FOLDER]]
     [-log [{debug,info,error,warning}]] [-f [OVERWRITE]] [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
 
+Usage when multi-vector-simulator is installed as a package:
+
+.. code-block:: bash
+
+    mvs_tool [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]] [-o [PATH_OUTPUT_FOLDER]]
+    [-log [{debug,info,error,warning}]] [-f [OVERWRITE]] [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
+
 Process MVS arguments
 
 optional arguments:
@@ -87,6 +94,48 @@ from multi_vector_simulator.utils.constants_json_strings import LABEL
 def mvs_arg_parser():
     """Create a command line argument parser for MVS
 
+    Usage from root of repository:
+
+    .. code-block:: bash
+
+        python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]] [-o [PATH_OUTPUT_FOLDER]]
+        [-log [{debug,info,error,warning}]] [-f [OVERWRITE]] [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
+
+    Usage when multi-vector-simulator is installed as a package:
+
+    .. code-block:: bash
+
+        mvs_tool [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]] [-o [PATH_OUTPUT_FOLDER]]
+        [-log [{debug,info,error,warning}]] [-f [OVERWRITE]] [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
+
+    Process MVS arguments
+
+    optional arguments:
+        -h, --help
+            show this help message and exit
+
+        -i [PATH_INPUT_FOLDER]
+            path to the input folder
+
+        -ext [{json,csv}]
+            type (json or csv) of the input files (default: 'json')
+
+        -o [PATH_OUTPUT_FOLDER]
+            path to the output folder for the simulation's results
+
+        -log [{debug,info,error,warning}]
+            level of logging in the console
+
+        -f [OVERWRITE]
+            overwrite the output folder if True (default: False)
+
+        -pdf [PDF_REPORT]
+            generate a pdf report of the simulation if True (default: False)
+
+        -png [SAVE_PNG]
+            generate png figures of the simulation in the output_folder if True (default: False)
+
+
     :return: parser
     """
     parser = argparse.ArgumentParser(
@@ -160,17 +209,25 @@ def mvs_arg_parser():
 def report_arg_parser():
     """Create a command line argument parser for MVS
 
-    usage: python mvs_report.py [-h] [-pdf [PRINT_REPORT]] [-i [OUTPUT_FOLDER]]
-                                [-o [REPORT_PATH]]
+    Usage when multi-vector-simulator is installed as a package:
 
-    Display the report of a MVS simulation
+    .. code-block:: bash
+
+        mvs_report [-h] [-i [PATH_SIM_OUTPUT]] [-o [REPORT_PATH]] [-pdf]
+
+    Process mvs report command line arguments
 
     optional arguments:
-      -h, --help           show this help message and exit
-      -pdf [PRINT_REPORT]  print the report as pdf (default: False)
-      -i [OUTPUT_FOLDER]   path to the simulation result json file
-                           'json_with_results.json'
-      -o [REPORT_PATH]     path to save the pdf report
+      -h, --help
+        show this help message and exit
+
+      -pdf [PRINT_REPORT]
+        print the report as pdf (default: False)
+
+      -i [OUTPUT_FOLDER]
+        path to the simulation result json file 'json_with_results.json'
+      -o [REPORT_PATH]
+        path to save the pdf report
 
 
     :return: parser
