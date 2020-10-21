@@ -446,7 +446,7 @@ Unit tests and integration tests are gauged by using test coverage measurement. 
 .. image:: images/Test_coverage.png
  :width: 200
 
-A benchmark is a point of reference against which results are compared to assess the operational validity of a model. Benchmark tests are not automated like unit and integration tests, hence it is necessary to check that they are passing for any implemented changes in the model. The following table lists the implemented benchmark tests which cover several features and functionalities of the MVS.
+A benchmark is a point of reference against which results are compared to assess the operational validity of a model. Benchmark tests are also automated like unit and integration tests, hence it is necessary to check that they are always passing for any implemented changes in the model. The following table lists the implemented benchmark tests which cover several features and functionalities of the MVS.
 
 .. list-table:: Benchmark Tests
    :widths: 25 25
