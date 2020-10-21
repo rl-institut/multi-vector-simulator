@@ -706,4 +706,7 @@ def add_storage_components(storage_filename, input_directory):
             parameters=parameters,
             asset_is_a_storage=True,
         )
+        # add labels to storage
+        for key, item in single_dict.items():
+            item[LABEL] = " ".join([storage_filename, key])
         return single_dict
