@@ -43,6 +43,10 @@ from multi_vector_simulator.utils.constants import (
     ECONOMIC_DATA,
     PROJECT_DATA,
     CONSTRAINTS,
+    ENERGY_CONSUMPTION,
+    ENERGY_CONVERSION,
+    ENERGY_PRODUCTION,
+    ENERGY_PROVIDERS,
     STORAGE_FILENAME,
     TYPE_BOOL,
     TYPE_STR,
@@ -157,6 +161,15 @@ def create_input_json(
             if filename in [PROJECT_DATA, ECONOMIC_DATA, SIMULATION_SETTINGS]:
                 # use filename as label
                 single_dict[filename][LABEL] = filename
+            elif filename in [
+                ENERGY_CONSUMPTION,
+                ENERGY_CONVERSION,
+                ENERGY_PRODUCTION,
+                ENERGY_PROVIDERS,
+            ]:
+                # use column names as labels, replace underscores and capitalize
+                for key, item in single_dict[filename].items():
+                    item[LABEL] = key
             input_json.update(single_dict)
         elif "storage_" in filename:
             list_assets.append(filename)
