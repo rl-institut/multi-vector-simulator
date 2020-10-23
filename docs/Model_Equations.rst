@@ -75,5 +75,8 @@ E_{out,j}: energy flowing from the bus to asset j
 It is very important to note that assets i and j can be the same asset (e.g., battery) however, one of the energy flowing values E_{in} or E_{out} should be zero at the same time step t.
 
 
-Case Study -- UVTgv Campus
---------------------------
+Example: Sector Coupled Energy System Scenario
+----------------------------------------------
+
+.. image:: images/23-10-2020_sector_coupled_example.png
+ :width: 600
