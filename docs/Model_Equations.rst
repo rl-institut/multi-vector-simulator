@@ -177,3 +177,53 @@ Non-Dispatchable Source Equations
         CAP_{pv} \text{: PV panel capacity [kWp]}
 
         \beta_{pv} \text{: instantaneous PV specific yield [kWh/kWp]}
+        
+Battery Storage Model
+#####################
+
+.. math::   
+        E_{bat}(t) = E_{bat}(t - 1) + E_{bat,in}(t) \cdot \eta_{bat,in} - \frac{E_{bat,out}}{\eta_{bat,out}} - E_{bat}(t - 1) \cdot \epsilon \qquad  \forall t
+        
+        CAP_{bat} \cdot SOC_{min} \leq E_{bat}(t) \leq CAP_{bat} \cdot SOC_{max} \qquad  \forall t
+        
+        0 \leq E_{bat}(t) - E_{bat}(t - 1) \leq CAP_{bat} \cdot C_{rate,in} \qquad  \forall t
+        
+        0 \leq E_{bat}(t - 1) - E_{bat}(t) \leq CAP_{bat} \cdot C_{rate,out} \qquad  \forall t
+
+.. math::
+        E_{bat} \text{: energy stored in the battery at time t}
+        
+        E_{bat,in} \text{: battery charging energy}
+        
+        \eta_{bat,in} \text{: battery charging efficiency}
+        
+        E_{bat,out} \text{: battery discharging energy}
+        
+        \eta_{bat,out} \text{: battery discharging efficiency}
+        
+        \epsilon \text{: decay per time step}
+        
+        \CAP_{bat} \text{: battery capacity [kWh]}
+        
+        SOC_{min} \text{: minimum state of charge}
+        
+        SOC_{max} \text{: maximum state of charge}
+        
+        C_{rate,in} \text{: battery charging rate}
+        
+        C_{rate,in} \text{: battery discharging rate}
+ 
+DC Electricity Bus Equation
+###########################
+
+.. math::   
+        E_{pv}(t) + E_{bat,out}(t) \cdot \eta_{bat,out} + E_{rec}(t) \cdot \eta_{rec} - E_{inv}(t) - E_{bat,in} - E_{ex}(t) = 0 \qquad  \forall t
+
+.. math::
+        E_{rec} \text{: rectifier energy}
+        
+        \eta_{rec} \text{: rectifier efficiency}
+        
+        E_{inv} \text{: inverter energy}
+        
+        \eta_{rec} \text{: inverter efficiency}
