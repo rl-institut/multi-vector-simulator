@@ -29,6 +29,7 @@ Here is a template for new release sections
 - Add report assets and example simulation to package_data in `setup.py` (#607)
 - Add a util function `copy_report_assets` to copy report asset to simulation output folder when user generates the report (#607)
 - Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
+- Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
 
 ### Changed
 - Order of readthedocs content (#590)
@@ -38,6 +39,7 @@ Here is a template for new release sections
 - If default folder does not exist when code is executed, example simulation's inputs are used from package_data (#607)
 - Rename `PATH_SIM_OUTPUT` to `ARG_PATH_SIM_OUTPUT` (#607)
 - Rename function `A0.create_parser` to `A0.mvs_arg_parser` (#607)
+- Update validation plan description in RTD (#593)
 
 ### Removed
 - Remove reference to git branch ID in the report (#607)
