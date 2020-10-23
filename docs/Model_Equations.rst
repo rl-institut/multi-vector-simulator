@@ -80,12 +80,11 @@ Example: Sector Coupled Energy System Scenario
 
 In order to understand the component models, a generic sector coupled example in shown in the next figure. It brings together the electricity and heat sector through Transformer 4 as it connects the two sector buses. 
 
-.. image:: images/23-10-2020_sector_coupled_example.png
- :width: 600
+
  
  For the sake of simplicity, the following table gives an example for each asset type with an abbreviation to be used in the energy balance and component equations.
  
- .. list-table:: Asset Types
+ .. list-table:: Asset Types and Examples
    :widths: 50 25 25 25
    :header-rows: 1
 
@@ -134,4 +133,5 @@ In order to understand the component models, a generic sector coupled example in
      - hp
      - kWth
 
-Therefore
+.. image:: images/23-10-2020_sector_coupled_example.png
+ :width: 600
