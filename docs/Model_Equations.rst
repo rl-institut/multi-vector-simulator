@@ -99,7 +99,7 @@ For the sake of simplicity, the following table gives an example for each asset 
      - kW
    * - Non-dispatchable source 2
      - Photovoltaic panels
-     - PV
+     - pv
      - kWp
    * - Storage 1
      - Battery energy storage
