@@ -53,7 +53,7 @@ INTERVAL = 2
 
 OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
-PARSER = initializing.create_parser()
+PARSER = initializing.mvs_arg_parser()
 
 TEST_INPUT_PATH = os.path.join(
     TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_F1_plot_es_graph"

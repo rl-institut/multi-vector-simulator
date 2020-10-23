@@ -230,7 +230,7 @@ class model_building:
             fpath = os.path.join(
                 dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], ES_GRAPH
             )
-            dict_values[PATHS_TO_PLOTS][PLOTS_ES] += [str(fpath)]
+            dict_values[PATHS_TO_PLOTS][PLOTS_ES] += str(fpath)
 
             # Draw the energy system model
             graph = ESGraphRenderer(model, filepath=fpath)
