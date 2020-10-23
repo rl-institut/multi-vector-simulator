@@ -51,7 +51,7 @@ The annual cost function of each asset includes the capital expenditure (investm
 
 The CRF is a ratio used to calculate the present value of the the annuity. The discount factor can be replaced by the weighted average cost of capital (WACC), calculated by the user. 
 
-The lifetime of the asset t\ :sub:`a`\ and the lifetime of the project T can be different from each other; hence, the number of replacements n is estimated using the equation below:
+The lifetime of the asset t\ :sub:`a`\  and the lifetime of the project T can be different from each other; hence, the number of replacements n is estimated using the equation below:
 
 .. math::
         n = round \left( \frac{T}{t_a} + 0.5 \right) - 1
@@ -138,13 +138,13 @@ For the sake of simplicity, the following table gives an example for each asset 
      - hp
      - kWth
 
-All grids and dispatchable sources are assumed to be available 100% of the time with no consumption limits. The MVS includes a sink component for excess energy, connected to each bus in the system and denoted by E\ :sub:`ex`\ in the equations. This excess sink accounts for the extra energy in the system that has to be dumped.
+All grids and dispatchable sources are assumed to be available 100% of the time with no consumption limits. The MVS includes a sink component for excess energy, connected to each bus in the system and denoted by E\ :sub:`ex`\  in the equations. This excess sink accounts for the extra energy in the system that has to be dumped.
 
 Electricity Grid Equation
 #########################
 
 .. math::
-        E_{grid,c}(t) - E_{grid,f}(t) + E_{ts,f)(t) \cdot \eta_{ts,f} - E_{ts,c}(t) = 0 \qquad  \forall t
+        E_{grid,c}(t) - E_{grid,f}(t) + E_{ts,f}(t) \cdot \eta_{ts,f} - E_{ts,c}(t) = 0 \qquad  \forall t
         
 .. math::
         E_{grid,c} \text{: energy consumption from the electricity grid}
