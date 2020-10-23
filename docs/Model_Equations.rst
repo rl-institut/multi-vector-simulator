@@ -148,7 +148,32 @@ Electricity Grid Equation
         
 .. math::
         E_{grid,c} \text{: energy consumption from the electricity grid}
+        
         E_{grid,f} \text{: energy feed into the electricity grid}
+        
         E_{grid,c} \text{: transformer station feed-in}
+        
         \eta_{ts,f} \text{: transformer station efficiency}
+        
         E_{grid,c} \text{: transformer station consumption}
+ 
+Non-Dispatchable Source Equations
+#################################
+
+.. math::   
+        E_{wind}(t) = CAP_{wind} \cdot \alpha_{wind}(t) \qquad  \forall t
+        
+        E_{pv}(t) = CAP_{pv} \cdot \beta_{pv}(t) \qquad  \forall t
+
+.. math::
+        E_{wind} \text{: energy generated from the wind turbine}
+        
+        CAP_{wind} \text{: wind turbine capacity [kW]}
+
+        \alpha_{wind} \text{: instantaneous wind turbine performance metric [kWh/kW]}
+        
+        E_{pv} \text{: energy generated from the PV panels}
+        
+        CAP_{pv} \text{: PV panel capacity [kWp]}
+
+        \beta_{pv} \text{: instantaneous PV specific yield [kWh/kWp]}
