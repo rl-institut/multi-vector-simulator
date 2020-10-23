@@ -66,11 +66,13 @@ Energy Balance Equation
 One main constraint that the optimization model is subject to is the energy balance equation. The latter maintains equality between the incoming energy into a bus and the outgoing energy from that bus. This balancing equation is applicable to all bus types, be it electrical, thermal, hydrogen or for any other energy carrier.
 
 .. math::
-        \sum E_{in,i}(t) - \sum E_{out,j}(t) = 0
+        \sum E_{in,i}(t) - \sum E_{out,j}(t) = 0 \qquad  \forall t
 
-E_{in,i}: energy flowing from asset i to the bus
+.. math::
 
-E_{out,j}: energy flowing from the bus to asset j
+        E_{in,i} \text{: energy flowing from asset i to the bus}
+
+        E_{out,j} \text{: energy flowing from the bus to asset j}
 
 It is very important to note that assets i and j can be the same asset (e.g., battery) however, one of the energy flowing values E_{in} or E_{out} should be zero at the same time step t.
 
@@ -134,4 +136,17 @@ For the sake of simplicity, the following table gives an example for each asset 
      - hp
      - kWth
 
+All grids and dispatchable sources are assumed to be available 100% of the time with no consumption limits. The MVS includes a sink component for excess energy, connected to each bus in the system and denoted by E_{ex} in the equations. This excess sink accounts for the extra energy in the system that has to be dumped.
 
+Electricity Grid Equation
+#########################
+
+.. math::
+        E_{grid,c}(t) - E_{grid,f}(t) + E_{ts,f)(t) \cdot \eta_{ts,f} - E_{ts,c}(t) = 0 \qquad  \forall t
+        
+.. math::
+        E_{grid,c} \text{: energy consumption from the electricity grid}
+        E_{grid,f} \text{: energy feed into the electricity grid}
+        E_{grid,c} \text{: transformer station feed-in}
+        \eta_{ts,f} \text{: transformer station efficiency}
+        E_{grid,c} \text{: transformer station consumption}
