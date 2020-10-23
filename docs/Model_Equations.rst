@@ -78,5 +78,58 @@ It is very important to note that assets i and j can be the same asset (e.g., ba
 Example: Sector Coupled Energy System Scenario
 ----------------------------------------------
 
+In order to understand the component models, a generic sector coupled example in shown in the next figure. It brings together the electricity and heat sector through Transformer 4 as it connects the two sector buses. 
+
 .. image:: images/23-10-2020_sector_coupled_example.png
  :width: 600
+ 
+ For the sake of simplicity, the following table gives an example for each asset type with an abbreviation to be used in the energy balance and component equations.
+ 
+ .. list-table:: Asset Types
+   :widths: 50 25 25 25
+   :header-rows: 1
+
+   * - Asset Type
+     - Asset Example
+     - Abbreviation
+     - Unit
+   * - Non-dispatchable source 1
+     - Wind turbine
+     - wind
+     - kW
+   * - Non-dispatchable source 2
+     - Photovoltaic panels
+     - PV
+     - kWp
+   * - Storage 1
+     - Battery energy storage
+     - bat
+     - kWh
+   * - Transformer 1
+     - Rectifier
+     - rec
+     - kW
+   * - Transformer 2
+     - Solar inverter
+     - inv
+     - kW
+   * - Non-dispatchable source 3
+     - Solar thermal collector
+     - stc
+     - kWth
+   * - Storage 2
+     - Thermal energy storage
+     - tes
+     - kWth
+   * - Dispatchable source
+     - Heat source (e.g., biogas)
+     - heat
+     - L
+   * - Transformer 3
+     - Turbine
+     - turb
+     - kWth
+   * - Transformer 4
+     - Heat pump
+     - hp
+     - kWth
