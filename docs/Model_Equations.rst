@@ -203,7 +203,7 @@ Battery Storage Model
         
         \epsilon \text{: decay per time step}
         
-        \CAP_{bat} \text{: battery capacity [kWh]}
+        CAP_{bat} \text{: battery capacity [kWh]}
         
         SOC_{min} \text{: minimum state of charge}
         
