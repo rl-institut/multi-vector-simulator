@@ -18,7 +18,7 @@ Flowchart
 The MVS' global flowchart, or graphical model, is divided into three connected blocks that trace the logic sequence: inputs, system model, and outputs. This is a typical representation of a simulation model.
 
 .. image:: images/MVS_flowchart.png
- :width: 200
+ :width: 600
 
 The user is asked to enter the required data through a web interface. In developer mode, the data is submitted as a number of csv files. This input data is split into  four categories:
 
