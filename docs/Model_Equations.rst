@@ -84,8 +84,7 @@ Example: Sector Coupled Energy System Scenario
 
 In order to understand the component models, a generic sector coupled example in shown in the next figure. It brings together the electricity and heat sector through Transformer 4 as it connects the two sector buses. 
 
-.. image:: images/23-10-2020_sector_coupled_example.png
- :width: 600
+
  
 For the sake of simplicity, the following table gives an example for each asset type with an abbreviation to be used in the energy balance and component equations.
  
@@ -164,6 +163,8 @@ Non-Dispatchable Source Equations
         E_{wind}(t) = CAP_{wind} \cdot \alpha_{wind}(t) \qquad  \forall t
         
         E_{pv}(t) = CAP_{pv} \cdot \beta_{pv}(t) \qquad  \forall t
+        
+        E_{stc}(t) = CAP_{stc} \cdot \gamma{stc}(t) \qquad  \forall t
 
 .. math::
         E_{wind} \text{: energy generated from the wind turbine}
@@ -177,6 +178,12 @@ Non-Dispatchable Source Equations
         CAP_{pv} \text{: PV panel capacity [kWp]}
 
         \beta_{pv} \text{: instantaneous PV specific yield [kWh/kWp]}
+        
+        E_{stc} \text{: energy generated from the solar thermal collector}
+        
+        CAP_{stc} \text{: Solar thermal collector capacity [kWth]}
+
+        \gamma_{stc} \text{: instantaneous collector's production [kWh/kWth]}
         
 Battery Storage Model
 #####################
@@ -240,3 +247,38 @@ AC Electricity Bus Equation
         E_{hp} \text{: heat pump electrical consumption}
         
         E_{el} \text{: electrical load}
+ 
+NDS3 Bus Equation
+#################
+
+.. math::
+        E_{stc}(t) - E_{tes}(t) - E_{ex}(t) = 0
+
+.. math::
+        E_{tes} \text{: thermal energy storage}
+
+DS Bus Equation
+###############
+
+.. math::
+        E_{heat}(t) - E_{turb}(t) - E_{ex}(t) = 0
+
+.. math::
+        E_{heat} \text{: thermal energy (biogas) production}
+        
+        E_{turb} \text{: turbine (biogas turbine) energy}
+        
+Heat Bus Equation
+###############
+
+.. math::
+        E_{tes}(t) \cdot \eta_{tes} + E_{turb}(t) \cdot \eta_{turb} + E_{hp}(t) \cdot COP - E_{th}(t) - E_{ex}(t) = 0
+
+.. math::
+        \eta_{tes} \text{: thermal storage efficiency}
+        
+        \eta_{turb} \text{: turbine efficiency}
+        
+        COP \text{: heat pump coefficient of performance}
+        
+        E_{th} \text{: heat load}
