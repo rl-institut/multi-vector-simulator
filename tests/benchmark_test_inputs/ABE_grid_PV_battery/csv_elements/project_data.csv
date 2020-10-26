@@ -1,6 +1,5 @@
 ,unit,project_data
 country,str,NA
-label,str,project_data
 latitude,str,0
 longitude,str,0
 project_id,str,1

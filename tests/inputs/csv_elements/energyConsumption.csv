@@ -1,5 +1,4 @@
-,unit,demand_01,demand_02,demand_03
-label,str,Harbor,Remaining demand,Shore power (docked ships)
+,unit,Harbor,Remaining_demand,Shore_power_(docked_ships)
 unit,str,kW,kW,kW
 inflow_direction,str,Electricity,Electricity,Electricity
 file_name,str,demand_harbor.csv,demand_remaining.csv,demand_shore_power.csv

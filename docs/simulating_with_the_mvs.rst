@@ -54,7 +54,7 @@ please also refer to the definition of parameters that you can find here: `stabl
 
 Please note that the allowed separators for csv files are located in `src/constants.py` under the
 `CSV_SEPARATORS` variable. Currently only `[",", ";", "&"]` are allowed.
-
+Please note further that the column headers in the csv files need to be unique amongst all files.
 
 Time series: time_series folder
 ###############################

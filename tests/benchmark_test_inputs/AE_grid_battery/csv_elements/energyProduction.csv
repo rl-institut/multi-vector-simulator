@@ -5,7 +5,6 @@ specific_costs,currency/unit
 file_name
 installedCap,kWp
 maximumCap, kWp
-label,str
 lifetime,year
 specific_costs_om,currency/unit/year
 dispatch_price,currency/kWh
