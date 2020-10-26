@@ -129,3 +129,5 @@ mvs_csv_config.json
 /inputs/
 
 /validation_tests/
+
+/docs/*.inc
