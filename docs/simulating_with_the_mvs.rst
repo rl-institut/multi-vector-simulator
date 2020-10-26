@@ -46,9 +46,6 @@ For that, each of the following files have to be present in the folder "csv_elem
 - `simulation_settings.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/simulation_settings.csv>`_ - Simulation settings, including start date and duration
 - `project_data.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/project_data.csv>`_ - some generic project information
 
-
-For easy set-up of your energy system, we have provided an empty input folder template as well
-`here. <https://github.com/rl-institut/mvs_eland/blob/dev/input_template>`_
 For easy set-up of your energy system, we have provided an empty input folder template as well
 `here <https://github.com/rl-institut/mvs_eland/blob/dev/input_template>`_.
 A simple example system is setup with this `input folder <https://github.com/rl-institut/mvs_eland/blob/dev/tests/inputs>`_.
