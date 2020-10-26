@@ -5,7 +5,6 @@ specific_costs,currency/unit,0
 file_name,str,None
 installedCap,kWp,0
 maximumCap,kWp,None
-label,str,Diesel source
 lifetime,year,20
 specific_costs_om,currency/unit/year,0
 dispatch_price,currency/kWh,0.1

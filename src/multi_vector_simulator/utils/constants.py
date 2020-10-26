@@ -3,8 +3,9 @@ import os
 from multi_vector_simulator.utils.constants_json_strings import *
 
 # path to the root of this repository (assumes this file is in src/mvs_eland/utils folder)
-REPO_PATH = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+REPO_PATH = os.path.abspath(os.path.curdir)
+PACKAGE_PATH = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 )
 # name of the default input folder
 INPUT_FOLDER = "inputs"
@@ -32,8 +33,15 @@ INPUTS_COPY = INPUT_FOLDER
 LOGFILE = "mvs_logfile.log"
 # name of the automatically generated pdf report
 PDF_REPORT = "simulation_report.pdf"
+
 # path of the pdf report path
-REPORT_PATH = os.path.join(REPO_PATH, "report")
+REPORT_FOLDER = "report"
+ASSET_FOLDER = "assets"
+
+# variables used for the pdf report parser
+ARG_PDF = "print_report"
+ARG_REPORT_PATH = "report_path"
+ARG_PATH_SIM_OUTPUT = "output_folder"
 
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
@@ -76,7 +84,6 @@ REQUIRED_CSV_PARAMETERS = {
     ENERGY_CONSUMPTION: [
         DSM,
         FILENAME,
-        LABEL,
         TYPE_ASSET,
         OEMOF_ASSET_TYPE,
         ENERGY_VECTOR,
@@ -90,7 +97,6 @@ REQUIRED_CSV_PARAMETERS = {
         EFFICIENCY,
         INFLOW_DIRECTION,
         INSTALLED_CAP,
-        LABEL,
         LIFETIME,
         SPECIFIC_COSTS_OM,
         DISPATCH_PRICE,
@@ -102,9 +108,9 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     ENERGY_STORAGE: [
         INFLOW_DIRECTION,
-        LABEL,
         OPTIMIZE_CAP,
         OUTFLOW_DIRECTION,
+        LABEL,
         OEMOF_ASSET_TYPE,
         STORAGE_FILENAME,
         ENERGY_VECTOR,
@@ -115,7 +121,6 @@ REQUIRED_CSV_PARAMETERS = {
         SPECIFIC_COSTS,
         FILENAME,
         INSTALLED_CAP,
-        LABEL,
         LIFETIME,
         SPECIFIC_COSTS_OM,
         DISPATCH_PRICE,
@@ -129,7 +134,6 @@ REQUIRED_CSV_PARAMETERS = {
         ENERGY_PRICE,
         FEEDIN_TARIFF,
         INFLOW_DIRECTION,
-        LABEL,
         OPTIMIZE_CAP,
         OUTFLOW_DIRECTION,
         PEAK_DEMAND_PRICING,
@@ -148,7 +152,6 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     SIMULATION_SETTINGS: [
         EVALUATED_PERIOD,
-        LABEL,
         OUTPUT_LP_FILE,
         STORE_OEMOF_RESULTS,
         START_DATE,
@@ -157,7 +160,6 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     PROJECT_DATA: [
         COUNTRY,
-        LABEL,
         LATITUDE,
         LONGITUDE,
         PROJECT_ID,
@@ -165,7 +167,7 @@ REQUIRED_CSV_PARAMETERS = {
         SCENARIO_ID,
         SCENARIO_NAME,
     ],
-    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX,],
+    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, PROJECT_DURATION, TAX,],
 }
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
@@ -299,7 +301,7 @@ DICT_PLOTS = {
         PLOTS_BUSSES: [],
         PLOTS_DEMANDS: [],
         PLOTS_RESOURCES: [],
-        PLOTS_ES: [],
+        PLOTS_ES: "",
         PLOTS_PERFORMANCE: [],
         PLOTS_COSTS: [],
     }

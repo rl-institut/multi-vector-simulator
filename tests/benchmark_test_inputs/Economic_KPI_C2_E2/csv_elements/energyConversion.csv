@@ -5,7 +5,6 @@ specific_costs,currency/kW,100
 efficiency,factor,0.34
 inflow_direction,str,DG
 installedCap,kW,1
-label,str,Diesel generator
 lifetime,year,30
 specific_costs_om,currency/kW/year,5
 dispatch_price,currency/kWh,0

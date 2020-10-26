@@ -13,6 +13,13 @@ Usage from root of repository:
     python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]] [-o [PATH_OUTPUT_FOLDER]]
     [-log [{debug,info,error,warning}]] [-f [OVERWRITE]] [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
 
+Usage when multi-vector-simulator is installed as a package:
+
+.. code-block:: bash
+
+    mvs_tool [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]] [-o [PATH_OUTPUT_FOLDER]]
+    [-log [{debug,info,error,warning}]] [-f [OVERWRITE]] [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
+
 Process MVS arguments
 
 optional arguments:
@@ -49,8 +56,10 @@ import shutil
 
 from oemof.tools import logger
 
+
 from multi_vector_simulator.utils.constants import (
     REPO_PATH,
+    PACKAGE_PATH,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
     JSON_FNAME,
@@ -58,6 +67,7 @@ from multi_vector_simulator.utils.constants import (
     JSON_EXT,
     CSV_EXT,
     CSV_ELEMENTS,
+    INPUT_FOLDER,
     INPUTS_COPY,
     DEFAULT_MAIN_KWARGS,
     PDF_REPORT,
@@ -70,12 +80,61 @@ from multi_vector_simulator.utils.constants import (
     DISPLAY_OUTPUT,
     SAVE_PNG,
     LOGFILE,
+    REPORT_FOLDER,
+    OUTPUT_FOLDER,
+    PDF_REPORT,
+    JSON_WITH_RESULTS,
+    ARG_PDF,
+    ARG_REPORT_PATH,
+    ARG_PATH_SIM_OUTPUT,
 )
 from multi_vector_simulator.utils.constants_json_strings import LABEL
 
 
-def create_parser():
+def mvs_arg_parser():
     """Create a command line argument parser for MVS
+
+    Usage from root of repository:
+
+    .. code-block:: bash
+
+        python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]] [-o [PATH_OUTPUT_FOLDER]]
+        [-log [{debug,info,error,warning}]] [-f [OVERWRITE]] [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
+
+    Usage when multi-vector-simulator is installed as a package:
+
+    .. code-block:: bash
+
+        mvs_tool [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]] [-o [PATH_OUTPUT_FOLDER]]
+        [-log [{debug,info,error,warning}]] [-f [OVERWRITE]] [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
+
+    Process MVS arguments
+
+    optional arguments:
+        -h, --help
+            show this help message and exit
+
+        -i [PATH_INPUT_FOLDER]
+            path to the input folder
+
+        -ext [{json,csv}]
+            type (json or csv) of the input files (default: 'json')
+
+        -o [PATH_OUTPUT_FOLDER]
+            path to the output folder for the simulation's results
+
+        -log [{debug,info,error,warning}]
+            level of logging in the console
+
+        -f [OVERWRITE]
+            overwrite the output folder if True (default: False)
+
+        -pdf [PDF_REPORT]
+            generate a pdf report of the simulation if True (default: False)
+
+        -png [SAVE_PNG]
+            generate png figures of the simulation in the output_folder if True (default: False)
+
 
     :return: parser
     """
@@ -147,6 +206,64 @@ def create_parser():
     return parser
 
 
+def report_arg_parser():
+    """Create a command line argument parser for MVS
+
+    Usage when multi-vector-simulator is installed as a package:
+
+    .. code-block:: bash
+
+        mvs_report [-h] [-i [PATH_SIM_OUTPUT]] [-o [REPORT_PATH]] [-pdf]
+
+    Process mvs report command line arguments
+
+    optional arguments:
+      -h, --help
+        show this help message and exit
+
+      -pdf [PRINT_REPORT]
+        print the report as pdf (default: False)
+
+      -i [OUTPUT_FOLDER]
+        path to the simulation result json file 'json_with_results.json'
+      -o [REPORT_PATH]
+        path to save the pdf report
+
+
+    :return: parser
+    """
+    parser = argparse.ArgumentParser(
+        prog="python mvs_report.py",
+        description="Display the report of a MVS simulation",
+    )
+    parser.add_argument(
+        "-pdf",
+        dest=ARG_PDF,
+        help="print the report as pdf (default: False)",
+        nargs="?",
+        const=True,
+        default=False,
+        type=bool,
+    )
+    parser.add_argument(
+        "-i",
+        dest=ARG_PATH_SIM_OUTPUT,
+        nargs="?",
+        type=str,
+        help="path to the simulation result json file 'json_with_results.json'",
+        default=os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS),
+    )
+    parser.add_argument(
+        "-o",
+        dest=ARG_REPORT_PATH,
+        nargs="?",
+        type=str,
+        help="path to save the pdf report",
+        default="",
+    )
+    return parser
+
+
 def check_input_folder(path_input_folder, input_type):
     """Enforces the rules for the input folder and files
 
@@ -161,15 +278,12 @@ def check_input_folder(path_input_folder, input_type):
     :return: the json filename which will be used as input of the simulation
     """
 
-    # make the path absolute
-    if REPO_PATH not in os.path.abspath(path_input_folder):
-        path_input_folder = os.path.join(REPO_PATH, path_input_folder)
-
     logging.debug("Checking for inputs files")
 
     if input_type == JSON_EXT:
         path_input_file = os.path.join(path_input_folder, JSON_FNAME)
         if os.path.exists(path_input_file) is False:
+
             raise (
                 FileNotFoundError(
                     "Missing input json file!\n"
@@ -214,12 +328,6 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
     :param overwrite: boolean indicating what to do if the output folder exists already
     :return: the path to the folder stored in the output folder as copy of the input folder
     """
-
-    # make the path absolute
-    if REPO_PATH not in os.path.abspath(path_input_folder):
-        path_input_folder = os.path.join(REPO_PATH, path_input_folder)
-    if REPO_PATH not in os.path.abspath(path_output_folder):
-        path_output_folder = os.path.join(REPO_PATH, path_output_folder)
 
     path_output_folder_inputs = os.path.join(path_output_folder, INPUTS_COPY)
 
@@ -299,7 +407,7 @@ def process_user_arguments(
     logging.debug("Get user inputs from console")
 
     # Parse the arguments from the command line
-    parser = create_parser()
+    parser = mvs_arg_parser()
     args = vars(parser.parse_args())
 
     # Give priority from user input kwargs over command line arguments
@@ -329,6 +437,13 @@ def process_user_arguments(
     if save_png is None:
         save_png = args.get(SAVE_PNG, DEFAULT_MAIN_KWARGS[SAVE_PNG])
 
+    # if the default input file does not exist, use package default input file
+    if (
+        path_input_folder == DEFAULT_INPUT_PATH
+        and os.path.exists(os.path.join(path_input_folder, JSON_FNAME)) is False
+    ):
+        path_input_folder = os.path.join(PACKAGE_PATH, INPUT_FOLDER)
+
     path_input_file = check_input_folder(path_input_folder, input_type)
     check_output_folder(path_input_folder, path_output_folder, overwrite)
 
@@ -345,7 +460,11 @@ def process_user_arguments(
 
     if pdf_report is True:
         user_input.update(
-            {"path_pdf_report": os.path.join(path_output_folder, PDF_REPORT)}
+            {
+                "path_pdf_report": os.path.join(
+                    path_output_folder, REPORT_FOLDER, PDF_REPORT
+                )
+            }
         )
 
     if save_png is True:

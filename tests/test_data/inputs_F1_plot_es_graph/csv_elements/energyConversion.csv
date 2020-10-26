@@ -5,7 +5,6 @@ specific_costs,currency/kW,0.0,0.0,3000,0.0,0.0,600
 efficiency,factor,1,1,1.0,0.96,0.96,0.33
 inflow_direction,str,Electricity,ESS Li-Ion,PV plant (mono),Electricity (DSO),Electricity,Fuel
 installedCap,kW,0.0,0.0,0.0,1250,1250,0
-label,str,Charge Contoller ESS Li-Ion (charge),Charge Contoller ESS Li-Ion (discharge),Solar inverter (mono),Transformer station (DSO) consumption,Transformer station (DSO) feedin,Backup diesel generator
 lifetime,year,10,10,15,30,30,15
 specific_costs_om,currency/kW/year,0.0,0.0,0.0,0.0,0.0,5
 dispatch_price,currency/kWh,0.0,0.0,0.0,0.0,0.0,0

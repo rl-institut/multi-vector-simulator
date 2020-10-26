@@ -47,7 +47,7 @@ from _constants import (
     PATH_OUTPUT_FOLDER,
 )
 
-PARSER = initializing.create_parser()
+PARSER = initializing.mvs_arg_parser()
 
 OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
