@@ -81,6 +81,14 @@ def transformer(model, dict_asset, **kwargs):
     * :py:func:`~.transformer_constant_efficiency_fix`
     * :py:func:`~.transformer_constant_efficiency_optimize`
 
+    Tested with:
+    - test_transformer_optimize_cap_single_busses()
+    - test_transformer_optimize_cap_multiple_input_busses()
+    - test_transformer_optimize_cap_multiple_output_busses()
+    - test_transformer_fix_cap_single_busses()
+    - test_transformer_fix_cap_multiple_input_busses()
+    - test_transformer_fix_cap_multiple_output_busses()
+
     Returns
     -------
     Indirectly updated `model` and dict of asset in `kwargs` with transformer object.
@@ -127,6 +135,10 @@ def storage(model, dict_asset, **kwargs):
     * :py:func:`~.storage_fix`
     * :py:func:`~.storage_optimize`
 
+    Tested with:
+    - test_storage_optimize()
+    - test_storage_fix()
+
     """
     check_optimize_cap(
         model,
@@ -172,6 +184,12 @@ def sink(model, dict_asset, **kwargs):
     * :py:func:`~.sink_non_dispatchable`
     * :py:func:`~.sink_dispatchable`
 
+    Tested with:
+    - test_sink_non_dispatchable_single_input_bus()
+    - test_sink_non_dispatchable_multiple_input_busses()
+    - test_sink_dispatchable_single_input_bus()
+    - test_sink_dispatchable_multiple_input_busses()
+
     """
     if TIMESERIES in dict_asset:
         sink_non_dispatchable(model, dict_asset, **kwargs)
@@ -215,6 +233,14 @@ def source(model, dict_asset, **kwargs):
     * :py:func:`~.source_dispatchable_optimize`
     * :py:func:`~.source_non_dispatchable_fix`
     * :py:func:`~.source_non_dispatchable_optimize`
+
+    Tested with:
+    - test_source_non_dispatchable_optimize()
+    - test_source_non_dispatchable_fix()
+    - test_source_dispatchable_optimize_normalized_timeseries()
+    - test_source_dispatchable_optimize_timeseries_not_normalized_timeseries()
+    - test_source_dispatchable_fix_normalized_timeseries()
+    - test_source_dispatchable_fix_timeseries_not_normalized_timeseries()
 
     Todos
     -----
@@ -272,6 +298,11 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
     transformers : dict, optional
     storages : dict, optional
 
+    Notes
+    -----
+    Tested with:
+    - test_check_optimize_cap_raise_error()
+
     Todos
     -----
     Might be possible to drop non invest optimization in favour of invest optimization if max_capactiy
@@ -310,6 +341,12 @@ def bus(model, name, **kwargs):
     r"""
     Adds bus `name` to `model` and to 'busses' in `kwargs`.
 
+    Notes
+    -----
+    Tested with:
+    - test_bus_add_to_empty_dict()
+    - test_bus_add_to_not_empty_dict()
+
     """
     logging.debug(f"Added: Bus {name}")
     bus = solph.Bus(label=name)
@@ -324,6 +361,12 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
 
     See :py:func:`~.transformer` for more information, including parameters.
 
+    Notes
+    -----
+    Tested with:
+    - test_transformer_fix_cap_single_busses()
+    - test_transformer_fix_cap_multiple_input_busses()
+    - test_transformer_fix_cap_multiple_output_busses()
 
     Returns
     -------
@@ -398,6 +441,13 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
     Defines a transformer with constant efficiency and a capacity to be optimized.
 
     See :py:func:`~.transformer` for more information, including parameters.
+
+    Notes
+    -----
+    Tested with:
+    - test_transformer_optimize_cap_single_busses()
+    - test_transformer_optimize_cap_multiple_input_busses()
+    - test_transformer_optimize_cap_multiple_output_busses()
 
     Returns
     -------
@@ -501,6 +551,11 @@ def storage_fix(model, dict_asset, **kwargs):
 
     See :py:func:`~.storage` for more information, including parameters.
 
+    Notes
+    -----
+    Tested with:
+    - test_storage_fix()
+
     Returns
     -------
     Indirectly updated `model` and dict of asset in `kwargs` with the storage object.
@@ -548,6 +603,11 @@ def storage_optimize(model, dict_asset, **kwargs):
     Defines a storage with a capacity to be optimized.
 
     See :py:func:`~.storage` for more information, including parameters.
+
+    Notes
+    -----
+    Tested with:
+    - test_storage_optimize()
 
     Returns
     -------
@@ -615,6 +675,11 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
 
     See :py:func:`~.source` for more information, including parameters.
 
+    Notes
+    -----
+    Tested with:
+    - test_source_non_dispatchable_fix()
+
     Returns
     -------
     Indirectly updated `model` and dict of asset in `kwargs` with the source object.
@@ -644,6 +709,11 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
     Defines a non dispatchable source with a capacity to be optimized.
 
     See :py:func:`~.source` for more information, including parameters.
+
+    Notes
+    -----
+    Tested with:
+    - test_source_non_dispatchable_optimize()
 
     Returns
     -------
@@ -676,6 +746,22 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
 
 
 def source_dispatchable_optimize(model, dict_asset, **kwargs):
+    r"""
+    Defines a dispatchable source with a fixed capacity.
+
+    See :py:func:`~.source` for more information, including parameters.
+
+    Notes
+    -----
+    Tested with:
+    - test_source_dispatchable_optimize_normalized_timeseries()
+    - test_source_dispatchable_optimize_timeseries_not_normalized_timeseries()
+
+     Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the source object.
+
+    """
     if TIMESERIES_NORMALIZED in dict_asset:
         outputs = {
             kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
@@ -729,6 +815,12 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
 
     See :py:func:`~.source` for more information, including parameters.
 
+    Notes
+    -----
+    Tested with:
+    - test_source_dispatchable_fix_normalized_timeseries()
+    - test_source_dispatchable_fix_timeseries_not_normalized_timeseries()
+
     Returns
     -------
     Indirectly updated `model` and dict of asset in `kwargs` with the source object.
@@ -779,6 +871,12 @@ def sink_dispatchable_optimize(model, dict_asset, **kwargs):
 
     See :py:func:`~.sink` for more information, including parameters.
 
+    Notes
+    -----
+    Tested with:
+    - test_sink_dispatchable_single_input_bus()
+    - test_sink_dispatchable_multiple_input_busses()
+
     Returns
     -------
     Indirectly updated `model` and dict of asset in `kwargs` with the sink object.
@@ -819,6 +917,12 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     Defines a non dispatchable sink.
 
     See :py:func:`~.sink` for more information, including parameters.
+
+    Notes
+    -----
+    Tested with:
+    - test_sink_non_dispatchable_single_input_bus()
+    - test_sink_non_dispatchable_multiple_input_busses()
 
     Returns
     -------
