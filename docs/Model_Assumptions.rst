@@ -140,9 +140,16 @@ The minimum renewable share is introduced to the energy system by `D2.constraint
 Weighting of energy carriers
 ----------------------------
 
-To be able to calculate sector-wide key performance indicators, it is necessary to weight energy carriers depending on their usable potential. With the conference paper handed in to the CIRED workshop we propose a methodolgy comparable to Gasoline Gallon Equivalents. This definition is currently hard-coded in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be atted to its list. Unknown carriers raise an `UnknownEnergyCarrier` Error.
+To be able to calculate sector-wide key performance indicators, it is necessary to assign weights to the energy carriers based on their usable potential. In the conference paper handed in to the CIRED workshop, we have proposed a methodology comparable to Gasoline Gallon Equivalents.
+
+After thorough consideration, it has been decided to base the equivalency in tonnes of oil equivalent (TOE). Electricity has been chosen as a baseline energy carrier, as our pilot sites mainly revolve around it and also because we believe that this energy carrier will play a larger role in the future. For converting the results into a more conventional unit, we choose crude oil as a secondary baseline energy carrier. This also enables comparisons with crude oil price developments in the market. For most KPIs, including for example the share of renewables at the project location or its self-sufficiency, the baseline energy carrier used is of no relevance as the result is not dependent on it. The choice of the baseline energy carrier is relevant only for the levelized cost of energy (LCOE), as it will either provide a system-wide supply cost in Euro per kWh electrical or per kg crude oil.
+
+First, the conversion factors to kg crude oil equivalent`:sup:`2`  https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf` were determined (see Table 1 :ref:`table1`). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
+
 
 Following conversion factors and energy carriers are defined:
+
+.. _table1-label:
 
 .. list-table:: Table 1: Kg crude oil equivalent (kgoe) per unit of a fuel
    :widths: 50 25 25
@@ -196,6 +203,63 @@ Following conversion factors and energy carriers are defined:
    * - Heat
      - kgoe/BTU
      - 0.000025
+
+The values of ethanol and biodiesel seem comparably low in (1) and (2) and do not seem to be representative of the net heating value (or lower heating value) that was expected to be used here.
+
+From this, the energy weighting factors using the baseline energy carrier electricity are calculated:
+
+.. list-table:: Table 2: Electricity equivalent conversion per unit of a fuel
+   :widths: 50 25 25
+   :header-rows: 1
+
+   * - Product
+     - Unit
+     - Value
+   * - LNG
+     - kWh(eleq)/kg
+     - 33.4728198
+   * - Crude oil
+     - kWh(eleq)/kg
+     - 12.6927029
+   * - Gas oil/diesel
+     - kWh(eleq)/litre
+     - 11.630422
+   * - Kerosene
+     - kWh(eleq)/litre
+     - 9.48030688
+   * - Gasoline
+     - kWh(eleq)/litre
+     - 8.90807395
+   * - LPG
+     - kWh(eleq)/litre
+     - 8.73575397
+   * - Ethane
+     - kWh(eleq)/litre
+     - 6.47282161
+   * - H2
+     - kgoe/kgH2
+     - 5.14976795
+   * - Electricity
+     - kWh(eleq)/kWh(el)
+     - 1
+   * - Biodiesel
+     - kWh(eleq)/litre
+     - 0.06290669
+   * - Ethanol
+     - kWh(eleq)/litre
+     - 0.04242544
+   * - Natural gas
+     - kWh(eleq)/litre
+     - 0.00933273
+   * - Heat
+     - kWh(eleq)/kWh(therm)
+     - 1.0002163
+   * - Heat
+     - kWh(eleq)/kcal
+     - 0.00116304
+   * - Heat
+     - kWh(eleq)/BTU
+     - 0.00029076
 
 The confersion factors are derived from their `Gasoline Gallon Equivalents.<https://epact.energy.gov/fuel-conversion-factors>`_
 
