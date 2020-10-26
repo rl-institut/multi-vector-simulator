@@ -144,7 +144,7 @@ To be able to calculate sector-wide key performance indicators, it is necessary 
 
 After thorough consideration, it has been decided to base the equivalency in tonnes of oil equivalent (TOE). Electricity has been chosen as a baseline energy carrier, as our pilot sites mainly revolve around it and also because we believe that this energy carrier will play a larger role in the future. For converting the results into a more conventional unit, we choose crude oil as a secondary baseline energy carrier. This also enables comparisons with crude oil price developments in the market. For most KPIs, including for example the share of renewables at the project location or its self-sufficiency, the baseline energy carrier used is of no relevance as the result is not dependent on it. The choice of the baseline energy carrier is relevant only for the levelized cost of energy (LCOE), as it will either provide a system-wide supply cost in Euro per kWh electrical or per kg crude oil.
 
-First, the conversion factors to kg crude oil equivalent :sup:``1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_` were determined (see Table 1 below). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
+First, the conversion factors to kg crude oil equivalent [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] were determined (see Table 1 below). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
 
 
 Following conversion factors and energy carriers are defined:
@@ -156,7 +156,7 @@ Following conversion factors and energy carriers are defined:
    * - Energy carrier
      - Unit
      - Value
-   * - H2
+   * - H2 [`3  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]
      - kgoe/kgH2
      - 2.87804
    * - LNG
@@ -202,7 +202,7 @@ Following conversion factors and energy carriers are defined:
      - kgoe/BTU
      - 0.000025
 
-The values of ethanol and biodiesel seem comparably low in (1) and (2) and do not seem to be representative of the net heating value (or lower heating value) that was expected to be used here.
+The values of ethanol and biodiesel seem comparably low in [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_] and do not seem to be representative of the net heating value (or lower heating value) that was expected to be used here.
 
 From this, the energy weighting factors using the baseline energy carrier electricity are calculated:
 
@@ -259,10 +259,12 @@ From this, the energy weighting factors using the baseline energy carrier electr
      - kWh(eleq)/BTU
      - 0.00029076
 
-With this, the equivalent potential of an energy carrier .. math:: E_{eleq,i}, compared to electricity, can be calculated with its conversion factor *w*:sub:`i` as:
+With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, compared to electricity, can be calculated with its conversion factor *w*:sub:`i` as:
 
 .. math::
         E_{eleq,i} = E_{i} \cdot w_{i}
+
+As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source (1) and (2). The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable share or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
 
 
 The confersion factors are derived from their `Gasoline Gallon Equivalents.<https://epact.energy.gov/fuel-conversion-factors>`_
