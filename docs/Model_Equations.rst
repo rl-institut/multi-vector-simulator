@@ -225,5 +225,18 @@ DC Electricity Bus Equation
         \eta_{rec} \text{: rectifier efficiency}
         
         E_{inv} \text{: inverter energy}
+
+AC Electricity Bus Equation
+###########################
+
+.. math::
+        E_{ts,c}(t) \cdot \eta_{ts,c} + E_{wind}(t) + E_{inv}(t) \cdot \eta_{inv} - E_{ts,c}(t) - E_{rec}(t) - E_{hp}(t) - E_{el}(t) - E_{ex}(t) = 0 \qquad  \forall t
         
-        \eta_{rec} \text{: inverter efficiency}
+.. math::
+        \eta_{ts,c} \text{: transformer station efficiency}
+        
+        \eta_{inv} \text{: inverter efficiency}
+        
+        E_{hp} \text{: heat pump electrical consumption}
+        
+        E_{el} \text{: electrical load}
