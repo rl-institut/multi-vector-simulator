@@ -1,5 +1,5 @@
 ================================
-Moddeling Assumptions of the MVS
+Modeling Assumptions of the MVS
 ================================
 
 Component models
@@ -32,7 +32,7 @@ Dispatchable sources of generation
 Fuel sources are added as dispatchable sources, which still can have development, investment, operational and dispatch costs.
 They are added by adding a column in `energyProviders.CSV`, and setting file_name to `None`.
 
-DSOs, eventhough also dispatchable sources of generation, should be added via `energyProviders.csv`,
+DSOs, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
 as there are some additional features available then.
 
 Both DSOs and the additional fuel sources are limited to following options:
@@ -74,12 +74,12 @@ The energy providers are the most complex assets in the MVS model. They are comp
     - Energy feed-in sink, able to take in generation that is provided to the DSO for revenue
     - Optionally: Transformer Station connecting the DSO bus to the energy bus of the LES
 
-With all these components, the DSO can be vizualized as follows:
+With all these components, the DSO can be visualized as follows:
 
 .. image:: images/Model_Assumptions_energyProvider_assets.png
  :width: 600
 
-Variable energy consumption prices (timeseries)
+Variable energy consumption prices (time-series)
 ###############################################
 
 - Link to howto
@@ -97,8 +97,8 @@ In the MVS, this information is gathered for the `energyProviders` with:
 
     - :const:`multi_vector_simulator.utils.constants_json_strings.PEAK_DEMAND_PRICING` as the costs per peak load unit, eg. kW
 
-To repesent the peak demand pricing, the MVS adds a "transformer" that is optimized with specific operation and maintainance costs per year equal to the PEAK_DEMAND_PRICING for each of the pricing periods.
-For two peak demand pricing persiods, the resulting dispatch could look as following:
+To represent the peak demand pricing, the MVS adds a "transformer" that is optimized with specific operation and maintenance costs per year equal to the PEAK_DEMAND_PRICING for each of the pricing periods.
+For two peak demand pricing periods, the resulting dispatch could look as following:
 
 .. image:: images/Model_Assumptions_Peak_Demand_Pricing_Dispatch_Graph.png
  :width: 600
@@ -267,7 +267,7 @@ With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, com
 As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]. The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable share or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
 
 
-The conversion factors are derived from their `Gasoline Gallon Equivalents <https://epact.energy.gov/fuel-conversion-factors>`_
+The conversion factors are derived from their `Gasoline Gallon Equivalents <https://epact.energy.gov/fuel-conversion-factors>`_.
 
 
 Limitations
@@ -315,7 +315,7 @@ This means that for an asset that is bidirectional two transformer objects have 
 * Physical bi-directional assets, eg. inverters
 * Logical bi-directional assets, eg. consumption from the grid and feed-in to the grid
 
-To archieve the real-life constraint one flow has to be zero when the other is larger zero,
+To achieve the real-life constraint one flow has to be zero when the other is larger zero,
 one would have to implement following relation:
 
 .. math:: 
@@ -330,7 +330,7 @@ which cannot logically happen if these assets are part of one physical bi-direct
 Another case that could occur is feeding the grid and consuming from it at the same time t.
 
 Under certain conditions, including an excess generation as well as dispatch costs of zero,
-the infeasibe dispatch can also be observed for batteries and result in a parallel charge and discharge of the battery.
+the infeasible dispatch can also be observed for batteries and result in a parallel charge and discharge of the battery.
 If this occurs, a solution may be to set a marginal dispatch cost of battery charge.
 
 .. _limitations-simplified_model:
@@ -468,7 +468,7 @@ This is an approach that the MVS currently uses.
 :Implications:
 By weighing the energy carriers according to their energy content (Gasoline Gallon Equivalent (GGE)),
 the MVS might result in values that can't be directly assessed.
-Those ratings affect the calaculation of the levelized cost of the energy carriers,
+Those ratings affect the calculation of the levelized cost of the energy carriers,
 but also the minimum renewable energy share constraint.
 
 .. _limitations-energy_shortage:
