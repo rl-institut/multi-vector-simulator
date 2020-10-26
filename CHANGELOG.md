@@ -30,6 +30,8 @@ Here is a template for new release sections
 - Add a util function `copy_report_assets` to copy report asset to simulation output folder when user generates the report (#607)
 - Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
 - Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
+- Add economic model equations in readthedocs (#581)
+- Add component model equations and energy balance adapted to sector coupled example (#581)
 
 ### Changed
 - Order of readthedocs content (#590)
