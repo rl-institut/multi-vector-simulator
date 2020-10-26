@@ -25,17 +25,31 @@ Here is a template for new release sections
 - `E-Land_Requirements.rst`: Official E-Land requirement list as well as progress on functional and non-functional requirements (#590)
 - Add pytests for `E4.detect_excessive_excess_generation_in_bus()` (#591)
 - Add pypi release to release protocol and update/simplify protocol (#601)
+- Remove REPORT_PATH constant (#607)
+- Add report assets and example simulation to package_data in `setup.py` (#607)
+- Add a util function `copy_report_assets` to copy report asset to simulation output folder when user generates the report (#607)
+- Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
+- Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
 
 ### Changed
 - Order of readthedocs content (#590)
+- Make sure report can be generated even if figures are missing from simulation outputs (#607)
+- Move the code located in `mvs_report.py` into `multi_vector_simulator.cli:report` (#607)
+- Update installation steps in README and in RTD (#607)
+- If default folder does not exist when code is executed, example simulation's inputs are used from package_data (#607)
+- Rename `PATH_SIM_OUTPUT` to `ARG_PATH_SIM_OUTPUT` (#607)
+- Rename function `A0.create_parser` to `A0.mvs_arg_parser` (#607)
+- Update validation plan description in RTD (#593)
 - Column headers of csv input files need to be unique amongst all files, info added to documentation (#602)
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (`project_data`, `economic_data`, `simulation_settings`) and column headers (`energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
+- Remove reference to git branch ID in the report (#607)
 
 ### Fixed
 - RTD entry for defining parameters as timeseries (#597)
 - Math equations of RTD in files `Model_Assumptions.rst` and `MVS_Output.rst` (#604)
+- Repaired the broken links to input CSV files (#618)
 
 ## [0.5.0] - 2020-10-05
 

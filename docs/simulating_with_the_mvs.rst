@@ -35,16 +35,16 @@ Specifically, the MVS will create a Json file ("mvs_csv_config.json") from the p
 that works just like above described "mvs_config.json".
 For that, each of the following files have to be present in the folder "csv_elements":
 
-- `economic_data.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/economic_data.csv>`_ - Major economic parameters of the project
-- `energyConsumption.csv  <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/energyConsumption.csv>`_ - Energy demands and paths to their time series as csv
-- `energyConversion.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/energyConversion.csv>`_ - Conversion/transformer objects, eg. transformers, generators, heat pumps
-- `energyProduction.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/energyProduction.csv>`_ - Act as energy "sources", ie. PV or wind plants, with paths to their generation time series as csv
-- `energyProviders.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/energyProviders.cs>`_ - Specifics of energy providers, ie. DSOs that are connected to the local energy system, including energy prices and feed-in tariffs
-- `energyStorage.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/energyStorage.csv>`_ - List of energy storages of the energy system
-- `storage_01.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/storage_01.csv>`_ - Technical parameters of each energy system
-- `fixcost.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/fixcost.csv>`_ - fix project development/maintenance costs (should not be used currently)
-- `simulation_settings.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/simulation_settings.csv>`_ - Simulation settings, including start date and duration
-- `project_data.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/project_data.csv>`_ - some generic project information
+- `economic_data.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/economic_data.csv>`_ - Major economic parameters of the project
+- `energyConsumption.csv  <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyConsumption.csv>`_ - Energy demands and paths to their time series as csv
+- `energyConversion.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyConversion.csv>`_ - Conversion/transformer objects, eg. transformers, generators, heat pumps
+- `energyProduction.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyProduction.csv>`_ - Act as energy "sources", ie. PV or wind plants, with paths to their generation time series as csv
+- `energyProviders.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyProviders.csv>`_ - Specifics of energy providers, ie. DSOs that are connected to the local energy system, including energy prices and feed-in tariffs
+- `energyStorage.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyStorage.csv>`_ - List of energy storages of the energy system
+- `storage_01.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/storage_01.csv>`_ - Technical parameters of each energy system
+- `fixcost.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/fixcost.csv>`_ - fix project development/maintenance costs (should not be used currently)
+- `simulation_settings.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/simulation_settings.csv>`_ - Simulation settings, including start date and duration
+- `project_data.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/project_data.csv>`_ - some generic project information
 
 
 For easy set-up of your energy system, we have provided an empty input folder template as well
