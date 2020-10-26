@@ -79,8 +79,8 @@ One main constraint that the optimization model is subject to is the energy bala
 It is very important to note that assets i and j can be the same asset (e.g., battery) however, one of the energy flowing values E_{in} or E_{out} should be zero at the same time step t.
 
 
-Example: Sector Coupled Energy System Scenario
-----------------------------------------------
+Example: Sector Coupled Energy System
+-------------------------------------
 
 In order to understand the component models, a generic sector coupled example in shown in the next figure. It brings together the electricity and heat sector through Transformer 4 as it connects the two sector buses. 
 
