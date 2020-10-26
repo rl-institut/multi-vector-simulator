@@ -144,34 +144,58 @@ To be able to calculate sector-wide key performance indicators, it is necessary 
 
 Following conversion factors and energy carriers are defined:
 
-.. list-table:: Weights of energy carriers
-   :widths: 50 25 25 25
+.. list-table:: Table 1: Kg crude oil equivalent (kgoe) per unit of a fuel
+   :widths: 50 25 25
    :header-rows: 1
 
    * - Energy carrier
-     - Energy carrier unit
-     - Conversion factor unit
-     - Value of conversion factor
-   * - Electricity
-     - kWh_el
-     - kWh_eleq/kWh_el
-     - 1
-   * - Heat
-     - kWh_therm
-     - kWh_eleq/kWh_therm
-     - 1
+     - Unit
+     - Value
    * - H2
-     - kg
-     - kWh_eleq/kg
-     - 32.87
-   * - Diesel
-     - l
-     - kWh_eleq/l
-     - 8.20
-   * - Gas
-     - l
-     - kWh_eleq/l
-     - 5.38
+     - kgoe/kgH2
+     - 2.87804
+   * - LNG
+     - kgoe/kg
+     - 1.0913364
+   * - Crude oil
+     - kgoe/kg
+     - 1
+   * - Gas oil/diesel
+     - kgoe/litre
+     - 0.81513008
+   * - Kerosene
+     - kgoe/litre
+     - 0.0859814
+   * - Gasoline
+     - kgoe/litre
+     - 0.75111238
+   * - LPG
+     - kgoe/litre
+     - 0.55654228
+   * - Ethane
+     - kgoe/litre
+     - 0.44278427
+   * - Electricity
+     - kgoe/kWh(el)
+     - 0.0859814
+   * - Biodiesel
+     - kgoe/litre
+     - 0.00540881
+   * - Ethanol
+     - kgoe/litre
+     - 0.0036478
+   * - Natural gas
+     - kgoe/litre
+     - 0.00080244
+   * - Heat
+     - kgoe/kWh(therm)
+     - 0.086
+   * - Heat
+     - kgoe/kcal
+     - 0.0001
+   * - Heat
+     - kgoe/BTU
+     - 0.000025
 
 The confersion factors are derived from their `Gasoline Gallon Equivalents.<https://epact.energy.gov/fuel-conversion-factors>`_
 
