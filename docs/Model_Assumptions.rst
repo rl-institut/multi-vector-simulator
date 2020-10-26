@@ -144,7 +144,7 @@ To be able to calculate sector-wide key performance indicators, it is necessary 
 
 After thorough consideration, it has been decided to base the equivalency in tonnes of oil equivalent (TOE). Electricity has been chosen as a baseline energy carrier, as our pilot sites mainly revolve around it and also because we believe that this energy carrier will play a larger role in the future. For converting the results into a more conventional unit, we choose crude oil as a secondary baseline energy carrier. This also enables comparisons with crude oil price developments in the market. For most KPIs, including for example the share of renewables at the project location or its self-sufficiency, the baseline energy carrier used is of no relevance as the result is not dependent on it. The choice of the baseline energy carrier is relevant only for the levelized cost of energy (LCOE), as it will either provide a system-wide supply cost in Euro per kWh electrical or per kg crude oil.
 
-First, the conversion factors to kg crude oil equivalent `:sup:`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_ were determined (see Table 1 below). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
+First, the conversion factors to kg crude oil equivalent :sup:``1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_` were determined (see Table 1 below). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
 
 
 Following conversion factors and energy carriers are defined:
@@ -258,6 +258,12 @@ From this, the energy weighting factors using the baseline energy carrier electr
    * - Heat
      - kWh(eleq)/BTU
      - 0.00029076
+
+With this, the equivalent potential of an energy carrier .. math:: E_{eleq,i}, compared to electricity, can be calculated with its conversion factor *w*:sub:`i` as:
+
+.. math::
+        E_{eleq,i} = E_{i} \cdot w_{i}
+
 
 The confersion factors are derived from their `Gasoline Gallon Equivalents.<https://epact.energy.gov/fuel-conversion-factors>`_
 
