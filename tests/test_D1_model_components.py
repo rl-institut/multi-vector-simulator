@@ -100,10 +100,12 @@ class TestTransformerComponent:
 
         """
         # self.transformers should contain the transformer (key = label, value = transformer object)
-        assert dict_asset[LABEL] in self.transformers
+        assert (
+            dict_asset[LABEL] in self.transformers
+        ), f"Transformer '{dict_asset[LABEL]}' was not added to `asset_dict` but should have been added."
         assert isinstance(
             self.transformers[dict_asset[LABEL]], solph.network.Transformer
-        )
+        ), f"Transformer '{dict_asset[LABEL]}' was not added as type ' solph.network.Transformer' to `asset_dict`."
 
         # self.models should contain the transformer (indirectly tested)
         # check output bus (`nominal_value`, `investment` and `existing`) these
@@ -121,17 +123,29 @@ class TestTransformerComponent:
             ]
         for output_bus in output_bus_list:
             if optimize is True:
-                assert isinstance(output_bus.investment, solph.options.Investment)
+                assert isinstance(
+                    output_bus.investment, solph.options.Investment
+                ), f"The output bus of transformer '{dict_asset[LABEL]}' misses an investment object."
                 assert (
                     output_bus.investment.existing == dict_asset[INSTALLED_CAP][VALUE]
-                )
-                assert output_bus.nominal_value is None
+                ), f"`existing` of the `investment` attribute of the output bus of transformer '{dict_asset[LABEL]}' should be {dict_asset[INSTALLED_CAP][VALUE]}."
+                assert (
+                    output_bus.nominal_value is None
+                ), f"The output bus of transformer '{dict_asset[LABEL]}' should have a `nominal_value` of value None."
             elif optimize is False:
-                assert output_bus.investment is None
-                assert hasattr(output_bus.investment, "existing") is False
-                assert output_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
+                assert (
+                    output_bus.investment is None
+                ), f" The `investment` attribute of transformer '{dict_asset[LABEL]}' should be None."
+                assert (
+                    hasattr(output_bus.investment, "existing") is False
+                ), f"`existing` of the `investment` attribute of the output bus of transformer '{dict_asset[LABEL]}' should not exist."
+                assert (
+                    output_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
+                ), f"The `nominal_value` of the output bus of transformer '{dict_asset[LABEL]}' should be {dict_asset[INSTALLED_CAP][VALUE]}."
             else:
-                raise ValueError(f"`optimize` should be True/False but is '{optimize}'")
+                raise ValueError(
+                    f"`optimize` should be True/False but is '{optimize}' - check how helper_test_transformer_in_model_and_dict() is used."
+                )
 
     def test_transformer_optimize_cap_single_busses(self):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
@@ -146,8 +160,12 @@ class TestTransformerComponent:
         )
 
         # only one output and one input bus
-        assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
-        assert len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
@@ -167,8 +185,12 @@ class TestTransformerComponent:
         )
 
         # one output bus and two input busses
-        assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
-        assert len([str(i) for i in self.model.entities[-1].inputs]) == 2
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 2
+        ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
@@ -187,9 +209,13 @@ class TestTransformerComponent:
             bus=self.busses,
         )
 
-        # one output bus and two input busses
-        assert len([str(i) for i in self.model.entities[-1].outputs]) == 2
-        assert len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        # two output busses and one input bus
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 2
+        ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
@@ -209,8 +235,12 @@ class TestTransformerComponent:
         )
 
         # only one output and one input bus
-        assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
-        assert len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
@@ -230,8 +260,12 @@ class TestTransformerComponent:
         )
 
         # one output bus and two input busses
-        assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
-        assert len([str(i) for i in self.model.entities[-1].inputs]) == 2
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 2
+        ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
@@ -250,9 +284,13 @@ class TestTransformerComponent:
             bus=self.busses,
         )
 
-        # one output bus and two input busses
-        assert len([str(i) for i in self.model.entities[-1].outputs]) == 2
-        assert len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        # two output busses and one input bus
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 2
+        ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
