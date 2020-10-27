@@ -1,5 +1,4 @@
 ,unit
-label,str
 unit,str
 optimizeCap,bool
 installedCap,kW

@@ -10,13 +10,15 @@ License
 
 The MVS is licensed with the **GNU General Public License v2.0**. The GNU GPL is the most widely used free software license and has a strong copyleft requirement. When distributing derived works, the source code of the work must be made available under the same license. There are multiple variants of the GNU GPL, each with different requirements.
 
+.. _Flowchart:
+
 Flowchart
 ---------
  
 The MVS' global flowchart, or graphical model, is divided into three connected blocks that trace the logic sequence: inputs, system model, and outputs. This is a typical representation of a simulation model.
 
 .. image:: images/MVS_flowchart.png
- :width: 200
+ :width: 600
 
 The user is asked to enter the required data through a web interface. In developer mode, the data is submitted as a number of csv files. This input data is split into  four categories:
 
@@ -31,22 +33,26 @@ The user is asked to enter the required data through a web interface. In develop
 This set of input data is then translated to a linear programming problem, also known as a constrained optimization problem. The MVS is based on the oemof-solph python library that describes the problem by specifying the objective function, the decision variables and the bounds and constraints. The goal is to (1) minimize the production costs by determining the generating units' optimal output, which meets the total demand, and (2) optimize near-future investments in generation and storage assets with the least possible cost of energy.
 The simulation outputs are also separated into categories: the economic results used for the financial evaluation, such as the levelized cost of electricity or heat or the net present value of the projected investments, the technical results that include the optimized capacities and dispatch of each asset for instance, and the system’s environmental contribution in terms of CO2 emissions. All these results are valuable for the decision making.
 
+.. _validation-plan:
+
 MVS Validation Plan
 -------------------
 
 The adopted validation plan is part of the MVS’ entire development process and is based on three main validation types: conceptual model validation, model verification and operational validity. Following some in-depth research, a validation approach is chosen for the MVS, through which the most appropriate validation techniques are applied to the MVS so that it gains the necessary credibility.
 
-*Conceptual model validation* consists of looking into the underlying theories and assumptions. Therefore, the conceptual validation scheme includes a comprehensive review of the generated equations by the oemof python library and the components’ models. Next step is to try and adapt them to one pilot project with specific constraints. Tracing and examining the flowchart is also considered as part of this validation type. The aim is to assess the reasonability of the model behavior through pre-requisite knowledge. 
+The validation techniques used are listed here below and expanded in :ref:`validation-methodology`:
 
-*Model verification* is related to computer programming and looks into whether the code is a correct representation of the conceptual model. To accomplish that, integration tests for each module will be written to assert that the output is as expected. The simulation will also be run several times for the same input data to double check the results. 
+* Face validity
 
-*Operational validity* determines if the model’s output is within the required accuracy. In order to achieve that, several validation techniques are used, namely:
+* Static testing
 
-*	Benchmark testing, through which scenarios are created with different constraints and component combinations, and the output is calculated and compared to the expected one;
-  
-*	Extreme scenarios (e.g., drastic meteorological conditions), created to make sure the simulation is through, then evaluate the output behavior by the use of graphs and qualitative analysis;
-  
-*	Replication of one pilot project, with a validated optimization model with different component representation to compare and assess the results; and
-  
-*	Sensitivity analysis, through which input-output transformations are studied to show the impact of changing the values of some input parameters.
+* Graphical displays
+
+* Benchmark tests
+
+* Extreme input parameters
+
+* Sensitivity analysis
+
+* Comparison to other model
 

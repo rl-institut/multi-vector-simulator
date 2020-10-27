@@ -35,29 +35,26 @@ Specifically, the MVS will create a Json file ("mvs_csv_config.json") from the p
 that works just like above described "mvs_config.json".
 For that, each of the following files have to be present in the folder "csv_elements":
 
-- `economic_data.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/economic_data.csv>`_ - Major economic parameters of the project
-- `energyConsumption.csv  <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/energyConsumption.csv>`_ - Energy demands and paths to their time series as csv
-- `energyConversion.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/energyConversion.csv>`_ - Conversion/transformer objects, eg. transformers, generators, heat pumps
-- `energyProduction.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/energyProduction.csv>`_ - Act as energy "sources", ie. PV or wind plants, with paths to their generation time series as csv
-- `energyProviders.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/energyProviders.cs>`_ - Specifics of energy providers, ie. DSOs that are connected to the local energy system, including energy prices and feed-in tariffs
-- `energyStorage.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/energyStorage.csv>`_ - List of energy storages of the energy system
-- `storage_01.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/storage_01.csv>`_ - Technical parameters of each energy system
-- `fixcost.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/fixcost.csv>`_ - fix project development/maintenance costs (should not be used currently)
-- `simulation_settings.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/simulation_settings.csv>`_ - Simulation settings, including start date and duration
-- `project_data.csv <https://github.com/rl-institut/mvs_eland/blob/dev/inputs/csv_elements/project_data.csv>`_ - some generic project information
-
+- `economic_data.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/economic_data.csv>`_ - Major economic parameters of the project
+- `energyConsumption.csv  <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyConsumption.csv>`_ - Energy demands and paths to their time series as csv
+- `energyConversion.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyConversion.csv>`_ - Conversion/transformer objects, eg. transformers, generators, heat pumps
+- `energyProduction.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyProduction.csv>`_ - Act as energy "sources", ie. PV or wind plants, with paths to their generation time series as csv
+- `energyProviders.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyProviders.csv>`_ - Specifics of energy providers, ie. DSOs that are connected to the local energy system, including energy prices and feed-in tariffs
+- `energyStorage.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyStorage.csv>`_ - List of energy storages of the energy system
+- `storage_01.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/storage_01.csv>`_ - Technical parameters of each energy system
+- `fixcost.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/fixcost.csv>`_ - fix project development/maintenance costs (should not be used currently)
+- `simulation_settings.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/simulation_settings.csv>`_ - Simulation settings, including start date and duration
+- `project_data.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/project_data.csv>`_ - some generic project information
 
 For easy set-up of your energy system, we have provided an empty input folder template as well
-`here. <https://github.com/rl-institut/mvs_eland/blob/dev/input_template>`_
-For easy set-up of your energy system, we have provided an empty input folder template as well
-`here <https://github.com/rl-institut/mvs_eland/blob/dev/input_template>`_.
-A simple example system is setup with this `input folder <https://github.com/rl-institut/mvs_eland/blob/dev/tests/inputs>`_.
+`here <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template>`_.
+A simple example system is setup with this `input folder <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/inputs>`_.
 When defining your energy system with this CSV files,
 please also refer to the definition of parameters that you can find here: `stable <https://mvs-eland.readthedocs.io/en/stable/MVS_parameters.html>`_ / `latest <https://mvs-eland.readthedocs.io/en/latest/MVS_parameters.html>`_.
 
 Please note that the allowed separators for csv files are located in `src/constants.py` under the
 `CSV_SEPARATORS` variable. Currently only `[",", ";", "&"]` are allowed.
-
+Please note further that the column headers in the csv files need to be unique amongst all files.
 
 Time series: time_series folder
 ###############################
@@ -104,7 +101,7 @@ Example of simple energy systems
 ################################
 
 Input files of simple benchmarks (PV + battery + grid) scenarios can be found
-`here <https://github.com/rl-institut/mvs_eland/blob/dev/tests/benchmark_test_inputs/>`_
+`here <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/benchmark_test_inputs/>`_
 
 
 Building a model from assets and energy flows
@@ -223,9 +220,9 @@ You can see an implemented example here, where the heat pump has a time-dependen
    :widths: 70, 30, 50
    :header-rows: 1
 
-The features were integrated with `Pull Request #63 <https://github.com/rl-institut/mvs_eland/pull/63>`_.
+The features were integrated with `Pull Request #63 <https://github.com/rl-institut/multi-vector-simulator/pull/63>`_.
 For more information, you might also reference following issues:
 
-- Parameters can now be a list of values, eg. efficiencies for two busses or multiple input/output vectors(`Issue #52 <https://github.com/rl-institut/mvs_eland/issue/52>`_)
+- Parameters can now be a list of values, eg. efficiencies for two busses or multiple input/output vectors(`Issue #52 <https://github.com/rl-institut/multi-vector-simulator/issue/52>`_)
 
-- Parameters can now be defined as a list as well as as a timeseries (`Issue #52 <https://github.com/rl-institut/mvs_eland/issue/52>`_, `Issue #82 <https://github.com/rl-institut/mvs_eland/issue/82>`_)
+- Parameters can now be defined as a list as well as as a timeseries (`Issue #52 <https://github.com/rl-institut/multi-vector-simulator/issue/52>`_, `Issue #82 <https://github.com/rl-institut/multi-vector-simulator/issue/82>`_)

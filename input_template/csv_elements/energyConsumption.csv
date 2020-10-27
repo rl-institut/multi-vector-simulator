@@ -1,5 +1,4 @@
 ,unit
-label,str
 unit,str
 inflow_direction,str
 energyVector,str

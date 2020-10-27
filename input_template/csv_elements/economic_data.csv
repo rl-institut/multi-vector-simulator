@@ -1,5 +1,4 @@
 ,unit,economic_data
-label,str,economic_data
 currency,str,
 project_duration,year,
 discount_factor,factor,

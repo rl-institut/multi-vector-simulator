@@ -1,5 +1,5 @@
 ================================
-Moddeling Assumptions of the MVS
+Modeling Assumptions of the MVS
 ================================
 
 Component models
@@ -32,7 +32,7 @@ Dispatchable sources of generation
 Fuel sources are added as dispatchable sources, which still can have development, investment, operational and dispatch costs.
 They are added by adding a column in `energyProviders.CSV`, and setting file_name to `None`.
 
-DSOs, eventhough also dispatchable sources of generation, should be added via `energyProviders.csv`,
+DSOs, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
 as there are some additional features available then.
 
 Both DSOs and the additional fuel sources are limited to following options:
@@ -74,12 +74,12 @@ The energy providers are the most complex assets in the MVS model. They are comp
     - Energy feed-in sink, able to take in generation that is provided to the DSO for revenue
     - Optionally: Transformer Station connecting the DSO bus to the energy bus of the LES
 
-With all these components, the DSO can be vizualized as follows:
+With all these components, the DSO can be visualized as follows:
 
 .. image:: images/Model_Assumptions_energyProvider_assets.png
  :width: 600
 
-Variable energy consumption prices (timeseries)
+Variable energy consumption prices (time-series)
 ###############################################
 
 - Link to howto
@@ -93,12 +93,12 @@ but also for the maximum peak demand (load, eg. kW power) towards the DSO grid w
 
 In the MVS, this information is gathered for the `energyProviders` with:
 
-    - :const:`mvs_eland.utils.constants_json_strings.PEAK_DEMAND_PRICING_PERIOD` as the period used in peak demand pricing. Possible is 1 (yearly), 2 (half-yearly), 3 (each trimester), 4 (quaterly), 6 (every 2 months) and 12 (each month). If you have a `simulation_duration` < 365 days, the periods will still be set up assuming a year! This means, that if you are simulating 14 days, you will never be able to have more than one peak demand pricing period in place.
+    - :const:`multi_vector_simulator.utils.constants_json_strings.PEAK_DEMAND_PRICING_PERIOD` as the period used in peak demand pricing. Possible is 1 (yearly), 2 (half-yearly), 3 (each trimester), 4 (quaterly), 6 (every 2 months) and 12 (each month). If you have a `simulation_duration` < 365 days, the periods will still be set up assuming a year! This means, that if you are simulating 14 days, you will never be able to have more than one peak demand pricing period in place.
 
-    - :const:`mvs_eland.utils.constants_json_strings.PEAK_DEMAND_PRICING` as the costs per peak load unit, eg. kW
+    - :const:`multi_vector_simulator.utils.constants_json_strings.PEAK_DEMAND_PRICING` as the costs per peak load unit, eg. kW
 
-To repesent the peak demand pricing, the MVS adds a "transformer" that is optimized with specific operation and maintainance costs per year equal to the PEAK_DEMAND_PRICING for each of the pricing periods.
-For two peak demand pricing persiods, the resulting dispatch could look as following:
+To represent the peak demand pricing, the MVS adds a "transformer" that is optimized with specific operation and maintenance costs per year equal to the PEAK_DEMAND_PRICING for each of the pricing periods.
+For two peak demand pricing periods, the resulting dispatch could look as following:
 
 .. image:: images/Model_Assumptions_Peak_Demand_Pricing_Dispatch_Graph.png
  :width: 600
@@ -140,40 +140,134 @@ The minimum renewable share is introduced to the energy system by `D2.constraint
 Weighting of energy carriers
 ----------------------------
 
-To be able to calculate sector-wide key performance indicators, it is necessary to weight energy carriers depending on their usable potential. With the conference paper handed in to the CIRED workshop we propose a methodolgy comparable to Gasoline Gallon Equivalents. This definition is currently hard-coded in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be atted to its list. Unknown carriers raise an `UnknownEnergyCarrier` Error.
+To be able to calculate sector-wide key performance indicators, it is necessary to assign weights to the energy carriers based on their usable potential. In the conference paper handed in to the CIRED workshop, we have proposed a methodology comparable to Gasoline Gallon Equivalents.
+
+After thorough consideration, it has been decided to base the equivalence in tonnes of oil equivalent (TOE). Electricity has been chosen as a baseline energy carrier, as our pilot sites mainly revolve around it and also because we believe that this energy carrier will play a larger role in the future. For converting the results into a more conventional unit, we choose crude oil as a secondary baseline energy carrier. This also enables comparisons with crude oil price developments in the market. For most KPIs, the baseline energy carrier used is of no relevance as the result is not dependent on it. This is the case for KPIs such as the share of renewables at the project location or its self-sufficiency. The choice of the baseline energy carrier is relevant only for the levelized cost of energy (LCOE), as it will either provide a system-wide supply cost in Euro per kWh electrical or per kg crude oil.
+
+First, the conversion factors to kg crude oil equivalent [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] were determined (see Table 1 below). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
+
 
 Following conversion factors and energy carriers are defined:
 
-.. list-table:: Weights of energy carriers
-   :widths: 50 25 25 25
+.. list-table:: Table 1: kg crude oil equivalent (kgoe) per unit of a fuel
+   :widths: 50 25 25
    :header-rows: 1
 
    * - Energy carrier
-     - Energy carrier unit
-     - Conversion factor unit
-     - Value of conversion factor
+     - Unit
+     - Value
+   * - H2 [`3  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]
+     - kgoe/kgH2
+     - 2.87804
+   * - LNG
+     - kgoe/kg
+     - 1.0913364
+   * - Crude oil
+     - kgoe/kg
+     - 1
+   * - Gas oil/diesel
+     - kgoe/litre
+     - 0.81513008
+   * - Kerosene
+     - kgoe/litre
+     - 0.0859814
+   * - Gasoline
+     - kgoe/litre
+     - 0.75111238
+   * - LPG
+     - kgoe/litre
+     - 0.55654228
+   * - Ethane
+     - kgoe/litre
+     - 0.44278427
    * - Electricity
-     - kWh_el
-     - kWh_eleq/kWh_el
-     - 1
+     - kgoe/kWh(el)
+     - 0.0859814
+   * - Biodiesel
+     - kgoe/litre
+     - 0.00540881
+   * - Ethanol
+     - kgoe/litre
+     - 0.0036478
+   * - Natural gas
+     - kgoe/litre
+     - 0.00080244
    * - Heat
-     - kWh_therm
-     - kWh_eleq/kWh_therm
-     - 1
-   * - H2
-     - kg
-     - kWh_eleq/kg
-     - 32.87
-   * - Diesel
-     - l
-     - kWh_eleq/l
-     - 8.20
-   * - Gas
-     - l
-     - kWh_eleq/l
-     - 5.38
+     - kgoe/kWh(therm)
+     - 0.086
+   * - Heat
+     - kgoe/kcal
+     - 0.0001
+   * - Heat
+     - kgoe/BTU
+     - 0.000025
 
-The confersion factors are derived from their `Gasoline Gallon Equivalents.<https://epact.energy.gov/fuel-conversion-factors>`_
+The values of ethanol and biodiesel seem comparably low in [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_] and do not seem to be representative of the net heating value (or lower heating value) that was expected to be used here.
+
+From this, the energy weighting factors using the baseline energy carrier electricity are calculated:
+
+.. list-table:: Table 2: Electricity equivalent conversion per unit of a fuel
+   :widths: 50 25 25
+   :header-rows: 1
+
+   * - Product
+     - Unit
+     - Value
+   * - LNG
+     - kWh(eleq)/kg
+     - 33.4728198
+   * - Crude oil
+     - kWh(eleq)/kg
+     - 12.6927029
+   * - Gas oil/diesel
+     - kWh(eleq)/litre
+     - 11.630422
+   * - Kerosene
+     - kWh(eleq)/litre
+     - 9.48030688
+   * - Gasoline
+     - kWh(eleq)/litre
+     - 8.90807395
+   * - LPG
+     - kWh(eleq)/litre
+     - 8.73575397
+   * - Ethane
+     - kWh(eleq)/litre
+     - 6.47282161
+   * - H2
+     - kWh(eleq)/kgH2
+     - 5.14976795
+   * - Electricity
+     - kWh(eleq)/kWh(el)
+     - 1
+   * - Biodiesel
+     - kWh(eleq)/litre
+     - 0.06290669
+   * - Ethanol
+     - kWh(eleq)/litre
+     - 0.04242544
+   * - Natural gas
+     - kWh(eleq)/litre
+     - 0.00933273
+   * - Heat
+     - kWh(eleq)/kWh(therm)
+     - 1.0002163
+   * - Heat
+     - kWh(eleq)/kcal
+     - 0.00116304
+   * - Heat
+     - kWh(eleq)/BTU
+     - 0.00029076
+
+With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, compared to electricity, can be calculated with its conversion factor *w*:sub:`i` as:
+
+.. math::
+        E_{eleq,i} = E_{i} \cdot w_{i}
+
+As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]. The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable share or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
+
+
+The conversion factors are derived from their `Gasoline Gallon Equivalents <https://epact.energy.gov/fuel-conversion-factors>`_.
 
 
 Limitations
@@ -221,7 +315,7 @@ This means that for an asset that is bidirectional two transformer objects have 
 * Physical bi-directional assets, eg. inverters
 * Logical bi-directional assets, eg. consumption from the grid and feed-in to the grid
 
-To archieve the real-life constraint one flow has to be zero when the other is larger zero,
+To achieve the real-life constraint one flow has to be zero when the other is larger zero,
 one would have to implement following relation:
 
 .. math:: 
@@ -236,7 +330,7 @@ which cannot logically happen if these assets are part of one physical bi-direct
 Another case that could occur is feeding the grid and consuming from it at the same time t.
 
 Under certain conditions, including an excess generation as well as dispatch costs of zero,
-the infeasibe dispatch can also be observed for batteries and result in a parallel charge and discharge of the battery.
+the infeasible dispatch can also be observed for batteries and result in a parallel charge and discharge of the battery.
 If this occurs, a solution may be to set a marginal dispatch cost of battery charge.
 
 .. _limitations-simplified_model:
@@ -374,7 +468,7 @@ This is an approach that the MVS currently uses.
 :Implications:
 By weighing the energy carriers according to their energy content (Gasoline Gallon Equivalent (GGE)),
 the MVS might result in values that can't be directly assessed.
-Those ratings affect the calaculation of the levelized cost of the energy carriers,
+Those ratings affect the calculation of the levelized cost of the energy carriers,
 but also the minimum renewable energy share constraint.
 
 .. _limitations-energy_shortage:
@@ -414,3 +508,84 @@ It also results in two optimized capacities for one logical unit.
 
 This limitation is to be addressed with a constraint which links both capacities of one logical unit,
 and therefore solves both the problem to attribute costs and the previously differing capacities.
+
+.. _validation-methodology:
+
+Validation Methodology
+----------------------
+
+As mentioned in :ref:`validation-plan`, the MVS is validated using three validation methods: conceptual model validation, model verification and operational validity.
+
+**Conceptual model validation** consists of looking into the underlying theories and assumptions. Therefore, the conceptual validation scheme includes a comprehensive review of the generated equations by the oemof-solph python library and the components’ models. Next step is to try and adapt them to a sector coupled example with specific constraints. Tracing and examining the flowchart is also considered as part of this validation type which can be found in :ref:`Flowchart`. The aim is to assess the reasonability of the model behavior through pre-requisite knowledge; this technique is known as face validity. 
+
+**Model verification** is related to computer programming and looks into whether the code is a correct representation of the conceptual model. To accomplish this, static testing methods are used to validate the output with respect to an input. Unit tests and integration tests, using proof of correctness techniques, are integrated within the code and evaluate the output of the MVS for any change occuring as they are automated. Unit tests target a single unit such as an individual component, while integration tests target more general parts such as entire modules. Both tests are implemented as pytests for the MVS, which allows automatized testing. 
+
+**Operational validity** assesses the model’s output with respect to the required accuracy. In order to achieve that, several validation techniques are used, namely:
+
+* **Graphical display**, which is the use of model generated or own graphs for result interpretation. Graphs are simultaneously used with other validation techniques to inspect the results;
+
+*	**Benchmark testing**, through which scenarios are created with different constraints and component combinations, and the output is calculated and compared to the expected one to evaluate the performance of the model;
+  
+*	**Extreme scenarios** (e.g., drastic meteorological conditions, very high costs, etc.) are created to make sure the simulation runs through and check if the output behavior is still valid by the use of graphs and qualitative analysis;
+  
+*	**Comparison to other validated model**, which compares the results of a case study simulated with the model at hand to the results of a validated optimization model in order to identify the similarities and differences in results;
+  
+*	**Sensitivity analysis**, through which input-output transformations are studied to show the impact of changing the values of some input parameters.
+
+Unit and Integration Tests
+##########################
+
+The goal is to have unit tests for each single function of the MVS, and integration tests for the larger modules. As previously mentioned, pytests are used for those kind of tests as they always assert that an externally determined output is archieved when applying a specific function. Unit tests and integration tests are gauged by using test coverage measurement. Examples of those tests can be found `here <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests>`_  and it is possible to distinguish them from other tests from the nomination that refers to the names of the source modules (e.g., A0, A1, B0, etc.). The MVS covers so far 80% of the modules and sub-modules as seen in the next figure. 
+
+.. image:: images/Test_coverage.png
+ :width: 200
+ 
+Since those tests are automated, this coverage is updated for any changes in the model.
+
+Benchmark Tests
+###############
+
+A benchmark is a point of reference against which results are compared to assess the operational validity of a model. Benchmark tests are also automated like unit and integration tests, hence it is necessary to check that they are always passing for any implemented changes in the model. The implemented benchmark tests, which cover several features and functionalities of the MVS, are listed here below.
+
+* Electricity Grid + PV (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AB_grid_PV>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L63>`_): Maximum use of PV to serve the demand and the rest is compensated from the grid
+   
+* Electricity Grid + PV + Battery (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/ABE_grid_PV_battery>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L124>`_): Reduced excess energy compared to Grid + PV scenario to charge the battery
+   
+* Electricity Grid + Diesel Generator (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AD_grid_diesel>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L157>`_): The diesel generator is only used if its LCOE is less than the grid price
+   
+* Electricity Grid + Battery (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AE_grid_battery>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L96>`_): The grid is only used to feed the load
+   
+* Electricity Grid + Battery + Peak Demand Pricing (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AE_grid_battery_peak_pricing>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L192>`_): Battery is charged at times of peak demand and used when demand is larger
+   
+* Electricity Grid (Price as Time Series) + Heat Pump + Heat Grid (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AFG_grid_heatpump_heat>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L276>`_): Heat pump is used when electricity_price/COP is less than the heat grid price
+     
+More tests can still be implemented with regard to:
+
+* The investment model within the MVS
+
+* Components with two input sources
+
+Sensitivity Analysis Tests
+##########################
+
+For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff (FIT) for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. The implemented sensitivity analysis test is shown here below with the resulting graph. More information can be found `here <https://repository.tudelft.nl/islandora/object/uuid%3A50c283c7-64c9-4470-8063-140b56f18cfe?collection=education>`_ on pages 54-55.
+
+* Comparing FIT to LCOE_ASSET: Investment in maximum allowed capacity of asset for FIT values larger than LCOE_ASSET
+
+.. image:: images/Sensitivity_1.png
+ :width: 600
+
+The previous graph is not generated by the MVS itself and the results are drawn and interpreted subjectively from it, which points back to the use of graphical displays validation technique with another one simultaneously. This sensitivity analysis test can be translated into a benchmark test so that it becomes automatized. The idea is to check that for every value of FIT greater than LCOE_ASSET, the MVS is investing in the entire allowed maximum capacity of the asset. 
+
+More input-output transformations for sensitivity analyses can be investigated such as:
+
+* Checking the randomness of supply between the electricity grid and a diesel generator when fuel_price/generator_efficiency is equal to electricity_price/transformer_efficiency
+
+* Checking if a diesel generator actually replaces the consumption from the grid at times of peak demand--i.e., dispatch_price is less or equal to peak_demand_charge
+
+Comparison to Other Models
+##########################
+
+So far, the MVS' results for a sector coupled system (electricity + hydrogen) are compared to those of HOMER for the same exact system. This comparison is important to highlight the similarities and differences between the two optimization models. On the electricity side, most of the values are comparable and in the same range. The differences mainly show on the hydrogen part in terms of investment in an electrolyzer capacity (component linking the two sectors) and the values related to that. On another note, both models have different approaches for calculating the value of the levelized cost of a certain energy carrier and therefore the values are apart. Details regarding the comparison drawn between the two models can be found `here <https://repository.tudelft.nl/islandora/object/uuid%3A50c283c7-64c9-4470-8063-140b56f18cfe?collection=education>`_ on pages 55-63.
+
+This validation method is commonly used. However, one model cannot absolutely validate another model or claim that one is better than the other. This is why the focus should be on testing the correctness, appropriateness and accuracy of a model vis-à-vis its purpose. Since the MVS is an open source tool, it is important to use a validated model for comparison, but also similar open source tools like urbs and Calliope for instance. The following two articles list some of the models that could be used for comparison to the MVS: `A review of modelling tools for energy and electricity systems with large shares of variable renewables <https://doi.org/10.1016/j.rser.2018.08.002>`_ and `Power-to-heat for renewable energy integration: A review of technologies, modeling approaches, and flexibility potentials <https://doi.org/10.1016/j.apenergy.2017.12.073>`_.
