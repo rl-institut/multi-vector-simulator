@@ -277,12 +277,8 @@ DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
         ENERGY_CARRIER_UNIT: "kgH2",
     },  # https://epact.energy.gov/fuel-conversion-factors
     "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1, ENERGY_CARRIER_UNIT: "kWh_el",},
-    "Biodiesel": {
-        UNIT: "kWh_eleq/l",
-        VALUE: 0.06290669,
-        ENERGY_CARRIER_UNIT: "kWh_el",
-    },
-    "Ethanol": {UNIT: "kWh_eleq/l", VALUE: 0.04242544, ENERGY_CARRIER_UNIT: "kWh_el",},
+    "Biodiesel": {UNIT: "kWh_eleq/l", VALUE: 0.06290669, ENERGY_CARRIER_UNIT: "l",},
+    "Ethanol": {UNIT: "kWh_eleq/l", VALUE: 0.04242544, ENERGY_CARRIER_UNIT: "l",},
     "Gas": {
         UNIT: "kWh_eleq/m3",
         VALUE: 0.00933273,
