@@ -44,7 +44,7 @@ Here is a template for new release sections
 - Column headers of csv input files need to be unique amongst all files, info added to documentation (#602)
 - Change mvs_eland to multi_vector_simulator in `docs/Code.rst` (#620)
 - Change mvs_eland to multi-vector-simulator in `docs/*.rst` `urls (#620)
-
+- Improved the description of assigning weightage to energy carriers in readthedocs (#619)
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
