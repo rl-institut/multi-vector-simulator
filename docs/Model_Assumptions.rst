@@ -149,7 +149,7 @@ First, the conversion factors to kg crude oil equivalent [`1  <https://www.bp.co
 
 Following conversion factors and energy carriers are defined:
 
-.. list-table:: Table 1: Kg crude oil equivalent (kgoe) per unit of a fuel
+.. list-table:: Table 1: kg crude oil equivalent (kgoe) per unit of a fuel
    :widths: 50 25 25
    :header-rows: 1
 
