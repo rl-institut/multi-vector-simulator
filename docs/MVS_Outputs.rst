@@ -198,7 +198,7 @@ Degree of autonomy (DA)
 The degree of autonomy describes the relation of the total locally
 generated energy to the total demand of the system (see `[2] <https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf>`_).
 
-A DA close to zero shows high dependence on the DSO,
+A DA close to zero shows high dependence on the distribution system operator (DSO),
 while a DA of 1 represents an autonomous or net-energy system
 and a DA higher 1 a plus-energy system.
 As above, we apply a weighting based on Electricity Equivalent.
