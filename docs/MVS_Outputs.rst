@@ -182,9 +182,7 @@ or an excess sink.
 
 
 .. math::
-        OEM &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i - E_{excess}(i) \cdot w_i}{\sum_i {E_{demand} (i) \cdot w_i}}
-
-        \text{with } &i \epsilon \text{[PV,Geothermal,…]}
+        OEM &=\frac{\sum {E_{generation} \cdot w} - E_{gridfeedin} \cdot w - E_{excess} \cdot w}{\sum {E_{demand} \cdot w}}
 
         &OEM \epsilon \text{[0,1]}
 
@@ -201,12 +199,7 @@ and a DA higher 1 a plus-energy system.
 As above, we apply a weighting based on Electricity Equivalent.
 
 .. math::
-        DA &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
-
-        \text{with } &i \epsilon \text{[PV,Geothermal,…]}
-
-
-
+        DA &=\frac{\sum {E_{generation} \cdot w}}{\sum {E_{demand} \cdot w}}
 
 Automatic Report
 -----------------
