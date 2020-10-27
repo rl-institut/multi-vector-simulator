@@ -31,6 +31,7 @@ Here is a template for new release sections
 - Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
 - Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
 - Updated readthedocs: Gather the MVS parameters in a csv file and parse it to a sphinx RTD file (#620)
+- Added more energy carriers and their weights to the list of already available energy carriers in constants.py (#621)
 
 ### Changed
 - Order of readthedocs content (#590)
