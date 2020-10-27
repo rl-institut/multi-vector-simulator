@@ -159,10 +159,7 @@ almost all locally produced energy is consumed by the system itself. notice that
 the feed into the grid can only be positive.
 
 .. math::
-        OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
-
-        \text{with } &i \epsilon \text{[PV,Geothermal,…]}
-
+        OEF &=\frac{\sum {E_{generation} \cdot w} - E_{gridfeedin} \cdot w}{\sum {E_{generation} \cdot w}}
 
         &OEF \epsilon \text{[0,1]}
 
