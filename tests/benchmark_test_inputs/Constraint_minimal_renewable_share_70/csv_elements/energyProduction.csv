@@ -5,7 +5,6 @@ specific_costs,currency/unit,1000
 file_name,str,pv_solar_input.csv
 installedCap,kWp,0
 maximumCap, kWp,None
-label,str,PV plant (mono)
 lifetime,year,30
 specific_costs_om,currency/unit/year,0
 dispatch_price,currency/kWh,0

@@ -5,7 +5,6 @@ specific_costs,currency/unit,4000,0,0
 c_rate,factor of total capacity (kWh),NA,1,1
 efficiency,factor,0,0.95,0.95
 installedCap,unit,1000,0,0
-label,str,storage capacity,input power,output power
 lifetime,year,10,10,10
 specific_costs_om,currency/unit/year,0,0,0
 dispatch_price,currency/kWh,NA,0,0

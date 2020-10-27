@@ -3,7 +3,6 @@ unit,str,kW
 energy_price,currency/kWh,0.54
 feedin_tariff,currency/kWh,0
 inflow_direction,str,Electricity (DSO)
-label,str,Electricity grid DSO
 optimizeCap,bool,False
 outflow_direction,str,Electricity (DSO)
 peak_demand_pricing,currency/kW,0

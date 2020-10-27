@@ -1,5 +1,4 @@
 ,unit,economic_data
-label,str,economic_data
 currency,str,NOK
 project_duration,year,30
 discount_factor,factor,0.06

@@ -12,9 +12,67 @@
 #
 import os
 import sys
+import pandas as pd
 
 sys.path.insert(0, os.path.abspath(".."))
 
+
+def generate_parameter_description(input_csv_file, output_rst_file):
+    """Read the MVS parameter description and generate a .rst formatted document
+
+    Parameters
+    ----------
+    input_csv_file: str
+        path of the file with extensive description of all mvs parameters
+    output_rst_file: str
+        path of the rst file with RTD formatted mvs parameters
+
+    Returns
+    -------
+    None
+
+    """
+    df = pd.read_csv(input_csv_file, index_col=0)
+
+    parameter_properties = [
+        ":Definition:",
+        ":Type:",
+        ":Unit:",
+        ":Example:",
+        ":Restrictions:",
+        ":Default:",
+    ]
+
+    lines = []
+    # formats following the template:
+    # .._<ref_name>:
+    #
+    # <name>
+    # ^^^^^^
+    #
+    # :Definition:
+    # :Type:
+    # :Unit:
+    # :Example:
+    # :Restrictions:
+    # :Default:
+    #
+    # ----
+    #
+    for row in df.iterrows():
+        props = row[1]
+        lines = (
+            lines
+            + [f".. _{props.ref}:", "", props.label, "^" * len(props.label), "",]
+            + [f"{p} {props[p]}" for p in parameter_properties]
+            + ["", "----", "",]
+        )
+
+    with open(output_rst_file, "w") as ofs:
+        ofs.write("\n".join(lines))
+
+
+generate_parameter_description("MVS_parameters_list.csv", "MVS_parameters_list.inc")
 
 # -- Project information -----------------------------------------------------
 
