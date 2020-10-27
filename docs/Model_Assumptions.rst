@@ -235,7 +235,7 @@ From this, the energy weighting factors using the baseline energy carrier electr
      - kWh(eleq)/litre
      - 6.47282161
    * - H2
-     - kgoe/kgH2
+     - kWh(eleq)/kgH2
      - 5.14976795
    * - Electricity
      - kWh(eleq)/kWh(el)
