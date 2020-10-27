@@ -30,6 +30,7 @@ Here is a template for new release sections
 - Add a util function `copy_report_assets` to copy report asset to simulation output folder when user generates the report (#607)
 - Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
 - Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
+- Updated readthedocs: Gather the MVS parameters in a csv file and parse it to a sphinx RTD file (#620)
 
 ### Changed
 - Order of readthedocs content (#590)
@@ -41,6 +42,9 @@ Here is a template for new release sections
 - Rename function `A0.create_parser` to `A0.mvs_arg_parser` (#607)
 - Update validation plan description in RTD (#593)
 - Column headers of csv input files need to be unique amongst all files, info added to documentation (#602)
+- Change mvs_eland to multi_vector_simulator in `docs/Code.rst` (#620)
+- Change mvs_eland to multi-vector-simulator in `docs/*.rst` `urls (#620)
+
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
