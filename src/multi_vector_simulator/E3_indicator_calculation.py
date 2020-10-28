@@ -9,6 +9,8 @@ In module E3 the technical KPI are evaluated:
 - calculate energy flows between sectors
 - calculate degree of autonomy me
 - calculate degree of sector coupling
+- calculate onsite energy fraction (OEF)
+- calculate onsite energy matching (OEM)
 """
 import logging
 
@@ -416,8 +418,51 @@ def equation_renewable_share(total_res, total_non_res):
         renewable_share = 0
     return renewable_share
 
+def add_degree_of_autonomy(dict_values):
 
-def equation_degree_of_autonomy():
+
+    total_generation = (dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
+                        + dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES])
+
+    total_demand = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_DEMAND]
+
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {DEGREE_OF_AUTONOMY: equation_degree_of_autonomy(total_generation, total_demand)}
+    )
+    return
+
+
+def equation_degree_of_autonomy(total_generation, total_demand):
+    """
+    calculates the degree of autonomy.
+
+    The degree of autonomy describes the relation of the total locally
+    generated energy to the total demand of the system.
+
+    Parameters
+    ----------
+    total_generation: float
+        total internal generation of energy
+
+    total_demand: float
+        total demand
+
+    Returns
+    -------
+    float
+        degree of autonomy
+
+    .. math::
+        DA &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+
+    A DA = 0 : System is totally dependent on the DSO,
+    DA = 1 : System is autonomous / a net-energy system
+    DA > 1 : a plus-energy system.
+
+    Notice: As above, we apply a weighting based on Electricity Equivalent.
+    """
+    degree_of_autonomy = total_generation / total_demand
+
     return degree_of_autonomy
 
 
@@ -501,10 +546,43 @@ def equation_degree_of_sector_coupling(
     )
     return degree_of_sector_coupling
 
+# def add_onsite_energy_fraction(dict_values):
+#
+#    total_demand, total_excess = total_demand_and_excess_each_sector(dict_values)
+#
+#     return
 
 def equation_onsite_energy_fraction():
+    """Calculates onsite energy fraction / self-consumption.
+
+    It describes the fraction of all locally generated energy that is consumed
+    by the system itself.
+
+        Parameters
+        ----------
+        total_flow_of_energy_conversion_equivalent: float
+            Energy equivalent of total conversion flows
+
+        total_demand_equivalent: float
+            Energy equivalent of total energy demand
+
+        Returns
+        -------
+        Onsite energy fraction.
+
+        .. math::
+                OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
+
+                &OEF \epsilon \text{[0,1]}
+
+        """
+    degree_of_sector_coupling = (
+            total_flow_of_energy_conversion_equivalent / total_demand_equivalent
+    )
     return onsite_energy_fraction
 
+def add_onsite_energy_matching(dict_values):
+    return
 
 def equation_onsite_energy_matching():
     return onsite_energy_matching
