@@ -152,7 +152,7 @@ Onsite energy fraction is also referred to as self-consumption. It describes
 the fraction of all locally generated energy that is consumed by the system
 itself. (see `[1] <https://www.sciencedirect.com/science/article/pii/S0960148119315216>`_ and `[2] <https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf>`_).
 
-An OEF close to zero shos that only a very small amount of locally generated
+An OEF close to zero shows that only a very small amount of locally generated
 energy is consumed by the system itself. It is at the same time an indicator
 that a large amount is fed into the grid instead. A OEF close to one shows that
 almost all locally produced energy is consumed by the system itself. notice that
