@@ -189,6 +189,57 @@ def store_timeseries_all_busses_to_excel(dict_values):
     return
 
 
+def parse_simulation_log(path_log_file, dict_values):
+    """Gather a log file with several log messages, this function gathers them all and inputs them into the dict with
+    all input and output parameters up to F0
+
+    Parameters
+    ----------
+    path_log_file: str/None
+        path to the mvs log file
+        Default: None
+
+    dict_values :
+        dict Of all input and output parameters up to F0
+
+    Returns
+    -------
+    Updates the results dictionary with the log messages of the simulation
+
+    """
+    # Dictionaries to gather non-fatal warning and error messages that appear during the simulation
+    log_dict = {'ERRORS': {}, 'WARNINGS': {}}
+    error_dict, warning_dict = {}, {}
+
+    if path_log_file is None:
+        path_log_file = os.path.join(OUTPUT_FOLDER, LOGFILE)
+
+    with open(path_log_file) as log_messages:
+        log_messages = log_messages.readlines()
+
+    i = j = 0
+
+    for line in log_messages:
+        print('++++++++++++++++++++')
+        print(line)
+        if "ERROR" in line:
+            i = i + 1
+            substrings = line.split(" - ")
+            message_string = substrings[-1]
+            error_dict.update({i: message_string})
+        elif "WARNING" in line:
+            j = j + 1
+            substrings = line.split(" - ")
+            message_string = substrings[-1]
+            warning_dict.update({j: message_string})
+
+    log_dict['ERRORS'] = error_dict
+    log_dict['WARNINGS'] = warning_dict
+
+    dict_values.update(log_dict)
+    return
+
+
 def store_as_json(dict_values, output_folder=None, file_name=None):
     """Converts dict_values to JSON format and saves dict_values as a JSON file or return json
 
