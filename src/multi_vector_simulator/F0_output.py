@@ -19,6 +19,8 @@ except ModuleNotFoundError:
 from multi_vector_simulator.utils.constants import (
     SIMULATION_SETTINGS,
     PATH_OUTPUT_FOLDER,
+    OUTPUT_FOLDER,
+    LOGFILE,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
