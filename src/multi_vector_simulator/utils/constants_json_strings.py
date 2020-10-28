@@ -231,12 +231,16 @@ RENEWABLE_SHARE = "Renewable_share"
 
 TOTAL_DEMAND = "Total_demand"
 TOTAL_EXCESS = "Total_excess"
+TOTAL_FEEDIN = "Total_feedin"
 SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
 ATTRIBUTED_COSTS = "Attributed costs"
 LCOeleq = "Levelized costs of electricity equivalent"
 
 DEGREE_OF_SECTOR_COUPLING = "Degree of sector coupling"
 DEGREE_OF_AUTONOMY = "Degree of autonomy"
+ONSITE_ENERGY_FRACTION = "Onsite energy fraction"
+ONSITE_ENERGY_MATCHING = "Onsite energy matching"
+
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (
