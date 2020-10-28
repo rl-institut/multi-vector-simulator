@@ -161,6 +161,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
     E3.total_renewable_and_non_renewable_energy_origin(dict_values)
     E3.renewable_share(dict_values)
     # E3.add_degree_of_sector_coupling(dict_values) feature not finished
+    E3.add_onsite_energy_fraction(dict_values)
+    E3.add_onsite_energy_matching(dict_values)
+    E3.add_degree_of_autonomy(dict_values)
 
     # Tests and checks
     logging.info("Running validity checks.")
