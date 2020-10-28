@@ -169,6 +169,12 @@ def evaluate_dict(dict_values, results_main, results_meta):
     E3.total_renewable_and_non_renewable_energy_origin(dict_values)
     E3.renewable_share(dict_values)
     # E3.add_degree_of_sector_coupling(dict_values) feature not finished
+    F0.parse_simulation_log(
+        path_log_file=os.path.join(
+            dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], LOGFILE
+        ),
+        dict_values=dict_values,
+    )
 
     # Tests and checks
     logging.info("Running validity checks.")
