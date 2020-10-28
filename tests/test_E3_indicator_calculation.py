@@ -442,3 +442,31 @@ def test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equi
     )
     assert attributed_costs == 0
     assert lcoe_energy_carrier == 0
+
+def test_equation_degree_of_autonomy():
+    """ """
+    total_generation = 30
+    total_demand = 100
+    degree_of_autonomy = E3.equation_degree_of_autonomy(total_generation, total_demand)
+    assert degree_of_autonomy == total_generation / total_demand
+
+def test_equation_onsite_energy_fraction():
+    """ """
+    total_generation = 30
+    total_feedin = 10
+    onsite_energy_fraction = E3.equation_onsite_energy_fraction(
+        total_generation, total_feedin)
+    assert onsite_energy_fraction == (total_generation - total_feedin) / total_generation
+
+def test_equation_onsite_energy_matching():
+    """ """
+    total_generation = 30
+    total_feedin = 10
+    total_excess = 10
+    total_demand = 100
+
+    onsite_energy_matching = E3.equation_onsite_energy_matching(total_generation, total_feedin,
+                                    total_excess, total_demand)
+    assert onsite_energy_matching == (total_generation - total_feedin - total_excess) / total_demand
+
+
