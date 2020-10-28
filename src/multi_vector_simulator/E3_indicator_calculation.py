@@ -42,6 +42,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_ASSET_BOOL,
     RENEWABLE_SHARE_DSO,
     DSO_CONSUMPTION,
+    DSO_CONSUMPTION,
     TOTAL_RENEWABLE_GENERATION_IN_LES,
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_ENERGY_USE,
@@ -56,7 +57,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DEGREE_OF_SECTOR_COUPLING,
     DEGREE_OF_AUTONOMY,
     ONSITE_ENERGY_FRACTION,
-    ONSITE_ENERGY_MATCHING
+    ONSITE_ENERGY_MATCHING,
 )
 
 
@@ -423,6 +424,7 @@ def equation_renewable_share(total_res, total_non_res):
         renewable_share = 0
     return renewable_share
 
+
 def add_degree_of_autonomy(dict_values):
     """
     Determines degree of autonomy and adds KPI to dict_values
@@ -442,21 +444,21 @@ def add_degree_of_autonomy(dict_values):
     - #todo: TEST
     """
 
-    total_generation = (dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
-                        + dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES])
+    total_generation = (
+        dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
+        + dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES]
+    )
 
-    total_demand = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT]
+    total_demand = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
 
     degree_of_autonomy = equation_degree_of_autonomy(total_generation, total_demand)
 
-    dict_values[KPI][KPI_SCALARS_DICT].update(
-        {DEGREE_OF_AUTONOMY: degree_of_autonomy}
-    )
+    dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_AUTONOMY: degree_of_autonomy})
 
-    logging.debug(
-        f"Calculated the {DEGREE_OF_AUTONOMY}: {round(degree_of_autonomy)}"
-    )
-    logging.info(f"Calculated the {ONSITE_ENERGY_FRACTION}.")
+    logging.debug(f"Calculated the {DEGREE_OF_AUTONOMY}: {round(degree_of_autonomy)}")
+    logging.info(f"Calculated the {DEGREE_OF_AUTONOMY}.")
 
     return
 
@@ -549,7 +551,7 @@ def add_degree_of_sector_coupling(dict_values):
 
 def equation_degree_of_sector_coupling(
     total_flow_of_energy_conversion_equivalent, total_demand_equivalent
-    ):
+):
     """Calculates degree of sector coupling.
 
     Parameters
@@ -595,8 +597,10 @@ def add_onsite_energy_fraction(dict_values):
     - #todo: TEST
     """
 
-    total_generation = (dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
-                        + dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES])
+    total_generation = (
+        dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
+        + dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES]
+    )
 
     total_feedin = 0
     # sum up all feed into the grid
@@ -604,18 +608,23 @@ def add_onsite_energy_fraction(dict_values):
         # Get source connected to the specific DSO in question
         scalars_matrix = dict_values[KPI][KPI_SCALAR_MATRIX]
         # load total flow into the dso sink
-        dso_sink = scalars_matrix.loc[scalars_matrix['label'] ==                    # todo: IS this referece always correct??
-                                      dict_values[ENERGY_PROVIDERS][dso]
-                                      [CONNECTED_FEEDIN_SINK] + AUTO_SINK]
-        dso_feedin= dso_sink["total_flow"][0]
+        dso_sink = scalars_matrix.loc[
+            scalars_matrix["label"]
+            == dict_values[ENERGY_PROVIDERS][  # todo: IS this referece always correct??
+                dso
+            ][CONNECTED_FEEDIN_SINK]
+            + AUTO_SINK
+        ]
+        dso_feedin = dso_sink["total_flow"][0]
         # sum up all dso flows
         total_feedin = total_feedin + dso_feedin
-    #save total feedin into KPI_SCALARS_DICT
-    dict_values[KPI][KPI_SCALARS_DICT].update(
-        {TOTAL_FEEDIN: total_feedin})
+    # save total feedin into KPI_SCALARS_DICT
+    dict_values[KPI][KPI_SCALARS_DICT].update({TOTAL_FEEDIN: total_feedin})
 
-    #calculate onsite energy fraction
-    onsite_energy_fraction = equation_onsite_energy_fraction(total_generation, total_feedin)
+    # calculate onsite energy fraction
+    onsite_energy_fraction = equation_onsite_energy_fraction(
+        total_generation, total_feedin
+    )
 
     # save total feedin into KPI_SCALARS_DICT
     dict_values[KPI][KPI_SCALARS_DICT].update(
@@ -678,20 +687,25 @@ def add_onsite_energy_matching(dict_values):
     - #todo: TEST
     """
 
-    total_generation = (dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
-                        + dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES])
+    total_generation = (
+        dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
+        + dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES]
+    )
 
     total_feedin = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_FEEDIN]
 
-    total_excess = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT]
+    total_excess = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
 
-    total_demand = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT]
+    total_demand = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
 
-    #calculate onsite energy matching
-    onsite_energy_matching = equation_onsite_energy_matching(total_generation,
-                                                             total_feedin,
-                                                             total_excess,
-                                                             total_demand)
+    # calculate onsite energy matching
+    onsite_energy_matching = equation_onsite_energy_matching(
+        total_generation, total_feedin, total_excess, total_demand
+    )
     # save KPI onsite energy matching to KPI Scalars
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {ONSITE_ENERGY_MATCHING: onsite_energy_matching}
@@ -703,8 +717,10 @@ def add_onsite_energy_matching(dict_values):
 
     return
 
-def equation_onsite_energy_matching(total_generation, total_feedin,
-                                    total_excess, total_demand):
+
+def equation_onsite_energy_matching(
+    total_generation, total_feedin, total_excess, total_demand
+):
     """Calculates onsite energy matching /self sufficiency.
 
     OEM describes the fraction of the total demand that can be
@@ -732,8 +748,8 @@ def equation_onsite_energy_matching(total_generation, total_feedin,
 
         """
     onsite_energy_matching = (
-            (total_generation - total_feedin - total_excess) / total_demand
-    )
+        total_generation - total_feedin - total_excess
+    ) / total_demand
     return onsite_energy_matching
 
 
