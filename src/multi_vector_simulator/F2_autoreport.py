@@ -923,11 +923,11 @@ def create_app(results_json, path_sim_output=None):
                         children=[
                             insert_subsection(
                                 title="Warning Messages",
-                                content=insert_log_messages(log_dict=warnings_dict),
+                                content=insert_log_messages(log_dict=results_json['WARNINGS']),
                             ),
                             insert_subsection(
                                 title="Error Messages",
-                                content=insert_log_messages(log_dict=errors_dict),
+                                content=insert_log_messages(log_dict=results_json['ERRORS']),
                             ),
                         ]
                     ),
