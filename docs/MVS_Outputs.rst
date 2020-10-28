@@ -155,7 +155,7 @@ itself. (see `[1] <https://www.sciencedirect.com/science/article/pii/S0960148119
 An OEF close to zero shows that only a very small amount of locally generated
 energy is consumed by the system itself. It is at the same time an indicator
 that a large amount is fed into the grid instead. A OEF close to one shows that
-almost all locally produced energy is consumed by the system itself. notice that
+almost all locally produced energy is consumed by the system itself. Notice that
 the feed into the grid can only be positive.
 
 .. math::
