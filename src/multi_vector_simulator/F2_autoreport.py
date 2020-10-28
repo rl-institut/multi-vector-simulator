@@ -70,7 +70,6 @@ from multi_vector_simulator.E1_process_results import (
     convert_scalars_to_dataframe,
 )
 from multi_vector_simulator.F1_plotting import (
-    parse_simulation_log,
     plot_timeseries,
     plot_piecharts_of_costs,
     plot_optimized_capacities,
@@ -675,13 +674,6 @@ def create_app(results_json, path_sim_output=None):
     df_scalar_matrix = convert_scalar_matrix_to_dataframe(results_json)
     df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
     df_kpi_scalars = convert_scalars_to_dataframe(results_json)
-
-    warnings_dict = parse_simulation_log(
-        path_log_file=os.path.join(path_sim_output, LOGFILE), log_type="WARNING",
-    )
-    errors_dict = parse_simulation_log(
-        path_log_file=os.path.join(path_sim_output, LOGFILE), log_type="ERROR",
-    )
 
     # App layout and populating it with different elements
     app.layout = html.Div(
