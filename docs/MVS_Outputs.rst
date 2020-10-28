@@ -168,7 +168,7 @@ the feed into the grid can only be positive.
 Onsite energy matching (OEM)
 ############################
 
-The onsite energy matching is also referred to as "self sufficiency". It
+The onsite energy matching is also referred to as "self-sufficiency". It
 describes the fraction of the total demand that can be
 covered by the locally generated energy (see
 `[1] <https://www.sciencedirect.com/science/article/pii/S0960148119315216>`_ and `[2] <https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf>`_).
