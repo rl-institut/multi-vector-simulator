@@ -32,6 +32,8 @@ Here is a template for new release sections
 - Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
 - Updated readthedocs: Gather the MVS parameters in a csv file and parse it to a sphinx RTD file (#620)
 - Added more energy carriers and their weights to the list of already available energy carriers in constants.py (#621)
+- Three new KPI's added to MVS_output.rst read the docs page: Onsite energy fraction, Onsite energy matching, Degree of autonomy (#609)
+
 
 ### Changed
 - Order of readthedocs content (#590)

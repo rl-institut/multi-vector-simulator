@@ -108,7 +108,7 @@ Describes the share of the MES demand that is supplied from renewable sources.
 .. math::
         RES &=\frac{\sum_i {E_{RES,generation} (i) \cdot w_i}}{\sum_j {E_{generation}(j) \cdot w_j}+\sum_k {E_{grid} (k)}}
 
-        \text{with~} &i \epsilon \text{[PV,Geothermal,…]}
+        \text{with } &i \epsilon \text{[PV,Geothermal,…]}
 
         &j \epsilon \text{[generation assets 1,2,…]}
 
@@ -129,17 +129,6 @@ with all aggregated energy flows from the generation assets and their subsequent
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
-Degree of autonomy (DA)
-#######################
-
-The DA represents the level of autonomy that the MES has from potential supply from a distribution system operators (DSO).
-DA close to zero shows high dependence on the DSO,
-while a DA of 1 represents an autonomous or net-energy system
-and a DA higher 1 a plus-energy system.
-As above, we apply a weighting based on Electricity Equivalent.
-
-** The content of this section was copied from the conference paper handed in to CIRED 2020**
-
 
 Degree of sector-coupling (DSC)
 ###############################
@@ -151,15 +140,67 @@ To measure this, we propose to compare the energy flows in between the sectors t
 .. math::
         DSC & =\frac{\sum_{i,j}{E_{conversion} (i,j) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
-        \text{with~} & i,j \epsilon \text{[Electricity,H2…]}
+        \text{with } & i,j \epsilon \text{[Electricity,H2…]}
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
-Onsite energy fraction
-######################
+Onsite energy fraction (OEF)
+############################
 
-Onsite energy matching
-######################
+
+Onsite energy fraction is also referred to as self-consumption. It describes
+the fraction of all locally generated energy that is consumed by the system
+itself. (see `[1] <https://www.sciencedirect.com/science/article/pii/S0960148119315216>`_ and `[2] <https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf>`_).
+
+An OEF close to zero shows that only a very small amount of locally generated
+energy is consumed by the system itself. It is at the same time an indicator
+that a large amount is fed into the grid instead. A OEF close to one shows that
+almost all locally produced energy is consumed by the system itself. Notice that
+the feed into the grid can only be positive.
+
+.. math::
+        OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
+
+        &OEF \epsilon \text{[0,1]}
+
+
+
+Onsite energy matching (OEM)
+############################
+
+The onsite energy matching is also referred to as "self-sufficiency". It
+describes the fraction of the total demand that can be
+covered by the locally generated energy (see
+`[1] <https://www.sciencedirect.com/science/article/pii/S0960148119315216>`_ and `[2] <https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf>`_).
+Notice that the feed into the grid should only be positive.
+
+An OEM close to zero shows that very little of the demand can be covered by
+locally produced energy. Am OEM close to one shows that almost all of the demand
+can be covered with locally generated energy. Per definition OEM cannot be greater
+than 1 because the excess generated energy would automatically be fed into the grid
+or an excess sink.
+
+
+.. math::
+        OEM &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i - E_{excess}(i) \cdot w_i}{\sum_i {E_{demand} (i) \cdot w_i}}
+
+        &OEM \epsilon \text{[0,1]}
+
+
+Degree of autonomy (DA)
+#######################
+
+The degree of autonomy describes the relation of the total locally
+generated energy to the total demand of the system (see `[2] <https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf>`_).
+
+A DA close to zero shows high dependence on the DSO,
+while a DA of 1 represents an autonomous or net-energy system
+and a DA higher 1 a plus-energy system.
+As above, we apply a weighting based on Electricity Equivalent.
+
+.. math::
+        DA &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+
 
 Automatic Report
 -----------------
