@@ -208,7 +208,7 @@ def parse_simulation_log(path_log_file, dict_values):
 
     """
     # Dictionaries to gather non-fatal warning and error messages that appear during the simulation
-    log_dict = {'ERRORS': {}, 'WARNINGS': {}}
+    log_dict = {"ERRORS": {}, "WARNINGS": {}}
     error_dict, warning_dict = {}, {}
 
     if path_log_file is None:
@@ -233,8 +233,8 @@ def parse_simulation_log(path_log_file, dict_values):
             message_string = substrings[-1]
             warning_dict.update({j: message_string})
 
-    log_dict['ERRORS'] = error_dict
-    log_dict['WARNINGS'] = warning_dict
+    log_dict["ERRORS"] = error_dict
+    log_dict["WARNINGS"] = warning_dict
 
     dict_values.update(log_dict)
     return
