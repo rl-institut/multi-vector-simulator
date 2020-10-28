@@ -221,8 +221,8 @@ def parse_simulation_log(path_log_file, dict_values):
 
     i = j = 0
 
+    # Loop through the list of lines of the log file to check for the relevant log messages and gather them in dicts
     for line in log_messages:
-        print('++++++++++++++++++++')
         print(line)
         if "ERROR" in line:
             i = i + 1
