@@ -1,5 +1,4 @@
 ,unit,project_data
-label,str,project_data
 country,str,Norway
 latitude,str,59.17905
 longitude,str,10.95787

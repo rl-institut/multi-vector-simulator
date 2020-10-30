@@ -30,6 +30,9 @@ Here is a template for new release sections
 - Add a util function `copy_report_assets` to copy report asset to simulation output folder when user generates the report (#607)
 - Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
 - Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
+- Updated readthedocs: Gather the MVS parameters in a csv file and parse it to a sphinx RTD file (#620)
+- Added more energy carriers and their weights to the list of already available energy carriers in constants.py (#621)
+- Three new KPI's added to MVS_output.rst read the docs page: Onsite energy fraction, Onsite energy matching, Degree of autonomy (#609)
 - Add economic model equations in readthedocs (#581)
 - Add component model equations and energy balance adapted to sector coupled example (#581)
 
@@ -42,8 +45,13 @@ Here is a template for new release sections
 - Rename `PATH_SIM_OUTPUT` to `ARG_PATH_SIM_OUTPUT` (#607)
 - Rename function `A0.create_parser` to `A0.mvs_arg_parser` (#607)
 - Update validation plan description in RTD (#593)
+- Column headers of csv input files need to be unique amongst all files, info added to documentation (#602)
+- Change mvs_eland to multi_vector_simulator in `docs/Code.rst` (#620)
+- Change mvs_eland to multi-vector-simulator in `docs/*.rst` `urls (#620)
+- Improved the description of assigning weightage to energy carriers in readthedocs (#619)
 
 ### Removed
+- Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
 - Remove reference to git branch ID in the report (#607)
 
 ### Fixed

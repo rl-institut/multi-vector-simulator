@@ -1,9 +1,8 @@
-,unit,Electricity DSO,Heat DSO
+,unit,Grid_DSO,Heat_DSO
 unit,str,kW,kWh
 energy_price,currency/kWh,"{'file_name': 'tariff_timeseries.csv', 'header': 'currency/kWh', 'unit': 'currency/kWh'}",0.056
 feedin_tariff,currency/kWh,0,0
 inflow_direction,str,Electricity,Heat
-label,str,Grid DSO,Heat DSO
 optimizeCap,bool,False,False
 outflow_direction,str,Electricity,Heat
 peak_demand_pricing,currency/kW,0,0

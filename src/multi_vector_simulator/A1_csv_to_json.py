@@ -43,6 +43,10 @@ from multi_vector_simulator.utils.constants import (
     ECONOMIC_DATA,
     PROJECT_DATA,
     CONSTRAINTS,
+    ENERGY_CONSUMPTION,
+    ENERGY_CONVERSION,
+    ENERGY_PRODUCTION,
+    ENERGY_PROVIDERS,
     STORAGE_FILENAME,
     TYPE_BOOL,
     TYPE_STR,
@@ -154,6 +158,18 @@ def create_input_json(
         if filename in REQUIRED_CSV_FILES:
             list_assets.append(filename)
             single_dict = create_json_from_csv(input_directory, filename)
+            if filename in [PROJECT_DATA, ECONOMIC_DATA, SIMULATION_SETTINGS]:
+                # use filename as label
+                single_dict[filename][LABEL] = filename
+            elif filename in [
+                ENERGY_CONSUMPTION,
+                ENERGY_CONVERSION,
+                ENERGY_PRODUCTION,
+                ENERGY_PROVIDERS,
+            ]:
+                # use column names as labels, replace underscores and capitalize
+                for key, item in single_dict[filename].items():
+                    item[LABEL] = key
             input_json.update(single_dict)
         elif "storage_" in filename:
             list_assets.append(filename)
@@ -184,7 +200,7 @@ def create_input_json(
     with open(output_filename, "w") as outfile:
         json.dump(input_json, outfile, skipkeys=True, sort_keys=True, indent=4)
     logging.info(
-        f"Json file created successully from csv's and stored into {output_filename}\n"
+        f"Json file created successfully from csv's and stored into {output_filename}\n"
     )
     logging.debug("Json created successfully from csv.")
     if pass_back:
@@ -679,7 +695,6 @@ def add_storage_components(storage_filename, input_directory):
             SPECIFIC_COSTS,
             EFFICIENCY,
             INSTALLED_CAP,
-            LABEL,
             LIFETIME,
             SPECIFIC_COSTS_OM,
             UNIT,
@@ -690,4 +705,7 @@ def add_storage_components(storage_filename, input_directory):
             parameters=parameters,
             asset_is_a_storage=True,
         )
+        # add labels to storage
+        for key, item in single_dict.items():
+            item[LABEL] = " ".join([storage_filename, key])
         return single_dict

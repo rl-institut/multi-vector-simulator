@@ -84,7 +84,6 @@ REQUIRED_CSV_PARAMETERS = {
     ENERGY_CONSUMPTION: [
         DSM,
         FILENAME,
-        LABEL,
         TYPE_ASSET,
         OEMOF_ASSET_TYPE,
         ENERGY_VECTOR,
@@ -98,7 +97,6 @@ REQUIRED_CSV_PARAMETERS = {
         EFFICIENCY,
         INFLOW_DIRECTION,
         INSTALLED_CAP,
-        LABEL,
         LIFETIME,
         SPECIFIC_COSTS_OM,
         DISPATCH_PRICE,
@@ -110,9 +108,9 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     ENERGY_STORAGE: [
         INFLOW_DIRECTION,
-        LABEL,
         OPTIMIZE_CAP,
         OUTFLOW_DIRECTION,
+        LABEL,
         OEMOF_ASSET_TYPE,
         STORAGE_FILENAME,
         ENERGY_VECTOR,
@@ -123,7 +121,6 @@ REQUIRED_CSV_PARAMETERS = {
         SPECIFIC_COSTS,
         FILENAME,
         INSTALLED_CAP,
-        LABEL,
         LIFETIME,
         SPECIFIC_COSTS_OM,
         DISPATCH_PRICE,
@@ -137,7 +134,6 @@ REQUIRED_CSV_PARAMETERS = {
         ENERGY_PRICE,
         FEEDIN_TARIFF,
         INFLOW_DIRECTION,
-        LABEL,
         OPTIMIZE_CAP,
         OUTFLOW_DIRECTION,
         PEAK_DEMAND_PRICING,
@@ -156,7 +152,6 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     SIMULATION_SETTINGS: [
         EVALUATED_PERIOD,
-        LABEL,
         OUTPUT_LP_FILE,
         STORE_OEMOF_RESULTS,
         START_DATE,
@@ -165,7 +160,6 @@ REQUIRED_CSV_PARAMETERS = {
     ],
     PROJECT_DATA: [
         COUNTRY,
-        LABEL,
         LATITUDE,
         LONGITUDE,
         PROJECT_ID,
@@ -173,7 +167,7 @@ REQUIRED_CSV_PARAMETERS = {
         SCENARIO_ID,
         SCENARIO_NAME,
     ],
-    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX,],
+    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, PROJECT_DURATION, TAX,],
 }
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
@@ -266,23 +260,35 @@ EXTRA_CSV_PARAMETERS = {
 
 ENERGY_CARRIER_UNIT = "energy_carrier_unit"
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
-    "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1, ENERGY_CARRIER_UNIT: "kWh_el"},
-    "Heat": {UNIT: "KWh_eleq/kWh_therm", VALUE: 1, ENERGY_CARRIER_UNIT: "kWh_therm"},
-    "H2": {
-        UNIT: "kWh_eleq/kgH2",
-        VALUE: 32.87,
-        ENERGY_CARRIER_UNIT: "kgH2",
-    },  # https://epact.energy.gov/fuel-conversion-factors
+    "LNG": {UNIT: "kWh_eleq/kg", VALUE: 33.4728198, ENERGY_CARRIER_UNIT: "kg",},
+    "Crude_Oil": {UNIT: "kWh_eleq/kg", VALUE: 12.6927029, ENERGY_CARRIER_UNIT: "kg",},
     "Diesel": {
         UNIT: "kWh_eleq/l",
-        VALUE: 8.20,
+        VALUE: 11.630422,
         ENERGY_CARRIER_UNIT: "l",
-    },  # https://epact.energy.gov/fuel-conversion-factors, convertion gallon->4.546092 l
+    },  # https://epact.energy.gov/fuel-conversion-factors, conversion gallon->4.546092 l
+    "Kerosene": {UNIT: "kWh_eleq/l", VALUE: 9.48030688, ENERGY_CARRIER_UNIT: "l",},
+    "Gasoline": {UNIT: "kWh_eleq/l", VALUE: 8.90807395, ENERGY_CARRIER_UNIT: "l",},
+    "LPG": {UNIT: "kWh_eleq/l", VALUE: 8.73575397, ENERGY_CARRIER_UNIT: "l",},
+    "Ethane": {UNIT: "kWh_eleq/l", VALUE: 6.47282161, ENERGY_CARRIER_UNIT: "l",},
+    "H2": {
+        UNIT: "kWh_eleq/kgH2",
+        VALUE: 5.14976795,
+        ENERGY_CARRIER_UNIT: "kgH2",
+    },  # https://epact.energy.gov/fuel-conversion-factors
+    "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1, ENERGY_CARRIER_UNIT: "kWh_el",},
+    "Biodiesel": {UNIT: "kWh_eleq/l", VALUE: 0.06290669, ENERGY_CARRIER_UNIT: "l",},
+    "Ethanol": {UNIT: "kWh_eleq/l", VALUE: 0.04242544, ENERGY_CARRIER_UNIT: "l",},
     "Gas": {
         UNIT: "kWh_eleq/m3",
-        VALUE: 5.38,
+        VALUE: 0.00933273,
         ENERGY_CARRIER_UNIT: "l",
-    },  # https://epact.energy.gov/fuel-conversion-factors, convertion gallon->4.546092 l
+    },  # https://epact.energy.gov/fuel-conversion-factors, conversion gallon->4.546092 l
+    "Heat": {
+        UNIT: "KWh_eleq/kWh_therm",
+        VALUE: 1.0002163,
+        ENERGY_CARRIER_UNIT: "kWh_therm",
+    },
 }
 
 # dict keys in results_json file

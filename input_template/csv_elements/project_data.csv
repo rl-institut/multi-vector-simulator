@@ -1,5 +1,4 @@
 ,unit,project_data
-label,str,project_data
 country,str,
 latitude,str,
 longitude,str,

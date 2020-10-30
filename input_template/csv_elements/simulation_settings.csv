@@ -1,5 +1,4 @@
 ,unit,simulation_settings
-label,str,simulation_settings
 start_date,str,
 evaluated_period,days,
 timestep,minutes,60
