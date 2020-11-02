@@ -76,6 +76,13 @@ def evaluate_dict(dict_values, path_pdf_report=None, path_png_figs=None):
         "Summarizing simulation results to results_timeseries and results_scalars_assets."
     )
 
+    parse_simulation_log(
+        path_log_file=os.path.join(
+            dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], LOGFILE
+        ),
+        dict_values=dict_values,
+    )
+
     # storing all flows to exel.
     store_timeseries_all_busses_to_excel(dict_values)
 
@@ -166,7 +173,6 @@ def store_scalars_to_excel(dict_values):
                 results_scalar_output_file,
                 kpi_set,
             )
-    return
 
 
 def store_timeseries_all_busses_to_excel(dict_values):
@@ -192,7 +198,6 @@ def store_timeseries_all_busses_to_excel(dict_values):
             dict_values[OPTIMIZED_FLOWS][bus].to_excel(open_file, sheet_name=bus)
 
     logging.debug("Saved flows at busses to: %s.", timeseries_output_file)
-    return
 
 
 def parse_simulation_log(path_log_file, dict_values):
@@ -227,7 +232,6 @@ def parse_simulation_log(path_log_file, dict_values):
 
     # Loop through the list of lines of the log file to check for the relevant log messages and gather them in dicts
     for line in log_messages:
-        print(line)
         if "ERROR" in line:
             i = i + 1
             substrings = line.split(" - ")
