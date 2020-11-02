@@ -204,7 +204,7 @@ Here, you would insert a list of your parameters instead of the scalar value of 
 Would be an example of a transformer with two efficiencies.
 
 You can also wrap multiple inputs/outputs with scalars that are defined as efficiencies.
-For that, you define one or muliple of the parameters within the list with the above introduced dictionary:
+For that, you define one or multiple of the parameters within the list with the above introduced dictionary:
 
     [0.99, {'value': {'file_name': 'your_file_name.csv', 'header': 'your_header'}, 'unit': 'your_unit'}]
 
