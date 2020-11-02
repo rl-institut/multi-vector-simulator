@@ -180,3 +180,74 @@ EPA_ASSET_KEYS = {
     ENERGY_BUSSES: [LABEL, "assets", "energy_vector"],
 }
 
+
+def convert_epa_params_to_mvs(epa_dict):
+    """Convert the EPA output parameters to MVS input parameters
+
+    Parameters
+    ----------
+    epa_dict: dict
+        parameters from EPA user interface
+
+    Returns
+    -------
+    dict_values: dict
+        mvs parameters
+
+    """
+
+    dict_values = {}
+
+    for param_group in [PROJECT_DATA, ECONOMIC_DATA, SIMULATION_SETTINGS, CONSTRAINTS]:
+
+        if MAP_MVS_EPA[param_group] in epa_dict:
+
+            dict_values[param_group] = epa_dict[MAP_MVS_EPA[param_group]]
+
+            # convert fields names from EPA convention to MVS convention, if applicable
+            keys_list = list(dict_values[param_group].keys())
+            for k in keys_list:
+                if k in MAP_EPA_MVS:
+                    dict_values[param_group][MAP_EPA_MVS[k]] = dict_values[
+                        param_group
+                    ].pop(k)
+        else:
+            logging.warning(
+                f"The parameters {MAP_MVS_EPA[param_group]} are not present in the parameters to be parsed into mvs json format"
+            )
+
+    for asset_group in [
+        ENERGY_CONSUMPTION,
+        ENERGY_CONVERSION,
+        ENERGY_PRODUCTION,
+        ENERGY_STORAGE,
+        ENERGY_BUSSES,
+        ENERGY_PROVIDERS,
+    ]:
+        if MAP_MVS_EPA[asset_group] in epa_dict:
+            dict_asset = {}
+            for asset in epa_dict[MAP_MVS_EPA[asset_group]]:
+
+                asset_label = asset[LABEL]
+                dict_asset[asset_label] = asset
+
+                asset_keys = list(dict_asset[asset_label].keys())
+                for k in asset_keys:
+                    if k in MAP_EPA_MVS:
+                        dict_asset[asset_label][MAP_EPA_MVS[k]] = dict_asset[
+                            asset_label
+                        ].pop(k)
+
+            # move the unit outside the timeseries dict
+            if TIMESERIES in dict_asset:
+                unit = dict_asset[TIMESERIES].pop(UNIT)
+                dict_asset[UNIT] = unit
+
+            dict_values[asset_group] = dict_asset
+        else:
+            logging.warning(
+                f"The parameters {MAP_MVS_EPA[asset_group]} are not present in the parameters to be parsed into mvs json format"
+            )
+
+    return dict_values
+
