@@ -330,7 +330,9 @@ def energyConversion(dict_values, group):
                 "Asset %s has multiple input/output busses with a list of efficiencies. Reading list",
                 dict_values[group][asset][LABEL],
             )
-    return
+        else:
+            logging.debug(f"Not loading {group} asset {asset} from file")
+            compute_timeseries_properties(dict_values[group][asset])
 
 
 def energyProduction(dict_values, group):
@@ -362,6 +364,9 @@ def energyProduction(dict_values, group):
                 )
                 # If Filename defines the generation timeseries, then we have an asset with a lack of dispatchability
                 dict_values[group][asset].update({DISPATCHABILITY: False})
+        else:
+            logging.debug(f"Not loading {group} asset {asset} from file")
+            compute_timeseries_properties(dict_values[group][asset])
         # check if maximumCap exists and add it to dict_values
         process_maximum_cap_constraint(dict_values, group, asset)
 
@@ -471,7 +476,9 @@ def energyConsumption(dict_values, group):
                 "input",
                 is_demand_profile=True,
             )
-    return
+        else:
+            logging.debug(f"Not loading {group} asset {asset} from file")
+            compute_timeseries_properties(dict_values[group][asset])
 
 
 def define_missing_cost_data(dict_values, dict_asset):
