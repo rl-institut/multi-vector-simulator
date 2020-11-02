@@ -30,6 +30,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RESOURCES,
     KPI_SCALARS_DICT,
     ECONOMIC_DATA,
+    SIMULATION_RESULTS,
+    LOGS,
+    ERRORS,
+    WARNINGS,
 )
 
 r"""
@@ -210,7 +214,7 @@ def parse_simulation_log(path_log_file, dict_values):
 
     """
     # Dictionaries to gather non-fatal warning and error messages that appear during the simulation
-    log_dict = {"ERRORS": {}, "WARNINGS": {}}
+
     error_dict, warning_dict = {}, {}
 
     if path_log_file is None:
@@ -235,11 +239,9 @@ def parse_simulation_log(path_log_file, dict_values):
             message_string = substrings[-1]
             warning_dict.update({j: message_string})
 
-    log_dict["ERRORS"] = error_dict
-    log_dict["WARNINGS"] = warning_dict
+    log_dict = {ERRORS: error_dict, WARNINGS: warning_dict}
 
-    dict_values.update(log_dict)
-    return
+    dict_values.update({SIMULATION_RESULTS: {LOGS: log_dict}})
 
 
 def store_as_json(dict_values, output_folder=None, file_name=None):
