@@ -133,13 +133,11 @@ def convert_from_special_types_to_json(o):
     elif isinstance(o, bool) or isinstance(o, str):
         answer = o
     elif isinstance(o, pd.DatetimeIndex):
-        answer = {DATA_TYPE_JSON_KEY: TYPE_DATETIMEINDEX}
-        answer.update(json.loads(o.to_frame().to_json(orient="split")))
+        answer = {DATA_TYPE_JSON_KEY: TYPE_DATETIMEINDEX, VALUE: o.values.tolist()}
     elif isinstance(o, pd.Timestamp):
         answer = {DATA_TYPE_JSON_KEY: TYPE_TIMESTAMP, VALUE: str(o)}
     elif isinstance(o, pd.Series):
-        answer = {DATA_TYPE_JSON_KEY: TYPE_SERIES}
-        answer.update(json.loads(o.to_json(orient="split")))
+        answer = {DATA_TYPE_JSON_KEY: TYPE_SERIES, VALUE: o.to_list()}
     elif isinstance(o, np.ndarray):
         answer = {DATA_TYPE_JSON_KEY: TYPE_NDARRAY, VALUE: o.tolist()}
     elif isinstance(o, pd.DataFrame):
