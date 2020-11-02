@@ -317,10 +317,7 @@ def energyConversion(dict_values, group):
             and HEADER in dict_values[group][asset][EFFICIENCY]
         ):
             receive_timeseries_from_csv(
-                dict_values,
-                dict_values[SIMULATION_SETTINGS],
-                dict_values[group][asset],
-                EFFICIENCY,
+                dict_values[SIMULATION_SETTINGS], dict_values[group][asset], EFFICIENCY,
             )
         # in case there is more than one parameter provided (either (A) n input busses and 1 output bus or (B) 1 input bus and n output busses)
         # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
@@ -359,7 +356,6 @@ def energyProduction(dict_values, group):
                 )
             else:
                 receive_timeseries_from_csv(
-                    dict_values,
                     dict_values[SIMULATION_SETTINGS],
                     dict_values[group][asset],
                     "input",
@@ -404,7 +400,6 @@ def energyStorage(dict_values, group):
                     dict_values[group][asset][subasset][parameter][VALUE], dict
                 ):
                     receive_timeseries_from_csv(
-                        dict_values,
                         dict_values[SIMULATION_SETTINGS],
                         dict_values[group][asset][subasset],
                         parameter,
@@ -471,7 +466,6 @@ def energyConsumption(dict_values, group):
 
         if FILENAME in dict_values[group][asset]:
             receive_timeseries_from_csv(
-                dict_values,
                 dict_values[SIMULATION_SETTINGS],
                 dict_values[group][asset],
                 "input",
@@ -494,10 +488,7 @@ def define_missing_cost_data(dict_values, dict_asset):
     if DISPATCH_PRICE in dict_asset:
         if isinstance(dict_asset[DISPATCH_PRICE][VALUE], dict):
             receive_timeseries_from_csv(
-                dict_values,
-                dict_values[SIMULATION_SETTINGS],
-                dict_asset,
-                DISPATCH_PRICE,
+                dict_values[SIMULATION_SETTINGS], dict_asset, DISPATCH_PRICE,
             )
         elif isinstance(dict_asset[DISPATCH_PRICE][VALUE], list):
             treat_multiple_flows(dict_asset, dict_values, DISPATCH_PRICE)
@@ -1150,7 +1141,7 @@ def determine_dispatch_price(dict_values, price, source):
             }
         )
         receive_timeseries_from_csv(
-            dict_values, dict_values[SIMULATION_SETTINGS], source, DISPATCH_PRICE
+            dict_values[SIMULATION_SETTINGS], source, DISPATCH_PRICE
         )
     else:
         source.update({DISPATCH_PRICE: {VALUE: price[VALUE], UNIT: price[UNIT]}})
@@ -1260,7 +1251,7 @@ def define_sink(
             }
         )
         receive_timeseries_from_csv(
-            dict_values, dict_values[SIMULATION_SETTINGS], sink, DISPATCH_PRICE
+            dict_values[SIMULATION_SETTINGS], sink, DISPATCH_PRICE
         )
         if (
             asset_name[-6:] == "feedin"
@@ -1459,7 +1450,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
 # so additional values like peak, total or average must be calculated. Any other type does not need this additional info.
 def receive_timeseries_from_csv(
-    dict_values, settings, dict_asset, input_type, is_demand_profile=False
+    settings, dict_asset, input_type, is_demand_profile=False
 ):
     """
 
