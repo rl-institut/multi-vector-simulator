@@ -57,28 +57,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ASSET_DICT,
 )
 
-# process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
-def test_retrieve_datetimeindex_for_simulation():
-    simulation_settings = {
-        START_DATE: "2020-01-01",
-        EVALUATED_PERIOD: {VALUE: 1},
-        TIMESTEP: {VALUE: 60},
-    }
-    C0.retrieve_date_time_info(simulation_settings)
-    for k in (START_DATE, END_DATE, TIME_INDEX):
-        assert (
-            k in simulation_settings.keys()
-        ), f"Function does not add {k} to the simulation settings."
-    assert simulation_settings[START_DATE] == pd.Timestamp(
-        "2020-01-01 00:00:00"
-    ), f"Function incorrectly parses the timestamp."
-    assert simulation_settings[END_DATE] == pd.Timestamp(
-        "2020-01-01 23:00:00"
-    ), f"Function incorrectly parses the timestamp."
-    assert (
-        simulation_settings[PERIODS] == 24
-    ), f"Function incorrectly identifies the number of evaluated periods."
-
 
 def test_add_economic_parameters():
     economic_parameters = {
