@@ -1584,12 +1584,35 @@ def receive_timeseries_from_csv(
         sys.exit()
 
     if input_type == "input":
+        compute_timeseries_properties(dict_asset)
+
+
+def compute_timeseries_properties(dict_asset):
+    """Compute peak, aggregation, average and normalize timeseries
+
+    Parameters
+    ----------
+    dict_asset: dict
+        dict of all asset parameters, must contain TIMESERIES key
+
+    Returns
+    -------
+    None
+    Add TIMESERIES_PEAK, TIMESERIES_TOTAL, TIMESERIES_AVERAGE and TIMESERIES_NORMALIZED
+    to dict_asset
+
+    """
+
+    if TIMESERIES in dict_asset:
+        timeseries = dict_asset[TIMESERIES]
+        unit = dict_asset[UNIT]
+
         dict_asset.update(
             {
-                TIMESERIES_PEAK: {VALUE: max(dict_asset[TIMESERIES]), UNIT: unit,},
-                TIMESERIES_TOTAL: {VALUE: sum(dict_asset[TIMESERIES]), UNIT: unit,},
+                TIMESERIES_PEAK: {VALUE: max(timeseries), UNIT: unit,},
+                TIMESERIES_TOTAL: {VALUE: sum(timeseries), UNIT: unit,},
                 TIMESERIES_AVERAGE: {
-                    VALUE: sum(dict_asset[TIMESERIES]) / len(dict_asset[TIMESERIES]),
+                    VALUE: sum(timeseries) / len(timeseries),
                     UNIT: unit,
                 },
             }
@@ -1597,19 +1620,17 @@ def receive_timeseries_from_csv(
 
         logging.debug("Normalizing timeseries of %s.", dict_asset[LABEL])
         dict_asset.update(
-            {
-                TIMESERIES_NORMALIZED: dict_asset[TIMESERIES]
-                / dict_asset[TIMESERIES_PEAK][VALUE]
-            }
+            {TIMESERIES_NORMALIZED: timeseries / dict_asset[TIMESERIES_PEAK][VALUE]}
         )
         # just to be sure!
         if any(dict_asset[TIMESERIES_NORMALIZED].values) > 1:
-            logging.warning(
-                "Error, %s timeseries not normalized, greater than 1.",
-                dict_asset[LABEL],
+            logging.error(
+                f"{dict_asset[LABEL]} normalized timeseries has values greater than 1."
             )
         if any(dict_asset[TIMESERIES_NORMALIZED].values) < 0:
-            logging.warning("Error, %s timeseries negative.", dict_asset[LABEL])
+            logging.error(
+                f"{ dict_asset[LABEL]} normalized timeseries has negative values."
+            )
 
 
 def treat_multiple_flows(dict_asset, dict_values, parameter):
