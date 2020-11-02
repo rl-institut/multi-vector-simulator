@@ -1,3 +1,4 @@
+import logging
 import copy
 import json
 import os
@@ -245,7 +246,20 @@ def load_json(
     with open(path_input_file) as json_file:
         dict_values = json.load(json_file)
 
-    dict_values = convert_from_json_to_special_types(dict_values)
+    # Retrieve the simulation setting in the right format
+    if SIMULATION_SETTINGS in dict_values:
+        dict_values[SIMULATION_SETTINGS] = convert_from_json_to_special_types(
+            dict_values[SIMULATION_SETTINGS]
+        )
+        # Compute the END_DATE and the TIME_INDEX
+        retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
+
+        time_index = dict_values[SIMULATION_SETTINGS][TIME_INDEX]
+    else:
+        time_index = None
+
+    # Convert the values inside the dict to python types
+    dict_values = convert_from_json_to_special_types(dict_values, time_index=time_index)
 
     # The user specified a value
     if path_input_folder is not None:
