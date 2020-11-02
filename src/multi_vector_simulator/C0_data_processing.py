@@ -16,6 +16,7 @@ from multi_vector_simulator.utils.constants import (
 )
 
 from multi_vector_simulator.utils.constants_json_strings import *
+import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C1_verification as C1
 import multi_vector_simulator.C2_economic_functions as C2
 import multi_vector_simulator.F0_output as F0
@@ -60,7 +61,7 @@ def all(dict_values):
     :return Pre-processed dictionary with all input parameters
 
     """
-    retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
+    B0.retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
     add_economic_parameters(dict_values[ECONOMIC_DATA])
     identify_energy_vectors(dict_values)
 
@@ -169,52 +170,6 @@ def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
             f"as it is not defined within the DEFAULT_WEIGHTS_ENERGY_CARRIERS."
             f"Please check the energy carrier, or update the DEFAULT_WEIGHTS_ENERGY_CARRIERS in contants.py (dev)."
         )
-
-
-def retrieve_date_time_info(simulation_settings):
-    """
-    Updates simulation settings by all time-related parameters.
-    - START_DATE
-    - END_DATE
-    - TIME_INDEX
-    - PERIODS
-
-    Parameters
-    ----------
-    simulation_settings: dict
-        Simulation parameters of the input data
-
-    Returns
-    -------
-    Update simulation_settings by start date, end date, timeindex, and number of simulation periods
-
-
-    Notes
-    -----
-    Function tested with test_retrieve_datetimeindex_for_simulation()
-    """
-    simulation_settings.update(
-        {START_DATE: pd.to_datetime(simulation_settings[START_DATE])}
-    )
-    simulation_settings.update(
-        {
-            END_DATE: simulation_settings[START_DATE]
-            + pd.DateOffset(days=simulation_settings[EVALUATED_PERIOD][VALUE], hours=-1)
-        }
-    )
-    # create time index used for initializing oemof simulation
-    simulation_settings.update(
-        {
-            TIME_INDEX: pd.date_range(
-                start=simulation_settings[START_DATE],
-                end=simulation_settings[END_DATE],
-                freq=str(simulation_settings[TIMESTEP][VALUE]) + UNIT_MINUTE,
-            )
-        }
-    )
-
-    simulation_settings.update({PERIODS: len(simulation_settings[TIME_INDEX])})
-    return simulation_settings
 
 
 def add_economic_parameters(economic_parameters):

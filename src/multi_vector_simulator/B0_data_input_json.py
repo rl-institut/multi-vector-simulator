@@ -5,7 +5,16 @@ import os
 import numpy as np
 import pandas as pd
 
-from multi_vector_simulator.utils.constants_json_strings import VALUE
+from multi_vector_simulator.utils.constants_json_strings import (
+    START_DATE,
+    PERIODS,
+    END_DATE,
+    EVALUATED_PERIOD,
+    TIME_INDEX,
+    TIMESTEP,
+    UNIT_MINUTE,
+    VALUE,
+)
 
 from multi_vector_simulator.utils.constants import (
     CSV_FNAME,
@@ -145,6 +154,51 @@ def convert_from_special_types_to_json(o):
         )
 
     return answer
+
+
+def retrieve_date_time_info(simulation_settings):
+    """
+    Updates simulation settings by all time-related parameters.
+    - START_DATE
+    - END_DATE
+    - TIME_INDEX
+    - PERIODS
+
+    Parameters
+    ----------
+    simulation_settings: dict
+        Simulation parameters of the input data
+
+    Returns
+    -------
+    Update simulation_settings by start date, end date, timeindex, and number of simulation periods
+
+
+    Notes
+    -----
+    Function tested with test_retrieve_datetimeindex_for_simulation()
+    """
+    simulation_settings.update(
+        {START_DATE: pd.to_datetime(simulation_settings[START_DATE])}
+    )
+    simulation_settings.update(
+        {
+            END_DATE: simulation_settings[START_DATE]
+            + pd.DateOffset(days=simulation_settings[EVALUATED_PERIOD][VALUE], hours=-1)
+        }
+    )
+    # create time index used for initializing oemof simulation
+    simulation_settings.update(
+        {
+            TIME_INDEX: pd.date_range(
+                start=simulation_settings[START_DATE],
+                end=simulation_settings[END_DATE],
+                freq=str(simulation_settings[TIMESTEP][VALUE]) + UNIT_MINUTE,
+            )
+        }
+    )
+
+    simulation_settings.update({PERIODS: len(simulation_settings[TIME_INDEX])})
 
 
 def load_json(
