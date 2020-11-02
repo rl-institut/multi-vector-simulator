@@ -34,6 +34,7 @@ child-sub:  Sub-child function, feeds only back to child functions
 """
 
 import logging
+import json
 
 # Loading all child functions
 import multi_vector_simulator.B0_data_input_json as data_input
@@ -42,6 +43,7 @@ import multi_vector_simulator.D0_modelling_and_optimization as modelling
 import multi_vector_simulator.E0_evaluation as evaluation
 import multi_vector_simulator.F0_output as output_processing
 from multi_vector_simulator.version import version_num, version_date
+from multi_vector_simulator.utils import data_parser
 
 
 def run_simulation(json_dict, **kwargs):
@@ -97,8 +99,14 @@ def run_simulation(json_dict, **kwargs):
     evaluation.evaluate_dict(dict_values, results_main, results_meta)
 
     logging.debug("Convert results to json")
-    json_values = output_processing.store_as_json(dict_values)
-    return json_values
+
+    epa_dict_values = data_parser.convert_mvs_params_to_epa(dict_values)
+
+    output_processing.select_essential_results(epa_dict_values)
+
+    json_values = output_processing.store_as_json(epa_dict_values)
+
+    return json.loads(json_values)
 
 
 if __name__ == "__main__":
