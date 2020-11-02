@@ -1692,9 +1692,9 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     * Unit of MaximumCap is asset unit
 
     If MaximumCap is changed depends on its value:
-    * If MaximumCap not in asset dict: MaximumCap == None
-    * If MaximumCap < installed Cap: invalid, MaximumCap == None
-    * If MaximumCap == 0: invalid, MaximumCap == None
+    * If MaximumCap not in asset dict: MaximumCap is None
+    * If MaximumCap < installed Cap: invalid, MaximumCap is None
+    * If MaximumCap == 0: invalid, MaximumCap is None
     * If MaximumCap > installedCap and group != energyProviders: pass
     * If MaximumCap > installedCap and group == energyProviders and filename not in asset_dict: pass
     * If MaximumCap > installedCap and group == energyProviders and filename in asset_dict (non-dispatchable assets): MaximumCap == MaximumCap/peak(timeseries)
@@ -1710,7 +1710,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     else:
         if asset_dict[MAXIMUM_CAP][VALUE] is not None:
             # adapt maximumCap of non-dispatchable sources
-            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] != None:
+            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
                 asset_dict[MAXIMUM_CAP][VALUE] = (
                     asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
                 )

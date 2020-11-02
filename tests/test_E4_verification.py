@@ -36,7 +36,7 @@ def test_minimal_renewable_share_test_fails():
         KPI: {KPI_SCALARS_DICT: {RENEWABLE_SHARE: 0.2 - 10 ** (-5)}},
     }
     return_value = E4.minimal_renewable_share_test(dict_values)
-    assert return_value == False
+    assert return_value is False
 
 
 def test_detect_excessive_excess_generation_in_bus_warning_is_logged(caplog):

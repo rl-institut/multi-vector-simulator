@@ -483,7 +483,7 @@ def test_process_maximum_cap_constraint_maximumCap_undefined():
         MAXIMUM_CAP in dict_values[group][asset]
     ), f"The function does not add a MAXIMUM_CAP to the asset dictionary."
     assert (
-        dict_values[group][asset][MAXIMUM_CAP][VALUE] == None
+        dict_values[group][asset][MAXIMUM_CAP][VALUE] is None
     ), f"Eventhough there is no limit imposed to the asset capacity, its maximumCap is defined to be {dict_values[group][asset][MAXIMUM_CAP][VALUE]}."
     assert (
         dict_values[group][asset][MAXIMUM_CAP][UNIT] == unit
@@ -495,7 +495,7 @@ def test_process_maximum_cap_constraint_maximumCap_is_None():
     dict_values = {group: {asset: {UNIT: unit, MAXIMUM_CAP: {VALUE: None}}}}
     C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
     assert (
-        dict_values[group][asset][MAXIMUM_CAP][VALUE] == None
+        dict_values[group][asset][MAXIMUM_CAP][VALUE] is None
     ), f"Eventhough there is no limit imposed to the asset capacity, its maximumCap is defined to be {dict_values[group][asset][MAXIMUM_CAP][VALUE]}."
     assert (
         dict_values[group][asset][MAXIMUM_CAP][UNIT] == unit
@@ -560,7 +560,7 @@ def test_process_maximum_cap_constraint_maximumCap_is_0():
     with pytest.warns(UserWarning):
         C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
         assert (
-            dict_values[group][asset][MAXIMUM_CAP][VALUE] == None
+            dict_values[group][asset][MAXIMUM_CAP][VALUE] is None
         ), f"The initial maximumCap defined by the end-user ({maxCap}) is overwritten by a different value ({dict_values[group][asset][MAXIMUM_CAP][VALUE]})."
 
 
@@ -579,7 +579,7 @@ def test_process_maximum_cap_constraint_maximumCap_is_int_smaller_than_installed
     with pytest.warns(UserWarning):
         C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
         assert (
-            dict_values[group][asset][MAXIMUM_CAP][VALUE] == None
+            dict_values[group][asset][MAXIMUM_CAP][VALUE] is None
         ), f"The invalid input is not ignored by defining maximumCap as None."
 
 
@@ -638,7 +638,7 @@ def test_process_maximum_cap_constraint_subasset():
 
     C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=subasset)
     assert (
-        dict_values[group][asset][subasset][MAXIMUM_CAP][VALUE] == None
+        dict_values[group][asset][subasset][MAXIMUM_CAP][VALUE] is None
     ), f"The function does not change the previously defined MAXIMUM_CAP."
     assert (
         dict_values[group][asset][subasset][MAXIMUM_CAP][UNIT] == unit

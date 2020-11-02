@@ -115,7 +115,7 @@ def check_feedin_tariff(dict_values):
             boolean = [
                 k > 0 for k in diff.values
             ]  # True if there is an instance where feed-in tariff > electricity_price
-            if any(boolean) == True:
+            if any(boolean) is True:
                 instances = sum(boolean)  # Count instances
                 msg = f"Feed-in tariff > energy price in {instances} during the simulation time for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'. This would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
                 raise ValueError(msg)
@@ -143,10 +143,8 @@ def check_time_series_values_between_0_and_1(time_series):
 
     """
     boolean = time_series.between(0, 1)
-    if boolean.all() == False:
-        return False
-    else:
-        return True
+
+    return bool(boolean.all())
 
 
 def check_non_dispatchable_source_time_series(dict_values):
@@ -166,12 +164,12 @@ def check_non_dispatchable_source_time_series(dict_values):
     """
     # go through all non-dispatchable sources
     for key, source in dict_values[ENERGY_PRODUCTION].items():
-        if TIMESERIES in source and source[RENEWABLE_ASSET_BOOL][VALUE] == True:
+        if TIMESERIES in source and source[RENEWABLE_ASSET_BOOL][VALUE] is True:
             # check if values between 0 and 1
             result = check_time_series_values_between_0_and_1(
                 time_series=source[TIMESERIES]
             )
-            if result == False:
+            if result is False:
                 logging.error(
                     f"{TIMESERIES} of non-dispatchable source {source[LABEL]} contains values out of bounds [0, 1]."
                 )
