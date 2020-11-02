@@ -251,3 +251,98 @@ def convert_epa_params_to_mvs(epa_dict):
 
     return dict_values
 
+
+def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
+    """Convert the MVS output parameters to EPA format
+
+    Parameters
+    ----------
+    mvs_dict: dict
+        output parameters from MVS
+
+    Returns
+    -------
+    dict_values: dict
+        epa parameters
+
+    """
+
+    dict_values = {}
+
+    for param_group in [PROJECT_DATA, ECONOMIC_DATA, SIMULATION_SETTINGS, CONSTRAINTS]:
+
+        param_group_epa = MAP_MVS_EPA[param_group]
+
+        dict_values[param_group_epa] = mvs_dict[param_group]
+
+        # convert fields names from MVS convention to EPA convention, if applicable
+        keys_list = list(dict_values[param_group_epa].keys())
+        for k in keys_list:
+            if k in MAP_MVS_EPA:
+                dict_values[param_group_epa][MAP_MVS_EPA[k]] = dict_values[
+                    param_group_epa
+                ].pop(k)
+
+    for asset_group in [
+        ENERGY_CONSUMPTION,
+        ENERGY_CONVERSION,
+        ENERGY_PRODUCTION,
+        ENERGY_STORAGE,
+        ENERGY_BUSSES,
+        ENERGY_PROVIDERS,
+    ]:
+        list_asset = []
+        for asset_label in mvs_dict[asset_group]:
+            # mvs[asset_group] is a dict we want to change into a list
+
+            # each asset is also a dict
+            asset = mvs_dict[asset_group][asset_label]
+
+            # keep the information about the dict key, but move it into the dict value
+            asset[LABEL] = asset_label
+
+            asset_keys = list(asset.keys())
+            for k in asset_keys:
+                if k in MAP_MVS_EPA:
+                    # convert some keys MVS to EPA style according to the mapping
+                    asset[MAP_MVS_EPA[k]] = asset.pop(k)
+                # TODO change energy busses from dict to list in MVS
+                if asset_group == ENERGY_BUSSES and k == "Asset_list":
+                    asset["assets"] = list(asset.pop(k).keys())
+
+            # move the unit inside the timeseries dict
+            if MAP_MVS_EPA[TIMESERIES] in asset:
+                unit = asset.pop(UNIT)
+                asset[MAP_MVS_EPA[TIMESERIES]][UNIT] = unit
+
+            if "_excess" not in asset_label and "_sink" not in asset_label:
+                list_asset.append(asset)
+
+        dict_values[MAP_MVS_EPA[asset_group]] = list_asset
+
+    # verify that there are extra keys, besides the one expected by EPA data structure
+    extra_keys = {}
+    # verify that there are keys expected by the EPA which are not filled
+    missing_keys = {}
+    for asset_group in EPA_ASSET_KEYS:
+        extra_keys[asset_group] = []
+        missing_keys[asset_group] = []
+        for asset in dict_values[MAP_MVS_EPA[asset_group]]:
+            asset_keys = list(asset.keys())
+            for k in asset_keys:
+                if k not in EPA_ASSET_KEYS[asset_group]:
+                    asset.pop(k)
+                    if k not in extra_keys[asset_group]:
+                        extra_keys[asset_group].append((asset[LABEL], k))
+            for k in EPA_ASSET_KEYS[asset_group]:
+                if k not in asset:
+                    missing_keys[asset_group].append((asset[LABEL], k))
+
+    if verbatim is True:
+        print("#" * 10 + " Missing values " + "#" * 10)
+        pp.pprint(missing_keys)
+
+        print("#" * 10 + " Extra values " + "#" * 12)
+        pp.pprint(extra_keys)
+
+    return dict_values
