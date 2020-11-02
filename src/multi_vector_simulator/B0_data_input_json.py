@@ -43,7 +43,7 @@ It will be an interface to the EPA.
 """
 
 
-def convert_from_json_to_special_types(a_dict, prev_key=None):
+def convert_from_json_to_special_types(a_dict, prev_key=None, time_index=None):
     """Convert the field values of the mvs result json file which are not simple types.
 
     The function is recursive to explore all nested levels
@@ -68,7 +68,9 @@ def convert_from_json_to_special_types(a_dict, prev_key=None):
         if DATA_TYPE_JSON_KEY not in a_dict:
             answer = {}
             for k in a_dict:
-                answer[k] = convert_from_json_to_special_types(a_dict[k], prev_key=k)
+                answer[k] = convert_from_json_to_special_types(
+                    a_dict[k], prev_key=k, time_index=time_index
+                )
         else:
             # the a_dict is a dictionary containing the special type key,
             # therefore we apply the conversion if this type is listed below
@@ -82,19 +84,34 @@ def convert_from_json_to_special_types(a_dict, prev_key=None):
                 answer = pd.read_json(a_dict, orient="split")
             elif TYPE_DATETIMEINDEX in data_type:
                 # pandas.DatetimeIndex
-                a_dict = json.dumps(a_dict)
-                answer = pd.read_json(a_dict, orient="split")
-                answer = pd.to_datetime(answer.index)
+                if time_index is not None:
+                    answer = time_index
+                else:
+                    answer = pd.DatetimeIndex(a_dict.get(VALUE, []))
 
                 answer.freq = answer.inferred_freq
             elif TYPE_SERIES in data_type:
                 # pandas.Series
                 # extract the name of the series in case it was a tuple
-                name = a_dict.pop("name")
+                name = a_dict.get("name", None)
 
                 # reconvert the dict to a json for conversion to pandas Series
-                a_dict = json.dumps(a_dict)
-                answer = pd.read_json(a_dict, orient="split", typ="series")
+                answer = pd.Series(a_dict[VALUE])
+
+                # Set time_index to Series
+                if time_index is not None:
+                    if len(answer.index) > len(time_index):
+                        logging.warning(
+                            f"The time index inferred from {SIMULATION_SETTINGS} is longer as "
+                            f"the timeserie under the field {prev_key}"
+                        )
+                    elif len(answer.index) < len(time_index):
+                        logging.warning(
+                            f"The time index inferred from {SIMULATION_SETTINGS} is shorter as "
+                            f"the timeserie under the field {prev_key}"
+                        )
+                    else:
+                        answer.index = time_index
 
                 # if the name was a tuple it was converted to a list via json serialization
                 if isinstance(name, list):
