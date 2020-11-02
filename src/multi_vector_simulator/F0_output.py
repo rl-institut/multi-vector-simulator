@@ -206,7 +206,6 @@ def store_timeseries_all_busses_to_excel(dict_values):
 
     logging.debug("Saved flows at busses to: %s.", timeseries_output_file)
 
-
 def parse_simulation_log(path_log_file, dict_values):
     """Gather a log file with several log messages, this function gathers them all and inputs them into the dict with
     all input and output parameters up to F0

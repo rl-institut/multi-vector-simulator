@@ -88,8 +88,6 @@ def all(dict_values):
         "json_input_processed",
     )
 
-    return
-
 
 def identify_energy_vectors(dict_values):
     """
@@ -132,7 +130,6 @@ def identify_energy_vectors(dict_values):
         "The energy system modelled includes following energy vectors / sectors: %s",
         names_of_sectors[:-2],
     )
-    return
 
 
 def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
@@ -215,7 +212,6 @@ def add_economic_parameters(economic_parameters):
             }
         }
     )
-    return
 
 
 def process_all_assets(dict_values):
@@ -256,7 +252,6 @@ def process_all_assets(dict_values):
         )
 
     logging.info("Processed cost data and added economic values.")
-    return
 
 
 def define_excess_sinks(dict_values):
@@ -370,8 +365,6 @@ def energyProduction(dict_values, group):
         # check if maximumCap exists and add it to dict_values
         process_maximum_cap_constraint(dict_values, group, asset)
 
-    return
-
 
 def energyStorage(dict_values, group):
     """
@@ -425,7 +418,6 @@ def energyStorage(dict_values, group):
         dict_values[group][asset].update(
             {OUTPUT_BUS_NAME: bus_suffix(dict_values[group][asset][OUTFLOW_DIRECTION])}
         )
-    return
 
 
 def energyProviders(dict_values, group):
@@ -447,7 +439,6 @@ def energyProviders(dict_values, group):
             dict_values[ECONOMIC_DATA],
             dict_values[group][asset],
         )
-    return
 
 
 def energyConsumption(dict_values, group):
@@ -524,7 +515,6 @@ def define_missing_cost_data(dict_values, dict_asset):
 
     if len(str) > 1:
         logging.debug("Added basic costs to asset %s: %s", dict_asset[LABEL], str)
-    return
 
 
 def define_busses(dict_values):
@@ -558,8 +548,6 @@ def define_busses(dict_values):
             add_busses_of_asset_depending_on_in_out_direction(
                 dict_values, dict_values[group][asset], asset
             )
-
-    return
 
 
 def add_busses_of_asset_depending_on_in_out_direction(
@@ -628,7 +616,6 @@ def add_busses_of_asset_depending_on_in_out_direction(
                 )
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_suffix(bus)})
-    return
 
 
 def bus_suffix(bus_direction):
@@ -720,7 +707,6 @@ def update_bus(bus, dict_values, asset_key, asset_label, energy_vector):
     # Asset should added to respective bus
     dict_values[ENERGY_BUSSES][bus_label][ASSET_DICT].update({asset_key: asset_label})
     logging.debug("Added asset %s to bus %s", asset_label, bus_label)
-    return
 
 
 def define_dso_sinks_and_sources(dict_values, dso):
@@ -780,8 +766,6 @@ def define_dso_sinks_and_sources(dict_values, dso):
             CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN + AUTO_SINK,
         }
     )
-
-    return
 
 
 def define_availability_of_peak_demand_pricing_assets(
@@ -991,7 +975,6 @@ def define_transformer_for_peak_demand_pricing(
     logging.debug(
         f"Model for peak demand pricing: Adding transfomer {transformer_name}."
     )
-    return
 
 
 def define_source(
@@ -1087,7 +1070,6 @@ def define_source(
         asset_label=default_source_dict[LABEL],
         energy_vector=energy_vector,
     )
-    return
 
 
 def get_name_or_names_of_in_or_output_bus(bus):
@@ -1161,7 +1143,6 @@ def determine_dispatch_price(dict_values, price, source):
         logging.debug(
             f"{source[LABEL]} was created, with a price of {source[DISPATCH_PRICE][VALUE]}."
         )
-    return
 
 
 def define_sink(
@@ -1291,8 +1272,6 @@ def define_sink(
         asset_label=sink[LABEL],
         energy_vector=energy_vector,
     )
-
-    return
 
 
 def apply_function_to_single_or_list(function, parameter, **kwargs):
@@ -1450,8 +1429,6 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
             }
         }
     )
-
-    return
 
 
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
@@ -1622,8 +1599,6 @@ def treat_multiple_flows(dict_asset, dict_values, parameter):
     dict_asset[parameter][VALUE] = updated_values
     if len(values_info) > 0:
         dict_asset[parameter].update({"values_info": values_info})
-
-    return
 
 
 # reads timeseries specifically when the need comes from a multiple or output busses situation

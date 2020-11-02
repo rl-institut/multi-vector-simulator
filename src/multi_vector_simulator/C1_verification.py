@@ -81,7 +81,6 @@ def lookup_file(file_path, name):
             + f"{name} can not be found. Operation terminated."
         )
         raise FileNotFoundError(msg)
-    return
 
 
 def check_feedin_tariff(dict_values):
@@ -123,8 +122,6 @@ def check_feedin_tariff(dict_values):
                 logging.debug(
                     f"Feed-in tariff < energy price for energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'"
                 )
-
-    return
 
 
 def check_time_series_values_between_0_and_1(time_series):
@@ -224,7 +221,6 @@ def check_input_values(dict_values):
     logging.info(
         "Input values have been verified. This verification can not replace a manual input parameter check."
     )
-    return
 
 
 def all_valid_intervals(name, value, title):
@@ -371,8 +367,6 @@ def all_valid_intervals(name, value, title):
             name,
             title,
         )
-
-    return
 
 
 def check_for_sufficient_assets_on_busses(dict_values):

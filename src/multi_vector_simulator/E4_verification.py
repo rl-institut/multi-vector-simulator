@@ -55,8 +55,6 @@ def minimal_renewable_share_test(dict_values):
     else:
         pass
 
-    return
-
 
 def detect_excessive_excess_generation_in_bus(dict_values):
     r"""
