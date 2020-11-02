@@ -63,6 +63,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LOGS,
     ERRORS,
     WARNINGS,
+    SIMULATION_RESULTS,
 )
 
 from multi_vector_simulator.E1_process_results import (
@@ -927,13 +928,17 @@ def create_app(results_json, path_sim_output=None):
                             insert_subsection(
                                 title="Warning Messages",
                                 content=insert_log_messages(
-                                    log_dict=results_json[LOGS][WARNINGS]
+                                    log_dict=results_json[SIMULATION_RESULTS][LOGS][
+                                        WARNINGS
+                                    ]
                                 ),
                             ),
                             insert_subsection(
                                 title="Error Messages",
                                 content=insert_log_messages(
-                                    log_dict=results_json[LOGS][ERRORS]
+                                    log_dict=results_json[SIMULATION_RESULTS][LOGS][
+                                        ERRORS
+                                    ]
                                 ),
                             ),
                         ]
