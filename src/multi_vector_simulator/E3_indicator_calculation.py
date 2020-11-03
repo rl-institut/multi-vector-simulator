@@ -628,7 +628,7 @@ def add_onsite_energy_fraction(dict_values):
         total_generation, total_feedin
     )
 
-    # save total feedin into KPI_SCALARS_DICT
+    # save KPI  onsite energy fraction into KPI_SCALARS_DICT
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {ONSITE_ENERGY_FRACTION: onsite_energy_fraction}
     )
