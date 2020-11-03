@@ -670,7 +670,7 @@ def equation_onsite_energy_fraction(total_generation, total_feedin):
 
 def add_onsite_energy_matching(dict_values):
     """
-    Determines onsite energy matching /self sufficiency and adds KPI to dict_values
+    Determines onsite energy matching (OEM), i.e. self-sufficiency, and adds KPI to dict_values
 
     Parameters
     ----------
