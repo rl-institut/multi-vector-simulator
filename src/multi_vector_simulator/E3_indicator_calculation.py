@@ -439,7 +439,7 @@ def add_degree_of_autonomy(dict_values):
     Returns
     -------
     None
-        updated dict_values with renewable share of a specific sector
+        updated dict_values with the degree of autonomy
 
     Tested with
     - #todo: TEST
