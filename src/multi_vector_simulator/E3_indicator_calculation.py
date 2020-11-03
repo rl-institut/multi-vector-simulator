@@ -723,7 +723,8 @@ def add_onsite_energy_matching(dict_values):
 def equation_onsite_energy_matching(
     total_generation, total_feedin, total_excess, total_demand
 ):
-    """Calculates onsite energy matching /self sufficiency.
+    """
+    Calculates onsite energy matching (OEM), i.e. self-sufficiency.
 
     OEM describes the fraction of the total demand that can be
     covered by the locally generated energy.
