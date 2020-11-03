@@ -648,7 +648,7 @@ def equation_onsite_energy_fraction(total_generation, total_feedin):
         Parameters
         ----------
         total_generation: float
-            Energy equivalent of total conversion flows
+            Energy equivalent of total generation flows
         total_feedin: float
             Total feed into the grid
 
