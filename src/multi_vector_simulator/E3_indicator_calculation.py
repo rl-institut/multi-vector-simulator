@@ -589,6 +589,7 @@ def add_onsite_energy_fraction(dict_values):
     dict_values: dict
         dict with all project information and results
         after applying total_renewable_and_non_renewable_energy_origin
+    
     Returns
     -------
     None
