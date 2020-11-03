@@ -714,7 +714,7 @@ def add_onsite_energy_matching(dict_values):
     logging.debug(
         f"Calculated the {ONSITE_ENERGY_MATCHING}: {round(onsite_energy_matching)}"
     )
-    logging.info(f"Calculated the {ONSITE_ENERGY_MATCHING}.")
+    logging.info(f"Calculated the {ONSITE_ENERGY_MATCHING} of the LES.")
 
     return
 
