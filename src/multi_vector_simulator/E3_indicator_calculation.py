@@ -466,7 +466,7 @@ def add_degree_of_autonomy(dict_values):
 
 def equation_degree_of_autonomy(total_generation, total_demand):
     """
-    calculates the degree of autonomy.
+    Calculates the degree of autonomy (DA).
 
     The degree of autonomy describes the relation of the total locally
     generated energy to the total demand of the system.
