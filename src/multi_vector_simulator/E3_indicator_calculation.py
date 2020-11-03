@@ -582,7 +582,7 @@ def equation_degree_of_sector_coupling(
 
 def add_onsite_energy_fraction(dict_values):
     """
-    Determines onsite energy fraction /self consumption and adds KPI to dict_values
+    Determines onsite energy fraction (OEF), i.e. self-consumption, and adds KPI to dict_values
 
     Parameters
     ----------
