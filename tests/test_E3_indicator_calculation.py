@@ -449,7 +449,10 @@ def test_equation_degree_of_autonomy():
     total_generation = 30
     total_demand = 100
     degree_of_autonomy = E3.equation_degree_of_autonomy(total_generation, total_demand)
-    assert degree_of_autonomy == total_generation / total_demand
+    assert (
+            degree_of_autonomy == total_generation / total_demand
+    ), f"The degree_of_autonomy ({degree_of_autonomy}) is not calculated correctly. " \
+       f"It should be equal to {total_generation / total_demand }."
 
 
 def test_equation_onsite_energy_fraction():
@@ -461,7 +464,8 @@ def test_equation_onsite_energy_fraction():
     )
     assert (
         onsite_energy_fraction == (total_generation - total_feedin) / total_generation
-    )
+    ), f"The onsite_energy_fraction ({onsite_energy_fraction}) is not calculated correctly. " \
+       f"It should be equal to {(total_generation - total_feedin)/ total_generation}."
 
 
 def test_equation_onsite_energy_matching():
@@ -477,4 +481,5 @@ def test_equation_onsite_energy_matching():
     assert (
         onsite_energy_matching
         == (total_generation - total_feedin - total_excess) / total_demand
-    )
+    ), f"The onsite_energy_matching ({onsite_energy_matching}) is not calculated correctly. " \
+       f"It should be equal to {(total_generation - total_feedin - total_excess) / total_demand}."

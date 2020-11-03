@@ -442,7 +442,7 @@ def add_degree_of_autonomy(dict_values):
         updated dict_values with the degree of autonomy
 
     Tested with
-    - #todo: TEST
+    - test_equation_degree_of_autonomy()
     """
 
     total_generation = (
@@ -595,7 +595,7 @@ def add_onsite_energy_fraction(dict_values):
         updated dict_values with onsite energy fraction KPI
 
     Tested with
-    - #todo: TEST
+    - test_equation_onsite_energy_fraction()
     """
 
     total_generation = (
@@ -686,7 +686,7 @@ def add_onsite_energy_matching(dict_values):
         updated dict_values with onsite energy matching KPI
 
     Tested with
-    - #todo: TEST
+    - test_equation_onsite_energy_matching()
     """
 
     total_generation = (
