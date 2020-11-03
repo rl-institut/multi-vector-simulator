@@ -459,7 +459,7 @@ def add_degree_of_autonomy(dict_values):
     dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_AUTONOMY: degree_of_autonomy})
 
     logging.debug(f"Calculated the {DEGREE_OF_AUTONOMY}: {round(degree_of_autonomy)}")
-    logging.info(f"Calculated the {DEGREE_OF_AUTONOMY}.")
+    logging.info(f"Calculated the {DEGREE_OF_AUTONOMY} of the LES.")
 
     return
 
