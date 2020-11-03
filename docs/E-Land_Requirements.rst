@@ -61,7 +61,7 @@ FUN-MVS-03 - Manual setting up an energy system optimization model
 :Progress message:
 
 It is possible to add as many components as needed to the energy model that is to be simulated with the MVS.
-They can be devided into following types:
+They can be divided into following types:
 
 * Energy providers
 * energy production
@@ -175,7 +175,7 @@ In general, the MVS aims to minimize the energy supply cost of the local energy 
 
 Some constraints still have to be added:
 
-* Minimal degree of automonomy
+* Minimal degree of autonomy
 * Maximum C02 emission constraint
 
 FUN-MVS-08 - Electricity cost model
@@ -298,7 +298,7 @@ FUN-MVS-13 - CHP data
 
 :Priority:  LOW
 
-:Progress: In progess (minimal requirement met)
+:Progress: In progress (minimal requirement met)
 
 :Progress message:
 
@@ -321,7 +321,7 @@ FUN-MVS-14 - Thermal storage data
 
 :Progress message:
 
-It is possible to simulate thermal storage assets with the MVS that are simulated analogeously to the BESS, which fullfills the requirement. They are defined by:
+It is possible to simulate thermal storage assets with the MVS that are simulated analogously to the BESS, which fulfills the requirement. They are defined by:
 
 * Charging and discharging efficiencies
 * Max/Min SOC
@@ -418,7 +418,7 @@ NF-MVS-01 - MVS pre-processing tools for LES optimization model input
 
 :Progress message: Internally, the MVS uses pd.DataFrames to set up the energy system model.
 However, for data exchange with the end-user the input files, ie. the csv or json file is essential.
-As the end user will use the MVS though the EPA, the data format that the MVS uses becomes unrelevant.
+As the end user will use the MVS though the EPA, the data format that the MVS uses becomes irrelevant.
 It was decided to use a json file as an exchange medium between the EPA and the MVS.
 
 :ToDo: None
@@ -471,7 +471,7 @@ The MVS is a standalone application that must be usable without the ESB.
 To ease end-user use, the EPA (Energy Planning Application) is developed.
 It sends inputs in json format to the MVS, and receives a json file with the results back.
 
-:ToDo: The EPA development is a continous process.
+:ToDo: The EPA development is a continuous process.
 
 NF-MVS-04 - Unit commitment time step restriction
 #################################################
@@ -490,7 +490,7 @@ NF-MVS-04 - Unit commitment time step restriction
 
 :Progress message: The MVS can be run for a variable number of days. The time series have to be provided on an hourly basis.
 
-:ToDo: A wish from the end-users war a finer resolution of eg. 15-minute time steps. This possiblility still has to be explored.
+:ToDo: A wish from the end-users war a finer resolution of eg. 15-minute time steps. This possibility still has to be explored.
 
 NF-MVS-05 - Interface for technical parameters and model
 ########################################################
