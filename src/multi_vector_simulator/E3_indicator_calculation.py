@@ -566,7 +566,7 @@ def equation_degree_of_sector_coupling(
     Returns
     -------
     float
-    Degree of sector coupling based on conversion flows and energy demands in electricity equivalent.
+        Degree of sector coupling based on conversion flows and energy demands in electricity equivalent.
 
     .. math::
        DSC=\frac{\sum_{i,j}{E_{conversion} (i,j)⋅w_i}}{\sum_i {E_{demand} (i)⋅w_i}}
