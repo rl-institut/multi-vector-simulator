@@ -38,6 +38,7 @@ from multi_vector_simulator.utils.constants_output import (
     KPI_SCALAR_MATRIX_ENTRIES,
 )
 
+
 r"""
 Module E0 evaluation
 ====================

@@ -185,6 +185,11 @@ ASSET_DICT = "Asset_list"
 
 SIMULATION_RESULTS = "simulation_results"
 
+# Logs
+LOGS = "logs"
+ERRORS = "errors"
+WARNINGS = "warnings"
+
 # Names for KPI output
 KPI = "kpi"
 KPI_SCALARS_DICT = "scalars"

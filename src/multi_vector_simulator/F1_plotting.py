@@ -136,42 +136,6 @@ def extract_plot_data_and_title(dict_values, df_dem=None):
     return dict_for_plots, dict_plot_labels
 
 
-def parse_simulation_log(path_log_file=None, log_type="ERROR"):
-    """Gather the log message of a certain type in a given log file
-
-    Parameters
-    ----------
-    path_log_file: str/None
-        path to the mvs log file
-        Default: None
-    log_type: str
-        one of "ERROR" or "WARNING"
-        Default: "ERROR"
-
-    Returns
-    -------
-
-    """
-    # Dictionaries to gather non-fatal warning and error messages that appear during the simulation
-    logs_dict = {}
-
-    if path_log_file is None:
-        path_log_file = os.path.join(OUTPUT_FOLDER, LOGFILE)
-
-    with open(path_log_file) as log_messages:
-        log_messages = log_messages.readlines()
-
-    i = 0
-    for line in log_messages:
-        if log_type in line:
-            i = i + 1
-            substrings = line.split(" - ")
-            message_string = substrings[-1]
-            logs_dict.update({i: message_string})
-
-    return logs_dict
-
-
 def fixed_width_text(text, char_num=10):
     """Add linebreaks every char_num characters in a given text.
 
