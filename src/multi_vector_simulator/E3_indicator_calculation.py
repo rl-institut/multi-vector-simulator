@@ -641,7 +641,8 @@ def add_onsite_energy_fraction(dict_values):
 
 
 def equation_onsite_energy_fraction(total_generation, total_feedin):
-    """Calculates onsite energy fraction / self-consumption.
+    """
+    Calculates onsite energy fraction (OEF), i.e. self-consumption.
 
     OEF describes the fraction of all locally generated energy that is consumed
     by the system itself.
