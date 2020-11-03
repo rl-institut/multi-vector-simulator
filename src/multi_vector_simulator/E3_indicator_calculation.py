@@ -635,7 +635,7 @@ def add_onsite_energy_fraction(dict_values):
     logging.debug(
         f"Calculated the {ONSITE_ENERGY_FRACTION}: {round(onsite_energy_fraction)}"
     )
-    logging.info(f"Calculated the {ONSITE_ENERGY_FRACTION}.")
+    logging.info(f"Calculated the {ONSITE_ENERGY_FRACTION} of the LES.")
 
     return
 
