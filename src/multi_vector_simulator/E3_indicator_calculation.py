@@ -435,6 +435,7 @@ def add_degree_of_autonomy(dict_values):
         dict with all project information and results,
         after applying total_renewable_and_non_renewable_energy_origin and
         total_demand_and_excess_each_sector
+
     Returns
     -------
     None
