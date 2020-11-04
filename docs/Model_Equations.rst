@@ -5,7 +5,11 @@ Set of Model Equations
 Economic Dispatch
 -----------------
 
-Linear programming is a mathematical modelling and optimization technique for a system of a linear objective function subject to linear constraints. The goal of a linear programming problem is to find the optimal value for the objective function, be it a maximum or a minimum. The MVS is based on oemof-solph, which in turn uses Pyomo to create a linear problem. The economic dispatch problem in the MVS has the objective of minimizing the production cost by allocating the total demand among the generating units at each time step. The equation is the following:
+Linear programming is a mathematical modelling and optimization technique for a system of a linear objective function subject to linear constraints.
+The goal of a linear programming problem is to find the optimal value for the objective function, be it a maximum or a minimum.
+The MVS is based on `oemof-solph`, which in turn uses `Pyomo` to create a linear problem.
+The economic dispatch problem in the MVS has the objective of minimizing the production cost by allocating the total demand among the generating units at each time step.
+The equation is the following:
 
 .. math::
         min Z = \sum_i a_i \cdot CAP_i + \sum_i \sum_t c_{var,i} \cdot E_i(t)
@@ -25,7 +29,8 @@ Linear programming is a mathematical modelling and optimization technique for a 
 
         E_i(t) &\text{: asset dispatch [kWh]}
 
-The annual cost function of each asset includes the capital expenditure (investment cost) and residual value, as well as the operating expenses of each asset. It is expressed as follows:
+The annual cost function of each asset includes the capital expenditure (investment cost) and residual value, as well as the operating expenses of each asset.
+It is expressed as follows:
 
 .. math:: 
         a_i &= \left( capex_i + \sum_{k=1}^{n} \frac{capex_i}{(1+d)^{k \cdot t_a}} - c_{res,i} \right) \cdot CRF(T) + opex_i
@@ -49,14 +54,17 @@ The annual cost function of each asset includes the capital expenditure (investm
 
         T &\text{: project lifetime [years]}
 
-The CRF is a ratio used to calculate the present value of the the annuity. The discount factor can be replaced by the weighted average cost of capital (WACC), calculated by the user. 
+The CRF is a ratio used to calculate the present value of the the annuity.
+The discount factor can be replaced by the weighted average cost of capital (WACC), calculated by the user.
 
-The lifetime of the asset t\ :sub:`a`\  and the lifetime of the project T can be different from each other; hence, the number of replacements n is estimated using the equation below:
+The lifetime of the asset :math:`t_a` and the lifetime of the project :math:`T` can be different from each other;
+hence, the number of replacements n is estimated using the equation below:
 
 .. math::
         n = round \left( \frac{T}{t_a} + 0.5 \right) - 1
         
-The residual value is also known as salvage value and it represents an estimate of the monetary value of an asset at the end of the project lifetime T. The MVS considers a linear depreciation over T and accounts for the time value of money by using the following equation:
+The residual value is also known as salvage value and it represents an estimate of the monetary value of an asset at the end of the project lifetime T.
+The MVS considers a linear depreciation over T and accounts for the time value of money by using the following equation:
 
 .. math::
         c_{res,i} = \frac{capex_i}{(1+d)^{n \cdot t_a}} \cdot \frac{1}{T} \cdot \frac{(n+1) \cdot t_a - T}{(1+d)^T}
@@ -65,7 +73,9 @@ The residual value is also known as salvage value and it represents an estimate 
 Energy Balance Equation
 -----------------------
 
-One main constraint that the optimization model is subject to is the energy balance equation. The latter maintains equality between the incoming energy into a bus and the outgoing energy from that bus. This balancing equation is applicable to all bus types, be it electrical, thermal, hydrogen or for any other energy carrier.
+One main constraint that the optimization model is subject to is the energy balance equation.
+The latter maintains equality between the incoming energy into a bus and the outgoing energy from that bus.
+This balancing equation is applicable to all bus types, be it electrical, thermal, hydrogen or for any other energy carrier.
 
 .. math::
         \sum E_{in,i}(t) - \sum E_{out,j}(t) = 0 \qquad  \forall t
@@ -82,7 +92,8 @@ It is very important to note that assets i and j can be the same asset (e.g., ba
 Example: Sector Coupled Energy System
 -------------------------------------
 
-In order to understand the component models, a generic sector coupled example in shown in the next figure. It brings together the electricity and heat sector through Transformer 4 as it connects the two sector buses. 
+In order to understand the component models, a generic sector coupled example in shown in the next figure.
+It brings together the electricity and heat sector through Transformer 4 as it connects the two sector buses.
 
 .. image:: images/26-10-2020_sector_coupled_example.png
  :width: 600
@@ -138,7 +149,9 @@ For the sake of simplicity, the following table gives an example for each asset 
      - hp
      - kWth
 
-All grids and dispatchable sources are assumed to be available 100% of the time with no consumption limits. The MVS includes a sink component for excess energy, connected to each bus in the system and denoted by E\ :sub:`ex`\  in the equations. This excess sink accounts for the extra energy in the system that has to be dumped.
+All grids and dispatchable sources are assumed to be available 100% of the time with no consumption limits.
+The MVS includes a sink component for excess energy, connected to each bus in the system and denoted by :math:`E_{ex}` in the equations.
+This excess sink accounts for the extra energy in the system that has to be dumped.
 
 Electricity Grid Equation
 #########################
