@@ -253,6 +253,8 @@ Below, the equations for the Storage 1 are provided, but Storage 2 follows analo
 DC Electricity Bus Equation
 ###########################
 
+This is an example of a DC bus with a battery, PV and a bi-directional inverter.
+
 .. math::   
         E_{pv}(t) + E_{bat,out}(t) \cdot \eta_{bat,out} + E_{rec}(t) \cdot \eta_{rec} - E_{inv}(t) - E_{bat,in} - E_{ex}(t) = 0 \qquad  \forall t
 
