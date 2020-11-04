@@ -54,6 +54,7 @@ Here is a template for new release sections
 - Fixed several typos in readthedocs (#622)
 - Move the function parse_log_messages to F0 and modify it to print log messages in results JSON file (#623)
 - Move the function `parse_log_messages` from F1 to F0 and modify it to print log messages in results JSON file (#623)
+- If `assets` folder is not found in package look in current folder for `report/assets` folder (#632)
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
