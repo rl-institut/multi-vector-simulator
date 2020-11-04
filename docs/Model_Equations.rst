@@ -75,7 +75,8 @@ One main constraint that the optimization model is subject to is the energy bala
 
         E_{out,j} &\text{: energy flowing from the bus to asset j}
 
-It is very important to note that assets i and j can be the same asset (e.g., battery) however, one of the energy flowing values :math:`E_{in}` or :math:`E_{out}` should be zero at the same time step t.
+It is very important to note that assets i and j can be the same asset (e.g., battery).
+`oemof-solph` allows both :math:`E_{in}` or :math:`E_{out}` to be larger zero in same time step t (see :ref:`_limitations-real-life-constraint`).
 
 
 Example: Sector Coupled Energy System
