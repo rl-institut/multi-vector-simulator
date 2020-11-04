@@ -11,11 +11,11 @@ Unit tests (pytests)
 --------------------
 
 When developing code for the MVS please make sure that you always also develop test in `tests`. We integrate those unit tests with `pytest`. 
-Make sure that your tests are as leightweight as possible - this means that you do not always have to run the whole code to test for one feature, but can test a function with a standalone tests. Please refer to the other tests that have already been introduced.
+Make sure that your tests are as lightweight as possible - this means that you do not always have to run the whole code to test for one feature, but can test a function with a standalone tests. Please refer to the other tests that have already been introduced.
 
-Always aim for the test coverage button on `the main page of the github reprository <https://github.com/rl-institut/multi-vector-simulator/>`_ to reach 100%!
+Always aim for the test coverage button on `the main page of the github repository <https://github.com/rl-institut/multi-vector-simulator/>`_ to reach 100%!
 
-When you do have to run the MVS itself for a test, eg. for benchmark tests, please always use the agruments `-f -log warning` to make the test results better readable.
+When you do have to run the MVS itself for a test, eg. for benchmark tests, please always use the arguments `-f -log warning` to make the test results better readable.
 
 Build documentation
 -------------------

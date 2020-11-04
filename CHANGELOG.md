@@ -33,6 +33,7 @@ Here is a template for new release sections
 - Updated readthedocs: Gather the MVS parameters in a csv file and parse it to a sphinx RTD file (#620)
 - Added more energy carriers and their weights to the list of already available energy carriers in constants.py (#621)
 - Three new KPI's added to MVS_output.rst read the docs page: Onsite energy fraction, Onsite energy matching, Degree of autonomy (#609)
+- New constant variables: `LOGS = "logs"`, `WARNINGS = "warnings"`, `ERRORS = "errors"` (#623)
 - Add economic model equations in readthedocs (#581)
 - Add component model equations and energy balance adapted to sector coupled example (#581)
 
@@ -49,6 +50,10 @@ Here is a template for new release sections
 - Change mvs_eland to multi_vector_simulator in `docs/Code.rst` (#620)
 - Change mvs_eland to multi-vector-simulator in `docs/*.rst` `urls (#620)
 - Improved the description of assigning weightage to energy carriers in readthedocs (#619)
+- Replaced the DSO sub-system image in Modelling Assumptions chapter of readthedocs (#622)
+- Fixed several typos in readthedocs (#622)
+- Move the function parse_log_messages to F0 and modify it to print log messages in results JSON file (#623)
+- Move the function `parse_log_messages` from F1 to F0 and modify it to print log messages in results JSON file (#623)
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
@@ -58,6 +63,7 @@ Here is a template for new release sections
 - RTD entry for defining parameters as timeseries (#597)
 - Math equations of RTD in files `Model_Assumptions.rst` and `MVS_Output.rst` (#604)
 - Repaired the broken links to input CSV files (#618)
+- Outdated RTD info and mistakenly deleted sentence (#629)
 
 ## [0.5.0] - 2020-10-05
 

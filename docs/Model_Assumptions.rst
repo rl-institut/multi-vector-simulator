@@ -266,8 +266,7 @@ With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, com
 
 As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]. The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable share or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
 
-
-The conversion factors are derived from their `Gasoline Gallon Equivalents <https://epact.energy.gov/fuel-conversion-factors>`_.
+Currently, the energy carrier conversion factors are defined in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be added to its list when needed. Unknown carriers raise an `UnknownEnergyCarrier` Error.
 
 
 Limitations

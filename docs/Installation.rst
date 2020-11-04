@@ -158,7 +158,7 @@ and `path_pdf_report` is the path where the report should be saved as a pdf file
 The report should appear in your browser (at http://127.0.0.1:8050) as an interactive Plotly Dash app.
 
 You can then print the report via your browser print functionality (ctrl+p), however the layout of
- the pdf report is only well optimized for chrome or chromimum browser.
+ the pdf report is only well optimized for chrome or chromium browser.
 
 It is also possible to automatically save the report as pdf by using the option `-pdf`
 
