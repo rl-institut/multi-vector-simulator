@@ -42,6 +42,7 @@ Here is a template for new release sections
 - Rename function `A0.create_parser` to `A0.mvs_arg_parser` (#607)
 - Update validation plan description in RTD (#593)
 - Column headers of csv input files need to be unique amongst all files, info added to documentation (#602)
+- `D1.transformer_constant_efficiency_fix()` and `D1.transformer_constant_efficiency_optimize()`, as well as their tests to reassign attributes (#596)
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
@@ -51,7 +52,7 @@ Here is a template for new release sections
 - RTD entry for defining parameters as timeseries (#597)
 - Math equations of RTD in files `Model_Assumptions.rst` and `MVS_Output.rst` (#604)
 - Repaired the broken links to input CSV files (#618)
-- All `variable_costs`, `efficiency` and `nominal_value` of transformers on output flows. Before they were inconsitently assigned to input or output flows. (#596)
+- All `variable_costs`, `efficiency` and `nominal_value` of transformers on output flows. Before they were inconsistently assigned to input or output flows. (#596)
 
 ## [0.5.0] - 2020-10-05
 
