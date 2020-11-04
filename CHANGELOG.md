@@ -30,6 +30,10 @@ Here is a template for new release sections
 - Add a util function `copy_report_assets` to copy report asset to simulation output folder when user generates the report (#607)
 - Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
 - Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
+- Updated readthedocs: Gather the MVS parameters in a csv file and parse it to a sphinx RTD file (#620)
+- Added more energy carriers and their weights to the list of already available energy carriers in constants.py (#621)
+- Three new KPI's added to MVS_output.rst read the docs page: Onsite energy fraction, Onsite energy matching, Degree of autonomy (#609)
+- New constant variables: `LOGS = "logs"`, `WARNINGS = "warnings"`, `ERRORS = "errors"` (#623)
 - Tests for `D1.transformer()` (#596)
 
 ### Changed
@@ -42,6 +46,14 @@ Here is a template for new release sections
 - Rename function `A0.create_parser` to `A0.mvs_arg_parser` (#607)
 - Update validation plan description in RTD (#593)
 - Column headers of csv input files need to be unique amongst all files, info added to documentation (#602)
+- Change mvs_eland to multi_vector_simulator in `docs/Code.rst` (#620)
+- Change mvs_eland to multi-vector-simulator in `docs/*.rst` `urls (#620)
+- Improved the description of assigning weightage to energy carriers in readthedocs (#619)
+- Replaced the DSO sub-system image in Modelling Assumptions chapter of readthedocs (#622)
+- Fixed several typos in readthedocs (#622)
+- Move the function parse_log_messages to F0 and modify it to print log messages in results JSON file (#623)
+- Move the function `parse_log_messages` from F1 to F0 and modify it to print log messages in results JSON file (#623)
+- If `assets` folder is not found in package look in current folder for `report/assets` folder (#632)
 - `D1.transformer_constant_efficiency_fix()` and `D1.transformer_constant_efficiency_optimize()`, as well as their tests to reassign attributes (#596)
 
 ### Removed
@@ -52,6 +64,7 @@ Here is a template for new release sections
 - RTD entry for defining parameters as timeseries (#597)
 - Math equations of RTD in files `Model_Assumptions.rst` and `MVS_Output.rst` (#604)
 - Repaired the broken links to input CSV files (#618)
+- Outdated RTD info and mistakenly deleted sentence (#629)
 - All `variable_costs`, `efficiency` and `nominal_value` of transformers on output flows. Before they were inconsistently assigned to input or output flows. (#596)
 
 ## [0.5.0] - 2020-10-05

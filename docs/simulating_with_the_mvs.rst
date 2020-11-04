@@ -47,8 +47,8 @@ For that, each of the following files have to be present in the folder "csv_elem
 - `project_data.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/project_data.csv>`_ - some generic project information
 
 For easy set-up of your energy system, we have provided an empty input folder template as well
-`here <https://github.com/rl-institut/mvs_eland/blob/dev/input_template>`_.
-A simple example system is setup with this `input folder <https://github.com/rl-institut/mvs_eland/blob/dev/tests/inputs>`_.
+`here <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template>`_.
+A simple example system is setup with this `input folder <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/inputs>`_.
 When defining your energy system with this CSV files,
 please also refer to the definition of parameters that you can find here: `stable <https://mvs-eland.readthedocs.io/en/stable/MVS_parameters.html>`_ / `latest <https://mvs-eland.readthedocs.io/en/latest/MVS_parameters.html>`_.
 
@@ -101,7 +101,7 @@ Example of simple energy systems
 ################################
 
 Input files of simple benchmarks (PV + battery + grid) scenarios can be found
-`here <https://github.com/rl-institut/mvs_eland/blob/dev/tests/benchmark_test_inputs/>`_
+`here <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/benchmark_test_inputs/>`_
 
 
 Building a model from assets and energy flows
@@ -204,7 +204,7 @@ Here, you would insert a list of your parameters instead of the scalar value of 
 Would be an example of a transformer with two efficiencies.
 
 You can also wrap multiple inputs/outputs with scalars that are defined as efficiencies.
-For that, you define one or muliple of the parameters within the list with the above introduced dictionary:
+For that, you define one or multiple of the parameters within the list with the above introduced dictionary:
 
     [0.99, {'value': {'file_name': 'your_file_name.csv', 'header': 'your_header'}, 'unit': 'your_unit'}]
 
@@ -220,9 +220,9 @@ You can see an implemented example here, where the heat pump has a time-dependen
    :widths: 70, 30, 50
    :header-rows: 1
 
-The features were integrated with `Pull Request #63 <https://github.com/rl-institut/mvs_eland/pull/63>`_.
+The features were integrated with `Pull Request #63 <https://github.com/rl-institut/multi-vector-simulator/pull/63>`_.
 For more information, you might also reference following issues:
 
-- Parameters can now be a list of values, eg. efficiencies for two busses or multiple input/output vectors(`Issue #52 <https://github.com/rl-institut/mvs_eland/issue/52>`_)
+- Parameters can now be a list of values, eg. efficiencies for two busses or multiple input/output vectors(`Issue #52 <https://github.com/rl-institut/multi-vector-simulator/issue/52>`_)
 
-- Parameters can now be defined as a list as well as as a timeseries (`Issue #52 <https://github.com/rl-institut/mvs_eland/issue/52>`_, `Issue #82 <https://github.com/rl-institut/mvs_eland/issue/82>`_)
+- Parameters can now be defined as a list as well as as a timeseries (`Issue #52 <https://github.com/rl-institut/multi-vector-simulator/issue/52>`_, `Issue #82 <https://github.com/rl-institut/multi-vector-simulator/issue/82>`_)

@@ -10,7 +10,7 @@ Firstly, an analysis of the current energy system, which can be set up automatic
 
 The tool is being developed within the scope of the H2020 project E-LAND (Integrated multi-vector management system for Energy isLANDs, project homepage `here <https://elandh2020.eu/>`_). A graphical user interface for the MVS will be integrated.
 
-**Latest release**: Check the `latest release <https://github.com/rl-institut/mvs_eland/releases/tag/v0.1.1>`_, and includes the working code of the MVS using json as an input. It is not validated and test coverage is still 0%. Please check the `CHANGELOG.md <https://github.com/rl-institut/mvs_eland/blob/master/CHANGELOG.md>`_ for past updates and changes.
+**Latest release**: Check the `latest release <https://github.com/rl-institut/multi-vector-simulator/releases/tag/v0.1.1>`_, and includes the working code of the MVS using json as an input. It is not validated and test coverage is still 0%. Please check the `CHANGELOG.md <https://github.com/rl-institut/multi-vector-simulator/blob/master/CHANGELOG.md>`_ for past updates and changes.
 
 **Upcoming**: As the MVS is still under development, many changes will still occur in the code as well as code structure. If you want to try the MVS, please make sure to check this project regularly.
 
@@ -158,7 +158,7 @@ and `path_pdf_report` is the path where the report should be saved as a pdf file
 The report should appear in your browser (at http://127.0.0.1:8050) as an interactive Plotly Dash app.
 
 You can then print the report via your browser print functionality (ctrl+p), however the layout of
- the pdf report is only well optimized for chrome or chromimum browser.
+ the pdf report is only well optimized for chrome or chromium browser.
 
 It is also possible to automatically save the report as pdf by using the option `-pdf`
 
@@ -171,6 +171,6 @@ See `mvs_report.py -h` for more information about possible options. The css and 
 Contributing and additional information for developers
 ------------------------------------------------------
 
-If you want to contribute to this project, please read [CONTRIBUTING.md](https://github.com/rl-institut/mvs_eland/blob/dev/CONTRIBUTING.md). For less experienced github users we propose a workflow. [Link](https://github.com/rl-institut/mvs_eland/wiki/Examplary-Workflow).
+If you want to contribute to this project, please read [CONTRIBUTING.md](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CONTRIBUTING.md). For less experienced github users we propose a workflow. [Link](https://github.com/rl-institut/multi-vector-simulator/wiki/Examplary-Workflow).
 
-For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in turn might not be tested. You can find the CHANGELOG.md on this`page <https://github.com/rl-institut/mvs_eland/blob/dev/CHANGELOG.md>`_.
+For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in turn might not be tested. You can find the CHANGELOG.md on this`page <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`_.

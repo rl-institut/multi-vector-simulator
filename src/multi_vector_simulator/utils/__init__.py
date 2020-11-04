@@ -190,9 +190,14 @@ def copy_report_assets(path_destination_folder):
     assets_folder = os.path.join(path_destination_folder, "report", "assets")
     if os.path.exists(assets_folder) is False:
         # copy from the default asset folder from mvs package
-        assets_folder = shutil.copytree(
-            os.path.join(PACKAGE_PATH, "assets"), assets_folder
-        )
+        try:
+            assets_folder = shutil.copytree(
+                os.path.join(PACKAGE_PATH, "assets"), assets_folder
+            )
+        except FileNotFoundError:
+            assets_folder = shutil.copytree(
+                os.path.join(".", "report", "assets"), assets_folder
+            )
     else:
         logging.warning(
             "The assets folder {} exists already, it will not be replaced by default folder "

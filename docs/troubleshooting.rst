@@ -71,7 +71,7 @@ or
 
     `conda install -c conda-forge/label/cf202003 pyppeteer`
 
-More information is avaiable on `their website <https://anaconda.org/conda-forge/pyppeteer>`_.
+More information is available on `their website <https://anaconda.org/conda-forge/pyppeteer>`_.
 
 Error messages and MVS termination
 ----------------------------------
@@ -84,7 +84,7 @@ json.decoder.JSONDecodeError
 
 If the error `json.decoder.JSONDecodeError` is raised, there is a formatting issue with the json file that is used as an input file.
 
-Have you changed the json file manually? Please check for correct formatting, ie. aphostrophes, commas, brackets, and so on.
+Have you changed the json file manually? Please check for correct formatting, ie. apostrophes, commas, brackets, and so on.
 
 If you have not changed the Json file yourself please consider raising an issue in the github project.
 
