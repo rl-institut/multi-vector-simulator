@@ -61,6 +61,7 @@ Here is a template for new release sections
 - RTD entry for defining parameters as timeseries (#597)
 - Math equations of RTD in files `Model_Assumptions.rst` and `MVS_Output.rst` (#604)
 - Repaired the broken links to input CSV files (#618)
+- Outdated RTD info and mistakenly deleted sentence (#628)
 
 ## [0.5.0] - 2020-10-05
 
