@@ -2,6 +2,11 @@
 Set of Model Equations
 ======================
 
+The MVS is based on the programming framework `oemof-solph` and builds an energy system model based up on its nomenclature.
+As such, the energy system model can be described with a linear equation system.
+Below, the most important aspects are described in a genrealized way, as well as explained based on an example.
+This will ease the comparision to other energy system models.
+
 Economic Dispatch
 -----------------
 
@@ -156,6 +161,10 @@ This excess sink accounts for the extra energy in the system that has to be dump
 Electricity Grid Equation
 #########################
 
+The electricity grid is modeled though a feedin and a consumption node.
+Transformers limit the peak flow into or from the local electricity line.
+Electricity sold to the grid experiences losses in the transformer :math:`(ts,f)`.
+
 .. math::
         E_{grid,c}(t) - E_{grid,f}(t) + E_{ts,f}(t) \cdot \eta_{ts,f} - E_{ts,c}(t) = 0 \qquad  \forall t
         
@@ -172,6 +181,9 @@ Electricity Grid Equation
  
 Non-Dispatchable Source Equations
 #################################
+
+Non-dispatchable sources in our example are a wind, pv and solar thermal plant.
+Their generation is determined by the provided timeseries of instantaneous generation, providing :math:`\alpha`, :math:`\beta`, :math:`\gamma`.
 
 .. math::   
         E_{wind}(t) &= CAP_{wind} \cdot \alpha_{wind}(t) \qquad  \forall t
@@ -199,8 +211,11 @@ Non-Dispatchable Source Equations
 
         \gamma_{stc} &\text{: instantaneous collector's production [kWh/kWth]}
         
-Battery Storage Model
-#####################
+Storage Model
+#############
+
+There are two storages in our system: An electricity storage (Storage 1, :math:`bat`) and a heat storage (Storage 2, :math:`tes`).
+Below, the equations for the Storage 1 are provided, but Storage 2 follows analogous equations for charge, discharge and bounds.
 
 .. math::   
         E_{bat}(t) = E_{bat}(t - 1) + E_{bat,in}(t) \cdot \eta_{bat,in} - \frac{E_{bat,out}}{\eta_{bat,out}} - E_{bat}(t - 1) \cdot \epsilon \qquad  \forall t
@@ -251,6 +266,8 @@ DC Electricity Bus Equation
 AC Electricity Bus Equation
 ###########################
 
+This describes the local electricity grid and all connected assets:
+
 .. math::
         E_{ts,c}(t) \cdot \eta_{ts,c} + E_{wind}(t) + E_{inv}(t) \cdot \eta_{inv} - E_{ts,c}(t) - E_{rec}(t) - E_{hp}(t) - E_{el}(t) - E_{ex}(t) = 0 \qquad  \forall t
         
@@ -262,9 +279,28 @@ AC Electricity Bus Equation
         E_{hp} &\text{: heat pump electrical consumption}
         
         E_{el} &\text{: electrical load}
- 
+
+Heat Bus Equation
+#################
+
+This describes the heat bus and all connected assets:
+
+.. math::
+        E_{tes}(t) \cdot \eta_{tes} + E_{turb}(t) \cdot \eta_{turb} + E_{hp}(t) \cdot COP - E_{th}(t) - E_{ex}(t) = 0
+
+.. math::
+        \eta_{tes} &\text{: thermal storage efficiency}
+
+        \eta_{turb} &\text{: turbine efficiency}
+
+        COP &\text{: heat pump coefficient of performance}
+
+        E_{th} &\text{: heat load}
+
 NDS3 Bus Equation
 #################
+
+The NDS3 Bus is an example of a bus, which does not serve both as in- and output of a storage system.
 
 .. math::
         E_{stc}(t) - E_{tes}(t) - E_{ex}(t) = 0
@@ -275,6 +311,8 @@ NDS3 Bus Equation
 DS Bus Equation
 ###############
 
+The DS Bus shows an example of a fuel source providing an energy carrier (biogas) to a transformer (turbine).
+
 .. math::
         E_{heat}(t) - E_{turb}(t) - E_{ex}(t) = 0
 
@@ -282,18 +320,4 @@ DS Bus Equation
         E_{heat} &\text{: thermal energy (biogas) production}
         
         E_{turb} &\text{: turbine (biogas turbine) energy}
-        
-Heat Bus Equation
-###############
 
-.. math::
-        E_{tes}(t) \cdot \eta_{tes} + E_{turb}(t) \cdot \eta_{turb} + E_{hp}(t) \cdot COP - E_{th}(t) - E_{ex}(t) = 0
-
-.. math::
-        \eta_{tes} &\text{: thermal storage efficiency}
-        
-        \eta_{turb} &\text{: turbine efficiency}
-        
-        COP &\text{: heat pump coefficient of performance}
-        
-        E_{th} &\text{: heat load}
