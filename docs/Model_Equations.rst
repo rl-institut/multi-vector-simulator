@@ -9,45 +9,45 @@ Linear programming is a mathematical modelling and optimization technique for a 
 
 .. math::
         min Z = \sum_i a_i \cdot CAP_i + \sum_i \sum_t c_{var,i} \cdot E_i(t)
-.. math::        
-        CAP_i \geq 0
-.. math::        
-        E_i(t) \geq 0  \qquad  \forall t
-        
+
 .. math::
-        i \text{: asset}
+        CAP_i &\geq 0
 
-        a_i \text{: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]}
+        E_i(t) &\geq 0  \qquad  \forall t
 
-        CAP_i \text{: asset capacity [kWp, kW, kWh]}
+        i &\text{: asset}
 
-        c_{var,i} \text{: variable operational or dispatch cost [currency/kWh, currency/L]}
+        a_i &\text{: asset annuity [currency/kWp/year, currency/kW/year, currency/kWh/year]}
 
-        E_i(t) \text{: asset dispatch [kWh]}
+        CAP_i &\text{: asset capacity [kWp, kW, kWh]}
+
+        c_{var,i} &\text{: variable operational or dispatch cost [currency/kWh, currency/L]}
+
+        E_i(t) &\text{: asset dispatch [kWh]}
 
 The annual cost function of each asset includes the capital expenditure (investment cost) and residual value, as well as the operating expenses of each asset. It is expressed as follows:
 
 .. math:: 
-        a_i = \left( capex_i + \sum_{k=1}^{n} \frac{capex_i}{(1+d)^{k \cdot t_a}} - c_{res,i} \right) \cdot CRF(T) + opex_i
-.. math:: 
-        CRF(T) = \frac{d \cdot (1+d)^T}{(1+d)^t - 1}
-        
+        a_i &= \left( capex_i + \sum_{k=1}^{n} \frac{capex_i}{(1+d)^{k \cdot t_a}} - c_{res,i} \right) \cdot CRF(T) + opex_i
+
+        CRF(T) &= \frac{d \cdot (1+d)^T}{(1+d)^t - 1}
+
 .. math::
-        capex_i \text{: specific investment costs [currency/unit]}
+        capex_i &\text{: specific investment costs [currency/unit]}
 
-        n \text{: number of replacements of an asset within project lifetime T}
+        n &\text{: number of replacements of an asset within project lifetime T}
 
-        t_a \text{: asset lifetime [years]}
+        t_a &\text{: asset lifetime [years]}
 
-        CRF \text{: capital recovery factor}
+        CRF &\text{: capital recovery factor}
 
-        c_{res,i} \text{: residual value of asset i at the end of project lifetime T [currency/unit]}
+        c_{res,i} &\text{: residual value of asset i at the end of project lifetime T [currency/unit]}
 
-        opex_i \text{: annual operational and management costs [currency/unit/year]}
+        opex_i &\text{: annual operational and management costs [currency/unit/year]}
 
-        d \text{: discount factor}
+        d &\text{: discount factor}
 
-        T \text{: project lifetime [years]}
+        T &\text{: project lifetime [years]}
 
 The CRF is a ratio used to calculate the present value of the the annuity. The discount factor can be replaced by the weighted average cost of capital (WACC), calculated by the user. 
 
@@ -71,10 +71,9 @@ One main constraint that the optimization model is subject to is the energy bala
         \sum E_{in,i}(t) - \sum E_{out,j}(t) = 0 \qquad  \forall t
 
 .. math::
+        E_{in,i} &\text{: energy flowing from asset i to the bus}
 
-        E_{in,i} \text{: energy flowing from asset i to the bus}
-
-        E_{out,j} \text{: energy flowing from the bus to asset j}
+        E_{out,j} &\text{: energy flowing from the bus to asset j}
 
 It is very important to note that assets i and j can be the same asset (e.g., battery) however, one of the energy flowing values E_{in} or E_{out} should be zero at the same time step t.
 
@@ -147,51 +146,52 @@ Electricity Grid Equation
         E_{grid,c}(t) - E_{grid,f}(t) + E_{ts,f}(t) \cdot \eta_{ts,f} - E_{ts,c}(t) = 0 \qquad  \forall t
         
 .. math::
-        E_{grid,c} \text{: energy consumption from the electricity grid}
+        E_{grid,c} &\text{: energy consumption from the electricity grid}
         
-        E_{grid,f} \text{: energy feed into the electricity grid}
+        E_{grid,f} &\text{: energy feed into the electricity grid}
         
-        E_{grid,c} \text{: transformer station feed-in}
+        E_{grid,c} &\text{: transformer station feed-in}
         
-        \eta_{ts,f} \text{: transformer station efficiency}
+        \eta_{ts,f} &\text{: transformer station efficiency}
         
-        E_{grid,c} \text{: transformer station consumption}
+        E_{grid,c} &\text{: transformer station consumption}
  
 Non-Dispatchable Source Equations
 #################################
 
 .. math::   
-        E_{wind}(t) = CAP_{wind} \cdot \alpha_{wind}(t) \qquad  \forall t
+        E_{wind}(t) &= CAP_{wind} \cdot \alpha_{wind}(t) \qquad  \forall t
         
-        E_{pv}(t) = CAP_{pv} \cdot \beta_{pv}(t) \qquad  \forall t
+        E_{pv}(t) &= CAP_{pv} \cdot \beta_{pv}(t) \qquad  \forall t
         
-        E_{stc}(t) = CAP_{stc} \cdot \gamma{stc}(t) \qquad  \forall t
+        E_{stc}(t) &= CAP_{stc} \cdot \gamma{stc}(t) \qquad  \forall t
 
 .. math::
-        E_{wind} \text{: energy generated from the wind turbine}
+        E_{wind} &\text{: energy generated from the wind turbine}
         
-        CAP_{wind} \text{: wind turbine capacity [kW]}
+        CAP_{wind} &\text{: wind turbine capacity [kW]}
 
-        \alpha_{wind} \text{: instantaneous wind turbine performance metric [kWh/kW]}
+        \alpha_{wind} &\text{: instantaneous wind turbine performance metric [kWh/kW]}
         
-        E_{pv} \text{: energy generated from the PV panels}
+        E_{pv} &\text{: energy generated from the PV panels}
         
-        CAP_{pv} \text{: PV panel capacity [kWp]}
+        CAP_{pv} &\text{: PV panel capacity [kWp]}
 
-        \beta_{pv} \text{: instantaneous PV specific yield [kWh/kWp]}
+        \beta_{pv} &\text{: instantaneous PV specific yield [kWh/kWp]}
         
-        E_{stc} \text{: energy generated from the solar thermal collector}
+        E_{stc} &\text{: energy generated from the solar thermal collector}
         
-        CAP_{stc} \text{: Solar thermal collector capacity [kWth]}
+        CAP_{stc} &\text{: Solar thermal collector capacity [kWth]}
 
-        \gamma_{stc} \text{: instantaneous collector's production [kWh/kWth]}
+        \gamma_{stc} &\text{: instantaneous collector's production [kWh/kWth]}
         
 Battery Storage Model
 #####################
 
 .. math::   
         E_{bat}(t) = E_{bat}(t - 1) + E_{bat,in}(t) \cdot \eta_{bat,in} - \frac{E_{bat,out}}{\eta_{bat,out}} - E_{bat}(t - 1) \cdot \epsilon \qquad  \forall t
-        
+
+.. math::
         CAP_{bat} \cdot SOC_{min} \leq E_{bat}(t) \leq CAP_{bat} \cdot SOC_{max} \qquad  \forall t
         
         0 \leq E_{bat}(t) - E_{bat}(t - 1) \leq CAP_{bat} \cdot C_{rate,in} \qquad  \forall t
@@ -199,27 +199,27 @@ Battery Storage Model
         0 \leq E_{bat}(t - 1) - E_{bat}(t) \leq CAP_{bat} \cdot C_{rate,out} \qquad  \forall t
 
 .. math::
-        E_{bat} \text{: energy stored in the battery at time t}
+        E_{bat} &\text{: energy stored in the battery at time t}
         
-        E_{bat,in} \text{: battery charging energy}
+        E_{bat,in} &\text{: battery charging energy}
         
-        \eta_{bat,in} \text{: battery charging efficiency}
+        \eta_{bat,in} &\text{: battery charging efficiency}
         
-        E_{bat,out} \text{: battery discharging energy}
+        E_{bat,out} &\text{: battery discharging energy}
         
-        \eta_{bat,out} \text{: battery discharging efficiency}
+        \eta_{bat,out} &\text{: battery discharging efficiency}
         
-        \epsilon \text{: decay per time step}
+        \epsilon &\text{: decay per time step}
         
-        CAP_{bat} \text{: battery capacity [kWh]}
+        CAP_{bat} &\text{: battery capacity [kWh]}
         
-        SOC_{min} \text{: minimum state of charge}
+        SOC_{min} &\text{: minimum state of charge}
         
-        SOC_{max} \text{: maximum state of charge}
+        SOC_{max} &\text{: maximum state of charge}
         
-        C_{rate,in} \text{: battery charging rate}
+        C_{rate,in} &\text{: battery charging rate}
         
-        C_{rate,in} \text{: battery discharging rate}
+        C_{rate,in} &\text{: battery discharging rate}
  
 DC Electricity Bus Equation
 ###########################
@@ -228,11 +228,11 @@ DC Electricity Bus Equation
         E_{pv}(t) + E_{bat,out}(t) \cdot \eta_{bat,out} + E_{rec}(t) \cdot \eta_{rec} - E_{inv}(t) - E_{bat,in} - E_{ex}(t) = 0 \qquad  \forall t
 
 .. math::
-        E_{rec} \text{: rectifier energy}
+        E_{rec} &\text{: rectifier energy}
         
-        \eta_{rec} \text{: rectifier efficiency}
+        \eta_{rec} &\text{: rectifier efficiency}
         
-        E_{inv} \text{: inverter energy}
+        E_{inv} &\text{: inverter energy}
 
 AC Electricity Bus Equation
 ###########################
@@ -241,13 +241,13 @@ AC Electricity Bus Equation
         E_{ts,c}(t) \cdot \eta_{ts,c} + E_{wind}(t) + E_{inv}(t) \cdot \eta_{inv} - E_{ts,c}(t) - E_{rec}(t) - E_{hp}(t) - E_{el}(t) - E_{ex}(t) = 0 \qquad  \forall t
         
 .. math::
-        \eta_{ts,c} \text{: transformer station efficiency}
+        \eta_{ts,c} &\text{: transformer station efficiency}
         
-        \eta_{inv} \text{: inverter efficiency}
+        \eta_{inv} &\text{: inverter efficiency}
         
-        E_{hp} \text{: heat pump electrical consumption}
+        E_{hp} &\text{: heat pump electrical consumption}
         
-        E_{el} \text{: electrical load}
+        E_{el} &\text{: electrical load}
  
 NDS3 Bus Equation
 #################
@@ -265,9 +265,9 @@ DS Bus Equation
         E_{heat}(t) - E_{turb}(t) - E_{ex}(t) = 0
 
 .. math::
-        E_{heat} \text{: thermal energy (biogas) production}
+        E_{heat} &\text{: thermal energy (biogas) production}
         
-        E_{turb} \text{: turbine (biogas turbine) energy}
+        E_{turb} &\text{: turbine (biogas turbine) energy}
         
 Heat Bus Equation
 ###############
@@ -276,10 +276,10 @@ Heat Bus Equation
         E_{tes}(t) \cdot \eta_{tes} + E_{turb}(t) \cdot \eta_{turb} + E_{hp}(t) \cdot COP - E_{th}(t) - E_{ex}(t) = 0
 
 .. math::
-        \eta_{tes} \text{: thermal storage efficiency}
+        \eta_{tes} &\text{: thermal storage efficiency}
         
-        \eta_{turb} \text{: turbine efficiency}
+        \eta_{turb} &\text{: turbine efficiency}
         
-        COP \text{: heat pump coefficient of performance}
+        COP &\text{: heat pump coefficient of performance}
         
-        E_{th} \text{: heat load}
+        E_{th} &\text{: heat load}
