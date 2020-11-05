@@ -445,15 +445,15 @@ class TestSourceComponent:
                 output_bus.variable_costs.default == dict_asset[DISPATCH_PRICE][VALUE]
             )
             assert output_bus.investment is None
-            if dispatchable == False:
+            if dispatchable is False:
                 assert output_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
                 assert_series_equal(output_bus.fix, dict_asset[TIMESERIES])
                 assert output_bus.max == []
-            elif dispatchable == True:
+            elif dispatchable is True:
                 assert output_bus.existing == dict_asset[INSTALLED_CAP][VALUE]
         elif mode == "optimize":
-            assert output_bus.nominal_value == None
-            if dispatchable == False:
+            assert output_bus.nominal_value is None
+            if dispatchable is False:
                 assert_series_equal(output_bus.fix, dict_asset[TIMESERIES_NORMALIZED])
                 assert output_bus.max == []
             if timeseries == "normalized":
@@ -467,7 +467,7 @@ class TestSourceComponent:
                     == dict_asset[DISPATCH_PRICE][VALUE]
                     / dict_asset[TIMESERIES_PEAK][VALUE]
                 )
-                if dispatchable == True:
+                if dispatchable is True:
                     assert_series_equal(
                         output_bus.max, dict_asset[TIMESERIES_NORMALIZED]
                     )

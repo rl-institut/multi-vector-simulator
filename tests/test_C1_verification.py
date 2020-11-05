@@ -63,19 +63,19 @@ def test_check_feedin_tariff_not_greater_energy_price():
 def test_check_time_series_values_between_0_and_1_True():
     time_series = pd.Series([0, 0.22, 0.5, 0.99, 1])
     result = C1.check_time_series_values_between_0_and_1(time_series=time_series)
-    assert result == True
+    assert result is True
 
 
 def test_check_time_series_values_between_0_and_1_False_greater_1():
     time_series = pd.Series([0, 0.22, 0.5, 0.99, 1, 1.01])
     result = C1.check_time_series_values_between_0_and_1(time_series=time_series)
-    assert result == False
+    assert result is False
 
 
 def test_check_time_series_values_between_0_and_1_False_smaller_0():
     time_series = pd.Series([0, 0.22, 0.5, 0.99, 1, -0.01])
     result = C1.check_time_series_values_between_0_and_1(time_series=time_series)
-    assert result == False
+    assert result is False
 
 
 @pytest.fixture()
@@ -86,7 +86,7 @@ def get_json():
 
     def _add_time_series_to_dict_values(ts):
         for key, source in dict_values[ENERGY_PRODUCTION].items():
-            if source[RENEWABLE_ASSET_BOOL][VALUE] == True:
+            if source[RENEWABLE_ASSET_BOOL][VALUE] is True:
                 dict_values[ENERGY_PRODUCTION][key][TIMESERIES] = ts
         return dict_values
 
@@ -96,13 +96,13 @@ def get_json():
 def test_check_non_dispatchable_source_time_series_passes(get_json):
     dict_values = get_json(pd.Series([0, 0.22, 0.5, 0.99, 1]))
     return_value = C1.check_non_dispatchable_source_time_series(dict_values=dict_values)
-    assert return_value == None
+    assert return_value is None
 
 
 def test_check_non_dispatchable_source_time_series_results_in_error_msg(get_json):
     dict_values = get_json(pd.Series([0, 0.22, 0.5, 0.99, 1, 1.01]))
     return_value = C1.check_non_dispatchable_source_time_series(dict_values=dict_values)
-    assert return_value == False
+    assert return_value is False
 
 
 # def test_check_input_values():

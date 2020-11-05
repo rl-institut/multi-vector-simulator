@@ -37,6 +37,10 @@ Here is a template for new release sections
 - Tests for `D1.transformer()` (#596)
 - Add economic model equations in readthedocs (#581)
 - Add component model equations and energy balance adapted to sector coupled example (#581)
+- Create function `F0.select_essential_results` to select main results out of `dict_values` (#625)
+- Create mapping between EPA and MVS parameter names (#625)
+- Create parameter parser from EPA to MVS (#625)
+- Create parameter parser from MVS to EPA (#625)
 
 ### Changed
 - Order of readthedocs content (#590)
@@ -57,6 +61,12 @@ Here is a template for new release sections
 - Move the function `parse_log_messages` from F1 to F0 and modify it to print log messages in results JSON file (#623)
 - If `assets` folder is not found in package look in current folder for `report/assets` folder (#632)
 - `D1.transformer_constant_efficiency_fix()` and `D1.transformer_constant_efficiency_optimize()`, as well as their tests to reassign attributes (#596)
+- Move `retrieve_date_time_info` from C0 to B0 (#625)
+- Conversion from dict to json drop the timeindexes from pandas.Series (#625)
+- Conversion from json to dict allow to load a timeindex for pandas.Series (#625)
+- Replace `==` by `is` in expression with `True`, `False` or `None` (#625)
+- Remove unused `dict_values` argument of function `receive_timeseries_from_csv` (#625)
+- Move the end of the function `receive_timeseries_from_csv` into `C0.compute_timeseries_properties()` (#625)
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)

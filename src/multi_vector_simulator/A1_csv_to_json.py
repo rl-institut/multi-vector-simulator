@@ -501,7 +501,6 @@ def create_json_from_csv(
         single_dict2 = {}
         single_dict2.update({filename: single_dict})
         return single_dict2
-    return
 
 
 def check_for_official_extra_parameters(
