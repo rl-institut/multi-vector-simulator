@@ -137,7 +137,7 @@
         "transformer_optimize_multiple_input_busses": {
             "efficiency": {
                 "unit": "factor",
-                "value": [0.33, 0.33]
+                "value": 0.33
             },
             "installedCap": {
                 "unit": "kW",
@@ -146,7 +146,7 @@
             "label": "Transformer optimize multiple input busses",
             "dispatch_price": {
                 "unit": "currency/kWh",
-                "value": [0, 0]
+                "value": 0
             },
             "optimizeCap": {
                 "unit": "bool",
@@ -154,6 +154,35 @@
             },
             "input_bus_name": ["Fuel bus", "Coal bus"],
             "output_bus_name": "Electricity bus",
+            "simulation_annuity": {
+                "value": 60,
+                "unit": "currency/unit/simulation period"},
+            "type_oemof": "transformer",
+            "maximumCap": {
+                "unit": "kWp",
+                "value": 10
+            }
+        },
+        "transformer_optimize_multiple_output_busses": {
+            "efficiency": {
+                "unit": "factor",
+                "value": [0.33, 0.33]
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 0
+            },
+            "label": "Transformer optimize multiple output busses",
+            "dispatch_price": {
+                "unit": "currency/kWh",
+                "value": [0, 0]
+            },
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "input_bus_name": "Coal bus",
+            "output_bus_name": ["Electricity bus", "Heat bus"],
             "simulation_annuity": {
                 "value": 60,
                 "unit": "currency/unit/simulation period"},
@@ -191,7 +220,7 @@
         "transformer_fix_multiple_input_busses": {
             "efficiency": {
                 "unit": "factor",
-                "value": [0.33, 0.33]
+                "value": 0.33
             },
             "installedCap": {
                 "unit": "kW",
@@ -200,7 +229,7 @@
             "label": "Transformer fix multiple input busses",
             "dispatch_price": {
                 "unit": "currency/kWh",
-                "value": [0, 0]
+                "value": 0
             },
             "optimizeCap": {
                 "unit": "bool",
@@ -208,6 +237,31 @@
             },
             "input_bus_name": ["Fuel bus", "Coal bus"],
             "output_bus_name": "Electricity bus",
+            "simulation_annuity": {
+                "value": 60,
+                "unit": "currency/unit/simulation period"},
+            "type_oemof": "transformer"
+        },
+        "transformer_fix_multiple_output_busses": {
+            "efficiency": {
+                "unit": "factor",
+                "value": [0.33, 0.33]
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 10
+            },
+            "label": "Transformer fix multiple output busses",
+            "dispatch_price": {
+                "unit": "currency/kWh",
+                "value": [0, 0]
+            },
+            "optimizeCap": {
+                "unit": "bool",
+                "value": false
+            },
+            "input_bus_name": "Coal bus",
+            "output_bus_name": ["Electricity bus", "Heat bus"],
             "simulation_annuity": {
                 "value": 60,
                 "unit": "currency/unit/simulation period"},
