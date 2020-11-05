@@ -91,13 +91,13 @@ This balancing equation is applicable to all bus types, be it electrical, therma
         E_{out,j} &\text{: energy flowing from the bus to asset j}
 
 It is very important to note that assets i and j can be the same asset (e.g., battery).
-`oemof-solph` allows both :math:`E_{in}` or :math:`E_{out}` to be larger zero in same time step t (see :ref:`_limitations-real-life-constraint`).
+`oemof-solph` allows both :math:`E_{in}` or :math:`E_{out}` to be larger zero in same time step t (see :ref:`limitations-real-life-constraint`).
 
 
 Example: Sector Coupled Energy System
 -------------------------------------
 
-In order to understand the component models, a generic sector coupled example in shown in the next figure.
+In order to understand the component models, a generic sector coupled example is shown in the next figure.
 It brings together the electricity and heat sector through Transformer 4 as it connects the two sector buses.
 
 .. image:: images/26-10-2020_sector_coupled_example.png
@@ -161,7 +161,7 @@ This excess sink accounts for the extra energy in the system that has to be dump
 Electricity Grid Equation
 #########################
 
-The electricity grid is modeled though a feedin and a consumption node.
+The electricity grid is modeled though a feed-in and a consumption node.
 Transformers limit the peak flow into or from the local electricity line.
 Electricity sold to the grid experiences losses in the transformer :math:`(ts,f)`.
 
@@ -169,9 +169,9 @@ Electricity sold to the grid experiences losses in the transformer :math:`(ts,f)
         E_{grid,c}(t) - E_{grid,f}(t) + E_{ts,f}(t) \cdot \eta_{ts,f} - E_{ts,c}(t) = 0 \qquad  \forall t
         
 .. math::
-        E_{grid,c} &\text{: energy consumption from the electricity grid}
+        E_{grid,c} &\text{: energy consumed from the electricity grid}
         
-        E_{grid,f} &\text{: energy feed into the electricity grid}
+        E_{grid,f} &\text{: energy fed into the electricity grid}
         
         E_{grid,c} &\text{: transformer station feed-in}
         
@@ -182,15 +182,15 @@ Electricity sold to the grid experiences losses in the transformer :math:`(ts,f)
 Non-Dispatchable Source Equations
 #################################
 
-Non-dispatchable sources in our example are a wind, pv and solar thermal plant.
-Their generation is determined by the provided timeseries of instantaneous generation, providing :math:`\alpha`, :math:`\beta`, :math:`\gamma`.
+Non-dispatchable sources in our example are wind, pv and solar thermal plant.
+Their generation is determined by the provided timeseries of instantaneous generation, providing :math:`\alpha`, :math:`\beta`, :math:`\gamma` respectively.
 
 .. math::   
         E_{wind}(t) &= CAP_{wind} \cdot \alpha_{wind}(t) \qquad  \forall t
         
         E_{pv}(t) &= CAP_{pv} \cdot \beta_{pv}(t) \qquad  \forall t
         
-        E_{stc}(t) &= CAP_{stc} \cdot \gamma{stc}(t) \qquad  \forall t
+        E_{stc}(t) &= CAP_{stc} \cdot \gamma_{stc}(t) \qquad  \forall t
 
 .. math::
         E_{wind} &\text{: energy generated from the wind turbine}
@@ -214,7 +214,7 @@ Their generation is determined by the provided timeseries of instantaneous gener
 Storage Model
 #############
 
-There are two storages in our system: An electricity storage (Storage 1, :math:`bat`) and a heat storage (Storage 2, :math:`tes`).
+There are two storages in our system: An electrical energy storage (Storage 1, :math:`bat`) and a thermal energy storage (Storage 2, :math:`tes`).
 Below, the equations for the Storage 1 are provided, but Storage 2 follows analogous equations for charge, discharge and bounds.
 
 .. math::   
@@ -303,6 +303,7 @@ NDS3 Bus Equation
 #################
 
 The NDS3 Bus is an example of a bus, which does not serve both as in- and output of a storage system.
+Instead, the thermal storage is charged from the NDS3 bus, but discharges into the heat bus.
 
 .. math::
         E_{stc}(t) - E_{tes}(t) - E_{ex}(t) = 0
