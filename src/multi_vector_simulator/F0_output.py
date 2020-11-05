@@ -206,6 +206,7 @@ def store_timeseries_all_busses_to_excel(dict_values):
 
     logging.debug("Saved flows at busses to: %s.", timeseries_output_file)
 
+
 def parse_simulation_log(path_log_file, dict_values):
     """Gather a log file with several log messages, this function gathers them all and inputs them into the dict with
     all input and output parameters up to F0
@@ -297,7 +298,9 @@ def store_as_json(dict_values, output_folder=None, file_name=None):
 
 
 def select_essential_results(dict_values):
-    """
+    """Remove fields from the dict which were not modified by the simulation
+
+    This prevents duplicata from innput parameters
 
     Parameters
     ----------

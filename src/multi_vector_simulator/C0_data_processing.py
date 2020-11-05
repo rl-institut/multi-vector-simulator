@@ -360,7 +360,9 @@ def energyProduction(dict_values, group):
                 # If Filename defines the generation timeseries, then we have an asset with a lack of dispatchability
                 dict_values[group][asset].update({DISPATCHABILITY: False})
         else:
-            logging.debug(f"Not loading {group} asset {asset} from file")
+            logging.debug(
+                f"Not loading {group} asset {asset} from a file, timeseries is provided"
+            )
             compute_timeseries_properties(dict_values[group][asset])
         # check if maximumCap exists and add it to dict_values
         process_maximum_cap_constraint(dict_values, group, asset)
@@ -468,7 +470,9 @@ def energyConsumption(dict_values, group):
                 is_demand_profile=True,
             )
         else:
-            logging.debug(f"Not loading {group} asset {asset} from file")
+            logging.debug(
+                f"Not loading {group} asset {asset} from a file, timeseries is provided"
+            )
             compute_timeseries_properties(dict_values[group][asset])
 
 
