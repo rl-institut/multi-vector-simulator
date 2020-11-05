@@ -35,6 +35,8 @@ Here is a template for new release sections
 - Three new KPI's added to MVS_output.rst read the docs page: Onsite energy fraction, Onsite energy matching, Degree of autonomy (#609)
 - New constant variables: `LOGS = "logs"`, `WARNINGS = "warnings"`, `ERRORS = "errors"` (#623)
 - Tests for `D1.transformer()` (#596)
+- Add economic model equations in readthedocs (#581)
+- Add component model equations and energy balance adapted to sector coupled example (#581)
 
 ### Changed
 - Order of readthedocs content (#590)
