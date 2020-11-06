@@ -655,9 +655,8 @@ def equation_levelized_cost_of_energy_carrier(
         lcoe_energy_carrier = 0
     return lcoe_energy_carrier, attributed_costs
 
-
 def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
-    """Calculates the weighted kpi for a specific kpi_name
+    """Calculates the weighted kpi for a specific kpi_name both for a single sector and system-wide
 
     Parameters
     ----------
@@ -669,22 +668,28 @@ def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
     Returns
     -------
     type
-        Specific KPI that describes sector-coupled system
-
+        Append specific KPI that describes sector-coupled system to dict_values[KPI][KPI_SCALARS_DICT]
+        Appends specific KPI in energy equivalent to each sector to dict_values[KPI][KPI_UNCOUPLED_DICT]
     """
-    energy_equivalent = 0
+    total_energy_equivalent = 0
+    dict_energy_equivalents_per_sector = {}
 
     for sector in dict_values[PROJECT_DATA][SECTORS]:
         if sector in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
-            energy_equivalent += (
+            energy_equivalent = (
                 dict_values[KPI][KPI_UNCOUPLED_DICT][kpi_name][sector]
                 * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector][VALUE]
             )
+            total_energy_equivalent += energy_equivalent
+            dict_energy_equivalents_per_sector.update({sector: energy_equivalent})
         else:
             raise ValueError(
                 f"The electricity equivalent value of energy carrier {sector} is not defined. "
                 f"Please add this information to the variable DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py."
             )
 
-        dict_values[KPI][KPI_SCALARS_DICT].update({kpi_name: energy_equivalent})
+    # Describes the energy equivalent of the kpi in question, eg. the renewable generation, so that comparison is easier
+    dict_values[KPI][KPI_UNCOUPLED_DICT].update({kpi_name+SUFFIX_ELECTRICITY_EQUIVALENT: dict_energy_equivalents_per_sector})
+    # Describes system wide total of the energy equivalent of the kpi
+    dict_values[KPI][KPI_SCALARS_DICT].update({kpi_name: total_energy_equivalent})
     return
