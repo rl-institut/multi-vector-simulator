@@ -384,16 +384,24 @@ def equation_renewable_share(total_res, total_non_res):
     type
         Renewable share
 
+    Notes
+    -----
+
+    Used both to calculate RENEWABLE_FACTOR and RENEWABLE_SHARE_OF_LOCAL_GENERATION.
+
+    Equation:
+
     .. math::
             RES = \frac{total_res}{total_non_res + total_res}
 
 
-        renewable share = 1 - all energy in the energy system is of renewable origin
-        renewable share < 1 - part of the energy in the system is of renewable origin
-        renewable share = 0 - no energy is of renewable origin
+    The renewable share is relative to generation, but not consumption of energy, the renewable share can not be larger 1.
+    If there is no generation or consumption from a DSO withing an energyVector and supply is solely reached by energy conversion from another vector, the renewable share is defined to be zero.
 
-        As for now this is relative to generation, but not consumption of energy, the renewable share can not be larger 1. If in future however the renewable share is calculated relative to the energy consumption, a renewable share larger 1 is possible in case of overly high renewable gerneation within the system that is later fed into the DSO grid.
-        If there is no generation or consumption from a DSO withing an energyVector and supply is solely reached by energy conversion from another vector, the renewable share is defined to be zero.
+    * renewable share = 1 - all energy in the energy system is of renewable origin
+    * renewable share < 1 - part of the energy in the system is of renewable origin
+    * renewable share = 0 - no energy is of renewable origin
+
 
     Tested with:
     - test_renewable_share_equation_no_generation()
