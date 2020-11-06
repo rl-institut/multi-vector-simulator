@@ -79,10 +79,7 @@ renewable_share_dso = 0.1
 dict_renewable_energy_use = {
     ENERGY_PRODUCTION: {
         dso
-        + DSO_CONSUMPTION: {
-            ENERGY_VECTOR: electricity,
-            TOTAL_FLOW: {VALUE: flow_dso},
-        },
+        + DSO_CONSUMPTION: {ENERGY_VECTOR: electricity, TOTAL_FLOW: {VALUE: flow_dso},},
         pv_plant: {
             ENERGY_VECTOR: electricity,
             TOTAL_FLOW: {VALUE: flow_pv_local},
@@ -101,6 +98,7 @@ dict_renewable_energy_use = {
 
 exp_res = flow_pv_local + (flow_dso * renewable_share_dso)
 exp_non_res = flow_dso * (1 - renewable_share_dso)
+
 
 def test_total_renewable_and_non_renewable_origin_of_each_sector():
     """ """
@@ -144,45 +142,58 @@ def test_total_renewable_and_non_renewable_origin_of_each_sector():
         == exp_non_res
     )
 
+
 # Tests renewable factor
 def test_renewable_factor_one_sector():
     """ """
-    dict_res = {PROJECT_DATA: {SECTORS: {electricity: electricity}},
-                                                           KPI: {KPI_SCALARS_DICT: {
-                                                               TOTAL_NON_RENEWABLE_ENERGY_USE: 50,
-                                                               TOTAL_RENEWABLE_ENERGY_USE: 50},
-                                                                 KPI_UNCOUPLED_DICT: {
-                                                                     TOTAL_RENEWABLE_ENERGY_USE: {
-                                                                         electricity: 50},
-                                                                     TOTAL_NON_RENEWABLE_ENERGY_USE: {
-                                                                         electricity: 50}}}}
-
+    dict_res = {
+        PROJECT_DATA: {SECTORS: {electricity: electricity}},
+        KPI: {
+            KPI_SCALARS_DICT: {
+                TOTAL_NON_RENEWABLE_ENERGY_USE: 50,
+                TOTAL_RENEWABLE_ENERGY_USE: 50,
+            },
+            KPI_UNCOUPLED_DICT: {
+                TOTAL_RENEWABLE_ENERGY_USE: {electricity: 50},
+                TOTAL_NON_RENEWABLE_ENERGY_USE: {electricity: 50},
+            },
+        },
+    }
 
     E3.add_renewable_factor(dict_res)
     exp = 0.5
-    assert RENEWABLE_FACTOR in dict_res[KPI][KPI_UNCOUPLED_DICT], f"KPI {RENEWABLE_FACTOR} not added to dict_values[KPI][KPI_UNCOUPLED_DICT]"
     assert (
-        electricity
-        in dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]
+        RENEWABLE_FACTOR in dict_res[KPI][KPI_UNCOUPLED_DICT]
+    ), f"KPI {RENEWABLE_FACTOR} not added to dict_values[KPI][KPI_UNCOUPLED_DICT]"
+    assert (
+        electricity in dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]
     ), f"KPI {RENEWABLE_FACTOR} not defined for vector {electricity}."
     assert (
-        dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR][electricity]
-        == exp
+        dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR][electricity] == exp
     ), f"{RENEWABLE_FACTOR} of {electricity} sector not expected value."
-    assert dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == exp, f"System-wide {RENEWABLE_FACTOR} of not expected value."
+    assert (
+        dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == exp
+    ), f"System-wide {RENEWABLE_FACTOR} of not expected value."
+
 
 def test_renewable_factor_two_sectors():
-    dict_res = {PROJECT_DATA: {SECTORS: {electricity: electricity, h2: h2}},
-                                                           KPI: {KPI_SCALARS_DICT: {
-                                                               TOTAL_NON_RENEWABLE_ENERGY_USE: 100,
-                                                               TOTAL_RENEWABLE_ENERGY_USE: 100},
-                                                                 KPI_UNCOUPLED_DICT: {
-                                                                     TOTAL_RENEWABLE_ENERGY_USE: {
-                                                                         electricity: 50, h2: 50},
-                                                                     TOTAL_NON_RENEWABLE_ENERGY_USE: {
-                                                                         electricity: 50, h2: 50}}}}
+    dict_res = {
+        PROJECT_DATA: {SECTORS: {electricity: electricity, h2: h2}},
+        KPI: {
+            KPI_SCALARS_DICT: {
+                TOTAL_NON_RENEWABLE_ENERGY_USE: 100,
+                TOTAL_RENEWABLE_ENERGY_USE: 100,
+            },
+            KPI_UNCOUPLED_DICT: {
+                TOTAL_RENEWABLE_ENERGY_USE: {electricity: 50, h2: 50},
+                TOTAL_NON_RENEWABLE_ENERGY_USE: {electricity: 50, h2: 50},
+            },
+        },
+    }
     E3.add_renewable_factor(dict_res)
-    assert RENEWABLE_FACTOR in dict_res[KPI][KPI_UNCOUPLED_DICT], f"KPI {RENEWABLE_FACTOR} not added to dict_values[KPI][KPI_UNCOUPLED_DICT]"
+    assert (
+        RENEWABLE_FACTOR in dict_res[KPI][KPI_UNCOUPLED_DICT]
+    ), f"KPI {RENEWABLE_FACTOR} not added to dict_values[KPI][KPI_UNCOUPLED_DICT]"
 
     exp_res_sector = {
         electricity: 0.5,
@@ -190,59 +201,82 @@ def test_renewable_factor_two_sectors():
     }
     exp = 0.5
     for k in [electricity, h2]:
-        assert k in dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR], f"{RENEWABLE_FACTOR} not defined for sector {k}."
         assert (
-            dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR][k]
-            == exp_res_sector[k]
+            k in dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]
+        ), f"{RENEWABLE_FACTOR} not defined for sector {k}."
+        assert (
+            dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR][k] == exp_res_sector[k]
         ), f"{RENEWABLE_FACTOR} of sector {k} no expected value."
 
-    assert dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == exp, f"System-wide renewable factor not expected value."
+    assert (
+        dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == exp
+    ), f"System-wide renewable factor not expected value."
+
 
 # Tests renewable_share_of_local_generation
 def test_renewable_share_of_local_generation_one_sector():
     """ """
-    dict_res = {PROJECT_DATA: {SECTORS: {electricity: electricity}},
-                                                           KPI: {KPI_SCALARS_DICT: {
-                                                               TOTAL_NON_RENEWABLE_GENERATION_IN_LES: 50,
-                                                               TOTAL_RENEWABLE_GENERATION_IN_LES: 50},
-                                                                 KPI_UNCOUPLED_DICT: {
-                                                                     TOTAL_RENEWABLE_GENERATION_IN_LES: {
-                                                                         electricity: 50},
-                                                                     TOTAL_NON_RENEWABLE_GENERATION_IN_LES: {
-                                                                         electricity: 50}}}}
+    dict_res = {
+        PROJECT_DATA: {SECTORS: {electricity: electricity}},
+        KPI: {
+            KPI_SCALARS_DICT: {
+                TOTAL_NON_RENEWABLE_GENERATION_IN_LES: 50,
+                TOTAL_RENEWABLE_GENERATION_IN_LES: 50,
+            },
+            KPI_UNCOUPLED_DICT: {
+                TOTAL_RENEWABLE_GENERATION_IN_LES: {electricity: 50},
+                TOTAL_NON_RENEWABLE_GENERATION_IN_LES: {electricity: 50},
+            },
+        },
+    }
     E3.add_renewable_share_of_local_generation(dict_res)
-    assert RENEWABLE_SHARE_OF_LOCAL_GENERATION in dict_res[KPI][KPI_UNCOUPLED_DICT], f"KPI {RENEWABLE_SHARE_OF_LOCAL_GENERATION} not added to dict_values[KPI][KPI_UNCOUPLED_DICT]"
+    assert (
+        RENEWABLE_SHARE_OF_LOCAL_GENERATION in dict_res[KPI][KPI_UNCOUPLED_DICT]
+    ), f"KPI {RENEWABLE_SHARE_OF_LOCAL_GENERATION} not added to dict_values[KPI][KPI_UNCOUPLED_DICT]"
     assert (
         electricity
         in dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION]
     ), f"{RENEWABLE_SHARE_OF_LOCAL_GENERATION} of sector {electricity} not defined."
     assert (
-        dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION][electricity]
+        dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION][
+            electricity
+        ]
         == 0.5
     ), f"{RENEWABLE_SHARE_OF_LOCAL_GENERATION} of sector {electricity} not of expected value."
-    assert dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION] == 0.5, f"System-wide {RENEWABLE_SHARE_OF_LOCAL_GENERATION} not of expected value."
+    assert (
+        dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION] == 0.5
+    ), f"System-wide {RENEWABLE_SHARE_OF_LOCAL_GENERATION} not of expected value."
+
 
 def test_renewable_share_of_local_generation_two_sectors():
-    dict_res = {PROJECT_DATA: {SECTORS: {electricity: electricity, h2: h2}},
-                                                           KPI: {KPI_SCALARS_DICT: {
-                                                               TOTAL_NON_RENEWABLE_GENERATION_IN_LES: 100,
-                                                               TOTAL_RENEWABLE_GENERATION_IN_LES: 100},
-                                                                 KPI_UNCOUPLED_DICT: {
-                                                                     TOTAL_RENEWABLE_GENERATION_IN_LES: {
-                                                                         electricity: 50, h2: 50},
-                                                                     TOTAL_NON_RENEWABLE_GENERATION_IN_LES: {
-                                                                         electricity: 50, h2: 50}}}}
+    dict_res = {
+        PROJECT_DATA: {SECTORS: {electricity: electricity, h2: h2}},
+        KPI: {
+            KPI_SCALARS_DICT: {
+                TOTAL_NON_RENEWABLE_GENERATION_IN_LES: 100,
+                TOTAL_RENEWABLE_GENERATION_IN_LES: 100,
+            },
+            KPI_UNCOUPLED_DICT: {
+                TOTAL_RENEWABLE_GENERATION_IN_LES: {electricity: 50, h2: 50},
+                TOTAL_NON_RENEWABLE_GENERATION_IN_LES: {electricity: 50, h2: 50},
+            },
+        },
+    }
     E3.add_renewable_share_of_local_generation(dict_res)
     exp_res_sector = {electricity: 0.5, h2: 0.5}
     assert RENEWABLE_SHARE_OF_LOCAL_GENERATION in dict_res[KPI][KPI_UNCOUPLED_DICT]
     for k in [electricity, h2]:
-        assert k in dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION], f"{RENEWABLE_SHARE_OF_LOCAL_GENERATION} of sector {k} not added."
+        assert (
+            k in dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION]
+        ), f"{RENEWABLE_SHARE_OF_LOCAL_GENERATION} of sector {k} not added."
         assert (
             dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION][k]
             == exp_res_sector[k]
         ), f"Expected value of {RENEWABLE_SHARE_OF_LOCAL_GENERATION} for vector {k} not reached."
 
-    assert dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION] == 0.5, f"Expected value of sector-wide {RENEWABLE_SHARE_OF_LOCAL_GENERATION} not reached."
+    assert (
+        dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION] == 0.5
+    ), f"Expected value of sector-wide {RENEWABLE_SHARE_OF_LOCAL_GENERATION} not reached."
 
 
 def test_renewable_share_equation_is_1():
