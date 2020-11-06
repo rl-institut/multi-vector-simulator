@@ -118,7 +118,6 @@ def get_timeseries_per_bus(dict_values, bus_data):
             ]
 
     dict_values.update({OPTIMIZED_FLOWS: bus_data_timeseries})
-    return
 
 
 def get_storage_results(settings, storage_bus, dict_asset):
@@ -247,7 +246,6 @@ def get_storage_results(settings, storage_bus, dict_asset):
             )
         }
     )
-    return
 
 
 def get_results(settings, bus_data, dict_asset, asset_group):
@@ -325,8 +323,6 @@ def get_results(settings, bus_data, dict_asset, asset_group):
             )
             # Get capacity information
             get_optimal_cap(bus_data[bus_instance], dict_asset, flow_tuple)
-
-    return
 
 
 def get_parameter_to_be_evaluated_from_oemof_results(asset_group, asset_label):
@@ -479,8 +475,6 @@ def get_optimal_cap(bus, dict_asset, flow_tuple):
         else:
             dict_asset.update({OPTIMIZED_ADD_CAP: {VALUE: 0, UNIT: dict_asset[UNIT]}})
 
-    return
-
 
 def get_flow(settings, bus, dict_asset, flow_tuple):
     r"""
@@ -521,7 +515,6 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
         dict_asset[LABEL],
         round(dict_asset[TOTAL_FLOW][VALUE]),
     )
-    return
 
 
 def add_info_flows(settings, dict_asset, flow):
@@ -559,7 +552,6 @@ def add_info_flows(settings, dict_asset, flow):
             AVERAGE_FLOW: {VALUE: total_flow / len(flow), UNIT: "kW"},
         }
     )
-    return
 
 
 def convert_demand_to_dataframe(dict_values):

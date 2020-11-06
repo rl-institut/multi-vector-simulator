@@ -223,7 +223,6 @@ def get_costs(dict_asset, economic_data):
             },
         }
     )
-    return
 
 
 def calculate_total_asset_costs_over_lifetime(
@@ -528,4 +527,3 @@ def lcoe_assets(dict_asset, asset_group):
         lcoe_a = dict_asset[ANNUITY_TOTAL][VALUE] / dict_asset[TOTAL_FLOW][VALUE]
 
     dict_asset.update({LCOE_ASSET: {VALUE: lcoe_a, UNIT: CURR + "/kWh"}})
-    return

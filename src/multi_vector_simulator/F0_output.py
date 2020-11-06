@@ -21,6 +21,7 @@ from multi_vector_simulator.utils.constants import (
     PATH_OUTPUT_FOLDER,
     OUTPUT_FOLDER,
     LOGFILE,
+    PATHS_TO_PLOTS,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
@@ -28,12 +29,18 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OPTIMIZED_FLOWS,
     DEMANDS,
     RESOURCES,
+    SECTORS,
     KPI_SCALARS_DICT,
+    KPI_SCALAR_MATRIX,
+    KPI_COST_MATRIX,
+    PROJECT_DATA,
     ECONOMIC_DATA,
     SIMULATION_RESULTS,
     LOGS,
     ERRORS,
     WARNINGS,
+    FIX_COST,
+    ENERGY_BUSSES,
 )
 
 r"""
@@ -288,3 +295,43 @@ def store_as_json(dict_values, output_folder=None, file_name=None):
         answer = json_data
 
     return answer
+
+
+def select_essential_results(dict_values):
+    """Remove fields from the dict which were not modified by the simulation
+
+    This prevents duplicata from innput parameters
+
+    Parameters
+    ----------
+    dict_values : (dict)
+        dict to be stored as json
+
+    Returns
+    -------
+    None
+    Remove certain fields in dict_values
+
+    """
+
+    # Remove the input data which where not modified
+    for asset_group in [
+        ECONOMIC_DATA,
+        SIMULATION_SETTINGS,
+        FIX_COST,
+        ENERGY_BUSSES,
+        PATHS_TO_PLOTS,
+        OPTIMIZED_FLOWS,
+    ]:
+        if asset_group in dict_values:
+            dict_values.pop(asset_group)
+
+    # Remove post-processed data
+    # for k in [KPI_SCALAR_MATRIX, KPI_COST_MATRIX]:
+    #    dict_values[KPI].pop(k)
+
+    # Only keep the sectors, otherwise the information is the same as from input json
+    dict_keys = list(dict_values[PROJECT_DATA].keys())
+    for k in dict_keys:
+        if k != SECTORS:
+            dict_values[PROJECT_DATA].pop(k)

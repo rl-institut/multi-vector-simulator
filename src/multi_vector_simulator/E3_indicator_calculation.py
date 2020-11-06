@@ -89,7 +89,6 @@ def all_totals(dict_values):
             dict_values[KPI][KPI_SCALARS_DICT].update(
                 {column: dict_values[KPI][KPI_COST_MATRIX][column].sum()}
             )
-    return
 
 
 def total_demand_and_excess_each_sector(dict_values):
@@ -184,8 +183,6 @@ def total_demand_and_excess_each_sector(dict_values):
     calculate_electricity_equivalent_for_a_set_of_aggregated_values(
         dict_values, total_excess_dict, kpi_name=TOTAL_EXCESS
     )
-
-    return
 
 
 def calculate_electricity_equivalent_for_a_set_of_aggregated_values(
@@ -330,7 +327,6 @@ def add_total_renewable_and_non_renewable_energy_origin(dict_values):
         weighting_for_sector_coupled_kpi(dict_values, sector_specific_kpi)
 
     logging.info("Calculated renewable share of the LES.")
-    return
 
 
 def add_renewable_share_of_local_generation(dict_values):
@@ -444,7 +440,6 @@ def add_renewable_factor(dict_values):
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {RENEWABLE_FACTOR: equation_renewable_share(total_res, total_non_res)}
     )
-    return
 
 
 def equation_renewable_share(total_res, total_non_res):
@@ -663,7 +658,6 @@ def add_levelized_cost_of_energy_carriers(dict_values):
     dict_values[KPI][KPI_SCALARS_DICT].update({LCOeleq: lcoe_energy_carrier})
     logging.debug(f"Determined {LCOeleq}: {round(lcoe_energy_carrier, 2)}")
     logging.info("Calculated LCOE of the energy system.")
-    return
 
 
 def equation_levelized_cost_of_energy_carrier(

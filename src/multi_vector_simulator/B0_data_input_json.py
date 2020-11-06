@@ -1,3 +1,4 @@
+import logging
 import copy
 import json
 import os
@@ -5,7 +6,16 @@ import os
 import numpy as np
 import pandas as pd
 
-from multi_vector_simulator.utils.constants_json_strings import VALUE
+from multi_vector_simulator.utils.constants_json_strings import (
+    START_DATE,
+    PERIODS,
+    END_DATE,
+    EVALUATED_PERIOD,
+    TIME_INDEX,
+    TIMESTEP,
+    UNIT_MINUTE,
+    VALUE,
+)
 
 from multi_vector_simulator.utils.constants import (
     CSV_FNAME,
@@ -34,7 +44,7 @@ It will be an interface to the EPA.
 """
 
 
-def convert_from_json_to_special_types(a_dict, prev_key=None):
+def convert_from_json_to_special_types(a_dict, prev_key=None, time_index=None):
     """Convert the field values of the mvs result json file which are not simple types.
 
     The function is recursive to explore all nested levels
@@ -59,7 +69,9 @@ def convert_from_json_to_special_types(a_dict, prev_key=None):
         if DATA_TYPE_JSON_KEY not in a_dict:
             answer = {}
             for k in a_dict:
-                answer[k] = convert_from_json_to_special_types(a_dict[k], prev_key=k)
+                answer[k] = convert_from_json_to_special_types(
+                    a_dict[k], prev_key=k, time_index=time_index
+                )
         else:
             # the a_dict is a dictionary containing the special type key,
             # therefore we apply the conversion if this type is listed below
@@ -73,19 +85,34 @@ def convert_from_json_to_special_types(a_dict, prev_key=None):
                 answer = pd.read_json(a_dict, orient="split")
             elif TYPE_DATETIMEINDEX in data_type:
                 # pandas.DatetimeIndex
-                a_dict = json.dumps(a_dict)
-                answer = pd.read_json(a_dict, orient="split")
-                answer = pd.to_datetime(answer.index)
+                if time_index is not None:
+                    answer = time_index
+                else:
+                    answer = pd.DatetimeIndex(a_dict.get(VALUE, []))
 
                 answer.freq = answer.inferred_freq
             elif TYPE_SERIES in data_type:
                 # pandas.Series
                 # extract the name of the series in case it was a tuple
-                name = a_dict.pop("name")
+                name = a_dict.get("name", None)
 
                 # reconvert the dict to a json for conversion to pandas Series
-                a_dict = json.dumps(a_dict)
-                answer = pd.read_json(a_dict, orient="split", typ="series")
+                answer = pd.Series(a_dict[VALUE])
+
+                # Set time_index to Series
+                if time_index is not None:
+                    if len(answer.index) > len(time_index):
+                        logging.warning(
+                            f"The time index inferred from {SIMULATION_SETTINGS} is longer as "
+                            f"the timeserie under the field {prev_key}"
+                        )
+                    elif len(answer.index) < len(time_index):
+                        logging.warning(
+                            f"The time index inferred from {SIMULATION_SETTINGS} is shorter as "
+                            f"the timeserie under the field {prev_key}"
+                        )
+                    else:
+                        answer.index = time_index
 
                 # if the name was a tuple it was converted to a list via json serialization
                 if isinstance(name, list):
@@ -124,13 +151,11 @@ def convert_from_special_types_to_json(o):
     elif isinstance(o, bool) or isinstance(o, str):
         answer = o
     elif isinstance(o, pd.DatetimeIndex):
-        answer = {DATA_TYPE_JSON_KEY: TYPE_DATETIMEINDEX}
-        answer.update(json.loads(o.to_frame().to_json(orient="split")))
+        answer = {DATA_TYPE_JSON_KEY: TYPE_DATETIMEINDEX, VALUE: o.values.tolist()}
     elif isinstance(o, pd.Timestamp):
         answer = {DATA_TYPE_JSON_KEY: TYPE_TIMESTAMP, VALUE: str(o)}
     elif isinstance(o, pd.Series):
-        answer = {DATA_TYPE_JSON_KEY: TYPE_SERIES}
-        answer.update(json.loads(o.to_json(orient="split")))
+        answer = {DATA_TYPE_JSON_KEY: TYPE_SERIES, VALUE: o.to_list()}
     elif isinstance(o, np.ndarray):
         answer = {DATA_TYPE_JSON_KEY: TYPE_NDARRAY, VALUE: o.tolist()}
     elif isinstance(o, pd.DataFrame):
@@ -145,6 +170,51 @@ def convert_from_special_types_to_json(o):
         )
 
     return answer
+
+
+def retrieve_date_time_info(simulation_settings):
+    """
+    Updates simulation settings by all time-related parameters.
+    - START_DATE
+    - END_DATE
+    - TIME_INDEX
+    - PERIODS
+
+    Parameters
+    ----------
+    simulation_settings: dict
+        Simulation parameters of the input data
+
+    Returns
+    -------
+    Update simulation_settings by start date, end date, timeindex, and number of simulation periods
+
+
+    Notes
+    -----
+    Function tested with test_retrieve_datetimeindex_for_simulation()
+    """
+    simulation_settings.update(
+        {START_DATE: pd.to_datetime(simulation_settings[START_DATE])}
+    )
+    simulation_settings.update(
+        {
+            END_DATE: simulation_settings[START_DATE]
+            + pd.DateOffset(days=simulation_settings[EVALUATED_PERIOD][VALUE], hours=-1)
+        }
+    )
+    # create time index used for initializing oemof simulation
+    simulation_settings.update(
+        {
+            TIME_INDEX: pd.date_range(
+                start=simulation_settings[START_DATE],
+                end=simulation_settings[END_DATE],
+                freq=str(simulation_settings[TIMESTEP][VALUE]) + UNIT_MINUTE,
+            )
+        }
+    )
+
+    simulation_settings.update({PERIODS: len(simulation_settings[TIME_INDEX])})
 
 
 def load_json(
@@ -176,7 +246,20 @@ def load_json(
     with open(path_input_file) as json_file:
         dict_values = json.load(json_file)
 
-    dict_values = convert_from_json_to_special_types(dict_values)
+    # Retrieve the simulation setting in the right format
+    if SIMULATION_SETTINGS in dict_values:
+        dict_values[SIMULATION_SETTINGS] = convert_from_json_to_special_types(
+            dict_values[SIMULATION_SETTINGS]
+        )
+        # Compute the END_DATE and the TIME_INDEX
+        retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
+
+        time_index = dict_values[SIMULATION_SETTINGS][TIME_INDEX]
+    else:
+        time_index = None
+
+    # Convert the values inside the dict to python types
+    dict_values = convert_from_json_to_special_types(dict_values, time_index=time_index)
 
     # The user specified a value
     if path_input_folder is not None:

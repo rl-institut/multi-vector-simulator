@@ -235,7 +235,7 @@
                 "value": 0.0
             },
 "timeseries": {
-                    "data": [
+                    "value": [
                          144.37,
                          144.15,
                          141.58,
@@ -410,7 +410,7 @@
                 "value": 0.0
             },
 "timeseries": {
-                    "data": [
+                    "value": [
                          0,
                          0,
                          0,
@@ -585,7 +585,7 @@
                 "value": 0.0
             },
 "timeseries": {
-                    "data": [
+                    "value": [
                          0,
                          0,
                          0,
@@ -1116,7 +1116,7 @@
                 "value": 0.0
             },
                            "timeseries": {
-                    "data": [
+                    "value": [
                          1,
                          1,
                          1,
@@ -1220,7 +1220,7 @@
                     "name": null
                },
                "timeseries_normalized": {
-                    "data": [
+                    "value": [
                          1,
                          1,
                          1,
@@ -1393,7 +1393,7 @@
                 "value": 3.3045050012511776
             },
 "timeseries": {
-                    "data": [
+                    "value": [
                          0.0,
                          0.0,
                          0.0,
@@ -1501,7 +1501,7 @@
                 "value": 0.001729166666666667
             },
 "timeseries_normalized": {
-                    "data": [
+                    "value": [
                          0.0,
                          0.0,
                          0.0,
@@ -2030,7 +2030,7 @@
         }
     },
     "simulation_settings": {
-        "end_date": "pandas_Timestamp:2018-01-02 23:00:00",
+        "end_date": "2018-01-02 23:00:00",
         "evaluated_period": {
             "unit": "days",
             "value": 2
@@ -2044,7 +2044,7 @@
         "path_output_folder": "D:\\PycharmProjects\\mvs_eland\\MVS_outputs",
         "path_output_folder_inputs": "D:\\PycharmProjects\\mvs_eland\\MVS_outputs\\inputs",
         "periods": 48,
-        "start_date": "pandas_Timestamp:2018-01-01 00:00:00",
+        "start_date": "2018-01-01 00:00:00",
         "store_oemof_results": {
             "unit": "bool",
             "value": true
@@ -2053,7 +2053,7 @@
                "columns": [
                     0
                ],
-               "data": [
+               "value": [
                     [
                          1514764800000
                     ],

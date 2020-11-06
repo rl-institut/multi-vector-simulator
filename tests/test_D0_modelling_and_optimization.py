@@ -34,6 +34,8 @@ from _constants import (
     PATH_OUTPUT_FOLDER,
     TEST_INPUT_DIRECTORY,
     ES_GRAPH,
+    DATA_TYPE_JSON_KEY,
+    TYPE_DATETIMEINDEX,
 )
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
@@ -56,7 +58,12 @@ def dict_values_minimal():
     )
 
     return {
-        SIMULATION_SETTINGS: {TIME_INDEX: pandas_DatetimeIndex},
+        SIMULATION_SETTINGS: {
+            TIME_INDEX: {
+                DATA_TYPE_JSON_KEY: TYPE_DATETIMEINDEX,
+                VALUE: pandas_DatetimeIndex,
+            }
+        },
         ENERGY_BUSSES: {
             "bus": {
                 LABEL: "bus",

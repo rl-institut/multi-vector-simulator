@@ -101,7 +101,6 @@ def transformer(model, dict_asset, **kwargs):
         func_optimize=transformer_constant_efficiency_optimize,
         **kwargs,
     )
-    return
 
 
 def storage(model, dict_asset, **kwargs):
@@ -147,7 +146,6 @@ def storage(model, dict_asset, **kwargs):
         func_optimize=storage_optimize,
         **kwargs,
     )
-    return
 
 
 def sink(model, dict_asset, **kwargs):
@@ -195,7 +193,6 @@ def sink(model, dict_asset, **kwargs):
         sink_non_dispatchable(model, dict_asset, **kwargs)
     else:
         sink_dispatchable_optimize(model, dict_asset, **kwargs)
-    return
 
 
 def source(model, dict_asset, **kwargs):
@@ -266,7 +263,6 @@ def source(model, dict_asset, **kwargs):
             func_optimize=source_non_dispatchable_optimize,
             **kwargs,
         )
-    return
 
 
 def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs):
@@ -334,7 +330,6 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
         raise ValueError(
             f"Input error! '{OPTIMIZE_CAP}' of asset {dict_asset[LABEL]}\n should be True/False but is {dict_asset[OPTIMIZE_CAP][VALUE]}."
         )
-    return
 
 
 def bus(model, name, **kwargs):
@@ -352,7 +347,6 @@ def bus(model, name, **kwargs):
     bus = solph.Bus(label=name)
     kwargs[OEMOF_BUSSES].update({name: bus})
     model.add(bus)
-    return
 
 
 def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
@@ -433,7 +427,6 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
 
     model.add(transformer)
     kwargs[OEMOF_TRANSFORMER].update({dict_asset[LABEL]: transformer})
-    return
 
 
 def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
@@ -542,7 +535,6 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
 
     model.add(transformer)
     kwargs[OEMOF_TRANSFORMER].update({dict_asset[LABEL]: transformer})
-    return
 
 
 def storage_fix(model, dict_asset, **kwargs):
@@ -595,7 +587,6 @@ def storage_fix(model, dict_asset, **kwargs):
     )  # efficiency of discharge
     model.add(storage)
     kwargs[OEMOF_GEN_STORAGE].update({dict_asset[LABEL]: storage})
-    return
 
 
 def storage_optimize(model, dict_asset, **kwargs):
@@ -666,7 +657,6 @@ def storage_optimize(model, dict_asset, **kwargs):
     )
     model.add(storage)
     kwargs[OEMOF_GEN_STORAGE].update({dict_asset[LABEL]: storage})
-    return
 
 
 def source_non_dispatchable_fix(model, dict_asset, **kwargs):
@@ -701,7 +691,6 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
     logging.debug(
         f"Added: Non-dispatchable source {dict_asset[LABEL]} (fixed capacity) to bus {dict_asset[OUTPUT_BUS_NAME]}.",
     )
-    return
 
 
 def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
@@ -742,7 +731,6 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
     logging.debug(
         f"Added: Non-dispatchable source {dict_asset[LABEL]} (capacity to be optimized) to bus {dict_asset[OUTPUT_BUS_NAME]}."
     )
-    return
 
 
 def source_dispatchable_optimize(model, dict_asset, **kwargs):
@@ -806,7 +794,6 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
     logging.debug(
         f"Added: Dispatchable source {dict_asset[LABEL]} (capacity to be optimized) to bus {dict_asset[OUTPUT_BUS_NAME]}."
     )
-    return
 
 
 def source_dispatchable_fix(model, dict_asset, **kwargs):
@@ -859,7 +846,6 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
     logging.debug(
         f"Added: Dispatchable source {dict_asset[LABEL]} (fixed capacity) to bus {dict_asset[OUTPUT_BUS_NAME]}."
     )
-    return
 
 
 def sink_dispatchable_optimize(model, dict_asset, **kwargs):
@@ -909,7 +895,6 @@ def sink_dispatchable_optimize(model, dict_asset, **kwargs):
     logging.debug(
         f"Added: Dispatchable sink {dict_asset[LABEL]} (to be capacity optimized) to bus {dict_asset[INPUT_BUS_NAME]}.",
     )
-    return
 
 
 def sink_non_dispatchable(model, dict_asset, **kwargs):
@@ -952,4 +937,3 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     logging.debug(
         f"Added: Non-dispatchable sink {dict_asset[LABEL]} to bus {dict_asset[INPUT_BUS_NAME]}"
     )
-    return
