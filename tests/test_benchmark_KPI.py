@@ -7,6 +7,7 @@ What should differ between the different functions is the input file
 import argparse
 import os
 import shutil
+import json
 
 import mock
 import pandas as pd
@@ -17,6 +18,8 @@ from multi_vector_simulator.B0_data_input_json import load_json
 import multi_vector_simulator.C2_economic_functions as C2
 
 from _constants import (
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
     TEST_REPO_PATH,
     CSV_EXT,
 )
@@ -52,6 +55,19 @@ from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DURATION,
     ANNUITY_FACTOR,
     CRF,
+    ENERGY_PRODUCTION,
+    TOTAL_FLOW,
+    KPI,
+    KPI_SCALARS_DICT,
+    KPI_UNCOUPLED_DICT,
+    TOTAL_DEMAND,
+    SUFFIX_ELECTRICITY_EQUIVALENT,
+    RENEWABLE_FACTOR,
+    RENEWABLE_SHARE_OF_LOCAL_GENERATION,
+    TOTAL_NON_RENEWABLE_ENERGY_USE,
+    TOTAL_RENEWABLE_ENERGY_USE,
+    TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
+    TOTAL_RENEWABLE_GENERATION_IN_LES
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -224,6 +240,80 @@ class Test_Economic_KPI:
                 assert expected_values[asset][key] == pytest.approx(
                     asset_data[key][VALUE], rel=1e-3
                 ), f"Parameter {key} of asset {asset} is not of expected value."
+
+    def teardown_method(self):
+        if os.path.exists(TEST_OUTPUT_PATH):
+            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+
+class Test_Technical_KPI:
+    def setup_method(self):
+        if os.path.exists(TEST_OUTPUT_PATH):
+            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+        if os.path.exists(TEST_OUTPUT_PATH) is False:
+            os.mkdir(TEST_OUTPUT_PATH)
+    # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+    # alone is called
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def renewable_factor_and_renewable_share_of_local_generation(self, margs):
+        r"""
+        Benchmark test that checks the calculation of
+        * TOTAL_NON_RENEWABLE_GENERATION_IN_LES
+        * TOTAL_RENEWABLE_GENERATION_IN_LES
+        * TOTAL_NON_RENEWABLE_ENERGY_USE
+        * TOTAL_RENEWABLE_ENERGY_USE
+        * RENEWABLE_FACTOR
+        * RENEWABLE_SHARE_OF_LOCAL_GENERATION
+        For one sector, with only grid and PV present. Uses the simple scenarios for MVS testing as an input.
+        """
+        use_case = "AB_grid_PV"
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=CSV_EXT,
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+        )
+        # Check for RENEWABLE_FACTOR and RENEWABLE_SHARE_OF_LOCAL_GENERATION:
+        with open(
+            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
+        ) as results:
+            data = json.load(results)
+
+        # Get total flow of PV
+        total_res_local = data[ENERGY_PRODUCTION]["pv_plant_01"][TOTAL_FLOW][VALUE]
+        # Get total demand
+        total_demand = data[KPI][KPI_SCALARS_DICT][
+            TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+        ]
+        assert (
+            data[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
+            == total_res_local
+        ), f"The total renewable generation is not equal to the generation of the PV system."
+        assert data[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES] == 0, f"There is no local non-renewable generation asset, but there seems to be a non-renewable production."
+        assert (
+            data[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_ENERGY_USE] == total_res_local
+        ), f"There is another renewable energy source apart from PV."
+        assert data[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_ENERGY_USE] == total_demand-total_res_local, "The non-renewable energy use was expected to be all grid supply, but this does not hold true."
+        assert (
+            data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]
+            == total_res_local / total_demand
+        ), f"The {RENEWABLE_FACTOR} is not as expected."
+        assert (
+            data[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]["Electricity"]
+            == total_res_local / total_demand
+        ), f"The {RENEWABLE_FACTOR} is not as expected."
+        assert data[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION] == 1, f"The {RENEWABLE_SHARE_OF_LOCAL_GENERATION} is not as expected."
+        assert (
+            data[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION][
+                "Electricity"
+            ]
+            == 1
+        ), f"The {RENEWABLE_SHARE_OF_LOCAL_GENERATION} is not as expected."
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
