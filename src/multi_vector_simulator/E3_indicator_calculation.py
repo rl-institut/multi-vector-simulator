@@ -351,6 +351,8 @@ def add_renewable_share_of_local_generation(dict_values):
         Updates the KPI with RENEWABLE_SHARE_OF_LOCAL_GENERATION for each sector as well as system-wide KPI.
 
         Tested with
+        * test_renewable_share_of_local_generation_one_sector()
+        * test_renewable_share_of_local_generation_two_sectors()
         """
 
     dict_renewable_share = {}
@@ -399,7 +401,8 @@ def add_renewable_factor(dict_values):
 
 
     Tested with
-    - test_renewable_share_one_sector
+    - test_renewable_factor_one_sector
+    - test_renewable_factor_two_sectors
     """
     dict_renewable_share = {}
     # Loops though the sectors
