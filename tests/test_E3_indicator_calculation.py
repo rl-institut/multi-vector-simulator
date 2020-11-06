@@ -29,7 +29,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_ENERGY_USE,
-    RENEWABLE_SHARE,
+    RENEWABLE_FACTOR,
     TOTAL_DEMAND,
     SUFFIX_ELECTRICITY_EQUIVALENT,
     ATTRIBUTED_COSTS,
@@ -151,16 +151,16 @@ def test_renewable_share_one_sector():
     E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
     E3.renewable_share(dict_renewable_energy_use)
     exp = exp_res / (exp_non_res + exp_res)
-    assert RENEWABLE_SHARE in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
+    assert RENEWABLE_FACTOR in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
     assert (
         electricity
-        in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE]
+        in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]
     )
     assert (
-        dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE][electricity]
+        dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR][electricity]
         == exp
     )
-    assert dict_renewable_energy_use[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE] == exp
+    assert dict_renewable_energy_use[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == exp
 
 
 def test_renewable_share_two_sectors():
@@ -176,7 +176,7 @@ def test_renewable_share_two_sectors():
 
     E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
     E3.renewable_share(dict_renewable_energy_use)
-    assert RENEWABLE_SHARE in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
+    assert RENEWABLE_FACTOR in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
 
     exp_total_res = flow_medium + flow_small * renewable_share_dso
     exp_total_non_res_el = flow_small * (1 - renewable_share_dso)
@@ -192,13 +192,13 @@ def test_renewable_share_two_sectors():
     }
 
     for k in [electricity, h2]:
-        assert k in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE]
+        assert k in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]
         assert (
-            dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE][k]
+            dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR][k]
             == exp_res_sector[k]
         )
 
-    assert dict_renewable_energy_use[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE] == exp_res
+    assert dict_renewable_energy_use[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == exp_res
 
 
 def test_renewable_share_equation_is_1():
@@ -238,7 +238,7 @@ def test_renewable_share_equation_no_generation():
 dict_weighting_unknown_sector = {
     PROJECT_DATA: {SECTORS: {"Water": "Water"}},
     KPI: {
-        KPI_UNCOUPLED_DICT: {RENEWABLE_SHARE: {"Water": numbers[0]}},
+        KPI_UNCOUPLED_DICT: {RENEWABLE_FACTOR: {"Water": numbers[0]}},
         KPI_SCALARS_DICT: {},
     },
 }
@@ -246,7 +246,7 @@ dict_weighting_unknown_sector = {
 dict_weighting_one_sector = {
     PROJECT_DATA: {SECTORS: {electricity: electricity}},
     KPI: {
-        KPI_UNCOUPLED_DICT: {RENEWABLE_SHARE: {electricity: numbers[1]}},
+        KPI_UNCOUPLED_DICT: {RENEWABLE_FACTOR: {electricity: numbers[1]}},
         KPI_SCALARS_DICT: {},
     },
 }
@@ -255,7 +255,7 @@ dict_weighting_two_sectors = {
     PROJECT_DATA: {SECTORS: {electricity: electricity, h2: h2}},
     KPI: {
         KPI_UNCOUPLED_DICT: {
-            RENEWABLE_SHARE: {electricity: numbers[1], h2: numbers[2]}
+            RENEWABLE_FACTOR: {electricity: numbers[1], h2: numbers[2]}
         },
         KPI_SCALARS_DICT: {},
     },
@@ -266,25 +266,25 @@ def test_weighting_for_sector_coupled_kpi_unknown_sector():
     """ """
     with pytest.raises(ValueError):
         E3.weighting_for_sector_coupled_kpi(
-            dict_weighting_unknown_sector, RENEWABLE_SHARE
+            dict_weighting_unknown_sector, RENEWABLE_FACTOR
         )
 
 
 def test_weighting_for_sector_coupled_kpi_one_sector():
     """ """
-    E3.weighting_for_sector_coupled_kpi(dict_weighting_one_sector, RENEWABLE_SHARE)
-    assert RENEWABLE_SHARE in dict_weighting_one_sector[KPI][KPI_SCALARS_DICT]
+    E3.weighting_for_sector_coupled_kpi(dict_weighting_one_sector, RENEWABLE_FACTOR)
+    assert RENEWABLE_FACTOR in dict_weighting_one_sector[KPI][KPI_SCALARS_DICT]
     assert (
-        dict_weighting_one_sector[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE] == numbers[1]
+        dict_weighting_one_sector[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == numbers[1]
     )
 
 
 def test_weighting_for_sector_coupled_kpi_multiple_sectors():
     """ """
-    E3.weighting_for_sector_coupled_kpi(dict_weighting_two_sectors, RENEWABLE_SHARE)
+    E3.weighting_for_sector_coupled_kpi(dict_weighting_two_sectors, RENEWABLE_FACTOR)
     exp = numbers[1] + numbers[2] * DEFAULT_WEIGHTS_ENERGY_CARRIERS[h2][VALUE]
-    assert RENEWABLE_SHARE in dict_weighting_two_sectors[KPI][KPI_SCALARS_DICT]
-    assert dict_weighting_two_sectors[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE] == exp
+    assert RENEWABLE_FACTOR in dict_weighting_two_sectors[KPI][KPI_SCALARS_DICT]
+    assert dict_weighting_two_sectors[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == exp
 
 
 npc = 1000

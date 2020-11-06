@@ -43,7 +43,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_ENERGY_USE,
-    RENEWABLE_SHARE,
+    RENEWABLE_FACTOR,
     TOTAL_DEMAND,
     TOTAL_EXCESS,
     SUFFIX_ELECTRICITY_EQUIVALENT,
@@ -360,12 +360,12 @@ def renewable_share(dict_values):
         dict_renewable_share.update(
             {sector: equation_renewable_share(total_res, total_non_res)}
         )
-    dict_values[KPI][KPI_UNCOUPLED_DICT].update({RENEWABLE_SHARE: dict_renewable_share})
+    dict_values[KPI][KPI_UNCOUPLED_DICT].update({RENEWABLE_FACTOR: dict_renewable_share})
 
     total_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_ENERGY_USE]
     total_non_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_ENERGY_USE]
     dict_values[KPI][KPI_SCALARS_DICT].update(
-        {RENEWABLE_SHARE: equation_renewable_share(total_res, total_non_res)}
+        {RENEWABLE_FACTOR: equation_renewable_share(total_res, total_non_res)}
     )
     return
 

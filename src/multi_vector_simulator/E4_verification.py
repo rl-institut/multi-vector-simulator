@@ -6,7 +6,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
     KPI,
     KPI_SCALARS_DICT,
-    RENEWABLE_SHARE,
+    RENEWABLE_FACTOR,
     OPTIMIZED_FLOWS,
 )
 
@@ -30,13 +30,13 @@ def minimal_renewable_share_test(dict_values):
     """
     if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE] > 0:
         boolean_test = (
-            dict_values[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE]
+            dict_values[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]
             >= dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE]
         )
         if boolean_test is False:
             deviation = (
                 dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE]
-                - dict_values[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE]
+                - dict_values[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]
             ) / dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE]
             if abs(deviation) < 10 ** (-6):
                 logging.warning(

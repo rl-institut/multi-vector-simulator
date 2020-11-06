@@ -27,7 +27,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
     KPI,
     KPI_SCALARS_DICT,
-    RENEWABLE_SHARE,
+    RENEWABLE_FACTOR,
     CONSTRAINTS,
     MINIMAL_RENEWABLE_SHARE,
 )
@@ -80,7 +80,7 @@ class Test_Constraints:
             )
             data = load_json(os.path.join(TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS))
             renewable_shares.update(
-                {case: data[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE]}
+                {case: data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]}
             )
             minimal_renewable_shares.update(
                 {case: data[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE]}
