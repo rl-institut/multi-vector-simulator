@@ -232,6 +232,7 @@ TOTAL_NON_RENEWABLE_GENERATION_IN_LES = "Total internal non-renewable generation
 TOTAL_RENEWABLE_ENERGY_USE = "Total renewable energy use"
 TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use"
 RENEWABLE_FACTOR = "Renewable factor"
+RENEWABLE_SHARE_OF_LOCAL_GENERATION = "Renewable share of local generation"
 
 TOTAL_DEMAND = "Total_demand"
 TOTAL_EXCESS = "Total_excess"

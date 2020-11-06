@@ -44,6 +44,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_ENERGY_USE,
     RENEWABLE_FACTOR,
+    RENEWABLE_SHARE_OF_LOCAL_GENERATION,
     TOTAL_DEMAND,
     TOTAL_EXCESS,
     SUFFIX_ELECTRICITY_EQUIVALENT,
@@ -330,6 +331,54 @@ def add_total_renewable_and_non_renewable_energy_origin(dict_values):
     logging.info("Calculated renewable share of the LES.")
     return
 
+def add_renewable_share_of_local_generation(dict_values):
+    """Determination of renewable share of local energy production
+
+        Parameters
+        ----------
+        dict_values :
+            dict with all project information and results, after applying add_total_renewable_and_non_renewable_energy_origin
+        sector :
+            Sector for which renewable share is being calculated
+
+        Returns
+        -------
+        type
+            updated dict_values with renewable share of each sector as well as the system-wide KPI
+
+        Notes
+        -----
+        Updates the KPI with RENEWABLE_SHARE_OF_LOCAL_GENERATION for each sector as well as system-wide KPI.
+
+        Tested with
+        """
+
+    dict_renewable_share = {}
+    for sector in dict_values[PROJECT_DATA][SECTORS]:
+        # Defines the total renewable energy as the renewable production within the LES
+        total_res = dict_values[KPI][KPI_UNCOUPLED_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES][
+            sector
+        ]
+        # Defines the total non-renewable energy as the non-renewable production within the LES
+        total_non_res = dict_values[KPI][KPI_UNCOUPLED_DICT][
+            TOTAL_NON_RENEWABLE_GENERATION_IN_LES
+        ][sector]
+        # Calculates the renewable factor for the current sector
+        dict_renewable_share.update(
+            {sector: equation_renewable_share(total_res, total_non_res)}
+        )
+    # Updates the KPI matrix for the individual sectors
+    dict_values[KPI][KPI_UNCOUPLED_DICT].update({RENEWABLE_SHARE_OF_LOCAL_GENERATION: dict_renewable_share})
+
+    # Calculation of the system-wide renewable factor
+    total_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
+    total_non_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES]
+
+    # Updates the system-wide KPI matrix
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {RENEWABLE_SHARE_OF_LOCAL_GENERATION: equation_renewable_share(total_res, total_non_res)}
+    )
+    return
 
 def add_renewable_factor(dict_values):
     """Determination of renewable share of one sector
