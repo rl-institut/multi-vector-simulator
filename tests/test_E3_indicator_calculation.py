@@ -104,7 +104,7 @@ exp_non_res = flow_small * (1 - renewable_share_dso)
 
 def test_total_renewable_and_non_renewable_origin_of_each_sector():
     """ """
-    E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
+    E3.add_total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
     kpi_list = [
         TOTAL_RENEWABLE_GENERATION_IN_LES,
         TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
@@ -148,8 +148,8 @@ def test_total_renewable_and_non_renewable_origin_of_each_sector():
 # Tests renewable share
 def test_renewable_share_one_sector():
     """ """
-    E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
-    E3.renewable_share(dict_renewable_energy_use)
+    E3.add_total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
+    E3.add_renewable_factor(dict_renewable_energy_use)
     exp = exp_res / (exp_non_res + exp_res)
     assert RENEWABLE_FACTOR in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
     assert (
@@ -174,8 +174,8 @@ def test_renewable_share_two_sectors():
     )
     dict_renewable_energy_use[PROJECT_DATA][SECTORS].update({h2: h2})
 
-    E3.total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
-    E3.renewable_share(dict_renewable_energy_use)
+    E3.add_total_renewable_and_non_renewable_energy_origin(dict_renewable_energy_use)
+    E3.add_renewable_factor(dict_renewable_energy_use)
     assert RENEWABLE_FACTOR in dict_renewable_energy_use[KPI][KPI_UNCOUPLED_DICT]
 
     exp_total_res = flow_medium + flow_small * renewable_share_dso

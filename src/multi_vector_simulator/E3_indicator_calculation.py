@@ -248,7 +248,7 @@ def calculate_electricity_equivalent_for_a_set_of_aggregated_values(
     return total_electricity_equivalent
 
 
-def total_renewable_and_non_renewable_energy_origin(dict_values):
+def add_total_renewable_and_non_renewable_energy_origin(dict_values):
     """Identifies all renewable generation assets and summs up their total generation to total renewable generation
 
     Parameters
@@ -331,13 +331,13 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
     return
 
 
-def renewable_share(dict_values):
+def add_renewable_factor(dict_values):
     """Determination of renewable share of one sector
 
     Parameters
     ----------
     dict_values :
-        dict with all project information and results, after applying total_renewable_and_non_renewable_energy_origin
+        dict with all project information and results, after applying add_total_renewable_and_non_renewable_energy_origin
     sector :
         Sector for which renewable share is being calculated
 
