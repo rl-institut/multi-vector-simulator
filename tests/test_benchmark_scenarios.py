@@ -38,7 +38,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LCOE_ASSET,
     ENERGY_CONSUMPTION,
     FLOW,
-    EFFICIENCY
+    EFFICIENCY,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")

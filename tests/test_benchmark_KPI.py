@@ -67,7 +67,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_NON_RENEWABLE_ENERGY_USE,
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
-    TOTAL_RENEWABLE_GENERATION_IN_LES
+    TOTAL_RENEWABLE_GENERATION_IN_LES,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -245,12 +245,14 @@ class Test_Economic_KPI:
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
 
+
 class Test_Technical_KPI:
     def setup_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
         if os.path.exists(TEST_OUTPUT_PATH) is False:
             os.mkdir(TEST_OUTPUT_PATH)
+
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
     # alone is called
     @pytest.mark.skipif(
@@ -294,11 +296,16 @@ class Test_Technical_KPI:
             data[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
             == total_res_local
         ), f"The total renewable generation is not equal to the generation of the PV system."
-        assert data[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES] == 0, f"There is no local non-renewable generation asset, but there seems to be a non-renewable production."
+        assert (
+            data[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES] == 0
+        ), f"There is no local non-renewable generation asset, but there seems to be a non-renewable production."
         assert (
             data[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_ENERGY_USE] == total_res_local
         ), f"There is another renewable energy source apart from PV."
-        assert data[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_ENERGY_USE] == total_demand-total_res_local, "The non-renewable energy use was expected to be all grid supply, but this does not hold true."
+        assert (
+            data[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_ENERGY_USE]
+            == total_demand - total_res_local
+        ), "The non-renewable energy use was expected to be all grid supply, but this does not hold true."
         assert (
             data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]
             == total_res_local / total_demand
@@ -307,7 +314,9 @@ class Test_Technical_KPI:
             data[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]["Electricity"]
             == total_res_local / total_demand
         ), f"The {RENEWABLE_FACTOR} is not as expected."
-        assert data[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION] == 1, f"The {RENEWABLE_SHARE_OF_LOCAL_GENERATION} is not as expected."
+        assert (
+            data[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION] == 1
+        ), f"The {RENEWABLE_SHARE_OF_LOCAL_GENERATION} is not as expected."
         assert (
             data[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION][
                 "Electricity"
