@@ -115,32 +115,34 @@ Constraints
 
 Constraints are controlled with the file `constraints.csv`.
 
-Minimal renewable share constraint
+Minimal renewable factor constraint
 ##################################
 
-The minimal renewable share constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal renewable share defined within the constraint. The renewable share of the optimized energy system may also be higher then the minimal renewable share.
+The minimal renewable factor constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal renewable factor defined within the constraint. The renewable share of the optimized energy system may also be higher then the minimal renewable factor.
 
-The minimal renewable share is applied to the minimal renewable share of the whole, sector-coupled energy system, but not specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
+The minimal renewable factor is applied to the minimal renewable factor of the whole, sector-coupled energy system, but not specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
 
 .. math:
         minimal renewable factor <= \frac{\sum renewable generation \cdot weighting factor}{\sum renewable generation \cdot weighting factor + \sum non-renewable generation \cdot weighting factor}
 
 
+Please be aware that the minimal renewable factor constraint defined bounds for the :ref:`kpi_renewable_factor` of the system, ie. taking into account both local generation as well as renewable supply from the energy providers. The constraint explicitly does not aim to reach a certain :ref:`kpi_renewable_share_of_local_generation` on-site.
+
 :Deactivating the constraint:
 
-The minimal renewable share constraint is deactivated by defining following row in `constraints.csv` as follows:
+The minimal renewable factor constraint is deactivated by defining following row in `constraints.csv` as follows:
 
-```minimal_renewable_share,factor,0```
+```minimal_renewable_factor,factor,0```
 
 :Activating the constraint:
 
-The constraint is enabled when the value of the minimal renewable share factor is above 0 in `constraints.csv`:
+The constraint is enabled when the value of the minimal renewable factor factor is above 0 in `constraints.csv`:
 
-```minimal_renewable_share,factor,0.3```
+```minimal_renewable_factor,factor,0.3```
 
 
-Depending on the energy system, especially when working assets which are not to be capacity-optimized, it is possible that the minimal renewable share criterion can not be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimize_Cap` to `True`, and then investigate further.
-Also, if you are aiming at very high minimal renewable shares, the simulation time can increase drastically. If you do not get a result after a maximum of 20 Minutes, you should consider terminating the simulation and trying with a lower minimum renewable share.
+Depending on the energy system, especially when working assets which are not to be capacity-optimized, it is possible that the minimal renewable factor criterion can not be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimize_Cap` to `True`, and then investigate further.
+Also, if you are aiming at very high minimal renewable factors, the simulation time can increase drastically. If you do not get a result after a maximum of 20 Minutes, you should consider terminating the simulation and trying with a lower minimum renewable share.
 
 The minimum renewable share is introduced to the energy system by `D2.constraint_minimal_renewable_share()` and a validation test is performed with `E4.minimal_renewable_share_test()`.
 
@@ -271,7 +273,7 @@ With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, com
 .. math::
         E_{eleq,i} = E_{i} \cdot w_{i}
 
-As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]. The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable share or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
+As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]. The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable factor or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
 
 Currently, the energy carrier conversion factors are defined in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be added to its list when needed. Unknown carriers raise an `UnknownEnergyCarrier` Error.
 

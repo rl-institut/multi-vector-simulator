@@ -101,6 +101,8 @@ Energy flows (aggregated) per asset
 ###################################
 
 
+.. _kpi_renewable_share_of_local_generation:
+
 Renewable share of local generation (REGen)
 ###########################################
 
@@ -151,6 +153,8 @@ This results in:
 * A single-vector renewable share of local generation of 100% for the electricity sector.
 * A system-wide renewable share of local generation of 100%.
 
+
+.. _kpi_renewable_factor:
 
 Renewable factor (RF)
 #####################
