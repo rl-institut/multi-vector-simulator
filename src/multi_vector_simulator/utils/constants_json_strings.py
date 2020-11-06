@@ -108,7 +108,7 @@ SOC_MIN = "soc_min"
 
 # Constraints
 CONSTRAINTS = "constraints"
-MINIMAL_RENEWABLE_SHARE = "minimal_renewable_share"
+MINIMAL_RENEWABLE_FACTOR = "minimal_renewable_factor"
 
 #######################################
 # Parameters added in pre-processing #

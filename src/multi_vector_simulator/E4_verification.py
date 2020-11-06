@@ -2,7 +2,7 @@ import logging
 import pandas as pd
 from multi_vector_simulator.utils.constants_json_strings import (
     CONSTRAINTS,
-    MINIMAL_RENEWABLE_SHARE,
+    MINIMAL_RENEWABLE_FACTOR,
     VALUE,
     KPI,
     KPI_SCALARS_DICT,
@@ -28,29 +28,29 @@ def minimal_renewable_share_test(dict_values):
     - Prints a logging.error message if the deviation from the constraint is >10^-6.
 
     """
-    if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE] > 0:
+    if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE] > 0:
         boolean_test = (
             dict_values[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]
-            >= dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE]
+            >= dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]
         )
         if boolean_test is False:
             deviation = (
-                dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE]
+                dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]
                 - dict_values[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]
-            ) / dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE]
+            ) / dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]
             if abs(deviation) < 10 ** (-6):
                 logging.warning(
-                    "Minimal renewable share criterion strictly not fullfilled, but deviation is less then e6."
+                    "Minimal renewable factor criterion strictly not fullfilled, but deviation is less then e6."
                 )
             else:
                 logging.error(
-                    f"ATTENTION: Minimal renewable share criterion NOT fullfilled! The deviation is {round(deviation,5)}."
+                    f"ATTENTION: Minimal renewable factor criterion NOT fullfilled! The deviation is {round(deviation,5)}."
                 )
                 return False
 
         else:
             logging.debug(
-                f"Minimal renewable share of {dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE]} is fullfilled."
+                f"Minimal renewable factor of {dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]} is fullfilled."
             )
     else:
         pass

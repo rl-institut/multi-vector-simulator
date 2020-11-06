@@ -80,7 +80,7 @@ DEFAULT_MAIN_KWARGS = dict(
 # list of csv filename which must be present within the CSV_ELEMENTS folder with the parameters
 # associated to each of these filenames
 REQUIRED_CSV_PARAMETERS = {
-    CONSTRAINTS: [MINIMAL_RENEWABLE_SHARE],
+    CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR],
     ENERGY_CONSUMPTION: [
         DSM,
         FILENAME,
@@ -183,7 +183,7 @@ REQUIRED_JSON_PARAMETERS = {
     ENERGY_PROVIDERS: None,
     ENERGY_STORAGE: None,
     FIX_COST: None,
-    CONSTRAINTS: [MINIMAL_RENEWABLE_SHARE],
+    CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR],
     PROJECT_DATA: [
         COUNTRY,
         LABEL,

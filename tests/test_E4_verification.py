@@ -4,7 +4,7 @@ import multi_vector_simulator.E4_verification as E4
 
 from multi_vector_simulator.utils.constants_json_strings import (
     CONSTRAINTS,
-    MINIMAL_RENEWABLE_SHARE,
+    MINIMAL_RENEWABLE_FACTOR,
     VALUE,
     KPI,
     KPI_SCALARS_DICT,
@@ -13,18 +13,18 @@ from multi_vector_simulator.utils.constants_json_strings import (
 
 
 def test_minimal_renewable_share_test_passes():
-    # No minimal renewable share
-    dict_values = {CONSTRAINTS: {MINIMAL_RENEWABLE_SHARE: {VALUE: 0}}}
+    # No minimal renewable factor
+    dict_values = {CONSTRAINTS: {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0}}}
     E4.minimal_renewable_share_test(dict_values)
     # Min res < res
     dict_values = {
-        CONSTRAINTS: {MINIMAL_RENEWABLE_SHARE: {VALUE: 0.2}},
+        CONSTRAINTS: {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0.2}},
         KPI: {KPI_SCALARS_DICT: {RENEWABLE_FACTOR: 0.3}},
     }
     E4.minimal_renewable_share_test(dict_values)
     # Min res < res, minimal deviation
     dict_values = {
-        CONSTRAINTS: {MINIMAL_RENEWABLE_SHARE: {VALUE: 0.2}},
+        CONSTRAINTS: {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0.2}},
         KPI: {KPI_SCALARS_DICT: {RENEWABLE_FACTOR: 0.2 - 10 ** (-7)}},
     }
     E4.minimal_renewable_share_test(dict_values)
@@ -32,7 +32,7 @@ def test_minimal_renewable_share_test_passes():
 
 def test_minimal_renewable_share_test_fails():
     dict_values = {
-        CONSTRAINTS: {MINIMAL_RENEWABLE_SHARE: {VALUE: 0.2}},
+        CONSTRAINTS: {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0.2}},
         KPI: {KPI_SCALARS_DICT: {RENEWABLE_FACTOR: 0.2 - 10 ** (-5)}},
     }
     return_value = E4.minimal_renewable_share_test(dict_values)

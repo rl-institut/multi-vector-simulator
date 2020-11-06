@@ -29,7 +29,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     KPI_SCALARS_DICT,
     RENEWABLE_FACTOR,
     CONSTRAINTS,
-    MINIMAL_RENEWABLE_SHARE,
+    MINIMAL_RENEWABLE_FACTOR,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -55,14 +55,14 @@ class Test_Constraints:
         r"""
         Notes
         -----
-        With this benchmark test, the minimal renewable share constraint is validated.
-        Constraint_minimal_renewable_share_0 does not have a minimal renewable share.
-        Constraint_minimal_renewable_share_50 has a minimal renewable share of 70%.
+        With this benchmark test, the minimal renewable factor constraint is validated.
+        Constraint_minimal_renewable_share_0 does not have a minimal renewable factor.
+        Constraint_minimal_renewable_share_50 has a minimal renewable factor of 70%.
         If the renewable share of Constraint_minimal_renewable_share_0 is lower than 70%,
         but the one of Constraint_minimal_renewable_share_50 is 70%, then the benchmark test passes.
         """
 
-        # define the two cases needed for comparison (no minimal renewable share) and (minimal renewable share of 70%)
+        # define the two cases needed for comparison (no minimal renewable factor) and (minimal renewable factor of 70%)
         use_case = [
             "Constraint_minimal_renewable_share_0",
             "Constraint_minimal_renewable_share_70",
@@ -83,7 +83,7 @@ class Test_Constraints:
                 {case: data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]}
             )
             minimal_renewable_shares.update(
-                {case: data[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE]}
+                {case: data[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]}
             )
 
             assert minimal_renewable_shares[case] < renewable_shares[case] + 10 ** (-6)

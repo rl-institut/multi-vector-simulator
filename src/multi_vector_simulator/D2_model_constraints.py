@@ -24,7 +24,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_SHARE_DSO,
     RENEWABLE_ASSET_BOOL,
     CONSTRAINTS,
-    MINIMAL_RENEWABLE_SHARE,
+    MINIMAL_RENEWABLE_FACTOR,
 )
 
 
@@ -33,7 +33,7 @@ def add_constraints(local_energy_system, dict_values, dict_model):
     Adds all constraints activated in constraints.csv to the energy system model.
 
     Possible constraints:
-    - Minimal renewable share constraint
+    - Minimal renewable factor constraint
     Parameters
     ----------
     local_energy_system:  :oemof-solph: <oemof.solph.model>
@@ -57,8 +57,8 @@ def add_constraints(local_energy_system, dict_values, dict_model):
     """
     count_added_constraints = 0
 
-    if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE] > 0:
-        # Add minimal renewable share constraint
+    if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE] > 0:
+        # Add minimal renewable factor constraint
         local_energy_system = constraint_minimal_renewable_share(
             local_energy_system, dict_values, dict_model
         )
@@ -154,14 +154,14 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
 
         expr = (
             renewable_generation
-            - (dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_SHARE][VALUE])
+            - (dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE])
             * total_generation
         )
         return expr >= 0
 
     model.constraint_minimal_renewable_share = po.Constraint(rule=renewable_share_rule)
 
-    logging.info("Added minimal renewable share constraint.")
+    logging.info("Added minimal renewable factor constraint.")
     return model
 
 
@@ -174,7 +174,7 @@ def prepare_constraint_minimal_renewable_share(
     oemof_solph_object_bus,
 ):
     r"""
-    Prepare creating the minimal renewable share constraint by processing dict_values
+    Prepare creating the minimal renewable factor constraint by processing dict_values
 
     Parameters
     ----------
@@ -330,7 +330,7 @@ def prepare_constraint_minimal_renewable_share(
     renewable_asset_string = ", ".join(map(str, renewable_assets.keys()))
     non_renewable_asset_string = ", ".join(map(str, non_renewable_assets.keys()))
 
-    logging.debug(f"Data considered for the minimal renewable share constraint:")
+    logging.debug(f"Data considered for the minimal renewable factor constraint:")
     logging.debug(f"Assets connected to renewable generation: {renewable_asset_string}")
     logging.debug(
         f"Assets connected to non-renewable generation: {non_renewable_asset_string}"

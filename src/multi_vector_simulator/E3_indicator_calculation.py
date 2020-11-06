@@ -338,8 +338,6 @@ def add_renewable_factor(dict_values):
     ----------
     dict_values :
         dict with all project information and results, after applying add_total_renewable_and_non_renewable_energy_origin
-    sector :
-        Sector for which renewable share is being calculated
 
     Returns
     -------
@@ -389,13 +387,6 @@ def equation_renewable_share(total_res, total_non_res):
     .. math::
             RES = \frac{total_res}{total_non_res + total_res}
 
-            =\frac{\sum_i {E_{RES,generation} (i)⋅w_i}}{\sum_j {E_{generation}(j)⋅w_j}+\sum_k {E_{grid} (k)}}
-
-            with i \epsilon [PV,Geothermal,…]
-
-            and j \epsilon [generation assets 1,2,…]
-
-            and  k \epsilon [DSO 1,2…]
 
         renewable share = 1 - all energy in the energy system is of renewable origin
         renewable share < 1 - part of the energy in the system is of renewable origin
