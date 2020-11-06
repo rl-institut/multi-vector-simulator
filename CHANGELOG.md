@@ -37,6 +37,8 @@ Here is a template for new release sections
 - Tests for `D1.transformer()` (#596)
 - Add economic model equations in readthedocs (#581)
 - Add component model equations and energy balance adapted to sector coupled example (#581)
+- Added definition of `renewable share of local generation` in RTD, `E3.add_renewable_share_of_local_generation` and pytests (#637)
+- Added calculation of electricity equivalents in `E3.weighting_for_sector_coupled_kpi()` (#637)
 
 ### Changed
 - Order of readthedocs content (#590)
@@ -57,6 +59,9 @@ Here is a template for new release sections
 - Move the function `parse_log_messages` from F1 to F0 and modify it to print log messages in results JSON file (#623)
 - If `assets` folder is not found in package look in current folder for `report/assets` folder (#632)
 - `D1.transformer_constant_efficiency_fix()` and `D1.transformer_constant_efficiency_optimize()`, as well as their tests to reassign attributes (#596)
+- Definition of renewable share (RES), now renewable factor (#637)
+- Refactoring of `RENEWABLE_SHARE` into `RENEWABLE_FACTOR` and some functions in E3 (now `E3.add_total_renewable_and_non_renewable_energy_origin` and `E3.add_renewable_factor`) (#637)
+- Rename: `Minimal renewable share constraint` to `Minimal renewable factor constraint` in all files (python, messages, RTD, json, tests, csv), so that this is in line with the definition and does not cause any confusion, explained in RTD (#637) 
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
@@ -68,6 +73,7 @@ Here is a template for new release sections
 - Repaired the broken links to input CSV files (#618)
 - Outdated RTD info and mistakenly deleted sentence (#629)
 - All `variable_costs`, `efficiency` and `nominal_value` of transformers on output flows. Before they were inconsistently assigned to input or output flows. (#596)
+- Calculation of the renewable share relative taking into account energy carrier weighting (#637)
 
 ## [0.5.0] - 2020-10-05
 
