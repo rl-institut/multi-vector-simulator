@@ -342,26 +342,38 @@ def add_renewable_factor(dict_values):
     Returns
     -------
     type
-        updated dict_values with renewable share of a specific sector
+        updated dict_values with renewable factor of each sector as well as system-wide indicator
+
+    Notes
+    -----
+    Updates the KPI with RENEWABLE_FACTOR for each sector as well as system-wide KPI.
+
 
     Tested with
     - test_renewable_share_one_sector
     """
     dict_renewable_share = {}
+    # Loops though the sectors
     for sector in dict_values[PROJECT_DATA][SECTORS]:
+        # Defines the total renewable energy as the renewable influx into the system (generation and consumption)
         total_res = dict_values[KPI][KPI_UNCOUPLED_DICT][TOTAL_RENEWABLE_ENERGY_USE][
             sector
         ]
+        # Defines the total non-renewable energy as the non-renewable influx into the system (generation and consumption)
         total_non_res = dict_values[KPI][KPI_UNCOUPLED_DICT][
             TOTAL_NON_RENEWABLE_ENERGY_USE
         ][sector]
+        # Calculates the renewable factor for the current sector
         dict_renewable_share.update(
             {sector: equation_renewable_share(total_res, total_non_res)}
         )
+    # Updates the KPI matrix for the individual sectors
     dict_values[KPI][KPI_UNCOUPLED_DICT].update({RENEWABLE_FACTOR: dict_renewable_share})
 
+    # Calculation of the system-wide renewable factor
     total_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_ENERGY_USE]
     total_non_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_ENERGY_USE]
+    # Updates the system-wide KPI matrix
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {RENEWABLE_FACTOR: equation_renewable_share(total_res, total_non_res)}
     )
