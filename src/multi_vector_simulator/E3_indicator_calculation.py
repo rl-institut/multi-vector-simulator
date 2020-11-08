@@ -334,9 +334,10 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
     ]:
         weighting_for_sector_coupled_kpi(dict_values, sector_specific_kpi)
     # calculate total generation, renewable + non-renewable
-    dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES] = \
-        (dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES] +
-        dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES])
+    dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES] = (
+        dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
+        + dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES]
+    )
 
     logging.info("Calculated renewable share of the LES.")
 
@@ -456,7 +457,9 @@ def add_degree_of_autonomy(dict_values):
 
     dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_AUTONOMY: degree_of_autonomy})
 
-    logging.debug(f"Calculated the {DEGREE_OF_AUTONOMY}: {round(degree_of_autonomy, 2)}")
+    logging.debug(
+        f"Calculated the {DEGREE_OF_AUTONOMY}: {round(degree_of_autonomy, 2)}"
+    )
     logging.info(f"Calculated the {DEGREE_OF_AUTONOMY} of the LES.")
 
     return
@@ -596,7 +599,6 @@ def add_total_feedin_electricity_equivaluent(dict_values):
     xxx # todo: write test
     """
 
-
     total_feedin_dict = {}
     # Get source connected to the specific DSO in question
     scalars_matrix = dict_values[KPI][KPI_SCALAR_MATRIX]
@@ -604,14 +606,15 @@ def add_total_feedin_electricity_equivaluent(dict_values):
     for dso in dict_values[ENERGY_PROVIDERS]:
         # load total flow into the dso sink
         consumption_asset = str(dso + DSO_FEEDIN + AUTO_SINK)
-        energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_asset][ENERGY_VECTOR]
+        energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_asset][
+            ENERGY_VECTOR
+        ]
         total_feedin_dict.update({energy_carrier: {}})
         total_feedin_dict.update(
             {
-                energy_carrier: dict_values[ENERGY_CONSUMPTION][
-                                    consumption_asset][
-                                    TOTAL_FLOW
-                                ][VALUE]
+                energy_carrier: dict_values[ENERGY_CONSUMPTION][consumption_asset][
+                    TOTAL_FLOW
+                ][VALUE]
             }
         )
 
@@ -643,7 +646,9 @@ def add_onsite_energy_fraction(dict_values):
     total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
 
     add_total_feedin_electricity_equivaluent(dict_values)
-    total_feedin = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT]
+    total_feedin = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
 
     # calculate onsite energy fraction
     onsite_energy_fraction = equation_onsite_energy_fraction(
@@ -715,7 +720,9 @@ def add_onsite_energy_matching(dict_values):
 
     total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
 
-    total_feedin = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_FEEDIN+SUFFIX_ELECTRICITY_EQUIVALENT]
+    total_feedin = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
 
     total_excess = dict_values[KPI][KPI_SCALARS_DICT][
         TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT
