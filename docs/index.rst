@@ -13,6 +13,7 @@ Welcome to Multi-Vector Simulator (MVS)'s documentation!
    Installation
    simulating_with_the_mvs
    Model_Assumptions
+   Model_Equations
    MVS_parameters
    MVS_Outputs
    E-Land_Requirements

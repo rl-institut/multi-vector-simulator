@@ -69,6 +69,7 @@ def get_busses():
         "Electricity bus 2": solph.Bus(label="Electricity bus 2"),
         "Coal bus": solph.Bus(label="Coal bus"),
         "Storage bus": solph.Bus(label="Storage bus"),
+        "Heat bus": solph.Bus(label="Heat bus"),
     }
 
 
@@ -81,7 +82,9 @@ class TestTransformerComponent:
         self.transformers = {}
         self.busses = get_busses
 
-    def helper_test_transformer_in_model_and_dict(self, optimize, dict_asset):
+    def helper_test_transformer_in_model_and_dict(
+        self, optimize, dict_asset, multiple_outputs=False
+    ):
         """
         Helps testing whether `self.transformers` and `self.model` was updated.
 
@@ -97,32 +100,52 @@ class TestTransformerComponent:
 
         """
         # self.transformers should contain the transformer (key = label, value = transformer object)
-        assert dict_asset[LABEL] in self.transformers
+        assert (
+            dict_asset[LABEL] in self.transformers
+        ), f"Transformer '{dict_asset[LABEL]}' was not added to `asset_dict` but should have been added."
         assert isinstance(
             self.transformers[dict_asset[LABEL]], solph.network.Transformer
-        )
+        ), f"Transformer '{dict_asset[LABEL]}' was not added as type ' solph.network.Transformer' to `asset_dict`."
 
         # self.models should contain the transformer (indirectly tested)
         # check output bus (`nominal_value`, `investment` and `existing`) these
         # values are expected to be different depending on whether capacity is optimized or not
-        if optimize is True:
-            output_bus = self.model.entities[-1].outputs.data[
-                self.busses[dict_asset[OUTPUT_BUS_NAME]]
+        if multiple_outputs == True:
+            output_bus_list = [
+                self.model.entities[-1].outputs.data[self.busses[bus_name]]
+                for bus_name in dict_asset[OUTPUT_BUS_NAME]
             ]
-            assert isinstance(
-                output_bus.investment, solph.options.Investment
-            )  # todo maybe ep costs
-            assert output_bus.investment.existing == dict_asset[INSTALLED_CAP][VALUE]
-            assert output_bus.nominal_value is None
-        elif optimize is False:
-            output_bus = self.model.entities[-1].outputs.data[
-                self.busses[dict_asset[OUTPUT_BUS_NAME]]
-            ]
-            assert output_bus.investment is None
-            assert hasattr(output_bus.investment, "existing") is False
-            assert output_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
         else:
-            raise ValueError(f"`optimize` should be True/False but is '{optimize}'")
+            output_bus_list = [
+                self.model.entities[-1].outputs.data[
+                    self.busses[dict_asset[OUTPUT_BUS_NAME]]
+                ]
+            ]
+        for output_bus in output_bus_list:
+            if optimize is True:
+                assert isinstance(
+                    output_bus.investment, solph.options.Investment
+                ), f"The output bus of transformer '{dict_asset[LABEL]}' misses an investment object."
+                assert (
+                    output_bus.investment.existing == dict_asset[INSTALLED_CAP][VALUE]
+                ), f"`existing` of the `investment` attribute of the output bus of transformer '{dict_asset[LABEL]}' should be {dict_asset[INSTALLED_CAP][VALUE]}."
+                assert (
+                    output_bus.nominal_value is None
+                ), f"The output bus of transformer '{dict_asset[LABEL]}' should have a `nominal_value` of value None."
+            elif optimize is False:
+                assert (
+                    output_bus.investment is None
+                ), f" The `investment` attribute of transformer '{dict_asset[LABEL]}' should be None."
+                assert (
+                    hasattr(output_bus.investment, "existing") is False
+                ), f"`existing` of the `investment` attribute of the output bus of transformer '{dict_asset[LABEL]}' should not exist."
+                assert (
+                    output_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
+                ), f"The `nominal_value` of the output bus of transformer '{dict_asset[LABEL]}' should be {dict_asset[INSTALLED_CAP][VALUE]}."
+            else:
+                raise ValueError(
+                    f"`optimize` should be True/False but is '{optimize}' - check how helper_test_transformer_in_model_and_dict() is used."
+                )
 
     def test_transformer_optimize_cap_single_busses(self):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
@@ -137,8 +160,12 @@ class TestTransformerComponent:
         )
 
         # only one output and one input bus
-        assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
-        assert len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
@@ -158,8 +185,12 @@ class TestTransformerComponent:
         )
 
         # one output bus and two input busses
-        assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
-        assert len([str(i) for i in self.model.entities[-1].inputs]) == 2
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 2
+        ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
@@ -167,7 +198,29 @@ class TestTransformerComponent:
         )
 
     def test_transformer_optimize_cap_multiple_output_busses(self):
-        pass
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_optimize_multiple_output_busses"
+        ]
+
+        D1.transformer(
+            model=self.model,
+            dict_asset=dict_asset,
+            transformer=self.transformers,
+            bus=self.busses,
+        )
+
+        # two output busses and one input bus
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 2
+        ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+
+        # checks done with helper function (see func for more information)
+        self.helper_test_transformer_in_model_and_dict(
+            optimize=True, dict_asset=dict_asset, multiple_outputs=True
+        )
 
     def test_transformer_fix_cap_single_busses(self):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
@@ -182,8 +235,12 @@ class TestTransformerComponent:
         )
 
         # only one output and one input bus
-        assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
-        assert len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
@@ -191,51 +248,54 @@ class TestTransformerComponent:
         )
 
     def test_transformer_fix_cap_multiple_input_busses(self,):
-        ## todo fix after decision on busses see todo in func above
-        # dict_asset = self.dict_values[ENERGY_CONVERSION ][
-        #     "transformer_fix_multiple_input_busses"
-        # ]
-        #
-        # D1.transformer(
-        #     model=self.model,
-        #     dict_asset=dict_asset,
-        #     transformer=self.transformers,
-        #     bus=self.busses,
-        # )
-        #
-        # # one output bus and two input busses
-        # assert len([str(i) for i in self.model.entities[-1].outputs]) == 1
-        # assert len([str(i) for i in self.model.entities[-1].inputs]) == 2
-        #
-        # # checks done with helper function (see func for more information)
-        # self.helper_test_transformer_in_model_and_dict(optimize=False, dict_asset=dict_asset)
-        pass
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_fix_multiple_input_busses"
+        ]
+
+        D1.transformer(
+            model=self.model,
+            dict_asset=dict_asset,
+            transformer=self.transformers,
+            bus=self.busses,
+        )
+
+        # one output bus and two input busses
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 2
+        ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+
+        # checks done with helper function (see func for more information)
+        self.helper_test_transformer_in_model_and_dict(
+            optimize=False, dict_asset=dict_asset
+        )
 
     def test_transformer_fix_cap_multiple_output_busses(self):
-        pass
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_fix_multiple_output_busses"
+        ]
 
-    ### tests for transformer with time dependent efficiency
-    def test_transformer_efficiency_time_series_optimize_cap_multiple_input_busses(
-        self,
-    ):
-        pass
+        D1.transformer(
+            model=self.model,
+            dict_asset=dict_asset,
+            transformer=self.transformers,
+            bus=self.busses,
+        )
 
-    def test_transformer_efficiency_time_series_optimize_cap_multiple_output_busses(
-        self,
-    ):
-        pass
+        # two output busses and one input bus
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 2
+        ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
-    def test_transformer_efficiency_time_series_optimize_cap_single_busses(self):
-        pass
-
-    def test_transformer_efficiency_time_series_fix_cap_multiple_input_busses(self):
-        pass
-
-    def test_transformer_efficiency_time_series_fix_cap_multiple_output_busses(self):
-        pass
-
-    def test_transformer_efficiency_time_series_fix_cap_single_busses(self):
-        pass
+        # checks done with helper function (see func for more information)
+        self.helper_test_transformer_in_model_and_dict(
+            optimize=False, dict_asset=dict_asset, multiple_outputs=True
+        )
 
 
 class TestSinkComponent:
@@ -385,15 +445,15 @@ class TestSourceComponent:
                 output_bus.variable_costs.default == dict_asset[DISPATCH_PRICE][VALUE]
             )
             assert output_bus.investment is None
-            if dispatchable == False:
+            if dispatchable is False:
                 assert output_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
                 assert_series_equal(output_bus.fix, dict_asset[TIMESERIES])
                 assert output_bus.max == []
-            elif dispatchable == True:
+            elif dispatchable is True:
                 assert output_bus.existing == dict_asset[INSTALLED_CAP][VALUE]
         elif mode == "optimize":
-            assert output_bus.nominal_value == None
-            if dispatchable == False:
+            assert output_bus.nominal_value is None
+            if dispatchable is False:
                 assert_series_equal(output_bus.fix, dict_asset[TIMESERIES_NORMALIZED])
                 assert output_bus.max == []
             if timeseries == "normalized":
@@ -407,7 +467,7 @@ class TestSourceComponent:
                     == dict_asset[DISPATCH_PRICE][VALUE]
                     / dict_asset[TIMESERIES_PEAK][VALUE]
                 )
-                if dispatchable == True:
+                if dispatchable is True:
                     assert_series_equal(
                         output_bus.max, dict_asset[TIMESERIES_NORMALIZED]
                     )

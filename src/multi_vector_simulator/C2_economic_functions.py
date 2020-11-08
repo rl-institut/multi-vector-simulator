@@ -393,7 +393,6 @@ def determine_lifetime_price_dispatch(dict_asset, economic_data):
             }
         }
     )
-    return
 
 
 def get_lifetime_price_dispatch_one_value(dispatch_price, economic_data):

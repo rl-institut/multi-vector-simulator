@@ -170,7 +170,6 @@ def evaluate_dict(dict_values, results_main, results_meta):
     logging.info("Running validity checks.")
     E4.minimal_renewable_share_test(dict_values)
     E4.detect_excessive_excess_generation_in_bus(dict_values)
-    return
 
 
 def store_result_matrix(dict_kpi, dict_asset):
@@ -220,4 +219,3 @@ def store_result_matrix(dict_kpi, dict_asset):
         dict_kpi.update(
             {kpi_storage: dict_kpi[kpi_storage].append(asset_result_df, sort=False)}
         )
-    return
