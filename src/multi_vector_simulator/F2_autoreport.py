@@ -824,7 +824,7 @@ def create_app(results_json, path_sim_output=None):
                         ],
                     ),
                     insert_subsection(
-                        title="Energy demand",
+                        title="Energy Demand",
                         content=[
                             insert_body_text(
                                 "The simulation was performed for the energy system "
@@ -846,7 +846,7 @@ def create_app(results_json, path_sim_output=None):
                         ],
                     ),
                     insert_subsection(
-                        title="Energy system components",
+                        title="Energy System Components",
                         content=[
                             insert_body_text(
                                 "The energy system is comprised of "
@@ -904,7 +904,7 @@ def create_app(results_json, path_sim_output=None):
                         ],
                     ),
                     insert_subsection(
-                        title="Energy system key performance indicators",
+                        title="Energy System: Key Performance Indicators (KPIs)",
                         content=[
                             insert_body_text(
                                 f"In the following the key performance indicators of the of {projectName}, "
