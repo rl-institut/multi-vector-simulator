@@ -818,6 +818,7 @@ def create_app(results_json, path_sim_output=None):
                                             ENERGY_SYSTEM_GRAPH.decode()
                                         ),
                                         alt="Energy System Graph",
+                                        style={"maxWidth": "100%"},
                                     ),
                                 ],
                             ),
