@@ -5,7 +5,7 @@ import shutil
 import logging
 import pandas as pd
 from .constants import (
-    PACKAGE_PATH,
+    PACKAGE_DATA_PATH,
     JSON_FNAME,
     CSV_ELEMENTS,
     OUTPUT_FOLDER,
@@ -304,7 +304,7 @@ def copy_report_assets(path_destination_folder):
         # copy from the default asset folder from mvs package
         try:
             assets_folder = shutil.copytree(
-                os.path.join(PACKAGE_PATH, "assets"), assets_folder
+                os.path.join(PACKAGE_DATA_PATH, "assets"), assets_folder
             )
         except FileNotFoundError:
             assets_folder = shutil.copytree(
@@ -338,7 +338,7 @@ def copy_inputs_template(path_destination_folder):
         # copy from the default asset folder from mvs package
         try:
             inputs_template_folder = shutil.copytree(
-                os.path.join(PACKAGE_PATH, TEMPLATE_INPUT_FOLDER),
+                os.path.join(PACKAGE_DATA_PATH, TEMPLATE_INPUT_FOLDER),
                 inputs_template_folder,
             )
             logging.info(
