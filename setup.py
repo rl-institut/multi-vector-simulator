@@ -210,6 +210,7 @@ setup(
         "console_scripts": [
             "mvs_tool=multi_vector_simulator.cli:main",
             "mvs_report=multi_vector_simulator.cli:report",
+            "mvs_create_input_template=multi_vector_simulator.cli:create_input_template_folder",
         ],
     },
     # List additional URLs that are relevant to your project as a dict.

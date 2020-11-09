@@ -41,8 +41,10 @@ from multi_vector_simulator.F2_autoreport import create_app, open_in_browser, pr
 
 from multi_vector_simulator.version import version_num, version_date
 
+from multi_vector_simulator.utils import copy_inputs_template
 
 from multi_vector_simulator.utils.constants import (
+    REPO_PATH,
     CSV_ELEMENTS,
     CSV_EXT,
     PATH_INPUT_FILE,
@@ -243,6 +245,20 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
                 "mvs_report.py`.\nTo let it run for a longer time, change timeout setting in "
                 "the mvs_report.py file\n" + banner
             )
+
+
+def create_input_template_folder():
+    """Create a copy of the input_template folder in the current directory
+
+    The input_template folder is located within the multi_vector_simulator package
+
+    Returns
+    -------
+    None, create a new folder in the current directory
+    """
+
+    logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
+    copy_inputs_template(REPO_PATH)
 
 
 if __name__ == "__main__":
