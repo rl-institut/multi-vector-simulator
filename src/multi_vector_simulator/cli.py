@@ -37,7 +37,17 @@ import multi_vector_simulator.C0_data_processing as data_processing
 import multi_vector_simulator.D0_modelling_and_optimization as modelling
 import multi_vector_simulator.E0_evaluation as evaluation
 import multi_vector_simulator.F0_output as output_processing
-from multi_vector_simulator.F2_autoreport import create_app, open_in_browser, print_pdf
+
+try:
+    from multi_vector_simulator.F2_autoreport import (
+        create_app,
+        open_in_browser,
+        print_pdf,
+    )
+except ModuleNotFoundError:
+    logging.warning(
+        "Some packages are mising to generate automatic report, if you want to install them use \n\tpip install multi-vector-simulator[report]"
+    )
 
 from multi_vector_simulator.version import version_num, version_date
 
@@ -257,7 +267,7 @@ def create_input_template_folder():
     None, create a new folder in the current directory
     """
 
-    logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
+    logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
     copy_inputs_template(REPO_PATH)
 
 
