@@ -559,7 +559,7 @@ def create_app(results_json, path_sim_output=None):
         path_sim_output = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
 
     # create a "report" folder containing an "asset" folder
-    asset_folder = copy_report_assets(path_sim_output)
+    asset_folder = os.path.abspath(copy_report_assets(path_sim_output))
 
     # external CSS stylesheets
     external_stylesheets = [
