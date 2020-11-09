@@ -47,8 +47,6 @@ ARG_PATH_SIM_OUTPUT = "output_folder"
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 
-TEMPLATE_INPUT_PATH = os.path.join(REPO_PATH, TEMPLATE_INPUT_FOLDER)
-
 PATH_INPUT_FILE = "path_input_file"
 PATH_INPUT_FOLDER = "path_input_folder"
 PATH_OUTPUT_FOLDER = "path_output_folder"
