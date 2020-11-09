@@ -138,8 +138,7 @@ setup(
     # called `my_module.py` to exist:
     #
     #   py_modules=["my_module"],
-    #
-    packages=["multi_vector_simulator", "multi_vector_simulator.utils"],  # Required
+    packages=["multi_vector_simulator", "multi_vector_simulator.utils",],  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you
@@ -167,6 +166,7 @@ setup(
     #
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
+    include_package_data=True,
     # package_data={  # Optional
     #     'sample': ['package_data.dat'],
     # },
@@ -175,30 +175,7 @@ setup(
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files
     #
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
-    data_files=[
-        (
-            "assets",
-            ["report/assets/logo-eland-original.jpg", "report/assets/styles.css"],
-        ),
-        ("inputs", ["tests/inputs/mvs_config.json"]),
-        (
-            "inputs/time_series",
-            [
-                path.join("tests", "inputs", "time_series", fn)
-                for fn in listdir("tests/inputs/time_series")
-                if fn.endswith(".csv")
-            ],
-        ),
-        (
-            "input_template/csv_elements",
-            [
-                path.join("input_template", "csv_elements", fn)
-                for fn in listdir("input_template/csv_elements")
-                if fn.endswith(".csv")
-            ],
-        ),
-        ("input_template/time_series", ["input_template/time_series/blank"]),
-    ],  # Optional
+    # data_files=[],  # Optional
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # `pip` to create the appropriate form of executable for the target
