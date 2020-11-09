@@ -88,7 +88,7 @@ CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
 
 async def _print_pdf_from_chrome(path_pdf_report):
     r"""
-    This function generates the PDF report from the web app rendered on a Chromimum-based browser.
+    This function generates the PDF report from the web app rendered on a Chromium-based browser.
 
     Parameters
     ----------
@@ -106,7 +106,9 @@ async def _print_pdf_from_chrome(path_pdf_report):
     await page.goto(
         "http://127.0.0.1:8050", {"waitUntil": "domcontentloaded", "timeout": 120000}
     )
-    await page.waitForSelector("#main-div")
+    await page.waitForSelector(
+        ".dash-cell", {"visible": "true",},
+    )
     await page.pdf({"path": path_pdf_report, "format": "A4", "printBackground": True})
     await browser.close()
     print("*" * 10)
