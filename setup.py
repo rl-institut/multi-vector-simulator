@@ -189,6 +189,15 @@ setup(
                 if fn.endswith(".csv")
             ],
         ),
+        (
+            "input_template/csv_elements",
+            [
+                path.join("input_template", "csv_elements", fn)
+                for fn in listdir("input_template/csv_elements")
+                if fn.endswith(".csv")
+            ],
+        ),
+        ("input_template/time_series", ["input_template/time_series/blank"]),
     ],  # Optional
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
