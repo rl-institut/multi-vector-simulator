@@ -22,13 +22,19 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Create function `utils.copy_inputs_template` to copy input_template from package data_files (#608)
+- Create `MANIFEST.in` file (#608)
+- Add entrypoint for `mvs_create_input_template` in `setup.py` (#608)
+- Create script `prepare_package.py` to add data to package and build dist folder (#608)
 
 ### Changed
 - Moved `get_nested_value`, `set_nested_value`, `split_nested_path` from `tests/test_sensitivity.py` to `src/multi_vector_simulator/utils/__init__.py` (#650)
+- Rename PACKAGE_PATH to PACKAGE_DATA_PATH (#608)
+- Update release protocol within `Contributing.md` (#608)
 
 ### Removed
--
+- Variable `TEMPLATE_INPUT_PATH` (#608)
+- Field `data_files` from `setup.py` (#608)
 
 ### Fixed
 -
@@ -55,10 +61,6 @@ Here is a template for new release sections
 - Create mapping between EPA and MVS parameter names (#625)
 - Create parameter parser from EPA to MVS (#625)
 - Create parameter parser from MVS to EPA (#625)
-- Create function `utils.copy_inputs_template` to copy input_template from package data_files (#608)
-- Create `MANIFEST.in` file (#608)
-- Add entrypoint for `mvs_create_input_template` in `setup.py` (#608)
-- Create script `prepare_package.py` to add data to package and build dist folder (#608)
 
 ### Changed
 - Order of readthedocs content (#590)
@@ -86,14 +88,10 @@ Here is a template for new release sections
 - Remove unused `dict_values` argument of function `receive_timeseries_from_csv` (#625)
 - Move the end of the function `receive_timeseries_from_csv` into `C0.compute_timeseries_properties()` (#625)
 - Fix rendering issues with the PDF report and web app: Tables, ES graph sizing (#643)
-- Rename PACKAGE_PATH to PACKAGE_DATA_PATH (#608)
-- Update release protocol within `Contributing.md` (#608)
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
 - Remove reference to git branch ID in the report (#607)
-- Variable `TEMPLATE_INPUT_PATH` (#608)
-- Field `data_files` from `setup.py` (#608)
 
 ### Fixed
 - RTD entry for defining parameters as timeseries (#597)
