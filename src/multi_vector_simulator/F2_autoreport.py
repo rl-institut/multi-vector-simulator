@@ -835,9 +835,7 @@ def create_app(results_json, path_sim_output=None):
                             ),
                             insert_body_text(f"{sec_list}"),
                             html.H4("List of Demands"),
-                            insert_body_text(
-                                "Demands that have to be supplied are:"
-                            ),
+                            insert_body_text("Demands that have to be supplied are:"),
                             make_dash_data_table(df_dem),
                             html.Div(
                                 children=ready_timeseries_plots(results_json, DEMANDS)

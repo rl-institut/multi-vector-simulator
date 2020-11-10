@@ -593,7 +593,7 @@ def convert_demand_to_dataframe(dict_values):
             {
                 dem: [
                     demands[dem][UNIT],
-                    demands[dem]['energyVector'],
+                    demands[dem]["energyVector"],
                     demands[dem][TIMESERIES_PEAK][VALUE],
                     demands[dem][TIMESERIES_AVERAGE][VALUE],
                     demands[dem][TIMESERIES_TOTAL][VALUE],
@@ -604,7 +604,13 @@ def convert_demand_to_dataframe(dict_values):
     df_dem = pd.DataFrame.from_dict(
         demand_data,
         orient="index",
-        columns=[UNIT, "Type of Demand", "Peak Demand", "Mean Demand", "Total Annual Demand"],
+        columns=[
+            UNIT,
+            "Type of Demand",
+            "Peak Demand",
+            "Mean Demand",
+            "Total Annual Demand",
+        ],
     )
     df_dem.index.name = "Demands"
     df_dem = df_dem.reset_index()
