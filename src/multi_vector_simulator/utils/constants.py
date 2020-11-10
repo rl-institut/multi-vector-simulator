@@ -4,8 +4,8 @@ from multi_vector_simulator.utils.constants_json_strings import *
 
 # path to the root of this repository (assumes this file is in src/mvs_eland/utils folder)
 REPO_PATH = os.path.abspath(os.path.curdir)
-PACKAGE_PATH = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PACKAGE_DATA_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "package_data"
 )
 # name of the default input folder
 INPUT_FOLDER = "inputs"
@@ -46,8 +46,6 @@ ARG_PATH_SIM_OUTPUT = "output_folder"
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)
-
-TEMPLATE_INPUT_PATH = os.path.join(REPO_PATH, TEMPLATE_INPUT_FOLDER)
 
 PATH_INPUT_FILE = "path_input_file"
 PATH_INPUT_FOLDER = "path_input_folder"

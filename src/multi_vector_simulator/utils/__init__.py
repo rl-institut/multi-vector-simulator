@@ -5,7 +5,7 @@ import shutil
 import logging
 import pandas as pd
 from .constants import (
-    PACKAGE_PATH,
+    PACKAGE_DATA_PATH,
     JSON_FNAME,
     CSV_ELEMENTS,
     OUTPUT_FOLDER,
@@ -15,6 +15,7 @@ from .constants import (
     JSON_FNAME,
     MISSING_PARAMETERS_KEY,
     EXTRA_PARAMETERS_KEY,
+    TEMPLATE_INPUT_FOLDER,
 )
 
 
@@ -303,7 +304,7 @@ def copy_report_assets(path_destination_folder):
         # copy from the default asset folder from mvs package
         try:
             assets_folder = shutil.copytree(
-                os.path.join(PACKAGE_PATH, "assets"), assets_folder
+                os.path.join(PACKAGE_DATA_PATH, "assets"), assets_folder
             )
         except FileNotFoundError:
             assets_folder = shutil.copytree(
@@ -315,3 +316,42 @@ def copy_report_assets(path_destination_folder):
             "from multi_vector_simulator's package".format(assets_folder)
         )
     return assets_folder
+
+
+def copy_inputs_template(path_destination_folder):
+    """Copy the inputs template folder
+
+    Parameters
+    ----------
+    path_destination_folder: str
+        path where the inputs template folder should be copied to
+
+    Returns
+    -------
+    Path of the destination folder
+
+    """
+    inputs_template_folder = os.path.join(
+        path_destination_folder, TEMPLATE_INPUT_FOLDER
+    )
+    if os.path.exists(inputs_template_folder) is False:
+        # copy from the default asset folder from mvs package
+        try:
+            inputs_template_folder = shutil.copytree(
+                os.path.join(PACKAGE_DATA_PATH, TEMPLATE_INPUT_FOLDER),
+                inputs_template_folder,
+            )
+            logging.info(
+                f"The following folder was successfully created into your local "
+                f"directory {inputs_template_folder}"
+            )
+        except FileNotFoundError:
+            logging.warning(
+                "If you installed the package in develop mode, then you cannot use this command"
+            )
+    else:
+        logging.warning(
+            "The inputs template folder {} exists already, it will not be replaced by default "
+            "folder from multi_vector_simulator's package".format(TEMPLATE_INPUT_FOLDER)
+        )
+    return inputs_template_folder

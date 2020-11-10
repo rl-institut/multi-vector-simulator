@@ -22,13 +22,19 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Create function `utils.copy_inputs_template` to copy input_template from package data_files (#608)
+- Create `MANIFEST.in` file (#608)
+- Add entrypoint for `mvs_create_input_template` in `setup.py` (#608)
+- Create script `prepare_package.py` to add data to package and build dist folder (#608)
 
 ### Changed
 - Moved `get_nested_value`, `set_nested_value`, `split_nested_path` from `tests/test_sensitivity.py` to `src/multi_vector_simulator/utils/__init__.py` (#650)
+- Rename PACKAGE_PATH to PACKAGE_DATA_PATH (#608)
+- Update release protocol within `Contributing.md` (#608)
 
 ### Removed
--
+- Variable `TEMPLATE_INPUT_PATH` (#608)
+- Field `data_files` from `setup.py` (#608)
 
 ### Fixed
 -
@@ -42,7 +48,7 @@ Here is a template for new release sections
 - Remove REPORT_PATH constant (#607)
 - Add report assets and example simulation to package_data in `setup.py` (#607)
 - Add a util function `copy_report_assets` to copy report asset to simulation output folder when user generates the report (#607)
-- Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
+- Add entrypoints for `mvs_tool` and `mvs_report` in `setup.py` (this can be simply typed directly in terminal) (#607)
 - Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
 - Updated readthedocs: Gather the MVS parameters in a csv file and parse it to a sphinx RTD file (#620)
 - Added more energy carriers and their weights to the list of already available energy carriers in constants.py (#621)

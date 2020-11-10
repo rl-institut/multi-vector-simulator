@@ -136,26 +136,29 @@ Please choose `master` as target and use `vX.Y.Z` as tag version. In the descrip
 For help look into the [github release description](https://help.github.com/en/github/administering-a-repository/creating-releases).
 
 ### The actual release
+*Note*: the point 4 to 7 can be done automatically by running `python prepare_package.py`, they are displayed here explicitly for transparency
+
 1. Open a working python3 virtual environment and make sure you have the latest versions of setuptools and wheel installed:
-`python3 -m pip install --upgrade setuptools wheel twine`
-2. Delete `build/` and `dist/` directories (from previous release) to avoid errors.
-3. Make sure you pulled the release on `master` branch from `origin`: `git checkout master`, `git pull origin`
-4. Change the version without committing with release candidates (add `rc1` to the `version_num`, for example `vX.Y.Zrc1`) before the actual release, as a release with a specific version number can only be uploaded once on pypi.
-5. Rebuild the `build/` and `dist/` directories `python3 setup.py sdist bdist_wheel`
+`python3 -m pip install --upgrade setuptools wheel twine`.
+2. Make sure you pulled the release on `master` branch from `origin`: `git checkout master`, `git pull origin`.
+3. Change the version without committing with release candidates (add `rc1` to the `version_num`, for example `vX.Y.Zrc1`) before the actual release, as a release with a specific version number can only be uploaded once on pypi.
+4. Delete `build/`, `dist/` and `multi_vector_simulator.egg-info` directories (from previous release) to avoid errors.
+5. Rebuild the `build/`, `dist/` and and `multi_vector_simulator.egg-info` directories `python3 setup.py sdist bdist_wheel`
 6. Check the package with twine: `python3 -m twine check dist/*` If errors occur, fix them before the release or postpone.
-7. If everything works as expected you can now upload the package release candidate to pypi.org
+7. Copy the content of `input_template` into `src/multi-vector-simulator/package_data/input_template`, `report/asset` into `src/multi-vector-simulator/package_data/assets` and `tests/inputs` into `src/multi-vector-simulator/package_data/inputs`.
+8. If everything works as expected you can now upload the package release candidate to pypi.org
     1. Check the credentials of our pypi@rl-institut.de account on https://pypi.org.
     2. Type `twine upload dist/*`
     3. Enter `__token__` for username and your pypi token for password.
-8. Test your package:
+9. Test your package:
     1. Test the upload on test.pypi.org
         ` twine upload --repository testpypi dist/*`
     2. Test the installation: `pip install multi-vector-simulator==X.Y.Zrci`, where you replace `X.Y.Zrci` by your current version and release candidate 
     3. Then open a terminal
         `mvs_tool -f -o test_pypi`
-9. If you notice errors in the uploaded package, fix them and bump up `rc1` to `rc2` and repeat steps 2. to 9. until you don't see any more mistakes.
-10. If your release candidate works well you can now do the actual release: repeat step 2. to 9. and remove `rci` from [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py).
-11. Congratulations, you just updated the package on pypi.org, you deserve a treat!
+10. If you notice errors in the uploaded package, fix them and bump up `rc1` to `rc2` and repeat steps 3. to 10. until you don't see any more mistakes.
+11. If your release candidate works well you can now do the actual release: repeat step 3. to 10. and remove `rci` from [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py).
+12. Congratulations, you just updated the package on pypi.org, you deserve a treat!
 
 ### After the release
 
