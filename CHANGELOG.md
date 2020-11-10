@@ -111,6 +111,7 @@ Here is a template for new release sections
 - Remove unused `dict_values` argument of function `receive_timeseries_from_csv` (#625)
 - Move the end of the function `receive_timeseries_from_csv` into `C0.compute_timeseries_properties()` (#625)
 - Fix rendering issues with the PDF report and web app: Tables, ES graph sizing (#643)
+- Improve the description of demands in the autoreport (#647)
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
