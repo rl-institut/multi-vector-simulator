@@ -68,6 +68,8 @@ Here is a template for new release sections
 - Conversion from json to dict allow to load a timeindex for pandas.Series (#625)
 - Replace `==` by `is` in expression with `True`, `False` or `None` (#625)
 - Remove unused `dict_values` argument of function `receive_timeseries_from_csv` (#625)
+- Move the end of the function `receive_timeseries_from_csv` into `C0.compute_timeseries_properties()` (#625)
+- Fix rendering issues with the PDF report and web app: Tables, ES graph sizing (#643)
 - Move the end of the function `receive_timeseries_from_csv` into `C0.compute_timeseries_properties()` (#625)- Definition of renewable share (RES), now renewable factor (#637)
 - Refactoring of `RENEWABLE_SHARE` into `RENEWABLE_FACTOR` and some functions in E3 (now `E3.add_total_renewable_and_non_renewable_energy_origin` and `E3.add_renewable_factor`) (#637)
 - Rename: `Minimal renewable share constraint` to `Minimal renewable factor constraint` in all files (python, messages, RTD, json, tests, csv), so that this is in line with the definition and does not cause any confusion, explained in RTD (#637) 
