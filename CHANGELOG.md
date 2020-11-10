@@ -25,7 +25,7 @@ Here is a template for new release sections
 -
 
 ### Changed
--
+- Moved `get_nested_value`, `set_nested_value`, `split_nested_path` from `tests/test_sensitivity.py` to `src/multi_vector_simulator/utils/__init__.py` (#650)
 
 ### Removed
 -
