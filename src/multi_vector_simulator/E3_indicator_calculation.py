@@ -601,8 +601,6 @@ def add_total_feedin_electricity_equivaluent(dict_values):
 
     total_feedin_dict = {}
     # Get source connected to the specific DSO in question
-    scalars_matrix = dict_values[KPI][KPI_SCALAR_MATRIX]
-    # sum up all feed into the grid
     for dso in dict_values[ENERGY_PROVIDERS]:
         # load total flow into the dso sink
         consumption_asset = str(dso + DSO_FEEDIN + AUTO_SINK)
