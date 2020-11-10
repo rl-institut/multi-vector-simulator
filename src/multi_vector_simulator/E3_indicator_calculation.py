@@ -4,10 +4,10 @@ Module E3 indicator calculation
 
 In module E3 the technical KPI are evaluated:
 - calculate renewable share
-- calculate degree of autonomy
-- calculate total generation of each asset
+- calculate degree of autonomy (DA)
+- calculate total generation of each asset and total_internal_generation
+- calculate total feedin electricity equivalent
 - calculate energy flows between sectors
-- calculate degree of autonomy me
 - calculate degree of sector coupling
 - calculate onsite energy fraction (OEF)
 - calculate onsite energy matching (OEM)
