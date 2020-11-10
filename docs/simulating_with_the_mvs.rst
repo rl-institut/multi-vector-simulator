@@ -48,6 +48,12 @@ For that, each of the following files have to be present in the folder "csv_elem
 
 For easy set-up of your energy system, we have provided an empty input folder template as well
 `here <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template>`_.
+
+You can conveniently create a copy of this folder in your local path with the command (after having followed :ref:`the installation steps<installation-steps>`)
+.. code::
+
+    mvs_create_input_template
+
 A simple example system is setup with this `input folder <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/inputs>`_.
 When defining your energy system with this CSV files,
 please also refer to the definition of parameters that you can find here: `stable <https://mvs-eland.readthedocs.io/en/stable/MVS_parameters.html>`_ / `latest <https://mvs-eland.readthedocs.io/en/latest/MVS_parameters.html>`_.
