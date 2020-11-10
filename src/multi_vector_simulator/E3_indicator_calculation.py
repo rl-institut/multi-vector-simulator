@@ -444,7 +444,7 @@ def add_degree_of_autonomy(dict_values):
         updated dict_values with the degree of autonomy
 
     Tested with
-    - test_equation_degree_of_autonomy()
+    - test_add_degree_of_autonomy()
     """
 
     total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
@@ -493,6 +493,9 @@ def equation_degree_of_autonomy(total_generation, total_demand):
     DA > 1 : a plus-energy system.
 
     Notice: As above, we apply a weighting based on Electricity Equivalent.
+
+    Tested with
+    - test_equation_degree_of_autonomy()
     """
     degree_of_autonomy = total_generation / total_demand
 
@@ -596,7 +599,7 @@ def add_total_feedin_electricity_equivaluent(dict_values):
         updated dict_values with KPI : total feedin
 
     Tested with
-    xxx # todo: write test
+    - test_add_total_feedin_electricity_equivaluent()
     """
 
     total_feedin_dict = {}
@@ -638,7 +641,7 @@ def add_onsite_energy_fraction(dict_values):
         updated dict_values with onsite energy fraction KPI
 
     Tested with
-    - test_equation_onsite_energy_fraction()
+    - test_add_onsite_energy_fraction()
     """
 
     total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
@@ -688,7 +691,10 @@ def equation_onsite_energy_fraction(total_generation, total_feedin):
 
                 &OEF \epsilon \text{[0,1]}
 
-        """
+        Tested with
+        - test_equation_onsite_energy_fraction()
+    """
+
     onsite_energy_fraction = (total_generation - total_feedin) / total_generation
 
     return onsite_energy_fraction
@@ -712,7 +718,7 @@ def add_onsite_energy_matching(dict_values):
         updated dict_values with onsite energy matching KPI
 
     Tested with
-    - test_equation_onsite_energy_matching()
+    - test_add_onsite_energy_matching()
     """
 
     total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
@@ -774,6 +780,8 @@ def equation_onsite_energy_matching(
 
                 &OEM \epsilon \text{[0,1]}
 
+        Tested with
+        - test_equation_onsite_energy_matching()
         """
     onsite_energy_matching = (
         total_generation - total_feedin - total_excess
