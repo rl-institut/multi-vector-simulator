@@ -443,6 +443,9 @@ def process_user_arguments(
         and os.path.exists(os.path.join(path_input_folder, JSON_FNAME)) is False
     ):
         path_input_folder = os.path.join(PACKAGE_DATA_PATH, INPUT_FOLDER)
+        logging.info(
+            "No default input file found in your path, using example simulation input"
+        )
 
     path_input_file = check_input_folder(path_input_folder, input_type)
     check_output_folder(path_input_folder, path_output_folder, overwrite)
