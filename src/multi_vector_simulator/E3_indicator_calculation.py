@@ -645,7 +645,6 @@ def add_onsite_energy_fraction(dict_values):
 
     total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
 
-    add_total_feedin_electricity_equivaluent(dict_values)
     total_feedin = dict_values[KPI][KPI_SCALARS_DICT][
         TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT
     ]
