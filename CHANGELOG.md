@@ -19,7 +19,7 @@ Here is a template for new release sections
 -
 ```
 
-## [Unreleased]
+## [0.5.1 - 2020-11-10]
 
 ### Added
 - `E-Land_Requirements.rst`: Official E-Land requirement list as well as progress on functional and non-functional requirements (#590)
