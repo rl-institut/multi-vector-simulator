@@ -57,28 +57,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ASSET_DICT,
 )
 
-# process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
-def test_retrieve_datetimeindex_for_simulation():
-    simulation_settings = {
-        START_DATE: "2020-01-01",
-        EVALUATED_PERIOD: {VALUE: 1},
-        TIMESTEP: {VALUE: 60},
-    }
-    C0.retrieve_date_time_info(simulation_settings)
-    for k in (START_DATE, END_DATE, TIME_INDEX):
-        assert (
-            k in simulation_settings.keys()
-        ), f"Function does not add {k} to the simulation settings."
-    assert simulation_settings[START_DATE] == pd.Timestamp(
-        "2020-01-01 00:00:00"
-    ), f"Function incorrectly parses the timestamp."
-    assert simulation_settings[END_DATE] == pd.Timestamp(
-        "2020-01-01 23:00:00"
-    ), f"Function incorrectly parses the timestamp."
-    assert (
-        simulation_settings[PERIODS] == 24
-    ), f"Function incorrectly identifies the number of evaluated periods."
-
 
 def test_add_economic_parameters():
     economic_parameters = {
@@ -505,7 +483,7 @@ def test_process_maximum_cap_constraint_maximumCap_undefined():
         MAXIMUM_CAP in dict_values[group][asset]
     ), f"The function does not add a MAXIMUM_CAP to the asset dictionary."
     assert (
-        dict_values[group][asset][MAXIMUM_CAP][VALUE] == None
+        dict_values[group][asset][MAXIMUM_CAP][VALUE] is None
     ), f"Eventhough there is no limit imposed to the asset capacity, its maximumCap is defined to be {dict_values[group][asset][MAXIMUM_CAP][VALUE]}."
     assert (
         dict_values[group][asset][MAXIMUM_CAP][UNIT] == unit
@@ -517,7 +495,7 @@ def test_process_maximum_cap_constraint_maximumCap_is_None():
     dict_values = {group: {asset: {UNIT: unit, MAXIMUM_CAP: {VALUE: None}}}}
     C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
     assert (
-        dict_values[group][asset][MAXIMUM_CAP][VALUE] == None
+        dict_values[group][asset][MAXIMUM_CAP][VALUE] is None
     ), f"Eventhough there is no limit imposed to the asset capacity, its maximumCap is defined to be {dict_values[group][asset][MAXIMUM_CAP][VALUE]}."
     assert (
         dict_values[group][asset][MAXIMUM_CAP][UNIT] == unit
@@ -582,7 +560,7 @@ def test_process_maximum_cap_constraint_maximumCap_is_0():
     with pytest.warns(UserWarning):
         C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
         assert (
-            dict_values[group][asset][MAXIMUM_CAP][VALUE] == None
+            dict_values[group][asset][MAXIMUM_CAP][VALUE] is None
         ), f"The initial maximumCap defined by the end-user ({maxCap}) is overwritten by a different value ({dict_values[group][asset][MAXIMUM_CAP][VALUE]})."
 
 
@@ -601,7 +579,7 @@ def test_process_maximum_cap_constraint_maximumCap_is_int_smaller_than_installed
     with pytest.warns(UserWarning):
         C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
         assert (
-            dict_values[group][asset][MAXIMUM_CAP][VALUE] == None
+            dict_values[group][asset][MAXIMUM_CAP][VALUE] is None
         ), f"The invalid input is not ignored by defining maximumCap as None."
 
 
@@ -660,7 +638,7 @@ def test_process_maximum_cap_constraint_subasset():
 
     C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=subasset)
     assert (
-        dict_values[group][asset][subasset][MAXIMUM_CAP][VALUE] == None
+        dict_values[group][asset][subasset][MAXIMUM_CAP][VALUE] is None
     ), f"The function does not change the previously defined MAXIMUM_CAP."
     assert (
         dict_values[group][asset][subasset][MAXIMUM_CAP][UNIT] == unit

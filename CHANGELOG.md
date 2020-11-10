@@ -19,15 +19,65 @@ Here is a template for new release sections
 -
 ```
 
-## [0.4.1] - 2020-09-21
+## [0.5.1 - 2020-11-10]
 
 ### Added
+- `E-Land_Requirements.rst`: Official E-Land requirement list as well as progress on functional and non-functional requirements (#590)
+- Add pytests for `E4.detect_excessive_excess_generation_in_bus()` (#591)
+- Add pypi release to release protocol and update/simplify protocol (#601)
+- Remove REPORT_PATH constant (#607)
+- Add report assets and example simulation to package_data in `setup.py` (#607)
+- Add a util function `copy_report_assets` to copy report asset to simulation output folder when user generates the report (#607)
+- Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
+- Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
+- Updated readthedocs: Gather the MVS parameters in a csv file and parse it to a sphinx RTD file (#620)
+- Added more energy carriers and their weights to the list of already available energy carriers in constants.py (#621)
+- Three new KPI's added to MVS_output.rst read the docs page: Onsite energy fraction, Onsite energy matching, Degree of autonomy (#609)
+- New constant variables: `LOGS = "logs"`, `WARNINGS = "warnings"`, `ERRORS = "errors"` (#623)
+- Tests for `D1.transformer()` (#596)
+- Add economic model equations in readthedocs (#581)
+- Add component model equations and energy balance adapted to sector coupled example (#581)
+- Create function `F0.select_essential_results` to select main results out of `dict_values` (#625)
+- Create mapping between EPA and MVS parameter names (#625)
+- Create parameter parser from EPA to MVS (#625)
+- Create parameter parser from MVS to EPA (#625)
 
 ### Changed
+- Order of readthedocs content (#590)
+- Make sure report can be generated even if figures are missing from simulation outputs (#607)
+- Move the code located in `mvs_report.py` into `multi_vector_simulator.cli:report` (#607)
+- Update installation steps in README and in RTD (#607)
+- If default folder does not exist when code is executed, example simulation's inputs are used from package_data (#607)
+- Rename `PATH_SIM_OUTPUT` to `ARG_PATH_SIM_OUTPUT` (#607)
+- Rename function `A0.create_parser` to `A0.mvs_arg_parser` (#607)
+- Update validation plan description in RTD (#593)
+- Column headers of csv input files need to be unique amongst all files, info added to documentation (#602)
+- Change mvs_eland to multi_vector_simulator in `docs/Code.rst` (#620)
+- Change mvs_eland to multi-vector-simulator in `docs/*.rst` `urls (#620)
+- Improved the description of assigning weightage to energy carriers in readthedocs (#619)
+- Replaced the DSO sub-system image in Modelling Assumptions chapter of readthedocs (#622)
+- Fixed several typos in readthedocs (#622)
+- Move the function parse_log_messages to F0 and modify it to print log messages in results JSON file (#623)
+- Move the function `parse_log_messages` from F1 to F0 and modify it to print log messages in results JSON file (#623)
+- If `assets` folder is not found in package look in current folder for `report/assets` folder (#632)
+- `D1.transformer_constant_efficiency_fix()` and `D1.transformer_constant_efficiency_optimize()`, as well as their tests to reassign attributes (#596)
+- Move `retrieve_date_time_info` from C0 to B0 (#625)
+- Conversion from dict to json drop the timeindexes from pandas.Series (#625)
+- Conversion from json to dict allow to load a timeindex for pandas.Series (#625)
+- Replace `==` by `is` in expression with `True`, `False` or `None` (#625)
+- Remove unused `dict_values` argument of function `receive_timeseries_from_csv` (#625)
+- Move the end of the function `receive_timeseries_from_csv` into `C0.compute_timeseries_properties()` (#625)
 
 ### Removed
+- Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
+- Remove reference to git branch ID in the report (#607)
 
 ### Fixed
+- RTD entry for defining parameters as timeseries (#597)
+- Math equations of RTD in files `Model_Assumptions.rst` and `MVS_Output.rst` (#604)
+- Repaired the broken links to input CSV files (#618)
+- Outdated RTD info and mistakenly deleted sentence (#629)
+- All `variable_costs`, `efficiency` and `nominal_value` of transformers on output flows. Before they were inconsistently assigned to input or output flows. (#596)
 
 ## [0.5.0] - 2020-10-05
 
@@ -39,6 +89,7 @@ Here is a template for new release sections
 - Requirement for time series of non-dispatchable sources in readthedocs (#498)
 - Provide a warning in case of excessive excess generation (#498)
 - Pytests for `C0.add_maximum_cap()`, renamed function into `C0.process_maximum_cap_constraint()` (#498)
+- Description of the inherited MVS limitations as well as the ones that can be addressed (#580)
 
 ### Changed
 - Modify `setup.py` to upload the code as package on pypi.org (#570)

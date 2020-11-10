@@ -7,7 +7,7 @@ https://github.com/pypa/sampleproject
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
-from os import path
+from os import path, listdir
 
 here = path.abspath(path.dirname(__file__))
 
@@ -175,7 +175,21 @@ setup(
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files
     #
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
-    # data_files=[('my_data', ['data/data_file'])],  # Optional
+    data_files=[
+        (
+            "assets",
+            ["report/assets/logo-eland-original.jpg", "report/assets/styles.css"],
+        ),
+        ("inputs", ["tests/inputs/mvs_config.json"]),
+        (
+            "inputs/time_series",
+            [
+                path.join("tests", "inputs", "time_series", fn)
+                for fn in listdir("tests/inputs/time_series")
+                if fn.endswith(".csv")
+            ],
+        ),
+    ],  # Optional
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # `pip` to create the appropriate form of executable for the target
@@ -183,11 +197,12 @@ setup(
     #
     # For example, the following would provide a command called `sample` which
     # executes the function `main` from this package when invoked:
-    # entry_points={  # Optional
-    #     'console_scripts': [
-    #         'sample=sample:main',
-    #     ],
-    # },
+    entry_points={  # Optional
+        "console_scripts": [
+            "mvs_tool=multi_vector_simulator.cli:main",
+            "mvs_report=multi_vector_simulator.cli:report",
+        ],
+    },
     # List additional URLs that are relevant to your project as a dict.
     #
     # This field corresponds to the "Project-URL" metadata fields:

@@ -81,7 +81,6 @@ def lookup_file(file_path, name):
             + f"{name} can not be found. Operation terminated."
         )
         raise FileNotFoundError(msg)
-    return
 
 
 def check_feedin_tariff(dict_values):
@@ -115,7 +114,7 @@ def check_feedin_tariff(dict_values):
             boolean = [
                 k > 0 for k in diff.values
             ]  # True if there is an instance where feed-in tariff > electricity_price
-            if any(boolean) == True:
+            if any(boolean) is True:
                 instances = sum(boolean)  # Count instances
                 msg = f"Feed-in tariff > energy price in {instances} during the simulation time for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'. This would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
                 raise ValueError(msg)
@@ -123,8 +122,6 @@ def check_feedin_tariff(dict_values):
                 logging.debug(
                     f"Feed-in tariff < energy price for energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'"
                 )
-
-    return
 
 
 def check_time_series_values_between_0_and_1(time_series):
@@ -143,10 +140,8 @@ def check_time_series_values_between_0_and_1(time_series):
 
     """
     boolean = time_series.between(0, 1)
-    if boolean.all() == False:
-        return False
-    else:
-        return True
+
+    return bool(boolean.all())
 
 
 def check_non_dispatchable_source_time_series(dict_values):
@@ -166,12 +161,12 @@ def check_non_dispatchable_source_time_series(dict_values):
     """
     # go through all non-dispatchable sources
     for key, source in dict_values[ENERGY_PRODUCTION].items():
-        if TIMESERIES in source and source[RENEWABLE_ASSET_BOOL][VALUE] == True:
+        if TIMESERIES in source and source[RENEWABLE_ASSET_BOOL][VALUE] is True:
             # check if values between 0 and 1
             result = check_time_series_values_between_0_and_1(
                 time_series=source[TIMESERIES]
             )
-            if result == False:
+            if result is False:
                 logging.error(
                     f"{TIMESERIES} of non-dispatchable source {source[LABEL]} contains values out of bounds [0, 1]."
                 )
@@ -226,7 +221,6 @@ def check_input_values(dict_values):
     logging.info(
         "Input values have been verified. This verification can not replace a manual input parameter check."
     )
-    return
 
 
 def all_valid_intervals(name, value, title):
@@ -373,8 +367,6 @@ def all_valid_intervals(name, value, title):
             name,
             title,
         )
-
-    return
 
 
 def check_for_sufficient_assets_on_busses(dict_values):

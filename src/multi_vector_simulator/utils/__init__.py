@@ -1,8 +1,10 @@
 import os
 import json
+import shutil
+import logging
 import pandas as pd
 from .constants import (
-    REPO_PATH,
+    PACKAGE_PATH,
     JSON_FNAME,
     CSV_ELEMENTS,
     OUTPUT_FOLDER,
@@ -170,3 +172,35 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
         answer[EXTRA_PARAMETERS_KEY] = extra_parameters
 
     return answer
+
+
+def copy_report_assets(path_destination_folder):
+    """Copy the css file and eland logo to the path_destination_folder
+
+    Parameters
+    ----------
+    path_destination_folder: str
+        path where the default report css files and logo should be copied
+
+    Returns
+    -------
+    Path of the destination folder
+
+    """
+    assets_folder = os.path.join(path_destination_folder, "report", "assets")
+    if os.path.exists(assets_folder) is False:
+        # copy from the default asset folder from mvs package
+        try:
+            assets_folder = shutil.copytree(
+                os.path.join(PACKAGE_PATH, "assets"), assets_folder
+            )
+        except FileNotFoundError:
+            assets_folder = shutil.copytree(
+                os.path.join(".", "report", "assets"), assets_folder
+            )
+    else:
+        logging.warning(
+            "The assets folder {} exists already, it will not be replaced by default folder "
+            "from multi_vector_simulator's package".format(assets_folder)
+        )
+    return assets_folder

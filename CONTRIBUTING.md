@@ -118,78 +118,62 @@ Once you are satisfied with your PR you should ask someone to review it. Before 
 
 ## Release protocol
 
-Once you are ready to publish a release, branch off from `dev`
+This protocol explains how to perform a release of the code on ´master´ branch before releasing the code to pypi.org. If you don't want to release on pypi.org, skip the part under "The actual release".
+
+### Before the release
+
+1. Create a release branch by branching off from `dev`
     ```bash
     git checkout -b release/vX.Y.Z dev
     ```
-For meaning of X, Y and Z version numbers, please refer to this [semantic versioning guidelines](https://semver.org/spec/v2.0.0.html).
+    For meaning of X, Y and Z version numbers, please refer to this [semantic versioning guidelines](https://semver.org/spec/v2.0.0.html).
+2. In your release branch, update the version number in [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py) in  in the format indicated under 1 (commit message: "Bump version number").
+3. Replace the header `[Unreleased]` in the [`CHANGELOG.md`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md)
+with the version number (see 2.) and the date of the release in [ISO format](https://xkcd.com/1179/): `[Version] - YYYY-MM-DD`.
+4. After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it into `master`.
+5. Create a [release tag](https://github.com/rl-institut/multi-vector-simulator/releases) on github.
+Please choose `master` as target and use `vX.Y.Z` as tag version. In the description field simply copy-paste the content of the `CHANGELOG`descriptions for this release and you're done!
+For help look into the [github release description](https://help.github.com/en/github/administering-a-repository/creating-releases).
 
-In this branch, you should normally only update the version number in the `src/multi-vector-simulator/version.py` and in the `CHANGELOG.md` files, respecting the indicated formats. Commit the first one with "Bump version number" as commit message.
+### The actual release
+1. Open a working python3 virtual environment and make sure you have the latest versions of setuptools and wheel installed:
+`python3 -m pip install --upgrade setuptools wheel twine`
+2. Delete `build/` and `dist/` directories (from previous release) to avoid errors.
+3. Make sure you pulled the release on `master` branch from `origin`: `git checkout master`, `git pull origin`
+4. Change the version without committing with release candidates (add `rc1` to the `version_num`, for example `vX.Y.Zrc1`) before the actual release, as a release with a specific version number can only be uploaded once on pypi.
+5. Rebuild the `build/` and `dist/` directories `python3 setup.py sdist bdist_wheel`
+6. Check the package with twine: `python3 -m twine check dist/*` If errors occur, fix them before the release or postpone.
+7. If everything works as expected you can now upload the package release candidate to pypi.org
+    1. Check the credentials of our pypi@rl-institut.de account on https://pypi.org.
+    2. Type `twine upload dist/*`
+    3. Enter `__token__` for username and your pypi token for password.
+8. Test your package:
+    1. Test the upload on test.pypi.org
+        ` twine upload --repository testpypi dist/*`
+    2. Test the installation: `pip install multi-vector-simulator==X.Y.Zrci`, where you replace `X.Y.Zrci` by your current version and release candidate 
+    3. Then open a terminal
+        `mvs_tool -f -o test_pypi`
+9. If you notice errors in the uploaded package, fix them and bump up `rc1` to `rc2` and repeat steps 2. to 9. until you don't see any more mistakes.
+10. If your release candidate works well you can now do the actual release: repeat step 2. to 9. and remove `rci` from [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py).
+11. Congratulations, you just updated the package on pypi.org, you deserve a treat!
 
-Your `CHANGELOG.md` file could look like this before the release
+### After the release
+
+1. Locally, merge `release/vX.Y.Z` into `dev` and push to the remote version of dev.
+--> The idea is to avoid creating a merge commit in `dev` (because `master` would otherwise have two merge commits for this release once you merge the next release).
+2. Set version for next release in [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py) of the `dev`: for example `0.5.1dev`
+3. Add the structure for a new `unreleased` version to the [`CHANGELOG.md`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md) in `dev`:
 ```
 ## [unreleased]
 
 ### Added
-- feature 1
-- feature 2
-### Changed 
-- thing 1
-- thing 2
-### Removed
-- some stuff
-```
-
-Simply replace `unreleased` by `X.Y.Z` and add the date of release in [ISO format](https://xkcd.com/1179/), then add the structure for a new `unreleased` version
-
-```
-## [unreleased]
-
-### Added
 -
 ### Changed 
 -
 ### Removed
 -
-
-## [X.Y.Z] - 20**-**-**
-### Added
-- feature 1
-- feature 2
-### Changed 
-- thing 1
-- thing 2
-### Removed
-- some stuff
 ```
-Commit this with "Update changelog" as commit message.
-
-After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it in `master`.
-
-Locally, merge `release/vX.Y.Z` into `dev`
-```
-git checkout release/vX.Y.Z
-```
-
-```
-git pull
-```
-    
-```
-git checkout dev
-```
-
-```
-git merge release/vX.Y.Z
-```
-And push your these updates to the remote version of dev
-```
-git push
-```
-
-The idea behind this procedure is to avoid creating a merge commit in `dev` (because `master` would otherwise have two merge commit for this release once you merge the next release).
-
-Finally, [create a release](https://help.github.com/en/github/administering-a-repository/creating-releases) on github. Please choose master as the target for the tag and format the tag as `vX.Y.Z`. In the description field simply copy-paste the content of the `CHANGELOG`descriptions for this release and you're done!
+4. Commit the steps 2. and 3. together with commit message "Start vX.Y.Zdev"
 
 ## Contributing to Readthedocs
 

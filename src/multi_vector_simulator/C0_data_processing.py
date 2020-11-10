@@ -16,6 +16,7 @@ from multi_vector_simulator.utils.constants import (
 )
 
 from multi_vector_simulator.utils.constants_json_strings import *
+import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C1_verification as C1
 import multi_vector_simulator.C2_economic_functions as C2
 import multi_vector_simulator.F0_output as F0
@@ -60,7 +61,7 @@ def all(dict_values):
     :return Pre-processed dictionary with all input parameters
 
     """
-    retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
+    B0.retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
     add_economic_parameters(dict_values[ECONOMIC_DATA])
     identify_energy_vectors(dict_values)
 
@@ -86,8 +87,6 @@ def all(dict_values):
         dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
         "json_input_processed",
     )
-
-    return
 
 
 def identify_energy_vectors(dict_values):
@@ -131,7 +130,6 @@ def identify_energy_vectors(dict_values):
         "The energy system modelled includes following energy vectors / sectors: %s",
         names_of_sectors[:-2],
     )
-    return
 
 
 def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
@@ -169,52 +167,6 @@ def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
             f"as it is not defined within the DEFAULT_WEIGHTS_ENERGY_CARRIERS."
             f"Please check the energy carrier, or update the DEFAULT_WEIGHTS_ENERGY_CARRIERS in contants.py (dev)."
         )
-
-
-def retrieve_date_time_info(simulation_settings):
-    """
-    Updates simulation settings by all time-related parameters.
-    - START_DATE
-    - END_DATE
-    - TIME_INDEX
-    - PERIODS
-
-    Parameters
-    ----------
-    simulation_settings: dict
-        Simulation parameters of the input data
-
-    Returns
-    -------
-    Update simulation_settings by start date, end date, timeindex, and number of simulation periods
-
-
-    Notes
-    -----
-    Function tested with test_retrieve_datetimeindex_for_simulation()
-    """
-    simulation_settings.update(
-        {START_DATE: pd.to_datetime(simulation_settings[START_DATE])}
-    )
-    simulation_settings.update(
-        {
-            END_DATE: simulation_settings[START_DATE]
-            + pd.DateOffset(days=simulation_settings[EVALUATED_PERIOD][VALUE], hours=-1)
-        }
-    )
-    # create time index used for initializing oemof simulation
-    simulation_settings.update(
-        {
-            TIME_INDEX: pd.date_range(
-                start=simulation_settings[START_DATE],
-                end=simulation_settings[END_DATE],
-                freq=str(simulation_settings[TIMESTEP][VALUE]) + UNIT_MINUTE,
-            )
-        }
-    )
-
-    simulation_settings.update({PERIODS: len(simulation_settings[TIME_INDEX])})
-    return simulation_settings
 
 
 def add_economic_parameters(economic_parameters):
@@ -260,7 +212,6 @@ def add_economic_parameters(economic_parameters):
             }
         }
     )
-    return
 
 
 def process_all_assets(dict_values):
@@ -301,7 +252,6 @@ def process_all_assets(dict_values):
         )
 
     logging.info("Processed cost data and added economic values.")
-    return
 
 
 def define_excess_sinks(dict_values):
@@ -362,10 +312,7 @@ def energyConversion(dict_values, group):
             and HEADER in dict_values[group][asset][EFFICIENCY]
         ):
             receive_timeseries_from_csv(
-                dict_values,
-                dict_values[SIMULATION_SETTINGS],
-                dict_values[group][asset],
-                EFFICIENCY,
+                dict_values[SIMULATION_SETTINGS], dict_values[group][asset], EFFICIENCY,
             )
         # in case there is more than one parameter provided (either (A) n input busses and 1 output bus or (B) 1 input bus and n output busses)
         # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
@@ -378,7 +325,9 @@ def energyConversion(dict_values, group):
                 "Asset %s has multiple input/output busses with a list of efficiencies. Reading list",
                 dict_values[group][asset][LABEL],
             )
-    return
+        else:
+            logging.debug(f"Not loading {group} asset {asset} from file")
+            compute_timeseries_properties(dict_values[group][asset])
 
 
 def energyProduction(dict_values, group):
@@ -404,17 +353,19 @@ def energyProduction(dict_values, group):
                 )
             else:
                 receive_timeseries_from_csv(
-                    dict_values,
                     dict_values[SIMULATION_SETTINGS],
                     dict_values[group][asset],
                     "input",
                 )
                 # If Filename defines the generation timeseries, then we have an asset with a lack of dispatchability
                 dict_values[group][asset].update({DISPATCHABILITY: False})
+        else:
+            logging.debug(
+                f"Not loading {group} asset {asset} from a file, timeseries is provided"
+            )
+            compute_timeseries_properties(dict_values[group][asset])
         # check if maximumCap exists and add it to dict_values
         process_maximum_cap_constraint(dict_values, group, asset)
-
-    return
 
 
 def energyStorage(dict_values, group):
@@ -449,7 +400,6 @@ def energyStorage(dict_values, group):
                     dict_values[group][asset][subasset][parameter][VALUE], dict
                 ):
                     receive_timeseries_from_csv(
-                        dict_values,
                         dict_values[SIMULATION_SETTINGS],
                         dict_values[group][asset][subasset],
                         parameter,
@@ -470,7 +420,6 @@ def energyStorage(dict_values, group):
         dict_values[group][asset].update(
             {OUTPUT_BUS_NAME: bus_suffix(dict_values[group][asset][OUTFLOW_DIRECTION])}
         )
-    return
 
 
 def energyProviders(dict_values, group):
@@ -492,7 +441,6 @@ def energyProviders(dict_values, group):
             dict_values[ECONOMIC_DATA],
             dict_values[group][asset],
         )
-    return
 
 
 def energyConsumption(dict_values, group):
@@ -516,13 +464,16 @@ def energyConsumption(dict_values, group):
 
         if FILENAME in dict_values[group][asset]:
             receive_timeseries_from_csv(
-                dict_values,
                 dict_values[SIMULATION_SETTINGS],
                 dict_values[group][asset],
                 "input",
                 is_demand_profile=True,
             )
-    return
+        else:
+            logging.debug(
+                f"Not loading {group} asset {asset} from a file, timeseries is provided"
+            )
+            compute_timeseries_properties(dict_values[group][asset])
 
 
 def define_missing_cost_data(dict_values, dict_asset):
@@ -539,10 +490,7 @@ def define_missing_cost_data(dict_values, dict_asset):
     if DISPATCH_PRICE in dict_asset:
         if isinstance(dict_asset[DISPATCH_PRICE][VALUE], dict):
             receive_timeseries_from_csv(
-                dict_values,
-                dict_values[SIMULATION_SETTINGS],
-                dict_asset,
-                DISPATCH_PRICE,
+                dict_values[SIMULATION_SETTINGS], dict_asset, DISPATCH_PRICE,
             )
         elif isinstance(dict_asset[DISPATCH_PRICE][VALUE], list):
             treat_multiple_flows(dict_asset, dict_values, DISPATCH_PRICE)
@@ -571,7 +519,6 @@ def define_missing_cost_data(dict_values, dict_asset):
 
     if len(str) > 1:
         logging.debug("Added basic costs to asset %s: %s", dict_asset[LABEL], str)
-    return
 
 
 def define_busses(dict_values):
@@ -605,8 +552,6 @@ def define_busses(dict_values):
             add_busses_of_asset_depending_on_in_out_direction(
                 dict_values, dict_values[group][asset], asset
             )
-
-    return
 
 
 def add_busses_of_asset_depending_on_in_out_direction(
@@ -675,7 +620,6 @@ def add_busses_of_asset_depending_on_in_out_direction(
                 )
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_suffix(bus)})
-    return
 
 
 def bus_suffix(bus_direction):
@@ -767,7 +711,6 @@ def update_bus(bus, dict_values, asset_key, asset_label, energy_vector):
     # Asset should added to respective bus
     dict_values[ENERGY_BUSSES][bus_label][ASSET_DICT].update({asset_key: asset_label})
     logging.debug("Added asset %s to bus %s", asset_label, bus_label)
-    return
 
 
 def define_dso_sinks_and_sources(dict_values, dso):
@@ -827,8 +770,6 @@ def define_dso_sinks_and_sources(dict_values, dso):
             CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN + AUTO_SINK,
         }
     )
-
-    return
 
 
 def define_availability_of_peak_demand_pricing_assets(
@@ -1038,7 +979,6 @@ def define_transformer_for_peak_demand_pricing(
     logging.debug(
         f"Model for peak demand pricing: Adding transfomer {transformer_name}."
     )
-    return
 
 
 def define_source(
@@ -1134,7 +1074,6 @@ def define_source(
         asset_label=default_source_dict[LABEL],
         energy_vector=energy_vector,
     )
-    return
 
 
 def get_name_or_names_of_in_or_output_bus(bus):
@@ -1195,7 +1134,7 @@ def determine_dispatch_price(dict_values, price, source):
             }
         )
         receive_timeseries_from_csv(
-            dict_values, dict_values[SIMULATION_SETTINGS], source, DISPATCH_PRICE
+            dict_values[SIMULATION_SETTINGS], source, DISPATCH_PRICE
         )
     else:
         source.update({DISPATCH_PRICE: {VALUE: price[VALUE], UNIT: price[UNIT]}})
@@ -1208,7 +1147,6 @@ def determine_dispatch_price(dict_values, price, source):
         logging.debug(
             f"{source[LABEL]} was created, with a price of {source[DISPATCH_PRICE][VALUE]}."
         )
-    return
 
 
 def define_sink(
@@ -1305,7 +1243,7 @@ def define_sink(
             }
         )
         receive_timeseries_from_csv(
-            dict_values, dict_values[SIMULATION_SETTINGS], sink, DISPATCH_PRICE
+            dict_values[SIMULATION_SETTINGS], sink, DISPATCH_PRICE
         )
         if (
             asset_name[-6:] == "feedin"
@@ -1338,8 +1276,6 @@ def define_sink(
         asset_label=sink[LABEL],
         energy_vector=energy_vector,
     )
-
-    return
 
 
 def apply_function_to_single_or_list(function, parameter, **kwargs):
@@ -1498,13 +1434,11 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         }
     )
 
-    return
-
 
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
 # so additional values like peak, total or average must be calculated. Any other type does not need this additional info.
 def receive_timeseries_from_csv(
-    dict_values, settings, dict_asset, input_type, is_demand_profile=False
+    settings, dict_asset, input_type, is_demand_profile=False
 ):
     """
 
@@ -1584,12 +1518,35 @@ def receive_timeseries_from_csv(
         sys.exit()
 
     if input_type == "input":
+        compute_timeseries_properties(dict_asset)
+
+
+def compute_timeseries_properties(dict_asset):
+    """Compute peak, aggregation, average and normalize timeseries
+
+    Parameters
+    ----------
+    dict_asset: dict
+        dict of all asset parameters, must contain TIMESERIES key
+
+    Returns
+    -------
+    None
+    Add TIMESERIES_PEAK, TIMESERIES_TOTAL, TIMESERIES_AVERAGE and TIMESERIES_NORMALIZED
+    to dict_asset
+
+    """
+
+    if TIMESERIES in dict_asset:
+        timeseries = dict_asset[TIMESERIES]
+        unit = dict_asset[UNIT]
+
         dict_asset.update(
             {
-                TIMESERIES_PEAK: {VALUE: max(dict_asset[TIMESERIES]), UNIT: unit,},
-                TIMESERIES_TOTAL: {VALUE: sum(dict_asset[TIMESERIES]), UNIT: unit,},
+                TIMESERIES_PEAK: {VALUE: max(timeseries), UNIT: unit,},
+                TIMESERIES_TOTAL: {VALUE: sum(timeseries), UNIT: unit,},
                 TIMESERIES_AVERAGE: {
-                    VALUE: sum(dict_asset[TIMESERIES]) / len(dict_asset[TIMESERIES]),
+                    VALUE: sum(timeseries) / len(timeseries),
                     UNIT: unit,
                 },
             }
@@ -1597,19 +1554,17 @@ def receive_timeseries_from_csv(
 
         logging.debug("Normalizing timeseries of %s.", dict_asset[LABEL])
         dict_asset.update(
-            {
-                TIMESERIES_NORMALIZED: dict_asset[TIMESERIES]
-                / dict_asset[TIMESERIES_PEAK][VALUE]
-            }
+            {TIMESERIES_NORMALIZED: timeseries / dict_asset[TIMESERIES_PEAK][VALUE]}
         )
         # just to be sure!
         if any(dict_asset[TIMESERIES_NORMALIZED].values) > 1:
-            logging.warning(
-                "Error, %s timeseries not normalized, greater than 1.",
-                dict_asset[LABEL],
+            logging.error(
+                f"{dict_asset[LABEL]} normalized timeseries has values greater than 1."
             )
         if any(dict_asset[TIMESERIES_NORMALIZED].values) < 0:
-            logging.warning("Error, %s timeseries negative.", dict_asset[LABEL])
+            logging.error(
+                f"{ dict_asset[LABEL]} normalized timeseries has negative values."
+            )
 
 
 def treat_multiple_flows(dict_asset, dict_values, parameter):
@@ -1648,8 +1603,6 @@ def treat_multiple_flows(dict_asset, dict_values, parameter):
     dict_asset[parameter][VALUE] = updated_values
     if len(values_info) > 0:
         dict_asset[parameter].update({"values_info": values_info})
-
-    return
 
 
 # reads timeseries specifically when the need comes from a multiple or output busses situation
@@ -1718,9 +1671,9 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     * Unit of MaximumCap is asset unit
 
     If MaximumCap is changed depends on its value:
-    * If MaximumCap not in asset dict: MaximumCap == None
-    * If MaximumCap < installed Cap: invalid, MaximumCap == None
-    * If MaximumCap == 0: invalid, MaximumCap == None
+    * If MaximumCap not in asset dict: MaximumCap is None
+    * If MaximumCap < installed Cap: invalid, MaximumCap is None
+    * If MaximumCap == 0: invalid, MaximumCap is None
     * If MaximumCap > installedCap and group != energyProviders: pass
     * If MaximumCap > installedCap and group == energyProviders and filename not in asset_dict: pass
     * If MaximumCap > installedCap and group == energyProviders and filename in asset_dict (non-dispatchable assets): MaximumCap == MaximumCap/peak(timeseries)
@@ -1736,7 +1689,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     else:
         if asset_dict[MAXIMUM_CAP][VALUE] is not None:
             # adapt maximumCap of non-dispatchable sources
-            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] != None:
+            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
                 asset_dict[MAXIMUM_CAP][VALUE] = (
                     asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
                 )

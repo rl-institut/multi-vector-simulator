@@ -28,7 +28,7 @@ from _constants import (
     PATH_OUTPUT_FOLDER,
 )
 
-PARSER = A0.create_parser()
+PARSER = A0.mvs_arg_parser()
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs")
 

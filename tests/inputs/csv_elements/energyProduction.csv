@@ -1,5 +1,4 @@
-,unit,pv_plant_01,Diesel
-label,str,PV plant (mono),Fuel
+,unit,PV_plant_(mono),Diesel
 unit,str,kWp,l
 optimizeCap,bool,True,True
 maximumCap,None or float,1000,None

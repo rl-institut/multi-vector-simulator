@@ -6,7 +6,6 @@ efficiency,factor,3.5
 inflow_direction,str,Electricity
 installedCap,kW,250
 maximumCap,kW,None
-label,str,heat_pump
 lifetime,year,20
 specific_costs_om,currency/kW/year,20
 dispatch_price,currency/kWh,0

@@ -230,7 +230,7 @@ class model_building:
             fpath = os.path.join(
                 dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], ES_GRAPH
             )
-            dict_values[PATHS_TO_PLOTS][PLOTS_ES] += [str(fpath)]
+            dict_values[PATHS_TO_PLOTS][PLOTS_ES] += str(fpath)
 
             # Draw the energy system model
             graph = ESGraphRenderer(model, filepath=fpath)
@@ -262,7 +262,6 @@ class model_building:
             local_energy_system.write(
                 path_lp_file, io_options={"symbolic_solver_labels": True},
             )
-        return
 
     def simulating(dict_values, model, local_energy_system):
         """
@@ -341,7 +340,6 @@ class model_building:
                 "Stored results in %s/MVS_results.oemof.",
                 dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
             )
-        return
 
 
 class timer:
@@ -376,4 +374,3 @@ class timer:
             "Moddeling time: %s minutes.",
             round(dict_values[SIMULATION_RESULTS]["modelling_time"] / 60, 2),
         )
-        return

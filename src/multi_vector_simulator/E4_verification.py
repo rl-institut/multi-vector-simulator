@@ -55,8 +55,6 @@ def minimal_renewable_share_test(dict_values):
     else:
         pass
 
-    return
-
 
 def detect_excessive_excess_generation_in_bus(dict_values):
     r"""
@@ -86,5 +84,5 @@ def detect_excessive_excess_generation_in_bus(dict_values):
             # give a warning in case ratio > 0.9
             ratio = total_outflow_bus / total_inflow_bus
             if ratio < 0.9:
-                msg = f"Attention, on bus {bus_label} there is an excessive excess generation, totalling up to {round((1 - ratio) * 100)}% of the inflows. The total inflows are {round(total_inflow_bus)} and outflows {round(total_outflow_bus)}  It seems to be cheaper to have this excess generation than to install more capacities that forward the energy carrier to other busses (if those assets can be optimized)."
+                msg = f"Attention, on bus {bus_label} there is excessive excess generation, totalling up to {round((1 - ratio) * 100)}% of the inflows. The total inflows are {round(total_inflow_bus)} and outflows {round(total_outflow_bus)}  It seems to be cheaper to have this excess generation than to install more capacities that forward the energy carrier to other busses (if those assets can be optimized)."
                 logging.warning(msg)

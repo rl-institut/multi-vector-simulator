@@ -5,7 +5,6 @@ specific_costs,currency/unit,7200
 file_name,str,pv_gen_merra2_2014_eff1_tilt40_az180.csv
 installedCap,kWp,1500
 maximumCap, kWp, 1000
-label,str,PV plant (mono)
 lifetime,year,30
 specific_costs_om,currency/unit/year,80
 dispatch_price,currency/kWh,0

@@ -37,7 +37,11 @@ import multi_vector_simulator.C0_data_processing as data_processing
 import multi_vector_simulator.D0_modelling_and_optimization as modelling
 import multi_vector_simulator.E0_evaluation as evaluation
 import multi_vector_simulator.F0_output as output_processing
+from multi_vector_simulator.F2_autoreport import create_app, open_in_browser, print_pdf
+
 from multi_vector_simulator.version import version_num, version_date
+
+
 from multi_vector_simulator.utils.constants import (
     CSV_ELEMENTS,
     CSV_EXT,
@@ -45,11 +49,16 @@ from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     INPUT_TYPE,
+    JSON_WITH_RESULTS,
+    REPORT_FOLDER,
+    PDF_REPORT,
+    ARG_PDF,
+    ARG_REPORT_PATH,
+    ARG_PATH_SIM_OUTPUT,
 )
 
 
 def main(**kwargs):
-    # Display welcome text
     r"""
     Starts MVS tool simulations.
 
@@ -149,6 +158,91 @@ def main(**kwargs):
         path_png_figs=user_input.get("path_png_figs", None),
     )
     return 1
+
+
+def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
+
+    """Display the report of a MVS simulation
+
+    Command line use:
+
+    .. code-block:: bash
+
+        mvs_report [-h] [-i [PATH_SIM_OUTPUT]] [-o [REPORT_PATH]] [-pdf]
+
+    optional command line arguments:
+      -h, --help           show this help message and exit
+      -pdf [PRINT_REPORT]  print the report as pdf (default: False)
+      -i [OUTPUT_FOLDER]   path to the simulation result json file
+                           'json_with_results.json'
+      -o [REPORT_PATH]     path to save the pdf report
+
+    Parameters
+    ----------
+    pdf: bool
+        if True a pdf report should be generated
+        Default: False
+    path_simulation_output_json: str
+        path to the simulation result json file 'json_with_results.json'
+    path_pdf_report: str
+        path to save the pdf report
+
+    Returns
+    -------
+
+    Save a pdf report if option -pdf is provided, otherwise display the report as an app
+    """
+
+    # Parse the arguments from the command line
+    parser = initializing.report_arg_parser()
+    args = vars(parser.parse_args())
+    print(args)
+
+    # Give priority from user input kwargs over command line arguments
+    # However the command line arguments have priority over default kwargs
+    if pdf is None:
+        pdf = args.get(ARG_PDF, False)
+    if path_simulation_output_json is None:
+        path_simulation_output_json = args.get(ARG_PATH_SIM_OUTPUT)
+
+    if path_pdf_report is None:
+        path_pdf_report = args.get(ARG_REPORT_PATH)
+
+    # if the user only provided the path to the folder, we complete with default json file
+    if os.path.isdir(path_simulation_output_json) is True:
+        path_simulation_output_json = os.path.join(
+            path_simulation_output_json, JSON_WITH_RESULTS
+        )
+
+    if os.path.exists(path_simulation_output_json) is False:
+        raise FileNotFoundError(
+            "{} not found. You need to run a simulation to generate the data to report"
+            "see `python mvs_tool.py -h` for help".format(path_simulation_output_json)
+        )
+    else:
+        # path to the mvs simulation output files
+        path_sim_output = os.path.dirname(path_simulation_output_json)
+
+        # if report path is not specified it will be included in the mvs simulation outputs folder
+        if path_pdf_report == "":
+            path_pdf_report = os.path.join(path_sim_output, REPORT_FOLDER, PDF_REPORT)
+
+        # load the results of a simulation
+        dict_values = data_input.load_json(path_simulation_output_json)
+        test_app = create_app(dict_values, path_sim_output=path_sim_output)
+        banner = "*" * 40
+        print(banner + "\nPress ctrl+c to stop the report server\n" + banner)
+        if pdf is True:
+            print_pdf(test_app, path_pdf_report=path_pdf_report)
+        else:
+            # run the dash server for 600s before shutting it down
+            open_in_browser(test_app, timeout=600)
+            print(
+                banner
+                + "\nThe report server has timed out.\nTo start it again run `python "
+                "mvs_report.py`.\nTo let it run for a longer time, change timeout setting in "
+                "the mvs_report.py file\n" + banner
+            )
 
 
 if __name__ == "__main__":

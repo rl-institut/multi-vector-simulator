@@ -296,21 +296,21 @@ class TestACElectricityBus:
             sheet_name=bus_suffix("Heat"),
         )
         # create dict with electricity prices
-        electricity_price = data[ENERGY_PROVIDERS]["Electricity DSO"][ENERGY_PRICE][
+        electricity_price = data[ENERGY_PROVIDERS]["Grid_DSO"][ENERGY_PRICE][VALUE][
             VALUE
-        ]["data"]
+        ]
         # compare cost of using heat pump with electricity price to heat price
-        cost_of_using_heatpump = "electricity_price[i] / data[ENERGY_CONVERSION]['heat_pump'][EFFICIENCY][VALUE] comp.data[ENERGY_PROVIDERS]['Heat DSO'][ENERGY_PRICE][VALUE]"
+        cost_of_using_heatpump = "electricity_price[i] / data[ENERGY_CONVERSION]['heat_pump'][EFFICIENCY][VALUE] comp.data[ENERGY_PROVIDERS]['Heat_DSO'][ENERGY_PRICE][VALUE]"
         cost_of_using_heat_dso = (
-            "data[ENERGY_PROVIDERS]['Heat DSO'][ENERGY_PRICE][VALUE]"
+            "data[ENERGY_PROVIDERS]['Heat_DSO'][ENERGY_PRICE][VALUE]"
         )
         for i in range(0, len(electricity_price)):
             if (
                 electricity_price[i]
                 / data[ENERGY_CONVERSION]["heat_pump"][EFFICIENCY][VALUE]
-                > data[ENERGY_PROVIDERS]["Heat DSO"][ENERGY_PRICE][VALUE]
+                > data[ENERGY_PROVIDERS]["Heat_DSO"][ENERGY_PRICE][VALUE]
             ):
-                assert busses_flow["Heat DSO_consumption_period"][i] == approx(
+                assert busses_flow["Heat_DSO_consumption_period"][i] == approx(
                     abs(busses_flow["demand_heat"][i])
                 ), f"Even though the marginal costs to use the heat pump are higher than the heat DSO price with {cost_of_using_heatpump} comp. {cost_of_using_heat_dso}, the heat DSO is not solely used for energy supply."
             else:
