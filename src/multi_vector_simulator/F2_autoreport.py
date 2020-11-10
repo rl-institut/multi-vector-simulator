@@ -88,7 +88,7 @@ CSV_FOLDER = os.path.join(REPO_PATH, OUTPUT_FOLDER, INPUTS_COPY, CSV_ELEMENTS)
 
 async def _print_pdf_from_chrome(path_pdf_report):
     r"""
-    This function generates the PDF report from the web app rendered on a Chromimum-based browser.
+    This function generates the PDF report from the web app rendered on a Chromium-based browser.
 
     Parameters
     ----------
@@ -106,7 +106,9 @@ async def _print_pdf_from_chrome(path_pdf_report):
     await page.goto(
         "http://127.0.0.1:8050", {"waitUntil": "domcontentloaded", "timeout": 120000}
     )
-    await page.waitForSelector("#main-div")
+    await page.waitForSelector(
+        ".dash-cell", {"visible": "true",},
+    )
     await page.pdf({"path": path_pdf_report, "format": "A4", "printBackground": True})
     await browser.close()
     print("*" * 10)
@@ -559,7 +561,7 @@ def create_app(results_json, path_sim_output=None):
         path_sim_output = results_json[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER]
 
     # create a "report" folder containing an "asset" folder
-    asset_folder = copy_report_assets(path_sim_output)
+    asset_folder = os.path.abspath(copy_report_assets(path_sim_output))
 
     # external CSS stylesheets
     external_stylesheets = [
@@ -818,13 +820,14 @@ def create_app(results_json, path_sim_output=None):
                                             ENERGY_SYSTEM_GRAPH.decode()
                                         ),
                                         alt="Energy System Graph",
+                                        style={"maxWidth": "100%"},
                                     ),
                                 ],
                             ),
                         ],
                     ),
                     insert_subsection(
-                        title="Energy demand",
+                        title="Energy Demand",
                         content=[
                             insert_body_text(
                                 "The simulation was performed for the energy system "
@@ -846,7 +849,7 @@ def create_app(results_json, path_sim_output=None):
                         ],
                     ),
                     insert_subsection(
-                        title="Energy system components",
+                        title="Energy System Components",
                         content=[
                             insert_body_text(
                                 "The energy system is comprised of "
@@ -904,7 +907,7 @@ def create_app(results_json, path_sim_output=None):
                         ],
                     ),
                     insert_subsection(
-                        title="Energy system key performance indicators",
+                        title="Energy System: Key Performance Indicators (KPIs)",
                         content=[
                             insert_body_text(
                                 f"In the following the key performance indicators of the of {projectName}, "
