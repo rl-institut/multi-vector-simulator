@@ -133,7 +133,7 @@ For the system-wide share of local renewable generation, energy carrier weightin
 
         i, j &\text{: Assets 1,2,…}
 
-        w &\text{: Energy carrier weighting factor for output of asset i/j}
+        w_i, w_j &\text{: Energy carrier weighting factor for output of asset i/j}
 
 
 :Example:
@@ -159,7 +159,7 @@ Describes the share of the energy influx to the local energy system that is prov
 This includes both local generation as well as consumption from energy providers.
 
 .. math::
-        RF &=\frac{\sum_i {E_{rgen,i} \cdot w_i + RES \cdot E_{grid}}}{\sum_j {E_{gen,j} \cdot w_j}+\sum_k {E_{grid} (k)}}
+        RF &=\frac{\sum_i {E_{rgen,i} \cdot w_i + RES \cdot E_{grid}}}{\sum_j {E_{gen,j} \cdot w_j}+\sum_k {E_{grid} (k) \cdot w_k}}
 
         \text{with } rgen &\text{: Renewable generation}
 
@@ -171,7 +171,7 @@ This includes both local generation as well as consumption from energy providers
 
         k &\text{: Energy provider 1,2…}
 
-        w &\text{: Energy carrier weighting factor for output of asset i/j/k}
+        w_i, w_j, w_k &\text{: Energy carrier weighting factor for output of asset i/j/k}
 
 :Example:
 
