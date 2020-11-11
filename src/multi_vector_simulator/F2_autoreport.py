@@ -569,9 +569,16 @@ def create_demands_section(output_json, sectors):
         table_with_dash = make_dash_data_table(sector_specific_df)
 
         # Plots for the sector specific demands
+        demand_plots = html.Div(
+            children=ready_timeseries_plots(
+                dict_values=output_json, df_sector_demand=table_with_dash
+            )
+        )
 
         # Add the heading, table and plot(s) to the content list
-        content_of_section.extend((html.H4(sector_heading), table_with_dash))
+        content_of_section.extend(
+            (html.H4(sector_heading), table_with_dash, demand_plots)
+        )
 
     return insert_subsection(title="Energy Demands", content=content_of_section)
 
