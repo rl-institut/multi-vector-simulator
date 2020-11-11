@@ -169,7 +169,8 @@ def test_renewable_factor_one_sector():
         electricity in dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]
     ), f"KPI {RENEWABLE_FACTOR} not defined for vector {electricity}."
     assert (
-        dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR][electricity] == expected_value
+        dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR][electricity]
+        == expected_value
     ), f"{RENEWABLE_FACTOR} of {electricity} sector not expected value."
     assert (
         dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == expected_value
@@ -360,9 +361,14 @@ def test_weighting_for_sector_coupled_kpi_one_sector():
 def test_weighting_for_sector_coupled_kpi_multiple_sectors():
     """ """
     E3.weighting_for_sector_coupled_kpi(dict_weighting_two_sectors, RENEWABLE_FACTOR)
-    expected_value = numbers[1] + numbers[2] * DEFAULT_WEIGHTS_ENERGY_CARRIERS[h2][VALUE]
+    expected_value = (
+        numbers[1] + numbers[2] * DEFAULT_WEIGHTS_ENERGY_CARRIERS[h2][VALUE]
+    )
     assert RENEWABLE_FACTOR in dict_weighting_two_sectors[KPI][KPI_SCALARS_DICT]
-    assert dict_weighting_two_sectors[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == expected_value
+    assert (
+        dict_weighting_two_sectors[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]
+        == expected_value
+    )
 
 
 npc = 1000
