@@ -54,7 +54,7 @@ Here is a template for new release sections
 - Remove REPORT_PATH constant (#607)
 - Add report assets and example simulation to package_data in `setup.py` (#607)
 - Add a util function `copy_report_assets` to copy report asset to simulation output folder when user generates the report (#607)
-- Add entrypoints for `mvs_tool` and `mvs_report` in `setup.py` (this can be simply typed directly in terminal) (#607)
+- Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
 - Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
 - Updated readthedocs: Gather the MVS parameters in a csv file and parse it to a sphinx RTD file (#620)
 - Added more energy carriers and their weights to the list of already available energy carriers in constants.py (#621)
@@ -105,6 +105,7 @@ Here is a template for new release sections
 - Repaired the broken links to input CSV files (#618)
 - Outdated RTD info and mistakenly deleted sentence (#629)
 - All `variable_costs`, `efficiency` and `nominal_value` of transformers on output flows. Before they were inconsistently assigned to input or output flows. (#596)
+- Calculation of the renewable share relative taking into account energy carrier weighting (#637)
 
 ## [0.5.0] - 2020-10-05
 
