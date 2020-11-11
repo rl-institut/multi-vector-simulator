@@ -470,7 +470,7 @@ def equation_renewable_share(total_res, total_non_res):
 
 
     The renewable share is relative to generation, but not consumption of energy, the renewable share can not be larger 1.
-    If there is no generation or consumption from a DSO withing an energyVector and supply is solely reached by energy conversion from another vector, the renewable share is defined to be zero.
+    If there is no generation or consumption from a DSO within an energyVector and supply is solely reached by energy conversion from another vector, the renewable share is defined to be zero.
 
     * renewable share = 1 - all energy in the energy system is of renewable origin
     * renewable share < 1 - part of the energy in the system is of renewable origin

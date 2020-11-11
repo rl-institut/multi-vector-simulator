@@ -118,19 +118,19 @@ Constraints are controlled with the file `constraints.csv`.
 Minimal renewable factor constraint
 ##################################
 
-The minimal renewable factor constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal renewable factor defined within the constraint. The renewable share of the optimized energy system may also be higher then the minimal renewable factor.
+The minimal renewable factor constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal renewable factor defined within the constraint. The renewable share of the optimized energy system may also be higher than the minimal renewable factor.
 
-The minimal renewable factor is applied to the minimal renewable factor of the whole, sector-coupled energy system, but not specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
+The minimal renewable factor is applied to the minimal renewable factor of the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
 
 .. math:
         minimal renewable factor <= \frac{\sum renewable generation \cdot weighting factor}{\sum renewable generation \cdot weighting factor + \sum non-renewable generation \cdot weighting factor}
 
 
-Please be aware that the minimal renewable factor constraint defined bounds for the :ref:`kpi_renewable_factor` of the system, ie. taking into account both local generation as well as renewable supply from the energy providers. The constraint explicitly does not aim to reach a certain :ref:`kpi_renewable_share_of_local_generation` on-site.
+Please be aware that the minimal renewable factor constraint defines bounds for the :ref:`kpi_renewable_factor` of the system, ie. taking into account both local generation as well as renewable supply from the energy providers. The constraint explicitly does not aim to reach a certain :ref:`kpi_renewable_share_of_local_generation` on-site.
 
 :Deactivating the constraint:
 
-The minimal renewable factor constraint is deactivated by defining following row in `constraints.csv` as follows:
+The minimal renewable factor constraint is deactivated by inserting the following row in `constraints.csv` as follows:
 
 ```minimal_renewable_factor,factor,0```
 
@@ -141,7 +141,7 @@ The constraint is enabled when the value of the minimal renewable factor factor 
 ```minimal_renewable_factor,factor,0.3```
 
 
-Depending on the energy system, especially when working assets which are not to be capacity-optimized, it is possible that the minimal renewable factor criterion can not be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimize_Cap` to `True`, and then investigate further.
+Depending on the energy system, especially when working with assets which are not to be capacity-optimized, it is possible that the minimal renewable factor criterion cannot be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimize_Cap` parameters to `True`, and then investigate further.
 Also, if you are aiming at very high minimal renewable factors, the simulation time can increase drastically. If you do not get a result after a maximum of 20 Minutes, you should consider terminating the simulation and trying with a lower minimum renewable share.
 
 The minimum renewable share is introduced to the energy system by `D2.constraint_minimal_renewable_share()` and a validation test is performed with `E4.minimal_renewable_share_test()`.

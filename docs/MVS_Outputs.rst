@@ -142,7 +142,7 @@ For the system-wide share of local renewable generation, energy carrier weightin
 
 :Example:
 
-An energy system is composed of a heat and electricity side. Following are the energy flows:
+An energy system is composed of a heat and an electricity side. Following are the energy flows:
 
 * 100 kWh from a local PV plant
 * 0 kWh local generation for the heat side
@@ -181,7 +181,7 @@ This includes both local generation as well as consumption from energy providers
 
 :Example:
 
-An energy system is composed of a heat and electricity side. Following are the energy flows:
+An energy system is composed of a heat and an electricity side. Following are the energy flows:
 
 * 100 kWh from a local PV plant
 * 0 kWh local generation for the heat side
@@ -193,7 +193,7 @@ Again, the heat sector would have a renewable factor of 0% when considered seper
                 {200 kWh(el)\cdot \frac{kWh(eleq)}{kWh(el)}}
                 = 3/4 = \text{75 %}
 
-The renewable factor can, just like the :ref:`kpi_renewable_share_of_local_generation` not indicate how much renewable energy is used in each of the sectors. In the future, it may be possible to dive into this together with the degree of sesector-coupling.
+The renewable factor can, just like the :ref:`kpi_renewable_share_of_local_generation` not indicate how much renewable energy is used in each of the sectors. In the future, it may be possible to dive into this together with the degree of sector-coupling.
 
 CO2 Emissions
 #############
