@@ -19,7 +19,7 @@ Here is a template for new release sections
 -
 ```
 
-## [Unreleased]
+## [0.5.2] - 2020-11-11
 
 ### Added
 - Create function `utils.copy_inputs_template` to copy input_template from package data_files (#608)
