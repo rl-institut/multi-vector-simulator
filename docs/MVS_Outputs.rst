@@ -118,11 +118,9 @@ The renewable share of local generation for each sector does not utilize energy 
 
         rgen &\text{: Renewable generation}
 
-        i &\text{: Renewable generation assets 1,2,…}
-
         gen &\text{: Renewable and non-renewable generation}
 
-        j &\text{: Renewable and non-renewable generation assets 1,2,…}
+        i,j &\text{: Asset 1,2,…}
 
 For the system-wide share of local renewable generation, energy carrier weighting is used:
 
@@ -131,11 +129,9 @@ For the system-wide share of local renewable generation, energy carrier weightin
 
         \text{with } rgen &\text{: Renewable generation}
 
-        i &\text{: Renewable generation assets 1,2,…}
-
         gen &\text{: Renewable and non-renewable generation}
 
-        j &\text{: Renewable and non-renewable generation assets 1,2,…}
+        i, j &\text{: Assets 1,2,…}
 
         w &\text{: Energy carrier weighting factor for output of asset i/j}
 
@@ -167,11 +163,9 @@ This includes both local generation as well as consumption from energy providers
 
         \text{with } rgen &\text{: Renewable generation}
 
-        i &\text{: Renewable generation assets 1,2,…}
-
         gen &\text{: Renewable and non-renewable generation}
 
-        j &\text{: Renewable and non-renewable generation assets 1,2,…}
+        i, j &\text{: Assets 1,2,…}
 
         RES &\text{: Renewable energy share of energy provider}
 
