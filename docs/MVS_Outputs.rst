@@ -183,9 +183,7 @@ An energy system is composed of a heat and electricity side. Following are the e
 
 Again, the heat sector would have a renewable factor of 0% when considered seperately, and the electricity side would have an renewable factor of 75%. This results in a system-wide renewable share of:
 
-.. math:: RF = \frac{100 kWh(el)\cdot \frac{kWh(eleq)}{kWh(el)}+50 kWh(el)\cdot \frac{kWh(eleq)}{kWh(el)}}
-                {200 kWh(el)\cdot \frac{kWh(eleq)}{kWh(el)}}
-                = 3/4 = \text{75 %}
+.. math:: RF = \frac{ 100 kWh(el)\cdot \frac{kWh(eleq)}{kWh(el)} +50 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}}{200 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}} = 3/4 = \text{75 \%}
 
 The renewable factor can, just like the :ref:`kpi_renewable_share_of_local_generation` not indicate how much renewable energy is used in each of the sectors. In the future, it may be possible to dive into this together with the degree of sesector-coupling.
 
