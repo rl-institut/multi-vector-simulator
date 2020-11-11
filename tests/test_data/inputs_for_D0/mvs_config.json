@@ -1,6 +1,6 @@
 {
     "constraints": {
-        "minimal_renewable_share": {
+        "minimal_renewable_factor": {
             "unit": "factor",
             "value": 0
         }},

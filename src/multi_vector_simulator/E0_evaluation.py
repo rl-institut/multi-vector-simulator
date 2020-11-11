@@ -160,8 +160,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
     E3.total_demand_and_excess_each_sector(dict_values)
     E3.add_total_feedin_electricity_equivaluent(dict_values)
     E3.add_levelized_cost_of_energy_carriers(dict_values)
-    E3.total_renewable_and_non_renewable_energy_origin(dict_values)
-    E3.renewable_share(dict_values)
+    E3.add_total_renewable_and_non_renewable_energy_origin(dict_values)
+    E3.add_renewable_share_of_local_generation(dict_values)
+    E3.add_renewable_factor(dict_values)
     # E3.add_degree_of_sector_coupling(dict_values) feature not finished
     E3.add_onsite_energy_fraction(dict_values)
     E3.add_onsite_energy_matching(dict_values)

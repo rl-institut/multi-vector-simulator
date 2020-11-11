@@ -49,7 +49,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_GENERATION_IN_LES,
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_ENERGY_USE,
-    RENEWABLE_SHARE,
+    RENEWABLE_FACTOR,
+    RENEWABLE_SHARE_OF_LOCAL_GENERATION,
     TOTAL_DEMAND,
     TOTAL_EXCESS,
     TOTAL_FEEDIN,
@@ -126,6 +127,7 @@ def total_demand_and_excess_each_sector(dict_values):
     Tested with
     - test_add_levelized_cost_of_energy_carriers_one_sector()
     - test_add_levelized_cost_of_energy_carriers_two_sectors()
+    - TestTechnicalKPI.renewable_factor_and_renewable_share_of_local_generation()
     """
 
     # Define empty dict to gather the total demand of each energy carrier
@@ -255,7 +257,7 @@ def calculate_electricity_equivalent_for_a_set_of_aggregated_values(
     return total_electricity_equivalent
 
 
-def total_renewable_and_non_renewable_energy_origin(dict_values):
+def add_total_renewable_and_non_renewable_energy_origin(dict_values):
     """Identifies all renewable generation assets and summs up their total generation to total renewable generation
 
     Parameters
@@ -342,41 +344,116 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
     logging.info("Calculated renewable share of the LES.")
 
 
-def renewable_share(dict_values):
+def add_renewable_share_of_local_generation(dict_values):
+    """Determination of renewable share of local energy production
+
+        Parameters
+        ----------
+        dict_values :
+            dict with all project information and results, after applying add_total_renewable_and_non_renewable_energy_origin
+        sector :
+            Sector for which renewable share is being calculated
+
+        Returns
+        -------
+        type
+            updated dict_values with renewable share of each sector as well as the system-wide KPI
+
+        Notes
+        -----
+        Updates the KPI with RENEWABLE_SHARE_OF_LOCAL_GENERATION for each sector as well as system-wide KPI.
+
+        Tested with
+        * test_renewable_share_of_local_generation_one_sector()
+        * test_renewable_share_of_local_generation_two_sectors()
+        * TestTechnicalKPI.renewable_factor_and_renewable_share_of_local_generation()
+        """
+
+    dict_renewable_share = {}
+    for sector in dict_values[PROJECT_DATA][SECTORS]:
+        # Defines the total renewable energy as the renewable production within the LES
+        total_res = dict_values[KPI][KPI_UNCOUPLED_DICT][
+            TOTAL_RENEWABLE_GENERATION_IN_LES
+        ][sector]
+        # Defines the total non-renewable energy as the non-renewable production within the LES
+        total_non_res = dict_values[KPI][KPI_UNCOUPLED_DICT][
+            TOTAL_NON_RENEWABLE_GENERATION_IN_LES
+        ][sector]
+        # Calculates the renewable factor for the current sector
+        dict_renewable_share.update(
+            {sector: equation_renewable_share(total_res, total_non_res)}
+        )
+    # Updates the KPI matrix for the individual sectors
+    dict_values[KPI][KPI_UNCOUPLED_DICT].update(
+        {RENEWABLE_SHARE_OF_LOCAL_GENERATION: dict_renewable_share}
+    )
+
+    # Calculation of the system-wide renewable factor
+    total_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
+    total_non_res = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_NON_RENEWABLE_GENERATION_IN_LES
+    ]
+
+    # Updates the system-wide KPI matrix
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {
+            RENEWABLE_SHARE_OF_LOCAL_GENERATION: equation_renewable_share(
+                total_res, total_non_res
+            )
+        }
+    )
+    return
+
+
+def add_renewable_factor(dict_values):
     """Determination of renewable share of one sector
 
     Parameters
     ----------
     dict_values :
-        dict with all project information and results, after applying total_renewable_and_non_renewable_energy_origin
-    sector :
-        Sector for which renewable share is being calculated
+        dict with all project information and results, after applying add_total_renewable_and_non_renewable_energy_origin
 
     Returns
     -------
     type
-        updated dict_values with renewable share of a specific sector
+        updated dict_values with renewable factor of each sector as well as system-wide indicator
+
+    Notes
+    -----
+    Updates the KPI with RENEWABLE_FACTOR for each sector as well as system-wide KPI.
+
 
     Tested with
-    - test_renewable_share_one_sector
+    - test_renewable_factor_one_sector
+    - test_renewable_factor_two_sectors
+    - TestTechnicalKPI.renewable_factor_and_renewable_share_of_local_generation()
     """
     dict_renewable_share = {}
+    # Loops though the sectors
     for sector in dict_values[PROJECT_DATA][SECTORS]:
+        # Defines the total renewable energy as the renewable influx into the system (generation and consumption)
         total_res = dict_values[KPI][KPI_UNCOUPLED_DICT][TOTAL_RENEWABLE_ENERGY_USE][
             sector
         ]
+        # Defines the total non-renewable energy as the non-renewable influx into the system (generation and consumption)
         total_non_res = dict_values[KPI][KPI_UNCOUPLED_DICT][
             TOTAL_NON_RENEWABLE_ENERGY_USE
         ][sector]
+        # Calculates the renewable factor for the current sector
         dict_renewable_share.update(
             {sector: equation_renewable_share(total_res, total_non_res)}
         )
-    dict_values[KPI][KPI_UNCOUPLED_DICT].update({RENEWABLE_SHARE: dict_renewable_share})
+    # Updates the KPI matrix for the individual sectors
+    dict_values[KPI][KPI_UNCOUPLED_DICT].update(
+        {RENEWABLE_FACTOR: dict_renewable_share}
+    )
 
+    # Calculation of the system-wide renewable factor
     total_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_ENERGY_USE]
     total_non_res = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_ENERGY_USE]
+    # Updates the system-wide KPI matrix
     dict_values[KPI][KPI_SCALARS_DICT].update(
-        {RENEWABLE_SHARE: equation_renewable_share(total_res, total_non_res)}
+        {RENEWABLE_FACTOR: equation_renewable_share(total_res, total_non_res)}
     )
 
 
@@ -396,23 +473,24 @@ def equation_renewable_share(total_res, total_non_res):
     type
         Renewable share
 
+    Notes
+    -----
+
+    Used both to calculate RENEWABLE_FACTOR and RENEWABLE_SHARE_OF_LOCAL_GENERATION.
+
+    Equation:
+
     .. math::
             RES = \frac{total_res}{total_non_res + total_res}
 
-            =\frac{\sum_i {E_{RES,generation} (i)⋅w_i}}{\sum_j {E_{generation}(j)⋅w_j}+\sum_k {E_{grid} (k)}}
 
-            with i \epsilon [PV,Geothermal,…]
+    The renewable share is relative to generation, but not consumption of energy, the renewable share can not be larger 1.
+    If there is no generation or consumption from a DSO within an energyVector and supply is solely reached by energy conversion from another vector, the renewable share is defined to be zero.
 
-            and j \epsilon [generation assets 1,2,…]
+    * renewable share = 1 - all energy in the energy system is of renewable origin
+    * renewable share < 1 - part of the energy in the system is of renewable origin
+    * renewable share = 0 - no energy is of renewable origin
 
-            and  k \epsilon [DSO 1,2…]
-
-        renewable share = 1 - all energy in the energy system is of renewable origin
-        renewable share < 1 - part of the energy in the system is of renewable origin
-        renewable share = 0 - no energy is of renewable origin
-
-        As for now this is relative to generation, but not consumption of energy, the renewable share can not be larger 1. If in future however the renewable share is calculated relative to the energy consumption, a renewable share larger 1 is possible in case of overly high renewable gerneation within the system that is later fed into the DSO grid.
-        If there is no generation or consumption from a DSO withing an energyVector and supply is solely reached by energy conversion from another vector, the renewable share is defined to be zero.
 
     Tested with:
     - test_renewable_share_equation_no_generation()
@@ -936,7 +1014,7 @@ def equation_levelized_cost_of_energy_carrier(
 
 
 def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
-    """Calculates the weighted kpi for a specific kpi_name
+    """Calculates the weighted kpi for a specific kpi_name both for a single sector and system-wide
 
     Parameters
     ----------
@@ -948,21 +1026,30 @@ def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
     Returns
     -------
     type
-        Specific KPI that describes sector-coupled system
-
+        Append specific KPI that describes sector-coupled system to dict_values[KPI][KPI_SCALARS_DICT]
+        Appends specific KPI in energy equivalent to each sector to dict_values[KPI][KPI_UNCOUPLED_DICT]
     """
-    energy_equivalent = 0
+    total_energy_equivalent = 0
+    dict_energy_equivalents_per_sector = {}
 
     for sector in dict_values[PROJECT_DATA][SECTORS]:
         if sector in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
-            energy_equivalent += (
+            energy_equivalent = (
                 dict_values[KPI][KPI_UNCOUPLED_DICT][kpi_name][sector]
                 * DEFAULT_WEIGHTS_ENERGY_CARRIERS[sector][VALUE]
             )
+            total_energy_equivalent += energy_equivalent
+            dict_energy_equivalents_per_sector.update({sector: energy_equivalent})
         else:
             raise ValueError(
                 f"The electricity equivalent value of energy carrier {sector} is not defined. "
                 f"Please add this information to the variable DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py."
             )
 
-        dict_values[KPI][KPI_SCALARS_DICT].update({kpi_name: energy_equivalent})
+    # Describes the energy equivalent of the kpi in question, eg. the renewable generation, so that comparison is easier
+    dict_values[KPI][KPI_UNCOUPLED_DICT].update(
+        {kpi_name + SUFFIX_ELECTRICITY_EQUIVALENT: dict_energy_equivalents_per_sector}
+    )
+    # Describes system wide total of the energy equivalent of the kpi
+    dict_values[KPI][KPI_SCALARS_DICT].update({kpi_name: total_energy_equivalent})
+    return
