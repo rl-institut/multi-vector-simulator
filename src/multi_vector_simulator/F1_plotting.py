@@ -575,7 +575,7 @@ def plot_timeseries(
         Default: DEMANDS
 
     max_days: int
-        maximal number of days the timeserie should be displayed for
+        maximum number of days the timeseries should be displayed for
 
     color_list: list of str or list to tuple (hexadecimal or rbg code)
         list of colors
