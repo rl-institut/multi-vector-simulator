@@ -54,7 +54,7 @@ Here is a template for new release sections
 - Remove REPORT_PATH constant (#607)
 - Add report assets and example simulation to package_data in `setup.py` (#607)
 - Add a util function `copy_report_assets` to copy report asset to simulation output folder when user generates the report (#607)
-- Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
+- Add entrypoints for `mvs_tool` and `mvs_report` in `setup.py` (this can be simply typed directly in terminal) (#607)
 - Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
 - Updated readthedocs: Gather the MVS parameters in a csv file and parse it to a sphinx RTD file (#620)
 - Added more energy carriers and their weights to the list of already available energy carriers in constants.py (#621)
@@ -67,6 +67,7 @@ Here is a template for new release sections
 - Create mapping between EPA and MVS parameter names (#625)
 - Create parameter parser from EPA to MVS (#625)
 - Create parameter parser from MVS to EPA (#625)
+- Five new KPI's added to E3: Onsite energy fraction, Onsite energy matching, Degree of autonomy, total_feedin_electricity_equivalent and internal generation (#609)
 
 ### Changed
 - Order of readthedocs content (#590)
