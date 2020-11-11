@@ -20,7 +20,7 @@
 18, None, Number of operational years of the asset until it has to be replaced., 30, None, Numeric, Year,lifetime,lifetime-label
 19, None, Longitude coordinate of the project’s geographical location., 10.95787, Should follow geographical convention, Numeric, None,longitude,longitude-label
 20, None, The maximum installable capacity., 1000, None, Alphanumeric, None or float,maximumCap,maxcap-label
-21, None, The minimum share of energy supplied by renewable generation in the optimized energy system., 0.7, Between 0 and 1, Numeric, factor,minimal_renewable_share,minrenshare-label
+21, None, The minimum share of energy supplied by renewable generation in the optimized energy system., 0.7, Between 0 and 1, Numeric, factor,minimal_renewable_factor,minrenshare-label
 22, None, ‘True’ if the user wants to perform capacity optimization for various components as part of the simulation., True, Permissible values are either True or False, str, Boolean value,optimizeCap,optimizecap-label
 23, None," Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user to peer ‘under the hood’ to understand how the program optimizes for the solution.", False, Acceptable values are either True or False, str, Boolean,output_lp_file,outputlpfile-label
 24, None," The bus/component to which the energyVector is leaving, from the asset.", PV plant (mono), None, str, None,outflow_direction,outflowdirec-label

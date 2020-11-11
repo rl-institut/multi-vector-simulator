@@ -44,6 +44,7 @@ ACCEPTED_ASSETS_FOR_ASSET_GROUPS = {
 # Central constant variables
 UNIT = "unit"
 VALUE = "value"
+DATA = "data"
 
 # Economic parameters
 CURR = "currency"
@@ -108,7 +109,7 @@ SOC_MIN = "soc_min"
 
 # Constraints
 CONSTRAINTS = "constraints"
-MINIMAL_RENEWABLE_SHARE = "minimal_renewable_share"
+MINIMAL_RENEWABLE_FACTOR = "minimal_renewable_factor"
 
 #######################################
 # Parameters added in pre-processing #
@@ -229,17 +230,25 @@ LCOE_ASSET = "levelized_cost_of_energy_of_asset"
 # Other KPI
 TOTAL_RENEWABLE_GENERATION_IN_LES = "Total internal renewable generation"
 TOTAL_NON_RENEWABLE_GENERATION_IN_LES = "Total internal non-renewable generation"
+TOTAL_GENERATION_IN_LES = "Total internal generation"
 TOTAL_RENEWABLE_ENERGY_USE = "Total renewable energy use"
 TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use"
-RENEWABLE_SHARE = "Renewable_share"
+RENEWABLE_FACTOR = "Renewable factor"
+RENEWABLE_SHARE_OF_LOCAL_GENERATION = "Renewable share of local generation"
+
 
 TOTAL_DEMAND = "Total_demand"
 TOTAL_EXCESS = "Total_excess"
+TOTAL_FEEDIN = "Total_feedin"
 SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
 ATTRIBUTED_COSTS = "Attributed costs"
 LCOeleq = "Levelized costs of electricity equivalent"
 
 DEGREE_OF_SECTOR_COUPLING = "Degree of sector coupling"
+DEGREE_OF_AUTONOMY = "Degree of autonomy"
+ONSITE_ENERGY_FRACTION = "Onsite energy fraction"
+ONSITE_ENERGY_MATCHING = "Onsite energy matching"
+
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (

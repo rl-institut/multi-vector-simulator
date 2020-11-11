@@ -4,8 +4,8 @@ from multi_vector_simulator.utils.constants_json_strings import *
 
 # path to the root of this repository (assumes this file is in src/mvs_eland/utils folder)
 REPO_PATH = os.path.abspath(os.path.curdir)
-PACKAGE_PATH = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PACKAGE_DATA_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "package_data"
 )
 # name of the default input folder
 INPUT_FOLDER = "inputs"
@@ -47,8 +47,6 @@ ARG_PATH_SIM_OUTPUT = "output_folder"
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_PATH, OUTPUT_FOLDER)
 
-TEMPLATE_INPUT_PATH = os.path.join(REPO_PATH, TEMPLATE_INPUT_FOLDER)
-
 PATH_INPUT_FILE = "path_input_file"
 PATH_INPUT_FOLDER = "path_input_folder"
 PATH_OUTPUT_FOLDER = "path_output_folder"
@@ -80,7 +78,7 @@ DEFAULT_MAIN_KWARGS = dict(
 # list of csv filename which must be present within the CSV_ELEMENTS folder with the parameters
 # associated to each of these filenames
 REQUIRED_CSV_PARAMETERS = {
-    CONSTRAINTS: [MINIMAL_RENEWABLE_SHARE],
+    CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR],
     ENERGY_CONSUMPTION: [
         DSM,
         FILENAME,
@@ -183,7 +181,7 @@ REQUIRED_JSON_PARAMETERS = {
     ENERGY_PROVIDERS: None,
     ENERGY_STORAGE: None,
     FIX_COST: None,
-    CONSTRAINTS: [MINIMAL_RENEWABLE_SHARE],
+    CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR],
     PROJECT_DATA: [
         COUNTRY,
         LABEL,

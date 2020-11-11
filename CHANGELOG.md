@@ -19,6 +19,36 @@ Here is a template for new release sections
 -
 ```
 
+## [0.5.2] - 2020-11-11
+
+### Added
+- Create function `utils.copy_inputs_template` to copy input_template from package data_files (#608)
+- Create `MANIFEST.in` file (#608)
+- Add entrypoint for `mvs_create_input_template` in `setup.py` (#608)
+- Create script `prepare_package.py` to add data to package and build dist folder (#608)
+- Five new KPI's added to E3: Onsite energy fraction, Onsite energy matching, Degree of autonomy, total_feedin_electricity_equivalent and internal generation (#624)
+- Add definition of `renewable share of local generation` in RTD, `E3.add_renewable_share_of_local_generation` and pytests (#637)
+- Add calculation of electricity equivalents in `E3.weighting_for_sector_coupled_kpi()` (#637)
+- Add benchmark test for  the calculation of: `TOTAL_NON_RENEWABLE_GENERATION_IN_LES`, `TOTAL_RENEWABLE_GENERATION_IN_LES`, `TOTAL_NON_RENEWABLE_ENERGY_USE`, `TOTAL_RENEWABLE_ENERGY_USE`, `RENEWABLE_FACTOR`, `RENEWABLE_SHARE_OF_LOCAL_GENERATION` for one sector (#637)
+- New constant variable: `DATA="data"` (#651)
+
+### Changed
+- Moved `get_nested_value`, `set_nested_value`, `split_nested_path` from `tests/test_sensitivity.py` to `src/multi_vector_simulator/utils/__init__.py` (#650)
+- Rename PACKAGE_PATH to PACKAGE_DATA_PATH (#608)
+- Update release protocol within `Contributing.md` (#608)
+- Definition of renewable share (RES), now renewable factor (#637)
+- Refactoring of `RENEWABLE_SHARE` into `RENEWABLE_FACTOR` and some functions in E3 (now `E3.add_total_renewable_and_non_renewable_energy_origin` and `E3.add_renewable_factor`) (#637)
+- Rename: `Minimal renewable share constraint` to `Minimal renewable factor constraint` in all files (python, messages, RTD, json, tests, csv), so that this is in line with the definition and does not cause any confusion, explained in RTD (#637)
+- Modify `B0_data_input_json.py` to read "input_timeseries" into `pandas.Series` from epa formated input json (#651)
+- Modify `convert_mvs_params_to_epa` in `utils.data_parser` to convert `pandas.Series` back to "input_timeseries" (#651)
+
+### Removed
+- Variable `TEMPLATE_INPUT_PATH` (#608)
+- Field `data_files` from `setup.py` (#608)
+
+### Fixed
+- Calculation of the renewable share relative taking into account energy carrier weighting (#637)
+
 ## [0.5.1 - 2020-11-10]
 
 ### Added
@@ -28,7 +58,7 @@ Here is a template for new release sections
 - Remove REPORT_PATH constant (#607)
 - Add report assets and example simulation to package_data in `setup.py` (#607)
 - Add a util function `copy_report_assets` to copy report asset to simulation output folder when user generates the report (#607)
-- Add entrypoints for `mvs_tool` and `mvs_report` in ´setup.py´ (this can be simply typed directly in terminal) (#607)
+- Add entrypoints for `mvs_tool` and `mvs_report` in `setup.py` (this can be simply typed directly in terminal) (#607)
 - Updated readthedocs: Validation plan - Implemented tests and possible future ones (#593)
 - Updated readthedocs: Gather the MVS parameters in a csv file and parse it to a sphinx RTD file (#620)
 - Added more energy carriers and their weights to the list of already available energy carriers in constants.py (#621)
@@ -67,6 +97,7 @@ Here is a template for new release sections
 - Replace `==` by `is` in expression with `True`, `False` or `None` (#625)
 - Remove unused `dict_values` argument of function `receive_timeseries_from_csv` (#625)
 - Move the end of the function `receive_timeseries_from_csv` into `C0.compute_timeseries_properties()` (#625)
+- Fix rendering issues with the PDF report and web app: Tables, ES graph sizing (#643)
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)
@@ -78,6 +109,7 @@ Here is a template for new release sections
 - Repaired the broken links to input CSV files (#618)
 - Outdated RTD info and mistakenly deleted sentence (#629)
 - All `variable_costs`, `efficiency` and `nominal_value` of transformers on output flows. Before they were inconsistently assigned to input or output flows. (#596)
+- Calculation of the renewable share relative taking into account energy carrier weighting (#637)
 
 ## [0.5.0] - 2020-10-05
 

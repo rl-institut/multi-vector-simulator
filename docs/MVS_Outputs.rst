@@ -100,21 +100,92 @@ Technical data
 Energy flows (aggregated) per asset
 ###################################
 
-Renewable share (RES)
-#####################
 
-Describes the share of the MES demand that is supplied from renewable sources.
+.. _kpi_renewable_share_of_local_generation:
+
+Renewable share of local generation (REGen)
+###########################################
+
+The renewable share of local generation describes how much of the energy generated locally is produced from renewable sources.
+It does not take into account the consumption from energy providers.
+
+The renewable share of local generation for each sector does not utilize energy carrier weighting but has a limited, single-vector view:
 
 .. math::
-        RES &=\frac{\sum_i {E_{RES,generation} (i) \cdot w_i}}{\sum_j {E_{generation}(j) \cdot w_j}+\sum_k {E_{grid} (k)}}
+        REGen_v &=\frac{\sum_i {E_{rgen,i}}}{\sum_j {E_{gen,j}}}
 
-        \text{with } &i \epsilon \text{[PV,Geothermal,…]}
+        \text{with } v &\text{: Energy vector}
 
-        &j \epsilon \text{[generation assets 1,2,…]}
+        rgen &\text{: Renewable generation}
 
-        &k \epsilon \text{[DSO 1,2…]}
+        gen &\text{: Renewable and non-renewable generation}
 
-** The content of this section was copied from the conference paper handed in to CIRED 2020**
+        i,j &\text{: Asset 1,2,…}
+
+For the system-wide share of local renewable generation, energy carrier weighting is used:
+
+.. math::
+        REGen &=\frac{\sum_i {E_{rgen,i} \cdot w_i}}{\sum_j {E_{gen,j} \cdot w_j}}
+
+        \text{with } rgen &\text{: Renewable generation}
+
+        gen &\text{: Renewable and non-renewable generation}
+
+        i, j &\text{: Assets 1,2,…}
+
+        w_i, w_j &\text{: Energy carrier weighting factor for output of asset i/j}
+
+
+:Example:
+
+An energy system is composed of a heat and an electricity side. Following are the energy flows:
+
+* 100 kWh from a local PV plant
+* 0 kWh local generation for the heat side
+
+This results in:
+
+* A single-vector renewable share of local generation of 0% for the heat sector.
+* A single-vector renewable share of local generation of 100% for the electricity sector.
+* A system-wide renewable share of local generation of 100%.
+
+
+.. _kpi_renewable_factor:
+
+Renewable factor (RF)
+#####################
+
+Describes the share of the energy influx to the local energy system that is provided from renewable sources.
+This includes both local generation as well as consumption from energy providers.
+
+.. math::
+        RF &=\frac{\sum_i {E_{rgen,i} \cdot w_i + RES \cdot E_{grid}}}{\sum_j {E_{gen,j} \cdot w_j}+\sum_k {E_{grid} (k) \cdot w_k}}
+
+        \text{with } rgen &\text{: Renewable generation}
+
+        gen &\text{: Renewable and non-renewable generation}
+
+        i, j &\text{: Assets 1,2,…}
+
+        RES &\text{: Renewable energy share of energy provider}
+
+        k &\text{: Energy provider 1,2…}
+
+        w_i, w_j, w_k &\text{: Energy carrier weighting factor for output of asset i/j/k}
+
+:Example:
+
+An energy system is composed of a heat and an electricity side. Following are the energy flows:
+
+* 100 kWh from a local PV plant
+* 0 kWh local generation for the heat side
+* 100 kWh consumption from the electricity provider, who has a renewable factor of 50%
+
+Again, the heat sector would have a renewable factor of 0% when considered seperately, and the electricity side would have an renewable factor of 75%. This results in a system-wide renewable share of:
+
+.. math:: RF = \frac{ 100 kWh(el)\cdot \frac{kWh(eleq)}{kWh(el)} +50 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}}{200 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}} = 3/4 = \text{75 \%}
+
+The renewable factor can, just like the :ref:`kpi_renewable_share_of_local_generation` not indicate how much renewable energy is used in each of the sectors. In the future, it may be possible to dive into this together with the degree of sector-coupling.
 
 CO2 Emissions
 #############
@@ -125,7 +196,7 @@ with all aggregated energy flows from the generation assets and their subsequent
 .. math::
         CO2 Emissions &= \sum_i {E_{gen} (i) \cdot CO2_{eq} (i)}
 
-        \text{with~} &i \epsilon \text{[generation assets 1,2,…]}
+        \text{with~} &i \text{: generation assets 1,2,…}
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
@@ -140,7 +211,7 @@ To measure this, we propose to compare the energy flows in between the sectors t
 .. math::
         DSC & =\frac{\sum_{i,j}{E_{conversion} (i,j) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
-        \text{with } & i,j \epsilon \text{[Electricity,H2…]}
+        \text{with } i,j &\text{: Electricity,H2…}
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
