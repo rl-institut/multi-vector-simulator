@@ -867,6 +867,7 @@ def create_app(results_json, path_sim_output=None):
                             ),
                         ],
                     ),
+                    create_demands_section(output_json=results_json, sectors=sectors),
                     insert_subsection(
                         title="Energy Demand",
                         content=[
