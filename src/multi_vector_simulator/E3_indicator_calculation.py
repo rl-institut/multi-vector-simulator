@@ -117,7 +117,7 @@ def total_demand_and_excess_each_sector(dict_values):
     Tested with
     - test_add_levelized_cost_of_energy_carriers_one_sector()
     - test_add_levelized_cost_of_energy_carriers_two_sectors()
-    - Test_Technical_KPI.renewable_factor_and_renewable_share_of_local_generation()
+    - TestTechnicalKPI.renewable_factor_and_renewable_share_of_local_generation()
     """
 
     # Define empty dict to gather the total demand of each energy carrier
@@ -351,7 +351,7 @@ def add_renewable_share_of_local_generation(dict_values):
         Tested with
         * test_renewable_share_of_local_generation_one_sector()
         * test_renewable_share_of_local_generation_two_sectors()
-        * Test_Technical_KPI.renewable_factor_and_renewable_share_of_local_generation()
+        * TestTechnicalKPI.renewable_factor_and_renewable_share_of_local_generation()
         """
 
     dict_renewable_share = {}
@@ -411,7 +411,7 @@ def add_renewable_factor(dict_values):
     Tested with
     - test_renewable_factor_one_sector
     - test_renewable_factor_two_sectors
-    - Test_Technical_KPI.renewable_factor_and_renewable_share_of_local_generation()
+    - TestTechnicalKPI.renewable_factor_and_renewable_share_of_local_generation()
     """
     dict_renewable_share = {}
     # Loops though the sectors

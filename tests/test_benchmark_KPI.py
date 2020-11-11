@@ -246,7 +246,7 @@ class Test_Economic_KPI:
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
 
 
-class Test_Technical_KPI:
+class TestTechnicalKPI:
     def setup_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
