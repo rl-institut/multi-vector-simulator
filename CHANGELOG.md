@@ -26,6 +26,7 @@ Here is a template for new release sections
 - Create `MANIFEST.in` file (#608)
 - Add entrypoint for `mvs_create_input_template` in `setup.py` (#608)
 - Create script `prepare_package.py` to add data to package and build dist folder (#608)
+- Five new KPI's added to E3: Onsite energy fraction, Onsite energy matching, Degree of autonomy, total_feedin_electricity_equivalent and internal generation (#624)
 - Added definition of `renewable share of local generation` in RTD, `E3.add_renewable_share_of_local_generation` and pytests (#637)
 - Added calculation of electricity equivalents in `E3.weighting_for_sector_coupled_kpi()` (#637)
 - Added benchmark test for  the calculation of: `TOTAL_NON_RENEWABLE_GENERATION_IN_LES`, `TOTAL_RENEWABLE_GENERATION_IN_LES`, `TOTAL_NON_RENEWABLE_ENERGY_USE`, `TOTAL_RENEWABLE_ENERGY_USE`, `RENEWABLE_FACTOR`, `RENEWABLE_SHARE_OF_LOCAL_GENERATION` for one sector (#637)
@@ -67,7 +68,6 @@ Here is a template for new release sections
 - Create mapping between EPA and MVS parameter names (#625)
 - Create parameter parser from EPA to MVS (#625)
 - Create parameter parser from MVS to EPA (#625)
-- Five new KPI's added to E3: Onsite energy fraction, Onsite energy matching, Degree of autonomy, total_feedin_electricity_equivalent and internal generation (#609)
 
 ### Changed
 - Order of readthedocs content (#590)
