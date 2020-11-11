@@ -1,3 +1,5 @@
+.. _installation-steps:
+
 ========================
 Getting started with MVS
 ========================

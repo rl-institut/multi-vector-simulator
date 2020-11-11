@@ -124,6 +124,7 @@ mvs_csv_config.json
 /report/*.pdf
 
 # Local input folders, eg. for pilots
+/src/multi_vector_simulator/package_data/
 /example_1/
 /UVTgv_input_files/
 /inputs/
