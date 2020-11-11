@@ -61,6 +61,7 @@ Here is a template for new release sections
 - Create mapping between EPA and MVS parameter names (#625)
 - Create parameter parser from EPA to MVS (#625)
 - Create parameter parser from MVS to EPA (#625)
+- Five new KPI's added to E3: Onsite energy fraction, Onsite energy matching, Degree of autonomy, total_feedin_electricity_equivalent and internal generation (#609)
 
 ### Changed
 - Order of readthedocs content (#590)

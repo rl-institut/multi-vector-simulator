@@ -10,6 +10,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ECONOMIC_DATA,
     ENERGY_PRODUCTION,
     ENERGY_PROVIDERS,
+    ENERGY_CONSUMPTION,
     LABEL,
     VALUE,
     CRF,
@@ -34,6 +35,14 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SUFFIX_ELECTRICITY_EQUIVALENT,
     ATTRIBUTED_COSTS,
     LCOeleq,
+    TOTAL_FEEDIN,
+    DSO_FEEDIN,
+    AUTO_SINK,
+    TOTAL_GENERATION_IN_LES,
+    ONSITE_ENERGY_FRACTION,
+    TOTAL_EXCESS,
+    ONSITE_ENERGY_MATCHING,
+    DEGREE_OF_AUTONOMY,
 )
 
 electricity = "Electricity"
@@ -442,3 +451,149 @@ def test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equi
     )
     assert attributed_costs == 0
     assert lcoe_energy_carrier == 0
+
+
+def test_add_total_feedin_electricity_equivaluent():
+    """ """
+
+    dso = "DSO"
+    feedin = 1000
+    consumption_asset = str(dso + DSO_FEEDIN + AUTO_SINK)
+    dict_values_feedin = {
+        ENERGY_PROVIDERS: {dso},
+        ENERGY_CONSUMPTION: {
+            consumption_asset: {
+                ENERGY_VECTOR: "Electricity",
+                TOTAL_FLOW: {VALUE: feedin},
+            }
+        },
+        KPI: {KPI_SCALARS_DICT: {}},
+        PROJECT_DATA: {SECTORS: {electricity: electricity}},
+    }
+
+    E3.add_total_feedin_electricity_equivaluent(dict_values_feedin)
+
+    assert (
+        dict_values_feedin[KPI][KPI_SCALARS_DICT][
+            TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT
+        ]
+        == feedin
+    ), f"The total_feedin_electricity_equivalent is added successfully to the list of KPI's."
+
+
+def test_add_onsite_energy_fraction():
+    """ """
+
+    total_generation = 50
+    total_feedin = 20
+    dict_values_OEF = {
+        KPI: {
+            KPI_SCALARS_DICT: {
+                TOTAL_GENERATION_IN_LES: total_generation,
+                TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT: total_feedin,
+            }
+        },
+    }
+    E3.add_onsite_energy_fraction(dict_values_OEF)
+
+    output = (total_generation - total_feedin) / total_generation
+
+    assert (
+        dict_values_OEF[KPI][KPI_SCALARS_DICT][ONSITE_ENERGY_FRACTION] == output
+    ), f"The onsite energy fraction is added successfully to the list of KPI's."
+
+
+def test_add_onsite_energy_matching():
+    """ """
+
+    total_generation = 50
+    total_feedin = 20
+    total_excess = 10
+    total_demand = 100
+    dict_values_OEM = {
+        KPI: {
+            KPI_SCALARS_DICT: {
+                TOTAL_GENERATION_IN_LES: total_generation,
+                TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT: total_feedin,
+                TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT: total_excess,
+                TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
+            }
+        },
+    }
+    E3.add_onsite_energy_matching(dict_values_OEM)
+
+    onsite_energy_matching = (
+        total_generation - total_feedin - total_excess
+    ) / total_demand
+
+    assert (
+        dict_values_OEM[KPI][KPI_SCALARS_DICT][ONSITE_ENERGY_MATCHING]
+        == onsite_energy_matching
+    ), f"The onsite energy matching is added successfully to the list of KPI's."
+
+
+def test_add_degree_of_autonomy():
+    """ """
+
+    total_generation = 50
+    total_demand = 100
+    dict_values_DA = {
+        KPI: {
+            KPI_SCALARS_DICT: {
+                TOTAL_GENERATION_IN_LES: total_generation,
+                TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
+            }
+        },
+    }
+    E3.add_degree_of_autonomy(dict_values_DA)
+
+    degree_of_autonomy = total_generation / total_demand
+
+    assert (
+        dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY] == degree_of_autonomy
+    ), f"The degree of autonomy is added successfully to the list of KPI's."
+
+
+def test_equation_degree_of_autonomy():
+    """ """
+    total_generation = 30
+    total_demand = 100
+    degree_of_autonomy = E3.equation_degree_of_autonomy(total_generation, total_demand)
+    assert degree_of_autonomy == total_generation / total_demand, (
+        f"The degree_of_autonomy ({degree_of_autonomy}) is not calculated correctly. "
+        f"It should be equal to {total_generation / total_demand }."
+    )
+
+
+def test_equation_onsite_energy_fraction():
+    """ """
+    total_generation = 30
+    total_feedin = 10
+    onsite_energy_fraction = E3.equation_onsite_energy_fraction(
+        total_generation, total_feedin
+    )
+    assert (
+        onsite_energy_fraction == (total_generation - total_feedin) / total_generation
+    ), (
+        f"The onsite_energy_fraction ({onsite_energy_fraction}) is not calculated correctly. "
+        f"It should be equal to {(total_generation - total_feedin)/ total_generation}."
+    )
+
+
+def test_equation_onsite_energy_matching():
+    """ """
+    total_generation = 30
+    total_feedin = 10
+    total_excess = 10
+    total_demand = 100
+
+    onsite_energy_matching = E3.equation_onsite_energy_matching(
+        total_generation, total_feedin, total_excess, total_demand
+    )
+    assert (
+        onsite_energy_matching
+        == (total_generation - total_feedin - total_excess) / total_demand
+    ), (
+        f"The onsite_energy_matching ({onsite_energy_matching}) is not calculated correctly. "
+        f"It should be equal to {(total_generation - total_feedin - total_excess) / total_demand}."
+    )

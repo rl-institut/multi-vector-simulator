@@ -4,11 +4,13 @@ Module E3 indicator calculation
 
 In module E3 the technical KPI are evaluated:
 - calculate renewable share
-- calculate degree of autonomy
-- calculate total generation of each asset
+- calculate degree of autonomy (DA)
+- calculate total generation of each asset and total_internal_generation
+- calculate total feedin electricity equivalent
 - calculate energy flows between sectors
-- calculate degree of autonomy me
 - calculate degree of sector coupling
+- calculate onsite energy fraction (OEF)
+- calculate onsite energy matching (OEM)
 """
 import logging
 
@@ -33,23 +35,31 @@ from multi_vector_simulator.utils.constants_json_strings import (
     KPI_SCALARS_DICT,
     KPI_UNCOUPLED_DICT,
     KPI_COST_MATRIX,
+    KPI_SCALAR_MATRIX,
     LCOE_ASSET,
     COST_TOTAL,
     TOTAL_FLOW,
     RENEWABLE_ASSET_BOOL,
     RENEWABLE_SHARE_DSO,
     DSO_CONSUMPTION,
+    DSO_FEEDIN,
+    DSO_CONSUMPTION,
     TOTAL_RENEWABLE_GENERATION_IN_LES,
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
+    TOTAL_GENERATION_IN_LES,
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_ENERGY_USE,
     RENEWABLE_SHARE,
     TOTAL_DEMAND,
     TOTAL_EXCESS,
+    TOTAL_FEEDIN,
     SUFFIX_ELECTRICITY_EQUIVALENT,
     LCOeleq,
     ATTRIBUTED_COSTS,
     DEGREE_OF_SECTOR_COUPLING,
+    DEGREE_OF_AUTONOMY,
+    ONSITE_ENERGY_FRACTION,
+    ONSITE_ENERGY_MATCHING,
 )
 
 
@@ -323,6 +333,11 @@ def total_renewable_and_non_renewable_energy_origin(dict_values):
         TOTAL_NON_RENEWABLE_ENERGY_USE,
     ]:
         weighting_for_sector_coupled_kpi(dict_values, sector_specific_kpi)
+    # calculate total generation, renewable + non-renewable
+    dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES] = (
+        dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
+        + dict_values[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_GENERATION_IN_LES]
+    )
 
     logging.info("Calculated renewable share of the LES.")
 
@@ -412,7 +427,78 @@ def equation_renewable_share(total_res, total_non_res):
     return renewable_share
 
 
-def equation_degree_of_autonomy():
+def add_degree_of_autonomy(dict_values):
+    """
+    Determines degree of autonomy and adds KPI to dict_values
+
+    Parameters
+    ----------
+    dict_values: dict
+        dict with all project information and results,
+        after applying total_renewable_and_non_renewable_energy_origin and
+        total_demand_and_excess_each_sector
+
+    Returns
+    -------
+    None
+        updated dict_values with the degree of autonomy
+
+    Tested with
+    - test_add_degree_of_autonomy()
+    """
+
+    total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
+
+    total_demand = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+
+    degree_of_autonomy = equation_degree_of_autonomy(total_generation, total_demand)
+
+    dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_AUTONOMY: degree_of_autonomy})
+
+    logging.debug(
+        f"Calculated the {DEGREE_OF_AUTONOMY}: {round(degree_of_autonomy, 2)}"
+    )
+    logging.info(f"Calculated the {DEGREE_OF_AUTONOMY} of the LES.")
+
+    return
+
+
+def equation_degree_of_autonomy(total_generation, total_demand):
+    """
+    Calculates the degree of autonomy (DA).
+
+    The degree of autonomy describes the relation of the total locally
+    generated energy to the total demand of the system.
+
+    Parameters
+    ----------
+    total_generation: float
+        total internal generation of energy
+
+    total_demand: float
+        total demand
+
+    Returns
+    -------
+    float
+        degree of autonomy
+
+    .. math::
+        DA &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+
+    A DA = 0 : System is totally dependent on the DSO,
+    DA = 1 : System is autonomous / a net-energy system
+    DA > 1 : a plus-energy system.
+
+    Notice: As above, we apply a weighting based on Electricity Equivalent.
+
+    Tested with
+    - test_equation_degree_of_autonomy()
+    """
+    degree_of_autonomy = total_generation / total_demand
+
     return degree_of_autonomy
 
 
@@ -483,7 +569,8 @@ def equation_degree_of_sector_coupling(
 
     Returns
     -------
-    Degree of sector coupling based on conversion flows and energy demands in electricity equivalent.
+    float
+        Degree of sector coupling based on conversion flows and energy demands in electricity equivalent.
 
     .. math::
        DSC=\frac{\sum_{i,j}{E_{conversion} (i,j)⋅w_i}}{\sum_i {E_{demand} (i)⋅w_i}}
@@ -497,11 +584,208 @@ def equation_degree_of_sector_coupling(
     return degree_of_sector_coupling
 
 
-def equation_onsite_energy_fraction():
+def add_total_feedin_electricity_equivaluent(dict_values):
+    """
+    Determines the total grid feed-in with weighting of electricity equivalent.
+
+    Parameters
+    ----------
+    dict_values: dict
+        dict with all project information and results
+
+    Returns
+    -------
+    None
+        updated dict_values with KPI : total feedin
+
+    Tested with
+    - test_add_total_feedin_electricity_equivaluent()
+    """
+
+    total_feedin_dict = {}
+    # Get source connected to the specific DSO in question
+    for dso in dict_values[ENERGY_PROVIDERS]:
+        # load total flow into the dso sink
+        consumption_asset = str(dso + DSO_FEEDIN + AUTO_SINK)
+        energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_asset][
+            ENERGY_VECTOR
+        ]
+        total_feedin_dict.update({energy_carrier: {}})
+        total_feedin_dict.update(
+            {
+                energy_carrier: dict_values[ENERGY_CONSUMPTION][consumption_asset][
+                    TOTAL_FLOW
+                ][VALUE]
+            }
+        )
+
+    # Append total feedin in electricity equivalent to kpi
+    calculate_electricity_equivalent_for_a_set_of_aggregated_values(
+        dict_values, total_feedin_dict, kpi_name=TOTAL_FEEDIN
+    )
+
+
+def add_onsite_energy_fraction(dict_values):
+    """
+    Determines onsite energy fraction (OEF), i.e. self-consumption, and adds KPI to dict_values
+
+    Parameters
+    ----------
+    dict_values: dict
+        dict with all project information and results
+        after applying total_renewable_and_non_renewable_energy_origin
+    
+    Returns
+    -------
+    None
+        updated dict_values with onsite energy fraction KPI
+
+    Tested with
+    - test_add_onsite_energy_fraction()
+    """
+
+    total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
+
+    total_feedin = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+
+    # calculate onsite energy fraction
+    onsite_energy_fraction = equation_onsite_energy_fraction(
+        total_generation, total_feedin
+    )
+
+    # save KPI  onsite energy fraction into KPI_SCALARS_DICT
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {ONSITE_ENERGY_FRACTION: onsite_energy_fraction}
+    )
+    logging.debug(
+        f"Calculated the {ONSITE_ENERGY_FRACTION}: {round(onsite_energy_fraction, 2)}"
+    )
+    logging.info(f"Calculated the {ONSITE_ENERGY_FRACTION} of the LES.")
+
+    return
+
+
+def equation_onsite_energy_fraction(total_generation, total_feedin):
+    """
+    Calculates onsite energy fraction (OEF), i.e. self-consumption.
+
+    OEF describes the fraction of all locally generated energy that is consumed
+    by the system itself.
+
+        Parameters
+        ----------
+        total_generation: float
+            Energy equivalent of total generation flows
+        total_feedin: float
+            Total feed into the grid
+
+        Returns
+        -------
+            float
+                Onsite energy fraction.
+
+        .. math::
+                OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
+
+                &OEF \epsilon \text{[0,1]}
+
+        Tested with
+        - test_equation_onsite_energy_fraction()
+    """
+
+    onsite_energy_fraction = (total_generation - total_feedin) / total_generation
+
     return onsite_energy_fraction
 
 
-def equation_onsite_energy_matching():
+def add_onsite_energy_matching(dict_values):
+    """
+    Determines onsite energy matching (OEM), i.e. self-sufficiency, and adds KPI to dict_values
+
+    Parameters
+    ----------
+    dict_values: dict
+        dict with all project information and results
+        after applying total_renewable_and_non_renewable_energy_origin and
+        total_demand_and_excess_each_sector and
+        add_onsite_energy_fraction
+    
+    Returns
+    -------
+    None
+        updated dict_values with onsite energy matching KPI
+
+    Tested with
+    - test_add_onsite_energy_matching()
+    """
+
+    total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
+
+    total_feedin = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+
+    total_excess = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+
+    total_demand = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+
+    # calculate onsite energy matching
+    onsite_energy_matching = equation_onsite_energy_matching(
+        total_generation, total_feedin, total_excess, total_demand
+    )
+    # save KPI onsite energy matching to KPI Scalars
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {ONSITE_ENERGY_MATCHING: onsite_energy_matching}
+    )
+    logging.debug(
+        f"Calculated the {ONSITE_ENERGY_MATCHING}: {round(onsite_energy_matching, 2)}"
+    )
+    logging.info(f"Calculated the {ONSITE_ENERGY_MATCHING} of the LES.")
+
+    return
+
+
+def equation_onsite_energy_matching(
+    total_generation, total_feedin, total_excess, total_demand
+):
+    """
+    Calculates onsite energy matching (OEM), i.e. self-sufficiency.
+
+    OEM describes the fraction of the total demand that can be
+    covered by the locally generated energy.
+
+        Parameters
+        ----------
+        total_generation: float
+            Energy equivalent of total conversion flows
+        total_feedin: float
+            Total feed into the grid
+        total_excess: float
+            Total Excess energy
+        total_demand: float
+            Total demand
+
+        Returns
+        -------
+        Onsite energy matching.
+
+        .. math::
+                OEM &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i - E_{excess}(i) \cdot w_i}{\sum_i {E_{demand} (i) \cdot w_i}}
+
+                &OEM \epsilon \text{[0,1]}
+
+        Tested with
+        - test_equation_onsite_energy_matching()
+        """
+    onsite_energy_matching = (
+        total_generation - total_feedin - total_excess
+    ) / total_demand
     return onsite_energy_matching
 
 
