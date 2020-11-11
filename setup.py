@@ -138,8 +138,7 @@ setup(
     # called `my_module.py` to exist:
     #
     #   py_modules=["my_module"],
-    #
-    packages=["multi_vector_simulator", "multi_vector_simulator.utils"],  # Required
+    packages=["multi_vector_simulator", "multi_vector_simulator.utils",],  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you
@@ -167,6 +166,7 @@ setup(
     #
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
+    include_package_data=True,
     # package_data={  # Optional
     #     'sample': ['package_data.dat'],
     # },
@@ -175,21 +175,7 @@ setup(
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files
     #
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
-    data_files=[
-        (
-            "assets",
-            ["report/assets/logo-eland-original.jpg", "report/assets/styles.css"],
-        ),
-        ("inputs", ["tests/inputs/mvs_config.json"]),
-        (
-            "inputs/time_series",
-            [
-                path.join("tests", "inputs", "time_series", fn)
-                for fn in listdir("tests/inputs/time_series")
-                if fn.endswith(".csv")
-            ],
-        ),
-    ],  # Optional
+    # data_files=[],  # Optional
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # `pip` to create the appropriate form of executable for the target
@@ -201,6 +187,7 @@ setup(
         "console_scripts": [
             "mvs_tool=multi_vector_simulator.cli:main",
             "mvs_report=multi_vector_simulator.cli:report",
+            "mvs_create_input_template=multi_vector_simulator.cli:create_input_template_folder",
         ],
     },
     # List additional URLs that are relevant to your project as a dict.

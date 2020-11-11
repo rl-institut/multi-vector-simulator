@@ -1,10 +1,11 @@
 import os
+import copy
 import json
 import shutil
 import logging
 import pandas as pd
 from .constants import (
-    PACKAGE_PATH,
+    PACKAGE_DATA_PATH,
     JSON_FNAME,
     CSV_ELEMENTS,
     OUTPUT_FOLDER,
@@ -14,6 +15,7 @@ from .constants import (
     JSON_FNAME,
     MISSING_PARAMETERS_KEY,
     EXTRA_PARAMETERS_KEY,
+    TEMPLATE_INPUT_FOLDER,
 )
 
 
@@ -174,6 +176,116 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
     return answer
 
 
+def set_nested_value(dct, value, keys):
+    r"""Set a value within a nested dict structure given the path within the dict
+
+    Parameters
+    ----------
+    dct: dict
+        the (potentially nested) dict from which we want to get a value
+    value: variable type
+        value to assign within the dict
+    keys: tuple
+        Tuple containing the succession of keys which lead to the value within the nested dict
+
+    Returns
+    -------
+    The value under the path within the (potentially nested) dict
+
+    Example
+    -------
+    >>> dct = dict(a=dict(a1=1, a2=2),b=dict(b1=dict(b11=11,b12=dict(b121=121))))
+    >>> print(set_nested_value(dct, 400,("b", "b1", "b12","b121")))
+    {'a': {'a1': 1, 'a2': 2}, 'b': {'b1': {'b11': 11, 'b12': {'b121': 400}}}}
+    """
+    if isinstance(keys, tuple) is True:
+        answer = copy.deepcopy(dct)
+        if len(keys) > 1:
+            answer[keys[0]] = set_nested_value(dct[keys[0]], value, keys[1:])
+        elif len(keys) == 1:
+            answer[keys[0]] = value
+        else:
+            raise ValueError(
+                "The tuple argument 'keys' from set_nested_value() should not be empty"
+            )
+    else:
+        raise TypeError("The argument 'keys' from set_nested_value() should be a tuple")
+    return answer
+
+
+def get_nested_value(dct, keys):
+    r"""Get a value from a succession of keys within a nested dict structure
+
+    Parameters
+    ----------
+    dct: dict
+        the (potentially nested) dict from which we want to get a value
+    keys: tuple
+        Tuple containing the succession of keys which lead to the value within the nested dict
+
+    Returns
+    -------
+    The value under the path within the (potentially nested) dict
+
+    Example
+    -------
+    >>> dct = dict(a=dict(a1=1, a2=2),b=dict(b1=dict(b11=11,b12=dict(b121=121))))
+    >>> print(get_nested_value(dct, ("b", "b1", "b12","b121")))
+    121
+    """
+    if isinstance(keys, tuple) is True:
+        if len(keys) > 1:
+            answer = get_nested_value(dct[keys[0]], keys[1:])
+        elif len(keys) == 1:
+            answer = dct[keys[0]]
+        else:
+            raise ValueError(
+                "The tuple argument 'keys' from get_nested_value() should not be empty"
+            )
+    else:
+        raise TypeError("The argument 'keys' from get_nested_value() should be a tuple")
+    return answer
+
+
+def split_nested_path(path):
+    r"""Separate a single-string path in a nested dict in a list of keys
+
+
+    Parameters
+    ----------
+    path: str or tuple
+        path within a nested dict which is expressed as a str of a succession of keys separated by
+        a `.` or a `,`. The order of keys is to be read from left to right.
+
+    Returns
+    -------
+    Tuple containing the succession of keys which lead to the value within the nested dict
+
+    """
+    SEPARATORS = (".", ",")
+    keys_list = None
+    if isinstance(path, str):
+        separator_count = 0
+        keys_separator = None
+        for separator in SEPARATORS:
+            if separator in path:
+                if path.count(separator) > 0:
+                    if separator_count > 0:
+                        raise ValueError(
+                            f"The separator of the nested dict's path is not unique"
+                        )
+                    separator_count = path.count(separator)
+                    keys_separator = separator
+        if keys_separator is not None:
+            keys_list = tuple(path.split(keys_separator))
+    elif isinstance(path, tuple):
+        keys_list = path
+    else:
+        raise TypeError("The argument path is not str type")
+
+    return tuple(keys_list)
+
+
 def copy_report_assets(path_destination_folder):
     """Copy the css file and eland logo to the path_destination_folder
 
@@ -192,7 +304,7 @@ def copy_report_assets(path_destination_folder):
         # copy from the default asset folder from mvs package
         try:
             assets_folder = shutil.copytree(
-                os.path.join(PACKAGE_PATH, "assets"), assets_folder
+                os.path.join(PACKAGE_DATA_PATH, "assets"), assets_folder
             )
         except FileNotFoundError:
             assets_folder = shutil.copytree(
@@ -204,3 +316,42 @@ def copy_report_assets(path_destination_folder):
             "from multi_vector_simulator's package".format(assets_folder)
         )
     return assets_folder
+
+
+def copy_inputs_template(path_destination_folder):
+    """Copy the inputs template folder
+
+    Parameters
+    ----------
+    path_destination_folder: str
+        path where the inputs template folder should be copied to
+
+    Returns
+    -------
+    Path of the destination folder
+
+    """
+    inputs_template_folder = os.path.join(
+        path_destination_folder, TEMPLATE_INPUT_FOLDER
+    )
+    if os.path.exists(inputs_template_folder) is False:
+        # copy from the default asset folder from mvs package
+        try:
+            inputs_template_folder = shutil.copytree(
+                os.path.join(PACKAGE_DATA_PATH, TEMPLATE_INPUT_FOLDER),
+                inputs_template_folder,
+            )
+            logging.info(
+                f"The following folder was successfully created into your local "
+                f"directory {inputs_template_folder}"
+            )
+        except FileNotFoundError:
+            logging.warning(
+                "If you installed the package in develop mode, then you cannot use this command"
+            )
+    else:
+        logging.warning(
+            "The inputs template folder {} exists already, it will not be replaced by default "
+            "folder from multi_vector_simulator's package".format(TEMPLATE_INPUT_FOLDER)
+        )
+    return inputs_template_folder
