@@ -556,7 +556,12 @@ def create_plotly_line_fig(
 
 
 def plot_timeseries(
-    dict_values, data_type=DEMANDS, max_days=None, color_list=None, file_path=None
+    dict_values,
+    data_type=DEMANDS,
+    max_days=None,
+    color_list=None,
+    file_path=None,
+    sec_dem_df=None,
 ):
     r"""Plot timeseries as line chart.
 
@@ -585,7 +590,11 @@ def plot_timeseries(
     Dict with html DOM id for the figure as key and :class:`plotly.graph_objs.Figure` as value
     """
 
-    df_dem = convert_demand_to_dataframe(dict_values)
+    if sec_dem_df is None:
+        df_dem = convert_demand_to_dataframe(dict_values)
+    else:
+        df_dem = sec_dem_df
+
     dict_for_plots, dict_plot_labels = extract_plot_data_and_title(
         dict_values, df_dem=df_dem
     )
