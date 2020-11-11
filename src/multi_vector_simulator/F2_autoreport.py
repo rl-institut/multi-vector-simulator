@@ -400,7 +400,9 @@ def insert_plotly_figure(
     return html.Div(children=rendered_plots)
 
 
-def ready_timeseries_plots(dict_values, data_type=DEMANDS, only_print=False):
+def ready_timeseries_plots(
+    dict_values, data_type=DEMANDS, only_print=False, df_sector_demand=None
+):
     r"""Insert the timeseries line plots in a dash html layout.
 
     Parameters
