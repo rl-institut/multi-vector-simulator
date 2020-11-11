@@ -60,6 +60,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     START_DATE,
     EVALUATED_PERIOD,
     TIMESTEP,
+    DATA,
 )
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -315,10 +316,12 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                 if asset_group == ENERGY_BUSSES and k == "Asset_list":
                     asset["assets"] = list(asset.pop(k).keys())
 
-            # move the unit inside the timeseries dict
+            # convert pandas.Series to a timeseries dict with key DATA value list,
+            # move the unit inside the timeseries dict under key UNIT
             if MAP_MVS_EPA[TIMESERIES] in asset:
+                timeseries = asset[MAP_MVS_EPA[TIMESERIES]].to_list()
                 unit = asset.pop(UNIT)
-                asset[MAP_MVS_EPA[TIMESERIES]][UNIT] = unit
+                asset[MAP_MVS_EPA[TIMESERIES]] = {UNIT: unit, DATA: timeseries}
 
             if "_excess" not in asset_label and "_sink" not in asset_label:
                 list_asset.append(asset)
