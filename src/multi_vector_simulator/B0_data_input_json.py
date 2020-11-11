@@ -6,6 +6,8 @@ import os
 import numpy as np
 import pandas as pd
 
+from multi_vector_simulator.utils import data_parser
+
 from multi_vector_simulator.utils.constants_json_strings import (
     START_DATE,
     PERIODS,
@@ -15,6 +17,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESTEP,
     UNIT_MINUTE,
     VALUE,
+    DATA,
+    TIMESERIES,
 )
 
 from multi_vector_simulator.utils.constants import (
@@ -72,6 +76,24 @@ def convert_from_json_to_special_types(a_dict, prev_key=None, time_index=None):
                 answer[k] = convert_from_json_to_special_types(
                     a_dict[k], prev_key=k, time_index=time_index
                 )
+        elif prev_key == data_parser.MAP_MVS_EPA[TIMESERIES]:
+            # the a_dict is from the EPA
+            answer = pd.Series(a_dict[DATA])
+            # Set time_index to Series
+            if time_index is not None:
+                if len(answer.index) > len(time_index):
+                    logging.warning(
+                        f"The time index inferred from {SIMULATION_SETTINGS} is longer as "
+                        f"the timeserie under the field {prev_key}"
+                    )
+                elif len(answer.index) < len(time_index):
+                    logging.warning(
+                        f"The time index inferred from {SIMULATION_SETTINGS} is shorter as "
+                        f"the timeserie under the field {prev_key}"
+                    )
+                else:
+                    answer.index = time_index
+
         else:
             # the a_dict is a dictionary containing the special type key,
             # therefore we apply the conversion if this type is listed below
