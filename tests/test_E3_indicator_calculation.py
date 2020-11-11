@@ -161,7 +161,7 @@ def test_renewable_factor_one_sector():
     }
 
     E3.add_renewable_factor(dict_res)
-    exp = 0.5
+    expected_value = 0.5
     assert (
         RENEWABLE_FACTOR in dict_res[KPI][KPI_UNCOUPLED_DICT]
     ), f"KPI {RENEWABLE_FACTOR} not added to dict_values[KPI][KPI_UNCOUPLED_DICT]"
@@ -169,10 +169,10 @@ def test_renewable_factor_one_sector():
         electricity in dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]
     ), f"KPI {RENEWABLE_FACTOR} not defined for vector {electricity}."
     assert (
-        dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR][electricity] == exp
+        dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR][electricity] == expected_value
     ), f"{RENEWABLE_FACTOR} of {electricity} sector not expected value."
     assert (
-        dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == exp
+        dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == expected_value
     ), f"System-wide {RENEWABLE_FACTOR} of not expected value."
 
 
@@ -199,7 +199,7 @@ def test_renewable_factor_two_sectors():
         electricity: 0.5,
         h2: 0.5,
     }
-    exp = 0.5
+    expected_value = 0.5
     for k in [electricity, h2]:
         assert (
             k in dict_res[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]
@@ -209,7 +209,7 @@ def test_renewable_factor_two_sectors():
         ), f"{RENEWABLE_FACTOR} of sector {k} no expected value."
 
     assert (
-        dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == exp
+        dict_res[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == expected_value
     ), f"System-wide renewable factor not expected value."
 
 
@@ -360,9 +360,9 @@ def test_weighting_for_sector_coupled_kpi_one_sector():
 def test_weighting_for_sector_coupled_kpi_multiple_sectors():
     """ """
     E3.weighting_for_sector_coupled_kpi(dict_weighting_two_sectors, RENEWABLE_FACTOR)
-    exp = numbers[1] + numbers[2] * DEFAULT_WEIGHTS_ENERGY_CARRIERS[h2][VALUE]
+    expected_value = numbers[1] + numbers[2] * DEFAULT_WEIGHTS_ENERGY_CARRIERS[h2][VALUE]
     assert RENEWABLE_FACTOR in dict_weighting_two_sectors[KPI][KPI_SCALARS_DICT]
-    assert dict_weighting_two_sectors[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == exp
+    assert dict_weighting_two_sectors[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == expected_value
 
 
 npc = 1000
@@ -384,7 +384,7 @@ dict_values = {
 def test_add_levelized_cost_of_energy_carriers_one_sector():
     E3.add_levelized_cost_of_energy_carriers(dict_values)
 
-    exp = {
+    expected_value = {
         ATTRIBUTED_COSTS + electricity: 1000,
         LCOeleq
         + electricity: 1000 * dict_values[ECONOMIC_DATA][CRF][VALUE] / total_demand,
@@ -395,11 +395,11 @@ def test_add_levelized_cost_of_energy_carriers_one_sector():
         assert kpi + electricity in dict_values[KPI][KPI_SCALARS_DICT]
         assert (
             dict_values[KPI][KPI_SCALARS_DICT][kpi + electricity]
-            == exp[kpi + electricity]
+            == expected_value[kpi + electricity]
         )
 
     assert LCOeleq in dict_values[KPI][KPI_SCALARS_DICT]
-    assert dict_values[KPI][KPI_SCALARS_DICT][LCOeleq] == exp[LCOeleq]
+    assert dict_values[KPI][KPI_SCALARS_DICT][LCOeleq] == expected_value[LCOeleq]
 
 
 def test_add_levelized_cost_of_energy_carriers_two_sectors():
@@ -428,7 +428,7 @@ def test_add_levelized_cost_of_energy_carriers_two_sectors():
     dict_values[PROJECT_DATA][SECTORS].update({h2: h2})
     E3.add_levelized_cost_of_energy_carriers(dict_values)
 
-    exp = {
+    expected_value = {
         ATTRIBUTED_COSTS
         + electricity: 1000
         * dict_values[KPI][KPI_SCALARS_DICT][
@@ -446,7 +446,7 @@ def test_add_levelized_cost_of_energy_carriers_two_sectors():
             TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
         ],
     }
-    exp.update(
+    expected_value.update(
         {
             LCOeleq
             + electricity: dict_values[KPI][KPI_SCALARS_DICT][
@@ -470,11 +470,11 @@ def test_add_levelized_cost_of_energy_carriers_two_sectors():
         assert kpi + electricity in dict_values[KPI][KPI_SCALARS_DICT]
         assert (
             dict_values[KPI][KPI_SCALARS_DICT][kpi + electricity]
-            == exp[kpi + electricity]
+            == expected_value[kpi + electricity]
         )
 
     assert LCOeleq in dict_values[KPI][KPI_SCALARS_DICT]
-    assert dict_values[KPI][KPI_SCALARS_DICT][LCOeleq] == exp[LCOeleq]
+    assert dict_values[KPI][KPI_SCALARS_DICT][LCOeleq] == expected_value[LCOeleq]
 
 
 def test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equivalent_larger_0_total_flow_energy_carrier_larger_0():
