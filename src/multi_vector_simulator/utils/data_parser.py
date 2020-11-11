@@ -272,18 +272,19 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
 
     Returns
     -------
-    dict_values: dict
+    epa_dict: dict
         epa parameters
 
     """
 
-    dict_values = {}
+    epa_dict = {}
 
     for param_group in [PROJECT_DATA, ECONOMIC_DATA, SIMULATION_SETTINGS, CONSTRAINTS]:
 
         param_group_epa = MAP_MVS_EPA[param_group]
 
-        dict_values[param_group_epa] = mvs_dict[param_group]
+        # assign the whole MVS value to the EPA field
+        epa_dict[param_group_epa] = mvs_dict[param_group]
 
         # convert fields names from MVS convention to EPA convention, if applicable
         keys_list = list(dict_values[param_group_epa].keys())
@@ -293,14 +294,8 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                     param_group_epa
                 ].pop(k)
 
-    for asset_group in [
-        ENERGY_CONSUMPTION,
-        ENERGY_CONVERSION,
-        ENERGY_PRODUCTION,
-        ENERGY_STORAGE,
-        ENERGY_BUSSES,
-        ENERGY_PROVIDERS,
-    ]:
+    # manage which assets parameters are kept and which one are removed in epa_dict
+    for asset_group in EPA_ASSET_KEYS:
         list_asset = []
         for asset_label in mvs_dict[asset_group]:
             # mvs[asset_group] is a dict we want to change into a list
@@ -328,7 +323,7 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
             if "_excess" not in asset_label and "_sink" not in asset_label:
                 list_asset.append(asset)
 
-        dict_values[MAP_MVS_EPA[asset_group]] = list_asset
+        epa_dict[MAP_MVS_EPA[asset_group]] = list_asset
 
     # verify that there are extra keys, besides the one expected by EPA data structure
     extra_keys = {}
@@ -337,7 +332,7 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
     for asset_group in EPA_ASSET_KEYS:
         extra_keys[asset_group] = []
         missing_keys[asset_group] = []
-        for asset in dict_values[MAP_MVS_EPA[asset_group]]:
+        for asset in epa_dict[MAP_MVS_EPA[asset_group]]:
             asset_keys = list(asset.keys())
             for k in asset_keys:
                 if k not in EPA_ASSET_KEYS[asset_group]:
@@ -355,4 +350,4 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
         print("#" * 10 + " Extra values " + "#" * 12)
         pp.pprint(extra_keys)
 
-    return dict_values
+    return epa_dict
