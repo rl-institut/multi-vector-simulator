@@ -535,6 +535,47 @@ def encode_image_file(img_path):
     return encoded_img
 
 
+def create_demands_section(output_json, sectors):
+
+    # Gather all the relevant demand data in a dataframe
+    all_demands_df = convert_demand_to_dataframe(output_json)
+
+    # Format the list of sectors
+    sec_list = """"""
+    for sec in sectors:
+        sec_list += "\n" + f"\u2022 {sec.upper()}"
+
+    # List of content
+    content_of_section = [
+        insert_body_text(
+            "The simulation was performed for the energy system "
+            "covering the following sectors: "
+        ),
+        insert_body_text(f"{sec_list}"),
+    ]
+
+    # Loop to generate the sector headings, sectoral-demands' tables and plots of the demands in each of the sectors
+    for sector in sectors:
+
+        # Determining the sector heading
+        sector_heading = sector.title() + " Demands"
+
+        # Table that holds the sector-specific demands
+        sector_specific_df = all_demands_df[
+            all_demands_df["Type of Demand"].str.match(sector)
+        ]
+
+        # Function call that generates a dash table from the above dataframe and saves it in a variable
+        table_with_dash = make_dash_data_table(sector_specific_df)
+
+        # Plots for the sector specific demands
+
+        # Add the heading, table and plot(s) to the content list
+        content_of_section.extend((html.H4(sector_heading), table_with_dash))
+
+    return insert_subsection(title="Energy Demands", content=content_of_section)
+
+
 # Styling of the report
 def create_app(results_json, path_sim_output=None):
     r"""Initializes the app and calls all the other functions, resulting in the web app as well as pdf.
