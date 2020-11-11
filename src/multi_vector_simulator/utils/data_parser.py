@@ -60,6 +60,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     START_DATE,
     EVALUATED_PERIOD,
     TIMESTEP,
+    KPI,
+    KPI_SCALARS_DICT,
     DATA,
 )
 
@@ -82,6 +84,7 @@ MAP_EPA_MVS = {
     "input_timeseries": TIMESERIES,
     "constraints": CONSTRAINTS,
     "renewable_asset": RENEWABLE_ASSET_BOOL,
+    KPI: KPI,
 }
 
 MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
@@ -90,6 +93,8 @@ MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
 EPA_PARAM_KEYS = {
     PROJECT_DATA: [PROJECT_ID, PROJECT_NAME, SCENARIO_ID, SCENARIO_NAME,],
     SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP],
+    CONSTRAINTS: [],
+    KPI: [KPI_SCALARS_DICT],
 }
 
 # Fields expected for assets' parameters of json returned to EPA
@@ -280,20 +285,29 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
 
     epa_dict = {}
 
-    for param_group in [PROJECT_DATA, ECONOMIC_DATA, SIMULATION_SETTINGS, CONSTRAINTS]:
+    # manage which parameters are kept and which one are removed in epa_dict
+    for param_group in EPA_PARAM_KEYS:
 
+        # translate field name from mvs to epa
         param_group_epa = MAP_MVS_EPA[param_group]
 
         # assign the whole MVS value to the EPA field
         epa_dict[param_group_epa] = mvs_dict[param_group]
 
-        # convert fields names from MVS convention to EPA convention, if applicable
-        keys_list = list(dict_values[param_group_epa].keys())
+        keys_list = list(epa_dict[param_group_epa].keys())
         for k in keys_list:
-            if k in MAP_MVS_EPA:
-                dict_values[param_group_epa][MAP_MVS_EPA[k]] = dict_values[
-                    param_group_epa
-                ].pop(k)
+            # ditch all subfields which are not present in the EPA_PARAM_KEYS value corresponding
+            # to the parameter group (except for CONSTRAINTS)
+            if k not in EPA_PARAM_KEYS[param_group] and param_group not in (
+                CONSTRAINTS
+            ):
+                epa_dict[param_group_epa].pop(k)
+            else:
+                # convert fields names from MVS convention to EPA convention, if applicable
+                if k in MAP_MVS_EPA:
+                    epa_dict[param_group_epa][MAP_MVS_EPA[k]] = epa_dict[
+                        param_group_epa
+                    ].pop(k)
 
     # manage which assets parameters are kept and which one are removed in epa_dict
     for asset_group in EPA_ASSET_KEYS:
@@ -337,12 +351,17 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
         missing_keys[asset_group] = []
         for asset in epa_dict[MAP_MVS_EPA[asset_group]]:
             asset_keys = list(asset.keys())
+            # loop over the actual fields of the asset
             for k in asset_keys:
+                # remove any field which is not listed under the asset_group in EPA_ASSET_KEYS
                 if k not in EPA_ASSET_KEYS[asset_group]:
                     asset.pop(k)
+                    # keep trace of this extra key
                     if k not in extra_keys[asset_group]:
                         extra_keys[asset_group].append((asset[LABEL], k))
+            # loop over the expected fields of the asset_group in EPA_ASSET_KEYS
             for k in EPA_ASSET_KEYS[asset_group]:
+                # if a field is missing in the actual asset, keep trace of it
                 if k not in asset:
                     missing_keys[asset_group].append((asset[LABEL], k))
 
