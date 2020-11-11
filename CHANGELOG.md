@@ -27,9 +27,10 @@ Here is a template for new release sections
 - Add entrypoint for `mvs_create_input_template` in `setup.py` (#608)
 - Create script `prepare_package.py` to add data to package and build dist folder (#608)
 - Five new KPI's added to E3: Onsite energy fraction, Onsite energy matching, Degree of autonomy, total_feedin_electricity_equivalent and internal generation (#624)
-- Added definition of `renewable share of local generation` in RTD, `E3.add_renewable_share_of_local_generation` and pytests (#637)
-- Added calculation of electricity equivalents in `E3.weighting_for_sector_coupled_kpi()` (#637)
-- Added benchmark test for  the calculation of: `TOTAL_NON_RENEWABLE_GENERATION_IN_LES`, `TOTAL_RENEWABLE_GENERATION_IN_LES`, `TOTAL_NON_RENEWABLE_ENERGY_USE`, `TOTAL_RENEWABLE_ENERGY_USE`, `RENEWABLE_FACTOR`, `RENEWABLE_SHARE_OF_LOCAL_GENERATION` for one sector (#637)
+- Add definition of `renewable share of local generation` in RTD, `E3.add_renewable_share_of_local_generation` and pytests (#637)
+- Add calculation of electricity equivalents in `E3.weighting_for_sector_coupled_kpi()` (#637)
+- Add benchmark test for  the calculation of: `TOTAL_NON_RENEWABLE_GENERATION_IN_LES`, `TOTAL_RENEWABLE_GENERATION_IN_LES`, `TOTAL_NON_RENEWABLE_ENERGY_USE`, `TOTAL_RENEWABLE_ENERGY_USE`, `RENEWABLE_FACTOR`, `RENEWABLE_SHARE_OF_LOCAL_GENERATION` for one sector (#637)
+- New constant variable: `DATA="data"` (#651)
 
 ### Changed
 - Moved `get_nested_value`, `set_nested_value`, `split_nested_path` from `tests/test_sensitivity.py` to `src/multi_vector_simulator/utils/__init__.py` (#650)
@@ -38,6 +39,8 @@ Here is a template for new release sections
 - Definition of renewable share (RES), now renewable factor (#637)
 - Refactoring of `RENEWABLE_SHARE` into `RENEWABLE_FACTOR` and some functions in E3 (now `E3.add_total_renewable_and_non_renewable_energy_origin` and `E3.add_renewable_factor`) (#637)
 - Rename: `Minimal renewable share constraint` to `Minimal renewable factor constraint` in all files (python, messages, RTD, json, tests, csv), so that this is in line with the definition and does not cause any confusion, explained in RTD (#637)
+- Modify `B0_data_input_json.py` to read "input_timeseries" into `pandas.Series` from epa formated input json (#651)
+- Modify `convert_mvs_params_to_epa` in `utils.data_parser` to convert `pandas.Series` back to "input_timeseries" (#651)
 
 ### Removed
 - Variable `TEMPLATE_INPUT_PATH` (#608)

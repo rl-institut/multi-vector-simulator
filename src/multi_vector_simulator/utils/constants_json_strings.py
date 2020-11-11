@@ -44,6 +44,7 @@ ACCEPTED_ASSETS_FOR_ASSET_GROUPS = {
 # Central constant variables
 UNIT = "unit"
 VALUE = "value"
+DATA = "data"
 
 # Economic parameters
 CURR = "currency"
