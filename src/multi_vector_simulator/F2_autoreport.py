@@ -558,6 +558,36 @@ def create_demands_section(output_json, sectors):
     # Loop to generate the sector headings, sectoral-demands' tables and plots of the demands in each of the sectors
     for sector in sectors:
 
+        # Make a demand dict that only has demands of this specific sector
+        sectoral_demands = output_json['energyConsumption']
+
+        drop_list = []
+
+        for column_label in sectoral_demands:
+            # Identifies excess sink in demands for removal
+            if 'excess' in column_label:
+                drop_list.append(column_label)
+            # Identifies DSO_feedin sink in demands for removal
+            elif 'DSO_feedin_sink' in column_label:
+                drop_list.append(column_label)
+            elif 'DSO_feedin' in column_label:
+                drop_list.append(column_label)
+
+        for item in drop_list:
+            del sectoral_demands[item]
+
+        # Drop the non-current sectoral demands from the dict
+
+        drop_list2 = []  # Put all dict keys to remove here
+        for dict_key in list(sectoral_demands.keys()):
+            if sectoral_demands[dict_key]['energyVector'] != (sector.title()):
+                drop_list2.append(dict_key)
+
+        # Remove all non-sectoral demands
+
+        for item2 in drop_list2:
+            del sectoral_demands[item2]
+
         # Determining the sector heading
         sector_heading = sector.title() + " Demands"
 
