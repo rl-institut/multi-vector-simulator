@@ -109,10 +109,16 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
     under the key {EXTRA_PARAMETERS_KEY}
     """
     if ext == JSON_EXT:
-        # load the mvs input json file into a dict
-        json_file_path = os.path.join(folder_path, JSON_FNAME)
-        with open(json_file_path) as fp:
-            main_parameters = json.load(fp)
+
+        if isinstance(folder_path, dict):
+            # the folder_path argument is already a dict
+            main_parameters = folder_path
+        else:
+            # load the mvs input json file into a dict
+            json_file_path = os.path.join(folder_path, JSON_FNAME)
+            with open(json_file_path) as fp:
+                main_parameters = json.load(fp)
+
     elif ext == CSV_EXT:
         # list the mvs input csv files
         folder_csv_path = os.path.join(folder_path, CSV_ELEMENTS)
