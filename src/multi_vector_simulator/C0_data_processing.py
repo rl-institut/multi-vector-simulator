@@ -531,9 +531,6 @@ def define_busses(dict_values):
     Extends dict_values by key "ENERGY_BUSSES" and all their names.
 
     """
-    # create new group of assets: busses
-    dict_values.update({ENERGY_BUSSES: {}})
-
     # Interatively adds busses to ENERGY_BUSSES for each new bus in the inflow/outflow direction of subsequent assets
     for group in [
         ENERGY_CONVERSION,
