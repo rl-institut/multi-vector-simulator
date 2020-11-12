@@ -593,7 +593,7 @@ def convert_demand_to_dataframe(dict_values):
             {
                 dem: [
                     demands[dem][UNIT],
-                    demands[dem]["energyVector"],
+                    demands[dem][ENERGY_VECTOR],
                     demands[dem][TIMESERIES_PEAK][VALUE],
                     demands[dem][TIMESERIES_AVERAGE][VALUE],
                     demands[dem][TIMESERIES_TOTAL][VALUE],
