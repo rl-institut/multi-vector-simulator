@@ -778,8 +778,9 @@ def equation_onsite_energy_fraction(total_generation, total_feedin):
     else:
         # TODO find a better way to deal with this
         onsite_energy_fraction = 0
-        logging.warning("The total local energy generation is zero, therefore the onsite energy fraction cannot be calculated and is set to 0")
-
+        logging.warning(
+            "The total local energy generation is zero, therefore the onsite energy fraction cannot be calculated and is set to 0"
+        )
 
     return onsite_energy_fraction
 
