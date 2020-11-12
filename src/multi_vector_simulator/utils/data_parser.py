@@ -11,6 +11,10 @@ This module defines all functions to convert formats between EPA and MVS
 import pprint
 import logging
 
+from multi_vector_simulator.utils import compare_input_parameters_with_reference
+
+
+from multi_vector_simulator.utils.constants import MISSING_PARAMETERS_KEY
 from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DATA,
     ECONOMIC_DATA,
@@ -64,6 +68,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     KPI_SCALARS_DICT,
     DATA,
 )
+
+from multi_vector_simulator.A1_csv_to_json import MissingParameterError
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -264,6 +270,28 @@ def convert_epa_params_to_mvs(epa_dict):
             logging.warning(
                 f"The parameters {MAP_MVS_EPA[asset_group]} are not present in the parameters to be parsed into mvs json format"
             )
+
+    comparison = compare_input_parameters_with_reference(dict_values)
+
+    if MISSING_PARAMETERS_KEY in comparison:
+        errror_msg = []
+
+        d = comparison[MISSING_PARAMETERS_KEY]
+
+        errror_msg.append(" ")
+        errror_msg.append(" ")
+        errror_msg.append(
+            "The following parameter groups and sub parameters are missing from input parameters:"
+        )
+
+        for asset_group in d.keys():
+            errror_msg.append(asset_group)
+            print(asset_group)
+            if d[asset_group] is not None:
+                for k in d[asset_group]:
+                    errror_msg.append(f"\t`{k}` parameter")
+
+        raise (MissingParameterError("\n".join(errror_msg)))
 
     return dict_values
 
