@@ -107,7 +107,7 @@ async def _print_pdf_from_chrome(path_pdf_report):
         "http://127.0.0.1:8050", {"waitUntil": "domcontentloaded", "timeout": 120000}
     )
     await page.waitForSelector(
-        ".dash-cell", {"visible": "true",},
+        ".dash-cell", {"visible": "true", },
     )
     await page.pdf({"path": path_pdf_report, "format": "A4", "printBackground": True})
     await browser.close()
@@ -259,7 +259,7 @@ def insert_subsection(title, content, **kwargs):
     return html.Div(
         className=className,
         children=[html.H3(title), html.Hr(className="cell small-12 horizontal_line")]
-        + content,
+                 + content,
         **kwargs,
     )
 
@@ -347,7 +347,7 @@ def insert_log_messages(log_dict):
 
 
 def insert_plotly_figure(
-    fig, id_plot=None, print_only=False,
+        fig, id_plot=None, print_only=False,
 ):
     r"""
     Insert a plotly figure in a dash app layout
@@ -394,14 +394,14 @@ def insert_plotly_figure(
     # Dynamic plotly figure for the app
     if print_only is False:
         rendered_plots.append(
-            dcc.Graph(className="no-print", id=id_plot, figure=fig, responsive=True,)
+            dcc.Graph(className="no-print", id=id_plot, figure=fig, responsive=True, )
         )
 
     return html.Div(children=rendered_plots)
 
 
 def ready_timeseries_plots(
-    dict_values, data_type=DEMANDS, only_print=False, df_sector_demand=None
+        dict_values, data_type=DEMANDS, only_print=False, df_sector_demand=None
 ):
     r"""Insert the timeseries line plots in a dash html layout.
 
@@ -538,7 +538,6 @@ def encode_image_file(img_path):
 
 
 def create_demands_section(output_json, sectors):
-
     # Gather all the relevant demand data in a dataframe
     all_demands_df = convert_demand_to_dataframe(output_json)
 
@@ -567,13 +566,15 @@ def create_demands_section(output_json, sectors):
             all_demands_df["Type of Demand"].str.match(sector)
         ]
 
+        sector_specific_df = sector_specific_df.reset_index(drop=True)
+
         # Function call that generates a dash table from the above dataframe and saves it in a variable
         table_with_dash = make_dash_data_table(sector_specific_df)
 
         # Plots for the sector specific demands
         demand_plots = html.Div(
             children=ready_timeseries_plots(
-                dict_values=output_json, df_sector_demand=table_with_dash
+                dict_values={'energyConsumption':sectoral_demands, 'energyProduction': {}}, data_type=DEMANDS, df_sector_demand=sector_specific_df
             )
         )
 
@@ -695,17 +696,17 @@ def create_app(results_json, path_sim_output=None):
     )
 
     projectName = (
-        results_json[PROJECT_DATA][PROJECT_NAME]
-        + " (ID: "
-        + str(results_json[PROJECT_DATA][PROJECT_ID])
-        + ")"
+            results_json[PROJECT_DATA][PROJECT_NAME]
+            + " (ID: "
+            + str(results_json[PROJECT_DATA][PROJECT_ID])
+            + ")"
     )
 
     scenarioName = (
-        results_json[PROJECT_DATA][SCENARIO_NAME]
-        + " (ID: "
-        + str(results_json[PROJECT_DATA][SCENARIO_ID])
-        + ")"
+            results_json[PROJECT_DATA][SCENARIO_NAME]
+            + " (ID: "
+            + str(results_json[PROJECT_DATA][SCENARIO_ID])
+            + ")"
     )
 
     simDate = time.strftime("%Y-%m-%d")
@@ -913,7 +914,7 @@ def create_app(results_json, path_sim_output=None):
                                 "With this, the demands are met with the following dispatch schedules:"
                             ),
                             html.Div(
-                                children=ready_flows_plots(dict_values=results_json,)
+                                children=ready_flows_plots(dict_values=results_json, )
                             ),
                             html.Div(
                                 className="add-cap-plot",
@@ -961,7 +962,7 @@ def create_app(results_json, path_sim_output=None):
                 children=[
                     html.Div(
                         className="cell",
-                        children=[insert_headings(heading_text="Logging Messages"),],
+                        children=[insert_headings(heading_text="Logging Messages"), ],
                     ),
                     html.Div(
                         children=[
