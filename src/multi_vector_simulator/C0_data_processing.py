@@ -593,24 +593,22 @@ def add_busses_of_asset_depending_on_in_out_direction(
                     # Append bus name to bus_list
                     bus_list.append(bus_suffix(subbus))
                     # Check if bus of the direction is already contained in energyBusses
-                    update_bus(
+                    add_asset_to_asset_dict_of_bus(
                         bus=subbus,
                         dict_values=dict_values,
                         asset_key=asset_key,
                         asset_label=dict_asset[LABEL],
-                        energy_vector=energy_vector,
                     )
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_list})
             # If false: Only one bus
             else:
                 # Check if bus of the direction is already contained in energyBusses
-                update_bus(
+                add_asset_to_asset_dict_of_bus(
                     bus=bus,
                     dict_values=dict_values,
                     asset_key=asset_key,
                     asset_label=dict_asset[LABEL],
-                    energy_vector=energy_vector,
                 )
                 # Add bus_name_key to dict_asset
                 dict_asset.update({bus_name_key: bus_suffix(bus)})
@@ -635,27 +633,10 @@ def bus_suffix(bus_direction):
     return bus_label
 
 
-def remove_bus_suffix(bus_label):
+def add_asset_to_asset_dict_of_bus(bus, dict_values, asset_key, asset_label):
     """
-    Removes suffix from a INPUT / OUTPUT BUS LABEL to get the INPUT / OUTPUT DIRECTION.
-
-    Parameters
-    ----------
-    bus_label: str
-        Bus label with suffix
-
-    Returns
-    -------
-    Bus direction (without suffix)
-    """
-    bus_direction = bus_label[: -len(BUS_SUFFIX)]
-    return bus_direction
-
-
-def update_bus(bus, dict_values, asset_key, asset_label, energy_vector):
-    """
-    Checks if an bus is already included in ENERGY_BUSSES and otherwise adds it.
-    Adds asset key and label to list of assets attached to a bus.
+    Adds asset key and label to a bus defined by `energyBusses.csv`
+    Sends an error message if the bus was not included in `energyBusses.csv`
 
     Parameters
     ----------
@@ -671,40 +652,25 @@ def update_bus(bus, dict_values, asset_key, asset_label, energy_vector):
     asset_label: str
         Label of the asset
 
-    energy_vector: str
-        Energy vector of the asset
-        - Output flow of an energy conversion asset (disregard energy vector if the assets inflow direction is connected to the bus)
-        - Input flow of a sink
-        - Output flow of a source
-        - Energy vector of a storage
-
     Returns
     -------
-    Updated dict_values[ENERGY_BUSSES], optionally with new busses and/or by adding an asset to a bus
+    Updated dict_values[ENERGY_BUSSES] by adding an asset to the busses` ASSET DICT
 
     EnergyBusses now has following keys: LABEL, ENERGY_VECTOR, ASSET_DICT
     """
-    bus_label = bus_suffix(bus)
+    # If bus not defined in `energyBusses.csv` display error message
+    if bus not in dict_values[ENERGY_BUSSES]:
+        logging.error(f"Asset {asset_key} has an inflow or outflow direction of {bus}. "
+                      f"This is bus is not defined in `energyBusses.csv`: {dict_values[ENERGY_BUSSES].keys()} . "
+                      f"You may either have a typo in one of the files or need to add a bus to `energyBusses.csv`.")
 
-    if bus_label not in dict_values[ENERGY_BUSSES]:
-        # add bus to asset group energyBusses
-        dict_values[ENERGY_BUSSES].update(
-            {
-                bus_label: {
-                    LABEL: bus_label,
-                    ENERGY_VECTOR: energy_vector,
-                    ASSET_DICT: {},
-                }
-            }
-        )
-
-    else:
-        if dict_values[ENERGY_BUSSES][bus_label][ENERGY_VECTOR] is None:
-            dict_values[ENERGY_BUSSES][bus_label].update({ENERGY_VECTOR: energy_vector})
+    # If the EnergyBus has no ASSET_DICT to which the asset can be added later, add it
+    if ASSET_DICT not in dict_values[ENERGY_BUSSES][bus]:
+        dict_values[ENERGY_BUSSES][bus].update({ASSET_DICT: {}})
 
     # Asset should added to respective bus
-    dict_values[ENERGY_BUSSES][bus_label][ASSET_DICT].update({asset_key: asset_label})
-    logging.debug("Added asset %s to bus %s", asset_label, bus_label)
+    dict_values[ENERGY_BUSSES][bus][ASSET_DICT].update({asset_key: asset_label})
+    logging.debug(f"Added asset {asset_label} to bus {bus}")
 
 
 def define_dso_sinks_and_sources(dict_values, dso):
@@ -1061,12 +1027,11 @@ def define_source(
     )
 
     apply_function_to_single_or_list(
-        function=update_bus,
+        function=add_asset_to_asset_dict_of_bus,
         parameter=output_bus_direction,
         dict_values=dict_values,
         asset_key=asset_key,
         asset_label=default_source_dict[LABEL],
-        energy_vector=energy_vector,
     )
 
 
@@ -1263,12 +1228,11 @@ def define_sink(
 
     # If multiple input busses exist
     apply_function_to_single_or_list(
-        function=update_bus,
+        function=add_asset_to_asset_dict_of_bus,
         parameter=input_direction,
         dict_values=dict_values,
         asset_key=asset_name,
         asset_label=sink[LABEL],
-        energy_vector=energy_vector,
     )
 
 

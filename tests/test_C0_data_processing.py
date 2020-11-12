@@ -332,7 +332,7 @@ def test_update_bus():
         },
     }
     bus_label = C0.bus_suffix(bus_name)
-    C0.update_bus(
+    C0.add_asset_to_asset_dict_of_bus(
         dict_values=dict_test,
         bus=bus_name,
         asset_key=asset_name,
