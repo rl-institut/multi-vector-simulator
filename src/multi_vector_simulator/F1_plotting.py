@@ -562,6 +562,7 @@ def plot_timeseries(
     color_list=None,
     file_path=None,
     sec_dem_df=None,
+    obj_num = None
 ):
     r"""Plot timeseries as line chart.
 
@@ -614,7 +615,8 @@ def plot_timeseries(
         title_addendum = " ({} days)".format(max_days)
     else:
         title_addendum = ""
-
+    # if obj_num is None:
+    #     obj_num = 1
     for i, component in enumerate(list_of_keys):
         comp_id = component + "-plot"
         fig = create_plotly_line_fig(
