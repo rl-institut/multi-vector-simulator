@@ -22,9 +22,9 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Warning for missing parameter when parsing inputs from epa to mvs (#656)
 ### Changed
--
+- Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
 ### Removed
 -
 ### Fixed
