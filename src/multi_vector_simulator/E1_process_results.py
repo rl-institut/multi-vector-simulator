@@ -582,7 +582,7 @@ def convert_demand_to_dataframe(dict_values):
         elif DSO_FEEDIN in column_label:
             drop_list.append(column_label)
 
-    # Remove some elements from drop_list (ie. sinks that are not demands) from the dict holding demand data
+    # Remove elements of drop_list (ie. sinks that are not demands) from the dict holding demand data
     for item in drop_list:
         del demands[item]
 
