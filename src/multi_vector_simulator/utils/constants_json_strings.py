@@ -152,11 +152,8 @@ SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED = (
 SECTORS = "sectors"
 OUTFLOW_DIRECTION = "outflow_direction"
 INFLOW_DIRECTION = "inflow_direction"
-OUTPUT_BUS_NAME = "output_bus_name"
-INPUT_BUS_NAME = "input_bus_name"
 ENERGY_VECTOR = "energyVector"
 EXCESS = "_excess"
-BUS_SUFFIX = " bus"
 
 # DSO
 DSO_CONSUMPTION = "_consumption"
@@ -178,7 +175,6 @@ AVAILABILITY_DISPATCH = "availability_timeseries"
 # Sinks
 EXCESS_SINK_POSTFIX = "_excess_sink"
 
-BUS_SUFFIX = "_bus"
 ASSET_DICT = "Asset_list"
 #######################################
 # Parameters added in post-processing #

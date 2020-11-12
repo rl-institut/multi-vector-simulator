@@ -29,8 +29,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
     TIMESERIES_NORMALIZED,
     TIMESERIES_PEAK,
-    INPUT_BUS_NAME,
-    OUTPUT_BUS_NAME,
+    INFLOW_DIRECTION,
+    OUTFLOW_DIRECTION,
     SIMULATION_ANNUITY,
     MAXIMUM_CAP,
 )
@@ -113,12 +113,12 @@ class TestTransformerComponent:
         if multiple_outputs == True:
             output_bus_list = [
                 self.model.entities[-1].outputs.data[self.busses[bus_name]]
-                for bus_name in dict_asset[OUTPUT_BUS_NAME]
+                for bus_name in dict_asset[OUTFLOW_DIRECTION]
             ]
         else:
             output_bus_list = [
                 self.model.entities[-1].outputs.data[
-                    self.busses[dict_asset[OUTPUT_BUS_NAME]]
+                    self.busses[dict_asset[OUTFLOW_DIRECTION]]
                 ]
             ]
         for output_bus in output_bus_list:
@@ -333,17 +333,17 @@ class TestSinkComponent:
         # foreach input bus - these values are expected to be different
         # depending on `dispatchable`
         if amount_inputs == 1:
-            input_bus_names = [dict_asset[INPUT_BUS_NAME]]
+            inflow_direction_s = [dict_asset[INFLOW_DIRECTION]]
             if dispatchable is True:
                 dispatch_price = [dict_asset[DISPATCH_PRICE][VALUE]]
         elif amount_inputs > 1:
-            input_bus_names = dict_asset[INPUT_BUS_NAME]
+            inflow_direction_s = dict_asset[INFLOW_DIRECTION]
             if dispatchable is True:
                 dispatch_price = dict_asset[DISPATCH_PRICE][VALUE]
         else:
             raise ValueError("`amount_inputs` should be int but not zero.")
-        for input_bus_name, i in zip(input_bus_names, range(len(input_bus_names))):
-            input_bus = self.model.entities[-1].inputs[self.busses[input_bus_name]]
+        for inflow_direction, i in zip(inflow_direction_s, range(len(inflow_direction_s))):
+            input_bus = self.model.entities[-1].inputs[self.busses[inflow_direction]]
             if dispatchable is False:
                 assert_series_equal(input_bus.fix, dict_asset[TIMESERIES])
                 assert (
@@ -438,7 +438,7 @@ class TestSourceComponent:
         # check output bus (`actual_value`, `investment` and `variable_costs`).
         # these values are expected to be different depending on `dispatchable`, `mode` and `timeseries`
         output_bus = self.model.entities[-1].outputs[
-            self.busses[dict_asset[OUTPUT_BUS_NAME]]
+            self.busses[dict_asset[OUTFLOW_DIRECTION]]
         ]
         if mode == "fix":
             assert (

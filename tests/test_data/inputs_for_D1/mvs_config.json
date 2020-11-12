@@ -80,15 +80,12 @@
     },
     "energyConsumption": {
         "non_dispatchable_single": {
-            "input_bus_name": "Electricity bus",
             "label": "Non dispatchable single"
         },
         "non_dispatchable_multiple": {
-            "input_bus_name": ["Electricity bus", "Electricity bus 2"],
             "label": "Non dispatchable multiple"
         },
         "dispatchable_single": {
-            "input_bus_name": "Electricity bus",
             "label": "Dispatchable single",
             "dispatch_price": {
                 "unit": "currency/kWh",
@@ -96,7 +93,6 @@
             }
         },
         "dispatchable_multiple": {
-            "input_bus_name": ["Electricity bus", "Electricity bus 2"],
             "label": "Dispatchable multiple",
             "dispatch_price": {
                 "unit": "currency/kWh",
@@ -123,7 +119,6 @@
                 "unit": "bool",
                 "value": true
             },
-            "input_bus_name": "Fuel bus",
             "output_bus_name": "Electricity bus",
             "simulation_annuity": {
                 "value": 60,
@@ -152,7 +147,6 @@
                 "unit": "bool",
                 "value": true
             },
-            "input_bus_name": ["Fuel bus", "Coal bus"],
             "output_bus_name": "Electricity bus",
             "simulation_annuity": {
                 "value": 60,
@@ -181,7 +175,6 @@
                 "unit": "bool",
                 "value": true
             },
-            "input_bus_name": "Coal bus",
             "output_bus_name": ["Electricity bus", "Heat bus"],
             "simulation_annuity": {
                 "value": 60,
@@ -210,7 +203,6 @@
                 "unit": "bool",
                 "value": false
             },
-            "input_bus_name": "Fuel bus",
             "output_bus_name": "Electricity bus",
             "simulation_annuity": {
                 "value": 60,
@@ -235,7 +227,6 @@
                 "unit": "bool",
                 "value": false
             },
-            "input_bus_name": ["Fuel bus", "Coal bus"],
             "output_bus_name": "Electricity bus",
             "simulation_annuity": {
                 "value": 60,
@@ -260,7 +251,6 @@
                 "unit": "bool",
                 "value": false
             },
-            "input_bus_name": "Coal bus",
             "output_bus_name": ["Electricity bus", "Heat bus"],
             "simulation_annuity": {
                 "value": 60,
@@ -285,7 +275,6 @@
                 "unit": "bool",
                 "value": true
             },
-            "input_bus_name": "Fuel bus",
             "output_bus_name": "Electricity bus",
             "simulation_annuity": {
                 "value": 60,
@@ -646,7 +635,6 @@
     "energyStorage": {
         "storage_optimize": {
             "label": "Storage optimize",
-            "input_bus_name": "Storage bus",
             "output_bus_name": "Storage bus",
             "storage capacity": {
                 "efficiency": {
@@ -726,7 +714,6 @@
         },
         "storage_fix": {
             "label": "Storage fix",
-            "input_bus_name": "Storage bus",
             "output_bus_name": "Storage bus",
             "storage capacity": {
                 "efficiency": {

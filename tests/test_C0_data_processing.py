@@ -22,8 +22,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     PEAK_DEMAND_PRICING,
     AVAILABILITY_DISPATCH,
     OEMOF_ASSET_TYPE,
-    INPUT_BUS_NAME,
-    OUTPUT_BUS_NAME,
+    INFLOW_DIRECTION,
+    OUTFLOW_DIRECTION,
     EFFICIENCY,
     TAX,
     AGE_INSTALLED,
@@ -51,7 +51,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LIFETIME_SPECIFIC_COST_OM,
     LIFETIME_PRICE_DISPATCH,
     PERIODS,
-    BUS_SUFFIX,
     UNIT_MINUTE,
     ENERGY_VECTOR,
     ASSET_DICT,
@@ -203,8 +202,6 @@ def test_define_transformer_for_peak_demand_pricing():
         DEVELOPMENT_COSTS,
         SPECIFIC_COSTS_OM,
         OEMOF_ASSET_TYPE,
-        INPUT_BUS_NAME,
-        OUTPUT_BUS_NAME,
         EFFICIENCY,
         ENERGY_VECTOR,
     ]:
@@ -275,12 +272,12 @@ def test_define_energyBusses():
     ), f"Parameter {ENERGY_BUSSES} is not added to the dictionary."
     for k in in_bus_names:
         assert (
-            k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
-        ), f"Bus {k+BUS_SUFFIX} of the input busses is not added to the {ENERGY_BUSSES}."
+            k  in dict_test[ENERGY_BUSSES].keys()
+        ), f"Bus {k} of the input busses is not added to the {ENERGY_BUSSES}."
     for k in out_bus_names:
         assert (
-            k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
-        ), f"Bus {k+BUS_SUFFIX} of the output busses is not added to the {ENERGY_BUSSES}."
+            k in dict_test[ENERGY_BUSSES].keys()
+        ), f"Bus {k} of the output busses is not added to the {ENERGY_BUSSES}."
 
 
 def test_add_busses_of_asset_depending_on_in_out_direction_single():
@@ -304,8 +301,8 @@ def test_add_busses_of_asset_depending_on_in_out_direction_single():
     )
     for k in bus_names:
         assert (
-            k + BUS_SUFFIX in dict_test[ENERGY_BUSSES].keys()
-        ), f"Bus {k+BUS_SUFFIX} is not added to the {ENERGY_BUSSES}."
+            k in dict_test[ENERGY_BUSSES].keys()
+        ), f"Bus {k} is not added to the {ENERGY_BUSSES}."
 
     for bus in dict_test[ENERGY_BUSSES].keys():
         assert (
@@ -331,43 +328,24 @@ def test_update_bus():
             }
         },
     }
-    bus_label = C0.bus_suffix(bus_name)
     C0.add_asset_to_asset_dict_of_bus(
         dict_values=dict_test,
         bus=bus_name,
         asset_key=asset_name,
         asset_label=asset_label,
-        energy_vector=energy_vector,
     )
     assert (
-        bus_label in dict_test[ENERGY_BUSSES]
-    ), f"The {bus_label} is not added to the {ENERGY_BUSSES}."
+        bus_name in dict_test[ENERGY_BUSSES]
+    ), f"The {bus_name} is not added to the {ENERGY_BUSSES}."
     assert (
-        asset_name in dict_test[ENERGY_BUSSES][bus_label][ASSET_DICT]
+        asset_name in dict_test[ENERGY_BUSSES][bus_name][ASSET_DICT]
     ), f"The asset {asset_name} is not added to the list of assets attached to the bus."
     assert (
-        dict_test[ENERGY_BUSSES][bus_label][ASSET_DICT][asset_name] == asset_label
+        dict_test[ENERGY_BUSSES][bus_name][ASSET_DICT][asset_name] == asset_label
     ), f"The asset {asset_name} is not added with its {LABEL} to the list of assets attached to the bus."
     assert (
-        dict_test[ENERGY_BUSSES][bus_label][ENERGY_VECTOR] == energy_vector
+        dict_test[ENERGY_BUSSES][bus_name][ENERGY_VECTOR] == energy_vector
     ), f"The {ENERGY_VECTOR} of the added bus is not of the expected value."
-
-
-def test_bus_suffix_functions():
-    name = "name"
-    bus_name = C0.bus_suffix(name)
-    assert name == C0.remove_bus_suffix(
-        bus_name
-    ), f"The original bus label is incorrectly defined."
-
-
-def test_bus_suffix_correct():
-    bus = "a"
-    bus_name = C0.bus_suffix(bus)
-    assert (
-        bus_name == bus + BUS_SUFFIX
-    ), f"The bus name is incorrectly defined from the bus label."
-
 
 def test_apply_function_to_single_or_list_apply_to_single():
     def multiply(parameter):
