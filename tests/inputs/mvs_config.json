@@ -20,6 +20,13 @@
             "value": 0.0
         }
     },
+    "energyBusses": {
+        "Electricity": {"label": "Electricity", "energyVector": "Electricity"},
+        "ESS Li-Ion": {"label": "ESS Li-Ion", "energyVector": "Electricity"},
+        "PV plant (mono)": {"label": "PV plant (mono)", "energyVector": "Electricity"},
+        "Electricity (DSO)": {"label": "Electricity (DSO)", "energyVector": "Electricity"},
+        "Fuel": {"label": "Fuel", "energyVector": "Electricity"}
+},
     "energyConsumption": {
         "demand_01": {
             "dsm": "False",
