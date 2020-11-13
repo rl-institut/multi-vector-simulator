@@ -103,7 +103,7 @@ EPA_PARAM_KEYS = {
     SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP],
     CONSTRAINTS: [],
     KPI: [KPI_SCALARS_DICT],
-    FIX_COST: []
+    FIX_COST: [],
 }
 
 # Fields expected for assets' parameters of json returned to EPA
@@ -223,7 +223,13 @@ def convert_epa_params_to_mvs(epa_dict):
 
     dict_values = {}
 
-    for param_group in [PROJECT_DATA, ECONOMIC_DATA, SIMULATION_SETTINGS, CONSTRAINTS, FIX_COST]:
+    for param_group in [
+        PROJECT_DATA,
+        ECONOMIC_DATA,
+        SIMULATION_SETTINGS,
+        CONSTRAINTS,
+        FIX_COST,
+    ]:
 
         if MAP_MVS_EPA[param_group] in epa_dict:
 
