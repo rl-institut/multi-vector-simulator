@@ -27,3 +27,12 @@ class WrongStorageColumn(ValueError):
 
     pass
 
+
+class InvalidPeakDemandPricingPeriodsError(ValueError):
+    # Exeption if an input is not valid
+    pass
+
+
+class UnknownEnergyCarrierError(ValueError):
+    # Exception if an energy carrier is not in DEFAULT_WEIGHTS_ENERGY_CARRIERS
+    pass
