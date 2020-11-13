@@ -7,6 +7,13 @@ import numpy as np
 import multi_vector_simulator.A1_csv_to_json as A1
 import multi_vector_simulator.B0_data_input_json as data_input
 
+from multi_vector_simulator.utils.exceptions import (
+    MissingParameterError,
+    MissingParameterWarning,
+    WrongParameterWarning,
+    CsvParsingError,
+    WrongStorageColumn,
+)
 from multi_vector_simulator.utils.constants import (
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
@@ -94,7 +101,7 @@ def test_if_check_for_official_extra_parameters_adds_no_parameter_when_not_neces
 
 
 def test_if_check_for_official_extra_parameters_raises_warning_if_parameter_doesnt_exist():
-    with pytest.warns(A1.MissingParameterWarning):
+    with pytest.warns(MissingParameterWarning):
         parameters_updated, _ = A1.check_for_official_extra_parameters(
             filename_a,
             df_no_new_parameter,
@@ -172,7 +179,7 @@ def test_create_json_from_csv_with_ampersand_separated_csv():
 
 def test_create_json_from_csv_with_unknown_separator_for_csv_raises_CsvParsingError():
 
-    with pytest.raises(A1.CsvParsingError):
+    with pytest.raises(CsvParsingError):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_unknown_separator",
@@ -183,15 +190,15 @@ def test_create_json_from_csv_with_unknown_separator_for_csv_raises_CsvParsingEr
 
 def test_create_json_from_csv_without_providing_parameters_raises_MissingParameterError():
 
-    with pytest.raises(A1.MissingParameterError):
+    with pytest.raises(MissingParameterError):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH, "csv_comma", parameters=[], asset_is_a_storage=False
         )
 
 
-def test_create_json_from_csv_with_uncomplete_parameters_raises_WrongParameterWarning():
+def test_create_json_from_csv_with_uncomplete_parameters_raises_MissingParameterError():
 
-    with pytest.raises(A1.MissingParameterError):
+    with pytest.raises(MissingParameterError):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_comma",
@@ -202,7 +209,7 @@ def test_create_json_from_csv_with_uncomplete_parameters_raises_WrongParameterWa
 
 def test_create_json_from_csv_with_wrong_parameters_raises_WrongParameterWarning():
 
-    with pytest.warns(A1.WrongParameterWarning):
+    with pytest.warns(WrongParameterWarning):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_wrong_parameter",
@@ -271,7 +278,7 @@ def test_conversion():
 
 def test_create_json_from_csv_storage_raises_WrongParameterWarning():
 
-    with pytest.warns(A1.WrongParameterWarning):
+    with pytest.warns(WrongParameterWarning):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
@@ -282,7 +289,7 @@ def test_create_json_from_csv_storage_raises_WrongParameterWarning():
 
 def test_create_json_from_csv_storage_raises_MissingParameterError():
 
-    with pytest.raises(A1.MissingParameterError):
+    with pytest.raises(MissingParameterError):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
@@ -302,7 +309,7 @@ def test_create_json_from_csv_storage_raises_MissingParameterError():
 
 def test_create_json_from_csv_storage_raises_WrongParameterWarning_for_wrong_values():
 
-    with pytest.warns(A1.WrongParameterWarning):
+    with pytest.warns(WrongParameterWarning):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_values",

@@ -70,7 +70,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DATA,
 )
 
-from multi_vector_simulator.A1_csv_to_json import MissingParameterError
+from multi_vector_simulator.utils.exceptions import MissingParameterError
 
 pp = pprint.PrettyPrinter(indent=4)
 
