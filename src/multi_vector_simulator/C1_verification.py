@@ -58,10 +58,14 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_ASSET_BOOL,
     TIMESERIES,
 )
-
+# Necessary for check_for_label_duplicates()
+from collections import Counter
 
 # web-application: valid input directly connected to cell-input
-
+class DuplicateLabels(ValueError):
+    # Exception raised in case an label is defined multiple times
+    # Oemof requires labels to be unique
+    pass
 
 def lookup_file(file_path, name):
     """
@@ -81,6 +85,71 @@ def lookup_file(file_path, name):
             + f"{name} can not be found. Operation terminated."
         )
         raise FileNotFoundError(msg)
+
+
+def find_value_by_key(data, target, result=None):
+    """
+    Finds value of a key in a nested dictionary.
+
+    Parameters
+    ----------
+    data: dict
+        Dict to be searched for target key
+
+    target: str
+        Key for which the value should be found in data
+
+    result: None, value or list
+        Only provided if function loops in itself
+
+    Returns
+    -------
+    value if the key is only once in data
+    list of values if it appears multiple times.
+    """
+    # check each item-value pair in the level
+    for k, v in data.items():
+        # if target in keys of level
+        if k == target:
+            if result is None:
+                result = v
+            elif isinstance(result, list):
+                # Expands list of key finds
+                result.append(v)
+            else:
+                # creates list for multiple key finds
+                previous_result = result
+                result = []
+                result.append(previous_result)
+                result.append(v)
+        # Check next level for target
+        if isinstance(v, dict):
+            result = find_value_by_key(data=v, target=target, result=result)
+    return result
+
+def check_for_label_duplicates(dict_values):
+    """
+    This function checks if any LABEL provided for the energy system model in dict_values is a duplicate.
+    This is not allowed, as oemof can not build a model with identical labels.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation inputs
+
+    Returns
+    -------
+    pass or error message: DuplicateLabels
+    """
+    values_of_label = find_value_by_key(dict_values, LABEL)
+    count = Counter(values_of_label)
+    msg = ""
+    for item in count:
+        if count[item] > 1:
+            msg += f"Following asset label is not unique with {count[item]} occurrences: {item}. \n"
+    if len(msg) > 1:
+        msg += f"Please make sure that each label is only used once, as oemof otherwise can not build the model."
+        raise DuplicateLabels(msg)
 
 
 def check_feedin_tariff(dict_values):

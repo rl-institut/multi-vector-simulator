@@ -17,6 +17,9 @@ Below is the list of all the parameters of MVS, sorted in alphabetical order. Ea
 Parameters in each CSV file
 ***************************
 
+Important note: Each asset and bus needs to have an unique label.
+In the `csv` input files, these are defined by the column heads.
+
 constraints.csv
 ^^^^^^^^^^^^^^^
 
