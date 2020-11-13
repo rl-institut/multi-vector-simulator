@@ -16,6 +16,10 @@ from multi_vector_simulator.utils.constants import (
 )
 
 from multi_vector_simulator.utils.constants_json_strings import *
+from multi_vector_simulator.utils.exceptions import (
+    InvalidPeakDemandPricingPeriodsError,
+    UnknownEnergyCarrierError,
+)
 import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C1_verification as C1
 import multi_vector_simulator.C2_economic_functions as C2
@@ -40,16 +44,6 @@ Module C0 prepares the data read from csv or json for simulation, ie. pre-proces
 - Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
 - Multiply `maximumCap` of non-dispatchable sources by max(timeseries(kWh/kWp)) as the `maximumCap` is limiting the flow but we want to limit the installed capacity (see issue #446)
 """
-
-
-class InvalidPeakDemandPricingPeriods(ValueError):
-    # Exeption if an input is not valid
-    pass
-
-
-class UnknownEnergyCarrier(ValueError):
-    # Exception if an energy carrier is not in DEFAULT_WEIGHTS_ENERGY_CARRIERS
-    pass
 
 
 def all(dict_values):
@@ -162,7 +156,7 @@ def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
     - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fails()
     """
     if energy_carrier not in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
-        raise UnknownEnergyCarrier(
+        raise UnknownEnergyCarrierError(
             f"The energy carrier {energy_carrier} of asset group {asset_group}, asset {asset} is unknown, "
             f"as it is not defined within the DEFAULT_WEIGHTS_ENERGY_CARRIERS."
             f"Please check the energy carrier, or update the DEFAULT_WEIGHTS_ENERGY_CARRIERS in contants.py (dev)."
@@ -909,7 +903,7 @@ def determine_months_in_a_peak_demand_pricing_period(
                 f"an possibly unexpected number of periods will be considered."
             )
     if number_of_pricing_periods not in [1, 2, 3, 4, 6, 12]:
-        raise InvalidPeakDemandPricingPeriods(
+        raise InvalidPeakDemandPricingPeriodsError(
             f"You have defined a number of peak demand pricing periods of {number_of_pricing_periods}. "
             f"Acceptable values are, however: 1 (yearly), 2 (half-yearly), 3 (each trimester), 4 (quarterly), 6 (every two months) and 1 (monthly)."
         )

@@ -56,6 +56,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_VECTOR,
     ASSET_DICT,
 )
+from multi_vector_simulator.utils.exceptions import (
+    InvalidPeakDemandPricingPeriodsError,
+    UnknownEnergyCarrierError,
+)
 
 
 def test_add_economic_parameters():
@@ -386,10 +390,10 @@ def test_apply_function_to_single_or_list_apply_to_list():
 
 
 def test_determine_months_in_a_peak_demand_pricing_period_not_valid():
-    with pytest.raises(C0.InvalidPeakDemandPricingPeriods):
+    with pytest.raises(InvalidPeakDemandPricingPeriodsError):
         C0.determine_months_in_a_peak_demand_pricing_period(
             5, 365
-        ), f"No C0.InvalidPeakDemandPricingPeriods is raised eventhough an invalid number of pricing periods is requested."
+        ), f"No InvalidPeakDemandPricingPeriodsError is raised eventhough an invalid number of pricing periods is requested."
 
 
 def test_determine_months_in_a_peak_demand_pricing_period_valid():
@@ -462,7 +466,7 @@ def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_p
 
 
 def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fail():
-    with pytest.raises(C0.UnknownEnergyCarrier):
+    with pytest.raises(UnknownEnergyCarrierError):
         C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
             "Bio-Diesel", "asset_group", "asset"
         ), f"The energy carrier `Bio-Diesel` is recognized in the `DEFAULT_WEIGHTS_ENERGY_CARRIERS`, eventhough it should not be defined."

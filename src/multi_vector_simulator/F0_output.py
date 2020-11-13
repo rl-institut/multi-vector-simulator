@@ -283,14 +283,18 @@ def store_as_json(dict_values, output_folder=None, file_name=None):
     )
     if file_name is not None:
         file_path = os.path.abspath(os.path.join(output_folder, file_name + ".json"))
-        myfile = open(file_path, "w")
 
-        myfile.write(json_data)
-        myfile.close()
-        logging.info(
-            "Converted and stored processed simulation data to json: %s", file_path
-        )
-        answer = file_path
+        if os.path.exists(os.path.dirname(file_path)):
+            myfile = open(file_path, "w")
+
+            myfile.write(json_data)
+            myfile.close()
+            logging.info(
+                "Converted and stored processed simulation data to json: %s", file_path
+            )
+            answer = file_path
+        else:
+            answer = None
     else:
         answer = json_data
 
