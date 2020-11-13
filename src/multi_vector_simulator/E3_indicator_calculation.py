@@ -248,7 +248,7 @@ def calculate_electricity_equivalent_for_a_set_of_aggregated_values(
     )
 
     logging.info(
-        f"The {kpi_name+SUFFIX_ELECTRICITY_EQUIVALENT} of the LES is: {total_electricity_equivalent} kWheleq."
+        f"The {kpi_name+SUFFIX_ELECTRICITY_EQUIVALENT} of the LES is: {round(total_electricity_equivalent)} kWheleq."
     )
     if kpi_name == TOTAL_EXCESS:
         logging.warning(

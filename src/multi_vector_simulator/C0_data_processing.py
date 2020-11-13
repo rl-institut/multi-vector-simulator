@@ -621,12 +621,21 @@ def add_asset_to_asset_dict_of_bus(bus, dict_values, asset_key, asset_label):
     Updated dict_values[ENERGY_BUSSES] by adding an asset to the busses` ASSET DICT
 
     EnergyBusses now has following keys: LABEL, ENERGY_VECTOR, ASSET_DICT
+
+    Notes
+    -----
+    Tests
+    - Todo: Valueerror
     """
     # If bus not defined in `energyBusses.csv` display error message
     if bus not in dict_values[ENERGY_BUSSES]:
-        logging.error(f"Asset {asset_key} has an inflow or outflow direction of {bus}. "
-                      f"This is bus is not defined in `energyBusses.csv`: {dict_values[ENERGY_BUSSES].keys()} . "
-                      f"You may either have a typo in one of the files or need to add a bus to `energyBusses.csv`.")
+        bus_string = ", ".join(
+            map(str, dict_values[ENERGY_BUSSES].keys())
+        )
+        msg = (f"Asset {asset_key} has an inflow or outflow direction of {bus}. "
+               f"This bus is not defined in `energyBusses.csv`: {bus_string}. "
+               f"You may either have a typo in one of the files or need to add a bus to `energyBusses.csv`.")
+        raise ValueError(msg)
 
     # If the EnergyBus has no ASSET_DICT to which the asset can be added later, add it
     if ASSET_DICT not in dict_values[ENERGY_BUSSES][bus]:
@@ -1600,7 +1609,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
             if asset_dict[MAXIMUM_CAP][VALUE] < asset_dict[INSTALLED_CAP][VALUE]:
                 message = (
                     f"The stated maximumCap in {group} {asset} is smaller than the "
-                    "installedCap. Please enter a greater maximumCap."
+                    f"installedCap ({asset_dict[MAXIMUM_CAP][VALUE]}/{asset_dict[INSTALLED_CAP][VALUE]}). Please enter a greater maximumCap."
                     "For this simulation, the maximumCap will be "
                     "disregarded and not be used in the simulation"
                 )
