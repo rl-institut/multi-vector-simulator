@@ -66,6 +66,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESTEP,
     KPI,
     KPI_SCALARS_DICT,
+    FIX_COST,
     DATA,
 )
 
@@ -91,6 +92,7 @@ MAP_EPA_MVS = {
     "constraints": CONSTRAINTS,
     "renewable_asset": RENEWABLE_ASSET_BOOL,
     KPI: KPI,
+    FIX_COST: FIX_COST,
 }
 
 MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
@@ -101,6 +103,7 @@ EPA_PARAM_KEYS = {
     SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP],
     CONSTRAINTS: [],
     KPI: [KPI_SCALARS_DICT],
+    FIX_COST: []
 }
 
 # Fields expected for assets' parameters of json returned to EPA
@@ -220,7 +223,7 @@ def convert_epa_params_to_mvs(epa_dict):
 
     dict_values = {}
 
-    for param_group in [PROJECT_DATA, ECONOMIC_DATA, SIMULATION_SETTINGS, CONSTRAINTS]:
+    for param_group in [PROJECT_DATA, ECONOMIC_DATA, SIMULATION_SETTINGS, CONSTRAINTS, FIX_COST]:
 
         if MAP_MVS_EPA[param_group] in epa_dict:
 
