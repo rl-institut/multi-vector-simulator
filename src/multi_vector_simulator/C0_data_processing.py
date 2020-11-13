@@ -665,7 +665,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         dict_values=dict_values,
         asset_key=dso + DSO_CONSUMPTION,
         output_bus_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]
-        + DSO_PEAK_DEMAND_BUS_NAME,
+                             + DSO_PEAK_DEMAND_SUFFIX,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
     )
@@ -871,7 +871,7 @@ def define_transformer_for_peak_demand_pricing(
         LABEL: transformer_name,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         INSTALLED_CAP: {VALUE: 0, UNIT: dict_dso[UNIT]},
-        INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION] + DSO_PEAK_DEMAND_BUS_NAME,
+        INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION] + DSO_PEAK_DEMAND_SUFFIX,
         OUTFLOW_DIRECTION: dict_dso[OUTFLOW_DIRECTION],
         AVAILABILITY_DISPATCH: timeseries_availability,
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
