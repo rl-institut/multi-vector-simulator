@@ -267,7 +267,7 @@ def define_excess_sinks(dict_values):
         energy_vector = dict_values[ENERGY_BUSSES][bus][ENERGY_VECTOR]
         define_sink(
             dict_values=dict_values,
-            asset_name=excess_sink_name,
+            asset_key=excess_sink_name,
             price={VALUE: 0, UNIT: CURR + "/" + UNIT},
             inflow_direction=bus,
             energy_vector=energy_vector,
@@ -664,8 +664,8 @@ def define_dso_sinks_and_sources(dict_values, dso):
     define_source(
         dict_values=dict_values,
         asset_key=dso + DSO_CONSUMPTION,
-        output_bus_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]
-                             + DSO_PEAK_DEMAND_SUFFIX,
+        outflow_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]
+                          + DSO_PEAK_DEMAND_SUFFIX,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
     )
@@ -673,7 +673,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
     # define feed-in sink of the DSO
     define_sink(
         dict_values=dict_values,
-        asset_name=dso + DSO_FEEDIN + AUTO_SINK,
+        asset_key=dso + DSO_FEEDIN + AUTO_SINK,
         price=dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
         inflow_direction=dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
@@ -895,7 +895,7 @@ def define_transformer_for_peak_demand_pricing(
 
 
 def define_source(
-    dict_values, asset_key, output_bus_direction, energy_vector, **kwargs
+    dict_values, asset_key, outflow_direction, energy_vector, **kwargs
 ):
     r"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
@@ -921,12 +921,14 @@ def define_source(
 
     Returns
     -------
+    Updates dict_values[ENERGY_BUSSES] if outflow_direction not in it
     Standard source defined as:
     """
+    source_label = asset_key + AUTO_SOURCE
     default_source_dict = {
         OEMOF_ASSET_TYPE: OEMOF_SOURCE,
-        LABEL: asset_key + AUTO_SOURCE,
-        OUTFLOW_DIRECTION: output_bus_direction,
+        LABEL: source_label,
+        OUTFLOW_DIRECTION: outflow_direction,
         DISPATCHABILITY: True,
         # OPEX_VAR: {VALUE: price, UNIT: CURR + "/" + UNIT},
         LIFETIME: {
@@ -938,6 +940,11 @@ def define_source(
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
         ENERGY_VECTOR: energy_vector,
     }
+
+    if outflow_direction not in dict_values[ENERGY_BUSSES]:
+        dict_values[ENERGY_BUSSES].update({outflow_direction: {LABEL: outflow_direction,
+                                                               ENERGY_VECTOR: energy_vector,
+                                                               ASSET_DICT: {asset_key: source_label}}})
 
     for item in kwargs:
         if item in [SPECIFIC_COSTS_OM, SPECIFIC_COSTS]:
@@ -977,7 +984,7 @@ def define_source(
 
     apply_function_to_single_or_list(
         function=add_asset_to_asset_dict_of_bus,
-        parameter=output_bus_direction,
+        parameter=outflow_direction,
         dict_values=dict_values,
         asset_key=asset_key,
         asset_label=default_source_dict[LABEL],
@@ -1035,7 +1042,7 @@ def determine_dispatch_price(dict_values, price, source):
 
 
 def define_sink(
-    dict_values, asset_name, price, inflow_direction, energy_vector, **kwargs
+    dict_values, asset_key, price, inflow_direction, energy_vector, **kwargs
 ):
     r"""
     This automatically defines a sink for an oemof-sink object. The sinks are added to the energyConsumption assets.
@@ -1045,7 +1052,7 @@ def define_sink(
     dict_values: dict
         All information of the simulation
 
-    asset_name: str
+    asset_key: str
         label of the asset to be generated
 
     price: float
@@ -1060,6 +1067,7 @@ def define_sink(
 
     Returns
     -------
+    Updates dict_values[ENERGY_BUSSES] if outflow_direction not in it
     Updates dict_values[ENERGY_CONSUMPTION] with a new sink
 
     Notes
@@ -1068,11 +1076,11 @@ def define_sink(
     - Used to define excess sinks for all energyBusses
     - Used to define feed-in sink for each DSO
     """
-
+    sink_label = asset_key + AUTO_SINK
     # create a dictionary for the sink
     sink = {
         OEMOF_ASSET_TYPE: OEMOF_SINK,
-        LABEL: asset_name + AUTO_SINK,
+        LABEL: sink_label,
         INFLOW_DIRECTION: inflow_direction,
         # OPEX_VAR: {VALUE: price, UNIT: CURR + "/" + UNIT},
         LIFETIME: {
@@ -1084,9 +1092,14 @@ def define_sink(
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
     }
 
+    if inflow_direction not in dict_values[ENERGY_BUSSES]:
+        dict_values[ENERGY_BUSSES].update({inflow_direction: {LABEL: inflow_direction,
+                                                                  ENERGY_VECTOR: energy_vector,
+                                                                  ASSET_DICT: {asset_key: sink_label}}})
+
     if energy_vector is None:
         raise ValueError(
-            f"The {ENERGY_VECTOR} of the automatically defined sink {asset_name+AUTO_SINK} is invalid: {energy_vector}."
+            f"The {ENERGY_VECTOR} of the automatically defined sink {asset_key + AUTO_SINK} is invalid: {energy_vector}."
         )
 
     # check if multiple busses are provided
@@ -1102,7 +1115,7 @@ def define_sink(
                     element[FILENAME],
                     element[HEADER],
                 )
-                if asset_name[-6:] == "feedin":
+                if asset_key[-6:] == "feedin":
                     sink[DISPATCH_PRICE][VALUE].append([-i for i in timeseries])
                 else:
                     sink[DISPATCH_PRICE][VALUE].append(timeseries)
@@ -1127,13 +1140,13 @@ def define_sink(
             dict_values[SIMULATION_SETTINGS], sink, DISPATCH_PRICE
         )
         if (
-            asset_name[-6:] == "feedin"
+                asset_key[-6:] == "feedin"
         ):  # change into negative value if this is a feedin sink
             sink[DISPATCH_PRICE].update(
                 {VALUE: [-i for i in sink[DISPATCH_PRICE][VALUE]]}
             )
     else:
-        if asset_name[-6:] == "feedin":
+        if asset_key[-6:] == "feedin":
             value = -price[VALUE]
         else:
             value = price[VALUE]
@@ -1146,14 +1159,14 @@ def define_sink(
             )
 
     # update dictionary
-    dict_values[ENERGY_CONSUMPTION].update({asset_name: sink})
+    dict_values[ENERGY_CONSUMPTION].update({asset_key: sink})
 
     # If multiple input busses exist
     apply_function_to_single_or_list(
         function=add_asset_to_asset_dict_of_bus,
         parameter=inflow_direction,
         dict_values=dict_values,
-        asset_key=asset_name,
+        asset_key=asset_key,
         asset_label=sink[LABEL],
     )
 
