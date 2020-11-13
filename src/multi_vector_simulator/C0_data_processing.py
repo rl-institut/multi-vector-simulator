@@ -983,29 +983,6 @@ def define_source(
         asset_label=default_source_dict[LABEL],
     )
 
-
-def get_name_or_names_of_in_or_output_bus(bus):
-    """
-    Returns the bus names of one or multiple in- or output busses.
-
-    Parameters
-    ----------
-    bus: str
-        A bus name without bus suffix
-
-    Returns
-    -------
-    Bus name with suffix
-    """
-    if isinstance(bus, list):
-        bus_name = []
-        for bus_item in bus:
-            bus_name.append(bus_item)
-    else:
-        bus_name = bus
-    return bus_name
-
-
 def determine_dispatch_price(dict_values, price, source):
     # check if multiple busses are provided
     # for each bus, read time series for dispatch_price if a file name has been

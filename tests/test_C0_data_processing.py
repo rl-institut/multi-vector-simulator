@@ -380,25 +380,6 @@ def test_determine_months_in_a_peak_demand_pricing_period_valid():
         months_in_a_period == 3
     ), f"The duration, ie. months of the peak demand pricing periods, are calculated incorrectly."
 
-
-def test_get_name_or_names_of_in_or_output_bus_single():
-    bus = "bus"
-    bus_with_suffix = C0.bus_suffix(bus)
-    bus_name = C0.get_name_or_names_of_in_or_output_bus(bus)
-    assert (
-        bus_name == bus_with_suffix
-    ), f"A bus label with a string value is not appeded by the bus suffix."
-
-
-def test_get_name_or_names_of_in_or_output_bus_list():
-    bus = ["bus1", "bus2"]
-    bus_with_suffix = [C0.bus_suffix(bus[0]), C0.bus_suffix(bus[1])]
-    bus_name = C0.get_name_or_names_of_in_or_output_bus(bus)
-    assert (
-        bus_name == bus_with_suffix
-    ), f"A list of bus names is not appended by the bus suffix."
-
-
 def test_evaluate_lifetime_costs():
     settings = {EVALUATED_PERIOD: {VALUE: 10}}
     economic_data = {
