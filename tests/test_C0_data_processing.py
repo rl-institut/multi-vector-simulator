@@ -220,6 +220,7 @@ def test_define_energyBusses():
     out_bus_names = ["out_bus_name_" + str(i) for i in range(0, 6)]
     energy_vector = "Electricity"
     dict_test = {
+        ENERGY_BUSSES: {},
         ENERGY_PROVIDERS: {
             asset_names[0]: {
                 LABEL: asset_names[0],
@@ -265,28 +266,35 @@ def test_define_energyBusses():
             },
         },
     }
+    for bus in in_bus_names:
+        dict_test[ENERGY_BUSSES].update({bus: {LABEL: bus, ENERGY_VECTOR: energy_vector}})
+
+    for bus in out_bus_names:
+        dict_test[ENERGY_BUSSES].update({bus: {LABEL: bus, ENERGY_VECTOR: energy_vector}})
 
     C0.define_busses(dict_test)
-    assert (
-        ENERGY_BUSSES in dict_test.keys()
-    ), f"Parameter {ENERGY_BUSSES} is not added to the dictionary."
-    for k in in_bus_names:
-        assert (
-            k  in dict_test[ENERGY_BUSSES].keys()
-        ), f"Bus {k} of the input busses is not added to the {ENERGY_BUSSES}."
-    for k in out_bus_names:
-        assert (
-            k in dict_test[ENERGY_BUSSES].keys()
-        ), f"Bus {k} of the output busses is not added to the {ENERGY_BUSSES}."
 
+    assert asset_names[0] in dict_test[ENERGY_BUSSES][in_bus_names[0]][ASSET_DICT], f"Asset {asset_names[0]} not added to the connected bus {in_bus_names[0]}"
+    assert asset_names[1] in dict_test[ENERGY_BUSSES][in_bus_names[1]][ASSET_DICT], f"Asset {asset_names[1]} not added to the connected bus {in_bus_names[1]}"
+    assert asset_names[2] in dict_test[ENERGY_BUSSES][in_bus_names[2]][ASSET_DICT], f"Asset {asset_names[2]} not added to the connected bus {in_bus_names[2]}"
+    assert asset_names[4] in dict_test[ENERGY_BUSSES][in_bus_names[3]][ASSET_DICT], f"Asset {asset_names[4]} not added to the connected bus {in_bus_names[3]}"
+    assert asset_names[5] in dict_test[ENERGY_BUSSES][in_bus_names[4]][ASSET_DICT], f"Asset {asset_names[5]} not added to the connected bus {in_bus_names[4]}"
+    assert asset_names[5] in dict_test[ENERGY_BUSSES][in_bus_names[5]][ASSET_DICT], f"Asset {asset_names[5]} not added to the connected bus {in_bus_names[5]}"
+    assert asset_names[0] in dict_test[ENERGY_BUSSES][out_bus_names[0]][ASSET_DICT], f"Asset {asset_names[0]} not added to the connected bus {out_bus_names[0]}"
+    assert asset_names[1] in dict_test[ENERGY_BUSSES][out_bus_names[1]][ASSET_DICT], f"Asset {asset_names[1]} not added to the connected bus {out_bus_names[1]}"
+    assert asset_names[3] in dict_test[ENERGY_BUSSES][out_bus_names[2]][ASSET_DICT], f"Asset {asset_names[3]} not added to the connected bus {out_bus_names[2]}"
+    assert asset_names[4] in dict_test[ENERGY_BUSSES][out_bus_names[3]][ASSET_DICT], f"Asset {asset_names[4]} not added to the connected bus {out_bus_names[3]}"
+    assert asset_names[5] in dict_test[ENERGY_BUSSES][out_bus_names[4]][ASSET_DICT], f"Asset {asset_names[5]} not added to the connected bus {out_bus_names[4]}"
+    assert asset_names[5] in dict_test[ENERGY_BUSSES][out_bus_names[5]][ASSET_DICT], f"Asset {asset_names[5]} not added to the connected bus {out_bus_names[5]}"
 
-def test_add_busses_of_asset_depending_on_in_out_direction_single():
+def test_add_busses_of_asset_depending_on_in_out_direction():
     bus_names = ["bus_name_" + str(i) for i in range(1, 3)]
     asset_name = "asset"
     asset_label = "asset_label"
     energy_vector = "Electricity"
     dict_test = {
-        ENERGY_BUSSES: {},
+        ENERGY_BUSSES: {bus_names[0]:{LABEL: bus_names[0], ENERGY_VECTOR: energy_vector},
+                        bus_names[1]: {LABEL: bus_names[1], ENERGY_VECTOR: energy_vector}},
         ENERGY_CONVERSION: {
             asset_name: {
                 LABEL: asset_label,
@@ -299,11 +307,6 @@ def test_add_busses_of_asset_depending_on_in_out_direction_single():
     C0.add_busses_of_asset_depending_on_in_out_direction(
         dict_test, dict_test[ENERGY_CONVERSION][asset_name], asset_name
     )
-    for k in bus_names:
-        assert (
-            k in dict_test[ENERGY_BUSSES].keys()
-        ), f"Bus {k} is not added to the {ENERGY_BUSSES}."
-
     for bus in dict_test[ENERGY_BUSSES].keys():
         assert (
             asset_name in dict_test[ENERGY_BUSSES][bus][ASSET_DICT].keys()
@@ -313,14 +316,14 @@ def test_add_busses_of_asset_depending_on_in_out_direction_single():
         ), f"The asset label of asset {asset_name} in the asset list of {bus} is of unexpected value."
 
 
-def test_update_bus():
+def test_add_asset_to_asset_dict_of_bus():
     bus_name = "bus_name"
     asset_name = "asset"
     asset_label = "asset_label"
     energy_vector = "Electricity"
     dict_test = {
-        ENERGY_BUSSES: {},
-        ENERGY_CONVERSION: {
+        ENERGY_BUSSES: {bus_name: {LABEL: bus_name, ENERGY_VECTOR: energy_vector}},
+        ENERGY_PROVIDERS: {
             asset_name: {
                 LABEL: asset_label,
                 OUTFLOW_DIRECTION: bus_name,
@@ -334,18 +337,13 @@ def test_update_bus():
         asset_key=asset_name,
         asset_label=asset_label,
     )
-    assert (
-        bus_name in dict_test[ENERGY_BUSSES]
-    ), f"The {bus_name} is not added to the {ENERGY_BUSSES}."
+
     assert (
         asset_name in dict_test[ENERGY_BUSSES][bus_name][ASSET_DICT]
     ), f"The asset {asset_name} is not added to the list of assets attached to the bus."
     assert (
         dict_test[ENERGY_BUSSES][bus_name][ASSET_DICT][asset_name] == asset_label
     ), f"The asset {asset_name} is not added with its {LABEL} to the list of assets attached to the bus."
-    assert (
-        dict_test[ENERGY_BUSSES][bus_name][ENERGY_VECTOR] == energy_vector
-    ), f"The {ENERGY_VECTOR} of the added bus is not of the expected value."
 
 def test_apply_function_to_single_or_list_apply_to_single():
     def multiply(parameter):

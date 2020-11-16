@@ -4,7 +4,7 @@ import os
 import oemof.solph as solph
 import pandas as pd
 import pytest
-from pandas.util.testing import assert_series_equal
+from pandas.testing import assert_series_equal
 
 # internal imports
 import multi_vector_simulator.D1_model_components as D1
