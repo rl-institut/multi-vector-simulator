@@ -182,6 +182,10 @@ ASSET_DICT = "Asset_list"
 
 SIMULATION_RESULTS = "simulation_results"
 
+# oemof simulation parameters:
+OBJECTIVE_VALUE = "objective_value"
+SIMULTATION_TIME = "simulation_time"
+
 # Logs
 LOGS = "logs"
 ERRORS = "errors"

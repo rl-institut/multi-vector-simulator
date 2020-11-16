@@ -26,6 +26,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     STORE_OEMOF_RESULTS,
     OUTPUT_LP_FILE,
     SIMULATION_RESULTS,
+OBJECTIVE_VALUE,
+SIMULTATION_TIME,
     ASSET_DICT,
     ENERGY_VECTOR,
 )
@@ -90,7 +92,6 @@ def test_if_model_building_time_measured_and_stored():
     D0.timer.stop(dict_values, start)
     assert "modelling_time" in dict_values[SIMULATION_RESULTS]
     assert isinstance(dict_values[SIMULATION_RESULTS]["modelling_time"], float)
-
 
 def test_energysystem_initialized(dict_values_minimal):
     model, dict_model = D0.model_building.initialize(dict_values_minimal)
@@ -212,5 +213,5 @@ def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false(dict_v
 
 def test_if_simulation_results_added_to_dict_values(dict_values):
     D0.run_oemof(dict_values)
-    for k in (LABEL, "objective_value", "simulation_time"):
+    for k in (LABEL, OBJECTIVE_VALUE, SIMULTATION_TIME):
         assert k in dict_values[SIMULATION_RESULTS].keys()

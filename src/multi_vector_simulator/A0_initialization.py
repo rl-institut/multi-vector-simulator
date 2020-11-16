@@ -358,7 +358,7 @@ def check_output_folder(path_input_folder, path_output_folder, overwrite):
             "It was not possible to create the output folder " + path_output_folder
         )
 
-    logging.info('Creating folder "inputs" in output folder.')
+    logging.info(f"Creating folder {INPUT_FOLDER} in output folder.")
     shutil.copytree(path_input_folder, path_output_folder_inputs)
 
 
