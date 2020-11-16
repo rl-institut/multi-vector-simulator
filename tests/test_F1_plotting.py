@@ -9,6 +9,7 @@ import multi_vector_simulator.A0_initialization as initializing
 import multi_vector_simulator.F1_plotting as F1
 from multi_vector_simulator.cli import main
 from multi_vector_simulator.utils.constants import (
+    INPUT_FOLDER,
     PLOTS_BUSSES,
     PATHS_TO_PLOTS,
     PLOTS_DEMANDS,
@@ -56,7 +57,7 @@ OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 PARSER = initializing.mvs_arg_parser()
 
 TEST_INPUT_PATH = os.path.join(
-    TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_F1_plot_es_graph"
+    TEST_REPO_PATH, INPUT_FOLDER
 )
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "F1_outputs")
