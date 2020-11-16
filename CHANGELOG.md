@@ -27,17 +27,23 @@ Here is a template for new release sections
 - New argument for functions `E1.convert_demand_to_dataframe`, `F1.plot_timeseries`, `F2.ready_timeseries_plots` (#665)
 - File .github/workflow/main.yml for github actions (#668)
 
+- `energyBusses` now have to be defined by the user via `energyBusses.csv` (#649)
+
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
 - Move A1 and C0 custom exceptions into `multi_vector_simulator.utils.exceptions.py` (#656)
 - Adapt `E1.convert_demand_to_dataframe` for multiple sectors (#656)
 - Improve the demands section of the autoreport: Divide the demand tables and plots sector-wise (#665)
+- The functions used to derive `energyBusses` and update `dict_values` are changed to validation functions (#649)
+- All tests and benchmark tests are adapted to `energyBusses` being defined manually (#649)
+- Input for for `tests\test_F1_plotting.py` changed from `tests/test_data/inputs_F1_plot_es_graph` to default input folder `tests/inputs` (#649)
 
 ### Removed
 - File .travis.yml (#668)
+- Folder `tests/test_data/inputs_F1_plot_es_graph`, now using default input folder `tests/inputs` as input for `tests\test_F1_plotting.py` (#649)
 
 ### Fixed
-
+-
 
 ## [0.5.2] - 2020-11-11
 
