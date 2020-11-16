@@ -78,6 +78,7 @@
         "scenario_id": "1",
         "scenario_name": "Warehouse 14"
     },
+    "energyBusses": {},
     "energyConsumption": {
         "non_dispatchable_single": {
             "label": "Non dispatchable single",
