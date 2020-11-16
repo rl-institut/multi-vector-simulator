@@ -80,24 +80,30 @@
     },
     "energyConsumption": {
         "non_dispatchable_single": {
-            "label": "Non dispatchable single"
+            "label": "Non dispatchable single",
+            "inflow_direction": "Electricity bus"
         },
         "non_dispatchable_multiple": {
-            "label": "Non dispatchable multiple"
+            "label": "Non dispatchable multiple",
+            "inflow_direction": ["Heat bus","Electricity bus"]
         },
         "dispatchable_single": {
             "label": "Dispatchable single",
             "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": 0.8
-            }
+            },
+            "inflow_direction": "Electricity bus"
+
         },
         "dispatchable_multiple": {
             "label": "Dispatchable multiple",
             "dispatch_price": {
                 "unit": "currency/kWh",
                 "value": [0.8, 0.8]
-            }
+            },
+            "inflow_direction": ["Heat bus","Electricity bus"]
+
         }
     },
     "energyConversion": {
@@ -119,7 +125,8 @@
                 "unit": "bool",
                 "value": true
             },
-            "output_bus_name": "Electricity bus",
+            "inflow_direction": "Electricity bus",
+            "outflow_direction": "Electricity bus",
             "simulation_annuity": {
                 "value": 60,
                 "unit": "currency/unit/simulation period"},
@@ -138,6 +145,7 @@
                 "unit": "kW",
                 "value": 0
             },
+            "inflow_direction": ["Heat bus","Electricity bus"],
             "label": "Transformer optimize multiple input busses",
             "dispatch_price": {
                 "unit": "currency/kWh",
@@ -147,7 +155,7 @@
                 "unit": "bool",
                 "value": true
             },
-            "output_bus_name": "Electricity bus",
+            "outflow_direction": "Electricity bus",
             "simulation_annuity": {
                 "value": 60,
                 "unit": "currency/unit/simulation period"},
@@ -166,6 +174,7 @@
                 "unit": "kW",
                 "value": 0
             },
+            "inflow_direction": "Electricity bus",
             "label": "Transformer optimize multiple output busses",
             "dispatch_price": {
                 "unit": "currency/kWh",
@@ -175,7 +184,7 @@
                 "unit": "bool",
                 "value": true
             },
-            "output_bus_name": ["Electricity bus", "Heat bus"],
+            "outflow_direction": ["Electricity bus", "Heat bus"],
             "simulation_annuity": {
                 "value": 60,
                 "unit": "currency/unit/simulation period"},
@@ -194,6 +203,7 @@
                 "unit": "kW",
                 "value": 10
             },
+            "inflow_direction": "Electricity bus",
             "label": "Transformer fix single busses",
             "dispatch_price": {
                 "unit": "currency/kWh",
@@ -203,7 +213,7 @@
                 "unit": "bool",
                 "value": false
             },
-            "output_bus_name": "Electricity bus",
+            "outflow_direction": "Electricity bus",
             "simulation_annuity": {
                 "value": 60,
                 "unit": "currency/unit/simulation period"},
@@ -218,6 +228,7 @@
                 "unit": "kW",
                 "value": 10
             },
+            "inflow_direction": ["Heat bus","Electricity bus"],
             "label": "Transformer fix multiple input busses",
             "dispatch_price": {
                 "unit": "currency/kWh",
@@ -227,7 +238,7 @@
                 "unit": "bool",
                 "value": false
             },
-            "output_bus_name": "Electricity bus",
+            "outflow_direction": "Electricity bus",
             "simulation_annuity": {
                 "value": 60,
                 "unit": "currency/unit/simulation period"},
@@ -242,6 +253,7 @@
                 "unit": "kW",
                 "value": 10
             },
+            "inflow_direction": "Electricity bus",
             "label": "Transformer fix multiple output busses",
             "dispatch_price": {
                 "unit": "currency/kWh",
@@ -251,7 +263,7 @@
                 "unit": "bool",
                 "value": false
             },
-            "output_bus_name": ["Electricity bus", "Heat bus"],
+            "outflow_direction": ["Electricity bus", "Heat bus"],
             "simulation_annuity": {
                 "value": 60,
                 "unit": "currency/unit/simulation period"},
@@ -275,7 +287,7 @@
                 "unit": "bool",
                 "value": true
             },
-            "output_bus_name": "Electricity bus",
+            "outflow_direction": "Electricity bus",
             "simulation_annuity": {
                 "value": 60,
                 "unit": "currency/unit/simulation period"},
@@ -518,7 +530,7 @@
                 "value": true
             },
             "type_oemof": "source",
-            "output_bus_name": "Electricity bus",
+            "outflow_direction": "Electricity bus",
             "simulation_annuity": {
                     "value": 3.3,
                     "unit": "currency/unit/simulation period"
@@ -543,7 +555,7 @@
                 "value": false
             },
             "type_oemof": "source",
-            "output_bus_name": "Electricity bus",
+            "outflow_direction": "Electricity bus",
             "simulation_annuity": {
                     "value": 3.3,
                     "unit": "currency/unit/simulation period"
@@ -565,7 +577,7 @@
             },
             "dispatchable": true,
             "type_oemof": "source",
-            "output_bus_name": "Electricity bus",
+            "outflow_direction": "Electricity bus",
             "simulation_annuity": {
                     "value": 3.3,
                     "unit": "currency/unit/simulation period"
@@ -591,7 +603,7 @@
             },
             "dispatchable": true,
             "type_oemof": "source",
-            "output_bus_name": "Electricity bus",
+            "outflow_direction": "Electricity bus",
             "simulation_annuity": {
                     "value": 3.3,
                     "unit": "currency/unit/simulation period"
@@ -635,7 +647,8 @@
     "energyStorage": {
         "storage_optimize": {
             "label": "Storage optimize",
-            "output_bus_name": "Storage bus",
+            "inflow_direction": "Storage bus",
+            "outflow_direction": "Storage bus",
             "storage capacity": {
                 "efficiency": {
                     "unit": "factor",
@@ -714,7 +727,8 @@
         },
         "storage_fix": {
             "label": "Storage fix",
-            "output_bus_name": "Storage bus",
+            "inflow_direction": "Storage bus",
+            "outflow_direction": "Storage bus",
             "storage capacity": {
                 "efficiency": {
                     "unit": "factor",
