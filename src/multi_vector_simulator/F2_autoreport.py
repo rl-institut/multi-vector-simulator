@@ -834,10 +834,8 @@ def create_app(results_json, path_sim_output=None):
                                 "covering the following sectors: "
                             ),
                             insert_body_text(f"{sec_list}"),
-                            html.H4("Electricity Demand"),
-                            insert_body_text(
-                                "Electricity demands " "that have to be supplied are:"
-                            ),
+                            html.H4("List of Demands"),
+                            insert_body_text("Demands that have to be supplied are:"),
                             make_dash_data_table(df_dem),
                             html.Div(
                                 children=ready_timeseries_plots(results_json, DEMANDS)
