@@ -9,7 +9,7 @@ Module E1 processes the oemof results.
 
 """
 import logging
-
+import copy
 import pandas as pd
 
 from multi_vector_simulator.utils.constants import TYPE_NONE
@@ -573,7 +573,7 @@ def convert_demand_to_dataframe(dict_values, sector_demands=None):
     """
 
     # Make a dict which is a sub-dict of the JSON results file with only the consumption components of the energy system
-    demands = dict(dict_values[ENERGY_CONSUMPTION])
+    demands = copy.deepcopy(dict_values[ENERGY_CONSUMPTION])
 
     # The following block removes all the non-current sectoral demands from the demands dict
     if sector_demands is not None:
