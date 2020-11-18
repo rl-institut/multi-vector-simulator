@@ -849,6 +849,10 @@ def create_plotly_flow_fig(
 
     assets_list = list(df_plots_data.columns)
     assets_list.remove("timestamp")
+    if any("SOC" in item for item in assets_list):
+        # remove SOC as it is provided in % and does not fit to this graph
+        assets_list = [s for s in assets_list if "SOC" not in s]
+        # call SOC plot here todo
 
     for i, asset in enumerate(assets_list):
         fig.add_trace(
