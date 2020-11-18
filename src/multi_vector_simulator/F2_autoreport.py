@@ -400,7 +400,9 @@ def insert_plotly_figure(
     return html.Div(children=rendered_plots)
 
 
-def ready_timeseries_plots(dict_values, data_type=DEMANDS, only_print=False):
+def ready_timeseries_plots(
+    dict_values, data_type=DEMANDS, only_print=False, sector_demands=None
+):
     r"""Insert the timeseries line plots in a dash html layout.
 
     Parameters
@@ -417,13 +419,17 @@ def ready_timeseries_plots(dict_values, data_type=DEMANDS, only_print=False):
         but not the web app version of the auto-report.
         Default: False
 
+    sector_demands: str
+        Name of the sector of the energy system
+        Default: None
+
     Returns
     -------
     plots: list
         List containing the timeseries line plots dash components
     """
 
-    figs = plot_timeseries(dict_values, data_type)
+    figs = plot_timeseries(dict_values, data_type, sector_demands=sector_demands)
     plots = [
         insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
         for comp_id, fig in figs.items()
@@ -533,6 +539,68 @@ def encode_image_file(img_path):
     except FileNotFoundError:
         encoded_img = base64.b64encode(bytes())
     return encoded_img
+
+
+def create_demands_section(output_JSON_file, sectors=None):
+    """This function creates a HTML Div element that holds an entire section with either the demands or the resources
+
+    Parameters
+    ----------
+
+    output_JSON_file: dict
+        Dict with all simulation parameters
+
+    sectors: list
+        List holding the names of sectors of the energy system as strings
+        Default: None
+
+    Returns
+    -------
+    Function call to insert_subsection() that generates the demands section of the autoreport
+
+    """
+
+    # Format the list of sectors
+    sec_list = """"""
+    for sec in sectors:
+        sec_list += "\n" + f"\u2022 {sec.upper()}"
+
+    # List of content
+    content_of_section = [
+        insert_body_text(
+            "The simulation was performed for the energy system "
+            "covering the following sectors: "
+        ),
+        insert_body_text(f"{sec_list}"),
+    ]
+
+    # Loop to generate the sector headings, sectoral-demands' tables and plots of the demands in each of the sectors
+    for sector in sectors:
+
+        # Determining the sector heading
+        sector_heading = sector.title() + " Demands"
+
+        # Collect the sector_specific demands in a dataframe
+        df_sector_demands = convert_demand_to_dataframe(
+            dict_values=output_JSON_file, sector_demands=sector
+        )
+
+        # Function call that generates a dash table from the above dataframe and saves it in a variable
+        table_with_dash = make_dash_data_table(df_sector_demands)
+
+        # Function that plots the sector-specific demands
+        sector_demand_plots = html.Div(
+            children=ready_timeseries_plots(
+                dict_values=output_JSON_file, sector_demands=sector
+            )
+        )
+
+        # Add the heading, table and plot(s) to the content list
+        content_of_section.extend(
+            (html.H4(sector_heading), table_with_dash, sector_demand_plots)
+        )
+
+    return insert_subsection(title="Energy Demands", content=content_of_section)
 
 
 # Styling of the report
@@ -675,7 +743,6 @@ def create_app(results_json, path_sim_output=None):
     for sec in sectors:
         sec_list += "\n" + f"\u2022 {sec.upper()}"
 
-    df_dem = convert_demand_to_dataframe(results_json)
     df_comp = convert_components_to_dataframe(results_json)
     df_scalar_matrix = convert_scalar_matrix_to_dataframe(results_json)
     df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
@@ -826,25 +893,16 @@ def create_app(results_json, path_sim_output=None):
                             ),
                         ],
                     ),
+                    html.Div(
+                        children=create_demands_section(
+                            output_JSON_file=results_json, sectors=sectors
+                        )
+                    ),
                     insert_subsection(
-                        title="Energy Demand",
-                        content=[
-                            insert_body_text(
-                                "The simulation was performed for the energy system "
-                                "covering the following sectors: "
-                            ),
-                            insert_body_text(f"{sec_list}"),
-                            html.H4("List of Demands"),
-                            insert_body_text("Demands that have to be supplied are:"),
-                            make_dash_data_table(df_dem),
-                            html.Div(
-                                children=ready_timeseries_plots(results_json, DEMANDS)
-                            ),
-                            html.H4("Resources"),
-                            html.Div(
-                                children=ready_timeseries_plots(results_json, RESOURCES)
-                            ),
-                        ],
+                        title="Resources",
+                        content=ready_timeseries_plots(
+                            results_json, data_type=RESOURCES
+                        ),
                     ),
                     insert_subsection(
                         title="Energy System Components",

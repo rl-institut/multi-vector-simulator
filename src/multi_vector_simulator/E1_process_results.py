@@ -9,7 +9,7 @@ Module E1 processes the oemof results.
 
 """
 import logging
-
+import copy
 import pandas as pd
 
 from multi_vector_simulator.utils.constants import TYPE_NONE
@@ -554,7 +554,7 @@ def add_info_flows(settings, dict_asset, flow):
     )
 
 
-def convert_demand_to_dataframe(dict_values):
+def convert_demand_to_dataframe(dict_values, sector_demands=None):
     """Dataframe used for the demands table of the report
 
     Parameters
@@ -562,16 +562,34 @@ def convert_demand_to_dataframe(dict_values):
     dict_values: dict
         output values of MVS
 
+    sector_demands: str
+        Name of the sector of the energy system whose demands must be returned as a df by this function
+        Default: None
+
     Returns
     -------
     :class:`pandas.DataFrame<frame>`
 
     """
-    # Creating a dataframe for the demands
-    demands = dict_values[ENERGY_CONSUMPTION]
 
-    # Removing all columns that are not actually from demands
+    # Make a dict which is a sub-dict of the JSON results file with only the consumption components of the energy system
+    demands = copy.deepcopy(dict_values[ENERGY_CONSUMPTION])
+
+    # The following block removes all the non-current sectoral demands from the demands dict
+    if sector_demands is not None:
+        non_sec_demands = []
+        # Loop through the demands checking if there are keys which do not belong to the current sector
+        for demand_key in demands.keys():
+            if demands[demand_key][ENERGY_VECTOR] != (sector_demands.title()):
+                non_sec_demands.append(demand_key)
+        # Drop the non-sectoral demands from the demands dict
+        for demand_to_drop in non_sec_demands:
+            del demands[demand_to_drop]
+
+    # Removing all the keys that do not represent actual demands
     drop_list = []
+
+    # Loop though the demands identifying irrelevant demands
     for column_label in demands:
         # Identifies excess sink in demands for removal
         if EXCESS in column_label:
@@ -582,12 +600,14 @@ def convert_demand_to_dataframe(dict_values):
         elif DSO_FEEDIN in column_label:
             drop_list.append(column_label)
 
-    # Remove some elements from drop_list (ie. sinks that are not demands) from the dict holding demand data
+    # Remove some elements from drop_list (ie. sinks that are not demands) from data
     for item in drop_list:
         del demands[item]
 
+    # Create empty dict to hold the current-sector demands' data
     demand_data = {}
 
+    # Populate the above dict with data for each of the demand in the current sector
     for dem in list(demands.keys()):
         demand_data.update(
             {
@@ -600,7 +620,7 @@ def convert_demand_to_dataframe(dict_values):
                 ]
             }
         )
-
+    # Creating a dataframe with all of the demands from the above dict
     df_dem = pd.DataFrame.from_dict(
         demand_data,
         orient="index",
@@ -612,6 +632,8 @@ def convert_demand_to_dataframe(dict_values):
             "Total Annual Demand",
         ],
     )
+
+    # Operations on the index of the dataframe created above
     df_dem.index.name = "Demands"
     df_dem = df_dem.reset_index()
     df_dem = df_dem.round(2)
