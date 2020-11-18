@@ -20,18 +20,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6]
+        python-version: [3.6, 3.7, 3.8]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
-      - name: Set env to staging
+      - name: Set env for dev branch
         if: endsWith(github.ref, '/develop')
         run: |
           echo "::set-env name=EXECUTE_TESTS_ON::dev"
-      - name: Set env to production
+      - name: Set env for master branch
         if: endsWith(github.ref, '/master')
         run: |
           echo "::set-env name==EXECUTE_TESTS_ON::master"
@@ -61,9 +61,3 @@ jobs:
       - name: Test with pytest
         run: |
           coverage run -m pytest
-      - name: Update coverage
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.coverage_token }}
-        run: |
-          coverage report -m
-          coveralls
