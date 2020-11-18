@@ -323,3 +323,6 @@ HEADER = "header"
 # Filenames of the json files stored to disc:
 
 JSON_WITH_RESULTS = "json_with_results.json"
+
+# suffixes
+SOC = "SOC"

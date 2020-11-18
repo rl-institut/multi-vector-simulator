@@ -25,6 +25,7 @@ Here is a template for new release sections
 - Warning for missing parameter when parsing inputs from epa to mvs (#656)
 - New module `exceptions.py` in `multi_vector_simulator.utils` to gather custom MVS exceptions (#656)
 - Plot showing state of charge (SOC) of storage separately, as it is provided in % (#444)
+- "SOC" as string representative in `utils/constants.py`, used in `F1` and `E0` (#444)
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)

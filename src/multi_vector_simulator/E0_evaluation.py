@@ -9,6 +9,10 @@ import multi_vector_simulator.E3_indicator_calculation as E3
 
 import multi_vector_simulator.E4_verification as E4
 
+from multi_vector_simulator.utils.constants import (
+    SOC,
+)
+
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,
@@ -136,7 +140,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
                     OPTIMIZED_ADD_CAP
                 ][UNIT]
-                + ") SOC"
+                + f") {SOC}"
             )
 
             dict_values[OPTIMIZED_FLOWS][bus_name][timeseries_name] = dict_values[
