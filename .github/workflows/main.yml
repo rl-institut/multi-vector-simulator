@@ -54,7 +54,7 @@ jobs:
           pip install -r requirements/test.txt
           pip install -e .[report]
           
-      - name: Lint with flake8
+      - name: Lint with black
         run: |
           black --check . --exclude docs/
 
@@ -63,7 +63,7 @@ jobs:
           coverage run -m pytest
       - name: Update coverage
         env:
-          COVERALLS_REPO_TOKEN=${{ secrets.coverage_token }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.coverage_token }}
         run: |
           coverage report -m
           coveralls
