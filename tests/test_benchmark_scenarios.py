@@ -25,6 +25,8 @@ from _constants import (
     CSV_EXT,
     ENERGY_PRICE,
     OPTIMIZED_ADD_CAP,
+    INPUT_POWER,
+    OUTPUT_POWER,
 )
 
 from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS
@@ -113,7 +115,8 @@ class TestACElectricityBus:
         # make the time the index
         df_busses_flow = df_busses_flow.set_index("Unnamed: 0")
         # make sure battery is not used
-        assert sum(df_busses_flow["battery"]) == 0
+        assert sum(df_busses_flow[f"battery {INPUT_POWER}"]) == 0
+        assert sum(df_busses_flow[f"battery {OUTPUT_POWER}"]) == 0
 
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
@@ -231,14 +234,8 @@ class TestACElectricityBus:
             busses_flow["Electricity grid DSO_consumption_period_3"],
         ]
         demand = busses_flow["demand_01"]
-        battery_charge = busses_flow["battery"]
-        # todo storage_discharge calculation should be replaced by timeseries as soon as that is stored to excel or if json is accessed
-        battery_discharge = (
-            abs(busses_flow["demand_01"])
-            - busses_flow["Electricity grid DSO_consumption_period_1"]
-            - busses_flow["Electricity grid DSO_consumption_period_2"]
-            - busses_flow["Electricity grid DSO_consumption_period_3"]
-        )  # todo: replace this by discharge column when implemented
+        battery_charge = busses_flow[f"battery {INPUT_POWER}"]
+        battery_discharge = busses_flow[f"battery {OUTPUT_POWER}"]
 
         # look for peak demand in period
         for j in range(0, 3):
