@@ -453,8 +453,7 @@ def create_json_from_csv(
             single_dict.update({column: column_dict})
             # add exception for energyStorage
             if filename == ENERGY_STORAGE:
-                storage_filename = df.loc[STORAGE_FILENAME][column][:-4]
-                storage_dict = add_storage_components(storage_filename, input_directory, single_dict[storage_filename][LABEL])
+                storage_dict = add_storage_components(df.loc[STORAGE_FILENAME][column][:-4], input_directory, single_dict[column][LABEL])
                 single_dict[column].update(storage_dict)
 
     logging.debug(
@@ -656,6 +655,8 @@ def add_storage_components(storage_filename, input_directory, storage_label):
         name of storage, given by the column name in "energyStorage.csv
     :param input_directory: str
         path of the input directory
+    :param storage_label: str
+        Label of storage
     :return: dict
         dictionary containing the storage parameters
     """
