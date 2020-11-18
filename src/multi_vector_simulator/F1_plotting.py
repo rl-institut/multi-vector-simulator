@@ -184,7 +184,7 @@ class ESGraphRenderer:
         legend=True,
         txt_width=10,
         txt_fontsize=10,
-        **kwargs
+        **kwargs,
     ):
         """Draw the energy system with Graphviz.
 
@@ -691,7 +691,7 @@ def create_plotly_barplot_fig(
             x=x_data,
             y=y_data,
             marker_color=px.colors.qualitative.D3,
-            **opts
+            **opts,
         )
     )
 
@@ -844,7 +844,9 @@ def create_plotly_flow_fig(
         figure object
     """
 
-    def create_plot(flow_list, filename=file_name, y_legend=y_legend, plot_title=plot_title):
+    def create_plot(
+        flow_list, filename=file_name, y_legend=y_legend, plot_title=plot_title
+    ):
         fig = go.Figure()
         styling_dict = get_fig_style_dict()
         styling_dict["gridwidth"] = 1.0
@@ -875,7 +877,7 @@ def create_plotly_flow_fig(
                 "xanchor": "center",
                 "yanchor": "top",
             },
-            legend=dict(y=0.5, traceorder="normal", font=dict(color="black"), ),
+            legend=dict(y=0.5, traceorder="normal", font=dict(color="black"),),
         )
 
         if file_path is not None:
@@ -890,14 +892,18 @@ def create_plotly_flow_fig(
             )
         return fig
 
-
     assets_list = list(df_plots_data.columns)
     assets_list.remove("timestamp")
 
     if any(SOC in item for item in assets_list):
         # plot SOC separately
         adapted_title = plot_title.replace("power", "storage SOC")
-        create_plot(flow_list=[s for s in assets_list if SOC in s], filename=f"SOC_{file_name}",  y_legend="SOC in %", plot_title=adapted_title)
+        create_plot(
+            flow_list=[s for s in assets_list if SOC in s],
+            filename=f"SOC_{file_name}",
+            y_legend="SOC in %",
+            plot_title=adapted_title,
+        )
         # remove SOC as it is provided in % and does not fit to this graph
         assets_list = [s for s in assets_list if SOC not in s]
 

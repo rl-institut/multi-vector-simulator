@@ -9,9 +9,7 @@ import multi_vector_simulator.E3_indicator_calculation as E3
 
 import multi_vector_simulator.E4_verification as E4
 
-from multi_vector_simulator.utils.constants import (
-    SOC,
-)
+from multi_vector_simulator.utils.constants import SOC
 
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,

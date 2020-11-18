@@ -453,7 +453,11 @@ def create_json_from_csv(
             single_dict.update({column: column_dict})
             # add exception for energyStorage
             if filename == ENERGY_STORAGE:
-                storage_dict = add_storage_components(df.loc[STORAGE_FILENAME][column][:-4], input_directory, single_dict[column][LABEL])
+                storage_dict = add_storage_components(
+                    df.loc[STORAGE_FILENAME][column][:-4],
+                    input_directory,
+                    single_dict[column][LABEL],
+                )
                 single_dict[column].update(storage_dict)
 
     logging.debug(
