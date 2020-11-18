@@ -554,13 +554,17 @@ def add_info_flows(settings, dict_asset, flow):
     )
 
 
-def convert_demand_to_dataframe(dict_values):
+def convert_demand_to_dataframe(dict_values, sector_demands=None):
     """Dataframe used for the demands table of the report
 
     Parameters
     ----------
     dict_values: dict
         output values of MVS
+
+    sector_demands: str
+        Name of the sector of the energy system whose demands must be returned as a df by this function
+        Default: None
 
     Returns
     -------

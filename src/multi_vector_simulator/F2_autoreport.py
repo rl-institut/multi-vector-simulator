@@ -400,7 +400,9 @@ def insert_plotly_figure(
     return html.Div(children=rendered_plots)
 
 
-def ready_timeseries_plots(dict_values, data_type=DEMANDS, only_print=False):
+def ready_timeseries_plots(
+    dict_values, data_type=DEMANDS, only_print=False, sector_demands=None
+):
     r"""Insert the timeseries line plots in a dash html layout.
 
     Parameters
@@ -417,13 +419,17 @@ def ready_timeseries_plots(dict_values, data_type=DEMANDS, only_print=False):
         but not the web app version of the auto-report.
         Default: False
 
+    sector_demands: str
+        Name of the sector of the energy system
+        Default: None
+
     Returns
     -------
     plots: list
         List containing the timeseries line plots dash components
     """
 
-    figs = plot_timeseries(dict_values, data_type)
+    figs = plot_timeseries(dict_values, data_type, sector_demands=sector_demands)
     plots = [
         insert_plotly_figure(fig, id_plot=comp_id, print_only=only_print)
         for comp_id, fig in figs.items()

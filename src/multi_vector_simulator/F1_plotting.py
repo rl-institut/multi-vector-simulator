@@ -556,7 +556,12 @@ def create_plotly_line_fig(
 
 
 def plot_timeseries(
-    dict_values, data_type=DEMANDS, max_days=None, color_list=None, file_path=None
+    dict_values,
+    data_type=DEMANDS,
+    sector_demands=None,
+    max_days=None,
+    color_list=None,
+    file_path=None,
 ):
     r"""Plot timeseries as line chart.
 
@@ -569,6 +574,9 @@ def plot_timeseries(
         one of DEMANDS or RESOURCES
         Default: DEMANDS
 
+    sector_demands: str
+        Name of the sector of the energy system
+        Default: None
     max_days: int
         maximal number of days the timeserie should be displayed for
 
@@ -585,7 +593,9 @@ def plot_timeseries(
     Dict with html DOM id for the figure as key and :class:`plotly.graph_objs.Figure` as value
     """
 
-    df_dem = convert_demand_to_dataframe(dict_values)
+    df_dem = convert_demand_to_dataframe(
+        dict_values=dict_values, sector_demands=sector_demands
+    )
     dict_for_plots, dict_plot_labels = extract_plot_data_and_title(
         dict_values, df_dem=df_dem
     )
