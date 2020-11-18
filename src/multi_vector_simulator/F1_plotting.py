@@ -78,6 +78,7 @@ def convert_plot_data_to_dataframe(plot_data_dict, data_type):
     df: pandas:`pandas.DataFrame<frame>`,
         timeseries for plotting
     """
+
     # Later, this dataframe can be passed to a function directly make the graphs with Plotly
     df = pd.DataFrame.from_dict(plot_data_dict[data_type], orient="columns")
 
@@ -577,8 +578,9 @@ def plot_timeseries(
     sector_demands: str
         Name of the sector of the energy system
         Default: None
+
     max_days: int
-        maximal number of days the timeserie should be displayed for
+        maximal number of days the timeseries should be displayed for
 
     color_list: list of str or list to tuple (hexadecimal or rbg code)
         list of colors
