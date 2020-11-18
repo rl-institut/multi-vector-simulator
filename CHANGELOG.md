@@ -24,13 +24,18 @@ Here is a template for new release sections
 ### Added
 - Warning for missing parameter when parsing inputs from epa to mvs (#656)
 - New module `exceptions.py` in `multi_vector_simulator.utils` to gather custom MVS exceptions (#656)
+- Plot showing state of charge (SOC) of storage separately, as it is provided in % ()
+
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
 - Move A1 and C0 custom exceptions into `multi_vector_simulator.utils.exceptions.py` (#656)
+- Modify `E1.get_timeseries_per_bus()` to add `INPUT_POWER` and respectively`OUTPUT_POWER` to a storage component directly connected to the a bus to fix #444 and add logging.info ()
+
 ### Removed
--
+- SOC of storages from busses' plots but not from `OPTIMZIED_FLOWS` so that it is still added to 'timeseries.xlsx' ()
+
 ### Fixed
--
+- Storage label definition (remove filename) ()
 
 ## [0.5.2] - 2020-11-11
 
