@@ -91,6 +91,7 @@ def get_timeseries_per_bus(dict_values, bus_data):
     Indirectly updated `dict_values` with 'optimizedFlows' - one data frame for each bus.
 
     """
+    logging.info("Time series for plots and 'timeseries.xlsx' are added to `dict_values[OPTIMIZED_FLOWS]` in `E1.get_timeseries_per_bus`; check there in case of problems.")
     bus_data_timeseries = {}
     for bus in bus_data.keys():
         bus_data_timeseries.update(
@@ -113,9 +114,16 @@ def get_timeseries_per_bus(dict_values, bus_data):
             if key[0][0] == bus and key[1] == "flow"
         }
         for asset in from_bus:
-            bus_data_timeseries[bus][asset] = -bus_data[bus]["sequences"][
-                from_bus[asset]
-            ]
+            try:
+                # if `asset` already exists add input/output power to column name
+                # (occurs for storages that are directly added to a bus)
+                bus_data_timeseries[bus][asset]
+                bus_data_timeseries[bus].rename(columns={asset: " ".join([asset, OUTPUT_POWER])}, inplace=True)
+                bus_data_timeseries[bus][" ".join([asset, INPUT_POWER])] = -bus_data[bus]["sequences"][from_bus[asset]]
+            except KeyError:
+                bus_data_timeseries[bus][asset] = -bus_data[bus]["sequences"][
+                    from_bus[asset]
+                ]
 
     dict_values.update({OPTIMIZED_FLOWS: bus_data_timeseries})
 
