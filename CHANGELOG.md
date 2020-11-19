@@ -24,15 +24,20 @@ Here is a template for new release sections
 ### Added
 - Warning for missing parameter when parsing inputs from epa to mvs (#656)
 - New module `exceptions.py` in `multi_vector_simulator.utils` to gather custom MVS exceptions (#656)
+- New argument for functions `E1.convert_demand_to_dataframe`, `F1.plot_timeseries`, `F2.ready_timeseries_plots` (#665)
+- File .github/workflow/main.yml for github actions (#668)
 - Plot showing state of charge (SOC) of storages of each bus separately, as it is provided in % (#444)
 - "SOC" as string representative in `utils/constants.py`, used in `F1` and `E0` (#444)
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
 - Move A1 and C0 custom exceptions into `multi_vector_simulator.utils.exceptions.py` (#656)
+- Adapt `E1.convert_demand_to_dataframe` for multiple sectors (#656)
+- Improve the demands section of the autoreport: Divide the demand tables and plots sector-wise (#665)
 - Modify `E1.get_timeseries_per_bus()` to add `INPUT_POWER` and respectively`OUTPUT_POWER` to a storage component directly connected to the a bus to fix #444 and add logging.info (#444)
 
 ### Removed
+- File .travis.yml (#668)
 - SOC from storages from busses' plots (in `F1.create_plotly_flow_fig()`) but not from `OPTIMZIED_FLOWS` so that it is still added to 'timeseries.xlsx' (#444)
 
 ### Fixed
