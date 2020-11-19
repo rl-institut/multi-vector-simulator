@@ -104,46 +104,73 @@ def test_check_non_dispatchable_source_time_series_results_in_error_msg(get_json
     return_value = C1.check_non_dispatchable_source_time_series(dict_values=dict_values)
     assert return_value is False
 
+
 def test_find_value_by_key_no_key_apperance():
     A_LABEL = "a_label"
     dict_values = {ENERGY_PRODUCTION: {"asset": {LABEL: A_LABEL}}}
     result = C1.find_value_by_key(data=dict_values, target=UNIT)
-    assert result is None, f"The key {UNIT} does not exist in dict_values but a value {result} is returned instead of None."
+    assert (
+        result is None
+    ), f"The key {UNIT} does not exist in dict_values but a value {result} is returned instead of None."
+
 
 def test_find_value_by_key_single_key_apperance():
     ASSET = "asset"
     A_LABEL = "a_label"
     dict_values = {ENERGY_PRODUCTION: {ASSET: {LABEL: A_LABEL}}}
     result = C1.find_value_by_key(data=dict_values, target=LABEL)
-    assert isinstance(result,str), f"The key {A_LABEL} only exists once, but its value {A_LABEL} is not provided. Instead, result is {result}."
-    assert result == A_LABEL, f"The value of the searched key should have been {A_LABEL}, but is {result}."
+    assert isinstance(
+        result, str
+    ), f"The key {A_LABEL} only exists once, but its value {A_LABEL} is not provided. Instead, result is {result}."
+    assert (
+        result == A_LABEL
+    ), f"The value of the searched key should have been {A_LABEL}, but is {result}."
+
 
 def test_find_value_by_key_multiple_key_apperance():
     ASSET = "asset"
     A_LABEL = "a_label"
-    dict_values = {ENERGY_PRODUCTION: {ASSET: {LABEL: A_LABEL}},
-                   ENERGY_PROVIDERS: {ASSET: {LABEL: A_LABEL}}}
+    dict_values = {
+        ENERGY_PRODUCTION: {ASSET: {LABEL: A_LABEL}},
+        ENERGY_PROVIDERS: {ASSET: {LABEL: A_LABEL}},
+    }
     result = C1.find_value_by_key(data=dict_values, target=LABEL)
-    assert isinstance(result, list), f"The key {LABEL} appears twice in dict_values. Still, no list of occurrences is provided, but {result}."
+    assert isinstance(
+        result, list
+    ), f"The key {LABEL} appears twice in dict_values. Still, no list of occurrences is provided, but {result}."
     expected_output = [A_LABEL, A_LABEL]
-    assert result == expected_output, f"Not all key duplicates ({expected_output}) were identified, but {result}."
+    assert (
+        result == expected_output
+    ), f"Not all key duplicates ({expected_output}) were identified, but {result}."
+
 
 def test_check_for_label_duplicates_fails():
     ASSET = "asset"
     A_LABEL = "a_label"
-    dict_values = {ENERGY_PRODUCTION: {ASSET: {LABEL: A_LABEL}},
-                   ENERGY_PROVIDERS: {ASSET: {LABEL: A_LABEL}}}
+    dict_values = {
+        ENERGY_PRODUCTION: {ASSET: {LABEL: A_LABEL}},
+        ENERGY_PROVIDERS: {ASSET: {LABEL: A_LABEL}},
+    }
     with pytest.raises(C1.DuplicateLabels):
-        C1.check_for_label_duplicates(dict_values), f"Eventhough there is a duplicate value of label, no error is raised."
+        C1.check_for_label_duplicates(
+            dict_values
+        ), f"Eventhough there is a duplicate value of label, no error is raised."
+
 
 def test_check_for_label_duplicates_passes():
     ASSET = "asset"
     A_LABEL = "a_label"
     B_LABEL = "b_label"
-    dict_values = {ENERGY_PRODUCTION: {ASSET: {LABEL: A_LABEL}},
-                   ENERGY_PROVIDERS: {ASSET: {LABEL: B_LABEL}}}
+    dict_values = {
+        ENERGY_PRODUCTION: {ASSET: {LABEL: A_LABEL}},
+        ENERGY_PROVIDERS: {ASSET: {LABEL: B_LABEL}},
+    }
     C1.check_for_label_duplicates(dict_values)
-    assert 1==1, f"There is no duplicate value for label, but still an error is raised."
+    assert (
+        1 == 1
+    ), f"There is no duplicate value for label, but still an error is raised."
+
+
 # def test_check_input_values():
 #     pass
 #     # todo note: function is not used so far

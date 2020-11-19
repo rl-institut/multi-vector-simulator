@@ -290,7 +290,9 @@ def prepare_constraint_minimal_renewable_share(
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][LABEL]
                     ],
                     oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
-                        dict_values[ENERGY_PRODUCTION][DSO_source_name][OUTFLOW_DIRECTION]
+                        dict_values[ENERGY_PRODUCTION][DSO_source_name][
+                            OUTFLOW_DIRECTION
+                        ]
                     ],
                     weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][ENERGY_VECTOR]
@@ -308,7 +310,9 @@ def prepare_constraint_minimal_renewable_share(
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][LABEL]
                     ],
                     oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
-                        dict_values[ENERGY_PRODUCTION][DSO_source_name][OUTFLOW_DIRECTION]
+                        dict_values[ENERGY_PRODUCTION][DSO_source_name][
+                            OUTFLOW_DIRECTION
+                        ]
                     ],
                     weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][ENERGY_VECTOR]

@@ -267,25 +267,54 @@ def test_define_energyBusses():
         },
     }
     for bus in in_bus_names:
-        dict_test[ENERGY_BUSSES].update({bus: {LABEL: bus, ENERGY_VECTOR: energy_vector}})
+        dict_test[ENERGY_BUSSES].update(
+            {bus: {LABEL: bus, ENERGY_VECTOR: energy_vector}}
+        )
 
     for bus in out_bus_names:
-        dict_test[ENERGY_BUSSES].update({bus: {LABEL: bus, ENERGY_VECTOR: energy_vector}})
+        dict_test[ENERGY_BUSSES].update(
+            {bus: {LABEL: bus, ENERGY_VECTOR: energy_vector}}
+        )
 
     C0.define_busses(dict_test)
 
-    assert asset_names[0] in dict_test[ENERGY_BUSSES][in_bus_names[0]][ASSET_DICT], f"Asset {asset_names[0]} not added to the connected bus {in_bus_names[0]}"
-    assert asset_names[1] in dict_test[ENERGY_BUSSES][in_bus_names[1]][ASSET_DICT], f"Asset {asset_names[1]} not added to the connected bus {in_bus_names[1]}"
-    assert asset_names[2] in dict_test[ENERGY_BUSSES][in_bus_names[2]][ASSET_DICT], f"Asset {asset_names[2]} not added to the connected bus {in_bus_names[2]}"
-    assert asset_names[4] in dict_test[ENERGY_BUSSES][in_bus_names[3]][ASSET_DICT], f"Asset {asset_names[4]} not added to the connected bus {in_bus_names[3]}"
-    assert asset_names[5] in dict_test[ENERGY_BUSSES][in_bus_names[4]][ASSET_DICT], f"Asset {asset_names[5]} not added to the connected bus {in_bus_names[4]}"
-    assert asset_names[5] in dict_test[ENERGY_BUSSES][in_bus_names[5]][ASSET_DICT], f"Asset {asset_names[5]} not added to the connected bus {in_bus_names[5]}"
-    assert asset_names[0] in dict_test[ENERGY_BUSSES][out_bus_names[0]][ASSET_DICT], f"Asset {asset_names[0]} not added to the connected bus {out_bus_names[0]}"
-    assert asset_names[1] in dict_test[ENERGY_BUSSES][out_bus_names[1]][ASSET_DICT], f"Asset {asset_names[1]} not added to the connected bus {out_bus_names[1]}"
-    assert asset_names[3] in dict_test[ENERGY_BUSSES][out_bus_names[2]][ASSET_DICT], f"Asset {asset_names[3]} not added to the connected bus {out_bus_names[2]}"
-    assert asset_names[4] in dict_test[ENERGY_BUSSES][out_bus_names[3]][ASSET_DICT], f"Asset {asset_names[4]} not added to the connected bus {out_bus_names[3]}"
-    assert asset_names[5] in dict_test[ENERGY_BUSSES][out_bus_names[4]][ASSET_DICT], f"Asset {asset_names[5]} not added to the connected bus {out_bus_names[4]}"
-    assert asset_names[5] in dict_test[ENERGY_BUSSES][out_bus_names[5]][ASSET_DICT], f"Asset {asset_names[5]} not added to the connected bus {out_bus_names[5]}"
+    assert (
+        asset_names[0] in dict_test[ENERGY_BUSSES][in_bus_names[0]][ASSET_DICT]
+    ), f"Asset {asset_names[0]} not added to the connected bus {in_bus_names[0]}"
+    assert (
+        asset_names[1] in dict_test[ENERGY_BUSSES][in_bus_names[1]][ASSET_DICT]
+    ), f"Asset {asset_names[1]} not added to the connected bus {in_bus_names[1]}"
+    assert (
+        asset_names[2] in dict_test[ENERGY_BUSSES][in_bus_names[2]][ASSET_DICT]
+    ), f"Asset {asset_names[2]} not added to the connected bus {in_bus_names[2]}"
+    assert (
+        asset_names[4] in dict_test[ENERGY_BUSSES][in_bus_names[3]][ASSET_DICT]
+    ), f"Asset {asset_names[4]} not added to the connected bus {in_bus_names[3]}"
+    assert (
+        asset_names[5] in dict_test[ENERGY_BUSSES][in_bus_names[4]][ASSET_DICT]
+    ), f"Asset {asset_names[5]} not added to the connected bus {in_bus_names[4]}"
+    assert (
+        asset_names[5] in dict_test[ENERGY_BUSSES][in_bus_names[5]][ASSET_DICT]
+    ), f"Asset {asset_names[5]} not added to the connected bus {in_bus_names[5]}"
+    assert (
+        asset_names[0] in dict_test[ENERGY_BUSSES][out_bus_names[0]][ASSET_DICT]
+    ), f"Asset {asset_names[0]} not added to the connected bus {out_bus_names[0]}"
+    assert (
+        asset_names[1] in dict_test[ENERGY_BUSSES][out_bus_names[1]][ASSET_DICT]
+    ), f"Asset {asset_names[1]} not added to the connected bus {out_bus_names[1]}"
+    assert (
+        asset_names[3] in dict_test[ENERGY_BUSSES][out_bus_names[2]][ASSET_DICT]
+    ), f"Asset {asset_names[3]} not added to the connected bus {out_bus_names[2]}"
+    assert (
+        asset_names[4] in dict_test[ENERGY_BUSSES][out_bus_names[3]][ASSET_DICT]
+    ), f"Asset {asset_names[4]} not added to the connected bus {out_bus_names[3]}"
+    assert (
+        asset_names[5] in dict_test[ENERGY_BUSSES][out_bus_names[4]][ASSET_DICT]
+    ), f"Asset {asset_names[5]} not added to the connected bus {out_bus_names[4]}"
+    assert (
+        asset_names[5] in dict_test[ENERGY_BUSSES][out_bus_names[5]][ASSET_DICT]
+    ), f"Asset {asset_names[5]} not added to the connected bus {out_bus_names[5]}"
+
 
 def test_add_busses_of_asset_depending_on_in_out_direction():
     bus_names = ["bus_name_" + str(i) for i in range(1, 3)]
@@ -293,8 +322,10 @@ def test_add_busses_of_asset_depending_on_in_out_direction():
     asset_label = "asset_label"
     energy_vector = "Electricity"
     dict_test = {
-        ENERGY_BUSSES: {bus_names[0]:{LABEL: bus_names[0], ENERGY_VECTOR: energy_vector},
-                        bus_names[1]: {LABEL: bus_names[1], ENERGY_VECTOR: energy_vector}},
+        ENERGY_BUSSES: {
+            bus_names[0]: {LABEL: bus_names[0], ENERGY_VECTOR: energy_vector},
+            bus_names[1]: {LABEL: bus_names[1], ENERGY_VECTOR: energy_vector},
+        },
         ENERGY_CONVERSION: {
             asset_name: {
                 LABEL: asset_label,
@@ -345,6 +376,7 @@ def test_add_asset_to_asset_dict_of_bus():
         dict_test[ENERGY_BUSSES][bus_name][ASSET_DICT][asset_name] == asset_label
     ), f"The asset {asset_name} is not added with its {LABEL} to the list of assets attached to the bus."
 
+
 def test_apply_function_to_single_or_list_apply_to_single():
     def multiply(parameter):
         parameter_processed = 2 * parameter
@@ -377,6 +409,7 @@ def test_determine_months_in_a_peak_demand_pricing_period_valid():
     assert (
         months_in_a_period == 3
     ), f"The duration, ie. months of the peak demand pricing periods, are calculated incorrectly."
+
 
 def test_evaluate_lifetime_costs():
     settings = {EVALUATED_PERIOD: {VALUE: 10}}

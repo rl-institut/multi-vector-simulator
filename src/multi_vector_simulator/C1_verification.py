@@ -58,6 +58,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_ASSET_BOOL,
     TIMESERIES,
 )
+
 # Necessary for check_for_label_duplicates()
 from collections import Counter
 
@@ -66,6 +67,7 @@ class DuplicateLabels(ValueError):
     # Exception raised in case an label is defined multiple times
     # Oemof requires labels to be unique
     pass
+
 
 def lookup_file(file_path, name):
     """
@@ -126,6 +128,7 @@ def find_value_by_key(data, target, result=None):
         if isinstance(v, dict):
             result = find_value_by_key(data=v, target=target, result=result)
     return result
+
 
 def check_for_label_duplicates(dict_values):
     """

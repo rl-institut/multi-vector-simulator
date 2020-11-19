@@ -140,9 +140,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + ") SOC"
             )
 
-            dict_values[OPTIMIZED_FLOWS][inflow_direction][timeseries_name] = dict_values[
-                ENERGY_STORAGE
-            ][storage]["timeseries_soc"]
+            dict_values[OPTIMIZED_FLOWS][inflow_direction][
+                timeseries_name
+            ] = dict_values[ENERGY_STORAGE][storage]["timeseries_soc"]
 
     for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:

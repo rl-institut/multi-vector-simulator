@@ -62,7 +62,6 @@ def all(dict_values):
     add_economic_parameters(dict_values[ECONOMIC_DATA])
     identify_energy_vectors(dict_values)
 
-
     ## Verify inputs
     # todo check whether input values can be true
     # C1.check_input_values(dict_values)
@@ -270,7 +269,7 @@ def define_excess_sinks(dict_values):
     """
     auto_sinks = []
     for bus in dict_values[ENERGY_BUSSES]:
-        excess_sink_name =  bus + EXCESS
+        excess_sink_name = bus + EXCESS
         energy_vector = dict_values[ENERGY_BUSSES][bus][ENERGY_VECTOR]
         define_sink(
             dict_values=dict_values,
@@ -414,6 +413,7 @@ def energyStorage(dict_values, group):
             # check if maximumCap exists and add it to dict_values
             process_maximum_cap_constraint(dict_values, group, asset, subasset)
 
+
 def energyProviders(dict_values, group):
     """
 
@@ -514,7 +514,7 @@ def define_missing_cost_data(dict_values, dict_asset):
 
 
 def define_busses(dict_values):
-    #todo this function is not used anymore
+    # todo this function is not used anymore
     """
     This function defines the ENERGY_BUSSES that the energy system model is comprised of.
     For that, it adds each new bus defined as INPUT_DIRECTION or OUTPUT_DIRECTION in all assets
@@ -597,6 +597,7 @@ def add_busses_of_asset_depending_on_in_out_direction(
                     asset_label=dict_asset[LABEL],
                 )
 
+
 def add_asset_to_asset_dict_of_bus(bus, dict_values, asset_key, asset_label):
     """
     Adds asset key and label to a bus defined by `energyBusses.csv`
@@ -629,12 +630,12 @@ def add_asset_to_asset_dict_of_bus(bus, dict_values, asset_key, asset_label):
     """
     # If bus not defined in `energyBusses.csv` display error message
     if bus not in dict_values[ENERGY_BUSSES]:
-        bus_string = ", ".join(
-            map(str, dict_values[ENERGY_BUSSES].keys())
+        bus_string = ", ".join(map(str, dict_values[ENERGY_BUSSES].keys()))
+        msg = (
+            f"Asset {asset_key} has an inflow or outflow direction of {bus}. "
+            f"This bus is not defined in `energyBusses.csv`: {bus_string}. "
+            f"You may either have a typo in one of the files or need to add a bus to `energyBusses.csv`."
         )
-        msg = (f"Asset {asset_key} has an inflow or outflow direction of {bus}. "
-               f"This bus is not defined in `energyBusses.csv`: {bus_string}. "
-               f"You may either have a typo in one of the files or need to add a bus to `energyBusses.csv`.")
         raise ValueError(msg)
 
     # If the EnergyBus has no ASSET_DICT to which the asset can be added later, add it
@@ -681,7 +682,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
         dict_values=dict_values,
         asset_key=dso + DSO_CONSUMPTION,
         outflow_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]
-                          + DSO_PEAK_DEMAND_SUFFIX,
+        + DSO_PEAK_DEMAND_SUFFIX,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
     )
@@ -910,9 +911,7 @@ def define_transformer_for_peak_demand_pricing(
     )
 
 
-def define_source(
-    dict_values, asset_key, outflow_direction, energy_vector, **kwargs
-):
+def define_source(dict_values, asset_key, outflow_direction, energy_vector, **kwargs):
     r"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
 
@@ -958,9 +957,15 @@ def define_source(
     }
 
     if outflow_direction not in dict_values[ENERGY_BUSSES]:
-        dict_values[ENERGY_BUSSES].update({outflow_direction: {LABEL: outflow_direction,
-                                                               ENERGY_VECTOR: energy_vector,
-                                                               ASSET_DICT: {asset_key: source_label}}})
+        dict_values[ENERGY_BUSSES].update(
+            {
+                outflow_direction: {
+                    LABEL: outflow_direction,
+                    ENERGY_VECTOR: energy_vector,
+                    ASSET_DICT: {asset_key: source_label},
+                }
+            }
+        )
 
     for item in kwargs:
         if item in [SPECIFIC_COSTS_OM, SPECIFIC_COSTS]:
@@ -1005,6 +1010,7 @@ def define_source(
         asset_key=asset_key,
         asset_label=default_source_dict[LABEL],
     )
+
 
 def determine_dispatch_price(dict_values, price, source):
     # check if multiple busses are provided
@@ -1109,9 +1115,15 @@ def define_sink(
     }
 
     if inflow_direction not in dict_values[ENERGY_BUSSES]:
-        dict_values[ENERGY_BUSSES].update({inflow_direction: {LABEL: inflow_direction,
-                                                                  ENERGY_VECTOR: energy_vector,
-                                                                  ASSET_DICT: {asset_key: sink_label}}})
+        dict_values[ENERGY_BUSSES].update(
+            {
+                inflow_direction: {
+                    LABEL: inflow_direction,
+                    ENERGY_VECTOR: energy_vector,
+                    ASSET_DICT: {asset_key: sink_label},
+                }
+            }
+        )
 
     if energy_vector is None:
         raise ValueError(
@@ -1156,7 +1168,7 @@ def define_sink(
             dict_values[SIMULATION_SETTINGS], sink, DISPATCH_PRICE
         )
         if (
-                asset_key[-6:] == "feedin"
+            asset_key[-6:] == "feedin"
         ):  # change into negative value if this is a feedin sink
             sink[DISPATCH_PRICE].update(
                 {VALUE: [-i for i in sink[DISPATCH_PRICE][VALUE]]}

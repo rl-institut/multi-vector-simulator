@@ -30,8 +30,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OUTPUT_LP_FILE,
     STORE_OEMOF_RESULTS,
     SIMULATION_RESULTS,
-OBJECTIVE_VALUE,
-SIMULTATION_TIME
+    OBJECTIVE_VALUE,
+    SIMULTATION_TIME,
 )
 
 """

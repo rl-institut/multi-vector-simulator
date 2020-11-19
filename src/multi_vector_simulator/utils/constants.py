@@ -79,9 +79,7 @@ DEFAULT_MAIN_KWARGS = dict(
 # associated to each of these filenames
 REQUIRED_CSV_PARAMETERS = {
     CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR],
-    ENERGY_BUSSES: [
-        ENERGY_VECTOR
-    ],
+    ENERGY_BUSSES: [ENERGY_VECTOR],
     ENERGY_CONSUMPTION: [
         DSM,
         FILENAME,

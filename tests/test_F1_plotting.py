@@ -56,9 +56,7 @@ OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 
 PARSER = initializing.mvs_arg_parser()
 
-TEST_INPUT_PATH = os.path.join(
-    TEST_REPO_PATH, INPUT_FOLDER
-)
+TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "F1_outputs")
 
