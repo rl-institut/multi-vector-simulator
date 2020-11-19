@@ -14,12 +14,16 @@ import os
 
 import pandas as pd
 
+from multi_vector_simulator.utils.exceptions import (
+    UnknownEnergyCarrierError,
+)
 from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     DISPLAY_OUTPUT,
     OVERWRITE,
+    DEFAULT_WEIGHTS_ENERGY_CARRIERS,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DURATION,
@@ -294,7 +298,6 @@ def check_input_values(dict_values):
         "Input values have been verified. This verification can not replace a manual input parameter check."
     )
 
-
 def all_valid_intervals(name, value, title):
     """
     Checks whether `value` of `name` is valid.
@@ -440,6 +443,42 @@ def all_valid_intervals(name, value, title):
             title,
         )
 
+
+def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+    energy_carrier, asset_group, asset
+):
+    r"""
+    Raises an error message if an energy vector is unknown.
+
+    It then needs to be added to the DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py
+
+    Parameters
+    ----------
+    energy_carrier: str
+        Name of the energy carrier
+
+    asset_group: str
+        Name of the asset group
+
+    asset: str
+        Name of the asset
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    Tested with:
+    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass()
+    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fails()
+    """
+    if energy_carrier not in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
+        raise UnknownEnergyCarrierError(
+            f"The energy carrier {energy_carrier} of asset group {asset_group}, asset {asset} is unknown, "
+            f"as it is not defined within the DEFAULT_WEIGHTS_ENERGY_CARRIERS."
+            f"Please check the energy carrier, or update the DEFAULT_WEIGHTS_ENERGY_CARRIERS in contants.py (dev)."
+        )
 
 def check_for_sufficient_assets_on_busses(dict_values):
     r"""

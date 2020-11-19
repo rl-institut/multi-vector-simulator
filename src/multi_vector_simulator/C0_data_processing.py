@@ -12,13 +12,11 @@ from multi_vector_simulator.utils.constants import (
     TYPE_BOOL,
     FILENAME,
     HEADER,
-    DEFAULT_WEIGHTS_ENERGY_CARRIERS,
 )
 
 from multi_vector_simulator.utils.constants_json_strings import *
 from multi_vector_simulator.utils.exceptions import (
     InvalidPeakDemandPricingPeriodsError,
-    UnknownEnergyCarrierError,
 )
 import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C1_verification as C1
@@ -117,7 +115,7 @@ def identify_energy_vectors(dict_values):
             ):
                 energy_vector_name = dict_values[level1][level2][ENERGY_VECTOR]
                 if energy_vector_name not in dict_of_sectors.keys():
-                    check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+                    C1.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
                         energy_vector_name, level1, level2
                     )
                     dict_of_sectors.update(
@@ -130,44 +128,6 @@ def identify_energy_vectors(dict_values):
         "The energy system modelled includes following energy vectors / sectors: %s",
         names_of_sectors[:-2],
     )
-
-
-def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
-    energy_carrier, asset_group, asset
-):
-    r"""
-    Raises an error message if an energy vector is unknown.
-
-    It then needs to be added to the DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py
-
-    Parameters
-    ----------
-    energy_carrier: str
-        Name of the energy carrier
-
-    asset_group: str
-        Name of the asset group
-
-    asset: str
-        Name of the asset
-
-    Returns
-    -------
-    None
-
-    Notes
-    -----
-    Tested with:
-    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass()
-    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fails()
-    """
-    if energy_carrier not in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
-        raise UnknownEnergyCarrierError(
-            f"The energy carrier {energy_carrier} of asset group {asset_group}, asset {asset} is unknown, "
-            f"as it is not defined within the DEFAULT_WEIGHTS_ENERGY_CARRIERS."
-            f"Please check the energy carrier, or update the DEFAULT_WEIGHTS_ENERGY_CARRIERS in contants.py (dev)."
-        )
-
 
 def add_economic_parameters(economic_parameters):
     """
@@ -348,7 +308,7 @@ def energyProduction(dict_values, group):
         if FILENAME in dict_values[group][asset]:
             if dict_values[group][asset][FILENAME] in ("None", None):
                 dict_values[group][asset].update({DISPATCHABILITY: True})
-                check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+                C1.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
                     asset, group, asset
                 )
             else:
@@ -842,6 +802,7 @@ def determine_months_in_a_peak_demand_pricing_period(
                 f"Please be advised that if you are not simulating for a year (365d)"
                 f"an possibly unexpected number of periods will be considered."
             )
+
     if number_of_pricing_periods not in [1, 2, 3, 4, 6, 12]:
         raise InvalidPeakDemandPricingPeriodsError(
             f"You have defined a number of peak demand pricing periods of {number_of_pricing_periods}. "

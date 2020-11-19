@@ -19,6 +19,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PRODUCTION,
 )
 
+from multi_vector_simulator.utils.exceptions import (
+    UnknownEnergyCarrierError,
+)
+
 
 def test_lookup_file_existing_file():
     file_name = JSON_PATH
@@ -32,6 +36,21 @@ def test_lookup_file_non_existing_file_raises_error():
     with pytest.raises(FileNotFoundError, match=msg):
         C1.lookup_file(file_path=file_name, name="test")
 
+def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass():
+    # Function only needs to pass
+    C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+        "Electricity", "asset_group", "asset"
+    )
+    assert (
+        1 == 1
+    ), f"The energy carrier `Electricity` is not recognized to be defined in `DEFAULT_WEIGHTS_ENERGY_CARRIERS`."
+
+
+def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fail():
+    with pytest.raises(UnknownEnergyCarrierError):
+        C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+            "Bio-Diesel", "asset_group", "asset"
+        ), f"The energy carrier `Bio-Diesel` is recognized in the `DEFAULT_WEIGHTS_ENERGY_CARRIERS`, eventhough it should not be defined."
 
 def test_check_feedin_tariff_greater_energy_price():
     dict_values = {
