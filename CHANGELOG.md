@@ -32,6 +32,7 @@ Here is a template for new release sections
 - Move A1 and C0 custom exceptions into `multi_vector_simulator.utils.exceptions.py` (#656)
 - Adapt `E1.convert_demand_to_dataframe` for multiple sectors (#656)
 - Improve the demands section of the autoreport: Divide the demand tables and plots sector-wise (#665)
+- Adapted `C1.check_feedin_tariff()` to changes in feed-in tariff algebraic sign ()
 
 ### Removed
 - File .travis.yml (#668)
