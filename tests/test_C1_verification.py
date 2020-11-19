@@ -17,6 +17,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
     RENEWABLE_ASSET_BOOL,
     ENERGY_PRODUCTION,
+    PROJECT_DATA,
+    ENERGY_VECTOR,
+    LES_ENERGY_VECTOR_S
 )
 
 from multi_vector_simulator.utils.exceptions import (
@@ -36,9 +39,9 @@ def test_lookup_file_non_existing_file_raises_error():
     with pytest.raises(FileNotFoundError, match=msg):
         C1.lookup_file(file_path=file_name, name="test")
 
-def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass():
+def test_check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass():
     # Function only needs to pass
-    C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+    C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
         "Electricity", "asset_group", "asset"
     )
     assert (
@@ -46,11 +49,23 @@ def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_p
     ), f"The energy carrier `Electricity` is not recognized to be defined in `DEFAULT_WEIGHTS_ENERGY_CARRIERS`."
 
 
-def test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fail():
+def test_check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fail():
     with pytest.raises(UnknownEnergyCarrierError):
-        C0.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+        C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
             "Bio-Diesel", "asset_group", "asset"
         ), f"The energy carrier `Bio-Diesel` is recognized in the `DEFAULT_WEIGHTS_ENERGY_CARRIERS`, eventhough it should not be defined."
+
+def test_check_if_energy_vector_of_all_assets_is_valid_passes():
+    dict_test={PROJECT_DATA: {LES_ENERGY_VECTOR_S: {"Electricity"}},
+               ENERGY_PRODUCTION: {ENERGY_VECTOR: "Electricity"}}
+    C1.check_if_energy_vector_of_all_assets_is_valid(dict_test)
+    assert 1==1, f"The function incorrectly identifies an energy vector as being not defined via the energyBusses (as the project energy vector)."
+
+def test_check_if_energy_vector_of_all_assets_is_valid_fails():
+    dict_test={PROJECT_DATA: {LES_ENERGY_VECTOR_S: {"Electricity"}},
+               ENERGY_PRODUCTION: {"Asset": {ENERGY_VECTOR: "Heat"}}}
+    with pytest.raises(ValueError):
+        C1.check_if_energy_vector_of_all_assets_is_valid(dict_test), f"The function incorrectly accepts an energyVector that is not in the energyBusses (as the project energy vector)."
 
 def test_check_feedin_tariff_greater_energy_price():
     dict_values = {

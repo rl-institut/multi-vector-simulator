@@ -58,7 +58,8 @@ def all(dict_values):
 
     B0.retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
     add_economic_parameters(dict_values[ECONOMIC_DATA])
-    identify_energy_vectors(dict_values)
+    define_energy_vectors_from_busses(dict_values)
+    C1.check_if_energy_vector_of_all_assets_is_valid(dict_values)
 
     ## Verify inputs
     # todo check whether input values can be true
@@ -87,10 +88,10 @@ def all(dict_values):
     )
 
 
-def identify_energy_vectors(dict_values):
+def define_energy_vectors_from_busses(dict_values):
     """
-    Identifies all energyVectors used in the energy system by checking every entry 'energyVector' of all assets.
-    energyVectors later will be used to distribute costs and KPI amongst the sectors (not implemented)
+    Identifies all energyVectors used in the energy system by looking at the defined energyBusses.
+    The EnergyVectors later will be used to distribute costs and KPI amongst the sectors
 
     Parameters
     ----------
@@ -99,34 +100,28 @@ def identify_energy_vectors(dict_values):
 
     Returns
     -------
-    Update dict['project_data'] by used sectors
+    Update dict['project_data'] by included energyVectors
 
     Notes
     -----
     Function tested with test_add_economic_parameters()
     """
-    dict_of_sectors = {}
-    names_of_sectors = ""
-    for level1 in dict_values.keys():
-        for level2 in dict_values[level1].keys():
-            if (
-                isinstance(dict_values[level1][level2], dict)
-                and ENERGY_VECTOR in dict_values[level1][level2].keys()
-            ):
-                energy_vector_name = dict_values[level1][level2][ENERGY_VECTOR]
-                if energy_vector_name not in dict_of_sectors.keys():
-                    C1.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
-                        energy_vector_name, level1, level2
-                    )
-                    dict_of_sectors.update(
-                        {energy_vector_name: energy_vector_name.replace("_", " ")}
-                    )
-                    names_of_sectors = names_of_sectors + energy_vector_name + ", "
+    dict_of_energy_vectors = {}
+    energy_vector_string = ""
+    for bus in dict_values[ENERGY_BUSSES]:
+        energy_vector_name = dict_values[ENERGY_BUSSES][bus][ENERGY_VECTOR]
+        if energy_vector_name not in dict_of_energy_vectors.keys():
+            C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+                energy_vector_name, ENERGY_BUSSES, bus
+            )
+            dict_of_energy_vectors.update(
+                {energy_vector_name: energy_vector_name.replace("_", " ")}
+            )
+            energy_vector_string = energy_vector_string + energy_vector_name + ", "
 
-    dict_values[PROJECT_DATA].update({SECTORS: dict_of_sectors})
+    dict_values[PROJECT_DATA].update({SECTORS: dict_of_energy_vectors})
     logging.info(
-        "The energy system modelled includes following energy vectors / sectors: %s",
-        names_of_sectors[:-2],
+        f"The energy system modelled includes following energy vectors: {energy_vector_string[:-2]}",
     )
 
 def add_economic_parameters(economic_parameters):
@@ -308,7 +303,7 @@ def energyProduction(dict_values, group):
         if FILENAME in dict_values[group][asset]:
             if dict_values[group][asset][FILENAME] in ("None", None):
                 dict_values[group][asset].update({DISPATCHABILITY: True})
-                C1.check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+                C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
                     asset, group, asset
                 )
             else:

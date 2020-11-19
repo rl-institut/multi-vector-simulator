@@ -444,7 +444,40 @@ def all_valid_intervals(name, value, title):
         )
 
 
-def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+def check_if_energy_vector_of_all_assets_is_valid(dict_values):
+    """
+    Validates for all assets, whether 'energyVector' is defined within DEFAULT_WEIGHTS_ENERGY_CARRIERS and within the energyBusses.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All input data in dict format
+
+    Notes
+    -----
+    Function tested with
+    - test_add_economic_parameters()
+    - test_check_if_energy_vector_of_all_assets_is_valid_fails
+    - test_check_if_energy_vector_of_all_assets_is_valid_passes
+    """
+    for level1 in dict_values.keys():
+        for level2 in dict_values[level1].keys():
+            if (
+                isinstance(dict_values[level1][level2], dict)
+                and ENERGY_VECTOR in dict_values[level1][level2].keys()
+            ):
+                energy_vector_name = dict_values[level1][level2][ENERGY_VECTOR]
+                if energy_vector_name not in dict_values[PROJECT_DATA][SECTORS]:
+                    raise ValueError(
+                        f"Asset {level2} of asset group {level1} has an energy vector that is not defined within the energyBusses. "
+                        f"This prohibits proper processing of the assets dispatch."
+                        f"Please check for typos or define another bus, as this hints at the energy system being faulty."
+                    )
+                    C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+                        energy_vector_name, level1, level2
+                    )
+
+def check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
     energy_carrier, asset_group, asset
 ):
     r"""
@@ -470,8 +503,8 @@ def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
     Notes
     -----
     Tested with:
-    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass()
-    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fails()
+    - test_check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass()
+    - test_check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fails()
     """
     if energy_carrier not in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
         raise UnknownEnergyCarrierError(
