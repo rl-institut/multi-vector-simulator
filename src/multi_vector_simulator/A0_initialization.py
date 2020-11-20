@@ -84,6 +84,7 @@ from multi_vector_simulator.utils.constants import (
     OUTPUT_FOLDER,
     PDF_REPORT,
     JSON_WITH_RESULTS,
+    JSON_FILE_EXTENSION,
     ARG_PDF,
     ARG_REPORT_PATH,
     ARG_PATH_SIM_OUTPUT,
@@ -250,8 +251,8 @@ def report_arg_parser():
         dest=ARG_PATH_SIM_OUTPUT,
         nargs="?",
         type=str,
-        help="path to the simulation result json file 'json_with_results.json'",
-        default=os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS),
+        help=f"path to the simulation result json file {JSON_WITH_RESULTS}.json'",
+        default=os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS+JSON_FILE_EXTENSION),
     )
     parser.add_argument(
         "-o",

@@ -12,6 +12,7 @@ from multi_vector_simulator.utils.constants import (
     TYPE_BOOL,
     FILENAME,
     HEADER,
+    JSON_PROCESSED,
 )
 
 from multi_vector_simulator.utils.constants_json_strings import *
@@ -84,7 +85,7 @@ def all(dict_values):
     F0.store_as_json(
         dict_values,
         dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-        "json_input_processed",
+        JSON_PROCESSED,
     )
 
 

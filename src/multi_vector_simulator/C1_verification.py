@@ -61,6 +61,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ASSET_DICT,
     RENEWABLE_ASSET_BOOL,
     TIMESERIES,
+    ENERGY_VECTOR,
+    PROJECT_DATA,
+    SECTORS
 )
 
 # Necessary for check_for_label_duplicates()

@@ -24,7 +24,7 @@ from _constants import (
     CSV_EXT,
 )
 
-from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS
+from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS, JSON_EXT
 
 from multi_vector_simulator.utils.constants_json_strings import (
     INPUT_POWER,
@@ -147,7 +147,7 @@ class Test_Economic_KPI:
         )
 
         # read json with results file
-        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
+        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS+JSON_FILE_EXTENSION))
 
         # Read expected values from file. To edit the values, please use the .xls file first and convert the first tab to csv.
         expected_value_file = "test_data_economic_expected_values.csv"
@@ -282,7 +282,7 @@ class TestTechnicalKPI:
         )
         # Check for RENEWABLE_FACTOR and RENEWABLE_SHARE_OF_LOCAL_GENERATION:
         with open(
-            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
+            os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS+JSON_FILE_EXTENSION), "r"
         ) as results:
             data = json.load(results)
 

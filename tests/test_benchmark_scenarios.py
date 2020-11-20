@@ -26,7 +26,7 @@ from _constants import (
     OPTIMIZED_ADD_CAP,
 )
 
-from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS
+from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS, JSON_FILE_EXTENSION
 
 from multi_vector_simulator.utils.constants_json_strings import (
     EXCESS,
@@ -165,7 +165,7 @@ class TestACElectricityBus:
         )
 
         # read json with results file
-        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
+        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS+JSON_FILE_EXTENSION))
 
         # make sure LCOE_diesel is less than grid price, so that below test makes sense
         assert (
@@ -200,7 +200,7 @@ class TestACElectricityBus:
         )
         # read json with results file
         with open(
-            os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS), "r"
+            os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS+JSON_FILE_EXTENSION), "r"
         ) as results:
             data = json.load(results)
         peak_demand = [
@@ -284,7 +284,7 @@ class TestACElectricityBus:
         )
         # read json with results file
         with open(
-            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
+            os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS+JSON_FILE_EXTENSION), "r"
         ) as results:
             data = json.load(results)
         # read excel sheet with time series

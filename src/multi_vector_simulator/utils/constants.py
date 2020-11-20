@@ -56,6 +56,11 @@ OVERWRITE = "overwrite"
 DISPLAY_OUTPUT = "display_output"
 SAVE_PNG = "save_png"
 
+# Filenames of the json files stored to disc:
+JSON_PROCESSED = "json_input_processed"
+JSON_WITH_RESULTS = "json_with_results"
+JSON_FILE_EXTENSION=".json"
+
 USER_INPUT_ARGUMENTS = (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
@@ -321,7 +326,3 @@ DICT_PLOTS = {
 
 # Reading data from csv file
 HEADER = "header"
-
-# Filenames of the json files stored to disc:
-
-JSON_WITH_RESULTS = "json_with_results.json"
