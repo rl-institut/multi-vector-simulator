@@ -15,7 +15,7 @@ import os
 import pandas as pd
 
 from multi_vector_simulator.utils.exceptions import (
-    UnknownEnergyCarrierError,
+    UnknownEnergyVectorError,
 )
 from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FILE,
@@ -510,7 +510,7 @@ def check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
     - test_check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fails()
     """
     if energy_carrier not in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
-        raise UnknownEnergyCarrierError(
+        raise UnknownEnergyVectorError(
             f"The energy carrier {energy_carrier} of asset group {asset_group}, asset {asset} is unknown, "
             f"as it is not defined within the DEFAULT_WEIGHTS_ENERGY_CARRIERS."
             f"Please check the energy carrier, or update the DEFAULT_WEIGHTS_ENERGY_CARRIERS in contants.py (dev)."

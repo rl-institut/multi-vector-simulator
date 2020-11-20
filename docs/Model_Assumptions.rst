@@ -35,14 +35,7 @@ They are added by adding a column in `energyProviders.CSV`, and setting file_nam
 DSOs, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
 as there are some additional features available then.
 
-Both DSOs and the additional fuel sources are limited to following options:
-- Electricity
-- Heat
-- H2
-- Diesel
-- Gas
-
-This is as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined. This definition is currently hard-coded in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. With new energy carriers necessary, the list can easily be extended. Please see below for more information.
+Both DSOs and the additional fuel sources are limited to the options provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
 
 Dispatchable conversion assets
 ##############################
@@ -215,6 +208,8 @@ The values of ethanol and biodiesel seem comparably low in [`1  <https://www.bp.
 
 From this, the energy weighting factors using the baseline energy carrier electricity are calculated:
 
+.. _table_default_energy_carrier_weights_label:
+
 .. list-table:: Table 2: Electricity equivalent conversion per unit of a fuel
    :widths: 50 25 25
    :header-rows: 1
@@ -275,8 +270,21 @@ With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, com
 
 As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]. The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable factor or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
 
-Currently, the energy carrier conversion factors are defined in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be added to its list when needed. Unknown carriers raise an `UnknownEnergyCarrier` Error.
+:Code:
 
+Currently, the energy carrier conversion factors are defined in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be added to its list when needed. Unknown carriers raise an `UnknownEnergyVectorError` error.
+
+:Comment:
+
+Please note that the energy carrier weighting factor is not applied dependent on the LABEL of the energy asset, but based on its energy vector. Let us consider an example:
+
+In our system, we have a dispatchable `diesel fuel source`, with dispatch carrying the unit `l Diesel`.
+The energy vector needs to be defined as `Diesel` for the energy carrier weighting to be applied, ie. the energy vector of `diesel fuel source` needs to be `Diesel`. This will also have implications for the KPI:
+For example, the `degree of sector coupling` will reach its maximum, when the system only has heat demand and all of it is provided by processing diesel fuel. If you want to portrait diesel as something inherent to heat supply, you will need to make the diesel source a heat source, and set its `dispatch costs` to currency/kWh, ie. divide the diesel costs by the heating value of the fuel.
+
+:Comment:
+
+In the MVS, there is no distinction between energy carriers and energy vector. For `Electricity` of the `Electricity` vector this may be self-explanatory. However, the energy carriers of the `Heat` vector can have different technical characteristics: A fluid on different temperature levels. As the MVS measures the energy content of a flow in kWh(thermal) however, this distinction is only relevant for the end user to be aware of, as two assets that have different energy carriers as an output should not be connected to one and the same bus if a detailed analysis is expected. An example of this would be, that a system where the output of the diesel boiler as well as the output of a solar thermal panel are connected to the same bus, eventhough they can not both supply the same kind of heat demands (radiator vs. floor heating).  This, however, is something that the end-user has to be aware of themselves, eg. by defining self-explanatory labels.
 
 Limitations
 -----------

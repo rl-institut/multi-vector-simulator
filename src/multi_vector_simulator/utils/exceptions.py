@@ -33,6 +33,6 @@ class InvalidPeakDemandPricingPeriodsError(ValueError):
     pass
 
 
-class UnknownEnergyCarrierError(ValueError):
+class UnknownEnergyVectorError(ValueError):
     # Exception if an energy carrier is not in DEFAULT_WEIGHTS_ENERGY_CARRIERS
     pass

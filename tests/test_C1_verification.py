@@ -23,7 +23,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
 )
 
 from multi_vector_simulator.utils.exceptions import (
-    UnknownEnergyCarrierError,
+    UnknownEnergyVectorError,
 )
 
 
@@ -50,7 +50,7 @@ def test_check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pa
 
 
 def test_check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fail():
-    with pytest.raises(UnknownEnergyCarrierError):
+    with pytest.raises(UnknownEnergyVectorError):
         C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
             "Bio-Diesel", "asset_group", "asset"
         ), f"The energy carrier `Bio-Diesel` is recognized in the `DEFAULT_WEIGHTS_ENERGY_CARRIERS`, eventhough it should not be defined."
