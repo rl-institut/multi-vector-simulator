@@ -5,6 +5,7 @@ import multi_vector_simulator.C0_data_processing as C0
 
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
+    PROJECT_DATA,
     ENERGY_PROVIDERS,
     ENERGY_STORAGE,
     ENERGY_CONSUMPTION,
@@ -54,6 +55,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     UNIT_MINUTE,
     ENERGY_VECTOR,
     ASSET_DICT,
+    LES_ENERGY_VECTOR_S
 )
 from multi_vector_simulator.utils.exceptions import (
     InvalidPeakDemandPricingPeriodsError,
@@ -213,7 +215,19 @@ def test_define_transformer_for_peak_demand_pricing():
     ), f"The {SPECIFIC_COSTS_OM} of the newly defined {transformer_name} is not equal to the {PEAK_DEMAND_PRICING} of the energy provider it is defined from."
 
 
-def test_define_energyBusses():
+def test_define_energy_vectors_from_busses():
+    bus_name = "a_bus"
+    bus_label = bus_name + "label"
+    energy_vector = "Electricity"
+    dict_test = {PROJECT_DATA: {},
+                 ENERGY_BUSSES: {bus_name: {LABEL: bus_label, ENERGY_VECTOR: energy_vector}}}
+    C0.define_energy_vectors_from_busses(dict_test)
+    assert LES_ENERGY_VECTOR_S in dict_test[PROJECT_DATA], f"The keys and names of the energy vectors of the LES are not added to the dict_test."
+    assert energy_vector in dict_test[PROJECT_DATA][LES_ENERGY_VECTOR_S], f"The energy vector of bus {bus} is not added as {LES_ENERGY_VECTOR_S}."
+    expected_label = energy_vector.replace("_", " ")
+    assert dict_test[PROJECT_DATA][LES_ENERGY_VECTOR_S][energy_vector] == expected_label, f"The label of the {energy_vector} is incorrectly parsed as {dict_test[PROJECT_DATA][LES_ENERGY_VECTOR_S][energy_vector]} instead of {expected_label}."
+
+def test_add_assets_to_asset_dict_of_connected_busses():
     asset_names = ["asset_name_" + str(i) for i in range(0, 6)]
     in_bus_names = ["in_bus_name_" + str(i) for i in range(0, 6)]
     out_bus_names = ["out_bus_name_" + str(i) for i in range(0, 6)]
@@ -275,7 +289,7 @@ def test_define_energyBusses():
             {bus: {LABEL: bus, ENERGY_VECTOR: energy_vector}}
         )
 
-    C0.define_busses(dict_test)
+    C0.add_assets_to_asset_dict_of_connected_busses(dict_test)
 
     assert (
         asset_names[0] in dict_test[ENERGY_BUSSES][in_bus_names[0]][ASSET_DICT]
@@ -315,7 +329,7 @@ def test_define_energyBusses():
     ), f"Asset {asset_names[5]} not added to the connected bus {out_bus_names[5]}"
 
 
-def test_add_busses_of_asset_depending_on_in_out_direction():
+def test_add_asset_to_asset_dict_for_each_flow_direction():
     bus_names = ["bus_name_" + str(i) for i in range(1, 3)]
     asset_name = "asset"
     asset_label = "asset_label"
@@ -334,7 +348,7 @@ def test_add_busses_of_asset_depending_on_in_out_direction():
             }
         },
     }
-    C0.add_busses_of_asset_depending_on_in_out_direction(
+    C0.add_asset_to_asset_dict_for_each_flow_direction(
         dict_test, dict_test[ENERGY_CONVERSION][asset_name], asset_name
     )
     for bus in dict_test[ENERGY_BUSSES].keys():
@@ -345,6 +359,29 @@ def test_add_busses_of_asset_depending_on_in_out_direction():
             dict_test[ENERGY_BUSSES][bus][ASSET_DICT][asset_name] == asset_label
         ), f"The asset label of asset {asset_name} in the asset list of {bus} is of unexpected value."
 
+
+def test_add_asset_to_asset_dict_of_bus_ValueError():
+    bus_name = "bus_name"
+    asset_name = "asset"
+    asset_label = "asset_label"
+    energy_vector = "Electricity"
+    dict_test = {
+        ENERGY_BUSSES: {bus_name: {LABEL: bus_name, ENERGY_VECTOR: energy_vector}},
+        ENERGY_PROVIDERS: {
+            asset_name: {
+                LABEL: asset_label,
+                OUTFLOW_DIRECTION: bus_name+"s",
+                ENERGY_VECTOR: energy_vector,
+            }
+        },
+    }
+    with pytest.raises(ValueError):
+        C0.add_asset_to_asset_dict_of_bus(
+            dict_values=dict_test,
+            bus=dict_test[ENERGY_PROVIDERS][asset_name][OUTFLOW_DIRECTION],
+            asset_key=asset_name,
+            asset_label=asset_label,
+        )
 
 def test_add_asset_to_asset_dict_of_bus():
     bus_name = "bus_name"
@@ -363,7 +400,7 @@ def test_add_asset_to_asset_dict_of_bus():
     }
     C0.add_asset_to_asset_dict_of_bus(
         dict_values=dict_test,
-        bus=bus_name,
+        bus=dict_test[ENERGY_PROVIDERS][asset_name][OUTFLOW_DIRECTION],
         asset_key=asset_name,
         asset_label=asset_label,
     )

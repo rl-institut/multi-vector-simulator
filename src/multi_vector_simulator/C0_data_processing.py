@@ -101,11 +101,12 @@ def define_energy_vectors_from_busses(dict_values):
 
     Returns
     -------
-    Update dict['project_data'] by included energyVectors
+    Update dict[PROJECT_DATA] by included energyVectors (LES_ENERGY_VECTOR_S)
 
     Notes
     -----
-    Function tested with test_add_economic_parameters()
+    Function tested with
+    -  C1.test_define_energy_vectors_from_busses
     """
     dict_of_energy_vectors = {}
     energy_vector_string = ""
@@ -177,7 +178,7 @@ def process_all_assets(dict_values):
     :return:
     """
     # Define all busses based on the in- and outflow directions of the assets in the input data
-    define_busses(dict_values)
+    add_assets_to_asset_dict_of_connected_busses(dict_values)
     # Define all excess sinks for each energy bus
     auto_sinks = define_excess_sinks(dict_values)
 
@@ -304,9 +305,6 @@ def energyProduction(dict_values, group):
         if FILENAME in dict_values[group][asset]:
             if dict_values[group][asset][FILENAME] in ("None", None):
                 dict_values[group][asset].update({DISPATCHABILITY: True})
-                C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
-                    asset, group, asset
-                )
             else:
                 receive_timeseries_from_csv(
                     dict_values[SIMULATION_SETTINGS],
@@ -469,12 +467,10 @@ def define_missing_cost_data(dict_values, dict_asset):
         logging.debug("Added basic costs to asset %s: %s", dict_asset[LABEL], str)
 
 
-def define_busses(dict_values):
-    # todo this function is not used anymore
+def add_assets_to_asset_dict_of_connected_busses(dict_values):
     """
-    This function defines the ENERGY_BUSSES that the energy system model is comprised of.
-    For that, it adds each new bus defined as INPUT_DIRECTION or OUTPUT_DIRECTION in all assets
-    of all the energyAsset types (ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION, ENERGY_PROVIDERS, ENERGY_STORAGE)
+    This function adds the assets of the different asset groups to the asset dict of ENERGY_BUSSES.
+    The asset groups are: ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION, ENERGY_PROVIDERS, ENERGY_STORAGE
 
     Parameters
     ----------
@@ -483,10 +479,13 @@ def define_busses(dict_values):
 
     Returns
     -------
-    Extends dict_values by key "ENERGY_BUSSES" and all their names.
+    Extends dict_values[ENERGY_BUSSES] by an asset_dict that includes all connected assets.
 
+    Notes
+    -----
+    Tested with:
+    - C0.test_add_assets_to_asset_dict_of_connected_busses()
     """
-    # Interatively adds busses to ENERGY_BUSSES for each new bus in the inflow/outflow direction of subsequent assets
     for group in [
         ENERGY_CONVERSION,
         ENERGY_PRODUCTION,
@@ -495,17 +494,16 @@ def define_busses(dict_values):
         ENERGY_STORAGE,
     ]:
         for asset in dict_values[group]:
-            add_busses_of_asset_depending_on_in_out_direction(
+            add_asset_to_asset_dict_for_each_flow_direction(
                 dict_values, dict_values[group][asset], asset
             )
 
 
-def add_busses_of_asset_depending_on_in_out_direction(
+def add_asset_to_asset_dict_for_each_flow_direction(
     dict_values, dict_asset, asset_key
 ):
     """
-    Check if the INPUT_DIRECTION and OUTPUT_DIRECTION, ie the bus, of an asset is already included in energyBusses.
-    Otherwise, add to dict_values(ENERGY_BUSSES).
+    Add asset to the asset dict of the busses connected to the INPUT_DIRECTION and OUTPUT_DIRECTION of the asset.
 
     Parameters
     ----------
@@ -520,10 +518,16 @@ def add_busses_of_asset_depending_on_in_out_direction(
 
     Returns
     -------
-    Updated dict_values with potentially additional busses of the energy system.
+    Updated dict_values, with dict_values[ENERGY_BUSSES] now including asset dictionaries for each asset connected to a bus.
+
+    Notes
+    -----
+    Tested with:
+    - C0.test_add_asset_to_asset_dict_for_each_flow_direction()
     """
+
+    # The asset needs to be added both to the inflow as well as the outflow bus:
     for direction in [INFLOW_DIRECTION, OUTFLOW_DIRECTION]:
-        energy_vector = dict_asset[ENERGY_VECTOR]
         # Check if the asset has an INFLOW_DIRECTION or OUTFLOW_DIRECTION
         if direction in dict_asset:
             bus = dict_asset[direction]
@@ -581,8 +585,9 @@ def add_asset_to_asset_dict_of_bus(bus, dict_values, asset_key, asset_label):
 
     Notes
     -----
-    Tests
-    - Todo: Valueerror
+    Tested with:
+    - C0.test_add_asset_to_asset_dict_of_bus()
+    - C0.test_add_asset_to_asset_dict_of_bus_ValueError()
     """
     # If bus not defined in `energyBusses.csv` display error message
     if bus not in dict_values[ENERGY_BUSSES]:
