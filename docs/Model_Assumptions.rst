@@ -146,12 +146,13 @@ To be able to calculate sector-wide key performance indicators, it is necessary 
 
 After thorough consideration, it has been decided to base the equivalence in tonnes of oil equivalent (TOE). Electricity has been chosen as a baseline energy carrier, as our pilot sites mainly revolve around it and also because we believe that this energy carrier will play a larger role in the future. For converting the results into a more conventional unit, we choose crude oil as a secondary baseline energy carrier. This also enables comparisons with crude oil price developments in the market. For most KPIs, the baseline energy carrier used is of no relevance as the result is not dependent on it. This is the case for KPIs such as the share of renewables at the project location or its self-sufficiency. The choice of the baseline energy carrier is relevant only for the levelized cost of energy (LCOE), as it will either provide a system-wide supply cost in Euro per kWh electrical or per kg crude oil.
 
-First, the conversion factors to kg crude oil equivalent [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] were determined (see Table 1 below). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
-
+First, the conversion factors to kg crude oil equivalent [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] were determined (see :ref:`table_kgoe_conversion_factors` below). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
 
 Following conversion factors and energy carriers are defined:
 
-.. list-table:: Table 1: kg crude oil equivalent (kgoe) per unit of a fuel
+.. _table_kgoe_conversion_factors:
+
+.. list-table:: Conversion factors: kg crude oil equivalent (kgoe) per unit of a fuel
    :widths: 50 25 25
    :header-rows: 1
 
@@ -206,11 +207,11 @@ Following conversion factors and energy carriers are defined:
 
 The values of ethanol and biodiesel seem comparably low in [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_] and do not seem to be representative of the net heating value (or lower heating value) that was expected to be used here.
 
-From this, the energy weighting factors using the baseline energy carrier electricity are calculated:
+From this, the energy weighting factors using the baseline energy carrier electricity are calculated (see :ref:`table_default_energy_carrier_weights_label`).
 
 .. _table_default_energy_carrier_weights_label:
 
-.. list-table:: Table 2: Electricity equivalent conversion per unit of a fuel
+.. list-table:: Electricity equivalent conversion per unit of a fuel
    :widths: 50 25 25
    :header-rows: 1
 
@@ -293,7 +294,10 @@ When running simulations with the MVS, there are certain peculiarities to be awa
 The peculiarities can be considered as limitations, some of which are merely model assumptions and others are drawbacks of the model.
 A number of those are inherited due to the nature of the MVS and its underlying modules,
 and others can still be addressed in the future during the MVS development process, which is still ongoing.
-The following table lists the MVS limitations based on their type.
+The following table (:ref:`table_limitations_label`) lists the MVS limitations based on their type.
+
+
+.. _table_limitations_label:
 
 .. list-table:: Limitations
    :widths: 25 25
