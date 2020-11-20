@@ -31,6 +31,7 @@ Here is a template for new release sections
 - Constant variables: `JSON_PROCESSED`, `JSON_WITH_RESULTS`, `JSON_FILE_EXTENSION` (#649)
 - Comment in the RTD concerning the logical equivalence of `energyCarrier` and `energyVector` in the MVS (#649)
 - Comment how fuels can either be attributed to the fuel energy vactor or another vector (#649)
+- Labels for tables in `Model_assumptions.rst` (#649)
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
