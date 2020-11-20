@@ -24,7 +24,7 @@ from _constants import (
     CSV_EXT,
 )
 
-from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS, JSON_EXT
+from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS, JSON_FILE_EXTENSION
 
 from multi_vector_simulator.utils.constants_json_strings import (
     INPUT_POWER,
