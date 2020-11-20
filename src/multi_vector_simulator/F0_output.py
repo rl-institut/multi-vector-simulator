@@ -24,7 +24,10 @@ from multi_vector_simulator.utils.constants import (
     PATHS_TO_PLOTS,
 )
 
-from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS, JSON_FILE_EXTENSION
+from multi_vector_simulator.utils.constants import (
+    JSON_WITH_RESULTS,
+    JSON_FILE_EXTENSION,
+)
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     KPI,

@@ -1014,7 +1014,9 @@ if __name__ == "__main__":
     from multi_vector_simulator.utils.constants import REPO_PATH, OUTPUT_FOLDER
     from multi_vector_simulator.B0_data_input_json import load_json
 
-    dict_values = load_json(os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS+JSON_FILE_EXTENSION))
+    dict_values = load_json(
+        os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS + JSON_FILE_EXTENSION)
+    )
 
     test_app = create_app(dict_values)
     # open_in_browser(test_app)

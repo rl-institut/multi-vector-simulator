@@ -59,7 +59,7 @@ SAVE_PNG = "save_png"
 # Filenames of the json files stored to disc:
 JSON_PROCESSED = "json_input_processed"
 JSON_WITH_RESULTS = "json_with_results"
-JSON_FILE_EXTENSION=".json"
+JSON_FILE_EXTENSION = ".json"
 
 USER_INPUT_ARGUMENTS = (
     PATH_INPUT_FILE,

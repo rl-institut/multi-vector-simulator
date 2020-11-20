@@ -14,9 +14,7 @@ import os
 
 import pandas as pd
 
-from multi_vector_simulator.utils.exceptions import (
-    UnknownEnergyVectorError,
-)
+from multi_vector_simulator.utils.exceptions import UnknownEnergyVectorError
 from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
@@ -63,7 +61,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
     ENERGY_VECTOR,
     PROJECT_DATA,
-    LES_ENERGY_VECTOR_S
+    LES_ENERGY_VECTOR_S,
 )
 
 # Necessary for check_for_label_duplicates()
@@ -301,6 +299,7 @@ def check_input_values(dict_values):
         "Input values have been verified. This verification can not replace a manual input parameter check."
     )
 
+
 def all_valid_intervals(name, value, title):
     """
     Checks whether `value` of `name` is valid.
@@ -470,7 +469,10 @@ def check_if_energy_vector_of_all_assets_is_valid(dict_values):
                 and ENERGY_VECTOR in dict_values[level1][level2].keys()
             ):
                 energy_vector_name = dict_values[level1][level2][ENERGY_VECTOR]
-                if energy_vector_name not in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
+                if (
+                    energy_vector_name
+                    not in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]
+                ):
                     raise ValueError(
                         f"Asset {level2} of asset group {level1} has an energy vector that is not defined within the energyBusses. "
                         f"This prohibits proper processing of the assets dispatch."
@@ -479,6 +481,7 @@ def check_if_energy_vector_of_all_assets_is_valid(dict_values):
                     C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
                         energy_vector_name, level1, level2
                     )
+
 
 def check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
     energy_carrier, asset_group, asset
@@ -515,6 +518,7 @@ def check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
             f"as it is not defined within the DEFAULT_WEIGHTS_ENERGY_CARRIERS."
             f"Please check the energy carrier, or update the DEFAULT_WEIGHTS_ENERGY_CARRIERS in contants.py (dev)."
         )
+
 
 def check_for_sufficient_assets_on_busses(dict_values):
     r"""

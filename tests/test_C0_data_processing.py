@@ -55,11 +55,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     UNIT_MINUTE,
     ENERGY_VECTOR,
     ASSET_DICT,
-    LES_ENERGY_VECTOR_S
+    LES_ENERGY_VECTOR_S,
 )
-from multi_vector_simulator.utils.exceptions import (
-    InvalidPeakDemandPricingPeriodsError,
-)
+from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 
 
 def test_add_economic_parameters():
@@ -219,13 +217,22 @@ def test_define_energy_vectors_from_busses():
     bus_name = "a_bus"
     bus_label = bus_name + "label"
     energy_vector = "Electricity"
-    dict_test = {PROJECT_DATA: {},
-                 ENERGY_BUSSES: {bus_name: {LABEL: bus_label, ENERGY_VECTOR: energy_vector}}}
+    dict_test = {
+        PROJECT_DATA: {},
+        ENERGY_BUSSES: {bus_name: {LABEL: bus_label, ENERGY_VECTOR: energy_vector}},
+    }
     C0.define_energy_vectors_from_busses(dict_test)
-    assert LES_ENERGY_VECTOR_S in dict_test[PROJECT_DATA], f"The keys and names of the energy vectors of the LES are not added to the dict_test."
-    assert energy_vector in dict_test[PROJECT_DATA][LES_ENERGY_VECTOR_S], f"The energy vector of bus {bus} is not added as {LES_ENERGY_VECTOR_S}."
+    assert (
+        LES_ENERGY_VECTOR_S in dict_test[PROJECT_DATA]
+    ), f"The keys and names of the energy vectors of the LES are not added to the dict_test."
+    assert (
+        energy_vector in dict_test[PROJECT_DATA][LES_ENERGY_VECTOR_S]
+    ), f"The energy vector of bus {bus} is not added as {LES_ENERGY_VECTOR_S}."
     expected_label = energy_vector.replace("_", " ")
-    assert dict_test[PROJECT_DATA][LES_ENERGY_VECTOR_S][energy_vector] == expected_label, f"The label of the {energy_vector} is incorrectly parsed as {dict_test[PROJECT_DATA][LES_ENERGY_VECTOR_S][energy_vector]} instead of {expected_label}."
+    assert (
+        dict_test[PROJECT_DATA][LES_ENERGY_VECTOR_S][energy_vector] == expected_label
+    ), f"The label of the {energy_vector} is incorrectly parsed as {dict_test[PROJECT_DATA][LES_ENERGY_VECTOR_S][energy_vector]} instead of {expected_label}."
+
 
 def test_add_assets_to_asset_dict_of_connected_busses():
     asset_names = ["asset_name_" + str(i) for i in range(0, 6)]
@@ -370,7 +377,7 @@ def test_add_asset_to_asset_dict_of_bus_ValueError():
         ENERGY_PROVIDERS: {
             asset_name: {
                 LABEL: asset_label,
-                OUTFLOW_DIRECTION: bus_name+"s",
+                OUTFLOW_DIRECTION: bus_name + "s",
                 ENERGY_VECTOR: energy_vector,
             }
         },
@@ -382,6 +389,7 @@ def test_add_asset_to_asset_dict_of_bus_ValueError():
             asset_key=asset_name,
             asset_label=asset_label,
         )
+
 
 def test_add_asset_to_asset_dict_of_bus():
     bus_name = "bus_name"
@@ -479,6 +487,7 @@ def test_evaluate_lifetime_costs():
         SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
     ]:
         assert k in dict_asset, f"Function does not add {k} to the asset dictionary."
+
 
 group = "GROUP"
 asset = "ASSET"

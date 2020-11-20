@@ -223,7 +223,7 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
     # if the user only provided the path to the folder, we complete with default json file
     if os.path.isdir(path_simulation_output_json) is True:
         path_simulation_output_json = os.path.join(
-            path_simulation_output_json, JSON_WITH_RESULTS+JSON_FILE_EXTENSION
+            path_simulation_output_json, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
         )
 
     if os.path.exists(path_simulation_output_json) is False:

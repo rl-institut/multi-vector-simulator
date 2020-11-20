@@ -252,7 +252,9 @@ def report_arg_parser():
         nargs="?",
         type=str,
         help=f"path to the simulation result json file {JSON_WITH_RESULTS}.json'",
-        default=os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS+JSON_FILE_EXTENSION),
+        default=os.path.join(
+            REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+        ),
     )
     parser.add_argument(
         "-o",

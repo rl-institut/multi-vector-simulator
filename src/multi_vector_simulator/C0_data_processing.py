@@ -16,9 +16,7 @@ from multi_vector_simulator.utils.constants import (
 )
 
 from multi_vector_simulator.utils.constants_json_strings import *
-from multi_vector_simulator.utils.exceptions import (
-    InvalidPeakDemandPricingPeriodsError,
-)
+from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C1_verification as C1
 import multi_vector_simulator.C2_economic_functions as C2
@@ -125,6 +123,7 @@ def define_energy_vectors_from_busses(dict_values):
     logging.info(
         f"The energy system modelled includes following energy vectors: {energy_vector_string[:-2]}",
     )
+
 
 def add_economic_parameters(economic_parameters):
     """
@@ -499,9 +498,7 @@ def add_assets_to_asset_dict_of_connected_busses(dict_values):
             )
 
 
-def add_asset_to_asset_dict_for_each_flow_direction(
-    dict_values, dict_asset, asset_key
-):
+def add_asset_to_asset_dict_for_each_flow_direction(dict_values, dict_asset, asset_key):
     """
     Add asset to the asset dict of the busses connected to the INPUT_DIRECTION and OUTPUT_DIRECTION of the asset.
 
