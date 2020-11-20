@@ -149,7 +149,7 @@ SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED = (
 )
 
 # Other Parameters
-SECTORS = "sectors"
+LES_ENERGY_VECTOR_S = "energy_vectors_of_the_local_energy_system"
 OUTFLOW_DIRECTION = "outflow_direction"
 INFLOW_DIRECTION = "inflow_direction"
 ENERGY_VECTOR = "energyVector"

@@ -63,7 +63,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
     ENERGY_VECTOR,
     PROJECT_DATA,
-    SECTORS
+    LES_ENERGY_VECTOR_S
 )
 
 # Necessary for check_for_label_duplicates()
@@ -470,7 +470,7 @@ def check_if_energy_vector_of_all_assets_is_valid(dict_values):
                 and ENERGY_VECTOR in dict_values[level1][level2].keys()
             ):
                 energy_vector_name = dict_values[level1][level2][ENERGY_VECTOR]
-                if energy_vector_name not in dict_values[PROJECT_DATA][SECTORS]:
+                if energy_vector_name not in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
                     raise ValueError(
                         f"Asset {level2} of asset group {level1} has an energy vector that is not defined within the energyBusses. "
                         f"This prohibits proper processing of the assets dispatch."

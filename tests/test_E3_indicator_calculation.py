@@ -14,7 +14,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LABEL,
     VALUE,
     CRF,
-    SECTORS,
+    LES_ENERGY_VECTOR_S,
     KPI,
     KPI_SCALARS_DICT,
     KPI_UNCOUPLED_DICT,
@@ -102,7 +102,7 @@ dict_renewable_energy_use = {
         }
     },
     KPI: {KPI_SCALARS_DICT: {}, KPI_UNCOUPLED_DICT: {}},
-    PROJECT_DATA: {SECTORS: {electricity: electricity}},
+    PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity}},
 }
 
 exp_res = flow_pv_local + (flow_dso * renewable_share_dso)
@@ -156,7 +156,7 @@ def test_total_renewable_and_non_renewable_origin_of_each_sector():
 def test_renewable_factor_one_sector():
     """ """
     dict_res = {
-        PROJECT_DATA: {SECTORS: {electricity: electricity}},
+        PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity}},
         KPI: {
             KPI_SCALARS_DICT: {
                 TOTAL_NON_RENEWABLE_ENERGY_USE: 50,
@@ -188,7 +188,7 @@ def test_renewable_factor_one_sector():
 
 def test_renewable_factor_two_sectors():
     dict_res = {
-        PROJECT_DATA: {SECTORS: {electricity: electricity, h2: h2}},
+        PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity, h2: h2}},
         KPI: {
             KPI_SCALARS_DICT: {
                 TOTAL_NON_RENEWABLE_ENERGY_USE: 100,
@@ -227,7 +227,7 @@ def test_renewable_factor_two_sectors():
 def test_renewable_share_of_local_generation_one_sector():
     """ """
     dict_res = {
-        PROJECT_DATA: {SECTORS: {electricity: electricity}},
+        PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity}},
         KPI: {
             KPI_SCALARS_DICT: {
                 TOTAL_NON_RENEWABLE_GENERATION_IN_LES: 50,
@@ -260,7 +260,7 @@ def test_renewable_share_of_local_generation_one_sector():
 
 def test_renewable_share_of_local_generation_two_sectors():
     dict_res = {
-        PROJECT_DATA: {SECTORS: {electricity: electricity, h2: h2}},
+        PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity, h2: h2}},
         KPI: {
             KPI_SCALARS_DICT: {
                 TOTAL_NON_RENEWABLE_GENERATION_IN_LES: 100,
@@ -324,7 +324,7 @@ def test_renewable_share_equation_no_generation():
 # Tests for weighting_for_sector_coupled_kpi
 
 dict_weighting_unknown_sector = {
-    PROJECT_DATA: {SECTORS: {"Water": "Water"}},
+    PROJECT_DATA: {LES_ENERGY_VECTOR_S: {"Water": "Water"}},
     KPI: {
         KPI_UNCOUPLED_DICT: {RENEWABLE_FACTOR: {"Water": numbers[0]}},
         KPI_SCALARS_DICT: {},
@@ -332,7 +332,7 @@ dict_weighting_unknown_sector = {
 }
 
 dict_weighting_one_sector = {
-    PROJECT_DATA: {SECTORS: {electricity: electricity}},
+    PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity}},
     KPI: {
         KPI_UNCOUPLED_DICT: {RENEWABLE_FACTOR: {electricity: numbers[1]}},
         KPI_SCALARS_DICT: {},
@@ -340,7 +340,7 @@ dict_weighting_one_sector = {
 }
 
 dict_weighting_two_sectors = {
-    PROJECT_DATA: {SECTORS: {electricity: electricity, h2: h2}},
+    PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity, h2: h2}},
     KPI: {
         KPI_UNCOUPLED_DICT: {
             RENEWABLE_FACTOR: {electricity: numbers[1], h2: numbers[2]}
@@ -392,7 +392,7 @@ dict_values = {
             TOTAL_DEMAND + electricity + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
         }
     },
-    PROJECT_DATA: {SECTORS: {electricity: electricity}},
+    PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity}},
 }
 
 
@@ -440,7 +440,7 @@ def test_add_levelized_cost_of_energy_carriers_two_sectors():
             ]
         }
     )
-    dict_values[PROJECT_DATA][SECTORS].update({h2: h2})
+    dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S].update({h2: h2})
     E3.add_levelized_cost_of_energy_carriers(dict_values)
 
     expected_value = {
@@ -552,7 +552,7 @@ def test_add_total_feedin_electricity_equivaluent():
             }
         },
         KPI: {KPI_SCALARS_DICT: {}},
-        PROJECT_DATA: {SECTORS: {electricity: electricity}},
+        PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity}},
     }
 
     E3.add_total_feedin_electricity_equivaluent(dict_values_feedin)

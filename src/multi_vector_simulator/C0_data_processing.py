@@ -120,7 +120,7 @@ def define_energy_vectors_from_busses(dict_values):
             )
             energy_vector_string = energy_vector_string + energy_vector_name + ", "
 
-    dict_values[PROJECT_DATA].update({SECTORS: dict_of_energy_vectors})
+    dict_values[PROJECT_DATA].update({LES_ENERGY_VECTOR_S: dict_of_energy_vectors})
     logging.info(
         f"The energy system modelled includes following energy vectors: {energy_vector_string[:-2]}",
     )
