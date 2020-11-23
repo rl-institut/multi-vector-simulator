@@ -6,6 +6,7 @@ from _constants import TEST_REPO_PATH
 
 from multi_vector_simulator.utils.helpers import find_value_by_key
 from multi_vector_simulator.utils.constants_json_strings import (
+    UNIT,
     LABEL,
     ENERGY_PROVIDERS,
     ENERGY_PRODUCTION,
