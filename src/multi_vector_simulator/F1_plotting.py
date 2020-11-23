@@ -856,74 +856,52 @@ def create_plotly_flow_fig(
         figure object
     """
 
-    def create_plot(
-        flow_list, filename=file_name, y_legend=y_legend, plot_title=plot_title
-    ):
-        fig = go.Figure()
-        styling_dict = get_fig_style_dict()
-        styling_dict["gridwidth"] = 1.0
-
-        for i, asset in enumerate(flow_list):
-            fig.add_trace(
-                go.Scatter(
-                    x=df_plots_data["timestamp"],
-                    y=df_plots_data[asset],
-                    mode="lines",
-                    line=dict(color=get_color(i, color_list), width=2.5),
-                    name=asset,
-                )
-            )
-
-        fig.update_layout(
-            xaxis_title=x_legend,
-            yaxis_title=y_legend,
-            font_family="sans-serif",
-            template="simple_white",
-            xaxis=styling_dict,
-            yaxis=styling_dict,
-            title={
-                "text": plot_title,
-                "y": 0.90,
-                "x": 0.5,
-                "font_size": 23,
-                "xanchor": "center",
-                "yanchor": "top",
-            },
-            legend=dict(y=0.5, traceorder="normal", font=dict(color="black"),),
-        )
-
-        if file_path is not None:
-            # Function call to save the Plotly plot to the disk
-            save_plots_to_disk(
-                fig_obj=fig,
-                file_path=file_path,
-                file_name=filename,
-                width=1200,
-                height=600,
-                scale=5,
-            )
-        return fig
+    fig = go.Figure()
+    styling_dict = get_fig_style_dict()
+    styling_dict["gridwidth"] = 1.0
 
     assets_list = list(df_plots_data.columns)
     assets_list.remove("timestamp")
 
-    # In case SOC of a storage is in assets_list the SOC is plotted separately and is
-    # removed from the assets_list --> plot that shows absolute flows should not contain
-    # SOC in %
-    if any(SOC in item for item in assets_list):
-        # plot SOC separately
-        adapted_title = plot_title.replace("power", "storage SOC")
-        create_plot(
-            flow_list=[s for s in assets_list if SOC in s],
-            filename=f"SOC_{file_name}",
-            y_legend="SOC in %",
-            plot_title=adapted_title,
+    for i, asset in enumerate(assets_list):
+        fig.add_trace(
+            go.Scatter(
+                x=df_plots_data["timestamp"],
+                y=df_plots_data[asset],
+                mode="lines",
+                line=dict(color=get_color(i, color_list), width=2.5),
+                name=asset,
+            )
         )
-        # remove SOC as it is provided in % and does not fit to the flows plot
-        assets_list = [s for s in assets_list if SOC not in s]
 
-    # create flows plot (without SOC)
-    fig = create_plot(flow_list=assets_list)
+    fig.update_layout(
+        xaxis_title=x_legend,
+        yaxis_title=y_legend,
+        font_family="sans-serif",
+        template="simple_white",
+        xaxis=styling_dict,
+        yaxis=styling_dict,
+        title={
+            "text": plot_title,
+            "y": 0.90,
+            "x": 0.5,
+            "font_size": 23,
+            "xanchor": "center",
+            "yanchor": "top",
+        },
+        legend=dict(y=0.5, traceorder="normal", font=dict(color="black"),),
+    )
+
+    if file_path is not None:
+        # Function call to save the Plotly plot to the disk
+        save_plots_to_disk(
+            fig_obj=fig,
+            file_path=file_path,
+            file_name=file_name,
+            width=1200,
+            height=600,
+            scale=5,
+        )
 
     return fig
 
@@ -948,7 +926,43 @@ def plot_instant_power(dict_values, file_path=None):
     buses_list = list(dict_values[OPTIMIZED_FLOWS].keys())
     multi_plots = {}
     for bus in buses_list:
-        comp_id = bus + "-plot"
+        df_data = dict_values[OPTIMIZED_FLOWS][bus].copy(deep=True)
+        df_data.reset_index(level=0, inplace=True)
+        df_data = df_data.rename(columns={"index": "timestamp"})
+
+        # In case SOC of a storage is in df_data the SOC is plotted separately and is
+        # removed from the df_data as the plot that shows absolute flows should not
+        # contain SOC in %
+        if any(SOC in item for item in df_data):
+        # if any(SOC in item for item in df_data):
+            comp_id = f"{SOC}-{bus}-plot"
+            title = (
+                    bus
+                    + " storage SOC in LES: "
+                    + dict_values[PROJECT_DATA][PROJECT_NAME]
+                    + ", "
+                    + dict_values[PROJECT_DATA][SCENARIO_NAME]
+            )
+            # get columns containing SOC and plot SOC
+            soc_cols = [s for s in df_data.keys() if SOC in s]
+            soc_cols.extend(["timestamp"])
+            fig = create_plotly_flow_fig(
+                df_plots_data=df_data[soc_cols],
+                x_legend="Time",
+                y_legend="SOC",
+                plot_title=title,
+                file_path=file_path,
+                file_name=f"SOC_{bus}_power.png",
+            )
+            if file_path is None:
+                multi_plots[comp_id] = fig
+
+            # remove SOC as it is provided in % and does not fit with flow plot
+            soc_cols.remove("timestamp")
+            df_data.drop(soc_cols, inplace=True, axis=1)
+
+        # create flow plot
+        comp_id = f"{bus}-plot"
         title = (
             bus
             + " power in LES: "
@@ -956,10 +970,6 @@ def plot_instant_power(dict_values, file_path=None):
             + ", "
             + dict_values[PROJECT_DATA][SCENARIO_NAME]
         )
-
-        df_data = dict_values[OPTIMIZED_FLOWS][bus]
-        df_data.reset_index(level=0, inplace=True)
-        df_data = df_data.rename(columns={"index": "timestamp"})
 
         fig = create_plotly_flow_fig(
             df_plots_data=df_data,
