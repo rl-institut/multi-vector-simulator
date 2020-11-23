@@ -33,6 +33,7 @@ Here is a template for new release sections
 - Comment how fuels can either be attributed to the fuel energy vactor or another vector (#649)
 - Labels for tables in `Model_assumptions.rst` (#649)
 - New in `utils`: `helpers.py` with `find_valvue_by_key()`: Finds value of a key in a nested dictionary (#649)
+- New exception `DuplicateLabels` (#649)
 
 
 ### Changed

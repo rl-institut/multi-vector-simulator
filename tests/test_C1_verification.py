@@ -22,7 +22,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LES_ENERGY_VECTOR_S,
 )
 
-from multi_vector_simulator.utils.exceptions import UnknownEnergyVectorError
+from multi_vector_simulator.utils.exceptions import (
+    UnknownEnergyVectorError,
+    DuplicateLabels,
+)
 
 
 def test_lookup_file_existing_file():
@@ -156,7 +159,7 @@ def test_check_for_label_duplicates_fails():
         ENERGY_PRODUCTION: {ASSET: {LABEL: A_LABEL}},
         ENERGY_PROVIDERS: {ASSET: {LABEL: A_LABEL}},
     }
-    with pytest.raises(C1.DuplicateLabels):
+    with pytest.raises(DuplicateLabels):
         C1.check_for_label_duplicates(
             dict_values
         ), f"Eventhough there is a duplicate value of label, no error is raised."

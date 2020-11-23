@@ -16,7 +16,10 @@ import pandas as pd
 
 from multi_vector_simulator.utils.helpers import find_value_by_key
 
-from multi_vector_simulator.utils.exceptions import UnknownEnergyVectorError
+from multi_vector_simulator.utils.exceptions import (
+    UnknownEnergyVectorError,
+    DuplicateLabels,
+)
 from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
@@ -68,12 +71,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
 
 # Necessary for check_for_label_duplicates()
 from collections import Counter
-
-# web-application: valid input directly connected to cell-input
-class DuplicateLabels(ValueError):
-    # Exception raised in case an label is defined multiple times
-    # Oemof requires labels to be unique
-    pass
 
 
 def lookup_file(file_path, name):
