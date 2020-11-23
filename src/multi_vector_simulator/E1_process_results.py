@@ -91,7 +91,7 @@ def get_timeseries_per_bus(dict_values, bus_data):
     Indirectly updated `dict_values` with 'optimizedFlows' - one data frame for each bus.
 
     """
-    logging.info(
+    logging.debug(
         "Time series for plots and 'timeseries.xlsx' are added to `dict_values[OPTIMIZED_FLOWS]` in `E1.get_timeseries_per_bus`; check there in case of problems."
     )
     bus_data_timeseries = {}
