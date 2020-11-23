@@ -26,8 +26,8 @@ Here is a template for new release sections
 - New module `exceptions.py` in `multi_vector_simulator.utils` to gather custom MVS exceptions (#656)
 - New argument for functions `E1.convert_demand_to_dataframe`, `F1.plot_timeseries`, `F2.ready_timeseries_plots` (#665)
 - File .github/workflow/main.yml for github actions (#668)
-- Plot showing state of charge (SOC) of storages of each bus separately, as it is provided in % (#444)
-- "SOC" as string representative in `utils/constants.py`, used in `F1` and `E0` (#444)
+- Plot showing state of charge (SOC) of storages of each bus separately, as it is provided in % (#666)
+- "SOC" as string representative in `utils/constants.py`, used in `F1` and `E0` (#666)
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
