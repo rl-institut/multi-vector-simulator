@@ -32,6 +32,8 @@ Here is a template for new release sections
 - Comment in the RTD concerning the logical equivalence of `energyCarrier` and `energyVector` in the MVS (#649)
 - Comment how fuels can either be attributed to the fuel energy vactor or another vector (#649)
 - Labels for tables in `Model_assumptions.rst` (#649)
+- New in `utils`: `helpers.py` with `find_valvue_by_key()`: Finds value of a key in a nested dictionary (#649)
+
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
