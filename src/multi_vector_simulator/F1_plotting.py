@@ -769,7 +769,7 @@ def plot_optimized_capacities(
     """
 
     # Add dataframe to hold all the KPIs and optimized additional capacities
-    df_capacities = dict_values[KPI][KPI_SCALAR_MATRIX]
+    df_capacities = dict_values[KPI][KPI_SCALAR_MATRIX].copy(deep=True)
     df_capacities.drop(
         columns=[TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW], inplace=True,
     )
