@@ -33,6 +33,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SOC_INITIAL,
     SOC_MAX,
     SOC_MIN,
+    LABEL,
 )
 from _constants import (
     CSV_PATH,
@@ -41,6 +42,7 @@ from _constants import (
     REQUIRED_CSV_FILES,
     PATHS_TO_PLOTS,
     TYPE_BOOL,
+    TEST_REPO_PATH,
 )
 
 CSV_PARAMETERS = ["param1", "param2"]
@@ -346,6 +348,20 @@ def test_create_json_from_csv_float_int_parsing():
     assert type(json["csv_float_int"]["col1"]["param1"][VALUE]) is int
     assert type(json["csv_float_int"]["col1"]["param2"][VALUE]) is float
     assert type(json["csv_float_int"]["col1"]["param3"][VALUE]) is float
+
+
+def test_add_storage_components_label_correctly_added():
+    storage_label = "ESS Li-Ion"
+    input_directory = os.path.join(TEST_REPO_PATH, "inputs", "csv_elements")
+    single_dict = A1.add_storage_components(
+        storage_filename="storage_01",
+        input_directory=input_directory,
+        storage_label=storage_label,
+    )
+    for column_name in ["storage capacity", "input power", "output power"]:
+        assert (
+            single_dict[column_name][LABEL] == f"{storage_label} {column_name}"
+        ), f"Label of storage {storage_label} defined incorrectly, should be: '{storage_label} {column_name}'."
 
 
 def teardown_function():
