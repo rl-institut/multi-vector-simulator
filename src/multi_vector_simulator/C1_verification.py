@@ -14,12 +14,19 @@ import os
 
 import pandas as pd
 
+from multi_vector_simulator.utils.helpers import find_value_by_key
+
+from multi_vector_simulator.utils.exceptions import (
+    UnknownEnergyVectorError,
+    DuplicateLabels,
+)
 from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     DISPLAY_OUTPUT,
     OVERWRITE,
+    DEFAULT_WEIGHTS_ENERGY_CARRIERS,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DURATION,
@@ -57,10 +64,13 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ASSET_DICT,
     RENEWABLE_ASSET_BOOL,
     TIMESERIES,
+    ENERGY_VECTOR,
+    PROJECT_DATA,
+    LES_ENERGY_VECTOR_S,
 )
 
-
-# web-application: valid input directly connected to cell-input
+# Necessary for check_for_label_duplicates()
+from collections import Counter
 
 
 def lookup_file(file_path, name):
@@ -81,6 +91,31 @@ def lookup_file(file_path, name):
             + f"{name} can not be found. Operation terminated."
         )
         raise FileNotFoundError(msg)
+
+
+def check_for_label_duplicates(dict_values):
+    """
+    This function checks if any LABEL provided for the energy system model in dict_values is a duplicate.
+    This is not allowed, as oemof can not build a model with identical labels.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation inputs
+
+    Returns
+    -------
+    pass or error message: DuplicateLabels
+    """
+    values_of_label = find_value_by_key(dict_values, LABEL)
+    count = Counter(values_of_label)
+    msg = ""
+    for item in count:
+        if count[item] > 1:
+            msg += f"Following asset label is not unique with {count[item]} occurrences: {item}. \n"
+    if len(msg) > 1:
+        msg += f"Please make sure that each label is only used once, as oemof otherwise can not build the model."
+        raise DuplicateLabels(msg)
 
 
 def check_feedin_tariff(dict_values):
@@ -366,6 +401,80 @@ def all_valid_intervals(name, value, title):
             "VALIDATION FAILED: Code does not define a valid range for value %s/%s",
             name,
             title,
+        )
+
+
+def check_if_energy_vector_of_all_assets_is_valid(dict_values):
+    """
+    Validates for all assets, whether 'energyVector' is defined within DEFAULT_WEIGHTS_ENERGY_CARRIERS and within the energyBusses.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All input data in dict format
+
+    Notes
+    -----
+    Function tested with
+    - test_add_economic_parameters()
+    - test_check_if_energy_vector_of_all_assets_is_valid_fails
+    - test_check_if_energy_vector_of_all_assets_is_valid_passes
+    """
+    for level1 in dict_values.keys():
+        for level2 in dict_values[level1].keys():
+            if (
+                isinstance(dict_values[level1][level2], dict)
+                and ENERGY_VECTOR in dict_values[level1][level2].keys()
+            ):
+                energy_vector_name = dict_values[level1][level2][ENERGY_VECTOR]
+                if (
+                    energy_vector_name
+                    not in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]
+                ):
+                    raise ValueError(
+                        f"Asset {level2} of asset group {level1} has an energy vector that is not defined within the energyBusses. "
+                        f"This prohibits proper processing of the assets dispatch."
+                        f"Please check for typos or define another bus, as this hints at the energy system being faulty."
+                    )
+                    C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+                        energy_vector_name, level1, level2
+                    )
+
+
+def check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+    energy_carrier, asset_group, asset
+):
+    r"""
+    Raises an error message if an energy vector is unknown.
+
+    It then needs to be added to the DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py
+
+    Parameters
+    ----------
+    energy_carrier: str
+        Name of the energy carrier
+
+    asset_group: str
+        Name of the asset group
+
+    asset: str
+        Name of the asset
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    Tested with:
+    - test_check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass()
+    - test_check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fails()
+    """
+    if energy_carrier not in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
+        raise UnknownEnergyVectorError(
+            f"The energy carrier {energy_carrier} of asset group {asset_group}, asset {asset} is unknown, "
+            f"as it is not defined within the DEFAULT_WEIGHTS_ENERGY_CARRIERS."
+            f"Please check the energy carrier, or update the DEFAULT_WEIGHTS_ENERGY_CARRIERS in contants.py (dev)."
         )
 
 

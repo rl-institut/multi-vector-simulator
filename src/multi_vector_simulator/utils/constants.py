@@ -56,6 +56,11 @@ OVERWRITE = "overwrite"
 DISPLAY_OUTPUT = "display_output"
 SAVE_PNG = "save_png"
 
+# Filenames of the json files stored to disc:
+JSON_PROCESSED = "json_input_processed"
+JSON_WITH_RESULTS = "json_with_results"
+JSON_FILE_EXTENSION = ".json"
+
 USER_INPUT_ARGUMENTS = (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
@@ -79,6 +84,7 @@ DEFAULT_MAIN_KWARGS = dict(
 # associated to each of these filenames
 REQUIRED_CSV_PARAMETERS = {
     CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR],
+    ENERGY_BUSSES: [ENERGY_VECTOR],
     ENERGY_CONSUMPTION: [
         DSM,
         FILENAME,
@@ -175,6 +181,7 @@ REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
 # be in a required parameters dict
 REQUIRED_JSON_PARAMETERS = {
     ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX],
+    ENERGY_BUSSES: None,
     ENERGY_CONSUMPTION: None,
     ENERGY_CONVERSION: None,
     ENERGY_PRODUCTION: None,
@@ -319,7 +326,3 @@ DICT_PLOTS = {
 
 # Reading data from csv file
 HEADER = "header"
-
-# Filenames of the json files stored to disc:
-
-JSON_WITH_RESULTS = "json_with_results.json"

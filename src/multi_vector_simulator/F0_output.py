@@ -23,13 +23,18 @@ from multi_vector_simulator.utils.constants import (
     LOGFILE,
     PATHS_TO_PLOTS,
 )
+
+from multi_vector_simulator.utils.constants import (
+    JSON_WITH_RESULTS,
+    JSON_FILE_EXTENSION,
+)
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     KPI,
     OPTIMIZED_FLOWS,
     DEMANDS,
     RESOURCES,
-    SECTORS,
+    LES_ENERGY_VECTOR_S,
     KPI_SCALARS_DICT,
     KPI_SCALAR_MATRIX,
     KPI_COST_MATRIX,
@@ -99,7 +104,7 @@ def evaluate_dict(dict_values, path_pdf_report=None, path_png_figs=None):
     store_as_json(
         dict_values,
         dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-        "json_with_results",
+        JSON_WITH_RESULTS,
     )
 
     # generate png figures
@@ -337,5 +342,5 @@ def select_essential_results(dict_values):
     # Only keep the sectors, otherwise the information is the same as from input json
     dict_keys = list(dict_values[PROJECT_DATA].keys())
     for k in dict_keys:
-        if k != SECTORS:
+        if k != LES_ENERGY_VECTOR_S:
             dict_values[PROJECT_DATA].pop(k)

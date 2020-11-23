@@ -149,19 +149,16 @@ SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED = (
 )
 
 # Other Parameters
-SECTORS = "sectors"
+LES_ENERGY_VECTOR_S = "energy_vectors_of_the_local_energy_system"
 OUTFLOW_DIRECTION = "outflow_direction"
 INFLOW_DIRECTION = "inflow_direction"
-OUTPUT_BUS_NAME = "output_bus_name"
-INPUT_BUS_NAME = "input_bus_name"
 ENERGY_VECTOR = "energyVector"
 EXCESS = "_excess"
-BUS_SUFFIX = " bus"
 
 # DSO
 DSO_CONSUMPTION = "_consumption"
 DSO_FEEDIN = "_feedin"
-DSO_PEAK_DEMAND_BUS_NAME = "_pdp"  # short for peak demand pricing
+DSO_PEAK_DEMAND_SUFFIX = "_pdp"  # short for peak demand pricing
 DSO_PEAK_DEMAND_PERIOD = "_period"
 CONNECTED_CONSUMPTION_SOURCE = "connected_consumption_sources"
 CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS = (
@@ -178,13 +175,16 @@ AVAILABILITY_DISPATCH = "availability_timeseries"
 # Sinks
 EXCESS_SINK_POSTFIX = "_excess_sink"
 
-BUS_SUFFIX = "_bus"
 ASSET_DICT = "Asset_list"
 #######################################
 # Parameters added in post-processing #
 #######################################
 
 SIMULATION_RESULTS = "simulation_results"
+
+# oemof simulation parameters:
+OBJECTIVE_VALUE = "objective_value"
+SIMULTATION_TIME = "simulation_time"
 
 # Logs
 LOGS = "logs"

@@ -45,10 +45,11 @@ from multi_vector_simulator.utils.constants import (
     ECONOMIC_DATA,
     PROJECT_DATA,
     JSON_WITH_RESULTS,
+    JSON_FILE_EXTENSION,
     LOGFILE,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
-    SECTORS,
+    LES_ENERGY_VECTOR_S,
     VALUE,
     SIMULATION_SETTINGS,
     EVALUATED_PERIOD,
@@ -646,9 +647,9 @@ def create_app(results_json, path_sim_output=None):
         assets_folder=asset_folder, external_stylesheets=external_stylesheets,
     )
 
-    # Reading the relevant user-inputs from the json_with_results.json file into Pandas dataframes
+    # Reading the relevant user-inputs from the JSON_WITH_RESULTS.json file into Pandas dataframes
 
-    # .iloc[0] is used as PROJECT_DATA includes SECTORS, which can have multiple entries.
+    # .iloc[0] is used as PROJECT_DATA includes LES_ENERGY_VECTOR_S, which can have multiple entries.
     # Pased to a DF, we have multiple rows - for eah sector one row.
     # This messes up reading the data from the DF later, so we only take one row which then contains all relevant data.
     dfprojectData = pd.DataFrame.from_dict(results_json[PROJECT_DATA]).iloc[0]
@@ -738,7 +739,7 @@ def create_app(results_json, path_sim_output=None):
 
     # Determining the sectors which were simulated
 
-    sectors = list(results_json[PROJECT_DATA][SECTORS].keys())
+    sectors = list(results_json[PROJECT_DATA][LES_ENERGY_VECTOR_S].keys())
     sec_list = """"""
     for sec in sectors:
         sec_list += "\n" + f"\u2022 {sec.upper()}"
@@ -1013,7 +1014,9 @@ if __name__ == "__main__":
     from multi_vector_simulator.utils.constants import REPO_PATH, OUTPUT_FOLDER
     from multi_vector_simulator.B0_data_input_json import load_json
 
-    dict_values = load_json(os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS))
+    dict_values = load_json(
+        os.path.join(REPO_PATH, OUTPUT_FOLDER, JSON_WITH_RESULTS + JSON_FILE_EXTENSION)
+    )
 
     test_app = create_app(dict_values)
     # open_in_browser(test_app)

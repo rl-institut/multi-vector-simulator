@@ -26,6 +26,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     STORE_OEMOF_RESULTS,
     OUTPUT_LP_FILE,
     SIMULATION_RESULTS,
+    OBJECTIVE_VALUE,
+    SIMULTATION_TIME,
     ASSET_DICT,
     ENERGY_VECTOR,
 )
@@ -212,5 +214,5 @@ def test_if_oemof_results_are_stored_to_file_if_store_oemof_results_false(dict_v
 
 def test_if_simulation_results_added_to_dict_values(dict_values):
     D0.run_oemof(dict_values)
-    for k in (LABEL, "objective_value", "simulation_time"):
+    for k in (LABEL, OBJECTIVE_VALUE, SIMULTATION_TIME):
         assert k in dict_values[SIMULATION_RESULTS].keys()
