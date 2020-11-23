@@ -28,6 +28,8 @@ Here is a template for new release sections
 - File .github/workflow/main.yml for github actions (#668)
 - Plot showing state of charge (SOC) of storages of each bus separately, as it is provided in % (#666)
 - "SOC" as string representative in `utils/constants.py`, used in `F1` and `E0` (#666)
+- SOC plot of storages is added to the autoreport (#666)
+- Tests for `A1.add_storage_components()` and `E1.get_timeseries_per_bus()` (#666)
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
@@ -35,6 +37,7 @@ Here is a template for new release sections
 - Adapt `E1.convert_demand_to_dataframe` for multiple sectors (#656)
 - Improve the demands section of the autoreport: Divide the demand tables and plots sector-wise (#665)
 - Modify `E1.get_timeseries_per_bus()` to add `INPUT_POWER` and respectively `OUTPUT_POWER` to a storage component directly connected to the a bus to fix #444 and add logging.debug(#666)
+- Changed label of storage in `timeseries_all_busses.xlsx` to be defined by `installedCap` + `optimizedAddCap` to prevent confusion (#666)
 
 ### Removed
 - File .travis.yml (#668)

@@ -907,6 +907,9 @@ def create_plotly_flow_fig(
     assets_list = list(df_plots_data.columns)
     assets_list.remove("timestamp")
 
+    # In case SOC of a storage is in assets_list the SOC is plotted separately and is
+    # removed from the assets_list --> plot that shows absolute flows should not contain
+    # SOC in %
     if any(SOC in item for item in assets_list):
         # plot SOC separately
         adapted_title = plot_title.replace("power", "storage SOC")
@@ -916,9 +919,10 @@ def create_plotly_flow_fig(
             y_legend="SOC in %",
             plot_title=adapted_title,
         )
-        # remove SOC as it is provided in % and does not fit to this graph
+        # remove SOC as it is provided in % and does not fit to the flows plot
         assets_list = [s for s in assets_list if SOC not in s]
 
+    # create flows plot (without SOC)
     fig = create_plot(flow_list=assets_list)
 
     return fig
