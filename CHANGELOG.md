@@ -41,7 +41,7 @@ Here is a template for new release sections
 - SOC from storages from busses' plots (in `F1.create_plotly_flow_fig()`) but not from `OPTIMZIED_FLOWS` so that it is still added to 'timeseries.xlsx' (#444)
 
 ### Fixed
-- storage label definition (remove filename) and use `LABEL` instead (#444)
+- Storage label definition (remove filename) and use `LABEL` instead (#666)
 
 ## [0.5.2] - 2020-11-11
 
