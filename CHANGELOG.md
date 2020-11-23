@@ -34,7 +34,7 @@ Here is a template for new release sections
 - Move A1 and C0 custom exceptions into `multi_vector_simulator.utils.exceptions.py` (#656)
 - Adapt `E1.convert_demand_to_dataframe` for multiple sectors (#656)
 - Improve the demands section of the autoreport: Divide the demand tables and plots sector-wise (#665)
-- Modify `E1.get_timeseries_per_bus()` to add `INPUT_POWER` and respectively`OUTPUT_POWER` to a storage component directly connected to the a bus to fix #444 and add logging.info (#444)
+- Modify `E1.get_timeseries_per_bus()` to add `INPUT_POWER` and respectively `OUTPUT_POWER` to a storage component directly connected to the a bus to fix #444 and add logging.debug(#666)
 
 ### Removed
 - File .travis.yml (#668)
