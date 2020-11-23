@@ -342,9 +342,7 @@ class TestSinkComponent:
                 dispatch_price = dict_asset[DISPATCH_PRICE][VALUE]
         else:
             raise ValueError("`amount_inputs` should be int but not zero.")
-        for inflow_direction, i in zip(
-            inflow_direction_s, range(len(inflow_direction_s))
-        ):
+        for i, inflow_direction in enumerate(inflow_direction_s):
             input_bus = self.model.entities[-1].inputs[self.busses[inflow_direction]]
             if dispatchable is False:
                 assert_series_equal(input_bus.fix, dict_asset[TIMESERIES])
