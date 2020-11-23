@@ -33,6 +33,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     KPI_SCALARS_DICT,
     OPTIMIZED_FLOWS,
     LABEL,
+    INSTALLED_CAP,
 )
 
 from multi_vector_simulator.utils.constants_output import (
@@ -131,6 +132,8 @@ def evaluate_dict(dict_values, results_main, results_meta):
                     round(
                         dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
                             OPTIMIZED_ADD_CAP
+                        ][VALUE] + dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
+                            INSTALLED_CAP
                         ][VALUE],
                         1,
                     )
