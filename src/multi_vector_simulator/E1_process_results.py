@@ -120,13 +120,16 @@ def get_timeseries_per_bus(dict_values, bus_data):
                 # if `asset` already exists add input/output power to column name
                 # (occurs for storages that are directly added to a bus)
                 bus_data_timeseries[bus][asset]
+                # asset is already in bus_data_timeseries[bus]. Therefore a renaming is necessary:
                 bus_data_timeseries[bus].rename(
                     columns={asset: " ".join([asset, OUTPUT_POWER])}, inplace=True
                 )
+                # Now the "from_bus" ie. the charging/input power of the storage asset is added to the data set:
                 bus_data_timeseries[bus][" ".join([asset, INPUT_POWER])] = -bus_data[
                     bus
                 ]["sequences"][from_bus[asset]]
             except KeyError:
+                # The asset was not previously added to the `OPTIMIZED_FLOWS`, ie. is not a storage asset
                 bus_data_timeseries[bus][asset] = -bus_data[bus]["sequences"][
                     from_bus[asset]
                 ]
