@@ -43,6 +43,7 @@ from multi_vector_simulator.utils.constants import (
     ECONOMIC_DATA,
     PROJECT_DATA,
     CONSTRAINTS,
+    ENERGY_BUSSES,
     ENERGY_CONSUMPTION,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
@@ -139,6 +140,7 @@ def create_input_json(
                 # use filename as label
                 single_dict[filename][LABEL] = filename
             elif filename in [
+                ENERGY_BUSSES,
                 ENERGY_CONSUMPTION,
                 ENERGY_CONVERSION,
                 ENERGY_PRODUCTION,

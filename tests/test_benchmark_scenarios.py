@@ -16,7 +16,6 @@ import pytest
 from pytest import approx
 from multi_vector_simulator.cli import main
 from multi_vector_simulator.B0_data_input_json import load_json
-from multi_vector_simulator.C0_data_processing import bus_suffix
 
 from _constants import (
     EXECUTE_TESTS_ON,
@@ -29,7 +28,10 @@ from _constants import (
     OUTPUT_POWER,
 )
 
-from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS
+from multi_vector_simulator.utils.constants import (
+    JSON_WITH_RESULTS,
+    JSON_FILE_EXTENSION,
+)
 
 from multi_vector_simulator.utils.constants_json_strings import (
     EXCESS,
@@ -77,7 +79,7 @@ class TestACElectricityBus:
 
         df_busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
-            sheet_name=bus_suffix("Electricity"),
+            sheet_name="Electricity",
         )
         # make the time the index
         df_busses_flow = df_busses_flow.set_index("Unnamed: 0")
@@ -110,7 +112,7 @@ class TestACElectricityBus:
 
         df_busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
-            sheet_name=bus_suffix("Electricity"),
+            sheet_name="Electricity",
         )
         # make the time the index
         df_busses_flow = df_busses_flow.set_index("Unnamed: 0")
@@ -142,12 +144,10 @@ class TestACElectricityBus:
             )
             busses_flow = pd.read_excel(
                 os.path.join(TEST_OUTPUT_PATH, case, "timeseries_all_busses.xlsx"),
-                sheet_name=bus_suffix("Electricity"),
+                sheet_name="Electricity",
             )
             # compute the sum of the excess electricity for all timesteps
-            excess[case] = sum(
-                busses_flow[bus_suffix("Electricity") + EXCESS + AUTO_SINK]
-            )
+            excess[case] = sum(busses_flow["Electricity" + EXCESS + AUTO_SINK])
         # compare the total excess electricity between the two cases
         assert excess["AB_grid_PV"] < excess["ABE_grid_PV_battery"]
 
@@ -171,7 +171,11 @@ class TestACElectricityBus:
         )
 
         # read json with results file
-        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
+        data = load_json(
+            os.path.join(
+                TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+            )
+        )
 
         # make sure LCOE_diesel is less than grid price, so that below test makes sense
         assert (
@@ -206,7 +210,10 @@ class TestACElectricityBus:
         )
         # read json with results file
         with open(
-            os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS), "r"
+            os.path.join(
+                TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+            ),
+            "r",
         ) as results:
             data = json.load(results)
         peak_demand = [
@@ -223,7 +230,7 @@ class TestACElectricityBus:
         # read timeseries_all_busses excel file
         busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
-            sheet_name=bus_suffix("Electricity"),
+            sheet_name="Electricity",
         )
         # make the time the index
         busses_flow = busses_flow.set_index("Unnamed: 0")
@@ -284,13 +291,16 @@ class TestACElectricityBus:
         )
         # read json with results file
         with open(
-            os.path.join(TEST_OUTPUT_PATH, use_case, "json_with_results.json"), "r"
+            os.path.join(
+                TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+            ),
+            "r",
         ) as results:
             data = json.load(results)
         # read excel sheet with time series
         busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
-            sheet_name=bus_suffix("Heat"),
+            sheet_name="Heat",
         )
         # create dict with electricity prices
         electricity_price = data[ENERGY_PROVIDERS]["Grid_DSO"][ENERGY_PRICE][VALUE][

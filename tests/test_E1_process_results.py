@@ -64,12 +64,12 @@ def test_get_parameter_to_be_evaluated_from_oemof_results():
         param = E1.get_parameter_to_be_evaluated_from_oemof_results(
             asset_group, asset_label="a_label"
         )
-        assert param == INPUT_BUS_NAME
+        assert param == INFLOW_DIRECTION
     for asset_group in E1.ASSET_GROUPS_DEFINED_BY_OUTFLUX:
         param = E1.get_parameter_to_be_evaluated_from_oemof_results(
             asset_group, asset_label="a_label"
         )
-        assert param == OUTPUT_BUS_NAME
+        assert param == OUTFLOW_DIRECTION
 
 
 def test_get_tuple_for_oemof_results():

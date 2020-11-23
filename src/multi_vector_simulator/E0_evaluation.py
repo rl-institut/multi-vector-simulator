@@ -24,8 +24,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INPUT_POWER,
     OUTPUT_POWER,
     STORAGE_CAPACITY,
-    INPUT_BUS_NAME,
-    OUTPUT_BUS_NAME,
+    INFLOW_DIRECTION,
+    OUTFLOW_DIRECTION,
     OPTIMIZED_ADD_CAP,
     KPI,
     KPI_COST_MATRIX,
@@ -118,13 +118,14 @@ def evaluate_dict(dict_values, results_main, results_meta):
             )
 
         if (
-            dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
+            dict_values[ENERGY_STORAGE][storage][INFLOW_DIRECTION]
             in dict_values[OPTIMIZED_FLOWS].keys()
         ) or (
-            dict_values[ENERGY_STORAGE][storage][OUTPUT_BUS_NAME]
+            dict_values[ENERGY_STORAGE][storage][OUTFLOW_DIRECTION]
             in dict_values[OPTIMIZED_FLOWS].keys()
         ):
-            bus_name = dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
+            bus_name = dict_values[ENERGY_STORAGE][storage][INFLOW_DIRECTION]
+            inflow_direction = dict_values[ENERGY_STORAGE][storage][INFLOW_DIRECTION]
             timeseries_name = (
                 dict_values[ENERGY_STORAGE][storage][LABEL]
                 + " ("
@@ -145,9 +146,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + f") {SOC}"
             )
 
-            dict_values[OPTIMIZED_FLOWS][bus_name][timeseries_name] = dict_values[
-                ENERGY_STORAGE
-            ][storage]["timeseries_soc"]
+            dict_values[OPTIMIZED_FLOWS][inflow_direction][
+                timeseries_name
+            ] = dict_values[ENERGY_STORAGE][storage]["timeseries_soc"]
 
     for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:

@@ -27,7 +27,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_CONSUMPTION,
     CONNECTED_FEEDIN_SINK,
     CRF,
-    SECTORS,
+    LES_ENERGY_VECTOR_S,
     EXCESS,
     AUTO_SINK,
     ENERGY_VECTOR,
@@ -133,7 +133,7 @@ def total_demand_and_excess_each_sector(dict_values):
     # Define empty dict to gather the total demand of each energy carrier
     total_demand_dict = {}
     total_excess_dict = {}
-    for sector in dict_values[PROJECT_DATA][SECTORS]:
+    for sector in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
         total_demand_dict.update({sector: 0})
         total_excess_dict.update({sector: 0})
 
@@ -153,7 +153,7 @@ def total_demand_and_excess_each_sector(dict_values):
                 ENERGY_VECTOR
             ]
             # check if energy carrier in total_demand dict
-            # (might be unnecessary, check where dict_values[PROJECT_DATA][SECTORS] are defined)
+            # (might be unnecessary, check where dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S] are defined)
             if energy_carrier not in total_demand_dict:
                 logging.error(
                     f'Energy vector "{energy_carrier}" of asset {consumption_asset} not in known energy sectors. Please double check.'
@@ -248,7 +248,7 @@ def calculate_electricity_equivalent_for_a_set_of_aggregated_values(
     )
 
     logging.info(
-        f"The {kpi_name+SUFFIX_ELECTRICITY_EQUIVALENT} of the LES is: {total_electricity_equivalent} kWheleq."
+        f"The {kpi_name+SUFFIX_ELECTRICITY_EQUIVALENT} of the LES is: {round(total_electricity_equivalent)} kWheleq."
     )
     if kpi_name == TOTAL_EXCESS:
         logging.warning(
@@ -279,7 +279,7 @@ def add_total_renewable_and_non_renewable_energy_origin(dict_values):
 
     renewable_origin = {}
     non_renewable_origin = {}
-    for sector in dict_values[PROJECT_DATA][SECTORS]:
+    for sector in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
         renewable_origin.update({sector: 0})
         non_renewable_origin.update({sector: 0})
 
@@ -370,7 +370,7 @@ def add_renewable_share_of_local_generation(dict_values):
         """
 
     dict_renewable_share = {}
-    for sector in dict_values[PROJECT_DATA][SECTORS]:
+    for sector in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
         # Defines the total renewable energy as the renewable production within the LES
         total_res = dict_values[KPI][KPI_UNCOUPLED_DICT][
             TOTAL_RENEWABLE_GENERATION_IN_LES
@@ -430,7 +430,7 @@ def add_renewable_factor(dict_values):
     """
     dict_renewable_share = {}
     # Loops though the sectors
-    for sector in dict_values[PROJECT_DATA][SECTORS]:
+    for sector in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
         # Defines the total renewable energy as the renewable influx into the system (generation and consumption)
         total_res = dict_values[KPI][KPI_UNCOUPLED_DICT][TOTAL_RENEWABLE_ENERGY_USE][
             sector
@@ -906,7 +906,7 @@ def add_levelized_cost_of_energy_carriers(dict_values):
     ]
 
     # Loop through all energy carriers
-    for energy_carrier in dict_values[PROJECT_DATA][SECTORS]:
+    for energy_carrier in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
         # Get energy carrier specific values
         energy_carrier_label = TOTAL_DEMAND + energy_carrier
         total_flow_energy_carrier_eleq = dict_values[KPI][KPI_SCALARS_DICT][
@@ -1039,7 +1039,7 @@ def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
     total_energy_equivalent = 0
     dict_energy_equivalents_per_sector = {}
 
-    for sector in dict_values[PROJECT_DATA][SECTORS]:
+    for sector in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
         if sector in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
             energy_equivalent = (
                 dict_values[KPI][KPI_UNCOUPLED_DICT][kpi_name][sector]

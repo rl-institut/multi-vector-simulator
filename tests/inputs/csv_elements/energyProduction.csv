@@ -9,7 +9,7 @@ development_costs,currency,10000,0
 specific_costs,currency/unit,7200,0
 specific_costs_om,currency/unit/year,80,0
 dispatch_price,currency/kWh,0,0.64
-outflow_direction,str,PV plant (mono),Fuel
+outflow_direction,str,PV plant (mono) bus,Fuel
 file_name,str,pv_gen_merra2_2014_eff1_tilt40_az180.csv,None
 energyVector,str,Electricity,Electricity
 renewableAsset,bool,True,False

@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-
+import pprint as pp
 import pandas as pd
 import warnings
 
@@ -12,14 +12,11 @@ from multi_vector_simulator.utils.constants import (
     TYPE_BOOL,
     FILENAME,
     HEADER,
-    DEFAULT_WEIGHTS_ENERGY_CARRIERS,
+    JSON_PROCESSED,
 )
 
 from multi_vector_simulator.utils.constants_json_strings import *
-from multi_vector_simulator.utils.exceptions import (
-    InvalidPeakDemandPricingPeriodsError,
-    UnknownEnergyCarrierError,
-)
+from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C1_verification as C1
 import multi_vector_simulator.C2_economic_functions as C2
@@ -55,9 +52,13 @@ def all(dict_values):
     :return Pre-processed dictionary with all input parameters
 
     """
+    # Check if any asset label has duplicates
+    C1.check_for_label_duplicates(dict_values)
+
     B0.retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
     add_economic_parameters(dict_values[ECONOMIC_DATA])
-    identify_energy_vectors(dict_values)
+    define_energy_vectors_from_busses(dict_values)
+    C1.check_if_energy_vector_of_all_assets_is_valid(dict_values)
 
     ## Verify inputs
     # todo check whether input values can be true
@@ -76,17 +77,20 @@ def all(dict_values):
     # Perform basic (limited) check for moduel completeness
     C1.check_for_sufficient_assets_on_busses(dict_values)
 
+    # just to be safe, run evaluation a second time
+    C1.check_for_label_duplicates(dict_values)
+
     F0.store_as_json(
         dict_values,
         dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-        "json_input_processed",
+        JSON_PROCESSED,
     )
 
 
-def identify_energy_vectors(dict_values):
+def define_energy_vectors_from_busses(dict_values):
     """
-    Identifies all energyVectors used in the energy system by checking every entry 'energyVector' of all assets.
-    energyVectors later will be used to distribute costs and KPI amongst the sectors (not implemented)
+    Identifies all energyVectors used in the energy system by looking at the defined energyBusses.
+    The EnergyVectors later will be used to distribute costs and KPI amongst the sectors
 
     Parameters
     ----------
@@ -95,72 +99,30 @@ def identify_energy_vectors(dict_values):
 
     Returns
     -------
-    Update dict['project_data'] by used sectors
+    Update dict[PROJECT_DATA] by included energyVectors (LES_ENERGY_VECTOR_S)
 
     Notes
     -----
-    Function tested with test_add_economic_parameters()
+    Function tested with
+    -  C1.test_define_energy_vectors_from_busses
     """
-    dict_of_sectors = {}
-    names_of_sectors = ""
-    for level1 in dict_values.keys():
-        for level2 in dict_values[level1].keys():
-            if (
-                isinstance(dict_values[level1][level2], dict)
-                and ENERGY_VECTOR in dict_values[level1][level2].keys()
-            ):
-                energy_vector_name = dict_values[level1][level2][ENERGY_VECTOR]
-                if energy_vector_name not in dict_of_sectors.keys():
-                    check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
-                        energy_vector_name, level1, level2
-                    )
-                    dict_of_sectors.update(
-                        {energy_vector_name: energy_vector_name.replace("_", " ")}
-                    )
-                    names_of_sectors = names_of_sectors + energy_vector_name + ", "
+    dict_of_energy_vectors = {}
+    energy_vector_string = ""
+    for bus in dict_values[ENERGY_BUSSES]:
+        energy_vector_name = dict_values[ENERGY_BUSSES][bus][ENERGY_VECTOR]
+        if energy_vector_name not in dict_of_energy_vectors.keys():
+            C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+                energy_vector_name, ENERGY_BUSSES, bus
+            )
+            dict_of_energy_vectors.update(
+                {energy_vector_name: energy_vector_name.replace("_", " ")}
+            )
+            energy_vector_string = energy_vector_string + energy_vector_name + ", "
 
-    dict_values[PROJECT_DATA].update({SECTORS: dict_of_sectors})
+    dict_values[PROJECT_DATA].update({LES_ENERGY_VECTOR_S: dict_of_energy_vectors})
     logging.info(
-        "The energy system modelled includes following energy vectors / sectors: %s",
-        names_of_sectors[:-2],
+        f"The energy system modelled includes following energy vectors: {energy_vector_string[:-2]}",
     )
-
-
-def check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
-    energy_carrier, asset_group, asset
-):
-    r"""
-    Raises an error message if an energy vector is unknown.
-
-    It then needs to be added to the DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py
-
-    Parameters
-    ----------
-    energy_carrier: str
-        Name of the energy carrier
-
-    asset_group: str
-        Name of the asset group
-
-    asset: str
-        Name of the asset
-
-    Returns
-    -------
-    None
-
-    Notes
-    -----
-    Tested with:
-    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass()
-    - test_check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fails()
-    """
-    if energy_carrier not in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
-        raise UnknownEnergyCarrierError(
-            f"The energy carrier {energy_carrier} of asset group {asset_group}, asset {asset} is unknown, "
-            f"as it is not defined within the DEFAULT_WEIGHTS_ENERGY_CARRIERS."
-            f"Please check the energy carrier, or update the DEFAULT_WEIGHTS_ENERGY_CARRIERS in contants.py (dev)."
-        )
 
 
 def add_economic_parameters(economic_parameters):
@@ -215,7 +177,7 @@ def process_all_assets(dict_values):
     :return:
     """
     # Define all busses based on the in- and outflow directions of the assets in the input data
-    define_busses(dict_values)
+    add_assets_to_asset_dict_of_connected_busses(dict_values)
     # Define all excess sinks for each energy bus
     auto_sinks = define_excess_sinks(dict_values)
 
@@ -262,20 +224,20 @@ def define_excess_sinks(dict_values):
     Updates dict_values
     """
     auto_sinks = []
-    for bus_name in dict_values[ENERGY_BUSSES]:
-        excess_sink_name = bus_name + EXCESS
-        energy_vector = dict_values[ENERGY_BUSSES][bus_name][ENERGY_VECTOR]
+    for bus in dict_values[ENERGY_BUSSES]:
+        excess_sink_name = bus + EXCESS
+        energy_vector = dict_values[ENERGY_BUSSES][bus][ENERGY_VECTOR]
         define_sink(
             dict_values=dict_values,
-            asset_name=excess_sink_name,
+            asset_key=excess_sink_name,
             price={VALUE: 0, UNIT: CURR + "/" + UNIT},
-            input_bus_name=bus_name,
+            inflow_direction=bus,
             energy_vector=energy_vector,
         )
-        dict_values[ENERGY_BUSSES][bus_name].update({EXCESS: excess_sink_name})
+        dict_values[ENERGY_BUSSES][bus].update({EXCESS: excess_sink_name})
         auto_sinks.append(excess_sink_name)
         logging.debug(
-            f"Created excess sink for energy bus {bus_name}, connected to {ENERGY_VECTOR} {energy_vector}."
+            f"Created excess sink for energy bus {bus}, connected to {ENERGY_VECTOR} {energy_vector}."
         )
     return auto_sinks
 
@@ -342,9 +304,6 @@ def energyProduction(dict_values, group):
         if FILENAME in dict_values[group][asset]:
             if dict_values[group][asset][FILENAME] in ("None", None):
                 dict_values[group][asset].update({DISPATCHABILITY: True})
-                check_if_energy_carrier_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
-                    asset, group, asset
-                )
             else:
                 receive_timeseries_from_csv(
                     dict_values[SIMULATION_SETTINGS],
@@ -399,14 +358,6 @@ def energyStorage(dict_values, group):
             # check if maximumCap exists and add it to dict_values
             process_maximum_cap_constraint(dict_values, group, asset, subasset)
 
-        # define input and output bus names
-        dict_values[group][asset].update(
-            {INPUT_BUS_NAME: bus_suffix(dict_values[group][asset][INFLOW_DIRECTION])}
-        )
-        dict_values[group][asset].update(
-            {OUTPUT_BUS_NAME: bus_suffix(dict_values[group][asset][OUTFLOW_DIRECTION])}
-        )
-
 
 def energyProviders(dict_values, group):
     """
@@ -443,9 +394,9 @@ def energyConsumption(dict_values, group):
             dict_values[ECONOMIC_DATA],
             dict_values[group][asset],
         )
-        if INPUT_BUS_NAME not in dict_values[group][asset]:
+        if INFLOW_DIRECTION not in dict_values[group][asset]:
             dict_values[group][asset].update(
-                {INPUT_BUS_NAME: bus_suffix(dict_values[group][asset][ENERGY_VECTOR])}
+                {INFLOW_DIRECTION: dict_values[group][asset][ENERGY_VECTOR]}
             )
 
         if FILENAME in dict_values[group][asset]:
@@ -507,11 +458,10 @@ def define_missing_cost_data(dict_values, dict_asset):
         logging.debug("Added basic costs to asset %s: %s", dict_asset[LABEL], str)
 
 
-def define_busses(dict_values):
+def add_assets_to_asset_dict_of_connected_busses(dict_values):
     """
-    This function defines the ENERGY_BUSSES that the energy system model is comprised of.
-    For that, it adds each new bus defined as INPUT_DIRECTION or OUTPUT_DIRECTION in all assets
-    of all the energyAsset types (ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION, ENERGY_PROVIDERS, ENERGY_STORAGE)
+    This function adds the assets of the different asset groups to the asset dict of ENERGY_BUSSES.
+    The asset groups are: ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION, ENERGY_PROVIDERS, ENERGY_STORAGE
 
     Parameters
     ----------
@@ -520,13 +470,13 @@ def define_busses(dict_values):
 
     Returns
     -------
-    Extends dict_values by key "ENERGY_BUSSES" and all their names.
+    Extends dict_values[ENERGY_BUSSES] by an asset_dict that includes all connected assets.
 
+    Notes
+    -----
+    Tested with:
+    - C0.test_add_assets_to_asset_dict_of_connected_busses()
     """
-    # create new group of assets: busses
-    dict_values.update({ENERGY_BUSSES: {}})
-
-    # Interatively adds busses to ENERGY_BUSSES for each new bus in the inflow/outflow direction of subsequent assets
     for group in [
         ENERGY_CONVERSION,
         ENERGY_PRODUCTION,
@@ -535,19 +485,14 @@ def define_busses(dict_values):
         ENERGY_STORAGE,
     ]:
         for asset in dict_values[group]:
-            add_busses_of_asset_depending_on_in_out_direction(
+            add_asset_to_asset_dict_for_each_flow_direction(
                 dict_values, dict_values[group][asset], asset
             )
 
 
-def add_busses_of_asset_depending_on_in_out_direction(
-    dict_values, dict_asset, asset_key
-):
+def add_asset_to_asset_dict_for_each_flow_direction(dict_values, dict_asset, asset_key):
     """
-    Check if the INPUT_DIRECTION and OUTPUT_DIRECTION, ie the bus, of an asset is already included in energyBusses.
-    Otherwise, add to dict_values(ENERGY_BUSSES).
-
-    Translates INPUT_DIRECTION and OUTPUT_DIRECTION into INPUT_BUS_NAME and OUTPUT_BUS_NAME.
+    Add asset to the asset dict of the busses connected to the INPUT_DIRECTION and OUTPUT_DIRECTION of the asset.
 
     Parameters
     ----------
@@ -562,17 +507,16 @@ def add_busses_of_asset_depending_on_in_out_direction(
 
     Returns
     -------
-    Updated dict_values with potentially additional busses of the energy system.
-    Updated dict_asset with the input_bus_name
-    """
-    for direction in [INFLOW_DIRECTION, OUTFLOW_DIRECTION]:
-        # This is the parameter that will be added to dict_asset as the bus_name_key
-        if direction == INFLOW_DIRECTION:
-            bus_name_key = INPUT_BUS_NAME
-        else:
-            bus_name_key = OUTPUT_BUS_NAME
+    Updated dict_values, with dict_values[ENERGY_BUSSES] now including asset dictionaries for each asset connected to a bus.
 
-        energy_vector = dict_asset[ENERGY_VECTOR]
+    Notes
+    -----
+    Tested with:
+    - C0.test_add_asset_to_asset_dict_for_each_flow_direction()
+    """
+
+    # The asset needs to be added both to the inflow as well as the outflow bus:
+    for direction in [INFLOW_DIRECTION, OUTFLOW_DIRECTION]:
         # Check if the asset has an INFLOW_DIRECTION or OUTFLOW_DIRECTION
         if direction in dict_asset:
             bus = dict_asset[direction]
@@ -583,71 +527,30 @@ def add_busses_of_asset_depending_on_in_out_direction(
                 # Checking each bus of the list
                 for subbus in bus:
                     # Append bus name to bus_list
-                    bus_list.append(bus_suffix(subbus))
+                    bus_list.append(subbus)
                     # Check if bus of the direction is already contained in energyBusses
-                    update_bus(
+                    add_asset_to_asset_dict_of_bus(
                         bus=subbus,
                         dict_values=dict_values,
                         asset_key=asset_key,
                         asset_label=dict_asset[LABEL],
-                        energy_vector=energy_vector,
                     )
-                # Add bus_name_key to dict_asset
-                dict_asset.update({bus_name_key: bus_list})
+
             # If false: Only one bus
             else:
                 # Check if bus of the direction is already contained in energyBusses
-                update_bus(
+                add_asset_to_asset_dict_of_bus(
                     bus=bus,
                     dict_values=dict_values,
                     asset_key=asset_key,
                     asset_label=dict_asset[LABEL],
-                    energy_vector=energy_vector,
                 )
-                # Add bus_name_key to dict_asset
-                dict_asset.update({bus_name_key: bus_suffix(bus)})
 
 
-def bus_suffix(bus_direction):
+def add_asset_to_asset_dict_of_bus(bus, dict_values, asset_key, asset_label):
     """
-    Returns the name of a bus with the suffix defined in constants_json_strings.py (BUS_SUFFIX)
-
-    It is possible that the suffix will be dropped later on, in case that users always enter the directions with suffix " bus" anyway.
-
-    Parameters
-    ----------
-    bus_direction: str
-        A string, ie. a bus name
-
-    Returns
-    -------
-    Above string with BUS_SUFFIX
-    """
-    bus_label = bus_direction + BUS_SUFFIX
-    return bus_label
-
-
-def remove_bus_suffix(bus_label):
-    """
-    Removes suffix from a INPUT / OUTPUT BUS LABEL to get the INPUT / OUTPUT DIRECTION.
-
-    Parameters
-    ----------
-    bus_label: str
-        Bus label with suffix
-
-    Returns
-    -------
-    Bus direction (without suffix)
-    """
-    bus_direction = bus_label[: -len(BUS_SUFFIX)]
-    return bus_direction
-
-
-def update_bus(bus, dict_values, asset_key, asset_label, energy_vector):
-    """
-    Checks if an bus is already included in ENERGY_BUSSES and otherwise adds it.
-    Adds asset key and label to list of assets attached to a bus.
+    Adds asset key and label to a bus defined by `energyBusses.csv`
+    Sends an error message if the bus was not included in `energyBusses.csv`
 
     Parameters
     ----------
@@ -663,40 +566,35 @@ def update_bus(bus, dict_values, asset_key, asset_label, energy_vector):
     asset_label: str
         Label of the asset
 
-    energy_vector: str
-        Energy vector of the asset
-        - Output flow of an energy conversion asset (disregard energy vector if the assets inflow direction is connected to the bus)
-        - Input flow of a sink
-        - Output flow of a source
-        - Energy vector of a storage
-
     Returns
     -------
-    Updated dict_values[ENERGY_BUSSES], optionally with new busses and/or by adding an asset to a bus
+    Updated dict_values[ENERGY_BUSSES] by adding an asset to the busses` ASSET DICT
 
     EnergyBusses now has following keys: LABEL, ENERGY_VECTOR, ASSET_DICT
+
+    Notes
+    -----
+    Tested with:
+    - C0.test_add_asset_to_asset_dict_of_bus()
+    - C0.test_add_asset_to_asset_dict_of_bus_ValueError()
     """
-    bus_label = bus_suffix(bus)
-
-    if bus_label not in dict_values[ENERGY_BUSSES]:
-        # add bus to asset group energyBusses
-        dict_values[ENERGY_BUSSES].update(
-            {
-                bus_label: {
-                    LABEL: bus_label,
-                    ENERGY_VECTOR: energy_vector,
-                    ASSET_DICT: {},
-                }
-            }
+    # If bus not defined in `energyBusses.csv` display error message
+    if bus not in dict_values[ENERGY_BUSSES]:
+        bus_string = ", ".join(map(str, dict_values[ENERGY_BUSSES].keys()))
+        msg = (
+            f"Asset {asset_key} has an inflow or outflow direction of {bus}. "
+            f"This bus is not defined in `energyBusses.csv`: {bus_string}. "
+            f"You may either have a typo in one of the files or need to add a bus to `energyBusses.csv`."
         )
+        raise ValueError(msg)
 
-    else:
-        if dict_values[ENERGY_BUSSES][bus_label][ENERGY_VECTOR] is None:
-            dict_values[ENERGY_BUSSES][bus_label].update({ENERGY_VECTOR: energy_vector})
+    # If the EnergyBus has no ASSET_DICT to which the asset can be added later, add it
+    if ASSET_DICT not in dict_values[ENERGY_BUSSES][bus]:
+        dict_values[ENERGY_BUSSES][bus].update({ASSET_DICT: {}})
 
     # Asset should added to respective bus
-    dict_values[ENERGY_BUSSES][bus_label][ASSET_DICT].update({asset_key: asset_label})
-    logging.debug("Added asset %s to bus %s", asset_label, bus_label)
+    dict_values[ENERGY_BUSSES][bus][ASSET_DICT].update({asset_key: asset_label})
+    logging.debug(f"Added asset {asset_label} to bus {bus}")
 
 
 def define_dso_sinks_and_sources(dict_values, dso):
@@ -733,8 +631,8 @@ def define_dso_sinks_and_sources(dict_values, dso):
     define_source(
         dict_values=dict_values,
         asset_key=dso + DSO_CONSUMPTION,
-        output_bus_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]
-        + DSO_PEAK_DEMAND_BUS_NAME,
+        outflow_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]
+        + DSO_PEAK_DEMAND_SUFFIX,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
     )
@@ -742,9 +640,9 @@ def define_dso_sinks_and_sources(dict_values, dso):
     # define feed-in sink of the DSO
     define_sink(
         dict_values=dict_values,
-        asset_name=dso + DSO_FEEDIN + AUTO_SINK,
+        asset_key=dso + DSO_FEEDIN + AUTO_SINK,
         price=dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
-        input_bus_name=dict_values[ENERGY_PROVIDERS][dso][INPUT_BUS_NAME],
+        inflow_direction=dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
     )
@@ -894,6 +792,7 @@ def determine_months_in_a_peak_demand_pricing_period(
                 f"Please be advised that if you are not simulating for a year (365d)"
                 f"an possibly unexpected number of periods will be considered."
             )
+
     if number_of_pricing_periods not in [1, 2, 3, 4, 6, 12]:
         raise InvalidPeakDemandPricingPeriodsError(
             f"You have defined a number of peak demand pricing periods of {number_of_pricing_periods}. "
@@ -940,12 +839,8 @@ def define_transformer_for_peak_demand_pricing(
         LABEL: transformer_name,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         INSTALLED_CAP: {VALUE: 0, UNIT: dict_dso[UNIT]},
-        INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION] + DSO_PEAK_DEMAND_BUS_NAME,
-        INPUT_BUS_NAME: bus_suffix(
-            dict_dso[INFLOW_DIRECTION] + DSO_PEAK_DEMAND_BUS_NAME
-        ),
+        INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION] + DSO_PEAK_DEMAND_SUFFIX,
         OUTFLOW_DIRECTION: dict_dso[OUTFLOW_DIRECTION],
-        OUTPUT_BUS_NAME: bus_suffix(dict_dso[OUTFLOW_DIRECTION]),
         AVAILABILITY_DISPATCH: timeseries_availability,
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
@@ -967,9 +862,7 @@ def define_transformer_for_peak_demand_pricing(
     )
 
 
-def define_source(
-    dict_values, asset_key, output_bus_direction, energy_vector, **kwargs
-):
+def define_source(dict_values, asset_key, outflow_direction, energy_vector, **kwargs):
     r"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
 
@@ -994,16 +887,14 @@ def define_source(
 
     Returns
     -------
+    Updates dict_values[ENERGY_BUSSES] if outflow_direction not in it
     Standard source defined as:
     """
-
-    output_bus_name = get_name_or_names_of_in_or_output_bus(output_bus_direction)
-
+    source_label = asset_key + AUTO_SOURCE
     default_source_dict = {
         OEMOF_ASSET_TYPE: OEMOF_SOURCE,
-        LABEL: asset_key + AUTO_SOURCE,
-        OUTFLOW_DIRECTION: output_bus_direction,
-        OUTPUT_BUS_NAME: output_bus_name,
+        LABEL: source_label,
+        OUTFLOW_DIRECTION: outflow_direction,
         DISPATCHABILITY: True,
         # OPEX_VAR: {VALUE: price, UNIT: CURR + "/" + UNIT},
         LIFETIME: {
@@ -1015,6 +906,17 @@ def define_source(
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
         ENERGY_VECTOR: energy_vector,
     }
+
+    if outflow_direction not in dict_values[ENERGY_BUSSES]:
+        dict_values[ENERGY_BUSSES].update(
+            {
+                outflow_direction: {
+                    LABEL: outflow_direction,
+                    ENERGY_VECTOR: energy_vector,
+                    ASSET_DICT: {asset_key: source_label},
+                }
+            }
+        )
 
     for item in kwargs:
         if item in [SPECIFIC_COSTS_OM, SPECIFIC_COSTS]:
@@ -1053,35 +955,12 @@ def define_source(
     )
 
     apply_function_to_single_or_list(
-        function=update_bus,
-        parameter=output_bus_direction,
+        function=add_asset_to_asset_dict_of_bus,
+        parameter=outflow_direction,
         dict_values=dict_values,
         asset_key=asset_key,
         asset_label=default_source_dict[LABEL],
-        energy_vector=energy_vector,
     )
-
-
-def get_name_or_names_of_in_or_output_bus(bus):
-    """
-    Returns the bus names of one or multiple in- or output busses.
-
-    Parameters
-    ----------
-    bus: str
-        A bus name without bus suffix
-
-    Returns
-    -------
-    Bus name with suffix
-    """
-    if isinstance(bus, list):
-        bus_name = []
-        for bus_item in bus:
-            bus_name.append(bus_suffix(bus_item))
-    else:
-        bus_name = bus_suffix(bus)
-    return bus_name
 
 
 def determine_dispatch_price(dict_values, price, source):
@@ -1136,7 +1015,7 @@ def determine_dispatch_price(dict_values, price, source):
 
 
 def define_sink(
-    dict_values, asset_name, price, input_bus_name, energy_vector, **kwargs
+    dict_values, asset_key, price, inflow_direction, energy_vector, **kwargs
 ):
     r"""
     This automatically defines a sink for an oemof-sink object. The sinks are added to the energyConsumption assets.
@@ -1146,14 +1025,14 @@ def define_sink(
     dict_values: dict
         All information of the simulation
 
-    asset_name: str
+    asset_key: str
         label of the asset to be generated
 
     price: float
         Price of dispatch of the asset
 
-    input_direction: str
-        Direction from which energy is provided to the sink, used to create inbut bus name
+    inflow_direction: str
+        Direction from which energy is provided to the sink
 
     kwargs: Misc
         Common parameters:
@@ -1161,6 +1040,7 @@ def define_sink(
 
     Returns
     -------
+    Updates dict_values[ENERGY_BUSSES] if outflow_direction not in it
     Updates dict_values[ENERGY_CONSUMPTION] with a new sink
 
     Notes
@@ -1169,16 +1049,12 @@ def define_sink(
     - Used to define excess sinks for all energyBusses
     - Used to define feed-in sink for each DSO
     """
-
-    # create name of bus. Check if multiple busses are given
-    input_direction = remove_bus_suffix(input_bus_name)
-
+    sink_label = asset_key + AUTO_SINK
     # create a dictionary for the sink
     sink = {
         OEMOF_ASSET_TYPE: OEMOF_SINK,
-        LABEL: asset_name + AUTO_SINK,
-        INFLOW_DIRECTION: input_direction,
-        INPUT_BUS_NAME: input_bus_name,
+        LABEL: sink_label,
+        INFLOW_DIRECTION: inflow_direction,
         # OPEX_VAR: {VALUE: price, UNIT: CURR + "/" + UNIT},
         LIFETIME: {
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
@@ -1189,9 +1065,20 @@ def define_sink(
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
     }
 
+    if inflow_direction not in dict_values[ENERGY_BUSSES]:
+        dict_values[ENERGY_BUSSES].update(
+            {
+                inflow_direction: {
+                    LABEL: inflow_direction,
+                    ENERGY_VECTOR: energy_vector,
+                    ASSET_DICT: {asset_key: sink_label},
+                }
+            }
+        )
+
     if energy_vector is None:
         raise ValueError(
-            f"The {ENERGY_VECTOR} of the automatically defined sink {asset_name+AUTO_SINK} is invalid: {energy_vector}."
+            f"The {ENERGY_VECTOR} of the automatically defined sink {asset_key + AUTO_SINK} is invalid: {energy_vector}."
         )
 
     # check if multiple busses are provided
@@ -1207,7 +1094,7 @@ def define_sink(
                     element[FILENAME],
                     element[HEADER],
                 )
-                if asset_name[-6:] == "feedin":
+                if asset_key[-6:] == "feedin":
                     sink[DISPATCH_PRICE][VALUE].append([-i for i in timeseries])
                 else:
                     sink[DISPATCH_PRICE][VALUE].append(timeseries)
@@ -1232,13 +1119,13 @@ def define_sink(
             dict_values[SIMULATION_SETTINGS], sink, DISPATCH_PRICE
         )
         if (
-            asset_name[-6:] == "feedin"
+            asset_key[-6:] == "feedin"
         ):  # change into negative value if this is a feedin sink
             sink[DISPATCH_PRICE].update(
                 {VALUE: [-i for i in sink[DISPATCH_PRICE][VALUE]]}
             )
     else:
-        if asset_name[-6:] == "feedin":
+        if asset_key[-6:] == "feedin":
             value = -price[VALUE]
         else:
             value = price[VALUE]
@@ -1251,16 +1138,15 @@ def define_sink(
             )
 
     # update dictionary
-    dict_values[ENERGY_CONSUMPTION].update({asset_name: sink})
+    dict_values[ENERGY_CONSUMPTION].update({asset_key: sink})
 
     # If multiple input busses exist
     apply_function_to_single_or_list(
-        function=update_bus,
-        parameter=input_direction,
+        function=add_asset_to_asset_dict_of_bus,
+        parameter=inflow_direction,
         dict_values=dict_values,
-        asset_key=asset_name,
+        asset_key=asset_key,
         asset_label=sink[LABEL],
-        energy_vector=energy_vector,
     )
 
 
@@ -1686,7 +1572,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
             if asset_dict[MAXIMUM_CAP][VALUE] < asset_dict[INSTALLED_CAP][VALUE]:
                 message = (
                     f"The stated maximumCap in {group} {asset} is smaller than the "
-                    "installedCap. Please enter a greater maximumCap."
+                    f"installedCap ({asset_dict[MAXIMUM_CAP][VALUE]}/{asset_dict[INSTALLED_CAP][VALUE]}). Please enter a greater maximumCap."
                     "For this simulation, the maximumCap will be "
                     "disregarded and not be used in the simulation"
                 )
