@@ -26,10 +26,11 @@ Here is a template for new release sections
 - New module `exceptions.py` in `multi_vector_simulator.utils` to gather custom MVS exceptions (#656)
 - New argument for functions `E1.convert_demand_to_dataframe`, `F1.plot_timeseries`, `F2.ready_timeseries_plots` (#665)
 - File .github/workflow/main.yml for github actions (#668)
-- Plot showing state of charge (SOC) of storages of each bus separately, as it is provided in % (#666)
+- Plot showing state of charge (SOC) of storages of each bus separately, as it is provided in %, also added to automatic report (#666)
 - "SOC" as string representative in `utils/constants.py`, used in `F1` and `E0` (#666)
 - SOC plot of storages is added to the autoreport (#666)
-- Tests for `A1.add_storage_components()` and `E1.get_timeseries_per_bus()` (#666)
+- Test for correct storage labelling in `A1.add_storage_components()` (#666)
+ - Test for getting two time series with `E1.get_timeseries_per_bus()` for storage (input and output power) also if storage is directly connected to bus (#666)
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
@@ -41,10 +42,11 @@ Here is a template for new release sections
 
 ### Removed
 - File .travis.yml (#668)
-- SOC from storages from busses' plots (in `F1.create_plotly_flow_fig()`) but not from `OPTIMZIED_FLOWS` so that it is still printed into `timeseries.xlsx` (#666)
+- Removed SOC from storages from busses' plots (in `F1.plot_instant_power()`) but not from `OPTIMZIED_FLOWS` so that it is still printed into `timeseries.xlsx` (#666)
 
 ### Fixed
 - Storage label definition (remove filename) and use `LABEL` instead (#666)
+- Make deep copy of data frame in `F1.plot_optimized_capacities()` to prevent errors (#666)
 
 ## [0.5.2] - 2020-11-11
 
