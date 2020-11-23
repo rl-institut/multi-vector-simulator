@@ -38,7 +38,7 @@ Here is a template for new release sections
 
 ### Removed
 - File .travis.yml (#668)
-- SOC from storages from busses' plots (in `F1.create_plotly_flow_fig()`) but not from `OPTIMZIED_FLOWS` so that it is still added to 'timeseries.xlsx' (#444)
+- SOC from storages from busses' plots (in `F1.create_plotly_flow_fig()`) but not from `OPTIMZIED_FLOWS` so that it is still printed into `timeseries.xlsx` (#666)
 
 ### Fixed
 - Storage label definition (remove filename) and use `LABEL` instead (#666)
