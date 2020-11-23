@@ -668,7 +668,7 @@ def add_storage_components(storage_filename, input_directory, storage_label):
     if not os.path.exists(os.path.join(input_directory, f"{storage_filename}.csv")):
         logging.error(f"The storage file {storage_filename}.csv is missing!")
     else:
-        # hardcoded parameterlist of common parameters in all columns
+        # hardcoded parameter list of common parameters in all columns
         parameters = [
             AGE_INSTALLED,
             DEVELOPMENT_COSTS,

@@ -934,14 +934,14 @@ def plot_instant_power(dict_values, file_path=None):
         # removed from the df_data as the plot that shows absolute flows should not
         # contain SOC in %
         if any(SOC in item for item in df_data):
-        # if any(SOC in item for item in df_data):
+            # if any(SOC in item for item in df_data):
             comp_id = f"{SOC}-{bus}-plot"
             title = (
-                    bus
-                    + " storage SOC in LES: "
-                    + dict_values[PROJECT_DATA][PROJECT_NAME]
-                    + ", "
-                    + dict_values[PROJECT_DATA][SCENARIO_NAME]
+                bus
+                + " storage SOC in LES: "
+                + dict_values[PROJECT_DATA][PROJECT_NAME]
+                + ", "
+                + dict_values[PROJECT_DATA][SCENARIO_NAME]
             )
             # get columns containing SOC and plot SOC
             soc_cols = [s for s in df_data.keys() if SOC in s]

@@ -132,7 +132,8 @@ def evaluate_dict(dict_values, results_main, results_meta):
                     round(
                         dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
                             OPTIMIZED_ADD_CAP
-                        ][VALUE] + dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
+                        ][VALUE]
+                        + dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
                             INSTALLED_CAP
                         ][VALUE],
                         1,
