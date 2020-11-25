@@ -1,0 +1,16 @@
+,unit
+age_installed,year
+development_costs,currency
+specific_costs,currency/unit
+file_name
+installedCap,kWp
+maximumCap, kWp
+lifetime,year
+specific_costs_om,currency/unit/year
+dispatch_price,currency/kWh
+optimizeCap,bool
+outflow_direction,str
+type_oemof,str
+unit,str
+energyVector,str
+renewableAsset,bool
