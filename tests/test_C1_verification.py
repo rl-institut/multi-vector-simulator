@@ -80,12 +80,13 @@ def test_check_if_energy_vector_of_all_assets_is_valid_fails():
         ), f"The function incorrectly accepts an energyVector that is not in the energyBusses (as the project energy vector)."
 
 
-def test_check_feedin_tariff_greater_energy_price():
+def test_check_feedin_tariff_abs_greater_energy_price():
+    """Feed-in tariff (absolute value) greater than energy price, raises ValueError"""
     dict_values = {
         ENERGY_PROVIDERS: {
             "DSO": {
                 ENERGY_PRICE: {UNIT: "currency/kWh", VALUE: 0.3},
-                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: 0.4},
+                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: -0.4},
                 LABEL: "test DSO",
             }
         }
@@ -94,12 +95,13 @@ def test_check_feedin_tariff_greater_energy_price():
         C1.check_feedin_tariff(dict_values)
 
 
-def test_check_feedin_tariff_not_greater_energy_price():
+def test_check_feedin_tariff_abs_not_greater_energy_price():
+    """Feed-in tariff (absolute value) smaller than energy price, no error"""
     dict_values = {
         ENERGY_PROVIDERS: {
             "DSO": {
                 ENERGY_PRICE: {UNIT: "currency/kWh", VALUE: 0.5},
-                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: 0.4},
+                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: -0.4},
                 LABEL: "test DSO",
             }
         }

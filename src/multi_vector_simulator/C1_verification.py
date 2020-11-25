@@ -136,9 +136,9 @@ def check_feedin_tariff(dict_values):
     for provider in dict_values[ENERGY_PROVIDERS].keys():
         feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]
         electricity_price = dict_values[ENERGY_PROVIDERS][provider][ENERGY_PRICE]
-        diff = feedin_tariff[VALUE] - electricity_price[VALUE]
+        diff = electricity_price[VALUE] - abs(feedin_tariff[VALUE])
         if isinstance(diff, float) or isinstance(diff, int):
-            if diff > 0:
+            if diff < 0:
                 msg = f"Feed-in tariff > energy price for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}' would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
                 raise ValueError(msg)
             else:
@@ -147,7 +147,7 @@ def check_feedin_tariff(dict_values):
                 )
         else:
             boolean = [
-                k > 0 for k in diff.values
+                k < 0 for k in diff.values
             ]  # True if there is an instance where feed-in tariff > electricity_price
             if any(boolean) is True:
                 instances = sum(boolean)  # Count instances
