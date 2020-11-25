@@ -1,18 +1,123 @@
-# from _constants import JSON_PATH
+import pandas as pd
+import os
+import logging
+import shutil
+import mock
+import oemof.solph as solph
+import pickle
+
+import multi_vector_simulator.A0_initialization as A0
+import multi_vector_simulator.A1_csv_to_json as A1
+import multi_vector_simulator.B0_data_input_json as B0
+import multi_vector_simulator.C0_data_processing as C0
+import multi_vector_simulator.D0_modelling_and_optimization as D0
 import multi_vector_simulator.E1_process_results as E1
 
 from multi_vector_simulator.utils.constants_json_strings import *
 
+from _constants import (
+    TEST_REPO_PATH,
+    INPUT_FOLDER,
+    PATH_INPUT_FILE,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+    TEST_INPUT_DIRECTORY,
+    # JSON_PATH,
+    CSV_ELEMENTS,
+)
+
+PARSER = A0.mvs_arg_parser()
+TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_for_E1")
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs")
+BUS_DATA_DUMP = os.path.join(TEST_REPO_PATH, "bus_data_E1.p")
+
 # Note: test functions might be summed up in classes..
 
 
-def test_get_timeseries_per_bus_one_bus():
-    pass
-    # check updated dict_values
+class TestGetTimeseriesPerBus:
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            [
+                "-f",
+                "-log",
+                "warning",
+                "-i",
+                TEST_INPUT_PATH,
+                "-o",
+                TEST_OUTPUT_PATH,
+                "-ext",
+                "csv",
+            ]
+        ),
+    )
+    def setup_class(m_args):
+        """Run the simulation up to module E0 and prepare bus_data for E1"""
+        if os.path.exists(TEST_OUTPUT_PATH):
+            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
 
+        logging.debug("Accessing script: A0_initialization")
+        user_input = A0.process_user_arguments()
 
-def test_get_timeseries_per_bus_three_busses():
-    pass
+        A1.create_input_json(
+            input_directory=os.path.join(user_input[PATH_INPUT_FOLDER], CSV_ELEMENTS)
+        )
+
+        logging.debug("Accessing script: B0_data_input_json")
+        dict_values = B0.load_json(
+            user_input[PATH_INPUT_FILE],
+            path_input_folder=user_input[PATH_INPUT_FOLDER],
+            path_output_folder=user_input[PATH_OUTPUT_FOLDER],
+            move_copy=True,
+        )
+        logging.debug("Accessing script: C0_data_processing")
+        C0.all(dict_values)
+
+        logging.debug("Accessing script: D0_modelling_and_optimization")
+        results_meta, results_main = D0.run_oemof(dict_values)
+
+        bus_data = {}
+        # Store all information related to busses in bus_data
+        for bus in dict_values[ENERGY_BUSSES]:
+            # Read all energy flows from busses
+            bus_data.update({bus: solph.views.node(results_main, bus)})
+
+        # Pickle dump bus data
+        with open(BUS_DATA_DUMP, "wb") as handle:
+            pickle.dump(bus_data, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    def test_get_timeseries_per_bus_two_timeseries_for_directly_connected_storage(self):
+        """A storage directly connected to a bus should have time series for input and output power."""
+        with open(BUS_DATA_DUMP, "rb") as handle:
+            bus_data = pickle.load(handle)
+        # (('transformer_station_in', 'Electricity_bus'), 'flow')
+        dict_values = {
+            SIMULATION_SETTINGS: {
+                TIME_INDEX: pd.date_range("2020-01-01", freq="H", periods=3)
+            }
+        }
+        E1.get_timeseries_per_bus(dict_values=dict_values, bus_data=bus_data)
+        # check updated dict_values
+        df = dict_values[OPTIMIZED_FLOWS]["Electricity"]
+        cols = [f"battery {i}" for i in [INPUT_POWER, OUTPUT_POWER]]
+        assert {cols[0], cols[1]}.issubset(
+            df.columns
+        ), f"`E1.get_timeseries_per_bus()` should add input and output power time series of storage to `dict_values` also if it is connected directly to a bus."
+
+    def test_get_timeseries_per_bus_one_bus(self):
+        pass
+        # check updated dict_values
+
+    def test_get_timeseries_per_bus_three_busses(self):
+        pass
+
+    def teardown_class(self):
+        # Remove the output folder
+        if os.path.exists(TEST_OUTPUT_PATH):
+            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+        # Remove pickle dump
+        if os.path.exists(BUS_DATA_DUMP):
+            os.remove(BUS_DATA_DUMP)
 
 
 def test_get_storage_results_optimize():
