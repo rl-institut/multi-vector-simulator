@@ -645,11 +645,13 @@ def define_dso_sinks_and_sources(dict_values, dso):
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
     )
 
+    dict_feedin = change_sign_of_feedin_tariff(dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF], dso)
+
     # define feed-in sink of the DSO
     define_sink(
         dict_values=dict_values,
         asset_key=dso + DSO_FEEDIN + AUTO_SINK,
-        price=dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
+        price=dict_feedin,
         inflow_direction=dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
@@ -663,6 +665,48 @@ def define_dso_sinks_and_sources(dict_values, dso):
         }
     )
 
+def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
+    r"""
+    Change the sign of the feed-in tariff.
+    Additionally, prints a logging.warning in case of the feed-in tariff is entered as
+    negative value in 'energyProviders.csv'.
+
+    Parameters
+    ----------
+    dict_feedin_tariff: dict
+        Dict of feedin tariff with Unit-value pair
+
+    dso: str
+        Name of the energy provider
+
+    Returns
+    -------
+    dict_feedin_tariff: dict
+        Dict of feedin tariff, to be used as input to C0.define_sink
+
+    Notes
+    -----
+    Tested with:
+    - C0.test_change_sign_of_feedin_tariff_positive_value()
+    - C0.test_change_sign_of_feedin_tariff_negative_value()
+    - C0.test_change_sign_of_feedin_tariff_zero()
+
+    """
+    if dict_feedin_tariff[VALUE] > 0:
+        # Add a debug message in case the feed-in is interpreted as revenue-inducing.
+        logging.debug(
+            f"The {FEEDIN_TARIFF} of {dso} is positive, which means that feeding into the grid results in a revenue stream."
+        )
+    elif dict_feedin_tariff[VALUE] < 0:
+        # Add a warning msg in case the feedin induces expenses rather then revenue
+        logging.warning(
+            f"The {FEEDIN_TARIFF} of {dso} is negative, which means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
+        )
+    else:
+        pass
+
+    dict_feedin_tariff = {VALUE: -dict_feedin_tariff[VALUE], UNIT: dict_feedin_tariff[UNIT]}
+    return dict_feedin_tariff
 
 def define_availability_of_peak_demand_pricing_assets(
     dict_values, number_of_pricing_periods, months_in_a_period

@@ -1,5 +1,7 @@
 import pandas as pd
 import pytest
+import logging
+from copy import deepcopy
 
 import multi_vector_simulator.C0_data_processing as C0
 
@@ -56,6 +58,12 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_VECTOR,
     ASSET_DICT,
     LES_ENERGY_VECTOR_S,
+    FEEDIN_TARIFF,
+    PEAK_DEMAND_PRICING_PERIOD,
+    DSO_CONSUMPTION,
+    DSO_PEAK_DEMAND_PERIOD,
+    ECONOMIC_DATA,
+    CURR
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 
@@ -664,6 +672,103 @@ def test_process_maximum_cap_constraint_subasset():
     assert (
         dict_values[group][asset][subasset][MAXIMUM_CAP][UNIT] == unit
     ), f"The maximumCap is in {dict_values[group][asset][subasset][MAXIMUM_CAP][UNIT]}, while the asset itself has unit {dict_values[group][asset][subasset][UNIT]}."
+
+
+DSO = "dso"
+dict_test = deepcopy(dict_test_avilability)
+dict_test[SIMULATION_SETTINGS].update({EVALUATED_PERIOD: {VALUE: 7}})
+dict_test.update({ECONOMIC_DATA:{CURR: "curr"}})
+dict_test.update(
+    {
+        ENERGY_CONVERSION: {},
+        ENERGY_CONSUMPTION: {},
+        ENERGY_PROVIDERS: {
+            DSO: {
+                LABEL: "a_label",
+                INFLOW_DIRECTION: "a_direction",
+                OUTFLOW_DIRECTION: "b_direction",
+                PEAK_DEMAND_PRICING: {VALUE: 60},
+                UNIT: "unit",
+                ENERGY_VECTOR: "a_vector",
+                PEAK_DEMAND_PRICING_PERIOD: {VALUE: 1},
+            }
+        },
+    }
+)
+
+def test_add_a_transformer_for_each_peak_demand_pricing_period_1_period():
+    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
+        dict_test, 1, 12,
+    )
+    list_of_dso_energyConversion_assets = C0.add_a_transformer_for_each_peak_demand_pricing_period(
+        dict_test, dict_test[ENERGY_PROVIDERS][DSO], dict_availability_timeseries,
+    )
+    assert len(list_of_dso_energyConversion_assets) == 1, f"The list of peak demand pricing transformers is not only one entry long."
+    exp_list = [
+        dict_test[ENERGY_PROVIDERS][DSO][LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD
+    ]
+    assert list_of_dso_energyConversion_assets == exp_list, f'The names of the created peak demand pricing transformers are with "{list_of_dso_energyConversion_assets}" not as they were expected ({exp_list}).'
+    for transformer in list_of_dso_energyConversion_assets:
+        assert transformer in dict_test[ENERGY_CONVERSION], f"Transformer {transformer} is not added as an energyConversion object."
+
+def test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods():
+    dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
+        dict_test, 2, 6,
+    )
+    list_of_dso_energyConversion_assets = C0.add_a_transformer_for_each_peak_demand_pricing_period(
+        dict_test, dict_test[ENERGY_PROVIDERS][DSO], dict_availability_timeseries,
+    )
+    assert len(list_of_dso_energyConversion_assets) == 2, f"The list of peak demand pricing transformers is not only two entries long."
+    exp_list = [
+        dict_test[ENERGY_PROVIDERS][DSO][LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + "_" + str(1),
+        dict_test[ENERGY_PROVIDERS][DSO][LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD + "_" + str(2),
+    ]
+    assert list_of_dso_energyConversion_assets == exp_list, f'The names of the created peak demand pricing transformers are with "{list_of_dso_energyConversion_assets}" not as they were expected ({exp_list}).'
+
+    for transformer in list_of_dso_energyConversion_assets:
+        assert transformer in dict_test[ENERGY_CONVERSION], f"Transformer {transformer} is not added as an energyConversion object."
+
+
+
+def test_change_sign_of_feedin_tariff_positive_value(caplog):
+    """A positive feed-in tariff has to be changed to a negative value; a info message is logged."""
+    feedin_tariff = 0.5
+    dict_feedin = {VALUE: feedin_tariff, UNIT: UNIT}
+    with caplog.at_level(logging.DEBUG):
+        dict_feedin = C0.change_sign_of_feedin_tariff(dict_feedin, DSO)
+    assert (
+        dict_feedin[VALUE] == -feedin_tariff
+    ), f"A positive {FEEDIN_TARIFF} should be set to a negative value."
+    assert (
+        "which means that feeding into the grid results in a revenue stream." in caplog.text
+    ), f"When a positive {FEEDIN_TARIFF} is changed to a negative value there should be an info message."
+
+def test_change_sign_of_feedin_tariff_negative_value(caplog):
+    """A negative feed-in tariff is changed to a positive value as it indicates expenses when feeding into the grid; a warning msg is logged as the user might not be aware of the norm."""
+    feedin_tariff= -0.5
+    dict_feedin = {VALUE: feedin_tariff, UNIT: UNIT}
+    with caplog.at_level(logging.WARNING):
+        dict_feedin = C0.change_sign_of_feedin_tariff(dict_feedin, DSO)
+    assert (
+        dict_feedin[VALUE]== -feedin_tariff
+    ), f"A negative {FEEDIN_TARIFF} should be set to a positive value."
+    assert (
+        "which means that payments are necessary to be allowed to feed-into the grid" in caplog.text
+    ), f"When a negative {FEEDIN_TARIFF} is changed to a positive value there should be a warning."
+
+
+def test_change_sign_of_feedin_tariff_zero(caplog):
+    """If the feed-in tariff is zero is stays zero and no logging msg is added."""
+    feedin_tariff = 0
+    dict_feedin = {VALUE: feedin_tariff, UNIT: UNIT}
+    with caplog.at_level(logging.WARNING):
+        dict_feedin = C0.change_sign_of_feedin_tariff(dict_feedin, DSO)
+    assert (
+        dict_feedin[VALUE] == 0
+    ), f"If the {FEEDIN_TARIFF} is zero it should stay like that but it was changed to {dict_feedin[VALUE]}."
+    assert (
+        caplog.text == ""
+    ), f"A msg is logged although the feed-in tariff is not changed."
 
 
 """
