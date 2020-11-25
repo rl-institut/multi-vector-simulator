@@ -65,6 +65,9 @@ def all(dict_values):
     # C1.check_input_values(dict_values)
     # todo Check, whether files (demand, generation) are existing
 
+    # Set feed-in tariff to negative value as it is not a cost but brings revenue
+    change_sign_of_feedin_tariff_to_minus(dict_values)
+
     # Adds costs to each asset and sub-asset, adds time series to assets
     process_all_assets(dict_values)
 
@@ -1599,3 +1602,40 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 asset_dict[MAXIMUM_CAP][VALUE] = None
 
     asset_dict[MAXIMUM_CAP].update({UNIT: asset_dict[UNIT]})
+
+
+def change_sign_of_feedin_tariff_to_minus(dict_values):
+    r"""
+    Change the sign of the feed-in tariff to minus.
+
+    Additionally, prints a logging.warning in case of the feed-in tariff is entered as
+    negative value to 'energyProviders.csv'.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All input data in dict format
+
+    Returns
+    -------
+    Updated `dict_values`.
+    """
+    # check feed-in tariff of each provider
+    for provider, provider_dict in dict_values[ENERGY_PROVIDERS].items():
+        feedin_tariff = provider_dict[FEEDIN_TARIFF][VALUE]
+        # change sign of feed-in tariff and add a info msg in case it was positive and
+        # a warning msg in case it was negative as might have been meant to be a
+        # negative feed-in tariff.
+        if feedin_tariff > 0:
+            logging.info(
+                f"The {FEEDIN_TARIFF} of {provider} has been changed to a negative value, which means to earn money by feeding into the grid."
+            )
+        elif feedin_tariff < 0:
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {provider} has been changed to a positive value, which means to pay for feed-in to the grid. If you intended the value to be negative (earning) please set a positive value."
+            )
+        else:
+            pass
+        dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF].update(
+            {VALUE: -feedin_tariff}
+        )

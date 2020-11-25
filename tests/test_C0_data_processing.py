@@ -1,5 +1,6 @@
 import pandas as pd
 import pytest
+import logging
 
 import multi_vector_simulator.C0_data_processing as C0
 
@@ -56,6 +57,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_VECTOR,
     ASSET_DICT,
     LES_ENERGY_VECTOR_S,
+    FEEDIN_TARIFF,
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 
@@ -664,6 +666,45 @@ def test_process_maximum_cap_constraint_subasset():
     assert (
         dict_values[group][asset][subasset][MAXIMUM_CAP][UNIT] == unit
     ), f"The maximumCap is in {dict_values[group][asset][subasset][MAXIMUM_CAP][UNIT]}, while the asset itself has unit {dict_values[group][asset][subasset][UNIT]}."
+
+
+def test_change_sign_of_feedin_tariff_to_minus_positive_value(caplog):
+    """A positive feed-in tariff has to be changed to a negative value; a info message is logged."""
+    dict_values = {ENERGY_PROVIDERS: {"DSO": {FEEDIN_TARIFF: {VALUE: 0.5}}}}
+    with caplog.at_level(logging.INFO):
+        C0.change_sign_of_feedin_tariff_to_minus(dict_values)
+    assert (
+        dict_values[ENERGY_PROVIDERS]["DSO"][FEEDIN_TARIFF][VALUE] == -0.5
+    ), f"A positive {FEEDIN_TARIFF} should be set to a negative value."
+    assert (
+        "has been changed to a negative value, which means to earn money" in caplog.text
+    ), f"When a positive {FEEDIN_TARIFF} is changed to a negative value there should be an info message."
+
+
+def test_change_sign_of_feedin_tariff_to_minus_negative_value(caplog):
+    """A negative feed-in tariff is changed to a positive value; a warning msg is logged as the user might not be aware of the norm."""
+    dict_values = {ENERGY_PROVIDERS: {"DSO": {FEEDIN_TARIFF: {VALUE: -0.5}}}}
+    with caplog.at_level(logging.WARNING):
+        C0.change_sign_of_feedin_tariff_to_minus(dict_values)
+    assert (
+        dict_values[ENERGY_PROVIDERS]["DSO"][FEEDIN_TARIFF][VALUE] == 0.5
+    ), f"A negative {FEEDIN_TARIFF} should be set to a positive value."
+    assert (
+        "If you intended the value to be negative" in caplog.text
+    ), f"When a negative {FEEDIN_TARIFF} is changed to a positive value there should be a warning."
+
+
+def test_change_sign_of_feedin_tariff_to_minus_zero(caplog):
+    """If the feed-in tariff is zero is stays zero and no logging msg is added."""
+    dict_values = {ENERGY_PROVIDERS: {"DSO": {FEEDIN_TARIFF: {VALUE: 0}}}}
+    with caplog.at_level(logging.WARNING):
+        C0.change_sign_of_feedin_tariff_to_minus(dict_values)
+    assert (
+        dict_values[ENERGY_PROVIDERS]["DSO"][FEEDIN_TARIFF][VALUE] == 0
+    ), f"If the {FEEDIN_TARIFF} is zero it should stay like that but it was changed to {dict_values[ENERGY_PROVIDERS]['DSO'][FEEDIN_TARIFF][VALUE]}."
+    assert (
+        caplog.text == ""
+    ), f"A msg is logged although the feed-in tariff is not changed."
 
 
 """
