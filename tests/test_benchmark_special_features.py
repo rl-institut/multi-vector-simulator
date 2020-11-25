@@ -17,6 +17,7 @@ from _constants import (
 )
 from multi_vector_simulator.utils.constants import (
     JSON_WITH_RESULTS,
+    JSON_FILE_EXTENSION,
     TIME_SERIES,
     CSV_EXT,
 )
@@ -70,7 +71,11 @@ class Test_Parameter_Parsing:
         )
 
         # read json with results file
-        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
+        data = load_json(
+            os.path.join(
+                TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+            )
+        )
 
         # read csv with expected values of the timeseries
         csv_file = "parameter_timeseries.csv"
@@ -122,7 +127,7 @@ class Test_Parameter_Parsing:
         )
 
         # read json with results file
-        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
+        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS+JSON_FILE_EXTENSION))
 
         assert 1 == 1
     '''

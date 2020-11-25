@@ -8,7 +8,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_VECTOR,
     VALUE,
     LABEL,
-    OUTPUT_BUS_NAME,
+    OUTFLOW_DIRECTION,
     DSO_CONSUMPTION,
     RENEWABLE_SHARE_DSO,
     RENEWABLE_ASSET_BOOL,
@@ -31,25 +31,25 @@ def test_prepare_constraint_minimal_renewable_share():
             pv_plant: {
                 RENEWABLE_ASSET_BOOL: {VALUE: True},
                 LABEL: pv_plant,
-                OUTPUT_BUS_NAME: electricity,
+                OUTFLOW_DIRECTION: electricity,
                 ENERGY_VECTOR: electricity,
             },
             diesel: {
                 RENEWABLE_ASSET_BOOL: {VALUE: False},
                 LABEL: diesel,
-                OUTPUT_BUS_NAME: fuel,
+                OUTFLOW_DIRECTION: fuel,
                 ENERGY_VECTOR: electricity,
             },
             dso_1
             + DSO_CONSUMPTION: {
                 LABEL: dso_1 + DSO_CONSUMPTION,
-                OUTPUT_BUS_NAME: electricity,
+                OUTFLOW_DIRECTION: electricity,
                 ENERGY_VECTOR: electricity,
             },
             dso_2
             + DSO_CONSUMPTION: {
                 LABEL: dso_2 + DSO_CONSUMPTION,
-                OUTPUT_BUS_NAME: electricity,
+                OUTFLOW_DIRECTION: electricity,
                 ENERGY_VECTOR: electricity,
             },
         },

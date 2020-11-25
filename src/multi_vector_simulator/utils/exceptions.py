@@ -29,10 +29,18 @@ class WrongStorageColumn(ValueError):
 
 
 class InvalidPeakDemandPricingPeriodsError(ValueError):
-    # Exeption if an input is not valid
+    """Exeption if an input is not valid"""
+
     pass
 
 
-class UnknownEnergyCarrierError(ValueError):
-    # Exception if an energy carrier is not in DEFAULT_WEIGHTS_ENERGY_CARRIERS
+class UnknownEnergyVectorError(ValueError):
+    """Exception if an energy carrier is not in DEFAULT_WEIGHTS_ENERGY_CARRIERS"""
+
+    pass
+
+
+class DuplicateLabels(ValueError):
+    """Exception raised in case an label is defined multiple times as Oemof requires labels to be unique"""
+
     pass

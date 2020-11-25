@@ -7,6 +7,8 @@ import pandas as pd
 import multi_vector_simulator.A0_initialization as A0
 import multi_vector_simulator.A1_csv_to_json as A1
 import multi_vector_simulator.B0_data_input_json as B0
+
+from multi_vector_simulator.utils.constants import INPUT_FOLDER
 from multi_vector_simulator.utils.constants_json_strings import (
     SIMULATION_SETTINGS,
     VALUE,
@@ -41,7 +43,7 @@ def test_load_json_overwrite_output_folder_from_json():
     dict_values = B0.load_json(JSON_PATH, path_output_folder="test")
     assert dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER] == "test"
     assert dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER_INPUTS] == os.path.join(
-        "test", "inputs"
+        "test", INPUT_FOLDER
     )
 
 
@@ -78,7 +80,7 @@ PARSER = A0.mvs_arg_parser()
 
 class TestTemporaryJsonFileDisposal:
 
-    test_in_path = os.path.join(TEST_REPO_PATH, "inputs")
+    test_in_path = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
     test_out_path = os.path.join(TEST_REPO_PATH, "MVS_outputs")
 
     @mock.patch(

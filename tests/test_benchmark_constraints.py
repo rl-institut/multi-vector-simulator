@@ -21,7 +21,10 @@ from _constants import (
     CSV_EXT,
 )
 
-from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS
+from multi_vector_simulator.utils.constants import (
+    JSON_WITH_RESULTS,
+    JSON_FILE_EXTENSION,
+)
 
 from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
@@ -78,7 +81,11 @@ class Test_Constraints:
                 input_type=CSV_EXT,
                 path_output_folder=os.path.join(TEST_OUTPUT_PATH, case),
             )
-            data = load_json(os.path.join(TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS))
+            data = load_json(
+                os.path.join(
+                    TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+                )
+            )
             renewable_shares.update(
                 {case: data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]}
             )

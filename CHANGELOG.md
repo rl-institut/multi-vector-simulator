@@ -26,19 +26,43 @@ Here is a template for new release sections
 - New module `exceptions.py` in `multi_vector_simulator.utils` to gather custom MVS exceptions (#656)
 - New argument for functions `E1.convert_demand_to_dataframe`, `F1.plot_timeseries`, `F2.ready_timeseries_plots` (#665)
 - File .github/workflow/main.yml for github actions (#668)
+- `energyBusses` now have to be defined by the user via `energyBusses.csv` (#649)
+- Input validation test `C1.check_for_label_duplicates` (#649)
+- Constant variables: `JSON_PROCESSED`, `JSON_WITH_RESULTS`, `JSON_FILE_EXTENSION` (#649)
+- Comment in the RTD concerning the logical equivalence of `energyCarrier` and `energyVector` in the MVS (#649)
+- Comment how fuels can either be attributed to the fuel energy vactor or another vector (#649)
+- Labels for tables in `Model_assumptions.rst` (#649)
+- New in `utils`: `helpers.py` with `find_valvue_by_key()`: Finds value of a key in a nested dictionary (#649)
+- New exception `DuplicateLabels` (#649)
+
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
 - Move A1 and C0 custom exceptions into `multi_vector_simulator.utils.exceptions.py` (#656)
 - Adapt `E1.convert_demand_to_dataframe` for multiple sectors (#656)
 - Improve the demands section of the autoreport: Divide the demand tables and plots sector-wise (#665)
-- Adapted `C1.check_feedin_tariff()` to changes in feed-in tariff algebraic sign ()
+- All tests and benchmark tests are adapted to `energyBusses` being defined manually (#649)
+- Input for for `tests\test_F1_plotting.py` changed from `tests/test_data/inputs_F1_plot_es_graph` to default input folder `tests/inputs` (#649)
+- `tests/inputs`, `input_template` and the inputs of the benchmark as well as pytests adapted to `energyBusses` defined via `csv` (#649)
+- Refactored and changed `C0.update_bus()` to `C0.add_asset_to_dict_of_bus` (#649) 
+- Refactored and changed `C0.define_busses()` as it now only defines the energy assets connected to the defined busses (#649)
+- Changed `C0.define_sink()` and `C0.define_source()` so that it fits with externally defined `ENERGY_BUSSES` (#649)
+- Adapt pytests of `D1` and `D0` (#649)
+- Changed `C1.identify_energy_vectors` to be a test `C1.check_if_energy_vector_of_an_asset_is_valid` (#649)
+- Input folder for the `F1` tests now `tests/inputs` (#649)
+- Refactored parameters: `DSO_PEAK_DEMAND_BUS_NAME` to `DSO_PEAK_DEMAND_SUFFIX`, `SECTORS` to `LES_ENERGY_VECTORS` (#649)
+- Update `MVS_parameter_list.csv`: Added information to `energyVector` (#649)
+- Adapted `C1.check_feedin_tariff()` to changes in feed-in tariff algebraic sign (#670)
 
 ### Removed
 - File .travis.yml (#668)
+- Folder `tests/test_data/inputs_F1_plot_es_graph`, now using default input folder `tests/inputs` as input for `tests\test_F1_plotting.py` (#649)
+- Mention of `LABEL` in the RTD description of the `csv` files (#649)
+- `C0.bus_suffix()`, `C0.remove_bus_suffix()` and `C0.get_name_or_names_of_in_or_output_bus()`, as this overcomplicated the issue and the end user now can define their own bus labels (#649)
+- Parameters `INPUT_BUS_NAME` and `INPUT_BUS_NAME`, as they are now equivalent to `INFLOW_DIRECTION` and `OUTFLOW_DIRECTION` (#649)
 
 ### Fixed
-
+-
 
 ## [0.5.2] - 2020-11-11
 
