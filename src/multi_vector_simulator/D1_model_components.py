@@ -572,7 +572,7 @@ def storage_fix(model, dict_asset, **kwargs):
                 variable_costs=dict_asset[OUTPUT_POWER][DISPATCH_PRICE][VALUE],
             )
         },  # maximum discharge possible in one timestep
-        loss_rate=dict_asset[STORAGE_CAPACITY][EFFICIENCY][
+        loss_rate=1-dict_asset[STORAGE_CAPACITY][EFFICIENCY][
             VALUE
         ],  # from timestep to timestep
         min_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE],
@@ -636,7 +636,7 @@ def storage_optimize(model, dict_asset, **kwargs):
                 variable_costs=dict_asset[OUTPUT_POWER][DISPATCH_PRICE][VALUE],
             )
         },  # maximum discharge power
-        loss_rate=dict_asset[STORAGE_CAPACITY][EFFICIENCY][
+        loss_rate=1-dict_asset[STORAGE_CAPACITY][EFFICIENCY][
             VALUE
         ],  # from timestep to timestep
         min_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE],
