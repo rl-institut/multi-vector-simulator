@@ -46,7 +46,7 @@ from multi_vector_simulator.version import version_num, version_date
 from multi_vector_simulator.utils import data_parser
 
 
-def run_simulation(json_dict, **kwargs):
+def run_simulation(json_dict, epa_format=True, **kwargs):
     r"""
      Starts MVS tool simulation from an input json file
 
@@ -54,6 +54,9 @@ def run_simulation(json_dict, **kwargs):
     -----------
      json_dict: dict
          json from http request
+     epa_format: bool, optional
+         Specifies whether the output is formatted for EPA standards
+         Default: True
 
      Other Parameters
      ----------------
@@ -66,6 +69,7 @@ def run_simulation(json_dict, **kwargs):
      lp_file_output : bool, optional
          Specifies whether linear equation system generated is saved as lp file.
          Default: False.
+
     """
 
     welcome_text = (
@@ -100,11 +104,16 @@ def run_simulation(json_dict, **kwargs):
 
     logging.debug("Convert results to json")
 
-    epa_dict_values = data_parser.convert_mvs_params_to_epa(dict_values)
+    if epa_format is True:
+        epa_dict_values = data_parser.convert_mvs_params_to_epa(dict_values)
 
-    json_values = output_processing.store_as_json(epa_dict_values)
+        json_values = output_processing.store_as_json(epa_dict_values)
+        answer = json.loads(json_values)
 
-    return json.loads(json_values)
+    else:
+        answer = dict_values
+
+    return answer
 
 
 if __name__ == "__main__":
