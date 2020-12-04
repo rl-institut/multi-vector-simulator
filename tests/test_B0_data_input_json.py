@@ -8,7 +8,7 @@ import multi_vector_simulator.A0_initialization as A0
 import multi_vector_simulator.A1_csv_to_json as A1
 import multi_vector_simulator.B0_data_input_json as B0
 
-from multi_vector_simulator.utils.constants import INPUT_FOLDER
+from multi_vector_simulator.utils.constants import INPUT_FOLDER, OUTPUT_FOLDER
 from multi_vector_simulator.utils.constants_json_strings import (
     SIMULATION_SETTINGS,
     VALUE,
@@ -81,7 +81,7 @@ PARSER = A0.mvs_arg_parser()
 class TestTemporaryJsonFileDisposal:
 
     test_in_path = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
-    test_out_path = os.path.join(TEST_REPO_PATH, "MVS_outputs")
+    test_out_path = os.path.join(TEST_REPO_PATH, OUTPUT_FOLDER)
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
