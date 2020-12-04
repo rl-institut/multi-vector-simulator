@@ -748,6 +748,24 @@ def test_define_sink():
     )
     assert sink_name in dict_test_sink[ENERGY_CONSUMPTION], f"The sink {sink_name} was not added to the list of energyConsumption assets."
 
+float = 0.9
+dict_test[ENERGY_PROVIDERS][DSO].update({FEEDIN_TARIFF: {VALUE: float, UNIT: UNIT}})
+
+def test_define_dso_sinks_and_sources():
+    dict_test_provider = deepcopy(dict_test)
+    C0.define_dso_sinks_and_sources(dict_test_provider, DSO)
+    assert DSO + DSO_CONSUMPTION in dict_test_provider[ENERGY_PRODUCTION], f"No source for energy consumption from the energy provider is added."
+    assert DSO + DSO_FEEDIN + AUTO_SINK in dict_test_provider[ENERGY_CONSUMPTION], f"No sink for feed-in into the energy provider`s grid is added."
+    assert CONNECTED_CONSUMPTION_SOURCE in dict_test_provider[ENERGY_PROVIDERS][DSO], f"The key {CONNECTED_CONSUMPTION_SOURCE} is not added to dict_test_provider[ENERGY_PROVIDERS][DSO]."
+    exp = DSO + DSO_CONSUMPTION + AUTO_SOURCE
+    assert dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_CONSUMPTION_SOURCE] == exp, f"The {CONNECTED_CONSUMPTION_SOURCE} is unexpected with {dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_CONSUMPTION_SOURCE]} instead of {exp}"
+    assert CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS in dict_test_provider[ENERGY_PROVIDERS][DSO], f"The key {CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS} is not added to dict_test_provider[ENERGY_PROVIDERS][DSO]."
+    assert len(dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS]) == 1, f"There should only be one peak demand pricing transformer, but there are {len(dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS])}."
+    assert CONNECTED_FEEDIN_SINK in dict_test_provider[ENERGY_PROVIDERS][DSO], f"The key {CONNECTED_FEEDIN_SINK} is not added to dict_test_provider[ENERGY_PROVIDERS][DSO]."
+    exp = DSO + DSO_FEEDIN + AUTO_SINK
+    assert dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_FEEDIN_SINK] == exp, f"The {CONNECTED_FEEDIN_SINK} is unexpected with {dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_FEEDIN_SINK]} instead of {exp}"
+    assert dict_test_provider[ENERGY_CONSUMPTION][exp][DISPATCH_PRICE][VALUE]==-float,f"The feed-in tarrif should have the inverse sign than the {FEEDIN_TARIFF} defined in the energyProvider {DSO} (ie. {float}), but this is not the case with {dict_test_provider[ENERGY_CONSUMPTION][exp][FEEDIN_TARIFF][VALUE]}"
+
 def test_change_sign_of_feedin_tariff_positive_value(caplog):
     """A positive feed-in tariff has to be changed to a negative value; a info message is logged."""
     feedin_tariff = 0.5

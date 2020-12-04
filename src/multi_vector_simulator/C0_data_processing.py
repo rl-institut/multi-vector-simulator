@@ -617,6 +617,24 @@ def define_dso_sinks_and_sources(dict_values, dso):
     Returns
     -------
     Updated dict_values
+
+    Notes
+    -----
+    This function is tested with following pytests:
+    - C0.test_define_dso_sinks_and_sources()
+    - C0.test_determine_months_in_a_peak_demand_pricing_period_not_valid()
+    - C0.test_determine_months_in_a_peak_demand_pricing_period_valid()
+    - C0.test_define_availability_of_peak_demand_pricing_assets_yearly()
+    - C0.test_define_availability_of_peak_demand_pricing_assets_monthly()
+    - C0.test_define_availability_of_peak_demand_pricing_assets_quarterly()
+    - C0.test_add_a_transformer_for_each_peak_demand_pricing_period_1_period()
+    - C0.test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods()
+    - C0.test_define_transformer_for_peak_demand_pricing()
+    - C0.test_define_source() -> incomplete
+    - C0.test_define_sink() -> incomplete
+    - C0.test_change_sign_of_feedin_tariff_positive_value()
+    - C0.test_change_sign_of_feedin_tariff_negative_value()
+    - C0.test_change_sign_of_feedin_tariff_zero()
     """
 
     number_of_pricing_periods = dict_values[ENERGY_PROVIDERS][dso][
