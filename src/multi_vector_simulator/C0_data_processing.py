@@ -1107,6 +1107,9 @@ def define_sink(
     Examples:
     - Used to define excess sinks for all energyBusses
     - Used to define feed-in sink for each DSO
+
+    The pytests for this function are not complete. It is started with:
+    - C0.test_define_sink() and only the assertion messages are missing
     """
     sink_label = asset_key + AUTO_SINK
     # create a dictionary for the sink

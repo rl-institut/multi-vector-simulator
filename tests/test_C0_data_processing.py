@@ -732,6 +732,22 @@ def test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods():
 
 
 
+dict_test.update({ENERGY_CONSUMPTION: {}})
+
+def test_define_sink():
+    dict_test_sink = deepcopy(dict_test)
+    sink_name = "a_name"
+    dict_feedin = {VALUE: -1, UNIT: UNIT}
+    C0.define_sink(
+        dict_values=dict_test_sink,
+        asset_key=sink_name,
+        price=dict_feedin,
+        inflow_direction=dict_test_sink[ENERGY_PROVIDERS][DSO][INFLOW_DIRECTION],
+        specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
+        energy_vector=dict_test_sink[ENERGY_PROVIDERS][DSO][ENERGY_VECTOR],
+    )
+    assert sink_name in dict_test_sink[ENERGY_CONSUMPTION], f"The sink {sink_name} was not added to the list of energyConsumption assets."
+
 def test_change_sign_of_feedin_tariff_positive_value(caplog):
     """A positive feed-in tariff has to be changed to a negative value; a info message is logged."""
     feedin_tariff = 0.5
