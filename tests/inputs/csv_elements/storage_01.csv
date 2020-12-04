@@ -1,6 +1,6 @@
 ,unit,storage capacity,input power,output power
 unit,str,kWh,kW,kW
-installedCap,kWh,0.0,0,0
+installedCap,kWh,10,1,1
 age_installed,year,0,0,0
 lifetime,year,10,10,10
 development_costs,currency,0.0,0.0,0.0
