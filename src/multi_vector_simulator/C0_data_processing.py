@@ -1054,6 +1054,19 @@ def define_source(dict_values, asset_key, outflow_direction, energy_vector, pric
 
 
 def determine_dispatch_price(dict_values, price, source):
+    """
+    This function needs to be re-evaluated.
+
+    Parameters
+    ----------
+    dict_values
+    price
+    source
+
+    Returns
+    -------
+
+    """
     # check if multiple busses are provided
     # for each bus, read time series for dispatch_price if a file name has been
     # provided in energy price
