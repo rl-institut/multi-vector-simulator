@@ -5,6 +5,7 @@ from copy import deepcopy
 
 import multi_vector_simulator.C0_data_processing as C0
 
+from multi_vector_simulator.utils.constants import TYPE_BOOL
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     PROJECT_DATA,
@@ -15,6 +16,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_BUSSES,
     OUTFLOW_DIRECTION,
+TIMESERIES_NORMALIZED,
     INFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
@@ -64,8 +66,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_PEAK_DEMAND_PERIOD,
     ECONOMIC_DATA,
     CURR, AUTO_SOURCE,
-DSO_PEAK_DEMAND_SUFFIX, ENERGY_PRICE, DSO_FEEDIN, AUTO_SINK, CONNECTED_CONSUMPTION_SOURCE, CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS, CONNECTED_FEEDIN_SINK
-
+DSO_PEAK_DEMAND_SUFFIX, ENERGY_PRICE, DSO_FEEDIN, AUTO_SINK, CONNECTED_CONSUMPTION_SOURCE, CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS, CONNECTED_FEEDIN_SINK, DISPATCHABILITY, OEMOF_SOURCE, UNIT_YEAR
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 
@@ -683,7 +684,6 @@ dict_test.update({ECONOMIC_DATA:{CURR: "curr"}})
 dict_test.update(
     {
         ENERGY_CONVERSION: {},
-        ENERGY_CONSUMPTION: {},
         ENERGY_PROVIDERS: {
             DSO: {
                 LABEL: "a_label",
@@ -733,6 +733,114 @@ def test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods():
         assert transformer in dict_test_trafo[ENERGY_CONVERSION], f"Transformer {transformer} is not added as an energyConversion object."
 
 
+dict_test[ECONOMIC_DATA].update({PROJECT_DURATION: {VALUE: 20}})
+dict_test[ENERGY_PROVIDERS][DSO].update({ENERGY_PRICE: {VALUE: 1, UNIT: UNIT}
+})
+dict_test.update({ENERGY_BUSSES: {dict_test[ENERGY_PROVIDERS][DSO][INFLOW_DIRECTION]: {},
+                                  dict_test[ENERGY_PROVIDERS][DSO][OUTFLOW_DIRECTION]: {}}})
+dict_test.update({ENERGY_PRODUCTION: {}})
+
+def test_define_source():
+    """The outflow direction is in energyBusses."""
+    outflow = "out"
+    dict_test_source = {ENERGY_BUSSES: {outflow: {}},
+                        ENERGY_PRODUCTION: {},
+                        ECONOMIC_DATA: {PROJECT_DURATION: {VALUE: 20}}}
+
+    source_name = "source"
+    unit_price = 1
+    energy_vector = "Electricity"
+    C0.define_source(
+        dict_values=dict_test_source,
+        asset_key=source_name,
+        outflow_direction=outflow,
+        energy_vector=energy_vector,
+    )
+    assert source_name in dict_test_source[ENERGY_PRODUCTION], f"The source {source_name} was not added to the list of energyProduction assets."
+    for key in [OEMOF_ASSET_TYPE, LABEL, OUTFLOW_DIRECTION, DISPATCHABILITY, LIFETIME, OPTIMIZE_CAP, MAXIMUM_CAP, AGE_INSTALLED, ENERGY_VECTOR]:
+        assert key in dict_test_source[ENERGY_PRODUCTION][source_name], f"The function should add key {key} to the newly defined source, but does not."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][OEMOF_ASSET_TYPE] == OEMOF_SOURCE, f"The {OEMOF_ASSET_TYPE} of the defined source is not {OEMOF_SOURCE}."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][LABEL] == source_name + AUTO_SOURCE, f"The {LABEL} of the defined source is not {source_name + AUTO_SOURCE}."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][OUTFLOW_DIRECTION] == outflow, f"The {OUTFLOW_DIRECTION} of the defined source is not {outflow}."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][DISPATCHABILITY] is True, f"The boolean value of {DISPATCHABILITY} of the defined source is not {True}."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][LIFETIME][VALUE] == 20, f"The {LIFETIME} {VALUE} of the defined source is not {20}."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][LIFETIME][UNIT] == UNIT_YEAR, f"The {LIFETIME} {UNIT} of the defined source is not {UNIT_YEAR}."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][OPTIMIZE_CAP][VALUE] is True, f"The {OPTIMIZE_CAP} {VALUE} of the defined source is not {True}."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][OPTIMIZE_CAP][UNIT] == TYPE_BOOL, f"The {OPTIMIZE_CAP} {UNIT} of the defined source is not {TYPE_BOOL}."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][MAXIMUM_CAP][VALUE] is None, f"The {MAXIMUM_CAP} {VALUE} of the defined source is not {None}."
+    # assert dict_test_source[ENERGY_PRODUCTION][source_name][MAXIMUM_CAP][UNIT] == "?" this is not properly defined in the function yet.
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][AGE_INSTALLED][VALUE] == 0, f"The {AGE_INSTALLED} {VALUE} of the defined source is not {0}."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][AGE_INSTALLED][UNIT] == UNIT_YEAR, f"The {AGE_INSTALLED} {UNIT} of the defined source is not {UNIT_YEAR}."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][ENERGY_VECTOR] == energy_vector, f"The {ENERGY_VECTOR} of the defined source is not {energy_vector}."
+    assert source_name in dict_test_source[ENERGY_BUSSES][outflow][ASSET_DICT], f"The new source {source_name} is not in the list of assets of the connected bus {outflow}."
+
+def test_define_source_exception_unknown_bus():
+    """The bus of an energy provider source is not included in the energyBusses."""
+    outflow = "out"
+    dict_test_source = {ENERGY_BUSSES: {},
+                        ENERGY_PRODUCTION: {},
+                        ECONOMIC_DATA: {PROJECT_DURATION: {VALUE: 20}}}
+
+    source_name = "source"
+    unit_price = 1
+    energy_vector = "Electricity"
+    C0.define_source(
+        dict_values=dict_test_source,
+        asset_key=source_name,
+        outflow_direction=outflow,
+        price= {VALUE: unit_price, UNIT: UNIT},
+        energy_vector=energy_vector,
+    )
+    assert outflow in dict_test_source[ENERGY_BUSSES], f"Energy bus {outflow} is not defined for in the energyBusses"
+    for key in [LABEL, ENERGY_VECTOR, ASSET_DICT]:
+        assert key in dict_test_source[ENERGY_BUSSES][outflow], f"Key {key} is not defined for the new energyBus {outflow}."
+    assert dict_test_source[ENERGY_BUSSES][outflow][LABEL] == outflow, f"The {LABEL} of the bus is not {outflow} as it should be"
+    assert dict_test_source[ENERGY_BUSSES][outflow][ENERGY_VECTOR] == energy_vector, f"The {ENERGY_VECTOR} of the bus is not {energy_vector} as it should be"
+    assert dict_test_source[ENERGY_BUSSES][outflow][ASSET_DICT] == {source_name: source_name + AUTO_SOURCE}, f"The new source {source_name} is not included in the {ASSET_DICT} of the newly defined bus {outflow}"
+
+def test_define_source_price_not_None_but_with_scalar_value():
+    outflow = "out"
+    dict_test_source = {ENERGY_BUSSES: {},
+                        ENERGY_PRODUCTION: {},
+                        ECONOMIC_DATA: {PROJECT_DURATION: {VALUE: 20}}}
+
+    source_name = "source"
+    unit_price = 1
+    energy_vector = "Electricity"
+    C0.define_source(
+        dict_values=dict_test_source,
+        asset_key=source_name,
+        outflow_direction=outflow,
+        price= {VALUE: unit_price, UNIT: UNIT},
+        energy_vector=energy_vector,
+    )
+    DISPATCH_PRICE in dict_test_source[ENERGY_PRODUCTION][source_name], f"The price is not added as {DISPATCH_PRICE} to the new source."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][DISPATCH_PRICE][VALUE] == unit_price, f"The dispatch price is not equal to the price it should be defined as."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][DISPATCH_PRICE][UNIT] == UNIT, f"The unit of the dispatch price is not correct."
+
+
+def test_define_source_timeseries_not_None():
+    outflow = "out"
+    dict_test_source = {ENERGY_BUSSES: {},
+                        ENERGY_PRODUCTION: {},
+                        ECONOMIC_DATA: {PROJECT_DURATION: {VALUE: 20}}}
+
+    source_name = "source"
+    unit_price = 1
+    energy_vector = "Electricity"
+    C0.define_source(
+        dict_values=dict_test_source,
+        asset_key=source_name,
+        outflow_direction=outflow,
+        price= {VALUE: unit_price, UNIT: UNIT},
+        energy_vector=energy_vector,
+        timeseries=pd.Series([1,2,3])
+    )
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][DISPATCHABILITY] is False, f"With an availability timeseries defined, the new source should be defined with {DISPATCHABILITY} is {False}"
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][OPTIMIZE_CAP][VALUE] is True, f"The capacity of the non-dispatchable source should be optimized."
+    assert TIMESERIES_PEAK in dict_test_source[ENERGY_PRODUCTION][source_name], f"The property '{TIMESERIES_PEAK}' of the availability timeseries is not added."
+    assert TIMESERIES_NORMALIZED in dict_test_source[ENERGY_PRODUCTION][source_name], f"The property '{TIMESERIES_NORMALIZED}' of the availability timeseries is not added."
+    assert dict_test_source[ENERGY_PRODUCTION][source_name][DISPATCH_PRICE][VALUE] == unit_price/3, f"The dispatch price is was not normalized based on the availability timeseries."
 
 dict_test.update({ENERGY_CONSUMPTION: {}})
 

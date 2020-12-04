@@ -630,7 +630,10 @@ def define_dso_sinks_and_sources(dict_values, dso):
     - C0.test_add_a_transformer_for_each_peak_demand_pricing_period_1_period()
     - C0.test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods()
     - C0.test_define_transformer_for_peak_demand_pricing()
-    - C0.test_define_source() -> incomplete
+    - C0.test_define_source()
+    - C0.test_define_source_exception_unknown_bus()
+    - C0.test_define_source_timeseries_not_None()
+    - C0.test_define_source_price_not_None_but_with_scalar_value()
     - C0.test_define_sink() -> incomplete
     - C0.test_change_sign_of_feedin_tariff_positive_value()
     - C0.test_change_sign_of_feedin_tariff_negative_value()
@@ -972,6 +975,10 @@ def define_source(dict_values, asset_key, outflow_direction, energy_vector, pric
     The pytests for this function are not complete. It is started with:
     - C0.test_define_source()
     - C0.test_define_source_exception_unknown_bus()
+    - C0.test_define_source_timeseries_not_None()
+    - C0.test_define_source_price_not_None_but_with_scalar_value()
+    Missing:
+    - C0.test_define_source_price_not_None_but_timeseries(), ie. value defined by FILENAME and HEADER
     """
     source_label = asset_key + AUTO_SOURCE
     default_source_dict = {
