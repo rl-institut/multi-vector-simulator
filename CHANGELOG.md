@@ -34,7 +34,9 @@ Here is a template for new release sections
 - Labels for tables in `Model_assumptions.rst` (#649)
 - New in `utils`: `helpers.py` with `find_valvue_by_key()`: Finds value of a key in a nested dictionary (#649)
 - New exception `DuplicateLabels` (#649)
-
+- Function `C0.change_sign_of_feedin_tariff()` for changing the sign of the `feedin_tariff`, added tests as well (#685)
+- Benchmark tests in `test_benchmark_feedin.py` to check the feed-in behaviour and feed-in revenues in dispatch and invest optimization (#685)
+- Pytests for `C0.add_a_transformer_for_each_peak_demand_pricing_period()`, `C0.define_source`, `C0.define_sink`, `C0.define_dso_sinks_and_sources` (#685)
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
@@ -52,6 +54,7 @@ Here is a template for new release sections
 - Input folder for the `F1` tests now `tests/inputs` (#649)
 - Refactored parameters: `DSO_PEAK_DEMAND_BUS_NAME` to `DSO_PEAK_DEMAND_SUFFIX`, `SECTORS` to `LES_ENERGY_VECTORS` (#649)
 - Update `MVS_parameter_list.csv`: Added information to `energyVector` (#649)
+- Significant change(!): `feedin_tariff` in `energyProviders.csv` should now be provided as positive value to earn money with feed-in and to a negative value to pay for feed-in (#685)
 
 ### Removed
 - File .travis.yml (#668)

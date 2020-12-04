@@ -63,7 +63,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_CONSUMPTION,
     DSO_PEAK_DEMAND_PERIOD,
     ECONOMIC_DATA,
-    CURR
+    CURR, AUTO_SOURCE,
+DSO_PEAK_DEMAND_SUFFIX, ENERGY_PRICE, DSO_FEEDIN, AUTO_SINK, CONNECTED_CONSUMPTION_SOURCE, CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS, CONNECTED_FEEDIN_SINK
+
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 
