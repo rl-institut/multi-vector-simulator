@@ -13,7 +13,7 @@ import multi_vector_simulator.C0_data_processing as C0
 import multi_vector_simulator.D0_modelling_and_optimization as D0
 import multi_vector_simulator.E1_process_results as E1
 
-from multi_vector_simulator.utils.constants import OUTPUT_FOLDER
+from multi_vector_simulator.utils.constants import OUTPUT_FOLDER, CSV_EXT
 
 from multi_vector_simulator.utils.constants_json_strings import *
 
@@ -49,7 +49,7 @@ class TestGetTimeseriesPerBus:
                 "-o",
                 TEST_OUTPUT_PATH,
                 "-ext",
-                "csv",
+                CSV_EXT,
             ]
         ),
     )
