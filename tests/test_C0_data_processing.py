@@ -697,26 +697,28 @@ dict_test.update(
 )
 
 def test_add_a_transformer_for_each_peak_demand_pricing_period_1_period():
+    dict_test_trafo = deepcopy(dict_test)
     dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
-        dict_test, 1, 12,
+        dict_test_trafo, 1, 12,
     )
     list_of_dso_energyConversion_assets = C0.add_a_transformer_for_each_peak_demand_pricing_period(
-        dict_test, dict_test[ENERGY_PROVIDERS][DSO], dict_availability_timeseries,
+        dict_test_trafo, dict_test[ENERGY_PROVIDERS][DSO], dict_availability_timeseries,
     )
     assert len(list_of_dso_energyConversion_assets) == 1, f"The list of peak demand pricing transformers is not only one entry long."
     exp_list = [
-        dict_test[ENERGY_PROVIDERS][DSO][LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD
+        dict_test_trafo[ENERGY_PROVIDERS][DSO][LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD
     ]
     assert list_of_dso_energyConversion_assets == exp_list, f'The names of the created peak demand pricing transformers are with "{list_of_dso_energyConversion_assets}" not as they were expected ({exp_list}).'
     for transformer in list_of_dso_energyConversion_assets:
-        assert transformer in dict_test[ENERGY_CONVERSION], f"Transformer {transformer} is not added as an energyConversion object."
+        assert transformer in dict_test_trafo[ENERGY_CONVERSION], f"Transformer {transformer} is not added as an energyConversion object."
 
 def test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods():
+    dict_test_trafo = deepcopy(dict_test)
     dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
-        dict_test, 2, 6,
+        dict_test_trafo, 2, 6,
     )
     list_of_dso_energyConversion_assets = C0.add_a_transformer_for_each_peak_demand_pricing_period(
-        dict_test, dict_test[ENERGY_PROVIDERS][DSO], dict_availability_timeseries,
+        dict_test_trafo, dict_test[ENERGY_PROVIDERS][DSO], dict_availability_timeseries,
     )
     assert len(list_of_dso_energyConversion_assets) == 2, f"The list of peak demand pricing transformers is not only two entries long."
     exp_list = [
@@ -726,7 +728,7 @@ def test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods():
     assert list_of_dso_energyConversion_assets == exp_list, f'The names of the created peak demand pricing transformers are with "{list_of_dso_energyConversion_assets}" not as they were expected ({exp_list}).'
 
     for transformer in list_of_dso_energyConversion_assets:
-        assert transformer in dict_test[ENERGY_CONVERSION], f"Transformer {transformer} is not added as an energyConversion object."
+        assert transformer in dict_test_trafo[ENERGY_CONVERSION], f"Transformer {transformer} is not added as an energyConversion object."
 
 
 

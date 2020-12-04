@@ -776,6 +776,13 @@ def add_a_transformer_for_each_peak_demand_pricing_period(
         List of names of newly added energy conversion assets,
 
     Updated dict_values with a transformer for each peak demand pricing period
+
+    Notes
+    -----
+
+    Tested by:
+    - C0.test_add_a_transformer_for_each_peak_demand_pricing_period_1_period
+    - C0.test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods
     """
 
     list_of_dso_energyConversion_assets = []
