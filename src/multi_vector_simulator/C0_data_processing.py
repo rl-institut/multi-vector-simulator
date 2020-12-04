@@ -666,7 +666,9 @@ def define_dso_sinks_and_sources(dict_values, dso):
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
     )
 
-    dict_feedin = change_sign_of_feedin_tariff(dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF], dso)
+    dict_feedin = change_sign_of_feedin_tariff(
+        dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF], dso
+    )
 
     # define feed-in sink of the DSO
     define_sink(
@@ -685,6 +687,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
             CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN + AUTO_SINK,
         }
     )
+
 
 def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
     r"""
@@ -725,8 +728,12 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
     else:
         pass
 
-    dict_feedin_tariff = {VALUE: -dict_feedin_tariff[VALUE], UNIT: dict_feedin_tariff[UNIT]}
+    dict_feedin_tariff = {
+        VALUE: -dict_feedin_tariff[VALUE],
+        UNIT: dict_feedin_tariff[UNIT],
+    }
     return dict_feedin_tariff
+
 
 def define_availability_of_peak_demand_pricing_assets(
     dict_values, number_of_pricing_periods, months_in_a_period
@@ -941,7 +948,14 @@ def define_transformer_for_peak_demand_pricing(
     )
 
 
-def define_source(dict_values, asset_key, outflow_direction, energy_vector, price=None, timeseries=None):
+def define_source(
+    dict_values,
+    asset_key,
+    outflow_direction,
+    energy_vector,
+    price=None,
+    timeseries=None,
+):
     r"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
 
@@ -1034,9 +1048,12 @@ def define_source(dict_values, asset_key, outflow_direction, energy_vector, pric
             {
                 TIMESERIES_PEAK: {VALUE: max(timeseries), UNIT: "kW"},
                 TIMESERIES_NORMALIZED: timeseries / max(timeseries),
-            })
+            }
+        )
         if DISPATCH_PRICE in default_source_dict and max(timeseries) != 0:
-            default_source_dict[DISPATCH_PRICE].update({VALUE: default_source_dict[DISPATCH_PRICE][VALUE]/ max(timeseries)})
+            default_source_dict[DISPATCH_PRICE].update(
+                {VALUE: default_source_dict[DISPATCH_PRICE][VALUE] / max(timeseries)}
+            )
 
     dict_values[ENERGY_PRODUCTION].update({asset_key: default_source_dict})
 
