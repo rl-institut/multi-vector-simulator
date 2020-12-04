@@ -708,7 +708,6 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
     - C0.test_change_sign_of_feedin_tariff_positive_value()
     - C0.test_change_sign_of_feedin_tariff_negative_value()
     - C0.test_change_sign_of_feedin_tariff_zero()
-
     """
     if dict_feedin_tariff[VALUE] > 0:
         # Add a debug message in case the feed-in is interpreted as revenue-inducing.
@@ -939,7 +938,7 @@ def define_transformer_for_peak_demand_pricing(
     )
 
 
-def define_source(dict_values, asset_key, outflow_direction, energy_vector, **kwargs):
+def define_source(dict_values, asset_key, outflow_direction, energy_vector, price=None, timeseries=None):
     r"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
 
@@ -954,18 +953,25 @@ def define_source(dict_values, asset_key, outflow_direction, energy_vector, **kw
     energy_vector: str
         Energy vector the new asset should belong to
 
-    kwargs: Misc.
-        Kwargs that can overwrite the default values.
-        Typical kwargs:
-            - TIMESERIES
-            - SPECIFIC_COSTS_OM
-            - SPECIFIC_COSTS
-            - "price"
+    price: dict
+        Dict with a unit-value pair of the dispatch price of the source.
+        The value can also be defined though FILENAME and HEADER, making the value of the price a timeseries.
+        Default: None
+
+    timeseries: pd.Dataframe
+        Timeseries defining the availability of the source. Currently not used.
+        Default: None
 
     Returns
     -------
     Updates dict_values[ENERGY_BUSSES] if outflow_direction not in it
     Standard source defined as:
+
+    Notes
+    -----
+    The pytests for this function are not complete. It is started with:
+    - C0.test_define_source()
+    - C0.test_define_source_exception_unknown_bus()
     """
     source_label = asset_key + AUTO_SOURCE
     default_source_dict = {
@@ -995,35 +1001,35 @@ def define_source(dict_values, asset_key, outflow_direction, energy_vector, **kw
             }
         )
 
-    for item in kwargs:
-        if item in [SPECIFIC_COSTS_OM, SPECIFIC_COSTS]:
-            default_source_dict.update({item: kwargs[item]})
-        if item == TIMESERIES:
-            default_source_dict.update({DISPATCHABILITY: False})
-            logging.debug(
-                f"{default_source_dict[LABEL]} can provide a total generation of {sum(kwargs[TIMESERIES].values)}"
-            )
-            default_source_dict.update(
-                {
-                    OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
-                    TIMESERIES_PEAK: {VALUE: max(kwargs[TIMESERIES]), UNIT: "kW"},
-                    # todo if we have normalized timeseries hiere, the capex/opex (simulation) have changed, too
-                    TIMESERIES_NORMALIZED: kwargs[TIMESERIES] / max(kwargs[TIMESERIES]),
-                }
-            )
-        if item == "price":
-            if FILENAME in kwargs[item] and HEADER in kwargs[item]:
-                kwargs[item].update(
+    if price is not None:
+        if isinstance(price[VALUE], dict):
+            if FILENAME in price[VALUE] and HEADER in price[VALUE]:
+                price.update(
                     {
                         VALUE: get_timeseries_multiple_flows(
                             dict_values[SIMULATION_SETTINGS],
                             default_source_dict,
-                            kwargs[item][FILENAME],
-                            kwargs[item][HEADER],
+                            price[FILENAME],
+                            price[HEADER],
                         )
                     }
                 )
-            determine_dispatch_price(dict_values, kwargs[item], default_source_dict)
+        determine_dispatch_price(dict_values, price, default_source_dict)
+
+    if timeseries is not None:
+        # This part is currently not used.
+        default_source_dict.update({DISPATCHABILITY: False})
+        logging.debug(
+            f"{default_source_dict[LABEL]} can provide a total generation of {sum(timeseries.values)}"
+        )
+        default_source_dict[OPTIMIZE_CAP].update({VALUE: True})
+        default_source_dict.update(
+            {
+                TIMESERIES_PEAK: {VALUE: max(timeseries), UNIT: "kW"},
+                TIMESERIES_NORMALIZED: timeseries / max(timeseries),
+            })
+        if DISPATCH_PRICE in default_source_dict and max(timeseries) != 0:
+            default_source_dict[DISPATCH_PRICE].update({VALUE: default_source_dict[DISPATCH_PRICE][VALUE]/ max(timeseries)})
 
     dict_values[ENERGY_PRODUCTION].update({asset_key: default_source_dict})
 
