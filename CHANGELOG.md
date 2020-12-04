@@ -26,7 +26,6 @@ Here is a template for new release sections
 - New module `exceptions.py` in `multi_vector_simulator.utils` to gather custom MVS exceptions (#656)
 - New argument for functions `E1.convert_demand_to_dataframe`, `F1.plot_timeseries`, `F2.ready_timeseries_plots` (#665)
 - File .github/workflow/main.yml for github actions (#668)
-
 - `energyBusses` now have to be defined by the user via `energyBusses.csv` (#649)
 - Input validation test `C1.check_for_label_duplicates` (#649)
 - Constant variables: `JSON_PROCESSED`, `JSON_WITH_RESULTS`, `JSON_FILE_EXTENSION` (#649)
@@ -59,6 +58,8 @@ Here is a template for new release sections
 - Update `MVS_parameter_list.csv`: Added information to `energyVector` (#649)
 - Modify `E1.get_timeseries_per_bus()` to add `INPUT_POWER` and respectively `OUTPUT_POWER` to a storage component directly connected to the a bus to fix #444 and add logging.debug(#666)
 - Changed label of storage in `timeseries_all_busses.xlsx` to be defined by `installedCap` + `optimizedAddCap` to prevent confusion (#666)
+- Make use of constant variables (#684)
+- `tests/inputs` adapted so that storage is used (#684)
 
 ### Removed
 - File .travis.yml (#668)
