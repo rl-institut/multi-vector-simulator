@@ -376,7 +376,7 @@ def energyProviders(dict_values, group):
     """
     # add sources and sinks depending on items in energy providers as pre-processing
     for asset in dict_values[group]:
-        define_dso_sinks_and_sources(dict_values, asset)
+        define_auxiliary_assets_of_energy_providers(dict_values, asset)
 
         # Add lifetime capex (incl. replacement costs), calculate annuity
         # (incl. om), and simulation annuity to each asset
@@ -605,7 +605,7 @@ def add_asset_to_asset_dict_of_bus(bus, dict_values, asset_key, asset_label):
     logging.debug(f"Added asset {asset_label} to bus {bus}")
 
 
-def define_dso_sinks_and_sources(dict_values, dso):
+def define_auxiliary_assets_of_energy_providers(dict_values, dso):
     r"""
     Defines all sinks and sources that need to be added to model the transformer using assets of energyConsumption, energyProduction and energyConversion.
 
@@ -621,7 +621,7 @@ def define_dso_sinks_and_sources(dict_values, dso):
     Notes
     -----
     This function is tested with following pytests:
-    - C0.test_define_dso_sinks_and_sources()
+    - C0.test_define_auxiliary_assets_of_energy_providers()
     - C0.test_determine_months_in_a_peak_demand_pricing_period_not_valid()
     - C0.test_determine_months_in_a_peak_demand_pricing_period_valid()
     - C0.test_define_availability_of_peak_demand_pricing_assets_yearly()

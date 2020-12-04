@@ -989,9 +989,9 @@ float = 0.9
 dict_test[ENERGY_PROVIDERS][DSO].update({FEEDIN_TARIFF: {VALUE: float, UNIT: UNIT}})
 
 
-def test_define_dso_sinks_and_sources():
+def test_define_auxiliary_assets_of_energy_providers():
     dict_test_provider = deepcopy(dict_test)
-    C0.define_dso_sinks_and_sources(dict_test_provider, DSO)
+    C0.define_auxiliary_assets_of_energy_providers(dict_test_provider, DSO)
     assert (
         DSO + DSO_CONSUMPTION in dict_test_provider[ENERGY_PRODUCTION]
     ), f"No source for energy consumption from the energy provider is added."
