@@ -60,6 +60,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PROVIDERS,
     ENERGY_PRODUCTION,
     ENERGY_BUSSES,
+    ENERGY_STORAGE,
+    STORAGE_CAPACITY,
     VALUE,
     ASSET_DICT,
     RENEWABLE_ASSET_BOOL,
@@ -206,6 +208,41 @@ def check_non_dispatchable_source_time_series(dict_values):
                     f"{TIMESERIES} of non-dispatchable source {source[LABEL]} contains values out of bounds [0, 1]."
                 )
                 return False
+
+
+def check_efficiency_of_storage_capacity(dict_values):
+    r"""
+    Raises error or logs a warning to help users to spot major change in PR #676.
+
+    In #676 the `efficiency` of `storage capacity' in `storage_*.csv` was defined as the
+    storages' efficiency/ability to hold charge over time. Before it was defined as
+    loss rate.
+    This function raises an error if efficiency of 'storage capacity' of one of the
+    storages is 0 and logs a warning if efficiency of 'storage capacity' of one of the
+    storages is <0.2.
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+
+    Returns
+    -------
+    Indirectly, raises error message in case of efficiency of 'storage capacity' is 0
+    and logs warning message in case of efficiency of 'storage capacity' is <0.2.
+
+    """
+    # go through all storages
+    for key, item in dict_values[ENERGY_STORAGE].items():
+        eff = item[STORAGE_CAPACITY][EFFICIENCY][VALUE]
+        if eff == 0:
+            raise ValueError(
+                f"You might use an old input file! The efficiency of the storage capacity of '{item[LABEL]}' is {eff}, although it should represent the ability of the storage to hold charge over time; check PR #676."
+            )
+        elif eff < 0.2:
+            logging.warning(
+                f"You might use an old input file! The efficiency of the storage capacity of '{item[LABEL]}' is {eff}, although it should represent the ability of the storage to hold charge over time; check PR #676."
+            )
 
 
 def check_input_values(dict_values):

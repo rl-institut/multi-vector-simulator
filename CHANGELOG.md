@@ -34,7 +34,7 @@ Here is a template for new release sections
 - Labels for tables in `Model_assumptions.rst` (#649)
 - New in `utils`: `helpers.py` with `find_valvue_by_key()`: Finds value of a key in a nested dictionary (#649)
 - New exception `DuplicateLabels` (#649)
-
+- Function `C1.check_efficiency_of_storage_capacity` that raises error message if the `efficiency` of `storage capacity` of any storage is 0 and a logging.warning if the efficiency is < 0.2, to help users to spot major change when using old files (#676)
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
