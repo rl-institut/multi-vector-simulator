@@ -34,7 +34,11 @@ Here is a template for new release sections
 - Labels for tables in `Model_assumptions.rst` (#649)
 - New in `utils`: `helpers.py` with `find_valvue_by_key()`: Finds value of a key in a nested dictionary (#649)
 - New exception `DuplicateLabels` (#649)
-
+- Plot showing state of charge (SOC) of storages of each bus separately, as it is provided in %, also added to automatic report (#666)
+- "SOC" as string representative in `utils/constants.py`, used in `F1` and `E0` (#666)
+- SOC plot of storages is added to the autoreport (#666)
+- Test for correct storage labelling in `A1.add_storage_components()` (#666)
+- Test for getting two time series with `E1.get_timeseries_per_bus()` for storage (input and output power) if storage is directly connected to bus (#666)
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
@@ -52,6 +56,10 @@ Here is a template for new release sections
 - Input folder for the `F1` tests now `tests/inputs` (#649)
 - Refactored parameters: `DSO_PEAK_DEMAND_BUS_NAME` to `DSO_PEAK_DEMAND_SUFFIX`, `SECTORS` to `LES_ENERGY_VECTORS` (#649)
 - Update `MVS_parameter_list.csv`: Added information to `energyVector` (#649)
+- Modify `E1.get_timeseries_per_bus()` to add `INPUT_POWER` and respectively `OUTPUT_POWER` to a storage component directly connected to the a bus to fix #444 and add logging.debug(#666)
+- Changed label of storage in `timeseries_all_busses.xlsx` to be defined by `installedCap` + `optimizedAddCap` to prevent confusion (#666)
+- Make use of constant variables (#684)
+- `tests/inputs` adapted so that storage is used (#684)
 
 ### Removed
 - File .travis.yml (#668)
@@ -59,9 +67,11 @@ Here is a template for new release sections
 - Mention of `LABEL` in the RTD description of the `csv` files (#649)
 - `C0.bus_suffix()`, `C0.remove_bus_suffix()` and `C0.get_name_or_names_of_in_or_output_bus()`, as this overcomplicated the issue and the end user now can define their own bus labels (#649)
 - Parameters `INPUT_BUS_NAME` and `INPUT_BUS_NAME`, as they are now equivalent to `INFLOW_DIRECTION` and `OUTFLOW_DIRECTION` (#649)
+- Removed SOC from storages from busses' plots (in `F1.plot_instant_power()`) but not from `OPTIMZIED_FLOWS` so that it is still printed into `timeseries.xlsx` (#666)
 
 ### Fixed
--
+- Storage label definition (remove filename) and use `LABEL` instead (#666)
+- Make deep copy of data frame in `F1.plot_optimized_capacities()` to prevent errors (#666)
 
 ## [0.5.2] - 2020-11-11
 
