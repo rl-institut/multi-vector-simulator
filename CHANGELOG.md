@@ -39,6 +39,7 @@ Here is a template for new release sections
 - SOC plot of storages is added to the autoreport (#666)
 - Test for correct storage labelling in `A1.add_storage_components()` (#666)
 - Test for getting two time series with `E1.get_timeseries_per_bus()` for storage (input and output power) if storage is directly connected to bus (#666)
+- Function `C1.check_efficiency_of_storage_capacity` that raises error message if the `efficiency` of `storage capacity` of any storage is 0 and a logging.warning if the efficiency is < 0.2, to help users to spot major change when using old files (#676)
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
@@ -60,6 +61,10 @@ Here is a template for new release sections
 - Changed label of storage in `timeseries_all_busses.xlsx` to be defined by `installedCap` + `optimizedAddCap` to prevent confusion (#666)
 - Make use of constant variables (#684)
 - `tests/inputs` adapted so that storage is used (#684)
+- Significant change(!): `loss_rate` of storages in `D1` defined as `1-efficiency` instead of as `efficiency` of the storage capacity (see `storage_*.csv` files) (#676)
+- `efficiency` of `storage capacity` in `storage_*.csv` now actually displays the storages' efficiency/ability to hold charge over time (#676)
+- Adapted `efficiency` of `storage capacity` in all provided benchmark tests and inputs (#676)
+- Documented the change of `efficiency` of `storage capacity` as actual efficiency/ability to hold charge over time in RTD (#676)
 
 ### Removed
 - File .travis.yml (#668)
