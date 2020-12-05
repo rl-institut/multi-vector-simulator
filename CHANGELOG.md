@@ -52,7 +52,7 @@ Here is a template for new release sections
 - Input folder for the `F1` tests now `tests/inputs` (#649)
 - Refactored parameters: `DSO_PEAK_DEMAND_BUS_NAME` to `DSO_PEAK_DEMAND_SUFFIX`, `SECTORS` to `LES_ENERGY_VECTORS` (#649)
 - Update `MVS_parameter_list.csv`: Added information to `energyVector` (#649)
-- `loss_rate` of storages in `D1` defined as `1-efficiency` instead of as `efficiency` of the storage capacity (see `storage_xx.csv` files) (#676)
+- Significant change(!): `loss_rate` of storages in `D1` defined as `1-efficiency` instead of as `efficiency` of the storage capacity (see `storage_xx.csv` files) (#676)
 - `efficiency` of `storage_capacity` in `storage_xx.csv` now actually displays the storages' efficiency/ability to hold charge over time (#676)
 - Adapted `efficiency` of `storage_capacity` in all provided benchmark tests and inputs (#676)
 - Documented the change of `efficiency` of `storage_capacity` as actual efficiency/ability to hold charge over time in RTD (#676)
