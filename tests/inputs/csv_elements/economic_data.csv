@@ -1,5 +1,5 @@
 ,unit,economic_data
 currency,str,NOK
-project_duration,year,30
+project_duration,year,20
 discount_factor,factor,0.06
 tax,factor,0.0
