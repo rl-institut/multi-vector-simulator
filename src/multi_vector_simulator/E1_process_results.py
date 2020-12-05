@@ -86,6 +86,11 @@ def get_timeseries_per_bus(dict_values, bus_data):
             'scalars': (pd.Series) (does not exist in all dicts)
             'sequences': (pd.DataFrame) - contains flows between components and busses
 
+    Notes
+    -----
+    Tested with:
+    - test_get_timeseries_per_bus_two_timeseries_for_directly_connected_storage()
+
     Returns
     -------
     Indirectly updated `dict_values` with 'optimizedFlows' - one data frame for each bus.

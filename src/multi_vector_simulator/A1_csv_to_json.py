@@ -651,19 +651,30 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
 
 
 def add_storage_components(storage_filename, input_directory, storage_label):
+    r"""
+    Creates json dict from storage csv.
 
-    """
-    loads the csv of a the specific storage listed as column in
-    "energyStorage.csv", checks for complete set of parameters and creates a
-    json dictionary.
+    Loads the csv of a the specific storage listed as column in
+    "energyStorage.csv", checks for complete set of parameters, adds a label and creates
+    a json dictionary.
 
-    :param storage_filename: str
-        name of storage, given by the column name in "energyStorage.csv
-    :param input_directory: str
-        path of the input directory
-    :param storage_label: str
+    Parameters
+    ----------
+    storage_filename: str
+        file name excl. extension, given by the parameter 'file_name` in "energyStorage.csv
+    input_directory: str
+        path to the input directory where `storage_filename` is located
+    storage_label: str
         Label of storage
-    :return: dict
+
+    Notes
+    -----
+    Tested with:
+    - test_add_storage_components_label_correctly_added()
+
+    Returns
+    -------
+    dict
         dictionary containing the storage parameters
     """
 
