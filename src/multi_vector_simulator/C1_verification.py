@@ -226,6 +226,13 @@ def check_efficiency_of_storage_capacity(dict_values):
     dict_values : dict
         Contains all input data of the simulation.
 
+    Notes
+    -----
+    Tested with:
+    - test_check_efficiency_of_storage_capacity_is_0
+    - test_check_efficiency_of_storage_capacity_is_btw_0_and_02
+    - test_check_efficiency_of_storage_capacity_is_greater_02
+
     Returns
     -------
     Indirectly, raises error message in case of efficiency of 'storage capacity' is 0
