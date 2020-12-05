@@ -11,6 +11,9 @@ import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C0_data_processing as C0
 import multi_vector_simulator.D0_modelling_and_optimization as D0
 import multi_vector_simulator.E0_evaluation as E0
+
+from multi_vector_simulator.utils.constants import OUTPUT_FOLDER
+
 from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
     KPI,
@@ -30,7 +33,7 @@ from _constants import (
 
 PARSER = A0.mvs_arg_parser()
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
-TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "MVS_outputs")
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, OUTPUT_FOLDER)
 
 DICT_BEFORE = os.path.join(TEST_REPO_PATH, "dict_values_before_E0.pickle")
 
