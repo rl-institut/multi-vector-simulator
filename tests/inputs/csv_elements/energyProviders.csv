@@ -10,4 +10,4 @@ inflow_direction,str,Electricity (DSO)
 outflow_direction,str,Electricity (DSO)
 energyVector,str,Electricity
 type_oemof,str,source
-
+,,
