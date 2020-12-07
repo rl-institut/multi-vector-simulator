@@ -706,15 +706,19 @@ def convert_components_to_dataframe(dict_values):
             )
 
     for storage_component in comp3_keys:
-        comp_label = components3[storage_component]['output power']['label']
+        comp_label = components3[storage_component]["output power"]["label"]
         components.update(
             {
                 comp_label: [
                     components3[storage_component][OEMOF_ASSET_TYPE],
                     components3[storage_component][ENERGY_VECTOR],
-                    components3[storage_component]['output power']['installedCap']['unit'],
-                    components3[storage_component]['output power'][INSTALLED_CAP][VALUE],
-                    components3[storage_component]['output power'][OPTIMIZE_CAP][VALUE],
+                    components3[storage_component]["output power"]["installedCap"][
+                        "unit"
+                    ],
+                    components3[storage_component]["output power"][INSTALLED_CAP][
+                        VALUE
+                    ],
+                    components3[storage_component]["output power"][OPTIMIZE_CAP][VALUE],
                 ]
             }
         )
