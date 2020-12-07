@@ -12,7 +12,6 @@ from _constants import (
     FEEDIN_TARIFF,
     ENERGY_PRICE,
     UNIT,
-    VALUE,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
