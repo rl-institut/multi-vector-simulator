@@ -326,3 +326,6 @@ DICT_PLOTS = {
 
 # Reading data from csv file
 HEADER = "header"
+
+# suffixes
+SOC = "SOC"

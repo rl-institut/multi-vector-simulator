@@ -1113,7 +1113,7 @@
                 },
                 "efficiency": {
                     "unit": "factor",
-                    "value": 0
+                    "value": 1
                 },
                 "installedCap": {
                     "unit": "unit",

@@ -76,7 +76,11 @@ def all(dict_values):
     # check time series of non-dispatchable sources in range [0, 1]
     C1.check_non_dispatchable_source_time_series(dict_values)
 
-    # Perform basic (limited) check for moduel completeness
+    # check efficiencies of storage capacity, raise error in case it is 0 and add a
+    # warning in case it is <0.2 to help users to spot major change in #676
+    C1.check_efficiency_of_storage_capacity(dict_values)
+
+    # Perform basic (limited) check for module completeness
     C1.check_for_sufficient_assets_on_busses(dict_values)
 
     # just to be safe, run evaluation a second time
@@ -332,14 +336,6 @@ def energyStorage(dict_values, group):
     """
     for asset in dict_values[group]:
         for subasset in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
-            # Redefining the label of storage components, ie. so that is is clear to which storage a component (eg. input power) belongs.
-            dict_values[group][asset][subasset].update(
-                {
-                    LABEL: dict_values[group][asset][LABEL]
-                    + "_"
-                    + dict_values[group][asset][subasset][LABEL]
-                }
-            )
             define_missing_cost_data(
                 dict_values, dict_values[group][asset][subasset],
             )

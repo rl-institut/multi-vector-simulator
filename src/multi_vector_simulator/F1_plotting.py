@@ -24,6 +24,7 @@ from multi_vector_simulator.utils.constants import (
     ECONOMIC_DATA,
     LABEL,
     OUTPUT_FOLDER,
+    SOC,
 )
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -184,7 +185,7 @@ class ESGraphRenderer:
         legend=True,
         txt_width=10,
         txt_fontsize=10,
-        **kwargs
+        **kwargs,
     ):
         """Draw the energy system with Graphviz.
 
@@ -702,7 +703,7 @@ def create_plotly_barplot_fig(
             x=x_data,
             y=y_data,
             marker_color=px.colors.qualitative.D3,
-            **opts
+            **opts,
         )
     )
 
@@ -768,7 +769,7 @@ def plot_optimized_capacities(
     """
 
     # Add dataframe to hold all the KPIs and optimized additional capacities
-    df_capacities = dict_values[KPI][KPI_SCALAR_MATRIX]
+    df_capacities = dict_values[KPI][KPI_SCALAR_MATRIX].copy(deep=True)
     df_capacities.drop(
         columns=[TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW], inplace=True,
     )
@@ -925,7 +926,43 @@ def plot_instant_power(dict_values, file_path=None):
     buses_list = list(dict_values[OPTIMIZED_FLOWS].keys())
     multi_plots = {}
     for bus in buses_list:
-        comp_id = bus + "-plot"
+        df_data = dict_values[OPTIMIZED_FLOWS][bus].copy(deep=True)
+        df_data.reset_index(level=0, inplace=True)
+        df_data = df_data.rename(columns={"index": "timestamp"})
+
+        # In case SOC of a storage is in df_data the SOC is plotted separately and is
+        # removed from the df_data as the plot that shows absolute flows should not
+        # contain SOC in %
+        if any(SOC in item for item in df_data):
+            # if any(SOC in item for item in df_data):
+            comp_id = f"{SOC}-{bus}-plot"
+            title = (
+                bus
+                + " storage SOC in LES: "
+                + dict_values[PROJECT_DATA][PROJECT_NAME]
+                + ", "
+                + dict_values[PROJECT_DATA][SCENARIO_NAME]
+            )
+            # get columns containing SOC and plot SOC
+            soc_cols = [s for s in df_data.keys() if SOC in s]
+            soc_cols.extend(["timestamp"])
+            fig = create_plotly_flow_fig(
+                df_plots_data=df_data[soc_cols],
+                x_legend="Time",
+                y_legend="SOC",
+                plot_title=title,
+                file_path=file_path,
+                file_name=f"SOC_{bus}_power.png",
+            )
+            if file_path is None:
+                multi_plots[comp_id] = fig
+
+            # remove SOC as it is provided in % and does not fit with flow plot
+            soc_cols.remove("timestamp")
+            df_data.drop(soc_cols, inplace=True, axis=1)
+
+        # create flow plot
+        comp_id = f"{bus}-plot"
         title = (
             bus
             + " power in LES: "
@@ -933,10 +970,6 @@ def plot_instant_power(dict_values, file_path=None):
             + ", "
             + dict_values[PROJECT_DATA][SCENARIO_NAME]
         )
-
-        df_data = dict_values[OPTIMIZED_FLOWS][bus]
-        df_data.reset_index(level=0, inplace=True)
-        df_data = df_data.rename(columns={"index": "timestamp"})
 
         fig = create_plotly_flow_fig(
             df_plots_data=df_data,

@@ -2,6 +2,7 @@ import pytest
 import pandas as pd
 import os
 import json
+import logging
 
 import multi_vector_simulator.C1_verification as C1
 from _constants import (
@@ -17,9 +18,13 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
     RENEWABLE_ASSET_BOOL,
     ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
     PROJECT_DATA,
     ENERGY_VECTOR,
     LES_ENERGY_VECTOR_S,
+    VALUE,
+    EFFICIENCY,
+    STORAGE_CAPACITY,
     SIMULATION_ANNUITY,
     TIMESERIES_TOTAL,
     DISPATCH_PRICE,
@@ -223,6 +228,60 @@ def test_check_time_series_values_between_0_and_1_False_smaller_0():
     time_series = pd.Series([0, 0.22, 0.5, 0.99, 1, -0.01])
     result = C1.check_time_series_values_between_0_and_1(time_series=time_series)
     assert result is False
+
+
+@pytest.fixture()
+def get_dict_vals():
+    """ Reads input json file."""
+    with open(os.path.join(JSON_PATH)) as json_file:
+        dict_values = json.load(json_file)  # todo welches file???
+    return dict_values
+
+
+def test_check_efficiency_of_storage_capacity_is_0(get_dict_vals):
+    dict_values = get_dict_vals
+    # get storage label (test will work also if 'storage_01' is renamed
+    storage_label = list(dict_values[ENERGY_STORAGE])[0]
+    # change value of efficiency
+    dict_values[ENERGY_STORAGE][storage_label][STORAGE_CAPACITY][EFFICIENCY][VALUE] = 0
+
+    with pytest.raises(ValueError):
+        C1.check_efficiency_of_storage_capacity(
+            dict_values
+        ), f"Although the efficiency of a 'storage_capacity' is zero, no ValueError is risen."
+
+
+def test_check_efficiency_of_storage_capacity_is_btw_0_and_02(get_dict_vals, caplog):
+    dict_values = get_dict_vals
+    # get storage label (test will work also if 'storage_01' is renamed
+    storage_label = list(dict_values[ENERGY_STORAGE])[0]
+    # change value of efficiency
+    dict_values[ENERGY_STORAGE][storage_label][STORAGE_CAPACITY][EFFICIENCY][
+        VALUE
+    ] = 0.1
+
+    with caplog.at_level(logging.WARNING):
+        C1.check_efficiency_of_storage_capacity(dict_values)
+    assert (
+        "You might use an old input file!" in caplog.text
+    ), f"Although the efficiency of a 'storage_capacity' is 0.1, no warning is logged."
+
+
+def test_check_efficiency_of_storage_capacity_is_greater_02(get_dict_vals, caplog):
+    dict_values = get_dict_vals
+    # get storage label (test will work also if 'storage_01' is renamed
+    storage_label = list(dict_values[ENERGY_STORAGE])[0]
+    # change value of efficiency
+    dict_values[ENERGY_STORAGE][storage_label][STORAGE_CAPACITY][EFFICIENCY][
+        VALUE
+    ] = 0.3
+
+    # no error, no logging
+    with caplog.at_level(logging.WARNING):
+        C1.check_efficiency_of_storage_capacity(dict_values)
+    assert (
+        caplog.text == ""
+    ), f"Although the efficiency of a 'storage_capacity' is 0.3, a warning is logged or error is risen."
 
 
 @pytest.fixture()
