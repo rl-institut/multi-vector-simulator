@@ -117,8 +117,7 @@ def check_for_label_duplicates(dict_values):
         msg += f"Please make sure that each label is only used once, as oemof otherwise can not build the model."
         raise DuplicateLabels(msg)
 
-
-def check_feedin_tariff(dict_values):
+def check_feedin_tariff_vs_energy_price(dict_values):
     r"""
     Raises error if feed-in tariff > energy price of any asset in 'energyProvider.csv'.
 

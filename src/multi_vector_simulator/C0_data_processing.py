@@ -69,7 +69,7 @@ def all(dict_values):
     process_all_assets(dict_values)
 
     # check electricity price >= feed-in tariff todo: can be integrated into check_input_values() later
-    C1.check_feedin_tariff(dict_values=dict_values)
+    C1.check_feedin_tariff_vs_energy_price(dict_values=dict_values)
 
     # check time series of non-dispatchable sources in range [0, 1]
     C1.check_non_dispatchable_source_time_series(dict_values)

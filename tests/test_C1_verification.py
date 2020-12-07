@@ -80,7 +80,7 @@ def test_check_if_energy_vector_of_all_assets_is_valid_fails():
         ), f"The function incorrectly accepts an energyVector that is not in the energyBusses (as the project energy vector)."
 
 
-def test_check_feedin_tariff_greater_energy_price():
+def test_check_feedin_tariff_vs_energy_price_greater_energy_price():
     dict_values = {
         ENERGY_PROVIDERS: {
             "DSO": {
@@ -91,10 +91,10 @@ def test_check_feedin_tariff_greater_energy_price():
         }
     }
     with pytest.raises(ValueError):
-        C1.check_feedin_tariff(dict_values)
+        C1.check_feedin_tariff_vs_energy_price(dict_values)
 
 
-def test_check_feedin_tariff_not_greater_energy_price():
+def test_check_feedin_tariff_vs_energy_price_not_greater_energy_price():
     dict_values = {
         ENERGY_PROVIDERS: {
             "DSO": {
@@ -104,7 +104,7 @@ def test_check_feedin_tariff_not_greater_energy_price():
             }
         }
     }
-    C1.check_feedin_tariff(dict_values)
+    C1.check_feedin_tariff_vs_energy_price(dict_values)
 
 
 def test_check_time_series_values_between_0_and_1_True():
