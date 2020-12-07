@@ -456,7 +456,9 @@ def create_json_from_csv(
             # add exception for energyStorage
             if filename == ENERGY_STORAGE:
                 storage_dict = add_storage_components(
-                    df.loc[STORAGE_FILENAME][column][:-4], input_directory
+                    df.loc[STORAGE_FILENAME][column][:-4],
+                    input_directory,
+                    single_dict[column][LABEL],
                 )
                 single_dict[column].update(storage_dict)
 
@@ -648,25 +650,38 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
     return asset_dict
 
 
-def add_storage_components(storage_filename, input_directory):
+def add_storage_components(storage_filename, input_directory, storage_label):
+    r"""
+    Creates json dict from storage csv.
 
-    """
-    loads the csv of a the specific storage listed as column in
-    "energyStorage.csv", checks for complete set of parameters and creates a
-    json dictionary.
+    Loads the csv of a the specific storage listed as column in
+    "energyStorage.csv", checks for complete set of parameters, adds a label and creates
+    a json dictionary.
 
-    :param storage_filename: str
-        name of storage, given by the column name in "energyStorage.csv
-    :param input_directory: str
-        path of the input directory
-    :return: dict
+    Parameters
+    ----------
+    storage_filename: str
+        file name excl. extension, given by the parameter 'file_name` in "energyStorage.csv
+    input_directory: str
+        path to the input directory where `storage_filename` is located
+    storage_label: str
+        Label of storage
+
+    Notes
+    -----
+    Tested with:
+    - test_add_storage_components_label_correctly_added()
+
+    Returns
+    -------
+    dict
         dictionary containing the storage parameters
     """
 
     if not os.path.exists(os.path.join(input_directory, f"{storage_filename}.csv")):
         logging.error(f"The storage file {storage_filename}.csv is missing!")
     else:
-        # hardcoded parameterlist of common parameters in all columns
+        # hardcoded parameter list of common parameters in all columns
         parameters = [
             AGE_INSTALLED,
             DEVELOPMENT_COSTS,
@@ -685,5 +700,5 @@ def add_storage_components(storage_filename, input_directory):
         )
         # add labels to storage
         for key, item in single_dict.items():
-            item[LABEL] = " ".join([storage_filename, key])
+            item[LABEL] = " ".join([storage_label, key])
         return single_dict
