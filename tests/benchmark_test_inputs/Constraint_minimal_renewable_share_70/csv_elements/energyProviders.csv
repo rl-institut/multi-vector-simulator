@@ -1,7 +1,7 @@
 ,unit,DSO
 unit,str,kW
 energy_price,currency/kWh,0.54
-feedin_tariff,currency/kWh,0.4
+feedin_tariff,currency/kWh,0.03
 inflow_direction,str,Electricity
 optimizeCap,bool,True
 outflow_direction,str,Electricity
