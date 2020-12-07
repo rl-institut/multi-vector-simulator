@@ -42,6 +42,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EXCESS,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
     OEMOF_ASSET_TYPE,
     ENERGY_VECTOR,
     KPI,
@@ -679,33 +680,41 @@ def convert_components_to_dataframe(dict_values):
 
     components1 = dict_values[ENERGY_PRODUCTION]
     components2 = dict_values[ENERGY_CONVERSION]
+    components3 = dict_values[ENERGY_STORAGE]
 
     comp1_keys = list(components1.keys())
     comp2_keys = list(components2.keys())
+    comp3_keys = list(components3.keys())
+
+    comp_dict_list = [components1, components2]
+    components_list = [comp1_keys, comp2_keys]
 
     components = {}
     # Defining the columns of the table to be printed
-    for comps in comp1_keys:
+    for (component_key, comp_dict) in zip(components_list, comp_dict_list):
+        for comps in component_key:
+            components.update(
+                {
+                    comps: [
+                        comp_dict[comps][OEMOF_ASSET_TYPE],
+                        comp_dict[comps][ENERGY_VECTOR],
+                        comp_dict[comps][UNIT],
+                        comp_dict[comps][INSTALLED_CAP][VALUE],
+                        comp_dict[comps][OPTIMIZE_CAP][VALUE],
+                    ]
+                }
+            )
+
+    for storage_component in comp3_keys:
+        comp_label = components3[storage_component]['output power']['label']
         components.update(
             {
-                comps: [
-                    components1[comps][OEMOF_ASSET_TYPE],
-                    components1[comps][ENERGY_VECTOR],
-                    components1[comps][UNIT],
-                    components1[comps][INSTALLED_CAP][VALUE],
-                    components1[comps][OPTIMIZE_CAP][VALUE],
-                ]
-            }
-        )
-    for comps in comp2_keys:
-        components.update(
-            {
-                comps: [
-                    components2[comps][OEMOF_ASSET_TYPE],
-                    components2[comps][ENERGY_VECTOR],
-                    components2[comps][UNIT],
-                    components2[comps][INSTALLED_CAP][VALUE],
-                    components2[comps][OPTIMIZE_CAP][VALUE],
+                comp_label: [
+                    components3[storage_component][OEMOF_ASSET_TYPE],
+                    components3[storage_component][ENERGY_VECTOR],
+                    components3[storage_component]['output power']['installedCap']['unit'],
+                    components3[storage_component]['output power'][INSTALLED_CAP][VALUE],
+                    components3[storage_component]['output power'][OPTIMIZE_CAP][VALUE],
                 ]
             }
         )
