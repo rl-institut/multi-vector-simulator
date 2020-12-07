@@ -20,6 +20,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DATA,
     ENERGY_VECTOR,
     LES_ENERGY_VECTOR_S,
+    SIMULATION_ANNUITY,
+    TIMESERIES_TOTAL,
+    DISPATCH_PRICE,
+    DISPATCHABILITY,
 )
 
 from multi_vector_simulator.utils.exceptions import (
@@ -105,6 +109,102 @@ def test_check_feedin_tariff_vs_energy_price_not_greater_energy_price():
         }
     }
     C1.check_feedin_tariff_vs_energy_price(dict_values)
+
+
+def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_dispatchable_lower_dispatch_price():
+    energy_vector = "Electricity"
+    dict_values = {
+        ENERGY_PROVIDERS: {
+            "DSO": {
+                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: 0.4},
+                LABEL: "test DSO",
+                ENERGY_VECTOR: energy_vector,
+            }
+        },
+        ENERGY_PRODUCTION: {
+            "asset": {
+                ENERGY_VECTOR: energy_vector,
+                LABEL: "production asset",
+                DISPATCH_PRICE: {VALUE: 0.3},
+                DISPATCHABILITY: True,
+            }
+        },
+    }
+    with pytest.raises(ValueError):
+        C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
+            dict_values
+        )
+
+
+def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_dispatchable_higher_dispatch_price():
+    energy_vector = "Electricity"
+    dict_values = {
+        ENERGY_PROVIDERS: {
+            "DSO": {
+                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: 0.4},
+                LABEL: "test DSO",
+                ENERGY_VECTOR: energy_vector,
+            }
+        },
+        ENERGY_PRODUCTION: {
+            "asset": {
+                ENERGY_VECTOR: energy_vector,
+                LABEL: "production asset",
+                DISPATCHABILITY: True,
+                DISPATCH_PRICE: {VALUE: 0.5},
+            }
+        },
+    }
+    C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_values)
+
+
+def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs():
+    energy_vector = "Electricity"
+    dict_values = {
+        ENERGY_PROVIDERS: {
+            "DSO": {
+                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: 0.4},
+                LABEL: "test DSO",
+                ENERGY_VECTOR: energy_vector,
+            }
+        },
+        ENERGY_PRODUCTION: {
+            "asset": {
+                ENERGY_VECTOR: energy_vector,
+                LABEL: "production asset",
+                SIMULATION_ANNUITY: {VALUE: 1},
+                TIMESERIES_TOTAL: {VALUE: 10},
+                DISPATCHABILITY: False,
+            }
+        },
+    }
+    with pytest.raises(ValueError):
+        C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
+            dict_values
+        )
+
+
+def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_not_greater_costs():
+    energy_vector = "Electricity"
+    dict_values = {
+        ENERGY_PROVIDERS: {
+            "DSO": {
+                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: 0.4},
+                LABEL: "test DSO",
+                ENERGY_VECTOR: energy_vector,
+            }
+        },
+        ENERGY_PRODUCTION: {
+            "asset": {
+                ENERGY_VECTOR: energy_vector,
+                LABEL: "production asset",
+                SIMULATION_ANNUITY: {VALUE: 10},
+                TIMESERIES_TOTAL: {VALUE: 10},
+                DISPATCHABILITY: False,
+            }
+        },
+    }
+    C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_values)
 
 
 def test_check_time_series_values_between_0_and_1_True():

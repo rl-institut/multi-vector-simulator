@@ -70,6 +70,8 @@ def all(dict_values):
 
     # check electricity price >= feed-in tariff todo: can be integrated into check_input_values() later
     C1.check_feedin_tariff_vs_energy_price(dict_values=dict_values)
+    # check that energy supply costs are not lower than generation costs of any asset (of the same energy vector)
+    C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_values)
 
     # check time series of non-dispatchable sources in range [0, 1]
     C1.check_non_dispatchable_source_time_series(dict_values)
