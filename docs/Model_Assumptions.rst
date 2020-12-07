@@ -529,6 +529,29 @@ It also results in two optimized capacities for one logical unit.
 This limitation is to be addressed with a constraint which links both capacities of one logical unit,
 and therefore solves both the problem to attribute costs and the previously differing capacities.
 
+.. _verification_of_inputs:
+
+Input verification
+------------------
+
+The inputs for a simulation with the MVS are subjected to a couple of verification tests to make sure that the inputs result in valid oemof simulations. This sould ensure:
+
+- Uniquess of labels (`C1.check_for_label_duplicates`): This function checks if any LABEL provided for the energy system model in dict_values is a duplicate. This is not allowed, as oemof can not build a model with identical labels.
+
+- No levelized costs of generation lower than feed-in tariff of same energy vector (`C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_providers`):  Raises error if feed-in tariff > levelized costs of generation for energy asset in ENERGY_PRODUCTION. This is not allowed, as oemof otherwise may be subjected to an unbound problem, ie. a business case in which an asset should be installed with infinite capacities to maximize revenue.
+
+- No feed-in tariff higher then energy price from an energy provider (`C1.check_feedin_tariff_vs_energy_price`): Raises error if feed-in tariff > energy price of any asset in 'energyProvider.csv'. This is not allowed, as oemof otherwise is subjected to an unbound and unrealistic problem, eg. one where the owner should consume electricity to feed it directly back into the grid for its revenue.
+
+- Assets have well-defined energy vectors and belong to an existing bus (`C1.check_if_energy_vector_of_all_assets_is_valid`):     Validates for all assets, whether 'energyVector' is defined within DEFAULT_WEIGHTS_ENERGY_CARRIERS and within the energyBusses.
+
+- Energy carriers used in the simulation have defined factors for the electricity equivalency weighting (`C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS`): Raises an error message if an energy vector is unknown.
+Raises an error message if an energy vector is unknown. It then needs to be added to the DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py
+
+- An energy bus is always connected to one inflow and one outflow (`C1.check_for_sufficient_assets_on_busses`): Validating model regarding busses - each bus has to have 2+ assets connected to it, exluding energy excess sinks
+
+- Timeseries of energyProduction assets that are to be optimized have specific generation profiles (`C1.check_non_dispatchable_source_time_series`, `C1.check_time_series_values_between_0_and_1`): Raises error if time series of non-dispatchable sources are not between [0, 1].
+
+
 .. _validation-methodology:
 
 Validation Methodology
