@@ -131,6 +131,12 @@ def check_feedin_tariff_vs_energy_price(dict_values):
     Indirectly, raises error message in case of feed-in tariff > energy price of any
     asset in 'energyProvider.csv'.
 
+    Notes
+    -----
+    Tested with:
+    - C1.test_check_feedin_tariff_vs_energy_price_greater_energy_price()
+    - C1.test_check_feedin_tariff_vs_energy_price_not_greater_energy_price()
+
     """
     for provider in dict_values[ENERGY_PROVIDERS].keys():
         feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]
