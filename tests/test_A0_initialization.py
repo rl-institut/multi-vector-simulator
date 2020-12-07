@@ -6,7 +6,7 @@ import pytest
 
 import multi_vector_simulator.A0_initialization as A0
 
-from multi_vector_simulator.utils.constants import INPUT_FOLDER
+from multi_vector_simulator.utils.constants import INPUT_FOLDER, OUTPUT_FOLDER
 
 from multi_vector_simulator.cli import main
 from _constants import (
@@ -33,7 +33,7 @@ PARSER = A0.mvs_arg_parser()
 class TestProcessUserArguments:
 
     test_in_path = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
-    test_out_path = os.path.join(TEST_REPO_PATH, "MVS_outputs")
+    test_out_path = os.path.join(TEST_REPO_PATH, OUTPUT_FOLDER)
     fake_input_path = os.path.join(TEST_REPO_PATH, "fake_inputs")
 
     @mock.patch(

@@ -653,7 +653,7 @@
             "storage capacity": {
                 "efficiency": {
                     "unit": "factor",
-                    "value": 0.0
+                    "value": 1
                 },
                 "installedCap": {
                     "unit": "kWh",
@@ -733,7 +733,7 @@
             "storage capacity": {
                 "efficiency": {
                     "unit": "factor",
-                    "value": 0.0
+                    "value": 1
                 },
                 "installedCap": {
                     "unit": "kWh",
