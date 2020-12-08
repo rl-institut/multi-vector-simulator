@@ -711,22 +711,25 @@ def convert_components_to_dataframe(dict_values):
             )
 
     for storage_component in comp3_keys:
-        comp_label = components3[storage_component]["output power"]["label"]
-        components.update(
-            {
-                comp_label: [
-                    components3[storage_component][OEMOF_ASSET_TYPE],
-                    components3[storage_component][ENERGY_VECTOR],
-                    components3[storage_component]["output power"]["installedCap"][
-                        "unit"
-                    ],
-                    components3[storage_component]["output power"][INSTALLED_CAP][
-                        VALUE
-                    ],
-                    components3[storage_component]["output power"][OPTIMIZE_CAP][VALUE],
-                ]
-            }
-        )
+        for sub_stor_comp in [INPUT_POWER, STORAGE_CAPACITY, OUTPUT_POWER]:
+            comp_label = components3[storage_component][sub_stor_comp][LABEL]
+            components.update(
+                {
+                    comp_label: [
+                        components3[storage_component][OEMOF_ASSET_TYPE],
+                        components3[storage_component][ENERGY_VECTOR],
+                        components3[storage_component][sub_stor_comp][INSTALLED_CAP][
+                            UNIT
+                        ],
+                        components3[storage_component][sub_stor_comp][INSTALLED_CAP][
+                            VALUE
+                        ],
+                        components3[storage_component][sub_stor_comp][OPTIMIZE_CAP][
+                            VALUE
+                        ],
+                    ]
+                }
+            )
 
     # Create a pandas dataframe from the dictionary created above
     df_comp = pd.DataFrame.from_dict(
@@ -736,7 +739,7 @@ def convert_components_to_dataframe(dict_values):
             "Type of Component",
             "Energy Vector",
             UNIT,
-            "Installed Capcity",
+            "Installed Capacity",
             "Capacity optimization",
         ],
     )
