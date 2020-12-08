@@ -233,6 +233,66 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_d
     assert caplog.text == "", f"If feed-in tariff < dispatch price of an asset no error and no logging message should occur."
 
 
+def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs_with_maxcap(caplog):
+    energy_vector = "Electricity"
+    dict_values = {
+        ENERGY_PROVIDERS: {
+            "DSO": {
+                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: 0.4},
+                LABEL: "test DSO",
+                ENERGY_VECTOR: energy_vector,
+            }
+        },
+        ENERGY_PRODUCTION: {
+            "asset": {
+                ENERGY_VECTOR: energy_vector,
+                LABEL: "production asset",
+                SIMULATION_ANNUITY: {VALUE: 1},
+                TIMESERIES_TOTAL: {VALUE: 10},
+                DISPATCHABILITY: False,
+                OPTIMIZE_CAP: {VALUE: True},
+                MAXIMUM_CAP: {VALUE: 1000},
+            }
+        },
+    }
+    # logging.warning
+    with caplog.at_level(logging.WARNING):
+        C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
+            dict_values
+        )
+    assert "This will cause the optimization to result into the maximum capacity of this asset." in caplog.text, f"If a production asset has a maximumCap and the feed-in tariff is greater than the expected lcoe a warning should be logged."
+
+
+def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs_dispatch_mode(caplog):
+    energy_vector = "Electricity"
+    dict_values = {
+        ENERGY_PROVIDERS: {
+            "DSO": {
+                FEEDIN_TARIFF: {UNIT: "currency/kWh", VALUE: 0.4},
+                LABEL: "test DSO",
+                ENERGY_VECTOR: energy_vector,
+            }
+        },
+        ENERGY_PRODUCTION: {
+            "asset": {
+                ENERGY_VECTOR: energy_vector,
+                LABEL: "production asset",
+                SIMULATION_ANNUITY: {VALUE: 1},
+                TIMESERIES_TOTAL: {VALUE: 10},
+                DISPATCHABILITY: False,
+                OPTIMIZE_CAP: {VALUE: False},
+                MAXIMUM_CAP: {VALUE: 1000},
+            }
+        },
+    }
+    # logging.warning
+    with caplog.at_level(logging.DEBUG):
+        C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
+            dict_values
+        )
+    assert "No error expected but strange dispatch behaviour might occur." in caplog.text, f"If the capacity of a production asset is not optimized and the feed-in tariff is greater than the expected lcoe a debug msg should be logged."
+
+
 def test_check_time_series_values_between_0_and_1_True():
     time_series = pd.Series([0, 0.22, 0.5, 0.99, 1])
     result = C1.check_time_series_values_between_0_and_1(time_series=time_series)
