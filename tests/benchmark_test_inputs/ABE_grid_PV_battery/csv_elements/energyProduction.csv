@@ -4,7 +4,7 @@ development_costs,currency,0
 specific_costs,currency/unit,0
 file_name,str,pv_solar_input.csv
 installedCap,kWp,1000
-maximumCap, kWp,1000
+maximumCap, kWp,None
 lifetime,year,30
 specific_costs_om,currency/unit/year,0
 dispatch_price,currency/kWh,0

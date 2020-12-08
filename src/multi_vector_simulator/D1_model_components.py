@@ -32,8 +32,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
     TIMESERIES_NORMALIZED,
     TIMESERIES_PEAK,
-    INPUT_BUS_NAME,
-    OUTPUT_BUS_NAME,
+    INFLOW_DIRECTION,
+    OUTFLOW_DIRECTION,
     SIMULATION_ANNUITY,
     MAXIMUM_CAP,
     DISPATCHABILITY,
@@ -53,7 +53,7 @@ def transformer(model, dict_asset, **kwargs):
     Depending on the 'value' of 'optimizeCap' in `dict_asset` the transformer
     is defined with a fixed capacity or a capacity to be optimized.
     The transformer has multiple or single input or output busses depending on
-    the types of keys 'input_bus_name' and 'output_bus_name' in `dict_asset`.
+    the types of keys 'inflow_direction' and 'outflow_direction' in `dict_asset`.
 
     Parameters
     ----------
@@ -62,8 +62,8 @@ def transformer(model, dict_asset, **kwargs):
     dict_asset : dict
         Contains information about the transformer like (not exhaustive):
         efficiency, installed capacity ('installedCap'), information on the
-        busses the transformer is connected to ('input_bus_name',
-        'output_bus_name').
+        busses the transformer is connected to ('inflow_direction',
+        'outflow_direction').
 
     Other Parameters
     ----------------
@@ -117,8 +117,8 @@ def storage(model, dict_asset, **kwargs):
     dict_asset : dict
         Contains information about the storage like (not exhaustive):
         efficiency, installed capacity ('installedCap'), information on the
-        busses the storage is connected to ('input_bus_name',
-        'output_bus_name'),
+        busses the storage is connected to ('inflow_direction',
+        'outflow_direction'),
 
     Other Parameters
     ----------------
@@ -157,7 +157,7 @@ def sink(model, dict_asset, **kwargs):
     series is provided for the sink (key 'timeseries' in `dict_asset`) it is
     defined as a non dispatchable sink, otherwise as dispatchable sink.
     The sink has multiple or a single input bus depending on the type of the
-    key 'input_bus_name' in `dict_asset`.
+    key 'inflow_direction' in `dict_asset`.
 
     Parameters
     ----------
@@ -166,7 +166,7 @@ def sink(model, dict_asset, **kwargs):
     dict_asset : dict
         Contains information about the storage like (not exhaustive):
         efficiency, installed capacity ('installedCap'), information on the
-        busses the sink is connected to ('input_bus_name'),
+        busses the sink is connected to ('inflow_direction'),
 
     Other Parameters
     ----------------
@@ -204,7 +204,7 @@ def source(model, dict_asset, **kwargs):
     series is provided for the source (key 'timeseries' in `dict_asset`) it is
     defined as a non dispatchable source, otherwise as dispatchable source.
     The source has multiple or a single output bus depending on the type of the
-    key 'input_bus_name' in `dict_asset`.
+    key 'inflow_direction' in `dict_asset`.
 
     Parameters
     ----------
@@ -213,7 +213,7 @@ def source(model, dict_asset, **kwargs):
     dict_asset : dict
         Contains information about the storage like (not exhaustive):
         efficiency, installed capacity ('installedCap'), information on the
-        busses the sink is connected to ('input_bus_name'),
+        busses the sink is connected to ('inflow_direction'),
 
     Other Parameters
     ----------------
@@ -276,8 +276,8 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
     dict_asset : dict
         Contains information about the asset like (not exhaustive):
         efficiency, installed capacity ('installedCap'), information on the
-        busses the asset is connected to (f.e. 'input_bus_name',
-        'output_bus_name').
+        busses the asset is connected to (f.e. 'inflow_direction',
+        'outflow_direction').
     func_constant : func
         Function to be applied if optimization not intended.
     func_optimize : func
@@ -368,30 +368,30 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
 
     """
     # check if the transformer has multiple input or multiple output busses
-    if isinstance(dict_asset[INPUT_BUS_NAME], list) or isinstance(
-        dict_asset[OUTPUT_BUS_NAME], list
+    if isinstance(dict_asset[INFLOW_DIRECTION], list) or isinstance(
+        dict_asset[OUTFLOW_DIRECTION], list
     ):
-        if isinstance(dict_asset[INPUT_BUS_NAME], list):
+        if isinstance(dict_asset[INFLOW_DIRECTION], list):
             inputs = {}
-            for bus in dict_asset[INPUT_BUS_NAME]:
+            for bus in dict_asset[INFLOW_DIRECTION]:
                 inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow()
             outputs = {
-                kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                     nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                 )
             }
             efficiencies = {
-                kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: dict_asset[
+                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: dict_asset[
                     EFFICIENCY
                 ][VALUE]
             }
 
         else:
-            inputs = {kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME]]: solph.Flow()}
+            inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
             outputs = {}
             index = 0
-            for bus in dict_asset[OUTPUT_BUS_NAME]:
+            for bus in dict_asset[OUTFLOW_DIRECTION]:
                 variable_costs = dict_asset[DISPATCH_PRICE][VALUE][index]
                 outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
                     nominal_value=dict_asset[INSTALLED_CAP][VALUE],
@@ -401,19 +401,19 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             efficiencies = {}
             for i in range(len(dict_asset[EFFICIENCY][VALUE])):
                 efficiencies[
-                    kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME][i]]
+                    kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][i]]
                 ] = dict_asset[EFFICIENCY][VALUE][i]
 
     else:
-        inputs = {kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME]]: solph.Flow()}
+        inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
         outputs = {
-            kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                 nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
         }
         efficiencies = {
-            kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: dict_asset[EFFICIENCY][
+            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: dict_asset[EFFICIENCY][
                 VALUE
             ]
         }
@@ -449,15 +449,15 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
     """
     # check if the transformer has multiple input or multiple output busses
     # the investment object is always in the output bus
-    if isinstance(dict_asset[INPUT_BUS_NAME], list) or isinstance(
-        dict_asset[OUTPUT_BUS_NAME], list
+    if isinstance(dict_asset[INFLOW_DIRECTION], list) or isinstance(
+        dict_asset[OUTFLOW_DIRECTION], list
     ):
-        if isinstance(dict_asset[INPUT_BUS_NAME], list):
+        if isinstance(dict_asset[INFLOW_DIRECTION], list):
             inputs = {}
-            for bus in dict_asset[INPUT_BUS_NAME]:
+            for bus in dict_asset[INFLOW_DIRECTION]:
                 inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow()
             outputs = {
-                kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                         maximum=dict_asset[MAXIMUM_CAP][VALUE],
@@ -467,16 +467,16 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 )
             }
             efficiencies = {
-                kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: dict_asset[
+                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: dict_asset[
                     EFFICIENCY
                 ][VALUE]
             }
 
         else:
-            inputs = {kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME]]: solph.Flow()}
+            inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
             outputs = {}
             index = 0
-            for bus in dict_asset[OUTPUT_BUS_NAME]:
+            for bus in dict_asset[OUTFLOW_DIRECTION]:
                 variable_costs = dict_asset[DISPATCH_PRICE][VALUE][index]
                 outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
                     investment=solph.Investment(
@@ -490,15 +490,15 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             efficiencies = {}
             for i in range(len(dict_asset[EFFICIENCY][VALUE])):
                 efficiencies[
-                    kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME][i]]
+                    kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][i]]
                 ] = dict_asset[EFFICIENCY][VALUE][i]
 
     else:
-        inputs = {kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME]]: solph.Flow()}
+        inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
         if AVAILABILITY_DISPATCH in dict_asset.keys():
             # This key is only present in DSO peak demand pricing transformers.
             outputs = {
-                kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                         maximum=dict_asset[MAXIMUM_CAP][VALUE],
@@ -510,7 +510,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             }
         else:
             outputs = {
-                kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                         maximum=dict_asset[MAXIMUM_CAP][VALUE],
@@ -521,7 +521,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             }
 
         efficiencies = {
-            kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: dict_asset[EFFICIENCY][
+            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: dict_asset[EFFICIENCY][
                 VALUE
             ]
         }
@@ -557,7 +557,7 @@ def storage_fix(model, dict_asset, **kwargs):
         label=dict_asset[LABEL],
         nominal_storage_capacity=dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE],
         inputs={
-            kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
                 nominal_value=dict_asset[INPUT_POWER][INSTALLED_CAP][
                     VALUE
                 ],  # limited through installed capacity, NOT c-rate
@@ -565,16 +565,15 @@ def storage_fix(model, dict_asset, **kwargs):
             )
         },  # maximum charge possible in one timestep
         outputs={
-            kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                 nominal_value=dict_asset[OUTPUT_POWER][INSTALLED_CAP][
                     VALUE
                 ],  # limited through installed capacity, NOT c-rate #todo actually, if we only have a lithium battery... crate should suffice? i mean, with crate fixed AND fixed power, this is defined two times
                 variable_costs=dict_asset[OUTPUT_POWER][DISPATCH_PRICE][VALUE],
             )
         },  # maximum discharge possible in one timestep
-        loss_rate=dict_asset[STORAGE_CAPACITY][EFFICIENCY][
-            VALUE
-        ],  # from timestep to timestep
+        loss_rate=1
+        - dict_asset[STORAGE_CAPACITY][EFFICIENCY][VALUE],  # from timestep to timestep
         min_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE],
         max_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE],
         initial_storage_level=dict_asset[STORAGE_CAPACITY][SOC_INITIAL][
@@ -613,7 +612,7 @@ def storage_optimize(model, dict_asset, **kwargs):
             existing=dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE],
         ),
         inputs={
-            kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
                 investment=solph.Investment(
                     ep_costs=dict_asset[INPUT_POWER][SIMULATION_ANNUITY][VALUE],
                     maximum=dict_asset[INPUT_POWER][MAXIMUM_CAP][VALUE],
@@ -625,7 +624,7 @@ def storage_optimize(model, dict_asset, **kwargs):
             )
         },  # maximum charge power
         outputs={
-            kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                 investment=solph.Investment(
                     ep_costs=dict_asset[OUTPUT_POWER][SIMULATION_ANNUITY][VALUE],
                     maximum=dict_asset[OUTPUT_POWER][MAXIMUM_CAP][VALUE],
@@ -636,9 +635,8 @@ def storage_optimize(model, dict_asset, **kwargs):
                 variable_costs=dict_asset[OUTPUT_POWER][DISPATCH_PRICE][VALUE],
             )
         },  # maximum discharge power
-        loss_rate=dict_asset[STORAGE_CAPACITY][EFFICIENCY][
-            VALUE
-        ],  # from timestep to timestep
+        loss_rate=1
+        - dict_asset[STORAGE_CAPACITY][EFFICIENCY][VALUE],  # from timestep to timestep
         min_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE],
         max_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE],
         initial_storage_level=dict_asset[STORAGE_CAPACITY][SOC_INITIAL][
@@ -676,7 +674,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
 
     """
     outputs = {
-        kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+        kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
             label=dict_asset[LABEL],
             fix=dict_asset[TIMESERIES],
             nominal_value=dict_asset[INSTALLED_CAP][VALUE],
@@ -689,7 +687,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
     model.add(source_non_dispatchable)
     kwargs[OEMOF_SOURCE].update({dict_asset[LABEL]: source_non_dispatchable})
     logging.debug(
-        f"Added: Non-dispatchable source {dict_asset[LABEL]} (fixed capacity) to bus {dict_asset[OUTPUT_BUS_NAME]}.",
+        f"Added: Non-dispatchable source {dict_asset[LABEL]} (fixed capacity) to bus {dict_asset[OUTFLOW_DIRECTION]}.",
     )
 
 
@@ -710,7 +708,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
 
     """
     outputs = {
-        kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+        kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
             label=dict_asset[LABEL],
             fix=dict_asset[TIMESERIES_NORMALIZED],
             investment=solph.Investment(
@@ -729,7 +727,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
     model.add(source_non_dispatchable)
     kwargs[OEMOF_SOURCE].update({dict_asset[LABEL]: source_non_dispatchable})
     logging.debug(
-        f"Added: Non-dispatchable source {dict_asset[LABEL]} (capacity to be optimized) to bus {dict_asset[OUTPUT_BUS_NAME]}."
+        f"Added: Non-dispatchable source {dict_asset[LABEL]} (capacity to be optimized) to bus {dict_asset[OUTFLOW_DIRECTION]}."
     )
 
 
@@ -752,7 +750,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
     """
     if TIMESERIES_NORMALIZED in dict_asset:
         outputs = {
-            kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                 label=dict_asset[LABEL],
                 max=dict_asset[TIMESERIES_NORMALIZED],
                 investment=solph.Investment(
@@ -778,7 +776,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                 f"If the asset should not have this behaviour, please create an issue.",
             )
         outputs = {
-            kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                 label=dict_asset[LABEL],
                 investment=solph.Investment(
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
@@ -792,7 +790,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
     model.add(source_dispatchable)
     kwargs[OEMOF_SOURCE].update({dict_asset[LABEL]: source_dispatchable})
     logging.debug(
-        f"Added: Dispatchable source {dict_asset[LABEL]} (capacity to be optimized) to bus {dict_asset[OUTPUT_BUS_NAME]}."
+        f"Added: Dispatchable source {dict_asset[LABEL]} (capacity to be optimized) to bus {dict_asset[OUTFLOW_DIRECTION]}."
     )
 
 
@@ -815,7 +813,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
     """
     if TIMESERIES_NORMALIZED in dict_asset:
         outputs = {
-            kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                 label=dict_asset[LABEL],
                 max=dict_asset[TIMESERIES_NORMALIZED],
                 existing=dict_asset[INSTALLED_CAP][VALUE],
@@ -834,7 +832,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
                 f"If the asset should not have this behaviour, please create an issue.",
             )
         outputs = {
-            kwargs[OEMOF_BUSSES][dict_asset[OUTPUT_BUS_NAME]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                 label=dict_asset[LABEL],
                 existing=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
@@ -844,7 +842,7 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
     model.add(source_dispatchable)
     kwargs[OEMOF_SOURCE].update({dict_asset[LABEL]: source_dispatchable})
     logging.debug(
-        f"Added: Dispatchable source {dict_asset[LABEL]} (fixed capacity) to bus {dict_asset[OUTPUT_BUS_NAME]}."
+        f"Added: Dispatchable source {dict_asset[LABEL]} (fixed capacity) to bus {dict_asset[OUTFLOW_DIRECTION]}."
     )
 
 
@@ -869,10 +867,10 @@ def sink_dispatchable_optimize(model, dict_asset, **kwargs):
 
     """
     # check if the sink has multiple input busses
-    if isinstance(dict_asset[INPUT_BUS_NAME], list):
+    if isinstance(dict_asset[INFLOW_DIRECTION], list):
         inputs = {}
         index = 0
-        for bus in dict_asset[INPUT_BUS_NAME]:
+        for bus in dict_asset[INFLOW_DIRECTION]:
             inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
                 label=dict_asset[LABEL],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE][index],
@@ -881,7 +879,7 @@ def sink_dispatchable_optimize(model, dict_asset, **kwargs):
             index += 1
     else:
         inputs = {
-            kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
                 label=dict_asset[LABEL],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                 investment=solph.Investment(),
@@ -893,7 +891,7 @@ def sink_dispatchable_optimize(model, dict_asset, **kwargs):
     model.add(sink_dispatchable)
     kwargs[OEMOF_SINK].update({dict_asset[LABEL]: sink_dispatchable})
     logging.debug(
-        f"Added: Dispatchable sink {dict_asset[LABEL]} (to be capacity optimized) to bus {dict_asset[INPUT_BUS_NAME]}.",
+        f"Added: Dispatchable sink {dict_asset[LABEL]} (to be capacity optimized) to bus {dict_asset[INFLOW_DIRECTION]}.",
     )
 
 
@@ -915,17 +913,17 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
 
     """
     # check if the sink has multiple input busses
-    if isinstance(dict_asset[INPUT_BUS_NAME], list):
+    if isinstance(dict_asset[INFLOW_DIRECTION], list):
         inputs = {}
         index = 0
-        for bus in dict_asset[INPUT_BUS_NAME]:
+        for bus in dict_asset[INFLOW_DIRECTION]:
             inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
                 fix=dict_asset[TIMESERIES], nominal_value=1
             )
             index += 1
     else:
         inputs = {
-            kwargs[OEMOF_BUSSES][dict_asset[INPUT_BUS_NAME]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
                 fix=dict_asset[TIMESERIES], nominal_value=1
             )
         }
@@ -935,5 +933,5 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     model.add(sink_demand)
     kwargs[OEMOF_SINK].update({dict_asset[LABEL]: sink_demand})
     logging.debug(
-        f"Added: Non-dispatchable sink {dict_asset[LABEL]} to bus {dict_asset[INPUT_BUS_NAME]}"
+        f"Added: Non-dispatchable sink {dict_asset[LABEL]} to bus {dict_asset[INFLOW_DIRECTION]}"
     )

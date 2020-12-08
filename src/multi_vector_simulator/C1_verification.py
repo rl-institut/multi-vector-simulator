@@ -14,12 +14,19 @@ import os
 
 import pandas as pd
 
+from multi_vector_simulator.utils.helpers import find_value_by_key
+
+from multi_vector_simulator.utils.exceptions import (
+    UnknownEnergyVectorError,
+    DuplicateLabels,
+)
 from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     DISPLAY_OUTPUT,
     OVERWRITE,
+    DEFAULT_WEIGHTS_ENERGY_CARRIERS,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DURATION,
@@ -53,14 +60,23 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PROVIDERS,
     ENERGY_PRODUCTION,
     ENERGY_BUSSES,
+    ENERGY_STORAGE,
+    STORAGE_CAPACITY,
     VALUE,
     ASSET_DICT,
     RENEWABLE_ASSET_BOOL,
     TIMESERIES,
+    ENERGY_VECTOR,
+    PROJECT_DATA,
+    LES_ENERGY_VECTOR_S,
+    SIMULATION_ANNUITY,
+    TIMESERIES_TOTAL,
+    DISPATCHABILITY,
+    OPTIMIZE_CAP,
 )
 
-
-# web-application: valid input directly connected to cell-input
+# Necessary for check_for_label_duplicates()
+from collections import Counter
 
 
 def lookup_file(file_path, name):
@@ -83,9 +99,157 @@ def lookup_file(file_path, name):
         raise FileNotFoundError(msg)
 
 
-def check_feedin_tariff(dict_values):
+def check_for_label_duplicates(dict_values):
+    """
+    This function checks if any LABEL provided for the energy system model in dict_values is a duplicate.
+    This is not allowed, as oemof can not build a model with identical labels.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation inputs
+
+    Returns
+    -------
+    pass or error message: DuplicateLabels
+    """
+    values_of_label = find_value_by_key(dict_values, LABEL)
+    count = Counter(values_of_label)
+    msg = ""
+    for item in count:
+        if count[item] > 1:
+            msg += f"Following asset label is not unique with {count[item]} occurrences: {item}. \n"
+    if len(msg) > 1:
+        msg += f"Please make sure that each label is only used once, as oemof otherwise can not build the model."
+        raise DuplicateLabels(msg)
+
+
+def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_values):
+    r"""
+    Raises error if feed-in tariff > levelized costs of generation for energy asset in ENERGY_PRODUCTION
+    This is not allowed, as oemof otherwise may be subjected to an unbound problem, ie. a business case in which an asset should be installed with infinite capacities to maximize revenue.
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+
+    Returns
+    -------
+    Raises error message in case of feed-in tariff > levelized costs of generation for energy asset of any
+    asset in ENERGY_PRODUCTION
+
+    Notes
+    -----
+    Tested with:
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_not_greater_costs()
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs()
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_dispatchable_higher_dispatch_price()
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_dispatchable_lower_dispatch_price()
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs_with_maxcap()
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs_dispatch_mode()
+
+    This test does not cover cross-sectoral invalid feedin tariffs.
+    Example: If there is very cheap electricity generation but a high H2 feedin tariff, then it might be a business case to install a large Electrolyzer, and the simulation would fail. In that case one should set bounds to the solution.
+    """
+
+    warning_message_hint_unbound = f"This may cause an unbound solution and terminate the optimization, if there are no additional costs in the supply line. If this happens, please check the costs of your assets or the feed-in tariff. If both are correct, consider setting a maximum capacity constraint (maximumCap) for the relevant assets."
+    warning_message_hint_maxcap = f"This will cause the optimization to result into the maximum capacity of this asset."
+    warning_message_hint_dispatch = (
+        f"No error expected but strange dispatch behaviour might occur."
+    )
+
+    # Check if feed-in tariff of any provider is less then expected minimal levelized energy generation costs
+    for provider in dict_values[ENERGY_PROVIDERS].keys():
+        feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]
+        energy_vector = dict_values[ENERGY_PROVIDERS][provider][ENERGY_VECTOR]
+
+        # Loop though all produciton assets
+        for production_asset in dict_values[ENERGY_PRODUCTION]:
+            # Only compare those assets to the provider that serve the same energy vector
+            if (
+                dict_values[ENERGY_PRODUCTION][production_asset][ENERGY_VECTOR]
+                == energy_vector
+            ):
+                log_message_object = f"levelized costs of generation for energy asset '{dict_values[ENERGY_PRODUCTION][production_asset][LABEL]}'"
+
+                # If energy production asset is a non-dispatchable source (PV plant)
+                if (
+                    dict_values[ENERGY_PRODUCTION][production_asset][DISPATCHABILITY]
+                    is False
+                ):
+                    # Calculate cost per kWh generated
+                    levelized_cost_of_generation = (
+                        dict_values[ENERGY_PRODUCTION][production_asset][
+                            SIMULATION_ANNUITY
+                        ][VALUE]
+                        / dict_values[ENERGY_PRODUCTION][production_asset][
+                            TIMESERIES_TOTAL
+                        ][VALUE]
+                    )
+                # If energy production asset is a dispatchable source (fuel source)
+                else:
+                    log_message_object += " (based on is dispatch price)"
+                    # Estimate costs based on dispatch price (this is the lower minimum, as actually o&m and investment costs would need to be added as well, but can not be added as the dispatch is not known yet.
+                    levelized_cost_of_generation = dict_values[ENERGY_PRODUCTION][
+                        production_asset
+                    ][DISPATCH_PRICE][VALUE]
+
+                # Determine the margin between feedin tariff and generation costs
+                diff = feedin_tariff[VALUE] - levelized_cost_of_generation
+                # Get value of optimizeCap and maximumCap of production_asset
+                optimze_cap = dict_values[ENERGY_PRODUCTION][production_asset][
+                    OPTIMIZE_CAP
+                ][VALUE]
+                maximum_cap = dict_values[ENERGY_PRODUCTION][production_asset][
+                    MAXIMUM_CAP
+                ][VALUE]
+                # If float/int values
+                if isinstance(diff, float) or isinstance(diff, int):
+                    if diff > 0:
+                        # This can result in an unbound solution if optimizeCap is True and maximumCap is None
+                        if optimze_cap == True and maximum_cap is None:
+                            msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_unbound}"
+                            raise ValueError(msg)
+                        # If maximumCap is not None the maximum capacity of the production asset will be installed
+                        elif optimze_cap == True and maximum_cap is not None:
+                            msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_maxcap}"
+                            logging.warning(msg)
+                        # If the capacity of the production asset is not optimized there is no unbound problem but strange dispatch behaviour might occur
+                        else:
+                            logging.debug(
+                                f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_dispatch}"
+                            )
+                    else:
+                        logging.debug(f"Feed-in tariff < {log_message_object}.")
+                # If provided as a timeseries
+                else:
+                    boolean = [
+                        k > 0 for k in diff.values
+                    ]  # True if there is an instance where feed-in tariff > electricity_price
+                    if any(boolean) is True:
+                        # This can result in an unbound solution if optimizeCap is True and maximumCap is None
+                        if optimze_cap == True and maximum_cap is None:
+                            instances = sum(boolean)  # Count instances
+                            msg = f"Feed-in tariff of {energy_vector} > {log_message_object} in {instances} during the simulation time. {warning_message_hint_unbound}"
+                            raise ValueError(msg)
+                        # If maximumCap is not None the maximum capacity of the production asset will be installed
+                        elif optimze_cap == True and maximum_cap is not None:
+                            msg = f"Feed-in tariff of {energy_vector} > {log_message_object} in {instances} during the simulation time. {warning_message_hint_maxcap}"
+                            logging.warning(msg)
+                        # If the capacity of the production asset is not optimized there is no unbound problem but strange dispatch behaviour might occur
+                        else:
+                            logging.debug(
+                                f"Feed-in tariff of {energy_vector} > {log_message_object} in {instances} during the simulation time. {warning_message_hint_dispatch}"
+                            )
+                    else:
+                        logging.debug(f"Feed-in tariff < {log_message_object}.")
+
+
+def check_feedin_tariff_vs_energy_price(dict_values):
     r"""
     Raises error if feed-in tariff > energy price of any asset in 'energyProvider.csv'.
+    This is not allowed, as oemof otherwise is subjected to an unbound and unrealistic problem, eg. one where the owner should consume electricity to feed it directly back into the grid for its revenue.
 
     Parameters
     ----------
@@ -96,6 +260,12 @@ def check_feedin_tariff(dict_values):
     -------
     Indirectly, raises error message in case of feed-in tariff > energy price of any
     asset in 'energyProvider.csv'.
+
+    Notes
+    -----
+    Tested with:
+    - C1.test_check_feedin_tariff_vs_energy_price_greater_energy_price()
+    - C1.test_check_feedin_tariff_vs_energy_price_not_greater_energy_price()
 
     """
     for provider in dict_values[ENERGY_PROVIDERS].keys():
@@ -171,6 +341,48 @@ def check_non_dispatchable_source_time_series(dict_values):
                     f"{TIMESERIES} of non-dispatchable source {source[LABEL]} contains values out of bounds [0, 1]."
                 )
                 return False
+
+
+def check_efficiency_of_storage_capacity(dict_values):
+    r"""
+    Raises error or logs a warning to help users to spot major change in PR #676.
+
+    In #676 the `efficiency` of `storage capacity' in `storage_*.csv` was defined as the
+    storages' efficiency/ability to hold charge over time. Before it was defined as
+    loss rate.
+    This function raises an error if efficiency of 'storage capacity' of one of the
+    storages is 0 and logs a warning if efficiency of 'storage capacity' of one of the
+    storages is <0.2.
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+
+    Notes
+    -----
+    Tested with:
+    - test_check_efficiency_of_storage_capacity_is_0
+    - test_check_efficiency_of_storage_capacity_is_btw_0_and_02
+    - test_check_efficiency_of_storage_capacity_is_greater_02
+
+    Returns
+    -------
+    Indirectly, raises error message in case of efficiency of 'storage capacity' is 0
+    and logs warning message in case of efficiency of 'storage capacity' is <0.2.
+
+    """
+    # go through all storages
+    for key, item in dict_values[ENERGY_STORAGE].items():
+        eff = item[STORAGE_CAPACITY][EFFICIENCY][VALUE]
+        if eff == 0:
+            raise ValueError(
+                f"You might use an old input file! The efficiency of the storage capacity of '{item[LABEL]}' is {eff}, although it should represent the ability of the storage to hold charge over time; check PR #676."
+            )
+        elif eff < 0.2:
+            logging.warning(
+                f"You might use an old input file! The efficiency of the storage capacity of '{item[LABEL]}' is {eff}, although it should represent the ability of the storage to hold charge over time; check PR #676."
+            )
 
 
 def check_input_values(dict_values):
@@ -369,9 +581,84 @@ def all_valid_intervals(name, value, title):
         )
 
 
+def check_if_energy_vector_of_all_assets_is_valid(dict_values):
+    """
+    Validates for all assets, whether 'energyVector' is defined within DEFAULT_WEIGHTS_ENERGY_CARRIERS and within the energyBusses.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All input data in dict format
+
+    Notes
+    -----
+    Function tested with
+    - test_add_economic_parameters()
+    - test_check_if_energy_vector_of_all_assets_is_valid_fails
+    - test_check_if_energy_vector_of_all_assets_is_valid_passes
+    """
+    for level1 in dict_values.keys():
+        for level2 in dict_values[level1].keys():
+            if (
+                isinstance(dict_values[level1][level2], dict)
+                and ENERGY_VECTOR in dict_values[level1][level2].keys()
+            ):
+                energy_vector_name = dict_values[level1][level2][ENERGY_VECTOR]
+                if (
+                    energy_vector_name
+                    not in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]
+                ):
+                    raise ValueError(
+                        f"Asset {level2} of asset group {level1} has an energy vector that is not defined within the energyBusses. "
+                        f"This prohibits proper processing of the assets dispatch."
+                        f"Please check for typos or define another bus, as this hints at the energy system being faulty."
+                    )
+                    C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+                        energy_vector_name, level1, level2
+                    )
+
+
+def check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
+    energy_carrier, asset_group, asset
+):
+    r"""
+    Raises an error message if an energy vector is unknown.
+
+    It then needs to be added to the DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py
+
+    Parameters
+    ----------
+    energy_carrier: str
+        Name of the energy carrier
+
+    asset_group: str
+        Name of the asset group
+
+    asset: str
+        Name of the asset
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    Tested with:
+    - test_check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_pass()
+    - test_check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS_fails()
+    """
+    if energy_carrier not in DEFAULT_WEIGHTS_ENERGY_CARRIERS:
+        raise UnknownEnergyVectorError(
+            f"The energy carrier {energy_carrier} of asset group {asset_group}, asset {asset} is unknown, "
+            f"as it is not defined within the DEFAULT_WEIGHTS_ENERGY_CARRIERS."
+            f"Please check the energy carrier, or update the DEFAULT_WEIGHTS_ENERGY_CARRIERS in contants.py (dev)."
+        )
+
+
 def check_for_sufficient_assets_on_busses(dict_values):
     r"""
     Validating model regarding busses - each bus has to have 2+ assets connected to it, exluding energy excess sinks
+
     Parameters
     ----------
     dict_values: dict

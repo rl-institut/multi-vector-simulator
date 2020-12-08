@@ -9,6 +9,8 @@ import multi_vector_simulator.E3_indicator_calculation as E3
 
 import multi_vector_simulator.E4_verification as E4
 
+from multi_vector_simulator.utils.constants import SOC
+
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     ENERGY_CONVERSION,
@@ -22,8 +24,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INPUT_POWER,
     OUTPUT_POWER,
     STORAGE_CAPACITY,
-    INPUT_BUS_NAME,
-    OUTPUT_BUS_NAME,
+    INFLOW_DIRECTION,
+    OUTFLOW_DIRECTION,
     OPTIMIZED_ADD_CAP,
     KPI,
     KPI_COST_MATRIX,
@@ -31,6 +33,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     KPI_SCALARS_DICT,
     OPTIMIZED_FLOWS,
     LABEL,
+    INSTALLED_CAP,
 )
 
 from multi_vector_simulator.utils.constants_output import (
@@ -115,13 +118,14 @@ def evaluate_dict(dict_values, results_main, results_meta):
             )
 
         if (
-            dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
+            dict_values[ENERGY_STORAGE][storage][INFLOW_DIRECTION]
             in dict_values[OPTIMIZED_FLOWS].keys()
         ) or (
-            dict_values[ENERGY_STORAGE][storage][OUTPUT_BUS_NAME]
+            dict_values[ENERGY_STORAGE][storage][OUTFLOW_DIRECTION]
             in dict_values[OPTIMIZED_FLOWS].keys()
         ):
-            bus_name = dict_values[ENERGY_STORAGE][storage][INPUT_BUS_NAME]
+            bus_name = dict_values[ENERGY_STORAGE][storage][INFLOW_DIRECTION]
+            inflow_direction = dict_values[ENERGY_STORAGE][storage][INFLOW_DIRECTION]
             timeseries_name = (
                 dict_values[ENERGY_STORAGE][storage][LABEL]
                 + " ("
@@ -129,6 +133,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
                     round(
                         dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
                             OPTIMIZED_ADD_CAP
+                        ][VALUE]
+                        + dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
+                            INSTALLED_CAP
                         ][VALUE],
                         1,
                     )
@@ -136,12 +143,12 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + dict_values[ENERGY_STORAGE][storage][STORAGE_CAPACITY][
                     OPTIMIZED_ADD_CAP
                 ][UNIT]
-                + ") SOC"
+                + f") {SOC}"
             )
 
-            dict_values[OPTIMIZED_FLOWS][bus_name][timeseries_name] = dict_values[
-                ENERGY_STORAGE
-            ][storage]["timeseries_soc"]
+            dict_values[OPTIMIZED_FLOWS][inflow_direction][
+                timeseries_name
+            ] = dict_values[ENERGY_STORAGE][storage]["timeseries_soc"]
 
     for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:

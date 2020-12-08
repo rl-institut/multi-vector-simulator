@@ -9,7 +9,7 @@ lifetime,year,20
 specific_costs_om,currency/unit/year,0
 dispatch_price,currency/kWh,0.1
 optimizeCap,bool,True
-outflow_direction,str,Electricity (diesel)
+outflow_direction,str,Electricity (Diesel)
 type_oemof,str,source
 unit,str,kWh_chem
 energyVector,str,Electricity

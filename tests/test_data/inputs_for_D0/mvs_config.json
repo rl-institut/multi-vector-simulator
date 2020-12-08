@@ -46,8 +46,8 @@
             "transformer_station_in": "Transformer station (DSO) consumption",
             "transformer_station_out": "Transformer station (DSO) feedin"}
         },
-        "Electricity bus": {
-          "label": "Electricity bus",
+        "Electricity": {
+          "label": "Electricity",
           "energyVector": "Electricity",
           "Asset_list": {
             "Electricity excess": "Electricity excess_sink",
@@ -82,8 +82,7 @@
                 "unit": "currency/kW",
                 "value": 0
             },
-            "input_bus_name": "Electricity (DSO) bus",
-            "input_direction": "Electricity (DSO)",
+            "inflow_direction": "Electricity (DSO) bus",
             "installedCap": {
                 "unit": "unit",
                 "value": 0.0
@@ -137,8 +136,7 @@
                 "unit": "currency/unit",
                 "value": 0
             },
-            "input_bus_name": "Electricity bus",
-            "input_direction": "Electricity",
+            "inflow_direction": "Electricity",
             "installedCap": {
                 "unit": "unit",
                 "value": 0.0
@@ -196,7 +194,6 @@
             "energyVector": "Electricity",
             "file_name": "demand_harbor.csv",
             "inflow_direction": "Electricity",
-            "input_bus_name": "Electricity bus",
             "installedCap": {
                 "unit": "unit",
                 "value": 0.0
@@ -371,7 +368,6 @@
             "energyVector": "Electricity",
             "file_name": "demand_remaining.csv",
             "inflow_direction": "Electricity",
-            "input_bus_name": "Electricity bus",
             "installedCap": {
                 "unit": "unit",
                 "value": 0.0
@@ -546,7 +542,6 @@
             "energyVector": "Electricity",
             "file_name": "demand_shore_power.csv",
             "inflow_direction": "Electricity",
-            "input_bus_name": "Electricity bus",
             "installedCap": {
                 "unit": "unit",
                 "value": 0.0
@@ -728,8 +723,7 @@
                 "value": 1.0
             },
             "energyVector": "Electricity",
-            "inflow_direction": "PV plant (mono)",
-            "input_bus_name": "PV plant (mono) bus",
+            "inflow_direction": "PV plant (mono) bus",
             "installedCap": {
                 "unit": "kW",
                 "value": 0.0
@@ -768,7 +762,6 @@
                 "value": true
             },
             "outflow_direction": "Electricity",
-            "output_bus_name": "Electricity bus",
             "simulation_annuity": {
                 "unit": "currency/unit/simulation period",
                 "value": 1.6925385855667836
@@ -799,7 +792,6 @@
             },
             "energyVector": "Electricity",
             "inflow_direction": "Electricity",
-            "input_bus_name": "Electricity bus",
             "installedCap": {
                 "unit": "kW",
                 "value": 0.0
@@ -837,8 +829,7 @@
                 "unit": "bool",
                 "value": true
             },
-            "outflow_direction": "ESS Li-Ion",
-            "output_bus_name": "ESS Li-Ion bus",
+            "outflow_direction": "ESS Li-Ion bus",
             "simulation_annuity": {
                 "unit": "currency/unit/simulation period",
                 "value": 0.0
@@ -868,8 +859,7 @@
                 "value": 1
             },
             "energyVector": "Electricity",
-            "inflow_direction": "ESS Li-Ion",
-            "input_bus_name": "ESS Li-Ion bus",
+            "inflow_direction": "ESS Li-Ion bus",
             "installedCap": {
                 "unit": "kW",
                 "value": 0.0
@@ -908,7 +898,6 @@
                 "value": true
             },
             "outflow_direction": "Electricity",
-            "output_bus_name": "Electricity bus",
             "simulation_annuity": {
                 "unit": "currency/unit/simulation period",
                 "value": 0.0
@@ -938,8 +927,7 @@
                 "value": 0.96
             },
             "energyVector": "Electricity",
-            "inflow_direction": "Electricity (DSO)",
-            "input_bus_name": "Electricity (DSO) bus",
+            "inflow_direction": "Electricity (DSO) bus",
             "installedCap": {
                 "unit": "kW",
                 "value": 1250
@@ -978,7 +966,6 @@
                 "value": false
             },
             "outflow_direction": "Electricity",
-            "output_bus_name": "Electricity bus",
             "simulation_annuity": {
                 "unit": "currency/unit/simulation period",
                 "value": 0.0
@@ -1009,7 +996,6 @@
             },
             "energyVector": "Electricity",
             "inflow_direction": "Electricity",
-            "input_bus_name": "Electricity bus",
             "installedCap": {
                 "unit": "kW",
                 "value": 1250
@@ -1047,8 +1033,7 @@
                 "unit": "bool",
                 "value": false
             },
-            "outflow_direction": "Electricity (DSO)",
-            "output_bus_name": "Electricity (DSO) bus",
+            "outflow_direction": "Electricity (DSO) bus",
             "simulation_annuity": {
                 "unit": "currency/unit/simulation period",
                 "value": 0.0
@@ -1109,8 +1094,7 @@
                 "unit": "bool",
                 "value": true
             },
-            "output_bus_name": "Electricity (DSO) bus",
-            "output_direction": "Electricity (DSO)",
+            "outflow_direction": "Electricity (DSO) bus",
             "simulation_annuity": {
                 "unit": "currency/unit/simulation period",
                 "value": 0.0
@@ -1386,8 +1370,7 @@
                 "unit": "bool",
                 "value": true
             },
-            "outflow_direction": "PV plant (mono)",
-            "output_bus_name": "PV plant (mono) bus",
+            "outflow_direction": "PV plant (mono) bus",
             "simulation_annuity": {
                 "unit": "currency/unit/simulation period",
                 "value": 3.3045050012511776
@@ -1640,7 +1623,7 @@
                 "unit": "currency/kWh",
                 "value": 0.4
             },
-            "inflow_direction": "Electricity (DSO)",
+            "inflow_direction": "Electricity (DSO) bus",
             "installedCap": {
                 "unit": "unit",
                 "value": 0.0
@@ -1674,7 +1657,7 @@
                 "unit": "bool",
                 "value": true
             },
-            "outflow_direction": "Electricity (DSO)",
+            "outflow_direction": "Electricity (DSO) bus",
             "peak_demand_pricing": {
                 "unit": "currency/kW",
                 "value": 0
@@ -1694,7 +1677,7 @@
     "energyStorage": {
         "storage_01": {
             "energyVector": "Electricity",
-            "inflow_direction": "ESS Li-Ion",
+            "inflow_direction": "ESS Li-Ion bus",
             "input power": {
                 "age_installed": {
                     "unit": "year",
@@ -1763,13 +1746,12 @@
                 },
                 "unit": "kW"
             },
-            "input_bus_name": "ESS Li-Ion bus",
             "label": "ESS Li-Ion",
             "optimizeCap": {
                 "unit": "bool",
                 "value": true
             },
-            "outflow_direction": "ESS Li-Ion",
+            "outflow_direction": "ESS Li-Ion bus",
             "output power": {
                 "age_installed": {
                     "unit": "year",
@@ -1838,7 +1820,7 @@
                 },
                 "unit": "kW"
             },
-            "output_bus_name": "ESS Li-Ion bus",
+            "outflow_direction": "ESS Li-Ion bus",
             "storage capacity": {
                 "age_installed": {
                     "unit": "year",
@@ -1858,7 +1840,7 @@
                 },
                 "efficiency": {
                     "unit": "factor",
-                    "value": 0
+                    "value": 1
                 },
                 "installedCap": {
                     "unit": "unit",
@@ -2049,7 +2031,7 @@
             "unit": "bool",
             "value": true
         },
-"time_index": {
+        "time_index": {
                "columns": [
                     0
                ],

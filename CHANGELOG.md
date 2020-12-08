@@ -19,6 +19,77 @@ Here is a template for new release sections
 -
 ```
 
+## [0.5.3] - 2020-12-08
+
+### Added
+- Warning for missing parameter when parsing inputs from epa to mvs (#656)
+- New module `exceptions.py` in `multi_vector_simulator.utils` to gather custom MVS exceptions (#656)
+- New argument for functions `E1.convert_demand_to_dataframe`, `F1.plot_timeseries`, `F2.ready_timeseries_plots` (#665)
+- File .github/workflow/main.yml for github actions (#668)
+- `energyBusses` now have to be defined by the user via `energyBusses.csv` (#649)
+- Input validation test `C1.check_for_label_duplicates` (#649)
+- Constant variables: `JSON_PROCESSED`, `JSON_WITH_RESULTS`, `JSON_FILE_EXTENSION` (#649)
+- Comment in the RTD concerning the logical equivalence of `energyCarrier` and `energyVector` in the MVS (#649)
+- Comment how fuels can either be attributed to the fuel energy vactor or another vector (#649)
+- Labels for tables in `Model_assumptions.rst` (#649)
+- New in `utils`: `helpers.py` with `find_valvue_by_key()`: Finds value of a key in a nested dictionary (#649)
+- New exception `DuplicateLabels` (#649)
+- Plot showing state of charge (SOC) of storages of each bus separately, as it is provided in %, also added to automatic report (#666)
+- "SOC" as string representative in `utils/constants.py`, used in `F1` and `E0` (#666)
+- SOC plot of storages is added to the autoreport (#666)
+- Test for correct storage labelling in `A1.add_storage_components()` (#666)
+- Test for getting two time series with `E1.get_timeseries_per_bus()` for storage (input and output power) if storage is directly connected to bus (#666)
+- Function `C1.check_efficiency_of_storage_capacity` that raises error message if the `efficiency` of `storage capacity` of any storage is 0 and a logging.warning if the efficiency is < 0.2, to help users to spot major change when using old files (#676)
+- Function `C0.change_sign_of_feedin_tariff()` for changing the sign of the `feedin_tariff`, added tests as well (#685)
+- Benchmark tests in `test_benchmark_feedin.py` to check the feed-in behaviour and feed-in revenues in dispatch and invest optimization (#685)
+- Pytests for `C0.add_a_transformer_for_each_peak_demand_pricing_period()`, `C0.define_dso_sinks_and_sources`/`C0.define_auxiliary_assets_of_energy_providers`, `C0.define_source` (#685)
+- Basic structure for pytest of `C0.define_sink` (#685)
+- Add verification test `C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production()` (#685)
+
+### Changed
+- Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
+- Move A1 and C0 custom exceptions into `multi_vector_simulator.utils.exceptions.py` (#656)
+- Adapt `E1.convert_demand_to_dataframe` for multiple sectors (#656)
+- Improve the demands section of the autoreport: Divide the demand tables and plots sector-wise (#665)
+- All tests and benchmark tests are adapted to `energyBusses` being defined manually (#649)
+- Input for for `tests\test_F1_plotting.py` changed from `tests/test_data/inputs_F1_plot_es_graph` to default input folder `tests/inputs` (#649)
+- `tests/inputs`, `input_template` and the inputs of the benchmark as well as pytests adapted to `energyBusses` defined via `csv` (#649)
+- Refactored and changed `C0.update_bus()` to `C0.add_asset_to_dict_of_bus` (#649) 
+- Refactored and changed `C0.define_busses()` as it now only defines the energy assets connected to the defined busses (#649)
+- Changed `C0.define_sink()` and `C0.define_source()` so that it fits with externally defined `ENERGY_BUSSES` (#649)
+- Adapt pytests of `D1` and `D0` (#649)
+- Changed `C1.identify_energy_vectors` to be a test `C1.check_if_energy_vector_of_an_asset_is_valid` (#649)
+- Input folder for the `F1` tests now `tests/inputs` (#649)
+- Refactored parameters: `DSO_PEAK_DEMAND_BUS_NAME` to `DSO_PEAK_DEMAND_SUFFIX`, `SECTORS` to `LES_ENERGY_VECTORS` (#649)
+- Update `MVS_parameter_list.csv`: Added information to `energyVector` (#649)
+- Modify `E1.get_timeseries_per_bus()` to add `INPUT_POWER` and respectively `OUTPUT_POWER` to a storage component directly connected to the a bus to fix #444 and add logging.debug(#666)
+- Changed label of storage in `timeseries_all_busses.xlsx` to be defined by `installedCap` + `optimizedAddCap` to prevent confusion (#666)
+- Make use of constant variables (#684)
+- `tests/inputs` adapted so that storage is used (#684)
+- Significant change(!): `loss_rate` of storages in `D1` defined as `1-efficiency` instead of as `efficiency` of the storage capacity (see `storage_*.csv` files) (#676)
+- `efficiency` of `storage capacity` in `storage_*.csv` now actually displays the storages' efficiency/ability to hold charge over time (#676)
+- Adapted `efficiency` of `storage capacity` in all provided benchmark tests and inputs (#676)
+- Documented the change of `efficiency` of `storage capacity` as actual efficiency/ability to hold charge over time in RTD (#676)
+- Significant change(!): `feedin_tariff` in `energyProviders.csv` should now be provided as positive value to earn money with feed-in and to a negative value to pay for feed-in (#685)
+- Simplified `C0.define_source()` (#685)
+- Refactored `C0.define_dso_sinks_and_sources` to `C0.define_auxiliary_assets_of_energy_providers` (#685)
+- Refactored `C0.check_feedin_tariff()` to `C0.check_feedin_tariff_vs_energy_price()` to specify test (#685)
+- Changed `tests/inputs` so that feed-in tariff checks pass (#685)
+- Adapted check in `C0.check_feedin_tariff_vs_levelized_cost_of_generation_of_production()`: if `maximumCap` is not None only a warning is logged as this wouldn't result in an unbound problem. In case of an investment optimization of the asset a logging.debug is shown. (#690)
+
+### Removed
+- File .travis.yml (#668)
+- Folder `tests/test_data/inputs_F1_plot_es_graph`, now using default input folder `tests/inputs` as input for `tests\test_F1_plotting.py` (#649)
+- Mention of `LABEL` in the RTD description of the `csv` files (#649)
+- `C0.bus_suffix()`, `C0.remove_bus_suffix()` and `C0.get_name_or_names_of_in_or_output_bus()`, as this overcomplicated the issue and the end user now can define their own bus labels (#649)
+- Parameters `INPUT_BUS_NAME` and `INPUT_BUS_NAME`, as they are now equivalent to `INFLOW_DIRECTION` and `OUTFLOW_DIRECTION` (#649)
+- Removed SOC from storages from busses' plots (in `F1.plot_instant_power()`) but not from `OPTIMZIED_FLOWS` so that it is still printed into `timeseries.xlsx` (#666)
+
+### Fixed
+- Storage label definition (remove filename) and use `LABEL` instead (#666)
+- Make deep copy of data frame in `F1.plot_optimized_capacities()` to prevent errors (#666)
+- Benchmark test for minimal renewable share constraint (#685)
+
 ## [0.5.2] - 2020-11-11
 
 ### Added
@@ -98,6 +169,7 @@ Here is a template for new release sections
 - Remove unused `dict_values` argument of function `receive_timeseries_from_csv` (#625)
 - Move the end of the function `receive_timeseries_from_csv` into `C0.compute_timeseries_properties()` (#625)
 - Fix rendering issues with the PDF report and web app: Tables, ES graph sizing (#643)
+- Improve the description of demands in the autoreport: Adapted section so that it applies to all vectors (#647)
 
 ### Removed
 - Parameter label from input csv files; label is now set by filenames (for `project_data`, `economic_data`, `simulation_settings`) and column headers (for `energyConsumption`, `energyConversion`, `energyProduction`, `energyProviders`), special for storage: `filename` + `column header` (#602)

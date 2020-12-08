@@ -9,7 +9,7 @@ Module E1 processes the oemof results.
 
 """
 import logging
-
+import copy
 import pandas as pd
 
 from multi_vector_simulator.utils.constants import TYPE_NONE
@@ -21,8 +21,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OUTPUT_POWER,
     STORAGE_CAPACITY,
     TIME_INDEX,
-    INPUT_BUS_NAME,
-    OUTPUT_BUS_NAME,
+    INFLOW_DIRECTION,
+    OUTFLOW_DIRECTION,
     KPI_SCALARS_DICT,
     OPTIMIZED_FLOWS,
     UNIT,
@@ -86,11 +86,19 @@ def get_timeseries_per_bus(dict_values, bus_data):
             'scalars': (pd.Series) (does not exist in all dicts)
             'sequences': (pd.DataFrame) - contains flows between components and busses
 
+    Notes
+    -----
+    Tested with:
+    - test_get_timeseries_per_bus_two_timeseries_for_directly_connected_storage()
+
     Returns
     -------
     Indirectly updated `dict_values` with 'optimizedFlows' - one data frame for each bus.
 
     """
+    logging.debug(
+        "Time series for plots and 'timeseries.xlsx' are added to `dict_values[OPTIMIZED_FLOWS]` in `E1.get_timeseries_per_bus`; check there in case of problems."
+    )
     bus_data_timeseries = {}
     for bus in bus_data.keys():
         bus_data_timeseries.update(
@@ -113,9 +121,23 @@ def get_timeseries_per_bus(dict_values, bus_data):
             if key[0][0] == bus and key[1] == "flow"
         }
         for asset in from_bus:
-            bus_data_timeseries[bus][asset] = -bus_data[bus]["sequences"][
-                from_bus[asset]
-            ]
+            try:
+                # if `asset` already exists add input/output power to column name
+                # (occurs for storages that are directly added to a bus)
+                bus_data_timeseries[bus][asset]
+                # asset is already in bus_data_timeseries[bus]. Therefore a renaming is necessary:
+                bus_data_timeseries[bus].rename(
+                    columns={asset: " ".join([asset, OUTPUT_POWER])}, inplace=True
+                )
+                # Now the "from_bus" ie. the charging/input power of the storage asset is added to the data set:
+                bus_data_timeseries[bus][" ".join([asset, INPUT_POWER])] = -bus_data[
+                    bus
+                ]["sequences"][from_bus[asset]]
+            except KeyError:
+                # The asset was not previously added to the `OPTIMIZED_FLOWS`, ie. is not a storage asset
+                bus_data_timeseries[bus][asset] = -bus_data[bus]["sequences"][
+                    from_bus[asset]
+                ]
 
     dict_values.update({OPTIMIZED_FLOWS: bus_data_timeseries})
 
@@ -144,12 +166,12 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
     """
     power_charge = storage_bus["sequences"][
-        ((dict_asset[INPUT_BUS_NAME], dict_asset[LABEL]), "flow")
+        ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), "flow")
     ]
     add_info_flows(settings, dict_asset[INPUT_POWER], power_charge)
 
     power_discharge = storage_bus["sequences"][
-        ((dict_asset[LABEL], dict_asset[OUTPUT_BUS_NAME]), "flow")
+        ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), "flow")
     ]
     add_info_flows(settings, dict_asset[OUTPUT_POWER], power_discharge)
 
@@ -161,7 +183,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     if OPTIMIZE_CAP in dict_asset:
         if dict_asset[OPTIMIZE_CAP][VALUE] is True:
             power_charge = storage_bus["scalars"][
-                ((dict_asset[INPUT_BUS_NAME], dict_asset[LABEL]), "invest")
+                ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), "invest")
             ]
             dict_asset[INPUT_POWER].update(
                 {
@@ -178,7 +200,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
             )
 
             power_discharge = storage_bus["scalars"][
-                ((dict_asset[LABEL], dict_asset[OUTPUT_BUS_NAME]), "invest")
+                ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), "invest")
             ]
             dict_asset[OUTPUT_POWER].update(
                 {
@@ -348,10 +370,10 @@ def get_parameter_to_be_evaluated_from_oemof_results(asset_group, asset_label):
     - test_get_parameter_to_be_evaluated_from_oemof_results()
     """
     if asset_group in ASSET_GROUPS_DEFINED_BY_INFLUX:
-        parameter_to_be_evaluated = INPUT_BUS_NAME
+        parameter_to_be_evaluated = INFLOW_DIRECTION
 
     elif asset_group in ASSET_GROUPS_DEFINED_BY_OUTFLUX:
-        parameter_to_be_evaluated = OUTPUT_BUS_NAME
+        parameter_to_be_evaluated = OUTFLOW_DIRECTION
 
     else:
         logging.warning(
@@ -554,7 +576,7 @@ def add_info_flows(settings, dict_asset, flow):
     )
 
 
-def convert_demand_to_dataframe(dict_values):
+def convert_demand_to_dataframe(dict_values, sector_demands=None):
     """Dataframe used for the demands table of the report
 
     Parameters
@@ -562,16 +584,34 @@ def convert_demand_to_dataframe(dict_values):
     dict_values: dict
         output values of MVS
 
+    sector_demands: str
+        Name of the sector of the energy system whose demands must be returned as a df by this function
+        Default: None
+
     Returns
     -------
     :class:`pandas.DataFrame<frame>`
 
     """
-    # Creating a dataframe for the demands
-    demands = dict_values[ENERGY_CONSUMPTION]
 
-    # Removing all columns that are not actually from demands
+    # Make a dict which is a sub-dict of the JSON results file with only the consumption components of the energy system
+    demands = copy.deepcopy(dict_values[ENERGY_CONSUMPTION])
+
+    # The following block removes all the non-current sectoral demands from the demands dict
+    if sector_demands is not None:
+        non_sec_demands = []
+        # Loop through the demands checking if there are keys which do not belong to the current sector
+        for demand_key in demands.keys():
+            if demands[demand_key][ENERGY_VECTOR] != (sector_demands.title()):
+                non_sec_demands.append(demand_key)
+        # Drop the non-sectoral demands from the demands dict
+        for demand_to_drop in non_sec_demands:
+            del demands[demand_to_drop]
+
+    # Removing all the keys that do not represent actual demands
     drop_list = []
+
+    # Loop though the demands identifying irrelevant demands
     for column_label in demands:
         # Identifies excess sink in demands for removal
         if EXCESS in column_label:
@@ -586,25 +626,36 @@ def convert_demand_to_dataframe(dict_values):
     for item in drop_list:
         del demands[item]
 
+    # Create empty dict to hold the current-sector demands' data
     demand_data = {}
 
+    # Populate the above dict with data for each of the demand in the current sector
     for dem in list(demands.keys()):
         demand_data.update(
             {
                 dem: [
                     demands[dem][UNIT],
+                    demands[dem][ENERGY_VECTOR],
                     demands[dem][TIMESERIES_PEAK][VALUE],
                     demands[dem][TIMESERIES_AVERAGE][VALUE],
                     demands[dem][TIMESERIES_TOTAL][VALUE],
                 ]
             }
         )
-
+    # Creating a dataframe with all of the demands from the above dict
     df_dem = pd.DataFrame.from_dict(
         demand_data,
         orient="index",
-        columns=[UNIT, "Peak Demand", "Mean Demand", "Total Demand per annum"],
+        columns=[
+            UNIT,
+            "Type of Demand",
+            "Peak Demand",
+            "Mean Demand",
+            "Total Annual Demand",
+        ],
     )
+
+    # Operations on the index of the dataframe created above
     df_dem.index.name = "Demands"
     df_dem = df_dem.reset_index()
     df_dem = df_dem.round(2)

@@ -17,6 +17,9 @@ Below is the list of all the parameters of MVS, sorted in alphabetical order. Ea
 Parameters in each CSV file
 ***************************
 
+Important note: Each asset and bus needs to have an unique label.
+In the `csv` input files, these are defined by the column heads.
+
 constraints.csv
 ^^^^^^^^^^^^^^^
 
@@ -27,20 +30,26 @@ The file `constraints.csv` includes the following parameter(s):
 economic_data.csv
 ^^^^^^^^^^^^^^^^^
 
-The file `economic_data.csv` includes the following parameters:
+The file `economic_data.csv` includes all economic data that the simulation will use. This includes the following parameters:
 
-* :ref:`labl-label`
 * :ref:`currency-label`
 * :ref:`projectduration-label`
 * :ref:`discountfactor-label`
 * :ref:`tax-label`
 
+eneryBusses.csv
+^^^^^^^^^^^^^^^
+
+The file `energyBusses.csv` defines all busses required to build the energy system. It includes following parameters:
+
+* :ref:`energyvector-label`
+
 energyConsumption.csv
 ^^^^^^^^^^^^^^^^^^^^^
 
-The file `energyConsumption.csv` includes the following parameters:
+The file `energyConsumption.csv` defines all energy demands that should be included in the energy system.
+It includes the following parameters:
 
-* :ref:`labl-label`
 * :ref:`unit-label`
 * :ref:`inflowdirection-label`
 * :ref:`energyvector-label`
@@ -52,9 +61,9 @@ The file `energyConsumption.csv` includes the following parameters:
 energyConversion.csv
 ^^^^^^^^^^^^^^^^^^^^
 
-The file `energyConversion.csv` includes the following parameters:
+The file `energyConversion.csv` defines the assets that convert one energy carrier into another one, eg. inverters or generators.
+Following parameters define them:
 
-* :ref:`labl-label`
 * :ref:`unit-label`
 * :ref:`optimizecap-label`
 * :ref:`installedcap-label`
@@ -73,9 +82,9 @@ The file `energyConversion.csv` includes the following parameters:
 energyProduction.csv
 ^^^^^^^^^^^^^^^^^^^^
 
-The file `energyProduction.csv` includes the following parameters:
+The file `energyProduction.csv` defines the assets that serve as energy sources, eg. fuel sources or PV plants.
+ They include the following parameters:
 
-* :ref:`labl-label`
 * :ref:`unit-label`
 * :ref:`optimizecap-label`
 * :ref:`maxcap-label`
@@ -94,9 +103,8 @@ The file `energyProduction.csv` includes the following parameters:
 energyProviders.csv
 ^^^^^^^^^^^^^^^^^^^
 
-The file `energyProviders.csv` includes the following parameters:
+The file `energyProviders.csv` defines the energy providers of the energy system. They include the following parameters:
 
-* :ref:`labl-label`
 * :ref:`unit-label`
 * :ref:`optimizecap-label`
 * :ref:`energyprice-label`
@@ -112,9 +120,10 @@ The file `energyProviders.csv` includes the following parameters:
 energyStorage.csv
 ^^^^^^^^^^^^^^^^^
 
+The file `energyStorage.csv` defines the storage assets included in the energy system.
+It does not hold all needed parameters, but requires `storage_xx.csv` to be defined as well.
 The file `energyStorage.csv` includes the following parameters:
 
-* :ref:`labl-label`
 * :ref:`optimizecap-label`
 * :ref:`inflowdirection-label`
 * :ref:`outflowdirec-label`
@@ -141,7 +150,6 @@ project_data.csv
 
 The file `project_data.csv` includes the following parameters:
 
-* :ref:`labl-label`
 * :ref:`country-label`
 * :ref:`latitude-label`
 * :ref:`longitude-label`
@@ -155,20 +163,18 @@ simulation_settings.csv
 
 The file `simulation_settings.csv` includes the following parameters:
 
-* :ref:`labl-label`
 * :ref:`startdate-label`
 * :ref:`evaluatedperiod-label`
 * :ref:`timestep-label`
 * :ref:`outputlpfile-label`
 * :ref:`storeoemoefresults-label`
 
-storage_xx.csv
+storage_*.csv
 ^^^^^^^^^^^^^^
 
-The "xx" in the storage filename is the number identifying the storage. It depends on the number of storage components (such as batteries, etc.) present in the system. For e.g., there should be two storage files named storage_01.csv and storage_02.csv if the system contains two storage components.
+The `*` in the storage filename is the number identifying the storage. It depends on the number of storage components (such as batteries, etc.) present in the system. For e.g., there should be two storage files named storage_01.csv and storage_02.csv if the system contains two storage components.
 The file `storage_xx.csv` contains the following parameters:
 
-* :ref:`labl-label`
 * :ref:`unit-label`
 * :ref:`installedcap-label`
 * :ref:`age_ins-label`

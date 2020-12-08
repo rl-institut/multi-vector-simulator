@@ -35,14 +35,7 @@ They are added by adding a column in `energyProviders.CSV`, and setting file_nam
 DSOs, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
 as there are some additional features available then.
 
-Both DSOs and the additional fuel sources are limited to following options:
-- Electricity
-- Heat
-- H2
-- Diesel
-- Gas
-
-This is as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined. This definition is currently hard-coded in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. With new energy carriers necessary, the list can easily be extended. Please see below for more information.
+Both DSOs and the additional fuel sources are limited to the options provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
 
 Dispatchable conversion assets
 ##############################
@@ -153,12 +146,13 @@ To be able to calculate sector-wide key performance indicators, it is necessary 
 
 After thorough consideration, it has been decided to base the equivalence in tonnes of oil equivalent (TOE). Electricity has been chosen as a baseline energy carrier, as our pilot sites mainly revolve around it and also because we believe that this energy carrier will play a larger role in the future. For converting the results into a more conventional unit, we choose crude oil as a secondary baseline energy carrier. This also enables comparisons with crude oil price developments in the market. For most KPIs, the baseline energy carrier used is of no relevance as the result is not dependent on it. This is the case for KPIs such as the share of renewables at the project location or its self-sufficiency. The choice of the baseline energy carrier is relevant only for the levelized cost of energy (LCOE), as it will either provide a system-wide supply cost in Euro per kWh electrical or per kg crude oil.
 
-First, the conversion factors to kg crude oil equivalent [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] were determined (see Table 1 below). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
-
+First, the conversion factors to kg crude oil equivalent [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] were determined (see :ref:`table_kgoe_conversion_factors` below). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
 
 Following conversion factors and energy carriers are defined:
 
-.. list-table:: Table 1: kg crude oil equivalent (kgoe) per unit of a fuel
+.. _table_kgoe_conversion_factors:
+
+.. list-table:: Conversion factors: kg crude oil equivalent (kgoe) per unit of a fuel
    :widths: 50 25 25
    :header-rows: 1
 
@@ -213,9 +207,11 @@ Following conversion factors and energy carriers are defined:
 
 The values of ethanol and biodiesel seem comparably low in [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_] and do not seem to be representative of the net heating value (or lower heating value) that was expected to be used here.
 
-From this, the energy weighting factors using the baseline energy carrier electricity are calculated:
+From this, the energy weighting factors using the baseline energy carrier electricity are calculated (see :ref:`table_default_energy_carrier_weights_label`).
 
-.. list-table:: Table 2: Electricity equivalent conversion per unit of a fuel
+.. _table_default_energy_carrier_weights_label:
+
+.. list-table:: Electricity equivalent conversion per unit of a fuel
    :widths: 50 25 25
    :header-rows: 1
 
@@ -275,8 +271,21 @@ With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, com
 
 As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]. The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable factor or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
 
-Currently, the energy carrier conversion factors are defined in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be added to its list when needed. Unknown carriers raise an `UnknownEnergyCarrier` Error.
+:Code:
 
+Currently, the energy carrier conversion factors are defined in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be added to its list when needed. Unknown carriers raise an `UnknownEnergyVectorError` error.
+
+:Comment:
+
+Please note that the energy carrier weighting factor is not applied dependent on the LABEL of the energy asset, but based on its energy vector. Let us consider an example:
+
+In our system, we have a dispatchable `diesel fuel source`, with dispatch carrying the unit `l Diesel`.
+The energy vector needs to be defined as `Diesel` for the energy carrier weighting to be applied, ie. the energy vector of `diesel fuel source` needs to be `Diesel`. This will also have implications for the KPI:
+For example, the `degree of sector coupling` will reach its maximum, when the system only has heat demand and all of it is provided by processing diesel fuel. If you want to portrait diesel as something inherent to heat supply, you will need to make the diesel source a heat source, and set its `dispatch costs` to currency/kWh, ie. divide the diesel costs by the heating value of the fuel.
+
+:Comment:
+
+In the MVS, there is no distinction between energy carriers and energy vector. For `Electricity` of the `Electricity` vector this may be self-explanatory. However, the energy carriers of the `Heat` vector can have different technical characteristics: A fluid on different temperature levels. As the MVS measures the energy content of a flow in kWh(thermal) however, this distinction is only relevant for the end user to be aware of, as two assets that have different energy carriers as an output should not be connected to one and the same bus if a detailed analysis is expected. An example of this would be, that a system where the output of the diesel boiler as well as the output of a solar thermal panel are connected to the same bus, eventhough they can not both supply the same kind of heat demands (radiator vs. floor heating).  This, however, is something that the end-user has to be aware of themselves, eg. by defining self-explanatory labels.
 
 Limitations
 -----------
@@ -285,7 +294,10 @@ When running simulations with the MVS, there are certain peculiarities to be awa
 The peculiarities can be considered as limitations, some of which are merely model assumptions and others are drawbacks of the model.
 A number of those are inherited due to the nature of the MVS and its underlying modules,
 and others can still be addressed in the future during the MVS development process, which is still ongoing.
-The following table lists the MVS limitations based on their type.
+The following table (:ref:`table_limitations_label`) lists the MVS limitations based on their type.
+
+
+.. _table_limitations_label:
 
 .. list-table:: Limitations
    :widths: 25 25
@@ -312,19 +324,15 @@ Infeasible bi-directional flow in one timestep
 ##############################################
 
 :Limitation: 
-The real life constraint of the dispatch of assets,
-that it is not possible to have two flows in opposite directions at the same time step, is not adhered to in the MVS.
+The real life constraint of the dispatch of assets, that it is not possible to have two flows in opposite directions at the same time step, is not adhered to in the MVS.
 
 :Reason: 
-The MVS is based on the python library `oemof-solph`. Its generic components are used to set up the energy system.
-As a ground rule, the components of `oemof-solph` are unidirectional.
-This means that for an asset that is bidirectional two transformer objects have to be used. Examples for this are:
+The MVS is based on the python library `oemof-solph`. Its generic components are used to set up the energy system. As a ground rule, the components of `oemof-solph` are unidirectional. This means that for an asset that is bidirectional two transformer objects have to be used. Examples for this are:
 
 * Physical bi-directional assets, eg. inverters
 * Logical bi-directional assets, eg. consumption from the grid and feed-in to the grid
 
-To achieve the real-life constraint one flow has to be zero when the other is larger zero,
-one would have to implement following relation:
+To achieve the real-life constraint one flow has to be zero when the other is larger zero, one would have to implement following relation:
 
 .. math:: 
         E_{in} \cdot E_{out} = 0
@@ -332,14 +340,9 @@ one would have to implement following relation:
 However, this relation creates a non-linear problem and can not be implemented in `oemof-solph`.
 
 :Implications: 
-This limitation means that the MVS might result in infeasible dispatch of assets.
-For instance, a bus might be supplied by a rectifier and itself supplying an inverter at the same time step t,
-which cannot logically happen if these assets are part of one physical bi-directional inverter.
-Another case that could occur is feeding the grid and consuming from it at the same time t.
+This limitation means that the MVS might result in infeasible dispatch of assets. For instance, a bus might be supplied by a rectifier and itself supplying an inverter at the same time step t, which cannot logically happen if these assets are part of one physical bi-directional inverter. Another case that could occur is feeding the grid and consuming from it at the same time t.
 
-Under certain conditions, including an excess generation as well as dispatch costs of zero,
-the infeasible dispatch can also be observed for batteries and result in a parallel charge and discharge of the battery.
-If this occurs, a solution may be to set a marginal dispatch cost of battery charge.
+Under certain conditions, including an excess generation as well as dispatch costs of zero, the infeasible dispatch can also be observed for batteries and result in a parallel charge and discharge of the battery. If this occurs, a solution may be to set a marginal dispatch cost of battery charge.
 
 .. _limitations-simplified_model:
 
@@ -354,14 +357,10 @@ The MVS simplifies the component model of some assets.
     * Turbines are implemented without ramp rates
 
 :Reason:
-The MVS is based oemof-solph python library and uses its generic components to set up an energy system.
-Transformers and storages cannot have variable efficiencies.
+The MVS is based oemof-solph python library and uses its generic components to set up an energy system. Transformers and storages cannot have variable efficiencies.
 
 :Implications:
-Simplifying the implementation of some component specifications can be beneficial for the ease of the model,
-however, it contributes to the lack of realism and might result in less accurate values.
-The MVS accepts the decreased level of detail in return for a quick evaluation of its scenarios,
-which are often only used for a pre-feasibility analysis.
+Simplifying the implementation of some component specifications can be beneficial for the ease of the model, however, it contributes to the lack of realism and might result in less accurate values. The MVS accepts the decreased level of detail in return for a quick evaluation of its scenarios, which are often only used for a pre-feasibility analysis.
 
 .. _limitations-degradation:
 
@@ -369,17 +368,13 @@ No degradation of efficiencies over a component lifetime
 ########################################################
 
 :Limitation:
-The MVS does not degrade the efficiencies of assets over the lifetime of the project,
-eg. in the case of production assets like PV panels.
+The MVS does not degrade the efficiencies of assets over the lifetime of the project, eg. in the case of production assets like PV panels.
 
 :Reason:
-The simulation of the MVS is only based on a single reference year,
-and it is not possible to take into account multi-year degradation of asset efficiency.
+The simulation of the MVS is only based on a single reference year, and it is not possible to take into account multi-year degradation of asset efficiency.
 
 :Implications:
-This results in an overestimation of the energy generated by the asset,
-which implies that the calculation of some other results might also be overestimated (e.g. overestimation of feed-in energy).
-The user can circumvent this by applying a degradation factor manually to the generation time series used as an input for the MVS.
+This results in an overestimation of the energy generated by the asset, which implies that the calculation of some other results might also be overestimated (e.g. overestimation of feed-in energy). The user can circumvent this by applying a degradation factor manually to the generation time series used as an input for the MVS.
 
 .. _limitations-perfect_foresight:
 
@@ -390,18 +385,10 @@ Perfect foresight
 The optimal solution of the energy system is based on perfect foresight.
 
 :Reason:
-As the MVS and thus oemof-solph, which is handling the energy system model,
-know the generation and demand profiles for the whole simulation time
-and solve the optimization problem based on a linear equation system,
-the solver knows their dispatch for certain, whereas in reality the generation and demand could only be forecasted.
+As the MVS and thus oemof-solph, which is handling the energy system model, know the generation and demand profiles for the whole simulation time and solve the optimization problem based on a linear equation system, the solver knows their dispatch for certain, whereas in reality the generation and demand could only be forecasted.
 
 :Implications:
-The perfect foresight can lead to suspicious dispatch of assets,
-for example charging of a battery right before a (in real-life) random blackout occurs.
-The systems optimized with the MVS therefore, represent their optimal potential, which in reality could not be reached.
-The MVS has thus a tendency to underestimate the needed battery capacity or the minimal state of charge for backup purposes,
-and also designs the PV system and backup power according to perfect forecasts.
-In reality, operational margins would need to be added.
+The perfect foresight can lead to suspicious dispatch of assets, for example charging of a battery right before a (in real-life) random blackout occurs. The systems optimized with the MVS therefore, represent their optimal potential, which in reality could not be reached. The MVS has thus a tendency to underestimate the needed battery capacity or the minimal state of charge for backup purposes, and also designs the PV system and backup power according to perfect forecasts. In reality, operational margins would need to be added.
 
 .. _limitations-missing-kpi:
 
@@ -430,13 +417,10 @@ Random excess energy distribution
 There is random excess distribution between the feed-in sink and the excess sink when no feed-in-tariff is assumed in the system.
 
 :Reason:
-Since there is no feed-in-tariff to benefit from, the MVS randomly distributes the excess energy between the feed-in and excess sinks.
-As such, the distribution of excess energy changes when running several simulations for the same input files.
+Since there is no feed-in-tariff to benefit from, the MVS randomly distributes the excess energy between the feed-in and excess sinks. As such, the distribution of excess energy changes when running several simulations for the same input files.
 
 :Implications:
-On the first glance, the distribution of excess energy onto both feed-in sink and excess sink may seem off to the end-user.
-Other than these inconveniences, there are no real implications that affect the capacity and dispatch optimization.
-When a degree of self-supply and self-consumption is defined, the limitation might tarnish these results.
+On the first glance, the distribution of excess energy onto both feed-in sink and excess sink may seem off to the end-user. Other than these inconveniences, there are no real implications that affect the capacity and dispatch optimization. When a degree of self-supply and self-consumption is defined, the limitation might tarnish these results.
 
 .. _limitations-renewable-share-definition:
 
@@ -444,8 +428,7 @@ Renewable energy share defintion relative to energy carriers
 ############################################################
 
 :Limitation:
-The current renewable energy share depends on the share of renewable energy production assets directly feeding the load.
-The equation to calculate the share also includes the energy carrier rating as described here below:
+The current renewable energy share depends on the share of renewable energy production assets directly feeding the load. The equation to calculate the share also includes the energy carrier rating as described here below:
 
 .. math:: 
         RES &= \frac{\sum_i E_{RE,generation}(i) \cdot w_i}{\sum_i E_{RE,generation}(i) \cdot w_i + \sum_k E_{nonRE,generation}(k) \cdot w_k}
@@ -458,8 +441,7 @@ The equation to calculate the share also includes the energy carrier rating as d
 The MVS tool is a work in progress and this can still be addressed in the future.
 
 :Implications:
-This might result in different values when comparing them to other models.
-Another way to calculate it is by considering the share of energy consumption supplied from renewable sources.
+This might result in different values when comparing them to other models. Another way to calculate it is by considering the share of energy consumption supplied from renewable sources.
 
 .. _limitations-energy_carrier_weighting:
 
@@ -467,17 +449,13 @@ Energy carrier weighting
 ########################
 
 :Limitation: 
-The MVS assumes a usable potential/energy content rating for every energy carrier.
-The current version assumes that 1 kWh thermal is equivalent to 1 kWh electricity.
+The MVS assumes a usable potential/energy content rating for every energy carrier. The current version assumes that 1 kWh thermal is equivalent to 1 kWh electricity.
 
 :Reason: 
 This is an approach that the MVS currently uses.
 
 :Implications:
-By weighing the energy carriers according to their energy content (Gasoline Gallon Equivalent (GGE)),
-the MVS might result in values that can't be directly assessed.
-Those ratings affect the calculation of the levelized cost of the energy carriers,
-but also the minimum renewable energy share constraint.
+By weighing the energy carriers according to their energy content (Gasoline Gallon Equivalent (GGE)), the MVS might result in values that can't be directly assessed. Those ratings affect the calculation of the levelized cost of the energy carriers, but also the minimum renewable energy share constraint.
 
 .. _limitations-energy_shortage:
 
@@ -516,6 +494,28 @@ It also results in two optimized capacities for one logical unit.
 
 This limitation is to be addressed with a constraint which links both capacities of one logical unit,
 and therefore solves both the problem to attribute costs and the previously differing capacities.
+
+.. _verification_of_inputs:
+
+Input verification
+------------------
+
+The inputs for a simulation with the MVS are subjected to a couple of verification tests to make sure that the inputs result in valid oemof simulations. This should ensure:
+
+- Uniqueness of labels (`C1.check_for_label_duplicates`): This function checks if any LABEL provided for the energy system model in dict_values is a duplicate. This is not allowed, as oemof can not build a model with identical labels.
+
+- No levelized costs of generation lower than feed-in tariff of same energy vector in case of investment optimization (`optimizeCap` is True) (`C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_providers`):  Raises error if feed-in tariff > levelized costs of generation if `maximumCap` is None for energy asset in ENERGY_PRODUCTION. This is not allowed, as oemof otherwise may be subjected to an unbound problem, ie. a business case in which an asset should be installed with infinite capacities to maximize revenue. If maximumCap is not None a logging.warning is shown as the maximum capacity of the asset will be installed.
+
+- No feed-in tariff higher then energy price from an energy provider (`C1.check_feedin_tariff_vs_energy_price`): Raises error if feed-in tariff > energy price of any asset in 'energyProvider.csv'. This is not allowed, as oemof otherwise is subjected to an unbound and unrealistic problem, eg. one where the owner should consume electricity to feed it directly back into the grid for its revenue.
+
+- Assets have well-defined energy vectors and belong to an existing bus (`C1.check_if_energy_vector_of_all_assets_is_valid`):     Validates for all assets, whether 'energyVector' is defined within DEFAULT_WEIGHTS_ENERGY_CARRIERS and within the energyBusses.
+
+- Energy carriers used in the simulation have defined factors for the electricity equivalency weighting (`C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS`): Raises an error message if an energy vector is unknown. It then needs to be added to the DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py
+
+- An energy bus is always connected to one inflow and one outflow (`C1.check_for_sufficient_assets_on_busses`): Validating model regarding busses - each bus has to have 2+ assets connected to it, exluding energy excess sinks
+
+- Time series of energyProduction assets that are to be optimized have specific generation profiles (`C1.check_non_dispatchable_source_time_series`, `C1.check_time_series_values_between_0_and_1`): Raises error if time series of non-dispatchable sources are not between [0, 1].
+
 
 .. _validation-methodology:
 

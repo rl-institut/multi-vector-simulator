@@ -7,11 +7,20 @@ import numpy as np
 import multi_vector_simulator.A1_csv_to_json as A1
 import multi_vector_simulator.B0_data_input_json as data_input
 
+from multi_vector_simulator.utils.exceptions import (
+    MissingParameterError,
+    MissingParameterWarning,
+    WrongParameterWarning,
+    CsvParsingError,
+    WrongStorageColumn,
+)
 from multi_vector_simulator.utils.constants import (
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
     DEFAULT_VALUE,
     HEADER,
+    INPUT_FOLDER,
+    CSV_ELEMENTS,
 )
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -26,6 +35,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SOC_INITIAL,
     SOC_MAX,
     SOC_MIN,
+    LABEL,
+    STORAGE_CAPACITY,
+    INPUT_POWER,
+    OUTPUT_POWER,
 )
 from _constants import (
     CSV_PATH,
@@ -34,6 +47,7 @@ from _constants import (
     REQUIRED_CSV_FILES,
     PATHS_TO_PLOTS,
     TYPE_BOOL,
+    TEST_REPO_PATH,
 )
 
 CSV_PARAMETERS = ["param1", "param2"]
@@ -94,7 +108,7 @@ def test_if_check_for_official_extra_parameters_adds_no_parameter_when_not_neces
 
 
 def test_if_check_for_official_extra_parameters_raises_warning_if_parameter_doesnt_exist():
-    with pytest.warns(A1.MissingParameterWarning):
+    with pytest.warns(MissingParameterWarning):
         parameters_updated, _ = A1.check_for_official_extra_parameters(
             filename_a,
             df_no_new_parameter,
@@ -172,7 +186,7 @@ def test_create_json_from_csv_with_ampersand_separated_csv():
 
 def test_create_json_from_csv_with_unknown_separator_for_csv_raises_CsvParsingError():
 
-    with pytest.raises(A1.CsvParsingError):
+    with pytest.raises(CsvParsingError):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_unknown_separator",
@@ -183,15 +197,15 @@ def test_create_json_from_csv_with_unknown_separator_for_csv_raises_CsvParsingEr
 
 def test_create_json_from_csv_without_providing_parameters_raises_MissingParameterError():
 
-    with pytest.raises(A1.MissingParameterError):
+    with pytest.raises(MissingParameterError):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH, "csv_comma", parameters=[], asset_is_a_storage=False
         )
 
 
-def test_create_json_from_csv_with_uncomplete_parameters_raises_WrongParameterWarning():
+def test_create_json_from_csv_with_uncomplete_parameters_raises_MissingParameterError():
 
-    with pytest.raises(A1.MissingParameterError):
+    with pytest.raises(MissingParameterError):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_comma",
@@ -202,7 +216,7 @@ def test_create_json_from_csv_with_uncomplete_parameters_raises_WrongParameterWa
 
 def test_create_json_from_csv_with_wrong_parameters_raises_WrongParameterWarning():
 
-    with pytest.warns(A1.WrongParameterWarning):
+    with pytest.warns(WrongParameterWarning):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_wrong_parameter",
@@ -271,7 +285,7 @@ def test_conversion():
 
 def test_create_json_from_csv_storage_raises_WrongParameterWarning():
 
-    with pytest.warns(A1.WrongParameterWarning):
+    with pytest.warns(WrongParameterWarning):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
@@ -282,7 +296,7 @@ def test_create_json_from_csv_storage_raises_WrongParameterWarning():
 
 def test_create_json_from_csv_storage_raises_MissingParameterError():
 
-    with pytest.raises(A1.MissingParameterError):
+    with pytest.raises(MissingParameterError):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
@@ -302,7 +316,7 @@ def test_create_json_from_csv_storage_raises_MissingParameterError():
 
 def test_create_json_from_csv_storage_raises_WrongParameterWarning_for_wrong_values():
 
-    with pytest.warns(A1.WrongParameterWarning):
+    with pytest.warns(WrongParameterWarning):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_values",
@@ -339,6 +353,21 @@ def test_create_json_from_csv_float_int_parsing():
     assert type(json["csv_float_int"]["col1"]["param1"][VALUE]) is int
     assert type(json["csv_float_int"]["col1"]["param2"][VALUE]) is float
     assert type(json["csv_float_int"]["col1"]["param3"][VALUE]) is float
+
+
+def test_add_storage_components_label_correctly_added():
+    storage_label = "ESS Li-Ion"
+    input_directory = os.path.join(TEST_REPO_PATH, INPUT_FOLDER, CSV_ELEMENTS)
+    single_dict = A1.add_storage_components(
+        storage_filename="storage_01",
+        input_directory=input_directory,
+        storage_label=storage_label,
+    )
+
+    for column_name in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
+        assert (
+            single_dict[column_name][LABEL] == f"{storage_label} {column_name}"
+        ), f"Label of storage {storage_label} defined incorrectly, should be: '{storage_label} {column_name}'."
 
 
 def teardown_function():

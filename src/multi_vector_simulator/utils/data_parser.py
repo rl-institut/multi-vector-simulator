@@ -11,6 +11,10 @@ This module defines all functions to convert formats between EPA and MVS
 import pprint
 import logging
 
+from multi_vector_simulator.utils import compare_input_parameters_with_reference
+
+
+from multi_vector_simulator.utils.constants import MISSING_PARAMETERS_KEY
 from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DATA,
     ECONOMIC_DATA,
@@ -34,8 +38,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     PEAK_DEMAND_PRICING,
     PEAK_DEMAND_PRICING_PERIOD,
     RENEWABLE_SHARE_DSO,
-    INPUT_BUS_NAME,
-    OUTPUT_BUS_NAME,
+    OUTFLOW_DIRECTION,
     OUTFLOW_DIRECTION,
     DEVELOPMENT_COSTS,
     DISPATCH_PRICE,
@@ -62,8 +65,11 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESTEP,
     KPI,
     KPI_SCALARS_DICT,
+    FIX_COST,
     DATA,
 )
+
+from multi_vector_simulator.utils.exceptions import MissingParameterError
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -85,6 +91,7 @@ MAP_EPA_MVS = {
     "constraints": CONSTRAINTS,
     "renewable_asset": RENEWABLE_ASSET_BOOL,
     KPI: KPI,
+    FIX_COST: FIX_COST,
 }
 
 MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
@@ -95,6 +102,7 @@ EPA_PARAM_KEYS = {
     SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP],
     CONSTRAINTS: [],
     KPI: [KPI_SCALARS_DICT],
+    FIX_COST: [],
 }
 
 # Fields expected for assets' parameters of json returned to EPA
@@ -125,7 +133,6 @@ EPA_ASSET_KEYS = {
     ENERGY_CONSUMPTION: [
         "asset_type",
         LABEL,
-        INPUT_BUS_NAME,
         INFLOW_DIRECTION,
         OEMOF_ASSET_TYPE,
         DEVELOPMENT_COSTS,
@@ -144,9 +151,8 @@ EPA_ASSET_KEYS = {
         "energy_vector",
         OEMOF_ASSET_TYPE,
         INFLOW_DIRECTION,
-        INPUT_BUS_NAME,
         OUTFLOW_DIRECTION,
-        OUTPUT_BUS_NAME,
+        OUTFLOW_DIRECTION,
         AGE_INSTALLED,
         DEVELOPMENT_COSTS,
         DISPATCH_PRICE,
@@ -162,7 +168,7 @@ EPA_ASSET_KEYS = {
         "asset_type",
         LABEL,
         OEMOF_ASSET_TYPE,
-        OUTPUT_BUS_NAME,
+        OUTFLOW_DIRECTION,
         OUTFLOW_DIRECTION,
         DEVELOPMENT_COSTS,
         DISPATCH_PRICE,
@@ -183,9 +189,8 @@ EPA_ASSET_KEYS = {
         LABEL,
         "energy_vector",
         INFLOW_DIRECTION,
-        INPUT_BUS_NAME,
         OUTFLOW_DIRECTION,
-        OUTPUT_BUS_NAME,
+        OUTFLOW_DIRECTION,
         OEMOF_ASSET_TYPE,
         INPUT_POWER,
         OUTPUT_POWER,
@@ -214,7 +219,13 @@ def convert_epa_params_to_mvs(epa_dict):
 
     dict_values = {}
 
-    for param_group in [PROJECT_DATA, ECONOMIC_DATA, SIMULATION_SETTINGS, CONSTRAINTS]:
+    for param_group in [
+        PROJECT_DATA,
+        ECONOMIC_DATA,
+        SIMULATION_SETTINGS,
+        CONSTRAINTS,
+        FIX_COST,
+    ]:
 
         if MAP_MVS_EPA[param_group] in epa_dict:
 
@@ -264,6 +275,28 @@ def convert_epa_params_to_mvs(epa_dict):
             logging.warning(
                 f"The parameters {MAP_MVS_EPA[asset_group]} are not present in the parameters to be parsed into mvs json format"
             )
+
+    comparison = compare_input_parameters_with_reference(dict_values)
+
+    if MISSING_PARAMETERS_KEY in comparison:
+        errror_msg = []
+
+        d = comparison[MISSING_PARAMETERS_KEY]
+
+        errror_msg.append(" ")
+        errror_msg.append(" ")
+        errror_msg.append(
+            "The following parameter groups and sub parameters are missing from input parameters:"
+        )
+
+        for asset_group in d.keys():
+            errror_msg.append(asset_group)
+            print(asset_group)
+            if d[asset_group] is not None:
+                for k in d[asset_group]:
+                    errror_msg.append(f"\t`{k}` parameter")
+
+        raise (MissingParameterError("\n".join(errror_msg)))
 
     return dict_values
 
