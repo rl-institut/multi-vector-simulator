@@ -28,6 +28,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES_TOTAL,
     DISPATCH_PRICE,
     DISPATCHABILITY,
+    OPTIMIZE_CAP,
+    MAXIMUM_CAP,
 )
 
 from multi_vector_simulator.utils.exceptions import (
@@ -131,16 +133,20 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_dispa
                 LABEL: "production asset",
                 DISPATCH_PRICE: {VALUE: 0.3},
                 DISPATCHABILITY: True,
+                OPTIMIZE_CAP: {VALUE: True},
+                MAXIMUM_CAP: {VALUE: None},
             }
         },
     }
     with pytest.raises(ValueError):
         C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
             dict_values
-        )
+        ), f"If feed-in tariff > dispatch price of an asset without maximumCap and with optimized capacity a ValueError should be risen."
 
 
-def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_dispatchable_higher_dispatch_price():
+def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_dispatchable_higher_dispatch_price(
+    caplog,
+):
     energy_vector = "Electricity"
     dict_values = {
         ENERGY_PROVIDERS: {
@@ -156,10 +162,17 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_dispa
                 LABEL: "production asset",
                 DISPATCHABILITY: True,
                 DISPATCH_PRICE: {VALUE: 0.5},
+                OPTIMIZE_CAP: {VALUE: True},
+                MAXIMUM_CAP: {VALUE: None},
             }
         },
     }
-    C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_values)
+    # no error no logging
+    with caplog.at_level(logging.WARNING):
+        C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
+            dict_values
+        )
+    assert caplog.text == "", f"If feed-in tariff < dispatch price of an asset no error and no logging message should occur."
 
 
 def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs():
@@ -179,16 +192,18 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_d
                 SIMULATION_ANNUITY: {VALUE: 1},
                 TIMESERIES_TOTAL: {VALUE: 10},
                 DISPATCHABILITY: False,
+                OPTIMIZE_CAP: {VALUE: True},
+                MAXIMUM_CAP: {VALUE: None},
             }
         },
     }
     with pytest.raises(ValueError):
         C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
             dict_values
-        )
+        ), , f"If feed-in tariff > dispatch price of an asset without maximumCap and with optimized capacity a ValueError should be risen."
 
 
-def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_not_greater_costs():
+def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_not_greater_costs(caplog):
     energy_vector = "Electricity"
     dict_values = {
         ENERGY_PROVIDERS: {
@@ -205,10 +220,17 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_d
                 SIMULATION_ANNUITY: {VALUE: 10},
                 TIMESERIES_TOTAL: {VALUE: 10},
                 DISPATCHABILITY: False,
+                OPTIMIZE_CAP: {VALUE: True},
+                MAXIMUM_CAP: {VALUE: None},
             }
         },
     }
-    C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_values)
+    # no error no logging
+    with caplog.at_level(logging.WARNING):
+        C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
+            dict_values
+        )
+    assert caplog.text == "", f"If feed-in tariff < dispatch price of an asset no error and no logging message should occur."
 
 
 def test_check_time_series_values_between_0_and_1_True():
