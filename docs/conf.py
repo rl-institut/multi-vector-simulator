@@ -65,7 +65,7 @@ def generate_parameter_description(input_csv_file, output_rst_file):
             lines
             + [f".. _{props.ref}:", "", props.label, "^" * len(props.label), "",]
             + [f"{p} {props[p]}" for p in parameter_properties]
-            + ["", "----", "",]
+            + ["", "",]
         )
 
     with open(output_rst_file, "w") as ofs:
