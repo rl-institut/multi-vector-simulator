@@ -678,19 +678,24 @@ def convert_components_to_dataframe(dict_values):
 
     """
 
+    # Read the subdicts energyProduction, energyConversion and energyStorage as separate dicts
     components1 = dict_values[ENERGY_PRODUCTION]
     components2 = dict_values[ENERGY_CONVERSION]
     components3 = dict_values[ENERGY_STORAGE]
 
+    # Read the keys of the above dicts into separate lists
     comp1_keys = list(components1.keys())
     comp2_keys = list(components2.keys())
     comp3_keys = list(components3.keys())
 
+    # Add the above dictionaries and lists of keys into new lists for iterating through, later
     comp_dict_list = [components1, components2]
     components_list = [comp1_keys, comp2_keys]
 
+    # Dict to hold the data for creating a pandas dataframe
     components = {}
-    # Defining the columns of the table to be printed
+
+    # Defining the columns of the table and filling them up with the appropriate data
     for (component_key, comp_dict) in zip(components_list, comp_dict_list):
         for comps in component_key:
             components.update(
@@ -723,6 +728,7 @@ def convert_components_to_dataframe(dict_values):
             }
         )
 
+    # Create a pandas dataframe from the dictionary created above
     df_comp = pd.DataFrame.from_dict(
         components,
         orient="index",
@@ -737,6 +743,7 @@ def convert_components_to_dataframe(dict_values):
     df_comp.index.name = "Component"
     df_comp = df_comp.reset_index()
 
+    # Add True or False for each component in the column for capacity optimization
     for i in range(len(df_comp)):
         if df_comp.at[i, "Capacity optimization"] is True:
             df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "Yes"

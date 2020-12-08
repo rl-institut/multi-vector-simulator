@@ -498,6 +498,7 @@ def equation_renewable_share(total_res, total_non_res):
     - test_renewable_share_equation_is_0()
     - test_renewable_share_equation_is_1()
     """
+
     if total_res + total_non_res > 0:
         renewable_share = total_res / (total_non_res + total_res)
     else:
