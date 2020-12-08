@@ -172,7 +172,9 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_dispa
         C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
             dict_values
         )
-    assert caplog.text == "", f"If feed-in tariff < dispatch price of an asset no error and no logging message should occur."
+    assert (
+        caplog.text == ""
+    ), f"If feed-in tariff < dispatch price of an asset no error and no logging message should occur."
 
 
 def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs():
@@ -203,7 +205,9 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_d
         ), f"If feed-in tariff > dispatch price of an asset without maximumCap and with optimized capacity a ValueError should be risen."
 
 
-def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_not_greater_costs(caplog):
+def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_not_greater_costs(
+    caplog,
+):
     energy_vector = "Electricity"
     dict_values = {
         ENERGY_PROVIDERS: {
@@ -230,10 +234,14 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_d
         C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
             dict_values
         )
-    assert caplog.text == "", f"If feed-in tariff < dispatch price of an asset no error and no logging message should occur."
+    assert (
+        caplog.text == ""
+    ), f"If feed-in tariff < dispatch price of an asset no error and no logging message should occur."
 
 
-def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs_with_maxcap(caplog):
+def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs_with_maxcap(
+    caplog,
+):
     energy_vector = "Electricity"
     dict_values = {
         ENERGY_PROVIDERS: {
@@ -260,10 +268,15 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_d
         C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
             dict_values
         )
-    assert "This will cause the optimization to result into the maximum capacity of this asset." in caplog.text, f"If a production asset has a maximumCap and the feed-in tariff is greater than the expected lcoe a warning should be logged."
+    assert (
+        "This will cause the optimization to result into the maximum capacity of this asset."
+        in caplog.text
+    ), f"If a production asset has a maximumCap and the feed-in tariff is greater than the expected lcoe a warning should be logged."
 
 
-def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs_dispatch_mode(caplog):
+def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs_dispatch_mode(
+    caplog,
+):
     energy_vector = "Electricity"
     dict_values = {
         ENERGY_PROVIDERS: {
@@ -290,7 +303,9 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_d
         C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
             dict_values
         )
-    assert "No error expected but strange dispatch behaviour might occur." in caplog.text, f"If the capacity of a production asset is not optimized and the feed-in tariff is greater than the expected lcoe a debug msg should be logged."
+    assert (
+        "No error expected but strange dispatch behaviour might occur." in caplog.text
+    ), f"If the capacity of a production asset is not optimized and the feed-in tariff is greater than the expected lcoe a debug msg should be logged."
 
 
 def test_check_time_series_values_between_0_and_1_True():
