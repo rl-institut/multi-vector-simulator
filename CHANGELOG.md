@@ -100,6 +100,7 @@ Here is a template for new release sections
 - Storage label definition (remove filename) and use `LABEL` instead (#666)
 - Make deep copy of data frame in `F1.plot_optimized_capacities()` to prevent errors (#666)
 - Benchmark test for minimal renewable share constraint (#685)
+- Added storage to the table in autoreport listing the energy system components (#686)
 
 ## [0.5.2] - 2020-11-11
 
