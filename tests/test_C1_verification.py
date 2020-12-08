@@ -200,7 +200,7 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_d
     with pytest.raises(ValueError):
         C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(
             dict_values
-        ), , f"If feed-in tariff > dispatch price of an asset without maximumCap and with optimized capacity a ValueError should be risen."
+        ), f"If feed-in tariff > dispatch price of an asset without maximumCap and with optimized capacity a ValueError should be risen."
 
 
 def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_not_greater_costs(caplog):
