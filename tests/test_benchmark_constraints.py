@@ -93,10 +93,16 @@ class Test_Constraints:
                 {case: data[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]}
             )
 
-            assert minimal_renewable_shares[case] < renewable_shares[case] + 10 ** (-6), f"The minimal renewable share is not at least as high as the minimal renewable share requires."
+            assert minimal_renewable_shares[case] < renewable_shares[case] + 10 ** (
+                -6
+            ), f"The minimal renewable share is not at least as high as the minimal renewable share requires."
 
-        assert renewable_shares[use_case[0]] < minimal_renewable_shares[use_case[1]], f"The renewable share of the scenario without minimal renewable share constraint is with {renewable_shares[use_case[0]]} higher than the minimal renewable share defined for the scenario with constraint ({minimal_renewable_shares[use_case[1]]}). This test therefore can not validate that the constraint works. To debug, increase the cost of PV."
-        assert renewable_shares[use_case[0]] < renewable_shares[use_case[1]], f"The renewable share of the scenario with the constraint is not higher than the one without, so the test does not make sense."
+        assert (
+            renewable_shares[use_case[0]] < minimal_renewable_shares[use_case[1]]
+        ), f"The renewable share of the scenario without minimal renewable share constraint is with {renewable_shares[use_case[0]]} higher than the minimal renewable share defined for the scenario with constraint ({minimal_renewable_shares[use_case[1]]}). This test therefore can not validate that the constraint works. To debug, increase the cost of PV."
+        assert (
+            renewable_shares[use_case[0]] < renewable_shares[use_case[1]]
+        ), f"The renewable share of the scenario with the constraint is not higher than the one without, so the test does not make sense."
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):

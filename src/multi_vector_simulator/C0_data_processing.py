@@ -1023,15 +1023,15 @@ def define_source(
     if price is not None:
         if FILENAME in price and HEADER in price:
             price.update(
-                    {
-                        VALUE: get_timeseries_multiple_flows(
-                            dict_values[SIMULATION_SETTINGS],
-                            default_source_dict,
-                            price[FILENAME],
-                            price[HEADER],
-                        )
-                    }
-                )
+                {
+                    VALUE: get_timeseries_multiple_flows(
+                        dict_values[SIMULATION_SETTINGS],
+                        default_source_dict,
+                        price[FILENAME],
+                        price[HEADER],
+                    )
+                }
+            )
         determine_dispatch_price(dict_values, price, default_source_dict)
 
     if timeseries is not None:
