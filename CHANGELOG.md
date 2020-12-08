@@ -40,6 +40,11 @@ Here is a template for new release sections
 - Test for correct storage labelling in `A1.add_storage_components()` (#666)
 - Test for getting two time series with `E1.get_timeseries_per_bus()` for storage (input and output power) if storage is directly connected to bus (#666)
 - Function `C1.check_efficiency_of_storage_capacity` that raises error message if the `efficiency` of `storage capacity` of any storage is 0 and a logging.warning if the efficiency is < 0.2, to help users to spot major change when using old files (#676)
+- Function `C0.change_sign_of_feedin_tariff()` for changing the sign of the `feedin_tariff`, added tests as well (#685)
+- Benchmark tests in `test_benchmark_feedin.py` to check the feed-in behaviour and feed-in revenues in dispatch and invest optimization (#685)
+- Pytests for `C0.add_a_transformer_for_each_peak_demand_pricing_period()`, `C0.define_dso_sinks_and_sources`/`C0.define_auxiliary_assets_of_energy_providers`, `C0.define_source` (#685)
+- Basic structure for pytest of `C0.define_sink` (#685)
+- Add verification test `C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production()` (#685)
 
 ### Changed
 - Function `utils.compare_input_parameters_with_reference` accepts parameters as dict for json comparison (#656)
@@ -65,6 +70,12 @@ Here is a template for new release sections
 - `efficiency` of `storage capacity` in `storage_*.csv` now actually displays the storages' efficiency/ability to hold charge over time (#676)
 - Adapted `efficiency` of `storage capacity` in all provided benchmark tests and inputs (#676)
 - Documented the change of `efficiency` of `storage capacity` as actual efficiency/ability to hold charge over time in RTD (#676)
+- Significant change(!): `feedin_tariff` in `energyProviders.csv` should now be provided as positive value to earn money with feed-in and to a negative value to pay for feed-in (#685)
+- Simplified `C0.define_source()` (#685)
+- Refactored `C0.define_dso_sinks_and_sources` to `C0.define_auxiliary_assets_of_energy_providers` (#685)
+- Refactored `C0.check_feedin_tariff()` to `C0.check_feedin_tariff_vs_energy_price()` to specify test (#685)
+- Changed `tests/inputs` so that feed-in tariff checks pass (#685)
+- Adapted check in `C0.check_feedin_tariff_vs_levelized_cost_of_generation_of_production()`: if `maximumCap` is not None only a warning is logged as this wouldn't result in an unbound problem. In case of an investment optimization of the asset a logging.debug is shown. (#690)
 
 ### Removed
 - File .travis.yml (#668)
@@ -77,6 +88,7 @@ Here is a template for new release sections
 ### Fixed
 - Storage label definition (remove filename) and use `LABEL` instead (#666)
 - Make deep copy of data frame in `F1.plot_optimized_capacities()` to prevent errors (#666)
+- Benchmark test for minimal renewable share constraint (#685)
 
 ## [0.5.2] - 2020-11-11
 
