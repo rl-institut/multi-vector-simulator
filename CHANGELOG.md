@@ -75,6 +75,7 @@ Here is a template for new release sections
 - Refactored `C0.define_dso_sinks_and_sources` to `C0.define_auxiliary_assets_of_energy_providers` (#685)
 - Refactored `C0.check_feedin_tariff()` to `C0.check_feedin_tariff_vs_energy_price()` to specify test (#685)
 - Changed `tests/inputs` so that feed-in tariff checks pass (#685)
+- Adapted check in `C0.check_feedin_tariff_vs_levelized_cost_of_generation_of_production()`: if `maximumCap` is not None only a warning is logged as this wouldn't result in an unbound problem. In case of an investment optimization of the asset a logging.debug is shown. (#690)
 
 ### Removed
 - File .travis.yml (#668)
