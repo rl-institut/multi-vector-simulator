@@ -69,7 +69,9 @@ def all(dict_values):
     process_all_assets(dict_values)
 
     # check electricity price >= feed-in tariff todo: can be integrated into check_input_values() later
-    C1.check_feedin_tariff(dict_values=dict_values)
+    C1.check_feedin_tariff_vs_energy_price(dict_values=dict_values)
+    # check that energy supply costs are not lower than generation costs of any asset (of the same energy vector)
+    C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_values)
 
     # check time series of non-dispatchable sources in range [0, 1]
     C1.check_non_dispatchable_source_time_series(dict_values)
@@ -372,7 +374,7 @@ def energyProviders(dict_values, group):
     """
     # add sources and sinks depending on items in energy providers as pre-processing
     for asset in dict_values[group]:
-        define_dso_sinks_and_sources(dict_values, asset)
+        define_auxiliary_assets_of_energy_providers(dict_values, asset)
 
         # Add lifetime capex (incl. replacement costs), calculate annuity
         # (incl. om), and simulation annuity to each asset
@@ -601,7 +603,7 @@ def add_asset_to_asset_dict_of_bus(bus, dict_values, asset_key, asset_label):
     logging.debug(f"Added asset {asset_label} to bus {bus}")
 
 
-def define_dso_sinks_and_sources(dict_values, dso):
+def define_auxiliary_assets_of_energy_providers(dict_values, dso):
     r"""
     Defines all sinks and sources that need to be added to model the transformer using assets of energyConsumption, energyProduction and energyConversion.
 
@@ -613,6 +615,27 @@ def define_dso_sinks_and_sources(dict_values, dso):
     Returns
     -------
     Updated dict_values
+
+    Notes
+    -----
+    This function is tested with following pytests:
+    - C0.test_define_auxiliary_assets_of_energy_providers()
+    - C0.test_determine_months_in_a_peak_demand_pricing_period_not_valid()
+    - C0.test_determine_months_in_a_peak_demand_pricing_period_valid()
+    - C0.test_define_availability_of_peak_demand_pricing_assets_yearly()
+    - C0.test_define_availability_of_peak_demand_pricing_assets_monthly()
+    - C0.test_define_availability_of_peak_demand_pricing_assets_quarterly()
+    - C0.test_add_a_transformer_for_each_peak_demand_pricing_period_1_period()
+    - C0.test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods()
+    - C0.test_define_transformer_for_peak_demand_pricing()
+    - C0.test_define_source()
+    - C0.test_define_source_exception_unknown_bus()
+    - C0.test_define_source_timeseries_not_None()
+    - C0.test_define_source_price_not_None_but_with_scalar_value()
+    - C0.test_define_sink() -> incomplete
+    - C0.test_change_sign_of_feedin_tariff_positive_value()
+    - C0.test_change_sign_of_feedin_tariff_negative_value()
+    - C0.test_change_sign_of_feedin_tariff_zero()
     """
 
     number_of_pricing_periods = dict_values[ENERGY_PROVIDERS][dso][
@@ -641,11 +664,15 @@ def define_dso_sinks_and_sources(dict_values, dso):
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
     )
 
+    dict_feedin = change_sign_of_feedin_tariff(
+        dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF], dso
+    )
+
     # define feed-in sink of the DSO
     define_sink(
         dict_values=dict_values,
         asset_key=dso + DSO_FEEDIN + AUTO_SINK,
-        price=dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF],
+        price=dict_feedin,
         inflow_direction=dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
@@ -658,6 +685,52 @@ def define_dso_sinks_and_sources(dict_values, dso):
             CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN + AUTO_SINK,
         }
     )
+
+
+def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
+    r"""
+    Change the sign of the feed-in tariff.
+    Additionally, prints a logging.warning in case of the feed-in tariff is entered as
+    negative value in 'energyProviders.csv'.
+
+    Parameters
+    ----------
+    dict_feedin_tariff: dict
+        Dict of feedin tariff with Unit-value pair
+
+    dso: str
+        Name of the energy provider
+
+    Returns
+    -------
+    dict_feedin_tariff: dict
+        Dict of feedin tariff, to be used as input to C0.define_sink
+
+    Notes
+    -----
+    Tested with:
+    - C0.test_change_sign_of_feedin_tariff_positive_value()
+    - C0.test_change_sign_of_feedin_tariff_negative_value()
+    - C0.test_change_sign_of_feedin_tariff_zero()
+    """
+    if dict_feedin_tariff[VALUE] > 0:
+        # Add a debug message in case the feed-in is interpreted as revenue-inducing.
+        logging.debug(
+            f"The {FEEDIN_TARIFF} of {dso} is positive, which means that feeding into the grid results in a revenue stream."
+        )
+    elif dict_feedin_tariff[VALUE] < 0:
+        # Add a warning msg in case the feedin induces expenses rather then revenue
+        logging.warning(
+            f"The {FEEDIN_TARIFF} of {dso} is negative, which means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
+        )
+    else:
+        pass
+
+    dict_feedin_tariff = {
+        VALUE: -dict_feedin_tariff[VALUE],
+        UNIT: dict_feedin_tariff[UNIT],
+    }
+    return dict_feedin_tariff
 
 
 def define_availability_of_peak_demand_pricing_assets(
@@ -728,6 +801,13 @@ def add_a_transformer_for_each_peak_demand_pricing_period(
         List of names of newly added energy conversion assets,
 
     Updated dict_values with a transformer for each peak demand pricing period
+
+    Notes
+    -----
+
+    Tested by:
+    - C0.test_add_a_transformer_for_each_peak_demand_pricing_period_1_period
+    - C0.test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods
     """
 
     list_of_dso_energyConversion_assets = []
@@ -866,7 +946,14 @@ def define_transformer_for_peak_demand_pricing(
     )
 
 
-def define_source(dict_values, asset_key, outflow_direction, energy_vector, **kwargs):
+def define_source(
+    dict_values,
+    asset_key,
+    outflow_direction,
+    energy_vector,
+    price=None,
+    timeseries=None,
+):
     r"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
 
@@ -881,18 +968,29 @@ def define_source(dict_values, asset_key, outflow_direction, energy_vector, **kw
     energy_vector: str
         Energy vector the new asset should belong to
 
-    kwargs: Misc.
-        Kwargs that can overwrite the default values.
-        Typical kwargs:
-            - TIMESERIES
-            - SPECIFIC_COSTS_OM
-            - SPECIFIC_COSTS
-            - "price"
+    price: dict
+        Dict with a unit-value pair of the dispatch price of the source.
+        The value can also be defined though FILENAME and HEADER, making the value of the price a timeseries.
+        Default: None
+
+    timeseries: pd.Dataframe
+        Timeseries defining the availability of the source. Currently not used.
+        Default: None
 
     Returns
     -------
     Updates dict_values[ENERGY_BUSSES] if outflow_direction not in it
     Standard source defined as:
+
+    Notes
+    -----
+    The pytests for this function are not complete. It is started with:
+    - C0.test_define_source()
+    - C0.test_define_source_exception_unknown_bus()
+    - C0.test_define_source_timeseries_not_None()
+    - C0.test_define_source_price_not_None_but_with_scalar_value()
+    Missing:
+    - C0.test_define_source_price_not_None_but_timeseries(), ie. value defined by FILENAME and HEADER
     """
     source_label = asset_key + AUTO_SOURCE
     default_source_dict = {
@@ -922,35 +1020,37 @@ def define_source(dict_values, asset_key, outflow_direction, energy_vector, **kw
             }
         )
 
-    for item in kwargs:
-        if item in [SPECIFIC_COSTS_OM, SPECIFIC_COSTS]:
-            default_source_dict.update({item: kwargs[item]})
-        if item == TIMESERIES:
-            default_source_dict.update({DISPATCHABILITY: False})
-            logging.debug(
-                f"{default_source_dict[LABEL]} can provide a total generation of {sum(kwargs[TIMESERIES].values)}"
-            )
-            default_source_dict.update(
+    if price is not None:
+        if FILENAME in price and HEADER in price:
+            price.update(
                 {
-                    OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
-                    TIMESERIES_PEAK: {VALUE: max(kwargs[TIMESERIES]), UNIT: "kW"},
-                    # todo if we have normalized timeseries hiere, the capex/opex (simulation) have changed, too
-                    TIMESERIES_NORMALIZED: kwargs[TIMESERIES] / max(kwargs[TIMESERIES]),
+                    VALUE: get_timeseries_multiple_flows(
+                        dict_values[SIMULATION_SETTINGS],
+                        default_source_dict,
+                        price[FILENAME],
+                        price[HEADER],
+                    )
                 }
             )
-        if item == "price":
-            if FILENAME in kwargs[item] and HEADER in kwargs[item]:
-                kwargs[item].update(
-                    {
-                        VALUE: get_timeseries_multiple_flows(
-                            dict_values[SIMULATION_SETTINGS],
-                            default_source_dict,
-                            kwargs[item][FILENAME],
-                            kwargs[item][HEADER],
-                        )
-                    }
-                )
-            determine_dispatch_price(dict_values, kwargs[item], default_source_dict)
+        determine_dispatch_price(dict_values, price, default_source_dict)
+
+    if timeseries is not None:
+        # This part is currently not used.
+        default_source_dict.update({DISPATCHABILITY: False})
+        logging.debug(
+            f"{default_source_dict[LABEL]} can provide a total generation of {sum(timeseries.values)}"
+        )
+        default_source_dict[OPTIMIZE_CAP].update({VALUE: True})
+        default_source_dict.update(
+            {
+                TIMESERIES_PEAK: {VALUE: max(timeseries), UNIT: "kW"},
+                TIMESERIES_NORMALIZED: timeseries / max(timeseries),
+            }
+        )
+        if DISPATCH_PRICE in default_source_dict and max(timeseries) != 0:
+            default_source_dict[DISPATCH_PRICE].update(
+                {VALUE: default_source_dict[DISPATCH_PRICE][VALUE] / max(timeseries)}
+            )
 
     dict_values[ENERGY_PRODUCTION].update({asset_key: default_source_dict})
 
@@ -968,6 +1068,19 @@ def define_source(dict_values, asset_key, outflow_direction, energy_vector, **kw
 
 
 def determine_dispatch_price(dict_values, price, source):
+    """
+    This function needs to be re-evaluated.
+
+    Parameters
+    ----------
+    dict_values
+    price
+    source
+
+    Returns
+    -------
+
+    """
     # check if multiple busses are provided
     # for each bus, read time series for dispatch_price if a file name has been
     # provided in energy price
@@ -1052,6 +1165,9 @@ def define_sink(
     Examples:
     - Used to define excess sinks for all energyBusses
     - Used to define feed-in sink for each DSO
+
+    The pytests for this function are not complete. It is started with:
+    - C0.test_define_sink() and only the assertion messages are missing
     """
     sink_label = asset_key + AUTO_SINK
     # create a dictionary for the sink

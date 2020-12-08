@@ -69,6 +69,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_VECTOR,
     PROJECT_DATA,
     LES_ENERGY_VECTOR_S,
+    SIMULATION_ANNUITY,
+    TIMESERIES_TOTAL,
+    DISPATCHABILITY,
+    OPTIMIZE_CAP,
 )
 
 # Necessary for check_for_label_duplicates()
@@ -120,9 +124,132 @@ def check_for_label_duplicates(dict_values):
         raise DuplicateLabels(msg)
 
 
-def check_feedin_tariff(dict_values):
+def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_values):
+    r"""
+    Raises error if feed-in tariff > levelized costs of generation for energy asset in ENERGY_PRODUCTION
+    This is not allowed, as oemof otherwise may be subjected to an unbound problem, ie. a business case in which an asset should be installed with infinite capacities to maximize revenue.
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+
+    Returns
+    -------
+    Raises error message in case of feed-in tariff > levelized costs of generation for energy asset of any
+    asset in ENERGY_PRODUCTION
+
+    Notes
+    -----
+    Tested with:
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_not_greater_costs()
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs()
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_dispatchable_higher_dispatch_price()
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_dispatchable_lower_dispatch_price()
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs_with_maxcap()
+    - C1.test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_dispatchable_greater_costs_dispatch_mode()
+
+    This test does not cover cross-sectoral invalid feedin tariffs.
+    Example: If there is very cheap electricity generation but a high H2 feedin tariff, then it might be a business case to install a large Electrolyzer, and the simulation would fail. In that case one should set bounds to the solution.
+    """
+
+    warning_message_hint_unbound = f"This may cause an unbound solution and terminate the optimization, if there are no additional costs in the supply line. If this happens, please check the costs of your assets or the feed-in tariff. If both are correct, consider setting a maximum capacity constraint (maximumCap) for the relevant assets."
+    warning_message_hint_maxcap = f"This will cause the optimization to result into the maximum capacity of this asset."
+    warning_message_hint_dispatch = (
+        f"No error expected but strange dispatch behaviour might occur."
+    )
+
+    # Check if feed-in tariff of any provider is less then expected minimal levelized energy generation costs
+    for provider in dict_values[ENERGY_PROVIDERS].keys():
+        feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]
+        energy_vector = dict_values[ENERGY_PROVIDERS][provider][ENERGY_VECTOR]
+
+        # Loop though all produciton assets
+        for production_asset in dict_values[ENERGY_PRODUCTION]:
+            # Only compare those assets to the provider that serve the same energy vector
+            if (
+                dict_values[ENERGY_PRODUCTION][production_asset][ENERGY_VECTOR]
+                == energy_vector
+            ):
+                log_message_object = f"levelized costs of generation for energy asset '{dict_values[ENERGY_PRODUCTION][production_asset][LABEL]}'"
+
+                # If energy production asset is a non-dispatchable source (PV plant)
+                if (
+                    dict_values[ENERGY_PRODUCTION][production_asset][DISPATCHABILITY]
+                    is False
+                ):
+                    # Calculate cost per kWh generated
+                    levelized_cost_of_generation = (
+                        dict_values[ENERGY_PRODUCTION][production_asset][
+                            SIMULATION_ANNUITY
+                        ][VALUE]
+                        / dict_values[ENERGY_PRODUCTION][production_asset][
+                            TIMESERIES_TOTAL
+                        ][VALUE]
+                    )
+                # If energy production asset is a dispatchable source (fuel source)
+                else:
+                    log_message_object += " (based on is dispatch price)"
+                    # Estimate costs based on dispatch price (this is the lower minimum, as actually o&m and investment costs would need to be added as well, but can not be added as the dispatch is not known yet.
+                    levelized_cost_of_generation = dict_values[ENERGY_PRODUCTION][
+                        production_asset
+                    ][DISPATCH_PRICE][VALUE]
+
+                # Determine the margin between feedin tariff and generation costs
+                diff = feedin_tariff[VALUE] - levelized_cost_of_generation
+                # Get value of optimizeCap and maximumCap of production_asset
+                optimze_cap = dict_values[ENERGY_PRODUCTION][production_asset][
+                    OPTIMIZE_CAP
+                ][VALUE]
+                maximum_cap = dict_values[ENERGY_PRODUCTION][production_asset][
+                    MAXIMUM_CAP
+                ][VALUE]
+                # If float/int values
+                if isinstance(diff, float) or isinstance(diff, int):
+                    if diff > 0:
+                        # This can result in an unbound solution if optimizeCap is True and maximumCap is None
+                        if optimze_cap == True and maximum_cap is None:
+                            msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_unbound}"
+                            raise ValueError(msg)
+                        # If maximumCap is not None the maximum capacity of the production asset will be installed
+                        elif optimze_cap == True and maximum_cap is not None:
+                            msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_maxcap}"
+                            logging.warning(msg)
+                        # If the capacity of the production asset is not optimized there is no unbound problem but strange dispatch behaviour might occur
+                        else:
+                            logging.debug(
+                                f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_dispatch}"
+                            )
+                    else:
+                        logging.debug(f"Feed-in tariff < {log_message_object}.")
+                # If provided as a timeseries
+                else:
+                    boolean = [
+                        k > 0 for k in diff.values
+                    ]  # True if there is an instance where feed-in tariff > electricity_price
+                    if any(boolean) is True:
+                        # This can result in an unbound solution if optimizeCap is True and maximumCap is None
+                        if optimze_cap == True and maximum_cap is None:
+                            instances = sum(boolean)  # Count instances
+                            msg = f"Feed-in tariff of {energy_vector} > {log_message_object} in {instances} during the simulation time. {warning_message_hint_unbound}"
+                            raise ValueError(msg)
+                        # If maximumCap is not None the maximum capacity of the production asset will be installed
+                        elif optimze_cap == True and maximum_cap is not None:
+                            msg = f"Feed-in tariff of {energy_vector} > {log_message_object} in {instances} during the simulation time. {warning_message_hint_maxcap}"
+                            logging.warning(msg)
+                        # If the capacity of the production asset is not optimized there is no unbound problem but strange dispatch behaviour might occur
+                        else:
+                            logging.debug(
+                                f"Feed-in tariff of {energy_vector} > {log_message_object} in {instances} during the simulation time. {warning_message_hint_dispatch}"
+                            )
+                    else:
+                        logging.debug(f"Feed-in tariff < {log_message_object}.")
+
+
+def check_feedin_tariff_vs_energy_price(dict_values):
     r"""
     Raises error if feed-in tariff > energy price of any asset in 'energyProvider.csv'.
+    This is not allowed, as oemof otherwise is subjected to an unbound and unrealistic problem, eg. one where the owner should consume electricity to feed it directly back into the grid for its revenue.
 
     Parameters
     ----------
@@ -133,6 +260,12 @@ def check_feedin_tariff(dict_values):
     -------
     Indirectly, raises error message in case of feed-in tariff > energy price of any
     asset in 'energyProvider.csv'.
+
+    Notes
+    -----
+    Tested with:
+    - C1.test_check_feedin_tariff_vs_energy_price_greater_energy_price()
+    - C1.test_check_feedin_tariff_vs_energy_price_not_greater_energy_price()
 
     """
     for provider in dict_values[ENERGY_PROVIDERS].keys():
@@ -525,6 +658,7 @@ def check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
 def check_for_sufficient_assets_on_busses(dict_values):
     r"""
     Validating model regarding busses - each bus has to have 2+ assets connected to it, exluding energy excess sinks
+
     Parameters
     ----------
     dict_values: dict
