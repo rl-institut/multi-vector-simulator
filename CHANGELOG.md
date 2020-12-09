@@ -33,6 +33,7 @@ Here is a template for new release sections
 ### Fixed
 - Decreased warnings of RTD compilation drastically (#693)
 - Use current version number as defined in `version.py` for RTD (#693)
+- Added storage to the table in autoreport listing the energy system components (#686)
 
 ## [0.5.3] - 2020-12-08
 
