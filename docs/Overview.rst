@@ -63,4 +63,4 @@ Access MVS Server API
 The Multi-Vector Simulator can be used to simulate energy systems via the browser using the `API on the RLI server <https://mvs-eland.rl-institut.de/>`__. It processes the parsed JSON input file, and returns the JSON result file.
 It is as simple as uploading the simulation files (by clicking the 'Browse' button) and then hitting the 'Run simulation' button. One can also visualize the log messages (error/warning) during the simulation.
 
-The code for the implementation of the MVS E-Land API is hosted in this `github repository <https://github.com/rl-institut/mvs_eland_api>`_.
+The code for the implementation of the MVS E-Land API is hosted in this `github repository <https://github.com/rl-institut/mvs_eland_api>`__.
