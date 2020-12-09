@@ -56,3 +56,12 @@ The validation techniques used are listed here below and expanded in :ref:`valid
 
 * Comparison to other model
 
+
+Access MVS Server API
+---------------------
+
+The multi-vector simulator can be used to simulate energy systems directly via the browser using the API of the server which processes the simulation. Users can interact with the API at this `URL <https://mvs-eland.rl-institut.de/>`_.
+It is as simple as uploading the simulation files (by clicking the 'Browse' button) and then hitting the 'Run simulation' button. One can also visualize the log messages (error/warning) during the simulation.
+
+The code for the implementation of the MVS E-Land API is hosted in this `github repository <https://github.com/rl-institut/mvs_eland_api>`_.
+
