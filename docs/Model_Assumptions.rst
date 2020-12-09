@@ -287,6 +287,54 @@ For example, the `degree of sector coupling` will reach its maximum, when the sy
 
 In the MVS, there is no distinction between energy carriers and energy vector. For `Electricity` of the `Electricity` vector this may be self-explanatory. However, the energy carriers of the `Heat` vector can have different technical characteristics: A fluid on different temperature levels. As the MVS measures the energy content of a flow in kWh(thermal) however, this distinction is only relevant for the end user to be aware of, as two assets that have different energy carriers as an output should not be connected to one and the same bus if a detailed analysis is expected. An example of this would be, that a system where the output of the diesel boiler as well as the output of a solar thermal panel are connected to the same bus, eventhough they can not both supply the same kind of heat demands (radiator vs. floor heating).  This, however, is something that the end-user has to be aware of themselves, eg. by defining self-explanatory labels.
 
+CO2 Emission factors
+----------------------------
+In order to optimise the energy system with minimum CO2 emissions, it is important to calculate CO2 emission per unit electricity generation.
+
+Following emission factors for energy carriers are defined:
+
+.. _table_CO2_emissions_energyCarriers:
+
+.. list-table:: CO2 Emission factors: grams of CO2 equivalent per kWh of electricity generation
+   :widths: 50 25
+   :header-rows: 1
+
+   * - Energy carrier
+     - Value
+   * - Diesel
+     - 650
+   * - Biogas
+     - 85
+   * - Biomass
+     - 230
+   * - Natural gas
+     - 490
+
+The values mentioned in the following table account for emissions during the complete life cycle. This includes emissions during energy production, energy conversion, energy storage and energy transmission. These values always fluctuate and depend on various factors such as energy mix, weather conditions, and demand fluctuations.
+
+CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, India):
+
+.. _table_CO2_emissions_countries:
+
+.. list-table:: CO2 Emission factors: grams of CO2 equivalent per kWh of electricity consumption
+   :widths: 50 25
+   :header-rows: 1
+
+   * - Country
+     - Value
+   * - Germany
+     - 518
+   * - Norway
+     - 25
+   * - Spain
+     - 174
+   * - Romania
+     - 291
+   * - India (Delhi)
+     - 476
+
+Despite the comparatively higher capacity of solar PV and wind energy generation potential in Germany, the CO2 emission is high during winter because of the lower solar irradiation available. Moreover, the thermal energy demand is higher during winter which is largely fulfilled using coal as a primary energy source.
+
 Limitations
 -----------
 
