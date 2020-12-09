@@ -36,7 +36,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OUTPUT_POWER,
     STORAGE_CAPACITY,
     VALUE,
-    FLOW,
     LIFETIME_SPECIFIC_COST_OM,
     LIFETIME_PRICE_DISPATCH,
     LIFETIME_SPECIFIC_COST,
@@ -55,15 +54,13 @@ from multi_vector_simulator.utils.constants_json_strings import (
     COST_UPFRONT,
     COST_REPLACEMENT,
     LCOE_ASSET,
+    LCOeleq,
     CURR,
     DISCOUNTFACTOR,
     PROJECT_DURATION,
     ANNUITY_FACTOR,
     CRF,
-    ENERGY_PRODUCTION,
     TOTAL_FLOW,
-    KPI,
-    KPI_SCALARS_DICT,
     KPI_UNCOUPLED_DICT,
     TOTAL_DEMAND,
     SUFFIX_ELECTRICITY_EQUIVALENT,
@@ -73,12 +70,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_GENERATION_IN_LES,
-    ENERGY_CONVERSION,
     ENERGY_CONSUMPTION,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
-    ENERGY_BUSSES,
-    ENERGY_PROVIDERS,
     KPI,
     KPI_SCALARS_DICT,
 )
@@ -173,7 +167,6 @@ class Test_Economic_KPI:
             sep=",",
             index_col=0,
         )
-
 
         KEYS_TO_BE_EVALUATED = [
             LIFETIME_SPECIFIC_COST_OM,
@@ -279,13 +272,13 @@ class Test_Economic_KPI:
                     aggregated_annuity += asset_data[ANNUITY_TOTAL][VALUE]
                     aggregated_costs += asset_data[COST_TOTAL][VALUE]
 
+        # todo when adding fix costs, there might be additional costs that are to be added here.
+
         # Compute the lcoe for this simple case (single demand)
         lcoe = aggregated_annuity / aggregated_demand
-        mvs_lcoe = data[KPI][KPI_SCALARS_DICT][
-            "Levelized costs of electricity equivalent"
-        ]
+        mvs_lcoe = data[KPI][KPI_SCALARS_DICT][LCOeleq]
         assert lcoe == pytest.approx(
-            mvs_lcoe, rel=1e-2
+            mvs_lcoe, rel=1e-3
         ), f"Parameter {LCOE_ASSET} of system is not of expected value (benchmark of {lcoe} versus computed value of {mvs_lcoe}."
 
         mvs_costs = data[KPI][KPI_SCALARS_DICT]["costs_total"]
