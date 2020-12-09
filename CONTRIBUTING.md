@@ -151,8 +151,9 @@ For help look into the [github release description](https://help.github.com/en/g
     2. Type `twine upload dist/*`
     3. Enter `__token__` for username and your pypi token for password.
 9. Test your package:
-    1. Test the upload on test.pypi.org
-        ` twine upload --repository testpypi dist/*`
+    1. Test the upload on test.pypi.org:
+        Here you need to use username and password of our pypi@rl-institut.de account.
+       ` twine upload --repository testpypi dist/*`
     2. Test the installation: `pip install multi-vector-simulator==X.Y.Zrci`, where you replace `X.Y.Zrci` by your current version and release candidate 
     3. Then open a terminal
         `mvs_tool -f -o test_pypi`
