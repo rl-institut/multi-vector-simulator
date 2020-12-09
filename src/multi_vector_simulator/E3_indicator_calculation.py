@@ -69,11 +69,13 @@ def all_totals(dict_values):
 
     Parameters
     ----------
+
     dict_values :
         dict all input parameters and restults up to E0
 
     Returns
     -------
+
     type
         List of all total cost parameters for the project
 
@@ -348,26 +350,26 @@ def add_renewable_share_of_local_generation(dict_values):
     """Determination of renewable share of local energy production
 
         Parameters
-        ----------
-        dict_values :
-            dict with all project information and results, after applying add_total_renewable_and_non_renewable_energy_origin
-        sector :
-            Sector for which renewable share is being calculated
+    ----------
+    dict_values :
+        dict with all project information and results, after applying add_total_renewable_and_non_renewable_energy_origin
+    sector :
+        Sector for which renewable share is being calculated
 
-        Returns
-        -------
-        type
-            updated dict_values with renewable share of each sector as well as the system-wide KPI
+    Returns
+    -------
+    type
+        updated dict_values with renewable share of each sector as well as the system-wide KPI
 
-        Notes
-        -----
-        Updates the KPI with RENEWABLE_SHARE_OF_LOCAL_GENERATION for each sector as well as system-wide KPI.
+    Notes
+    -----
+    Updates the KPI with RENEWABLE_SHARE_OF_LOCAL_GENERATION for each sector as well as system-wide KPI.
 
-        Tested with
-        * test_renewable_share_of_local_generation_one_sector()
-        * test_renewable_share_of_local_generation_two_sectors()
-        * TestTechnicalKPI.renewable_factor_and_renewable_share_of_local_generation()
-        """
+    Tested with
+    * test_renewable_share_of_local_generation_one_sector()
+    * test_renewable_share_of_local_generation_two_sectors()
+    * TestTechnicalKPI.renewable_factor_and_renewable_share_of_local_generation()
+    """
 
     dict_renewable_share = {}
     for sector in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
@@ -475,7 +477,6 @@ def equation_renewable_share(total_res, total_non_res):
 
     Notes
     -----
-
     Used both to calculate RENEWABLE_FACTOR and RENEWABLE_SHARE_OF_LOCAL_GENERATION.
 
     Equation:
@@ -752,25 +753,25 @@ def equation_onsite_energy_fraction(total_generation, total_feedin):
     OEF describes the fraction of all locally generated energy that is consumed
     by the system itself.
 
-        Parameters
-        ----------
-        total_generation: float
-            Energy equivalent of total generation flows
-        total_feedin: float
-            Total feed into the grid
+    Parameters
+    ----------
+    total_generation: float
+        Energy equivalent of total generation flows
+    total_feedin: float
+        Total feed into the grid
 
-        Returns
-        -------
-            float
-                Onsite energy fraction.
+    Returns
+    -------
+        float
+            Onsite energy fraction.
 
-        .. math::
-                OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
+    .. math::
+            OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
 
-                &OEF \epsilon \text{[0,1]}
+            &OEF \epsilon \text{[0,1]}
 
-        Tested with
-        - test_equation_onsite_energy_fraction()
+    Tested with
+    - test_equation_onsite_energy_fraction()
     """
 
     if total_generation != 0:
@@ -845,29 +846,29 @@ def equation_onsite_energy_matching(
     OEM describes the fraction of the total demand that can be
     covered by the locally generated energy.
 
-        Parameters
-        ----------
-        total_generation: float
-            Energy equivalent of total conversion flows
-        total_feedin: float
-            Total feed into the grid
-        total_excess: float
-            Total Excess energy
-        total_demand: float
-            Total demand
+    Parameters
+    ----------
+    total_generation: float
+        Energy equivalent of total conversion flows
+    total_feedin: float
+        Total feed into the grid
+    total_excess: float
+        Total Excess energy
+    total_demand: float
+        Total demand
 
-        Returns
-        -------
-        Onsite energy matching.
+    Returns
+    -------
+    Onsite energy matching.
 
-        .. math::
-                OEM &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i - E_{excess}(i) \cdot w_i}{\sum_i {E_{demand} (i) \cdot w_i}}
+    .. math::
+            OEM &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i - E_{excess}(i) \cdot w_i}{\sum_i {E_{demand} (i) \cdot w_i}}
 
-                &OEM \epsilon \text{[0,1]}
+            &OEM \epsilon \text{[0,1]}
 
-        Tested with
-        - test_equation_onsite_energy_matching()
-        """
+    Tested with
+    - test_equation_onsite_energy_matching()
+    """
     onsite_energy_matching = (
         total_generation - total_feedin - total_excess
     ) / total_demand

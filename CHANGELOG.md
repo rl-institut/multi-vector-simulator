@@ -23,12 +23,16 @@ Here is a template for new release sections
 
 ### Added
 -
+
 ### Changed 
 -
+
 ### Removed
 -
+
 ### Fixed
--
+- Decreased warnings of RTD compilation drastically (#693)
+- Use current version number as defined in `version.py` for RTD (#693)
 
 ## [0.5.3] - 2020-12-08
 
