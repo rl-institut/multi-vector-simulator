@@ -176,6 +176,8 @@ For help look into the [github release description](https://help.github.com/en/g
 -
 ### Removed
 -
+### Fixed
+-
 ```
 4. Commit the steps 2. and 3. together with commit message "Start vX.Y.Zdev"
 
