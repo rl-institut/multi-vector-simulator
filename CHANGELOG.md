@@ -22,13 +22,17 @@ Here is a template for new release sections
 ## [unreleased]
 
 ### Added
--
+- Updated release protocol with info on credentials for test.pypi.org (step 9) and added "Fixed" to unreleased section of changelog.md in release protocol (#695)
+
 ### Changed 
 -
+
 ### Removed
 -
+
 ### Fixed
--
+- Decreased warnings of RTD compilation drastically (#693)
+- Use current version number as defined in `version.py` for RTD (#693)
 
 ## [0.5.3] - 2020-12-08
 

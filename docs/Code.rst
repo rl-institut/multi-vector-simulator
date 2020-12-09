@@ -77,7 +77,7 @@ Evaluation
    :members:
    :undoc-members:
 
-.. automodule:: multi_vector_simulator.E4_verification_of_constraints
+.. automodule:: multi_vector_simulator.E4_verification
    :members:
    :undoc-members:
 
