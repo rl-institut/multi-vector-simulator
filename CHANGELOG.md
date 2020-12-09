@@ -23,6 +23,7 @@ Here is a template for new release sections
 
 ### Added
 - Updated release protocol with info on credentials for test.pypi.org (step 9) and added "Fixed" to unreleased section of changelog.md in release protocol (#695)
+- Added information about the API to the docs (#701)
 
 ### Changed 
 -
