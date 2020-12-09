@@ -107,6 +107,9 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
+# generate autosummary even if no references
+autosummary_generate = True
+#autosummary_imported_members = True
 
 # -- Options for HTML output -------------------------------------------------
 
