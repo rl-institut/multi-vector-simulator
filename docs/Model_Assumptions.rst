@@ -296,51 +296,79 @@ Following emission factors for energy carriers are defined:
 .. _table_CO2_emissions_energyCarriers:
 
 .. list-table:: CO2 Emission factors: Kg of CO2 equivalent per unit of fuel consumption
-   :widths: 50 25 25
+   :widths: 50 25 25 25
    :header-rows: 1
 
    * - Energy carrier
      - Unit
      - Value
+     - Source
    * - Diesel
-     - kg/litre
-     - 2.68 [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`_]
+     - kgCO2eq/litre
+     - 2.68
+     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
    * - Gasoline
-     - kg/litre
-     - 2.29[`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`_]
+     - kgCO2eq/litre
+     - 2.29
+     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
+   * - Biodiesel
+     - kgCO2eq/litre
+     - 0.03178
+     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
+   * - Bioethanol
+     - kgCO2eq/litre
+     - 0.00855
+     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
+   * - LPG
+     - kgCO2eq/litre
+     - 1.611
+     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
    * - Biogas
-     - kg/m3
+     - kgCO2eq/m3
      - 0
+     - [`5 <https://doi.org/10.1080/10934529.2018.1459076>`__]
    * - Natural gas
-     - kg/m3
-     - 1.88[`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`_]
+     - kgCO2eq/m3
+     - 1.88
+     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
 
-The CO2 emission of biogas is considered neutral since CO2 is considered as biogenic.[`5 <https://doi.org/10.1080/10934529.2018.1459076>`_]
+
+The CO2 emission of biogas is considered neutral since CO2 is considered as biogenic.[`5 <https://doi.org/10.1080/10934529.2018.1459076>`__]
 
 CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, India):
 
 .. _table_CO2_emissions_countries:
 
 .. list-table:: CO2 Emission factors: grams of CO2 equivalent per kWh of electricity consumption
-   :widths: 50 25
+   :widths: 50 25 25 25
    :header-rows: 1
 
    * - Country
      - Value
+     - Unit
+     - Source
    * - Germany
-     - 397 [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`__]
+     - 397
+     - kgCO2eq/kWh
+     - [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`__]
    * - Norway
-     - 14.4 [`7 <https://www.regjeringen.no/contentassets/21e80b8392494672897854413675021e/iea-rapport-idr_2017_norway_web-final.pdf>`_]
+     - 14.4
+     - kgCO2eq/kWh
+     - [`7 <https://www.regjeringen.no/contentassets/21e80b8392494672897854413675021e/iea-rapport-idr_2017_norway_web-final.pdf>`__]
    * - Spain
-     - 197 [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`_]
+     - 197
+     - kgCO2eq/kWh
+     - [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`__]
    * - Romania
-     - 339 [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`_]
-   * - India (Delhi)
-     - 697 [`8 <https://www.iea.org/data-and-statistics/charts/average-co2-emissions-intensity-of-hourly-electricity-supply-in-india-2018-and-2040-by-scenario-and-average-electricity-demand-in-2018>`_]
+     - 339
+     - kgCO2eq/kWh
+     - [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`__]
+   * - India
+     - 697
+     - kgCO2eq/kWh
+     - [`8 <https://www.iea.org/data-and-statistics/charts/average-co2-emissions-intensity-of-hourly-electricity-supply-in-india-2018-and-2040-by-scenario-and-average-electricity-demand-in-2018>`__]
 
 The values mentioned in the table above account for emissions during the complete life cycle. This includes emissions during energy production, energy conversion, energy storage and energy transmission. These values always fluctuate and depend on various factors such as energy mix, weather conditions, and demand fluctuations.
-
-Despite the comparatively higher capacity of solar PV and wind energy generation potential in Germany, the CO2 emission is high during winter because of the lower solar irradiation available. Moreover, the thermal energy demand is higher during winter which is largely fulfilled using coal as a primary energy source.
 
 Limitations
 -----------
