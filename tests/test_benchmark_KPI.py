@@ -120,7 +120,7 @@ def process_expected_values():
     -------
     Save expected values to `expected_value_file`, to be used in benchmark tests
     """
-    #To edit the values, please use the test_data_economic_expected_values.xls file first and convert the first tab to csv.
+    # To edit the values, please use the test_data_economic_expected_values.xls file first and convert the first tab to csv.
     expected_value_file = "test_data_economic_expected_values.csv"
     expected_values = pd.read_csv(
         os.path.join(TEST_INPUT_PATH, USE_CASE, expected_value_file),
@@ -162,8 +162,7 @@ def process_expected_values():
 
         # process cost
         expected_values[asset][ANNUITY_OM] = (
-            expected_values[asset][COST_OPERATIONAL_TOTAL]
-            * DICT_ECONOMIC[CRF][VALUE]
+            expected_values[asset][COST_OPERATIONAL_TOTAL] * DICT_ECONOMIC[CRF][VALUE]
         )
         expected_values[asset][ANNUITY_TOTAL] = (
             expected_values[asset][COST_TOTAL] * DICT_ECONOMIC[CRF][VALUE]
@@ -179,6 +178,7 @@ def process_expected_values():
     expected_values.drop("flow").to_csv(
         os.path.join(TEST_OUTPUT_PATH, USE_CASE, expected_value_file), sep=","
     )
+
 
 class Test_Economic_KPI:
     def setup_method(self):
@@ -317,9 +317,18 @@ class Test_Economic_KPI:
             """
             for key in KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM:
                 KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM.update(
-                    {key: KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key] + asset_data[key][VALUE]})
+                    {
+                        key: KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key]
+                        + asset_data[key][VALUE]
+                    }
+                )
 
-        for asset_group in (ENERGY_CONSUMPTION, ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_STORAGE):
+        for asset_group in (
+            ENERGY_CONSUMPTION,
+            ENERGY_CONVERSION,
+            ENERGY_PRODUCTION,
+            ENERGY_STORAGE,
+        ):
             for asset in data[asset_group]:
                 # for storage we look at the annuity of the in and out flows and storage capacity
                 if asset_group == ENERGY_STORAGE:
@@ -332,8 +341,8 @@ class Test_Economic_KPI:
 
         for key in KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM:
             assert KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key] == pytest.approx(
-            data[KPI][KPI_SCALARS_DICT][key],rel=1e-3
-        ), f"The key {key} is not of expected value {KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key]} but {data[KPI][KPI_SCALARS_DICT][key]}. This is based on the before esablished assertion, that the expected values of asset costs are equal to the ones in the json results file."
+                data[KPI][KPI_SCALARS_DICT][key], rel=1e-3
+            ), f"The key {key} is not of expected value {KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key]} but {data[KPI][KPI_SCALARS_DICT][key]}. This is based on the before esablished assertion, that the expected values of asset costs are equal to the ones in the json results file."
 
         # Compute the lcoe for this simple case from the data (single demand)
         lcoe = KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[ANNUITY_TOTAL] / aggregated_demand
@@ -347,7 +356,10 @@ class Test_Economic_KPI:
             if ATTRIBUTED_COSTS in key:
 
                 attributed_costs += data[KPI][KPI_SCALARS_DICT][key]
-        assert attributed_costs == data[KPI][KPI_SCALARS_DICT][COST_TOTAL], f"The total attributed costs are not the costs of the total system."
+        assert (
+            attributed_costs == data[KPI][KPI_SCALARS_DICT][COST_TOTAL]
+        ), f"The total attributed costs are not the costs of the total system."
+
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
