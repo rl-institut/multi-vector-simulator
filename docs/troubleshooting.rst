@@ -29,7 +29,7 @@ results in an error:
 
     error: Microsoft Visual C++ 14.0 is required. Get it with "Build Tools for Visual Studio": https://visualstudio.microsoft.com/downloads/
 
-You can find fixes on `stackoverflow <https://stackoverflow.com/questions/40809758/howto-install-pygraphviz-on-windows-10-64bit>`_
+You can find fixes on `stackoverflow <https://stackoverflow.com/questions/40809758/howto-install-pygraphviz-on-windows-10-64bit>`__
 If you have conda installed, activate your environment and run
 
     conda install -c alubbock graphviz pygraphviz
@@ -44,14 +44,14 @@ Python package "xlrd"
 On **Windows** there can be issues installing xlrd. This could solve your troubles:
 
 1. Delete xlrd from requirements.txt
-2. Download the xlrd-1.2.0-py2.py3-none-any.whl file from `here <https://pypi.org/project/xlrd/#files>`_.
+2. Download the xlrd-1.2.0-py2.py3-none-any.whl file from `here <https://pypi.org/project/xlrd/#files>`__.
 3. Copy the file to main directory of the project on your laptop
 4. Install it manually writing pip install xlrd-1.2.0-py2.py3-none-any.whl
 
 Python package "wkhtmltopdf"
 ############################
 
-There can be issues installing ´wkhtmltopdf´. Solution can be found on the `packages documentation <https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf>`_.
+There can be issues installing ´wkhtmltopdf´. Solution can be found on the `packages documentation <https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf>`__.
 
 cbc-solver
 ##########
@@ -71,7 +71,7 @@ or
 
     `conda install -c conda-forge/label/cf202003 pyppeteer`
 
-More information is available on `their website <https://anaconda.org/conda-forge/pyppeteer>`_.
+More information is available on `their website <https://anaconda.org/conda-forge/pyppeteer>`__.
 
 Error messages and MVS termination
 ----------------------------------

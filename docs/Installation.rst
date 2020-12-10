@@ -4,15 +4,15 @@
 Getting started with MVS
 ========================
 
-Rights: `Reiner Lemoine Institut (Berlin) <https://reiner-lemoine-institut.de/en/>`_
+Rights: `Reiner Lemoine Institut (Berlin) <https://reiner-lemoine-institut.de/en/>`__
 
 The multi-vector simulator (MVS) allows the evaluation of local sector-coupled energy systems that include the energy carriers electricity, heat and/or gas. The MVS has three main features:
 
 Firstly, an analysis of the current energy system, which can be set up automatically from a choice of components, including its costs and performance parameters. As a second step, near-future investments into power generation and storage assets can be optimized aiming at a least-cost supply of electricity and heat. Lastly, future energy supply scenarios that integrate emerging technologies helping to meet sustainability goals and decrease adverse climate effects, e.g. through high renewable energy shares or sector-coupling technologies, can be evaluated.
 
-The tool is being developed within the scope of the H2020 project E-LAND (Integrated multi-vector management system for Energy isLANDs, project homepage `here <https://elandh2020.eu/>`_). A graphical user interface for the MVS will be integrated.
+The tool is being developed within the scope of the H2020 project E-LAND (Integrated multi-vector management system for Energy isLANDs, project homepage `here <https://elandh2020.eu/>`__). A graphical user interface for the MVS will be integrated.
 
-**Latest release**: Check the `latest release <https://github.com/rl-institut/multi-vector-simulator/releases/tag/v0.1.1>`_, and includes the working code of the MVS using json as an input. It is not validated and test coverage is still 0%. Please check the `CHANGELOG.md <https://github.com/rl-institut/multi-vector-simulator/blob/master/CHANGELOG.md>`_ for past updates and changes.
+**Latest release**: Check the `latest release <https://github.com/rl-institut/multi-vector-simulator/releases/tag/v0.1.1>`__, and includes the working code of the MVS using json as an input. It is not validated and test coverage is still 0%. Please check the `CHANGELOG.md <https://github.com/rl-institut/multi-vector-simulator/blob/master/CHANGELOG.md>`__ for past updates and changes.
 
 **Upcoming**: As the MVS is still under development, many changes will still occur in the code as well as code structure. If you want to try the MVS, please make sure to check this project regularly.
 
@@ -175,4 +175,4 @@ Contributing and additional information for developers
 
 If you want to contribute to this project, please read [CONTRIBUTING.md](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CONTRIBUTING.md). For less experienced github users we propose a workflow. [Link](https://github.com/rl-institut/multi-vector-simulator/wiki/Examplary-Workflow).
 
-For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in turn might not be tested. You can find the CHANGELOG.md on this`page <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`_.
+For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in turn might not be tested. You can find the CHANGELOG.md on this`page <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`__.

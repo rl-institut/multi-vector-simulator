@@ -59,10 +59,11 @@ def convert_from_json_to_special_types(a_dict, prev_key=None, time_index=None):
         In the recursion, this is either a dict (moving down one nesting level) or a field value
     prev_key: str
         The previous key of the dict in the recursive loop
+
     Returns
+    -------
     The original dictionary, with the serialized instances of pandas.Series,
     pandas.DatetimeIndex, pandas.DataFrame, numpy.array converted back to their original form
-    -------
 
     """
 
