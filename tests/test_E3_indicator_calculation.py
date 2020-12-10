@@ -1,5 +1,6 @@
 import pandas as pd
 import pytest
+import numpy as np
 
 import multi_vector_simulator.E3_indicator_calculation as E3
 from multi_vector_simulator.utils.constants import (
@@ -44,6 +45,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_EXCESS,
     ONSITE_ENERGY_MATCHING,
     DEGREE_OF_AUTONOMY,
+    TOTAL_EMISSIONS,
+    KPI_SCALAR_MATRIX,
 )
 
 electricity = "Electricity"
@@ -683,9 +686,20 @@ def test_equation_onsite_energy_matching():
     )
 
 
-def test_add_total_emissions_per_year():
-    assert 0 == 1
-
-
-def test_add_total_emissions_kWh():
-    assert 0 == 1
+def test_add_total_emission():
+    dict_values = {
+        KPI: {
+            KPI_SCALARS_DICT: {TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: 100},
+            KPI_SCALAR_MATRIX: {TOTAL_EMISSIONS: pd.Series([10, 50, 10, np.nan])},
+        }
+    }
+    E3.add_total_emissions(dict_values)
+    assert (
+        dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS] == 70
+    ), f"Total emissions [kg/a] should be the sum of the emissions of all assets, in this case 70, but is {dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS]}."
+    emissions_kWh = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_EMISSIONS + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+    assert (
+        emissions_kWh == 0.7
+    ), f"Total emissions [kg/kWheleq] should be total_emissions / total_demand_electricity_equivalent (in this case: 70/100=0.7), but is {emissions_kWh}."

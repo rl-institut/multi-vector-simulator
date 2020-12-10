@@ -900,7 +900,7 @@ def add_total_emissions(dict_values):
 
     """
     # sum up emissions of all assets [kg/a]
-    emissions = dict_values[KPI][KPI_SCALAR_MATRIX][TOTAL_EMISSIONS].sum()
+    emissions = dict_values[KPI][KPI_SCALAR_MATRIX][TOTAL_EMISSIONS].sum()  # data frame
     dict_values[KPI][KPI_SCALARS_DICT].update({TOTAL_EMISSIONS: emissions})
     logging.debug(f"Calculated the {TOTAL_EMISSIONS}: {round(emissions, 2)} kg/a.")
     logging.info(f"Calculated the {TOTAL_EMISSIONS} kg/a of the LES.")
