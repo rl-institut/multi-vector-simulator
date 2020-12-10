@@ -1,2 +1,3 @@
 ,unit,constraints
 minimal_renewable_factor,factor,0.3
+total_emissions,kgCO2/a,800000
