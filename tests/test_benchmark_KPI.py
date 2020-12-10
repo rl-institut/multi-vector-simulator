@@ -75,6 +75,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_STORAGE,
     KPI,
     KPI_SCALARS_DICT,
+    FLOW
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -103,6 +104,79 @@ DICT_ECONOMIC.update(
     }
 )
 
+USE_CASE = "Economic_KPI_C2_E2"
+
+
+def process_expected_values():
+    """
+    Processes expected values from `
+    Derive expected values dependent on actual dispatch of the asset(s)
+    for asset in expected_values.columns:
+
+
+    Returns
+    -------
+    Save expected values to `expected_value_file`, to be used in benchmark tests
+    """
+    #To edit the values, please use the test_data_economic_expected_values.xls file first and convert the first tab to csv.
+    expected_value_file = "test_data_economic_expected_values.csv"
+    expected_values = pd.read_csv(
+        os.path.join(TEST_INPUT_PATH, USE_CASE, expected_value_file),
+        sep=",",
+        index_col=0,
+    )
+
+    # read json with results file
+    data = load_json(
+        os.path.join(
+            TEST_OUTPUT_PATH, USE_CASE, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+        )
+    )
+
+    for asset in expected_values.index:
+
+        # determine asset dictionary (special for storages)
+        result_key = expected_values[asset]["group"]
+
+        if asset in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
+            asset_data = data[result_key]["storage_01"][asset]
+        else:
+            asset_data = data[result_key][asset]
+
+        # get dispatch of the assets
+        expected_values[asset][FLOW] = asset_data[FLOW]
+
+        # calculate cost parameters that are dependent on the flow
+        expected_values[asset][COST_DISPATCH] = expected_values[asset][
+            LIFETIME_PRICE_DISPATCH
+        ] * sum(expected_values[asset][FLOW])
+        expected_values[asset][COST_OPERATIONAL_TOTAL] = (
+            expected_values[asset][COST_DISPATCH] + expected_values[asset][COST_OM]
+        )
+        expected_values[asset][COST_TOTAL] = (
+            expected_values[asset][COST_OPERATIONAL_TOTAL]
+            + expected_values[asset][COST_INVESTMENT]
+        )
+
+        # process cost
+        expected_values[asset][ANNUITY_OM] = (
+            expected_values[asset][COST_OPERATIONAL_TOTAL]
+            * DICT_ECONOMIC[CRF][VALUE]
+        )
+        expected_values[asset][ANNUITY_TOTAL] = (
+            expected_values[asset][COST_TOTAL] * DICT_ECONOMIC[CRF][VALUE]
+        )
+        if sum(expected_values[asset][FLOW]) == 0:
+            expected_values[asset][LCOE_ASSET] = 0
+        else:
+            expected_values[asset][LCOE_ASSET] = expected_values[asset][
+                ANNUITY_TOTAL
+            ] / sum(expected_values[asset][FLOW])
+
+    # store to csv to enable manual check, eg. of lcoe_a. only previously empty rows have been changed.
+    expected_values.drop("flow").to_csv(
+        os.path.join(TEST_OUTPUT_PATH, USE_CASE, expected_value_file), sep=","
+    )
 
 class Test_Economic_KPI:
     def setup_method(self):
@@ -142,28 +216,27 @@ class Test_Economic_KPI:
         - Annuity
 
         """
-        use_case = "Economic_KPI_C2_E2"
 
         # Execute the script
         main(
             overwrite=True,
             display_output="warning",
-            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            path_input_folder=os.path.join(TEST_INPUT_PATH, USE_CASE),
             input_type=CSV_EXT,
-            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, USE_CASE),
         )
 
         # read json with results file
         data = load_json(
             os.path.join(
-                TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+                TEST_OUTPUT_PATH, USE_CASE, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
             )
         )
 
-        # Read expected values from file. To edit the values, please use the .xls file first and convert the first tab to csv.
+        # Read expected values from file.
         expected_value_file = "test_data_economic_expected_values.csv"
         expected_values = pd.read_csv(
-            os.path.join(TEST_INPUT_PATH, use_case, expected_value_file),
+            os.path.join(TEST_INPUT_PATH, USE_CASE, expected_value_file),
             sep=",",
             index_col=0,
         )
@@ -188,51 +261,6 @@ class Test_Economic_KPI:
             ANNUITY_TOTAL,
             LCOE_ASSET,
         ]
-
-        # # Derive expected values dependent on actual dispatch of the asset(s)
-        # for asset in expected_values.columns:
-        #     # determine asset dictionary (special for storages)
-        #     result_key = expected_values[asset]["group"]
-        #
-        #     if asset in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
-        #         asset_data = data[result_key]["storage_01"][asset]
-        #     else:
-        #         asset_data = data[result_key][asset]
-        #
-        #     # Get dispatch of the assets
-        #     expected_values[asset][FLOW] = asset_data[FLOW]
-        #
-        #     # Calculate cost parameters that are dependent on the flow
-        #     expected_values[asset][COST_DISPATCH] = expected_values[asset][
-        #         LIFETIME_PRICE_DISPATCH
-        #     ] * sum(expected_values[asset][FLOW])
-        #     expected_values[asset][COST_OPERATIONAL_TOTAL] = (
-        #         expected_values[asset][COST_DISPATCH] + expected_values[asset][COST_OM]
-        #     )
-        #     expected_values[asset][COST_TOTAL] = (
-        #         expected_values[asset][COST_OPERATIONAL_TOTAL]
-        #         + expected_values[asset][COST_INVESTMENT]
-        #     )
-        #
-        #     # Process cost
-        #     expected_values[asset][ANNUITY_OM] = (
-        #         expected_values[asset][COST_OPERATIONAL_TOTAL]
-        #         * DICT_ECONOMIC[CRF][VALUE]
-        #     )
-        #     expected_values[asset][ANNUITY_TOTAL] = (
-        #         expected_values[asset][COST_TOTAL] * DICT_ECONOMIC[CRF][VALUE]
-        #     )
-        #     if sum(expected_values[asset][FLOW]) == 0:
-        #         expected_values[asset][LCOE_ASSET] = 0
-        #     else:
-        #         expected_values[asset][LCOE_ASSET] = expected_values[asset][
-        #             ANNUITY_TOTAL
-        #         ] / sum(expected_values[asset][FLOW])
-        #
-        # # Store to csv to enable manual check, eg. of LCOE_A. Only previously empty rows have been changed.
-        # expected_values.drop("flow").to_csv(
-        #     os.path.join(TEST_OUTPUT_PATH, use_case, expected_value_file), sep=","
-        # )
 
         # Compare asset costs calculated in C2 and E2 with benchmark data from csv file
         for asset in expected_values.index:
