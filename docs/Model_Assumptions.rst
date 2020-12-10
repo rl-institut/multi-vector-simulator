@@ -328,7 +328,7 @@ CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, Indi
    * - Country
      - Value
    * - Germany
-     - 397 [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`_]
+     - 397 [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`__]
    * - Norway
      - 14.4 [`7 <https://www.regjeringen.no/contentassets/21e80b8392494672897854413675021e/iea-rapport-idr_2017_norway_web-final.pdf>`_]
    * - Spain
