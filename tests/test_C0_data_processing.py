@@ -77,6 +77,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DISPATCHABILITY,
     OEMOF_SOURCE,
     UNIT_YEAR,
+    EMISSION_FACTOR,
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 
@@ -703,6 +704,7 @@ dict_test.update(
                 UNIT: "unit",
                 ENERGY_VECTOR: "a_vector",
                 PEAK_DEMAND_PRICING_PERIOD: {VALUE: 1},
+                EMISSION_FACTOR: {VALUE: 0.02}
             }
         },
     }
@@ -797,6 +799,7 @@ def test_define_source():
         asset_key=source_name,
         outflow_direction=outflow,
         energy_vector=energy_vector,
+        emission_factor=0.02,
     )
     assert (
         source_name in dict_test_source[ENERGY_PRODUCTION]
@@ -811,6 +814,7 @@ def test_define_source():
         MAXIMUM_CAP,
         AGE_INSTALLED,
         ENERGY_VECTOR,
+        EMISSION_FACTOR,
     ]:
         assert (
             key in dict_test_source[ENERGY_PRODUCTION][source_name]
@@ -879,6 +883,7 @@ def test_define_source_exception_unknown_bus():
         outflow_direction=outflow,
         price={VALUE: unit_price, UNIT: UNIT},
         energy_vector=energy_vector,
+        emission_factor=0.02,
     )
     assert (
         outflow in dict_test_source[ENERGY_BUSSES]
@@ -915,6 +920,7 @@ def test_define_source_price_not_None_but_with_scalar_value():
         outflow_direction=outflow,
         price={VALUE: unit_price, UNIT: UNIT},
         energy_vector=energy_vector,
+        emission_factor=0.02,
     )
     DISPATCH_PRICE in dict_test_source[ENERGY_PRODUCTION][
         source_name
@@ -946,6 +952,7 @@ def test_define_source_timeseries_not_None():
         price={VALUE: unit_price, UNIT: UNIT},
         energy_vector=energy_vector,
         timeseries=pd.Series([1, 2, 3]),
+        emission_factor=0.02,
     )
     assert (
         dict_test_source[ENERGY_PRODUCTION][source_name][DISPATCHABILITY] is False
