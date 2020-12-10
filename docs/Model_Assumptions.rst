@@ -159,7 +159,7 @@ Following conversion factors and energy carriers are defined:
    * - Energy carrier
      - Unit
      - Value
-   * - H2 [`3  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]
+   * - H2 [`3  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_])
      - kgoe/kgH2
      - 2.87804
    * - LNG
@@ -289,28 +289,33 @@ In the MVS, there is no distinction between energy carriers and energy vector. F
 
 CO2 Emission factors
 ----------------------------
-In order to optimise the energy system with minimum CO2 emissions, it is important to calculate CO2 emission per unit electricity generation.
+In order to optimise the energy system with minimum CO2 emissions, it is important to calculate CO2 emission per unit of fuel consumption.
 
 Following emission factors for energy carriers are defined:
 
 .. _table_CO2_emissions_energyCarriers:
 
-.. list-table:: CO2 Emission factors: grams of CO2 equivalent per kWh of electricity generation
-   :widths: 50 25
+.. list-table:: CO2 Emission factors: Kg of CO2 equivalent per unit of fuel consumption
+   :widths: 50 25 25
    :header-rows: 1
 
    * - Energy carrier
+     - Unit
      - Value
    * - Diesel
-     - 650
+     - kg/litre
+     - 2.68 [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`_]
+   * - Gasoline
+     - kg/litre
+     - 2.29[`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`_]
    * - Biogas
-     - 85
-   * - Biomass
-     - 230
+     - kg/m3
+     - 0
    * - Natural gas
-     - 490
+     - kg/m3
+     - 1.88[`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`_]
 
-The values mentioned in the following table account for emissions during the complete life cycle. This includes emissions during energy production, energy conversion, energy storage and energy transmission. These values always fluctuate and depend on various factors such as energy mix, weather conditions, and demand fluctuations.
+The CO2 emission of biogas is considered neutral since CO2 is considered as biogenic.[`5 <https://doi.org/10.1080/10934529.2018.1459076>`_]
 
 CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, India):
 
@@ -323,15 +328,17 @@ CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, Indi
    * - Country
      - Value
    * - Germany
-     - 518
+     - 397 [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`_]
    * - Norway
-     - 25
+     - 14.4 [`7 <https://www.regjeringen.no/contentassets/21e80b8392494672897854413675021e/iea-rapport-idr_2017_norway_web-final.pdf>`_]
    * - Spain
-     - 174
+     - 197 [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`_]
    * - Romania
-     - 291
+     - 339 [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`_]
    * - India (Delhi)
-     - 476
+     - 697 [`8 <https://www.iea.org/data-and-statistics/charts/average-co2-emissions-intensity-of-hourly-electricity-supply-in-india-2018-and-2040-by-scenario-and-average-electricity-demand-in-2018>`_]
+
+The values mentioned in the table above account for emissions during the complete life cycle. This includes emissions during energy production, energy conversion, energy storage and energy transmission. These values always fluctuate and depend on various factors such as energy mix, weather conditions, and demand fluctuations.
 
 Despite the comparatively higher capacity of solar PV and wind energy generation potential in Germany, the CO2 emission is high during winter because of the lower solar irradiation available. Moreover, the thermal energy demand is higher during winter which is largely fulfilled using coal as a primary energy source.
 
