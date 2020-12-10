@@ -681,3 +681,11 @@ def test_equation_onsite_energy_matching():
         f"The onsite_energy_matching ({onsite_energy_matching}) is not calculated correctly. "
         f"It should be equal to {(total_generation - total_feedin - total_excess) / total_demand}."
     )
+
+
+def test_add_total_emissions_per_year():
+    assert 0 == 1
+
+
+def test_add_total_emissions_kWh():
+    assert 0 == 1

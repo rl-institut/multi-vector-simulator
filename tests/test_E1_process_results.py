@@ -190,6 +190,14 @@ def test_get_tuple_for_oemof_results():
         assert flux_tuple == (asset_label, bus)
 
 
+def test_get_emissions():
+    assert 0 == 1
+
+
+def test_get_emissions_zero_emissions():
+    assert 0 == 1
+
+
 def test_get_optimal_cap_optimize_input_flow_timeseries_peak_provided():
     pass
 
