@@ -91,6 +91,7 @@ OEMOF_ASSET_TYPE = "type_oemof"
 # Specific parameters
 RENEWABLE_ASSET_BOOL = "renewableAsset"
 RENEWABLE_SHARE_DSO = "renewable_share"
+EMISSION_FACTOR = "emission_factor"
 
 # Asset definitions: Providers
 ENERGY_PRICE = "energy_price"
@@ -235,7 +236,7 @@ TOTAL_RENEWABLE_ENERGY_USE = "Total renewable energy use"
 TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use"
 RENEWABLE_FACTOR = "Renewable factor"
 RENEWABLE_SHARE_OF_LOCAL_GENERATION = "Renewable share of local generation"
-
+TOTAL_EMISSIONS = "Total emissions"
 
 TOTAL_DEMAND = "Total_demand"
 TOTAL_EXCESS = "Total_excess"

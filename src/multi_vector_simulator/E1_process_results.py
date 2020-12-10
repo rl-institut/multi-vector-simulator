@@ -12,7 +12,7 @@ import logging
 import copy
 import pandas as pd
 
-from multi_vector_simulator.utils.constants import TYPE_NONE
+from multi_vector_simulator.utils.constants import TYPE_NONE, TOTAL_FLOW
 from multi_vector_simulator.utils.constants_json_strings import (
     ECONOMIC_DATA,
     FLOW,
@@ -62,6 +62,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ANNUITY_TOTAL,
     ANNUITY_OM,
     LCOE_ASSET,
+    EMISSION_FACTOR,
+    TOTAL_EMISSIONS,
 )
 
 # Determines which assets are defined by...
@@ -941,3 +943,23 @@ def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
         else:
             unit_list.append(kpi_cost_unit_dict[key])
     return unit_list
+
+
+def get_emissions(dict_asset):
+    r"""
+    Calculates the total emissions of the asset.
+
+    Parameters
+    ----------
+    dict_asset : dict
+        Contains information about the asset.
+
+    Notes
+    -----
+    Tested with:
+    -
+
+    """
+    emissions = dict_asset[TOTAL_FLOW][VALUE] * dict_asset[EMISSION_FACTOR][VALUE]
+    dict_asset.update({TOTAL_EMISSIONS: {VALUE: emissions, UNIT: "kg"}})
+    return emissions

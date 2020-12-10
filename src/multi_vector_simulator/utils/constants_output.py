@@ -21,9 +21,10 @@ from multi_vector_simulator.utils.constants import (
     ANNUAL_TOTAL_FLOW,
     PEAK_FLOW,
     AVERAGE_FLOW,
+    TOTAL_EMISSIONS,
 )
 
-from multi_vector_simulator.utils.constants_json_strings import LABEL
+from multi_vector_simulator.utils.constants_json_strings import LABEL, EMISSION_FACTOR
 
 ######################
 # Tab "cost_matrix"  #
@@ -54,6 +55,7 @@ KPI_SCALAR_MATRIX_ENTRIES = [
     ANNUAL_TOTAL_FLOW,
     PEAK_FLOW,
     AVERAGE_FLOW,
+    TOTAL_EMISSIONS,
 ]
 ##################
 # Tab "scalars"  #

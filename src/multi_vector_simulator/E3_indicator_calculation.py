@@ -61,6 +61,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DEGREE_OF_AUTONOMY,
     ONSITE_ENERGY_FRACTION,
     ONSITE_ENERGY_MATCHING,
+    EMISSION_FACTOR,
+    TOTAL_EMISSIONS,
+    UNIT,
 )
 
 
@@ -876,14 +879,49 @@ def equation_onsite_energy_matching(
     return onsite_energy_matching
 
 
-def equation_co2_emissions(dict_values):
-    co2_emissions = 0
-    for asset in dict_values[ENERGY_PRODUCTION]:
-        co2_emissions += (
-            dict_values[ENERGY_PRODUCTION][asset]["total_aggregated_flow"][VALUE]
-            * dict_values[ENERGY_PRODUCTION][asset]["emissionFactor"][VALUE]
-        )
-    return co2_emissions
+def add_total_emissions(dict_values):
+    r"""
+    Calculates the total emission of the energy system in kg/a and kg/kWheleq and adds KPI to `dict_values`.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation inputs and results
+
+    Returns
+    -------
+    None
+        updated `dict_values` with total emissions KPI, unit: kg/a and kg/kWheleq
+
+    Notes
+    -----
+    Tested with:
+    - ()
+
+    """
+    # sum up emissions of all assets [kg/a]
+    emissions = dict_values[KPI][KPI_SCALAR_MATRIX][TOTAL_EMISSIONS].sum()
+    dict_values[KPI][KPI_SCALARS_DICT].update({TOTAL_EMISSIONS: emissions})
+    logging.debug(f"Calculated the {TOTAL_EMISSIONS}: {round(emissions, 2)} kg/a.")
+    logging.info(f"Calculated the {TOTAL_EMISSIONS} kg/a of the LES.")
+
+    # emissions per kWheleq
+    emissions_kWh = (
+        emissions
+        / dict_values[KPI][KPI_SCALARS_DICT][
+            TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+        ]
+    )
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {TOTAL_EMISSIONS + SUFFIX_ELECTRICITY_EQUIVALENT: emissions_kWh}
+    )
+    logging.debug(
+        f"Calculated the {TOTAL_EMISSIONS+SUFFIX_ELECTRICITY_EQUIVALENT}: {round(emissions_kWh, 2)} kg/kWheleq."
+    )
+    logging.info(
+        f"Calculated the {TOTAL_EMISSIONS+SUFFIX_ELECTRICITY_EQUIVALENT} kg/kWheleq of the LES."
+    )
+    return
 
 
 def add_levelized_cost_of_energy_carriers(dict_values):
