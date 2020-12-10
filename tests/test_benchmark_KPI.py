@@ -71,6 +71,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_GENERATION_IN_LES,
     ENERGY_CONSUMPTION,
+    ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
     KPI,
@@ -241,7 +242,7 @@ class Test_Economic_KPI:
             index_col=0,
         )
 
-        KEYS_TO_BE_EVALUATED = [
+        KEYS_TO_BE_EVALUATED_PER_ASSET = [
             LIFETIME_SPECIFIC_COST_OM,
             LIFETIME_PRICE_DISPATCH,
             LIFETIME_SPECIFIC_COST,
@@ -273,46 +274,72 @@ class Test_Economic_KPI:
             else:
                 asset_data = data[asset_group][asset]
             # assertion
-            for key in KEYS_TO_BE_EVALUATED:
+            for key in KEYS_TO_BE_EVALUATED_PER_ASSET:
                 assert expected_values.loc[asset, key] == pytest.approx(
                     asset_data[key][VALUE], rel=1e-3
                 ), f"Parameter {key} of asset {asset} is not of expected value."
 
+        # Now we established that the externally calculated values are equal to the internally calculated values.
+        # Therefore, we can now use the cost data from the assets to validate the cost data for the whole energy system.
+
         demand = pd.read_csv(
-            os.path.join(TEST_INPUT_PATH, use_case, TIME_SERIES, "demand.csv"), sep=",",
+            os.path.join(TEST_INPUT_PATH, USE_CASE, TIME_SERIES, "demand.csv"), sep=",",
         )
         aggregated_demand = demand.sum()[0]
 
-        # Compute the aggregated annuity and costs (NPC)
-        aggregated_annuity = 0
-        aggregated_costs = 0
+        KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM = {
+            COST_INVESTMENT: 0,
+            COST_UPFRONT: 0,
+            COST_REPLACEMENT: 0,
+            COST_OM: 0,
+            COST_DISPATCH: 0,
+            COST_OPERATIONAL_TOTAL: 0,
+            COST_TOTAL: 0,
+            ANNUITY_OM: 0,
+            ANNUITY_TOTAL: 0,
+        }
 
-        for asset_group in (ENERGY_CONSUMPTION, ENERGY_PRODUCTION, ENERGY_STORAGE):
+        def add_to_key(KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM, asset_data):
+            """
+            Add individual cost to each of the seperate costs
+
+            Parameters
+            ----------
+            KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM: dict
+                dict of keys to be evaluated for system costs, to be updated
+            asset_data: dict
+                Asset data with economic parameters
+
+            Returns
+            -------
+            Updated KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM
+            """
+            for key in KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM:
+                KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM.update(
+                    {key: KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key] + asset_data[key][VALUE]})
+
+        for asset_group in (ENERGY_CONSUMPTION, ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_STORAGE):
             for asset in data[asset_group]:
                 # for storage we look at the annuity of the in and out flows and storage capacity
                 if asset_group == ENERGY_STORAGE:
                     for storage_type in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
                         asset_data = data[asset_group][asset][storage_type]
-                        aggregated_annuity += asset_data[ANNUITY_TOTAL][VALUE]
-                        aggregated_costs += asset_data[COST_TOTAL][VALUE]
+                        add_to_key(KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM, asset_data)
                 else:
                     asset_data = data[asset_group][asset]
-                    aggregated_annuity += asset_data[ANNUITY_TOTAL][VALUE]
-                    aggregated_costs += asset_data[COST_TOTAL][VALUE]
+                    add_to_key(KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM, asset_data)
 
-        # todo when adding fix costs, there might be additional costs that are to be added here.
+        for key in KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM:
+            assert KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key] == pytest.approx(
+            data[KPI][KPI_SCALARS_DICT][key],rel=1e-3
+        ), f"The key {key} is not of expected value {KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key]} but {data[KPI][KPI_SCALARS_DICT][key]}. This is based on the before esablished assertion, that the expected values of asset costs are equal to the ones in the json results file."
 
-        # Compute the lcoe for this simple case (single demand)
-        lcoe = aggregated_annuity / aggregated_demand
+        # Compute the lcoe for this simple case from the data (single demand)
+        lcoe = KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[ANNUITY_TOTAL] / aggregated_demand
         mvs_lcoe = data[KPI][KPI_SCALARS_DICT][LCOeleq]
         assert lcoe == pytest.approx(
             mvs_lcoe, rel=1e-3
         ), f"Parameter {LCOE_ASSET} of system is not of expected value (benchmark of {lcoe} versus computed value of {mvs_lcoe}."
-
-        mvs_costs = data[KPI][KPI_SCALARS_DICT]["costs_total"]
-        assert aggregated_costs == pytest.approx(
-            mvs_costs, rel=1e-2
-        ), f"Parameter {COST_TOTAL} of system is not of expected value (benchmark of {aggregated_costs} versus computed value of {mvs_costs}."
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
