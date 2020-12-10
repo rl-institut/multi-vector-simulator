@@ -76,7 +76,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_STORAGE,
     KPI,
     KPI_SCALARS_DICT,
-    FLOW
+    FLOW,
+    ATTRIBUTED_COSTS,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -341,6 +342,12 @@ class Test_Economic_KPI:
             mvs_lcoe, rel=1e-3
         ), f"Parameter {LCOE_ASSET} of system is not of expected value (benchmark of {lcoe} versus computed value of {mvs_lcoe}."
 
+        attributed_costs = 0
+        for key in data[KPI][KPI_SCALARS_DICT]:
+            if ATTRIBUTED_COSTS in key:
+
+                attributed_costs += data[KPI][KPI_SCALARS_DICT][key]
+        assert attributed_costs == data[KPI][KPI_SCALARS_DICT][COST_TOTAL], f"The total attributed costs are not the costs of the total system."
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
