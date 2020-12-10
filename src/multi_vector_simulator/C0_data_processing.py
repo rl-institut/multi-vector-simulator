@@ -662,6 +662,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso):
         + DSO_PEAK_DEMAND_SUFFIX,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
+        emission_factor=dict_values[ENERGY_PROVIDERS][dso][EMISSION_FACTOR],
     )
 
     dict_feedin = change_sign_of_feedin_tariff(
@@ -951,6 +952,7 @@ def define_source(
     asset_key,
     outflow_direction,
     energy_vector,
+    emission_factor,
     price=None,
     timeseries=None,
 ):
@@ -967,6 +969,9 @@ def define_source(
 
     energy_vector: str
         Energy vector the new asset should belong to
+
+    emission_factor : float
+        Emission factor of the new asset
 
     price: dict
         Dict with a unit-value pair of the dispatch price of the source.
@@ -1007,6 +1012,7 @@ def define_source(
         MAXIMUM_CAP: {VALUE: None, UNIT: "?"},
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
         ENERGY_VECTOR: energy_vector,
+        EMISSION_FACTOR: emission_factor,
     }
 
     if outflow_direction not in dict_values[ENERGY_BUSSES]:
