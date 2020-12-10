@@ -79,6 +79,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     VALUE,
     ENERGY_STORAGE,
+    EMISSION_FACTOR,
 )
 
 
