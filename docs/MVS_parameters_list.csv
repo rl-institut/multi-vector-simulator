@@ -45,5 +45,5 @@
 43, None, The type of the component., demand, *demand*, str, None,type_asset,typeasset-label
 44, None," Input the type of OEMOF component. For example, a PV plant would be a source, a solar inverter would be a transformer, etc.  The `type_oemof` will later on be determined through the EPA.", sink, *sink* or *source* or one of the other component classes of OEMOF., str, None,type_oemof,typeoemof-label
 45, None, Unit associated with the capacity of the component.," Storage could have units like kW or kWh, transformer station could have kVA, and so on.", Appropriate scientific unit, str, NA,unit,unit-label
-46, None, The maximum amount of total emissions in the optimized energy system.,100000, None, Alphanumeric,None or kg/a,total_emissions,totalemissions-label
+46, None, The maximum amount of total emissions in the optimized energy system.,100000, None, Alphanumeric,None or kg/a,maximum_emissions,maxemissions-label
 47, None, Emissions per unit of an asset., 14.4, None, Numeric,kgCO2/unit,emission_factor,emissionfactor-label

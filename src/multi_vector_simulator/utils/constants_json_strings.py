@@ -114,6 +114,7 @@ SOC_MIN = "soc_min"
 # Constraints
 CONSTRAINTS = "constraints"
 MINIMAL_RENEWABLE_FACTOR = "minimal_renewable_factor"
+MAXIMUM_EMISSIONS = "maximum_emissions"
 
 #######################################
 # Parameters added in pre-processing #

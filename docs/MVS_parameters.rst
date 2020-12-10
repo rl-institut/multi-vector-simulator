@@ -26,7 +26,7 @@ constraints.csv
 The file `constraints.csv` includes the following parameter(s):
 
 * :ref:`minrenshare-label`
-* :ref:`totalemissions-label`
+* :ref:`maxemissions-label`
 
 economic_data.csv
 ^^^^^^^^^^^^^^^^^
