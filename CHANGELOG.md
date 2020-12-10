@@ -24,6 +24,11 @@ Here is a template for new release sections
 ### Added
 - Updated release protocol with info on credentials for test.pypi.org (step 9) and added "Fixed" to unreleased section of changelog.md in release protocol (#695)
 - Added information about the API to the docs (#701)
+- Parameter `emission_factor` to `energyProduction` and `energyProviders` and to rtd (`MVS_parameters.rst` and `MVS_parameters_list.csv`) (#706)
+- Parameter `total_emissions` in kg/a to `constraints.csv` (#706)
+- Emissions KPI with `E3.add_total_emissions` and adapted `E3.calculate_emissions()` for calculations (#706)
+- `emisson_factor` of providers to automatic source for providers in `C0.define_source()` and adapted tests (#706)
+
 
 ### Changed 
 -
