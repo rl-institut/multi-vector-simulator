@@ -1,6 +1,7 @@
-r"""
+"""
 Module E1 process results
--------------------------
+=========================
+
 Module E1 processes the oemof results.
 - receive time series per bus for all assets
 - write time series to dictionary

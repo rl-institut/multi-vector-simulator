@@ -1,4 +1,9 @@
-# This script generates a report of the simulation automatically, with all the important data.
+"""
+Module F2 - Autoreport
+======================
+
+This script generates a report of the simulation automatically, with all the important data.
+"""
 
 import base64
 import os

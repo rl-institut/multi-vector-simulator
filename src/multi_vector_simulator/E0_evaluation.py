@@ -1,3 +1,13 @@
+"""
+Module E0 - evaluation
+====================
+
+Module E0 evaluates the oemof results and calculates the KPI
+- define dictionary entry for kpi matrix
+- define dictionary entry for cost matrix
+- store all results to matrix
+"""
+
 import logging
 
 import oemof.solph as solph
@@ -40,17 +50,6 @@ from multi_vector_simulator.utils.constants_output import (
     KPI_COST_MATRIX_ENTRIES,
     KPI_SCALAR_MATRIX_ENTRIES,
 )
-
-
-r"""
-Module E0 evaluation
-====================
-
-Module E0 evaluates the oemof results and calculates the KPI
-- define dictionary entry for kpi matrix
-- define dictionary entry for cost matrix
-- store all results to matrix
-"""
 
 
 def evaluate_dict(dict_values, results_main, results_meta):
