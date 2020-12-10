@@ -1,3 +1,7 @@
+"""
+General Constants
+=================
+"""
 import os
 
 from multi_vector_simulator.utils.constants_json_strings import *

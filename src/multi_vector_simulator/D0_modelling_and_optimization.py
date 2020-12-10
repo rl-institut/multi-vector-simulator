@@ -1,3 +1,24 @@
+"""
+Module D0 - Model building
+==========================
+
+Functional requirements of module D0:
+- measure time needed to build model
+- measure time needed to solve model
+- generate energy system model for oemof
+- create dictionary of components so that they can be used for constraints and some
+- raise warning if component not a (in mvs defined) oemof model type
+- add all energy conversion, energy consumption, energy production, energy storage devices model
+- plot network graph
+- at constraints to remote model
+- store lp file (optional)
+- start oemof simulation
+- process results by giving them to the next function
+- dump oemof results
+- add simulation parameters to dict values
+"""
+
+
 import logging
 import os
 import timeit
@@ -33,23 +54,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OBJECTIVE_VALUE,
     SIMULTATION_TIME,
 )
-
-"""
-Functional requirements of module D0:
-- measure time needed to build model
-- measure time needed to solve model
-- generate energy system model for oemof
-- create dictionary of components so that they can be used for constraints and some
-- raise warning if component not a (in mvs defined) oemof model type
-- add all energy conversion, energy consumption, energy production, energy storage devices model
-- plot network graph
-- at constraints to remote model
-- store lp file (optional)
-- start oemof simulation
-- process results by giving them to the next function
-- dump oemof results
-- add simulation parameters to dict values 
-"""
 
 
 class WrongOemofAssetForGroupError(ValueError):

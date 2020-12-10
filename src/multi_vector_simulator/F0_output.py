@@ -1,3 +1,19 @@
+"""
+Module F0 - Output
+==================
+
+The model F0 output defines all functions that store evaluation results to file.
+- Aggregate demand profiles to a total demand profile
+- Plot all energy flows for both 14 and 365 days for each energy bus
+- Store timeseries of all energy flows to excel (one sheet = one energy bus)
+- Execute function: plot optimised capacities as a barchart (F1)
+- Execute function: plot all annuities as a barchart (F1)
+- Store scalars/KPI to excel
+- Process dictionary so that it can be stored to Json
+- Store dictionary to Json
+"""
+
+
 import json
 import logging
 import os
@@ -47,20 +63,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     FIX_COST,
     ENERGY_BUSSES,
 )
-
-r"""
-Module F0 Output
-================
-The model F0 output defines all functions that store evaluation results to file.
-- Aggregate demand profiles to a total demand profile
-- Plot all energy flows for both 14 and 365 days for each energy bus
-- Store timeseries of all energy flows to excel (one sheet = one energy bus)
-- Execute function: plot optimised capacities as a barchart (F1)
-- Execute function: plot all annuities as a barchart (F1)
-- Store scalars/KPI to excel
-- Process dictionary so that it can be stored to Json
-- Store dictionary to Json
-"""
 
 
 def evaluate_dict(dict_values, path_pdf_report=None, path_png_figs=None):

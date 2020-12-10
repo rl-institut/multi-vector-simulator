@@ -1,3 +1,23 @@
+"""
+Module E2 - Economic processing
+===============================
+
+The module processes the simulation results regarding economic parameters:
+- calculate lifetime expenditures based on variable energy flows
+- calculate lifetime investment costs
+- calculate present value of an asset
+- calculate revenue
+- calculate yearly cash flows of whole project for project lifetime (cash flow projection)
+- calculate fuel price expenditures calculate upfront investment costs
+- calculate operation management costs (FOM)
+- calculate upfront investment costs (UIC)
+- calculate annuity per asset
+- calculate annuity for the whole project
+- calculate net present value
+- calculate levelised cost of energy
+- calculate levelised cost of energy carriers (electricity, H2, heat)
+"""
+
 import logging
 import pandas as pd
 import warnings
@@ -43,25 +63,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
     SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
 )
-
-r"""
-Module E3 economic processing
------------------------------
-The module processes the simulation results regarding economic parameters:
-- calculate lifetime expenditures based on variable energy flows
-- calculate lifetime investment costs
-- calculate present value of an asset
-- calculate revenue
-- calculate yearly cash flows of whole project for project lifetime (cash flow projection)
-- calculate fuel price expenditures calculate upfront investment costs
-- calculate operation management costs (FOM)
-- calculate upfront investment costs (UIC)
-- calculate annuity per asset
-- calculate annuity for the whole project
-- calculate net present value
-- calculate levelised cost of energy
-- calculate levelised cost of energy carriers (electricity, H2, heat)
-"""
 
 
 class MissingParametersForEconomicEvaluation(UserWarning):

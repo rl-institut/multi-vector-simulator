@@ -1,4 +1,7 @@
 """
+Output definition
+=================
+
 This file contains multiple lists of paramters that are written to the "scalars.xlsx" output file of the MVS.
 One should simply import new KPI names from constants.py or constants_json_strings.py
 and add them to the list to make them appear in the excel output sheet "scalars".
