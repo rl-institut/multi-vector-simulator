@@ -1,4 +1,7 @@
 r"""
+Module A0 - Initialization
+========================
+
 Module A0_initialization defines functions to parse user inputs to the MVS simulation.
     - Display welcome message with current version number
     - Parse command line arguments and set default values for MVS parameters if not provided

@@ -1,4 +1,7 @@
 """
+Parameter constants
+===================
+
 Defines the strings of different json parameters
 Using variables rather than strings is helpful for typo prevention. A typo in a variable will
 raise an error where the variable was misspelled, whereas a typo in a string (dictionnary key)
