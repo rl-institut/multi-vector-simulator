@@ -26,7 +26,11 @@ Here is a template for new release sections
 - Added information about the API to the docs (#701)
 
 ### Changed 
--
+- Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
+- Adapt pre-processing for investment benchmark tests into a seperate function (#613)
+- `COST_REPLACEMENT` is now a parameter that is included in output cost matrix (#613)
+- Improved `Code.rst` for RTD code documentation (#704)
+- All `.py` files to add a module description for RTD on top (#704)
 
 ### Removed
 -
@@ -35,6 +39,7 @@ Here is a template for new release sections
 - Decreased warnings of RTD compilation drastically (#693)
 - Use current version number as defined in `version.py` for RTD (#693)
 - Added storage to the table in autoreport listing the energy system components (#686)
+- Add assertion `sum(attributed_costs)==cost_total` (for single-vector system) (#613)
 
 ## [0.5.3] - 2020-12-08
 
