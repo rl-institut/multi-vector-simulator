@@ -26,7 +26,7 @@ Here is a template for new release sections
 - Added information about the API to the docs (#701)
 
 ### Changed 
-- Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
+- Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
 - Adapt pre-processing for investment benchmark tests into a seperate function (#613)
 - `COST_REPLACEMENT` is now a parameter that is included in output cost matrix (#613)
 

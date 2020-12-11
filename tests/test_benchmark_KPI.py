@@ -111,7 +111,8 @@ USE_CASE = "Economic_KPI_C2_E2"
 
 def process_expected_values():
     """
-    Processes expected values from `
+    Processes expected values from `test_data_economic_expected_values.csv`.
+    
     Derive expected values dependent on actual dispatch of the asset(s)
     for asset in expected_values.columns:
 
@@ -269,7 +270,7 @@ class Test_Economic_KPI:
 
             asset_group = expected_values.loc[asset, "group"]
 
-            # determine asset dictionnary (special for storages)
+            # determine asset dictionary (special for storages)
             if asset in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
                 asset_data = data[asset_group]["storage_01"][asset]
             else:
@@ -278,7 +279,7 @@ class Test_Economic_KPI:
             for key in KEYS_TO_BE_EVALUATED_PER_ASSET:
                 assert expected_values.loc[asset, key] == pytest.approx(
                     asset_data[key][VALUE], rel=1e-3
-                ), f"Parameter {key} of asset {asset} is not of expected value."
+                ), f"Parameter {key} of asset {asset} is not of expected value, expected {expected_values.loc[asset, key]}, got {asset_data[key][VALUE]}."
 
         # Now we established that the externally calculated values are equal to the internally calculated values.
         # Therefore, we can now use the cost data from the assets to validate the cost data for the whole energy system.
@@ -302,7 +303,7 @@ class Test_Economic_KPI:
 
         def add_to_key(KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM, asset_data):
             """
-            Add individual cost to each of the seperate costs
+            Add individual cost to each of the separate costs.
 
             Parameters
             ----------
@@ -342,7 +343,7 @@ class Test_Economic_KPI:
         for key in KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM:
             assert KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key] == pytest.approx(
                 data[KPI][KPI_SCALARS_DICT][key], rel=1e-3
-            ), f"The key {key} is not of expected value {KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key]} but {data[KPI][KPI_SCALARS_DICT][key]}. This is based on the before esablished assertion, that the expected values of asset costs are equal to the ones in the json results file."
+            ), f"The key {key} is not of expected value {KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key]} but {data[KPI][KPI_SCALARS_DICT][key]}. This is based on the before established assertion, that the expected values of asset costs are equal to the ones in the json results file."
 
         # Compute the lcoe for this simple case from the data (single demand)
         lcoe = KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[ANNUITY_TOTAL] / aggregated_demand
