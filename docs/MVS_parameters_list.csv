@@ -29,7 +29,7 @@
 27, None, The name of years the project is intended to be operational. The project duration also sets the installation time of the assets used in the simulation. After the project ends these assets are 'sold' and the refund is charged against the initial investment costs.,30, None, Numeric, Years,Project_duration,projectduration-label
 28, None, Users can assign a project ID as per their preference.,1, None, Alphanumeric, None,Project_id,projectid-label
 29, None, Users can assign a project name as per their preference., Borg Havn, None, Alphanumeric, None,Project_name,projectname-label
-30, None, User can enter True if the asset is considered as a renewable energy source. False should be entered otherwise., True, Acceptable values are either True or False, str, Boolean, renewableAsset, renewableasset-label
+30, None, User can enter True if the asset is considered as a renewable energy source. False should be entered otherwise., True, Acceptable values are either True or False, str, Boolean,renewableAsset,renewableasset-label
 31, None, The share of renewables in the generation mix of the energy supplied by the DSO (utility).,0.1, Between 0 and 1, Numeric, Factor,renewable_share,renshare-label
 32, None, Users can assign a scenario id as per their preference.,1, None, Alphanumeric, None,scenario_id,scenarioid-label
 33, None, Users can assign a scenario name as per their preference., Warehouse 14, None, Alphanumeric, None,scenario_name,scenarioname-label
