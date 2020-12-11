@@ -73,11 +73,15 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_CONSUMPTION,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
+    ENERGY_PROVIDERS,
     ENERGY_STORAGE,
     KPI,
     KPI_SCALARS_DICT,
     FLOW,
     ATTRIBUTED_COSTS,
+    TOTAL_EXCESS,
+    LABEL,
+    DSO_CONSUMPTION,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -112,7 +116,7 @@ USE_CASE = "Economic_KPI_C2_E2"
 def process_expected_values():
     """
     Processes expected values from `test_data_economic_expected_values.csv`.
-    
+
     Derive expected values dependent on actual dispatch of the asset(s)
     for asset in expected_values.columns:
 
@@ -381,7 +385,7 @@ class TestTechnicalKPI:
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
-    def renewable_factor_and_renewable_share_of_local_generation(self, margs):
+    def test_renewable_factor_and_renewable_share_of_local_generation(self, margs):
         r"""
         Benchmark test that checks the calculation of
         * TOTAL_NON_RENEWABLE_GENERATION_IN_LES
@@ -411,10 +415,13 @@ class TestTechnicalKPI:
 
         # Get total flow of PV
         total_res_local = data[ENERGY_PRODUCTION]["pv_plant_01"][TOTAL_FLOW][VALUE]
-        # Get total demand
-        total_demand = data[KPI][KPI_SCALARS_DICT][
-            TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+        dso_consumption_source = (
+            data[ENERGY_PROVIDERS]["Electricity_grid_DSO"][LABEL] + DSO_CONSUMPTION
+        )
+        total_supply_dso = data[ENERGY_PRODUCTION][dso_consumption_source][TOTAL_FLOW][
+            VALUE
         ]
+
         assert (
             data[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
             == total_res_local
@@ -427,15 +434,15 @@ class TestTechnicalKPI:
         ), f"There is another renewable energy source apart from PV."
         assert (
             data[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_ENERGY_USE]
-            == total_demand - total_res_local
+            == total_supply_dso
         ), "The non-renewable energy use was expected to be all grid supply, but this does not hold true."
-        assert (
-            data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]
-            == total_res_local / total_demand
+        assert data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == (total_res_local) / (
+            total_res_local + total_supply_dso
         ), f"The {RENEWABLE_FACTOR} is not as expected."
-        assert (
-            data[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]["Electricity"]
-            == total_res_local / total_demand
+        assert data[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]["Electricity"] == (
+            total_res_local
+        ) / (
+            total_res_local + total_supply_dso
         ), f"The {RENEWABLE_FACTOR} is not as expected."
         assert (
             data[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION] == 1
