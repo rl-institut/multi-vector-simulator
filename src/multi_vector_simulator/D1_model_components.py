@@ -31,8 +31,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SOC_INITIAL,
     SOC_MAX,
     SOC_MIN,
-    REL_LOSSES,
-    ABS_LOSSES,
+    THERM_LOSSES_REL,
+    THERM_LOSSES_ABS,
     STORAGE_CAPACITY,
     TIMESERIES,
     TIMESERIES_NORMALIZED,
@@ -579,8 +579,8 @@ def storage_fix(model, dict_asset, **kwargs):
         },  # maximum discharge possible in one timestep
         loss_rate=1
         - dict_asset[STORAGE_CAPACITY][EFFICIENCY][VALUE],  # from timestep to timestep
-        fixed_losses_absolute=dict_asset[STORAGE_CAPACITY][ABS_LOSSES][VALUE],
-        fixed_losses_relative=dict_asset[STORAGE_CAPACITY][REL_LOSSES][VALUE],
+        fixed_losses_absolute=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE],
+        fixed_losses_relative=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][VALUE],
         min_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE],
         max_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE],
         initial_storage_level=dict_asset[STORAGE_CAPACITY][SOC_INITIAL][
@@ -644,8 +644,8 @@ def storage_optimize(model, dict_asset, **kwargs):
         },  # maximum discharge power
         loss_rate=1
         - dict_asset[STORAGE_CAPACITY][EFFICIENCY][VALUE],  # from timestep to timestep
-        fixed_losses_absolute=dict_asset[STORAGE_CAPACITY][ABS_LOSSES][VALUE],
-        fixed_losses_relative=dict_asset[STORAGE_CAPACITY][REL_LOSSES][VALUE],
+        fixed_losses_absolute=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE],
+        fixed_losses_relative=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][VALUE],
         min_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE],
         max_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE],
         initial_storage_level=dict_asset[STORAGE_CAPACITY][SOC_INITIAL][

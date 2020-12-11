@@ -109,8 +109,8 @@ STORAGE_CAPACITY = "storage capacity"
 SOC_INITIAL = "soc_initial"
 SOC_MAX = "soc_max"
 SOC_MIN = "soc_min"
-REL_LOSSES = "rel_thermal_losses"
-ABS_LOSSES = "abs_thermal_losses"
+THERM_LOSSES_REL = "fixed_thermal_losses_relative"
+THERM_LOSSES_ABS = "fixed_thermal_losses_absolute"
 
 # Constraints
 CONSTRAINTS = "constraints"
