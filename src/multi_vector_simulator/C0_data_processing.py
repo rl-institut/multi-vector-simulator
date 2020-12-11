@@ -1,3 +1,27 @@
+"""
+Module C0 - Data processing
+===========================
+
+Module C0 prepares the data read from csv or json for simulation, ie. pre-processes it.
+- Verify input values with C1
+- Identify energyVectors and write them to project_data/sectors
+- Create an excess sink for each bus
+- Process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
+- Add economic parameters to json with C2
+- Calculate "simulation annuity" used in oemof model
+- Add demand sinks to energyVectors (this should actually be changed and demand sinks should be added to bus relative to input_direction, also see issue #179)
+- Translate input_directions/output_directions to bus names
+- Add missing cost data to automatically generated objects (eg. DSO transformers)
+- Read timeseries of assets and store into json (differ between one-column csv, multi-column csv)
+- Read timeseries for parameter of an asset, eg. efficiency
+- Parse list of inputs/outputs, eg. for chp
+- Define dso sinks, sources, transformer stations (this will be changed due to bug #119), also for peak demand pricing
+- Add a source if a conversion object is connected to a new input_direction (bug #186)
+- Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
+- Multiply `maximumCap` of non-dispatchable sources by max(timeseries(kWh/kWp)) as the `maximumCap` is limiting the flow but we want to limit the installed capacity (see issue #446)
+"""
+
+
 import logging
 import os
 import sys
@@ -21,26 +45,6 @@ import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C1_verification as C1
 import multi_vector_simulator.C2_economic_functions as C2
 import multi_vector_simulator.F0_output as F0
-
-"""
-Module C0 prepares the data read from csv or json for simulation, ie. pre-processes it. 
-- Verify input values with C1
-- Identify energyVectors and write them to project_data/sectors
-- Create an excess sink for each bus
-- Process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
-- Add economic parameters to json with C2
-- Calculate "simulation annuity" used in oemof model
-- Add demand sinks to energyVectors (this should actually be changed and demand sinks should be added to bus relative to input_direction, also see issue #179)
-- Translate input_directions/output_directions to bus names
-- Add missing cost data to automatically generated objects (eg. DSO transformers)
-- Read timeseries of assets and store into json (differ between one-column csv, multi-column csv)
-- Read timeseries for parameter of an asset, eg. efficiency
-- Parse list of inputs/outputs, eg. for chp
-- Define dso sinks, sources, transformer stations (this will be changed due to bug #119), also for peak demand pricing
-- Add a source if a conversion object is connected to a new input_direction (bug #186)
-- Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
-- Multiply `maximumCap` of non-dispatchable sources by max(timeseries(kWh/kWp)) as the `maximumCap` is limiting the flow but we want to limit the installed capacity (see issue #446)
-"""
 
 
 def all(dict_values):

@@ -1,4 +1,7 @@
 """
+Module D2 - Model constraints
+=============================
+
 This module gathers all constraints that can be added to the MVS optimisation. 
 we will probably require another input CSV file or further parameters in simulation_settings.
 

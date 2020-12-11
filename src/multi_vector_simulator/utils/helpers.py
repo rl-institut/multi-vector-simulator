@@ -1,4 +1,7 @@
 """
+Helper functions
+================
+
 Util functions that are useful throughout the MVS
 
 Including:
