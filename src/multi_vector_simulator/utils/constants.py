@@ -268,13 +268,13 @@ EXTRA_CSV_PARAMETERS = {
     REL_LOSSES: {
         DEFAULT_VALUE: 0,
         UNIT: TYPE_FLOAT,
-        WARNING_TEXT: "allows considering relative thermal energy losses (Values: Float)",
+        WARNING_TEXT: "allows considering relative thermal energy losses (Values: Float). This is an advanced setting that most users can ignore.",
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_STORAGE],
     },
     ABS_LOSSES: {
         DEFAULT_VALUE: 0,
         UNIT: TYPE_FLOAT,
-        WARNING_TEXT: "allows considering relative thermal energy losses (Values: Float)",
+        WARNING_TEXT: "allows considering relative thermal energy losses (Values: Float). This is an advanced setting that most users can ignore.",
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_STORAGE],
     },
 }
