@@ -63,6 +63,61 @@ In case of excessive excess energy, a warning is given that it seems to be cheap
 High excess energy can for example result into an optimized inverter capacity that is smaller than the peak generation of installed PV.
 This becomes unrealistic when the excess is very high.
 
+Stratified thermal storage
+##########################
+
+In order to model a stratified thermal energy storage the two parameters `fixed_losses_relative` and `fixed_losses_absolute` are passed through `storage_xx.csv`.
+They are used to take into account temperature dependent losses of a thermal storage.
+Except for these two additional parameters the stratified thermal storage is implemented in the same way as other storage components.
+
+Precalculations of the `installedCap`, `efficiency`, `fixed_losses_relative` and `fixed_losses_absolute` can be done orientating on the stratified thermal storage component of `oemof.thermal  <https://github.com/oemof/oemof-thermal>`__.
+Further parameters, which can be precalculated, are: U-value, volume and surface of the storage.
+
+The efficiency :math:`\eta` of the storage is calculated as follows:
+
+.. math::
+   \eta = 1 - loss{\_}rate
+
+This example shows how to do precalculations using stratified thermal storage specific input data:
+
+
+.. code-block:: python
+
+        from oemof.thermal.stratified_thermal_storage import (
+        calculate_storage_u_value,
+        calculate_storage_dimensions,
+        calculate_capacities,
+        calculate_losses,
+        )
+
+        # Precalculation
+        u_value = calculate_storage_u_value(
+            input_data['s_iso'],
+            input_data['lamb_iso'],
+            input_data['alpha_inside'],
+            input_data['alpha_outside'])
+
+        volume, surface = calculate_storage_dimensions(
+            input_data['height'],
+            input_data['diameter']
+        )
+
+        nominal_storage_capacity = calculate_capacities(
+            volume,
+            input_data['temp_h'],
+            input_data['temp_c'])
+
+        loss_rate, fixed_losses_relative, fixed_losses_absolute = calculate_losses(
+            u_value,
+            input_data['diameter'],
+            input_data['temp_h'],
+            input_data['temp_c'],
+            input_data['temp_env'])
+
+Please see the `oemof.thermal` `examples <https://github.com/oemof/oemof-thermal/tree/dev/examples/stratified_thermal_storage>`__ and the `documentation  <https://oemof-thermal.readthedocs.io/en/latest/stratified_thermal_storage.html>`__ for further information.
+
+For an investment optimization the height of the storage should be left open in the precalculations and `installedCap` should be set to 0 or NaN.
+
 Energy providers (DSOs)
 -----------------------
 
