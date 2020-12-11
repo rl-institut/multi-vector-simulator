@@ -181,7 +181,7 @@ An energy system is composed of a heat and an electricity side. Following are th
 * 0 kWh local generation for the heat side
 * 100 kWh consumption from the electricity provider, who has a renewable factor of 50%
 
-Again, the heat sector would have a renewable factor of 0% when considered seperately, and the electricity side would have an renewable factor of 75%. This results in a system-wide renewable share of:
+Again, the heat sector would have a renewable factor of 0% when considered separately, and the electricity side would have an renewable factor of 75%. This results in a system-wide renewable share of:
 
 .. math:: RF = \frac{ 100 kWh(el)\cdot \frac{kWh(eleq)}{kWh(el)} +50 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}}{200 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}} = 3/4 = \text{75 \%}
 
