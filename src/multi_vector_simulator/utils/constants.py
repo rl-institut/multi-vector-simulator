@@ -265,6 +265,18 @@ EXTRA_CSV_PARAMETERS = {
         WARNING_TEXT: "allows defining the renewable share of the DSO supply (Values: Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
     },
+    REL_LOSSES: {
+        DEFAULT_VALUE: 0,
+        UNIT: TYPE_FLOAT,
+        WARNING_TEXT: "allows considering relative thermal energy losses (Values: Float)",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_STORAGE],
+    },
+    ABS_LOSSES: {
+        DEFAULT_VALUE: 0,
+        UNIT: TYPE_FLOAT,
+        WARNING_TEXT: "allows considering relative thermal energy losses (Values: Float)",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_STORAGE],
+    },
 }
 
 ENERGY_CARRIER_UNIT = "energy_carrier_unit"
