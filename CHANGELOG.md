@@ -41,6 +41,7 @@ Here is a template for new release sections
 - Use current version number as defined in `version.py` for RTD (#693)
 - Added storage to the table in autoreport listing the energy system components (#686)
 - Add assertion `sum(attributed_costs)==cost_total` (for single-vector system) (#613)
+- Benchmark test for renewable share (`TestTechnicalKPI.test_renewable_factor_and_renewable_share_of_local_generation()`) (#613)
 
 ## [0.5.3] - 2020-12-08
 
