@@ -1,7 +1,7 @@
-# todo check whether this is the most recent version
-# - there were some project costs included wrongly,
-# and something with the replacement costs
 """
+Module C2 - Economic preprocessing
+==================================
+
 Module C2 performs the economic pre-processing of MVS' input parameters.
 It includes basic economic formulas.
 

@@ -2,16 +2,19 @@
 Code documentation
 ==================
 
-Initialization
+Util functions
 --------------
 
-.. automodule:: multi_vector_simulator.utils.constants
+.. automodule:: multi_vector_simulator.utils.data_parser
    :members:
    :undoc-members:
 
-.. automodule:: multi_vector_simulator.utils.constants_json_strings
+.. automodule:: multi_vector_simulator.utils.helpers
    :members:
    :undoc-members:
+
+Initialization
+--------------
 
 .. automodule:: multi_vector_simulator.A0_initialization
    :members:
@@ -28,8 +31,8 @@ Data input
    :members:
    :undoc-members:
 
-Data processing
----------------
+Data pre-processing and validity checks
+---------------------------------------
 
 .. automodule:: multi_vector_simulator.C0_data_processing
    :members:
@@ -43,8 +46,8 @@ Data processing
    :members:
    :undoc-members:
 
-Modelling
----------
+Building the energy system model
+--------------------------------
 
 .. automodule:: multi_vector_simulator.D0_modelling_and_optimization
    :members:
@@ -58,8 +61,8 @@ Modelling
    :members:
    :undoc-members:
 
-Evaluation
-----------
+Post-processing and evaluation
+------------------------------
 
 .. automodule:: multi_vector_simulator.E0_evaluation
    :members:
@@ -77,7 +80,7 @@ Evaluation
    :members:
    :undoc-members:
 
-.. automodule:: multi_vector_simulator.E4_verification_of_constraints
+.. automodule:: multi_vector_simulator.E4_verification
    :members:
    :undoc-members:
 
@@ -89,5 +92,9 @@ Output
    :undoc-members:
 
 .. automodule:: multi_vector_simulator.F1_plotting
+   :members:
+   :undoc-members:
+
+.. automodule:: multi_vector_simulator.F2_autoreport
    :members:
    :undoc-members:

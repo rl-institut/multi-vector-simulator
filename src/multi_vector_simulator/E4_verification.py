@@ -1,3 +1,11 @@
+"""
+Module E4 - Verification of results
+===================================
+
+- Detect excessive excess generation
+- Verify that minimal renewable share constraint is adhered to
+"""
+
 import logging
 import pandas as pd
 from multi_vector_simulator.utils.constants_json_strings import (

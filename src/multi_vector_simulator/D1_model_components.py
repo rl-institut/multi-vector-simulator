@@ -1,4 +1,7 @@
 """
+Module D1 - Oemof components
+============================
+
 Module D1 includes all functions that are required to build an oemof model with adaptable components.
 
 - add transformer objects (fix, to be optimized)

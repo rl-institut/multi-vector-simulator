@@ -1,6 +1,7 @@
-r"""
+"""
 Module E1 process results
--------------------------
+=========================
+
 Module E1 processes the oemof results.
 - receive time series per bus for all assets
 - write time series to dictionary
@@ -42,6 +43,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EXCESS,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
     OEMOF_ASSET_TYPE,
     ENERGY_VECTOR,
     KPI,
@@ -677,39 +679,60 @@ def convert_components_to_dataframe(dict_values):
 
     """
 
+    # Read the subdicts energyProduction, energyConversion and energyStorage as separate dicts
     components1 = dict_values[ENERGY_PRODUCTION]
     components2 = dict_values[ENERGY_CONVERSION]
+    components3 = dict_values[ENERGY_STORAGE]
 
+    # Read the keys of the above dicts into separate lists
     comp1_keys = list(components1.keys())
     comp2_keys = list(components2.keys())
+    comp3_keys = list(components3.keys())
 
+    # Add the above dictionaries and lists of keys into new lists for iterating through, later
+    comp_dict_list = [components1, components2]
+    components_list = [comp1_keys, comp2_keys]
+
+    # Dict to hold the data for creating a pandas dataframe
     components = {}
-    # Defining the columns of the table to be printed
-    for comps in comp1_keys:
-        components.update(
-            {
-                comps: [
-                    components1[comps][OEMOF_ASSET_TYPE],
-                    components1[comps][ENERGY_VECTOR],
-                    components1[comps][UNIT],
-                    components1[comps][INSTALLED_CAP][VALUE],
-                    components1[comps][OPTIMIZE_CAP][VALUE],
-                ]
-            }
-        )
-    for comps in comp2_keys:
-        components.update(
-            {
-                comps: [
-                    components2[comps][OEMOF_ASSET_TYPE],
-                    components2[comps][ENERGY_VECTOR],
-                    components2[comps][UNIT],
-                    components2[comps][INSTALLED_CAP][VALUE],
-                    components2[comps][OPTIMIZE_CAP][VALUE],
-                ]
-            }
-        )
 
+    # Defining the columns of the table and filling them up with the appropriate data
+    for (component_key, comp_dict) in zip(components_list, comp_dict_list):
+        for comps in component_key:
+            components.update(
+                {
+                    comps: [
+                        comp_dict[comps][OEMOF_ASSET_TYPE],
+                        comp_dict[comps][ENERGY_VECTOR],
+                        comp_dict[comps][UNIT],
+                        comp_dict[comps][INSTALLED_CAP][VALUE],
+                        comp_dict[comps][OPTIMIZE_CAP][VALUE],
+                    ]
+                }
+            )
+
+    for storage_component in comp3_keys:
+        for sub_stor_comp in [INPUT_POWER, STORAGE_CAPACITY, OUTPUT_POWER]:
+            comp_label = components3[storage_component][sub_stor_comp][LABEL]
+            components.update(
+                {
+                    comp_label: [
+                        components3[storage_component][OEMOF_ASSET_TYPE],
+                        components3[storage_component][ENERGY_VECTOR],
+                        components3[storage_component][sub_stor_comp][INSTALLED_CAP][
+                            UNIT
+                        ],
+                        components3[storage_component][sub_stor_comp][INSTALLED_CAP][
+                            VALUE
+                        ],
+                        components3[storage_component][sub_stor_comp][OPTIMIZE_CAP][
+                            VALUE
+                        ],
+                    ]
+                }
+            )
+
+    # Create a pandas dataframe from the dictionary created above
     df_comp = pd.DataFrame.from_dict(
         components,
         orient="index",
@@ -717,13 +740,14 @@ def convert_components_to_dataframe(dict_values):
             "Type of Component",
             "Energy Vector",
             UNIT,
-            "Installed Capcity",
+            "Installed Capacity",
             "Capacity optimization",
         ],
     )
     df_comp.index.name = "Component"
     df_comp = df_comp.reset_index()
 
+    # Add True or False for each component in the column for capacity optimization
     for i in range(len(df_comp)):
         if df_comp.at[i, "Capacity optimization"] is True:
             df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "Yes"
