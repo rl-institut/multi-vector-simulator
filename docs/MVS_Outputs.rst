@@ -187,19 +187,22 @@ Again, the heat sector would have a renewable factor of 0% when considered separ
 
 The renewable factor can, just like the :ref:`kpi_renewable_share_of_local_generation` not indicate how much renewable energy is used in each of the sectors. In the future, it may be possible to dive into this together with the degree of sector-coupling.
 
-CO2 Emissions
-#############
+Emissions
+#########
 
-The total C02 emissions of the MES in question can be calculated
+The total emissions of the MES in question can be calculated
 with all aggregated energy flows from the generation assets and their subsequent emission factor:
 
 .. math::
-        CO2 Emissions &= \sum_i {E_{gen} (i) \cdot CO2_{eq} (i)}
+        Emissions &= \sum_i {E_{gen} (i) \cdot emission\_factor (i)}
 
         \text{with~} &i \text{: generation assets 1,2,…}
 
-** The content of this section was copied from the conference paper handed in to CIRED 2020**
+Emissions can be of different nature: CO2 emissions, CO2 equivalents, greenhouse gases, ...
 
+The emissions are calculated separately for each asset in kg/a, as well as for the total system in kg/a and in :math:`\text{kg/kWh}_{eleq}`.
+
+Until now the emissions do not include life cycle emissions nor are they calculated separately for the energy sectors. For the latter, it arises the problem of the assignment of assets to sectors. E.g. emissions caused by an electrolyser would be counted to the electricity sector although you might want to count it for the H2 sector, as the purpose of the electrolyser is to feed the H2 sector.
 
 Degree of sector-coupling (DSC)
 ###############################
