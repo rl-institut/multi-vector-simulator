@@ -671,6 +671,14 @@
                     "unit": "factor",
                     "value": 0.2
                 },
+                "fixed_thermal_losses_relative": {
+                    "unit": "factor",
+                    "value": 0.001
+                },
+                "fixed_thermal_losses_absolute": {
+                    "unit": "factor",
+                    "value": 0.0002
+                },
                 "simulation_annuity": {
                     "value": 2.7,
                     "unit": "currency/unit/simulation period"
@@ -750,6 +758,14 @@
                 "soc_min": {
                     "unit": "factor",
                     "value": 0.2
+                },
+                "fixed_thermal_losses_relative": {
+                    "unit": "factor",
+                    "value": 0.001
+                },
+                "fixed_thermal_losses_absolute": {
+                    "unit": "factor",
+                    "value": 0.0002
                 }
             },
             "input power": {

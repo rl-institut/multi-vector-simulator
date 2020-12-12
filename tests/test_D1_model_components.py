@@ -25,6 +25,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INPUT_POWER,
     OUTPUT_POWER,
     C_RATE,
+    THERM_LOSSES_REL,
+    THERM_LOSSES_ABS,
     STORAGE_CAPACITY,
     TIMESERIES,
     TIMESERIES_NORMALIZED,
@@ -621,6 +623,7 @@ class TestStorageComponent:
         dict_asset[STORAGE_CAPACITY][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
         dict_asset[INPUT_POWER][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
         dict_asset[OUTPUT_POWER][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL] = {VALUE: 0.001, UNIT: "no_unit"}
         D1.storage(
             model=self.model,
             dict_asset=dict_asset,
@@ -675,6 +678,16 @@ class TestStorageComponent:
             == dict_asset[OUTPUT_POWER][C_RATE][VALUE]
         )
 
+        assert (
+            self.model.entities[-1].fixed_losses_relative.default
+            == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][VALUE]
+        )
+        assert (
+            self.model.entities[-1].fixed_losses_absolute.default
+            == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE]
+        )
+
+
     def test_storage_fix(self):
         dict_asset = self.dict_values[ENERGY_STORAGE]["storage_fix"]
         D1.storage(
@@ -717,6 +730,15 @@ class TestStorageComponent:
         # # check that invest_relation_input_capacity and invest_relation_output_capacity is not added
         assert self.model.entities[-1].invest_relation_input_capacity is None
         assert self.model.entities[-1].invest_relation_output_capacity is None
+
+        assert (
+                self.model.entities[-1].fixed_losses_relative.default
+                == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][VALUE]
+        )
+        assert (
+                self.model.entities[-1].fixed_losses_absolute.default
+                == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE]
+        )
 
 
 ### other functionalities
