@@ -687,7 +687,6 @@ class TestStorageComponent:
             == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE]
         )
 
-
     def test_storage_fix(self):
         dict_asset = self.dict_values[ENERGY_STORAGE]["storage_fix"]
         D1.storage(
@@ -732,12 +731,12 @@ class TestStorageComponent:
         assert self.model.entities[-1].invest_relation_output_capacity is None
 
         assert (
-                self.model.entities[-1].fixed_losses_relative.default
-                == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][VALUE]
+            self.model.entities[-1].fixed_losses_relative.default
+            == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][VALUE]
         )
         assert (
-                self.model.entities[-1].fixed_losses_absolute.default
-                == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE]
+            self.model.entities[-1].fixed_losses_absolute.default
+            == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE]
         )
 
 
