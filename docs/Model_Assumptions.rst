@@ -287,15 +287,17 @@ For example, the `degree of sector coupling` will reach its maximum, when the sy
 
 In the MVS, there is no distinction between energy carriers and energy vector. For `Electricity` of the `Electricity` vector this may be self-explanatory. However, the energy carriers of the `Heat` vector can have different technical characteristics: A fluid on different temperature levels. As the MVS measures the energy content of a flow in kWh(thermal) however, this distinction is only relevant for the end user to be aware of, as two assets that have different energy carriers as an output should not be connected to one and the same bus if a detailed analysis is expected. An example of this would be, that a system where the output of the diesel boiler as well as the output of a solar thermal panel are connected to the same bus, eventhough they can not both supply the same kind of heat demands (radiator vs. floor heating).  This, however, is something that the end-user has to be aware of themselves, eg. by defining self-explanatory labels.
 
-CO2 Emission factors
+Emission factors
 ----------------------------
 In order to optimise the energy system with minimum CO2 emissions, it is important to calculate CO2 emission per unit of fuel consumption.
 
 Following emission factors for energy carriers are defined:
 
-.. _table_CO2_emissions_energyCarriers:
+These values are based on direct emissions during stationary consumption of the mentioned fuels.
 
-.. list-table:: CO2 Emission factors: Kg of CO2 equivalent per unit of fuel consumption
+.. _table_emissions_energyCarriers:
+
+.. list-table:: Emission factors: Kg of CO2 equivalent per unit of fuel consumption
    :widths: 50 25 25 25
    :header-rows: 1
 
@@ -305,37 +307,38 @@ Following emission factors for energy carriers are defined:
      - Source
    * - Diesel
      - kgCO2eq/litre
-     - 2.68
-     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
+     - 2.7
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]
    * - Gasoline
      - kgCO2eq/litre
-     - 2.29
-     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
-   * - Biodiesel
+     - 2.3
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]
+   * - Kerosene
      - kgCO2eq/litre
-     - 0.03178
-     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
-   * - Bioethanol
-     - kgCO2eq/litre
-     - 0.00855
-     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
-   * - LPG
-     - kgCO2eq/litre
-     - 1.611
-     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
-   * - Biogas
-     - kgCO2eq/m3
-     - 0
-     - [`5 <https://doi.org/10.1080/10934529.2018.1459076>`__]
+     - 2.5
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]
    * - Natural gas
      - kgCO2eq/m3
-     - 1.88
-     - [`4  <https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol2.html>`__]
+     - 1.9
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]
+   * - LPG
+     - kgCO2eq/litre
+     - 1.6
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]
+   * - Biodiesel
+     - kgCO2eq/litre
+     - 0.000125
+     - [`5  <https://www.mfe.govt.nz/sites/default/files/media/Climate%20Change/2019-emission-factors-summary.pdf>`__]
+   * - Bioethanol
+     - kgCO2eq/litre
+     - 0.0000807
+     - [`5  <https://www.mfe.govt.nz/sites/default/files/media/Climate%20Change/2019-emission-factors-summary.pdf>`__]
+   * - Biogas
+     - kgCO2eq/m3
+     - 0.12
+     - [`6 <https://www.winnipeg.ca/finance/findata/matmgt/documents/2012/682-2012/682-2012_Appendix_H-WSTP_South_End_Plant_Process_Selection_Report/Appendix%207.pdf>`__]
 
-
-The CO2 emission of biogas is considered neutral since CO2 is considered as biogenic.[`5 <https://doi.org/10.1080/10934529.2018.1459076>`__]
-
-CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, India):
+Following CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, India) are defined:
 
 .. _table_CO2_emissions_countries:
 
@@ -344,31 +347,31 @@ CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, Indi
    :header-rows: 1
 
    * - Country
-     - Value
      - Unit
+     - Value
      - Source
    * - Germany
-     - 397
-     - kgCO2eq/kWh
-     - [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`__]
+     - gCO2eq/kWh
+     - 338
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__]
    * - Norway
-     - 14.4
-     - kgCO2eq/kWh
-     - [`7 <https://www.regjeringen.no/contentassets/21e80b8392494672897854413675021e/iea-rapport-idr_2017_norway_web-final.pdf>`__]
+     - gCO2eq/kWh
+     - 19
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__]
    * - Spain
-     - 197
-     - kgCO2eq/kWh
-     - [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`__]
+     - gCO2eq/kWh
+     - 207
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__]
    * - Romania
-     - 339
-     - kgCO2eq/kWh
-     - [`6 <https://www.agora-energiewende.de/fileadmin2/Projekte/2019/Jahresauswertung_EU_2019/172_A-EW_EU-Annual-Report-2019_Web.pdf>`__]
+     - gCO2eq/kWh
+     - 293
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__]
    * - India
-     - 697
-     - kgCO2eq/kWh
-     - [`8 <https://www.iea.org/data-and-statistics/charts/average-co2-emissions-intensity-of-hourly-electricity-supply-in-india-2018-and-2040-by-scenario-and-average-electricity-demand-in-2018>`__]
+     - gCO2eq/kWh
+     - 708
+     - [`8 <https://www.climate-transparency.org/wp-content/uploads/2019/11/B2G_2019_India.pdf>`__]
 
-The values mentioned in the table above account for emissions during the complete life cycle. This includes emissions during energy production, energy conversion, energy storage and energy transmission. These values always fluctuate and depend on various factors such as energy mix, weather conditions, and demand fluctuations.
+The values mentioned in the table above account for emissions during the complete life cycle. This includes emissions during energy production, energy conversion, energy storage and energy transmission.
 
 Limitations
 -----------
