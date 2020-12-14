@@ -47,6 +47,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DEGREE_OF_AUTONOMY,
     TOTAL_EMISSIONS,
     KPI_SCALAR_MATRIX,
+    EMISSION_FACTOR,
+    SPECIFIC_EMISSIONS_ELEQ,
+    UNIT_SPECIFIC_EMISSIONS,
+    UNIT_EMISSIONS,
 )
 
 electricity = "Electricity"
@@ -686,7 +690,23 @@ def test_equation_onsite_energy_matching():
     )
 
 
-def test_add_total_emission():
+def test_calculate_emissions_from_flow():
+    dict_asset = {TOTAL_FLOW: {VALUE: 100}, EMISSION_FACTOR: {VALUE: 0.5}}
+    E3.calculate_emissions_from_flow(dict_asset)
+    assert (
+        dict_asset[TOTAL_EMISSIONS][VALUE] == 50
+    ), f"{TOTAL_EMISSIONS} [{UNIT_EMISSIONS}] of an asset should be total flow times emission factor (in this case: 100*0.5=50), but is {dict_asset[TOTAL_EMISSIONS][VALUE]}."
+
+
+def test_calculate_emissions_from_flow_zero_emissions():
+    dict_asset = {TOTAL_FLOW: {VALUE: 100}, EMISSION_FACTOR: {VALUE: 0}}
+    E3.calculate_emissions_from_flow(dict_asset)
+    assert (
+        dict_asset[TOTAL_EMISSIONS][VALUE] == 0
+    ), f"{TOTAL_EMISSIONS} [{UNIT_EMISSIONS}] of an asset with an emission_factor of zero should be 0, but is {dict_asset[TOTAL_EMISSIONS][VALUE]}."
+
+
+def test_add_total_emissions():
     dict_values = {
         KPI: {
             KPI_SCALARS_DICT: {TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: 100},
@@ -696,10 +716,20 @@ def test_add_total_emission():
     E3.add_total_emissions(dict_values)
     assert (
         dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS] == 70
-    ), f"Total emissions [kg/a] should be the sum of the emissions of all assets, in this case 70, but is {dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS]}."
-    emissions_kWh = dict_values[KPI][KPI_SCALARS_DICT][
-        TOTAL_EMISSIONS + SUFFIX_ELECTRICITY_EQUIVALENT
-    ]
+    ), f"{TOTAL_EMISSIONS} [{UNIT_EMISSIONS}] should be the sum of the emissions of all assets, in this case 70, but is {dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS]}."
+
+
+def test_add_specific_emissions_per_electricity_equivalent():
+    dict_values = {
+        KPI: {
+            KPI_SCALARS_DICT: {
+                TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: 100,
+                TOTAL_EMISSIONS: 70,
+            },
+        }
+    }
+    E3.add_specific_emissions_per_electricity_equivalent(dict_values)
+    emissions_kWheleq = dict_values[KPI][KPI_SCALARS_DICT][SPECIFIC_EMISSIONS_ELEQ]
     assert (
-        emissions_kWh == 0.7
-    ), f"Total emissions [kg/kWheleq] should be total_emissions / total_demand_electricity_equivalent (in this case: 70/100=0.7), but is {emissions_kWh}."
+        emissions_kWheleq == 0.7
+    ), f"{SPECIFIC_EMISSIONS_ELEQ} [{UNIT_SPECIFIC_EMISSIONS}] should be total_emissions / total_demand_electricity_equivalent (in this case: 70/100=0.7), but is {emissions_kWheleq}."

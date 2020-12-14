@@ -190,22 +190,6 @@ def test_get_tuple_for_oemof_results():
         assert flux_tuple == (asset_label, bus)
 
 
-def test_get_emissions():
-    dict_asset = {TOTAL_FLOW: {VALUE: 100}, EMISSION_FACTOR: {VALUE: 0.5}}
-    E1.get_emissions(dict_asset)
-    assert (
-        dict_asset[TOTAL_EMISSIONS][VALUE] == 50
-    ), f"total_emissions/a of an asset should be total flow times emission factor (in this case: 100*0.5=50), but is {dict_asset[TOTAL_EMISSIONS][VALUE]}."
-
-
-def test_get_emissions_zero_emissions():
-    dict_asset = {TOTAL_FLOW: {VALUE: 100}, EMISSION_FACTOR: {VALUE: 0}}
-    E1.get_emissions(dict_asset)
-    assert (
-        dict_asset[TOTAL_EMISSIONS][VALUE] == 0
-    ), f"total_emissions/a of an asset with an emission_factor of zero should be 0, but is {dict_asset[TOTAL_EMISSIONS][VALUE]}."
-
-
 def test_get_optimal_cap_optimize_input_flow_timeseries_peak_provided():
     pass
 

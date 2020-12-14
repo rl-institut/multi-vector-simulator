@@ -157,10 +157,10 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 dict_asset=dict_values[group][asset],
                 asset_group=group,
             )
-            if group == ENERGY_PRODUCTION:
-                E1.get_emissions(dict_values[group][asset])
             E2.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
             E2.lcoe_assets(dict_values[group][asset], group)
+            if group == ENERGY_PRODUCTION:
+                E3.calculate_emissions_from_flow(dict_values[group][asset])
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
     logging.info("Evaluating key performance indicators of the system")
@@ -176,6 +176,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     E3.add_onsite_energy_matching(dict_values)
     E3.add_degree_of_autonomy(dict_values)
     E3.add_total_emissions(dict_values)
+    E3.add_specific_emissions_per_electricity_equivalent(dict_values)
 
     # Tests and checks
     logging.info("Running validity checks.")

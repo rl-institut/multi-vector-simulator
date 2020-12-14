@@ -944,29 +944,3 @@ def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
         else:
             unit_list.append(kpi_cost_unit_dict[key])
     return unit_list
-
-
-def get_emissions(dict_asset):
-    r"""
-    Calculates the total emissions of the asset per year.
-
-    Parameters
-    ----------
-    dict_asset : dict
-        Contains information about the asset.
-
-    Notes
-    -----
-    Tested with:
-    - E1.test_get_emissions()
-    -
-
-    Returns
-    -------
-    None
-        Updates `dict_asset` with TOTAL_EMISSIONS of the asset in kg/a.
-
-    """
-    emissions = dict_asset[TOTAL_FLOW][VALUE] * dict_asset[EMISSION_FACTOR][VALUE]
-    dict_asset.update({TOTAL_EMISSIONS: {VALUE: emissions, UNIT: "kg/a"}})
-    return
