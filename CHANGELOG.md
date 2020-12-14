@@ -35,7 +35,7 @@ Here is a template for new release sections
 - Parameter `maximum_emissions` (`MAXIMUM_EMISSIONS`) to `constraints.csv`, unit: kgCO2eq/a
 
 ### Changed 
-- Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
+- Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
 - Adapt pre-processing for investment benchmark tests into a seperate function (#613)
 - `COST_REPLACEMENT` is now a parameter that is included in output cost matrix (#613)
 - Improved `Code.rst` for RTD code documentation (#704)
