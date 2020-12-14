@@ -20,8 +20,10 @@ import multi_vector_simulator.C2_economic_functions as C2
 from _constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
+    JSON_WITH_RESULTS,
     TEST_REPO_PATH,
     CSV_EXT,
+    TIME_SERIES,
 )
 
 from multi_vector_simulator.utils.constants import (
@@ -34,7 +36,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OUTPUT_POWER,
     STORAGE_CAPACITY,
     VALUE,
-    FLOW,
     LIFETIME_SPECIFIC_COST_OM,
     LIFETIME_PRICE_DISPATCH,
     LIFETIME_SPECIFIC_COST,
@@ -53,15 +54,13 @@ from multi_vector_simulator.utils.constants_json_strings import (
     COST_UPFRONT,
     COST_REPLACEMENT,
     LCOE_ASSET,
+    LCOeleq,
     CURR,
     DISCOUNTFACTOR,
     PROJECT_DURATION,
     ANNUITY_FACTOR,
     CRF,
-    ENERGY_PRODUCTION,
     TOTAL_FLOW,
-    KPI,
-    KPI_SCALARS_DICT,
     KPI_UNCOUPLED_DICT,
     TOTAL_DEMAND,
     SUFFIX_ELECTRICITY_EQUIVALENT,
@@ -71,33 +70,119 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_RENEWABLE_ENERGY_USE,
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_GENERATION_IN_LES,
+    ENERGY_CONSUMPTION,
+    ENERGY_CONVERSION,
+    ENERGY_PRODUCTION,
+    ENERGY_PROVIDERS,
+    ENERGY_STORAGE,
+    KPI,
+    KPI_SCALARS_DICT,
+    FLOW,
+    ATTRIBUTED_COSTS,
+    TOTAL_EXCESS,
+    LABEL,
+    DSO_CONSUMPTION,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
 
-dict_economic = {
+DICT_ECONOMIC = {
     CURR: "Euro",
     DISCOUNTFACTOR: {VALUE: 0.08},
     PROJECT_DURATION: {VALUE: 20},
 }
 
-dict_economic.update(
+DICT_ECONOMIC.update(
     {
         ANNUITY_FACTOR: {
             VALUE: C2.annuity_factor(
-                project_life=dict_economic[PROJECT_DURATION][VALUE],
-                discount_factor=dict_economic[DISCOUNTFACTOR][VALUE],
+                project_life=DICT_ECONOMIC[PROJECT_DURATION][VALUE],
+                discount_factor=DICT_ECONOMIC[DISCOUNTFACTOR][VALUE],
             )
         },
         CRF: {
             VALUE: C2.crf(
-                project_life=dict_economic[PROJECT_DURATION][VALUE],
-                discount_factor=dict_economic[DISCOUNTFACTOR][VALUE],
+                project_life=DICT_ECONOMIC[PROJECT_DURATION][VALUE],
+                discount_factor=DICT_ECONOMIC[DISCOUNTFACTOR][VALUE],
             )
         },
     }
 )
+
+USE_CASE = "Economic_KPI_C2_E2"
+
+
+def process_expected_values():
+    """
+    Processes expected values from `test_data_economic_expected_values.csv`.
+
+    Derive expected values dependent on actual dispatch of the asset(s)
+    for asset in expected_values.columns:
+
+
+    Returns
+    -------
+    Save expected values to `expected_value_file`, to be used in benchmark tests
+    """
+    # To edit the values, please use the test_data_economic_expected_values.xls file first and convert the first tab to csv.
+    expected_value_file = "test_data_economic_expected_values.csv"
+    expected_values = pd.read_csv(
+        os.path.join(TEST_INPUT_PATH, USE_CASE, expected_value_file),
+        sep=",",
+        index_col=0,
+    )
+
+    # read json with results file
+    data = load_json(
+        os.path.join(
+            TEST_OUTPUT_PATH, USE_CASE, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+        )
+    )
+
+    for asset in expected_values.index:
+
+        # determine asset dictionary (special for storages)
+        result_key = expected_values[asset]["group"]
+
+        if asset in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
+            asset_data = data[result_key]["storage_01"][asset]
+        else:
+            asset_data = data[result_key][asset]
+
+        # get dispatch of the assets
+        expected_values[asset][FLOW] = asset_data[FLOW]
+
+        # calculate cost parameters that are dependent on the flow
+        expected_values[asset][COST_DISPATCH] = expected_values[asset][
+            LIFETIME_PRICE_DISPATCH
+        ] * sum(expected_values[asset][FLOW])
+        expected_values[asset][COST_OPERATIONAL_TOTAL] = (
+            expected_values[asset][COST_DISPATCH] + expected_values[asset][COST_OM]
+        )
+        expected_values[asset][COST_TOTAL] = (
+            expected_values[asset][COST_OPERATIONAL_TOTAL]
+            + expected_values[asset][COST_INVESTMENT]
+        )
+
+        # process cost
+        expected_values[asset][ANNUITY_OM] = (
+            expected_values[asset][COST_OPERATIONAL_TOTAL] * DICT_ECONOMIC[CRF][VALUE]
+        )
+        expected_values[asset][ANNUITY_TOTAL] = (
+            expected_values[asset][COST_TOTAL] * DICT_ECONOMIC[CRF][VALUE]
+        )
+        if sum(expected_values[asset][FLOW]) == 0:
+            expected_values[asset][LCOE_ASSET] = 0
+        else:
+            expected_values[asset][LCOE_ASSET] = expected_values[asset][
+                ANNUITY_TOTAL
+            ] / sum(expected_values[asset][FLOW])
+
+    # store to csv to enable manual check, eg. of lcoe_a. only previously empty rows have been changed.
+    expected_values.drop("flow").to_csv(
+        os.path.join(TEST_OUTPUT_PATH, USE_CASE, expected_value_file), sep=","
+    )
 
 
 class Test_Economic_KPI:
@@ -138,43 +223,32 @@ class Test_Economic_KPI:
         - Annuity
 
         """
-        use_case = "Economic_KPI_C2_E2"
 
         # Execute the script
         main(
             overwrite=True,
             display_output="warning",
-            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            path_input_folder=os.path.join(TEST_INPUT_PATH, USE_CASE),
             input_type=CSV_EXT,
-            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, USE_CASE),
         )
 
         # read json with results file
         data = load_json(
             os.path.join(
-                TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+                TEST_OUTPUT_PATH, USE_CASE, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
             )
         )
 
-        # Read expected values from file. To edit the values, please use the .xls file first and convert the first tab to csv.
+        # Read expected values from file.
         expected_value_file = "test_data_economic_expected_values.csv"
         expected_values = pd.read_csv(
-            os.path.join(TEST_INPUT_PATH, use_case, expected_value_file),
+            os.path.join(TEST_INPUT_PATH, USE_CASE, expected_value_file),
             sep=",",
             index_col=0,
         )
-        # Define numbers in the csv as int/floats instead of str, but leave row "group" as a string
-        groups = expected_values.loc["group"]
-        # need to transpose the DataFrame before applying the conversion and retranspose after
-        # the conversion because it does not follow the tidy data principle
-        # see https://en.wikipedia.org/wiki/Tidy_data for more info
-        expected_values = expected_values.T.apply(
-            pd.to_numeric, errors="ignore", downcast="integer"
-        ).T
-        expected_values.loc["group"] = groups
-        expected_values.loc[FLOW] = [0, 0, 0, 0, 0]
 
-        KEYS_TO_BE_EVALUATED = [
+        KEYS_TO_BE_EVALUATED_PER_ASSET = [
             LIFETIME_SPECIFIC_COST_OM,
             LIFETIME_PRICE_DISPATCH,
             LIFETIME_SPECIFIC_COST,
@@ -195,58 +269,101 @@ class Test_Economic_KPI:
             LCOE_ASSET,
         ]
 
-        # Derive expected values dependent on actual dispatch of the asset(s)
-        for asset in expected_values.columns:
+        # Compare asset costs calculated in C2 and E2 with benchmark data from csv file
+        for asset in expected_values.index:
+
+            asset_group = expected_values.loc[asset, "group"]
+
             # determine asset dictionary (special for storages)
             if asset in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
-                asset_data = data[expected_values[asset]["group"]]["storage_01"][asset]
+                asset_data = data[asset_group]["storage_01"][asset]
             else:
-                asset_data = data[expected_values[asset]["group"]][asset]
-            # Get dispatch of the assets
-            expected_values[asset][FLOW] = asset_data[FLOW]
-            # Calculate cost parameters that are dependent on the flow
-            expected_values[asset][COST_DISPATCH] = expected_values[asset][
-                LIFETIME_PRICE_DISPATCH
-            ] * sum(expected_values[asset][FLOW])
-            expected_values[asset][COST_OPERATIONAL_TOTAL] = (
-                expected_values[asset][COST_DISPATCH] + expected_values[asset][COST_OM]
-            )
-            expected_values[asset][COST_TOTAL] = (
-                expected_values[asset][COST_OPERATIONAL_TOTAL]
-                + expected_values[asset][COST_INVESTMENT]
-            )
-            # Process cost
-            expected_values[asset][ANNUITY_OM] = (
-                expected_values[asset][COST_OPERATIONAL_TOTAL]
-                * dict_economic[CRF][VALUE]
-            )
-            expected_values[asset][ANNUITY_TOTAL] = (
-                expected_values[asset][COST_TOTAL] * dict_economic[CRF][VALUE]
-            )
-            if sum(expected_values[asset][FLOW]) == 0:
-                expected_values[asset][LCOE_ASSET] = 0
-            else:
-                expected_values[asset][LCOE_ASSET] = expected_values[asset][
-                    ANNUITY_TOTAL
-                ] / sum(expected_values[asset][FLOW])
-
-        # Store to csv to enable manual check, eg. of LCOE_A. Only previously empty rows have been changed.
-        expected_values.drop("flow").to_csv(
-            os.path.join(TEST_OUTPUT_PATH, use_case, expected_value_file), sep=","
-        )
-
-        # Check if asset costs were correctly calculated in C2 and E2
-        for asset in expected_values.columns:
-            # determine asset dictionary (special for storages)
-            if asset in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
-                asset_data = data[expected_values[asset]["group"]]["storage_01"][asset]
-            else:
-                asset_data = data[expected_values[asset]["group"]][asset]
+                asset_data = data[asset_group][asset]
             # assertion
-            for key in KEYS_TO_BE_EVALUATED:
-                assert expected_values[asset][key] == pytest.approx(
+            for key in KEYS_TO_BE_EVALUATED_PER_ASSET:
+                assert expected_values.loc[asset, key] == pytest.approx(
                     asset_data[key][VALUE], rel=1e-3
-                ), f"Parameter {key} of asset {asset} is not of expected value."
+                ), f"Parameter {key} of asset {asset} is not of expected value, expected {expected_values.loc[asset, key]}, got {asset_data[key][VALUE]}."
+
+        # Now we established that the externally calculated values are equal to the internally calculated values.
+        # Therefore, we can now use the cost data from the assets to validate the cost data for the whole energy system.
+
+        demand = pd.read_csv(
+            os.path.join(TEST_INPUT_PATH, USE_CASE, TIME_SERIES, "demand.csv"), sep=",",
+        )
+        aggregated_demand = demand.sum()[0]
+
+        KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM = {
+            COST_INVESTMENT: 0,
+            COST_UPFRONT: 0,
+            COST_REPLACEMENT: 0,
+            COST_OM: 0,
+            COST_DISPATCH: 0,
+            COST_OPERATIONAL_TOTAL: 0,
+            COST_TOTAL: 0,
+            ANNUITY_OM: 0,
+            ANNUITY_TOTAL: 0,
+        }
+
+        def add_to_key(KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM, asset_data):
+            """
+            Add individual cost to each of the separate costs.
+
+            Parameters
+            ----------
+            KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM: dict
+                dict of keys to be evaluated for system costs, to be updated
+            asset_data: dict
+                Asset data with economic parameters
+
+            Returns
+            -------
+            Updated KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM
+            """
+            for key in KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM:
+                KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM.update(
+                    {
+                        key: KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key]
+                        + asset_data[key][VALUE]
+                    }
+                )
+
+        for asset_group in (
+            ENERGY_CONSUMPTION,
+            ENERGY_CONVERSION,
+            ENERGY_PRODUCTION,
+            ENERGY_STORAGE,
+        ):
+            for asset in data[asset_group]:
+                # for storage we look at the annuity of the in and out flows and storage capacity
+                if asset_group == ENERGY_STORAGE:
+                    for storage_type in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
+                        asset_data = data[asset_group][asset][storage_type]
+                        add_to_key(KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM, asset_data)
+                else:
+                    asset_data = data[asset_group][asset]
+                    add_to_key(KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM, asset_data)
+
+        for key in KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM:
+            assert KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key] == pytest.approx(
+                data[KPI][KPI_SCALARS_DICT][key], rel=1e-3
+            ), f"The key {key} is not of expected value {KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key]} but {data[KPI][KPI_SCALARS_DICT][key]}. This is based on the before established assertion, that the expected values of asset costs are equal to the ones in the json results file."
+
+        # Compute the lcoe for this simple case from the data (single demand)
+        lcoe = KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[ANNUITY_TOTAL] / aggregated_demand
+        mvs_lcoe = data[KPI][KPI_SCALARS_DICT][LCOeleq]
+        assert lcoe == pytest.approx(
+            mvs_lcoe, rel=1e-3
+        ), f"Parameter {LCOE_ASSET} of system is not of expected value (benchmark of {lcoe} versus computed value of {mvs_lcoe}."
+
+        attributed_costs = 0
+        for key in data[KPI][KPI_SCALARS_DICT]:
+            if ATTRIBUTED_COSTS in key:
+
+                attributed_costs += data[KPI][KPI_SCALARS_DICT][key]
+        assert (
+            attributed_costs == data[KPI][KPI_SCALARS_DICT][COST_TOTAL]
+        ), f"The total attributed costs are not the costs of the total system."
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
@@ -268,7 +385,7 @@ class TestTechnicalKPI:
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
-    def renewable_factor_and_renewable_share_of_local_generation(self, margs):
+    def test_renewable_factor_and_renewable_share_of_local_generation(self, margs):
         r"""
         Benchmark test that checks the calculation of
         * TOTAL_NON_RENEWABLE_GENERATION_IN_LES
@@ -298,10 +415,13 @@ class TestTechnicalKPI:
 
         # Get total flow of PV
         total_res_local = data[ENERGY_PRODUCTION]["pv_plant_01"][TOTAL_FLOW][VALUE]
-        # Get total demand
-        total_demand = data[KPI][KPI_SCALARS_DICT][
-            TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+        dso_consumption_source = (
+            data[ENERGY_PROVIDERS]["Electricity_grid_DSO"][LABEL] + DSO_CONSUMPTION
+        )
+        total_supply_dso = data[ENERGY_PRODUCTION][dso_consumption_source][TOTAL_FLOW][
+            VALUE
         ]
+
         assert (
             data[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
             == total_res_local
@@ -314,15 +434,15 @@ class TestTechnicalKPI:
         ), f"There is another renewable energy source apart from PV."
         assert (
             data[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_ENERGY_USE]
-            == total_demand - total_res_local
+            == total_supply_dso
         ), "The non-renewable energy use was expected to be all grid supply, but this does not hold true."
-        assert (
-            data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]
-            == total_res_local / total_demand
+        assert data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == (total_res_local) / (
+            total_res_local + total_supply_dso
         ), f"The {RENEWABLE_FACTOR} is not as expected."
-        assert (
-            data[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]["Electricity"]
-            == total_res_local / total_demand
+        assert data[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]["Electricity"] == (
+            total_res_local
+        ) / (
+            total_res_local + total_supply_dso
         ), f"The {RENEWABLE_FACTOR} is not as expected."
         assert (
             data[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION] == 1

@@ -99,6 +99,7 @@ The file `energyProduction.csv` defines the assets that serve as energy sources,
 * :ref:`outflowdirec-label`
 * :ref:`filename-label`
 * :ref:`energyvector-label`
+* :ref:`renewableasset-label`
 * :ref:`emissionfactor-label`
 * :ref:`typeoemof-label`
 

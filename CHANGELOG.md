@@ -24,6 +24,9 @@ Here is a template for new release sections
 ### Added
 - Updated release protocol with info on credentials for test.pypi.org (step 9) and added "Fixed" to unreleased section of changelog.md in release protocol (#695)
 - Added information about the API to the docs (#701)
+- Added CO2 emission factors in the section model_assumption.rst (#697)
+- Added energyBusses.csv in RTD (#678)
+- Add and link `rewableAsset` as parameter in RTD, specifically `MVS_parameters.rst` and `MVS_parameters_list.csv` (#710)
 - Parameter `emission_factor` to `energyProduction` and `energyProviders` and to rtd (`MVS_parameters.rst` and `MVS_parameters_list.csv`) (#706)
 - Parameter `total_emissions` in kgCO2eq/a to `constraints.csv` (#706)
 - Constant variables `TOTAL_EMISSIONS` and `SPECIFIC_EMISSIONS_ELEQ` for emission KPIs, `MAXIMUM_EMISSIONS` for emission constraint and `UNIT_EMISSIONS` and `UNIT_SPECIFIC_EMISSIONS` for unit definitions (#706)
@@ -35,8 +38,8 @@ Here is a template for new release sections
 - Parameter `maximum_emissions` (`MAXIMUM_EMISSIONS`) to `constraints.csv`, unit: kgCO2eq/a (#706)
 
 ### Changed 
-- Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
-- Adapt pre-processing for investment benchmark tests into a separate function (#613)
+- Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
+- Adapt pre-processing for investment benchmark tests into a seperate function (#613)
 - `COST_REPLACEMENT` is now a parameter that is included in output cost matrix (#613)
 - Improved `Code.rst` for RTD code documentation (#704)
 - All `.py` files to add a module description for RTD on top (#704)
@@ -50,6 +53,7 @@ Here is a template for new release sections
 - Use current version number as defined in `version.py` for RTD (#693)
 - Added storage to the table in autoreport listing the energy system components (#686)
 - Add assertion `sum(attributed_costs)==cost_total` (for single-vector system) (#613)
+- Benchmark test for renewable share (`TestTechnicalKPI.test_renewable_factor_and_renewable_share_of_local_generation()`) (#613)
 
 ## [0.5.3] - 2020-12-08
 
