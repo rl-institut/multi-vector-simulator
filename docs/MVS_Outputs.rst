@@ -202,7 +202,7 @@ Emissions can be of different nature: CO2 emissions, CO2 equivalents, greenhouse
 
 The emissions are calculated separately for each source in kg/a, as well as for the total system in kg/a and in :math:`\text{kg/kWh}_{eleq}`.
 
-Until now the emissions do not include life cycle emissions nor are they calculated separately for the energy sectors. For the latter, it arises the problem of the assignment of assets to sectors. E.g. emissions caused by an electrolyser would be counted to the electricity sector although you might want to count it for the H2 sector, as the purpose of the electrolyser is to feed the H2 sector.
+Currently the emissions do not include life cycle emissions of energy conversion or storage assets, nor are they calculated separately for the energy sectors. For the latter, it arises the problem of the assignment of assets to sectors. E.g. emissions caused by an electrolyser would be counted to the electricity sector although you might want to count it for the H2 sector, as the purpose of the electrolyser is to feed the H2 sector. Therefore, we will have to verify whether or not we can apply the energy carrier weighting also for this KPI.
 
 Degree of sector-coupling (DSC)
 ###############################
