@@ -9,5 +9,5 @@ renewable_share,factor,0.1
 inflow_direction,str,Electricity (DSO)
 outflow_direction,str,Electricity (DSO)
 energyVector,str,Electricity
-emission_factor,kgCO2/kWh,0.0144
+emission_factor,kgCO2eq/kWh,0.019
 type_oemof,str,source

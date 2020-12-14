@@ -13,5 +13,5 @@ outflow_direction,str,PV plant (mono) bus,Fuel
 file_name,str,pv_gen_merra2_2014_eff1_tilt40_az180.csv,None
 energyVector,str,Electricity,Electricity
 renewableAsset,bool,True,False
-emission_factor,kgCO2/unit,0,2.68
+emission_factor,kgCO2eq/unit,0,2.7
 type_oemof,str,source,source
