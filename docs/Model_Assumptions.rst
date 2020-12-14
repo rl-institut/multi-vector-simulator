@@ -308,35 +308,35 @@ These values are based on direct emissions during stationary consumption of the 
    * - Diesel
      - kgCO2eq/litre
      - 2.7
-     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__] Page No. 26
    * - Gasoline
      - kgCO2eq/litre
      - 2.3
-     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]Page No. 26
    * - Kerosene
      - kgCO2eq/litre
      - 2.5
-     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]Page No. 26
    * - Natural gas
      - kgCO2eq/m3
      - 1.9
-     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]Page No. 26
    * - LPG
      - kgCO2eq/litre
      - 1.6
-     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__]Page No. 26
    * - Biodiesel
      - kgCO2eq/litre
      - 0.000125
-     - [`5  <https://www.mfe.govt.nz/sites/default/files/media/Climate%20Change/2019-emission-factors-summary.pdf>`__]
+     - [`5  <https://www.mfe.govt.nz/sites/default/files/media/Climate%20Change/2019-emission-factors-summary.pdf>`__]Page No. 6
    * - Bioethanol
      - kgCO2eq/litre
      - 0.0000807
-     - [`5  <https://www.mfe.govt.nz/sites/default/files/media/Climate%20Change/2019-emission-factors-summary.pdf>`__]
+     - [`5  <https://www.mfe.govt.nz/sites/default/files/media/Climate%20Change/2019-emission-factors-summary.pdf>`__]Page No. 6
    * - Biogas
      - kgCO2eq/m3
      - 0.12
-     - [`6 <https://www.winnipeg.ca/finance/findata/matmgt/documents/2012/682-2012/682-2012_Appendix_H-WSTP_South_End_Plant_Process_Selection_Report/Appendix%207.pdf>`__]
+     - [`6 <https://www.winnipeg.ca/finance/findata/matmgt/documents/2012/682-2012/682-2012_Appendix_H-WSTP_South_End_Plant_Process_Selection_Report/Appendix%207.pdf>`__]Page No. 1
 
 Following CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, India) are defined:
 
@@ -353,23 +353,23 @@ Following CO2 emissions for Germany and the four pilot sites (Norway, Spain, Rom
    * - Germany
      - gCO2eq/kWh
      - 338
-     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__]
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__] Fig. 1
    * - Norway
      - gCO2eq/kWh
      - 19
-     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__]
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__] Fig. 1
    * - Spain
      - gCO2eq/kWh
      - 207
-     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__]
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__] Fig. 1
    * - Romania
      - gCO2eq/kWh
      - 293
-     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__]
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__] Fig. 1
    * - India
      - gCO2eq/kWh
      - 708
-     - [`8 <https://www.climate-transparency.org/wp-content/uploads/2019/11/B2G_2019_India.pdf>`__]
+     - [`8 <https://www.climate-transparency.org/wp-content/uploads/2019/11/B2G_2019_India.pdf>`__] Page No. 7
 
 The values mentioned in the table above account for emissions during the complete life cycle. This includes emissions during energy production, energy conversion, energy storage and energy transmission.
 
