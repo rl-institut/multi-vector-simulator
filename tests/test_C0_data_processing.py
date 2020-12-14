@@ -704,7 +704,7 @@ dict_test.update(
                 UNIT: "unit",
                 ENERGY_VECTOR: "a_vector",
                 PEAK_DEMAND_PRICING_PERIOD: {VALUE: 1},
-                EMISSION_FACTOR: {VALUE: 0.02}
+                EMISSION_FACTOR: {VALUE: 0.02},
             }
         },
     }
