@@ -881,7 +881,7 @@ def equation_onsite_energy_matching(
 
 def add_total_emissions(dict_values):
     r"""
-    Calculates the total emission of the energy system in kg/a and kg/kWheleq and adds KPI to `dict_values`.
+    Calculates the total emission of the energy system in kg/a and the emissions per electricity equivalent in kg/kWheleq and adds KPI to `dict_values`.
 
     Parameters
     ----------
