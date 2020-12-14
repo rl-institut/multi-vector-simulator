@@ -123,6 +123,8 @@ MAXIMUM_EMISSIONS = "maximum_emissions"
 UNIT_YEAR = "year"
 UNIT_HOUR = "hour"
 UNIT_MINUTE = "min"
+UNIT_EMISSIONS = "kgCO2eq/a"
+UNIT_SPECIFIC_EMISSIONS = "kgCO2eq/kWheleq"
 
 # Preprocessing: Time
 END_DATE = "end_date"
@@ -241,6 +243,7 @@ TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use"
 RENEWABLE_FACTOR = "Renewable factor"
 RENEWABLE_SHARE_OF_LOCAL_GENERATION = "Renewable share of local generation"
 TOTAL_EMISSIONS = "Total emissions"
+SPECIFIC_EMISSIONS_ELEQ = "Specific emissions per electricity equivalent"
 
 TOTAL_DEMAND = "Total_demand"
 TOTAL_EXCESS = "Total_excess"
