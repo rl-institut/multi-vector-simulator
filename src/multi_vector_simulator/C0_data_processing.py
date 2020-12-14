@@ -974,8 +974,8 @@ def define_source(
     energy_vector: str
         Energy vector the new asset should belong to
 
-    emission_factor : float
-        Emission factor of the new asset
+    emission_factor : dict
+        Dict with a unit-value pair of the emission factor of the new asset
 
     price: dict
         Dict with a unit-value pair of the dispatch price of the source.

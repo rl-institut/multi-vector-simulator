@@ -27,7 +27,7 @@ from multi_vector_simulator.utils.constants import (
     TOTAL_EMISSIONS,
 )
 
-from multi_vector_simulator.utils.constants_json_strings import LABEL, EMISSION_FACTOR
+from multi_vector_simulator.utils.constants_json_strings import LABEL
 
 ######################
 # Tab "cost_matrix"  #
