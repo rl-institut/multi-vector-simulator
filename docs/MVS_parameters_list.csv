@@ -19,7 +19,7 @@
 17, None, Latitude coordinate of the project's geographical location., 45.641603, Should follow geographical convention, Numeric, None,latitude,latitude-label
 18, None, Number of operational years of the asset until it has to be replaced., 30, None, Numeric, Year,lifetime,lifetime-label
 19, None, Longitude coordinate of the project's geographical location., 10.95787, Should follow geographical convention, Numeric, None,longitude,longitude-label
-20, None, The maximum installable capacity., 1000, None, Alphanumeric, None or float,maximumCap,maxcap-label
+20, None, The maximum installable capacity., 1000, Acceptable values are either a positive real number or None, Numeric or None, kW,maximumCap,maxcap-label
 21, None, The minimum share of energy supplied by renewable generation in the optimized energy system., 0.7, Between 0 and 1, Numeric, factor,minimal_renewable_factor,minrenshare-label
 22, None, `True` if the user wants to perform capacity optimization for various components as part of the simulation., True, Permissible values are either True or False, str, Boolean value,optimizeCap,optimizecap-label
 23, None," Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user look at the underlying equations of the optimization.", False, Acceptable values are either True or False, str, Boolean,output_lp_file,outputlpfile-label
