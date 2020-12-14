@@ -25,10 +25,14 @@ Here is a template for new release sections
 - Updated release protocol with info on credentials for test.pypi.org (step 9) and added "Fixed" to unreleased section of changelog.md in release protocol (#695)
 - Added information about the API to the docs (#701)
 - Parameter `emission_factor` to `energyProduction` and `energyProviders` and to rtd (`MVS_parameters.rst` and `MVS_parameters_list.csv`) (#706)
-- Parameter `total_emissions` in kg/a to `constraints.csv` (#706)
-- Emissions KPI with `E3.add_total_emissions` and adapted `E3.calculate_emissions()` for calculations (#706)
-- `emisson_factor` of providers to automatic source for providers in `C0.define_source()` and adapted tests (#706)
-
+- Parameter `total_emissions` in kgCO2eq/a to `constraints.csv` (#706)
+- Constant variables `TOTAL_EMISSIONS` and `SPECIFIC_EMISSIONS_ELEQ` for emission KPIs and `MAXIMUM_EMISSIONS` for emission constraint (#706)
+- Calculation of total emissions per production asset in `E3.calculate_emissions_from_flow()`, which are added to `KPI_SCALARS_DICT` (#706)
+- KPI "Total emissions" in kgCO2eq/a per production asset (`E3.add_total_emissions()`) and KPI "Specific emissions per electricity equivalent" in kgCO2eq/kWheleq (`E3.add_specific_emissions_per_electricity_equivalent()`) (#706)
+- Tests for functions `E3.calculate_emissions_from_flow()`, `E3.add_specific_emissions_per_electricity_equivalent()`) and `E3.add_total_emissions()` (#706)
+- Added `emisson_factor` of providers to automatic source for providers in `C0.define_source()` and adapted tests (#706)
+- Added information on calculation of total emissions in RTD in Simulation Outputs section (#706)
+- Parameter `maximum_emissions` (`MAXIMUM_EMISSIONS`) to `constraints.csv`, unit: kgCO2eq/a
 
 ### Changed 
 - Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
@@ -36,6 +40,7 @@ Here is a template for new release sections
 - `COST_REPLACEMENT` is now a parameter that is included in output cost matrix (#613)
 - Improved `Code.rst` for RTD code documentation (#704)
 - All `.py` files to add a module description for RTD on top (#704)
+- Adapted `E0` tests to new parameter `emission_factor` (#706)
 
 ### Removed
 -
