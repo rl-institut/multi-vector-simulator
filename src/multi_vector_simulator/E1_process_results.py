@@ -958,7 +958,7 @@ def get_emissions(dict_asset):
     Notes
     -----
     Tested with:
-    - test_get_emissions()
+    - E1.test_get_emissions()
     -
 
     Returns
