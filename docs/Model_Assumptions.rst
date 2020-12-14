@@ -289,7 +289,7 @@ In the MVS, there is no distinction between energy carriers and energy vector. F
 
 Emission factors
 ----------------------------
-In order to optimise the energy system with minimum CO2 emissions, it is important to calculate CO2 emission per unit of fuel consumption.
+In order to optimise the energy system with minimum emissions, it is important to calculate emission per unit of fuel consumption.
 
 Following emission factors for energy carriers are defined:
 
