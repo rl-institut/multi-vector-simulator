@@ -268,7 +268,7 @@ EXTRA_CSV_PARAMETERS = {
     EMISSION_FACTOR: {
         DEFAULT_VALUE: 0,
         UNIT: TYPE_FLOAT,
-        WARNING_TEXT: "allows defining the total emissions of the energy system (Values: Float). ",
+        WARNING_TEXT: "allows calculating the total emissions of the energy system (Values: Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PRODUCTION, ENERGY_PROVIDERS,],
     },
 }
