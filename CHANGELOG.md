@@ -24,6 +24,7 @@ Here is a template for new release sections
 ### Added
 - Updated release protocol with info on credentials for test.pypi.org (step 9) and added "Fixed" to unreleased section of changelog.md in release protocol (#695)
 - Added information about the API to the docs (#701)
+- Added CO2 emission factors in the section model_assumption.rst (#697)
 - Added energyBusses.csv in RTD (#678)
 - Add and link `rewableAsset` as parameter in RTD, specifically `MVS_parameters.rst` and `MVS_parameters_list.csv` (#710)
 
