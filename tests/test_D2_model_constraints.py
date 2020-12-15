@@ -43,6 +43,7 @@ PARSER = A0.mvs_arg_parser()
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, OUTPUT_FOLDER)
 
+
 def test_prepare_constraint_minimal_renewable_share():
     pv_plant = "PV"
     diesel = "Diesel"
