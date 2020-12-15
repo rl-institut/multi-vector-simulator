@@ -76,6 +76,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES_TOTAL,
     DISPATCHABILITY,
     OPTIMIZE_CAP,
+    EMISSION_FACTOR,
+    MAXIMUM_EMISSIONS,
+    CONSTRAINTS,
 )
 
 # Necessary for check_for_label_duplicates()
@@ -299,6 +302,46 @@ def check_feedin_tariff_vs_energy_price(dict_values):
                 logging.debug(
                     f"Feed-in tariff < energy price for energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'"
                 )
+
+
+def check_maximum_emissions_constraint(dict_values):
+    r"""
+    Logs a logging.warning message in case the maximum emissions constraint could run into an unbound problem.
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+
+    Returns
+    -------
+    Indirectly, logs a logging.warning message in case the maximum emissions constraint
+    is used while no production with zero emissions is optimized without maximum capacity.
+
+    Notes
+    -----
+    Tested with:
+    - C1.test_check_maximum_emissions_constraint_no_warning_no_constraint()
+    - C1.test_check_maximum_emissions_constraint_no_warning_although_emission_contraint()
+    - C1.test_check_maximum_emissions_constraint_maximumcap()
+    - C1.test_check_maximum_emissions_constraint_optimizeCap_is_False()
+    - C1.test_check_maximum_emissions_constraint_no_zero_emission_asset()
+
+    """
+    if dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE] is not None:
+        count = 0
+        for key, asset in dict_values[ENERGY_PRODUCTION].items():
+            if (
+                asset[EMISSION_FACTOR][VALUE] == 0
+                and asset[OPTIMIZE_CAP][VALUE] == True
+                and asset[MAXIMUM_CAP][VALUE] is None
+            ):
+                count += 1
+
+        if count == 0:
+            logging.warning(
+                f"When the maximum emissions constraint is used and no production asset with zero emissions is optimized without maximum capacity this could result into an unbound problem. If this happens you can either raise the allowed maximum emissions or make sure you have enough production capacity with low emissions to cover the demand."
+            )
 
 
 def check_time_series_values_between_0_and_1(time_series):
