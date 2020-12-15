@@ -129,8 +129,12 @@ def check_for_label_duplicates(dict_values):
 
 def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_values):
     r"""
-    Raises error if feed-in tariff > levelized costs of generation for energy asset in ENERGY_PRODUCTION
-    This is not allowed, as oemof otherwise may be subjected to an unbound problem, ie. a business case in which an asset should be installed with infinite capacities to maximize revenue.
+    Raises error if feed-in tariff > levelized costs of generation for energy asset in ENERGY_PRODUCTION with capacity to be optimized and no maximum capacity constraint.
+
+    This is not allowed, as oemof otherwise may be subjected to an unbound problem, ie.
+    a business case in which an asset should be installed with infinite capacities to maximize revenue.
+
+    In case of a set maximum capacity or no capacity optimization logging messages are logged.
 
     Parameters
     ----------
