@@ -139,6 +139,34 @@ Also, if you are aiming at very high minimal renewable factors, the simulation t
 
 The minimum renewable share is introduced to the energy system by `D2.constraint_minimal_renewable_share()` and a validation test is performed with `E4.minimal_renewable_share_test()`.
 
+
+Maximum emission constraint
+###########################
+
+The maximum emission constraint limits the maximum amount of total emissions per year of the energy system. It allows the capacity and dispatch optimization of the MVS to result into a maximum amount of emissions defined by the maximum emission constraint. The yearly emissions of the optimized energy system may also be lower than the maximum emission constraint.
+
+Please note that the maximum emissions constraint currently does not take into consideration life cycle emissions, also see :ref:`emissions` section for an explanation.
+
+:Activating the constraint:
+
+The maximum emissions constraint is enabled by inserting the following row in `constraints.csv` as follows:
+
+```maximum_emissions,kgCO2eq/a,800000```
+
+:Deactivating the constraint:
+
+The constraint is deactivated by setting the value in `constraints.csv` to None:
+
+```maximum_emissions,kgCO2eq/a,None```
+
+The unit of the constraint is `kgCO2eq/a`. To select a useful value for this constraint you can e.g.:
+
+- Firstly, optimize your system without the constraint to get an idea about the scale of the emissions and then, secondly, set the constraint and lower the emissions step by step until you receive an unbound problem
+- Check the emissions targets of your region/country and disaggregate the number
+
+The maximum emissions constraint is introduced to the energy system by `D2.constraint_maximum_emissions()` and a validation test is performed within the benchmark tests.
+
+
 Weighting of energy carriers
 ----------------------------
 

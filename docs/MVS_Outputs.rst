@@ -187,6 +187,8 @@ Again, the heat sector would have a renewable factor of 0% when considered separ
 
 The renewable factor can, just like the :ref:`kpi_renewable_share_of_local_generation` not indicate how much renewable energy is used in each of the sectors. In the future, it may be possible to dive into this together with the degree of sector-coupling.
 
+.. _emissions:
+
 Emissions
 #########
 
