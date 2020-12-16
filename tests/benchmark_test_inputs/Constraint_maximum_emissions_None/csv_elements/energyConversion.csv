@@ -1,16 +1,16 @@
-,unit,transformer_station_in
-age_installed,year,5
-development_costs,currency,0
-specific_costs,currency/kW,0
-efficiency,factor,0.96
-inflow_direction,str,Electricity (DSO)
-installedCap,kW,1250
-maximumCap,kW,None
-lifetime,year,30
-specific_costs_om,currency/kW/year,0
-dispatch_price,currency/kWh,0
-optimizeCap,bool,False
-outflow_direction,str,Electricity
-energyVector,str,Electricity
-type_oemof,str,transformer
-unit,str,kVA
+,unit,transformer_station_in,diesel_generator
+age_installed,year,5,5
+development_costs,currency,0,0
+specific_costs,currency/kW,0,100
+efficiency,factor,0.96,0.34
+inflow_direction,str,Electricity (DSO),Fuel
+installedCap,kW,1250,0
+maximumCap,kW,None,None
+lifetime,year,30,30
+specific_costs_om,currency/kW/year,0,5
+dispatch_price,currency/kWh,0,0
+optimizeCap,bool,False,True
+outflow_direction,str,Electricity,Electricity
+energyVector,str,Electricity,Electricity
+type_oemof,str,transformer,transformer
+unit,str,kVA,kVA

@@ -120,7 +120,7 @@ class Test_Constraints:
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_maximum_emissions_constraint(self, margs):
         r"""
-        Tests the maximum emissions constraint in a system with PV and DSO.
+        Tests the maximum emissions constraint in a system with PV, DSO and a diesel generator.
         The şystem defined in `\Constraint_maximum_emissions_None` does not have maximum emissions constraint,
         while the system defined in `\Constraint_maximum_emissions_low` has a low maximum emissions constraint of 800 kgCO2eq/a.
 
@@ -140,6 +140,7 @@ class Test_Constraints:
         maximum_emissions = {}
         specific_emissions_eleq = {}
         pv_capacities = {}
+        diesel_capacities = {}
         for case in use_case:
             main(
                 overwrite=True,
@@ -171,6 +172,13 @@ class Test_Constraints:
         assert total_emissions[use_case[1]] <= maximum_emissions[use_case[1]] + 10 ** (
             -5
         ), f"The total emissions exceed the maximum emisssions constraints."
+            diesel_capacities.update(
+                {
+                    case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[
+                        OPTIMIZED_ADD_CAP
+                    ]["diesel_generator"]
+                }
+            )
 
         assert (
             total_emissions[use_case[0]] > total_emissions[use_case[1]]
