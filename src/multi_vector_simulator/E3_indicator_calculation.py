@@ -529,7 +529,6 @@ def add_degree_of_autonomy(dict_values):
     """
 
     total_consumption_from_energy_provider = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_CONSUMPTION_FROM_PROVIDERS+SUFFIX_ELECTRICITY_EQUIVALENT]
-
     total_demand = dict_values[KPI][KPI_SCALARS_DICT][
         TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
     ]
@@ -728,13 +727,13 @@ def add_total_consumption_electricity_equivaluent(dict_values):
     for dso in dict_values[ENERGY_PROVIDERS]:
         # load total flow into the dso sink
         consumption_source = str(dso + DSO_CONSUMPTION)
-        energy_carrier = dict_values[ENERGY_PRODUCTION][consumption_source][
+        energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_source][
             ENERGY_VECTOR
         ]
         total_consumption_dict.update({energy_carrier: {}})
         total_consumption_dict.update(
             {
-                energy_carrier: dict_values[ENERGY_PRODUCTION][consumption_source][
+                energy_carrier: dict_values[ENERGY_CONSUMPTION][consumption_source][
                     TOTAL_FLOW
                 ][VALUE]
             }
