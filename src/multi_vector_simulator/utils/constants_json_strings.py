@@ -75,6 +75,7 @@ SCENARIO_NAME = "scenario_name"
 COUNTRY = "country"
 PROJECT_ID = "project_id"
 SCENARIO_ID = "scenario_id"
+SCENARIO_DESCRIPTION = "scenario_description"
 
 # Asset definitions
 DSM = "dsm"
