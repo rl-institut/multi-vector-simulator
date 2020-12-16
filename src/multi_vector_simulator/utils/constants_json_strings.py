@@ -113,6 +113,7 @@ SOC_MIN = "soc_min"
 # Constraints
 CONSTRAINTS = "constraints"
 MINIMAL_RENEWABLE_FACTOR = "minimal_renewable_factor"
+MINIMAL_DEGREE_OF_AUTONOMY = "minimal_degree_of_autonomy"
 
 #######################################
 # Parameters added in pre-processing #
@@ -243,6 +244,7 @@ RENEWABLE_SHARE_OF_LOCAL_GENERATION = "Renewable share of local generation"
 TOTAL_DEMAND = "Total_demand"
 TOTAL_EXCESS = "Total_excess"
 TOTAL_FEEDIN = "Total_feedin"
+TOTAL_CONSUMPTION_FROM_PROVIDERS = "Total_consumption_from_energy_provider"
 SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
 ATTRIBUTED_COSTS = "Attributed costs"
 LCOeleq = "Levelized costs of electricity equivalent"
