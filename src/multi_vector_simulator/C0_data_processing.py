@@ -83,6 +83,9 @@ def all(dict_values):
     # display warning in case of maximum emissions constraint and no asset with zero emissions has no capacity limit
     C1.check_maximum_emissions_constraint(dict_values)
 
+    # display warning in case of emission_factor of provider > 0 while RE share = 100 %
+    C1.check_emission_factor_of_providers(dict_values)
+
     # check efficiencies of storage capacity, raise error in case it is 0 and add a
     # warning in case it is <0.2 to help users to spot major change in #676
     C1.check_efficiency_of_storage_capacity(dict_values)

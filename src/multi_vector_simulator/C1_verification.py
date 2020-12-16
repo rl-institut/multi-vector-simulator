@@ -79,6 +79,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EMISSION_FACTOR,
     MAXIMUM_EMISSIONS,
     CONSTRAINTS,
+    RENEWABLE_SHARE_DSO,
 )
 
 # Necessary for check_for_label_duplicates()
@@ -341,6 +342,36 @@ def check_maximum_emissions_constraint(dict_values):
         if count == 0:
             logging.warning(
                 f"When the maximum emissions constraint is used and no production asset with zero emissions is optimized without maximum capacity this could result into an unbound problem. If this happens you can either raise the allowed maximum emissions or make sure you have enough production capacity with low emissions to cover the demand."
+            )
+
+
+def check_emission_factor_of_providers(dict_values):
+    r"""
+    Logs a logging.warning message in case the grid has a renewable share of 100 % but an emission factor > 0.
+
+    This would affect the optimization if a maximum emissions contraint is used.
+    Aditionally, it effects the KPIs connected to emissions.
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+
+    Returns
+    -------
+    Indirectly, logs a logging.warning message in case tthe grid has a renewable share
+    of 100 % but an emission factor > 0.
+
+    Notes
+    -----
+    Tested with:
+    - C1.
+
+    """
+    for key, asset in dict_values[ENERGY_PROVIDERS].items():
+        if asset[EMISSION_FACTOR][VALUE] > 0 and asset[RENEWABLE_SHARE_DSO][VALUE] == 1:
+            logging.warning(
+                f"The renewable share of provider {key} is {asset[RENEWABLE_SHARE_DSO][VALUE] * 100} % while its emission_factor is >0. Check if this is what you intended to define."
             )
 
 
