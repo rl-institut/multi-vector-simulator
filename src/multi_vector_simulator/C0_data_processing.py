@@ -351,8 +351,9 @@ def energyStorage(dict_values, group):
 
             # check if parameters are provided as timeseries
             for parameter in [EFFICIENCY, SOC_MIN, SOC_MAX]:
-                if parameter in dict_values[group][asset][subasset] and isinstance(
-                    dict_values[group][asset][subasset][parameter][VALUE], dict
+                if parameter in dict_values[group][asset][subasset] and (
+                        FILENAME in dict_values[group][asset][subasset][parameter]
+                        and HEADER in dict_values[group][asset][subasset][parameter]
                 ):
                     receive_timeseries_from_csv(
                         dict_values[SIMULATION_SETTINGS],
