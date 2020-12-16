@@ -498,6 +498,11 @@ def process_user_arguments(
         screen_level=screen_level,
     )
 
+    logger.getLogger("asyncio").setLevel(logging.ERROR)
+    logger.getLogger("asyncio.coroutines").setLevel(logging.ERROR)
+    logger.getLogger("websockets.server").setLevel(logging.ERROR)
+    logger.getLogger("websockets.protocol").setLevel(logging.ERROR)
+
     if welcome_text is not None:
         # display welcome text
         logging.info(welcome_text)
