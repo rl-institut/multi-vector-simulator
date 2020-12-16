@@ -257,6 +257,7 @@ or an excess sink.
 
         &OEM \epsilon \text{[0,1]}
 
+.. _kpi_degree_of_autonomy:
 
 Degree of autonomy (DA)
 #######################
