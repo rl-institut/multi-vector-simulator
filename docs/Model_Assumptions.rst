@@ -146,7 +146,7 @@ The minimal degree of autonomy constraint requires the capacity and dispatch opt
 The minimal degree of autonomy is applied to the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
 
 .. math::
-        minimal degree of autonomy <= \frac{\sum local demand \cdot weighting factor - \sum consumtion from energy providers}{\sum local demand  \cdot weighting factor}
+        minimal degree of autonomy <= \frac{\sum local demand \cdot weighting factor - \sum consumtion from energy providers \cdot weighting factor}{\sum local demand  \cdot weighting factor}
 
 :Deactivating the constraint:
 
