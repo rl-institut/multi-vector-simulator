@@ -54,6 +54,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_DEMAND,
     TOTAL_EXCESS,
     TOTAL_FEEDIN,
+    TOTAL_CONSUMPTION_FROM_PROVIDERS,
     SUFFIX_ELECTRICITY_EQUIVALENT,
     LCOeleq,
     ATTRIBUTED_COSTS,
@@ -527,13 +528,13 @@ def add_degree_of_autonomy(dict_values):
     - test_add_degree_of_autonomy()
     """
 
-    total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
+    total_consumption_from_energy_provider = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_CONSUMPTION_FROM_PROVIDERS+SUFFIX_ELECTRICITY_EQUIVALENT]
 
     total_demand = dict_values[KPI][KPI_SCALARS_DICT][
         TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
     ]
 
-    degree_of_autonomy = equation_degree_of_autonomy(total_generation, total_demand)
+    degree_of_autonomy = equation_degree_of_autonomy(total_consumption_from_energy_provider, total_demand)
 
     dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_AUTONOMY: degree_of_autonomy})
 
@@ -545,7 +546,7 @@ def add_degree_of_autonomy(dict_values):
     return
 
 
-def equation_degree_of_autonomy(total_generation, total_demand):
+def equation_degree_of_autonomy(total_consumption_from_energy_provider, total_demand):
     """
     Calculates the degree of autonomy (DA).
 
@@ -554,7 +555,7 @@ def equation_degree_of_autonomy(total_generation, total_demand):
 
     Parameters
     ----------
-    total_generation: float
+    total_consumption_from_energy_provider: float
         total internal generation of energy
 
     total_demand: float
@@ -566,7 +567,7 @@ def equation_degree_of_autonomy(total_generation, total_demand):
         degree of autonomy
 
     .. math::
-        DA &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+        DA &=\frac{\sum_i {E_{demand} (i) \cdot w_i} - \sum_{i} {E_{total_consumption_from_energy_provider} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
     A DA = 0 : System is totally dependent on the DSO,
     DA = 1 : System is autonomous / a net-energy system
@@ -577,7 +578,7 @@ def equation_degree_of_autonomy(total_generation, total_demand):
     Tested with
     - test_equation_degree_of_autonomy()
     """
-    degree_of_autonomy = total_generation / total_demand
+    degree_of_autonomy = (total_demand-total_consumption_from_energy_provider) / total_demand
 
     return degree_of_autonomy
 
@@ -704,6 +705,45 @@ def add_total_feedin_electricity_equivaluent(dict_values):
         dict_values, total_feedin_dict, kpi_name=TOTAL_FEEDIN
     )
 
+def add_total_consumption_electricity_equivaluent(dict_values):
+    """
+    Determines the total grid consumption with weighting of electricity equivalent.
+
+    Parameters
+    ----------
+    dict_values: dict
+        dict with all project information and results
+
+    Returns
+    -------
+    None
+        updated dict_values with KPI : TOTAL_CONSUMPTION_FROM_PROVIDERS
+
+    Tested with
+    - test_add_total_consumption_electricity_equivaluent()
+    """
+
+    total_consumption_dict = {}
+    # Get source connected to the specific DSO in question
+    for dso in dict_values[ENERGY_PROVIDERS]:
+        # load total flow into the dso sink
+        consumption_source = str(dso + DSO_CONSUMPTION)
+        energy_carrier = dict_values[ENERGY_PRODUCTION][consumption_source][
+            ENERGY_VECTOR
+        ]
+        total_consumption_dict.update({energy_carrier: {}})
+        total_consumption_dict.update(
+            {
+                energy_carrier: dict_values[ENERGY_PRODUCTION][consumption_source][
+                    TOTAL_FLOW
+                ][VALUE]
+            }
+        )
+
+    # Append total feedin in electricity equivalent to kpi
+    calculate_electricity_equivalent_for_a_set_of_aggregated_values(
+        dict_values, total_consumption_dict, kpi_name=TOTAL_CONSUMPTION_FROM_PROVIDERS
+    )
 
 def add_onsite_energy_fraction(dict_values):
     """
