@@ -123,17 +123,22 @@ class Test_Constraints:
         Tests the maximum emissions constraint in a system with PV, DSO and a diesel generator.
         The şystem defined in `\Constraint_maximum_emissions_None` does not have maximum emissions constraint,
         while the system defined in `\Constraint_maximum_emissions_low` has a low maximum emissions constraint of 800 kgCO2eq/a.
+        A third system, `\Constraint_maximum_emissions_low_grid_RE_100`, includes a renewable share in the grid of 100 %.
 
         The following checks are made:
-        - total emissions of energy system <= maximum emissions constraint (for Constraint_maximum_emissions_low)
+        - total emissions of energy system <= maximum emissions constraint
+            (for Constraint_maximum_emissions_low and Constraint_maximum_emissions_low_grid_RE_100)
         - total emissions of case without constraint > total emissions of case with constraint
         - specific emissions eleq of case without constraint > specific emissions eleq of case with constraint
         - optimized added pv capacity lower for case without constraint than for case with constraint
+        - optimized added capacity of diesel higher for case with 100 % RE share in grid
+
         """
         # define the two cases needed for comparison
         use_case = [
             "Constraint_maximum_emissions_None",
             "Constraint_maximum_emissions_low",
+            "Constraint_maximum_emissions_low_grid_RE_100",
         ]
         # define an empty dictionary for excess electricity
         total_emissions = {}
@@ -168,10 +173,6 @@ class Test_Constraints:
                     ]["pv_plant_01"]
                 }
             )
-
-        assert total_emissions[use_case[1]] <= maximum_emissions[use_case[1]] + 10 ** (
-            -5
-        ), f"The total emissions exceed the maximum emisssions constraints."
             diesel_capacities.update(
                 {
                     case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[
@@ -179,6 +180,10 @@ class Test_Constraints:
                     ]["diesel_generator"]
                 }
             )
+            if case != "Constraint_maximum_emissions_None":
+                assert total_emissions[case] <= maximum_emissions[case] + 10 ** (
+                    -5
+                ), f"The total emissions of use case {case} exceed the maximum emisssions constraint."
 
         assert (
             total_emissions[use_case[0]] > total_emissions[use_case[1]]
@@ -189,6 +194,9 @@ class Test_Constraints:
         assert (
             pv_capacities[use_case[0]] < pv_capacities[use_case[1]]
         ), f"The optimized installed pv capacity of the scenario without maximum emissions constraint is with {pv_capacities[use_case[0]]} kW higher than in the scenario with the maximum emissions constraint ({pv_capacities[use_case[1]]} kW), but it should be the other way round."
+        assert (
+            diesel_capacities[use_case[2]] < diesel_capacities[use_case[1]]
+        ), f"The optimized installed capacity of diesel generators of the scenario with 100 % RE in the grid is with {diesel_capacities[use_case[2]]} kW lower than in the scenario with emissions from the grid ({diesel_capacities[use_case[1]]} kW), although the diesel generator has a higher emission_factor than the grid."
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
