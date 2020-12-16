@@ -1,2 +1,3 @@
 ,unit,constraints
 minimal_renewable_factor,factor,0.3
+minimal_degree_of_autonomy,factor,0.5
