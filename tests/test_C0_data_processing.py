@@ -1058,7 +1058,6 @@ def test_change_sign_of_feedin_tariff_negative_value(caplog):
         in caplog.text
     ), f"When a negative {FEEDIN_TARIFF} is changed to a positive value there should be a warning."
 
-
 def test_change_sign_of_feedin_tariff_zero(caplog):
     """If the feed-in tariff is zero is stays zero and no logging msg is added."""
     feedin_tariff = 0
@@ -1071,6 +1070,31 @@ def test_change_sign_of_feedin_tariff_zero(caplog):
     assert (
         caplog.text == ""
     ), f"A msg is logged although the feed-in tariff is not changed."
+
+
+def test_compute_timeseries_properties(TIMESERIES_PEAK):
+    expected=
+    actual=compute_timeseries_properties(TIMESERIES_PEAK)
+    message="Expected return value:{0}, Actual return value: {1}".format(expected,actual)
+    assert actual== pytest.approx(expected),message
+
+def test_compute_timeseries_properties(TIMESERIES_TOTAL):
+    expected=
+    actual=compute_timeseries_properties(TIMESERIES_PEAK)
+    message="Expected return value:{0}, Actual return value: {1}".format(expected,actual)
+    assert actual== pytest.approx(expected),message
+
+def test_compute_timeseries_properties(TIMESERIES_AVERAGE):
+    expected=
+    actual=compute_timeseries_properties(TIMESERIES_AVERAGE)
+    message="Expected return value:{0}, Actual return value: {1}".format(expected,actual)
+    assert actual== pytest.approx(expected),message
+
+def test_compute_timeseries_properties(TIMESERIES_NORMALIZED):
+    expected=
+    actual=compute_timeseries_properties(TIMESERIES_NORMALIZED)
+    message="Expected return value:{0}, Actual return value: {1}".format(expected,actual)
+    assert actual== pytest.approx(expected),message
 
 
 """
