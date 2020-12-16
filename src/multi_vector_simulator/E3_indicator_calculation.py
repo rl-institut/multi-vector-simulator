@@ -686,14 +686,14 @@ def add_total_feedin_electricity_equivaluent(dict_values):
     # Get source connected to the specific DSO in question
     for dso in dict_values[ENERGY_PROVIDERS]:
         # load total flow into the dso sink
-        consumption_asset = str(dso + DSO_FEEDIN + AUTO_SINK)
-        energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_asset][
+        feedin_sink = str(dso + DSO_FEEDIN + AUTO_SINK)
+        energy_carrier = dict_values[ENERGY_CONSUMPTION][feedin_sink][
             ENERGY_VECTOR
         ]
         total_feedin_dict.update({energy_carrier: {}})
         total_feedin_dict.update(
             {
-                energy_carrier: dict_values[ENERGY_CONSUMPTION][consumption_asset][
+                energy_carrier: dict_values[ENERGY_CONSUMPTION][feedin_sink][
                     TOTAL_FLOW
                 ][VALUE]
             }
