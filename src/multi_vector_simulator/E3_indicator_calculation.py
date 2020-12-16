@@ -727,13 +727,13 @@ def add_total_consumption_electricity_equivaluent(dict_values):
     for dso in dict_values[ENERGY_PROVIDERS]:
         # load total flow into the dso sink
         consumption_source = str(dso + DSO_CONSUMPTION)
-        energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_source][
+        energy_carrier = dict_values[ENERGY_PRODUCTION][consumption_source][
             ENERGY_VECTOR
         ]
         total_consumption_dict.update({energy_carrier: {}})
         total_consumption_dict.update(
             {
-                energy_carrier: dict_values[ENERGY_CONSUMPTION][consumption_source][
+                energy_carrier: dict_values[ENERGY_PRODUCTION][consumption_source][
                     TOTAL_FLOW
                 ][VALUE]
             }
