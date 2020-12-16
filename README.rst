@@ -1,46 +1,45 @@
-==================================================
+##################################################
 MVS - Multi-Vector Simulator of the E-Land toolbox
-==================================================
+##################################################
 
-[![Documentation Status](https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest)](https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest)
-[![Build Status](https://travis-ci.com/rl-institut/mvs_eland.svg?branch=dev)](https://travis-ci.com/rl-institut/mvs_eland)
-[![Coverage Status](https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg)](https://coveralls.io/github/rl-institut/multi-vector-simulator)
+|badge_docs| |badge_CI| |badge_coverage|
 
-Rights: [Reiner Lemoine Institut (Berlin)](https://reiner-lemoine-institut.de/)
+Depreciated: |badge_travis|
 
-The multi-vector simulator (MVS) allows the evaluation of local sector-coupled energy systems that include the energy carriers electricity, heat and/or gas.
-The MVS has three main features:
+Rights: `Reiner Lemoine Institut (Berlin) <https://reiner-lemoine-institut.de/>`__
+
+The Multi-Vector Simulator (MVS) allows the evaluation of local sector-coupled energy systems that include the energy carriers electricity, heat and/or gas. The MVS has three main features:
 
 -  Analysis of an energy system model, which can be defined from csv or json files, including its costs and performance parameters.
 -  Near-future investments into power generation and storage assets can be optimized aiming at least-cost supply of electricity and heat.
 -  Future energy supply scenarios that integrate emerging technologies helping to meet sustainability goals and decrease adverse climate effects can be evaluated, e.g. through high renewable energy shares or sector-coupling technologies.
 
 The tool is being developed within the scope of the H2020 project E-LAND (Integrated multi-vector management system for
-Energy isLANDs, project homepage `HERE <https://elandh2020.eu/>`__).
+Energy isLANDs, `project homepage <https://elandh2020.eu/>`__).
 A graphical user interface for the MVS will be integrated.
 
 *Latest release*: Check the `latest release <https://github.com/rl-institut/multi-vector-simulator/releases/latest>`__.
 Please check the `CHANGELOG.md <https://github.com/rl-institut/multi-vector-simulator/blob/master/CHANGELOG.md>`__ for past updates and changes.
 
+You find advanced documentation of the MVS on `readthedocs <https://multi-vector-simulator.readthedocs.io/en/stable/>`__
+(stable version, latest developments `here <https://multi-vector-simulator.readthedocs.io/en/latest/>`__).
+
 *Disclaimer*: As the MVS is still under development, changes might still occur in the code as well as code structure.
 If you want to try the MVS, please make sure to check this project regularly.
-
-For advanced programmers: You can also use the ``dev`` branch that includes the latest updates and changes.
-You find the changelog `HERE <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`__.
-
-Getting started
-===============
 
 If you are interested to try out the code, please feel free to do so! In case that you are planning to use it for a specific or a larger-scale
 project, we would be very happy if you would get in contact with us, eg. via creating a github issue.
 Maybe you have ideas that can help the MVS move forward? Maybe you noticed a bug that we can resolve?
 
-We are still working on including a readthedocs for the MVS. Some information on this tool and code is already
-available `here <https://multi-vector-simulator.readthedocs.io/en/stable/>`__ (stable version,
-latest developments `here <https://multi-vector-simulator.readthedocs.io/en/latest/>`__).
+For advanced programmers: You can also use the ``dev`` branch that includes the latest updates and changes.
+You find the changelog `HERE <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`__.
 
-Setup and installation
-----------------------
+========================
+Getting started with MVS
+========================
+
+Setup
+=====
 
 To set up the MVS, follow the steps below:
 
@@ -87,13 +86,14 @@ To set up the MVS, follow the steps below:
 
 This should create a folder ``MVS_outputs`` with the example simulation's results
 
+
 Using the MVS
--------------
+=============
 
 To run the MVS with custom inputs you have several options:
 
 Use the command line
-''''''''''''''''''''
+--------------------
 
 Edit the json input file (or csv files) and run
 
@@ -114,7 +114,7 @@ For more information about the possible command lines options
     `mvs_tool -h`
 
 Use the ``main()`` function
-'''''''''''''''''''''''''''
+---------------------------
 
 You can also execute the mvs within a script, for this you need to import
 
@@ -130,8 +130,7 @@ The possible arguments to this functions are:
 
 - ``path_input_folder`` (str): The path to the directory where the input CSVs/JSON files are located. Default: ``inputs/`` (Command line "-i").
 
-- ``path_output_folder`` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands (Command
-line "-o"). Default: ``MVS_outputs/``.
+- ``path_output_folder`` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands (Command line "-o"). Default: ``MVS_outputs/``.
 
 - ``display_output`` (str): Sets the level of displayed logging messages. Options: "debug", "info", "warning", "error". Default: "info".
 
@@ -144,7 +143,7 @@ line "-o"). Default: ``MVS_outputs/``.
 Edit the csv files (or, for devs, the json file) and run the ``main()`` function. The following ``kwargs`` are possible:
 
 Default settings
-''''''''''''''''
+----------------
 
 If you execute the ``mvs_tool`` command in a path where there is a folder named ``inputs`` (you can use the
 folder ``input_template`` for inspiration) this folder will be taken as default input folder and you can simply run
@@ -177,7 +176,7 @@ To use the report feature you need to install extra dependencies first
     `pip install multi-vector-simulator[report]`
 
 Generate a report after running a simulation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------------
 
 Use the option ``-pdf`` in the command line ``mvs_tool`` to generate a pdf report in the simulation's output folder
 (by default in ``MVS_outputs/report/simulation_report.pdf``):
@@ -187,7 +186,7 @@ Use the option ``-pdf`` in the command line ``mvs_tool`` to generate a pdf repor
     `mvs_tool -pdf`
 
 Generate only the figures of a simulation's results
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------------------
 
 Use the option ``-png`` in the command line ``mvs_tool`` to generate png figures of the results in the simulation's
 output folder (by default in ``MVS_outputs/``):
@@ -197,7 +196,7 @@ output folder (by default in ``MVS_outputs/``):
     `mvs_tool -png`
 
 post-processing
-~~~~~~~~~~~~~~~
+---------------
 
 To generate a report of the simulation's results, run the following command **after** a simulation generated an output folder:
 
@@ -223,8 +222,28 @@ By default, it will save the report in a ``report`` folder within your simulatio
 default (``MVS_outputs/report/``). See ``mvs_report.py -h`` for more information about possible options.
 The css and images used to make the report pretty should be located under ``report/assets``.
 
-Contributing
-------------
+Contributing and additional information for developers
+======================================================
 
 If you want to contribute to this project, please read
-`CONTRIBUTING.md <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CONTRIBUTING.md>`__.
+`CONTRIBUTING.md <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CONTRIBUTING.md>`__. For less experienced
+github users, we propose a `workflow <https://github.com/rl-institut/multi-vector-simulator/wiki/Examplary-Workflow>`__.
+
+For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in
+turn might not be tested. You can find the CHANGELOG.md on
+this `page <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`__.
+
+.. |badge_docs| image:: https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest
+    :target: https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+.. |badge_CI| image:: https://github.com/rl-institut/multi-vector-simulator/workflows/CI/badge.svg
+    :alt: Build status
+
+.. |badge_coverage| image:: https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg
+    :target: https://coveralls.io/github/rl-institut/multi-vector-simulator
+    :alt: Test coverage
+
+.. |badge_travis| image:: https://travis-ci.com/rl-institut/mvs_eland.svg?branch=dev
+    :target: https://travis-ci.com/rl-institut/mvs_eland
+    :alt: Build status
