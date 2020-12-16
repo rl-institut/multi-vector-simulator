@@ -36,6 +36,11 @@ Here is a template for new release sections
 - Added `emisson_factor` of providers to automatic source for providers in `C0.define_source()` and adapted tests (#706)
 - Added information on calculation of total emissions in RTD in Simulation Outputs section (#706)
 - Parameter `maximum_emissions` (`MAXIMUM_EMISSIONS`) to `constraints.csv`, unit: kgCO2eq/a (#706)
+- Maximum emission constraint by `D2.constraint_maximum_emissions()` to `D2.add_constraints()` using `oemof.solph.constraints.emission_limit()`, also added tests (#714, #706)
+- Benchmark test for maximum emission constraint in `test_benchmark_constraints.py` (#714, #706)
+- Information on maximum emissions constraint to RTD, including help for the end-user to define the value for this constraint (#714, #706)
+- A logging.warning (`C1.check_maximum_emissions_constraint()`) if `maximum_emissions` constraint is used but no asset with zero emissions is optimized without maximum capacity constraint, also added tests (#714, #706)
+- A logging.warning (`C1.check_emission_factor_of_providers()`) in case any of the providers has a renewable share of 100 % but an emission factor > 0, also added tests (#714, #706)
 
 ### Changed 
 - Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
