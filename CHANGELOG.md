@@ -51,6 +51,7 @@ Here is a template for new release sections
 - Improved `Code.rst` for RTD code documentation (#704)
 - All `.py` files to add a module description for RTD on top (#704)
 - Adapted `E0` tests to new parameter `emission_factor` (#706)
+- Adapted all test inputs and json files and the input template, adding `emission_factor` (`energyProduction`, `energyProviders`) and `maximum_emissions` (`constraints.csv`) (#706)
 
 ### Removed
 -
