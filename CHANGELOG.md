@@ -34,9 +34,11 @@ Here is a template for new release sections
 - `COST_REPLACEMENT` is now a parameter that is included in output cost matrix (#613)
 - Improved `Code.rst` for RTD code documentation (#704)
 - All `.py` files to add a module description for RTD on top (#704)
+- Converted `README` from `.md` to` .rst` format and updated `Installation.rst` file (#646)
+- Updated `setup.py` to use the rst formatted README file
 
 ### Removed
--
+- Removed `README.md` in favour of `README.rst` (#646)
 
 ### Fixed
 - Decreased warnings of RTD compilation drastically (#693)
