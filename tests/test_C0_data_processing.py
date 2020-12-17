@@ -1071,7 +1071,7 @@ def test_change_sign_of_feedin_tariff_zero(caplog):
         caplog.text == ""
     ), f"A msg is logged although the feed-in tariff is not changed."
 
-
+"""
 def test_compute_timeseries_properties(TIMESERIES_PEAK):
     expected=
     actual=compute_timeseries_properties(TIMESERIES_PEAK)
@@ -1095,8 +1095,33 @@ def test_compute_timeseries_properties(TIMESERIES_NORMALIZED):
     actual=compute_timeseries_properties(TIMESERIES_NORMALIZED)
     message="Expected return value:{0}, Actual return value: {1}".format(expected,actual)
     assert actual== pytest.approx(expected),message
+"""
+
+def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
+    dict_asset= {
+        TIMESERIES: pd.Series([1,2,3]),
+        UNIT:"str",
+        LABEL: "str"
+    }
+    C0.compute_timeseries_properties(dict_asset)
+    print(dict_asset)
+
+    for parameter in [TIMESERIES_PEAK,TIMESERIES_TOTAL,TIMESERIES_AVERAGE]:
+        assert parameter in dict_asset, f"Parameter {parameter} is not in updated dict_asset."
+        assert VALUE in dict_asset[parameter]
+        assert UNIT in dict_asset[parameter]
+        assert LABEL in dict_asset[parameter]
+
+    assert dict_asset[TIMESERIES_PEAK][VALUE] == 5
+    assert dict_asset[TIMESERIES_TOTAL][VALUE] == 6
+    assert dict_asset[TIMESERIES_AVERAGE][VALUE] == 2
 
 
+
+
+
+
+"""
 """
 def test_asess_energyVectors_and_add_to_project_data():
     C2.identify_energy_vectors(dict_values)
