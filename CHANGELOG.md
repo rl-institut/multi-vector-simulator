@@ -36,6 +36,8 @@ Here is a template for new release sections
 - All `.py` files to add a module description for RTD on top (#704)
 - Converted `README` from `.md` to` .rst` format and updated `Installation.rst` file (#646)
 - Updated `setup.py` to use the rst formatted README file
+- Changed `C0.energyStorage()` for timeseries in storage parameters (hotfix) (#720)
+- Input files and benchmark test `test_benchmark_special_features.Test_Parameter_Parsing()`: Now also including timeseries in a storage component ()
 
 ### Removed
 - Removed `README.md` in favour of `README.rst` (#646)
@@ -47,6 +49,7 @@ Here is a template for new release sections
 - Add assertion `sum(attributed_costs)==cost_total` (for single-vector system) (#613)
 - Benchmark test for renewable share (`TestTechnicalKPI.test_renewable_factor_and_renewable_share_of_local_generation()`) (#613)
 - Github actions workflow: update apt-get before installing pre-dependencies (#729)
+- Hot fix: Parameters to be defined as timeseries in `storage_*.csv` (#720)
 
 ## [0.5.3] - 2020-12-08
 
