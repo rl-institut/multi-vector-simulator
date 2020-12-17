@@ -81,7 +81,7 @@ def all(dict_values):
     C1.check_non_dispatchable_source_time_series(dict_values)
 
     # display warning in case of maximum emissions constraint and no asset with zero emissions has no capacity limit
-    C1.check_maximum_emissions_constraint(dict_values)
+    C1.check_feasibility_of_maximum_emissions_constraint(dict_values)
 
     # display warning in case of emission_factor of provider > 0 while RE share = 100 %
     C1.check_emission_factor_of_providers(dict_values)

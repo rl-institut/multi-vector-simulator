@@ -305,9 +305,13 @@ def check_feedin_tariff_vs_energy_price(dict_values):
                 )
 
 
-def check_maximum_emissions_constraint(dict_values):
+def check_feasibility_of_maximum_emissions_constraint(dict_values):
     r"""
-    Logs a logging.warning message in case the maximum emissions constraint could run into an unbound problem.
+    Logs a logging.warning message in case the maximum emissions constraint could lead into an unbound problem.
+
+    If the maximum emissions constraint is used it is checked whether there is any
+    production asset with zero emissions that has a capacity to be optimized without
+    maximum capacity constraint. If this is not the case a warning is logged.
 
     Parameters
     ----------
@@ -322,11 +326,11 @@ def check_maximum_emissions_constraint(dict_values):
     Notes
     -----
     Tested with:
-    - C1.test_check_maximum_emissions_constraint_no_warning_no_constraint()
-    - C1.test_check_maximum_emissions_constraint_no_warning_although_emission_contraint()
-    - C1.test_check_maximum_emissions_constraint_maximumcap()
-    - C1.test_check_maximum_emissions_constraint_optimizeCap_is_False()
-    - C1.test_check_maximum_emissions_constraint_no_zero_emission_asset()
+    - C1.test_check_feasibility_of_maximum_emissions_constraint_no_warning_no_constraint()
+    - C1.test_check_feasibility_of_maximum_emissions_constraint_no_warning_although_emission_constraint()
+    - C1.test_check_feasibility_of_maximum_emissions_constraint_maximumcap()
+    - C1.test_check_feasibility_of_maximum_emissions_constraint_optimizeCap_is_False()
+    - C1.test_check_feasibility_of_maximum_emissions_constraint_no_zero_emission_asset()
 
     """
     if dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE] is not None:

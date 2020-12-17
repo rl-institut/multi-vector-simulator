@@ -39,7 +39,7 @@ Here is a template for new release sections
 - Maximum emission constraint by `D2.constraint_maximum_emissions()` to `D2.add_constraints()` using `oemof.solph.constraints.emission_limit()`, also added tests (#714, #706)
 - Benchmark test for maximum emission constraint in `test_benchmark_constraints.py` (#714, #706)
 - Information on maximum emissions constraint to RTD, including help for the end-user to define the value for this constraint (#714, #706)
-- A logging.warning (`C1.check_maximum_emissions_constraint()`) if `maximum_emissions` constraint is used but no asset with zero emissions is optimized without maximum capacity constraint, also added tests (#714, #706)
+- A logging.warning (`C1.check_feasibility_of_maximum_emissions_constraint()`) if `maximum_emissions` constraint is used but no asset with zero emissions is optimized without maximum capacity constraint, also added tests (#714, #706)
 - A logging.warning (`C1.check_emission_factor_of_providers()`) in case any of the providers has a renewable share of 100 % but an emission factor > 0, also added tests (#714, #706)
 
 ### Changed 
