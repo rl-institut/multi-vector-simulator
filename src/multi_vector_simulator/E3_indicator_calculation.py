@@ -77,7 +77,7 @@ def all_totals(dict_values):
     ----------
 
     dict_values :
-        dict all input parameters and restults up to E0
+        dict all input parameters and results up to E0
 
     Returns
     -------

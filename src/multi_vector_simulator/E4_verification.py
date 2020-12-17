@@ -34,8 +34,14 @@ def minimal_renewable_share_test(dict_values):
     Nothing
 
     - Nothing if the constraint is confirmed
-    - Prints logging.warning message if the deviation from the constraint is 10^-6.
-    - Prints a logging.error message if the deviation from the constraint is >10^-6.
+    - Prints logging.warning message if the deviation from the constraint is < 10^-6.
+    - Prints a logging.error message if the deviation from the constraint is >= 10^-6.
+
+    Notes
+    -----
+    Tested with:
+    - E4.test_minimal_renewable_share_test_passes()
+    - E4.test_minimal_renewable_share_test_fails()
 
     """
     if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE] > 0:
