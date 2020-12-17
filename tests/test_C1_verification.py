@@ -315,13 +315,6 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_d
 def test_check_maximum_emissions_constraint_no_warning_no_constraint(caplog):
     dict_values = {
         CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: None}},
-        ENERGY_PRODUCTION: {
-            "Energy asset": {
-                EMISSION_FACTOR: {VALUE: 0},
-                MAXIMUM_CAP: {VALUE: 1000},
-                OPTIMIZE_CAP: {VALUE: False},
-            },
-        },
     }
     # logging.warning
     with caplog.at_level(logging.WARNING):

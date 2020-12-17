@@ -365,7 +365,9 @@ def check_emission_factor_of_providers(dict_values):
     Notes
     -----
     Tested with:
-    - C1.
+    - C1.test_check_emission_factor_of_providers_no_warning_RE_share_lower_1()
+    - C1.test_check_emission_factor_of_providers_no_warning_emission_factor_0()
+    - C1.test_check_emission_factor_of_providers_warning()
 
     """
     for key, asset in dict_values[ENERGY_PROVIDERS].items():
