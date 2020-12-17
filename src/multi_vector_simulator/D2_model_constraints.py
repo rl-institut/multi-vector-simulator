@@ -11,6 +11,7 @@ constraints should be tested in-code (examples) and by comparing the lp file gen
 """
 import logging
 import pyomo.environ as po
+from oemof.solph import constraints
 
 from multi_vector_simulator.utils.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
 
@@ -28,6 +29,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_ASSET_BOOL,
     CONSTRAINTS,
     MINIMAL_RENEWABLE_FACTOR,
+    MAXIMUM_EMISSIONS,
 )
 
 
@@ -57,6 +59,11 @@ def add_constraints(local_energy_system, dict_values, dict_model):
     -----
     The constraints can be validated by evaluating the LP file.
     Additionally, there are validation tests in `E4_verification_of_constraints`.
+
+    Tested with:
+    - D2.test_add_constraints_maximum_emissions()
+    - D2.test_add_constraints_maximum_emissions_None()
+
     """
     count_added_constraints = 0
 
@@ -67,12 +74,43 @@ def add_constraints(local_energy_system, dict_values, dict_model):
         )
         count_added_constraints += 1
 
+    if dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE] is not None:
+        # Add maximum emissions constraint
+        local_energy_system = constraint_maximum_emissions(
+            local_energy_system, dict_values
+        )
+        count_added_constraints += 1
+
     if count_added_constraints == 0:
         logging.info("No modelling constraint to be introduced.")
     else:
         logging.debug(f"Number of added constraints: {count_added_constraints}")
 
     return local_energy_system
+
+
+def constraint_maximum_emissions(model, dict_values):
+    r"""
+    Resulting in an energy system adhering to a maximum amount of emissions.
+
+    Parameters
+    ----------
+    model: :oemof-solph: <oemof.solph.model>
+        Model to which constraint is added.
+
+    dict_values: dict
+        All simulation parameters
+
+    Notes
+    -----
+    Tested with:
+    - D2.test_constraint_maximum_emissions()
+
+    """
+    maximum_emissions = dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]
+    constraints.emission_limit(model, limit=maximum_emissions)
+    logging.info("Added maximum emission constraint.")
+    return model
 
 
 def constraint_minimal_renewable_share(model, dict_values, dict_model):

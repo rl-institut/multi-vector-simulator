@@ -46,6 +46,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_SOURCE,
     OEMOF_TRANSFORMER,
     OEMOF_BUSSES,
+    EMISSION_FACTOR,
 )
 
 
@@ -682,6 +683,7 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
             fix=dict_asset[TIMESERIES],
             nominal_value=dict_asset[INSTALLED_CAP][VALUE],
             variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+            emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
         )
     }
 
@@ -723,6 +725,8 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
             # variable_costs are devided by time series peak as normalized time series are used as actual_value
             variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
             / dict_asset[TIMESERIES_PEAK][VALUE],
+            # add emission_factor for emission contraint
+            emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
         )
     }
     source_non_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs)
@@ -765,6 +769,8 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                 # variable_costs are devided by time series peak as normalized time series are used as actual_value
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
+                # add emission_factor for emission contraint
+                emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
             )
         }
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
@@ -787,6 +793,8 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                     maximum=dict_asset[MAXIMUM_CAP][VALUE],
                 ),
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+                # add emission_factor for emission contraint
+                emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
             )
         }
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
@@ -821,6 +829,8 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
                 max=dict_asset[TIMESERIES_NORMALIZED],
                 existing=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+                # add emission_factor for emission contraint
+                emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
             )
         }
         source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)

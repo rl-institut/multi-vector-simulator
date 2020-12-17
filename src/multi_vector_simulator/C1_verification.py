@@ -76,6 +76,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES_TOTAL,
     DISPATCHABILITY,
     OPTIMIZE_CAP,
+    EMISSION_FACTOR,
+    MAXIMUM_EMISSIONS,
+    CONSTRAINTS,
+    RENEWABLE_SHARE_DSO,
 )
 
 # Necessary for check_for_label_duplicates()
@@ -129,8 +133,12 @@ def check_for_label_duplicates(dict_values):
 
 def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_values):
     r"""
-    Raises error if feed-in tariff > levelized costs of generation for energy asset in ENERGY_PRODUCTION
-    This is not allowed, as oemof otherwise may be subjected to an unbound problem, ie. a business case in which an asset should be installed with infinite capacities to maximize revenue.
+    Raises error if feed-in tariff > levelized costs of generation for energy asset in ENERGY_PRODUCTION with capacity to be optimized and no maximum capacity constraint.
+
+    This is not allowed, as oemof otherwise may be subjected to an unbound problem, ie.
+    a business case in which an asset should be installed with infinite capacities to maximize revenue.
+
+    In case of a set maximum capacity or no capacity optimization logging messages are logged.
 
     Parameters
     ----------
@@ -295,6 +303,82 @@ def check_feedin_tariff_vs_energy_price(dict_values):
                 logging.debug(
                     f"Feed-in tariff < energy price for energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'"
                 )
+
+
+def check_feasibility_of_maximum_emissions_constraint(dict_values):
+    r"""
+    Logs a logging.warning message in case the maximum emissions constraint could lead into an unbound problem.
+
+    If the maximum emissions constraint is used it is checked whether there is any
+    production asset with zero emissions that has a capacity to be optimized without
+    maximum capacity constraint. If this is not the case a warning is logged.
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+
+    Returns
+    -------
+    Indirectly, logs a logging.warning message in case the maximum emissions constraint
+    is used while no production with zero emissions is optimized without maximum capacity.
+
+    Notes
+    -----
+    Tested with:
+    - C1.test_check_feasibility_of_maximum_emissions_constraint_no_warning_no_constraint()
+    - C1.test_check_feasibility_of_maximum_emissions_constraint_no_warning_although_emission_constraint()
+    - C1.test_check_feasibility_of_maximum_emissions_constraint_maximumcap()
+    - C1.test_check_feasibility_of_maximum_emissions_constraint_optimizeCap_is_False()
+    - C1.test_check_feasibility_of_maximum_emissions_constraint_no_zero_emission_asset()
+
+    """
+    if dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE] is not None:
+        count = 0
+        for key, asset in dict_values[ENERGY_PRODUCTION].items():
+            if (
+                asset[EMISSION_FACTOR][VALUE] == 0
+                and asset[OPTIMIZE_CAP][VALUE] == True
+                and asset[MAXIMUM_CAP][VALUE] is None
+            ):
+                count += 1
+
+        if count == 0:
+            logging.warning(
+                f"When the maximum emissions constraint is used and no production asset with zero emissions is optimized without maximum capacity this could result into an unbound problem. If this happens you can either raise the allowed maximum emissions or make sure you have enough production capacity with low emissions to cover the demand."
+            )
+
+
+def check_emission_factor_of_providers(dict_values):
+    r"""
+    Logs a logging.warning message in case the grid has a renewable share of 100 % but an emission factor > 0.
+
+    This would affect the optimization if a maximum emissions contraint is used.
+    Aditionally, it effects the KPIs connected to emissions.
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+
+    Returns
+    -------
+    Indirectly, logs a logging.warning message in case tthe grid has a renewable share
+    of 100 % but an emission factor > 0.
+
+    Notes
+    -----
+    Tested with:
+    - C1.test_check_emission_factor_of_providers_no_warning_RE_share_lower_1()
+    - C1.test_check_emission_factor_of_providers_no_warning_emission_factor_0()
+    - C1.test_check_emission_factor_of_providers_warning()
+
+    """
+    for key, asset in dict_values[ENERGY_PROVIDERS].items():
+        if asset[EMISSION_FACTOR][VALUE] > 0 and asset[RENEWABLE_SHARE_DSO][VALUE] == 1:
+            logging.warning(
+                f"The renewable share of provider {key} is {asset[RENEWABLE_SHARE_DSO][VALUE] * 100} % while its emission_factor is >0. Check if this is what you intended to define."
+            )
 
 
 def check_time_series_values_between_0_and_1(time_series):
