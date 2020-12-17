@@ -312,7 +312,9 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_d
     ), f"If the capacity of a production asset is not optimized and the feed-in tariff is greater than the expected lcoe a debug msg should be logged."
 
 
-def test_check_feasibility_of_maximum_emissions_constraint_no_warning_no_constraint(caplog):
+def test_check_feasibility_of_maximum_emissions_constraint_no_warning_no_constraint(
+    caplog,
+):
     dict_values = {
         CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: None}},
     }
@@ -385,7 +387,9 @@ def test_check_feasibility_of_maximum_emissions_constraint_optimizeCap_is_False(
     ), f"If the maximum emissions constraint is used and no production asset with zero emissions, capacity to be optimized and maximum capacity of None exists, a warning msg should be logged."
 
 
-def test_check_feasibility_of_maximum_emissions_constraint_no_zero_emission_asset(caplog):
+def test_check_feasibility_of_maximum_emissions_constraint_no_zero_emission_asset(
+    caplog,
+):
     dict_values = {
         CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: 1000}},
         ENERGY_PRODUCTION: {
