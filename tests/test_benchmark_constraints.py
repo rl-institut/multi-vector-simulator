@@ -195,7 +195,7 @@ class Test_Constraints:
             pv_capacities[use_case[0]] < pv_capacities[use_case[1]]
         ), f"The optimized installed pv capacity of the scenario without maximum emissions constraint is with {pv_capacities[use_case[0]]} kW higher than in the scenario with the maximum emissions constraint ({pv_capacities[use_case[1]]} kW), but it should be the other way round."
         assert (
-            diesel_capacities[use_case[2]] < diesel_capacities[use_case[1]]
+            diesel_capacities[use_case[2]] > diesel_capacities[use_case[1]]
         ), f"The optimized installed capacity of diesel generators of the scenario with 100 % RE in the grid is with {diesel_capacities[use_case[2]]} kW lower than in the scenario with emissions from the grid ({diesel_capacities[use_case[1]]} kW), although the diesel generator has a higher emission_factor than the grid."
 
     def teardown_method(self):
