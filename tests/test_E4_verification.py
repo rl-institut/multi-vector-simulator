@@ -17,19 +17,28 @@ from multi_vector_simulator.utils.constants_json_strings import (
 def test_minimal_renewable_share_test_passes():
     # No minimal renewable factor
     dict_values = {CONSTRAINTS: {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0}}}
-    E4.minimal_renewable_share_test(dict_values)
+    return_value = E4.minimal_renewable_share_test(dict_values)
+    assert (
+        return_value == None
+    ), f"When no minimal renewable factor is set, this test should not fail."
     # Min res < res
     dict_values = {
         CONSTRAINTS: {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0.2}},
         KPI: {KPI_SCALARS_DICT: {RENEWABLE_FACTOR: 0.3}},
     }
-    E4.minimal_renewable_share_test(dict_values)
+    return_value = E4.minimal_renewable_share_test(dict_values)
+    assert (
+        return_value == None
+    ), f"When minimal renewable factor < res, this test should not fail."
     # Min res < res, minimal deviation
     dict_values = {
         CONSTRAINTS: {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0.2}},
         KPI: {KPI_SCALARS_DICT: {RENEWABLE_FACTOR: 0.2 - 10 ** (-7)}},
     }
-    E4.minimal_renewable_share_test(dict_values)
+    return_value = E4.minimal_renewable_share_test(dict_values)
+    assert (
+        return_value == None
+    ), f"When minimal renewable factor is missed by < e6, this test should not fail."
 
 
 def test_minimal_renewable_share_test_fails():
@@ -38,7 +47,9 @@ def test_minimal_renewable_share_test_fails():
         KPI: {KPI_SCALARS_DICT: {RENEWABLE_FACTOR: 0.2 - 10 ** (-5)}},
     }
     return_value = E4.minimal_renewable_share_test(dict_values)
-    assert return_value is False
+    assert (
+        return_value is False
+    ), f"When the minimal renewable share constraint is not met (allowed deviation: < e6), this test should fail."
 
 
 def test_maximum_emissions_test_passes():
