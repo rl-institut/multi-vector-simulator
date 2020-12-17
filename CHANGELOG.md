@@ -37,7 +37,7 @@ Here is a template for new release sections
 - Converted `README` from `.md` to` .rst` format and updated `Installation.rst` file (#646)
 - Updated `setup.py` to use the rst formatted README file
 - Changed `C0.energyStorage()` for timeseries in storage parameters (hotfix) (#720)
-- Input files and benchmark test `test_benchmark_special_features.Test_Parameter_Parsing()`: Now also including timeseries in a storage component ()
+- Input files and benchmark test `test_benchmark_special_features.Test_Parameter_Parsing()`: Now also including timeseries in a storage component (#723)
 
 ### Removed
 - Removed `README.md` in favour of `README.rst` (#646)
