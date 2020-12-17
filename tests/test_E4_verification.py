@@ -9,6 +9,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     KPI,
     KPI_SCALARS_DICT,
     RENEWABLE_FACTOR,
+    MAXIMUM_EMISSIONS,
+    TOTAL_EMISSIONS,
 )
 
 
@@ -37,6 +39,44 @@ def test_minimal_renewable_share_test_fails():
     }
     return_value = E4.minimal_renewable_share_test(dict_values)
     assert return_value is False
+
+
+def test_maximum_emissions_test_passes():
+    # No maximum emissions constraint
+    dict_values = {CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: None}}}
+    return_value = E4.maximum_emissions_test(dict_values)
+    assert (
+        return_value == None
+    ), f"When no maximum emissions contraint is set, this test should not fail."
+    # Total emissions < maximum emissions constraint
+    dict_values = {
+        CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: 1000}},
+        KPI: {KPI_SCALARS_DICT: {TOTAL_EMISSIONS: 999}},
+    }
+    return_value = E4.maximum_emissions_test(dict_values)
+    assert (
+        return_value == None
+    ), f"When the maximum emissions contraint is met, this test should not fail."
+    # Total emissions > maximum emissions constraint, minimal diff
+    dict_values = {
+        CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: 1000}},
+        KPI: {KPI_SCALARS_DICT: {TOTAL_EMISSIONS: 1000 + 10 ** (-6)}},
+    }
+    return_value = E4.maximum_emissions_test(dict_values)
+    assert (
+        return_value == None
+    ), f"At a minimal exceeding of the maximum emission constraint of < e6, this test should not fail."
+
+
+def test_maximum_emissions_test_fails():
+    dict_values = {
+        CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: 1000}},
+        KPI: {KPI_SCALARS_DICT: {TOTAL_EMISSIONS: 1000.00001}},
+    }
+    return_value = E4.maximum_emissions_test(dict_values)
+    assert (
+        return_value == False
+    ), f"When the maximum emissions contraint is not met by a difference of >= e6 this test should fail."
 
 
 def test_detect_excessive_excess_generation_in_bus_warning_is_logged(caplog):

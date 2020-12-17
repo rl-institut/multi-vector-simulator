@@ -181,6 +181,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     # Tests and checks
     logging.info("Running validity checks.")
     E4.minimal_renewable_share_test(dict_values)
+    E4.maximum_emissions_test(dict_values)
     E4.detect_excessive_excess_generation_in_bus(dict_values)
 
 

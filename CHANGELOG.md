@@ -42,6 +42,7 @@ Here is a template for new release sections
 - A logging.warning (`C1.check_feasibility_of_maximum_emissions_constraint()`) if `maximum_emissions` constraint is used but no asset with zero emissions is optimized without maximum capacity constraint, also added tests (#714, #706)
 - A logging.warning (`C1.check_emission_factor_of_providers()`) in case any of the providers has a renewable share of 100 % but an emission factor > 0, also added tests (#714, #706)
 - Info on maximum emissions constraint benchmark test to RTD (#714, #706)
+- Verification for maximum emissions contraint in `E4.maximum_emissions_test()`, also added tests (#714, #706)
 
 ### Changed 
 - Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
