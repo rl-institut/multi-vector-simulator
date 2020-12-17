@@ -498,10 +498,17 @@ def process_user_arguments(
         screen_level=screen_level,
     )
 
-    logger.getLogger("asyncio").setLevel(logging.ERROR)
-    logger.getLogger("asyncio.coroutines").setLevel(logging.ERROR)
-    logger.getLogger("websockets.server").setLevel(logging.ERROR)
-    logger.getLogger("websockets.protocol").setLevel(logging.ERROR)
+    # Disable log messages of external libraries saving into the log file, unless they are ERROR or CRITICAL level
+    for ext_lib_logger in (
+        "asyncio",
+        "asyncio.coroutines",
+        "websockets.server",
+        "websockets.protocol",
+        "websockets.client",
+        "urllib3.connectionpool",
+        "PIL.PngImagePlugin",
+    ):
+        logger.getLogger(ext_lib_logger).setLevel(logging.ERROR)
 
     if welcome_text is not None:
         # display welcome text
