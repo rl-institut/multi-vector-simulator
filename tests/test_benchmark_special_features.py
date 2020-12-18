@@ -26,11 +26,14 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PROVIDERS,
     ENERGY_PRODUCTION,
     ENERGY_CONVERSION,
+    ENERGY_STORAGE,
     EFFICIENCY,
     VALUE,
     DSO_CONSUMPTION,
     DISPATCH_PRICE,
     ENERGY_PRICE,
+    STORAGE_CAPACITY,
+    SOC_MIN,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -88,6 +91,7 @@ class Test_Parameter_Parsing:
         dso = "DSO"
         diesel_efficiency = "diesel_efficiency"
         electricity_price = "electricity_price"
+        soc_min = "soc_min"
 
         for k in range(0, len(csv_data[diesel_efficiency])):
             assert data[ENERGY_CONVERSION][diesel][EFFICIENCY][VALUE][
@@ -99,6 +103,9 @@ class Test_Parameter_Parsing:
             assert data[ENERGY_PRODUCTION][dso + DSO_CONSUMPTION][DISPATCH_PRICE][
                 VALUE
             ][k] == pytest.approx(csv_data[electricity_price][k], rel=1e-6)
+            assert data[ENERGY_STORAGE]["storage_01"][STORAGE_CAPACITY][SOC_MIN][VALUE][
+                k
+            ] == pytest.approx(csv_data[soc_min][k], rel=1e-6)
 
     '''
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
