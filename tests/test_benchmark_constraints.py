@@ -132,7 +132,7 @@ class Test_Constraints:
         - total emissions of case without constraint > total emissions of case with constraint
         - specific emissions eleq of case without constraint > specific emissions eleq of case with constraint
         - optimized added pv capacity lower for case without constraint than for case with constraint
-        - optimized added capacity of diesel higher for case with 100 % RE share in grid
+        - total flow of grid consumption higher for case with 100 % RE share in grid than for case with emissions from grid
 
         """
         # define the two cases needed for comparison
@@ -146,7 +146,6 @@ class Test_Constraints:
         maximum_emissions = {}
         specific_emissions_eleq = {}
         pv_capacities = {}
-        diesel_capacities = {}
         grid_total_flows = {}
         for case in use_case:
             main(
@@ -175,13 +174,6 @@ class Test_Constraints:
                     ]["pv_plant_01"]
                 }
             )
-            diesel_capacities.update(
-                {
-                    case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[
-                        OPTIMIZED_ADD_CAP
-                    ]["diesel_generator"]
-                }
-            )
             grid_total_flows.update(
                 {
                     case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[TOTAL_FLOW][
@@ -203,9 +195,6 @@ class Test_Constraints:
         assert (
             pv_capacities[use_case[0]] < pv_capacities[use_case[1]]
         ), f"The optimized installed pv capacity of the scenario without maximum emissions constraint is with {pv_capacities[use_case[0]]} kW higher than in the scenario with the maximum emissions constraint ({pv_capacities[use_case[1]]} kW), but it should be the other way round."
-        assert (
-            diesel_capacities[use_case[2]] > diesel_capacities[use_case[1]]
-        ), f"The optimized installed capacity of diesel generators of the scenario with 100 % RE in the grid is with {diesel_capacities[use_case[2]]} kW lower than in the scenario with emissions from the grid ({diesel_capacities[use_case[1]]} kW), although the diesel generator has a higher emission_factor than the grid."
         assert (
             grid_total_flows[use_case[2]] > grid_total_flows[use_case[1]]
         ), f"The total flow of the grid consumption of the scenario with 100 % RE in the grid is with {grid_total_flows[use_case[2]]} kWh lower than in the scenario with emissions from the grid ({grid_total_flows[use_case[1]]} kWh). When the grid has zero emissions it should be used more, while PV is more expensive."
