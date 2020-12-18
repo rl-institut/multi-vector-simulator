@@ -41,6 +41,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     KPI_SCALAR_MATRIX,
     OPTIMIZED_ADD_CAP,
     LABEL,
+    TOTAL_FLOW,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -146,6 +147,7 @@ class Test_Constraints:
         specific_emissions_eleq = {}
         pv_capacities = {}
         diesel_capacities = {}
+        grid_total_flows = {}
         for case in use_case:
             main(
                 overwrite=True,
@@ -180,6 +182,13 @@ class Test_Constraints:
                     ]["diesel_generator"]
                 }
             )
+            grid_total_flows.update(
+                {
+                    case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[TOTAL_FLOW][
+                        "Electricity_grid_DSO_consumption_source"
+                    ]
+                }
+            )
             if case != "Constraint_maximum_emissions_None":
                 assert total_emissions[case] <= maximum_emissions[case] + 10 ** (
                     -5
@@ -197,6 +206,9 @@ class Test_Constraints:
         assert (
             diesel_capacities[use_case[2]] > diesel_capacities[use_case[1]]
         ), f"The optimized installed capacity of diesel generators of the scenario with 100 % RE in the grid is with {diesel_capacities[use_case[2]]} kW lower than in the scenario with emissions from the grid ({diesel_capacities[use_case[1]]} kW), although the diesel generator has a higher emission_factor than the grid."
+        assert (
+            grid_total_flows[use_case[2]] > grid_total_flows[use_case[1]]
+        ), f"The total flow of the grid consumption of the scenario with 100 % RE in the grid is with {grid_total_flows[use_case[2]]} kWh lower than in the scenario with emissions from the grid ({grid_total_flows[use_case[1]]} kWh). When the grid has zero emissions it should be used more, while PV is more expensive."
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
