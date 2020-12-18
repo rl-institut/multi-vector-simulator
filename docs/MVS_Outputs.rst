@@ -192,17 +192,20 @@ The renewable factor can, just like the :ref:`kpi_renewable_share_of_local_gener
 Emissions
 #########
 
-The total emissions of the MES in question can be calculated
-with all aggregated energy flows from the generation assets and their subsequent emission factor:
+The total emissions of the MES in question are calculated with all aggregated energy flows from the generation assets including energy providers and their subsequent emission factor:
 
 .. math::
-        Emissions &= \sum_i {E_{gen} (i) \cdot emission\_factor (i)}
+        Total\_emissions &= \sum_i {E_{gen} (i) \cdot emission\_factor (i)}
 
         \text{with~} &i \text{: generation assets 1,2,…}
 
-Emissions can be of different nature: CO2 emissions, CO2 equivalents, greenhouse gases, ...
+The emissions of each generation asset and provider are also calculated and displayed separately in the outputs of MVS.
+Additionally, the specific emissions per electricity equivalent of the MES are calculated in :math:`\text{kg/kWh}_{eleq}`:
 
-The emissions are calculated separately for each source in kg/a, as well as for the total system in kg/a and in :math:`\text{kg/kWh}_{eleq}`.
+.. math::
+        Specific\_emissions &= \frac{Total\_emissions}{total\_demand_{eleq}}
+
+Emissions can be of different nature: CO2 emissions, CO2 equivalents, greenhouse gases, ...
 
 Currently the emissions do not include life cycle emissions of energy conversion or storage assets, nor are they calculated separately for the energy sectors. For the latter, it arises the problem of the assignment of assets to sectors. E.g. emissions caused by an electrolyser would be counted to the electricity sector although you might want to count it for the H2 sector, as the purpose of the electrolyser is to feed the H2 sector. Therefore, we will have to verify whether or not we can apply the energy carrier weighting also for this KPI.
 
