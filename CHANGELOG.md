@@ -47,6 +47,7 @@ Here is a template for new release sections
 - Add assertion `sum(attributed_costs)==cost_total` (for single-vector system) (#613)
 - Benchmark test for renewable share (`TestTechnicalKPI.test_renewable_factor_and_renewable_share_of_local_generation()`) (#613)
 - Github actions workflow: update apt-get before installing pre-dependencies (#729)
+- Got rid of logging messages of imported libraries in the log file (#725)
 
 ## [0.5.3] - 2020-12-08
 
