@@ -81,6 +81,7 @@ copyright = "2019, Reiner Lemoine Institut and Martha M. Hoffmann"
 author = "Reiner Lemoine Institut and Martha M. Hoffmann"
 
 from multi_vector_simulator.version import version_num
+
 release = version_num
 
 # -- General configuration ---------------------------------------------------

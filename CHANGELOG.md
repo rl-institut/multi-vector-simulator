@@ -24,8 +24,8 @@ Here is a template for new release sections
 ### Added
 - Updated release protocol with info on credentials for test.pypi.org (step 9) and added "Fixed" to unreleased section of changelog.md in release protocol (#695)
 - Added information about the API to the docs (#701)
-- Added CO2 emission factors in the section model_assumption.rst (#697)
-- Added energyBusses.csv in RTD (#678)
+- Added CO2 emission factors in the section `Model_Assumption.rst` (#697, #735)
+- Added `energyBusses.csv` in RTD (#678)
 - Add and link `rewableAsset` as parameter in RTD, specifically `MVS_parameters.rst` and `MVS_parameters_list.csv` (#710)
 - Parameter `emission_factor` to `energyProduction` and `energyProviders` and to rtd (`MVS_parameters.rst` and `MVS_parameters_list.csv`) (#706)
 - Parameter `total_emissions` in kgCO2eq/a to `constraints.csv` (#706)
@@ -52,6 +52,8 @@ Here is a template for new release sections
 - All `.py` files to add a module description for RTD on top (#704)
 - Converted `README` from `.md` to` .rst` format and updated `Installation.rst` file (#646)
 - Updated `setup.py` to use the rst formatted README file
+- Changed `C0.energyStorage()` for timeseries in storage parameters (hotfix) (#720)
+- Input files and benchmark test `test_benchmark_special_features.Test_Parameter_Parsing()`: Now also including timeseries in a storage component (#723)
 - Adapted `E0` tests to new parameter `emission_factor` (#706)
 - Adapted all test inputs and json files and the input template, adding `emission_factor` (`energyProduction`, `energyProviders`) and `maximum_emissions` (`constraints.csv`) (#706)
 
@@ -65,6 +67,9 @@ Here is a template for new release sections
 - Add assertion `sum(attributed_costs)==cost_total` (for single-vector system) (#613)
 - Benchmark test for renewable share (`TestTechnicalKPI.test_renewable_factor_and_renewable_share_of_local_generation()`) (#613)
 - Github actions workflow: update apt-get before installing pre-dependencies (#729)
+- Got rid of logging messages of imported libraries in the log file (#725)
+- Fix RTD for emissions (#735)
+- Hot fix: Parameters to be defined as timeseries in `storage_*.csv` (#720)
 - Tests for `E4.minimal_renewable_share_test` (#714, #706)
 
 ## [0.5.3] - 2020-12-08
