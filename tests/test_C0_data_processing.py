@@ -77,9 +77,14 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DISPATCHABILITY,
     OEMOF_SOURCE,
     UNIT_YEAR,
+    TIMESERIES,
+    TIMESERIES_PEAK,
+    TIMESERIES_TOTAL,
+    TIMESERIES_AVERAGE
+
+
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
-
 
 def test_add_economic_parameters():
     economic_parameters = {
@@ -1116,13 +1121,16 @@ def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
     assert dict_asset[TIMESERIES_TOTAL][VALUE] == 6
     assert dict_asset[TIMESERIES_AVERAGE][VALUE] == 2
 
+    assert dict_asset[TIMESERIES_PEAK][UNIT] == str
+    assert dict_asset[TIMESERIES_TOTAL][UNIT] == str
+    assert dict_asset[TIMESERIES_AVERAGE][UNIT] == str
 
-
-
-
+    assert dict_asset[TIMESERIES_PEAK][LABEL] == str
+    assert dict_asset[TIMESERIES_TOTAL][LABEL] == str
+    assert dict_asset[TIMESERIES_AVERAGE][LABEL] == str
 
 """
-"""
+
 def test_asess_energyVectors_and_add_to_project_data():
     C2.identify_energy_vectors(dict_values)
     assert 1 == 0
