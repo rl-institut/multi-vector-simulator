@@ -24,8 +24,8 @@ Here is a template for new release sections
 ### Added
 - Updated release protocol with info on credentials for test.pypi.org (step 9) and added "Fixed" to unreleased section of changelog.md in release protocol (#695)
 - Added information about the API to the docs (#701)
-- Added CO2 emission factors in the section model_assumption.rst (#697)
-- Added energyBusses.csv in RTD (#678)
+- Added CO2 emission factors in the section `Model_Assumption.rst` (#697, #735)
+- Added `energyBusses.csv` in RTD (#678)
 - Add and link `rewableAsset` as parameter in RTD, specifically `MVS_parameters.rst` and `MVS_parameters_list.csv` (#710)
 
 ### Changed 
@@ -50,6 +50,7 @@ Here is a template for new release sections
 - Benchmark test for renewable share (`TestTechnicalKPI.test_renewable_factor_and_renewable_share_of_local_generation()`) (#613)
 - Github actions workflow: update apt-get before installing pre-dependencies (#729)
 - Got rid of logging messages of imported libraries in the log file (#725)
+- Fix RTD for emissions (#735)
 - Hot fix: Parameters to be defined as timeseries in `storage_*.csv` (#720)
 
 ## [0.5.3] - 2020-12-08

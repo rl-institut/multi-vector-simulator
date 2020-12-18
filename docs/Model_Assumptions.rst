@@ -288,12 +288,11 @@ For example, the `degree of sector coupling` will reach its maximum, when the sy
 In the MVS, there is no distinction between energy carriers and energy vector. For `Electricity` of the `Electricity` vector this may be self-explanatory. However, the energy carriers of the `Heat` vector can have different technical characteristics: A fluid on different temperature levels. As the MVS measures the energy content of a flow in kWh(thermal) however, this distinction is only relevant for the end user to be aware of, as two assets that have different energy carriers as an output should not be connected to one and the same bus if a detailed analysis is expected. An example of this would be, that a system where the output of the diesel boiler as well as the output of a solar thermal panel are connected to the same bus, eventhough they can not both supply the same kind of heat demands (radiator vs. floor heating).  This, however, is something that the end-user has to be aware of themselves, eg. by defining self-explanatory labels.
 
 Emission factors
-----------------------------
+----------------
+
 In order to optimise the energy system with minimum emissions, it is important to calculate emission per unit of fuel consumption.
 
-Following emission factors for energy carriers are defined:
-
-These values are based on direct emissions during stationary consumption of the mentioned fuels.
+In table :ref:`table_emissions_energyCarriers` the emission factors for energy carriers are defined. These values are based on direct emissions during stationary consumption of the mentioned fuels.
 
 .. _table_emissions_energyCarriers:
 
@@ -338,7 +337,7 @@ These values are based on direct emissions during stationary consumption of the 
      - 0.12
      - [`6 <https://www.winnipeg.ca/finance/findata/matmgt/documents/2012/682-2012/682-2012_Appendix_H-WSTP_South_End_Plant_Process_Selection_Report/Appendix%207.pdf>`__] Page No. 1
 
-Following CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, India) are defined:
+In table :ref:`table_CO2_emissions_countries` the CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, India) are defined:
 
 .. _table_CO2_emissions_countries:
 
