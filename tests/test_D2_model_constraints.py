@@ -243,10 +243,13 @@ class TestConstraints:
             == self.exp_emission_limit
         ), f"When maximum_emission is None, no emission constraint should be added to the ESM."
 
+    """
     def test_add_constraints_minimal_renewable_share(self):
-        # todo to be added
-        pass
+    # todo to be added
+    pass
+    """
 
+    """
     def test_add_constraints_minimal_renewable_share_None(self):
         dict_values = self.dict_values.copy()
         dict_values.update(
@@ -261,6 +264,7 @@ class TestConstraints:
         )
         # todo to be added
         pass
+    """
 
     def teardown_class(self):
         # Remove the output folder
