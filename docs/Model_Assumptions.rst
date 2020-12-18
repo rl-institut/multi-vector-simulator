@@ -139,6 +139,34 @@ Also, if you are aiming at very high minimal renewable factors, the simulation t
 
 The minimum renewable share is introduced to the energy system by `D2.constraint_minimal_renewable_share()` and a validation test is performed with `E4.minimal_renewable_share_test()`.
 
+
+Maximum emission constraint
+###########################
+
+The maximum emission constraint limits the maximum amount of total emissions per year of the energy system. It allows the capacity and dispatch optimization of the MVS to result into a maximum amount of emissions defined by the maximum emission constraint. The yearly emissions of the optimized energy system may also be lower than the maximum emission constraint.
+
+Please note that the maximum emissions constraint currently does not take into consideration life cycle emissions, also see :ref:`emissions` section for an explanation.
+
+:Activating the constraint:
+
+The maximum emissions constraint is enabled by inserting the following row in `constraints.csv` as follows:
+
+```maximum_emissions,kgCO2eq/a,800000```
+
+:Deactivating the constraint:
+
+The constraint is deactivated by setting the value in `constraints.csv` to None:
+
+```maximum_emissions,kgCO2eq/a,None```
+
+The unit of the constraint is `kgCO2eq/a`. To select a useful value for this constraint you can e.g.:
+
+- Firstly, optimize your system without the constraint to get an idea about the scale of the emissions and then, secondly, set the constraint and lower the emissions step by step until you receive an unbound problem (which then represents the non-archievable minimum of emissions for your energy system)
+- Check the emissions targets of your region/country and disaggregate the number
+
+The maximum emissions constraint is introduced to the energy system by `D2.constraint_maximum_emissions()` and a validation test is performed within the benchmark tests.
+
+
 Weighting of energy carriers
 ----------------------------
 
@@ -681,7 +709,9 @@ A benchmark is a point of reference against which results are compared to assess
 * Electricity Grid + Battery + Peak Demand Pricing (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AE_grid_battery_peak_pricing>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L192>`__): Battery is charged at times of peak demand and used when demand is larger
    
 * Electricity Grid (Price as Time Series) + Heat Pump + Heat Grid (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AFG_grid_heatpump_heat>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L276>`__): Heat pump is used when electricity_price/COP is less than the heat grid price
-     
+
+* Maximum emissions constraint: Grid + PV + Diesel Generator (data: `set 1 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_None>`__, `set 2 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low>`__, `set 3 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low_grid_RE_100>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/f459b35da6c46445e8294845604eb2b683e43680/tests/test_benchmark_constraints.py#L121>`__): Emissions are limited by constraint, more PV is installed to reduce emissions. For RE share of 100 % in grid, more electricity from the grid is used
+
 More tests can still be implemented with regard to:
 
 * The investment model within the MVS

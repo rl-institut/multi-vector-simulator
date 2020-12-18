@@ -30,6 +30,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DISPATCHABILITY,
     OPTIMIZE_CAP,
     MAXIMUM_CAP,
+    CONSTRAINTS,
+    MAXIMUM_EMISSIONS,
+    EMISSION_FACTOR,
+    RENEWABLE_SHARE_DSO,
 )
 
 from multi_vector_simulator.utils.exceptions import (
@@ -306,6 +310,154 @@ def test_check_feedin_tariff_vs_levelized_cost_of_generation_of_production_non_d
     assert (
         "No error expected but strange dispatch behaviour might occur." in caplog.text
     ), f"If the capacity of a production asset is not optimized and the feed-in tariff is greater than the expected lcoe a debug msg should be logged."
+
+
+def test_check_feasibility_of_maximum_emissions_constraint_no_warning_no_constraint(
+    caplog,
+):
+    dict_values = {
+        CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: None}},
+    }
+    # logging.warning
+    with caplog.at_level(logging.WARNING):
+        C1.check_feasibility_of_maximum_emissions_constraint(dict_values)
+    assert (
+        caplog.text == ""
+    ), f"If the maximum emissions constraint is not used, no msg should be logged."
+
+
+def test_check_feasibility_of_maximum_emissions_constraint_no_warning_although_emission_constraint(
+    caplog,
+):
+    dict_values = {
+        CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: 1000}},
+        ENERGY_PRODUCTION: {
+            "Energy asset": {
+                EMISSION_FACTOR: {VALUE: 0},
+                MAXIMUM_CAP: {VALUE: None},
+                OPTIMIZE_CAP: {VALUE: True},
+            },
+        },
+    }
+    # logging.warning
+    with caplog.at_level(logging.WARNING):
+        C1.check_feasibility_of_maximum_emissions_constraint(dict_values)
+    assert (
+        caplog.text == ""
+    ), f"If the maximum emissions constraint is used and one production asset with zero emissions has a capacity to be optimized and a maximum capacity of None, no msg should be logged."
+
+
+def test_check_feasibility_of_maximum_emissions_constraint_maximumcap(caplog):
+    dict_values = {
+        CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: 1000}},
+        ENERGY_PRODUCTION: {
+            "Energy asset": {
+                EMISSION_FACTOR: {VALUE: 0},
+                MAXIMUM_CAP: {VALUE: 1000},
+                OPTIMIZE_CAP: {VALUE: True},
+            },
+        },
+    }
+    # logging.warning
+    with caplog.at_level(logging.WARNING):
+        C1.check_feasibility_of_maximum_emissions_constraint(dict_values)
+    assert (
+        "When the maximum emissions constraint is used and no production asset with zero emissions"
+        in caplog.text
+    ), f"If the maximum emissions constraint is used and no production asset with zero emissions, capacity to be optimized and maximum capacity of None exists, a warning msg should be logged."
+
+
+def test_check_feasibility_of_maximum_emissions_constraint_optimizeCap_is_False(caplog):
+    dict_values = {
+        CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: 1000}},
+        ENERGY_PRODUCTION: {
+            "Energy asset": {
+                EMISSION_FACTOR: {VALUE: 0},
+                MAXIMUM_CAP: {VALUE: None},
+                OPTIMIZE_CAP: {VALUE: False},
+            },
+        },
+    }
+    # logging.warning
+    with caplog.at_level(logging.WARNING):
+        C1.check_feasibility_of_maximum_emissions_constraint(dict_values)
+    assert (
+        "When the maximum emissions constraint is used and no production asset with zero emissions"
+        in caplog.text
+    ), f"If the maximum emissions constraint is used and no production asset with zero emissions, capacity to be optimized and maximum capacity of None exists, a warning msg should be logged."
+
+
+def test_check_feasibility_of_maximum_emissions_constraint_no_zero_emission_asset(
+    caplog,
+):
+    dict_values = {
+        CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: 1000}},
+        ENERGY_PRODUCTION: {
+            "Energy asset": {
+                EMISSION_FACTOR: {VALUE: 1},
+                MAXIMUM_CAP: {VALUE: None},
+                OPTIMIZE_CAP: {VALUE: True},
+            },
+        },
+    }
+    # logging.warning
+    with caplog.at_level(logging.WARNING):
+        C1.check_feasibility_of_maximum_emissions_constraint(dict_values)
+    assert (
+        "When the maximum emissions constraint is used and no production asset with zero emissions"
+        in caplog.text
+    ), f"If the maximum emissions constraint is used and no production asset with zero emissions exists, a warning msg should be logged."
+
+
+def test_check_emission_factor_of_providers_no_warning_RE_share_lower_1(caplog):
+    dict_values = {
+        ENERGY_PROVIDERS: {
+            "Energy provider": {
+                EMISSION_FACTOR: {VALUE: 0.2},
+                RENEWABLE_SHARE_DSO: {VALUE: 0.5},
+            },
+        },
+    }
+    # logging.warning
+    with caplog.at_level(logging.WARNING):
+        C1.check_emission_factor_of_providers(dict_values)
+    assert (
+        caplog.text == ""
+    ), f"When the renewable share of the provider is lower than 1, no warning msg should be logged."
+
+
+def test_check_emission_factor_of_providers_no_warning_emission_factor_0(caplog):
+    dict_values = {
+        ENERGY_PROVIDERS: {
+            "Energy provider": {
+                EMISSION_FACTOR: {VALUE: 0},
+                RENEWABLE_SHARE_DSO: {VALUE: 1},
+            },
+        },
+    }
+    # logging.warning
+    with caplog.at_level(logging.WARNING):
+        C1.check_emission_factor_of_providers(dict_values)
+    assert (
+        caplog.text == ""
+    ), f"When the emission_factor of the provider is zero, no warning msg should be logged."
+
+
+def test_check_emission_factor_of_providers_warning(caplog):
+    dict_values = {
+        ENERGY_PROVIDERS: {
+            "Energy provider": {
+                EMISSION_FACTOR: {VALUE: 0.2},
+                RENEWABLE_SHARE_DSO: {VALUE: 1},
+            },
+        },
+    }
+    # logging.warning
+    with caplog.at_level(logging.WARNING):
+        C1.check_emission_factor_of_providers(dict_values)
+    assert (
+        "Check if this is what you intended to define." in caplog.text
+    ), f"When the emission_factor of the provider is > 0 while the RE share is 1, a warning msg should be logged."
 
 
 def test_check_time_series_values_between_0_and_1_True():

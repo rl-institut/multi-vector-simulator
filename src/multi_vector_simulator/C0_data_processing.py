@@ -80,6 +80,12 @@ def all(dict_values):
     # check time series of non-dispatchable sources in range [0, 1]
     C1.check_non_dispatchable_source_time_series(dict_values)
 
+    # display warning in case of maximum emissions constraint and no asset with zero emissions has no capacity limit
+    C1.check_feasibility_of_maximum_emissions_constraint(dict_values)
+
+    # display warning in case of emission_factor of provider > 0 while RE share = 100 %
+    C1.check_emission_factor_of_providers(dict_values)
+
     # check efficiencies of storage capacity, raise error in case it is 0 and add a
     # warning in case it is <0.2 to help users to spot major change in #676
     C1.check_efficiency_of_storage_capacity(dict_values)
@@ -667,6 +673,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso):
         + DSO_PEAK_DEMAND_SUFFIX,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
+        emission_factor=dict_values[ENERGY_PROVIDERS][dso][EMISSION_FACTOR],
     )
 
     dict_feedin = change_sign_of_feedin_tariff(
@@ -956,6 +963,7 @@ def define_source(
     asset_key,
     outflow_direction,
     energy_vector,
+    emission_factor,
     price=None,
     timeseries=None,
 ):
@@ -972,6 +980,9 @@ def define_source(
 
     energy_vector: str
         Energy vector the new asset should belong to
+
+    emission_factor : dict
+        Dict with a unit-value pair of the emission factor of the new asset
 
     price: dict
         Dict with a unit-value pair of the dispatch price of the source.
@@ -1012,6 +1023,7 @@ def define_source(
         MAXIMUM_CAP: {VALUE: None, UNIT: "?"},
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
         ENERGY_VECTOR: energy_vector,
+        EMISSION_FACTOR: emission_factor,
     }
 
     if outflow_direction not in dict_values[ENERGY_BUSSES]:
