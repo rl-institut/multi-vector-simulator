@@ -1,3 +1,7 @@
+"""
+General Constants
+=================
+"""
 import os
 
 from multi_vector_simulator.utils.constants_json_strings import *
@@ -260,6 +264,18 @@ EXTRA_CSV_PARAMETERS = {
         UNIT: TYPE_FLOAT,
         WARNING_TEXT: "allows defining the renewable share of the DSO supply (Values: Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
+    },
+    EMISSION_FACTOR: {
+        DEFAULT_VALUE: 0,
+        UNIT: TYPE_FLOAT,
+        WARNING_TEXT: "allows calculating the total emissions of the energy system (Values: Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PRODUCTION, ENERGY_PROVIDERS,],
+    },
+    MAXIMUM_EMISSIONS: {
+        DEFAULT_VALUE: None,
+        UNIT: TYPE_NONE,
+        WARNING_TEXT: "allows setting a maximum amount of emissions of the optimized energy system (Values: None/Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
     },
 }
 

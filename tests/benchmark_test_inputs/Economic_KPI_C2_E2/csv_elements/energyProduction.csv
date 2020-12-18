@@ -14,3 +14,4 @@ type_oemof,str,source,source
 unit,str,kWp,kWh_therm
 energyVector,str,Electricity,Electricity
 renewableAsset,bool,True,False
+emission_factor,kgCO2eq/unit,0,2.17

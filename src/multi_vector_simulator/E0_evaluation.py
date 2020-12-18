@@ -1,3 +1,13 @@
+"""
+Module E0 - evaluation
+======================
+
+Module E0 evaluates the oemof results and calculates the KPI
+- define dictionary entry for kpi matrix
+- define dictionary entry for cost matrix
+- store all results to matrix
+"""
+
 import logging
 
 import oemof.solph as solph
@@ -40,17 +50,6 @@ from multi_vector_simulator.utils.constants_output import (
     KPI_COST_MATRIX_ENTRIES,
     KPI_SCALAR_MATRIX_ENTRIES,
 )
-
-
-r"""
-Module E0 evaluation
-====================
-
-Module E0 evaluates the oemof results and calculates the KPI
-- define dictionary entry for kpi matrix
-- define dictionary entry for cost matrix
-- store all results to matrix
-"""
 
 
 def evaluate_dict(dict_values, results_main, results_meta):
@@ -160,6 +159,8 @@ def evaluate_dict(dict_values, results_main, results_meta):
             )
             E2.get_costs(dict_values[group][asset], dict_values[ECONOMIC_DATA])
             E2.lcoe_assets(dict_values[group][asset], group)
+            if group == ENERGY_PRODUCTION:
+                E3.calculate_emissions_from_flow(dict_values[group][asset])
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
     logging.info("Evaluating key performance indicators of the system")
@@ -174,10 +175,13 @@ def evaluate_dict(dict_values, results_main, results_meta):
     E3.add_onsite_energy_fraction(dict_values)
     E3.add_onsite_energy_matching(dict_values)
     E3.add_degree_of_autonomy(dict_values)
+    E3.add_total_emissions(dict_values)
+    E3.add_specific_emissions_per_electricity_equivalent(dict_values)
 
     # Tests and checks
     logging.info("Running validity checks.")
     E4.minimal_renewable_share_test(dict_values)
+    E4.maximum_emissions_test(dict_values)
     E4.detect_excessive_excess_generation_in_bus(dict_values)
 
 
@@ -185,6 +189,7 @@ def store_result_matrix(dict_kpi, dict_asset):
     """
     Storing results to vector and then result matrix for saving it in csv.
     Defined value types: Str, bool, None, dict (with key "VALUE"), else (int, float)
+
     Parameters
     ----------
     dict_kpi: dict

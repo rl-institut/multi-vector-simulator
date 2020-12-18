@@ -1,6 +1,6 @@
 r"""
-Module E3 indicator calculation
--------------------------------
+Module E3 - Indicator calculation
+==================================
 
 In module E3 the technical KPI are evaluated:
 - calculate renewable share
@@ -61,6 +61,12 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DEGREE_OF_AUTONOMY,
     ONSITE_ENERGY_FRACTION,
     ONSITE_ENERGY_MATCHING,
+    EMISSION_FACTOR,
+    TOTAL_EMISSIONS,
+    SPECIFIC_EMISSIONS_ELEQ,
+    UNIT,
+    UNIT_SPECIFIC_EMISSIONS,
+    UNIT_EMISSIONS,
 )
 
 
@@ -69,11 +75,13 @@ def all_totals(dict_values):
 
     Parameters
     ----------
+
     dict_values :
-        dict all input parameters and restults up to E0
+        dict all input parameters and results up to E0
 
     Returns
     -------
+
     type
         List of all total cost parameters for the project
 
@@ -348,26 +356,26 @@ def add_renewable_share_of_local_generation(dict_values):
     """Determination of renewable share of local energy production
 
         Parameters
-        ----------
-        dict_values :
-            dict with all project information and results, after applying add_total_renewable_and_non_renewable_energy_origin
-        sector :
-            Sector for which renewable share is being calculated
+    ----------
+    dict_values :
+        dict with all project information and results, after applying add_total_renewable_and_non_renewable_energy_origin
+    sector :
+        Sector for which renewable share is being calculated
 
-        Returns
-        -------
-        type
-            updated dict_values with renewable share of each sector as well as the system-wide KPI
+    Returns
+    -------
+    type
+        updated dict_values with renewable share of each sector as well as the system-wide KPI
 
-        Notes
-        -----
-        Updates the KPI with RENEWABLE_SHARE_OF_LOCAL_GENERATION for each sector as well as system-wide KPI.
+    Notes
+    -----
+    Updates the KPI with RENEWABLE_SHARE_OF_LOCAL_GENERATION for each sector as well as system-wide KPI.
 
-        Tested with
-        * test_renewable_share_of_local_generation_one_sector()
-        * test_renewable_share_of_local_generation_two_sectors()
-        * TestTechnicalKPI.renewable_factor_and_renewable_share_of_local_generation()
-        """
+    Tested with
+    * test_renewable_share_of_local_generation_one_sector()
+    * test_renewable_share_of_local_generation_two_sectors()
+    * TestTechnicalKPI.renewable_factor_and_renewable_share_of_local_generation()
+    """
 
     dict_renewable_share = {}
     for sector in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
@@ -475,7 +483,6 @@ def equation_renewable_share(total_res, total_non_res):
 
     Notes
     -----
-
     Used both to calculate RENEWABLE_FACTOR and RENEWABLE_SHARE_OF_LOCAL_GENERATION.
 
     Equation:
@@ -498,6 +505,7 @@ def equation_renewable_share(total_res, total_non_res):
     - test_renewable_share_equation_is_0()
     - test_renewable_share_equation_is_1()
     """
+
     if total_res + total_non_res > 0:
         renewable_share = total_res / (total_non_res + total_res)
     else:
@@ -752,25 +760,25 @@ def equation_onsite_energy_fraction(total_generation, total_feedin):
     OEF describes the fraction of all locally generated energy that is consumed
     by the system itself.
 
-        Parameters
-        ----------
-        total_generation: float
-            Energy equivalent of total generation flows
-        total_feedin: float
-            Total feed into the grid
+    Parameters
+    ----------
+    total_generation: float
+        Energy equivalent of total generation flows
+    total_feedin: float
+        Total feed into the grid
 
-        Returns
-        -------
-            float
-                Onsite energy fraction.
+    Returns
+    -------
+        float
+            Onsite energy fraction.
 
-        .. math::
-                OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
+    .. math::
+            OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
 
-                &OEF \epsilon \text{[0,1]}
+            &OEF \epsilon \text{[0,1]}
 
-        Tested with
-        - test_equation_onsite_energy_fraction()
+    Tested with
+    - test_equation_onsite_energy_fraction()
     """
 
     if total_generation != 0:
@@ -845,43 +853,133 @@ def equation_onsite_energy_matching(
     OEM describes the fraction of the total demand that can be
     covered by the locally generated energy.
 
-        Parameters
-        ----------
-        total_generation: float
-            Energy equivalent of total conversion flows
-        total_feedin: float
-            Total feed into the grid
-        total_excess: float
-            Total Excess energy
-        total_demand: float
-            Total demand
+    Parameters
+    ----------
+    total_generation: float
+        Energy equivalent of total conversion flows
+    total_feedin: float
+        Total feed into the grid
+    total_excess: float
+        Total Excess energy
+    total_demand: float
+        Total demand
 
-        Returns
-        -------
-        Onsite energy matching.
+    Returns
+    -------
+    Onsite energy matching.
 
-        .. math::
-                OEM &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i - E_{excess}(i) \cdot w_i}{\sum_i {E_{demand} (i) \cdot w_i}}
+    .. math::
+            OEM &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i - E_{excess}(i) \cdot w_i}{\sum_i {E_{demand} (i) \cdot w_i}}
 
-                &OEM \epsilon \text{[0,1]}
+            &OEM \epsilon \text{[0,1]}
 
-        Tested with
-        - test_equation_onsite_energy_matching()
-        """
+    Tested with
+    - test_equation_onsite_energy_matching()
+    """
     onsite_energy_matching = (
         total_generation - total_feedin - total_excess
     ) / total_demand
     return onsite_energy_matching
 
 
-def equation_co2_emissions(dict_values):
-    co2_emissions = 0
-    for asset in dict_values[ENERGY_PRODUCTION]:
-        co2_emissions += (
-            dict_values[ENERGY_PRODUCTION][asset]["total_aggregated_flow"][VALUE]
-            * dict_values[ENERGY_PRODUCTION][asset]["emissionFactor"][VALUE]
-        )
-    return co2_emissions
+def calculate_emissions_from_flow(dict_asset):
+    r"""
+    Calculates the total emissions of the asset in 'dict_asset' in kg per year.
+
+    Parameters
+    ----------
+    dict_asset : dict
+        Contains information about the asset.
+
+    Notes
+    -----
+    Tested with:
+    - E3.test_calculate_emissions_from_flow()
+    - E3.test_calculate_emissions_from_flow_zero_emissions
+
+    Returns
+    -------
+    None
+        Updated `dict_asset` with TOTAL_EMISSIONS of the asset in kgCO2eq/a (UNIT_EMISSIONS).
+
+    """
+    emissions = dict_asset[TOTAL_FLOW][VALUE] * dict_asset[EMISSION_FACTOR][VALUE]
+    dict_asset.update({TOTAL_EMISSIONS: {VALUE: emissions, UNIT: UNIT_EMISSIONS}})
+    return
+
+
+def add_total_emissions(dict_values):
+    r"""
+    Calculates the total emission of the energy system in kgCO2eq/a and adds KPI to `dict_values`.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation inputs and results
+
+    Returns
+    -------
+    None
+        Updated `dict_values` with TOTAL_EMISSIONS of the energy system in kgCO2eq/a
+        (UNIT_EMISSIONS).
+
+    Notes
+    -----
+
+    Tested with:
+    - E3.test_add_total_emissions()
+
+    """
+    # sum up emissions of all assets [kgCO2eq/a]
+    emissions = dict_values[KPI][KPI_SCALAR_MATRIX][TOTAL_EMISSIONS].sum()  # data frame
+    dict_values[KPI][KPI_SCALARS_DICT].update({TOTAL_EMISSIONS: emissions})
+    logging.debug(
+        f"Calculated the {TOTAL_EMISSIONS}: {round(emissions, 2)} {UNIT_EMISSIONS}."
+    )
+    logging.info(f"Calculated the {TOTAL_EMISSIONS} ({UNIT_EMISSIONS}) of the LES.")
+    return
+
+
+def add_specific_emissions_per_electricity_equivalent(dict_values):
+    r"""
+    Calculates the specific emissions of the energy system per kWheleq and adds KPI to `dict_values`.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation inputs and results including TOTAL_EMISSIONS calculated in
+        `E3.calculate_emissions_from_flow`.
+
+    Notes
+    -----
+    This funtion is run after `E3.calculate_emissions_from_flow`.
+
+    Tested with:
+    - E3.test_add_specific_emissions_per_electricity_equivalent()
+
+    Returns
+    -------
+    None
+        Updated `dict_values` with SPECIFIC_EMISSIONS_ELEQ in kgCO2eq/kWheleq (UNIT_SPECIFIC_EMISSIONS).
+
+    """
+    # emissions per kWheleq
+    emissions_kWheleq = (
+        dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS]
+        / dict_values[KPI][KPI_SCALARS_DICT][
+            TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+        ]
+    )
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {SPECIFIC_EMISSIONS_ELEQ: emissions_kWheleq}
+    )
+    logging.debug(
+        f"Calculated the {SPECIFIC_EMISSIONS_ELEQ}: {round(emissions_kWheleq, 2)} {UNIT_SPECIFIC_EMISSIONS}."
+    )
+    logging.info(
+        f"Calculated the {SPECIFIC_EMISSIONS_ELEQ} ({UNIT_SPECIFIC_EMISSIONS}) of the LES."
+    )
+    return
 
 
 def add_levelized_cost_of_energy_carriers(dict_values):

@@ -69,7 +69,7 @@ They can be divided into following types:
 * energy conversion
 * energy storage
 
-Details on how to model different assets are included in the model assumptions, specifically the `component models <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#component-models>`_.
+Details on how to model different assets are included in the model assumptions, specifically the `component models <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#component-models>`__.
 
 :ToDo: None
 
@@ -169,7 +169,7 @@ FUN-MVS-07 - Optimisation goal
 
 In general, the MVS aims to minimize the energy supply cost of the local energy system. Additionally, following constraint can be activated:
 
-* Minimal renewable share constraint (see `here <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#minimal-renewable-share-constraint>`_)
+* Minimal renewable share constraint (see `here <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#minimal-renewable-share-constraint>`__)
 
 :ToDo:
 
@@ -194,7 +194,7 @@ FUN-MVS-08 - Electricity cost model
 The different constraints regarding the electricity DSO can be considered:
 
 a) The energy price as well as the feed-in tariff of a DSO can be provided as a time series
-b) Peak demand pricing can be considered (see `here <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#peak-demand-pricing>`_)
+b) Peak demand pricing can be considered (see `here <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#peak-demand-pricing>`__)
 c) The transformer station limitation can, but does not have to be added.
 
 :ToDo: None
@@ -416,7 +416,9 @@ NF-MVS-01 - MVS pre-processing tools for LES optimization model input
 
 :Progress: Done
 
-:Progress message: Internally, the MVS uses pd.DataFrames to set up the energy system model.
+:Progress message:
+
+Internally, the MVS uses pd.DataFrames to set up the energy system model.
 However, for data exchange with the end-user the input files, ie. the csv or json file is essential.
 As the end user will use the MVS though the EPA, the data format that the MVS uses becomes irrelevant.
 It was decided to use a json file as an exchange medium between the EPA and the MVS.

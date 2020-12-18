@@ -26,6 +26,7 @@ constraints.csv
 The file `constraints.csv` includes the following parameter(s):
 
 * :ref:`minrenshare-label`
+* :ref:`maxemissions-label`
 
 economic_data.csv
 ^^^^^^^^^^^^^^^^^
@@ -98,6 +99,8 @@ The file `energyProduction.csv` defines the assets that serve as energy sources,
 * :ref:`outflowdirec-label`
 * :ref:`filename-label`
 * :ref:`energyvector-label`
+* :ref:`renewableasset-label`
+* :ref:`emissionfactor-label`
 * :ref:`typeoemof-label`
 
 energyProviders.csv
@@ -115,6 +118,7 @@ The file `energyProviders.csv` defines the energy providers of the energy system
 * :ref:`inflowdirection-label`
 * :ref:`outflowdirec-label`
 * :ref:`energyvector-label`
+* :ref:`emissionfactor-label`
 * :ref:`typeoemof-label`
 
 energyStorage.csv

@@ -1,3 +1,9 @@
+"""
+Exceptions of the MVS
+=====================
+"""
+
+
 class MissingParameterError(ValueError):
     """Exception raised for missing parameters of a csv input file."""
 

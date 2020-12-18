@@ -1,3 +1,27 @@
+"""
+Module C0 - Data processing
+===========================
+
+Module C0 prepares the data read from csv or json for simulation, ie. pre-processes it.
+- Verify input values with C1
+- Identify energyVectors and write them to project_data/sectors
+- Create an excess sink for each bus
+- Process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
+- Add economic parameters to json with C2
+- Calculate "simulation annuity" used in oemof model
+- Add demand sinks to energyVectors (this should actually be changed and demand sinks should be added to bus relative to input_direction, also see issue #179)
+- Translate input_directions/output_directions to bus names
+- Add missing cost data to automatically generated objects (eg. DSO transformers)
+- Read timeseries of assets and store into json (differ between one-column csv, multi-column csv)
+- Read timeseries for parameter of an asset, eg. efficiency
+- Parse list of inputs/outputs, eg. for chp
+- Define dso sinks, sources, transformer stations (this will be changed due to bug #119), also for peak demand pricing
+- Add a source if a conversion object is connected to a new input_direction (bug #186)
+- Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
+- Multiply `maximumCap` of non-dispatchable sources by max(timeseries(kWh/kWp)) as the `maximumCap` is limiting the flow but we want to limit the installed capacity (see issue #446)
+"""
+
+
 import logging
 import os
 import sys
@@ -21,26 +45,6 @@ import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C1_verification as C1
 import multi_vector_simulator.C2_economic_functions as C2
 import multi_vector_simulator.F0_output as F0
-
-"""
-Module C0 prepares the data read from csv or json for simulation, ie. pre-processes it. 
-- Verify input values with C1
-- Identify energyVectors and write them to project_data/sectors
-- Create an excess sink for each bus
-- Process start_date/simulation_duration to pd.datatimeindex (future: Also consider timesteplenghts)
-- Add economic parameters to json with C2
-- Calculate "simulation annuity" used in oemof model
-- Add demand sinks to energyVectors (this should actually be changed and demand sinks should be added to bus relative to input_direction, also see issue #179)
-- Translate input_directions/output_directions to bus names
-- Add missing cost data to automatically generated objects (eg. DSO transformers)
-- Read timeseries of assets and store into json (differ between one-column csv, multi-column csv)
-- Read timeseries for parameter of an asset, eg. efficiency
-- Parse list of inputs/outputs, eg. for chp
-- Define dso sinks, sources, transformer stations (this will be changed due to bug #119), also for peak demand pricing
-- Add a source if a conversion object is connected to a new input_direction (bug #186)
-- Define all necessary energyBusses and add all assets that are connected to them specifically with asset name and label
-- Multiply `maximumCap` of non-dispatchable sources by max(timeseries(kWh/kWp)) as the `maximumCap` is limiting the flow but we want to limit the installed capacity (see issue #446)
-"""
 
 
 def all(dict_values):
@@ -75,6 +79,12 @@ def all(dict_values):
 
     # check time series of non-dispatchable sources in range [0, 1]
     C1.check_non_dispatchable_source_time_series(dict_values)
+
+    # display warning in case of maximum emissions constraint and no asset with zero emissions has no capacity limit
+    C1.check_feasibility_of_maximum_emissions_constraint(dict_values)
+
+    # display warning in case of emission_factor of provider > 0 while RE share = 100 %
+    C1.check_emission_factor_of_providers(dict_values)
 
     # check efficiencies of storage capacity, raise error in case it is 0 and add a
     # warning in case it is <0.2 to help users to spot major change in #676
@@ -347,8 +357,9 @@ def energyStorage(dict_values, group):
 
             # check if parameters are provided as timeseries
             for parameter in [EFFICIENCY, SOC_MIN, SOC_MAX]:
-                if parameter in dict_values[group][asset][subasset] and isinstance(
-                    dict_values[group][asset][subasset][parameter][VALUE], dict
+                if parameter in dict_values[group][asset][subasset] and (
+                    FILENAME in dict_values[group][asset][subasset][parameter]
+                    and HEADER in dict_values[group][asset][subasset][parameter]
                 ):
                     receive_timeseries_from_csv(
                         dict_values[SIMULATION_SETTINGS],
@@ -662,6 +673,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso):
         + DSO_PEAK_DEMAND_SUFFIX,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
+        emission_factor=dict_values[ENERGY_PROVIDERS][dso][EMISSION_FACTOR],
     )
 
     dict_feedin = change_sign_of_feedin_tariff(
@@ -951,6 +963,7 @@ def define_source(
     asset_key,
     outflow_direction,
     energy_vector,
+    emission_factor,
     price=None,
     timeseries=None,
 ):
@@ -967,6 +980,9 @@ def define_source(
 
     energy_vector: str
         Energy vector the new asset should belong to
+
+    emission_factor : dict
+        Dict with a unit-value pair of the emission factor of the new asset
 
     price: dict
         Dict with a unit-value pair of the dispatch price of the source.
@@ -1007,6 +1023,7 @@ def define_source(
         MAXIMUM_CAP: {VALUE: None, UNIT: "?"},
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
         ENERGY_VECTOR: energy_vector,
+        EMISSION_FACTOR: emission_factor,
     }
 
     if outflow_direction not in dict_values[ENERGY_BUSSES]:

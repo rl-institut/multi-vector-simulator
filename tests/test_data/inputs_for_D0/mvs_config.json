@@ -3,7 +3,12 @@
         "minimal_renewable_factor": {
             "unit": "factor",
             "value": 0
-        }},
+        },
+    "maximum_emissions": {
+            "unit": "kgCO2eq/a",
+            "value": 800000
+        }
+    },
     "economic_data": {
         "annuity_factor": {
             "unit": "?",
@@ -1094,6 +1099,10 @@
                 "unit": "bool",
                 "value": true
             },
+            "emission_factor": {
+                "unit": "kgCO2eq/kWh",
+                "value": 0.0019
+            },
             "outflow_direction": "Electricity (DSO) bus",
             "simulation_annuity": {
                 "unit": "currency/unit/simulation period",
@@ -1357,6 +1366,10 @@
             "maximumCap": {
                 "unit": " kWp",
                 "value": null
+            },
+            "emission_factor": {
+                "unit": "kgCO2eq/unit",
+                "value": 0
             },
             "specific_costs_om": {
                 "unit": "currency/unit/year",
@@ -1656,6 +1669,10 @@
             "optimizeCap": {
                 "unit": "bool",
                 "value": true
+            },
+            "emission_factor": {
+                "unit": "kgCO2eq/unit",
+                "value": 0.0019
             },
             "outflow_direction": "Electricity (DSO) bus",
             "peak_demand_pricing": {

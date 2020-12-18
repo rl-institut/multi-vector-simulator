@@ -80,7 +80,7 @@ With all these components, the DSO can be visualized as follows:
  :width: 600
 
 Variable energy consumption prices (time-series)
-###############################################
+################################################
 
 - Link to howto
 
@@ -109,7 +109,7 @@ Constraints
 Constraints are controlled with the file `constraints.csv`.
 
 Minimal renewable factor constraint
-##################################
+###################################
 
 The minimal renewable factor constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal renewable factor defined within the constraint. The renewable share of the optimized energy system may also be higher than the minimal renewable factor.
 
@@ -139,6 +139,34 @@ Also, if you are aiming at very high minimal renewable factors, the simulation t
 
 The minimum renewable share is introduced to the energy system by `D2.constraint_minimal_renewable_share()` and a validation test is performed with `E4.minimal_renewable_share_test()`.
 
+
+Maximum emission constraint
+###########################
+
+The maximum emission constraint limits the maximum amount of total emissions per year of the energy system. It allows the capacity and dispatch optimization of the MVS to result into a maximum amount of emissions defined by the maximum emission constraint. The yearly emissions of the optimized energy system may also be lower than the maximum emission constraint.
+
+Please note that the maximum emissions constraint currently does not take into consideration life cycle emissions, also see :ref:`emissions` section for an explanation.
+
+:Activating the constraint:
+
+The maximum emissions constraint is enabled by inserting the following row in `constraints.csv` as follows:
+
+```maximum_emissions,kgCO2eq/a,800000```
+
+:Deactivating the constraint:
+
+The constraint is deactivated by setting the value in `constraints.csv` to None:
+
+```maximum_emissions,kgCO2eq/a,None```
+
+The unit of the constraint is `kgCO2eq/a`. To select a useful value for this constraint you can e.g.:
+
+- Firstly, optimize your system without the constraint to get an idea about the scale of the emissions and then, secondly, set the constraint and lower the emissions step by step until you receive an unbound problem (which then represents the non-archievable minimum of emissions for your energy system)
+- Check the emissions targets of your region/country and disaggregate the number
+
+The maximum emissions constraint is introduced to the energy system by `D2.constraint_maximum_emissions()` and a validation test is performed within the benchmark tests.
+
+
 Weighting of energy carriers
 ----------------------------
 
@@ -146,7 +174,7 @@ To be able to calculate sector-wide key performance indicators, it is necessary 
 
 After thorough consideration, it has been decided to base the equivalence in tonnes of oil equivalent (TOE). Electricity has been chosen as a baseline energy carrier, as our pilot sites mainly revolve around it and also because we believe that this energy carrier will play a larger role in the future. For converting the results into a more conventional unit, we choose crude oil as a secondary baseline energy carrier. This also enables comparisons with crude oil price developments in the market. For most KPIs, the baseline energy carrier used is of no relevance as the result is not dependent on it. This is the case for KPIs such as the share of renewables at the project location or its self-sufficiency. The choice of the baseline energy carrier is relevant only for the levelized cost of energy (LCOE), as it will either provide a system-wide supply cost in Euro per kWh electrical or per kg crude oil.
 
-First, the conversion factors to kg crude oil equivalent [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] were determined (see :ref:`table_kgoe_conversion_factors` below). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
+First, the conversion factors to kg crude oil equivalent [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`__] were determined (see :ref:`table_kgoe_conversion_factors` below). These are equivalent to the energy carrier weighting factors with baseline energy carrier crude oil.
 
 Following conversion factors and energy carriers are defined:
 
@@ -159,7 +187,7 @@ Following conversion factors and energy carriers are defined:
    * - Energy carrier
      - Unit
      - Value
-   * - H2 [`3  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]
+   * - H2 [`3  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`__]
      - kgoe/kgH2
      - 2.87804
    * - LNG
@@ -205,7 +233,7 @@ Following conversion factors and energy carriers are defined:
      - kgoe/BTU
      - 0.000025
 
-The values of ethanol and biodiesel seem comparably low in [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_] and do not seem to be representative of the net heating value (or lower heating value) that was expected to be used here.
+The values of ethanol and biodiesel seem comparably low in [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`__] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`__] and do not seem to be representative of the net heating value (or lower heating value) that was expected to be used here.
 
 From this, the energy weighting factors using the baseline energy carrier electricity are calculated (see :ref:`table_default_energy_carrier_weights_label`).
 
@@ -269,7 +297,7 @@ With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, com
 .. math::
         E_{eleq,i} = E_{i} \cdot w_{i}
 
-As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`_] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`_]. The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable factor or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
+As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`__] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`__]. The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable factor or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
 
 :Code:
 
@@ -286,6 +314,91 @@ For example, the `degree of sector coupling` will reach its maximum, when the sy
 :Comment:
 
 In the MVS, there is no distinction between energy carriers and energy vector. For `Electricity` of the `Electricity` vector this may be self-explanatory. However, the energy carriers of the `Heat` vector can have different technical characteristics: A fluid on different temperature levels. As the MVS measures the energy content of a flow in kWh(thermal) however, this distinction is only relevant for the end user to be aware of, as two assets that have different energy carriers as an output should not be connected to one and the same bus if a detailed analysis is expected. An example of this would be, that a system where the output of the diesel boiler as well as the output of a solar thermal panel are connected to the same bus, eventhough they can not both supply the same kind of heat demands (radiator vs. floor heating).  This, however, is something that the end-user has to be aware of themselves, eg. by defining self-explanatory labels.
+
+Emission factors
+----------------
+
+In order to optimise the energy system with minimum emissions, it is important to calculate emission per unit of fuel consumption.
+
+In table :ref:`table_emissions_energyCarriers` the emission factors for energy carriers are defined. These values are based on direct emissions during stationary consumption of the mentioned fuels.
+
+.. _table_emissions_energyCarriers:
+
+.. list-table:: Emission factors: Kg of CO2 equivalent per unit of fuel consumption
+   :widths: 50 25 25 25
+   :header-rows: 1
+
+   * - Energy carrier
+     - Unit
+     - Value
+     - Source
+   * - Diesel
+     - kgCO2eq/litre
+     - 2.7
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__] Page No. 26
+   * - Gasoline
+     - kgCO2eq/litre
+     - 2.3
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__] Page No. 26
+   * - Kerosene
+     - kgCO2eq/litre
+     - 2.5
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__] Page No. 26
+   * - Natural gas
+     - kgCO2eq/m3
+     - 1.9
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__] Page No. 26
+   * - LPG
+     - kgCO2eq/litre
+     - 1.6
+     - [`4  <https://www.eib.org/attachments/strategies/eib_project_carbon_footprint_methodologies_en.pdf>`__] Page No. 26
+   * - Biodiesel
+     - kgCO2eq/litre
+     - 0.000125
+     - [`5  <https://www.mfe.govt.nz/sites/default/files/media/Climate%20Change/2019-emission-factors-summary.pdf>`__] Page No. 6
+   * - Bioethanol
+     - kgCO2eq/litre
+     - 0.0000807
+     - [`5  <https://www.mfe.govt.nz/sites/default/files/media/Climate%20Change/2019-emission-factors-summary.pdf>`__] Page No. 6
+   * - Biogas
+     - kgCO2eq/m3
+     - 0.12
+     - [`6 <https://www.winnipeg.ca/finance/findata/matmgt/documents/2012/682-2012/682-2012_Appendix_H-WSTP_South_End_Plant_Process_Selection_Report/Appendix%207.pdf>`__] Page No. 1
+
+In table :ref:`table_CO2_emissions_countries` the CO2 emissions for Germany and the four pilot sites (Norway, Spain, Romania, India) are defined:
+
+.. _table_CO2_emissions_countries:
+
+.. list-table:: CO2 Emission factors: grams of CO2 equivalent per kWh of electricity consumption
+   :widths: 50 25 25 25
+   :header-rows: 1
+
+   * - Country
+     - Unit
+     - Value
+     - Source
+   * - Germany
+     - gCO2eq/kWh
+     - 338
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__] Fig. 2
+   * - Norway
+     - gCO2eq/kWh
+     - 19
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__] Fig. 2
+   * - Spain
+     - gCO2eq/kWh
+     - 207
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__] Fig. 2
+   * - Romania
+     - gCO2eq/kWh
+     - 293
+     - [`7 <https://www.eea.europa.eu/data-and-maps/indicators/overview-of-the-electricity-production-3/assessment>`__] Fig. 2
+   * - India
+     - gCO2eq/kWh
+     - 708
+     - [`8 <https://www.climate-transparency.org/wp-content/uploads/2019/11/B2G_2019_India.pdf>`__] Page No. 7
+
+The values mentioned in the table above account for emissions during the complete life cycle. This includes emissions during energy production, energy conversion, energy storage and energy transmission.
 
 Limitations
 -----------
@@ -323,10 +436,12 @@ The following table (:ref:`table_limitations_label`) lists the MVS limitations b
 Infeasible bi-directional flow in one timestep
 ##############################################
 
-:Limitation: 
+:Limitation:
+
 The real life constraint of the dispatch of assets, that it is not possible to have two flows in opposite directions at the same time step, is not adhered to in the MVS.
 
-:Reason: 
+:Reason:
+
 The MVS is based on the python library `oemof-solph`. Its generic components are used to set up the energy system. As a ground rule, the components of `oemof-solph` are unidirectional. This means that for an asset that is bidirectional two transformer objects have to be used. Examples for this are:
 
 * Physical bi-directional assets, eg. inverters
@@ -339,7 +454,8 @@ To achieve the real-life constraint one flow has to be zero when the other is la
 
 However, this relation creates a non-linear problem and can not be implemented in `oemof-solph`.
 
-:Implications: 
+:Implications:
+
 This limitation means that the MVS might result in infeasible dispatch of assets. For instance, a bus might be supplied by a rectifier and itself supplying an inverter at the same time step t, which cannot logically happen if these assets are part of one physical bi-directional inverter. Another case that could occur is feeding the grid and consuming from it at the same time t.
 
 Under certain conditions, including an excess generation as well as dispatch costs of zero, the infeasible dispatch can also be observed for batteries and result in a parallel charge and discharge of the battery. If this occurs, a solution may be to set a marginal dispatch cost of battery charge.
@@ -350,6 +466,7 @@ Simplified linear component models
 ##################################
 
 :Limitation:
+
 The MVS simplifies the component model of some assets.
 
     * Generators have an efficiency that is not load-dependent
@@ -357,9 +474,11 @@ The MVS simplifies the component model of some assets.
     * Turbines are implemented without ramp rates
 
 :Reason:
+
 The MVS is based oemof-solph python library and uses its generic components to set up an energy system. Transformers and storages cannot have variable efficiencies.
 
 :Implications:
+
 Simplifying the implementation of some component specifications can be beneficial for the ease of the model, however, it contributes to the lack of realism and might result in less accurate values. The MVS accepts the decreased level of detail in return for a quick evaluation of its scenarios, which are often only used for a pre-feasibility analysis.
 
 .. _limitations-degradation:
@@ -368,12 +487,15 @@ No degradation of efficiencies over a component lifetime
 ########################################################
 
 :Limitation:
+
 The MVS does not degrade the efficiencies of assets over the lifetime of the project, eg. in the case of production assets like PV panels.
 
 :Reason:
+
 The simulation of the MVS is only based on a single reference year, and it is not possible to take into account multi-year degradation of asset efficiency.
 
 :Implications:
+
 This results in an overestimation of the energy generated by the asset, which implies that the calculation of some other results might also be overestimated (e.g. overestimation of feed-in energy). The user can circumvent this by applying a degradation factor manually to the generation time series used as an input for the MVS.
 
 .. _limitations-perfect_foresight:
@@ -382,12 +504,15 @@ Perfect foresight
 #################
 
 :Limitation:
+
 The optimal solution of the energy system is based on perfect foresight.
 
 :Reason:
+
 As the MVS and thus oemof-solph, which is handling the energy system model, know the generation and demand profiles for the whole simulation time and solve the optimization problem based on a linear equation system, the solver knows their dispatch for certain, whereas in reality the generation and demand could only be forecasted.
 
 :Implications:
+
 The perfect foresight can lead to suspicious dispatch of assets, for example charging of a battery right before a (in real-life) random blackout occurs. The systems optimized with the MVS therefore, represent their optimal potential, which in reality could not be reached. The MVS has thus a tendency to underestimate the needed battery capacity or the minimal state of charge for backup purposes, and also designs the PV system and backup power according to perfect forecasts. In reality, operational margins would need to be added.
 
 .. _limitations-missing-kpi:
@@ -396,6 +521,7 @@ Extension of KPIs necessary
 ###########################
 
 :Limitation:
+
 Some important KPIs usually required by developers are currently not implemented in the MVS:
 
 * Internal rate of return (IRR)
@@ -403,9 +529,11 @@ Some important KPIs usually required by developers are currently not implemented
 * Return on equity (ROE),
 
 :Reason:
+
 The MVS tool is a work in progress and this can still be addressed in the future.
 
 :Implications:
+
 The absence of such indicators might affect decision-making.
 
 .. _limitations-random-excess:
@@ -414,12 +542,15 @@ Random excess energy distribution
 #################################
 
 :Limitation:
+
 There is random excess distribution between the feed-in sink and the excess sink when no feed-in-tariff is assumed in the system.
 
 :Reason:
+
 Since there is no feed-in-tariff to benefit from, the MVS randomly distributes the excess energy between the feed-in and excess sinks. As such, the distribution of excess energy changes when running several simulations for the same input files.
 
 :Implications:
+
 On the first glance, the distribution of excess energy onto both feed-in sink and excess sink may seem off to the end-user. Other than these inconveniences, there are no real implications that affect the capacity and dispatch optimization. When a degree of self-supply and self-consumption is defined, the limitation might tarnish these results.
 
 .. _limitations-renewable-share-definition:
@@ -428,6 +559,7 @@ Renewable energy share defintion relative to energy carriers
 ############################################################
 
 :Limitation:
+
 The current renewable energy share depends on the share of renewable energy production assets directly feeding the load. The equation to calculate the share also includes the energy carrier rating as described here below:
 
 .. math:: 
@@ -438,9 +570,11 @@ The current renewable energy share depends on the share of renewable energy prod
         & k \text{: non-renewable energy asset}
 
 :Reason:
+
 The MVS tool is a work in progress and this can still be addressed in the future.
 
 :Implications:
+
 This might result in different values when comparing them to other models. Another way to calculate it is by considering the share of energy consumption supplied from renewable sources.
 
 .. _limitations-energy_carrier_weighting:
@@ -448,13 +582,16 @@ This might result in different values when comparing them to other models. Anoth
 Energy carrier weighting
 ########################
 
-:Limitation: 
+:Limitation:
+
 The MVS assumes a usable potential/energy content rating for every energy carrier. The current version assumes that 1 kWh thermal is equivalent to 1 kWh electricity.
 
-:Reason: 
+:Reason:
+
 This is an approach that the MVS currently uses.
 
 :Implications:
+
 By weighing the energy carriers according to their energy content (Gasoline Gallon Equivalent (GGE)), the MVS might result in values that can't be directly assessed. Those ratings affect the calculation of the levelized cost of the energy carriers, but also the minimum renewable energy share constraint.
 
 .. _limitations-energy_shortage:
@@ -462,13 +599,16 @@ By weighing the energy carriers according to their energy content (Gasoline Gall
 Events of energy shortage or grid interruption can not be modelled
 ##################################################################
 
-:Limitation: 
+:Limitation:
+
 The MVS assumes no shortage or grid interruption in the system.
 
-:Reason: 
+:Reason:
+
 The aim of the MVS does not cover this scenario.
 
 :Implications:
+
 Electricity shortages due to power cuts might happen in real life and the MVS currently omits this scenario.
 If a system is self-sufficient but relies on grid-connected PV systems,
 the latter stop feeding the load if any power cuts occur
@@ -480,13 +620,16 @@ Need of two transformer assets for of one technical unit
 ########################################################
 
 :Limitation:
+
 Two transformer objects representing one technical unit in real life are currently unlinked in terms of capacity and attributed costs.
 
 :Reason:
+
 The MVS uses oemof-solph's generic components which are unidirectional so for a bidirectional asset,
 two transformer objects have to be used.
 
-:Implications: 
+:Implications:
+
 Since one input is only allowed, such technical units are modelled as two separate transformers that are currently unlinked in the MVS
 (e.g., hybrid inverter, heat pump, distribution transformer, etc.).
 This raises a difficulty to define costs in the input data.
@@ -543,7 +686,7 @@ As mentioned in :ref:`validation-plan`, the MVS is validated using three validat
 Unit and Integration Tests
 ##########################
 
-The goal is to have unit tests for each single function of the MVS, and integration tests for the larger modules. As previously mentioned, pytests are used for those kind of tests as they always assert that an externally determined output is archieved when applying a specific function. Unit tests and integration tests are gauged by using test coverage measurement. Examples of those tests can be found `here <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests>`_  and it is possible to distinguish them from other tests from the nomination that refers to the names of the source modules (e.g., A0, A1, B0, etc.). The MVS covers so far 80% of the modules and sub-modules as seen in the next figure. 
+The goal is to have unit tests for each single function of the MVS, and integration tests for the larger modules. As previously mentioned, pytests are used for those kind of tests as they always assert that an externally determined output is archieved when applying a specific function. Unit tests and integration tests are gauged by using test coverage measurement. Examples of those tests can be found `here <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests>`__  and it is possible to distinguish them from other tests from the nomination that refers to the names of the source modules (e.g., A0, A1, B0, etc.). The MVS covers so far 80% of the modules and sub-modules as seen in the next figure.
 
 .. image:: images/Test_coverage.png
  :width: 200
@@ -555,18 +698,20 @@ Benchmark Tests
 
 A benchmark is a point of reference against which results are compared to assess the operational validity of a model. Benchmark tests are also automated like unit and integration tests, hence it is necessary to check that they are always passing for any implemented changes in the model. The implemented benchmark tests, which cover several features and functionalities of the MVS, are listed here below.
 
-* Electricity Grid + PV (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AB_grid_PV>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L63>`_): Maximum use of PV to serve the demand and the rest is compensated from the grid
+* Electricity Grid + PV (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AB_grid_PV>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L63>`__): Maximum use of PV to serve the demand and the rest is compensated from the grid
    
-* Electricity Grid + PV + Battery (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/ABE_grid_PV_battery>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L124>`_): Reduced excess energy compared to Grid + PV scenario to charge the battery
+* Electricity Grid + PV + Battery (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/ABE_grid_PV_battery>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L124>`__): Reduced excess energy compared to Grid + PV scenario to charge the battery
    
-* Electricity Grid + Diesel Generator (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AD_grid_diesel>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L157>`_): The diesel generator is only used if its LCOE is less than the grid price
+* Electricity Grid + Diesel Generator (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AD_grid_diesel>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L157>`__): The diesel generator is only used if its LCOE is less than the grid price
    
-* Electricity Grid + Battery (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AE_grid_battery>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L96>`_): The grid is only used to feed the load
+* Electricity Grid + Battery (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AE_grid_battery>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L96>`__): The grid is only used to feed the load
    
-* Electricity Grid + Battery + Peak Demand Pricing (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AE_grid_battery_peak_pricing>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L192>`_): Battery is charged at times of peak demand and used when demand is larger
+* Electricity Grid + Battery + Peak Demand Pricing (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AE_grid_battery_peak_pricing>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L192>`__): Battery is charged at times of peak demand and used when demand is larger
    
-* Electricity Grid (Price as Time Series) + Heat Pump + Heat Grid (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AFG_grid_heatpump_heat>`_/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L276>`_): Heat pump is used when electricity_price/COP is less than the heat grid price
-     
+* Electricity Grid (Price as Time Series) + Heat Pump + Heat Grid (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AFG_grid_heatpump_heat>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L276>`__): Heat pump is used when electricity_price/COP is less than the heat grid price
+
+* Maximum emissions constraint: Grid + PV + Diesel Generator (data: `set 1 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_None>`__, `set 2 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low>`__, `set 3 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low_grid_RE_100>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/f459b35da6c46445e8294845604eb2b683e43680/tests/test_benchmark_constraints.py#L121>`__): Emissions are limited by constraint, more PV is installed to reduce emissions. For RE share of 100 % in grid, more electricity from the grid is used
+
 More tests can still be implemented with regard to:
 
 * The investment model within the MVS
@@ -576,7 +721,7 @@ More tests can still be implemented with regard to:
 Sensitivity Analysis Tests
 ##########################
 
-For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff (FIT) for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. The implemented sensitivity analysis test is shown here below with the resulting graph. More information can be found `here <https://repository.tudelft.nl/islandora/object/uuid%3A50c283c7-64c9-4470-8063-140b56f18cfe?collection=education>`_ on pages 54-55.
+For sensitivity analysis, the behaviour of the MVS is studied by testing the effect of changing the value of the feed-in tariff (FIT) for a fixed value of an asset's LCOE such that LCOE_ASSET is less than the electricity price. The implemented sensitivity analysis test is shown here below with the resulting graph. More information can be found `here <https://repository.tudelft.nl/islandora/object/uuid%3A50c283c7-64c9-4470-8063-140b56f18cfe?collection=education>`__ on pages 54-55.
 
 * Comparing FIT to LCOE_ASSET: Investment in maximum allowed capacity of asset for FIT values larger than LCOE_ASSET
 
@@ -594,6 +739,6 @@ More input-output transformations for sensitivity analyses can be investigated s
 Comparison to Other Models
 ##########################
 
-So far, the MVS' results for a sector coupled system (electricity + hydrogen) are compared to those of HOMER for the same exact system. This comparison is important to highlight the similarities and differences between the two optimization models. On the electricity side, most of the values are comparable and in the same range. The differences mainly show on the hydrogen part in terms of investment in an electrolyzer capacity (component linking the two sectors) and the values related to that. On another note, both models have different approaches for calculating the value of the levelized cost of a certain energy carrier and therefore the values are apart. Details regarding the comparison drawn between the two models can be found `here <https://repository.tudelft.nl/islandora/object/uuid%3A50c283c7-64c9-4470-8063-140b56f18cfe?collection=education>`_ on pages 55-63.
+So far, the MVS' results for a sector coupled system (electricity + hydrogen) are compared to those of HOMER for the same exact system. This comparison is important to highlight the similarities and differences between the two optimization models. On the electricity side, most of the values are comparable and in the same range. The differences mainly show on the hydrogen part in terms of investment in an electrolyzer capacity (component linking the two sectors) and the values related to that. On another note, both models have different approaches for calculating the value of the levelized cost of a certain energy carrier and therefore the values are apart. Details regarding the comparison drawn between the two models can be found `here <https://repository.tudelft.nl/islandora/object/uuid%3A50c283c7-64c9-4470-8063-140b56f18cfe?collection=education>`__ on pages 55-63.
 
-This validation method is commonly used. However, one model cannot absolutely validate another model or claim that one is better than the other. This is why the focus should be on testing the correctness, appropriateness and accuracy of a model vis-à-vis its purpose. Since the MVS is an open source tool, it is important to use a validated model for comparison, but also similar open source tools like urbs and Calliope for instance. The following two articles list some of the models that could be used for comparison to the MVS: `A review of modelling tools for energy and electricity systems with large shares of variable renewables <https://doi.org/10.1016/j.rser.2018.08.002>`_ and `Power-to-heat for renewable energy integration: A review of technologies, modeling approaches, and flexibility potentials <https://doi.org/10.1016/j.apenergy.2017.12.073>`_.
+This validation method is commonly used. However, one model cannot absolutely validate another model or claim that one is better than the other. This is why the focus should be on testing the correctness, appropriateness and accuracy of a model vis-à-vis its purpose. Since the MVS is an open source tool, it is important to use a validated model for comparison, but also similar open source tools like urbs and Calliope for instance. The following two articles list some of the models that could be used for comparison to the MVS: `A review of modelling tools for energy and electricity systems with large shares of variable renewables <https://doi.org/10.1016/j.rser.2018.08.002>`__ and `Power-to-heat for renewable energy integration: A review of technologies, modeling approaches, and flexibility potentials <https://doi.org/10.1016/j.apenergy.2017.12.073>`__.

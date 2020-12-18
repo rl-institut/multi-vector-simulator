@@ -1,3 +1,15 @@
+r"""
+Module F1 - Plotting
+====================
+
+Module F1 describes all the functions that create plots.
+
+- creating graphs for energy flows
+- creating bar chart for capacity
+- creating pie chart for cost data
+- creating network graph for the model brackets only working on Ubuntu
+"""
+
 import logging
 import os
 import textwrap
@@ -52,15 +64,6 @@ from multi_vector_simulator.E1_process_results import (
     convert_demand_to_dataframe,
     convert_costs_to_dataframe,
 )
-
-r"""
-Module F1 describes all the functions that create plots.
-
-- creating graphs for energy flows
-- creating bar chart for capacity
-- creating pie chart for cost data
-- creating network graph for the model brackets only working on Ubuntu
-"""
 
 
 def convert_plot_data_to_dataframe(plot_data_dict, data_type):
@@ -217,10 +220,11 @@ class ESGraphRenderer:
 
         Returns
         -------
-        None: render the generated dot graph in the filepath
+        None:
+        render the generated dot graph in the filepath
 
         Notes
-        --------
+        -----
         When new oemof-solph asset types are added to the available types in the MVS, this function needs to be updated, so that it can render the asset in the graph.
         """
         file_name, file_ext = os.path.splitext(filepath)

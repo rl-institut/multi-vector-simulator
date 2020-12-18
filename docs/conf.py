@@ -65,7 +65,7 @@ def generate_parameter_description(input_csv_file, output_rst_file):
             lines
             + [f".. _{props.ref}:", "", props.label, "^" * len(props.label), "",]
             + [f"{p} {props[p]}" for p in parameter_properties]
-            + ["", "----", "",]
+            + ["", "",]
         )
 
     with open(output_rst_file, "w") as ofs:
@@ -80,9 +80,9 @@ project = "Multi-Vector Simulator (MVS)"
 copyright = "2019, Reiner Lemoine Institut and Martha M. Hoffmann"
 author = "Reiner Lemoine Institut and Martha M. Hoffmann"
 
-# The full version, including alpha/beta/rc tags
-release = "0.0.2"
+from multi_vector_simulator.version import version_num
 
+release = version_num
 
 # -- General configuration ---------------------------------------------------
 
@@ -108,6 +108,9 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
+# generate autosummary even if no references
+autosummary_generate = True
+autosummary_imported_members = True
 
 # -- Options for HTML output -------------------------------------------------
 

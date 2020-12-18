@@ -14,3 +14,4 @@ type_oemof,str
 unit,str
 energyVector,str
 renewableAsset,bool
+emission_factor,kgCO2eq/unit
