@@ -181,25 +181,33 @@ An energy system is composed of a heat and an electricity side. Following are th
 * 0 kWh local generation for the heat side
 * 100 kWh consumption from the electricity provider, who has a renewable factor of 50%
 
-Again, the heat sector would have a renewable factor of 0% when considered seperately, and the electricity side would have an renewable factor of 75%. This results in a system-wide renewable share of:
+Again, the heat sector would have a renewable factor of 0% when considered separately, and the electricity side would have an renewable factor of 75%. This results in a system-wide renewable share of:
 
 .. math:: RF = \frac{ 100 kWh(el)\cdot \frac{kWh(eleq)}{kWh(el)} +50 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}}{200 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}} = 3/4 = \text{75 \%}
 
 The renewable factor can, just like the :ref:`kpi_renewable_share_of_local_generation` not indicate how much renewable energy is used in each of the sectors. In the future, it may be possible to dive into this together with the degree of sector-coupling.
 
-CO2 Emissions
-#############
+.. _emissions:
 
-The total C02 emissions of the MES in question can be calculated
-with all aggregated energy flows from the generation assets and their subsequent emission factor:
+Emissions
+#########
+
+The total emissions of the MES in question are calculated with all aggregated energy flows from the generation assets including energy providers and their subsequent emission factor:
 
 .. math::
-        CO2 Emissions &= \sum_i {E_{gen} (i) \cdot CO2_{eq} (i)}
+        Total\_emissions &= \sum_i {E_{gen} (i) \cdot emission\_factor (i)}
 
         \text{with~} &i \text{: generation assets 1,2,…}
 
-** The content of this section was copied from the conference paper handed in to CIRED 2020**
+The emissions of each generation asset and provider are also calculated and displayed separately in the outputs of MVS.
+Additionally, the specific emissions per electricity equivalent of the MES are calculated in :math:`\text{kg/kWh}_{eleq}`:
 
+.. math::
+        Specific\_emissions &= \frac{Total\_emissions}{total\_demand_{eleq}}
+
+Emissions can be of different nature: CO2 emissions, CO2 equivalents, greenhouse gases, ...
+
+Currently the emissions do not include life cycle emissions of energy conversion or storage assets, nor are they calculated separately for the energy sectors. For the latter, it arises the problem of the assignment of assets to sectors. E.g. emissions caused by an electrolyser would be counted to the electricity sector although you might want to count it for the H2 sector, as the purpose of the electrolyser is to feed the H2 sector. Therefore, we will have to verify whether or not we can apply the energy carrier weighting also for this KPI.
 
 Degree of sector-coupling (DSC)
 ###############################

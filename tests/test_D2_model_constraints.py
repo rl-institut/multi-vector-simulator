@@ -1,4 +1,16 @@
+from oemof import solph
+import os
+import pytest
+import mock
+import pandas as pd
+import logging
+import shutil
+
 import multi_vector_simulator.D2_model_constraints as D2
+import multi_vector_simulator.A0_initialization as A0
+import multi_vector_simulator.B0_data_input_json as B0
+import multi_vector_simulator.C0_data_processing as C0
+import multi_vector_simulator.D0_modelling_and_optimization as D0
 
 from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_SOURCE,
@@ -12,7 +24,24 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_CONSUMPTION,
     RENEWABLE_SHARE_DSO,
     RENEWABLE_ASSET_BOOL,
+    MAXIMUM_EMISSIONS,
+    CONSTRAINTS,
+    MINIMAL_RENEWABLE_FACTOR,
 )
+
+from multi_vector_simulator.utils.constants import OUTPUT_FOLDER
+
+from _constants import (
+    TEST_REPO_PATH,
+    INPUT_FOLDER,
+    PATH_INPUT_FILE,
+    PATH_INPUT_FOLDER,
+    PATH_OUTPUT_FOLDER,
+)
+
+PARSER = A0.mvs_arg_parser()
+TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, INPUT_FOLDER)
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, OUTPUT_FOLDER)
 
 
 def test_prepare_constraint_minimal_renewable_share():
@@ -127,3 +156,117 @@ def test_prepare_constraint_minimal_renewable_share():
     assert (
         non_renewable_assets[dso_2 + DSO_CONSUMPTION][renewable_share_asset_flow] == 0.7
     ), f"The renewable share of asset {dso_2 + DSO_CONSUMPTION} is added incorrectly."
+
+
+class TestConstraints:
+    def setup_class(self):
+        """Run the simulation up to constraints adding in D2 and define class attributes."""
+
+        @mock.patch(
+            "argparse.ArgumentParser.parse_args",
+            return_value=PARSER.parse_args(
+                ["-f", "-log", "warning", "-i", TEST_INPUT_PATH, "-o", TEST_OUTPUT_PATH]
+            ),
+        )
+        def run_parts(margs):
+            if os.path.exists(TEST_OUTPUT_PATH):
+                shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+            user_input = A0.process_user_arguments()
+
+            logging.debug("Accessing script: B0_data_input_json")
+            dict_values = B0.load_json(
+                user_input[PATH_INPUT_FILE],
+                path_input_folder=user_input[PATH_INPUT_FOLDER],
+                path_output_folder=user_input[PATH_OUTPUT_FOLDER],
+                move_copy=False,
+            )
+            logging.debug("Accessing script: C0_data_processing")
+            C0.all(dict_values)
+
+            logging.debug("Run parts of D0_modelling_and_optimization")
+            model, dict_model = D0.model_building.initialize(dict_values)
+            model = D0.model_building.adding_assets_to_energysystem_model(
+                dict_values, dict_model, model
+            )
+            local_energy_system = solph.Model(model)
+            logging.debug("Created oemof model based on created components and busses.")
+            return dict_values, local_energy_system, dict_model
+
+        self.dict_values, self.model, self.dict_model = run_parts()
+        self.exp_emission_limit = 1000
+        self.dict_values[CONSTRAINTS].update(
+            {MAXIMUM_EMISSIONS: {VALUE: self.exp_emission_limit}}
+        )
+        return
+
+    def test_constraint_maximum_emissions(self):
+        model = D2.constraint_maximum_emissions(
+            model=self.model, dict_values=self.dict_values
+        )
+        assert (
+            model.integral_limit_emission_factor.NoConstraint[0]
+            == self.exp_emission_limit
+        ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor.NoConstraint[0]}."
+
+    def test_add_constraints_maximum_emissions(self):
+        model = D2.add_constraints(
+            local_energy_system=self.model,
+            dict_values=self.dict_values,
+            dict_model=self.dict_model,
+        )
+        assert (
+            model.integral_limit_emission_factor.NoConstraint[0]
+            == self.exp_emission_limit
+        ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor.NoConstraint[0]}."
+
+    def test_add_constraints_maximum_emissions_None(self):
+        dict_values = self.dict_values.copy()
+        dict_values.update(
+            {
+                CONSTRAINTS: {
+                    MAXIMUM_EMISSIONS: {VALUE: None},
+                    MINIMAL_RENEWABLE_FACTOR: {
+                        VALUE: self.dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][
+                            VALUE
+                        ]
+                    },
+                }
+            }
+        )
+        model = D2.add_constraints(
+            local_energy_system=self.model,
+            dict_values=self.dict_values,
+            dict_model=self.dict_model,
+        )
+        assert (
+            model.integral_limit_emission_factor.NoConstraint[0]
+            == self.exp_emission_limit
+        ), f"When maximum_emission is None, no emission constraint should be added to the ESM."
+
+    """
+    def test_add_constraints_minimal_renewable_share(self):
+    # todo to be added
+    pass
+    """
+
+    """
+    def test_add_constraints_minimal_renewable_share_None(self):
+        dict_values = self.dict_values.copy()
+        dict_values.update(
+            {
+                CONSTRAINTS: {
+                    MAXIMUM_EMISSIONS: {
+                        VALUE: self.dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]
+                    },
+                    MINIMAL_RENEWABLE_FACTOR: {VALUE: None},
+                }
+            }
+        )
+        # todo to be added
+        pass
+    """
+
+    def teardown_class(self):
+        # Remove the output folder
+        if os.path.exists(TEST_OUTPUT_PATH):
+            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)

@@ -13,7 +13,7 @@ import logging
 import copy
 import pandas as pd
 
-from multi_vector_simulator.utils.constants import TYPE_NONE
+from multi_vector_simulator.utils.constants import TYPE_NONE, TOTAL_FLOW
 from multi_vector_simulator.utils.constants_json_strings import (
     ECONOMIC_DATA,
     FLOW,
@@ -63,6 +63,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ANNUITY_TOTAL,
     ANNUITY_OM,
     LCOE_ASSET,
+    EMISSION_FACTOR,
+    TOTAL_EMISSIONS,
 )
 
 # Determines which assets are defined by...

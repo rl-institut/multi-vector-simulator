@@ -22,11 +22,39 @@ Here is a template for new release sections
 ## [unreleased]
 
 ### Added
+-
+### Changed
+-
+### Removed
+-
+### Fixed
+-
+
+
+## [0.5.4] - 2020-12-18
+
+### Added
 - Updated release protocol with info on credentials for test.pypi.org (step 9) and added "Fixed" to unreleased section of changelog.md in release protocol (#695)
 - Added information about the API to the docs (#701)
-- Added CO2 emission factors in the section model_assumption.rst (#697)
-- Added energyBusses.csv in RTD (#678)
+- Added CO2 emission factors in the section `Model_Assumption.rst` (#697, #735)
+- Added `energyBusses.csv` in RTD (#678)
 - Add and link `rewableAsset` as parameter in RTD, specifically `MVS_parameters.rst` and `MVS_parameters_list.csv` (#710)
+- Parameter `emission_factor` to `energyProduction` and `energyProviders` and to rtd (`MVS_parameters.rst` and `MVS_parameters_list.csv`) (#706)
+- Parameter `total_emissions` in kgCO2eq/a to `constraints.csv` (#706)
+- Constant variables `TOTAL_EMISSIONS` and `SPECIFIC_EMISSIONS_ELEQ` for emission KPIs, `MAXIMUM_EMISSIONS` for emission constraint and `UNIT_EMISSIONS` and `UNIT_SPECIFIC_EMISSIONS` for unit definitions (#706)
+- Calculation of total emissions per production asset in `E3.calculate_emissions_from_flow()`, which are added to `KPI_SCALARS_DICT` (#706)
+- KPI "Total emissions" in kgCO2eq/a per production asset (`E3.add_total_emissions()`) and KPI "Specific emissions per electricity equivalent" in kgCO2eq/kWheleq (`E3.add_specific_emissions_per_electricity_equivalent()`) (#706)
+- Tests for functions `E3.calculate_emissions_from_flow()`, `E3.add_specific_emissions_per_electricity_equivalent()`) and `E3.add_total_emissions()` (#706)
+- Added `emisson_factor` of providers to automatic source for providers in `C0.define_source()` and adapted tests (#706)
+- Added information on calculation of total emissions in RTD in Simulation Outputs section (#706)
+- Parameter `maximum_emissions` (`MAXIMUM_EMISSIONS`) to `constraints.csv`, unit: kgCO2eq/a (#706)
+- Maximum emission constraint by `D2.constraint_maximum_emissions()` to `D2.add_constraints()` using `oemof.solph.constraints.emission_limit()`, also added tests (#714, #706)
+- Benchmark test for maximum emission constraint in `test_benchmark_constraints.py` (#714, #706)
+- Information on maximum emissions constraint to RTD, including help for the end-user to define the value for this constraint (#714, #706)
+- A logging.warning (`C1.check_feasibility_of_maximum_emissions_constraint()`) if `maximum_emissions` constraint is used but no asset with zero emissions is optimized without maximum capacity constraint, also added tests (#714, #706)
+- A logging.warning (`C1.check_emission_factor_of_providers()`) in case any of the providers has a renewable share of 100 % but an emission factor > 0, also added tests (#714, #706)
+- Info on maximum emissions constraint benchmark test to RTD (#714, #706)
+- Verification for maximum emissions contraint in `E4.maximum_emissions_test()`, also added tests (#714, #706)
 
 ### Changed 
 - Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
@@ -36,6 +64,10 @@ Here is a template for new release sections
 - All `.py` files to add a module description for RTD on top (#704)
 - Converted `README` from `.md` to` .rst` format and updated `Installation.rst` file (#646)
 - Updated `setup.py` to use the rst formatted README file
+- Changed `C0.energyStorage()` for timeseries in storage parameters (hotfix) (#720)
+- Input files and benchmark test `test_benchmark_special_features.Test_Parameter_Parsing()`: Now also including timeseries in a storage component (#723)
+- Adapted `E0` tests to new parameter `emission_factor` (#706)
+- Adapted all test inputs and json files and the input template, adding `emission_factor` (`energyProduction`, `energyProviders`) and `maximum_emissions` (`constraints.csv`) (#706)
 
 ### Removed
 - Removed `README.md` in favour of `README.rst` (#646)
@@ -48,6 +80,9 @@ Here is a template for new release sections
 - Benchmark test for renewable share (`TestTechnicalKPI.test_renewable_factor_and_renewable_share_of_local_generation()`) (#613)
 - Github actions workflow: update apt-get before installing pre-dependencies (#729)
 - Got rid of logging messages of imported libraries in the log file (#725)
+- Fix RTD for emissions (#735)
+- Hot fix: Parameters to be defined as timeseries in `storage_*.csv` (#720)
+- Tests for `E4.minimal_renewable_share_test` (#714, #706)
 
 ## [0.5.3] - 2020-12-08
 

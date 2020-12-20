@@ -12,4 +12,5 @@ dispatch_price,currency/kWh
 outflow_direction,str
 file_name,str
 energyVector,str
+emission_factor,kgCO2eq/unit
 type_oemof,str
