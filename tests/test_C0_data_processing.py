@@ -1085,33 +1085,6 @@ def test_change_sign_of_feedin_tariff_zero(caplog):
     ), f"A msg is logged although the feed-in tariff is not changed."
 
 
-"""
-def test_compute_timeseries_properties(TIMESERIES_PEAK):
-    expected=
-    actual=compute_timeseries_properties(TIMESERIES_PEAK)
-    message="Expected return value:{0}, Actual return value: {1}".format(expected,actual)
-    assert actual== pytest.approx(expected),message
-
-def test_compute_timeseries_properties(TIMESERIES_TOTAL):
-    expected=
-    actual=compute_timeseries_properties(TIMESERIES_PEAK)
-    message="Expected return value:{0}, Actual return value: {1}".format(expected,actual)
-    assert actual== pytest.approx(expected),message
-
-def test_compute_timeseries_properties(TIMESERIES_AVERAGE):
-    expected=
-    actual=compute_timeseries_properties(TIMESERIES_AVERAGE)
-    message="Expected return value:{0}, Actual return value: {1}".format(expected,actual)
-    assert actual== pytest.approx(expected),message
-
-def test_compute_timeseries_properties(TIMESERIES_NORMALIZED):
-    expected=
-    actual=compute_timeseries_properties(TIMESERIES_NORMALIZED)
-    message="Expected return value:{0}, Actual return value: {1}".format(expected,actual)
-    assert actual== pytest.approx(expected),message
-"""
-
-
 def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
     str = "str"
     dict_asset = {
@@ -1140,7 +1113,6 @@ def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
     assert dict_asset[TIMESERIES_PEAK][LABEL] == str
     assert dict_asset[TIMESERIES_TOTAL][LABEL] == str
     assert dict_asset[TIMESERIES_AVERAGE][LABEL] == str
-
 
 """
 
