@@ -1100,7 +1100,7 @@ def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
         assert parameter in dict_asset, f"Parameter {parameter} is not in updated dict_asset."
         assert VALUE in dict_asset[parameter]
         assert UNIT in dict_asset[parameter]
-        assert LABEL in dict_asset[parameter]
+
 
     assert dict_asset[TIMESERIES_PEAK][VALUE] == 3
     assert dict_asset[TIMESERIES_TOTAL][VALUE] == 6
@@ -1109,10 +1109,6 @@ def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
     assert dict_asset[TIMESERIES_PEAK][UNIT] == str
     assert dict_asset[TIMESERIES_TOTAL][UNIT] == str
     assert dict_asset[TIMESERIES_AVERAGE][UNIT] == str
-
-    assert dict_asset[TIMESERIES_PEAK][LABEL] == str
-    assert dict_asset[TIMESERIES_TOTAL][LABEL] == str
-    assert dict_asset[TIMESERIES_AVERAGE][LABEL] == str
 
 """
 
