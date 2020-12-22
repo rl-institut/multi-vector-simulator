@@ -16,7 +16,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_BUSSES,
     OUTFLOW_DIRECTION,
-    TIMESERIES_NORMALIZED,
     INFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
@@ -50,7 +49,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ANNUITY_FACTOR,
     SIMULATION_ANNUITY,
     LIFETIME_SPECIFIC_COST,
-    TIMESERIES_PEAK,
     CRF,
     ANNUITY_SPECIFIC_INVESTMENT_AND_OM,
     LIFETIME_SPECIFIC_COST_OM,
@@ -81,8 +79,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
     TIMESERIES_PEAK,
     TIMESERIES_TOTAL,
-    TIMESERIES_AVERAGE
-
+    TIMESERIES_AVERAGE,
+    TIMESERIES_NORMALIZED,
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 
@@ -1087,28 +1085,33 @@ def test_change_sign_of_feedin_tariff_zero(caplog):
 
 def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
     str = "str"
-    dict_asset = {
-        TIMESERIES: pd.Series([1, 2, 3]),
-        UNIT: "str",
-        LABEL: "str"
-    }
+    dict_asset = {TIMESERIES: pd.Series([1, 2, 3]), UNIT: "str", LABEL: "str"}
 
     C0.compute_timeseries_properties(dict_asset)
     print(dict_asset)
 
-    for parameter in [TIMESERIES_PEAK, TIMESERIES_TOTAL, TIMESERIES_AVERAGE]:
-        assert parameter in dict_asset, f"Parameter {parameter} is not in updated dict_asset."
+    for parameter in [
+        TIMESERIES_PEAK,
+        TIMESERIES_TOTAL,
+        TIMESERIES_AVERAGE,
+        TIMESERIES_NORMALIZED,
+    ]:
+        assert (
+            parameter in dict_asset
+        ), f"Parameter {parameter} is not in updated dict_asset."
         assert VALUE in dict_asset[parameter]
         assert UNIT in dict_asset[parameter]
-
 
     assert dict_asset[TIMESERIES_PEAK][VALUE] == 3
     assert dict_asset[TIMESERIES_TOTAL][VALUE] == 6
     assert dict_asset[TIMESERIES_AVERAGE][VALUE] == 2
+    assert dict_asset[TIMESERIES_NORMALIZED][VALUE] == (0.333333, 0.666667, 1.000000)
 
     assert dict_asset[TIMESERIES_PEAK][UNIT] == str
     assert dict_asset[TIMESERIES_TOTAL][UNIT] == str
     assert dict_asset[TIMESERIES_AVERAGE][UNIT] == str
+    assert dict_asset[TIMESERIES_NORMALIZED][UNIT] == str
+
 
 """
 
