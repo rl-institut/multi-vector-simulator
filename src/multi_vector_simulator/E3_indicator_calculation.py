@@ -61,6 +61,12 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DEGREE_OF_AUTONOMY,
     ONSITE_ENERGY_FRACTION,
     ONSITE_ENERGY_MATCHING,
+    EMISSION_FACTOR,
+    TOTAL_EMISSIONS,
+    SPECIFIC_EMISSIONS_ELEQ,
+    UNIT,
+    UNIT_SPECIFIC_EMISSIONS,
+    UNIT_EMISSIONS,
 )
 
 
@@ -71,7 +77,7 @@ def all_totals(dict_values):
     ----------
 
     dict_values :
-        dict all input parameters and restults up to E0
+        dict all input parameters and results up to E0
 
     Returns
     -------
@@ -876,14 +882,104 @@ def equation_onsite_energy_matching(
     return onsite_energy_matching
 
 
-def equation_co2_emissions(dict_values):
-    co2_emissions = 0
-    for asset in dict_values[ENERGY_PRODUCTION]:
-        co2_emissions += (
-            dict_values[ENERGY_PRODUCTION][asset]["total_aggregated_flow"][VALUE]
-            * dict_values[ENERGY_PRODUCTION][asset]["emissionFactor"][VALUE]
-        )
-    return co2_emissions
+def calculate_emissions_from_flow(dict_asset):
+    r"""
+    Calculates the total emissions of the asset in 'dict_asset' in kg per year.
+
+    Parameters
+    ----------
+    dict_asset : dict
+        Contains information about the asset.
+
+    Notes
+    -----
+    Tested with:
+    - E3.test_calculate_emissions_from_flow()
+    - E3.test_calculate_emissions_from_flow_zero_emissions
+
+    Returns
+    -------
+    None
+        Updated `dict_asset` with TOTAL_EMISSIONS of the asset in kgCO2eq/a (UNIT_EMISSIONS).
+
+    """
+    emissions = dict_asset[TOTAL_FLOW][VALUE] * dict_asset[EMISSION_FACTOR][VALUE]
+    dict_asset.update({TOTAL_EMISSIONS: {VALUE: emissions, UNIT: UNIT_EMISSIONS}})
+    return
+
+
+def add_total_emissions(dict_values):
+    r"""
+    Calculates the total emission of the energy system in kgCO2eq/a and adds KPI to `dict_values`.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation inputs and results
+
+    Returns
+    -------
+    None
+        Updated `dict_values` with TOTAL_EMISSIONS of the energy system in kgCO2eq/a
+        (UNIT_EMISSIONS).
+
+    Notes
+    -----
+
+    Tested with:
+    - E3.test_add_total_emissions()
+
+    """
+    # sum up emissions of all assets [kgCO2eq/a]
+    emissions = dict_values[KPI][KPI_SCALAR_MATRIX][TOTAL_EMISSIONS].sum()  # data frame
+    dict_values[KPI][KPI_SCALARS_DICT].update({TOTAL_EMISSIONS: emissions})
+    logging.debug(
+        f"Calculated the {TOTAL_EMISSIONS}: {round(emissions, 2)} {UNIT_EMISSIONS}."
+    )
+    logging.info(f"Calculated the {TOTAL_EMISSIONS} ({UNIT_EMISSIONS}) of the LES.")
+    return
+
+
+def add_specific_emissions_per_electricity_equivalent(dict_values):
+    r"""
+    Calculates the specific emissions of the energy system per kWheleq and adds KPI to `dict_values`.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation inputs and results including TOTAL_EMISSIONS calculated in
+        `E3.calculate_emissions_from_flow`.
+
+    Notes
+    -----
+    This funtion is run after `E3.calculate_emissions_from_flow`.
+
+    Tested with:
+    - E3.test_add_specific_emissions_per_electricity_equivalent()
+
+    Returns
+    -------
+    None
+        Updated `dict_values` with SPECIFIC_EMISSIONS_ELEQ in kgCO2eq/kWheleq (UNIT_SPECIFIC_EMISSIONS).
+
+    """
+    # emissions per kWheleq
+    emissions_kWheleq = (
+        dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS]
+        / dict_values[KPI][KPI_SCALARS_DICT][
+            TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+        ]
+    )
+    dict_values[KPI][KPI_SCALARS_DICT].update(
+        {SPECIFIC_EMISSIONS_ELEQ: emissions_kWheleq}
+    )
+    logging.debug(
+        f"Calculated the {SPECIFIC_EMISSIONS_ELEQ}: {round(emissions_kWheleq, 2)} {UNIT_SPECIFIC_EMISSIONS}."
+    )
+    logging.info(
+        f"Calculated the {SPECIFIC_EMISSIONS_ELEQ} ({UNIT_SPECIFIC_EMISSIONS}) of the LES."
+    )
+    return
 
 
 def add_levelized_cost_of_energy_carriers(dict_values):

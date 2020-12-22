@@ -3,7 +3,12 @@
         "minimal_renewable_factor": {
             "unit": "factor",
             "value": 0
-        }},
+        },
+    "maximum_emissions": {
+            "unit": "kgCO2eq/a",
+            "value": 800000
+        }
+    },
     "economic_data": {
         "currency": "NOK",
         "discount_factor": {
@@ -539,6 +544,10 @@
             "maximumCap": {
                 "unit": "kWp",
                 "value": 10
+            },
+            "emission_factor": {
+                "unit": "kgCO2eq/unit",
+                "value": 0
             }
         },
         "non_dispatchable_source_fix": {
@@ -560,7 +569,11 @@
             "simulation_annuity": {
                     "value": 3.3,
                     "unit": "currency/unit/simulation period"
-                }
+                },
+            "emission_factor": {
+                "unit": "kgCO2eq/unit",
+                "value": 0
+            }
         },
         "dispatchable_source_optimize": {
             "installedCap": {
@@ -586,6 +599,10 @@
             "maximumCap": {
                 "unit": "kWp",
                 "value": 10
+            },
+            "emission_factor": {
+                "unit": "kgCO2eq/unit",
+                "value": 0
             }
         },
         "dispatchable_source_fix": {
@@ -612,6 +629,10 @@
             "maximumCap": {
                 "unit": "kWp",
                 "value": 10
+            },
+            "emission_factor": {
+                "unit": "kgCO2eq/unit",
+                "value": 0
             }
         }
     },
@@ -643,7 +664,11 @@
                 "value": 1
             },
             "type_oemof": "source"
-        }
+            },
+            "emission_factor": {
+                "unit": "kgCO2eq/kWh",
+                "value": 0.0019
+            }
     },
     "energyStorage": {
         "storage_optimize": {

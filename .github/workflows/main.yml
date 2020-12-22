@@ -30,11 +30,11 @@ jobs:
       - name: Set env for dev branch
         if: endsWith(github.ref, '/develop')
         run: |
-          echo "::set-env name=EXECUTE_TESTS_ON::dev"
+          echo "EXECUTE_TESTS_ON=dev" >> $GITHUB_ENV
       - name: Set env for master branch
         if: endsWith(github.ref, '/master')
         run: |
-          echo "::set-env name==EXECUTE_TESTS_ON::master"
+          echo "EXECUTE_TESTS_ON=master" >> $GITHUB_ENV
       
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -43,6 +43,7 @@ jobs:
 
       - name: Install pre-dependencies
         run: |
+            sudo apt-get update
             sudo apt-get install coinor-cbc
             sudo apt-get install graphviz
             sudo apt-get install wkhtmltopdf

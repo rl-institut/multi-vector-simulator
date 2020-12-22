@@ -1,6 +1,6 @@
 r"""
 Module A0 - Initialization
-========================
+==========================
 
 Module A0_initialization defines functions to parse user inputs to the MVS simulation.
     - Display welcome message with current version number
@@ -497,6 +497,18 @@ def process_user_arguments(
         file_level=logging.DEBUG,
         screen_level=screen_level,
     )
+
+    # Disable log messages of external libraries saving into the log file, unless they are ERROR or CRITICAL level
+    for ext_lib_logger in (
+        "asyncio",
+        "asyncio.coroutines",
+        "websockets.server",
+        "websockets.protocol",
+        "websockets.client",
+        "urllib3.connectionpool",
+        "PIL.PngImagePlugin",
+    ):
+        logger.getLogger(ext_lib_logger).setLevel(logging.ERROR)
 
     if welcome_text is not None:
         # display welcome text

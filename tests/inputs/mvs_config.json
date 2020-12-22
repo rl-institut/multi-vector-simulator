@@ -3,6 +3,10 @@
         "minimal_renewable_factor": {
             "unit": "factor",
             "value": 0.3
+        },
+        "maximum_emissions": {
+            "unit": "kgCO2eq/a",
+            "value": 800000
         }
     },
     "economic_data": {
@@ -411,6 +415,10 @@
                 "unit": "currency/unit/year",
                 "value": 0
             },
+            "emission_factor": {
+                "unit": "kgCO2eq/unit",
+                "value": 2.7
+            },
             "type_oemof": "source",
             "unit": "l"
         },
@@ -459,6 +467,10 @@
                 "unit": "currency/unit/year",
                 "value": 80
             },
+            "emission_factor": {
+                "unit": "kgCO2eq/unit",
+                "value": 0
+            },
             "type_oemof": "source",
             "unit": "kWp"
         }
@@ -492,6 +504,10 @@
             "renewable_share": {
                 "unit": "factor",
                 "value": 0.1
+            },
+            "emission_factor": {
+                "unit": "kgCO2eq/kWh",
+                "value": 0.019
             },
             "type_oemof": "source",
             "unit": "kW"

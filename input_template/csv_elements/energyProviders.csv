@@ -9,4 +9,5 @@ renewable_share,factor
 inflow_direction,str
 outflow_direction,str
 energyVector,str
+emission_factor,kgCO2eq/kWh
 type_oemof,str

@@ -33,6 +33,15 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_FACTOR,
     CONSTRAINTS,
     MINIMAL_RENEWABLE_FACTOR,
+    MAXIMUM_EMISSIONS,
+    TOTAL_EMISSIONS,
+    SPECIFIC_EMISSIONS_ELEQ,
+    UNIT_EMISSIONS,
+    UNIT_SPECIFIC_EMISSIONS,
+    KPI_SCALAR_MATRIX,
+    OPTIMIZED_ADD_CAP,
+    LABEL,
+    TOTAL_FLOW,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -103,6 +112,92 @@ class Test_Constraints:
         assert (
             renewable_shares[use_case[0]] < renewable_shares[use_case[1]]
         ), f"The renewable share of the scenario with the constraint is not higher than the one without, so the test does not make sense."
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_benchmark_maximum_emissions_constraint(self, margs):
+        r"""
+        Tests the maximum emissions constraint in a system with PV, DSO and a diesel generator.
+        The şystem defined in `\Constraint_maximum_emissions_None` does not have maximum emissions constraint,
+        while the system defined in `\Constraint_maximum_emissions_low` has a low maximum emissions constraint of 800 kgCO2eq/a.
+        A third system, `\Constraint_maximum_emissions_low_grid_RE_100`, includes a renewable share in the grid of 100 %.
+
+        The following checks are made:
+        - total emissions of energy system <= maximum emissions constraint
+            (for Constraint_maximum_emissions_low and Constraint_maximum_emissions_low_grid_RE_100)
+        - total emissions of case without constraint > total emissions of case with constraint
+        - specific emissions eleq of case without constraint > specific emissions eleq of case with constraint
+        - optimized added pv capacity lower for case without constraint than for case with constraint
+        - total flow of grid consumption higher for case with 100 % RE share in grid than for case with emissions from grid
+
+        """
+        # define the two cases needed for comparison
+        use_case = [
+            "Constraint_maximum_emissions_None",
+            "Constraint_maximum_emissions_low",
+            "Constraint_maximum_emissions_low_grid_RE_100",
+        ]
+        # define an empty dictionary for excess electricity
+        total_emissions = {}
+        maximum_emissions = {}
+        specific_emissions_eleq = {}
+        pv_capacities = {}
+        grid_total_flows = {}
+        for case in use_case:
+            main(
+                overwrite=True,
+                display_output="warning",
+                path_input_folder=os.path.join(TEST_INPUT_PATH, case),
+                input_type=CSV_EXT,
+                path_output_folder=os.path.join(TEST_OUTPUT_PATH, case),
+            )
+            data = load_json(
+                os.path.join(
+                    TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+                )
+            )
+            total_emissions.update({case: data[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS]})
+            maximum_emissions.update(
+                {case: data[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]}
+            )
+            specific_emissions_eleq.update(
+                {case: data[KPI][KPI_SCALARS_DICT][SPECIFIC_EMISSIONS_ELEQ]}
+            )
+            pv_capacities.update(
+                {
+                    case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[
+                        OPTIMIZED_ADD_CAP
+                    ]["pv_plant_01"]
+                }
+            )
+            grid_total_flows.update(
+                {
+                    case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[TOTAL_FLOW][
+                        "Electricity_grid_DSO_consumption_source"
+                    ]
+                }
+            )
+            if case != "Constraint_maximum_emissions_None":
+                assert total_emissions[case] <= maximum_emissions[case] + 10 ** (
+                    -5
+                ), f"The total emissions of use case {case} exceed the maximum emisssions constraint."
+
+        assert (
+            total_emissions[use_case[0]] > total_emissions[use_case[1]]
+        ), f"The total emissions of the scenario without maximum emissions constraint are with {total_emissions[use_case[0]]} {UNIT_EMISSIONS} lower than the total emissions of the scenario with the maximum emissions constraint  ({total_emissions[use_case[1]]} {UNIT_EMISSIONS}). This test therefore can not validate that the constraint works."
+        assert (
+            specific_emissions_eleq[use_case[0]] > specific_emissions_eleq[use_case[1]]
+        ), f"The specific emissions per electricity equivalent of the scenario without maximum emissions constraint are with {specific_emissions_eleq[use_case[0]]} {UNIT_SPECIFIC_EMISSIONS} lower than in the scenario with the maximum emissions constraint  ({specific_emissions_eleq[use_case[1]]} {UNIT_SPECIFIC_EMISSIONS})."
+        assert (
+            pv_capacities[use_case[0]] < pv_capacities[use_case[1]]
+        ), f"The optimized installed pv capacity of the scenario without maximum emissions constraint is with {pv_capacities[use_case[0]]} kW higher than in the scenario with the maximum emissions constraint ({pv_capacities[use_case[1]]} kW), but it should be the other way round."
+        assert (
+            grid_total_flows[use_case[2]] > grid_total_flows[use_case[1]]
+        ), f"The total flow of the grid consumption of the scenario with 100 % RE in the grid is with {grid_total_flows[use_case[2]]} kWh lower than in the scenario with emissions from the grid ({grid_total_flows[use_case[1]]} kWh). When the grid has zero emissions it should be used more, while PV is more expensive."
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
