@@ -1085,7 +1085,7 @@ def test_change_sign_of_feedin_tariff_zero(caplog):
 
 def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
     str = "str"
-    dict_asset = {TIMESERIES: pd.Series([1, 2, 3]), UNIT: "str", LABEL: "str"}
+    dict_asset = {TIMESERIES: pd.Series([10, 50, 100, 150, 200]), UNIT: "str", LABEL: "str"}
 
     C0.compute_timeseries_properties(dict_asset)
     print(dict_asset)
@@ -1102,17 +1102,17 @@ def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
         assert VALUE in dict_asset[parameter]
         assert UNIT in dict_asset[parameter]
 
-    assert dict_asset[TIMESERIES_PEAK][VALUE] == 3
-    assert dict_asset[TIMESERIES_TOTAL][VALUE] == 6
-    assert dict_asset[TIMESERIES_AVERAGE][VALUE] == 2
-    assert dict_asset[TIMESERIES_NORMALIZED][VALUE] == (0.333333, 0.666667, 1.000000)
+    assert dict_asset[TIMESERIES_PEAK][VALUE] == 200
+    assert dict_asset[TIMESERIES_TOTAL][VALUE] == 510
+    assert dict_asset[TIMESERIES_AVERAGE][VALUE] == 102
+    assert dict_asset[TIMESERIES_NORMALIZED].values == [0.05,0.25,0.5,0.75,1]
 
     assert dict_asset[TIMESERIES_PEAK][UNIT] == str
     assert dict_asset[TIMESERIES_TOTAL][UNIT] == str
     assert dict_asset[TIMESERIES_AVERAGE][UNIT] == str
     assert dict_asset[TIMESERIES_NORMALIZED][UNIT] == str
 
-
+"""
 """
 
 def test_asess_energyVectors_and_add_to_project_data():
