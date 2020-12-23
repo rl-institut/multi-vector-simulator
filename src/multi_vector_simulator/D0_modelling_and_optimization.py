@@ -377,6 +377,6 @@ class timer:
         dict_values[SIMULATION_RESULTS].update({"modelling_time": round(duration, 2)})
 
         logging.info(
-            "Moddeling time: %s minutes.",
+            "Modeling time: %s minutes.",
             round(dict_values[SIMULATION_RESULTS]["modelling_time"] / 60, 2),
         )
