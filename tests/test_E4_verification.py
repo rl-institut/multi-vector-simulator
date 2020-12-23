@@ -58,7 +58,7 @@ def test_maximum_emissions_test_passes():
     return_value = E4.maximum_emissions_test(dict_values)
     assert (
         return_value == None
-    ), f"When no maximum emissions contraint is set, this test should not fail."
+    ), f"When no maximum emissions constraint is set, this test should not fail."
     # Total emissions < maximum emissions constraint
     dict_values = {
         CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: 1000}},
@@ -67,7 +67,7 @@ def test_maximum_emissions_test_passes():
     return_value = E4.maximum_emissions_test(dict_values)
     assert (
         return_value == None
-    ), f"When the maximum emissions contraint is met, this test should not fail."
+    ), f"When the maximum emissions constraint is met, this test should not fail."
     # Total emissions > maximum emissions constraint, minimal diff
     dict_values = {
         CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: 1000}},
@@ -87,7 +87,7 @@ def test_maximum_emissions_test_fails():
     return_value = E4.maximum_emissions_test(dict_values)
     assert (
         return_value == False
-    ), f"When the maximum emissions contraint is not met by a difference of >= e6 this test should fail."
+    ), f"When the maximum emissions constraint is not met by a difference of >= e6 this test should fail."
 
 
 def test_detect_excessive_excess_generation_in_bus_warning_is_logged(caplog):
