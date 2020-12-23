@@ -1112,7 +1112,7 @@ def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
     assert dict_asset[TIMESERIES_AVERAGE][UNIT] == str
     assert dict_asset[TIMESERIES_NORMALIZED][UNIT] == str
 
-"""
+
 """
 
 def test_asess_energyVectors_and_add_to_project_data():
