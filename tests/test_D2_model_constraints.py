@@ -249,7 +249,6 @@ class TestConstraints:
     pass
     """
 
-    """
     def test_add_constraints_minimal_renewable_share_None(self):
         dict_values = self.dict_values.copy()
         dict_values.update(
@@ -262,9 +261,12 @@ class TestConstraints:
                 }
             }
         )
-        # todo to be added
-        pass
-    """
+        model = D2.add_constraints(
+            local_energy_system=self.model,
+            dict_values=self.dict_values,
+            dict_model=self.dict_model,
+        )
+        assert (model.), f"When the minimal_renewable_share is None, no constraint should be added"
 
     def teardown_class(self):
         # Remove the output folder
