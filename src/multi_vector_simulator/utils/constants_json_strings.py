@@ -134,6 +134,7 @@ TIMESERIES_NORMALIZED = "timeseries_normalized"
 TIMESERIES_PEAK = "timeseries_peak"
 TIMESERIES_TOTAL = "timeseries_total"
 TIMESERIES_AVERAGE = "timeseries_average"
+TIMESERIES_SOC = "timeseries_soc"
 
 # Pre-processing cost parameters
 ANNUITY_FACTOR = "annuity_factor"
@@ -256,7 +257,6 @@ DEGREE_OF_SECTOR_COUPLING = "Degree of sector coupling"
 DEGREE_OF_AUTONOMY = "Degree of autonomy"
 ONSITE_ENERGY_FRACTION = "Onsite energy fraction"
 ONSITE_ENERGY_MATCHING = "Onsite energy matching"
-
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (

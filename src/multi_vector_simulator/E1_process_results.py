@@ -65,6 +65,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LCOE_ASSET,
     EMISSION_FACTOR,
     TOTAL_EMISSIONS,
+    TIMESERIES_SOC
 )
 
 # Determines which assets are defined by...
@@ -265,7 +266,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
     dict_asset.update(  # todo: this could be a separate function for testing.
         {
-            "timeseries_soc": dict_asset[STORAGE_CAPACITY]["flow"]
+            TIMESERIES_SOC: dict_asset[STORAGE_CAPACITY]["flow"]
             / (
                 dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
                 + dict_asset[STORAGE_CAPACITY][OPTIMIZED_ADD_CAP][VALUE]
