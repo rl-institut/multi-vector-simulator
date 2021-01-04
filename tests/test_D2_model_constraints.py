@@ -194,8 +194,12 @@ class TestConstraints:
 
         self.dict_values, self.model, self.dict_model = run_parts()
         self.exp_emission_limit = 1000
+        self.min_renewable_share = 0.60
         self.dict_values[CONSTRAINTS].update(
             {MAXIMUM_EMISSIONS: {VALUE: self.exp_emission_limit}}
+        )
+        self.dict_values[CONSTRAINTS].update(
+            {MINIMAL_RENEWABLE_FACTOR: {VALUE: self.min_renewable_share}}
         )
         return
 
@@ -266,7 +270,9 @@ class TestConstraints:
             dict_values=self.dict_values,
             dict_model=self.dict_model,
         )
-        assert (model.), f"When the minimal_renewable_share is None, no constraint should be added"
+        assert (
+            model.constraint_minimal_renewable_share == self.min_renewable_share
+        ), f"When the minimal_renewable_share is None, no constraint should be added"
 
     def teardown_class(self):
         # Remove the output folder
