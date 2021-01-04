@@ -253,7 +253,7 @@ def prepare_constraint_minimal_renewable_share(
     non_renewable_assets = {}
 
     # Determine which energy sources are of renewable origin and which are fossil-fuelled.
-    # DSO sources are added seperately (as they do not have parameter "RENEWABLE_ASSET_BOOL".
+    # DSO sources are added separately (as they do not have parameter "RENEWABLE_ASSET_BOOL".
     assets_without_renewable_asset_bool = []
     for asset in dict_values[ENERGY_PRODUCTION]:
         if RENEWABLE_ASSET_BOOL in dict_values[ENERGY_PRODUCTION][asset]:
@@ -308,7 +308,7 @@ def prepare_constraint_minimal_renewable_share(
         else:
             assets_without_renewable_asset_bool.append(asset)
 
-    # This message is printed so that errors can be idendified easier.
+    # This message is printed so that errors can be identified easier.
     assets_without_renewable_asset_bool_string = ", ".join(
         map(str, assets_without_renewable_asset_bool)
     )
