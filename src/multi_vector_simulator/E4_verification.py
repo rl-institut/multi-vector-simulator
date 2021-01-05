@@ -56,17 +56,17 @@ def minimal_renewable_share_test(dict_values):
             ) / dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]
             if abs(deviation) < 10 ** (-6):
                 logging.warning(
-                    "Minimal renewable factor criterion strictly not fullfilled, but deviation is less then e6."
+                    "Minimal renewable factor criterion strictly not fulfilled, but deviation is less then e6."
                 )
             else:
                 logging.error(
-                    f"ATTENTION: Minimal renewable factor criterion NOT fullfilled! The deviation is {round(deviation,5)}."
+                    f"ATTENTION: Minimal renewable factor criterion NOT fulfilled! The deviation is {round(deviation, 5)}."
                 )
                 return False
 
         else:
             logging.debug(
-                f"Minimal renewable factor of {dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]} is fullfilled."
+                f"Minimal renewable factor of {dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]} is fulfilled."
             )
     else:
         pass
@@ -108,17 +108,17 @@ def maximum_emissions_test(dict_values):
             )
             if abs(diff) < 10 ** (-6):
                 logging.warning(
-                    "Maximum emissions criterion strictly not fullfilled, but difference is less then e6."
+                    "Maximum emissions criterion strictly not fulfilled, but difference is less then e6."
                 )
             else:
                 logging.error(
-                    f"ATTENTION: Maximum emissions factor criterion NOT fullfilled! The difference is {round(diff,6)}."
+                    f"ATTENTION: Maximum emissions factor criterion NOT fulfilled! The difference is {round(diff, 6)}."
                 )
                 return False
 
         else:
             logging.debug(
-                f"Maximum emissions constraint of {dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]} is fullfilled."
+                f"Maximum emissions constraint of {dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]} is fulfilled."
             )
     else:
         pass
