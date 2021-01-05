@@ -27,7 +27,8 @@ Here is a template for new release sections
 - Added CO2 emission factors in the section model_assumption.rst (#697)
 - Added energyBusses.csv in RTD (#678)
 - Add and link `rewableAsset` as parameter in RTD, specifically `MVS_parameters.rst` and `MVS_parameters_list.csv` (#710)
-- New subsection `Minimal degree of autonomy constraint` for RTD
+- New subsection `Minimal degree of autonomy constraint` for RTD (#730)
+- New line in csv `Minimal degree of autonomy constraint` for RTD (#730)
 
 ### Changed 
 - Benchmark test for investment model (`Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2`): Expand test to LCOE as well as all all other system-wide economic parameters, transpose `test_data_economic_expected_values.csv`, change `test_data_economic_expected_values.xls` (#613)
@@ -37,6 +38,7 @@ Here is a template for new release sections
 - All `.py` files to add a module description for RTD on top (#704)
 - Converted `README` from `.md` to` .rst` format and updated `Installation.rst` file (#646)
 - Updated `setup.py` to use the rst formatted README file
+- Definition of Degree of Autonomy updated in the RTD (DA) (#730)
 
 ### Removed
 - Removed `README.md` in favour of `README.rst` (#646)
@@ -48,7 +50,7 @@ Here is a template for new release sections
 - Add assertion `sum(attributed_costs)==cost_total` (for single-vector system) (#613)
 - Benchmark test for renewable share (`TestTechnicalKPI.test_renewable_factor_and_renewable_share_of_local_generation()`) (#613)
 - Github actions workflow: update apt-get before installing pre-dependencies (#729)
-- Fixed display of math equations in RTD
+- Fixed display of math equations in RTD (#730)
 
 ## [0.5.3] - 2020-12-08
 
