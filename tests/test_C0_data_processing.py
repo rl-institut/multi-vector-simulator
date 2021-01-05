@@ -1110,7 +1110,7 @@ def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
     assert dict_asset[TIMESERIES_TOTAL][VALUE] == 510
     assert dict_asset[TIMESERIES_AVERAGE][VALUE] == 102
     exp = pd.Series([0.05, 0.25, 0.5, 0.75, 1])
-    assert dict_asset[TIMESERIES_NORMALIZED] == exp.all()
+    assert (dict_asset[TIMESERIES_NORMALIZED] == exp).all()
 
     assert dict_asset[TIMESERIES_PEAK][UNIT] == str
     assert dict_asset[TIMESERIES_TOTAL][UNIT] == str
