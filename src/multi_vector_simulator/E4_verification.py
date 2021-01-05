@@ -18,6 +18,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OPTIMIZED_FLOWS,
     MAXIMUM_EMISSIONS,
     TOTAL_EMISSIONS,
+    ENERGY_STORAGE,
+    TIMESERIES_SOC,
 )
 
 
