@@ -1098,7 +1098,6 @@ def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
         TIMESERIES_PEAK,
         TIMESERIES_TOTAL,
         TIMESERIES_AVERAGE,
-        # TIMESERIES_NORMALIZED,
     ]:
         assert (
             parameter in dict_asset
