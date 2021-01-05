@@ -1,6 +1,6 @@
 """
 Module E0 - evaluation
-====================
+======================
 
 Module E0 evaluates the oemof results and calculates the KPI
 - define dictionary entry for kpi matrix
