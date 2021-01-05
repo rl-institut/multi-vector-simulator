@@ -268,7 +268,7 @@ A DA close to zero shows high dependence on the grid operator, while a DA of 1 r
 As above, we apply a weighting based on Electricity Equivalent.
 
 .. math::
-        minimal degree of autonomy <= \frac{\sum local demand \cdot weighting factor - \sum consumtion from energy providers \cdot weighting factor}{\sum local demand  \cdot weighting factor}
+       DA <= \frac{\sum E_{demand,i} \cdot w_i - \sum E_{consumption,provider,j} \cdot w_j}{\sum E_{demand,i} \cdot w_i}
 
 
 Automatic Report
