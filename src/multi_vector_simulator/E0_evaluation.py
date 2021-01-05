@@ -44,7 +44,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OPTIMIZED_FLOWS,
     LABEL,
     INSTALLED_CAP,
-    TIMESERIES_SOC
+    TIMESERIES_SOC,
 )
 
 from multi_vector_simulator.utils.constants_output import (

@@ -65,7 +65,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LCOE_ASSET,
     EMISSION_FACTOR,
     TOTAL_EMISSIONS,
-    TIMESERIES_SOC
+    TIMESERIES_SOC,
 )
 
 # Determines which assets are defined by...

@@ -200,12 +200,10 @@ def test_verify_state_of_charge_feasible(caplog):
     with caplog.at_level(logging.WARNING):
         E4.verify_state_of_charge(dict_values=dict_values)
     assert (
-        f"greater than 1. This is a physically impossible value!"
-        not in caplog.text
+        f"greater than 1. This is a physically impossible value!" not in caplog.text
     ), f"A WARNING message is logged even though the SoC values are all below 1."
     assert (
-        f"is less than 0. This is a physically impossible value!"
-        not in caplog.text
+        f"is less than 0. This is a physically impossible value!" not in caplog.text
     ), f"A WARNING message is logged even though the SoC values are all above 0."
 
 
