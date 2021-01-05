@@ -24,7 +24,7 @@ Here is a template for new release sections
 ### Added
 -
 ### Changed
--
+- fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
 ### Removed
 -
 ### Fixed
