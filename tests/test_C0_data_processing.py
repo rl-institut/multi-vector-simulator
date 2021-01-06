@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 import logging
+import copy
 from copy import deepcopy
 
 import multi_vector_simulator.C0_data_processing as C0
@@ -1115,13 +1116,13 @@ def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
     assert dict_asset[TIMESERIES_TOTAL][UNIT] == str
     assert dict_asset[TIMESERIES_AVERAGE][UNIT] == str
 
+
 def test_compute_timeseries_properties_TIMESERIES_not_in_dict_asset():
     dict_asset = {
-        TIMESERIES: pd.Series()
         UNIT: "str",
         LABEL: "str",
     }
-    dict_exp =dict_asset.copy(deep=True)
+    dict_exp =copy.deepcopy(dict_asset)
     assert dict_exp == dict_asset, f"Assertion goes wrong"
 
 """
