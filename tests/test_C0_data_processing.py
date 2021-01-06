@@ -1125,7 +1125,7 @@ def test_compute_timeseries_properties_TIMESERIES_not_in_dict_asset():
     dict_exp = copy.deepcopy(dict_asset)
     assert (
         dict_exp == dict_asset
-    ), f"The function has unexpectedly changed the dict_asset"
+    ), f"The function has changed the dict_asset to {dict_asset}, eventhough it should not have been modified and stayed identical to {dict_exp}."
 
 
 """
