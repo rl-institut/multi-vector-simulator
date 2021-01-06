@@ -1123,8 +1123,9 @@ def test_compute_timeseries_properties_TIMESERIES_not_in_dict_asset():
         LABEL: "str",
     }
     dict_exp = copy.deepcopy(dict_asset)
-    # assert dict_exp == dict_asset, f"Assertion goes wrong"
-    assert cmp(dict_asset, dict_exp) == 0
+    assert (
+        dict_exp == dict_asset
+    ), f"The function has unexpectedly changed the dict_asset"
 
 
 """
