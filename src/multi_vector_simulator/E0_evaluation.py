@@ -44,6 +44,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OPTIMIZED_FLOWS,
     LABEL,
     INSTALLED_CAP,
+    TIMESERIES_SOC,
 )
 
 from multi_vector_simulator.utils.constants_output import (
@@ -147,7 +148,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
             dict_values[OPTIMIZED_FLOWS][inflow_direction][
                 timeseries_name
-            ] = dict_values[ENERGY_STORAGE][storage]["timeseries_soc"]
+            ] = dict_values[ENERGY_STORAGE][storage][TIMESERIES_SOC]
 
     for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:
@@ -183,6 +184,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     E4.minimal_renewable_share_test(dict_values)
     E4.maximum_emissions_test(dict_values)
     E4.detect_excessive_excess_generation_in_bus(dict_values)
+    E4.verify_state_of_charge(dict_values)
 
 
 def store_result_matrix(dict_kpi, dict_asset):
