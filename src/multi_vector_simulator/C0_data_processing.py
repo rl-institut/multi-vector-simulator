@@ -1544,6 +1544,10 @@ def compute_timeseries_properties(dict_asset):
     Add TIMESERIES_PEAK, TIMESERIES_TOTAL, TIMESERIES_AVERAGE and TIMESERIES_NORMALIZED
     to dict_asset
 
+    Notes
+    -----
+    Function tested with
+    -  C0.test_compute_timeseries_properties
     """
 
     if TIMESERIES in dict_asset:
