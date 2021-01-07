@@ -70,6 +70,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ERRORS,
     WARNINGS,
     SIMULATION_RESULTS,
+    SCENARIO_DESCRIPTION,
 )
 
 from multi_vector_simulator.E1_process_results import (
@@ -754,6 +755,9 @@ def create_app(results_json, path_sim_output=None):
     df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
     df_kpi_scalars = convert_scalars_to_dataframe(results_json)
 
+    # Obtain the scenario description text provided by the user from the JSON results file
+    scenario_description = results_json[PROJECT_DATA][SCENARIO_DESCRIPTION]
+
     # App layout and populating it with different elements
     app.layout = html.Div(
         id="main-div",
@@ -815,6 +819,11 @@ def create_app(results_json, path_sim_output=None):
                                     "developed in the scope of the Horizon 2020 European research project. The tool was developed by "
                                     "Reiner Lemoine Institute and utilizes the OEMOF framework.",
                                 ],
+                            ),
+                            html.Br(),
+                            insert_subsection(
+                                title="Scenario Description",
+                                content=[insert_body_text(scenario_description)],
                             ),
                         ],
                     ),
