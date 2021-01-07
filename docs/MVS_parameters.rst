@@ -161,7 +161,7 @@ The file `project_data.csv` includes the following parameters:
 * :ref:`projectname-label`
 * :ref:`scenarioid-label`
 * :ref:`scenarioname-label`
-* :ref:` scenario_description-label`
+* :ref:`scenariodescription-label`
 
 simulation_settings.csv
 ^^^^^^^^^^^^^^^^^^^^^^^
