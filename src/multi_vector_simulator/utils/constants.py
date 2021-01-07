@@ -315,6 +315,7 @@ DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
 # dict keys in results_json file
 TIMESERIES = "timeseries"
 
+
 # filename of the energy system graph
 ES_GRAPH = "energy_system_graph.png"
 

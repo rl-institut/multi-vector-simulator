@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 import logging
+import copy
 from copy import deepcopy
 
 import multi_vector_simulator.C0_data_processing as C0
@@ -16,7 +17,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_BUSSES,
     OUTFLOW_DIRECTION,
-    TIMESERIES_NORMALIZED,
     INFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
@@ -50,7 +50,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ANNUITY_FACTOR,
     SIMULATION_ANNUITY,
     LIFETIME_SPECIFIC_COST,
-    TIMESERIES_PEAK,
     CRF,
     ANNUITY_SPECIFIC_INVESTMENT_AND_OM,
     LIFETIME_SPECIFIC_COST_OM,
@@ -78,6 +77,11 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_SOURCE,
     UNIT_YEAR,
     EMISSION_FACTOR,
+    TIMESERIES,
+    TIMESERIES_PEAK,
+    TIMESERIES_TOTAL,
+    TIMESERIES_AVERAGE,
+    TIMESERIES_NORMALIZED,
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 
@@ -1080,7 +1084,52 @@ def test_change_sign_of_feedin_tariff_zero(caplog):
     ), f"A msg is logged although the feed-in tariff is not changed."
 
 
+def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
+    str = "str"
+    dict_asset = {
+        TIMESERIES: pd.Series([10, 50, 100, 150, 200]),
+        UNIT: "str",
+        LABEL: "str",
+    }
+
+    C0.compute_timeseries_properties(dict_asset)
+    print(dict_asset)
+
+    for parameter in [
+        TIMESERIES_PEAK,
+        TIMESERIES_TOTAL,
+        TIMESERIES_AVERAGE,
+    ]:
+        assert (
+            parameter in dict_asset
+        ), f"Parameter {parameter} is not in updated dict_asset."
+        assert VALUE in dict_asset[parameter]
+        assert UNIT in dict_asset[parameter]
+
+    assert dict_asset[TIMESERIES_PEAK][VALUE] == 200
+    assert dict_asset[TIMESERIES_TOTAL][VALUE] == 510
+    assert dict_asset[TIMESERIES_AVERAGE][VALUE] == 102
+    exp = pd.Series([0.05, 0.25, 0.5, 0.75, 1])
+    assert (dict_asset[TIMESERIES_NORMALIZED] == exp).all()
+
+    assert dict_asset[TIMESERIES_PEAK][UNIT] == str
+    assert dict_asset[TIMESERIES_TOTAL][UNIT] == str
+    assert dict_asset[TIMESERIES_AVERAGE][UNIT] == str
+
+
+def test_compute_timeseries_properties_TIMESERIES_not_in_dict_asset():
+    dict_asset = {
+        UNIT: "str",
+        LABEL: "str",
+    }
+    dict_exp = copy.deepcopy(dict_asset)
+    assert (
+        dict_exp == dict_asset
+    ), f"The function has changed the dict_asset to {dict_asset}, eventhough it should not have been modified and stayed identical to {dict_exp}."
+
+
 """
+
 def test_asess_energyVectors_and_add_to_project_data():
     C2.identify_energy_vectors(dict_values)
     assert 1 == 0
