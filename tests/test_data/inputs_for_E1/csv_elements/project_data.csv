@@ -6,3 +6,4 @@ project_id,str,1
 project_name,str,Benchmark test for simple case electricity bus
 scenario_id,str,2
 scenario_name,str,A+B
+scenario_description,str,"Electric bus model benchmark test"
