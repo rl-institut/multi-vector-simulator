@@ -1547,7 +1547,8 @@ def compute_timeseries_properties(dict_asset):
     Notes
     -----
     Function tested with
-    -  C0.test_compute_timeseries_properties
+    - C0.test_compute_timeseries_properties_TIMESERIES_in_dict_asset()
+    - C0.test_compute_timeseries_properties_TIMESERIES_not_in_dict_asset()
     """
 
     if TIMESERIES in dict_asset:
