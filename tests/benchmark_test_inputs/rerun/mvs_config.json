@@ -1280,6 +1280,7 @@
         "project_name": "Borg Havn",
         "scenario_id": "1",
         "scenario_name": "Warehouse 14",
+        "scenario_description": "",
         "sectors": {
             "Electricity": "Electricity"
         }

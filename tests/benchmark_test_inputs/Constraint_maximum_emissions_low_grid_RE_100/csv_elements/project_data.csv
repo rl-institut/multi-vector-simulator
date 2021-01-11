@@ -6,3 +6,4 @@ project_id,str,1
 project_name,str,Benchmark test for maximum emissions constraint
 scenario_id,str,3
 scenario_name,str,A+B+D
+scenario_description,str,""

@@ -24,8 +24,10 @@ Here is a template for new release sections
 ### Added
 - Verification of the SoC values after simulation for any physically infeasible values with `E4.verify_state_of_charge` and added tests for this function (#739)
 - Explanation in MVS_parameters_list.csv on how to deactivate the RES constraint. (#752)
+- Add the new parameter `scenario_description` to input files and docs and a section in autoreport describing the scenario being simulated (#722)
+
 ### Changed
-- fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
+- Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
 ### Removed
 -
 ### Fixed

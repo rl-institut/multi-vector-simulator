@@ -174,6 +174,7 @@ REQUIRED_CSV_PARAMETERS = {
         PROJECT_NAME,
         SCENARIO_ID,
         SCENARIO_NAME,
+        SCENARIO_DESCRIPTION,
     ],
     ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, PROJECT_DURATION, TAX,],
 }
@@ -202,6 +203,7 @@ REQUIRED_JSON_PARAMETERS = {
         PROJECT_NAME,
         SCENARIO_ID,
         SCENARIO_NAME,
+        SCENARIO_DESCRIPTION,
     ],
     SIMULATION_SETTINGS: [
         EVALUATED_PERIOD,
@@ -276,6 +278,12 @@ EXTRA_CSV_PARAMETERS = {
         UNIT: TYPE_NONE,
         WARNING_TEXT: "allows setting a maximum amount of emissions of the optimized energy system (Values: None/Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
+    },
+    SCENARIO_DESCRIPTION: {
+        DEFAULT_VALUE: "",
+        UNIT: TYPE_STR,
+        WARNING_TEXT: "allows giving a description for the scenario being simulated",
+        REQUIRED_IN_CSV_ELEMENTS: [PROJECT_DATA],
     },
 }
 
