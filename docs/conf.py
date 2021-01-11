@@ -32,7 +32,7 @@ def generate_parameter_description(input_csv_file, output_rst_file):
     None
 
     """
-    df = pd.read_csv(input_csv_file, index_col=0)
+    df = pd.read_csv(input_csv_file)
 
     parameter_properties = [
         ":Definition:",
