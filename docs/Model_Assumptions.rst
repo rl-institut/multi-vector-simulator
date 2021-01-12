@@ -742,3 +742,34 @@ Comparison to Other Models
 So far, the MVS' results for a sector coupled system (electricity + hydrogen) are compared to those of HOMER for the same exact system. This comparison is important to highlight the similarities and differences between the two optimization models. On the electricity side, most of the values are comparable and in the same range. The differences mainly show on the hydrogen part in terms of investment in an electrolyzer capacity (component linking the two sectors) and the values related to that. On another note, both models have different approaches for calculating the value of the levelized cost of a certain energy carrier and therefore the values are apart. Details regarding the comparison drawn between the two models can be found `here <https://repository.tudelft.nl/islandora/object/uuid%3A50c283c7-64c9-4470-8063-140b56f18cfe?collection=education>`__ on pages 55-63.
 
 This validation method is commonly used. However, one model cannot absolutely validate another model or claim that one is better than the other. This is why the focus should be on testing the correctness, appropriateness and accuracy of a model vis-à-vis its purpose. Since the MVS is an open source tool, it is important to use a validated model for comparison, but also similar open source tools like urbs and Calliope for instance. The following two articles list some of the models that could be used for comparison to the MVS: `A review of modelling tools for energy and electricity systems with large shares of variable renewables <https://doi.org/10.1016/j.rser.2018.08.002>`__ and `Power-to-heat for renewable energy integration: A review of technologies, modeling approaches, and flexibility potentials <https://doi.org/10.1016/j.apenergy.2017.12.073>`__.
+
+
+.. _verification-tests:
+
+Verification Tests
+------------------
+
+There are a suite of functions within the MVS codebase module E4_verification.py that run a few checks on some of the outputs of the simulation in order to make sure that the results are meaningful and if something like an excessive excess energy flow is noteworthy. These are valuable tests that act as a safeguard for the user, as the model is not only validated for benchmark tests but for every run simulation.
+The following are the list of functions that carry out the verification tests:
+
+* E4_verification.detect_excessive_excess_generation_in_bus
+* E4_verification.maximum_emissions_test
+* E4_verification.minimal_renewable_share_test
+* E4_verification.verify_state_of_charge
+
+E4_verification.detect_excessive_excess_generation_in_bus
+#########################################################
+
+
+E4_verification.maximum_emissions_test
+######################################
+
+Other than renewables, source components in the energy system have a certain emissions value associated with the generation of energy. However, the user is able to apply a constraint on the maximum allowed emissions in the energy mix of the output energy system. This function runs a verification test on the output energy system data to determine if the user-supplied constraint on maximum emissions is correctly applied or not. If not, then the modeler is notified regarding the issue.
+
+E4_verification.minimal_renewable_share_test
+############################################
+
+This test is carried out on the optimized system which is an output of the simulation. It verifies if the user-provided constraint for the minimal share of renewables in the energy mix of the optimised system is applied properly or not. In case there is a discrepancy, the user is notified about the issue.
+
+E4_verification.verify_state_of_charge
+######################################
