@@ -746,30 +746,35 @@ This validation method is commonly used. However, one model cannot absolutely va
 
 .. _verification-tests:
 
-Verification Tests
-------------------
+Automatic output verification
+#############################
 
-There are a suite of functions within the MVS codebase module E4_verification.py that run a few checks on some of the outputs of the simulation in order to make sure that the results are meaningful and if something like an excessive excess energy flow is noteworthy. These are valuable tests that act as a safeguard for the user, as the model is not only validated for benchmark tests but for every run simulation.
-The following are the list of functions that carry out the verification tests:
+There is a suite of functions within the MVS codebase module E4_verification.py that run a few checks on some of the outputs of the simulation in order to make sure that the results are meaningful and if something like an excessive excess energy flow is noteworthy. These are valuable tests that act as a safeguard for the user, as the model is not only validated for benchmark tests but for every run simulation.
+The following is the list of functions in E4_verification.py that carry out the verification tests:
 
-* E4_verification.detect_excessive_excess_generation_in_bus
-* E4_verification.maximum_emissions_test
-* E4_verification.minimal_renewable_share_test
-* E4_verification.verify_state_of_charge
+* detect_excessive_excess_generation_in_bus
+* maximum_emissions_test
+* minimal_renewable_share_test
+* verify_state_of_charge
+
+The first test serves as an alert to the energy system modeler to check their inputs again, whereas if there are any errors raised within the other functions, it is an indication of something seriously wrong.
 
 E4_verification.detect_excessive_excess_generation_in_bus
-#########################################################
+=========================================================
 
+This test is here to notify to the modeler in case there is an excess generation within a bus in the energy system. Precisely, the modeler is given a heads-up when the ratio of total outflows to total inflows for one or more buses is less than 0.9
 
 E4_verification.maximum_emissions_test
-######################################
+======================================
 
-Other than renewables, source components in the energy system have a certain emissions value associated with the generation of energy. However, the user is able to apply a constraint on the maximum allowed emissions in the energy mix of the output energy system. This function runs a verification test on the output energy system data to determine if the user-supplied constraint on maximum emissions is correctly applied or not. If not, then the modeler is notified regarding the issue.
+Other than renewables, source components in the energy system have a certain emissions value associated with the generation of energy. The user is able to apply a constraint on the maximum allowed emissions in the energy mix of the output energy system. This function runs a verification test on the output energy system data to determine if the user-supplied constraint on maximum emissions is correctly applied or not. If not, then the modeler is notified.
 
 E4_verification.minimal_renewable_share_test
-############################################
+============================================
 
-This test is carried out on the optimized system which is an output of the simulation. It verifies if the user-provided constraint for the minimal share of renewables in the energy mix of the optimised system is applied properly or not. In case there is a discrepancy, the user is notified about the issue.
+This test is carried out on the energy system model after optimization of its capacities. It verifies whether the user-provided constraint for the minimal share of renewables in the energy mix of the optimized system was respected or not. In case this lower bound constraint is not met, the user is notified.
 
 E4_verification.verify_state_of_charge
-######################################
+======================================
+
+This test is intended to check the time-series of the state of charge values for storages in the energy system simulation results to notify of a serious error in case, the SoC value at any time-step is not between 0 and 1, which is physically not feasible.
