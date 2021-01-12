@@ -285,14 +285,21 @@ class model_building:
         Updated model with results, main results (flows, assets) and meta results (simulation)
         """
         logging.info("Starting simulation.")
-        local_energy_system.solve(
-            solver="cbc",
-            solve_kwargs={
-                "tee": False
-            },  # if tee_switch is true solver messages will be displayed
-            cmdline_options={"ratioGap": str(0.03)},
-        )  # ratioGap allowedGap mipgap
-        logging.info("Problem solved.")
+        try:
+            local_energy_system.solve(
+                solver="cbc",
+                solve_kwargs={
+                    "tee": False
+                },  # if tee_switch is true solver messages will be displayed
+                cmdline_options={"ratioGap": str(0.03)},
+            )  # ratioGap allowedGap mipgap
+        except Exception as error_message:
+            example_error = 'ValueError: No value for uninitialized NumericValue object InvestmentFlow.invest'
+            if example_error in str(error_message):
+                print('Your energy system components and buses are not properly connected with each other. Please '
+                      'check the input files.')
+        else:
+            logging.info("Problem solved.")
 
         # add results to the energy system to make it possible to store them.
         results_main = processing.results(local_energy_system)
