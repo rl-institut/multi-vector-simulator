@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from multi_vector_simulator.utils.constants import REPO_PATH, EXTRA_CSV_PARAMETERS
+from multi_vector_simulator.utils.constants import REPO_PATH, KNOWN_EXTRA_PARAMETERS
 from _constants import (
     TEMPLATE_INPUT_FOLDER,
     JSON_EXT,
@@ -34,12 +34,12 @@ def test_input_folder_csv_files_have_required_parameters(input_folder):
         for k in comparison[MISSING_PARAMETERS_KEY].keys():
             for el in comparison[MISSING_PARAMETERS_KEY][k]:
                 try:
-                    assert el in EXTRA_CSV_PARAMETERS
+                    assert el in KNOWN_EXTRA_PARAMETERS
                 except AssertionError:
                     raise AssertionError(
                         f"Parameter '{el}' is missing in you csv input files although it is required. It "
                         f"should be added in the '{k}.csv' file of the folder '{input_folder}"
-                        f"/{CSV_ELEMENTS}' or listed in the dict 'EXTRA_CSV_PARAMETERS' in "
+                        f"/{CSV_ELEMENTS}' or listed in the dict 'KNOWN_EXTRA_PARAMETERS' in "
                         f"src/mvs_eland/utils/constants.py. The csv required parameters are listed in "
                         f"the dict 'REQUIRED_CSV_PARAMETERS' in the aforementionned constant.py "
                         f"file.\n\nSee previous exception in the pytest log for more details on "
@@ -51,7 +51,7 @@ def test_input_folder_csv_files_have_required_parameters(input_folder):
             for k in comparison[EXTRA_PARAMETERS_KEY].keys():
                 for el in comparison[EXTRA_PARAMETERS_KEY][k]:
                     try:
-                        assert el in EXTRA_CSV_PARAMETERS
+                        assert el in KNOWN_EXTRA_PARAMETERS
                     except AssertionError:
                         raise AssertionError(
                             f"\n\nParameter '{el}' is an extra parameter in the file '{input_folder}/"

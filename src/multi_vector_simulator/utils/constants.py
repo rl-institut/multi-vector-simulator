@@ -242,7 +242,7 @@ TYPE_STR = "str"
 TYPE_NONE = "None"
 TYPE_FLOAT = "float"
 
-EXTRA_CSV_PARAMETERS = {
+KNOWN_EXTRA_PARAMETERS = {
     UNIT: {
         DEFAULT_VALUE: "NA",
         UNIT: TYPE_STR,

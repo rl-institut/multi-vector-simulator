@@ -12,7 +12,7 @@ from .constants import (
     JSON_EXT,
     CSV_EXT,
     REQUIRED_MVS_PARAMETERS,
-    EXTRA_CSV_PARAMETERS,
+    KNOWN_EXTRA_PARAMETERS,
     JSON_FNAME,
     MISSING_PARAMETERS_KEY,
     EXTRA_PARAMETERS_KEY,
@@ -158,7 +158,7 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
                 not_matching_params = []
 
             for sp in not_matching_params:
-                if sp in required_parameters[mp] and sp not in EXTRA_CSV_PARAMETERS:
+                if sp in required_parameters[mp] and sp not in KNOWN_EXTRA_PARAMETERS:
                     # the sub parameter is not provided but is required --> missing
                     param_list = missing_parameters.get(mp, [])
                     param_list.append(sp)
@@ -170,7 +170,7 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
                     extra_parameters[mp] = param_list
 
     for mp in required_parameters.keys():
-        if mp not in main_parameters and mp not in EXTRA_CSV_PARAMETERS:
+        if mp not in main_parameters and mp not in KNOWN_EXTRA_PARAMETERS:
             # the main parameter is not provided but is required --> missing
             missing_parameters[mp] = required_parameters[mp]
 

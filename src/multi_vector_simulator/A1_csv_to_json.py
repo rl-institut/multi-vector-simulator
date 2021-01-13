@@ -55,7 +55,7 @@ from multi_vector_simulator.utils.constants import (
     TYPE_BOOL,
     TYPE_STR,
     TYPE_NONE,
-    EXTRA_CSV_PARAMETERS,
+    KNOWN_EXTRA_PARAMETERS,
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
     DEFAULT_VALUE,
@@ -257,7 +257,7 @@ def create_json_from_csv(
         )
 
     # Compare the csv input file potential extra parameters with the acknowledged
-    # EXTRA_CSV_PARAMETERS, update the parameters list and the values of the parameters
+    # KNOWN_EXTRA_PARAMETERS, update the parameters list and the values of the parameters
     parameters, df = check_for_official_extra_parameters(filename, df, parameters)
 
     # check for wrong or missing required parameters
@@ -488,7 +488,7 @@ def create_json_from_csv(
 
 
 def check_for_official_extra_parameters(
-    filename, df, required_parameters, official_extra_parameters=EXTRA_CSV_PARAMETERS
+    filename, df, required_parameters, official_extra_parameters=KNOWN_EXTRA_PARAMETERS
 ):
     """
     Checks if there are new parameters that should be in the csvs.
