@@ -264,8 +264,8 @@ class TestConstraints:
             }
         )
         model = D2.add_constraints(
-            dict_values=self.dict_values,
             local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
             dict_model=self.dict_model,
         )
         assert (
