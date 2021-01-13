@@ -188,9 +188,7 @@ class TestConstraints:
             model = D0.model_building.adding_assets_to_energysystem_model(
                 dict_values, dict_model, model
             )
-            local_energy_system = solph.Model(model)
-            logging.debug("Created oemof model based on created components and busses.")
-            return dict_values, local_energy_system, dict_model
+            return dict_values, model, dict_model
 
         self.dict_values, self.model, self.dict_model = run_parts()
         self.exp_emission_limit = 1000
@@ -205,7 +203,7 @@ class TestConstraints:
 
     def test_constraint_maximum_emissions(self):
         model = D2.constraint_maximum_emissions(
-            model=self.model, dict_values=self.dict_values
+            model=solph.Model(self.model), dict_values=self.dict_values
         )
         assert (
             model.integral_limit_emission_factor.NoConstraint[0]
@@ -214,7 +212,7 @@ class TestConstraints:
 
     def test_add_constraints_maximum_emissions(self):
         model = D2.add_constraints(
-            local_energy_system=self.model,
+            local_energy_system=solph.Model(self.model),
             dict_values=self.dict_values,
             dict_model=self.dict_model,
         )
@@ -238,8 +236,8 @@ class TestConstraints:
             }
         )
         model = D2.add_constraints(
-            local_energy_system=self.model,
             dict_values=self.dict_values,
+            local_energy_system=solph.Model(self.model),
             dict_model=self.dict_model,
         )
         assert (
@@ -266,8 +264,8 @@ class TestConstraints:
             }
         )
         model = D2.add_constraints(
-            local_energy_system=self.model,
             dict_values=self.dict_values,
+            local_energy_system=solph.Model(self.model),
             dict_model=self.dict_model,
         )
         assert (
