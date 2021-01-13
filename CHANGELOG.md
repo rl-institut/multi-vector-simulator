@@ -30,7 +30,10 @@ Here is a template for new release sections
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
-- Format KPI_UNCOUPLED_DICT to a `pd.DataFrame` (#757) 
+- Format KPI_UNCOUPLED_DICT to a `pd.DataFrame` (#757)
+- Rename variable EXTRA_CSV_PARAMETERS to KNOWN_CSV_PARAMETERS (#761)
+- If a required parameter is in the `KNOWN_EXTRA_PARAMETERS` dict in `constants.py`do not flag it as missing (#761)
+
 ### Removed
 -
 ### Fixed
