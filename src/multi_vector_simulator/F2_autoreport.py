@@ -71,6 +71,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     WARNINGS,
     SIMULATION_RESULTS,
     SCENARIO_DESCRIPTION,
+    KPI,
+    KPI_UNCOUPLED_DICT,
 )
 
 from multi_vector_simulator.E1_process_results import (
@@ -754,6 +756,11 @@ def create_app(results_json, path_sim_output=None):
     df_scalar_matrix = convert_scalar_matrix_to_dataframe(results_json)
     df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
     df_kpi_scalars = convert_scalars_to_dataframe(results_json)
+    df_kpi_sectors = results_json[KPI][KPI_UNCOUPLED_DICT]
+    # Formats the kpi_sectors dataframe for nicer display
+    cols = list(df_kpi_sectors.columns)
+    df_kpi_sectors["KPI"] = df_kpi_sectors.index  #
+    df_kpi_sectors = df_kpi_sectors[["KPI"] + cols]
 
     # Obtain the scenario description text provided by the user from the JSON results file
     scenario_description = results_json[PROJECT_DATA][SCENARIO_DESCRIPTION]
@@ -956,9 +963,9 @@ def create_app(results_json, path_sim_output=None):
                                 ),
                             ),
                             insert_body_text(
-                                "This results in the following KPI of the dispatch:"
+                                "This results in the following KPI of the dispatch per energy sector:"
                             ),
-                            # TODO the table with renewable share, emissions, total renewable generation, etc.
+                            make_dash_data_table(df_kpi_sectors),
                         ],
                     ),
                     insert_subsection(

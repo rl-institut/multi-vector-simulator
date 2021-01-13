@@ -291,6 +291,7 @@ def add_total_renewable_and_non_renewable_energy_origin(dict_values):
         renewable_origin.update({sector: 0})
         non_renewable_origin.update({sector: 0})
 
+    # Aggregate the total generation of non renewable and renewable energy in the LES
     for asset in dict_values[ENERGY_PRODUCTION]:
         if RENEWABLE_ASSET_BOOL in dict_values[ENERGY_PRODUCTION][asset]:
             sector = dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
@@ -313,6 +314,7 @@ def add_total_renewable_and_non_renewable_energy_origin(dict_values):
         }
     )
 
+    # Aggregate the total use of non renewable and renewable energy at DSO level
     for dso in dict_values[ENERGY_PROVIDERS]:
         sector = dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR]
 
@@ -410,7 +412,6 @@ def add_renewable_share_of_local_generation(dict_values):
             )
         }
     )
-    return
 
 
 def add_renewable_factor(dict_values):
@@ -547,8 +548,6 @@ def add_degree_of_autonomy(dict_values):
         f"Calculated the {DEGREE_OF_AUTONOMY}: {round(degree_of_autonomy, 2)}"
     )
     logging.info(f"Calculated the {DEGREE_OF_AUTONOMY} of the LES.")
-
-    return
 
 
 def equation_degree_of_autonomy(total_generation, total_demand):
@@ -750,8 +749,6 @@ def add_onsite_energy_fraction(dict_values):
     )
     logging.info(f"Calculated the {ONSITE_ENERGY_FRACTION} of the LES.")
 
-    return
-
 
 def equation_onsite_energy_fraction(total_generation, total_feedin):
     """
@@ -841,8 +838,6 @@ def add_onsite_energy_matching(dict_values):
     )
     logging.info(f"Calculated the {ONSITE_ENERGY_MATCHING} of the LES.")
 
-    return
-
 
 def equation_onsite_energy_matching(
     total_generation, total_feedin, total_excess, total_demand
@@ -905,7 +900,6 @@ def calculate_emissions_from_flow(dict_asset):
     """
     emissions = dict_asset[TOTAL_FLOW][VALUE] * dict_asset[EMISSION_FACTOR][VALUE]
     dict_asset.update({TOTAL_EMISSIONS: {VALUE: emissions, UNIT: UNIT_EMISSIONS}})
-    return
 
 
 def add_total_emissions(dict_values):
@@ -937,7 +931,6 @@ def add_total_emissions(dict_values):
         f"Calculated the {TOTAL_EMISSIONS}: {round(emissions, 2)} {UNIT_EMISSIONS}."
     )
     logging.info(f"Calculated the {TOTAL_EMISSIONS} ({UNIT_EMISSIONS}) of the LES.")
-    return
 
 
 def add_specific_emissions_per_electricity_equivalent(dict_values):
@@ -979,7 +972,6 @@ def add_specific_emissions_per_electricity_equivalent(dict_values):
     logging.info(
         f"Calculated the {SPECIFIC_EMISSIONS_ELEQ} ({UNIT_SPECIFIC_EMISSIONS}) of the LES."
     )
-    return
 
 
 def add_levelized_cost_of_energy_carriers(dict_values):
@@ -1157,4 +1149,3 @@ def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
     )
     # Describes system wide total of the energy equivalent of the kpi
     dict_values[KPI][KPI_SCALARS_DICT].update({kpi_name: total_energy_equivalent})
-    return
