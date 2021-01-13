@@ -508,7 +508,7 @@ def check_for_official_extra_parameters(
     Returns
     -------
     Updated parameters list and updated dataframe and updated :class:`pandas.DataFrame<frame>`
-    The function through a warning if a new parameter is not defined in the csv but exists inf
+    The function throw a warning if a new parameter is not defined in the csv but exists in
     the official_extra_parameters. The parameter will then be set to it's default value.
     """
     df = df.copy()
@@ -525,9 +525,7 @@ def check_for_official_extra_parameters(
                 # Add default values for each of the columns in the df
                 default_values = {}
                 for i, column in enumerate(df):
-                    if i == 0:
-                        default_values.update({column: extra_parameter})
-                    elif column == "unit":
+                    if column == UNIT:
                         default_values.update(
                             {
                                 column: official_extra_parameters[extra_parameter].get(
