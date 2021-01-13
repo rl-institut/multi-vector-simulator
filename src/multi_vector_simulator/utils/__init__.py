@@ -100,8 +100,13 @@ def find_csv_input_folders(
         return answer
 
 
-def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
+def compare_input_parameters_with_reference(
+    folder_path, ext=JSON_EXT, flag_missing=False
+):
     """Compare provided MVS input parameters with the required parameters
+
+    Extra parameters listed in KNOWN_EXTRA_PARAMETERS are not flagged as missing if
+    not provided, instead they take their default value defined in KNOWN_EXTRA_PARAMETERS
 
     Parameters
     ----------
@@ -109,6 +114,8 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
         path to the mvs input folder
     ext: str
         one of {JSON_EXT} or {CSV_EXT}
+    flag_missing: bool
+        if True, raise MissingParameterError for each missing required parameter
 
     Returns
     -------
@@ -204,9 +211,42 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
     if len(extra_parameters) > 0:
         answer[EXTRA_PARAMETERS_KEY] = extra_parameters
 
+    if flag_missing is True:
+        warn_missing_parameters(answer)
+
     return answer
 
 
+def warn_missing_parameters(comparison_with_reference):
+    """Raise error for missing parameters
+
+    Parameters
+    ----------
+    comparison_with_reference: dict
+        dict with possibly two keys: MISSING_PARAMETERS_KEY, EXTRA_PARAMETERS_KEY
+    Returns
+    -------
+    Nothing
+
+    """
+    if MISSING_PARAMETERS_KEY in comparison_with_reference:
+        error_msg = []
+
+        d = comparison_with_reference[MISSING_PARAMETERS_KEY]
+
+        error_msg.append(" ")
+        error_msg.append(" ")
+        error_msg.append(
+            "The following parameter groups and sub parameters are missing from input parameters:"
+        )
+
+        for asset_group in d.keys():
+            error_msg.append(asset_group)
+            if d[asset_group] is not None:
+                for k in d[asset_group]:
+                    error_msg.append(f"\t`{k}` parameter")
+
+        raise (MissingParameterError("\n".join(error_msg)))
 
 
 def set_nested_value(dct, value, keys):
