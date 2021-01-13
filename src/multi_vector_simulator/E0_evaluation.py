@@ -45,6 +45,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LABEL,
     INSTALLED_CAP,
     TIMESERIES_SOC,
+    KPI_UNCOUPLED_DICT,
 )
 
 from multi_vector_simulator.utils.constants_output import (
@@ -185,6 +186,11 @@ def evaluate_dict(dict_values, results_main, results_meta):
     E4.maximum_emissions_test(dict_values)
     E4.detect_excessive_excess_generation_in_bus(dict_values)
     E4.verify_state_of_charge(dict_values)
+
+    # Format KPI about energy generation into a pd.DataFrame
+    dict_values[KPI][KPI_UNCOUPLED_DICT] = pd.DataFrame.from_dict(
+        dict_values[KPI][KPI_UNCOUPLED_DICT], orient="index"
+    )
 
 
 def store_result_matrix(dict_kpi, dict_asset):
