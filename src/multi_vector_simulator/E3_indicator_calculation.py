@@ -291,6 +291,7 @@ def add_total_renewable_and_non_renewable_energy_origin(dict_values):
         renewable_origin.update({sector: 0})
         non_renewable_origin.update({sector: 0})
 
+    # Aggregate the total generation of non renewable and renewable energy in the LES
     for asset in dict_values[ENERGY_PRODUCTION]:
         if RENEWABLE_ASSET_BOOL in dict_values[ENERGY_PRODUCTION][asset]:
             sector = dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
@@ -313,6 +314,7 @@ def add_total_renewable_and_non_renewable_energy_origin(dict_values):
         }
     )
 
+    # Aggregate the total use of non renewable and renewable energy at DSO level
     for dso in dict_values[ENERGY_PROVIDERS]:
         sector = dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR]
 
