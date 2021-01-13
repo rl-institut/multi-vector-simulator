@@ -10,7 +10,10 @@ import os
 import numpy as np
 import pandas as pd
 
-from multi_vector_simulator.utils import data_parser
+from multi_vector_simulator.utils import (
+    data_parser,
+    compare_input_parameters_with_reference,
+)
 
 from multi_vector_simulator.utils.constants_json_strings import (
     START_DATE,
@@ -40,6 +43,7 @@ from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     PATH_OUTPUT_FOLDER_INPUTS,
+    MISSING_PARAMETERS_KEY,
 )
 
 """
@@ -311,4 +315,10 @@ def load_json(
     # add default value if the field PATHS_TO_PLOTS is not already present
     if PATHS_TO_PLOTS not in dict_values:
         dict_values.update(copy.deepcopy(DICT_PLOTS))
+
+    # raise a warning if required parameters are missing, see REQUIRED_MVS_PARAMETERS in
+    # constants.py for more information, note json and csv required parameter are independant from
+    # one another at the moment
+    compare_input_parameters_with_reference(dict_values, flag_missing=True)
+
     return dict_values
