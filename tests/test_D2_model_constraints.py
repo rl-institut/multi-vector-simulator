@@ -211,9 +211,13 @@ class TestConstraints:
         ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor.NoConstraint[0]}."
 
     def test_add_constraints_maximum_emissions(self):
+        dict_values = self.dict_values.copy()
+        dict_values.update(
+            {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},}
+        )
         model = D2.add_constraints(
             local_energy_system=solph.Model(self.model),
-            dict_values=self.dict_values,
+            dict_values=dict_values,
             dict_model=self.dict_model,
         )
         assert (
@@ -227,11 +231,7 @@ class TestConstraints:
             {
                 CONSTRAINTS: {
                     MAXIMUM_EMISSIONS: {VALUE: None},
-                    MINIMAL_RENEWABLE_FACTOR: {
-                        VALUE: self.dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][
-                            VALUE
-                        ]
-                    },
+                    MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                 }
             }
         )
