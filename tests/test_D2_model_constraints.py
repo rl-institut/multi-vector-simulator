@@ -241,8 +241,7 @@ class TestConstraints:
             dict_model=self.dict_model,
         )
         assert (
-            hasattr(model, "integral_limit_emission_factor")
-            == False
+            hasattr(model, "integral_limit_emission_factor") == False
         ), f"When maximum_emission is None, no emission constraint should be added to the ESM."
 
     """
