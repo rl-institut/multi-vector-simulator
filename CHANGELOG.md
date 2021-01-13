@@ -26,9 +26,11 @@ Here is a template for new release sections
 - Explanation in MVS_parameters_list.csv on how to deactivate the RES constraint. (#752)
 - Add the new parameter `scenario_description` to input files and docs and a section in autoreport describing the scenario being simulated (#722)
 - Add a new sub-section in RTD describing the suite of post-simulation tests carried out through functions in E4_verification.py (#753)
+- Add KPI individual sectors to the report (#757)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
+- Format KPI_UNCOUPLED_DICT to a `pd.DataFrame` (#757) 
 ### Removed
 -
 ### Fixed
