@@ -236,13 +236,13 @@ class TestConstraints:
             }
         )
         model = D2.add_constraints(
-            dict_values=self.dict_values,
             local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
             dict_model=self.dict_model,
         )
         assert (
-            model.integral_limit_emission_factor.NoConstraint[0]
-            == self.exp_emission_limit
+            hasattr(model, "integral_limit_emission_factor")
+            == False
         ), f"When maximum_emission is None, no emission constraint should be added to the ESM."
 
     """
