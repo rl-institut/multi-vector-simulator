@@ -63,7 +63,8 @@ def add_constraints(local_energy_system, dict_values, dict_model):
     Tested with:
     - D2.test_add_constraints_maximum_emissions()
     - D2.test_add_constraints_maximum_emissions_None()
-
+    - D2.test_add_constraints_minimal_renewable_share()
+    - D2.test_test_add_constraints_minimal_renewable_share_is_0()
     """
     count_added_constraints = 0
 
@@ -108,6 +109,7 @@ def constraint_maximum_emissions(model, dict_values):
 
     """
     maximum_emissions = dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]
+    # Updates the model with the constraint for maximum amount of emissions
     constraints.emission_limit(model, limit=maximum_emissions)
     logging.info("Added maximum emission constraint.")
     return model
