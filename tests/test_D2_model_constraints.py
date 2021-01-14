@@ -244,11 +244,17 @@ class TestConstraints:
             hasattr(model, "integral_limit_emission_factor") == False
         ), f"When maximum_emission is None, no emission constraint should be added to the ESM."
 
-    """
     def test_add_constraints_minimal_renewable_share(self):
-    # todo to be added
-    pass
-    """
+        """Checks if the constraint minimal renewable share value provided by the user is being applied or not"""
+        model = D2.add_constraints(
+            local_energy_system=solph.Model(self.model),
+            dict_values=self.dict_values,
+            dict_model=self.dict_model,
+        )
+
+        assert (
+            hasattr(model, "constraint_minimal_renewable_share") == True
+        ), f"The minimal renewable share has not been added, something has failed."
 
     def test_add_constraints_minimal_renewable_share_None(self):
         dict_values = self.dict_values.copy()
