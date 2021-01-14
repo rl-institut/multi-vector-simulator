@@ -101,7 +101,7 @@ def find_csv_input_folders(
 
 
 def compare_input_parameters_with_reference(
-    folder_path, ext=JSON_EXT, flag_missing=False
+    folder_path, ext=JSON_EXT, flag_missing=False, set_default=False
 ):
     """Compare provided MVS input parameters with the required parameters
 
@@ -116,6 +116,9 @@ def compare_input_parameters_with_reference(
         one of {JSON_EXT} or {CSV_EXT}
     flag_missing: bool
         if True, raise MissingParameterError for each missing required parameter
+    set_default: bool
+        if True, set the default value of a missing required parameter which is listed in
+        KNOWN_EXTRA_PARAMETERS
 
     Returns
     -------
@@ -173,7 +176,7 @@ def compare_input_parameters_with_reference(
             for sp in not_matching_params:
                 if sp in required_parameters[mp]:
 
-                    if sp in KNOWN_EXTRA_PARAMETERS:
+                    if sp in KNOWN_EXTRA_PARAMETERS and set_default is True:
                         # the sub parameter is not provided but is listed in known extra parameters
                         # --> default value is set for this parameter
                         main_parameters[mp][sp] = {

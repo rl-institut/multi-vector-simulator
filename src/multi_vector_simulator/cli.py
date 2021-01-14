@@ -142,6 +142,7 @@ def main(**kwargs):
         path_input_folder=user_input[PATH_INPUT_FOLDER],
         path_output_folder=user_input[PATH_OUTPUT_FOLDER],
         move_copy=move_copy_config_file,
+        set_default=True,
     )
 
     print("")

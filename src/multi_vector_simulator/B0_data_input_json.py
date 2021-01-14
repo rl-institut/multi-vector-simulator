@@ -249,7 +249,12 @@ def retrieve_date_time_info(simulation_settings):
 
 
 def load_json(
-    path_input_file, path_input_folder=None, path_output_folder=None, move_copy=False
+    path_input_file,
+    path_input_folder=None,
+    path_output_folder=None,
+    move_copy=False,
+    flag_missing_values=True,
+    set_default_values=False,
 ):
     """Opens and reads json input file and parses it to dict of input parameters.
 
@@ -268,6 +273,12 @@ def load_json(
     move_copy: bool, optional
         if this is set to True, the path_input_file will be moved to the path_output_folder
         Default: False
+    flag_missing_values: bool
+        if True, raise MissingParameterError for each missing required parameter
+    set_default_values: bool
+        if True, set the default value of a missing required parameter which is listed in
+        KNOWN_EXTRA_PARAMETERS
+
 
     Returns
     -------
@@ -317,8 +328,10 @@ def load_json(
         dict_values.update(copy.deepcopy(DICT_PLOTS))
 
     # raise a warning if required parameters are missing, see REQUIRED_MVS_PARAMETERS in
-    # constants.py for more information, note json and csv required parameter are independant from
+    # constants.py for more information, note json and csv required parameter are independent from
     # one another at the moment
-    compare_input_parameters_with_reference(dict_values, flag_missing=True)
+    compare_input_parameters_with_reference(
+        dict_values, flag_missing=flag_missing_values, set_default=set_default_values
+    )
 
     return dict_values
