@@ -202,6 +202,8 @@ class TestConstraints:
         return
 
     def test_constraint_maximum_emissions(self):
+        """Checks if maximum emissions limit is properly added as a constraint"""
+        # Create a solph model using the input values (especially the constraints setup as class variables above)
         model = D2.constraint_maximum_emissions(
             model=solph.Model(self.model), dict_values=self.dict_values,
         )
@@ -211,7 +213,9 @@ class TestConstraints:
         ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor.NoConstraint[0]}."
 
     def test_add_constraints_maximum_emissions(self):
+        """Checks if maximum emissions constraint works as intended"""
         dict_values = self.dict_values.copy()
+        # Modify the minimum renewable factor constraint to be 0, otherwise this constraint will also be added
         dict_values.update(
             {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},}
         )
@@ -226,6 +230,7 @@ class TestConstraints:
         ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor.NoConstraint[0]}."
 
     def test_add_constraints_maximum_emissions_None(self):
+        """Verifies if the max emissions constraint was not added, in case the user does not provide a value"""
         dict_values = self.dict_values.copy()
         dict_values.update(
             {
