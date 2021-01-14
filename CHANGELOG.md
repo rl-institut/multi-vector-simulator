@@ -27,6 +27,7 @@ Here is a template for new release sections
 - Add the new parameter `scenario_description` to input files and docs and a section in autoreport describing the scenario being simulated (#722)
 - Add a new sub-section in RTD describing the suite of post-simulation tests carried out through functions in E4_verification.py (#753)
 - Add KPI individual sectors to the report (#757)
+- Added pytests for the minimal renewable share constraint of function 'D2.add_constraints()' (#742)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
