@@ -192,18 +192,18 @@ class TestConstraints:
 
         self.dict_values, self.model, self.dict_model = run_parts()
         self.exp_emission_limit = 1000
-        self.min_renewable_share = 0.60
+        self.exp_min_renewable_share = 0.60
         self.dict_values[CONSTRAINTS].update(
             {MAXIMUM_EMISSIONS: {VALUE: self.exp_emission_limit}}
         )
         self.dict_values[CONSTRAINTS].update(
-            {MINIMAL_RENEWABLE_FACTOR: {VALUE: self.min_renewable_share}}
+            {MINIMAL_RENEWABLE_FACTOR: {VALUE: self.exp_min_renewable_share}}
         )
         return
 
     def test_constraint_maximum_emissions(self):
         model = D2.constraint_maximum_emissions(
-            model=solph.Model(self.model), dict_values=self.dict_values
+            model=solph.Model(self.model), dict_values=self.dict_values,
         )
         assert (
             model.integral_limit_emission_factor.NoConstraint[0]
