@@ -97,39 +97,6 @@ list_of_new_parameter = {
 }
 
 
-def test_if_check_for_official_extra_parameters_adds_no_parameter_when_not_necessary():
-    parameters_updated, _ = A1.check_for_official_extra_parameters(
-        filename_b,
-        df_no_new_parameter,
-        parameters,
-        official_extra_parameters=list_of_new_parameter,
-    )
-    assert parameters == parameters_updated
-
-
-def test_if_check_for_official_extra_parameters_raises_warning_if_parameter_doesnt_exist():
-    with pytest.warns(MissingParameterWarning):
-        parameters_updated, _ = A1.check_for_official_extra_parameters(
-            filename_a,
-            df_no_new_parameter,
-            parameters,
-            official_extra_parameters=list_of_new_parameter,
-        )
-
-
-df_with_new_parameter = pd.DataFrame(["a", "b", 20], index=["unit", "value", "max"])
-
-
-def test_if_check_for_official_extra_parameters_adds_to_parameter_list_when_new_parameter_exists():
-    parameters_updated, _ = A1.check_for_official_extra_parameters(
-        filename_a,
-        df_with_new_parameter,
-        parameters,
-        official_extra_parameters=list_of_new_parameter,
-    )
-    assert ["unit", "value", "max"] == parameters_updated
-
-
 def test_create_input_json_creation_of_json_file():
     A1.create_input_json(input_directory=CSV_PATH)
     assert os.path.exists(os.path.join(CSV_PATH, CSV_FNAME))
