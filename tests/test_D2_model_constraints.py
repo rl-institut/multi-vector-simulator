@@ -256,26 +256,28 @@ class TestConstraints:
             hasattr(model, "constraint_minimal_renewable_share") == True
         ), f"The minimal renewable share has not been added, something has failed."
 
-    def test_add_constraints_minimal_renewable_share_None(self):
+    #
+    def test_add_constraints_minimal_renewable_share_is_0(self):
+        """Checks if the minimal renewable share constraint is not added if user does not provide any value for it"""
         dict_values = self.dict_values.copy()
         dict_values.update(
             {
                 CONSTRAINTS: {
-                    MAXIMUM_EMISSIONS: {
-                        VALUE: self.dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]
-                    },
-                    MINIMAL_RENEWABLE_FACTOR: {VALUE: None},
+                    MAXIMUM_EMISSIONS: {VALUE: None},
+                    MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                 }
             }
         )
+
         model = D2.add_constraints(
             local_energy_system=solph.Model(self.model),
             dict_values=dict_values,
             dict_model=self.dict_model,
         )
+
         assert (
-            model.constraint_minimal_renewable_share == self.min_renewable_share
-        ), f"When the minimal_renewable_share is None, no constraint should be added"
+            hasattr(model, "constraint_minimal_renewable_share") == False
+        ), f"When the minimal_renewable_share is 0, no constraint should be added"
 
     def teardown_class(self):
         # Remove the output folder
