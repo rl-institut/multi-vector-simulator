@@ -9,7 +9,6 @@ import multi_vector_simulator.B0_data_input_json as data_input
 
 from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
-    MissingParameterWarning,
     WrongParameterWarning,
     CsvParsingError,
     WrongStorageColumn,

@@ -10,12 +10,6 @@ class MissingParameterError(ValueError):
     pass
 
 
-class MissingParameterWarning(UserWarning):
-    """Exception raised for missing new parameters of a csv input file, which will be set to default."""
-
-    pass
-
-
 class WrongParameterWarning(UserWarning):
     """Exception raised for errors in the parameters of a csv input file."""
 

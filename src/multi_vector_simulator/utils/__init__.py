@@ -23,7 +23,6 @@ from .constants import (
 )
 
 from .constants_json_strings import UNIT, VALUE
-from .exceptions import MissingParameterError, MissingParameterWarning
 
 
 def find_json_input_folders(
@@ -183,14 +182,12 @@ def compare_input_parameters_with_reference(
                             UNIT: KNOWN_EXTRA_PARAMETERS[sp][UNIT],
                             VALUE: KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE],
                         }
-                        warnings.warn(
-                            MissingParameterWarning(
-                                f"You are not using the parameter {sp} for asset group {mp}, which "
-                                + KNOWN_EXTRA_PARAMETERS[sp][WARNING_TEXT]
-                                + f"This parameter is set to it's default value {KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE]},"
-                                + " which can influence the results."
-                                + "In the next release, this parameter will required."
-                            )
+                        logging.warning(
+                            f"You are not using the parameter '{sp}' for asset group '{mp}', which "
+                            + KNOWN_EXTRA_PARAMETERS[sp][WARNING_TEXT]
+                            + f"This parameter is set to it's default value ({KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE]}),"
+                            + " which can influence the results."
+                            + "In the next release, this parameter will required."
                         )
                     else:
                         # the sub parameter is not provided but is required --> missing
