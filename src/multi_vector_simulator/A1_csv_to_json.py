@@ -262,7 +262,7 @@ def create_json_from_csv(
         extra = list(set(parameters) ^ set(df.index))
         if len(extra) > 0:
             for i in extra:
-                if i in parameters or i:
+                if i in parameters:
                     missing_parameters.append(i)
                 else:
                     if i not in KNOWN_EXTRA_PARAMETERS:

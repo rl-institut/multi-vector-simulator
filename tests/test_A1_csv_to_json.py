@@ -1,11 +1,13 @@
 import os
-
+import logging
 import pytest
 import pandas as pd
 import numpy as np
 
 import multi_vector_simulator.A1_csv_to_json as A1
 import multi_vector_simulator.B0_data_input_json as data_input
+
+import multi_vector_simulator.utils as utils
 
 from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
@@ -164,20 +166,22 @@ def test_create_json_from_csv_with_unknown_separator_for_csv_raises_CsvParsingEr
 def test_create_json_from_csv_without_providing_parameters_raises_MissingParameterError():
 
     with pytest.raises(MissingParameterError):
-        A1.create_json_from_csv(
+        d = A1.create_json_from_csv(
             DUMMY_CSV_PATH, "csv_comma", parameters=[], asset_is_a_storage=False
         )
+        utils.compare_input_parameters_with_reference(d, flag_missing=True)
 
 
 def test_create_json_from_csv_with_uncomplete_parameters_raises_MissingParameterError():
 
     with pytest.raises(MissingParameterError):
-        A1.create_json_from_csv(
+        d = A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_comma",
             parameters=["param1", "param2", "param3"],
             asset_is_a_storage=False,
         )
+        utils.compare_input_parameters_with_reference(d, flag_missing=True)
 
 
 def test_create_json_from_csv_with_wrong_parameters_raises_WrongParameterWarning():
@@ -263,7 +267,7 @@ def test_create_json_from_csv_storage_raises_WrongParameterWarning():
 def test_create_json_from_csv_storage_raises_MissingParameterError():
 
     with pytest.raises(MissingParameterError):
-        A1.create_json_from_csv(
+        d = A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
             parameters=[
@@ -278,6 +282,7 @@ def test_create_json_from_csv_storage_raises_MissingParameterError():
             ],
             asset_is_a_storage=True,
         )
+        utils.compare_input_parameters_with_reference(d, flag_missing=True)
 
 
 def test_create_json_from_csv_storage_raises_WrongParameterWarning_for_wrong_values():
