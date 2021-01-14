@@ -251,7 +251,7 @@ KNOWN_EXTRA_PARAMETERS = {
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
     },
     MAXIMUM_CAP: {
-        DEFAULT_VALUE: 1e17,
+        DEFAULT_VALUE: None,
         UNIT: TYPE_NONE,
         WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_CONVERSION, ENERGY_PRODUCTION],
