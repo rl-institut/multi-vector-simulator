@@ -285,6 +285,7 @@ def load_json(
 
     dict of all input parameters of the MVS E-Lands simulation
     """
+
     with open(path_input_file) as json_file:
         dict_values = json.load(json_file)
 

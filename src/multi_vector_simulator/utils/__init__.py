@@ -22,7 +22,23 @@ from .constants import (
     WARNING_TEXT,
 )
 
-from .constants_json_strings import UNIT, VALUE
+from .constants_json_strings import (
+    UNIT,
+    VALUE,
+    PROJECT_DATA,
+    ECONOMIC_DATA,
+    SIMULATION_SETTINGS,
+    CONSTRAINTS,
+    ENERGY_CONSUMPTION,
+    ENERGY_CONVERSION,
+    ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
+    ENERGY_BUSSES,
+    ENERGY_PROVIDERS,
+    FIX_COST,
+)
+
+from .exceptions import MissingParameterError
 
 
 def find_json_input_folders(
@@ -157,48 +173,84 @@ def compare_input_parameters_with_reference(
             # --> comparison of the sub parameters with the reference
             if ext == JSON_EXT:
                 # get the sub parameters from the json structure
-                sub_parameters = main_parameters[mp].keys()
+                if mp in [
+                    PROJECT_DATA,
+                    ECONOMIC_DATA,
+                    SIMULATION_SETTINGS,
+                    CONSTRAINTS,
+                    FIX_COST,
+                ]:
+                    # project parameters only
+                    sub_params = {"non-asset": main_parameters[mp].keys()}
+                elif mp in [
+                    ENERGY_CONSUMPTION,
+                    ENERGY_CONVERSION,
+                    ENERGY_PRODUCTION,
+                    ENERGY_STORAGE,
+                    ENERGY_BUSSES,
+                    ENERGY_PROVIDERS,
+                ]:
+                    # dict containing assets
+                    # TODO this should be modified if the assets are inside a list instead
+                    # of inside a dict
+                    sub_params = main_parameters[mp]
+
             elif ext == CSV_EXT:
                 # read the csv file, each line corresponds to a sub_parameter
                 df = pd.read_csv(os.path.join(folder_csv_path, mp + ".csv"))
-                sub_parameters = df.iloc[:, 0].unique().tolist()
+                sub_params = {"non-asset": df.iloc[:, 0].unique().tolist()}
 
-            if required_parameters[mp] is not None:
-                # intersect the set of provided sub_parameters with the set of required sub parameters
-                not_matching_params = list(
-                    set(sub_parameters) ^ set(required_parameters[mp])
-                )
-            else:
-                # the parameter is expected to contain user defined names --> those are not checked
-                not_matching_params = []
-
-            for sp in not_matching_params:
-                if sp in required_parameters[mp]:
-
-                    if sp in KNOWN_EXTRA_PARAMETERS and set_default is True:
-                        # the sub parameter is not provided but is listed in known extra parameters
-                        # --> default value is set for this parameter
-                        main_parameters[mp][sp] = {
-                            UNIT: KNOWN_EXTRA_PARAMETERS[sp][UNIT],
-                            VALUE: KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE],
-                        }
-                        logging.warning(
-                            f"You are not using the parameter '{sp}' for asset group '{mp}', which "
-                            + KNOWN_EXTRA_PARAMETERS[sp][WARNING_TEXT]
-                            + f"This parameter is set to it's default value ({KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE]}),"
-                            + " which can influence the results."
-                            + "In the next release, this parameter will required."
-                        )
-                    else:
-                        # the sub parameter is not provided but is required --> missing
-                        param_list = missing_parameters.get(mp, [])
-                        param_list.append(sp)
-                        missing_parameters[mp] = param_list
+            for k in sub_params:
+                sub_parameters = sub_params[k]
+                if required_parameters[mp] is not None:
+                    # intersect the set of provided sub_parameters with the set of required sub parameters
+                    not_matching_params = list(
+                        set(sub_parameters) ^ set(required_parameters[mp])
+                    )
                 else:
-                    # the sub parameter is provided but is not required --> extra
-                    param_list = extra_parameters.get(mp, [])
-                    param_list.append(sp)
-                    extra_parameters[mp] = param_list
+                    # the parameter is expected to contain user defined names --> those are not checked
+                    not_matching_params = []
+
+                for sp in not_matching_params:
+                    if sp in required_parameters[mp]:
+
+                        if sp in KNOWN_EXTRA_PARAMETERS and set_default is True:
+                            # the sub parameter is not provided but is listed in known extra parameters
+                            # --> default value is set for this parameter
+                            if k == "non-asset":
+                                main_parameters[mp][sp] = {
+                                    UNIT: KNOWN_EXTRA_PARAMETERS[sp][UNIT],
+                                    VALUE: KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE],
+                                }
+                                logging.warning(
+                                    f"You are not using the parameter '{sp}' for asset group '{mp}', which "
+                                    + KNOWN_EXTRA_PARAMETERS[sp][WARNING_TEXT]
+                                    + f"This parameter is set to it's default value ({KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE]}),"
+                                    + " which can influence the results."
+                                    + "In the next release, this parameter will required."
+                                )
+                            else:
+                                main_parameters[mp][k][sp] = {
+                                    UNIT: KNOWN_EXTRA_PARAMETERS[sp][UNIT],
+                                    VALUE: KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE],
+                                }
+                                logging.warning(
+                                    f"You are not using the parameter '{sp}' for asset '{k}' of asset group '{mp}', which "
+                                    + KNOWN_EXTRA_PARAMETERS[sp][WARNING_TEXT]
+                                    + f"This parameter is set to it's default value ({KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE]}),"
+                                    + " which can influence the results."
+                                    + "In the next release, this parameter will required."
+                                )
+                        else:
+                            # the sub parameter is not provided but is required --> missing
+                            param_list = missing_parameters.get(mp, [])
+                            param_list.append(sp)
+                            missing_parameters[mp] = param_list
+                    else:
+                        # the sub parameter is provided but is not required --> extra
+                        param_list = extra_parameters.get(mp, [])
+                        param_list.append(sp)
+                        extra_parameters[mp] = param_list
 
     for mp in required_parameters.keys():
         if mp not in main_parameters:
