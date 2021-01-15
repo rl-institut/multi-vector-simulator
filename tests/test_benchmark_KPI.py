@@ -237,7 +237,8 @@ class Test_Economic_KPI:
         data = load_json(
             os.path.join(
                 TEST_OUTPUT_PATH, USE_CASE, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
-            )
+            ),
+            flag_missing_values=False,
         )
 
         # Read expected values from file.
@@ -405,10 +406,12 @@ class TestTechnicalKPI:
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
         )
         # Check for RENEWABLE_FACTOR and RENEWABLE_SHARE_OF_LOCAL_GENERATION:
-        results = os.path.join(
-            TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+        data = load_json(
+            os.path.join(
+                TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+            ),
+            flag_missing_values=False,
         )
-        data = load_json(results)
 
         # Get total flow of PV
         total_res_local = data[ENERGY_PRODUCTION]["pv_plant_01"][TOTAL_FLOW][VALUE]

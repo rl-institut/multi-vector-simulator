@@ -30,9 +30,15 @@ Here is a template for new release sections
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
-- Format KPI_UNCOUPLED_DICT to a `pd.DataFrame` (#757) 
+- Format KPI_UNCOUPLED_DICT to a `pd.DataFrame` (#757)
+- Rename variable EXTRA_CSV_PARAMETERS to KNOWN_CSV_PARAMETERS (#761)
+- If a required parameter is missing but is in the `KNOWN_EXTRA_PARAMETERS` dict in `constants.py`: do not flag it as missing and set its default value (#761)
+- Gather all missing MVS parameters and raise a single error listing all of them (#761)
+- Add `set_default_values` argument to the `B0.load_json` function to set default values of missing parameter which is listed in `KNOWN_EXTRA_PARAMETERS`(#761)
+- Add `flag_missing_values` argument to the `B0_load_json` function to allow switching between `MissingParameterWarning` and `MissingParameterError`(#761)
 ### Removed
--
+- Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
+- Remove redundant function `A1.check_for_official_extra_parameters` as `utils.compare_input_parameters_with_reference` works for both csv and json and will therefore be preferred (#761)
 ### Fixed
 - Minor typos in D0, E4 and test_E4 files (#739)
 

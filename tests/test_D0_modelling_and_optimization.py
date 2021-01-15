@@ -46,7 +46,8 @@ TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
 @pytest.fixture
 def dict_values():
     answer = load_json(
-        os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_for_D0", JSON_FNAME)
+        os.path.join(TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_for_D0", JSON_FNAME),
+        flag_missing_values=False,
     )
     answer[SIMULATION_SETTINGS].update({PATH_OUTPUT_FOLDER: TEST_OUTPUT_PATH})
 

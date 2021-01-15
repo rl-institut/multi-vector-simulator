@@ -77,7 +77,8 @@ class Test_Parameter_Parsing:
         data = load_json(
             os.path.join(
                 TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
-            )
+            ),
+            flag_missing_values=False,
         )
 
         # read csv with expected values of the timeseries
