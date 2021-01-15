@@ -71,6 +71,7 @@ class TestGetTimeseriesPerBus:
             path_input_folder=user_input[PATH_INPUT_FOLDER],
             path_output_folder=user_input[PATH_OUTPUT_FOLDER],
             move_copy=True,
+            set_default_values=True,
         )
         logging.debug("Accessing script: C0_data_processing")
         C0.all(dict_values)

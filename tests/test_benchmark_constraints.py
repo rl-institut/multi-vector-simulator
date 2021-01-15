@@ -93,7 +93,8 @@ class Test_Constraints:
             data = load_json(
                 os.path.join(
                     TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
-                )
+                ),
+                flag_missing_values=False,
             )
             renewable_shares.update(
                 {case: data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]}
@@ -158,7 +159,8 @@ class Test_Constraints:
             data = load_json(
                 os.path.join(
                     TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
-                )
+                ),
+                flag_missing_values=False,
             )
             total_emissions.update({case: data[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS]})
             maximum_emissions.update(
