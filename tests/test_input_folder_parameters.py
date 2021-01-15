@@ -18,7 +18,9 @@ from multi_vector_simulator.utils import (
 )
 
 TEST_CSV_INPUT_FOLDERS = find_csv_input_folders(REPO_PATH)
-TEST_JSON_INPUT_FOLDERS = find_json_input_folders(REPO_PATH)
+TEST_JSON_INPUT_FOLDERS = find_json_input_folders(
+    REPO_PATH, ignore_folders=["inputs_for_D0", "inputs_for_D1"]
+)
 
 
 @pytest.mark.parametrize("input_folder", TEST_CSV_INPUT_FOLDERS)

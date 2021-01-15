@@ -68,14 +68,16 @@ def find_json_input_folders(
     ]
 
     if os.path.exists(os.path.join(path, JSON_FNAME)):
-        return [path]
+        answer = [path]
     else:
         answer = []
         for folder in folder_list:
             answer = answer + find_json_input_folders(
-                os.path.join(path, folder), specific_file_name=specific_file_name
+                os.path.join(path, folder),
+                specific_file_name=specific_file_name,
+                ignore_folders=ignore_folders,
             )
-        return answer
+    return answer
 
 
 def find_csv_input_folders(
