@@ -512,6 +512,29 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                 # TODO change energy busses from dict to list in MVS
                 if asset_group == ENERGY_BUSSES and k == "Asset_list":
                     asset["assets"] = list(asset.pop(k).keys())
+                if asset_group == ENERGY_STORAGE:
+                    # if k in (MAP_MVS_EPA[INPUT_POWER], MAP_MVS_EPA[OUTPUT_POWER], MAP_MVS_EPA[STORAGE_CAPACITY]):
+                    if k in (INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY):
+                        asset[k] = mvs_dict[asset_group][asset_label][MAP_MVS_EPA[k]]
+                        subasset_keys = list(asset[k].keys())
+
+                        # if the asset possesses a unit field
+                        if UNIT in asset[k]:
+                            subunit = asset[k].pop(UNIT)
+                            if k == STORAGE_CAPACITY:
+                                unit_soc = subunit
+                        else:
+                            subunit = None
+
+                        for sk in subasset_keys:
+                            if sk in MAP_MVS_EPA:
+                                # convert some keys MVS to EPA style according to the mapping
+                                asset[k][MAP_MVS_EPA[sk]] = asset[k].pop(sk)
+                        # convert pandas.Series to a timeseries dict with key DATA value list,
+                        # move the unit inside the timeseries dict under key UNIT
+                        if FLOW in asset[k]:
+                            timeseries = asset[k][FLOW].to_list()
+                            asset[k][FLOW] = {UNIT: subunit, VALUE: timeseries}
 
             if MAP_MVS_EPA[TIMESERIES] in asset:
                 asset.pop(MAP_MVS_EPA[TIMESERIES])
