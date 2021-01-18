@@ -318,6 +318,33 @@ def convert_epa_params_to_mvs(epa_dict):
                             asset_label
                         ].pop(k)
 
+                    # for energy_storage there is an extra indentation level
+                    if asset_group == ENERGY_STORAGE:
+                        if k in (
+                            MAP_MVS_EPA[STORAGE_CAPACITY],
+                            MAP_MVS_EPA[INPUT_POWER],
+                            MAP_MVS_EPA[OUTPUT_POWER],
+                        ):
+                            subasset = dict_asset[asset_label][MAP_EPA_MVS[k]]
+                            subasset_keys = list(subasset.keys())
+
+                            for sk in subasset_keys:
+                                if sk in MAP_EPA_MVS:
+                                    subasset[MAP_EPA_MVS[sk]] = subasset.pop(sk)
+
+                            # remove non-implemented parameter if provided faultily
+                            if OPTIMIZE_CAP in subasset:
+                                subasset.pop(OPTIMIZE_CAP)
+
+                            # add unit if not provided
+                            if UNIT not in subasset:
+                                if k == MAP_MVS_EPA[STORAGE_CAPACITY]:
+                                    subasset[UNIT] = "kWh"
+                                else:
+                                    subasset[UNIT] = "kW"
+                            # set the initial value of the state of charge to None
+                            if k == MAP_MVS_EPA[STORAGE_CAPACITY]:
+                                subasset[SOC_INITIAL] = {VALUE: None, UNIT: TYPE_NONE}
 
                 # move the unit outside the timeseries dict
                 if TIMESERIES in dict_asset[asset_label]:
@@ -331,6 +358,21 @@ def convert_epa_params_to_mvs(epa_dict):
                         DATA_TYPE_JSON_KEY
                     ] = TYPE_SERIES
 
+
+                # TODO remove this when change has been made on EPA side
+                if asset_group == ENERGY_STORAGE:
+
+                    if OPTIMIZE_CAP not in dict_asset[asset_label]:
+                        dict_asset[asset_label][OPTIMIZE_CAP] = {
+                            "unit": "bool",
+                            "value": False,
+                        }
+                    else:
+                        logging.warning(
+                            "The optimized cap has been updated on EPA side so you can look for "
+                            "this warning in data_parser.py and remove the warning and the 7 "
+                            "lines of code above it as well"
+                        )
             dict_values[asset_group] = dict_asset
         else:
             logging.warning(
