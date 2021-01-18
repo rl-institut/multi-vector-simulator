@@ -262,7 +262,7 @@ class TestConstraints:
         ), f"The minimal renewable share has not been added, something has failed."
 
     def test_add_constraints_minimal_renewable_share_is_0(self):
-        """Checks if the minimal renewable share constraint is not added if user does not provide any value for it"""
+        """Checks that the minimal renewable share constraint is not added if user provides a minimal share of 0"""
         dict_values = self.dict_values.copy()
         dict_values.update(
             {
