@@ -18,7 +18,6 @@ Functional requirements of module D0:
 - add simulation parameters to dict values
 """
 
-
 import logging
 import os
 import timeit
@@ -284,7 +283,10 @@ class model_building:
         -------
         Updated model with results, main results (flows, assets) and meta results (simulation)
         """
+        import warnings
+
         logging.info("Starting simulation.")
+        warnings.filterwarnings("error")
         try:
             local_energy_system.solve(
                 solver="cbc",
@@ -293,13 +295,20 @@ class model_building:
                 },  # if tee_switch is true solver messages will be displayed
                 cmdline_options={"ratioGap": str(0.03)},
             )  # ratioGap allowedGap mipgap
-        except Exception as error_message:
-            example_error = 'ValueError: No value for uninitialized NumericValue object InvestmentFlow.invest'
-            if example_error in str(error_message):
-                print('Your energy system components and buses are not properly connected with each other. Please '
-                      'check the input files.')
-        else:
-            logging.info("Problem solved.")
+        except UserWarning as e:
+            print("This is a user error")
+            print(str(e))
+            error_message = str(e)
+            compare_message = "Optimization ended with status warning and termination condition infeasible"
+            if compare_message in error_message:
+                logging.error(
+                    f"The following error occurred: {error_message}. There are several reasons why this "
+                    f"could have happened. One reason could be that the energy system is not properly "
+                    f"connected. The other reason could be that the capacity of some assets might not have "
+                    f"been optimized. Third reason could be that the demands could not be supplied with the "
+                    f"current energy system. "
+                )
+        warnings.resetwarnings()
 
         # add results to the energy system to make it possible to store them.
         results_main = processing.results(local_energy_system)
