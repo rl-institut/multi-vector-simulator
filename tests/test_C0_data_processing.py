@@ -118,6 +118,7 @@ dict_asset = {
     LIFETIME: {VALUE: 20},
     UNIT: "a_unit",
     AGE_INSTALLED: {VALUE: 0},
+    LABEL: "test",
 }
 
 
@@ -498,6 +499,7 @@ def test_evaluate_lifetime_costs():
         LIFETIME: {VALUE: 10},
         UNIT: UNIT,
         AGE_INSTALLED: {VALUE: 0},
+        LABEL: "test",
     }
 
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)

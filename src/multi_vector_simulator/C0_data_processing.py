@@ -1383,6 +1383,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         discount_factor=economic_data[DISCOUNTFACTOR][VALUE],
         tax=economic_data[TAX][VALUE],
         age_of_asset=dict_asset[AGE_INSTALLED][VALUE],
+        asset_label=dict_asset[LABEL],
     )
 
     dict_asset.update(

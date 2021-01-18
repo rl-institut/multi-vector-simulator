@@ -78,7 +78,13 @@ def crf(project_life, discount_factor):
 
 
 def capex_from_investment(
-    investment_t0, lifetime, project_life, discount_factor, tax, age_of_asset
+    investment_t0,
+    lifetime,
+    project_life,
+    discount_factor,
+    tax,
+    age_of_asset,
+    asset_label="",
 ):
     """
     Calculates the capital expenditures, also known as CapEx.
@@ -101,6 +107,10 @@ def capex_from_investment(
         weighted average cost of capital, which is the after-tax average cost of various capital sources
     tax: float
         compulsory financial charge paid to the government
+    age_of_asset: int
+        age since asset installation in year
+    asset_label: str
+        name of the asset
 
     Returns
     -------
@@ -131,7 +141,12 @@ def capex_from_investment(
 
     # Calculating the replacement costs per unit for the currently already installed assets
     specific_replacement_costs_installed = get_replacement_costs(
-        age_of_asset, project_life, lifetime, first_time_investment, discount_factor
+        age_of_asset,
+        project_life,
+        lifetime,
+        first_time_investment,
+        discount_factor,
+        asset_label=asset_label,
     )
     return (
         specific_capex,
@@ -146,6 +161,7 @@ def get_replacement_costs(
     asset_lifetime,
     first_time_investment,
     discount_factor,
+    asset_label="",
 ):
     r"""
     Calculating the replacement costs of an asset
@@ -166,6 +182,9 @@ def get_replacement_costs(
 
     discount_factor: float
         Discount factor of a project
+
+    asset_label: str
+        name of the asset
 
     Returns
     -------
@@ -189,9 +208,9 @@ def get_replacement_costs(
     year = -age_of_asset
     if abs(year) >= asset_lifetime:
         logging.error(
-            f"The age of the asset is with {age_of_asset} lower or equal then the {asset_lifetime}. "
-            f"This does not make sense, as a replacement is imminent or should already have happened."
-            f"Please check this value."
+            f"The age of the asset `{asset_label}` ({age_of_asset} years) is lower or equal than "
+            f"the asset lifetime ({asset_lifetime} years). This does not make sense, as a "
+            f"replacement is imminent or should already have happened. Please check this value."
         )
 
     present_value_of_capital_expenditures = pd.DataFrame(
