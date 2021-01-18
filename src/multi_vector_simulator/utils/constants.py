@@ -3,6 +3,7 @@ General Constants
 =================
 """
 import os
+from copy import deepcopy
 
 from multi_vector_simulator.utils.constants_json_strings import *
 
@@ -137,6 +138,7 @@ REQUIRED_CSV_PARAMETERS = {
         OEMOF_ASSET_TYPE,
         UNIT,
         ENERGY_VECTOR,
+        EMISSION_FACTOR,
     ],
     ENERGY_PROVIDERS: [
         ENERGY_PRICE,
@@ -148,6 +150,7 @@ REQUIRED_CSV_PARAMETERS = {
         PEAK_DEMAND_PRICING_PERIOD,
         OEMOF_ASSET_TYPE,
         ENERGY_VECTOR,
+        EMISSION_FACTOR,
     ],
     FIX_COST: [
         AGE_INSTALLED,
@@ -184,36 +187,45 @@ REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
 # list of parameters which must be present within the JSON_FNAME file with the sub-parameters
 # note: if the value of a key is none, then the value is expected to be user-defined and thus cannot
 # be in a required parameters dict
-REQUIRED_JSON_PARAMETERS = {
-    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX],
-    ENERGY_BUSSES: None,
-    ENERGY_CONSUMPTION: None,
-    ENERGY_CONVERSION: None,
-    ENERGY_PRODUCTION: None,
-    ENERGY_PROVIDERS: None,
-    ENERGY_STORAGE: None,
-    FIX_COST: None,
-    CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR],
-    PROJECT_DATA: [
-        COUNTRY,
-        LABEL,
-        LATITUDE,
-        LONGITUDE,
-        PROJECT_ID,
-        PROJECT_NAME,
-        SCENARIO_ID,
-        SCENARIO_NAME,
-        SCENARIO_DESCRIPTION,
-    ],
-    SIMULATION_SETTINGS: [
-        EVALUATED_PERIOD,
-        LABEL,
-        OUTPUT_LP_FILE,
-        START_DATE,
-        STORE_OEMOF_RESULTS,
-        TIMESTEP,
-    ],
-}
+
+# TODO add required sub-parameters for assets as well
+REQUIRED_JSON_PARAMETERS = deepcopy(REQUIRED_CSV_PARAMETERS)
+REQUIRED_JSON_PARAMETERS[FIX_COST] = None
+
+REQUIRED_JSON_PARAMETERS[ENERGY_CONSUMPTION].remove(FILENAME)
+REQUIRED_JSON_PARAMETERS[ENERGY_PRODUCTION].remove(FILENAME)
+REQUIRED_JSON_PARAMETERS[ENERGY_STORAGE].remove(STORAGE_FILENAME)
+#
+#     {
+#     ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX],
+#     ENERGY_BUSSES: None,
+#     ENERGY_CONSUMPTION: None,
+#     ENERGY_CONVERSION: None,
+#     ENERGY_PRODUCTION: None,
+#     ENERGY_PROVIDERS: None,
+#     ENERGY_STORAGE: None,
+#     FIX_COST: None,
+#     CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR, MAXIMUM_EMISSIONS],
+#     PROJECT_DATA: [
+#         COUNTRY,
+#         LABEL,
+#         LATITUDE,
+#         LONGITUDE,
+#         PROJECT_ID,
+#         PROJECT_NAME,
+#         SCENARIO_ID,
+#         SCENARIO_NAME,
+#         SCENARIO_DESCRIPTION,
+#     ],
+#     SIMULATION_SETTINGS: [
+#         EVALUATED_PERIOD,
+#         LABEL,
+#         OUTPUT_LP_FILE,
+#         START_DATE,
+#         STORE_OEMOF_RESULTS,
+#         TIMESTEP,
+#     ],
+# }
 # references for which parameters must be present either in the json or csv input method
 REQUIRED_MVS_PARAMETERS = {
     JSON_EXT: REQUIRED_JSON_PARAMETERS,
@@ -242,7 +254,7 @@ TYPE_STR = "str"
 TYPE_NONE = "None"
 TYPE_FLOAT = "float"
 
-EXTRA_CSV_PARAMETERS = {
+KNOWN_EXTRA_PARAMETERS = {
     UNIT: {
         DEFAULT_VALUE: "NA",
         UNIT: TYPE_STR,

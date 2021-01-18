@@ -3,6 +3,7 @@ import copy
 import json
 import shutil
 import logging
+import warnings
 import pandas as pd
 from .constants import (
     PACKAGE_DATA_PATH,
@@ -12,11 +13,32 @@ from .constants import (
     JSON_EXT,
     CSV_EXT,
     REQUIRED_MVS_PARAMETERS,
+    KNOWN_EXTRA_PARAMETERS,
     JSON_FNAME,
     MISSING_PARAMETERS_KEY,
     EXTRA_PARAMETERS_KEY,
     TEMPLATE_INPUT_FOLDER,
+    DEFAULT_VALUE,
+    WARNING_TEXT,
 )
+
+from .constants_json_strings import (
+    UNIT,
+    VALUE,
+    PROJECT_DATA,
+    ECONOMIC_DATA,
+    SIMULATION_SETTINGS,
+    CONSTRAINTS,
+    ENERGY_CONSUMPTION,
+    ENERGY_CONVERSION,
+    ENERGY_PRODUCTION,
+    ENERGY_STORAGE,
+    ENERGY_BUSSES,
+    ENERGY_PROVIDERS,
+    FIX_COST,
+)
+
+from .exceptions import MissingParameterError
 
 
 def find_json_input_folders(
@@ -46,14 +68,16 @@ def find_json_input_folders(
     ]
 
     if os.path.exists(os.path.join(path, JSON_FNAME)):
-        return [path]
+        answer = [path]
     else:
         answer = []
         for folder in folder_list:
             answer = answer + find_json_input_folders(
-                os.path.join(path, folder), specific_file_name=specific_file_name
+                os.path.join(path, folder),
+                specific_file_name=specific_file_name,
+                ignore_folders=ignore_folders,
             )
-        return answer
+    return answer
 
 
 def find_csv_input_folders(
@@ -93,8 +117,13 @@ def find_csv_input_folders(
         return answer
 
 
-def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
+def compare_input_parameters_with_reference(
+    folder_path, ext=JSON_EXT, flag_missing=False, set_default=False
+):
     """Compare provided MVS input parameters with the required parameters
+
+    Extra parameters listed in KNOWN_EXTRA_PARAMETERS are not flagged as missing if
+    not provided, instead they take their default value defined in KNOWN_EXTRA_PARAMETERS
 
     Parameters
     ----------
@@ -102,6 +131,11 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
         path to the mvs input folder
     ext: str
         one of {JSON_EXT} or {CSV_EXT}
+    flag_missing: bool
+        if True, raise MissingParameterError for each missing required parameter
+    set_default: bool
+        if True, set the default value of a missing required parameter which is listed in
+        KNOWN_EXTRA_PARAMETERS
 
     Returns
     -------
@@ -141,32 +175,84 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
             # --> comparison of the sub parameters with the reference
             if ext == JSON_EXT:
                 # get the sub parameters from the json structure
-                sub_parameters = main_parameters[mp].keys()
+                if mp in [
+                    PROJECT_DATA,
+                    ECONOMIC_DATA,
+                    SIMULATION_SETTINGS,
+                    CONSTRAINTS,
+                    FIX_COST,
+                ]:
+                    # project parameters only
+                    sub_params = {"non-asset": main_parameters[mp].keys()}
+                elif mp in [
+                    ENERGY_CONSUMPTION,
+                    ENERGY_CONVERSION,
+                    ENERGY_PRODUCTION,
+                    ENERGY_STORAGE,
+                    ENERGY_BUSSES,
+                    ENERGY_PROVIDERS,
+                ]:
+                    # dict containing assets
+                    # TODO this should be modified if the assets are inside a list instead
+                    # of inside a dict
+                    sub_params = main_parameters[mp]
+
             elif ext == CSV_EXT:
                 # read the csv file, each line corresponds to a sub_parameter
                 df = pd.read_csv(os.path.join(folder_csv_path, mp + ".csv"))
-                sub_parameters = df.iloc[:, 0].unique().tolist()
+                sub_params = {"non-asset": df.iloc[:, 0].unique().tolist()}
 
-            if required_parameters[mp] is not None:
-                # intersect the set of provided sub_parameters with the set of required sub parameters
-                not_matching_params = list(
-                    set(sub_parameters) ^ set(required_parameters[mp])
-                )
-            else:
-                # the parameter is expected to contain user defined names --> those are not checked
-                not_matching_params = []
-
-            for sp in not_matching_params:
-                if sp in required_parameters[mp]:
-                    # the sub parameter is not provided but is required --> missing
-                    param_list = missing_parameters.get(mp, [])
-                    param_list.append(sp)
-                    missing_parameters[mp] = param_list
+            for k in sub_params:
+                sub_parameters = sub_params[k]
+                if required_parameters[mp] is not None:
+                    # intersect the set of provided sub_parameters with the set of required sub parameters
+                    not_matching_params = list(
+                        set(sub_parameters) ^ set(required_parameters[mp])
+                    )
                 else:
-                    # the sub parameter is provided but is not required --> extra
-                    param_list = extra_parameters.get(mp, [])
-                    param_list.append(sp)
-                    extra_parameters[mp] = param_list
+                    # the parameter is expected to contain user defined names --> those are not checked
+                    not_matching_params = []
+
+                for sp in not_matching_params:
+                    if sp in required_parameters[mp]:
+
+                        if sp in KNOWN_EXTRA_PARAMETERS and set_default is True:
+                            # the sub parameter is not provided but is listed in known extra parameters
+                            # --> default value is set for this parameter
+                            if k == "non-asset":
+                                main_parameters[mp][sp] = {
+                                    UNIT: KNOWN_EXTRA_PARAMETERS[sp][UNIT],
+                                    VALUE: KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE],
+                                }
+                                logging.warning(
+                                    f"You are not using the parameter '{sp}' for asset group '{mp}', which "
+                                    + KNOWN_EXTRA_PARAMETERS[sp][WARNING_TEXT]
+                                    + f"This parameter is set to it's default value ({KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE]}),"
+                                    + " which can influence the results."
+                                    + "In the next release, this parameter will required."
+                                )
+                            else:
+                                main_parameters[mp][k][sp] = {
+                                    UNIT: KNOWN_EXTRA_PARAMETERS[sp][UNIT],
+                                    VALUE: KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE],
+                                }
+                                logging.warning(
+                                    f"You are not using the parameter '{sp}' for asset '{k}' of asset group '{mp}', which "
+                                    + KNOWN_EXTRA_PARAMETERS[sp][WARNING_TEXT]
+                                    + f"This parameter is set to it's default value ({KNOWN_EXTRA_PARAMETERS[sp][DEFAULT_VALUE]}),"
+                                    + " which can influence the results."
+                                    + "In the next release, this parameter will required."
+                                )
+                        else:
+                            # the sub parameter is not provided but is required --> missing
+                            param_list = missing_parameters.get(mp, [])
+                            param_list.append(sp)
+                            missing_parameters[mp] = param_list
+                    else:
+                        # the sub parameter is provided but is not required --> extra
+                        param_list = extra_parameters.get(mp, [])
+                        param_list.append(sp)
+                        extra_parameters[mp] = param_list
 
     for mp in required_parameters.keys():
         if mp not in main_parameters:
@@ -179,7 +265,42 @@ def compare_input_parameters_with_reference(folder_path, ext=JSON_EXT):
     if len(extra_parameters) > 0:
         answer[EXTRA_PARAMETERS_KEY] = extra_parameters
 
+    if flag_missing is True:
+        warn_missing_parameters(answer)
+
     return answer
+
+
+def warn_missing_parameters(comparison_with_reference):
+    """Raise error for missing parameters
+
+    Parameters
+    ----------
+    comparison_with_reference: dict
+        dict with possibly two keys: MISSING_PARAMETERS_KEY, EXTRA_PARAMETERS_KEY
+    Returns
+    -------
+    Nothing
+
+    """
+    if MISSING_PARAMETERS_KEY in comparison_with_reference:
+        error_msg = []
+
+        d = comparison_with_reference[MISSING_PARAMETERS_KEY]
+
+        error_msg.append(" ")
+        error_msg.append(" ")
+        error_msg.append(
+            "The following parameter groups and sub parameters are missing from input parameters:"
+        )
+
+        for asset_group in d.keys():
+            error_msg.append(asset_group)
+            if d[asset_group] is not None:
+                for k in d[asset_group]:
+                    error_msg.append(f"\t`{k}` parameter")
+
+        raise (MissingParameterError("\n".join(error_msg)))
 
 
 def set_nested_value(dct, value, keys):

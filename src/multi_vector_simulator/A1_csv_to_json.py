@@ -55,7 +55,7 @@ from multi_vector_simulator.utils.constants import (
     TYPE_BOOL,
     TYPE_STR,
     TYPE_NONE,
-    EXTRA_CSV_PARAMETERS,
+    KNOWN_EXTRA_PARAMETERS,
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
     DEFAULT_VALUE,
@@ -87,7 +87,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
 
 from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
-    MissingParameterWarning,
     WrongParameterWarning,
     CsvParsingError,
     WrongStorageColumn,
@@ -256,10 +255,6 @@ def create_json_from_csv(
             )
         )
 
-    # Compare the csv input file potential extra parameters with the acknowledged
-    # EXTRA_CSV_PARAMETERS, update the parameters list and the values of the parameters
-    parameters, df = check_for_official_extra_parameters(filename, df, parameters)
-
     # check for wrong or missing required parameters
     missing_parameters = []
     wrong_parameters = []
@@ -270,14 +265,10 @@ def create_json_from_csv(
                 if i in parameters:
                     missing_parameters.append(i)
                 else:
-                    wrong_parameters.append(i)
+                    if i not in KNOWN_EXTRA_PARAMETERS:
+                        wrong_parameters.append(i)
 
-    if len(missing_parameters) > 0 or len(parameters) == 0:
-        raise MissingParameterError(
-            f"In the file {filename}.csv the parameter {i} is missing. \n"
-            f"Please check {input_directory} for correct parameter names."
-        )
-    elif len(wrong_parameters) > 0:
+    if len(wrong_parameters) > 0:
         warnings.warn(
             WrongParameterWarning(
                 f"The parameter {i} in the file"
@@ -485,83 +476,6 @@ def create_json_from_csv(
         single_dict2 = {}
         single_dict2.update({filename: single_dict})
         return single_dict2
-
-
-def check_for_official_extra_parameters(
-    filename, df, required_parameters, official_extra_parameters=EXTRA_CSV_PARAMETERS
-):
-    """
-    Checks if there are new parameters that should be in the csvs.
-    Adds them to the required list of parameters.
-
-    Parameters
-    ----------
-    filename: str
-        Defines the name of a csv input file (without the extension)
-    df: :py:class:`~pandas.core.frame.DataFrame`
-        Data frame read from one of the input files
-    required_parameters: list
-        Defines the required parameters
-    official_extra_parameters: dict
-        dict specifing allowed extra parameters that should be in the Data frame
-
-    Returns
-    -------
-    Updated parameters list and updated dataframe and updated :class:`pandas.DataFrame<frame>`
-    The function through a warning if a new parameter is not defined in the csv but exists inf
-    the official_extra_parameters. The parameter will then be set to it's default value.
-    """
-    df = df.copy()
-
-    # Loop through official extra parameters (i.e. not yet added to the REQUIRED_CSV_PARAMETERS)
-    for extra_parameter in official_extra_parameters:
-        # Check whether the extra parameter should be contained in the csv file named `filename`
-        if (
-            filename
-            in official_extra_parameters[extra_parameter][REQUIRED_IN_CSV_ELEMENTS]
-        ):
-            # Check if the extra parameter is included in the pandas Dataframe
-            if extra_parameter not in df.index:
-                # Add default values for each of the columns in the df
-                default_values = {}
-                for i, column in enumerate(df):
-                    if i == 0:
-                        default_values.update({column: extra_parameter})
-                    elif column == "unit":
-                        default_values.update(
-                            {
-                                column: official_extra_parameters[extra_parameter].get(
-                                    UNIT, TYPE_STR
-                                )
-                            }
-                        )
-                    else:
-                        default_values.update(
-                            {
-                                column: official_extra_parameters[extra_parameter][
-                                    DEFAULT_VALUE
-                                ]
-                            }
-                        )
-                default_values = pd.Series(data=default_values, name=extra_parameter)
-                df = df.append(default_values, ignore_index=False)
-
-                # Display warning message if the extra parameter was not present in the csv file.
-                warnings.warn(
-                    MissingParameterWarning(
-                        f"You are not using the parameter {extra_parameter} for asset group {filename}, which "
-                        + official_extra_parameters[extra_parameter][WARNING_TEXT]
-                        + ". "
-                        + f"This parameter is set to it's default value {official_extra_parameters[extra_parameter][DEFAULT_VALUE]}, which can influence the results."
-                        + "In the next release, this parameter will required."
-                    )
-                )
-
-            if extra_parameter not in required_parameters:
-                # Now that the new parameter is in the df
-                # (optional with default values being added) add the new parameter to parameter list
-                required_parameters.append(extra_parameter)
-    return required_parameters, df
 
 
 def conversion(value, asset_dict, row, param, asset, filename=""):
