@@ -11,11 +11,18 @@ This module defines all functions to convert formats between EPA and MVS
 
 import pprint
 import logging
+import json
 
 from multi_vector_simulator.utils import compare_input_parameters_with_reference
 
 
-from multi_vector_simulator.utils.constants import MISSING_PARAMETERS_KEY
+from multi_vector_simulator.utils.constants import (
+    MISSING_PARAMETERS_KEY,
+    DATA_TYPE_JSON_KEY,
+    TYPE_SERIES,
+    TYPE_NONE,
+)
+
 from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DATA,
     ECONOMIC_DATA,
@@ -40,7 +47,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     PEAK_DEMAND_PRICING_PERIOD,
     RENEWABLE_SHARE_DSO,
     OUTFLOW_DIRECTION,
-    OUTFLOW_DIRECTION,
     DEVELOPMENT_COSTS,
     DISPATCH_PRICE,
     DISPATCHABILITY,
@@ -63,11 +69,24 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SCENARIO_NAME,
     START_DATE,
     EVALUATED_PERIOD,
-    TIMESTEP,
-    KPI,
-    KPI_SCALARS_DICT,
+    OUTPUT_LP_FILE,
+    MINIMAL_RENEWABLE_FACTOR,
     FIX_COST,
-    DATA,
+    KPI,
+    TIMESTEP,
+    KPI_SCALARS_DICT,
+    VALUE,
+    EMISSION_FACTOR,
+    MAXIMUM_EMISSIONS,
+    FLOW,
+    KPI_UNCOUPLED_DICT,
+    KPI_COST_MATRIX,
+    KPI_SCALAR_MATRIX,
+    SOC_INITIAL,
+    SCENARIO_DESCRIPTION,
+    TIMESERIES_SOC,
+    TYPE_ASSET,
+    DSM,
 )
 
 from multi_vector_simulator.utils.exceptions import MissingParameterError
@@ -76,16 +95,21 @@ pp = pprint.PrettyPrinter(indent=4)
 
 MAP_EPA_MVS = {
     "economic_data": ECONOMIC_DATA,
-    "energyProviders": ENERGY_PROVIDERS,
+    "energy_providers": ENERGY_PROVIDERS,
     "energy_busses": ENERGY_BUSSES,
     "energy_consumption": ENERGY_CONSUMPTION,
     "energy_conversion": ENERGY_CONVERSION,
     "energy_production": ENERGY_PRODUCTION,
     "energy_storage": ENERGY_STORAGE,
     "project_data": PROJECT_DATA,
+    "input_bus_name": INFLOW_DIRECTION,  # TODO remove this when it is updated on EPA side
+    "output_bus_name": OUTFLOW_DIRECTION,  # TODO remove this when it is updated on EPA side
     "simulation_settings": SIMULATION_SETTINGS,
     "energy_vector": ENERGY_VECTOR,
     "installed_capacity": INSTALLED_CAP,
+    "capacity": STORAGE_CAPACITY,
+    "input_power": INPUT_POWER,
+    "output_power": OUTPUT_POWER,
     "optimize_capacity": OPTIMIZE_CAP,
     "maximum_capacity": MAXIMUM_CAP,
     "input_timeseries": TIMESERIES,
@@ -93,6 +117,12 @@ MAP_EPA_MVS = {
     "renewable_asset": RENEWABLE_ASSET_BOOL,
     KPI: KPI,
     FIX_COST: FIX_COST,
+    "time_step": TIMESTEP,
+    "data": VALUE,
+    "replacement_costs_during_project_lifetime": "Replacement_costs_during_project_lifetime",
+    "specific_replacement_costs_of_installed_capacity": "Specific_replacement_costs_of_installed_capacity",
+    "specific_replacement_costs_of_optimized_capacity": "Specific_replacement_costs_of_optimized_capacity",
+    "asset_type": TYPE_ASSET,
 }
 
 MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
