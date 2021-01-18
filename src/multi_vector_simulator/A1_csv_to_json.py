@@ -235,16 +235,25 @@ def create_json_from_csv(
 
     idx = 0
     while seperator_unknown is True and idx < len(CSV_SEPARATORS):
-        df = pd.read_csv(
-            os.path.join(input_directory, "{}.csv".format(filename)),
-            sep=CSV_SEPARATORS[idx],
-            header=0,
-            index_col=0,
-        )
 
-        if len(df.columns) > 0:
-            seperator_unknown = False
-        else:
+        try:
+            df = pd.read_csv(
+                os.path.join(input_directory, "{}.csv".format(filename)),
+                sep=CSV_SEPARATORS[idx],
+                header=0,
+                index_col=0,
+            )
+
+            if len(df.columns) > 0:
+                seperator_unknown = False
+            else:
+                idx = idx + 1
+
+        except pd.errors.ParserError:
+            logging.warning(
+                f"The file {filename} is not separated by {CSV_SEPARATORS[idx]} or has a formatting problem somewhere"
+            )
+            seperator_unknown = True
             idx = idx + 1
 
     if seperator_unknown is True:
