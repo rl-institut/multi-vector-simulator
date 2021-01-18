@@ -293,7 +293,7 @@ def convert_epa_params_to_mvs(epa_dict):
 
         else:
             logging.warning(
-                f"The parameters {MAP_MVS_EPA[param_group]} are not present in the parameters to be parsed into mvs json format"
+                f"The parameters group '{MAP_MVS_EPA[param_group]}' is not present in the EPA parameters to be parsed into MVS json format"
             )
 
     for asset_group in [
@@ -310,9 +310,11 @@ def convert_epa_params_to_mvs(epa_dict):
 
                 asset_label = asset[LABEL]
                 dict_asset[asset_label] = asset
-
                 asset_keys = list(dict_asset[asset_label].keys())
+
+                # change EPA style keys of an asset to MVS style ones
                 for k in asset_keys:
+
                     if k in MAP_EPA_MVS:
                         dict_asset[asset_label][MAP_EPA_MVS[k]] = dict_asset[
                             asset_label
@@ -390,10 +392,11 @@ def convert_epa_params_to_mvs(epa_dict):
 
                 if EMISSION_FACTOR not in dict_asset[asset_label]:
                     dict_asset[asset_label][EMISSION_FACTOR] = {VALUE: 0}
+
             dict_values[asset_group] = dict_asset
         else:
-            logging.warning(
-                f"The parameters {MAP_MVS_EPA[asset_group]} are not present in the parameters to be parsed into mvs json format"
+            logging.INFO(
+                f"The assets parameters '{MAP_MVS_EPA[asset_group]}' is not present in the EPA parameters to be parsed into MVS json format"
             )
 
     comparison = compare_input_parameters_with_reference(dict_values)
