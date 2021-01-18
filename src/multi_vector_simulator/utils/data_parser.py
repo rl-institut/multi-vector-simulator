@@ -484,6 +484,18 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                         param_group_epa
                     ].pop(k)
 
+                if k == KPI_UNCOUPLED_DICT:
+                    epa_dict[param_group_epa][k] = json.loads(
+                        epa_dict[param_group_epa][k].to_json(orient="index")
+                    )
+
+                if k in (KPI_SCALAR_MATRIX, KPI_COST_MATRIX):
+                    epa_dict[param_group_epa][k] = json.loads(
+                        epa_dict[param_group_epa][k]
+                        .set_index("label")
+                        .to_json(orient="index")
+                    )
+
     # manage which assets parameters are kept and which one are removed in epa_dict
     for asset_group in EPA_ASSET_KEYS:
         list_asset = []
