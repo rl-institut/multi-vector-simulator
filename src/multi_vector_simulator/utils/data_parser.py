@@ -493,6 +493,14 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
             # each asset is also a dict
             asset = mvs_dict[asset_group][asset_label]
 
+            # if the asset possesses a unit field
+            if UNIT in asset:
+                unit = asset.pop(UNIT)
+            else:
+                unit = None
+
+            unit_soc = None
+
             # keep the information about the dict key, but move it into the dict value
             asset[LABEL] = asset_label
 
@@ -505,12 +513,18 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                 if asset_group == ENERGY_BUSSES and k == "Asset_list":
                     asset["assets"] = list(asset.pop(k).keys())
 
+            if MAP_MVS_EPA[TIMESERIES] in asset:
+                asset.pop(MAP_MVS_EPA[TIMESERIES])
+
             # convert pandas.Series to a timeseries dict with key DATA value list,
             # move the unit inside the timeseries dict under key UNIT
-            if MAP_MVS_EPA[TIMESERIES] in asset:
-                timeseries = asset[MAP_MVS_EPA[TIMESERIES]].to_list()
-                unit = asset.pop(UNIT)
-                asset[MAP_MVS_EPA[TIMESERIES]] = {UNIT: unit, DATA: timeseries}
+            if FLOW in asset:
+                timeseries = asset[FLOW].to_list()
+                asset[FLOW] = {UNIT: unit, VALUE: timeseries}
+
+            if TIMESERIES_SOC in asset:
+                timeseries = asset[TIMESERIES_SOC].to_list()
+                asset[TIMESERIES_SOC] = {UNIT: unit_soc, VALUE: timeseries}
 
             if "_excess" not in asset_label and "_sink" not in asset_label:
                 list_asset.append(asset)
