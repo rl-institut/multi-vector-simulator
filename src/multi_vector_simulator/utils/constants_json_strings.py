@@ -69,7 +69,6 @@ LATITUDE = "latitude"
 # Project data and simulation settings (true/false)
 SIMULATION_SETTINGS = "simulation_settings"
 OUTPUT_LP_FILE = "output_lp_file"
-STORE_OEMOF_RESULTS = "store_oemof_results"
 PROJECT_NAME = "project_name"
 SCENARIO_NAME = "scenario_name"
 COUNTRY = "country"
@@ -153,6 +152,7 @@ SIMULATION_ANNUITY = "simulation_annuity"
 SPECIFIC_REPLACEMENT_COSTS_INSTALLED = (
     "Specific_replacement_costs_of_installed_capacity"
 )
+
 SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED = (
     "Specific_replacement_costs_of_optimized_capacity"
 )
