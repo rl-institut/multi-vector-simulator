@@ -285,6 +285,12 @@ def convert_epa_params_to_mvs(epa_dict):
                         UNIT: "minutes",
                         VALUE: timestep,
                     }
+            if param_group == PROJECT_DATA:
+                if SCENARIO_DESCRIPTION not in dict_values[param_group]:
+                    dict_values[param_group][
+                        SCENARIO_DESCRIPTION
+                    ] = "no scenario description"
+
         else:
             logging.warning(
                 f"The parameters {MAP_MVS_EPA[param_group]} are not present in the parameters to be parsed into mvs json format"
