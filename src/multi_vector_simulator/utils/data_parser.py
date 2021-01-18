@@ -127,18 +127,17 @@ MAP_EPA_MVS = {
 
 MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
 
-# Fields expected for parameters of json returned to EPA
+# Fields expected for parameters of json returned to EPA, all assets will be returned
 EPA_PARAM_KEYS = {
-    PROJECT_DATA: [PROJECT_ID, PROJECT_NAME, SCENARIO_ID, SCENARIO_NAME,],
+    PROJECT_DATA: [PROJECT_ID, PROJECT_NAME, SCENARIO_ID, SCENARIO_NAME],
     SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP],
-    CONSTRAINTS: [],
-    KPI: [KPI_SCALARS_DICT],
-    FIX_COST: [],
+    KPI: [KPI_SCALARS_DICT, KPI_UNCOUPLED_DICT, KPI_COST_MATRIX, KPI_SCALAR_MATRIX],
 }
 
 # Fields expected for assets' parameters of json returned to EPA
 EPA_ASSET_KEYS = {
     ENERGY_PROVIDERS: [
+        "unique_id",
         "asset_type",
         LABEL,
         OEMOF_ASSET_TYPE,
@@ -160,8 +159,10 @@ EPA_ASSET_KEYS = {
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
         UNIT,
+        FLOW,
     ],
     ENERGY_CONSUMPTION: [
+        "unique_id",
         "asset_type",
         LABEL,
         INFLOW_DIRECTION,
@@ -175,8 +176,10 @@ EPA_ASSET_KEYS = {
         SPECIFIC_COSTS_OM,
         "input_timeseries",
         "energy_vector",
+        FLOW,
     ],
     ENERGY_CONVERSION: [
+        "unique_id",
         "asset_type",
         LABEL,
         "energy_vector",
@@ -194,8 +197,10 @@ EPA_ASSET_KEYS = {
         "optimize_capacity",
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
+        FLOW,
     ],
     ENERGY_PRODUCTION: [
+        "unique_id",
         "asset_type",
         LABEL,
         OEMOF_ASSET_TYPE,
@@ -214,8 +219,10 @@ EPA_ASSET_KEYS = {
         AGE_INSTALLED,
         "renewable_asset",
         "energy_vector",
+        FLOW,
     ],
     ENERGY_STORAGE: [
+        "unique_id",
         "asset_type",
         LABEL,
         "energy_vector",
@@ -228,6 +235,7 @@ EPA_ASSET_KEYS = {
         STORAGE_CAPACITY,
         "optimize_capacity",
         "input_timeseries",
+        TIMESERIES_SOC,
     ],
     ENERGY_BUSSES: [LABEL, "assets", "energy_vector"],
 }
