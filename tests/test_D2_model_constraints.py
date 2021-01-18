@@ -188,20 +188,24 @@ class TestConstraints:
             model = D0.model_building.adding_assets_to_energysystem_model(
                 dict_values, dict_model, model
             )
-            local_energy_system = solph.Model(model)
-            logging.debug("Created oemof model based on created components and busses.")
-            return dict_values, local_energy_system, dict_model
+            return dict_values, model, dict_model
 
         self.dict_values, self.model, self.dict_model = run_parts()
         self.exp_emission_limit = 1000
+        self.exp_min_renewable_share = 0.60
         self.dict_values[CONSTRAINTS].update(
             {MAXIMUM_EMISSIONS: {VALUE: self.exp_emission_limit}}
+        )
+        self.dict_values[CONSTRAINTS].update(
+            {MINIMAL_RENEWABLE_FACTOR: {VALUE: self.exp_min_renewable_share}}
         )
         return
 
     def test_constraint_maximum_emissions(self):
+        """Checks if maximum emissions limit is properly added as a constraint"""
+        # Create a solph model using the input values (especially the constraints setup as class variables above)
         model = D2.constraint_maximum_emissions(
-            model=self.model, dict_values=self.dict_values
+            model=solph.Model(self.model), dict_values=self.dict_values,
         )
         assert (
             model.integral_limit_emission_factor.NoConstraint[0]
@@ -209,9 +213,15 @@ class TestConstraints:
         ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor.NoConstraint[0]}."
 
     def test_add_constraints_maximum_emissions(self):
+        """Checks if maximum emissions constraint works as intended"""
+        dict_values = self.dict_values.copy()
+        # Modify the minimum renewable factor constraint to be 0, otherwise this constraint will also be added
+        dict_values.update(
+            {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},}
+        )
         model = D2.add_constraints(
-            local_energy_system=self.model,
-            dict_values=self.dict_values,
+            local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
             dict_model=self.dict_model,
         )
         assert (
@@ -220,51 +230,58 @@ class TestConstraints:
         ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor.NoConstraint[0]}."
 
     def test_add_constraints_maximum_emissions_None(self):
+        """Verifies if the max emissions constraint was not added, in case the user does not provide a value"""
         dict_values = self.dict_values.copy()
         dict_values.update(
             {
                 CONSTRAINTS: {
                     MAXIMUM_EMISSIONS: {VALUE: None},
-                    MINIMAL_RENEWABLE_FACTOR: {
-                        VALUE: self.dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][
-                            VALUE
-                        ]
-                    },
+                    MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                 }
             }
         )
         model = D2.add_constraints(
-            local_energy_system=self.model,
-            dict_values=self.dict_values,
+            local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
             dict_model=self.dict_model,
         )
         assert (
-            model.integral_limit_emission_factor.NoConstraint[0]
-            == self.exp_emission_limit
+            hasattr(model, "integral_limit_emission_factor") == False
         ), f"When maximum_emission is None, no emission constraint should be added to the ESM."
 
-    """
     def test_add_constraints_minimal_renewable_share(self):
-    # todo to be added
-    pass
-    """
+        """Checks if the constraint minimal renewable share value provided by the user is being applied or not"""
+        model = D2.add_constraints(
+            local_energy_system=solph.Model(self.model),
+            dict_values=self.dict_values,
+            dict_model=self.dict_model,
+        )
 
-    """
-    def test_add_constraints_minimal_renewable_share_None(self):
+        assert (
+            hasattr(model, "constraint_minimal_renewable_share") == True
+        ), f"The minimal renewable share has not been added, something has failed."
+
+    def test_add_constraints_minimal_renewable_share_is_0(self):
+        """Checks that the minimal renewable share constraint is not added if user provides a minimal share of 0"""
         dict_values = self.dict_values.copy()
         dict_values.update(
             {
                 CONSTRAINTS: {
-                    MAXIMUM_EMISSIONS: {
-                        VALUE: self.dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]
-                    },
-                    MINIMAL_RENEWABLE_FACTOR: {VALUE: None},
+                    MAXIMUM_EMISSIONS: {VALUE: None},
+                    MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                 }
             }
         )
-        # todo to be added
-        pass
-    """
+
+        model = D2.add_constraints(
+            local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
+            dict_model=self.dict_model,
+        )
+
+        assert (
+            hasattr(model, "constraint_minimal_renewable_share") == False
+        ), f"When the minimal_renewable_share is 0, no constraint should be added"
 
     def teardown_class(self):
         # Remove the output folder
