@@ -475,9 +475,7 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
         for k in keys_list:
             # ditch all subfields which are not present in the EPA_PARAM_KEYS value corresponding
             # to the parameter group (except for CONSTRAINTS)
-            if k not in EPA_PARAM_KEYS[param_group] and param_group not in (
-                CONSTRAINTS
-            ):
+            if k not in EPA_PARAM_KEYS[param_group] or param_group in (CONSTRAINTS,):
                 epa_dict[param_group_epa].pop(k)
             else:
                 # convert fields names from MVS convention to EPA convention, if applicable
