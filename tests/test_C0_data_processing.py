@@ -1074,14 +1074,15 @@ def test_change_sign_of_feedin_tariff_zero(caplog):
     """If the feed-in tariff is zero is stays zero and no logging msg is added."""
     feedin_tariff = 0
     dict_feedin = {VALUE: feedin_tariff, UNIT: UNIT}
-    with caplog.at_level(logging.WARNING):
+    with caplog.at_level(logging.INFO):
         dict_feedin = C0.change_sign_of_feedin_tariff(dict_feedin, DSO)
     assert (
         dict_feedin[VALUE] == 0
     ), f"If the {FEEDIN_TARIFF} is zero it should stay like that but it was changed to {dict_feedin[VALUE]}."
     assert (
-        caplog.text == ""
-    ), f"A msg is logged although the feed-in tariff is not changed."
+        "which means that there is no renumeration for feed-in to the grid"
+        in caplog.text
+    ), f"No information regarding feed-in tariff zero is added to the log."
 
 
 def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
