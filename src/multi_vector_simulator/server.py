@@ -102,8 +102,6 @@ def run_simulation(json_dict, **kwargs):
 
     epa_dict_values = data_parser.convert_mvs_params_to_epa(dict_values)
 
-    output_processing.select_essential_results(epa_dict_values)
-
     json_values = output_processing.store_as_json(epa_dict_values)
 
     return json.loads(json_values)
