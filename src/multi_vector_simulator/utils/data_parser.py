@@ -358,6 +358,16 @@ def convert_epa_params_to_mvs(epa_dict):
                         DATA_TYPE_JSON_KEY
                     ] = TYPE_SERIES
 
+                # typically DSO
+                if asset_group == ENERGY_PROVIDERS:
+                    # unit is not provided, so default is kWh
+                    if UNIT not in dict_asset[asset_label]:
+                        dict_asset[asset_label][UNIT] = "kWh"
+                    # if inflow direction is not provided, the same as outflow direction is used
+                    if INFLOW_DIRECTION not in dict_asset[asset_label]:
+                        dict_asset[asset_label][INFLOW_DIRECTION] = dict_asset[
+                            asset_label
+                        ][OUTFLOW_DIRECTION]
 
                 # TODO remove this when change has been made on EPA side
                 if asset_group == ENERGY_STORAGE:
@@ -373,6 +383,13 @@ def convert_epa_params_to_mvs(epa_dict):
                             "this warning in data_parser.py and remove the warning and the 7 "
                             "lines of code above it as well"
                         )
+
+                if asset_group == ENERGY_CONSUMPTION:
+                    if DSM not in dict_asset[asset_label]:
+                        dict_asset[asset_label][DSM] = False
+
+                if EMISSION_FACTOR not in dict_asset[asset_label]:
+                    dict_asset[asset_label][EMISSION_FACTOR] = {VALUE: 0}
             dict_values[asset_group] = dict_asset
         else:
             logging.warning(
@@ -382,24 +399,48 @@ def convert_epa_params_to_mvs(epa_dict):
     comparison = compare_input_parameters_with_reference(dict_values)
 
     if MISSING_PARAMETERS_KEY in comparison:
-        errror_msg = []
+        error_msg = []
 
-        d = comparison[MISSING_PARAMETERS_KEY]
+        missing_params = comparison[MISSING_PARAMETERS_KEY]
+        # this should not be missing on EPA side, but in case it is take default value 0
+        if CONSTRAINTS in missing_params:
+            dict_values[CONSTRAINTS] = {
+                MINIMAL_RENEWABLE_FACTOR: {UNIT: "factor", VALUE: 0},
+                MAXIMUM_EMISSIONS: {UNIT: "factor", VALUE: 0},
+                # TODO uncomment next line when PR #726 is merged
+                # MINIMAL_DEGREE_OF_AUTONOMY: {UNIT: "factor", VALUE: 0},
+            }
+            missing_params.pop(CONSTRAINTS)
 
-        errror_msg.append(" ")
-        errror_msg.append(" ")
-        errror_msg.append(
+        if SIMULATION_SETTINGS in missing_params:
+            if (
+                OUTPUT_LP_FILE in missing_params[SIMULATION_SETTINGS]
+                and len(missing_params[SIMULATION_SETTINGS]) == 1
+            ):
+                dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE] = {
+                    UNIT: "bool",
+                    VALUE: False,
+                }
+                missing_params.pop(SIMULATION_SETTINGS)
+        if FIX_COST in missing_params:
+            dict_values[FIX_COST] = {}
+            missing_params.pop(FIX_COST)
+
+        error_msg.append(" ")
+        error_msg.append(" ")
+        error_msg.append(
             "The following parameter groups and sub parameters are missing from input parameters:"
         )
 
-        for asset_group in d.keys():
-            errror_msg.append(asset_group)
-            print(asset_group)
-            if d[asset_group] is not None:
-                for k in d[asset_group]:
-                    errror_msg.append(f"\t`{k}` parameter")
+        if len(missing_params.keys()) > 0:
 
-        raise (MissingParameterError("\n".join(errror_msg)))
+            for asset_group in missing_params.keys():
+                error_msg.append(asset_group)
+                if missing_params[asset_group] is not None:
+                    for k in missing_params[asset_group]:
+                        error_msg.append(f"\t`{k}` parameter")
+
+            raise (MissingParameterError("\n".join(error_msg)))
 
     return dict_values
 
