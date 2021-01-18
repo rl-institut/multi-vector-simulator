@@ -67,6 +67,8 @@ from multi_vector_simulator.utils.constants import (
     ARG_PDF,
     ARG_REPORT_PATH,
     ARG_PATH_SIM_OUTPUT,
+    SIMULATION_SETTINGS,
+    JSON_PROCESSED,
 )
 
 
@@ -149,6 +151,12 @@ def main(**kwargs):
     logging.debug("Accessing script: C0_data_processing")
     data_processing.all(dict_values)
 
+    output_processing.store_as_json(
+        dict_values,
+        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
+        JSON_PROCESSED,
+    )
+
     if "path_pdf_report" in user_input or "path_png_figs" in user_input:
         save_energy_system_graph = True
     else:
@@ -157,7 +165,9 @@ def main(**kwargs):
     print("")
     logging.debug("Accessing script: D0_modelling_and_optimization")
     results_meta, results_main = modelling.run_oemof(
-        dict_values, save_energy_system_graph=save_energy_system_graph
+        dict_values,
+        save_energy_system_graph=save_energy_system_graph,
+        save_lp_file=True,
     )
 
     print("")

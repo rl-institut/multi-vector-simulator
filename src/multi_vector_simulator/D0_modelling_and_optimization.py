@@ -65,7 +65,7 @@ class UnknownOemofAssetType(ValueError):
     pass
 
 
-def run_oemof(dict_values, save_energy_system_graph=False):
+def run_oemof(dict_values, save_energy_system_graph=False, save_lp_file=False):
     """
     Creates and solves energy system model generated from excel template inputs.
     Each component is included by calling its constructor function in D1_model_components.
@@ -101,8 +101,8 @@ def run_oemof(dict_values, save_energy_system_graph=False):
     local_energy_system = D2.add_constraints(
         local_energy_system, dict_values, dict_model
     )
-
-    model_building.store_lp_file(dict_values, local_energy_system)
+    if save_lp_file is True:
+        model_building.store_lp_file(dict_values, local_energy_system)
 
     model, results_main, results_meta = model_building.simulating(
         dict_values, model, local_energy_system

@@ -96,12 +96,6 @@ def all(dict_values):
     # just to be safe, run evaluation a second time
     C1.check_for_label_duplicates(dict_values)
 
-    F0.store_as_json(
-        dict_values,
-        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-        JSON_PROCESSED,
-    )
-
 
 def define_energy_vectors_from_busses(dict_values):
     """
