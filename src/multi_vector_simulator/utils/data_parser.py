@@ -277,6 +277,14 @@ def convert_epa_params_to_mvs(epa_dict):
                     dict_values[param_group][MAP_EPA_MVS[k]] = dict_values[
                         param_group
                     ].pop(k)
+
+            if param_group == SIMULATION_SETTINGS:
+                timestep = dict_values[param_group].get(TIMESTEP)
+                if timestep is not None:
+                    dict_values[param_group][TIMESTEP] = {
+                        UNIT: "minutes",
+                        VALUE: timestep,
+                    }
         else:
             logging.warning(
                 f"The parameters {MAP_MVS_EPA[param_group]} are not present in the parameters to be parsed into mvs json format"
