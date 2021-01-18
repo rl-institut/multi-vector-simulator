@@ -261,7 +261,6 @@ class TestConstraints:
             hasattr(model, "constraint_minimal_renewable_share") == True
         ), f"The minimal renewable share has not been added, something has failed."
 
-    #
     def test_add_constraints_minimal_renewable_share_is_0(self):
         """Checks if the minimal renewable share constraint is not added if user does not provide any value for it"""
         dict_values = self.dict_values.copy()
