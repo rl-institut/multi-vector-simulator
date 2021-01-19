@@ -291,6 +291,13 @@ KNOWN_EXTRA_PARAMETERS = {
         WARNING_TEXT: "allows setting a maximum amount of emissions of the optimized energy system (Values: None/Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
     },
+    MINIMAL_DEGREE_OF_AUTONOMY:{
+        DEFAULT_VALUE: 0,
+        UNIT: TYPE_FLOAT,
+        WARNING_TEXT: "allows setting a minimum degree of autonomy of the optimized energy system (Values: Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
+    },
+
     SCENARIO_DESCRIPTION: {
         DEFAULT_VALUE: "",
         UNIT: TYPE_STR,

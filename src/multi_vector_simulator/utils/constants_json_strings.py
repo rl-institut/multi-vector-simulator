@@ -116,6 +116,7 @@ SOC_MIN = "soc_min"
 CONSTRAINTS = "constraints"
 MINIMAL_RENEWABLE_FACTOR = "minimal_renewable_factor"
 MAXIMUM_EMISSIONS = "maximum_emissions"
+MINIMAL_DEGREE_OF_AUTONOMY = "minimal_degree_of_autonomy"
 
 #######################################
 # Parameters added in pre-processing #
