@@ -27,6 +27,7 @@ The file `constraints.csv` includes the following parameter(s):
 
 * :ref:`minrenshare-label`
 * :ref:`maxemissions-label`
+* :ref:`minda-label`
 
 economic_data.csv
 ^^^^^^^^^^^^^^^^^
