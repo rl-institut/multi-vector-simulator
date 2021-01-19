@@ -4,6 +4,10 @@
             "unit": "factor",
             "value": 0
         },
+        "minimal_degree_of_autonomy": {
+            "unit": "factor",
+            "value": 0
+        },
     "maximum_emissions": {
             "unit": "kgCO2eq/a",
             "value": 800000
