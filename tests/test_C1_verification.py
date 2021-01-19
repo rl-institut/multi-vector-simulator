@@ -540,7 +540,7 @@ def get_json():
 
     def _add_time_series_to_dict_values(ts):
         for key, source in dict_values[ENERGY_PRODUCTION].items():
-            if source[RENEWABLE_ASSET_BOOL][VALUE] is True:
+            if source[DISPATCHABILITY] is False:
                 dict_values[ENERGY_PRODUCTION][key][TIMESERIES] = ts
         return dict_values
 
