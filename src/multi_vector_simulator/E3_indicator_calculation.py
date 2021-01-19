@@ -54,6 +54,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_DEMAND,
     TOTAL_EXCESS,
     TOTAL_FEEDIN,
+    TOTAL_CONSUMPTION_FROM_PROVIDERS,
     SUFFIX_ELECTRICITY_EQUIVALENT,
     LCOeleq,
     ATTRIBUTED_COSTS,
@@ -707,6 +708,44 @@ def add_total_feedin_electricity_equivaluent(dict_values):
     # Append total feedin in electricity equivalent to kpi
     calculate_electricity_equivalent_for_a_set_of_aggregated_values(
         dict_values, total_feedin_dict, kpi_name=TOTAL_FEEDIN
+    )
+
+
+def add_total_consumption_electricity_equivalent(dict_values):
+    """
+    Determines the total grid consumption with weighting of electricity equivalent.
+
+    Parameters
+    ----------
+    dict_values: dict
+        dict with all project information and results
+
+    Returns
+    -------
+    None
+        updated dict_values with KPI : TOTAL_CONSUMPTION_FROM_PROVIDERS
+    """
+
+    total_consumption_dict = {}
+    # Get source connected to the specific DSO in question
+    for dso in dict_values[ENERGY_PROVIDERS]:
+        # load total flow into the dso sink
+        consumption_source = str(dso + DSO_CONSUMPTION)
+        energy_carrier = dict_values[ENERGY_PRODUCTION][consumption_source][
+            ENERGY_VECTOR
+        ]
+        total_consumption_dict.update({energy_carrier: {}})
+        total_consumption_dict.update(
+            {
+                energy_carrier: dict_values[ENERGY_PRODUCTION][consumption_source][
+                    TOTAL_FLOW
+                ][VALUE]
+            }
+        )
+
+    # Append total feedin in electricity equivalent to kpi
+    calculate_electricity_equivalent_for_a_set_of_aggregated_values(
+        dict_values, total_consumption_dict, kpi_name=TOTAL_CONSUMPTION_FROM_PROVIDERS
     )
 
 
