@@ -269,6 +269,11 @@ class TestConstraints:
     def setup_class(self):
         """Run the simulation up to constraints adding in D2 and define class attributes."""
 
+        # This function reads the json file provided in `tests/inputs` for the simulation.
+        # Therefore, if changes are applied to the json file,
+        # especially if new constraints are to be introduced,
+        # it is necessary to recompile and update the json input file.
+
         @mock.patch(
             "argparse.ArgumentParser.parse_args",
             return_value=PARSER.parse_args(
@@ -300,6 +305,7 @@ class TestConstraints:
         self.dict_values, self.model, self.dict_model = run_parts()
         self.exp_emission_limit = 1000
         self.exp_min_renewable_share = 0.60
+        
         self.dict_values[CONSTRAINTS].update(
             {MAXIMUM_EMISSIONS: {VALUE: self.exp_emission_limit}}
         )

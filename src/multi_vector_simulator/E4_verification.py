@@ -131,9 +131,6 @@ def maximum_emissions_test(dict_values):
             logging.debug(
                 f"Maximum emissions constraint of {dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]} is fulfilled."
             )
-    else:
-        pass
-
 
 def detect_excessive_excess_generation_in_bus(dict_values):
     r"""
