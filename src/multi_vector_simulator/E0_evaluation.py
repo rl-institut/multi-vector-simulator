@@ -46,6 +46,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INSTALLED_CAP,
     TIMESERIES_SOC,
     KPI_UNCOUPLED_DICT,
+    MINIMAL_DEGREE_OF_AUTONOMY,
+    MINIMAL_RENEWABLE_FACTOR,
+    RENEWABLE_FACTOR,
+    DEGREE_OF_AUTONOMY,
 )
 
 from multi_vector_simulator.utils.constants_output import (
@@ -183,7 +187,10 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     # Tests and checks
     logging.info("Running validity checks.")
-    E4.minimal_renewable_share_test(dict_values)
+    E4.minimal_constraint_test(dict_values, MINIMAL_RENEWABLE_FACTOR, RENEWABLE_FACTOR)
+    E4.minimal_constraint_test(
+        dict_values, MINIMAL_DEGREE_OF_AUTONOMY, DEGREE_OF_AUTONOMY
+    )
     E4.maximum_emissions_test(dict_values)
     E4.detect_excessive_excess_generation_in_bus(dict_values)
     E4.verify_state_of_charge(dict_values)
