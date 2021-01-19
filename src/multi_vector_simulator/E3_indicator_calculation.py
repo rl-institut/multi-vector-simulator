@@ -1125,11 +1125,11 @@ def equation_levelized_cost_of_energy_carrier(
 
     The costs attributed to an energy carrier are calculated from the ratio of electricity equivalent of the energy carrier demand in focus to the electricity equivalent of the total demand:
 
-    .. math: attributed costs = NPC \cdot \frac{Total electricity equivalent of energy carrier demand}{Total electricity equivalent of demand}
+    .. math:: attributed costs = NPC \cdot \frac{Total electricity equivalent of energy carrier demand}{Total electricity equivalent of demand}
 
     The LCOE sets these attributed costs in relation to the energy carrier demand (in its original unit):
 
-    .. math: LCOE energy carrier = \frac{attributed costs \cdot CRF}{total energy carrier demand}
+    .. math:: LCOE energy carrier = \frac{attributed costs \cdot CRF}{total energy carrier demand}
 
     Tested with:
     - test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equivalent_larger_0_total_flow_energy_carrier_larger_0()
