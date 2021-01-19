@@ -32,6 +32,9 @@ Here is a template for new release sections
 - Add `-d` option to `mvs_report` command to use hotreload of dash app for devs (#770)
 - Add `utils.analysis` module for overall analysis functions (#679)
 - Added pre-processing step with `C0.replace_nans_in_timeseries_with_0` to set NaNs occurring in provided timeseries to zero (#746)
+- KPI processing function `E3.add_total_consumption_electricity_equivaluent()` (#726) 
+- Subsection `Minimal degree of autonomy constraint` for RTD, added parameter in parameter csv  (#730, #726)
+- Minimal degree of autonomy constraint including pytest and benchmark test (#726)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
@@ -46,6 +49,10 @@ Here is a template for new release sections
 - Update RTD instruction for instructions for the `mvs_tool` command (#770)
 - Change `test_benchmark_special_features` (#746)
 - Update "Input verification" section in `Model_Assmptions.rst` for NaNs (#746)
+- Definition of Degree of Autonomy (DA) updated in the RTD, also changed calculation of that KPI (#730, #726)
+- Updated all input files to also include `minimal_degree_of_autonomy`, including `input_template`, `tests/inputs`, `tests/benchmark_test_inputs` (#726)
+- `E4.minimal_renewable_share_test()` into generic `E4.minimal_constraint_test()` so that it can be applied both to minimal renewable share and minimal degree of autonomy (#726)
+- `C1.check_time_series_values_between_0_and_1()`, now verification not only applied to renewable assets, but all non-dispatchable assets (#726)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
@@ -53,13 +60,13 @@ Here is a template for new release sections
 - Remove `STORE_OEMOF_RESULTS` variable (#675)
 - Remove `F0.select_essential_results()` (#675)
 
-
 ### Fixed
 - Minor typos in D0, E4 and test_E4 files (#739)
 - `utils.data_parser.convert_epa_params_to_mvs()` and `utils.data_parser.convert_mvs_params_to_epa()` now parse succesfully input files generated from EPA (#675)
 - Fix issue (#763): Avoid displaying a energy sector demand table in report if it is empty (#770)
 - Fix issue (#769): Fix argument parsing and error messages of `mvs_report` command (#770)
 - Fix issue (#756): Avoid crashing report generation when internet not available (#770)
+- Fixed display of math equations in RTD (#730)
 
 ## [0.5.4] - 2020-12-18
 
