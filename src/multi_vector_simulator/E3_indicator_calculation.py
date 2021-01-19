@@ -670,7 +670,7 @@ def equation_degree_of_sector_coupling(
     return degree_of_sector_coupling
 
 
-def add_total_feedin_electricity_equivaluent(dict_values):
+def add_total_feedin_electricity_equivalent(dict_values):
     """
     Determines the total grid feed-in with weighting of electricity equivalent.
 
@@ -685,21 +685,19 @@ def add_total_feedin_electricity_equivaluent(dict_values):
         updated dict_values with KPI : total feedin
 
     Tested with
-    - test_add_total_feedin_electricity_equivaluent()
+    - test_add_total_feedin_electricity_equivalent()
     """
 
     total_feedin_dict = {}
     # Get source connected to the specific DSO in question
     for dso in dict_values[ENERGY_PROVIDERS]:
         # load total flow into the dso sink
-        consumption_asset = str(dso + DSO_FEEDIN + AUTO_SINK)
-        energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_asset][
-            ENERGY_VECTOR
-        ]
+        feedin_sink = str(dso + DSO_FEEDIN + AUTO_SINK)
+        energy_carrier = dict_values[ENERGY_CONSUMPTION][feedin_sink][ENERGY_VECTOR]
         total_feedin_dict.update({energy_carrier: {}})
         total_feedin_dict.update(
             {
-                energy_carrier: dict_values[ENERGY_CONSUMPTION][consumption_asset][
+                energy_carrier: dict_values[ENERGY_CONSUMPTION][feedin_sink][
                     TOTAL_FLOW
                 ][VALUE]
             }
