@@ -23,13 +23,20 @@ from multi_vector_simulator.utils.constants_json_strings import (
 )
 
 
-def minimal_renewable_share_test(dict_values):
+def minimal_constraint_test(dict_values, minimal_constraint, bounded_result):
     r"""
-    Test if renewable share constraint was correctly applied
+    Test if minimal constraint was correctly applied
 
     Parameters
     ----------
-    dict_values
+    dict_values: dict
+        Dict of all simulation information
+
+    minimal_constraint: str
+        Key to access the value of the minimal bound of parameter subjected to constraint to be tested
+
+    bounded_result: str
+        Key to access the value of the resulting parameter to be compared to minimal_bound
 
     Returns
     -------
@@ -41,37 +48,39 @@ def minimal_renewable_share_test(dict_values):
 
     Notes
     -----
+    Executed to test
+    - MINIMAL_DEGREE_OF_AUTONOMY  vs. RENEWABLE_FACTOR
+    - MINIMAL_RENEWABLE_FACTOR vs. DEGREE_OF_AUTONOMY
+
     Tested with:
     - E4.test_minimal_renewable_share_test_passes()
     - E4.test_minimal_renewable_share_test_fails()
 
     """
-    if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE] > 0:
+    if dict_values[CONSTRAINTS][minimal_constraint][VALUE] > 0:
         boolean_test = (
-            dict_values[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]
-            >= dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]
+            dict_values[KPI][KPI_SCALARS_DICT][bounded_result]
+            >= dict_values[CONSTRAINTS][minimal_constraint][VALUE]
         )
         if boolean_test is False:
             deviation = (
-                dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]
-                - dict_values[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR]
-            ) / dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]
+                dict_values[CONSTRAINTS][minimal_constraint][VALUE]
+                - dict_values[KPI][KPI_SCALARS_DICT][bounded_result]
+            ) / dict_values[CONSTRAINTS][minimal_constraint][VALUE]
             if abs(deviation) < 10 ** (-6):
                 logging.warning(
-                    "Minimal renewable factor criterion strictly not fulfilled, but deviation is less then e6."
+                    f"{minimal_constraint} constraint strictly not fulfilled, but deviation is less then e6."
                 )
             else:
                 logging.error(
-                    f"ATTENTION: Minimal renewable factor criterion NOT fulfilled! The deviation is {round(deviation, 5)}."
+                    f"ATTENTION: {minimal_constraint} constraint NOT fulfilled! The deviation is {round(deviation, 5)}."
                 )
                 return False
 
         else:
             logging.debug(
-                f"Minimal renewable factor of {dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]} is fulfilled."
+                f"{minimal_constraint} of {dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE]} is fullfilled."
             )
-    else:
-        pass
 
 
 def maximum_emissions_test(dict_values):
