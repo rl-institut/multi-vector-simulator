@@ -544,7 +544,7 @@ def test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equi
     assert lcoe_energy_carrier == 0
 
 
-def test_add_total_feedin_electricity_equivaluent():
+def test_add_total_feedin_electricity_equivalent():
     """ """
 
     dso = "DSO"
@@ -562,7 +562,7 @@ def test_add_total_feedin_electricity_equivaluent():
         PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity}},
     }
 
-    E3.add_total_feedin_electricity_equivaluent(dict_values_feedin)
+    E3.add_total_feedin_electricity_equivalent(dict_values_feedin)
 
     assert (
         dict_values_feedin[KPI][KPI_SCALARS_DICT][
