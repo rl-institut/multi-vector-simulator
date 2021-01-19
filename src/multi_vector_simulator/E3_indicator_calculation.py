@@ -535,13 +535,16 @@ def add_degree_of_autonomy(dict_values):
     - test_add_degree_of_autonomy()
     """
 
-    total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
-
+    total_consumption_from_energy_provider = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
     total_demand = dict_values[KPI][KPI_SCALARS_DICT][
         TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
     ]
 
-    degree_of_autonomy = equation_degree_of_autonomy(total_generation, total_demand)
+    degree_of_autonomy = equation_degree_of_autonomy(
+        total_consumption_from_energy_provider, total_demand
+    )
 
     dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_AUTONOMY: degree_of_autonomy})
 
@@ -551,7 +554,7 @@ def add_degree_of_autonomy(dict_values):
     logging.info(f"Calculated the {DEGREE_OF_AUTONOMY} of the LES.")
 
 
-def equation_degree_of_autonomy(total_generation, total_demand):
+def equation_degree_of_autonomy(total_consumption_from_energy_provider, total_demand):
     """
     Calculates the degree of autonomy (DA).
 
@@ -560,7 +563,7 @@ def equation_degree_of_autonomy(total_generation, total_demand):
 
     Parameters
     ----------
-    total_generation: float
+    total_consumption_from_energy_provider: float
         total internal generation of energy
 
     total_demand: float
@@ -572,7 +575,7 @@ def equation_degree_of_autonomy(total_generation, total_demand):
         degree of autonomy
 
     .. math::
-        DA &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+        DA &=\frac{\sum_i {E_{demand} (i) \cdot w_i} - \sum_{i} {E_{total_consumption_from_energy_provider} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
     A DA = 0 : System is totally dependent on the DSO,
     DA = 1 : System is autonomous / a net-energy system
@@ -583,7 +586,9 @@ def equation_degree_of_autonomy(total_generation, total_demand):
     Tested with
     - test_equation_degree_of_autonomy()
     """
-    degree_of_autonomy = total_generation / total_demand
+    degree_of_autonomy = (
+        total_demand - total_consumption_from_energy_provider
+    ) / total_demand
 
     return degree_of_autonomy
 

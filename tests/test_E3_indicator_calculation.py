@@ -27,6 +27,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_SHARE_DSO,
     RENEWABLE_ASSET_BOOL,
     DSO_CONSUMPTION,
+    TOTAL_CONSUMPTION_FROM_PROVIDERS,
     TOTAL_RENEWABLE_GENERATION_IN_LES,
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_ENERGY_USE,
@@ -626,19 +627,20 @@ def test_add_onsite_energy_matching():
 def test_add_degree_of_autonomy():
     """ """
 
-    total_generation = 50
+    total_consumption_from_grid = 50
     total_demand = 100
     dict_values_DA = {
         KPI: {
             KPI_SCALARS_DICT: {
-                TOTAL_GENERATION_IN_LES: total_generation,
+                TOTAL_CONSUMPTION_FROM_PROVIDERS
+                + SUFFIX_ELECTRICITY_EQUIVALENT: total_consumption_from_grid,
                 TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
             }
         },
     }
     E3.add_degree_of_autonomy(dict_values_DA)
 
-    degree_of_autonomy = total_generation / total_demand
+    degree_of_autonomy = (total_demand - total_consumption_from_grid) / total_demand
 
     assert (
         dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY] == degree_of_autonomy
@@ -647,12 +649,15 @@ def test_add_degree_of_autonomy():
 
 def test_equation_degree_of_autonomy():
     """ """
-    total_generation = 30
+    total_consumption_from_grid = 30
     total_demand = 100
-    degree_of_autonomy = E3.equation_degree_of_autonomy(total_generation, total_demand)
-    assert degree_of_autonomy == total_generation / total_demand, (
+    degree_of_autonomy = E3.equation_degree_of_autonomy(
+        total_consumption_from_grid, total_demand
+    )
+    exp = (total_demand - total_consumption_from_grid) / total_demand
+    assert degree_of_autonomy == exp, (
         f"The degree_of_autonomy ({degree_of_autonomy}) is not calculated correctly. "
-        f"It should be equal to {total_generation / total_demand }."
+        f"It should be equal to {exp}."
     )
 
 
