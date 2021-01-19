@@ -28,6 +28,9 @@ Here is a template for new release sections
 - Add a new sub-section in RTD describing the suite of post-simulation tests carried out through functions in E4_verification.py (#753)
 - Add KPI individual sectors to the report (#757)
 - Added pytests for the minimal renewable share constraint of function `D2.add_constraints()` (#742)
+- KPI processing function `E3.add_total_consumption_electricity_equivaluent()` (#726) 
+- Subsection `Minimal degree of autonomy constraint` for RTD, added parameter in parameter csv  (#730, #726)
+- Minimal degree of autonomy constraint including pytest and benchmark test (#726)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
@@ -37,12 +40,18 @@ Here is a template for new release sections
 - Gather all missing MVS parameters and raise a single error listing all of them (#761)
 - Add `set_default_values` argument to the `B0.load_json` function to set default values of missing parameter which is listed in `KNOWN_EXTRA_PARAMETERS`(#761)
 - Add `flag_missing_values` argument to the `B0_load_json` function to allow switching between `MissingParameterWarning` and `MissingParameterError`(#761)
+- Definition of Degree of Autonomy (DA) updated in the RTD, also changed calculation of that KPI (#730, #726)
+- Updated all input files to also include `minimal_degree_of_autonomy`, including `input_template`, `tests/inputs`, `tests/benchmark_test_inputs` (#726)
+- `E4.minimal_renewable_share_test()` into generic `E4.minimal_constraint_test()` so that it can be applied both to minimal renewable share and minimal degree of autonomy (#726)
+- `C1.check_time_series_values_between_0_and_1()`, now verification not only applied to renewable assets, but all non-dispatchable assets (#726)
+
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
 - Remove redundant function `A1.check_for_official_extra_parameters` as `utils.compare_input_parameters_with_reference` works for both csv and json and will therefore be preferred (#761)
+
 ### Fixed
 - Minor typos in D0, E4 and test_E4 files (#739)
-
+- Fixed display of math equations in RTD (#730)
 
 ## [0.5.4] - 2020-12-18
 
