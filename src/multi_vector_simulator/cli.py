@@ -165,9 +165,7 @@ def main(**kwargs):
     print("")
     logging.debug("Accessing script: D0_modelling_and_optimization")
     results_meta, results_main = modelling.run_oemof(
-        dict_values,
-        save_energy_system_graph=save_energy_system_graph,
-        save_lp_file=True,
+        dict_values, save_energy_system_graph=save_energy_system_graph,
     )
 
     print("")

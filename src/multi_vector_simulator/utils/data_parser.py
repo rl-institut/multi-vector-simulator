@@ -291,6 +291,10 @@ def convert_epa_params_to_mvs(epa_dict):
                         SCENARIO_DESCRIPTION
                     ] = "no scenario description"
 
+            # Never save the oemof lp file when running on the server
+            if param_group == SIMULATION_SETTINGS:
+                dict_values[param_group][OUTPUT_LP_FILE] = False
+
         else:
             logging.warning(
                 f"The parameters group '{MAP_MVS_EPA[param_group]}' is not present in the EPA parameters to be parsed into MVS json format"
