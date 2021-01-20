@@ -346,6 +346,7 @@ def convert_epa_params_to_mvs(epa_dict):
                                 subasset.pop(OPTIMIZE_CAP)
 
                             # add unit if not provided
+                            # TODO deal with other vectors than electricity
                             if UNIT not in subasset:
                                 if k == MAP_MVS_EPA[STORAGE_CAPACITY]:
                                     subasset[UNIT] = "kWh"
@@ -535,7 +536,6 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                 if asset_group == ENERGY_BUSSES and k == "Asset_list":
                     asset["assets"] = list(asset.pop(k).keys())
                 if asset_group == ENERGY_STORAGE:
-                    # if k in (MAP_MVS_EPA[INPUT_POWER], MAP_MVS_EPA[OUTPUT_POWER], MAP_MVS_EPA[STORAGE_CAPACITY]):
                     if k in (INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY):
                         asset[k] = mvs_dict[asset_group][asset_label][MAP_MVS_EPA[k]]
                         subasset_keys = list(asset[k].keys())
