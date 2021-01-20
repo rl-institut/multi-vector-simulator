@@ -305,7 +305,7 @@ class TestConstraints:
         self.dict_values, self.model, self.dict_model = run_parts()
         self.exp_emission_limit = 1000
         self.exp_min_renewable_share = 0.60
-        
+
         self.dict_values[CONSTRAINTS].update(
             {MAXIMUM_EMISSIONS: {VALUE: self.exp_emission_limit}}
         )
@@ -330,7 +330,10 @@ class TestConstraints:
         dict_values = self.dict_values.copy()
         # Modify the minimum renewable factor constraint to be 0, otherwise this constraint will also be added
         dict_values.update(
-            {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},}
+            {
+                MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
+                MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+            }
         )
         model = D2.add_constraints(
             local_energy_system=solph.Model(self.model),
@@ -350,6 +353,7 @@ class TestConstraints:
                 CONSTRAINTS: {
                     MAXIMUM_EMISSIONS: {VALUE: None},
                     MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
+                    MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
                 }
             }
         )
@@ -382,6 +386,7 @@ class TestConstraints:
                 CONSTRAINTS: {
                     MAXIMUM_EMISSIONS: {VALUE: None},
                     MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
+                    MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
                 }
             }
         )

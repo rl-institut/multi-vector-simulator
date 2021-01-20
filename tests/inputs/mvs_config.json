@@ -46,10 +46,8 @@
             "Asset_list": {
                 "Charge_contoller_ESS_Li-Ion_(charge)": "Charge_contoller_ESS_Li-Ion_(charge)",
                 "Charge_contoller_ESS_Li-Ion_(discharge)": "Charge_contoller_ESS_Li-Ion_(discharge)",
-                "ESS Li-Ion bus_excess": "ESS Li-Ion bus_excess_sink",
                 "storage_01": "ESS Li-Ion"
             },
-            "_excess": "ESS Li-Ion bus_excess",
             "energyVector": "Electricity",
             "label": "ESS Li-Ion bus"
         },
@@ -58,7 +56,6 @@
                 "Backup_diesel_generator": "Backup_diesel_generator",
                 "Charge_contoller_ESS_Li-Ion_(charge)": "Charge_contoller_ESS_Li-Ion_(charge)",
                 "Charge_contoller_ESS_Li-Ion_(discharge)": "Charge_contoller_ESS_Li-Ion_(discharge)",
-                "Electricity_excess": "Electricity_excess_sink",
                 "Harbor": "Harbor",
                 "Remaining_demand": "Remaining_demand",
                 "Shore_power_(docked_ships)": "Shore_power_(docked_ships)",
@@ -66,13 +63,11 @@
                 "solar_inverter_(mono)": "solar_inverter_(mono)",
                 "transformer_station_(DSO)_consumption": "transformer_station_(DSO)_consumption"
             },
-            "_excess": "Electricity_excess",
             "energyVector": "Electricity",
             "label": "Electricity"
         },
         "Electricity (DSO)": {
             "Asset_list": {
-                "Electricity (DSO)_excess": "Electricity (DSO)_excess_sink",
                 "Electricity_grid_DSO": "Electricity_grid_DSO",
                 "Electricity_grid_DSO_consumption_period_1": "Electricity_grid_DSO_consumption_period_1",
                 "Electricity_grid_DSO_consumption_period_2": "Electricity_grid_DSO_consumption_period_2",
@@ -80,445 +75,36 @@
                 "Transformer_station_(DSO)_feedin": "Transformer_station_(DSO)_feedin",
                 "transformer_station_(DSO)_consumption": "transformer_station_(DSO)_consumption"
             },
-            "_excess": "Electricity (DSO)_excess",
             "energyVector": "Electricity",
             "label": "Electricity (DSO)"
         },
         "Electricity (DSO)_pdp": {
             "Asset_list": {
-                "Electricity (DSO)_pdp_excess": "Electricity (DSO)_pdp_excess_sink",
                 "Electricity_grid_DSO_consumption": "Electricity_grid_DSO_consumption_source",
                 "Electricity_grid_DSO_consumption_period_1": "Electricity_grid_DSO_consumption_period_1",
                 "Electricity_grid_DSO_consumption_period_2": "Electricity_grid_DSO_consumption_period_2"
             },
-            "_excess": "Electricity (DSO)_pdp_excess",
             "energyVector": "Electricity",
             "label": "Electricity (DSO)_pdp"
         },
         "Fuel": {
             "Asset_list": {
                 "Backup_diesel_generator": "Backup_diesel_generator",
-                "Diesel": "Diesel",
-                "Fuel_excess": "Fuel_excess_sink"
+                "Diesel": "Diesel"
             },
-            "_excess": "Fuel_excess",
             "energyVector": "Electricity",
             "label": "Fuel"
         },
         "PV plant (mono) bus": {
             "Asset_list": {
-                "PV plant (mono) bus_excess": "PV plant (mono) bus_excess_sink",
                 "PV_plant_(mono)": "PV_plant_(mono)",
                 "solar_inverter_(mono)": "solar_inverter_(mono)"
             },
-            "_excess": "PV plant (mono) bus_excess",
             "energyVector": "Electricity",
             "label": "PV plant (mono) bus"
         }
     },
     "energyConsumption": {
-        "ESS Li-Ion bus_excess": {
-            "Specific_replacement_costs_of_installed_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "Specific_replacement_costs_of_optimized_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "age_installed": {
-                "unit": "year",
-                "value": 0
-            },
-            "annuity_of_specific_investment_costs_and_specific_annual_om": {
-                "unit": "currency/unit/year",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "energyVector": "Electricity",
-            "inflow_direction": "ESS Li-Ion bus",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "ESS Li-Ion bus_excess_sink",
-            "lifetime": {
-                "unit": "year",
-                "value": 20
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?/hour",
-                "value": 0.0
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "lifetime_specific_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": true
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/evaluated_period",
-                "value": 0.0
-            },
-            "specific_costs": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "type_oemof": "sink",
-            "unit": "?"
-        },
-        "Electricity (DSO)_excess": {
-            "Specific_replacement_costs_of_installed_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "Specific_replacement_costs_of_optimized_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "age_installed": {
-                "unit": "year",
-                "value": 0
-            },
-            "annuity_of_specific_investment_costs_and_specific_annual_om": {
-                "unit": "currency/unit/year",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "energyVector": "Electricity",
-            "inflow_direction": "Electricity (DSO)",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "Electricity (DSO)_excess_sink",
-            "lifetime": {
-                "unit": "year",
-                "value": 20
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?/hour",
-                "value": 0.0
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "lifetime_specific_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": true
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/evaluated_period",
-                "value": 0.0
-            },
-            "specific_costs": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "type_oemof": "sink",
-            "unit": "?"
-        },
-        "Electricity (DSO)_pdp_excess": {
-            "Specific_replacement_costs_of_installed_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "Specific_replacement_costs_of_optimized_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "age_installed": {
-                "unit": "year",
-                "value": 0
-            },
-            "annuity_of_specific_investment_costs_and_specific_annual_om": {
-                "unit": "currency/unit/year",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "energyVector": "Electricity",
-            "inflow_direction": "Electricity (DSO)_pdp",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "Electricity (DSO)_pdp_excess_sink",
-            "lifetime": {
-                "unit": "year",
-                "value": 20
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?/hour",
-                "value": 0.0
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "lifetime_specific_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": true
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/evaluated_period",
-                "value": 0.0
-            },
-            "specific_costs": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "type_oemof": "sink",
-            "unit": "?"
-        },
-        "Electricity_excess": {
-            "Specific_replacement_costs_of_installed_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "Specific_replacement_costs_of_optimized_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "age_installed": {
-                "unit": "year",
-                "value": 0
-            },
-            "annuity_of_specific_investment_costs_and_specific_annual_om": {
-                "unit": "currency/unit/year",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "energyVector": "Electricity",
-            "inflow_direction": "Electricity",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "Electricity_excess_sink",
-            "lifetime": {
-                "unit": "year",
-                "value": 20
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?/hour",
-                "value": 0.0
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "lifetime_specific_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": true
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/evaluated_period",
-                "value": 0.0
-            },
-            "specific_costs": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "type_oemof": "sink",
-            "unit": "?"
-        },
-        "Electricity_grid_DSO_feedin_sink": {
-            "Specific_replacement_costs_of_installed_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "Specific_replacement_costs_of_optimized_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "age_installed": {
-                "unit": "year",
-                "value": 0
-            },
-            "annuity_of_specific_investment_costs_and_specific_annual_om": {
-                "unit": "currency/unit/year",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
-                "value": -0.005
-            },
-            "energyVector": "Electricity",
-            "inflow_direction": "Electricity (DSO)",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "Electricity_grid_DSO_feedin_sink_sink",
-            "lifetime": {
-                "unit": "year",
-                "value": 20
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?/hour",
-                "value": -0.057349606092826313
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "lifetime_specific_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": true
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/evaluated_period",
-                "value": 0.0
-            },
-            "specific_costs": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "type_oemof": "sink",
-            "unit": "?"
-        },
-        "Fuel_excess": {
-            "Specific_replacement_costs_of_installed_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "Specific_replacement_costs_of_optimized_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "age_installed": {
-                "unit": "year",
-                "value": 0
-            },
-            "annuity_of_specific_investment_costs_and_specific_annual_om": {
-                "unit": "currency/unit/year",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "energyVector": "Electricity",
-            "inflow_direction": "Fuel",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "Fuel_excess_sink",
-            "lifetime": {
-                "unit": "year",
-                "value": 20
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?/hour",
-                "value": 0.0
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "lifetime_specific_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": true
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/evaluated_period",
-                "value": 0.0
-            },
-            "specific_costs": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "type_oemof": "sink",
-            "unit": "?"
-        },
         "Harbor": {
             "Specific_replacement_costs_of_installed_capacity": {
                 "unit": "currency/unit",
@@ -18130,73 +17716,6 @@
             "type_asset": "demand",
             "type_oemof": "sink",
             "unit": "kW"
-        },
-        "PV plant (mono) bus_excess": {
-            "Specific_replacement_costs_of_installed_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "Specific_replacement_costs_of_optimized_capacity": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "age_installed": {
-                "unit": "year",
-                "value": 0
-            },
-            "annuity_of_specific_investment_costs_and_specific_annual_om": {
-                "unit": "currency/unit/year",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "energyVector": "Electricity",
-            "inflow_direction": "PV plant (mono) bus",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "PV plant (mono) bus_excess_sink",
-            "lifetime": {
-                "unit": "year",
-                "value": 20
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?/hour",
-                "value": 0.0
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "lifetime_specific_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": true
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/evaluated_period",
-                "value": 0.0
-            },
-            "specific_costs": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "type_oemof": "sink",
-            "unit": "?"
         },
         "Remaining_demand": {
             "Specific_replacement_costs_of_installed_capacity": {
@@ -89813,14 +89332,6 @@
         "scenario_description": "Main features: Demand of harbour and shore power. Connection to National grid (0.54 NOK/kWh electricity price, 60 NOK/kW monthly peak demand pricing, 0.54 NOK/kWh*0.8 feedin tariff. PV system of 300 kWp. Objective: Optimize battery capacity. Outcomes: Capacity battery and utilization profile. Consumption from national grid. Feed-in into national grid. Outlook: With this, it can be compared whether or not the battery reduced the peak demand expenditures. Later, the simulation results should be compared to the consumption from national grid without batteries."
     },
     "simulation_settings": {
-        "_excess_sink": [
-            "ESS Li-Ion bus_excess",
-            "Electricity_excess",
-            "Electricity (DSO)_excess",
-            "Electricity (DSO)_pdp_excess",
-            "Fuel_excess",
-            "PV plant (mono) bus_excess"
-        ],
         "end_date": {
             "data_type": "pandas_Timestamp",
             "value": "2018-12-31 23:00:00"
