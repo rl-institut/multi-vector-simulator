@@ -96,12 +96,6 @@ def all(dict_values):
     # just to be safe, run evaluation a second time
     C1.check_for_label_duplicates(dict_values)
 
-    F0.store_as_json(
-        dict_values,
-        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-        JSON_PROCESSED,
-    )
-
 
 def define_energy_vectors_from_busses(dict_values):
     """
@@ -729,6 +723,11 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
         # Add a debug message in case the feed-in is interpreted as revenue-inducing.
         logging.debug(
             f"The {FEEDIN_TARIFF} of {dso} is positive, which means that feeding into the grid results in a revenue stream."
+        )
+    elif dict_feedin_tariff[VALUE] == 0:
+        # Add a warning msg in case the feedin induces expenses rather then revenue
+        logging.info(
+            f"The {FEEDIN_TARIFF} of {dso} is 0, which means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
         )
     elif dict_feedin_tariff[VALUE] < 0:
         # Add a warning msg in case the feedin induces expenses rather then revenue
@@ -1378,6 +1377,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         discount_factor=economic_data[DISCOUNTFACTOR][VALUE],
         tax=economic_data[TAX][VALUE],
         age_of_asset=dict_asset[AGE_INSTALLED][VALUE],
+        asset_label=dict_asset[LABEL],
     )
 
     dict_asset.update(

@@ -88,7 +88,7 @@ DEFAULT_MAIN_KWARGS = dict(
 # list of csv filename which must be present within the CSV_ELEMENTS folder with the parameters
 # associated to each of these filenames
 REQUIRED_CSV_PARAMETERS = {
-    CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR],
+    CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR, MAXIMUM_EMISSIONS],
     ENERGY_BUSSES: [ENERGY_VECTOR],
     ENERGY_CONSUMPTION: [
         DSM,
@@ -161,14 +161,7 @@ REQUIRED_CSV_PARAMETERS = {
         SPECIFIC_COSTS_OM,
         DISPATCH_PRICE,
     ],
-    SIMULATION_SETTINGS: [
-        EVALUATED_PERIOD,
-        OUTPUT_LP_FILE,
-        STORE_OEMOF_RESULTS,
-        START_DATE,
-        STORE_OEMOF_RESULTS,
-        TIMESTEP,
-    ],
+    SIMULATION_SETTINGS: [EVALUATED_PERIOD, OUTPUT_LP_FILE, START_DATE, TIMESTEP,],
     PROJECT_DATA: [
         COUNTRY,
         LATITUDE,
@@ -187,45 +180,14 @@ REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
 # list of parameters which must be present within the JSON_FNAME file with the sub-parameters
 # note: if the value of a key is none, then the value is expected to be user-defined and thus cannot
 # be in a required parameters dict
-
-# TODO add required sub-parameters for assets as well
 REQUIRED_JSON_PARAMETERS = deepcopy(REQUIRED_CSV_PARAMETERS)
 REQUIRED_JSON_PARAMETERS[FIX_COST] = None
 
 REQUIRED_JSON_PARAMETERS[ENERGY_CONSUMPTION].remove(FILENAME)
 REQUIRED_JSON_PARAMETERS[ENERGY_PRODUCTION].remove(FILENAME)
 REQUIRED_JSON_PARAMETERS[ENERGY_STORAGE].remove(STORAGE_FILENAME)
-#
-#     {
-#     ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX],
-#     ENERGY_BUSSES: None,
-#     ENERGY_CONSUMPTION: None,
-#     ENERGY_CONVERSION: None,
-#     ENERGY_PRODUCTION: None,
-#     ENERGY_PROVIDERS: None,
-#     ENERGY_STORAGE: None,
-#     FIX_COST: None,
-#     CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR, MAXIMUM_EMISSIONS],
-#     PROJECT_DATA: [
-#         COUNTRY,
-#         LABEL,
-#         LATITUDE,
-#         LONGITUDE,
-#         PROJECT_ID,
-#         PROJECT_NAME,
-#         SCENARIO_ID,
-#         SCENARIO_NAME,
-#         SCENARIO_DESCRIPTION,
-#     ],
-#     SIMULATION_SETTINGS: [
-#         EVALUATED_PERIOD,
-#         LABEL,
-#         OUTPUT_LP_FILE,
-#         START_DATE,
-#         STORE_OEMOF_RESULTS,
-#         TIMESTEP,
-#     ],
-# }
+
+
 # references for which parameters must be present either in the json or csv input method
 REQUIRED_MVS_PARAMETERS = {
     JSON_EXT: REQUIRED_JSON_PARAMETERS,

@@ -85,6 +85,7 @@ def convert_from_json_to_special_types(a_dict, prev_key=None, time_index=None):
                 answer[k] = convert_from_json_to_special_types(
                     a_dict[k], prev_key=k, time_index=time_index
                 )
+        # TODO this cas might be obsolete with the newer version of the parser from PR #675
         elif prev_key == data_parser.MAP_MVS_EPA[TIMESERIES]:
             # the a_dict is from the EPA
             answer = pd.Series(a_dict[DATA])
@@ -134,13 +135,13 @@ def convert_from_json_to_special_types(a_dict, prev_key=None, time_index=None):
                 if time_index is not None:
                     if len(answer.index) > len(time_index):
                         logging.warning(
-                            f"The time index inferred from {SIMULATION_SETTINGS} is longer as "
-                            f"the timeserie under the field {prev_key}"
+                            f"The time index inferred from {SIMULATION_SETTINGS} is shorter as "
+                            f"the timeserie under the field {prev_key} ({len(time_index)}<{len(answer.index)})"
                         )
                     elif len(answer.index) < len(time_index):
                         logging.warning(
-                            f"The time index inferred from {SIMULATION_SETTINGS} is shorter as "
-                            f"the timeserie under the field {prev_key}"
+                            f"The time index inferred from {SIMULATION_SETTINGS} is longer as "
+                            f"the timeserie under the field {prev_key} ({len(time_index)}>{len(answer.index)})"
                         )
                     else:
                         answer.index = time_index

@@ -189,7 +189,7 @@ class TestConversionJsonToPythonTypes:
         # check it is a warning
         assert log_msg[1] == 30
         assert (
-            "The time index inferred from simulation_settings is longer as the timeserie under the field series"
+            "The time index inferred from simulation_settings is shorter as the timeserie under the field series"
             in log_msg[2]
         )
         assert (pd_series["series"].values == self.test_result_series.values).all()
@@ -206,7 +206,7 @@ class TestConversionJsonToPythonTypes:
         # check it is a warning
         assert log_msg[1] == 30
         assert (
-            "The time index inferred from simulation_settings is shorter as the timeserie under the field series"
+            "The time index inferred from simulation_settings is longer as the timeserie under the field series"
             in log_msg[2]
         )
         assert (pd_series["series"].values == self.test_result_series.values).all()

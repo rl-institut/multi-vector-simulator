@@ -27,7 +27,8 @@ Here is a template for new release sections
 - Add the new parameter `scenario_description` to input files and docs and a section in autoreport describing the scenario being simulated (#722)
 - Add a new sub-section in RTD describing the suite of post-simulation tests carried out through functions in E4_verification.py (#753)
 - Add KPI individual sectors to the report (#757)
-- Added pytests for the minimal renewable share constraint of function `D2.add_constraints()` (#742)
+- Add pytests for the minimal renewable share constraint of function `D2.add_constraints()` (#742)
+- Throw an explanatory warning in `A1` module when csv file cannot be parsed (#675)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
@@ -37,11 +38,19 @@ Here is a template for new release sections
 - Gather all missing MVS parameters and raise a single error listing all of them (#761)
 - Add `set_default_values` argument to the `B0.load_json` function to set default values of missing parameter which is listed in `KNOWN_EXTRA_PARAMETERS`(#761)
 - Add `flag_missing_values` argument to the `B0_load_json` function to allow switching between `MissingParameterWarning` and `MissingParameterError`(#761)
+- Write lp file only when executing `cli.py` (#675)
+- Change C0.change_sign_of_feedin_tariff() - logging.info message if feedin=0 (#675)
+
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
 - Remove redundant function `A1.check_for_official_extra_parameters` as `utils.compare_input_parameters_with_reference` works for both csv and json and will therefore be preferred (#761)
+- Remove `STORE_OEMOF_RESULTS` variable (#675)
+- Remove `F0.select_essential_results()` (#675)
+
+
 ### Fixed
 - Minor typos in D0, E4 and test_E4 files (#739)
+- `utils.data_parser.convert_epa_params_to_mvs()` and `utils.data_parser.convert_mvs_params_to_epa()` now parse succesfully input files generated from EPA (#675)
 
 
 ## [0.5.4] - 2020-12-18
