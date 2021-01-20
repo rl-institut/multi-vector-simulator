@@ -132,6 +132,7 @@ def maximum_emissions_test(dict_values):
                 f"Maximum emissions constraint of {dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]} is fulfilled."
             )
 
+
 def detect_excessive_excess_generation_in_bus(dict_values):
     r"""
     Warning for any bus with excessive excess generation is given.
