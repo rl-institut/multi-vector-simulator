@@ -21,6 +21,7 @@ from multi_vector_simulator.utils.constants import (
     DATA_TYPE_JSON_KEY,
     TYPE_SERIES,
     TYPE_NONE,
+    TYPE_BOOL,
 )
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -56,6 +57,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OPTIMIZE_CAP,
     SPECIFIC_COSTS,
     SPECIFIC_COSTS_OM,
+    SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+    SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
     TIMESERIES,
     AGE_INSTALLED,
     RENEWABLE_ASSET_BOOL,
@@ -120,8 +123,8 @@ MAP_EPA_MVS = {
     "time_step": TIMESTEP,
     "data": VALUE,
     "replacement_costs_during_project_lifetime": "Replacement_costs_during_project_lifetime",
-    "specific_replacement_costs_of_installed_capacity": "Specific_replacement_costs_of_installed_capacity",
-    "specific_replacement_costs_of_optimized_capacity": "Specific_replacement_costs_of_optimized_capacity",
+    "specific_replacement_costs_of_installed_capacity": SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+    "specific_replacement_costs_of_optimized_capacity": SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
     "asset_type": TYPE_ASSET,
 }
 
@@ -380,8 +383,8 @@ def convert_epa_params_to_mvs(epa_dict):
 
                     if OPTIMIZE_CAP not in dict_asset[asset_label]:
                         dict_asset[asset_label][OPTIMIZE_CAP] = {
-                            "unit": "bool",
-                            "value": False,
+                            UNIT: TYPE_BOOL,
+                            VALUE: False,
                         }
                     else:
                         logging.warning(
@@ -425,7 +428,7 @@ def convert_epa_params_to_mvs(epa_dict):
                 and len(missing_params[SIMULATION_SETTINGS]) == 1
             ):
                 dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE] = {
-                    UNIT: "bool",
+                    UNIT: TYPE_BOOL,
                     VALUE: False,
                 }
                 missing_params.pop(SIMULATION_SETTINGS)
