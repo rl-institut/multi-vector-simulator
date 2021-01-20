@@ -38,8 +38,8 @@ Here is a template for new release sections
 - Gather all missing MVS parameters and raise a single error listing all of them (#761)
 - Add `set_default_values` argument to the `B0.load_json` function to set default values of missing parameter which is listed in `KNOWN_EXTRA_PARAMETERS`(#761)
 - Add `flag_missing_values` argument to the `B0_load_json` function to allow switching between `MissingParameterWarning` and `MissingParameterError`(#761)
-- Write pre-processed results or oemof results to files only when executing `cli.py` (#675)
-- Change C0.change_sign_of_feedin_tariff() (#675)
+- Write lp file only when executing `cli.py` (#675)
+- Change C0.change_sign_of_feedin_tariff() - logging.info message if feedin=0 (#675)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
