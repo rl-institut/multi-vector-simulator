@@ -285,7 +285,7 @@ def convert_epa_params_to_mvs(epa_dict):
                 timestep = dict_values[param_group].get(TIMESTEP)
                 if timestep is not None:
                     dict_values[param_group][TIMESTEP] = {
-                        UNIT: "minutes",
+                        UNIT: "min",
                         VALUE: timestep,
                     }
             if param_group == PROJECT_DATA:
