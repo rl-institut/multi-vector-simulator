@@ -292,7 +292,7 @@ def convert_epa_params_to_mvs(epa_dict):
                 if SCENARIO_DESCRIPTION not in dict_values[param_group]:
                     dict_values[param_group][
                         SCENARIO_DESCRIPTION
-                    ] = "no scenario description"
+                    ] = "[No scenario description available]"
 
             # Never save the oemof lp file when running on the server
             if param_group == SIMULATION_SETTINGS:
