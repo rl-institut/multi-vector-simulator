@@ -22,6 +22,8 @@ from multi_vector_simulator.utils.constants import (
     TYPE_SERIES,
     TYPE_NONE,
     TYPE_BOOL,
+    KNOWN_EXTRA_PARAMETERS,
+    DEFAULT_VALUE,
 )
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -399,7 +401,9 @@ def convert_epa_params_to_mvs(epa_dict):
                         dict_asset[asset_label][DSM] = False
 
                 if EMISSION_FACTOR not in dict_asset[asset_label]:
-                    dict_asset[asset_label][EMISSION_FACTOR] = {VALUE: 0}
+                    dict_asset[asset_label][EMISSION_FACTOR] = {
+                        VALUE: KNOWN_EXTRA_PARAMETERS[EMISSION_FACTOR][DEFAULT_VALUE]
+                    }
 
             dict_values[asset_group] = dict_asset
         else:
