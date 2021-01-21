@@ -81,6 +81,7 @@ from multi_vector_simulator.E1_process_results import (
     convert_scalar_matrix_to_dataframe,
     convert_cost_matrix_to_dataframe,
     convert_scalars_to_dataframe,
+    convert_kpi_sector_to_dataframe,
 )
 from multi_vector_simulator.F1_plotting import (
     plot_timeseries,
@@ -756,11 +757,7 @@ def create_app(results_json, path_sim_output=None):
     df_scalar_matrix = convert_scalar_matrix_to_dataframe(results_json)
     df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
     df_kpi_scalars = convert_scalars_to_dataframe(results_json)
-    df_kpi_sectors = results_json[KPI][KPI_UNCOUPLED_DICT]
-    # Formats the kpi_sectors dataframe for nicer display
-    cols = list(df_kpi_sectors.columns)
-    df_kpi_sectors["KPI"] = df_kpi_sectors.index  #
-    df_kpi_sectors = df_kpi_sectors[["KPI"] + cols]
+    df_kpi_sectors = convert_kpi_sector_to_dataframe(results_json)
 
     # Obtain the scenario description text provided by the user from the JSON results file
     scenario_description = results_json[PROJECT_DATA][SCENARIO_DESCRIPTION]
