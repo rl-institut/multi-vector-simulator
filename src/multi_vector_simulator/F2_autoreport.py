@@ -760,7 +760,7 @@ def create_app(results_json, path_sim_output=None):
     df_kpi_sectors = convert_kpi_sector_to_dataframe(results_json)
 
     # Obtain the scenario description text provided by the user from the JSON results file
-    scenario_description = results_json[PROJECT_DATA][SCENARIO_DESCRIPTION]
+    scenario_description = results_json[PROJECT_DATA].get(SCENARIO_DESCRIPTION, "")
 
     # App layout and populating it with different elements
     app.layout = html.Div(
@@ -808,6 +808,18 @@ def create_app(results_json, path_sim_output=None):
                                 ],
                             ),
                             html.Div(
+                                className="cell imp_info2",
+                                children=[]
+                                if scenario_description == ""
+                                else [
+                                    html.Span(
+                                        "Scenario description  : ",
+                                        style={"font-weight": "bold"},
+                                    ),
+                                    f"{scenario_description}",
+                                ],
+                            ),
+                            html.Div(
                                 className="blockoftext",
                                 children=[
                                     "The energy system with the ",
@@ -823,11 +835,6 @@ def create_app(results_json, path_sim_output=None):
                                     "developed in the scope of the Horizon 2020 European research project. The tool was developed by "
                                     "Reiner Lemoine Institute and utilizes the OEMOF framework.",
                                 ],
-                            ),
-                            html.Br(),
-                            insert_subsection(
-                                title="Scenario Description",
-                                content=[insert_body_text(scenario_description)],
                             ),
                         ],
                     ),
