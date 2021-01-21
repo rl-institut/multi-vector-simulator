@@ -605,10 +605,11 @@ def create_demands_section(output_JSON_file, sectors=None):
             )
         )
 
-        # Add the heading, table and plot(s) to the content list
-        content_of_section.extend(
-            (html.H4(sector_heading), table_with_dash, sector_demand_plots)
-        )
+        # Add the heading, table and plot(s) to the content list only if it is not empty
+        if df_sector_demands.empty is False:
+            content_of_section.extend(
+                (html.H4(sector_heading), table_with_dash, sector_demand_plots)
+            )
 
     return insert_subsection(title="Energy Demands", content=content_of_section)
 
