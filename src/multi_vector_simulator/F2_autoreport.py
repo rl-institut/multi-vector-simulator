@@ -870,11 +870,6 @@ def create_app(results_json, path_sim_output=None):
                                                     "r",
                                                 ).read(),
                                                 height="400",
-                                                style={
-                                                    "margin": "30px",
-                                                    "width": "30%",
-                                                    "marginBottom": "1.5cm",
-                                                },
                                             ),
                                             html.Div(
                                                 className="staticimagepdf print-only",
