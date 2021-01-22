@@ -264,6 +264,15 @@ class model_building:
         """
         Initiates the oemof-solph simulation, accesses results and writes main results into dict
 
+        If an error is encountered in the oemof solver, mvs should not be allowed to continue,
+        otherwise other errors related to the uncomplete simulation result might occur and it will
+        be more obscure to the endusers what went wrong.
+
+        A MVS error is raised if the omoef solver warning states explicitely that
+        "termination condition infeasible", otherwise the oemof solver warning is re-raised as
+        an error.
+
+
         Parameters
         ----------
         dict_values: dict
@@ -294,7 +303,7 @@ class model_building:
             )  # ratioGap allowedGap mipgap
         except UserWarning as e:
             error_message = str(e)
-            compare_message = "Optimization ended with status warning and termination condition infeasible"
+            compare_message = "termination condition infeasible"
             if compare_message in error_message:
                 error_message = (
                     f"The following error occurred during the mvs solver: {error_message}\n\n "
@@ -307,6 +316,9 @@ class model_building:
                     "meet the total demand"
                 )
                 logging.error(error_message)
+                raise MVSOemofError(error_message) from None
+            else:
+                raise e
         # stop turning warnings into errors
         warnings.resetwarnings()
 
