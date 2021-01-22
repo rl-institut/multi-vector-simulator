@@ -172,7 +172,6 @@ The file `simulation_settings.csv` includes the following parameters:
 * :ref:`evaluatedperiod-label`
 * :ref:`timestep-label`
 * :ref:`outputlpfile-label`
-* :ref:`storeoemoefresults-label`
 
 storage_*.csv
 ^^^^^^^^^^^^^^

@@ -238,8 +238,7 @@ def report_arg_parser():
     :return: parser
     """
     parser = argparse.ArgumentParser(
-        prog="mvs_report",
-        description="Display the report of a MVS simulation",
+        prog="mvs_report", description="Display the report of a MVS simulation",
     )
     parser.add_argument(
         "-pdf",
