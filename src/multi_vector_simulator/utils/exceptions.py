@@ -4,6 +4,22 @@ Exceptions of the MVS
 """
 
 
+class MVSOemofError(ValueError):
+    """Exception raised for missing parameters of a csv input file."""
+
+
+class WrongOemofAssetForGroupError(ValueError):
+    """Exception raised when an asset group has an asset with an denied oemof type"""
+
+    pass
+
+
+class UnknownOemofAssetType(ValueError):
+    """Exception raised in case an asset type is defined for an asset group constants_json_strings but the oemof function is not yet defined (only dev)"""
+
+    pass
+
+
 class MissingParameterError(ValueError):
     """Exception raised for missing parameters of a csv input file."""
 

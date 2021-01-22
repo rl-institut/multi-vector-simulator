@@ -30,6 +30,14 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ASSET_DICT,
     ENERGY_VECTOR,
 )
+
+from multi_vector_simulator.utils.exceptions import (
+    MVSOemofError,
+    WrongOemofAssetForGroupError,
+    UnknownOemofAssetType,
+)
+
+
 from _constants import (
     TEST_REPO_PATH,
     PATH_OUTPUT_FOLDER,
@@ -121,7 +129,7 @@ def test_error_raise_WrongOemofAssetForGroupError_if_oemof_asset_type_not_accept
     model, dict_model = D0.model_building.initialize(dict_values_minimal)
     dict_test = {ENERGY_CONSUMPTION: {"asset": {OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER}}}
     dict_test.update(dict_values_minimal)
-    with pytest.raises(D0.WrongOemofAssetForGroupError):
+    with pytest.raises(WrongOemofAssetForGroupError):
         D0.model_building.adding_assets_to_energysystem_model(
             dict_test, dict_model, model
         )
@@ -139,7 +147,7 @@ def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0
     dict_test = {ENERGY_CONSUMPTION: {"asset": {OEMOF_ASSET_TYPE: "unknown_type"}}}
     dict_test.update(dict_values_minimal)
     ACCEPTED_ASSETS_FOR_ASSET_GROUPS[ENERGY_CONSUMPTION].append("unknown_type")
-    with pytest.raises(D0.UnknownOemofAssetType):
+    with pytest.raises(UnknownOemofAssetType):
         D0.model_building.adding_assets_to_energysystem_model(
             dict_test, dict_model, model, **ACCEPTED_ASSETS_FOR_ASSET_GROUPS
         )

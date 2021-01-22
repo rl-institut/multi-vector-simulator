@@ -53,15 +53,11 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SIMULTATION_TIME,
 )
 
-
-class WrongOemofAssetForGroupError(ValueError):
-    # Exception raised when an asset group has an asset with an denied oemof type
-    pass
-
-
-class UnknownOemofAssetType(ValueError):
-    # Exception raised in case an asset type is defined for an asset group constants_json_strings but the oemof function is not jet defined (only dev)
-    pass
+from multi_vector_simulator.utils.exceptions import (
+    MVSOemofError,
+    WrongOemofAssetForGroupError,
+    UnknownOemofAssetType,
+)
 
 
 def run_oemof(dict_values, save_energy_system_graph=False):
