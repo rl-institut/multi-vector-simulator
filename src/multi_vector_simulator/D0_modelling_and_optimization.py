@@ -282,6 +282,7 @@ class model_building:
         import warnings
 
         logging.info("Starting simulation.")
+        # turn warnings into errors
         warnings.filterwarnings("error")
         try:
             local_energy_system.solve(
@@ -292,18 +293,21 @@ class model_building:
                 cmdline_options={"ratioGap": str(0.03)},
             )  # ratioGap allowedGap mipgap
         except UserWarning as e:
-            print("This is a user error")
-            print(str(e))
             error_message = str(e)
             compare_message = "Optimization ended with status warning and termination condition infeasible"
             if compare_message in error_message:
-                logging.error(
-                    f"The following error occurred: {error_message}. There are several reasons why this "
-                    f"could have happened. One reason could be that the energy system is not properly "
-                    f"connected. The other reason could be that the capacity of some assets might not have "
-                    f"been optimized. Third reason could be that the demands could not be supplied with the "
-                    f"current energy system. "
+                error_message = (
+                    f"The following error occurred during the mvs solver: {error_message}\n\n "
+                    f"There are several reasons why this could have happened."
+                    "\n\t- the energy system is not properly connected. "
+                    "\n\t- the capacity of some assets might not have been optimized. "
+                    "\n\t- the demands might not be supplied with the installed capacities in "
+                    "current energy system. Check your maximum power demand and if your energy "
+                    "production assets and/or energy conversion assets have enough capacity to "
+                    "meet the total demand"
                 )
+                logging.error(error_message)
+        # stop turning warnings into errors
         warnings.resetwarnings()
 
         # add results to the energy system to make it possible to store them.
