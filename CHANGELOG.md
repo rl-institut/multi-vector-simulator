@@ -29,6 +29,7 @@ Here is a template for new release sections
 - Add KPI individual sectors to the report (#757)
 - Add pytests for the minimal renewable share constraint of function `D2.add_constraints()` (#742)
 - Throw an explanatory warning in `A1` module when csv file cannot be parsed (#675)
+- Add `-d` option to `mvs_report` command to use hotreload of dash app for devs (#770)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
@@ -40,6 +41,8 @@ Here is a template for new release sections
 - Add `flag_missing_values` argument to the `B0_load_json` function to allow switching between `MissingParameterWarning` and `MissingParameterError`(#761)
 - Write lp file only when executing `cli.py` (#675)
 - Change C0.change_sign_of_feedin_tariff() - logging.info message if feedin=0 (#675)
+- Update RTD instruction for instructions for the `mvs_tool` command (#770)
+
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
@@ -51,7 +54,9 @@ Here is a template for new release sections
 ### Fixed
 - Minor typos in D0, E4 and test_E4 files (#739)
 - `utils.data_parser.convert_epa_params_to_mvs()` and `utils.data_parser.convert_mvs_params_to_epa()` now parse succesfully input files generated from EPA (#675)
-
+- Fix issue (#763): Avoid displaying a energy sector demand table in report if it is empty (#770)
+- Fix issue (#769): Fix argument parsing and error messages of `mvs_report` command (#770)
+- Fix issue (#756): Avoid crashing report generation when internet not available (#770)
 
 ## [0.5.4] - 2020-12-18
 

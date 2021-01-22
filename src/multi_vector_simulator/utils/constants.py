@@ -47,6 +47,7 @@ ASSET_FOLDER = "assets"
 ARG_PDF = "print_report"
 ARG_REPORT_PATH = "report_path"
 ARG_PATH_SIM_OUTPUT = "output_folder"
+ARG_DEBUG_REPORT = "debug_report"
 
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)

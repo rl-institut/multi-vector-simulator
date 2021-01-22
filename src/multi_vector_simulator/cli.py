@@ -67,8 +67,10 @@ from multi_vector_simulator.utils.constants import (
     ARG_PDF,
     ARG_REPORT_PATH,
     ARG_PATH_SIM_OUTPUT,
+    ARG_DEBUG_REPORT,
     SIMULATION_SETTINGS,
     JSON_PROCESSED,
+    JSON_FILE_EXTENSION,
 )
 
 
@@ -197,6 +199,7 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
       -i [OUTPUT_FOLDER]   path to the simulation result json file
                            'json_with_results.json'
       -o [REPORT_PATH]     path to save the pdf report
+      -d [DEBUG_REPORT]    run the dash app in debug mode with hot-reload
 
     Parameters
     ----------
@@ -217,7 +220,6 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
     # Parse the arguments from the command line
     parser = initializing.report_arg_parser()
     args = vars(parser.parse_args())
-    print(args)
 
     # Give priority from user input kwargs over command line arguments
     # However the command line arguments have priority over default kwargs
@@ -234,11 +236,15 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
         path_simulation_output_json = os.path.join(
             path_simulation_output_json, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
         )
+        logging.warning(
+            f"Only path to a folder provided ({args.get(ARG_PATH_SIM_OUTPUT)}), looking now for default {JSON_WITH_RESULTS + JSON_FILE_EXTENSION} file within this folder"
+        )
 
     if os.path.exists(path_simulation_output_json) is False:
         raise FileNotFoundError(
-            "{} not found. You need to run a simulation to generate the data to report"
-            "see `python mvs_tool.py -h` for help".format(path_simulation_output_json)
+            "Simulation results file {} not found. You need to run a simulation to generate "
+            "the data before you can generate a report\n\n\tsee `mvs_tool -h` for help on how "
+            "to run a simulation\n".format(path_simulation_output_json)
         )
     else:
         # path to the mvs simulation output files
@@ -249,21 +255,26 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
             path_pdf_report = os.path.join(path_sim_output, REPORT_FOLDER, PDF_REPORT)
 
         # load the results of a simulation
-        dict_values = data_input.load_json(path_simulation_output_json)
+        dict_values = data_input.load_json(
+            path_simulation_output_json, flag_missing_values=False
+        )
         test_app = create_app(dict_values, path_sim_output=path_sim_output)
         banner = "*" * 40
         print(banner + "\nPress ctrl+c to stop the report server\n" + banner)
         if pdf is True:
             print_pdf(test_app, path_pdf_report=path_pdf_report)
         else:
-            # run the dash server for 600s before shutting it down
-            open_in_browser(test_app, timeout=600)
-            print(
-                banner
-                + "\nThe report server has timed out.\nTo start it again run `python "
-                "mvs_report.py`.\nTo let it run for a longer time, change timeout setting in "
-                "the mvs_report.py file\n" + banner
-            )
+            if args.get(ARG_DEBUG_REPORT) is True:
+                test_app.run_server(debug=True)
+            else:
+                # run the dash server for 600s before shutting it down
+                open_in_browser(test_app, timeout=600)
+                print(
+                    banner
+                    + "\nThe report server has timed out.\nTo start it again run "
+                    "`mvs_report`.\nTo let it run for a longer time, change timeout setting in "
+                    "the cli.py file\n" + banner
+                )
 
 
 def create_input_template_folder():

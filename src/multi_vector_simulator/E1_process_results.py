@@ -66,6 +66,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EMISSION_FACTOR,
     TOTAL_EMISSIONS,
     TIMESERIES_SOC,
+    KPI_UNCOUPLED_DICT,
 )
 
 # Determines which assets are defined by...
@@ -905,6 +906,39 @@ def convert_scalars_to_dataframe(dict_values):
     kpi_scalars_dataframe = kpi_scalars_dataframe[[KPI, UNIT, VALUE]]
 
     return kpi_scalars_dataframe
+
+
+def convert_kpi_sector_to_dataframe(dict_values):
+    """
+    Processes the sector KPIs so that they can be included in the report
+
+    Parameters
+    ----------
+    dict_values: dict
+        output values of MVS
+
+    Returns
+    -------
+    kpi_sectors_dataframe: :class:`pandas.DataFrame<frame>`
+        Dataframe to be displayed as a table in the report
+
+    Notes
+    -----
+    Currently, as the KPI_UNCOUPLED_DICT does not hold any units, the table printed in the report is unit-les.
+    """
+
+    if isinstance(dict_values[KPI][KPI_UNCOUPLED_DICT], dict):
+        kpi_sectors_dataframe = pd.DataFrame.from_dict(
+            dict_values[KPI][KPI_UNCOUPLED_DICT], orient="index"
+        )
+    else:
+        kpi_sectors_dataframe = dict_values[KPI][KPI_UNCOUPLED_DICT]
+    # Formats the kpi_sectors dataframe for nicer display
+    cols = list(kpi_sectors_dataframe.columns)
+    kpi_sectors_dataframe["KPI"] = kpi_sectors_dataframe.index  #
+    kpi_sectors_dataframe = kpi_sectors_dataframe[["KPI"] + cols]
+
+    return kpi_sectors_dataframe
 
 
 def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
