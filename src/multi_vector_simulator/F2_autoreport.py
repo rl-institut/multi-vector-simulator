@@ -7,6 +7,7 @@ This script generates a report of the simulation automatically, with all the imp
 
 import base64
 import os
+import pickle
 
 # Imports for generating pdf automatically
 import threading
@@ -670,34 +671,54 @@ def create_app(results_json, path_sim_output=None):
         float(dfprojectData.latitude),
         float(dfprojectData.longitude),
     )
-
     # Determining the geographical location of the project
-    geoList = rg.search(latlong)
-    geoDict = geoList[0]
-    location = geoDict["name"]
+    geo_dict_path = os.path.join(asset_folder, "geolocation")
+    if os.path.exists(geo_dict_path):
+        with open(geo_dict_path, "rb") as handle:
+            geo_dict = pickle.load(handle)
+    else:
+        geoList = rg.search(latlong)
+        geo_dict = geoList[0]
+        with open(geo_dict_path, "wb") as handle:
+            pickle.dump(geo_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-    # Adds a map to the Dash app
-    mapy = folium.Map(location=latlong, zoom_start=14)
-    tooltip = "Click here for more info"
-    folium.Marker(
-        latlong,
-        popup="Location of the project",
-        tooltip=tooltip,
-        icon=folium.Icon(color="red", icon="glyphicon glyphicon-flash"),
-    ).add_to(mapy)
-    mapy.save(os.path.join(asset_folder, "proj_map"))
+    location = geo_dict["name"]
 
-    # Adds a staticmap to the PDF
+    leaflet_map_path = os.path.join(asset_folder, "proj_map.html")
+    static_map_path = os.path.join(asset_folder, "proj_map_static.png")
 
-    longitude = latlong[1]
-    latitude = latlong[0]
-    coords = longitude, latitude
+    # Add a dynamic leaflet map to the dash app
+    if not os.path.exists(leaflet_map_path):
+        mapy = folium.Map(location=latlong, zoom_start=14)
+        tooltip = "Click here for more info"
+        folium.Marker(
+            latlong,
+            popup="Location of the project",
+            tooltip=tooltip,
+            icon=folium.Icon(color="red", icon="glyphicon glyphicon-flash"),
+        ).add_to(mapy)
+        mapy.save(leaflet_map_path)
 
-    map_static = staticmap.StaticMap(600, 600, 80)
-    marker = staticmap.CircleMarker(coords, "#13074f", 15)
-    map_static.add_marker(marker)
-    map_image = map_static.render(zoom=14)
-    map_image.save(os.path.join(asset_folder, "proj_map_static.png"))
+    # Adds a static map for the PDF report
+    MAP_STATIC = None
+    if not os.path.exists(static_map_path):
+        longitude = latlong[1]
+        latitude = latlong[0]
+        coords = longitude, latitude
+
+        map_static = staticmap.StaticMap(600, 600, 80)
+        marker = staticmap.CircleMarker(coords, "#13074f", 15)
+        map_static.add_marker(marker)
+        try:
+            map_image = map_static.render(zoom=14)
+            map_image.save(static_map_path)
+            MAP_STATIC = encode_image_file(static_map_path)
+        except RuntimeError as e:
+            if "could not download" in repr(e):
+                logging.warning(
+                    "You might not be connected to internet, skipping the download of "
+                    "location map for the report"
+                )
 
     dict_projectdata = {
         "Country": dfprojectData.country,
@@ -742,8 +763,6 @@ def create_app(results_json, path_sim_output=None):
     ELAND_LOGO = encode_image_file(
         os.path.join(asset_folder, "logo-eland-original.jpg")
     )
-
-    MAP_STATIC = encode_image_file(os.path.join(asset_folder, "proj_map_static.png"))
 
     ENERGY_SYSTEM_GRAPH = encode_image_file(results_json[PATHS_TO_PLOTS][PLOTS_ES])
 
@@ -864,10 +883,7 @@ def create_app(results_json, path_sim_output=None):
                                             html.H4(["Project Location"]),
                                             html.Iframe(
                                                 srcDoc=open(
-                                                    os.path.join(
-                                                        asset_folder, "proj_map",
-                                                    ),
-                                                    "r",
+                                                    leaflet_map_path, "r",
                                                 ).read(),
                                                 height="400",
                                             ),
@@ -880,11 +896,14 @@ def create_app(results_json, path_sim_output=None):
                                                     ),
                                                     html.Img(
                                                         id="staticmapimage",
-                                                        src="data:image/png;base64,{}".format(
+                                                        src=""
+                                                        if MAP_STATIC is None
+                                                        else "data:image/png;base64,{}".format(
                                                             MAP_STATIC.decode()
                                                         ),
                                                         width="400px",
                                                         style={"marginLeft": "30px"},
+                                                        alt="Map of the location",
                                                     ),
                                                 ],
                                             ),
