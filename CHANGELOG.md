@@ -30,6 +30,7 @@ Here is a template for new release sections
 - Add pytests for the minimal renewable share constraint of function `D2.add_constraints()` (#742)
 - Throw an explanatory warning in `A1` module when csv file cannot be parsed (#675)
 - Add `-d` option to `mvs_report` command to use hotreload of dash app for devs (#770)
+- Add `utils.analysis` module for overall analysis functions (#679)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
