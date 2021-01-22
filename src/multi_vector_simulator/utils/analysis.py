@@ -39,8 +39,7 @@ def single_param_variation_analysis(
     # Process the argument json_input based on its type
     if isinstance(json_input, str):
         # load the file if it is a path
-        with open(json_input) as fp:
-            simulation_input = load_json(json_input)
+        simulation_input = load_json(json_input)
     elif isinstance(json_input, dict):
         # this is already a json variable
         simulation_input = json_input
@@ -60,7 +59,9 @@ def single_param_variation_analysis(
             )
             # run a simulation with next value of the variable parameter and convert the result to
             # mvs special json type
-            sim_output_json = run_simulation(modified_input, display_output="error", epa_format=False)
+            sim_output_json = run_simulation(
+                modified_input, display_output="error", epa_format=False
+            )
             print(sim_output_json)
             if json_path_to_output_value is None:
                 answer.append(sim_output_json)

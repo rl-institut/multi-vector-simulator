@@ -114,7 +114,3 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
         answer = dict_values
 
     return answer
-
-
-if __name__ == "__main__":
-    main()
