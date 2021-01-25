@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import pytest
 import logging
 import copy
@@ -1129,6 +1130,26 @@ def test_compute_timeseries_properties_TIMESERIES_not_in_dict_asset():
     assert (
         dict_exp == dict_asset
     ), f"The function has changed the dict_asset to {dict_asset}, eventhough it should not have been modified and stayed identical to {dict_exp}."
+
+
+def test_compute_timeseries_properties_TIMESERIES_not_in_dict_asset():
+    dict_asset = {
+        UNIT: "str",
+        LABEL: "str",
+    }
+    dict_exp = copy.deepcopy(dict_asset)
+    assert (
+        dict_exp == dict_asset
+    ), f"The function has changed the dict_asset to {dict_asset}, eventhough it should not have been modified and stayed identical to {dict_exp}."
+
+
+def test_replace_nans_in_timeseries_with_0():
+    timeseries = pd.Series([10, np.nan, 100, 150, 200, np.nan, 91])
+
+    timeseries = C0.replace_nans_in_timeseries_with_0(timeseries, "any")
+
+    exp = pd.Series([10, 0, 100, 150, 200, 0, 91])
+    assert (timeseries == exp).all(), f"The timeseries is improperly changed."
 
 
 """
