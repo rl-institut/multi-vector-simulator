@@ -31,6 +31,7 @@ Here is a template for new release sections
 - Throw an explanatory warning in `A1` module when csv file cannot be parsed (#675)
 - Add `-d` option to `mvs_report` command to use hotreload of dash app for devs (#770)
 - Add `utils.analysis` module for overall analysis functions (#679)
+- Added pre-processing step with `C0.replace_nans_in_timeseries_with_0` to set NaNs occurring in provided timeseries to zero (#746)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
@@ -43,7 +44,8 @@ Here is a template for new release sections
 - Write lp file only when executing `cli.py` (#675)
 - Change C0.change_sign_of_feedin_tariff() - logging.info message if feedin=0 (#675)
 - Update RTD instruction for instructions for the `mvs_tool` command (#770)
-
+- Change `test_benchmark_special_features` (#746)
+- Update "Input verification" section in `Model_Assmptions.rst` for NaNs (#746)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)

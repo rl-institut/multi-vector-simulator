@@ -1473,24 +1473,24 @@ def receive_timeseries_from_csv(
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
     C1.lookup_file(file_path, dict_asset[LABEL])
 
-    data_set = pd.read_csv(file_path, sep=",")
+    data_set = pd.read_csv(file_path, sep=",", keep_default_na=True)
 
     if FILENAME in dict_asset:
         header = data_set.columns[0]
 
     if len(data_set.index) == settings[PERIODS]:
         if input_type == "input":
-            dict_asset.update(
-                {
-                    TIMESERIES: pd.Series(
-                        data_set[header].values, index=settings[TIME_INDEX]
-                    )
-                }
+            timeseries = pd.Series(data_set[header].values, index=settings[TIME_INDEX])
+            timeseries = replace_nans_in_timeseries_with_0(
+                timeseries, dict_asset[LABEL]
             )
+            dict_asset.update({TIMESERIES: timeseries})
         else:
-            dict_asset[input_type][VALUE] = pd.Series(
-                data_set[header].values, index=settings[TIME_INDEX]
+            timeseries = pd.Series(data_set[header].values, index=settings[TIME_INDEX])
+            timeseries = replace_nans_in_timeseries_with_0(
+                timeseries, dict_asset[LABEL] + "(" + input_type + ")"
             )
+            dict_asset[input_type][VALUE] = timeseries
 
         logging.debug("Added timeseries of %s (%s).", dict_asset[LABEL], file_path)
     elif len(data_set.index) >= settings[PERIODS]:
@@ -1530,10 +1530,45 @@ def receive_timeseries_from_csv(
         compute_timeseries_properties(dict_asset)
 
 
+def replace_nans_in_timeseries_with_0(timeseries, label):
+    """
+
+    Replaces nans in the timeseries (if any) with 0
+
+    Parameters
+
+    ----------
+    timeseries: pd.Series
+        demand or resource timeseries in dict_asset (having nan value(s) if any),
+        also of parameters that are not defined as scalars but as timeseries
+
+    label: str
+        Contains user-defined information about the timeseries to be printed into the eventual error message
+
+    Returns
+    ----------
+    timeseries: pd.Series
+        timeseries without NaN values
+
+    Notes
+    -----
+    Function tested with
+    - C0.test_replace_nans_in_timeseries_with_0()
+    """
+    if sum(pd.isna(timeseries)) > 0:
+        incidents = sum(pd.isna(timeseries))
+        logging.warning(
+            f"A number of {incidents} NaN value(s) found in the {TIMESERIES} of {label}. Changing NaN value(s) to 0."
+        )
+        timeseries = timeseries.fillna(0)
+    return timeseries
+
+
 def compute_timeseries_properties(dict_asset):
     """Compute peak, aggregation, average and normalize timeseries
 
     Parameters
+
     ----------
     dict_asset: dict
         dict of all asset parameters, must contain TIMESERIES key

@@ -659,6 +659,7 @@ The inputs for a simulation with the MVS are subjected to a couple of verificati
 
 - Time series of energyProduction assets that are to be optimized have specific generation profiles (`C1.check_non_dispatchable_source_time_series`, `C1.check_time_series_values_between_0_and_1`): Raises error if time series of non-dispatchable sources are not between [0, 1].
 
+- Provided timeseries are checked for `NaN` values, which are replaced by zeroes (`C0.replace_nans_in_timeseries_with_0`).
 
 .. _validation-methodology:
 
