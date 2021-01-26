@@ -44,7 +44,8 @@ Here is a template for new release sections
 - Write lp file only when executing `cli.py` (#675)
 - Change C0.change_sign_of_feedin_tariff() - logging.info message if feedin=0 (#675)
 - Update RTD instruction for instructions for the `mvs_tool` command (#770)
-- Changed `test_benchmark_special_features` (#746)
+- Change `test_benchmark_special_features` (#746)
+- Update "Input verification" section in `Model_Assmptions.rst` for NaNs (#746)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)

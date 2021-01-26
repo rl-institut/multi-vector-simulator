@@ -1539,10 +1539,11 @@ def replace_nans_in_timeseries_with_0(timeseries, label):
 
     ----------
     timeseries: pd.Series
-        timeseries in dict_asset (having nan value(s) if any), also of parameters
+        demand or resource timeseries in dict_asset (having nan value(s) if any),
+        also of parameters that are not defined as scalars but as timeseries
 
     label: str
-        Key to print into the error message
+        Contains user-defined information about the timeseries to be printed into the eventual error message
 
     Returns
     ----------
@@ -1554,15 +1555,12 @@ def replace_nans_in_timeseries_with_0(timeseries, label):
     Function tested with
     - C0.test_replace_nans_in_timeseries_with_0()
     """
-
-    if (pd.isna(timeseries)).any():
+    if sum(pd.isna(timeseries)) > 0:
         incidents = sum(pd.isna(timeseries))
-        logging.info(str(timeseries.values))
-        logging.error(
+        logging.warning(
             f"A number of {incidents} NaN value(s) found in the {TIMESERIES} of {label}. Changing NaN value(s) to 0."
         )
         timeseries = timeseries.fillna(0)
-        logging.info(str(timeseries.values))
     return timeseries
 
 

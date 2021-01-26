@@ -99,34 +99,34 @@ class Test_Parameter_Parsing:
 
         assert (
             data[ENERGY_CONSUMPTION]["demand_01"][TIMESERIES][3] == 0
-        ), f"The NaN value of the demand profile is not replaced by a 0 value."
+        ), f"The NaN value of the demand profile is not replaced by a 0 value as it should."
         for k in range(0, len(csv_data[diesel_efficiency])):
             assert data[ENERGY_CONVERSION][diesel][EFFICIENCY][VALUE][
                 k
             ] == pytest.approx(
                 csv_data[diesel_efficiency][k], rel=1e-6
-            ), f"The diesel efficiency is not the one defined in the csv file as a timeseries."
+            ), f"The diesel efficiency has different values then it was defined as with the csv file {csv_file}."
             assert data[ENERGY_PROVIDERS][dso][ENERGY_PRICE][VALUE][k] == pytest.approx(
                 csv_data[electricity_price][k], rel=1e-6
-            ), f"The energy price is not the one defined in the csv file as a timeseries."
+            ), f"The energy price has different values then it was defined as with the csv file {csv_file}."
             assert data[ENERGY_PRODUCTION][dso + DSO_CONSUMPTION][DISPATCH_PRICE][
                 VALUE
             ][k] == pytest.approx(
                 csv_data[electricity_price][k], rel=1e-6
-            ), f"The feedin tariff is not the one defined in the csv file as a timeseries."
+            ), f"The feedin tariff has different values then it was defined as with the csv file {csv_file}."
             if k == 0 or k == 1:
                 assert (
                     data[ENERGY_STORAGE]["storage_01"][STORAGE_CAPACITY][SOC_MIN][
                         VALUE
                     ][k]
                     == 0
-                ), f"The NaN value of the soc min timeseries is not parsed as 0."
+                ), f"The NaN value of the soc min timeseries is not parsed as 0 as it should."
             else:
                 assert data[ENERGY_STORAGE]["storage_01"][STORAGE_CAPACITY][SOC_MIN][
                     VALUE
                 ][k] == pytest.approx(
                     csv_data[soc_min][k], rel=1e-6
-                ), f"The soc min is not the one defined in the csv file as a timeseries."
+                ), f"The soc min has different values then it was defined as with the csv file {csv_file}."
 
     '''
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
