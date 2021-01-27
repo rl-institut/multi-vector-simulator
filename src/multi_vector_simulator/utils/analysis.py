@@ -9,11 +9,12 @@ from multi_vector_simulator.server import run_simulation
 from multi_vector_simulator.B0_data_input_json import (
     load_json,
     convert_from_json_to_special_types,
+    convert_from_special_types_to_json
 )
 
 
 def single_param_variation_analysis(
-    param_values, json_input, json_path_to_param_value, json_path_to_output_value=None
+    param_values, json_input, json_path_to_param_value, json_path_to_output_value=None, output_file=None
 ):
     r"""Run mvs simulations by varying one of the input parameters to access output's sensitivity
 
@@ -30,6 +31,11 @@ def single_param_variation_analysis(
         collection of succession of keys which lead the value of an output parameter of interest in
         the json dict of the simulation's output. The order of keys is to be read from left to
         right. In the case of str, each key should be separated by a `.` or a `,`.
+    output_file_name: str
+        name of wished outputfile, without file extension (it will be .json), the simulation result
+        for every parameter in param_values will be saved in files following the pattern
+        <output_file_name>_i.json where i is the index of the varying parameter in param_values
+        default; "sensitivity_full_output" will be used if parameter is set to None
 
     Returns
     -------
@@ -49,10 +55,14 @@ def single_param_variation_analysis(
             f"Simulation input `{json_input}` is neither a file path, nor a json dict. "
             f"It can therefore not be processed."
         )
+
+    if output_file is None:
+        output_file = "sensitivity_full_output"
+
     param_path_tuple = split_nested_path(json_path_to_param_value)
     answer = []
     if simulation_input is not None:
-        for param_val in param_values:
+        for i, param_val in enumerate(param_values):
             # modify the value of the parameter before running a new simulation
             modified_input = set_nested_value(
                 simulation_input, param_val, param_path_tuple
@@ -62,7 +72,15 @@ def single_param_variation_analysis(
             sim_output_json = run_simulation(
                 modified_input, display_output="error", epa_format=False
             )
-            print(sim_output_json)
+            with open(f"{output_file}_{i}.json", "w") as fp:
+                json.dump(
+                    sim_output_json,
+                    fp,
+                    skipkeys=False,
+                    sort_keys=True,
+                    default=convert_from_special_types_to_json,
+                    indent=4,
+                )
             if json_path_to_output_value is None:
                 answer.append(sim_output_json)
             else:
