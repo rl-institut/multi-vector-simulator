@@ -32,7 +32,7 @@ Here is a template for new release sections
 - Add `-d` option to `mvs_report` command to use hotreload of dash app for devs (#770)
 - Add `utils.analysis` module for overall analysis functions (#679)
 - Added pre-processing step with `C0.replace_nans_in_timeseries_with_0` to set NaNs occurring in provided timeseries to zero (#746)
-- KPI processing function `E3.add_total_consumption_electricity_equivaluent()` (#726) 
+- KPI processing function `E3.add_total_consumption_from_provider_electricity_equivalent()` incl. pytest (#726)
 - Subsection `Minimal degree of autonomy constraint` for RTD, added parameter in parameter csv  (#730, #726)
 - Minimal degree of autonomy constraint including pytest and benchmark test (#726)
 

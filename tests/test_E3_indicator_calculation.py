@@ -740,3 +740,29 @@ def test_add_specific_emissions_per_electricity_equivalent():
     assert (
         emissions_kWheleq == 0.7
     ), f"{SPECIFIC_EMISSIONS_ELEQ} [{UNIT_SPECIFIC_EMISSIONS}] should be total_emissions / total_demand_electricity_equivalent (in this case: 70/100=0.7), but is {emissions_kWheleq}."
+
+
+def test_add_total_consumption_from_provider_electricity_equivalent():
+    dso = "DSO"
+    exp = 100
+    consumption_source = str(dso + DSO_CONSUMPTION)
+    dict_values = {
+        KPI: {KPI_SCALARS_DICT: {}},
+        ENERGY_PROVIDERS: {dso: {ENERGY_VECTOR: electricity}},
+        ENERGY_PRODUCTION: {
+            consumption_source: {TOTAL_FLOW: {VALUE: exp}, ENERGY_VECTOR: electricity}
+        },
+    }
+
+    E3.add_total_consumption_from_provider_electricity_equivalent(dict_values)
+    for kpi in [
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity,
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity + SUFFIX_ELECTRICITY_EQUIVALENT,
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + SUFFIX_ELECTRICITY_EQUIVALENT,
+    ]:
+        assert (
+            kpi in dict_values[KPI][KPI_SCALARS_DICT]
+        ), f"The {kpi} is not included in the {KPI_SCALARS_DICT}, which only holds {dict_values[KPI][KPI_SCALARS_DICT].keys()}."
+        assert (
+            dict_values[KPI][KPI_SCALARS_DICT][kpi] == exp
+        ), f"The {kpi} should have been {exp} but is {dict_values[KPI][KPI_SCALARS_DICT][kpi]}."

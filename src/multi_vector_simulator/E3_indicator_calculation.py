@@ -713,7 +713,7 @@ def add_total_feedin_electricity_equivalent(dict_values):
     )
 
 
-def add_total_consumption_electricity_equivalent(dict_values):
+def add_total_consumption_from_provider_electricity_equivalent(dict_values):
     """
     Determines the total consumption from energy providers with weighting of electricity equivalent.
 
@@ -725,7 +725,15 @@ def add_total_consumption_electricity_equivalent(dict_values):
     Returns
     -------
     None
-        updated dict_values with KPI : TOTAL_CONSUMPTION_FROM_PROVIDERS
+        updated dict_values with KPI :
+        - TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity,
+        - TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity + SUFFIX_ELECTRICITY_EQUIVALENT
+        - TOTAL_CONSUMPTION_FROM_PROVIDERS + SUFFIX_ELECTRICITY_EQUIVALENT
+
+    Notes
+    -----
+    Tested with:
+    - E3.test_add_total_consumption_from_provider_electricity_equivalent()
     """
 
     total_consumption_dict = {}
