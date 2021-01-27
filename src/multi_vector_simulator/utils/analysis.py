@@ -9,12 +9,16 @@ from multi_vector_simulator.server import run_simulation
 from multi_vector_simulator.B0_data_input_json import (
     load_json,
     convert_from_json_to_special_types,
-    convert_from_special_types_to_json
+    convert_from_special_types_to_json,
 )
 
 
 def single_param_variation_analysis(
-    param_values, json_input, json_path_to_param_value, json_path_to_output_value=None, output_file=None
+    param_values,
+    json_input,
+    json_path_to_param_value,
+    json_path_to_output_value=None,
+    output_file=None,
 ):
     r"""Run mvs simulations by varying one of the input parameters to access output's sensitivity
 
