@@ -558,13 +558,13 @@ def equation_degree_of_autonomy(total_consumption_from_energy_provider, total_de
     """
     Calculates the degree of autonomy (DA).
 
-    The degree of autonomy describes the relation of the total locally
-    generated energy to the total demand of the system.
+    The degree of autonomy describes the relation of how much demand is supplied by local generation (as opposed to
+    grid conumption) compared to the total demand of the system.
 
     Parameters
     ----------
     total_consumption_from_energy_provider: float
-        total internal generation of energy
+        total energy consumption from providers
 
     total_demand: float
         total demand
@@ -575,11 +575,10 @@ def equation_degree_of_autonomy(total_consumption_from_energy_provider, total_de
         degree of autonomy
 
     .. math::
-        DA &=\frac{\sum_i {E_{demand} (i) \cdot w_i} - \sum_{i} {E_{total_consumption_from_energy_provider} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+        DA &=\frac{\sum_i {E_{demand} (i) \cdot w_i} - \sum_{i} {E_{consumption,provider,j} (j) \cdot w_j}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
-    A DA = 0 : System is totally dependent on the DSO,
-    DA = 1 : System is autonomous / a net-energy system
-    DA > 1 : a plus-energy system.
+    A DA = 0 : Demand is fully supplied by DSO consumption
+    DA = 1 : System is autonomous, ie. no DSO consumption is necessary
 
     Notice: As above, we apply a weighting based on Electricity Equivalent.
 
@@ -716,7 +715,7 @@ def add_total_feedin_electricity_equivalent(dict_values):
 
 def add_total_consumption_electricity_equivalent(dict_values):
     """
-    Determines the total grid consumption with weighting of electricity equivalent.
+    Determines the total consumption from energy providers with weighting of electricity equivalent.
 
     Parameters
     ----------

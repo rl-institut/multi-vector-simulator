@@ -53,8 +53,8 @@ def minimal_constraint_test(dict_values, minimal_constraint, bounded_result):
     - MINIMAL_RENEWABLE_FACTOR vs. DEGREE_OF_AUTONOMY
 
     Tested with:
-    - E4.test_minimal_renewable_share_test_passes()
-    - E4.test_minimal_renewable_share_test_fails()
+    - E4.test_minimal_constraint_test_passes()
+    - E4.test_minimal_constraint_test_fails()
 
     """
     if dict_values[CONSTRAINTS][minimal_constraint][VALUE] > 0:

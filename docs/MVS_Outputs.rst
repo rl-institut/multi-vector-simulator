@@ -276,7 +276,7 @@ A degree of autonomy close to zero shows high dependence on the grid operator, w
 As above, we apply a weighting based on Electricity Equivalent.
 
 .. math::
-       Degree of Autonomy = \frac{\sum E_{demand,i} \cdot w_i - \sum E_{consumption,provider,j} \cdot w_j}{\sum E_{demand,i} \cdot w_i}
+       Degree of Autonomy = \frac{\sum_{i} E_{demand,i} \cdot w_i - \sum_{j} E_{consumption,provider,j} \cdot w_j}{\sum_{i} E_{demand,i} \cdot w_i}
 
 
 Automatic Report

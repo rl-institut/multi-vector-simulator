@@ -641,10 +641,12 @@ def test_add_degree_of_autonomy():
     E3.add_degree_of_autonomy(dict_values_DA)
 
     degree_of_autonomy = (total_demand - total_consumption_from_grid) / total_demand
-
+    assert (
+        DEGREE_OF_AUTONOMY in dict_values_DA[KPI][KPI_SCALARS_DICT]
+    ), f"The {DEGREE_OF_AUTONOMY} is added to {KPI_SCALARS_DICT}"
     assert (
         dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY] == degree_of_autonomy
-    ), f"The degree of autonomy is added successfully to the list of KPI's."
+    ), f"The {DEGREE_OF_AUTONOMY} seems to be of incorrect value (exp: {degree_of_autonomy}, returned: {dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY]}."
 
 
 def test_equation_degree_of_autonomy():

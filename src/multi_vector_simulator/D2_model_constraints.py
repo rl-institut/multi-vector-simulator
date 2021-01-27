@@ -403,8 +403,8 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
     r"""
     Resulting in an energy system adhering to a minimal degree of autonomy.
 
-    Please be aware that the minimal degree of autonomy is not applied the one of one specific sector,
-    but of the overall energy system.
+    Please be aware that the minimal degree of autonomy is not applied to each sector individually,
+    but to the overall energy system (via energy carrier weighting).
 
     Parameters
     ----------
@@ -448,7 +448,7 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
         total_demand = 0
         total_consumption_from_energy_provider = 0
 
-        # Get the flows from all renewable assets
+        # Get the flows from demands and add weighing
         for asset in demands:
             demand_one_asset = (
                 sum(
@@ -462,7 +462,7 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
             )
             total_demand += demand_one_asset
 
-        # Get the flows from all non renewable assets
+        # Get the flows from providers and add weighing
         for asset in energy_provider_consumption_sources:
             consumption_of_one_provider = (
                 sum(
@@ -503,7 +503,7 @@ def prepare_constraint_minimal_degree_of_autonomy(
     oemof_solph_object_bus,
 ):
     r"""
-    Prepare creating the minimal degree of autonomy constraint by processing dict_values
+    Prepare creating the minimal degree of autonomy constraint by processing `dict_values`
 
     Parameters
     ----------
@@ -539,8 +539,7 @@ def prepare_constraint_minimal_degree_of_autonomy(
     energy_provider_consumption_sources = {}
     dso_consumption_source_list = []
 
-    # Determine which energy sources are of renewable origin and which are fossil-fuelled.
-    # DSO sources are added seperately (as they do not have parameter "RENEWABLE_ASSET_BOOL".
+    # Determine energy demands
     for asset in dict_values[ENERGY_CONSUMPTION]:
         if (
             AUTO_SINK not in asset
@@ -569,7 +568,7 @@ def prepare_constraint_minimal_degree_of_autonomy(
     for dso in dict_values[ENERGY_PROVIDERS]:
         # Get source connected to the specific DSO in question
         DSO_source_name = dso + DSO_CONSUMPTION
-        # Add DSO to both renewable and nonrenewable assets (as only a share of their supply may be renewable)
+        # Add DSO to assets
         dso_consumption_source_list.append(DSO_source_name)
 
         energy_provider_consumption_sources.update(

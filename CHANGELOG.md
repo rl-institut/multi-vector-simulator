@@ -49,10 +49,10 @@ Here is a template for new release sections
 - Update RTD instruction for instructions for the `mvs_tool` command (#770)
 - Change `test_benchmark_special_features` (#746)
 - Update "Input verification" section in `Model_Assmptions.rst` for NaNs (#746)
-- Definition of Degree of Autonomy (DA) updated in the RTD, also changed calculation of that KPI (#730, #726)
+- (!) Major change: Definition of Degree of Autonomy (DA) updated in the RTD, also changed calculation of that KPI (#730, #726)
 - Updated all input files to also include `minimal_degree_of_autonomy`, including `input_template`, `tests/inputs`, `tests/benchmark_test_inputs` (#726)
 - `E4.minimal_renewable_share_test()` into generic `E4.minimal_constraint_test()` so that it can be applied both to minimal renewable share and minimal degree of autonomy (#726)
-- `C1.check_time_series_values_between_0_and_1()`, now verification not only applied to renewable assets, but all non-dispatchable assets (#726)
+- `C1.check_non_dispatchable_source_time_series()`, now verification not only applied to renewable assets, but all non-dispatchable assets (#726)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
