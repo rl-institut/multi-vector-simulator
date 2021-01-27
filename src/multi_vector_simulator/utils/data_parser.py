@@ -76,6 +76,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EVALUATED_PERIOD,
     OUTPUT_LP_FILE,
     MINIMAL_RENEWABLE_FACTOR,
+    MINIMAL_DEGREE_OF_AUTONOMY,
     FIX_COST,
     KPI,
     TIMESTEP,
@@ -422,8 +423,7 @@ def convert_epa_params_to_mvs(epa_dict):
             dict_values[CONSTRAINTS] = {
                 MINIMAL_RENEWABLE_FACTOR: {UNIT: "factor", VALUE: 0},
                 MAXIMUM_EMISSIONS: {UNIT: "factor", VALUE: 0},
-                # TODO uncomment next line when PR #726 is merged
-                # MINIMAL_DEGREE_OF_AUTONOMY: {UNIT: "factor", VALUE: 0},
+                MINIMAL_DEGREE_OF_AUTONOMY: {UNIT: "factor", VALUE: 0},
             }
             missing_params.pop(CONSTRAINTS)
 

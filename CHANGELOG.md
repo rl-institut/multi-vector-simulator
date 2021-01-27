@@ -53,6 +53,7 @@ Here is a template for new release sections
 - Updated all input files to also include `minimal_degree_of_autonomy`, including `input_template`, `tests/inputs`, `tests/benchmark_test_inputs` (#726)
 - `E4.minimal_renewable_share_test()` into generic `E4.minimal_constraint_test()` so that it can be applied both to minimal renewable share and minimal degree of autonomy (#726)
 - `C1.check_non_dispatchable_source_time_series()`, now verification not only applied to renewable assets, but all non-dispatchable assets (#726)
+- Add `MINIMAL_DEGREE_OF_AUTONOMY` to EPA-MVS parser (`utils.data_parser.convert_epa_params_to_mvs()`)(#726)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
