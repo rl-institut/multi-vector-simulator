@@ -270,7 +270,7 @@ or an excess sink.
 Degree of autonomy (DA)
 #######################
 
-The degree of autonomy describes the overall energy consumed minus the energy consumed from the grid divided by the overall energy consumed. Adapted from this definition `[2] <https://pvspeicher.htw-berlin.de/solarspeicherstudie/>`__.
+The degree of autonomy describes the overall energy consumed minus the energy consumed from the grid divided by the overall energy consumed. Adapted from this definition `[3] <https://pvspeicher.htw-berlin.de/solarspeicherstudie/>`__.
 
 A degree of autonomy close to zero shows high dependence on the grid operator, while a degree of autonomy of one represents an autonomous system. Note that this key parameter indicator does not take into account the outflow from the system to the grid operator (also called feedin).
 As above, we apply a weighting based on Electricity Equivalent.
