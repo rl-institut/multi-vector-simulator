@@ -60,6 +60,7 @@ Here is a template for new release sections
 - Remove redundant function `A1.check_for_official_extra_parameters` as `utils.compare_input_parameters_with_reference` works for both csv and json and will therefore be preferred (#761)
 - Remove `STORE_OEMOF_RESULTS` variable (#675)
 - Remove `F0.select_essential_results()` (#675)
+- Removed `DSM` and `TYPE_ASSET` from `input_template/energyConsumption.csv`, also in `constants.py` (#726)
 
 ### Fixed
 - Minor typos in D0, E4 and test_E4 files (#739)
