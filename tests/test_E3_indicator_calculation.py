@@ -656,6 +656,39 @@ def test_equation_degree_of_autonomy():
     )
 
 
+def test_add_degree_of_net_zero_energy():
+    """ """
+
+    total_generation = 50
+    total_demand = 100
+    dict_values_DA = {
+        KPI: {
+            KPI_SCALARS_DICT: {
+                TOTAL_GENERATION_IN_LES: total_generation,
+                TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
+            }
+        },
+    }
+    E3.add_degree_of_autonomy(dict_values_DA)
+
+    degree_of_autonomy = total_generation / total_demand
+
+    assert (
+        dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY] == degree_of_autonomy
+    ), f"The degree of autonomy is added successfully to the list of KPI's."
+
+
+def test_equation_degree_of_net_zero_energy():
+    """ """
+    total_generation = 30
+    total_demand = 100
+    degree_of_autonomy = E3.equation_degree_of_autonomy(total_generation, total_demand)
+    assert degree_of_autonomy == total_generation / total_demand, (
+        f"The degree_of_autonomy ({degree_of_autonomy}) is not calculated correctly. "
+        f"It should be equal to {total_generation / total_demand }."
+    )
+
+
 def test_equation_onsite_energy_fraction():
     """ """
     total_generation = 30

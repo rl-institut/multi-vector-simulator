@@ -281,6 +281,15 @@ As above, we apply a weighting based on Electricity Equivalent.
         DA &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
 
+Degree of Net Zero Energy (NZE)
+###############################
+
+
+
+.. math::
+        NZE &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i - E_{excess} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+
+
 Automatic Report
 -----------------
 MVS has a feature to automatically `generate a PDF report <https://mvs-eland.readthedocs.io/en/latest/Installation.html#generate-pdf-report-or-an-app-in-your-browser-to-visualise-the-results-of-the-simulation>`__ that contains the main elements from the input data as well as the simulation results' data.
