@@ -19,10 +19,12 @@ from multi_vector_simulator.utils.constants_json_strings import (
 from multi_vector_simulator.utils.constants import DATA_TYPE_JSON_KEY
 
 
-def test_minimal_renewable_share_test_passes():
+def test_minimal_constraint_test_passes():
     # No minimal renewable factor
     dict_values = {CONSTRAINTS: {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0}}}
-    return_value = E4.minimal_renewable_share_test(dict_values)
+    return_value = E4.minimal_constraint_test(
+        dict_values, MINIMAL_RENEWABLE_FACTOR, RENEWABLE_FACTOR
+    )
     assert (
         return_value == None
     ), f"When no minimal renewable factor is set, this test should not fail."
@@ -31,7 +33,9 @@ def test_minimal_renewable_share_test_passes():
         CONSTRAINTS: {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0.2}},
         KPI: {KPI_SCALARS_DICT: {RENEWABLE_FACTOR: 0.3}},
     }
-    return_value = E4.minimal_renewable_share_test(dict_values)
+    return_value = E4.minimal_constraint_test(
+        dict_values, MINIMAL_RENEWABLE_FACTOR, RENEWABLE_FACTOR
+    )
     assert (
         return_value == None
     ), f"When minimal renewable factor < res, this test should not fail."
@@ -40,18 +44,22 @@ def test_minimal_renewable_share_test_passes():
         CONSTRAINTS: {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0.2}},
         KPI: {KPI_SCALARS_DICT: {RENEWABLE_FACTOR: 0.2 - 10 ** (-7)}},
     }
-    return_value = E4.minimal_renewable_share_test(dict_values)
+    return_value = E4.minimal_constraint_test(
+        dict_values, MINIMAL_RENEWABLE_FACTOR, RENEWABLE_FACTOR
+    )
     assert (
         return_value == None
     ), f"When minimal renewable factor is missed by < e6, this test should not fail."
 
 
-def test_minimal_renewable_share_test_fails():
+def test_minimal_constraint_test_fails():
     dict_values = {
         CONSTRAINTS: {MINIMAL_RENEWABLE_FACTOR: {VALUE: 0.2}},
         KPI: {KPI_SCALARS_DICT: {RENEWABLE_FACTOR: 0.2 - 10 ** (-5)}},
     }
-    return_value = E4.minimal_renewable_share_test(dict_values)
+    return_value = E4.minimal_constraint_test(
+        dict_values, MINIMAL_RENEWABLE_FACTOR, RENEWABLE_FACTOR
+    )
     assert (
         return_value is False
     ), f"When the minimal renewable share constraint is not met (allowed deviation: < e6), this test should fail."

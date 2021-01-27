@@ -4,11 +4,15 @@
             "unit": "factor",
             "value": 0
         },
+      "minimal_degree_of_autonomy": {
+            "unit": "factor",
+            "value": 0
+        },
     "maximum_emissions": {
             "unit": "kgCO2eq/a",
             "value": 800000
         }
-    },
+     },
     "economic_data": {
         "annuity_factor": {
             "unit": "?",
@@ -47,7 +51,6 @@
           "energyVector": "Electricity",
           "Asset_list": {
             "DSO_consumption": "DSO_consumption source",
-            "DSO_feedin": "DSO_feedin_sink",
             "transformer_station_in": "Transformer station (DSO) consumption",
             "transformer_station_out": "Transformer station (DSO) feedin"}
         },
@@ -55,7 +58,6 @@
           "label": "Electricity",
           "energyVector": "Electricity",
           "Asset_list": {
-            "Electricity excess": "Electricity excess_sink",
             "demand_01": "Harbor",
             "demand_02": "Remaining demand",
             "demand_03": "Shore power (docked ships)",
@@ -74,114 +76,6 @@
         }
     },
     "energyConsumption": {
-        "DSO_feedin": {
-            "annuity_capex_price_dispatch": {
-                "unit": "currency/kW/a",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "specific_costs": {
-                "unit": "currency/kW",
-                "value": 0
-            },
-            "inflow_direction": "Electricity (DSO) bus",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "DSO_feedin_sink",
-            "lifetime": {
-                "unit": "year",
-                "value": 30
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/kW",
-                "value": 0.0
-            },
-            "lifetime_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?",
-                "value": -5.505932460595773
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
-                "value": -0.4
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": false
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/simulation period",
-                "value": 0.0
-            },
-            "type_oemof": "sink",
-            "unit": "?"
-        },
-        "Electricity excess": {
-            "annuity_capex_price_dispatch": {
-                "unit": "currency/unit/a",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "specific_costs": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "inflow_direction": "Electricity",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "Electricity excess_sink",
-            "lifetime": {
-                "unit": "year",
-                "value": 30
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/unit",
-                "value": 0.0
-            },
-            "lifetime_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?",
-                "value": 0.0
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
-                "value": 0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": false
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/simulation period",
-                "value": 0.0
-            },
-            "type_oemof": "sink",
-            "unit": "?"
-        },
         "demand_01": {
             "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",

@@ -22,6 +22,7 @@
  None, Longitude coordinate of the project's geographical location.,10.95787, Should follow geographical convention, Numeric, None,longitude,longitude-label
  None, The maximum amount of total emissions in the optimized energy system.,100000, Acceptable values are either a positive real number or None, Numeric or None, kgCO2eq/a,maximum_emissions,maxemissions-label
  None, The maximum installable capacity.,1000, None, Alphanumeric, None or float,maximumCap,maxcap-label
+None,The minimal degree of autonomy that needs to be met by the optimization.,0.3,Between 0 and 1,Numeric,factor,minimal_degree_of_autonomy,minda-label
  None, The minimum share of energy supplied by renewable generation in the optimized energy system. Insert the value 0 to deactivate this constraint.,0.7, Between 0 and 1, Numeric, factor,minimal_renewable_factor,minrenshare-label
  None, `True` if the user wants to perform capacity optimization for various components as part of the simulation., True, Permissible values are either True or False, str, Boolean value,optimizeCap,optimizecap-label
  None," The bus/component to which the energyVector is leaving, from the asset.", PV plant (mono), None, str, None,outflow_direction,outflowdirec-label

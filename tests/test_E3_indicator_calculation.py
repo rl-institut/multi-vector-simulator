@@ -27,6 +27,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_SHARE_DSO,
     RENEWABLE_ASSET_BOOL,
     DSO_CONSUMPTION,
+    TOTAL_CONSUMPTION_FROM_PROVIDERS,
     TOTAL_RENEWABLE_GENERATION_IN_LES,
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_ENERGY_USE,
@@ -544,7 +545,7 @@ def test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equi
     assert lcoe_energy_carrier == 0
 
 
-def test_add_total_feedin_electricity_equivaluent():
+def test_add_total_feedin_electricity_equivalent():
     """ """
 
     dso = "DSO"
@@ -562,7 +563,7 @@ def test_add_total_feedin_electricity_equivaluent():
         PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity}},
     }
 
-    E3.add_total_feedin_electricity_equivaluent(dict_values_feedin)
+    E3.add_total_feedin_electricity_equivalent(dict_values_feedin)
 
     assert (
         dict_values_feedin[KPI][KPI_SCALARS_DICT][
@@ -626,33 +627,39 @@ def test_add_onsite_energy_matching():
 def test_add_degree_of_autonomy():
     """ """
 
-    total_generation = 50
+    total_consumption_from_grid = 50
     total_demand = 100
     dict_values_DA = {
         KPI: {
             KPI_SCALARS_DICT: {
-                TOTAL_GENERATION_IN_LES: total_generation,
+                TOTAL_CONSUMPTION_FROM_PROVIDERS
+                + SUFFIX_ELECTRICITY_EQUIVALENT: total_consumption_from_grid,
                 TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
             }
         },
     }
     E3.add_degree_of_autonomy(dict_values_DA)
 
-    degree_of_autonomy = total_generation / total_demand
-
+    degree_of_autonomy = (total_demand - total_consumption_from_grid) / total_demand
+    assert (
+        DEGREE_OF_AUTONOMY in dict_values_DA[KPI][KPI_SCALARS_DICT]
+    ), f"The {DEGREE_OF_AUTONOMY} is added to {KPI_SCALARS_DICT}"
     assert (
         dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY] == degree_of_autonomy
-    ), f"The degree of autonomy is added successfully to the list of KPI's."
+    ), f"The {DEGREE_OF_AUTONOMY} seems to be of incorrect value (exp: {degree_of_autonomy}, returned: {dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY]}."
 
 
 def test_equation_degree_of_autonomy():
     """ """
-    total_generation = 30
+    total_consumption_from_grid = 30
     total_demand = 100
-    degree_of_autonomy = E3.equation_degree_of_autonomy(total_generation, total_demand)
-    assert degree_of_autonomy == total_generation / total_demand, (
+    degree_of_autonomy = E3.equation_degree_of_autonomy(
+        total_consumption_from_grid, total_demand
+    )
+    exp = (total_demand - total_consumption_from_grid) / total_demand
+    assert degree_of_autonomy == exp, (
         f"The degree_of_autonomy ({degree_of_autonomy}) is not calculated correctly. "
-        f"It should be equal to {total_generation / total_demand }."
+        f"It should be equal to {exp}."
     )
 
 
@@ -733,3 +740,29 @@ def test_add_specific_emissions_per_electricity_equivalent():
     assert (
         emissions_kWheleq == 0.7
     ), f"{SPECIFIC_EMISSIONS_ELEQ} [{UNIT_SPECIFIC_EMISSIONS}] should be total_emissions / total_demand_electricity_equivalent (in this case: 70/100=0.7), but is {emissions_kWheleq}."
+
+
+def test_add_total_consumption_from_provider_electricity_equivalent():
+    dso = "DSO"
+    exp = 100
+    consumption_source = str(dso + DSO_CONSUMPTION)
+    dict_values = {
+        KPI: {KPI_SCALARS_DICT: {}},
+        ENERGY_PROVIDERS: {dso: {ENERGY_VECTOR: electricity}},
+        ENERGY_PRODUCTION: {
+            consumption_source: {TOTAL_FLOW: {VALUE: exp}, ENERGY_VECTOR: electricity}
+        },
+    }
+
+    E3.add_total_consumption_from_provider_electricity_equivalent(dict_values)
+    for kpi in [
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity,
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity + SUFFIX_ELECTRICITY_EQUIVALENT,
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + SUFFIX_ELECTRICITY_EQUIVALENT,
+    ]:
+        assert (
+            kpi in dict_values[KPI][KPI_SCALARS_DICT]
+        ), f"The {kpi} is not included in the {KPI_SCALARS_DICT}, which only holds {dict_values[KPI][KPI_SCALARS_DICT].keys()}."
+        assert (
+            dict_values[KPI][KPI_SCALARS_DICT][kpi] == exp
+        ), f"The {kpi} should have been {exp} but is {dict_values[KPI][KPI_SCALARS_DICT][kpi]}."

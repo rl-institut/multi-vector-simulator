@@ -265,20 +265,18 @@ or an excess sink.
 
         &OEM \epsilon \text{[0,1]}
 
+.. _kpi_degree_of_autonomy:
 
 Degree of autonomy (DA)
 #######################
 
-The degree of autonomy describes the relation of the total locally
-generated energy to the total demand of the system (see `[2] <https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf>`__).
+The degree of autonomy describes the overall energy consumed minus the energy consumed from the grid divided by the overall energy consumed. Adapted from this definition `[3] <https://pvspeicher.htw-berlin.de/solarspeicherstudie/>`__.
 
-A DA close to zero shows high dependence on the DSO,
-while a DA of 1 represents an autonomous or net-energy system
-and a DA higher 1 a plus-energy system.
+A degree of autonomy close to zero shows high dependence on the grid operator, while a degree of autonomy of one represents an autonomous system. Note that this key parameter indicator does not take into account the outflow from the system to the grid operator (also called feedin).
 As above, we apply a weighting based on Electricity Equivalent.
 
 .. math::
-        DA &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+       Degree of Autonomy = \frac{\sum_{i} E_{demand,i} \cdot w_i - \sum_{j} E_{consumption,provider,j} \cdot w_j}{\sum_{i} E_{demand,i} \cdot w_i}
 
 
 Automatic Report
