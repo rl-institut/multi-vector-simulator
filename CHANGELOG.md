@@ -61,7 +61,7 @@ Here is a template for new release sections
 - Remove `STORE_OEMOF_RESULTS` variable (#675)
 - Remove `F0.select_essential_results()` (#675)
 - Removed `DSM` and `TYPE_ASSET` from `input_template/energyConsumption.csv`, also in `constants.py` (#726)
-
+- Removed warning message that is outdated as #559 is solved (777)
 ### Fixed
 - Minor typos in D0, E4 and test_E4 files (#739)
 - `utils.data_parser.convert_epa_params_to_mvs()` and `utils.data_parser.convert_mvs_params_to_epa()` now parse succesfully input files generated from EPA (#675)
