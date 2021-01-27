@@ -258,6 +258,7 @@ DEGREE_OF_SECTOR_COUPLING = "Degree of sector coupling"
 DEGREE_OF_AUTONOMY = "Degree of autonomy"
 ONSITE_ENERGY_FRACTION = "Onsite energy fraction"
 ONSITE_ENERGY_MATCHING = "Onsite energy matching"
+DEGREE_OF_NZE = "Degree of NZE"
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (
