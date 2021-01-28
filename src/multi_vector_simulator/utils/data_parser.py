@@ -299,7 +299,10 @@ def convert_epa_params_to_mvs(epa_dict):
 
             # Never save the oemof lp file when running on the server
             if param_group == SIMULATION_SETTINGS:
-                dict_values[param_group][OUTPUT_LP_FILE] = False
+                dict_values[param_group][OUTPUT_LP_FILE] = {
+                    UNIT: TYPE_BOOL,
+                    VALUE: False,
+                }
 
         else:
             logging.warning(

@@ -740,6 +740,8 @@ A benchmark is a point of reference against which results are compared to assess
 
 * Maximum emissions constraint: Grid + PV + Diesel Generator (data: `set 1 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_None>`__, `set 2 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low>`__, `set 3 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low_grid_RE_100>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/f459b35da6c46445e8294845604eb2b683e43680/tests/test_benchmark_constraints.py#L121>`__): Emissions are limited by constraint, more PV is installed to reduce emissions. For RE share of 100 % in grid, more electricity from the grid is used
 
+* Parser converting an energy system model from EPA to MVS (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/epa_benchmark.json>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/test_benchmark_scenarios.py>`__)
+
 More tests can still be implemented with regard to:
 
 * The investment model within the MVS
