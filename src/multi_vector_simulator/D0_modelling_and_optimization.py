@@ -18,10 +18,10 @@ Functional requirements of module D0:
 - add simulation parameters to dict values
 """
 
-
 import logging
 import os
 import timeit
+import warnings
 
 from oemof.solph import processing
 import oemof.solph as solph
@@ -54,15 +54,11 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SIMULTATION_TIME,
 )
 
-
-class WrongOemofAssetForGroupError(ValueError):
-    # Exception raised when an asset group has an asset with an denied oemof type
-    pass
-
-
-class UnknownOemofAssetType(ValueError):
-    # Exception raised in case an asset type is defined for an asset group constants_json_strings but the oemof function is not jet defined (only dev)
-    pass
+from multi_vector_simulator.utils.exceptions import (
+    MVSOemofError,
+    WrongOemofAssetForGroupError,
+    UnknownOemofAssetType,
+)
 
 
 def run_oemof(dict_values, save_energy_system_graph=False):
@@ -269,6 +265,15 @@ class model_building:
         """
         Initiates the oemof-solph simulation, accesses results and writes main results into dict
 
+        If an error is encountered in the oemof solver, mvs should not be allowed to continue,
+        otherwise other errors related to the uncomplete simulation result might occur and it will
+        be more obscure to the endusers what went wrong.
+
+        A MVS error is raised if the omoef solver warning states explicitely that
+        "termination condition infeasible", otherwise the oemof solver warning is re-raised as
+        an error.
+
+
         Parameters
         ----------
         dict_values: dict
@@ -284,15 +289,38 @@ class model_building:
         -------
         Updated model with results, main results (flows, assets) and meta results (simulation)
         """
+
         logging.info("Starting simulation.")
-        local_energy_system.solve(
-            solver="cbc",
-            solve_kwargs={
-                "tee": False
-            },  # if tee_switch is true solver messages will be displayed
-            cmdline_options={"ratioGap": str(0.03)},
-        )  # ratioGap allowedGap mipgap
-        logging.info("Problem solved.")
+        # turn warnings into errors
+        warnings.filterwarnings("error")
+        try:
+            local_energy_system.solve(
+                solver="cbc",
+                solve_kwargs={
+                    "tee": False
+                },  # if tee_switch is true solver messages will be displayed
+                cmdline_options={"ratioGap": str(0.03)},
+            )  # ratioGap allowedGap mipgap
+        except UserWarning as e:
+            error_message = str(e)
+            compare_message = "termination condition infeasible"
+            if compare_message in error_message:
+                error_message = (
+                    f"The following error occurred during the mvs solver: {error_message}\n\n "
+                    f"There are several reasons why this could have happened."
+                    "\n\t- the energy system is not properly connected. "
+                    "\n\t- the capacity of some assets might not have been optimized. "
+                    "\n\t- the demands might not be supplied with the installed capacities in "
+                    "current energy system. Check your maximum power demand and if your energy "
+                    "production assets and/or energy conversion assets have enough capacity to "
+                    "meet the total demand"
+                )
+                logging.error(error_message)
+                raise MVSOemofError(error_message) from None
+            else:
+                raise e
+        # stop turning warnings into errors
+        warnings.resetwarnings()
 
         # add results to the energy system to make it possible to store them.
         results_main = processing.results(local_energy_system)
