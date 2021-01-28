@@ -178,7 +178,7 @@ def convert_from_special_types_to_json(o):
         json-storable value.
 
     """
-    if isinstance(o, np.int64):
+    if isinstance(o, np.int64) or isinstance(o, np.int32):
         answer = int(o)
     elif isinstance(o, bool) or isinstance(o, str):
         answer = o
