@@ -333,7 +333,7 @@ class TestACElectricityBus:
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
 
 
-# this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+# this ensure that the test is only ran if explicitly executed
 # alone is called
 @pytest.mark.skipif(
     EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),

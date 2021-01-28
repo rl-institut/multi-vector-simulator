@@ -35,7 +35,7 @@ Here is a template for new release sections
 - KPI processing function `E3.add_total_consumption_from_provider_electricity_equivalent()` incl. pytest (#726)
 - Subsection `Minimal degree of autonomy constraint` for RTD, added parameter in parameter csv  (#730, #726)
 - Minimal degree of autonomy constraint including pytest and benchmark test (#726)
-- Add test for json benchmark from EPA (#781)
+- Add benchmark test for json benchmark file from EPA (EPA-MVS compatability) (#781)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
