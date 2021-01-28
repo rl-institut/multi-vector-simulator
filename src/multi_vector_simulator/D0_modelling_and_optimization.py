@@ -21,6 +21,7 @@ Functional requirements of module D0:
 import logging
 import os
 import timeit
+import warnings
 
 from oemof.solph import processing
 import oemof.solph as solph
@@ -288,7 +289,6 @@ class model_building:
         -------
         Updated model with results, main results (flows, assets) and meta results (simulation)
         """
-        import warnings
 
         logging.info("Starting simulation.")
         # turn warnings into errors
