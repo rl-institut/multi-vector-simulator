@@ -15,7 +15,7 @@ import pytest
 
 from pytest import approx
 from multi_vector_simulator.cli import main
-from multi_vector_simulator.server import  run_simulation
+from multi_vector_simulator.server import run_simulation
 from multi_vector_simulator.B0_data_input_json import load_json
 
 from _constants import (
@@ -351,5 +351,3 @@ def test_benchmark_EPA_run_through():
     dict_values = convert_epa_params_to_mvs(epa_dict)
 
     run_simulation(dict_values)
-
-
