@@ -70,6 +70,7 @@ Here is a template for new release sections
 - Fix issue (#769): Fix argument parsing and error messages of `mvs_report` command (#770)
 - Fix issue (#756): Avoid crashing report generation when internet not available (#770)
 - Fixed display of math equations in RTD (#730)
+- Fix numpy.int32 error in B0 (#778)
 
 ## [0.5.4] - 2020-12-18
 
