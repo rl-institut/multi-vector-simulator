@@ -36,6 +36,9 @@ Here is a template for new release sections
 - Subsection `Minimal degree of autonomy constraint` for RTD, added parameter in parameter csv  (#730, #726)
 - Minimal degree of autonomy constraint including pytest and benchmark test (#726)
 - Add benchmark test for json benchmark file from EPA (EPA-MVS compatability) (#781)
+- Add a try-except code block to catch fatal errors that cause simulation to terminate unsuccessfully (#754)
+
+
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
@@ -55,6 +58,7 @@ Here is a template for new release sections
 - `E4.minimal_renewable_share_test()` into generic `E4.minimal_constraint_test()` so that it can be applied both to minimal renewable share and minimal degree of autonomy (#726)
 - `C1.check_non_dispatchable_source_time_series()`, now verification not only applied to renewable assets, but all non-dispatchable assets (#726)
 - Add `MINIMAL_DEGREE_OF_AUTONOMY` to EPA-MVS parser (`utils.data_parser.convert_epa_params_to_mvs()`)(#726)
+- Provide the modeler with helpful messages enabling simpler identification and rectification of problems in their input files (#754)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
