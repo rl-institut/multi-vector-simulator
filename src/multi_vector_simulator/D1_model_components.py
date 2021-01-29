@@ -31,6 +31,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SOC_INITIAL,
     SOC_MAX,
     SOC_MIN,
+    THERM_LOSSES_REL,
+    THERM_LOSSES_ABS,
     STORAGE_CAPACITY,
     TIMESERIES,
     TIMESERIES_NORMALIZED,
@@ -578,6 +580,8 @@ def storage_fix(model, dict_asset, **kwargs):
         },  # maximum discharge possible in one timestep
         loss_rate=1
         - dict_asset[STORAGE_CAPACITY][EFFICIENCY][VALUE],  # from timestep to timestep
+        fixed_losses_absolute=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE],
+        fixed_losses_relative=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][VALUE],
         min_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE],
         max_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE],
         initial_storage_level=dict_asset[STORAGE_CAPACITY][SOC_INITIAL][
@@ -602,16 +606,39 @@ def storage_optimize(model, dict_asset, **kwargs):
     -----
     Tested with:
     - test_storage_optimize()
+    - test_storage_optimize_investment_minimum_0_float()
+    - test_storage_optimize_investment_minimum_0_time_series()
+    - test_storage_optimize_investment_minimum_1_rel_float()
+    - test_storage_optimize_investment_minimum_1_abs_float()
+    - test_storage_optimize_investment_minimum_1_rel_times_series()
+    - test_storage_optimize_investment_minimum_1_abs_times_series()
 
     Returns
     -------
     Indirectly updated `model` and dict of asset in `kwargs` with the storage object.
 
     """
+    # investment.minimum for an InvestmentStorage is 0 as default
+    minimum = 0
+
+    # Set investment.minimum to 1 if
+    # non-zero fixed_thermal_losses_relative or fixed_thermal_losses_absolute exist as
+    for losses in [THERM_LOSSES_REL, THERM_LOSSES_ABS]:
+        # 1. float or
+        try:
+            float(dict_asset[STORAGE_CAPACITY][losses][VALUE])
+            if dict_asset[STORAGE_CAPACITY][losses][VALUE] != 0:
+                minimum = 1
+        # 2. time series
+        except TypeError:
+            if sum(dict_asset[STORAGE_CAPACITY][losses][VALUE]) != 0:
+                minimum = 1
+
     storage = solph.components.GenericStorage(
         label=dict_asset[LABEL],
         investment=solph.Investment(
             ep_costs=dict_asset[STORAGE_CAPACITY][SIMULATION_ANNUITY][VALUE],
+            minimum=minimum,
             maximum=dict_asset[STORAGE_CAPACITY][MAXIMUM_CAP][VALUE],
             existing=dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE],
         ),
@@ -641,6 +668,8 @@ def storage_optimize(model, dict_asset, **kwargs):
         },  # maximum discharge power
         loss_rate=1
         - dict_asset[STORAGE_CAPACITY][EFFICIENCY][VALUE],  # from timestep to timestep
+        fixed_losses_absolute=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE],
+        fixed_losses_relative=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][VALUE],
         min_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE],
         max_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE],
         initial_storage_level=dict_asset[STORAGE_CAPACITY][SOC_INITIAL][
