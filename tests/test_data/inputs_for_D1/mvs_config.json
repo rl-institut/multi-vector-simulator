@@ -685,6 +685,10 @@
                     "unit": "kWh",
                     "value": 0.0
                 },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
+                },
                 "soc_initial": {
                     "unit": "None or factor",
                     "value": null
@@ -696,6 +700,14 @@
                 "soc_min": {
                     "unit": "factor",
                     "value": 0.2
+                },
+                "fixed_thermal_losses_relative": {
+                    "unit": "factor",
+                    "value": 0.001
+                },
+                "fixed_thermal_losses_absolute": {
+                    "unit": "factor",
+                    "value": 0.0002
                 },
                 "simulation_annuity": {
                     "value": 2.7,
@@ -714,6 +726,10 @@
                 "installedCap": {
                     "unit": "kWh",
                     "value": 0
+                },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
                 },
                 "dispatch_price": {
                     "unit": "currency/kWh",
@@ -736,6 +752,10 @@
                 "installedCap": {
                     "unit": "kWh",
                     "value": 0
+                },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
                 },
                 "dispatch_price": {
                     "unit": "currency/kWh",
@@ -765,6 +785,10 @@
                     "unit": "kWh",
                     "value": 0.0
                 },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
+                },
                 "soc_initial": {
                     "unit": "None or factor",
                     "value": null
@@ -776,6 +800,14 @@
                 "soc_min": {
                     "unit": "factor",
                     "value": 0.2
+                },
+                "fixed_thermal_losses_relative": {
+                    "unit": "factor",
+                    "value": 0.001
+                },
+                "fixed_thermal_losses_absolute": {
+                    "unit": "factor",
+                    "value": 0.0002
                 }
             },
             "input power": {
@@ -786,6 +818,10 @@
                 "installedCap": {
                     "unit": "kWh",
                     "value": 0
+                },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
                 },
                 "dispatch_price": {
                     "unit": "currency/kWh",
@@ -800,6 +836,10 @@
                 "installedCap": {
                     "unit": "kWh",
                     "value": 0
+                },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
                 },
                 "dispatch_price": {
                     "unit": "currency/kWh",
