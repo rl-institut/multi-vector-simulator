@@ -63,6 +63,65 @@ In case of excessive excess energy, a warning is given that it seems to be cheap
 High excess energy can for example result into an optimized inverter capacity that is smaller than the peak generation of installed PV.
 This becomes unrealistic when the excess is very high.
 
+Energy storage
+###########
+
+Generic storages are defined with file `energyStorage.csv` and `storage_*.csv` and have subassets, which are listed in :ref:`storage_csv`.
+
+Stratified thermal energy storage uses the two optional parameters `fixed_losses_relative` and `fixed_losses_absolute`. If these two are not included in `storage_*.csv` or are equal to zero, then a normal generic storage is simulated.
+They are used to take into account temperature dependent losses of a thermal storage. To model a thermal energy storage without stratification, the two parameters are not set. The default values of `fixed_losses_relative` and `fixed_losses_absolute` are zero.
+Except for these two additional parameters the stratified thermal storage is implemented in the same way as other storage components.
+
+Precalculations of the `installedCap`, `efficiency`, `fixed_losses_relative` and `fixed_losses_absolute` can be done orientating on the stratified thermal storage component of `oemof.thermal  <https://github.com/oemof/oemof-thermal>`__.
+The parameters `U-value`, `volume` and `surface` of the storage, which are required to calculate `installedCap`, can be precalculated as well.
+
+The efficiency :math:`\eta` of the storage is calculated as follows:
+
+.. math::
+   \eta = 1 - loss{\_}rate
+
+This example shows how to do precalculations using stratified thermal storage specific input data:
+
+
+.. code-block:: python
+
+        from oemof.thermal.stratified_thermal_storage import (
+        calculate_storage_u_value,
+        calculate_storage_dimensions,
+        calculate_capacities,
+        calculate_losses,
+        )
+
+        # Precalculation
+        u_value = calculate_storage_u_value(
+            input_data['s_iso'],
+            input_data['lamb_iso'],
+            input_data['alpha_inside'],
+            input_data['alpha_outside'])
+
+        volume, surface = calculate_storage_dimensions(
+            input_data['height'],
+            input_data['diameter']
+        )
+
+        nominal_storage_capacity = calculate_capacities(
+            volume,
+            input_data['temp_h'],
+            input_data['temp_c'])
+
+        loss_rate, fixed_losses_relative, fixed_losses_absolute = calculate_losses(
+            u_value,
+            input_data['diameter'],
+            input_data['temp_h'],
+            input_data['temp_c'],
+            input_data['temp_env'])
+
+Please see the `oemof.thermal` `examples <https://github.com/oemof/oemof-thermal/tree/dev/examples/stratified_thermal_storage>`__ and the `documentation  <https://oemof-thermal.readthedocs.io/en/latest/stratified_thermal_storage.html>`__ for further information.
+
+For an investment optimization the height of the storage should be left open in the precalculations and `installedCap` should be set to 0 or NaN.
+
+An implementation of the stratified thermal storage component has been done in `pvcompare <https://github.com/greco-project/pvcompare>`__. You can find the precalculations of the stratified thermal energy storage made in `pvcompare` `here <https://github.com/greco-project/pvcompare/blob/feature/dev/pvcompare/stratified_thermal_storage.py>`__.
+
 Energy providers (DSOs)
 -----------------------
 
@@ -741,6 +800,7 @@ A benchmark is a point of reference against which results are compared to assess
 * Maximum emissions constraint: Grid + PV + Diesel Generator (data: `set 1 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_None>`__, `set 2 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low>`__, `set 3 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low_grid_RE_100>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/f459b35da6c46445e8294845604eb2b683e43680/tests/test_benchmark_constraints.py#L121>`__): Emissions are limited by constraint, more PV is installed to reduce emissions. For RE share of 100 % in grid, more electricity from the grid is used
 
 * Parser converting an energy system model from EPA to MVS (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/epa_benchmark.json>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/test_benchmark_scenarios.py>`__)
+* Stratified thermal energy storage (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/Feature_stratified_thermal_storage>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/test_benchmark_stratified_thermal_storage.py>`__): With fixed thermal losses absolute and relative reduced storage capacity only if these losses apply
 
 More tests can still be implemented with regard to:
 

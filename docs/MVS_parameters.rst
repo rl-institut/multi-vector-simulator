@@ -174,6 +174,8 @@ The file `simulation_settings.csv` includes the following parameters:
 * :ref:`timestep-label`
 * :ref:`outputlpfile-label`
 
+.. _storage_csv:
+
 storage_*.csv
 ^^^^^^^^^^^^^^
 
