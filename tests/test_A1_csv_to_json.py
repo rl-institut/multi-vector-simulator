@@ -40,6 +40,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     STORAGE_CAPACITY,
     INPUT_POWER,
     OUTPUT_POWER,
+    THERM_LOSSES_REL,
+    THERM_LOSSES_ABS,
 )
 from _constants import (
     CSV_PATH,
@@ -344,3 +346,71 @@ def test_add_storage_components_label_correctly_added():
 def teardown_function():
     if os.path.exists(os.path.join(CSV_PATH, CSV_FNAME)):
         os.remove(os.path.join(CSV_PATH, CSV_FNAME))
+
+
+def test_default_values_storage_without_thermal_losses():
+    exp = {
+        THERM_LOSSES_REL: {UNIT: "no_unit", VALUE: 0},
+        THERM_LOSSES_ABS: {UNIT: "kWh", VALUE: 0},
+    }
+
+    data_path = os.path.join(
+        TEST_REPO_PATH,
+        "benchmark_test_inputs",
+        "Feature_stratified_thermal_storage",
+        "csv_elements",
+    )
+
+    json = A1.create_json_from_csv(
+        input_directory=data_path,
+        filename="storage_fix_without_fixed_thermal_losses",
+        parameters=[
+            "age_installed",
+            "development_costs",
+            "specific_costs",
+            "efficiency",
+            "installedCap",
+            "lifetime",
+            "specific_costs_om",
+            "unit",
+        ],
+        asset_is_a_storage=True,
+    )
+    for param, result in exp.items():
+        assert (
+            json["storage capacity"][param][VALUE] == result[VALUE]
+        ), f"The losses set to default value should match {result[VALUE]}"
+
+
+def test_default_values_storage_with_thermal_losses():
+    exp = {
+        THERM_LOSSES_REL: {UNIT: "no_unit", VALUE: 0.001},
+        THERM_LOSSES_ABS: {UNIT: "kWh", VALUE: 0.00001},
+    }
+
+    data_path = os.path.join(
+        TEST_REPO_PATH,
+        "benchmark_test_inputs",
+        "Feature_stratified_thermal_storage",
+        "csv_elements",
+    )
+
+    json = A1.create_json_from_csv(
+        input_directory=data_path,
+        filename="storage_fix_with_fixed_thermal_losses_float",
+        parameters=[
+            "age_installed",
+            "development_costs",
+            "specific_costs",
+            "efficiency",
+            "installedCap",
+            "lifetime",
+            "specific_costs_om",
+            "unit",
+        ],
+        asset_is_a_storage=True,
+    )
+    for param, result in exp.items():
+        assert (
+            json["storage capacity"][param][VALUE] == result[VALUE]
+        ), f"{param} should match {result[VALUE]}"

@@ -1,0 +1,16 @@
+,unit,Heat pump
+age_installed,year,0
+development_costs,currency,0
+specific_costs,currency/kW,1000
+efficiency,factor,3.8
+inflow_direction,str,Electricity
+installedCap,kW,0
+maximumCap,kW,None
+lifetime,year,20
+specific_costs_om,currency/kW/year,20
+dispatch_price,currency/kWh,0
+optimizeCap,bool,True
+outflow_direction,str,Heat
+energyVector,str,Heat
+type_oemof,str,transformer
+unit,str,kW

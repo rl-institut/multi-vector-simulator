@@ -25,6 +25,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INPUT_POWER,
     OUTPUT_POWER,
     C_RATE,
+    THERM_LOSSES_REL,
+    THERM_LOSSES_ABS,
     STORAGE_CAPACITY,
     TIMESERIES,
     TIMESERIES_NORMALIZED,
@@ -616,11 +618,64 @@ class TestStorageComponent:
         self.busses = get_busses
         self.storages = {}
 
+    def test_storage_fix(self):
+        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_fix"]
+        D1.storage(
+            model=self.model,
+            dict_asset=dict_asset,
+            bus=self.busses,
+            storage=self.storages,
+        )
+
+        # self.storages should contain the storage (key = label, value = storage object)
+        assert dict_asset[LABEL] in self.storages
+        assert isinstance(
+            self.storages[dict_asset[LABEL]], solph.components.GenericStorage
+        )
+
+        # check value of `existing`, `investment` and `nominal_value`(`nominal_storage_capacity`)
+        input_bus = self.model.entities[-1].inputs[self.busses["Storage bus"]]
+        output_bus = self.model.entities[-1].outputs[self.busses["Storage bus"]]
+
+        assert hasattr(input_bus, "existing") is False
+        assert input_bus.investment is None
+        assert (
+            input_bus.nominal_value
+            == dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
+        )
+
+        assert hasattr(output_bus, "existing") is False
+        assert output_bus.investment is None
+        assert output_bus.nominal_value == dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE]
+
+        assert (
+            hasattr(self.model.entities[-1], "existing") is False
+        )  # todo probably not necessary parameter
+        assert self.model.entities[-1].investment is None
+        assert (
+            self.model.entities[-1].nominal_storage_capacity
+            == dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE]
+        )
+
+        # # check that invest_relation_input_capacity and invest_relation_output_capacity is not added
+        assert self.model.entities[-1].invest_relation_input_capacity is None
+        assert self.model.entities[-1].invest_relation_output_capacity is None
+
+        assert (
+            self.model.entities[-1].fixed_losses_relative.default
+            == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][VALUE]
+        )
+        assert (
+            self.model.entities[-1].fixed_losses_absolute.default
+            == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE]
+        )
+
     def test_storage_optimize(self):
         dict_asset = self.dict_values[ENERGY_STORAGE]["storage_optimize"]
         dict_asset[STORAGE_CAPACITY][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
         dict_asset[INPUT_POWER][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
         dict_asset[OUTPUT_POWER][MAXIMUM_CAP] = {VALUE: None, UNIT: "kWh"}
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL] = {VALUE: 0.001, UNIT: "no_unit"}
         D1.storage(
             model=self.model,
             dict_asset=dict_asset,
@@ -675,8 +730,21 @@ class TestStorageComponent:
             == dict_asset[OUTPUT_POWER][C_RATE][VALUE]
         )
 
-    def test_storage_fix(self):
-        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_fix"]
+        assert (
+            self.model.entities[-1].fixed_losses_relative.default
+            == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][VALUE]
+        )
+        assert (
+            self.model.entities[-1].fixed_losses_absolute.default
+            == dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE]
+        )
+
+    def test_storage_optimize_investment_minimum_0_float(self):
+        # Test if minimum value is zero if thermal losses are zero (float)
+        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_optimize"]
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL] = {VALUE: 0, UNIT: "no_unit"}
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS] = {VALUE: 0, UNIT: "kWh"}
+
         D1.storage(
             model=self.model,
             dict_asset=dict_asset,
@@ -684,39 +752,106 @@ class TestStorageComponent:
             storage=self.storages,
         )
 
-        # self.storages should contain the storage (key = label, value = storage object)
-        assert dict_asset[LABEL] in self.storages
-        assert isinstance(
-            self.storages[dict_asset[LABEL]], solph.components.GenericStorage
+        assert (
+            self.model.entities[-1].investment.minimum == 0
+        ), f"investment.minimum should be zero with {THERM_LOSSES_REL} and {THERM_LOSSES_ABS} that are equal to zero"
+
+    def test_storage_optimize_investment_minimum_0_time_series(self):
+        # Test if minimum value is zero if thermal losses are zero (time series)
+        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_optimize"]
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL] = {
+            VALUE: [0, 0, 0, 0],
+            UNIT: "no_unit",
+        }
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS] = {
+            VALUE: [0, 0, 0, 0],
+            UNIT: "kWh",
+        }
+
+        D1.storage(
+            model=self.model,
+            dict_asset=dict_asset,
+            bus=self.busses,
+            storage=self.storages,
         )
 
-        # check value of `existing`, `investment` and `nominal_value`(`nominal_storage_capacity`)
-        input_bus = self.model.entities[-1].inputs[self.busses["Storage bus"]]
-        output_bus = self.model.entities[-1].outputs[self.busses["Storage bus"]]
-
-        assert hasattr(input_bus, "existing") is False
-        assert input_bus.investment is None
         assert (
-            input_bus.nominal_value
-            == dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
+            self.model.entities[-1].investment.minimum == 0
+        ), f"investment.minimum should be zero with {THERM_LOSSES_REL} and {THERM_LOSSES_ABS} that are equal to zero"
+
+    def test_storage_optimize_investment_minimum_1_rel_float(self):
+        # Test if minimum value is one if relative thermal losses are not zero (float)
+        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_optimize"]
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL] = {VALUE: 0.001, UNIT: "no_unit"}
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS] = {VALUE: 0, UNIT: "kWh"}
+
+        D1.storage(
+            model=self.model,
+            dict_asset=dict_asset,
+            bus=self.busses,
+            storage=self.storages,
         )
 
-        assert hasattr(output_bus, "existing") is False
-        assert output_bus.investment is None
-        assert output_bus.nominal_value == dict_asset[INPUT_POWER][INSTALLED_CAP][VALUE]
+        assert (
+            self.model.entities[-1].investment.minimum == 1
+        ), f"investment.minimum should be one with non-zero {THERM_LOSSES_REL}"
 
-        assert (
-            hasattr(self.model.entities[-1], "existing") is False
-        )  # todo probably not necessary parameter
-        assert self.model.entities[-1].investment is None
-        assert (
-            self.model.entities[-1].nominal_storage_capacity
-            == dict_asset[OUTPUT_POWER][INSTALLED_CAP][VALUE]
+    def test_storage_optimize_investment_minimum_1_abs_float(self):
+        # Test if minimum value is one if absolute thermal losses are not zero (float)
+        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_optimize"]
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL] = {VALUE: 0, UNIT: "no_unit"}
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS] = {VALUE: 0.001, UNIT: "kWh"}
+
+        D1.storage(
+            model=self.model,
+            dict_asset=dict_asset,
+            bus=self.busses,
+            storage=self.storages,
         )
 
-        # # check that invest_relation_input_capacity and invest_relation_output_capacity is not added
-        assert self.model.entities[-1].invest_relation_input_capacity is None
-        assert self.model.entities[-1].invest_relation_output_capacity is None
+        assert (
+            self.model.entities[-1].investment.minimum == 1
+        ), f"investment.minimum should be one with non-zero {THERM_LOSSES_ABS}"
+
+    def test_storage_optimize_investment_minimum_1_rel_times_series(self):
+        # Test if minimum value is one if relative thermal losses are not zero (time series)
+        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_optimize"]
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL] = {
+            VALUE: [0.001, 0.001, 0.001, 0.001],
+            UNIT: "no_unit",
+        }
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS] = {VALUE: 0, UNIT: "kWh"}
+
+        D1.storage(
+            model=self.model,
+            dict_asset=dict_asset,
+            bus=self.busses,
+            storage=self.storages,
+        )
+
+        assert (
+            self.model.entities[-1].investment.minimum == 1
+        ), f"investment.minimum should be one with non-zero {THERM_LOSSES_REL}"
+
+    def test_storage_optimize_investment_minimum_1_abs_times_series(self):
+        # Test if minimum value is one if absolute thermal losses are not zero (time series)
+        dict_asset = self.dict_values[ENERGY_STORAGE]["storage_optimize"]
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL] = {VALUE: 0, UNIT: "no_unit"}
+        dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS] = {
+            VALUE: [0.001, 0.001, 0.001, 0.001],
+            UNIT: "kWh",
+        }
+
+        D1.storage(
+            model=self.model,
+            dict_asset=dict_asset,
+            bus=self.busses,
+            storage=self.storages,
+        )
+
+        assert (
+            self.model.entities[-1].investment.minimum == 1
+        ), f"investment.minimum should be one with non-zero {THERM_LOSSES_ABS}"
 
 
 ### other functionalities

@@ -77,6 +77,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SOC_INITIAL,
     SOC_MAX,
     SOC_MIN,
+    THERM_LOSSES_REL,
+    THERM_LOSSES_ABS,
     STORAGE_CAPACITY,
     FILENAME,
     UNIT,
@@ -216,6 +218,11 @@ def create_json_from_csv(
         add_storage_components() the
         parameter is set to True
 
+    :notes:
+    Tested with:
+    - test_default_values_storage_without_thermal_losses()
+    - test_default_values_storage_with_thermal_losses()
+
     :return: dict
         the converted dictionary
     """
@@ -312,7 +319,13 @@ def create_json_from_csv(
                     )
                 # add column specific parameters
                 if column == STORAGE_CAPACITY:
-                    extra = [SOC_INITIAL, SOC_MAX, SOC_MIN]
+                    extra = [
+                        SOC_INITIAL,
+                        SOC_MAX,
+                        SOC_MIN,
+                        THERM_LOSSES_REL,
+                        THERM_LOSSES_ABS,
+                    ]
                 elif column == INPUT_POWER or column == OUTPUT_POWER:
                     extra = [C_RATE, DISPATCH_PRICE]
                 else:
@@ -325,10 +338,42 @@ def create_json_from_csv(
                 column_parameters = parameters + extra
                 # check if required parameters are missing
                 for i in set(column_parameters) - set(df_copy.index):
-                    raise MissingParameterError(
-                        f"In file {filename}.csv the parameter {i}"
-                        f" in column {column} is missing."
-                    )
+                    if i == THERM_LOSSES_REL:
+                        logging.debug(
+                            f"You are not using the parameter {THERM_LOSSES_REL}, which allows considering relative thermal energy losses (Values: Float). This is an advanced setting that most users can ignore."
+                        )
+                        # Set 0 as default parameter for losses in storage capacity
+                        losses = pd.DataFrame(
+                            data={
+                                "": THERM_LOSSES_REL,
+                                df_copy.columns[0]: ["factor"],
+                                df_copy.columns[1]: [0],
+                            }
+                        )
+                        losses = losses.set_index("")
+                        # Append missing parameter to dataframe
+                        df_copy = df_copy.append(losses, ignore_index=False, sort=False)
+                    elif i == THERM_LOSSES_ABS:
+                        logging.debug(
+                            f"You are not using the parameter {THERM_LOSSES_ABS}, which allows considering relative thermal energy losses (Values: Float). This is an advanced setting that most users can ignore."
+                        )
+                        # Set 0 as default parameter for losses in storage capacity
+                        losses = pd.DataFrame(
+                            data={
+                                "": THERM_LOSSES_ABS,
+                                df_copy.columns[0]: ["kWh"],
+                                df_copy.columns[1]: [0],
+                            }
+                        )
+                        losses = losses.set_index("")
+                        # Append missing parameter to dataframe
+                        df_copy = df_copy.append(losses, ignore_index=False, sort=False)
+                    else:
+                        raise MissingParameterError(
+                            f"In file {filename}.csv the parameter {i}"
+                            f" in column {column} is missing."
+                        )
+
                 for i in df_copy.index:
                     if i not in column_parameters:
                         # check if not required parameters are set to Nan and
@@ -339,6 +384,8 @@ def create_json_from_csv(
                             SOC_INITIAL,
                             SOC_MAX,
                             SOC_MIN,
+                            THERM_LOSSES_REL,
+                            THERM_LOSSES_ABS,
                         ]:
                             warnings.warn(
                                 WrongParameterWarning(

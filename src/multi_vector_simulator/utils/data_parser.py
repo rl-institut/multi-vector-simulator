@@ -93,6 +93,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES_SOC,
     TYPE_ASSET,
     DSM,
+    THERM_LOSSES_REL,
+    THERM_LOSSES_ABS,
 )
 
 from multi_vector_simulator.utils.exceptions import MissingParameterError
@@ -387,6 +389,23 @@ def convert_epa_params_to_mvs(epa_dict):
 
                 # TODO remove this when change has been made on EPA side
                 if asset_group == ENERGY_STORAGE:
+
+                    if (
+                        THERM_LOSSES_REL
+                        not in dict_asset[asset_label][STORAGE_CAPACITY]
+                    ):
+                        dict_asset[asset_label][STORAGE_CAPACITY][THERM_LOSSES_REL] = {
+                            UNIT: "factor",
+                            VALUE: 0,
+                        }
+                    if (
+                        THERM_LOSSES_ABS
+                        not in dict_asset[asset_label][STORAGE_CAPACITY]
+                    ):
+                        dict_asset[asset_label][STORAGE_CAPACITY][THERM_LOSSES_ABS] = {
+                            UNIT: "kWh",
+                            VALUE: 0,
+                        }
 
                     if OPTIMIZE_CAP not in dict_asset[asset_label]:
                         dict_asset[asset_label][OPTIMIZE_CAP] = {

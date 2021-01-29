@@ -38,6 +38,8 @@ Here is a template for new release sections
 - Add benchmark test for json benchmark file from EPA (EPA-MVS compatability) (#781)
 - Add a try-except code block to catch fatal errors that cause simulation to terminate unsuccessfully (#754)
 
+- The parameters `fixed_losses_relative` and `fixed_losses_absolute` were added. It is now possible to model a stratified thermal energy storage. The usage of this new component has been tested and documented (#718)
+- It is now possible to model a stratified thermal energy storage. In this context, the two optional parameters `fixed_losses_relative` and `fixed_losses_absolute` were added and can be set in the `storage_*.csv` file. The usage of this new component was tested in `test_A1_csv_to_json.py`, `test_D1_model_components.py` and `test_benchmark_stratified_thermal_storage.py`. A documentation was added in the chapter `Modeling Assumptions of the MVS` (#718)
 
 
 ### Changed
@@ -59,6 +61,9 @@ Here is a template for new release sections
 - `C1.check_non_dispatchable_source_time_series()`, now verification not only applied to renewable assets, but all non-dispatchable assets (#726)
 - Add `MINIMAL_DEGREE_OF_AUTONOMY` to EPA-MVS parser (`utils.data_parser.convert_epa_params_to_mvs()`)(#726)
 - Provide the modeler with helpful messages enabling simpler identification and rectification of problems in their input files (#754)
+- In `test_A1_csv_to_json.py` tests were added that check whether default values of `0` are set for `fixed_losses_relative` and `fixed_losses_absolute` in case the user does not pass these two parameters (#718)
+- In `test_D1_model_components.py` tests were added that check whether the `GenericStorage` parameter `investment.minimum` is set to `0` in case `fixed_losses_relative` and `fixed_losses_absolute` are not passed and to `1` in case they are passed as times series or floats. At this time it is not possible to do an ivestment optimization of a stratified thermal energy storage without a non-zero `investment.minimum` (see this [issue](https://github.com/oemof/oemof-thermal/issues/174))  (#718)
+- The two optional parameters `fixed_losses_relative` and `fixed_losses_absolute` were added in `tests/inputs/mvs_config.json` (#718)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
