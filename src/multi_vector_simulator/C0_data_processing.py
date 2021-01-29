@@ -350,7 +350,13 @@ def energyStorage(dict_values, group):
             )
 
             # check if parameters are provided as timeseries
-            for parameter in [EFFICIENCY, SOC_MIN, SOC_MAX]:
+            for parameter in [
+                EFFICIENCY,
+                SOC_MIN,
+                SOC_MAX,
+                THERM_LOSSES_REL,
+                THERM_LOSSES_ABS,
+            ]:
                 if parameter in dict_values[group][asset][subasset] and (
                     FILENAME in dict_values[group][asset][subasset][parameter]
                     and HEADER in dict_values[group][asset][subasset][parameter]
