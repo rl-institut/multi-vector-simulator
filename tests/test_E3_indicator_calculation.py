@@ -644,7 +644,7 @@ def test_add_degree_of_autonomy():
     degree_of_autonomy = (total_demand - total_consumption_from_grid) / total_demand
     assert (
         DEGREE_OF_AUTONOMY in dict_values_DA[KPI][KPI_SCALARS_DICT]
-    ), f"The {DEGREE_OF_AUTONOMY} is added to {KPI_SCALARS_DICT}"
+    ), f"The {DEGREE_OF_AUTONOMY} is not added to {KPI_SCALARS_DICT}"
     assert (
         dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY] == degree_of_autonomy
     ), f"The degree of autonomy is not added successfully to the list of KPI's."
