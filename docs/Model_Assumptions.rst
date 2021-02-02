@@ -63,6 +63,65 @@ In case of excessive excess energy, a warning is given that it seems to be cheap
 High excess energy can for example result into an optimized inverter capacity that is smaller than the peak generation of installed PV.
 This becomes unrealistic when the excess is very high.
 
+Energy storage
+###########
+
+Generic storages are defined with file `energyStorage.csv` and `storage_*.csv` and have subassets, which are listed in :ref:`storage_csv`.
+
+Stratified thermal energy storage uses the two optional parameters `fixed_losses_relative` and `fixed_losses_absolute`. If these two are not included in `storage_*.csv` or are equal to zero, then a normal generic storage is simulated.
+They are used to take into account temperature dependent losses of a thermal storage. To model a thermal energy storage without stratification, the two parameters are not set. The default values of `fixed_losses_relative` and `fixed_losses_absolute` are zero.
+Except for these two additional parameters the stratified thermal storage is implemented in the same way as other storage components.
+
+Precalculations of the `installedCap`, `efficiency`, `fixed_losses_relative` and `fixed_losses_absolute` can be done orientating on the stratified thermal storage component of `oemof.thermal  <https://github.com/oemof/oemof-thermal>`__.
+The parameters `U-value`, `volume` and `surface` of the storage, which are required to calculate `installedCap`, can be precalculated as well.
+
+The efficiency :math:`\eta` of the storage is calculated as follows:
+
+.. math::
+   \eta = 1 - loss{\_}rate
+
+This example shows how to do precalculations using stratified thermal storage specific input data:
+
+
+.. code-block:: python
+
+        from oemof.thermal.stratified_thermal_storage import (
+        calculate_storage_u_value,
+        calculate_storage_dimensions,
+        calculate_capacities,
+        calculate_losses,
+        )
+
+        # Precalculation
+        u_value = calculate_storage_u_value(
+            input_data['s_iso'],
+            input_data['lamb_iso'],
+            input_data['alpha_inside'],
+            input_data['alpha_outside'])
+
+        volume, surface = calculate_storage_dimensions(
+            input_data['height'],
+            input_data['diameter']
+        )
+
+        nominal_storage_capacity = calculate_capacities(
+            volume,
+            input_data['temp_h'],
+            input_data['temp_c'])
+
+        loss_rate, fixed_losses_relative, fixed_losses_absolute = calculate_losses(
+            u_value,
+            input_data['diameter'],
+            input_data['temp_h'],
+            input_data['temp_c'],
+            input_data['temp_env'])
+
+Please see the `oemof.thermal` `examples <https://github.com/oemof/oemof-thermal/tree/dev/examples/stratified_thermal_storage>`__ and the `documentation  <https://oemof-thermal.readthedocs.io/en/latest/stratified_thermal_storage.html>`__ for further information.
+
+For an investment optimization the height of the storage should be left open in the precalculations and `installedCap` should be set to 0 or NaN.
+
+An implementation of the stratified thermal storage component has been done in `pvcompare <https://github.com/greco-project/pvcompare>`__. You can find the precalculations of the stratified thermal energy storage made in `pvcompare` `here <https://github.com/greco-project/pvcompare/tree/dev/pvcompare/stratified_thermal_storage.py>`__.
+
 Energy providers (DSOs)
 -----------------------
 
@@ -115,9 +174,8 @@ The minimal renewable factor constraint requires the capacity and dispatch optim
 
 The minimal renewable factor is applied to the minimal renewable factor of the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
 
-.. math:
+.. math::
         minimal renewable factor <= \frac{\sum renewable generation \cdot weighting factor}{\sum renewable generation \cdot weighting factor + \sum non-renewable generation \cdot weighting factor}
-
 
 Please be aware that the minimal renewable factor constraint defines bounds for the :ref:`kpi_renewable_factor` of the system, ie. taking into account both local generation as well as renewable supply from the energy providers. The constraint explicitly does not aim to reach a certain :ref:`kpi_renewable_share_of_local_generation` on-site.
 
@@ -138,6 +196,34 @@ Depending on the energy system, especially when working with assets which are no
 Also, if you are aiming at very high minimal renewable factors, the simulation time can increase drastically. If you do not get a result after a maximum of 20 Minutes, you should consider terminating the simulation and trying with a lower minimum renewable share.
 
 The minimum renewable share is introduced to the energy system by `D2.constraint_minimal_renewable_share()` and a validation test is performed with `E4.minimal_renewable_share_test()`.
+
+Minimal degree of autonomy constraint
+######################################
+
+The minimal degree of autonomy constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal degree of autonomy defined within the constraint. The degree of autonomy of the optimized energy system may also be higher than the minimal degree of autonomy. Please find the definition of here: :ref:`kpi_degree_of_autonomy`
+
+The minimal degree of autonomy is applied to the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
+
+.. math::
+        minimal~degree~of~autonomy <= DA = \frac{\sum E_{demand,i} \cdot w_i - \sum E_{consumption,provider,j} \cdot w_j}{\sum E_{demand,i} \cdot w_i}
+
+:Deactivating the constraint:
+
+The minimal degree of autonomy constraint is deactivated by inserting the following row in `constraints.csv` as follows:
+
+```minimal_degree_of_autonomy,factor,0```
+
+:Activating the constraint:
+
+The constraint is enabled when the value of the minimal degree of autonomy is above 0 in `constraints.csv`:
+
+```minimal_degree_of_autonomy,factor,0.3```
+
+
+Depending on the energy system, especially when working with assets which are not to be capacity-optimized, it is possible that the minimal degree of autonomy criterion cannot be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimizeCap` parameters to `True`, and then investigate further.
+
+The minimum degree of autonomy is introduced to the energy system by `D2.constraint_minimal_degree_of_autonomy()` and a validation test is performed with `E4.minimal_degree_of_autonomy()`.
+
 
 
 Maximum emission constraint
@@ -712,6 +798,10 @@ A benchmark is a point of reference against which results are compared to assess
 * Electricity Grid (Price as Time Series) + Heat Pump + Heat Grid (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/AFG_grid_heatpump_heat>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/d5a06f913fa2449e3d9f9966d3362dc7e8e4c874/tests/test_benchmark_scenarios.py#L276>`__): Heat pump is used when electricity_price/COP is less than the heat grid price
 
 * Maximum emissions constraint: Grid + PV + Diesel Generator (data: `set 1 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_None>`__, `set 2 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low>`__, `set 3 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low_grid_RE_100>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/f459b35da6c46445e8294845604eb2b683e43680/tests/test_benchmark_constraints.py#L121>`__): Emissions are limited by constraint, more PV is installed to reduce emissions. For RE share of 100 % in grid, more electricity from the grid is used
+
+* Parser converting an energy system model from EPA to MVS (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/epa_benchmark.json>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/test_benchmark_scenarios.py>`__)
+
+* Stratified thermal energy storage (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/Feature_stratified_thermal_storage>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/test_benchmark_stratified_thermal_storage.py>`__): With fixed thermal losses absolute and relative reduced storage capacity only if these losses apply
 
 More tests can still be implemented with regard to:
 

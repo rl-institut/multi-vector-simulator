@@ -1,0 +1,9 @@
+,unit,project_data
+country,str,NA
+latitude,str,0
+longitude,str,0
+project_id,str,1
+project_name,str,Benchmark test for stratified thermal storage
+scenario_id,str,7
+scenario_name,str,stratified thermal storage
+scenario_description,str,Benchmark test for stratified thermal storage with fixed thermal losses

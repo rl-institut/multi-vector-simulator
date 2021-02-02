@@ -32,6 +32,13 @@ Here is a template for new release sections
 - Add `-d` option to `mvs_report` command to use hotreload of dash app for devs (#770)
 - Add `utils.analysis` module for overall analysis functions (#679)
 - Added pre-processing step with `C0.replace_nans_in_timeseries_with_0` to set NaNs occurring in provided timeseries to zero (#746)
+- KPI processing function `E3.add_total_consumption_from_provider_electricity_equivalent()` incl. pytest (#726)
+- Subsection `Minimal degree of autonomy constraint` for RTD, added parameter in parameter csv  (#730, #726)
+- Minimal degree of autonomy constraint including pytest and benchmark test (#726)
+- Add benchmark test for json benchmark file from EPA (EPA-MVS compatability) (#781)
+- Add a try-except code block to catch fatal errors that cause simulation to terminate unsuccessfully (#754)
+- The parameters `fixed_losses_relative` and `fixed_losses_absolute` were added. It is now possible to model a stratified thermal energy storage. The usage of this new component has been tested and documented (#718)
+- It is now possible to model a stratified thermal energy storage. In this context, the two optional parameters `fixed_losses_relative` and `fixed_losses_absolute` were added and can be set in the `storage_*.csv` file. The usage of this new component was tested in `test_A1_csv_to_json.py`, `test_D1_model_components.py` and `test_benchmark_stratified_thermal_storage.py`. A documentation was added in the chapter `Modeling Assumptions of the MVS` (#718)
 - Added net zero energy KPI `degree of NZE` with `E3.equation_degree_of_net_zero_energy()` and `E3.add_degree_of_net_zero_energy()` (#776)
 - Added tests for `E3.equation_degree_of_net_zero_energy()` and `E3.add_degree_of_net_zero_energy()` (#776)
 - Added information about degree of NZE to RTD (#776)
@@ -49,13 +56,23 @@ Here is a template for new release sections
 - Update RTD instruction for instructions for the `mvs_tool` command (#770)
 - Change `test_benchmark_special_features` (#746)
 - Update "Input verification" section in `Model_Assmptions.rst` for NaNs (#746)
+- (!) Major change: Definition of Degree of Autonomy (DA) updated in the RTD, also changed calculation of that KPI (#730, #726)
+- Updated all input files to also include `minimal_degree_of_autonomy`, including `input_template`, `tests/inputs`, `tests/benchmark_test_inputs` (#726)
+- `E4.minimal_renewable_share_test()` into generic `E4.minimal_constraint_test()` so that it can be applied both to minimal renewable share and minimal degree of autonomy (#726)
+- `C1.check_non_dispatchable_source_time_series()`, now verification not only applied to renewable assets, but all non-dispatchable assets (#726)
+- Add `MINIMAL_DEGREE_OF_AUTONOMY` to EPA-MVS parser (`utils.data_parser.convert_epa_params_to_mvs()`)(#726)
+- Provide the modeler with helpful messages enabling simpler identification and rectification of problems in their input files (#754)
+- In `test_A1_csv_to_json.py` tests were added that check whether default values of `0` are set for `fixed_losses_relative` and `fixed_losses_absolute` in case the user does not pass these two parameters (#718)
+- In `test_D1_model_components.py` tests were added that check whether the `GenericStorage` parameter `investment.minimum` is set to `0` in case `fixed_losses_relative` and `fixed_losses_absolute` are not passed and to `1` in case they are passed as times series or floats. At this time it is not possible to do an ivestment optimization of a stratified thermal energy storage without a non-zero `investment.minimum` (see this [issue](https://github.com/oemof/oemof-thermal/issues/174))  (#718)
+- The two optional parameters `fixed_losses_relative` and `fixed_losses_absolute` were added in `tests/inputs/mvs_config.json` (#718)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
 - Remove redundant function `A1.check_for_official_extra_parameters` as `utils.compare_input_parameters_with_reference` works for both csv and json and will therefore be preferred (#761)
 - Remove `STORE_OEMOF_RESULTS` variable (#675)
 - Remove `F0.select_essential_results()` (#675)
-
+- Removed `DSM` and `TYPE_ASSET` from `input_template/energyConsumption.csv`, also in `constants.py` (#726)
+- Removed warning message about excess energy calculation that is outdated as #559 is solved (777)
 
 ### Fixed
 - Minor typos in D0, E4 and test_E4 files (#739)
@@ -63,6 +80,8 @@ Here is a template for new release sections
 - Fix issue (#763): Avoid displaying a energy sector demand table in report if it is empty (#770)
 - Fix issue (#769): Fix argument parsing and error messages of `mvs_report` command (#770)
 - Fix issue (#756): Avoid crashing report generation when internet not available (#770)
+- Fixed display of math equations in RTD (#730)
+- Fix numpy.int32 error in B0 (#778)
 
 ## [0.5.4] - 2020-12-18
 

@@ -1,3 +1,4 @@
 ,unit,constraints
 minimal_renewable_factor,factor,0.7
 maximum_emissions,kgCO2eq/a,None
+minimal_degree_of_autonomy,factor,0

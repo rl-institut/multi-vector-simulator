@@ -110,11 +110,14 @@ STORAGE_CAPACITY = "storage capacity"
 SOC_INITIAL = "soc_initial"
 SOC_MAX = "soc_max"
 SOC_MIN = "soc_min"
+THERM_LOSSES_REL = "fixed_thermal_losses_relative"
+THERM_LOSSES_ABS = "fixed_thermal_losses_absolute"
 
 # Constraints
 CONSTRAINTS = "constraints"
 MINIMAL_RENEWABLE_FACTOR = "minimal_renewable_factor"
 MAXIMUM_EMISSIONS = "maximum_emissions"
+MINIMAL_DEGREE_OF_AUTONOMY = "minimal_degree_of_autonomy"
 
 #######################################
 # Parameters added in pre-processing #
@@ -250,6 +253,7 @@ SPECIFIC_EMISSIONS_ELEQ = "Specific emissions per electricity equivalent"
 TOTAL_DEMAND = "Total_demand"
 TOTAL_EXCESS = "Total_excess"
 TOTAL_FEEDIN = "Total_feedin"
+TOTAL_CONSUMPTION_FROM_PROVIDERS = "Total_consumption_from_energy_provider"
 SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
 ATTRIBUTED_COSTS = "Attributed costs"
 LCOeleq = "Levelized costs of electricity equivalent"

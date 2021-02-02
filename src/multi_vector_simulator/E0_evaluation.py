@@ -46,6 +46,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INSTALLED_CAP,
     TIMESERIES_SOC,
     KPI_UNCOUPLED_DICT,
+    MINIMAL_DEGREE_OF_AUTONOMY,
+    MINIMAL_RENEWABLE_FACTOR,
+    RENEWABLE_FACTOR,
+    DEGREE_OF_AUTONOMY,
 )
 
 from multi_vector_simulator.utils.constants_output import (
@@ -168,7 +172,8 @@ def evaluate_dict(dict_values, results_main, results_meta):
     logging.info("Evaluating key performance indicators of the system")
     E3.all_totals(dict_values)
     E3.total_demand_and_excess_each_sector(dict_values)
-    E3.add_total_feedin_electricity_equivaluent(dict_values)
+    E3.add_total_feedin_electricity_equivalent(dict_values)
+    E3.add_total_consumption_from_provider_electricity_equivalent(dict_values)
     E3.add_levelized_cost_of_energy_carriers(dict_values)
     E3.add_total_renewable_and_non_renewable_energy_origin(dict_values)
     E3.add_renewable_share_of_local_generation(dict_values)
@@ -183,7 +188,10 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     # Tests and checks
     logging.info("Running validity checks.")
-    E4.minimal_renewable_share_test(dict_values)
+    E4.minimal_constraint_test(dict_values, MINIMAL_RENEWABLE_FACTOR, RENEWABLE_FACTOR)
+    E4.minimal_constraint_test(
+        dict_values, MINIMAL_DEGREE_OF_AUTONOMY, DEGREE_OF_AUTONOMY
+    )
     E4.maximum_emissions_test(dict_values)
     E4.detect_excessive_excess_generation_in_bus(dict_values)
     E4.verify_state_of_charge(dict_values)

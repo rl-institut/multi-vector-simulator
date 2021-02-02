@@ -1,0 +1,8 @@
+,unit,storage_01
+label,str,TES
+optimizeCap,bool,True
+outflow_direction,str,Heat
+inflow_direction,str,Heat
+storage_filename,str,storage_fix_without_fixed_thermal_losses.csv
+energyVector,str,Heat
+type_oemof,str,storage

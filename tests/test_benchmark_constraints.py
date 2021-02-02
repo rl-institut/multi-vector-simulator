@@ -31,8 +31,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     KPI,
     KPI_SCALARS_DICT,
     RENEWABLE_FACTOR,
+    DEGREE_OF_AUTONOMY,
     CONSTRAINTS,
     MINIMAL_RENEWABLE_FACTOR,
+    MINIMAL_DEGREE_OF_AUTONOMY,
     MAXIMUM_EMISSIONS,
     TOTAL_EMISSIONS,
     SPECIFIC_EMISSIONS_ELEQ,
@@ -200,6 +202,64 @@ class Test_Constraints:
         assert (
             grid_total_flows[use_case[2]] > grid_total_flows[use_case[1]]
         ), f"The total flow of the grid consumption of the scenario with 100 % RE in the grid is with {grid_total_flows[use_case[2]]} kWh lower than in the scenario with emissions from the grid ({grid_total_flows[use_case[1]]} kWh). When the grid has zero emissions it should be used more, while PV is more expensive."
+
+    # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+    # alone is called
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_benchmark_minimal_degree_of_autonomy_constraint(self, margs):
+        r"""
+        Notes
+        -----
+        With this benchmark test, the minimal degree of autonomy constraint is validated.
+        constraint_minimal_degree_of_autonomy_0 does not have a minimal degree of autonomy.
+        Constraint_minimal_degree_of_autonomy_70 has a minimal degree of autonomy of 70%.
+        If the degree of autonomy of constraint_minimal_renewable_share_0 is lower than 70%,
+        but the one of constraint_minimal_renewable_share_70 is 70%, then the benchmark test passes.
+        """
+
+        # define the two cases needed for comparison (no minimal renewable factor) and (minimal renewable factor of 70%)
+        use_case = [
+            "constraint_degree_of_autonomy_0",
+            "constraint_degree_of_autonomy_70",
+        ]
+        # define an empty dictionary for excess electricity
+        degree_of_autonomy = {}
+        minimal_degree_of_autonomy = {}
+        for case in use_case:
+            main(
+                overwrite=True,
+                display_output="warning",
+                path_input_folder=os.path.join(TEST_INPUT_PATH, case),
+                input_type=CSV_EXT,
+                path_output_folder=os.path.join(TEST_OUTPUT_PATH, case),
+            )
+            data = load_json(
+                os.path.join(
+                    TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+                )
+            )
+            degree_of_autonomy.update(
+                {case: data[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY]}
+            )
+            minimal_degree_of_autonomy.update(
+                {case: data[CONSTRAINTS][MINIMAL_DEGREE_OF_AUTONOMY][VALUE]}
+            )
+
+            assert minimal_degree_of_autonomy[case] < degree_of_autonomy[case] + 10 ** (
+                -6
+            ), f"The minimal degree of autonomy is not at least as high as the minimal degree of autonomy requires."
+
+        assert (
+            degree_of_autonomy[use_case[0]] < minimal_degree_of_autonomy[use_case[1]]
+        ), f"The  degree of autonomy of the scenario without minimal  degree of autonomy constraint is with {degree_of_autonomy[use_case[0]]} higher than the minimal  degree of autonomy defined for the scenario with constraint ({minimal_degree_of_autonomy[use_case[1]]}). This test therefore can not validate that the constraint works. To debug, increase the cost of PV."
+        assert (
+            degree_of_autonomy[use_case[0]] < degree_of_autonomy[use_case[1]]
+        ), f"The  degree of autonomy of the scenario with the constraint is not higher than the one without, so the test does not make sense."
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):

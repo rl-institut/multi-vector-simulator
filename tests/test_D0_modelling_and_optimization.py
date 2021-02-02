@@ -1,14 +1,15 @@
 import os
 import shutil
+import argparse
 
 import oemof.solph
 import pandas as pd
 import pytest
+import mock
 
+from multi_vector_simulator.cli import main
 import multi_vector_simulator.D0_modelling_and_optimization as D0
 from multi_vector_simulator.B0_data_input_json import load_json
-
-from multi_vector_simulator.utils.constants import JSON_FNAME
 
 from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_BUSSES,
@@ -30,6 +31,14 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ASSET_DICT,
     ENERGY_VECTOR,
 )
+
+from multi_vector_simulator.utils.exceptions import (
+    MVSOemofError,
+    WrongOemofAssetForGroupError,
+    UnknownOemofAssetType,
+)
+
+
 from _constants import (
     TEST_REPO_PATH,
     PATH_OUTPUT_FOLDER,
@@ -37,6 +46,10 @@ from _constants import (
     ES_GRAPH,
     DATA_TYPE_JSON_KEY,
     TYPE_DATETIMEINDEX,
+    EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
+    CSV_EXT,
+    JSON_FNAME,
 )
 
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "test_outputs")
@@ -121,7 +134,7 @@ def test_error_raise_WrongOemofAssetForGroupError_if_oemof_asset_type_not_accept
     model, dict_model = D0.model_building.initialize(dict_values_minimal)
     dict_test = {ENERGY_CONSUMPTION: {"asset": {OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER}}}
     dict_test.update(dict_values_minimal)
-    with pytest.raises(D0.WrongOemofAssetForGroupError):
+    with pytest.raises(WrongOemofAssetForGroupError):
         D0.model_building.adding_assets_to_energysystem_model(
             dict_test, dict_model, model
         )
@@ -139,9 +152,27 @@ def test_error_raise_UnknownOemofAssetType_if_oemof_asset_type_not_defined_in_D0
     dict_test = {ENERGY_CONSUMPTION: {"asset": {OEMOF_ASSET_TYPE: "unknown_type"}}}
     dict_test.update(dict_values_minimal)
     ACCEPTED_ASSETS_FOR_ASSET_GROUPS[ENERGY_CONSUMPTION].append("unknown_type")
-    with pytest.raises(D0.UnknownOemofAssetType):
+    with pytest.raises(UnknownOemofAssetType):
         D0.model_building.adding_assets_to_energysystem_model(
             dict_test, dict_model, model, **ACCEPTED_ASSETS_FOR_ASSET_GROUPS
+        )
+
+
+@pytest.mark.skipif(
+    EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+    reason="Benchmark test deactivated, set env variable "
+    "EXECUTE_TESTS_ON to 'master' to run this test",
+)
+@mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+def test_error_raise_MVSOemofError_if_solver_could_not_finish_simulation(margs):
+    use_case = os.path.join("test_data", "known_oemof_errors", "insufficient_capacity")
+    with pytest.raises(MVSOemofError):
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_REPO_PATH, use_case),
+            input_type=CSV_EXT,
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
         )
 
 

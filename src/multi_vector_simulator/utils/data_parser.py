@@ -76,6 +76,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EVALUATED_PERIOD,
     OUTPUT_LP_FILE,
     MINIMAL_RENEWABLE_FACTOR,
+    MINIMAL_DEGREE_OF_AUTONOMY,
     FIX_COST,
     KPI,
     TIMESTEP,
@@ -92,6 +93,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES_SOC,
     TYPE_ASSET,
     DSM,
+    THERM_LOSSES_REL,
+    THERM_LOSSES_ABS,
 )
 
 from multi_vector_simulator.utils.exceptions import MissingParameterError
@@ -298,7 +301,10 @@ def convert_epa_params_to_mvs(epa_dict):
 
             # Never save the oemof lp file when running on the server
             if param_group == SIMULATION_SETTINGS:
-                dict_values[param_group][OUTPUT_LP_FILE] = False
+                dict_values[param_group][OUTPUT_LP_FILE] = {
+                    UNIT: TYPE_BOOL,
+                    VALUE: False,
+                }
 
         else:
             logging.warning(
@@ -384,6 +390,23 @@ def convert_epa_params_to_mvs(epa_dict):
                 # TODO remove this when change has been made on EPA side
                 if asset_group == ENERGY_STORAGE:
 
+                    if (
+                        THERM_LOSSES_REL
+                        not in dict_asset[asset_label][STORAGE_CAPACITY]
+                    ):
+                        dict_asset[asset_label][STORAGE_CAPACITY][THERM_LOSSES_REL] = {
+                            UNIT: "factor",
+                            VALUE: 0,
+                        }
+                    if (
+                        THERM_LOSSES_ABS
+                        not in dict_asset[asset_label][STORAGE_CAPACITY]
+                    ):
+                        dict_asset[asset_label][STORAGE_CAPACITY][THERM_LOSSES_ABS] = {
+                            UNIT: "kWh",
+                            VALUE: 0,
+                        }
+
                     if OPTIMIZE_CAP not in dict_asset[asset_label]:
                         dict_asset[asset_label][OPTIMIZE_CAP] = {
                             UNIT: TYPE_BOOL,
@@ -422,8 +445,7 @@ def convert_epa_params_to_mvs(epa_dict):
             dict_values[CONSTRAINTS] = {
                 MINIMAL_RENEWABLE_FACTOR: {UNIT: "factor", VALUE: 0},
                 MAXIMUM_EMISSIONS: {UNIT: "factor", VALUE: 0},
-                # TODO uncomment next line when PR #726 is merged
-                # MINIMAL_DEGREE_OF_AUTONOMY: {UNIT: "factor", VALUE: 0},
+                MINIMAL_DEGREE_OF_AUTONOMY: {UNIT: "factor", VALUE: 0},
             }
             missing_params.pop(CONSTRAINTS)
 
