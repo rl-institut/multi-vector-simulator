@@ -32,6 +32,9 @@ Here is a template for new release sections
 - Add `-d` option to `mvs_report` command to use hotreload of dash app for devs (#770)
 - Add `utils.analysis` module for overall analysis functions (#679)
 - Added pre-processing step with `C0.replace_nans_in_timeseries_with_0` to set NaNs occurring in provided timeseries to zero (#746)
+- Added net zero energy KPI `degree of NZE` with `E3.equation_degree_of_net_zero_energy()` and `E3.add_degree_of_net_zero_energy()` (#776)
+- Added tests for `E3.equation_degree_of_net_zero_energy()` and `E3.add_degree_of_net_zero_energy()` (#776)
+- Added information about degree of NZE to RTD (#776)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
