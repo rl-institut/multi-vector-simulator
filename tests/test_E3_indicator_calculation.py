@@ -51,7 +51,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SPECIFIC_EMISSIONS_ELEQ,
     UNIT_SPECIFIC_EMISSIONS,
     UNIT_EMISSIONS,
-DEGREE_OF_NZE,
+    DEGREE_OF_NZE,
 )
 
 electricity = "Electricity"
@@ -685,7 +685,9 @@ def test_equation_degree_of_net_zero_energy():
     total_re_generation = 60
     total_demand = 100
     excess = 10
-    degree_of_nze = E3.equation_degree_of_net_zero_energy(total_re_generation, total_demand, excess)
+    degree_of_nze = E3.equation_degree_of_net_zero_energy(
+        total_re_generation, total_demand, excess
+    )
     assert degree_of_nze == (total_re_generation - excess) / total_demand, (
         f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
         f"It should be equal to {(total_re_generation - excess) / total_demand}."

@@ -68,7 +68,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     UNIT_SPECIFIC_EMISSIONS,
     UNIT_EMISSIONS,
-    DEGREE_OF_NZE
+    DEGREE_OF_NZE,
 )
 
 
@@ -613,25 +613,31 @@ def add_degree_of_net_zero_energy(dict_values):
     - test_add_degree_of_net_zero_energy()
     """
 
-    total_renewable_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
+    total_renewable_generation = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_RENEWABLE_GENERATION_IN_LES
+    ]
 
     total_demand = dict_values[KPI][KPI_SCALARS_DICT][
         TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
     ]
 
-    total_excess = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT]
+    total_excess = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
 
-    degree_of_nze = equation_degree_of_net_zero_energy(total_renewable_generation, total_demand, total_excess)
+    degree_of_nze = equation_degree_of_net_zero_energy(
+        total_renewable_generation, total_demand, total_excess
+    )
 
     dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_NZE: degree_of_nze})
 
-    logging.debug(
-        f"Calculated the {DEGREE_OF_NZE}: {round(degree_of_nze, 2)}"
-    )
+    logging.debug(f"Calculated the {DEGREE_OF_NZE}: {round(degree_of_nze, 2)}")
     logging.info(f"Calculated the {DEGREE_OF_NZE} of the LES.")
 
 
-def equation_degree_of_net_zero_energy(total_renewable_generation, total_demand, total_excess):
+def equation_degree_of_net_zero_energy(
+    total_renewable_generation, total_demand, total_excess
+):
     """
     Calculates the degree of net zero energy (NZE).
 
