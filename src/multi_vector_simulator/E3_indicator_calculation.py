@@ -591,7 +591,7 @@ def equation_degree_of_autonomy(total_generation, total_demand):
 
 def add_degree_of_net_zero_energy(dict_values):
     """
-    Determines degree of autonomy and adds KPI to dict_values
+    Determines degree of net zero energy (NZE) and adds KPI to dict_values.
 
     Parameters
     ----------
@@ -603,63 +603,72 @@ def add_degree_of_net_zero_energy(dict_values):
     Returns
     -------
     None
-        updated dict_values with the degree of autonomy
+        updated dict_values with the degree of net zero energy
+
+    Notes
+    -----
+    As for other KPI, we apply a weighting based on Electricity Equivalent.
 
     Tested with
-    - test_add_degree_of_autonomy()
+    - test_add_degree_of_net_zero_energy()
     """
 
-    total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
+    total_renewable_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_RENEWABLE_GENERATION_IN_LES]
 
     total_demand = dict_values[KPI][KPI_SCALARS_DICT][
         TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
     ]
 
-    degree_of_autonomy = equation_degree_of_autonomy(total_generation, total_demand)
+    total_excess = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT]
 
-    dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_AUTONOMY: degree_of_autonomy})
+    degree_of_nze = equation_degree_of_net_zero_energy(total_renewable_generation, total_demand, total_excess)
+
+    dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_NZE: degree_of_nze})
 
     logging.debug(
-        f"Calculated the {DEGREE_OF_AUTONOMY}: {round(degree_of_autonomy, 2)}"
+        f"Calculated the {DEGREE_OF_NZE}: {round(degree_of_nze, 2)}"
     )
-    logging.info(f"Calculated the {DEGREE_OF_AUTONOMY} of the LES.")
+    logging.info(f"Calculated the {DEGREE_OF_NZE} of the LES.")
 
 
-def equation_degree_of_net_zero_energy(total_generation, total_demand):
+def equation_degree_of_net_zero_energy(total_renewable_generation, total_demand, total_excess):
     """
-    Calculates the degree of autonomy (DA). todo adapt all
+    Calculates the degree of net zero energy (NZE).
 
-    The degree of autonomy describes the relation of the total locally
-    generated energy to the total demand of the system.
+    In NZE systems import and export of energy is allowed while the balance over one
+    year should be zero. If more energy is exported than imported it is plus-energy system.
 
     Parameters
     ----------
-    total_generation: float
-        total internal generation of energy
-
+    total_renewable_generation: float
+        total internal renewable generation of energy
     total_demand: float
         total demand
+    total_excess: float
+        Total Excess energy
 
     Returns
     -------
     float
-        degree of autonomy
+        degree of net zero energy
+
+    Notes
+    -----
 
     .. math::
-        DA &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+        NZE &=\frac{\sum_{i} {E_{RE\_generation} (i) \cdot w_i - E_{excess} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
-    A DA = 0 : System is totally dependent on the DSO,
-    DA = 1 : System is autonomous / a net-energy system
-    DA > 1 : a plus-energy system.
-
-    Notice: As above, we apply a weighting based on Electricity Equivalent.
+    NZE = 1 : System is a net zero energy system,
+    NZE > 1 : system is a plus-energy system,
+    NZE < 1 : system does not reach NZE status.
 
     Tested with
-    - test_equation_degree_of_autonomy()
-    """
-    degree_of_autonomy = total_generation / total_demand
+    - test_equation_degree_of_net_zero_energy()
 
-    return degree_of_autonomy
+    """
+    degree_of_nze = (total_renewable_generation - total_excess) / total_demand
+
+    return degree_of_nze
 
 
 def add_degree_of_sector_coupling(dict_values):
