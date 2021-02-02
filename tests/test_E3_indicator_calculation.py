@@ -51,6 +51,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SPECIFIC_EMISSIONS_ELEQ,
     UNIT_SPECIFIC_EMISSIONS,
     UNIT_EMISSIONS,
+DEGREE_OF_NZE,
 )
 
 electricity = "Electricity"
@@ -642,7 +643,7 @@ def test_add_degree_of_autonomy():
 
     assert (
         dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY] == degree_of_autonomy
-    ), f"The degree of autonomy is added successfully to the list of KPI's."
+    ), f"The degree of autonomy is not added successfully to the list of KPI's."
 
 
 def test_equation_degree_of_autonomy():
@@ -658,34 +659,36 @@ def test_equation_degree_of_autonomy():
 
 def test_add_degree_of_net_zero_energy():
     """ """
-
-    total_generation = 50
+    total_re_generation = 60
     total_demand = 100
-    dict_values_DA = {
+    excess = 10
+    dict_values_NZE = {
         KPI: {
             KPI_SCALARS_DICT: {
-                TOTAL_GENERATION_IN_LES: total_generation,
+                TOTAL_RENEWABLE_GENERATION_IN_LES: total_re_generation,
                 TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
+                TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT: excess,
             }
         },
     }
-    E3.add_degree_of_autonomy(dict_values_DA)
+    E3.add_degree_of_net_zero_energy(dict_values_NZE)
 
-    degree_of_autonomy = total_generation / total_demand
+    degree_of_nze = (total_re_generation - excess) / total_demand
 
     assert (
-        dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY] == degree_of_autonomy
-    ), f"The degree of autonomy is added successfully to the list of KPI's."
+        dict_values_NZE[KPI][KPI_SCALARS_DICT][DEGREE_OF_NZE] == degree_of_nze
+    ), f"The degree of NZE is not added successfully to the list of KPI's."
 
 
 def test_equation_degree_of_net_zero_energy():
     """ """
-    total_generation = 30
+    total_re_generation = 60
     total_demand = 100
-    degree_of_autonomy = E3.equation_degree_of_autonomy(total_generation, total_demand)
-    assert degree_of_autonomy == total_generation / total_demand, (
-        f"The degree_of_autonomy ({degree_of_autonomy}) is not calculated correctly. "
-        f"It should be equal to {total_generation / total_demand }."
+    excess = 10
+    degree_of_nze = E3.equation_degree_of_net_zero_energy(total_re_generation, total_demand, excess)
+    assert degree_of_nze == (total_re_generation - excess) / total_demand, (
+        f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
+        f"It should be equal to {(total_re_generation - excess) / total_demand}."
     )
 
 
