@@ -683,6 +683,9 @@ def test_add_degree_of_net_zero_energy():
     degree_of_nze = (total_re_generation - excess) / total_demand
 
     assert (
+            DEGREE_OF_NZE in dict_values_NZE[KPI][KPI_SCALARS_DICT]
+    ), f"The {DEGREE_OF_NZE} is not added to {KPI_SCALARS_DICT}"
+    assert (
         dict_values_NZE[KPI][KPI_SCALARS_DICT][DEGREE_OF_NZE] == degree_of_nze
     ), f"The degree of NZE is not added successfully to the list of KPI's."
 
@@ -695,9 +698,10 @@ def test_equation_degree_of_net_zero_energy():
     degree_of_nze = E3.equation_degree_of_net_zero_energy(
         total_re_generation, total_demand, excess
     )
-    assert degree_of_nze == (total_re_generation - excess) / total_demand, (
+    exp = (total_re_generation - excess) / total_demand
+    assert degree_of_nze == exp, (
         f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
-        f"It should be equal to {(total_re_generation - excess) / total_demand}."
+        f"It should be equal to {exp}."
     )
 
 
