@@ -683,7 +683,7 @@ def test_add_degree_of_net_zero_energy():
     degree_of_nze = (total_re_generation - excess) / total_demand
 
     assert (
-            DEGREE_OF_NZE in dict_values_NZE[KPI][KPI_SCALARS_DICT]
+        DEGREE_OF_NZE in dict_values_NZE[KPI][KPI_SCALARS_DICT]
     ), f"The {DEGREE_OF_NZE} is not added to {KPI_SCALARS_DICT}"
     assert (
         dict_values_NZE[KPI][KPI_SCALARS_DICT][DEGREE_OF_NZE] == degree_of_nze
