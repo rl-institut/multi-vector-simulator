@@ -60,6 +60,7 @@ from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
+    PATH_OUTPUT_FOLDER_INPUTS,
     INPUT_TYPE,
     JSON_WITH_RESULTS,
     REPORT_FOLDER,
@@ -71,6 +72,7 @@ from multi_vector_simulator.utils.constants import (
     SIMULATION_SETTINGS,
     JSON_PROCESSED,
     JSON_FILE_EXTENSION,
+    MVS_CONFIG,
 )
 
 
@@ -122,9 +124,7 @@ def main(**kwargs):
 
     logging.debug("Accessing script: A0_initialization")
 
-    user_input = A0.process_user_arguments(
-        welcome_text=welcome_text, **kwargs
-    )
+    user_input = A0.process_user_arguments(welcome_text=welcome_text, **kwargs)
 
     # Read all inputs
     #    print("")
@@ -147,6 +147,11 @@ def main(**kwargs):
         path_output_folder=user_input[PATH_OUTPUT_FOLDER],
         move_copy=move_copy_config_file,
         set_default_values=True,
+    )
+    F0.store_as_json(
+        dict_values,
+        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER_INPUTS],
+        MVS_CONFIG,
     )
 
     print("")
