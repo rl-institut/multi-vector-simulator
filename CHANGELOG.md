@@ -78,6 +78,7 @@ Here is a template for new release sections
 - Remove `F0.select_essential_results()` (#675)
 - Removed `DSM` and `TYPE_ASSET` from `input_template/energyConsumption.csv`, also in `constants.py` (#726)
 - Removed warning message about excess energy calculation that is outdated as #559 is solved (777)
+- Remove `test_C1_verification.get_json()` as now not used (#783)
 
 ### Fixed
 - Minor typos in D0, E4 and test_E4 files (#739)
@@ -88,6 +89,7 @@ Here is a template for new release sections
 - Fixed display of math equations in RTD (#730)
 - Fix `numpy.int32` error in `B0` (#778)
 - `mvs_config.json` is generated again, now from `cli.py` (#783)
+- Fix pytest `C1.test_check_non_dispatchable_source_time_series_passes` and `C1.test_check_non_dispatchable_source_time_series_results_in_error_msg` (#783)
 
 ## [0.5.4] - 2020-12-18
 
