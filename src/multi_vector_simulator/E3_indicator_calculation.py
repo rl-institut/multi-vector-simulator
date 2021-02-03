@@ -664,11 +664,11 @@ def equation_degree_of_net_zero_energy(
     -----
 
     .. math::
-        NZE &=\frac{\sum_{i} {E_{RE\_generation} (i) \cdot w_i - E_{excess} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+        Degree of NZE &=\frac{\sum_{i} {E_{RE\_generation,i} \cdot w_i - E_{excess, i} \cdot w_i}}{\sum_i {E_{demand, i} \cdot w_i}}
 
-    NZE = 1 : System is a net zero energy system,
-    NZE > 1 : system is a plus-energy system,
-    NZE < 1 : system does not reach NZE status.
+    Degree of NZE = 1 : System is a net zero energy system,
+    Degree of NZE > 1 : system is a plus-energy system,
+    Degree of NZE < 1 : system does not reach net zero balance, indicates by how much it fails to do so
 
     Tested with
     - test_equation_degree_of_net_zero_energy()
