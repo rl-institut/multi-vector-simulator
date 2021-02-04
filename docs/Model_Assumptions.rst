@@ -615,6 +615,13 @@ The perfect foresight can lead to suspicious dispatch of assets, for example cha
 
 .. _limitations-missing-kpi:
 
+
+Optimization precision
+######################
+
+The MVS makes use of the open energy modelling framework (oemof) by using oemof-solph. It is defined that the energy system is solved with the `cbc-solver` and a `ratioGap=0.03`. This influences the precision of the optimized decision variables, ie. the optimized capacities as well as the dispatch of the assets.
+In some cases it was possible to observe that the precision allowed minimal and also negative dispatch or capacities (scale: <10e-6). In case of storage assets, this can lead to SOC curves with negative values or values far above the viable value 1. As the reason for these inconsistencies is known, the MVS enforces minimal capacities and dispatch of 10e-6, ie. all capacities or flows smaller then 10e-9 are set to zero. This is applied to absolute values, so that irregular (and incorrect) values for decision variables can still be detected.
+
 Extension of KPIs necessary
 ###########################
 
