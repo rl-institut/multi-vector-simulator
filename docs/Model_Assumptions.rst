@@ -36,10 +36,10 @@ Dispatchable sources of generation
 Fuel sources are added as dispatchable sources, which still can have development, investment, operational and dispatch costs.
 They are added by adding a column in `energyProviders.CSV`, and setting file_name to `None`.
 
-DSOs, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
+Energy providers, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
 as there are some additional features available then.
 
-Both DSOs and the additional fuel sources are limited to the options provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
+Both energy providers and the additional fuel sources are limited to the options provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
 
 
 Energy conversion
@@ -66,10 +66,10 @@ The energy providers are the most complex assets in the MVS model. They are comp
     - Energy consumption source, providing the energy required from the system with a certain price
     - Energy peak demand pricing "transformers", which represent the costs induced due to peak demand
     - Bus connecting energy consumption source and energy peak demand pricing transformers
-    - Energy feed-in sink, able to take in generation that is provided to the DSO for revenue
-    - Optionally: Transformer Station connecting the DSO bus to the energy bus of the LES
+    - Energy feed-in sink, able to take in generation that is provided to the energy provider for revenue
+    - Optionally: Transformer Station connecting the energy provider bus to the energy bus of the LES
 
-With all these components, the DSO can be visualized as follows:
+With all these components, the energy provider can be visualized as follows:
 
 .. image:: images/Model_Assumptions_energyProvider_assets.png
  :width: 600
@@ -84,7 +84,7 @@ Peak demand pricing
 
 A peak demand pricing scheme is based on an electricity tariff,
 that requires the consumer not only to pay for the aggregated energy consumption in a time period (eg. kWh electricity),
-but also for the maximum peak demand (load, eg. kW power) towards the DSO grid within a specific pricing period.
+but also for the maximum peak demand (load, eg. kW power) towards the grid of the energy provider within a specific pricing period.
 
 In the MVS, this information is gathered for the `energyProviders` with:
 
