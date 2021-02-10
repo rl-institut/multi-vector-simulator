@@ -59,7 +59,7 @@ This also means that the costs of the fuel of a diesel generator (input flow) ar
 
 
 Energy providers
-#######################
+################
 
 The energy providers are the most complex assets in the MVS model. They are composed of a number of sub-assets
 
