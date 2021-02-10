@@ -39,6 +39,7 @@ Here is a template for new release sections
 - Add a try-except code block to catch fatal errors that cause simulation to terminate unsuccessfully (#754)
 - The parameters `fixed_losses_relative` and `fixed_losses_absolute` were added. It is now possible to model a stratified thermal energy storage. The usage of this new component has been tested and documented (#718)
 - It is now possible to model a stratified thermal energy storage. In this context, the two optional parameters `fixed_losses_relative` and `fixed_losses_absolute` were added and can be set in the `storage_*.csv` file. The usage of this new component was tested in `test_A1_csv_to_json.py`, `test_D1_model_components.py` and `test_benchmark_stratified_thermal_storage.py`. A documentation was added in the chapter `Modeling Assumptions of the MVS` (#718)
+- Allow to run workflow manually from the Actions tab by adding `workflow_dispatch` to `main.yml` (#793)
 - Added a note in Energy excess section in RTD (component models) saying that excess sinks are added automatically (#792)
 
 ### Changed
