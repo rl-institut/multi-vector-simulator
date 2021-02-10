@@ -53,10 +53,11 @@ Energy conversion
     - Electric transformers (rectifiers, inverters)
     - Heat pumps (as heater and/or chiller)
 
-Dispatchable conversion assets are added as transformers and are defined in `energyConversion.csv`.
+
+Conversion assets are added as transformers and are defined in `energyConversion.csv`.
 
 The parameters `dispatch_price`, `efficiency` and `installedCap` of transformers are assigned to the output flows.
-This means that these parameters need to be given for the electrical output power in case of a diesel generator (more examples: electrolyzer - H2, heat pumps and boiler - nominal heat ouput, inverters / rectifiers - electrical output power).
+This means that these parameters need to be given for the electrical output power in case of a diesel generator (more examples: electrolyzer - H2, heat pumps and boiler - nominal heat output, inverters / rectifiers - electrical output power).
 This also means that the costs of the fuel of a diesel generator (input flow) are not included in its `dispatch_price` but in the `dispatch_price` of the fuel source.
 
 Charge controllers for a :ref:`battery_storage` are defined by two transformers, one for charging and one for discharging.
