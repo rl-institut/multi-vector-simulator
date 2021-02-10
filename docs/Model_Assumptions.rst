@@ -58,7 +58,7 @@ This means that these parameters need to be given for the electrical output powe
 This also means that the costs of the fuel of a diesel generator (input flow) are not included in its `dispatch_price` but in the `dispatch_price` of the fuel source.
 
 
-Energy providers (DSOs)
+Energy providers
 #######################
 
 The energy providers are the most complex assets in the MVS model. They are composed of a number of sub-assets
