@@ -162,6 +162,9 @@ An implementation of the stratified thermal storage component has been done in `
 Energy excess
 #############
 
+.. note::
+   Energy excess components are implemented **automatically** by MVS! You do not need to define them yourself.
+
 An energy excess sink is placed on each of the LES energy busses, and therefore energy excess is allowed to take place on each bus of the LES.
 This means that there are assumed to be sufficient vents (heat) or transistors (electricity) to dump excess (waste) generation.
 Excess generation can only take place when a non-dispatchable source is present or if an asset can supply energy without any fuel or dispatch costs.
