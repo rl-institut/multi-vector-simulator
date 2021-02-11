@@ -59,7 +59,7 @@ Here is a template for new release sections
 - Change `test_benchmark_special_features` (#746)
 - Update "Input verification" section in `Model_Assmptions.rst` for NaNs (#746)
 - (!) Major change: Definition of Degree of Autonomy (DA) updated in the RTD, also changed calculation of that KPI (#730, #726)
-- Updated all input files to also include `minimal_degree_of_autonomy`, including `input_template`, `tests/inputs`, `tests/benchmark_test_inputs` (#726)
+- Updated all input files to also include `minimal_degree_of_autonomy`, including `input_template`, `tests/inputs`, `tests/benchmark_test_inputs` (#726, #783)
 - `E4.minimal_renewable_share_test()` into generic `E4.minimal_constraint_test()` so that it can be applied both to minimal renewable share and minimal degree of autonomy (#726)
 - `C1.check_non_dispatchable_source_time_series()`, now verification not only applied to renewable assets, but all non-dispatchable assets (#726)
 - Add `MINIMAL_DEGREE_OF_AUTONOMY` to EPA-MVS parser (`utils.data_parser.convert_epa_params_to_mvs()`)(#726)
@@ -68,6 +68,8 @@ Here is a template for new release sections
 - In `test_D1_model_components.py` tests were added that check whether the `GenericStorage` parameter `investment.minimum` is set to `0` in case `fixed_losses_relative` and `fixed_losses_absolute` are not passed and to `1` in case they are passed as times series or floats. At this time it is not possible to do an ivestment optimization of a stratified thermal energy storage without a non-zero `investment.minimum` (see this [issue](https://github.com/oemof/oemof-thermal/issues/174))  (#718)
 - The two optional parameters `fixed_losses_relative` and `fixed_losses_absolute` were added in `tests/inputs/mvs_config.json` (#718)
 - Adapted structure of component models in RTD to mirror EPA and MVS input data (#792)
+- Refactor module imports in `cli.py` and `server.py` (#783)
+- Limit index of availability timeseries to simulation timeindex (`C0.define_availability_of_peak_demand_pricing_assets`) (#783)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
@@ -76,6 +78,7 @@ Here is a template for new release sections
 - Remove `F0.select_essential_results()` (#675)
 - Removed `DSM` and `TYPE_ASSET` from `input_template/energyConsumption.csv`, also in `constants.py` (#726)
 - Removed warning message about excess energy calculation that is outdated as #559 is solved (777)
+- Remove `test_C1_verification.get_json()` as now not used (#783)
 
 ### Fixed
 - Minor typos in D0, E4 and test_E4 files (#739)
@@ -84,7 +87,9 @@ Here is a template for new release sections
 - Fix issue (#769): Fix argument parsing and error messages of `mvs_report` command (#770)
 - Fix issue (#756): Avoid crashing report generation when internet not available (#770)
 - Fixed display of math equations in RTD (#730)
-- Fix numpy.int32 error in B0 (#778)
+- Fix `numpy.int32` error in `B0` (#778)
+- `mvs_config.json` is generated again, now from `cli.py` (#783)
+- Fix pytest `C1.test_check_non_dispatchable_source_time_series_passes` and `C1.test_check_non_dispatchable_source_time_series_results_in_error_msg` (#783)
 
 ## [0.5.4] - 2020-12-18
 
