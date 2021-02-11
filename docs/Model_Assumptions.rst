@@ -130,11 +130,11 @@ Battery energy storage system (BESS)
 ====================================
 
 BESS are modelled as *GenericStorage* like described above. The BESS can either be connected directly to the electricity bus of the LES or via a charge controller that manages the BESS.
-When choosing the second option, the capacity of the charge controller can be optimized, which takes its specific costs and lifetime into consideration.
+When choosing the second option, the capacity of the charge controller can be optimized individually, which takes its specific costs and lifetime into consideration.
 If you do not want to optimize the charge controller's capacity you can take its costs and efficiency into account when defining the storage's input and output power, see :ref:`storage_csv`.
 A charge controller is defined by two transformers, see section :ref:`energy_conversion` above.
 
-Note that capacity reduction over the lifetime of a BESS that may occur due to different effects during aging cannot be taken into consideration in MVS. A possible workaround for this could be to work with the c-rate of the storage or the efficiencies of input and output flows. Note that defining the c-rate as a time series has not been tested, yet, see section :ref:`time_series_params`.
+Note that capacity reduction over the lifetime of a BESS that may occur due to different effects during aging cannot be taken into consideration in MVS. A possible workaround for this could be to manipulate the lifetime.
 
 Thermal energy storage
 ======================
