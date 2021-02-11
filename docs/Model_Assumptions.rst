@@ -12,8 +12,12 @@ This is the reason that the MVS can provide a pre-feasibility study of a specifi
 but not the final sizing and system design.
 The types of assets are presented below.
 
+
+Energy Production
+#################
+
 Non-dispatchable sources of generation
-######################################
+======================================
 
 `Examples`:
 
@@ -21,7 +25,7 @@ Non-dispatchable sources of generation
     - Wind plant
 
 Dispatchable sources of generation
-##################################
+==================================
 
 `Examples`:
 
@@ -32,13 +36,14 @@ Dispatchable sources of generation
 Fuel sources are added as dispatchable sources, which still can have development, investment, operational and dispatch costs.
 They are added by adding a column in `energyProviders.CSV`, and setting file_name to `None`.
 
-DSOs, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
+Energy providers, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
 as there are some additional features available then.
 
-Both DSOs and the additional fuel sources are limited to the options provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
+Both energy providers and the additional fuel sources are limited to the options provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
 
-Dispatchable conversion assets
-##############################
+
+Energy conversion
+#################
 
 `Examples`:
 
@@ -52,19 +57,50 @@ The parameters `dispatch_price`, `efficiency` and `installedCap` of transformers
 This means that these parameters need to be given for the electrical output power in case of a diesel generator (more examples: electrolyzer - H2, heat pumps and boiler - nominal heat ouput, inverters / rectifiers - electrical output power).
 This also means that the costs of the fuel of a diesel generator (input flow) are not included in its `dispatch_price` but in the `dispatch_price` of the fuel source.
 
-Energy excess
-#############
 
-An energy excess sink is placed on each of the LES energy busses, and therefore energy excess is allowed to take place on each bus of the LES.
-This means that there are assumed to be sufficient vents (heat) or transistors (electricity) to dump excess (waste) generation.
-Excess generation can only take place when a non-dispatchable source is present or if an asset can supply energy without any fuel or dispatch costs.
+Energy providers
+################
 
-In case of excessive excess energy, a warning is given that it seems to be cheaper to have high excess generation than investing into more capacities.
-High excess energy can for example result into an optimized inverter capacity that is smaller than the peak generation of installed PV.
-This becomes unrealistic when the excess is very high.
+The energy providers are the most complex assets in the MVS model. They are composed of a number of sub-assets
+
+    - Energy consumption source, providing the energy required from the system with a certain price
+    - Energy peak demand pricing "transformers", which represent the costs induced due to peak demand
+    - Bus connecting energy consumption source and energy peak demand pricing transformers
+    - Energy feed-in sink, able to take in generation that is provided to the energy provider for revenue
+    - Optionally: Transformer Station connecting the energy provider bus to the energy bus of the LES
+
+With all these components, the energy provider can be visualized as follows:
+
+.. image:: images/Model_Assumptions_energyProvider_assets.png
+ :width: 600
+
+Variable energy consumption prices (time-series)
+================================================
+
+- Link to howto
+
+Peak demand pricing
+===================
+
+A peak demand pricing scheme is based on an electricity tariff,
+that requires the consumer not only to pay for the aggregated energy consumption in a time period (eg. kWh electricity),
+but also for the maximum peak demand (load, eg. kW power) towards the grid of the energy provider within a specific pricing period.
+
+In the MVS, this information is gathered for the `energyProviders` with:
+
+    - :const:`multi_vector_simulator.utils.constants_json_strings.PEAK_DEMAND_PRICING_PERIOD` as the period used in peak demand pricing. Possible is 1 (yearly), 2 (half-yearly), 3 (each trimester), 4 (quaterly), 6 (every 2 months) and 12 (each month). If you have a `simulation_duration` < 365 days, the periods will still be set up assuming a year! This means, that if you are simulating 14 days, you will never be able to have more than one peak demand pricing period in place.
+
+    - :const:`multi_vector_simulator.utils.constants_json_strings.PEAK_DEMAND_PRICING` as the costs per peak load unit, eg. kW
+
+To represent the peak demand pricing, the MVS adds a "transformer" that is optimized with specific operation and maintenance costs per year equal to the PEAK_DEMAND_PRICING for each of the pricing periods.
+For two peak demand pricing periods, the resulting dispatch could look as following:
+
+.. image:: images/Model_Assumptions_Peak_Demand_Pricing_Dispatch_Graph.png
+ :width: 600
+
 
 Energy storage
-###########
+##############
 
 Generic storages are defined with file `energyStorage.csv` and `storage_*.csv` and have subassets, which are listed in :ref:`storage_csv`.
 
@@ -122,45 +158,21 @@ For an investment optimization the height of the storage should be left open in 
 
 An implementation of the stratified thermal storage component has been done in `pvcompare <https://github.com/greco-project/pvcompare>`__. You can find the precalculations of the stratified thermal energy storage made in `pvcompare` `here <https://github.com/greco-project/pvcompare/tree/dev/pvcompare/stratified_thermal_storage.py>`__.
 
-Energy providers (DSOs)
------------------------
 
-The energy providers are the most complex assets in the MVS model. They are composed of a number of sub-assets
+Energy excess
+#############
 
-    - Energy consumption source, providing the energy required from the system with a certain price
-    - Energy peak demand pricing "transformers", which represent the costs induced due to peak demand
-    - Bus connecting energy consumption source and energy peak demand pricing transformers
-    - Energy feed-in sink, able to take in generation that is provided to the DSO for revenue
-    - Optionally: Transformer Station connecting the DSO bus to the energy bus of the LES
+.. note::
+   Energy excess components are implemented **automatically** by MVS! You do not need to define them yourself.
 
-With all these components, the DSO can be visualized as follows:
+An energy excess sink is placed on each of the LES energy busses, and therefore energy excess is allowed to take place on each bus of the LES.
+This means that there are assumed to be sufficient vents (heat) or transistors (electricity) to dump excess (waste) generation.
+Excess generation can only take place when a non-dispatchable source is present or if an asset can supply energy without any fuel or dispatch costs.
 
-.. image:: images/Model_Assumptions_energyProvider_assets.png
- :width: 600
+In case of excessive excess energy, a warning is given that it seems to be cheaper to have high excess generation than investing into more capacities.
+High excess energy can for example result into an optimized inverter capacity that is smaller than the peak generation of installed PV.
+This becomes unrealistic when the excess is very high.
 
-Variable energy consumption prices (time-series)
-################################################
-
-- Link to howto
-
-Peak demand pricing
-###################
-
-A peak demand pricing scheme is based on an electricity tariff,
-that requires the consumer not only to pay for the aggregated energy consumption in a time period (eg. kWh electricity),
-but also for the maximum peak demand (load, eg. kW power) towards the DSO grid within a specific pricing period.
-
-In the MVS, this information is gathered for the `energyProviders` with:
-
-    - :const:`multi_vector_simulator.utils.constants_json_strings.PEAK_DEMAND_PRICING_PERIOD` as the period used in peak demand pricing. Possible is 1 (yearly), 2 (half-yearly), 3 (each trimester), 4 (quaterly), 6 (every 2 months) and 12 (each month). If you have a `simulation_duration` < 365 days, the periods will still be set up assuming a year! This means, that if you are simulating 14 days, you will never be able to have more than one peak demand pricing period in place.
-
-    - :const:`multi_vector_simulator.utils.constants_json_strings.PEAK_DEMAND_PRICING` as the costs per peak load unit, eg. kW
-
-To represent the peak demand pricing, the MVS adds a "transformer" that is optimized with specific operation and maintenance costs per year equal to the PEAK_DEMAND_PRICING for each of the pricing periods.
-For two peak demand pricing periods, the resulting dispatch could look as following:
-
-.. image:: images/Model_Assumptions_Peak_Demand_Pricing_Dispatch_Graph.png
- :width: 600
 
 Constraints
 -----------
