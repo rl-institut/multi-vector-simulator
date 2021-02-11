@@ -5,6 +5,7 @@ Module E3 - Indicator calculation
 In module E3 the technical KPI are evaluated:
 - calculate renewable share
 - calculate degree of autonomy (DA)
+- calculate degree of net zero energy (NZE)
 - calculate total generation of each asset and total_internal_generation
 - calculate total feedin electricity equivalent
 - calculate energy flows between sectors
@@ -68,6 +69,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     UNIT_SPECIFIC_EMISSIONS,
     UNIT_EMISSIONS,
+    DEGREE_OF_NZE,
 )
 
 
@@ -589,6 +591,94 @@ def equation_degree_of_autonomy(total_consumption_from_energy_provider, total_de
     return degree_of_autonomy
 
 
+def add_degree_of_net_zero_energy(dict_values):
+    """
+    Determines degree of net zero energy (NZE) and adds KPI to dict_values.
+
+    Parameters
+    ----------
+    dict_values: dict
+        dict with all project information and results,
+        after applying total_renewable_and_non_renewable_energy_origin and
+        total_demand_and_excess_each_sector
+
+    Returns
+    -------
+    None
+        updated dict_values with the degree of net zero energy
+
+    Notes
+    -----
+    As for other KPI, we apply a weighting based on Electricity Equivalent.
+
+    Tested with
+    - test_add_degree_of_net_zero_energy()
+    """
+
+    total_renewable_generation = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_RENEWABLE_GENERATION_IN_LES
+    ]
+
+    total_demand = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+
+    total_excess = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+
+    degree_of_nze = equation_degree_of_net_zero_energy(
+        total_renewable_generation, total_demand, total_excess
+    )
+
+    dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_NZE: degree_of_nze})
+
+    logging.debug(f"Calculated the {DEGREE_OF_NZE}: {round(degree_of_nze, 2)}")
+    logging.info(f"Calculated the {DEGREE_OF_NZE} of the LES.")
+
+
+def equation_degree_of_net_zero_energy(
+    total_renewable_generation, total_demand, total_excess
+):
+    """
+    Calculates the degree of net zero energy (NZE).
+
+    In NZE systems import and export of energy is allowed while the balance over one
+    year should be zero. If more energy is exported than imported it is plus-energy system.
+
+    Parameters
+    ----------
+    total_renewable_generation: float
+        total internal renewable generation of energy
+    total_demand: float
+        total demand
+    total_excess: float
+        Total Excess energy
+
+    Returns
+    -------
+    float
+        degree of net zero energy
+
+    Notes
+    -----
+
+    .. math::
+        Degree of NZE &=\frac{\sum_{i} {E_{RE\_generation,i} \cdot w_i - E_{excess, i} \cdot w_i}}{\sum_i {E_{demand, i} \cdot w_i}}
+
+    Degree of NZE = 1 : System is a net zero energy system,
+    Degree of NZE > 1 : system is a plus-energy system,
+    Degree of NZE < 1 : system does not reach net zero balance, indicates by how much it fails to do so
+
+    Tested with
+    - test_equation_degree_of_net_zero_energy()
+
+    """
+    degree_of_nze = (total_renewable_generation - total_excess) / total_demand
+
+    return degree_of_nze
+
+
 def add_degree_of_sector_coupling(dict_values):
     r"""
     Determines the aggregated flows in between the sectors and the Degree of Sector Coupling.
@@ -609,7 +699,7 @@ def add_degree_of_sector_coupling(dict_values):
         with i are conversion assets
 
     """
-    # todo actually only flows that transform an energy carrier from oone energy vector to the next should be added
+    # todo actually only flows that transform an energy carrier from one energy vector to the next should be added
     # maybe energyBusses helps?
     total_flow_of_energy_conversion_equivalent = 0
     for asset in dict_values[ENERGY_CONVERSION]:
