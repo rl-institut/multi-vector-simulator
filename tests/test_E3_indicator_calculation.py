@@ -52,6 +52,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SPECIFIC_EMISSIONS_ELEQ,
     UNIT_SPECIFIC_EMISSIONS,
     UNIT_EMISSIONS,
+    DEGREE_OF_NZE,
 )
 
 electricity = "Electricity"
@@ -643,10 +644,10 @@ def test_add_degree_of_autonomy():
     degree_of_autonomy = (total_demand - total_consumption_from_grid) / total_demand
     assert (
         DEGREE_OF_AUTONOMY in dict_values_DA[KPI][KPI_SCALARS_DICT]
-    ), f"The {DEGREE_OF_AUTONOMY} is added to {KPI_SCALARS_DICT}"
+    ), f"The {DEGREE_OF_AUTONOMY} is not added to {KPI_SCALARS_DICT}"
     assert (
         dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY] == degree_of_autonomy
-    ), f"The {DEGREE_OF_AUTONOMY} seems to be of incorrect value (exp: {degree_of_autonomy}, returned: {dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY]}."
+    ), f"The degree of autonomy is not added successfully to the list of KPI's."
 
 
 def test_equation_degree_of_autonomy():
@@ -659,6 +660,47 @@ def test_equation_degree_of_autonomy():
     exp = (total_demand - total_consumption_from_grid) / total_demand
     assert degree_of_autonomy == exp, (
         f"The degree_of_autonomy ({degree_of_autonomy}) is not calculated correctly. "
+        f"It should be equal to {exp}."
+    )
+
+
+def test_add_degree_of_net_zero_energy():
+    """ """
+    total_re_generation = 60
+    total_demand = 100
+    excess = 10
+    dict_values_NZE = {
+        KPI: {
+            KPI_SCALARS_DICT: {
+                TOTAL_RENEWABLE_GENERATION_IN_LES: total_re_generation,
+                TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
+                TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT: excess,
+            }
+        },
+    }
+    E3.add_degree_of_net_zero_energy(dict_values_NZE)
+
+    degree_of_nze = (total_re_generation - excess) / total_demand
+
+    assert (
+        DEGREE_OF_NZE in dict_values_NZE[KPI][KPI_SCALARS_DICT]
+    ), f"The {DEGREE_OF_NZE} is not added to {KPI_SCALARS_DICT}"
+    assert (
+        dict_values_NZE[KPI][KPI_SCALARS_DICT][DEGREE_OF_NZE] == degree_of_nze
+    ), f"The degree of NZE is not added successfully to the list of KPI's."
+
+
+def test_equation_degree_of_net_zero_energy():
+    """ """
+    total_re_generation = 60
+    total_demand = 100
+    excess = 10
+    degree_of_nze = E3.equation_degree_of_net_zero_energy(
+        total_re_generation, total_demand, excess
+    )
+    exp = (total_re_generation - excess) / total_demand
+    assert degree_of_nze == exp, (
+        f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
         f"It should be equal to {exp}."
     )
 

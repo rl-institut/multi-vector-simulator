@@ -182,6 +182,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     E3.add_onsite_energy_fraction(dict_values)
     E3.add_onsite_energy_matching(dict_values)
     E3.add_degree_of_autonomy(dict_values)
+    E3.add_degree_of_net_zero_energy(dict_values)
     E3.add_total_emissions(dict_values)
     E3.add_specific_emissions_per_electricity_equivalent(dict_values)
 

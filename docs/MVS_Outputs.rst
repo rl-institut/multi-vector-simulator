@@ -279,6 +279,22 @@ As above, we apply a weighting based on Electricity Equivalent.
        Degree of Autonomy = \frac{\sum_{i} E_{demand,i} \cdot w_i - \sum_{j} E_{consumption,provider,j} \cdot w_j}{\sum_{i} E_{demand,i} \cdot w_i}
 
 
+Degree of net zero energy (NZE)
+###############################
+
+The degree of net zero energy describes the ability of an energy system to provide its aggregated annual demand though renewable, local sources. For that, the balance between local generation as well as consumption from and feed-in towards the energy provider is compared. In a net zero energy system, demand can be supplied by energy import, but then local renewable energy generation should allow an equally high energy export of energy in the course of the year. In a plus energy system, the export exceeds the import, while local renewable generation can supply all demand (from an aggregated perspective).
+To calculate the degree of NZE, the overall renewable energy generated locally minus the excess energy is divided by the overall energy consumed.
+
+A degree of NZE lower 1 shows that the energy system can not reach a net zero balance, and indicates by how much it fails to do so,
+while a degree of NZE of 1 represents a net zero energy system
+and a degree of NZE higher 1 a plus-energy system.
+
+As above, we apply a weighting based on Electricity Equivalent.
+
+.. math::
+        Degree of NZE &=\frac{\sum_{i} {E_{RE\_generation,i} \cdot w_i - E_{excess, i} \cdot w_i}}{\sum_i {E_{demand, i} \cdot w_i}}
+
+
 Automatic Report
 -----------------
 MVS has a feature to automatically `generate a PDF report <https://mvs-eland.readthedocs.io/en/latest/Installation.html#generate-pdf-report-or-an-app-in-your-browser-to-visualise-the-results-of-the-simulation>`__ that contains the main elements from the input data as well as the simulation results' data.
