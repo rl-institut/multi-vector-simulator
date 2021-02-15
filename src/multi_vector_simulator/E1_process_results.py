@@ -114,7 +114,7 @@ def cut_below_micro(value, label):
     """
     threshold = 10 ** (-6)
     text_block_start = f"The value of {label} is below 0"
-    text_block_set_0 = f"Negative value (s) are smaller then {-threshold}. This is likely a result of the termination/precision settings of the cbc solver. As the difference is marginal, the value will be set to 0. "
+    text_block_set_0 = f"Negative value (s) are smaller than {-threshold}. This is likely a result of the termination/precision settings of the cbc solver. As the difference is marginal, the value will be set to 0. "
     text_block_oemof = "This is so far below 0, that the value is not changed. All oemof decision variables should be positive so this needs to be investigated. "
 
     # flows
