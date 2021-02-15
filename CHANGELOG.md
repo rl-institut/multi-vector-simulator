@@ -44,6 +44,7 @@ Here is a template for new release sections
 - Added net zero energy KPI `degree of NZE` with `E3.equation_degree_of_net_zero_energy()` and `E3.add_degree_of_net_zero_energy()` (#776)
 - Added tests for `E3.equation_degree_of_net_zero_energy()` and `E3.add_degree_of_net_zero_energy()` (#776)
 - Added information about degree of NZE to RTD (#776)
+- Function `E1.cut_below_micro` to round decision variables (capacities, flows) below threshold of plus/minus 10^-6 to 0, add warnings if negative value larger then threshold (invalid result). Includes pytests (#791)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
@@ -70,6 +71,7 @@ Here is a template for new release sections
 - Adapted structure of component models in RTD to mirror EPA and MVS input data (#792)
 - Refactor module imports in `cli.py` and `server.py` (#783)
 - Limit index of availability timeseries to simulation timeindex (`C0.define_availability_of_peak_demand_pricing_assets`) (#783)
+- Call `E1.cut_below_micro` in `E1.get_flows`, `E1.get_optimal_cap` and `E1.get_storage_results` (#791) 
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)

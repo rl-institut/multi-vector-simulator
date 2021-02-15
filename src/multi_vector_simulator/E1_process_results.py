@@ -76,6 +76,109 @@ ASSET_GROUPS_DEFINED_BY_INFLUX = [ENERGY_CONSUMPTION]
 ASSET_GROUPS_DEFINED_BY_OUTFLUX = [ENERGY_CONVERSION, ENERGY_PRODUCTION]
 
 
+def cut_below_micro(value, label):
+    r"""
+    Function trims results of oemof optimization to positive values and rounds to 0, if within a certain precision threshold (of -10^-6)
+
+    Oemof termination is dependent on the simulation settings of oemof solph. Thus, it can terminate the optimization if the results are with certain bounds, which can sometimes lead to negative decision variables (capacities, flows). Negative values do not make sense in this context. If the values are between -10^-6 and 0, we assume that they can be rounded to 0, as they result from the precision settings of the solver. In that case the value is overwritten for the futher post-processing. This should also avoid SOC timeseries with doubtful values outside of [0,1]. If any value is a higher negative value then the threshold, its value is not changed but a warning raised.
+    Similarily, if a positive devision variable is detected that has a value lower then the theshold, it is assumed that this only happends because of the solver settings, and the values below the theshold are rounded to 0.
+
+    Parameters
+    ----------
+    value: float or pd.Series
+        Decision variable determined by oemof
+
+    label: str
+        String to be mentioned in the debug messages
+
+    Returns
+    -------
+
+    value: float of pd.Series
+        Decision variable with rounded values in case that slight negative values or positive values were observed.
+
+    Notes
+    -----
+
+    Tested with:
+    - E1.test_cut_below_micro_scalar_value_below_0_larger_threshold
+    - E1.test_cut_below_micro_scalar_value_below_0_smaller_threshold
+    - E1.test_cut_below_micro_scalar_value_0
+    - E1.test_cut_below_micro_scalar_value_larger_0
+    - E1.test_cut_below_micro_scalar_value_larger_0_smaller_threshold
+    - E1.test_cut_below_micro_pd_Series_below_0_larger_threshold
+    - E1.test_cut_below_micro_pd_Series_below_0_smaller_threshold
+    - E1.test_cut_below_micro_pd_Series_0
+    - E1.test_cut_below_micro_pd_Series_larger_0
+    - E1.test_cut_below_micro_pd_Series_larger_0_smaller_threshold
+    """
+    threshold = 10 ** (-6)
+    text_block_start = f"The value of {label} is below 0"
+    text_block_set_0 = f"Negative value (s) are smaller than {-threshold}. This is likely a result of the termination/precision settings of the cbc solver. As the difference is marginal, the value will be set to 0. "
+    text_block_oemof = "This is so far below 0, that the value is not changed. All oemof decision variables should be positive so this needs to be investigated. "
+
+    # flows
+    if isinstance(value, pd.Series):
+        # Identifies any negative values. Decision variables should not have a negative value
+        if (value < 0).any():
+            log_msg = text_block_start
+            # Counts the incidents, in which the value is below 0.
+            if isinstance(value, pd.Series):
+                instances = sum(value < 0)
+                log_msg += f" in {instances} instances. "
+            # Checks that all values are at least within the threshold for negative values.
+            if (value > -threshold).all():
+                log_msg += text_block_set_0
+                logging.debug(log_msg)
+                value = value.clip(lower=0)
+            # If any value has a large negative value (lower then threshold), no values are changed.
+            else:
+                test = value.clip(upper=-threshold).abs()
+                log_msg += f"At least one value is exceeds the scale of {-threshold}. The highest negative value is -{max(test)}. "
+                log_msg += text_block_oemof
+                logging.warning(log_msg)
+
+        # Determine if there are any positive values that are between 0 and the threshold:
+        # Clip to interval
+        positive_threshold = value.clip(lower=0, upper=threshold)
+        # Determine instances in which bounds are met: 1=either 0 or larger threshold, 0=smaller threshold
+        positive_threshold = (positive_threshold == 0) + (
+            positive_threshold == threshold
+        )
+        # Instances in which values are in determined interval:
+        instances = len(value) - sum(positive_threshold)
+        if instances > 0:
+            logging.debug(
+                f"There are {instances} instances in which there are positive values smaller then the threshold."
+            )
+            # Multiply with positive_threshold (1=either 0 or larger threshold, 0=smaller threshold)
+            value = value * positive_threshold
+
+    # capacities
+    else:
+        # Value is lower 0, which should not be possible for decision variables
+        if value < 0:
+            log_msg = text_block_start
+            # Value between [threshold, 0] = [-10**(-6)], ie. is so small that it can be neglected.
+            if value > -threshold:
+                log_msg += text_block_set_0
+                logging.debug(log_msg)
+                value = 0
+            # Value is below 0 but already large enough that it should not be neglected.
+            else:
+                log_msg += f"The value exceeds the scale of {-threshold}, with {value}."
+                log_msg += text_block_oemof
+                logging.warning(log_msg)
+        # Value is above 0 but below threshold, should be rounded
+        elif value < threshold:
+            logging.debug(
+                f"The positive value {value} is below the {threshold}, and rounded to 0."
+            )
+            value = 0
+
+    return value
+
+
 def get_timeseries_per_bus(dict_values, bus_data):
     r"""
     Reads simulation results of all busses and stores time series.
@@ -174,16 +277,23 @@ def get_storage_results(settings, storage_bus, dict_asset):
     power_charge = storage_bus["sequences"][
         ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), "flow")
     ]
+    power_charge = cut_below_micro(power_charge, dict_asset[LABEL] + " charge flow")
     add_info_flows(settings, dict_asset[INPUT_POWER], power_charge)
 
     power_discharge = storage_bus["sequences"][
         ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), "flow")
     ]
+    power_discharge = cut_below_micro(
+        power_discharge, dict_asset[LABEL] + " discharge flow"
+    )
+
     add_info_flows(settings, dict_asset[OUTPUT_POWER], power_discharge)
 
     capacity = storage_bus["sequences"][
         ((dict_asset[LABEL], TYPE_NONE), "storage_content")
     ]
+    capacity = cut_below_micro(capacity, dict_asset[LABEL] + " storage capacity")
+
     add_info_flows(settings, dict_asset[STORAGE_CAPACITY], capacity)
 
     if OPTIMIZE_CAP in dict_asset:
@@ -467,7 +577,7 @@ def get_optimal_cap(bus, dict_asset, flow_tuple):
             and (flow_tuple, "invest") in bus["scalars"]
         ):
             optimal_capacity = bus["scalars"][(flow_tuple, "invest")]
-
+            optimal_capacity = cut_below_micro(optimal_capacity, dict_asset[LABEL])
             if TIMESERIES_PEAK in dict_asset:
                 if dict_asset[TIMESERIES_PEAK][VALUE] > 0:
                     dict_asset.update(
@@ -536,6 +646,7 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
 
     """
     flow = bus["sequences"][(flow_tuple, "flow")]
+    cut_below_micro(flow, dict_asset[LABEL] + " flow")
     add_info_flows(settings, dict_asset, flow)
 
     logging.debug(
