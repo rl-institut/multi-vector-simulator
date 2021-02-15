@@ -191,25 +191,25 @@ def test_get_tuple_for_oemof_results():
         assert flux_tuple == (asset_label, bus)
 
 
-def test_cut_below_pico_scalar_value_below_0_larger_treshhold(caplog):
+def test_cut_below_pico_scalar_value_below_0_larger_threshold(caplog):
     value = -1
     with caplog.at_level(logging.WARNING):
         result = E1.cut_below_pico(value=value, label="label")
     assert (
         "This is so far below 0, that the value is not changed" in caplog.text
-    ), f"The value {value} is below 0 and larger then the treshhold, but no warning is displayed that this value may be invalid."
+    ), f"The value {value} is below 0 and larger then the threshold, but no warning is displayed that this value may be invalid."
     assert (
         result == value
     ), f"As value {value} is below 0 but larger then the threshold, its value should not be changed (but it is {result})."
 
 
-def test_cut_below_pico_scalar_value_below_0_smaller_treshhold(caplog):
+def test_cut_below_pico_scalar_value_below_0_smaller_threshold(caplog):
     value = -0.5 * 10 ** (-6)
     with caplog.at_level(logging.DEBUG):
         result = E1.cut_below_pico(value=value, label="label")
     assert (
         "Negative value (s)" in caplog.text
-    ), f"The value {value} is below 0 and below the treshhold, but the log does not register a debug message for this."
+    ), f"The value {value} is below 0 and below the threshold, but the log does not register a debug message for this."
     assert (
         result == 0
     ), f"As value {value} is below 0 but smaller then the threshold, its value should be changed to zero (but it is {result})."
@@ -237,33 +237,33 @@ def test_cut_below_pico_scalar_value_larger_0_smaller_threshold(caplog):
         result = E1.cut_below_pico(value=value, label="label")
     assert (
         "The positive value" in caplog.text
-    ), f"The value {value} is larger 0 but below the treshold and should raise a debug message."
+    ), f"The value {value} is larger 0 but below the threshold and should raise a debug message."
 
     assert (
         result == 0
     ), f"As value {value} positive but smaller then the threshold, its value should be changed to zero (but it is {result})."
 
 
-def test_cut_below_pico_pd_Series_below_0_larger_treshhold(caplog):
+def test_cut_below_pico_pd_Series_below_0_larger_threshold(caplog):
     value = pd.Series([0, -0.5 * 10 ** (-6), -1, 0])
     with caplog.at_level(logging.WARNING):
         result = E1.cut_below_pico(value=value, label="label")
     assert (
         "This is so far below 0, that the value is not changed" in caplog.text
-    ), f"One value in pd.Series is below 0 and larger then the treshhold, but no warning is displayed that this value may be invalid."
+    ), f"One value in pd.Series is below 0 and larger then the threshold, but no warning is displayed that this value may be invalid."
     assert (
         result == value
     ).all(), f"As value {value} is below 0 but larger then the threshold, its value should not be changed (but it is {result})."
 
 
-def test_cut_below_pico_pd_Series_below_0_smaller_treshhold(caplog):
+def test_cut_below_pico_pd_Series_below_0_smaller_threshold(caplog):
     value = pd.Series([0, -0.5 * 10 ** (-6), 0, 1])
     exp = pd.Series([0, 0, 0, 1])
     with caplog.at_level(logging.DEBUG):
         result = E1.cut_below_pico(value=value, label="label")
     assert (
         "Negative value (s)" in caplog.text
-    ), f"One value in pd.Series is below 0 and below the treshhold, but the log does not register a debug message for this."
+    ), f"One value in pd.Series is below 0 and below the threshold, but the log does not register a debug message for this."
     assert (
         result[1] == 0
     ), f"As value {value[1]} is below 0 but smaller then the threshold, its value should be changed to zero (but it is {result[1]})."
@@ -290,14 +290,14 @@ def test_cut_below_pico_pd_Series_larger_0():
     ).all(), f"All values in pd.Series are larger 0 and therefore should not be changed (but it is {result})."
 
 
-def test_cut_below_pico_pd_Series_larger_0_smaller_treshold(caplog):
+def test_cut_below_pico_pd_Series_larger_0_smaller_threshold(caplog):
     value = pd.Series([0, 0.5 * 10 ** (-6), 0, 1])
     exp = pd.Series([0, 0, 0, 1])
     with caplog.at_level(logging.DEBUG):
         result = E1.cut_below_pico(value=value, label="label")
     assert (
         " positive values smaller then the threshold" in caplog.text
-    ), f"One value in pd.Series is above 0 and below the treshhold, but the log does not register a debug message for this."
+    ), f"One value in pd.Series is above 0 and below the threshold, but the log does not register a debug message for this."
     assert (
         result[1] == 0
     ), f"As value {value[1]} is below 0 but smaller then the threshold, its value should be changed to zero (but it is {result[1]})."

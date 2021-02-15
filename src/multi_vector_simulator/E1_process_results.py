@@ -101,20 +101,20 @@ def cut_below_pico(value, label):
     -----
 
     Tested with:
-    - E1.test_cut_below_pico_scalar_value_below_0_larger_treshhold
-    - E1.test_cut_below_pico_scalar_value_below_0_smaller_treshhold
+    - E1.test_cut_below_pico_scalar_value_below_0_larger_threshold
+    - E1.test_cut_below_pico_scalar_value_below_0_smaller_threshold
     - E1.test_cut_below_pico_scalar_value_0
     - E1.test_cut_below_pico_scalar_value_larger_0
     - E1.test_cut_below_pico_scalar_value_larger_0_smaller_threshold
-    - E1.test_cut_below_pico_pd_Series_below_0_larger_treshhold
-    - E1.test_cut_below_pico_pd_Series_below_0_smaller_treshhold
+    - E1.test_cut_below_pico_pd_Series_below_0_larger_threshold
+    - E1.test_cut_below_pico_pd_Series_below_0_smaller_threshold
     - E1.test_cut_below_pico_pd_Series_0
     - E1.test_cut_below_pico_pd_Series_larger_0
-    - E1.test_cut_below_pico_pd_Series_larger_0_smaller_treshold
+    - E1.test_cut_below_pico_pd_Series_larger_0_smaller_threshold
     """
-    treshhold = 10 ** (-6)
+    threshold = 10 ** (-6)
     text_block_start = f"The value of {label} is below 0"
-    text_block_set_0 = f"Negative value (s) are smaller then {-treshhold}. This is likely a result of the termination/precision settings of the cbc solver. As the difference is marginal, the value will be set to 0. "
+    text_block_set_0 = f"Negative value (s) are smaller then {-threshold}. This is likely a result of the termination/precision settings of the cbc solver. As the difference is marginal, the value will be set to 0. "
     text_block_oemof = "This is so far below 0, that the value is not changed. All oemof decision variables should be positive so this needs to be investigated. "
 
     # flows
@@ -126,24 +126,24 @@ def cut_below_pico(value, label):
             if isinstance(value, pd.Series):
                 instances = sum(value < 0)
                 log_msg += f" in {instances} instances. "
-            # Checks that all values are at least within the treshhold for negative values.
-            if (value > -treshhold).all():
+            # Checks that all values are at least within the threshold for negative values.
+            if (value > -threshold).all():
                 log_msg += text_block_set_0
                 logging.debug(log_msg)
                 value = value.clip(lower=0)
-            # If any value has a large negative value (lower then threshhold), no values are changed.
+            # If any value has a large negative value (lower then threshold), no values are changed.
             else:
-                test = value.clip(upper=-treshhold).abs()
-                log_msg += f"At least one value is exceeds the scale of {-treshhold}. The highest negative value is -{max(test)}. "
+                test = value.clip(upper=-threshold).abs()
+                log_msg += f"At least one value is exceeds the scale of {-threshold}. The highest negative value is -{max(test)}. "
                 log_msg += text_block_oemof
                 logging.warning(log_msg)
 
         # Determine if there are any positive values that are between 0 and the threshold:
         # Clip to interval
-        positive_threshold = value.clip(lower=0, upper=treshhold)
-        # Determine instances in which bounds are met: 1=either 0 or larger threshold, 0=smaller treshold
+        positive_threshold = value.clip(lower=0, upper=threshold)
+        # Determine instances in which bounds are met: 1=either 0 or larger threshold, 0=smaller threshold
         positive_threshold = (positive_threshold == 0) + (
-            positive_threshold == treshhold
+            positive_threshold == threshold
         )
         # Instances in which values are in determined interval:
         instances = len(value) - sum(positive_threshold)
@@ -151,7 +151,7 @@ def cut_below_pico(value, label):
             logging.debug(
                 f"There are {instances} instances in which there are positive values smaller then the threshold."
             )
-            # Multiply with positive_threshold (1=either 0 or larger threshold, 0=smaller treshold)
+            # Multiply with positive_threshold (1=either 0 or larger threshold, 0=smaller threshold)
             value = value * positive_threshold
 
     # capacities
@@ -160,19 +160,19 @@ def cut_below_pico(value, label):
         if value < 0:
             log_msg = text_block_start
             # Value between [threshold, 0] = [-10**(-6)], ie. is so small that it can be neglected.
-            if value > -treshhold:
+            if value > -threshold:
                 log_msg += text_block_set_0
                 logging.debug(log_msg)
                 value = 0
             # Value is below 0 but already large enough that it should not be neglected.
             else:
-                log_msg += f"The value exceeds the scale of {-treshhold}, with {value}."
+                log_msg += f"The value exceeds the scale of {-threshold}, with {value}."
                 log_msg += text_block_oemof
                 logging.warning(log_msg)
         # Value is above 0 but below threshold, should be rounded
-        elif value < treshhold:
+        elif value < threshold:
             logging.debug(
-                f"The positive value {value} is below the {treshhold}, and rounded to 0."
+                f"The positive value {value} is below the {threshold}, and rounded to 0."
             )
             value = 0
 
