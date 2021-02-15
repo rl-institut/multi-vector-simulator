@@ -76,7 +76,7 @@ ASSET_GROUPS_DEFINED_BY_INFLUX = [ENERGY_CONSUMPTION]
 ASSET_GROUPS_DEFINED_BY_OUTFLUX = [ENERGY_CONVERSION, ENERGY_PRODUCTION]
 
 
-def cut_below_pico(value, label):
+def cut_below_micro(value, label):
     r"""
     Function trims results of oemof optimization to positive values and rounds to 0, if within a certain precision threshold (of -10^-6)
 
@@ -101,16 +101,16 @@ def cut_below_pico(value, label):
     -----
 
     Tested with:
-    - E1.test_cut_below_pico_scalar_value_below_0_larger_threshold
-    - E1.test_cut_below_pico_scalar_value_below_0_smaller_threshold
-    - E1.test_cut_below_pico_scalar_value_0
-    - E1.test_cut_below_pico_scalar_value_larger_0
-    - E1.test_cut_below_pico_scalar_value_larger_0_smaller_threshold
-    - E1.test_cut_below_pico_pd_Series_below_0_larger_threshold
-    - E1.test_cut_below_pico_pd_Series_below_0_smaller_threshold
-    - E1.test_cut_below_pico_pd_Series_0
-    - E1.test_cut_below_pico_pd_Series_larger_0
-    - E1.test_cut_below_pico_pd_Series_larger_0_smaller_threshold
+    - E1.test_cut_below_micro_scalar_value_below_0_larger_threshold
+    - E1.test_cut_below_micro_scalar_value_below_0_smaller_threshold
+    - E1.test_cut_below_micro_scalar_value_0
+    - E1.test_cut_below_micro_scalar_value_larger_0
+    - E1.test_cut_below_micro_scalar_value_larger_0_smaller_threshold
+    - E1.test_cut_below_micro_pd_Series_below_0_larger_threshold
+    - E1.test_cut_below_micro_pd_Series_below_0_smaller_threshold
+    - E1.test_cut_below_micro_pd_Series_0
+    - E1.test_cut_below_micro_pd_Series_larger_0
+    - E1.test_cut_below_micro_pd_Series_larger_0_smaller_threshold
     """
     threshold = 10 ** (-6)
     text_block_start = f"The value of {label} is below 0"
@@ -277,13 +277,13 @@ def get_storage_results(settings, storage_bus, dict_asset):
     power_charge = storage_bus["sequences"][
         ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), "flow")
     ]
-    power_charge = cut_below_pico(power_charge, dict_asset[LABEL] + " charge flow")
+    power_charge = cut_below_micro(power_charge, dict_asset[LABEL] + " charge flow")
     add_info_flows(settings, dict_asset[INPUT_POWER], power_charge)
 
     power_discharge = storage_bus["sequences"][
         ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), "flow")
     ]
-    power_discharge = cut_below_pico(
+    power_discharge = cut_below_micro(
         power_discharge, dict_asset[LABEL] + " discharge flow"
     )
 
@@ -292,7 +292,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     capacity = storage_bus["sequences"][
         ((dict_asset[LABEL], TYPE_NONE), "storage_content")
     ]
-    capacity = cut_below_pico(capacity, dict_asset[LABEL] + " storage capacity")
+    capacity = cut_below_micro(capacity, dict_asset[LABEL] + " storage capacity")
 
     add_info_flows(settings, dict_asset[STORAGE_CAPACITY], capacity)
 
@@ -577,7 +577,7 @@ def get_optimal_cap(bus, dict_asset, flow_tuple):
             and (flow_tuple, "invest") in bus["scalars"]
         ):
             optimal_capacity = bus["scalars"][(flow_tuple, "invest")]
-            optimal_capacity = cut_below_pico(optimal_capacity, dict_asset[LABEL])
+            optimal_capacity = cut_below_micro(optimal_capacity, dict_asset[LABEL])
             if TIMESERIES_PEAK in dict_asset:
                 if dict_asset[TIMESERIES_PEAK][VALUE] > 0:
                     dict_asset.update(
@@ -646,7 +646,7 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
 
     """
     flow = bus["sequences"][(flow_tuple, "flow")]
-    cut_below_pico(flow, dict_asset[LABEL] + " flow")
+    cut_below_micro(flow, dict_asset[LABEL] + " flow")
     add_info_flows(settings, dict_asset, flow)
 
     logging.debug(
