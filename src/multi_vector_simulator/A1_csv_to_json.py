@@ -234,7 +234,7 @@ def create_json_from_csv(
 
     if parameters is None:
         raise MissingParameterError(
-            f"No parameters were provided to extract from the file file {filename}.csv \n"
+            f"No parameters were provided to extract from the file {filename}.csv \n"
             f"Please check {input_directory} for correct parameter names."
         )
 
@@ -286,10 +286,11 @@ def create_json_from_csv(
                         wrong_parameters.append(i)
 
     if len(wrong_parameters) > 0:
+        parameter_string = ", ".join(map(str, parameters))
         logging.warning(
-            f"The parameter {i} in the file"
-            f"{os.path.join(input_directory,filename)}.csv is not expected. \n"
-            f"Expected parameters are {parameters}"
+            f"The parameter {i} in the file "
+            f"{os.path.join(input_directory,filename)}.csv is not expected. "
+            f"Expected parameters are: {str(parameter_string)}"
             )
         # ignore the wrong parameter which is in the csv but not required by the parameters list
         df = df.drop(wrong_parameters)
