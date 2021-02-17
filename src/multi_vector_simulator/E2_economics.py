@@ -528,3 +528,16 @@ def lcoe_assets(dict_asset, asset_group):
         lcoe_a = dict_asset[ANNUITY_TOTAL][VALUE] / dict_asset[TOTAL_FLOW][VALUE]
 
     dict_asset.update({LCOE_ASSET: {VALUE: lcoe_a, UNIT: CURR + "/kWh"}})
+
+def add_fix_project_cost(dict_values):
+    """
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation input and output data, specifically including KPI_
+
+    Returns
+    -------
+
+    """

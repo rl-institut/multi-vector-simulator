@@ -169,6 +169,8 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 E3.calculate_emissions_from_flow(dict_values[group][asset])
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
+    E2.add_fix_project_cost(dict_values)
+
     logging.info("Evaluating key performance indicators of the system")
     E3.all_totals(dict_values)
     E3.total_demand_and_excess_each_sector(dict_values)

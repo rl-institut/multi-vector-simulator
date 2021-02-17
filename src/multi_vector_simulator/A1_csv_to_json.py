@@ -560,7 +560,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
     """
     if pd.isnull(value):
         logging.error(
-            f"Parametr {param} of asset {asset} is missing. "
+            f"Parameter {param} of asset {asset} (group: {filename}) is missing. "
             f"The simulation may continue, but errors during execution or in the results can be expected."
         )
 

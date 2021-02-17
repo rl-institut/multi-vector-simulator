@@ -1,8 +1,6 @@
 ,unit,distribution_grid,engineering,operation
-label,str,distribution grid infrastructure,"R&D, engineering",Fix project operation
-age_installed,year,10, 0, 0
+age_installed,year,10,0,0
 lifetime,year,30,20,20
 development_costs,currency,0.0,0,0
-specific_costs,currency,0.0,0,0
 specific_costs_om,currency/year,0,0,4600
-dispatch_price,currency/kWh,0,0,0
+specific_costs,currency
