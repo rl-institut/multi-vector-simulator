@@ -89,7 +89,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
 
 from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
-    WrongParameterWarning,
     CsvParsingError,
     WrongStorageColumn,
 )
@@ -285,13 +284,11 @@ def create_json_from_csv(
                         wrong_parameters.append(i)
 
     if len(wrong_parameters) > 0:
-        warnings.warn(
-            WrongParameterWarning(
-                f"The parameter {i} in the file"
-                f"{os.path.join(input_directory,filename)}.csv is not expected. \n"
-                f"Expected parameters are {parameters}"
+        logging.warning(
+            f"The parameter {i} in the file"
+            f"{os.path.join(input_directory,filename)}.csv is not expected. \n"
+            f"Expected parameters are {parameters}"
             )
-        )
         # ignore the wrong parameter which is in the csv but not required by the parameters list
         df = df.drop(wrong_parameters)
 
@@ -387,24 +384,21 @@ def create_json_from_csv(
                             THERM_LOSSES_REL,
                             THERM_LOSSES_ABS,
                         ]:
-                            warnings.warn(
-                                WrongParameterWarning(
-                                    f"The storage parameter {i} of the file "
-                                    f"{os.path.join(input_directory,filename)}.csv "
-                                    f"is not recognized. It will not be "
-                                    "considered in the simulation."
+                            logging.warning(
+                                f"The storage parameter {i} of the file "
+                                f"{os.path.join(input_directory,filename)}.csv "
+                                f"is not recognized. It will not be "
+                                "considered in the simulation."
                                 )
-                            )
+
                             df_copy.loc[[i], [column]] = "NaN"
 
                         elif pd.isnull(df_copy.at[i, column]) is False:
-                            warnings.warn(
-                                WrongParameterWarning(
-                                    f"The storage parameter {i} in column "
-                                    f" {column} of the file {filename}.csv should "
-                                    "be set to NaN. It will not be considered in the "
-                                    "simulation"
-                                )
+                            logging.warning(
+                                f"The storage parameter {i} in column "
+                                f" {column} of the file {filename}.csv should "
+                                "be set to NaN. It will not be considered in the "
+                                "simulation"
                             )
                             df_copy.loc[[i], [column]] = "NaN"
                         else:
@@ -415,14 +409,12 @@ def create_json_from_csv(
                             )
                     # check if all other values have a value unequal to Nan
                     elif pd.isnull(df_copy.at[i, column]) is True:
-                        warnings.warn(
-                            WrongParameterWarning(
-                                f"In file {filename}.csv the parameter {i}"
-                                f" in column {column} is NaN. Please insert a value "
-                                "of 0 or int. For this "
-                                "simulation the value is set to 0 "
-                                "automatically."
-                            )
+                        logging.warning(
+                            f"In file {filename}.csv the parameter {i}"
+                            f" in column {column} is NaN. Please insert a value "
+                            "of 0 or int. For this "
+                            "simulation the value is set to 0 "
+                            "automatically."
                         )
 
                         df_copy.loc[[i], [column]] = 0
