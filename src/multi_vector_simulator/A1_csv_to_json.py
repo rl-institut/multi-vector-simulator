@@ -60,6 +60,7 @@ from multi_vector_simulator.utils.constants import (
     REQUIRED_IN_CSV_ELEMENTS,
     DEFAULT_VALUE,
     HEADER,
+    FIX_COST
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     LABEL,
@@ -148,6 +149,7 @@ def create_input_json(
                 ENERGY_CONVERSION,
                 ENERGY_PRODUCTION,
                 ENERGY_PROVIDERS,
+                FIX_COST,
             ]:
                 # use column names as labels, replace underscores and capitalize
                 for key, item in single_dict[filename].items():
