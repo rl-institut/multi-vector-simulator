@@ -208,6 +208,14 @@ def process_all_assets(dict_values):
         ENERGY_CONSUMPTION: energyConsumption,
     }
 
+    logging.debug("Pre-process fix project costs")
+    for asset in dict_values[FIX_COST]:
+        evaluate_lifetime_costs(
+            dict_values[SIMULATION_SETTINGS],
+            dict_values[ECONOMIC_DATA],
+            dict_values[FIX_COST][asset],
+        )
+
     for asset_group, asset_function in asset_group_list.items():
         logging.info("Pre-processing all assets in asset group %s.", asset_group)
         # call asset function connected to current asset group (see asset_group_list)
@@ -1370,8 +1378,8 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     - Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
 
     """
-
-    C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
+    if DISPATCH_PRICE in dict_asset:
+        C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
     (
         specific_capex,

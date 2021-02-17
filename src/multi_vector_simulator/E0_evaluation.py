@@ -36,7 +36,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     STORAGE_CAPACITY,
     INFLOW_DIRECTION,
     OUTFLOW_DIRECTION,
-    OPTIMIZED_ADD_CAP,
     KPI,
     KPI_COST_MATRIX,
     KPI_SCALAR_MATRIX,
@@ -50,6 +49,11 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MINIMAL_RENEWABLE_FACTOR,
     RENEWABLE_FACTOR,
     DEGREE_OF_AUTONOMY,
+    FIX_COST,
+    OPTIMIZED_ADD_CAP,
+    LIFETIME_PRICE_DISPATCH,
+    FLOW,
+    COST_DISPATCH,
 )
 
 from multi_vector_simulator.utils.constants_output import (
@@ -169,7 +173,19 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 E3.calculate_emissions_from_flow(dict_values[group][asset])
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
-    E2.add_fix_project_cost(dict_values)
+    # Add fix project costs
+    for asset in dict_values[FIX_COST]:
+        # Add parameters that are needed for E2.get_costs()
+        dict_values[FIX_COST][asset].update({OPTIMIZED_ADD_CAP: {VALUE: 1},
+                                             INSTALLED_CAP: {VALUE: 0},
+                                             LIFETIME_PRICE_DISPATCH: {VALUE: 0},
+                                             FLOW: pd.Series([0,0])})
+
+        E2.get_costs(dict_values[FIX_COST][asset], dict_values[ECONOMIC_DATA])
+        # Remove all parameters that were added before and the KPI that do not apply
+        for key in [OPTIMIZED_ADD_CAP, LIFETIME_PRICE_DISPATCH, INSTALLED_CAP, FLOW, COST_DISPATCH]:
+            dict_values[FIX_COST][asset].pop(key)
+        store_result_matrix(dict_values[KPI], dict_values[FIX_COST][asset])
 
     logging.info("Evaluating key performance indicators of the system")
     E3.all_totals(dict_values)
