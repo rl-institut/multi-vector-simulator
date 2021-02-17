@@ -7,6 +7,8 @@ As such, the energy system model can be described with a linear equation system.
 Below, the most important aspects are described in a genrealized way, as well as explained based on an example.
 This will ease the comparision to other energy system models.
 
+.. _economic_precalculation-label:
+
 Economic Dispatch
 -----------------
 
@@ -73,7 +75,6 @@ The MVS considers a linear depreciation over T and accounts for the time value o
 
 .. math::
         c_{res,i} = \frac{capex_i}{(1+d)^{n \cdot t_a}} \cdot \frac{1}{T} \cdot \frac{(n+1) \cdot t_a - T}{(1+d)^T}
-
 
 Energy Balance Equation
 -----------------------

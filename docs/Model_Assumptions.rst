@@ -2,6 +2,27 @@
 Modeling Assumptions of the MVS
 ================================
 
+Cost calculations
+-----------------
+
+The optimization in the MVS is mainly a cost optimization. There are some additional constraints that can be introduced, mainly by adding bounds eg. by limiting the maximum capacity that can be installed (comp. :ref:`maxcap-label`) or adding constraints for certain key performance indicators (see :ref:`constraints-label`). To optimize the energy systems properly, the economic data provided with the input data has to be pre-processed (also see :ref:`economic_precalculation-label`) and then also post-processed when evaluating the results. Following assumptions are important:
+
+* **Project lifetime**: The simulation has a defined project lifetime, for which continuous operation is assumed - which means that the first year of operation is exactly like the last year of operation. Existing and optimized assets have to be replaced to make this possible.
+* **Simulation duration**: It is advisable to simulate whole year to find the most suitable combination of energy assets for your system. Sometimes however you might want to look at specific seasons to see their effect - this is possible in the MVS by choosing a specific start date and simulation duration.
+* **Asset costs**: Each asset can have development costs, specific investment costs, specific operation and management costs as well as dispatch costs.
+    * *Replacement costs* are calculated based on the lifetime of the assets, and residual values are paid at the end of the project.
+    * *Development costs* are costs that will occurr regardless of the installed capacity of an asset - even if it is not installed at all. It stands for system planning and licensing costs. If you have optimized your energy system and see that an asset might not be favourable (zero optimized capacities), you might want to run the simulation again and remove the asset, or remove the development costs of the asset.
+    * *Specific investment costs* and *specific operation and maintenance costs* are used to calculate the annual expenditures that an asset has per year, in the process also adding the replacement costs.
+    * *Dispatch price* can often be set to zero, but are supposed to cover instances where utilization of an asset requires increased operation and maintenance or leads to wear.
+* **Pre-existing capacities**: It is possible to add assets that already exist in your energy system with their capacity and age.
+    * *Replacements* - To ensure that the energy system operates continously, the existing assets are replaced with the same capacities when they reached their end of life within the project lifetime.
+    * *Replacement costs* are calculated based on the lifetime of the asset in general and the age of the pre-existing capacities
+* **Fix project costs**: It is possible to define fix costs of the project - this is important if you want to compare different project locations with each other. You can define...
+    * *Development costs*, which could for example stand for the cost of licenses of the whole energy system
+    * *(Specific) investment costs*, which could be an investment into land or buildings at the project site. When you define a lifetime for the investment, the MVS will also consider replacements and reimbursements.
+    * *(Specific) operation and management costs*, which can cover eg. the salaries of at the project site
+
+
 Component models
 ----------------
 
@@ -222,6 +243,7 @@ In case of excessive excess energy, a warning is given that it seems to be cheap
 High excess energy can for example result into an optimized inverter capacity that is smaller than the peak generation of installed PV.
 This becomes unrealistic when the excess is very high.
 
+.. _constraints-label:
 
 Constraints
 -----------
