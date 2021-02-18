@@ -430,7 +430,7 @@ def convert_epa_params_to_mvs(epa_dict):
 
             dict_values[asset_group] = dict_asset
         else:
-            logging.INFO(
+            logging.info(
                 f"The assets parameters '{MAP_MVS_EPA[asset_group]}' is not present in the EPA parameters to be parsed into MVS json format"
             )
 
