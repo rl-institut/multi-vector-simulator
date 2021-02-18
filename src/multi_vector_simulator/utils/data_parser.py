@@ -12,6 +12,7 @@ This module defines all functions to convert formats between EPA and MVS
 import pprint
 import logging
 import json
+from copy import deepcopy
 
 from multi_vector_simulator.utils import compare_input_parameters_with_reference
 
@@ -264,6 +265,7 @@ def convert_epa_params_to_mvs(epa_dict):
 
     """
 
+    epa_dict = deepcopy(epa_dict)
     dict_values = {}
 
     for param_group in [
