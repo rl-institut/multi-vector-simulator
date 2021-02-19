@@ -179,6 +179,8 @@ Constraints
 
 Constraints are controlled with the file `constraints.csv`.
 
+.. _constraint_min_re_factor:
+
 Minimal renewable factor constraint
 ###################################
 
@@ -262,7 +264,40 @@ The unit of the constraint is `kgCO2eq/a`. To select a useful value for this con
 - Firstly, optimize your system without the constraint to get an idea about the scale of the emissions and then, secondly, set the constraint and lower the emissions step by step until you receive an unbound problem (which then represents the non-archievable minimum of emissions for your energy system)
 - Check the emissions targets of your region/country and disaggregate the number
 
-The maximum emissions constraint is introduced to the energy system by `D2.constraint_maximum_emissions()` and a validation test is performed within the benchmark tests.
+The maximum emissions constraint is introduced to the energy system by `D2.constraint_maximum_emissions()` and a validation test is performed with `E4.maximum_emissions_test()`.
+
+
+Net zero energy (NZE) constraint
+################################
+
+The net zero energy (NZE) constraint requires the capacity and dispatch optimization of the MVS to result into a NZE system. For that, the balance between consumption from and feed-in towards the energy providers is compared. In a net zero energy system, demand can be supplied by energy import, but then local energy generation should allow an equally high energy export of energy in the course of the year.
+The degree of NZE of the optimized energy system may be higher than 1. Please find the definition of the KPI here: :ref:`kpi_degree_of_nze`.
+
+Some definitions of NZE systems allow the demand only partly be covered by non-renewable locally generated energy. In MVS this is not the case - all locally generated energy in taken into consideration. To enlarge the share of renewables in the energy system you can use the :ref:`constraint_min_re_factor`.
+
+The NZE constraint is applied to the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
+
+.. math::
+        \sum_{i} {E_{feedin, DSO} (i) \cdot w_i - E_{consumption, DSO} (i) \cdot w_i} >= 0
+
+:Deactivating the constraint:
+
+The NZE constraint is deactivated by inserting the following row in `constraints.csv` as follows:
+
+```net_zero_energy,bool,False```
+
+:Activating the constraint:
+
+The constraint is enabled when the value of the NZE constraint is set to `True` in `constraints.csv`:
+
+```net_zero_energy,bool,True```
+
+
+Depending on the energy system, especially when working with assets which are not to be capacity-optimized, it is possible that the NZE criterion cannot be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimizeCap` parameters to `True`, and then investigate further.
+
+The net zero energy constraint is introduced to the energy system by `D2.constraint_net_zero_energy()` and a validation test is performed with `E4.net_zero_energy_test()`.
+
+
 
 
 Weighting of energy carriers

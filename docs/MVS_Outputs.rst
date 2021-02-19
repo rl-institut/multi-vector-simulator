@@ -278,6 +278,7 @@ As above, we apply a weighting based on Electricity Equivalent.
 .. math::
        Degree of Autonomy = \frac{\sum_{i} E_{demand,i} \cdot w_i - \sum_{j} E_{consumption,provider,j} \cdot w_j}{\sum_{i} E_{demand,i} \cdot w_i}
 
+.. _kpi_degree_of_nze:
 
 Degree of net zero energy (NZE)
 ###############################
