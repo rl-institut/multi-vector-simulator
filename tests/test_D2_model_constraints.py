@@ -285,6 +285,64 @@ def test_prepare_energy_provider_consumption_sources():
         ), f"The expected value (exp[key]) of {key} for {DSO_source_name} is not met, but is of value {energy_provider_consumption_sources[DSO_source_name][key]}."
 
 
+def test_prepare_energy_provider_feedin_sinks():
+    electricity = "Electricity"
+    dso = "DSO"
+    dict_values = {
+        ENERGY_PROVIDERS: {dso: {LABEL: dso},},
+        ENERGY_CONSUMPTION: {
+            dso
+            + DSO_FEEDIN
+            + AUTO_SINK: {
+                LABEL: dso + DSO_FEEDIN,
+                INFLOW_DIRECTION: electricity,
+                ENERGY_VECTOR: electricity,
+            }
+        },
+    }
+    dict_model = {
+        OEMOF_SINK: {dso + DSO_FEEDIN: dso + DSO_FEEDIN,},
+        OEMOF_BUSSES: {electricity: electricity},
+    }
+    oemof_solph_object_asset = "object"
+    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
+    oemof_solph_object_bus = "oemof_solph_object_bus"
+
+    energy_provider_feedin_sinks = D2.prepare_energy_provider_feedin_sinks(
+        dict_values,
+        dict_model,
+        oemof_solph_object_asset,
+        weighting_factor_energy_carrier,
+        oemof_solph_object_bus,
+    )
+
+    DSO_sink_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_FEEDIN + AUTO_SINK
+
+    assert (
+        DSO_sink_name in energy_provider_feedin_sinks
+    ), f"DSO sink asset {DSO_sink_name} should be in the energy provider sink list taken into account for the constraints, but is not included in it ({energy_provider_feedin_sinks.keys()})."
+
+    exp = {
+        oemof_solph_object_asset: dict_model[OEMOF_SINK][
+            dict_values[ENERGY_CONSUMPTION][DSO_sink_name][LABEL]
+        ],
+        oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+            dict_values[ENERGY_CONSUMPTION][DSO_sink_name][INFLOW_DIRECTION]
+        ],
+        weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+            dict_values[ENERGY_CONSUMPTION][DSO_sink_name][ENERGY_VECTOR]
+        ][VALUE],
+    }
+
+    for key in exp.keys():
+        assert (
+            key in energy_provider_feedin_sinks[DSO_sink_name]
+        ), f"The parameter {key} for DSO {DSO_sink_name} not is not added for energy provider sinks processing for constraints."
+        assert (
+            energy_provider_feedin_sinks[DSO_sink_name][key] == exp[key]
+        ), f"The expected value (exp[key]) of {key} for {DSO_sink_name} is not met, but is of value {energy_provider_feedin_sinks[DSO_sink_name][key]}."
+
+
 class TestConstraints:
     def setup_class(self):
         """Run the simulation up to constraints adding in D2 and define class attributes."""
