@@ -39,6 +39,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EXCESS_SINK_POSTFIX,
     EXCESS,
     INFLOW_DIRECTION,
+    DSO_FEEDIN,
+    NET_ZERO_ENERGY,
 )
 
 from multi_vector_simulator.utils.constants import OUTPUT_FOLDER
@@ -170,13 +172,11 @@ def test_prepare_constraint_minimal_renewable_share():
     ), f"The renewable share of asset {dso_2 + DSO_CONSUMPTION} is added incorrectly."
 
 
-def test_prepare_constraint_minimal_degree_of_autonomy():
+def test_prepare_demand_assets():
     asset = "asset"
     demand_profiles = "demand"
     electricity = "Electricity"
-    dso = "DSO"
     dict_values = {
-        ENERGY_PROVIDERS: {dso: {LABEL: dso},},
         ENERGY_CONSUMPTION: {
             asset + AUTO_SINK: {},
             asset + EXCESS: {},
@@ -187,17 +187,8 @@ def test_prepare_constraint_minimal_degree_of_autonomy():
                 ENERGY_VECTOR: electricity,
             },
         },
-        ENERGY_PRODUCTION: {
-            dso
-            + DSO_CONSUMPTION: {
-                LABEL: dso + DSO_CONSUMPTION,
-                OUTFLOW_DIRECTION: electricity,
-                ENERGY_VECTOR: electricity,
-            }
-        },
     }
     dict_model = {
-        OEMOF_SOURCE: {dso + DSO_CONSUMPTION: dso + DSO_CONSUMPTION,},
         OEMOF_SINK: {demand_profiles: demand_profiles},
         OEMOF_BUSSES: {electricity: electricity},
     }
@@ -205,19 +196,17 @@ def test_prepare_constraint_minimal_degree_of_autonomy():
     weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
     oemof_solph_object_bus = "oemof_solph_object_bus"
 
-    (
-        demands,
-        energy_provider_consumption_sources,
-    ) = D2.prepare_constraint_minimal_degree_of_autonomy(
+    demands = D2.prepare_demand_assets(
         dict_values,
         dict_model,
         oemof_solph_object_asset,
         weighting_factor_energy_carrier,
         oemof_solph_object_bus,
     )
+
     assert (
         demand_profiles in demands
-    ), f"Demand asset {demand_profiles} should be in the demands taken into account for the DA, but is not included in it ({demands.keys()})."
+    ), f"Demand asset {demand_profiles} should be in the demands taken into account for the constraints, but is not included in it ({demands.keys()})."
     exp = {
         oemof_solph_object_asset: dict_model[OEMOF_SINK][
             dict_values[ENERGY_CONSUMPTION][demand_profiles][LABEL]
@@ -233,16 +222,47 @@ def test_prepare_constraint_minimal_degree_of_autonomy():
     for key in exp.keys():
         assert (
             key in demands[demand_profiles]
-        ), f"The parameter {key} for demand {demand_profiles} not is not added for DA processing."
+        ), f"The parameter {key} for demand {demand_profiles} not is not added for demand asset processing for the constraints."
         assert (
             demands[demand_profiles][key] == exp[key]
         ), f"The expected value (exp[key]) of {key} for {demand_profiles} is not met, but is of value {demands[demand_profiles][key]}."
+
+
+def test_prepare_energy_provider_consumption_sources():
+    electricity = "Electricity"
+    dso = "DSO"
+    dict_values = {
+        ENERGY_PROVIDERS: {dso: {LABEL: dso},},
+        ENERGY_PRODUCTION: {
+            dso
+            + DSO_CONSUMPTION: {
+                LABEL: dso + DSO_CONSUMPTION,
+                OUTFLOW_DIRECTION: electricity,
+                ENERGY_VECTOR: electricity,
+            }
+        },
+    }
+    dict_model = {
+        OEMOF_SOURCE: {dso + DSO_CONSUMPTION: dso + DSO_CONSUMPTION,},
+        OEMOF_BUSSES: {electricity: electricity},
+    }
+    oemof_solph_object_asset = "object"
+    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
+    oemof_solph_object_bus = "oemof_solph_object_bus"
+
+    energy_provider_consumption_sources = D2.prepare_energy_provider_consumption_sources(
+        dict_values,
+        dict_model,
+        oemof_solph_object_asset,
+        weighting_factor_energy_carrier,
+        oemof_solph_object_bus,
+    )
 
     DSO_source_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_CONSUMPTION
 
     assert (
         DSO_source_name in energy_provider_consumption_sources
-    ), f"DSO source asset {DSO_source_name} should be in the energy provider source list taken into account for the DA, but is not included in it ({energy_provider_consumption_sources.keys()})."
+    ), f"DSO source asset {DSO_source_name} should be in the energy provider source list taken into account for the constraints, but is not included in it ({energy_provider_consumption_sources.keys()})."
 
     exp = {
         oemof_solph_object_asset: dict_model[OEMOF_SOURCE][
@@ -259,7 +279,7 @@ def test_prepare_constraint_minimal_degree_of_autonomy():
     for key in exp.keys():
         assert (
             key in energy_provider_consumption_sources[DSO_source_name]
-        ), f"The parameter {key} for DSO {DSO_source_name} not is not added for DA processing."
+        ), f"The parameter {key} for DSO {DSO_source_name} not is not added for energy provider sources processing for constraints."
         assert (
             energy_provider_consumption_sources[DSO_source_name][key] == exp[key]
         ), f"The expected value (exp[key]) of {key} for {DSO_source_name} is not met, but is of value {energy_provider_consumption_sources[DSO_source_name][key]}."
@@ -354,6 +374,7 @@ class TestConstraints:
                     MAXIMUM_EMISSIONS: {VALUE: None},
                     MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                     MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                    NET_ZERO_ENERGY: {VALUE: False},
                 }
             }
         )
@@ -387,6 +408,7 @@ class TestConstraints:
                     MAXIMUM_EMISSIONS: {VALUE: None},
                     MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                     MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                    NET_ZERO_ENERGY: {VALUE: False},
                 }
             }
         )
