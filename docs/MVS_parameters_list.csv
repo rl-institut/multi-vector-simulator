@@ -14,8 +14,8 @@
  None, The number of days for which the simulation is to be run.,365, None, Numeric, Days,evaluated_period,evaluatedperiod-label
  None, Price received for feeding electricity into the grid.,0, None, Numeric, currency/kWh,feedin_tariff,feedintariff-label
  None, Name of the csv file containing the input PV generation time-series. E.g.: filename.csv, demand_harbor.csv, None, str, None,file_name,filename-label
- 0, Thermal losses of storage independent of state of charge between two consecutive timesteps relative to nominal storage capacity., 0.0016, Between 0 and 1, Numeric, factor,fixed_thermal_losses_relative,fixed_thermal_losses_relative-label
- 0, Thermal losses of storage independent of state of charge and independent of nominal storage capacity between two consecutive timesteps., 0.0003, Between 0 and 1, Numeric, factor,fixed_thermal_losses_absolute,fixed_thermal_losses_absolute-label
+0, Thermal losses of storage independent of state of charge and independent of nominal storage capacity between two consecutive timesteps.,0.0003, Between 0 and 1, Numeric, factor,fixed_thermal_losses_absolute,fixed_thermal_losses_absolute-label
+0, Thermal losses of storage independent of state of charge between two consecutive timesteps relative to nominal storage capacity.,0.0016, Between 0 and 1, Numeric, factor,fixed_thermal_losses_relative,fixed_thermal_losses_relative-label
  None, The bus/component from which the energyVector is arriving into the asset., Electricity, None, str, None,inflow_direction,inflowdirection-label
  None," The already existing installed capacity in-place, which will also be replaced after its lifetime.",50, Each component in the energyProduction.csv should have a value., Numeric, kWp,installedCap,installedcap-label
  None, Name of the asset, Electricity grid DSO," Input the names in a computer readable format, preferably with underscores instead of spaces, and avoiding special characters (eg. pv_plant_01)", str, None,label,labl-label
@@ -26,6 +26,7 @@
  None, The maximum installable capacity.,1000, None, Alphanumeric, None or float,maximumCap,maxcap-label
 None,The minimal degree of autonomy that needs to be met by the optimization.,0.3,Between 0 and 1,Numeric,factor,minimal_degree_of_autonomy,minda-label
  None, The minimum share of energy supplied by renewable generation in the optimized energy system. Insert the value 0 to deactivate this constraint.,0.7, Between 0 and 1, Numeric, factor,minimal_renewable_factor,minrenshare-label
+ None, Specifies whether optimization needs to result into a net zero energy system (True) or not (False)., True, Acceptable values are either True or False., str, Boolean value,net_zero_energy,nzeconstraint-label
  None, `True` if the user wants to perform capacity optimization for various components as part of the simulation., True, Permissible values are either True or False, str, Boolean value,optimizeCap,optimizecap-label
  None," The bus/component to which the energyVector is leaving, from the asset.", PV plant (mono), None, str, None,outflow_direction,outflowdirec-label
  None," Entering True would result in the generation of a file with the linear equation system describing the simulation, ie., with the objective function and all the constraints. This lp file enables the user look at the underlying equations of the optimization.", False, Acceptable values are either True or False, str, Boolean,output_lp_file,outputlpfile-label
@@ -36,9 +37,9 @@ None,The minimal degree of autonomy that needs to be met by the optimization.,0.
  None, Users can assign a project name as per their preference., Borg Havn, None, Alphanumeric, None,Project_name,projectname-label
  None, The share of renewables in the generation mix of the energy supplied by the DSO (utility).,0.1, Between 0 and 1, Numeric, Factor,renewable_share,renshare-label
  None, User can enter True if the asset is considered as a renewable energy source. False should be entered otherwise., True, Acceptable values are either True or False, str, Boolean,renewableAsset,renewableasset-label
+ None, Brief description of the scenario being simulated.,This scenario similated a sector-coupled energy system, None, Alphanumeric, None,scenario_description,scenariodescription-label
  None, Users can assign a scenario id as per their preference.,1, None, Alphanumeric, None,scenario_id,scenarioid-label
  None, Users can assign a scenario name as per their preference., Warehouse 14, None, Alphanumeric, None,scenario_name,scenarioname-label
- None, Brief description of the scenario being simulated.,This scenario similated a sector-coupled energy system, None, Alphanumeric, None,scenario_description,scenariodescription-label
  None, The level of charge (as a factor of the actual capacity) in the storage in the zeroth time-step.," *storage capacity*: None, *input power*: NaN"," Acceptable values are either None or the factor. Only the column ""storage capacity"" requires a value, in column ""input power"" and ""output power"" soc_initial should be set to NaN.", Numeric, None or factor,soc_initial,socin-label
  None," The maximum permissible level of charge in the battery (generally, it is when the battery is filled to its nominal capacity), represented by the value 1.0. Users can  also specify a certain value as a factor of the actual capacity.",1," Only the column ""storage capacity"" requires a value, in column ""input power"" and ""output power"" soc_max should be set to NaN.", Numeric, Factor,soc_max,socmax-label
  None, The minimum permissible level of charge in the battery as a factor of the nominal capacity of the battery.,0.2," Only the column ""storage capacity"" requires a value, in column ""input power"" and ""output power"" soc_min should be set to NaN.", Numeric, Factor,soc_min,socmin-label
