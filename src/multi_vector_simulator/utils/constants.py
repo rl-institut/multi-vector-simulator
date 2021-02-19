@@ -267,6 +267,12 @@ KNOWN_EXTRA_PARAMETERS = {
         WARNING_TEXT: "allows giving a description for the scenario being simulated",
         REQUIRED_IN_CSV_ELEMENTS: [PROJECT_DATA],
     },
+    NET_ZERO_ENERGY: {
+        DEFAULT_VALUE: False,
+        UNIT: TYPE_BOOL,
+        WARNING_TEXT: "allows setting a net zero energy constraint to the optimized energy system (True). ",
+        REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
+    },
 }
 
 ENERGY_CARRIER_UNIT = "energy_carrier_unit"
