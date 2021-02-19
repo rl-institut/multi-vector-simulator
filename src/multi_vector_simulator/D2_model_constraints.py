@@ -37,6 +37,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MINIMAL_RENEWABLE_FACTOR,
     MAXIMUM_EMISSIONS,
     MINIMAL_DEGREE_OF_AUTONOMY,
+    DSO_FEEDIN,
 )
 
 
@@ -659,4 +660,79 @@ def prepare_energy_provider_consumption_sources(
         f"Energy provider consumption sources: {dso_consumption_source_string}"
     )
     return energy_provider_consumption_sources
+
+
+def prepare_energy_provider_feedin_sinks(
+    dict_values,
+    dict_model,
+    oemof_solph_object_asset,
+    weighting_factor_energy_carrier,
+    oemof_solph_object_bus,
+):
+    r"""
+    Prepare energy provider feedin sinks by processing `dict_values`.
+
+    Used for the following constraints:
+    - net zero energy (NZE)
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation parameters
+
+    dict_model: dict of :oemof-solph: <oemof.solph.assets>
+        Dictionary including the oemof-solph component assets, which need to be connected with constraints
+
+    oemof_solph_object_asset: str
+        Name under which the oemof-solph object of an asset shall be stored
+
+    weighting_factor_energy_carrier: str
+        Name under which the energy_carrier weighting factor shall be stored
+
+    oemof_solph_object_bus: str
+        Name under which the oemof-solph object of the output bus of an asset shall be stored
+
+    Notes
+    -----
+    Tested with:
+        - test_prepare_energy_provider_feedin_sinks()
+
+    Returns
+    -------
+    energy_provider_feedin_sinks: dict
+        Dictionary of all assets that are sinks for the energy feed-in to energy providers in the energy system.
+        Defined by: oemof_solph_object_asset, weighting_factor_energy_carrier, oemof_solph_object_bus
+
+    """
+    # dicts for processing
+    energy_provider_feedin_sinks = {}
+    dso_feedin_sink_list = []
+
+    for dso in dict_values[ENERGY_PROVIDERS]:
+        # Get sink connected to the specific DSO in question
+        DSO_sink_name = dso + DSO_FEEDIN + AUTO_SINK
+        # Add DSO to assets
+        dso_feedin_sink_list.append(DSO_sink_name)
+
+        energy_provider_feedin_sinks.update(
+            {
+                DSO_sink_name: {
+                    oemof_solph_object_asset: dict_model[OEMOF_SINK][
+                        dict_values[ENERGY_CONSUMPTION][DSO_sink_name][LABEL]
+                    ],
+                    oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+                        dict_values[ENERGY_CONSUMPTION][DSO_sink_name][INFLOW_DIRECTION]
+                    ],
+                    weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+                        dict_values[ENERGY_CONSUMPTION][DSO_sink_name][ENERGY_VECTOR]
+                    ][VALUE],
+                }
+            }
+        )
+
+    # Preprocessing for log messages
+    dso_feedin_sink_string = ", ".join(map(str, dso_feedin_sink_list))
+
+    logging.debug(f"Energy provider consumption sources: {dso_feedin_sink_string}")
+    return energy_provider_feedin_sinks
 
