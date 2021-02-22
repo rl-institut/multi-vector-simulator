@@ -64,19 +64,27 @@ from multi_vector_simulator.utils.constants_output import (
 
 def evaluate_dict(dict_values, results_main, results_meta):
     """
+    Processes all simulation outputs by evaluating oemof results, asset capacities and dispatch as well as all KPIs.
 
     Parameters
     ----------
     dict_values: dict
         simulation parameters
+
     results_main: DataFrame
         oemof simulation results as output by processing.results()
+
     results_meta: DataFrame
         oemof simulation meta information as output by processing.meta_results()
 
     Returns
     -------
 
+    Notes
+    -----
+
+    Tested with:
+    -
     """
 
     dict_values.update(
@@ -174,28 +182,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
             store_result_matrix(dict_values[KPI], dict_values[group][asset])
 
     # Add fix project costs
-    for asset in dict_values[FIX_COST]:
-        # Add parameters that are needed for E2.get_costs()
-        dict_values[FIX_COST][asset].update(
-            {
-                OPTIMIZED_ADD_CAP: {VALUE: 1},
-                INSTALLED_CAP: {VALUE: 0},
-                LIFETIME_PRICE_DISPATCH: {VALUE: 0},
-                FLOW: pd.Series([0, 0]),
-            }
-        )
-
-        E2.get_costs(dict_values[FIX_COST][asset], dict_values[ECONOMIC_DATA])
-        # Remove all parameters that were added before and the KPI that do not apply
-        for key in [
-            OPTIMIZED_ADD_CAP,
-            LIFETIME_PRICE_DISPATCH,
-            INSTALLED_CAP,
-            FLOW,
-            COST_DISPATCH,
-        ]:
-            dict_values[FIX_COST][asset].pop(key)
-        store_result_matrix(dict_values[KPI], dict_values[FIX_COST][asset])
+    E1.process_fixcost(dict_values)
 
     logging.info("Evaluating key performance indicators of the system")
     E3.all_totals(dict_values)
