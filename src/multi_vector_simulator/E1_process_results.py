@@ -1114,7 +1114,7 @@ def process_fixcost(dict_values):
     -----
 
     Function is tested with:
-    -
+    - test_E1_process_results.test_process_fixcost()
     """
     for asset in dict_values[FIX_COST]:
         # Add parameters that are needed for E2.get_costs()
