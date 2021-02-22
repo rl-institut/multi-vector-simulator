@@ -183,9 +183,27 @@ def add_economic_parameters(economic_parameters):
 def process_all_assets(dict_values):
     """defines dict_values['energyBusses'] for later reference
 
-    :param dict_values:
-    :return:
+    Processes all assets of the energy system by evaluating them, performing economic pre-calculations and validity checks.
+
+    Parameters
+    ----------
+
+    dict_values: dict
+        All simulation inputs
+
+    Returns
+    -------
+
+    dict_values: dict
+        Updated dict_values with pre-processes assets, including economic parameters, busses and auxiliary assets like excess sinks and all assets connected to the energyProviders.
+
+    Notes
+    -----
+
+    Tested with:
+    - test_C0_data_processing.test_process_all_assets_fixcost()
     """
+
     # Define all busses based on the in- and outflow directions of the assets in the input data
     add_assets_to_asset_dict_of_connected_busses(dict_values)
     # Define all excess sinks for each energy bus

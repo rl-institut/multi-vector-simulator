@@ -83,6 +83,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES_TOTAL,
     TIMESERIES_AVERAGE,
     TIMESERIES_NORMALIZED,
+    FIX_COST,
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 
@@ -1144,6 +1145,46 @@ def test_replace_nans_in_timeseries_with_0(caplog):
         sum(pd.isna(timeseries)) == 0
     ), f"The function did remove all NaN values from the input."
     assert timeseries[1] == 0, f"The NaN was not replaced by zero!"
+
+
+def test_process_all_assets_fixcost():
+    fix_cost_entry = "one entry"
+    dict_test = {
+        ECONOMIC_DATA: economic_data,
+        ENERGY_PRODUCTION: {},
+        ENERGY_CONSUMPTION: {},
+        ENERGY_CONVERSION: {},
+        ENERGY_PROVIDERS: {},
+        ENERGY_STORAGE: {},
+        ENERGY_BUSSES: {},
+        SIMULATION_SETTINGS: {EVALUATED_PERIOD: {VALUE: 365, UNIT: "Days"}},
+        FIX_COST: {
+            fix_cost_entry: {
+                LABEL: "label",
+                SPECIFIC_COSTS_OM: {VALUE: 1, UNIT: CURR},
+                SPECIFIC_COSTS: {VALUE: 1, UNIT: CURR},
+                DEVELOPMENT_COSTS: {VALUE: 1, UNIT: CURR},
+                LIFETIME: {VALUE: 20},
+                AGE_INSTALLED: {VALUE: 0},
+            }
+        },
+    }
+
+    C0.process_all_assets(dict_test)
+    for k in [
+        LIFETIME_SPECIFIC_COST,
+        LIFETIME_SPECIFIC_COST_OM,
+        ANNUITY_SPECIFIC_INVESTMENT_AND_OM,
+        SIMULATION_ANNUITY,
+        SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+        SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
+    ]:
+        assert (
+            k in dict_test[FIX_COST][fix_cost_entry]
+        ), f"Parameter {k} is missing when processing {FIX_COST} entries with C0.process_all_assets()."
+    assert (
+        LIFETIME_PRICE_DISPATCH not in dict_test[FIX_COST][fix_cost_entry]
+    ), f"Parameter {LIFETIME_PRICE_DISPATCH} should not be calculated for {FIX_COST} entries."
 
 
 """
