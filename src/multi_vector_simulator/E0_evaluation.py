@@ -87,15 +87,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     -
     """
 
-    dict_values.update(
-        {
-            KPI: {
-                KPI_COST_MATRIX: pd.DataFrame(columns=KPI_COST_MATRIX_ENTRIES),
-                KPI_SCALAR_MATRIX: pd.DataFrame(columns=KPI_SCALAR_MATRIX_ENTRIES),
-                KPI_SCALARS_DICT: {},
-            }
-        }
-    )
+    initalize_kpi(dict_values)
 
     bus_data = {}
     # Store all information related to busses in bus_data
@@ -265,3 +257,27 @@ def store_result_matrix(dict_kpi, dict_asset):
         dict_kpi.update(
             {kpi_storage: dict_kpi[kpi_storage].append(asset_result_df, sort=False)}
         )
+
+def initalize_kpi(dict_values):
+    r"""
+    Adds basic structure of KPI to dict_values to gather them later on.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation data, but without any results
+
+    Returns
+    -------
+    Updated dict_values with KPI structure, made up from KPI_COST_MATRIX, KPI_SCALAR_MATRIX and KPI_SCALARS_DICT.
+
+    """
+    dict_values.update(
+        {
+            KPI: {
+                KPI_COST_MATRIX: pd.DataFrame(columns=KPI_COST_MATRIX_ENTRIES),
+                KPI_SCALAR_MATRIX: pd.DataFrame(columns=KPI_SCALAR_MATRIX_ENTRIES),
+                KPI_SCALARS_DICT: {},
+            }
+        }
+    )
