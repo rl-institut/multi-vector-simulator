@@ -44,6 +44,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OPTIMIZED_ADD_CAP,
     LABEL,
     TOTAL_FLOW,
+    DEGREE_OF_NZE,
+    ANNUAL_TOTAL_FLOW,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -203,7 +205,7 @@ class Test_Constraints:
             grid_total_flows[use_case[2]] > grid_total_flows[use_case[1]]
         ), f"The total flow of the grid consumption of the scenario with 100 % RE in the grid is with {grid_total_flows[use_case[2]]} kWh lower than in the scenario with emissions from the grid ({grid_total_flows[use_case[1]]} kWh). When the grid has zero emissions it should be used more, while PV is more expensive."
 
-    # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+    # this ensures that the test is only run if explicitly executed, ie not when the `pytest` command
     # alone is called
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
@@ -260,6 +262,84 @@ class Test_Constraints:
         assert (
             degree_of_autonomy[use_case[0]] < degree_of_autonomy[use_case[1]]
         ), f"The  degree of autonomy of the scenario with the constraint is not higher than the one without, so the test does not make sense."
+
+    # this ensures that the test is only run if explicitly executed, ie not when the `pytest` command
+    # alone is called
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_net_zero_energy_constraint(self, margs):
+        r"""
+        Notes
+        -----
+        With this benchmark test, the net zero energy (NZE) constraint is validated in a
+        single sector LES and a sector coupled LES.
+        Constraint_net_zero_energy_False contains a single sector LES without NZE constraint.
+        Constraint_net_zero_energy contains a single sector LES with NZE constraint.
+        Constraint_net_zero_energy_sector_coupled_False contains a sector-coupled LES without NZE constraint.
+        Constraint_net_zero_energy_sector_coupled contains a sector-coupled LES with NZE constraint.
+        The benchmark test passes if the degree of NZE of the defined energy systems
+        without constraint is lower than one and if the degree of NZE of the energy
+        systems with constraint equals one or is greater than one.
+
+        """
+        # define the cases needed for comparison
+        use_case = [
+            "Constraint_net_zero_energy_False",
+            "Constraint_net_zero_energy",
+            "Constraint_net_zero_energy_sector_coupled_False",
+            "Constraint_net_zero_energy_sector_coupled",
+        ]
+        # define empty dictionaries degree of NZE
+        degree_of_nze = {}
+        consumption_from_grid = {}
+        feedin_to_grid = {}
+        for case in use_case:
+            main(
+                overwrite=True,
+                display_output="warning",
+                path_input_folder=os.path.join(TEST_INPUT_PATH, case),
+                input_type=CSV_EXT,
+                path_output_folder=os.path.join(TEST_OUTPUT_PATH, case),
+            )
+            data = load_json(
+                os.path.join(
+                    TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+                )
+            )
+            degree_of_nze.update({case: data[KPI][KPI_SCALARS_DICT][DEGREE_OF_NZE]})
+            consumption_from_grid.update(
+                {
+                    case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[
+                        ANNUAL_TOTAL_FLOW
+                    ]["Grid_DSO_consumption_source"]
+                }
+            )
+            feedin_to_grid.update(
+                {
+                    case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[
+                        ANNUAL_TOTAL_FLOW
+                    ]["Grid_DSO_feedin_sink_sink"]
+                }
+            )
+
+        assert (
+            degree_of_nze[use_case[0]] < 1
+        ), f"The degree of NZE of a LES without NZE constraint should be lower than 1 but is {degree_of_nze[use_case[0]]}."
+        assert (
+            degree_of_nze[use_case[1]] >= 1
+        ), f"The degree of NZE of a LES with NZE constraint should be equal or greater than 1 but is {degree_of_nze[use_case[1]]}."
+        assert (
+            degree_of_nze[use_case[2]] < 1
+        ), f"The degree of NZE of a sector-coupled LES without NZE constraint should be lower than 1 but is {degree_of_nze[use_case[2]]}."
+
+        balance = feedin_to_grid[use_case[3]] - consumption_from_grid[use_case[3]]
+        assert (
+            balance.round(2) >= 0
+        ), f"The balance between feed-in and consumption from grid of the sector-coupled LES with NZE constraint (feed-in - consumption) should be equal or greater than 0 but is {balance}."
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
