@@ -681,7 +681,7 @@ def test_add_degree_of_net_zero_energy():
     }
     E3.add_degree_of_net_zero_energy(dict_values_NZE)
 
-    degree_of_nze = (1 + (total_feedin - total_grid_consumption)) / total_demand
+    degree_of_nze = 1 + (total_feedin - total_grid_consumption) / total_demand
 
     assert (
         DEGREE_OF_NZE in dict_values_NZE[KPI][KPI_SCALARS_DICT]
@@ -699,7 +699,7 @@ def test_equation_degree_of_net_zero_energy():
     degree_of_nze = E3.equation_degree_of_net_zero_energy(
         total_feedin, total_grid_consumption, total_demand
     )
-    exp = (1 + (total_feedin - total_grid_consumption)) / total_demand
+    exp = 1 + (total_feedin - total_grid_consumption) / total_demand
     assert degree_of_nze == exp, (
         f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
         f"It should be equal to {exp}."

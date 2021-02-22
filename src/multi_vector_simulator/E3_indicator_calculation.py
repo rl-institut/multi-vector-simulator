@@ -677,7 +677,7 @@ def equation_degree_of_net_zero_energy(
     - test_equation_degree_of_net_zero_energy()
 
     """
-    degree_of_nze = (1 + (total_feedin - total_grid_consumption)) / total_demand
+    degree_of_nze = 1 + (total_feedin - total_grid_consumption) / total_demand
 
     return degree_of_nze
 
