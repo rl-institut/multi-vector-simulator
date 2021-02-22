@@ -176,14 +176,24 @@ def evaluate_dict(dict_values, results_main, results_meta):
     # Add fix project costs
     for asset in dict_values[FIX_COST]:
         # Add parameters that are needed for E2.get_costs()
-        dict_values[FIX_COST][asset].update({OPTIMIZED_ADD_CAP: {VALUE: 1},
-                                             INSTALLED_CAP: {VALUE: 0},
-                                             LIFETIME_PRICE_DISPATCH: {VALUE: 0},
-                                             FLOW: pd.Series([0,0])})
+        dict_values[FIX_COST][asset].update(
+            {
+                OPTIMIZED_ADD_CAP: {VALUE: 1},
+                INSTALLED_CAP: {VALUE: 0},
+                LIFETIME_PRICE_DISPATCH: {VALUE: 0},
+                FLOW: pd.Series([0, 0]),
+            }
+        )
 
         E2.get_costs(dict_values[FIX_COST][asset], dict_values[ECONOMIC_DATA])
         # Remove all parameters that were added before and the KPI that do not apply
-        for key in [OPTIMIZED_ADD_CAP, LIFETIME_PRICE_DISPATCH, INSTALLED_CAP, FLOW, COST_DISPATCH]:
+        for key in [
+            OPTIMIZED_ADD_CAP,
+            LIFETIME_PRICE_DISPATCH,
+            INSTALLED_CAP,
+            FLOW,
+            COST_DISPATCH,
+        ]:
             dict_values[FIX_COST][asset].pop(key)
         store_result_matrix(dict_values[KPI], dict_values[FIX_COST][asset])
 

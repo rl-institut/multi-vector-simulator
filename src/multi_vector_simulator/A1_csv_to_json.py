@@ -60,7 +60,7 @@ from multi_vector_simulator.utils.constants import (
     REQUIRED_IN_CSV_ELEMENTS,
     DEFAULT_VALUE,
     HEADER,
-    FIX_COST
+    FIX_COST,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     LABEL,
@@ -291,7 +291,7 @@ def create_json_from_csv(
             f"The parameter {i} in the file "
             f"{os.path.join(input_directory,filename)}.csv is not expected. "
             f"Expected parameters are: {str(parameter_string)}"
-            )
+        )
         # ignore the wrong parameter which is in the csv but not required by the parameters list
         df = df.drop(wrong_parameters)
 
@@ -392,7 +392,7 @@ def create_json_from_csv(
                                 f"{os.path.join(input_directory,filename)}.csv "
                                 f"is not recognized. It will not be "
                                 "considered in the simulation."
-                                )
+                            )
 
                             df_copy.loc[[i], [column]] = "NaN"
 
