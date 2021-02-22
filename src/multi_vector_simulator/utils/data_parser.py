@@ -95,6 +95,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSM,
     THERM_LOSSES_REL,
     THERM_LOSSES_ABS,
+    NET_ZERO_ENERGY,
 )
 
 from multi_vector_simulator.utils.exceptions import MissingParameterError
@@ -446,6 +447,7 @@ def convert_epa_params_to_mvs(epa_dict):
                 MINIMAL_RENEWABLE_FACTOR: {UNIT: "factor", VALUE: 0},
                 MAXIMUM_EMISSIONS: {UNIT: "factor", VALUE: 0},
                 MINIMAL_DEGREE_OF_AUTONOMY: {UNIT: "factor", VALUE: 0},
+                NET_ZERO_ENERGY: {UNIT: "bool", VALUE: False},
             }
             missing_params.pop(CONSTRAINTS)
 
