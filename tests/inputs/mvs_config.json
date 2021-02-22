@@ -14,7 +14,7 @@
         },
         "net_zero_energy": {
             "unit": "bool",
-            "value": true
+            "value": false
         }
     },
     "economic_data": {
