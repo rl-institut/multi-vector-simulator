@@ -67,10 +67,6 @@
             "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 4600
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
-                "value": 0
             }
         }},
     "project_data": {
