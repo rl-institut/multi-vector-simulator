@@ -209,7 +209,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
     )
 
 
-def store_result_matrix(dict_kpi, dict_asset):
+def store_result_matrix(dict_kpi, dict_asset, fix_cost=False):
     """
     Storing results to vector and then result matrix for saving it in csv.
     Defined value types: Str, bool, None, dict (with key "VALUE"), else (int, float)
@@ -222,41 +222,50 @@ def store_result_matrix(dict_kpi, dict_asset):
     dict_asset: dict
         all information known for a specific asset
 
+    fix_cost: Boolean
+        If fix_cost is True, then no new row is added to KPI_SCALAR_MATRIX, as there are no KPI to update.
+        Costs in KPI_COST_MATRIX however are added.
+
     Returns
     -------
-    Updated dict_kpi DF, with new row of kpis of the specific asset
+    Updated dict_kpi DF, with new row of kpis of the specific asset.
+
 
     """
 
     round_to_comma = 5
 
     for kpi_storage in [KPI_COST_MATRIX, KPI_SCALAR_MATRIX]:
-        asset_result_dict = {}
-        for key in dict_kpi[kpi_storage].columns.values:
-            # Check if called value is in oemof results -> Remember: check if pandas index has certain index: pd.object.index.contains(key)
-            if key in dict_asset:
-                if isinstance(dict_asset[key], str):
-                    asset_result_dict.update({key: dict_asset[key]})
-                elif isinstance(dict_asset[key], bool):
-                    asset_result_dict.update({key: dict_asset[key]})
-                elif dict_asset[key] is None:
-                    asset_result_dict.update({key: None})
-                elif isinstance(dict_asset[key], dict):
-                    if VALUE in dict_asset[key].keys():
-                        if dict_asset[key][VALUE] is not None:
-                            asset_result_dict.update(
-                                {key: round(dict_asset[key][VALUE], round_to_comma)}
-                            )
-                else:
-                    asset_result_dict.update(
-                        {key: round(dict_asset[key], round_to_comma)}
-                    )
+        if fix_cost == True and kpi_storage == KPI_SCALAR_MATRIX:
+            pass
+        else:
+            asset_result_dict = {}
+            for key in dict_kpi[kpi_storage].columns.values:
+                # Check if called value is in oemof results -> Remember: check if pandas index has certain index: pd.object.index.contains(key)
+                if key in dict_asset:
+                    if isinstance(dict_asset[key], str):
+                        asset_result_dict.update({key: dict_asset[key]})
+                    elif isinstance(dict_asset[key], bool):
+                        asset_result_dict.update({key: dict_asset[key]})
+                    elif dict_asset[key] is None:
+                        asset_result_dict.update({key: None})
+                    elif isinstance(dict_asset[key], dict):
+                        if VALUE in dict_asset[key].keys():
+                            if dict_asset[key][VALUE] is not None:
+                                asset_result_dict.update(
+                                    {key: round(dict_asset[key][VALUE], round_to_comma)}
+                                )
+                    else:
+                        asset_result_dict.update(
+                            {key: round(dict_asset[key], round_to_comma)}
+                        )
 
-        asset_result_df = pd.DataFrame([asset_result_dict])
+            asset_result_df = pd.DataFrame([asset_result_dict])
 
-        dict_kpi.update(
-            {kpi_storage: dict_kpi[kpi_storage].append(asset_result_df, sort=False)}
-        )
+            dict_kpi.update(
+                {kpi_storage: dict_kpi[kpi_storage].append(asset_result_df, sort=False)}
+            )
+
 
 def initalize_kpi(dict_values):
     r"""

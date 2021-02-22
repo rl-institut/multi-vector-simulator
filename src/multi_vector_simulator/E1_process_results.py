@@ -1137,4 +1137,6 @@ def process_fixcost(dict_values):
             COST_DISPATCH,
         ]:
             dict_values[FIX_COST][asset].pop(key)
-        store_result_matrix(dict_values[KPI], dict_values[FIX_COST][asset])
+        store_result_matrix(
+            dict_values[KPI], dict_values[FIX_COST][asset], fix_cost=True
+        )
