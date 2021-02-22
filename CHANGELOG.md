@@ -72,6 +72,7 @@ Here is a template for new release sections
 - Refactor module imports in `cli.py` and `server.py` (#783)
 - Limit index of availability timeseries to simulation timeindex (`C0.define_availability_of_peak_demand_pricing_assets`) (#783)
 - Call `E1.cut_below_micro` in `E1.get_flows`, `E1.get_optimal_cap` and `E1.get_storage_results` (#791) 
+- Update definition of degree of net zero energy (#774)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
