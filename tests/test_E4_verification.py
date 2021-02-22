@@ -14,6 +14,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_EMISSIONS,
     ENERGY_STORAGE,
     TIMESERIES_SOC,
+    NET_ZERO_ENERGY,
+    DEGREE_OF_NZE,
 )
 
 from multi_vector_simulator.utils.constants import DATA_TYPE_JSON_KEY
@@ -101,6 +103,44 @@ def test_maximum_emissions_test_fails():
     assert (
         return_value == False
     ), f"When the maximum emissions constraint is not met by a difference of >= e6 this test should fail."
+
+
+def test_net_zero_energy_constraint_test_passes():
+    # No nze constraint
+    dict_values = {CONSTRAINTS: {NET_ZERO_ENERGY: {VALUE: False}}}
+    return_value = E4.net_zero_energy_constraint_test(dict_values)
+    assert (
+        return_value == None
+    ), f"When no net zero energy constraint is set, this test should not fail."
+    # Degree of NZE >= 1
+    dict_values = {
+        CONSTRAINTS: {NET_ZERO_ENERGY: {VALUE: True}},
+        KPI: {KPI_SCALARS_DICT: {DEGREE_OF_NZE: 1}},
+    }
+    return_value = E4.net_zero_energy_constraint_test(dict_values)
+    assert (
+        return_value == None
+    ), f"When the net zero energy constraint is met, this test should not fail."
+    # Total emissions > maximum emissions constraint, minimal diff
+    dict_values = {
+        CONSTRAINTS: {NET_ZERO_ENERGY: {VALUE: True}},
+        KPI: {KPI_SCALARS_DICT: {DEGREE_OF_NZE: 1 - 10 ** (-7)}},
+    }
+    return_value = E4.net_zero_energy_constraint_test(dict_values)
+    assert (
+        return_value == None
+    ), f"At a minimal exceeding of the net zero energy constraint of < e6, this test should not fail."
+
+
+def test_net_zero_energy_constraint_test_fails():
+    dict_values = {
+        CONSTRAINTS: {NET_ZERO_ENERGY: {VALUE: True}},
+        KPI: {KPI_SCALARS_DICT: {DEGREE_OF_NZE: 1 - 10 ** (-6)}},
+    }
+    return_value = E4.net_zero_energy_constraint_test(dict_values)
+    assert (
+        return_value == False
+    ), f"When the net zero energy constraint is not met by a difference of >= e6 this test should fail."
 
 
 def test_detect_excessive_excess_generation_in_bus_warning_is_logged(caplog):

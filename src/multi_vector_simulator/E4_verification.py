@@ -4,6 +4,9 @@ Module E4 - Verification of results
 
 - Detect excessive excess generation
 - Verify that minimal renewable share constraint is adhered to
+- Verfiy that maximum emission constraint is adhered to
+- Verfiy that net zero energy (NZE) constraint is adhered to
+
 """
 
 import logging
@@ -20,6 +23,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_EMISSIONS,
     ENERGY_STORAGE,
     TIMESERIES_SOC,
+    NET_ZERO_ENERGY,
+    DEGREE_OF_NZE,
 )
 
 
@@ -130,6 +135,50 @@ def maximum_emissions_test(dict_values):
         else:
             logging.debug(
                 f"Maximum emissions constraint of {dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]} is fulfilled."
+            )
+
+
+def net_zero_energy_constraint_test(dict_values):
+    r"""
+    Tests if net zero energy constraint was correctly applied.
+
+    Parameters
+    ----------
+    dict_values : dict
+        all input parameters and results up to E0
+
+    Returns
+    -------
+    Nothing
+
+    - Nothing if the constraint is confirmed  # todo adapt
+    - Prints logging.warning message if the difference from the constraint is < 10^-6.
+    - Prints a logging.error message if the difference from the constraint is >= 10^-6.
+
+    Notes
+    -----
+    Tested with:
+    - E4.test_net_zero_energy_constraint_test_fails()
+    - E4.test_net_zero_energy_constraint_test_passes()
+
+    """
+    if dict_values[CONSTRAINTS][NET_ZERO_ENERGY][VALUE] is True:
+        boolean_test = dict_values[KPI][KPI_SCALARS_DICT][DEGREE_OF_NZE] >= 1
+        if boolean_test is False:
+            diff = 1 - dict_values[KPI][KPI_SCALARS_DICT][DEGREE_OF_NZE]
+            if abs(diff) <= 10 ** (-6):
+                logging.warning(
+                    "Net zero energy criterion strictly not fulfilled, but difference is less then e6."
+                )
+            else:
+                logging.error(
+                    f"ATTENTION: Net zero energy criterion NOT fulfilled! The difference is {round(diff, 6)}."
+                )
+                return False
+
+        else:
+            logging.debug(
+                f"Net zero energy constraint of is fulfilled with a degree of NZE of {dict_values[KPI][KPI_SCALARS_DICT][DEGREE_OF_NZE]}."
             )
 
 

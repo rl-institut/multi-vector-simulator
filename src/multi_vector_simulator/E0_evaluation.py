@@ -193,6 +193,7 @@ def evaluate_dict(dict_values, results_main, results_meta):
         dict_values, MINIMAL_DEGREE_OF_AUTONOMY, DEGREE_OF_AUTONOMY
     )
     E4.maximum_emissions_test(dict_values)
+    E4.net_zero_energy_constraint_test(dict_values)
     E4.detect_excessive_excess_generation_in_bus(dict_values)
     E4.verify_state_of_charge(dict_values)
 
