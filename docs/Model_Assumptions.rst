@@ -67,8 +67,7 @@ Heating, Ventilation, and Air Conditioning (HVAC)
 
 Like other conversion assets, devices for heating, ventilation and air conditioning (HVAC) are added as transformers. As the parameters `dispatch_price`, `efficiency` and `installedCap` are assigned to the output flows they need to be given for the nominal heat output of the HVAC.
 
-Different types of HVAC can be modelled. Except for an air source device with ambient temperature as heat reservoir, the device is modelled with two inputs: electricity and heat.
-**NOTE todo: here actually wrong implementation of defining efficiency for the two input busses tba**
+Different types of HVAC can be modelled. Except for an air source device with ambient temperature as heat reservoir, the device could be modelled with two inputs (electricity and heat) in case the user is interested in the heat reservoir. This has not been tested, yet, also note that, currently efficiencies are assigned to the output flows the see `issue #799 <https://github.com/rl-institut/multi-vector-simulator/issues/799>`_
 
 The efficiency of HVAC systems is defined by the coefficient of performance (COP), which is strongly dependent on the temperature. In order to take account of this, the efficiency can be defined as time series, see section :ref:`time_series_params`.
 If you do not provide your own COP time series you can calculate them with `oemof.thermal <https://github.com/oemof/oemof-thermal>`_, see  `documentation on compression heat pumps and chillers <https://oemof-thermal.readthedocs.io/en/stable/compression_heat_pumps_and_chillers.html>`_ and  `documentation on absorption chillers <https://oemof-thermal.readthedocs.io/en/stable/absorption_chillers.html>`_.
