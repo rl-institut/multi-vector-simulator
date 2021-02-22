@@ -615,20 +615,19 @@ def add_degree_of_net_zero_energy(dict_values):
     - test_add_degree_of_net_zero_energy()
     """
 
-    total_renewable_generation = dict_values[KPI][KPI_SCALARS_DICT][
-        TOTAL_RENEWABLE_GENERATION_IN_LES
+    total_feedin = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT
     ]
 
+    total_consumption_from_energy_provider = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
     total_demand = dict_values[KPI][KPI_SCALARS_DICT][
         TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
     ]
 
-    total_excess = dict_values[KPI][KPI_SCALARS_DICT][
-        TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT
-    ]
-
     degree_of_nze = equation_degree_of_net_zero_energy(
-        total_renewable_generation, total_demand, total_excess
+        total_feedin, total_consumption_from_energy_provider, total_demand
     )
 
     dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_NZE: degree_of_nze})
@@ -638,22 +637,25 @@ def add_degree_of_net_zero_energy(dict_values):
 
 
 def equation_degree_of_net_zero_energy(
-    total_renewable_generation, total_demand, total_excess
+    total_feedin, total_grid_consumption, total_demand
 ):
     """
     Calculates the degree of net zero energy (NZE).
 
     In NZE systems import and export of energy is allowed while the balance over one
-    year should be zero. If more energy is exported than imported it is plus-energy system.
+    year should be zero, thus the degree of net zero energy would be 1. The
+    Degree of net zero energy indicates how close the system gets to the NZE ideal.
+    If more energy is exported than imported it is plus-energy system.
 
     Parameters
     ----------
-    total_renewable_generation: float
-        total internal renewable generation of energy
+    total_feedin: float
+        total grid feed-in in electricity equivalents
+
+    total_grid_consumption: float
+        total consumption from energy provider in electricity equivalents
     total_demand: float
-        total demand
-    total_excess: float
-        Total Excess energy
+        total demand in electricity equivalents
 
     Returns
     -------
@@ -664,17 +666,18 @@ def equation_degree_of_net_zero_energy(
     -----
 
     .. math::
-        Degree of NZE &=\frac{\sum_{i} {E_{RE\_generation,i} \cdot w_i - E_{excess, i} \cdot w_i}}{\sum_i {E_{demand, i} \cdot w_i}}
+        Degree of NZE &=\frac{1 + (\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
 
-    Degree of NZE = 1 : System is a net zero energy system,
-    Degree of NZE > 1 : system is a plus-energy system,
-    Degree of NZE < 1 : system does not reach net zero balance, indicates by how much it fails to do so
+    Degree of NZE = 1 : System is a net zero energy system, as E_feedin = E_grid_consumption
+    Degree of NZE > 1 : system is a plus-energy system, as E_feedin > E_grid_consumption
+    Degree of NZE < 1 : system does not reach net zero balance. The degree indicates by how much it fails to do so.
+    Degree of NZE = 0 : system has no internal production, as E_dem = E_grid_consumption.
 
     Tested with
     - test_equation_degree_of_net_zero_energy()
 
     """
-    degree_of_nze = (total_renewable_generation - total_excess) / total_demand
+    degree_of_nze = (1 + (total_feedin - total_grid_consumption)) / total_demand
 
     return degree_of_nze
 
