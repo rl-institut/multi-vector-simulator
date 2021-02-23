@@ -42,6 +42,8 @@ as there are some additional features available then.
 Both energy providers and the additional fuel sources are limited to the options provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
 
 
+.. _energy_conversion:
+
 Energy conversion
 #################
 
@@ -51,11 +53,26 @@ Energy conversion
     - Electric transformers (rectifiers, inverters)
     - Heat pumps (as heater and/or chiller)
 
-Dispatchable conversion assets are added as transformers and are defined in `energyConversion.csv`.
+
+Conversion assets are added as transformers and are defined in `energyConversion.csv`.
 
 The parameters `dispatch_price`, `efficiency` and `installedCap` of transformers are assigned to the output flows.
-This means that these parameters need to be given for the electrical output power in case of a diesel generator (more examples: electrolyzer - H2, heat pumps and boiler - nominal heat ouput, inverters / rectifiers - electrical output power).
+This means that these parameters need to be given for the electrical output power in case of a diesel generator (more examples: electrolyzer - H2, heat pumps and boiler - nominal heat output, inverters / rectifiers - electrical output power).
 This also means that the costs of the fuel of a diesel generator (input flow) are not included in its `dispatch_price` but in the `dispatch_price` of the fuel source.
+
+Charge controllers for a :ref:`battery_storage` are defined by two transformers, one for charging and one for discharging.
+
+When using two conversion objects to emulate a bidirectional conversion assets, their capacity should be interdependent. This is currently not the case, see `Infeasible bi-directional flow in one timestep <https://multi-vector-simulator.readthedocs.io/en/stable/Model_Assumptions.html#infeasible-bi-directional-flow-in-one-timestep>`_.
+
+Heating, Ventilation, and Air Conditioning (HVAC)
+=================================================
+
+Like other conversion assets, devices for heating, ventilation and air conditioning (HVAC) are added as transformers. As the parameters `dispatch_price`, `efficiency` and `installedCap` are assigned to the output flows they need to be given for the nominal heat output of the HVAC.
+
+Different types of HVAC can be modelled. Except for an air source device with ambient temperature as heat reservoir, the device could be modelled with two inputs (electricity and heat) in case the user is interested in the heat reservoir. This has not been tested, yet, also note that, currently efficiencies are assigned to the output flows the see `issue #799 <https://github.com/rl-institut/multi-vector-simulator/issues/799>`_
+
+The efficiency of HVAC systems is defined by the coefficient of performance (COP), which is strongly dependent on the temperature. In order to take account of this, the efficiency can be defined as time series, see section :ref:`time_series_params`.
+If you do not provide your own COP time series you can calculate them with `oemof.thermal <https://github.com/oemof/oemof-thermal>`_, see  `documentation on compression heat pumps and chillers <https://oemof-thermal.readthedocs.io/en/stable/compression_heat_pumps_and_chillers.html>`_ and  `documentation on absorption chillers <https://oemof-thermal.readthedocs.io/en/stable/absorption_chillers.html>`_.
 
 
 Energy providers
@@ -102,10 +119,42 @@ For two peak demand pricing periods, the resulting dispatch could look as follow
 Energy storage
 ##############
 
-Generic storages are defined with file `energyStorage.csv` and `storage_*.csv` and have subassets, which are listed in :ref:`storage_csv`.
+Energy storages such as battery storages, thermal storages or H2 storages are modelled with the *GenericStorage* component of *oemof.solph*. They are designed for one input and one output and are defined with files `energyStorage.csv` and `storage_*.csv` and have several parameters, which are listed in the section :ref:`storage_csv`.
 
-Stratified thermal energy storage uses the two optional parameters `fixed_losses_relative` and `fixed_losses_absolute`. If these two are not included in `storage_*.csv` or are equal to zero, then a normal generic storage is simulated.
-They are used to take into account temperature dependent losses of a thermal storage. To model a thermal energy storage without stratification, the two parameters are not set. The default values of `fixed_losses_relative` and `fixed_losses_absolute` are zero.
+The state of charge of a storage at the first and last time step of an optimization are equal.
+Charge and discharge of the whole capacity of the energy storage are possible within one time step in case the capacity of the storage is not optimized. In case of
+capacity optimization charge and discharge is limited by the :ref:`crate-label`.
+
+.. _battery_storage:
+
+Battery energy storage system (BESS)
+====================================
+
+BESS are modelled as *GenericStorage* like described above. The BESS can either be connected directly to the electricity bus of the LES or via a charge controller that manages the BESS.
+When choosing the second option, the capacity of the charge controller can be optimized individually, which takes its specific costs and lifetime into consideration.
+If you do not want to optimize the charge controller's capacity you can take its costs and efficiency into account when defining the storage's input and output power, see :ref:`storage_csv`.
+A charge controller is defined by two transformers, see section :ref:`energy_conversion` above.
+
+Note that capacity reduction over the lifetime of a BESS that may occur due to different effects during aging cannot be taken into consideration in MVS. A possible workaround for this could be to manipulate the lifetime.
+
+Thermal energy storage
+======================
+
+Thermal energy storages of the type sensible heat storage (SHS) are modelled as *GenericStorage* like described above. The implementation of a specific type of SHS, the stratified thermal energy storage, is described in section :ref:`stratified_tes`.
+The modelling of latent-heat (or Phase-change) and chemical storages have not been tested with MVS, but might be achieved by precalculations.
+
+H2 storage
+==========
+
+tba
+
+.. _stratified_tes:
+
+Stratified thermal energy storage
+=================================
+
+Stratified thermal energy storage is defined by the two optional parameters `fixed_losses_relative` and `fixed_losses_absolute`. If they are not included in `storage_*.csv` or are equal to zero, then a normal generic storage is simulated.
+These two parameters are used to take into account temperature dependent losses of a thermal storage. To model a thermal energy storage without stratification, the two parameters are not set. The default values of `fixed_losses_relative` and `fixed_losses_absolute` are zero.
 Except for these two additional parameters the stratified thermal storage is implemented in the same way as other storage components.
 
 Precalculations of the `installedCap`, `efficiency`, `fixed_losses_relative` and `fixed_losses_absolute` can be done orientating on the stratified thermal storage component of `oemof.thermal  <https://github.com/oemof/oemof-thermal>`__.
