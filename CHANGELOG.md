@@ -53,7 +53,8 @@ Here is a template for new release sections
 - Added `net_zero_energy` parameter to all `constraints.csv` files and all json files (#796)
 - Added `net_zero_energy` parameter to `MVS_parameters.rst` and `MVS_parameters_list.csv` (#796)
 - Added verification of NZE constraint in `E4.net_zero_energy_constraint_test()`, added tests for this function (#796)
-
+- Added test for `D2.add_constraints()` with activated NZE constraint (#796)
+  
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
 - Format KPI_UNCOUPLED_DICT to a `pd.DataFrame` (#757)
