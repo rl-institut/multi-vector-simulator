@@ -411,6 +411,7 @@ class TestConstraints:
             {
                 MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                 MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                NET_ZERO_ENERGY: {VALUE: False},
             }
         )
         model = D2.add_constraints(
@@ -432,6 +433,7 @@ class TestConstraints:
                     MAXIMUM_EMISSIONS: {VALUE: None},
                     MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                     MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                    NET_ZERO_ENERGY: {VALUE: False},
                 }
             }
         )
@@ -465,6 +467,7 @@ class TestConstraints:
                     MAXIMUM_EMISSIONS: {VALUE: None},
                     MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                     MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                    NET_ZERO_ENERGY: {VALUE: False},
                 }
             }
         )
