@@ -37,7 +37,7 @@ Fuel sources are added as dispatchable sources, which still can have development
 They are added by adding a column in `energyProviders.CSV`, and setting file_name to `None`.
 
 Energy providers, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
-as there are some additional features available then.
+as there are some additional features available then, see :ref:`energy_providers`.
 
 Both energy providers and the additional fuel sources are limited to the options provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
 
