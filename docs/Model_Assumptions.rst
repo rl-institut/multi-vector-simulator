@@ -868,6 +868,8 @@ A benchmark is a point of reference against which results are compared to assess
 
 * Stratified thermal energy storage (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/Feature_stratified_thermal_storage>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/test_benchmark_stratified_thermal_storage.py>`__): With fixed thermal losses absolute and relative reduced storage capacity only if these losses apply
 
+* Net zero energy (NZE) constraint: Grid + PV and Grid + PV + Heat Pump (data `set 1 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy>`__, `set 2 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy_False>`__, `set 3 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy_sector_coupled>`__, `set 4 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy_sector_coupled_False>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/test_benchmark_constraints.py>`__): Degree of NZE >= 1 when constraint is used and degree of NZE < 1 when constraint is not used.
+
 More tests can still be implemented with regard to:
 
 * The investment model within the MVS
