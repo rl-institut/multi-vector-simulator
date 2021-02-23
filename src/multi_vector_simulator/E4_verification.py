@@ -151,7 +151,7 @@ def net_zero_energy_constraint_test(dict_values):
     -------
     Nothing
 
-    - Nothing if the constraint is confirmed  # todo adapt
+    - Nothing if the constraint is confirmed
     - Prints logging.warning message if the difference from the constraint is < 10^-6.
     - Prints a logging.error message if the difference from the constraint is >= 10^-6.
 

@@ -284,6 +284,9 @@ class Test_Constraints:
         The benchmark test passes if the degree of NZE of the defined energy systems
         without constraint is lower than one and if the degree of NZE of the energy
         systems with constraint equals one or is greater than one.
+        For the sector-coupled energy system, instead of the degree of NZE the balance
+        between grid feed-in and consumption is used for the assertion to avoid problems
+        with energy weighting.
 
         """
         # define the cases needed for comparison
@@ -328,14 +331,14 @@ class Test_Constraints:
 
         assert (
             degree_of_nze[use_case[0]] < 1
-        ), f"The degree of NZE of a LES without NZE constraint should be lower than 1 but is {degree_of_nze[use_case[0]]}."
+        ), f"The degree of NZE of a LES without NZE constraint should be lower than 1, so that the benchmark test reasonably confirms the feature, but is {degree_of_nze[use_case[0]]}."
         assert (
             degree_of_nze[use_case[1]] >= 1 - 1e-6
         ), f"The degree of NZE of a LES with NZE constraint should be equal or greater than 1 but is {degree_of_nze[use_case[1]]}."
 
         assert (
             degree_of_nze[use_case[2]] < 1
-        ), f"The degree of NZE of a sector-coupled LES without NZE constraint should be lower than 1 but is {degree_of_nze[use_case[2]]}."
+        ), f"The degree of NZE of a sector-coupled LES without NZE constraint should be lower than 1, so that the benchmark test reasonably confirms the feature, but is {degree_of_nze[use_case[2]]}."
 
         balance = feedin_to_grid[use_case[3]] - consumption_from_grid[use_case[3]]
         assert (
