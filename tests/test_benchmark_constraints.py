@@ -330,7 +330,7 @@ class Test_Constraints:
             degree_of_nze[use_case[0]] < 1
         ), f"The degree of NZE of a LES without NZE constraint should be lower than 1 but is {degree_of_nze[use_case[0]]}."
         assert (
-            degree_of_nze[use_case[1]] >= 1 - 10 ** (-6)
+            degree_of_nze[use_case[1]] >= 1 - 1e-6
         ), f"The degree of NZE of a LES with NZE constraint should be equal or greater than 1 but is {degree_of_nze[use_case[1]]}."
 
         assert (
@@ -339,7 +339,7 @@ class Test_Constraints:
 
         balance = feedin_to_grid[use_case[3]] - consumption_from_grid[use_case[3]]
         assert (
-            balance >= 0 - 10 ** (-2)
+            balance >= 0 - 1e-2
         ), f"The balance between feed-in and consumption from grid of the sector-coupled LES with NZE constraint (feed-in - consumption) should be equal or greater than 0 but is {balance}."
 
     def teardown_method(self):

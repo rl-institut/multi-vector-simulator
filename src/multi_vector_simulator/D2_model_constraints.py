@@ -442,7 +442,7 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
     weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
     oemof_solph_object_bus = "oemof_solph_object_bus"
 
-    logging.debug(f"Data considered for the minimal renewable factor constraint:")
+    logging.debug(f"Data considered for the minimal degree of autonomy constraint:")
 
     demands = prepare_demand_assets(
         dict_values,
@@ -741,13 +741,13 @@ def prepare_energy_provider_feedin_sinks(
     # Preprocessing for log messages
     dso_feedin_sink_string = ", ".join(map(str, dso_feedin_sink_list))
 
-    logging.debug(f"Energy provider consumption sources: {dso_feedin_sink_string}")
+    logging.debug(f"Energy provider feedin sinks: {dso_feedin_sink_string}")
     return energy_provider_feedin_sinks
 
 
 def constraint_net_zero_energy(model, dict_values, dict_model):
     r"""
-    Resulting in an energy system that is a net zero energy (NZE) system.
+    Resulting in an energy system that is a net zero energy (NZE) or plus energy system.
 
     Please be aware that the NZE constraint is not applied to each sector individually,
     but to the overall energy system (via energy carrier weighting).
