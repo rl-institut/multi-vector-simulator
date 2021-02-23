@@ -45,6 +45,7 @@ Here is a template for new release sections
 - Added tests for `E3.equation_degree_of_net_zero_energy()` and `E3.add_degree_of_net_zero_energy()` (#776)
 - Added information about degree of NZE to RTD (#776)
 - Function `E1.cut_below_micro` to round decision variables (capacities, flows) below threshold of plus/minus 10^-6 to 0, add warnings if negative value larger then threshold (invalid result). Includes pytests (#791)
+- Update `component models` section in RTD with information on energy storages, heat pumps and HVAC. (#794)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)

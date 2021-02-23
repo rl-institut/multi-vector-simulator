@@ -157,6 +157,8 @@ There, all components and buses should be part of a single system (i.e. linked t
 **You need to be aware that you yourself have to make sure that the units you assign to your assets and energy flows make sense.
 The MVS does neither perform a logical check, nor does it transform units, eg. from MWh to kWh.**
 
+.. _time_series_params:
+
 Adding a timeseries for a parameter
 ###################################
 
