@@ -662,6 +662,24 @@ The perfect foresight can lead to suspicious dispatch of assets, for example cha
 
 .. _limitations-missing-kpi:
 
+
+Optimization precision
+######################
+
+:Limitation:
+
+Marginal capacities and flows below a threshold of 10^-6 are rounded to zero.
+
+:Reason:
+
+The MVS makes use of the open energy modelling framework (oemof) by using oemof-solph. For the MVS, we use the `cbc-solver` and at a `ratioGap=0.03`. This influences the precision of the optimized decision variables, ie. the optimized capacities as well as the dispatch of the assets.
+In some cases the dispatch and capacities vary around 0 with fluctuations of the order of floating point precision (well below <10e-6), thus resulting in marginal and also marginal negative dispatch or capacities. When calculating KPI from these decision variables, the results can be nonsensical, for example leading to SoC curves with negative values or values far above the viable value 1.
+As the reason for these inconsistencies is known, the MVS enforces the capacities and dispatch of to be above 10e-6, ie. all capacities or flows smaller than that are set to zero. This is applied to absolute values, so that irregular (and incorrect) values for decision variables can still be detected.
+
+:Implications:
+
+If your energy system has demand or resource profiles that include marginal values below the threshold of 10^-6, the MVS will not result in appropriate results. For example, that means that if you have an energy system with usually is measured in `MW` but one demand is in the `W` range, the dispatch of assets serving this minor demand is not displayed correctly. Please chose `kW` or even `W` as a base unit then.
+
 Extension of KPIs necessary
 ###########################
 
