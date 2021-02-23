@@ -44,6 +44,7 @@ Here is a template for new release sections
 - Added net zero energy KPI `degree of NZE` with `E3.equation_degree_of_net_zero_energy()` and `E3.add_degree_of_net_zero_energy()` (#776)
 - Added tests for `E3.equation_degree_of_net_zero_energy()` and `E3.add_degree_of_net_zero_energy()` (#776)
 - Added information about degree of NZE to RTD (#776)
+- Update `component models` section in RTD with information on energy storages, heat pumps and HVAC. (#794)
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
