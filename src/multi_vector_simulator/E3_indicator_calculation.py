@@ -645,7 +645,7 @@ def equation_degree_of_net_zero_energy(
     In NZE systems import and export of energy is allowed while the balance over one
     year should be zero, thus the degree of net zero energy would be 1. The
     Degree of net zero energy indicates how close the system gets to the NZE ideal.
-    If more energy is exported than imported it is plus-energy system.
+    If more energy is exported than imported it is plus-energy system (degree of NZE > 1).
 
     Parameters
     ----------
