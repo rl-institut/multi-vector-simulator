@@ -771,7 +771,7 @@ def constraint_net_zero_energy(model, dict_values, dict_model):
         \sum_{i} {E_{feedin, DSO} (i) \cdot w_i - E_{consumption, DSO} (i) \cdot w_i} >= 0
 
     Tested with:
-    - Test_Constraints.() # todo adapt
+    - Test_Constraints.test_net_zero_energy_constraint()
     """
 
     # Keys for dicts
