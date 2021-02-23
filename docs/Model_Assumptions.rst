@@ -62,6 +62,8 @@ This also means that the costs of the fuel of a diesel generator (input flow) ar
 
 Charge controllers for a :ref:`battery_storage` are defined by two transformers, one for charging and one for discharging.
 
+When using two conversion objects to emulate a bidirectional conversion assets, their capacity should be interdependent. This is currently not the case, see `Infeasible bi-directional flow in one timestep <https://multi-vector-simulator.readthedocs.io/en/stable/Model_Assumptions.html#infeasible-bi-directional-flow-in-one-timestep>`_.
+
 Heating, Ventilation, and Air Conditioning (HVAC)
 =================================================
 
