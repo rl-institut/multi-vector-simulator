@@ -270,8 +270,8 @@ The maximum emissions constraint is introduced to the energy system by `D2.const
 Net zero energy (NZE) constraint
 ################################
 
-The net zero energy (NZE) constraint requires the capacity and dispatch optimization of the MVS to result into a net zero system, but can also result in a plus energy system. For that, the balance between consumption from and feed-in towards the energy providers is compared. In a net zero energy system, demand can be supplied by energy import, but then local energy generation must provide an equally high energy export of energy in the course of the year.
-The degree of NZE of the optimized energy system may be higher than 1, in case of a plus energy system. Please find the definition of the KPI here: :ref:`kpi_degree_of_nze`.
+The net zero energy (NZE) constraint requires the capacity and dispatch optimization of the MVS to result into a net zero system, but can also result in a plus energy system.
+The degree of NZE of the optimized energy system may be higher than 1, in case of a plus energy system. Please find the definition of net zero energy (NZE) and the KPI here: :ref:`kpi_degree_of_nze`.
 
 Some definitions of NZE systems in literature allow the energy system's demand solely be provided by locally generated renewable energy. In MVS this is not the case - all locally generated energy is taken into consideration. To enlarge the share of renewables in the energy system you can use the :ref:`constraint_min_re_factor`.
 
