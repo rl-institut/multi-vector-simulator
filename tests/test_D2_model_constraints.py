@@ -479,7 +479,6 @@ class TestConstraints:
             hasattr(model, "constraint_minimal_renewable_share") == False
         ), f"When the minimal_renewable_share is 0, no constraint should be added"
 
-
     def test_add_constraints_net_zero_energy_requirement_is_true(self):
         """Checks that the nze constraint is added if user provides the value True"""
         dict_values = self.dict_values.copy()
@@ -503,7 +502,6 @@ class TestConstraints:
         assert (
             hasattr(model, "constraint_net_zero_energy") == True
         ), f"When the net_zero_energy constraint is activated (True), the constraint should be added. Something went wrong."
-
 
     def test_add_constraints_net_zero_energy_requirement_is_false(self):
         """Checks that the nze constraint is not added if user provides the value False"""
