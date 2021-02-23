@@ -50,9 +50,10 @@ Energy conversion
 `Examples`:
 
     - Diesel generator
-    - Electric transformers (rectifiers, inverters)
-    - Heat pumps (as heater and/or chiller)
-
+    - Electric transformers (rectifiers, inverters, transformer stations, charge controllers)
+    - HVAC and Heat pumps (as heater and/or chiller)
+    - Combined heat and power (CHP) and other condensing power plants
+    - Electrolyzer
 
 Conversion assets are added as transformers and are defined in `energyConversion.csv`.
 
@@ -60,9 +61,17 @@ The parameters `dispatch_price`, `efficiency` and `installedCap` of transformers
 This means that these parameters need to be given for the electrical output power in case of a diesel generator (more examples: electrolyzer - H2, heat pumps and boiler - nominal heat output, inverters / rectifiers - electrical output power).
 This also means that the costs of the fuel of a diesel generator (input flow) are not included in its `dispatch_price` but in the `dispatch_price` of the fuel source.
 
-Charge controllers for a :ref:`battery_storage` are defined by two transformers, one for charging and one for discharging.
+Conversion assets can be defined with multiple inputs or multiple outputs, but one asset currently cannot have multiple inputs and outputs. Note that multiple inputs/output have not been tested, yet.
 
-When using two conversion objects to emulate a bidirectional conversion assets, their capacity should be interdependent. This is currently not the case, see `Infeasible bi-directional flow in one timestep <https://multi-vector-simulator.readthedocs.io/en/stable/Model_Assumptions.html#infeasible-bi-directional-flow-in-one-timestep>`_.
+Electric transformers
+=====================
+
+Electric rectifiers and inverters that are transforming electricity in one direction only, are simply added as transformers.
+Transformer stations are defined by two transformers that are optimized independently from each other, if optimized.
+The same accounts for charge controllers for a :ref:`battery_storage` that are defined by two transformers, one for charging and one for discharging.
+
+.. note::
+    When using two conversion objects to emulate a bidirectional conversion assets, their capacity should be interdependent. This is currently not the case, see `Infeasible bi-directional flow in one timestep <https://multi-vector-simulator.readthedocs.io/en/stable/Model_Assumptions.html#infeasible-bi-directional-flow-in-one-timestep>`_.
 
 Heating, Ventilation, and Air Conditioning (HVAC)
 =================================================
@@ -70,10 +79,24 @@ Heating, Ventilation, and Air Conditioning (HVAC)
 Like other conversion assets, devices for heating, ventilation and air conditioning (HVAC) are added as transformers. As the parameters `dispatch_price`, `efficiency` and `installedCap` are assigned to the output flows they need to be given for the nominal heat output of the HVAC.
 
 Different types of HVAC can be modelled. Except for an air source device with ambient temperature as heat reservoir, the device could be modelled with two inputs (electricity and heat) in case the user is interested in the heat reservoir. This has not been tested, yet, also note that, currently efficiencies are assigned to the output flows the see `issue #799 <https://github.com/rl-institut/multi-vector-simulator/issues/799>`_
+Theoretically, a HVAC device can be modelled with multiple outputs (heat, cooling, ..); this has not been tested, yet.
 
 The efficiency of HVAC systems is defined by the coefficient of performance (COP), which is strongly dependent on the temperature. In order to take account of this, the efficiency can be defined as time series, see section :ref:`time_series_params`.
 If you do not provide your own COP time series you can calculate them with `oemof.thermal <https://github.com/oemof/oemof-thermal>`_, see  `documentation on compression heat pumps and chillers <https://oemof-thermal.readthedocs.io/en/stable/compression_heat_pumps_and_chillers.html>`_ and  `documentation on absorption chillers <https://oemof-thermal.readthedocs.io/en/stable/absorption_chillers.html>`_.
 
+
+Combined heat and power (CHP)
+=============================
+
+Condensing power plants are added as transformers with one input (fuel) and one output (electricity), while CHP plants are defined with two outputs (electricity and heat).
+
+The ratio between the heat and electricity output of a CHP is currently simulated as fix values. This might be changed in the future by using the `ExtractionTurbineCHP <https://oemof-solph.readthedocs.io/en/latest/usage.html#extractionturbinechp-component>`_
+or the `GenericCHP <https://oemof-solph.readthedocs.io/en/latest/usage.html#genericchp-component>`_ component of oemof, see `issue #803 <https://github.com/rl-institut/multi-vector-simulator/issues/803>`_
+
+Note that multiple inputs/output have not been tested, yet.
+
+
+.. _energy_providers:
 
 Energy providers
 ################
