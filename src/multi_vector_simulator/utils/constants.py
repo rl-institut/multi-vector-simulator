@@ -270,7 +270,7 @@ KNOWN_EXTRA_PARAMETERS = {
     NET_ZERO_ENERGY: {
         DEFAULT_VALUE: False,
         UNIT: TYPE_BOOL,
-        WARNING_TEXT: "allows setting a net zero energy constraint to the optimized energy system (True). ",
+        WARNING_TEXT: "allows to add a net zero energy constraint to optimization problem (activate by setting to `True`). ",
         REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
     },
 }
