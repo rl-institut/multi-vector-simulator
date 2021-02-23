@@ -23,7 +23,8 @@ CSV_EXT = "csv"
 # name of the folder containing mvs model described by .csv files
 CSV_ELEMENTS = "csv_elements"
 # name of the json file which should be present in the input folder if option -i json was chosen
-JSON_FNAME = "mvs_config.json"
+MVS_CONFIG = "mvs_config"
+JSON_FNAME = MVS_CONFIG + ".json"
 # name of the json file which is should be created in the input folder if option -i csv was chosen
 CSV_FNAME = "mvs_csv_config.json"
 # allowed symbols for separating values in .csv files

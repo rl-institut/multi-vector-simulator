@@ -84,7 +84,7 @@ def test_maximum_emissions_test_passes():
     # Total emissions > maximum emissions constraint, minimal diff
     dict_values = {
         CONSTRAINTS: {MAXIMUM_EMISSIONS: {VALUE: 1000}},
-        KPI: {KPI_SCALARS_DICT: {TOTAL_EMISSIONS: 1000 + 10 ** (-6)}},
+        KPI: {KPI_SCALARS_DICT: {TOTAL_EMISSIONS: 1000 + 1e-6}},
     }
     return_value = E4.maximum_emissions_test(dict_values)
     assert (
