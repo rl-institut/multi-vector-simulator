@@ -283,10 +283,10 @@ Degree of net zero energy (NZE)
 ###############################
 
 The degree of net zero energy describes the ability of an energy system to provide its aggregated annual demand though local sources. For that, the balance between local generation as well as consumption from and feed-in towards the energy provider is compared.
-In a net zero energy system, demand can be supplied by energy import, but then local energy generation should allow an equally high energy export of energy in the course of the year. In a plus energy system, the export exceeds the import, while local generation can supply all demand (from an aggregated perspective).
-To calculate the degree of NZE, the overall grid feed-in minus the grid consumption is added with one and afterwards divided by the overall energy consumed.
+In a net zero energy system, demand can be supplied by energy import, but then local energy generation must provide an equally high energy export of energy in the course of the year. In a plus energy system, the export exceeds the import, while local generation can supply all demand (from an aggregated perspective).
+To calculate the degree of NZE, the margin between grid feed-in and grid consumption is compared to the overall demand. 
 
-Some definitions of NZE systems allow the demand only partly be covered by non-renewable locally generated energy. In MVS this is not the case - all locally generated energy is taken into consideration. For information about the share of renewables in the local energy system checkout :ref:`kpi_renewable_share_of_local_generation`.
+Some definitions of NZE systems require that the local demand is solely covered by locally generated renewable energy. In MVS this is not the case - all locally generated energy is taken into consideration. For information about the share of renewables in the local energy system checkout :ref:`kpi_renewable_share_of_local_generation`.
 
 A degree of NZE lower 1 shows that the energy system can not reach a net zero balance, and indicates by how much it fails to do so,
 while a degree of NZE of 1 represents a net zero energy system
