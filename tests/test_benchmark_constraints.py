@@ -278,9 +278,9 @@ class Test_Constraints:
         With this benchmark test, the net zero energy (NZE) constraint is validated in a
         single sector LES and a sector coupled LES.
         Constraint_net_zero_energy_False contains a single sector LES without NZE constraint.
-        Constraint_net_zero_energy contains a single sector LES with NZE constraint.
+        Constraint_net_zero_energy_true contains a single sector LES with NZE constraint.
         Constraint_net_zero_energy_sector_coupled_False contains a sector-coupled LES without NZE constraint.
-        Constraint_net_zero_energy_sector_coupled contains a sector-coupled LES with NZE constraint.
+        Constraint_net_zero_energy_sector_coupled_true contains a sector-coupled LES with NZE constraint.
         The benchmark test passes if the degree of NZE of the defined energy systems
         without constraint is lower than one and if the degree of NZE of the energy
         systems with constraint equals one or is greater than one.
@@ -289,9 +289,9 @@ class Test_Constraints:
         # define the cases needed for comparison
         use_case = [
             "Constraint_net_zero_energy_False",
-            "Constraint_net_zero_energy",
+            "Constraint_net_zero_energy_true",
             "Constraint_net_zero_energy_sector_coupled_False",
-            "Constraint_net_zero_energy_sector_coupled",
+            "Constraint_net_zero_energy_sector_coupled_true",
         ]
         # define empty dictionaries degree of NZE
         degree_of_nze = {}
