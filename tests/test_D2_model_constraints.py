@@ -411,7 +411,6 @@ class TestConstraints:
             {
                 MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                 MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
-                NET_ZERO_ENERGY: {VALUE: False},
             }
         )
         model = D2.add_constraints(
@@ -433,7 +432,6 @@ class TestConstraints:
                     MAXIMUM_EMISSIONS: {VALUE: None},
                     MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                     MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
-                    NET_ZERO_ENERGY: {VALUE: False},
                 }
             }
         )
@@ -467,7 +465,6 @@ class TestConstraints:
                     MAXIMUM_EMISSIONS: {VALUE: None},
                     MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
                     MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
-                    NET_ZERO_ENERGY: {VALUE: False},
                 }
             }
         )
@@ -481,6 +478,56 @@ class TestConstraints:
         assert (
             hasattr(model, "constraint_minimal_renewable_share") == False
         ), f"When the minimal_renewable_share is 0, no constraint should be added"
+
+
+    def test_add_constraints_net_zero_energy_requirement_is_true(self):
+        """Checks that the nze constraint is added if user provides the value True"""
+        dict_values = self.dict_values.copy()
+        dict_values.update(
+            {
+                CONSTRAINTS: {
+                    MAXIMUM_EMISSIONS: {VALUE: None},
+                    MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
+                    MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                    NET_ZERO_ENERGY: {VALUE: True},
+                }
+            }
+        )
+
+        model = D2.add_constraints(
+            local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
+            dict_model=self.dict_model,
+        )
+
+        assert (
+            hasattr(model, "constraint_net_zero_energy") == True
+        ), f"When the net_zero_energy constraint is activated (True), the constraint should be added. Something went wrong."
+
+
+    def test_add_constraints_net_zero_energy_requirement_is_false(self):
+        """Checks that the nze constraint is not added if user provides the value False"""
+        dict_values = self.dict_values.copy()
+        dict_values.update(
+            {
+                CONSTRAINTS: {
+                    MAXIMUM_EMISSIONS: {VALUE: None},
+                    MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
+                    MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                    NET_ZERO_ENERGY: {VALUE: False},
+                }
+            }
+        )
+
+        model = D2.add_constraints(
+            local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
+            dict_model=self.dict_model,
+        )
+
+        assert (
+            hasattr(model, "constraint_net_zero_energy") == False
+        ), f"When the net_zero_energy constraint is deactivated (False), no constraint should be added"
 
     def teardown_class(self):
         # Remove the output folder

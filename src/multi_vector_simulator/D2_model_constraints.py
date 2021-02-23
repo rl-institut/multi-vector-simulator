@@ -73,7 +73,9 @@ def add_constraints(local_energy_system, dict_values, dict_model):
     - D2.test_add_constraints_maximum_emissions()
     - D2.test_add_constraints_maximum_emissions_None()
     - D2.test_add_constraints_minimal_renewable_share()
-    - D2.test_test_add_constraints_minimal_renewable_share_is_0()
+    - D2.test_add_constraints_minimal_renewable_share_is_0()
+    - D2.test_add_constraints_net_zero_energy_requirement_is_true()
+    - D2.test_add_constraints_net_zero_energy_requirement_is_false()
     """
     count_added_constraints = 0
 
