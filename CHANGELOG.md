@@ -83,6 +83,8 @@ Here is a template for new release sections
 - Call `E1.cut_below_micro` in `E1.get_flows`, `E1.get_optimal_cap` and `E1.get_storage_results` (#791) 
 - Split preprocessing function `D2.prepare_constraint_minimal_degree_of_autonomy()` into two functions that can be used by multiple constraints: `D2.prepare_demand_assets()` and `D2.prepare_energy_provider_consumption_sources()`, also adapted tests (#796)
 - Edited epa parser so that net zero energy constraint is added in `utils.data_parser.convert_epa_params_to_mvs()` (#796)
+- Update definition of degree of net zero energy (#797)
+
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
