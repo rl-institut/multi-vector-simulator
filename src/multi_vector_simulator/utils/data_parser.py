@@ -283,6 +283,7 @@ def convert_epa_params_to_mvs(epa_dict):
     - `ENERGY_PROVIDERS`: Auto-define unit as kWh(el), `INFLOW_DIRECTION=OUTFLOW_DIRECTION`
     - `ENERGY_CONSUMPTION`: `DSM` is `False`
     - `EMISSION_FACTOR` default value
+    - `ENERGY_PRODUCTION`: `DISPATCHABILITY` is always `False`, as no dispatchable fuel assets possible right now. Must be tackeld by EPA.
      """
     epa_dict = deepcopy(epa_dict)
     dict_values = {}
@@ -401,6 +402,10 @@ def convert_epa_params_to_mvs(epa_dict):
                     dict_asset[asset_label][TIMESERIES][
                         DATA_TYPE_JSON_KEY
                     ] = TYPE_SERIES
+
+                # TODO remove this when change has been made on EPA side
+                if asset_group == ENERGY_PRODUCTION:
+                    dict_asset[asset_label].update({DISPATCHABILITY: False})
 
                 # typically DSO
                 if asset_group == ENERGY_PROVIDERS:
