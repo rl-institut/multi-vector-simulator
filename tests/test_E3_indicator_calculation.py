@@ -723,7 +723,7 @@ def test_equation_degree_of_net_zero_energy_is_zero():
 
 def test_equation_degree_of_net_zero_energy_is_one():
     """ """
-    total_feedin =100
+    total_feedin = 100
     total_grid_consumption = 100
     total_demand = 100
     degree_of_nze = E3.equation_degree_of_net_zero_energy(
@@ -738,7 +738,7 @@ def test_equation_degree_of_net_zero_energy_is_one():
 
 def test_equation_degree_of_net_zero_energy_greater_one():
     """ """
-    total_feedin =150
+    total_feedin = 150
     total_grid_consumption = 100
     total_demand = 100
     degree_of_nze = E3.equation_degree_of_net_zero_energy(

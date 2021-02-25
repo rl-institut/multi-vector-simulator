@@ -94,6 +94,7 @@ Here is a template for new release sections
 - Fix `numpy.int32` error in `B0` (#778)
 - `mvs_config.json` is generated again, now from `cli.py` (#783)
 - Fix pytest `C1.test_check_non_dispatchable_source_time_series_passes` and `C1.test_check_non_dispatchable_source_time_series_results_in_error_msg` (#783)
+- Fix typo in `utils.data_parser` `logging.INFO` was used instead of `logging.info` (#809)
 
 ## [0.5.4] - 2020-12-18
 
