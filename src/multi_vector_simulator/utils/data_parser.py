@@ -479,7 +479,7 @@ def convert_epa_params_to_mvs(epa_dict):
         if CONSTRAINTS in missing_params:
             dict_values[CONSTRAINTS] = {
                 MINIMAL_RENEWABLE_FACTOR: {UNIT: "factor", VALUE: 0},
-                MAXIMUM_EMISSIONS: {UNIT: "factor", VALUE: 0},
+                MAXIMUM_EMISSIONS: {UNIT: "factor", VALUE: None},
                 MINIMAL_DEGREE_OF_AUTONOMY: {UNIT: "factor", VALUE: 0},
             }
             missing_params.pop(CONSTRAINTS)
