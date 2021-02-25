@@ -459,7 +459,11 @@ def convert_epa_params_to_mvs(epa_dict):
             logging.info(
                 f"The assets parameters '{MAP_MVS_EPA[asset_group]}' is not present in the EPA parameters to be parsed into MVS json format"
             )
+            epa_dict.update({asset_group: {}})
+            dict_values.update({asset_group: {}})
 
+    # Check if all necessary input parameters are provided
+    # Does this also identify excess parameters? They occur in storage_assets right now with DISPATCHABILITY.
     comparison = compare_input_parameters_with_reference(dict_values)
 
     if MISSING_PARAMETERS_KEY in comparison:
@@ -499,7 +503,12 @@ def convert_epa_params_to_mvs(epa_dict):
         if len(missing_params.keys()) > 0:
 
             for asset_group in missing_params.keys():
-                error_msg.append(asset_group)
+                # If no asset is in the asset groups, all keys may be missing
+                if len(dict_values[asset_group].keys()) == 0:
+                    pass
+                # If a asset is included in the asset group, and in the missing_params, then essential parameters are missing.
+                else:
+                    error_msg.append(asset_group)
                 if missing_params[asset_group] is not None:
                     for k in missing_params[asset_group]:
                         error_msg.append(f"\t`{k}` parameter")
