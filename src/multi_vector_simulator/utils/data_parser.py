@@ -261,13 +261,34 @@ def convert_epa_params_to_mvs(epa_dict):
     Returns
     -------
     dict_values: dict
-        mvs parameters
+        MVS json file, generated from EPA inputs, to be provided as MVS input
 
-    """
+    Notes
+    -----
 
+    - For `simulation_settings`: parameter `TIMESTEP` is parsed as unit-value pair, `OUTPUT_LP_FILE` always `False`.
+    - For `project_data`: parameter `SCENARIO_DESCRIPTION` is defined as placeholder string.
+    - `fix_cost` does not have to be provided, as default parameters will be set. But, aren´t they provided in EPA?
+    - For missing asset group `CONSTRAINTS` following parameters are added:
+        - MINIMAL_RENEWABLE_FACTOR: 0
+        - MAXIMUM_EMISSIONS: None
+        - MINIMAL_DEGREE_OF_AUTONOMY: 0
+    - `ENERGY_STORAGE` assets:
+        - Optimize cap written to main asset and removed from subassets
+        - Units defined automatically (assumed: electricity system)
+        - `SOC_INITIAL`: None
+        - `THERM_LOSSES_REL`: 0
+        - `THERM_LOSSES_ABS`: 0
+    - If `TIMESERIES` parameter in asset dictionary: Redefine unit, value and label.
+    - `ENERGY_PROVIDERS`: Auto-define unit as kWh(el), `INFLOW_DIRECTION=OUTFLOW_DIRECTION`
+    - `ENERGY_CONSUMPTION`: `DSM` is `False`
+    - `EMISSION_FACTOR` default value
+     """
     epa_dict = deepcopy(epa_dict)
     dict_values = {}
 
+    # Loop though one-dimensional energy system data (parameters directly in group)
+    # Warnings for missing param_groups, will result in fatal error (except for fix_cost) as they can not be replaced with default values
     for param_group in [
         PROJECT_DATA,
         ECONOMIC_DATA,
@@ -277,7 +298,7 @@ def convert_epa_params_to_mvs(epa_dict):
     ]:
 
         if MAP_MVS_EPA[param_group] in epa_dict:
-
+            # Write entry of EPA to MVS json file
             dict_values[param_group] = epa_dict[MAP_MVS_EPA[param_group]]
 
             # convert fields names from EPA convention to MVS convention, if applicable
@@ -295,11 +316,6 @@ def convert_epa_params_to_mvs(epa_dict):
                         UNIT: "min",
                         VALUE: timestep,
                     }
-            if param_group == PROJECT_DATA:
-                if SCENARIO_DESCRIPTION not in dict_values[param_group]:
-                    dict_values[param_group][
-                        SCENARIO_DESCRIPTION
-                    ] = "[No scenario description available]"
 
             # Never save the oemof lp file when running on the server
             if param_group == SIMULATION_SETTINGS:
@@ -308,11 +324,19 @@ def convert_epa_params_to_mvs(epa_dict):
                     VALUE: False,
                 }
 
+            if param_group == PROJECT_DATA:
+                if SCENARIO_DESCRIPTION not in dict_values[param_group]:
+                    dict_values[param_group][
+                        SCENARIO_DESCRIPTION
+                    ] = "[No scenario description available]"
+
         else:
             logging.warning(
                 f"The parameters group '{MAP_MVS_EPA[param_group]}' is not present in the EPA parameters to be parsed into MVS json format"
             )
 
+    # Loop through energy system asset groups and their assets
+    # Logging warning message for missing asset groups, will not raise fatal error as empty asset group entry is created
     for asset_group in [
         ENERGY_CONSUMPTION,
         ENERGY_CONVERSION,
@@ -461,6 +485,7 @@ def convert_epa_params_to_mvs(epa_dict):
                     VALUE: False,
                 }
                 missing_params.pop(SIMULATION_SETTINGS)
+
         if FIX_COST in missing_params:
             dict_values[FIX_COST] = {}
             missing_params.pop(FIX_COST)
