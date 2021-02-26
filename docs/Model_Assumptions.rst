@@ -39,17 +39,20 @@ If you cannot provide time series for your VRE assets you can consider to calcul
     - Solar thermal: `flat plate collectors <https://oemof-thermal.readthedocs.io/en/stable/solar_thermal_collector.html>`_ of `oemof.thermal <https://github.com/oemof/oemof-thermal>`_
 
 
+.. _dispatchable_sources:
+
 Dispatchable sources of generation
 ==================================
 
 `Examples`:
 
     - Fuel sources
-    - Run-of-the-river hydro power plant
     - Deep-ground geothermal plant (ground assumed to allow unlimited extraction of heat, not depending on season)
 
-Fuel sources are added as dispatchable sources, which still can have development, investment, operational and dispatch costs.
-They are added by adding a column in `energyProviders.CSV`, and setting file_name to `None`.
+Fuel sources are added as dispatchable sources, which can have development, investment, operational and dispatch costs.
+They are added to `energyProduction.csv`, while setting :ref:`filename-label` to `None`.
+
+Fuel sources are for example needed as source for a diesel generator (diesel), biogas plant (gas) or a condensing power plant (gas, coal, ...), see :ref:`energy_conversion`.
 
 Energy providers, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
 as there are some additional features available then, see :ref:`energy_providers`.
