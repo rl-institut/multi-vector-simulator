@@ -73,6 +73,7 @@ Here is a template for new release sections
 - Refactor module imports in `cli.py` and `server.py` (#783)
 - Limit index of availability timeseries to simulation timeindex (`C0.define_availability_of_peak_demand_pricing_assets`) (#783)
 - Call `E1.cut_below_micro` in `E1.get_flows`, `E1.get_optimal_cap` and `E1.get_storage_results` (#791) 
+- Update definition of degree of net zero energy (#797)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
@@ -93,6 +94,7 @@ Here is a template for new release sections
 - Fix `numpy.int32` error in `B0` (#778)
 - `mvs_config.json` is generated again, now from `cli.py` (#783)
 - Fix pytest `C1.test_check_non_dispatchable_source_time_series_passes` and `C1.test_check_non_dispatchable_source_time_series_results_in_error_msg` (#783)
+- Fix typo in `utils.data_parser` `logging.INFO` was used instead of `logging.info` (#809)
 
 ## [0.5.4] - 2020-12-18
 

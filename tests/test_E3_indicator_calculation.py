@@ -666,21 +666,22 @@ def test_equation_degree_of_autonomy():
 
 def test_add_degree_of_net_zero_energy():
     """ """
-    total_re_generation = 60
-    total_demand = 100
-    excess = 10
+    total_feedin = 60
+    total_grid_consumption = 100
+    total_demand = 10
     dict_values_NZE = {
         KPI: {
             KPI_SCALARS_DICT: {
-                TOTAL_RENEWABLE_GENERATION_IN_LES: total_re_generation,
+                TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT: total_feedin,
+                TOTAL_CONSUMPTION_FROM_PROVIDERS
+                + SUFFIX_ELECTRICITY_EQUIVALENT: total_grid_consumption,
                 TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
-                TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT: excess,
             }
         },
     }
     E3.add_degree_of_net_zero_energy(dict_values_NZE)
 
-    degree_of_nze = (total_re_generation - excess) / total_demand
+    degree_of_nze = 1 + (total_feedin - total_grid_consumption) / total_demand
 
     assert (
         DEGREE_OF_NZE in dict_values_NZE[KPI][KPI_SCALARS_DICT]
@@ -691,14 +692,59 @@ def test_add_degree_of_net_zero_energy():
 
 
 def test_equation_degree_of_net_zero_energy():
-    """ """
-    total_re_generation = 60
+    """ Degree of NZE between 0 and 1."""
+    total_feedin = 60
+    total_grid_consumption = 80
     total_demand = 100
-    excess = 10
     degree_of_nze = E3.equation_degree_of_net_zero_energy(
-        total_re_generation, total_demand, excess
+        total_feedin, total_grid_consumption, total_demand
     )
-    exp = (total_re_generation - excess) / total_demand
+    exp = 1 + (total_feedin - total_grid_consumption) / total_demand
+    assert degree_of_nze == exp, (
+        f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
+        f"It should be equal to {exp}."
+    )
+
+
+def test_equation_degree_of_net_zero_energy_is_zero():
+    """ """
+    total_feedin = 0
+    total_grid_consumption = 100
+    total_demand = 100
+    degree_of_nze = E3.equation_degree_of_net_zero_energy(
+        total_feedin, total_grid_consumption, total_demand
+    )
+    exp = 0
+    assert degree_of_nze == exp, (
+        f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
+        f"It should be equal to {exp}."
+    )
+
+
+def test_equation_degree_of_net_zero_energy_is_one():
+    """ """
+    total_feedin = 100
+    total_grid_consumption = 100
+    total_demand = 100
+    degree_of_nze = E3.equation_degree_of_net_zero_energy(
+        total_feedin, total_grid_consumption, total_demand
+    )
+    exp = 1
+    assert degree_of_nze == exp, (
+        f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
+        f"It should be equal to {exp}."
+    )
+
+
+def test_equation_degree_of_net_zero_energy_greater_one():
+    """ """
+    total_feedin = 150
+    total_grid_consumption = 100
+    total_demand = 100
+    degree_of_nze = E3.equation_degree_of_net_zero_energy(
+        total_feedin, total_grid_consumption, total_demand
+    )
+    exp = 1.5
     assert degree_of_nze == exp, (
         f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
         f"It should be equal to {exp}."
