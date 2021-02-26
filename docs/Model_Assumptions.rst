@@ -151,7 +151,7 @@ With all these components, the energy provider can be visualized as follows:
 Variable energy consumption prices (time-series)
 ================================================
 
-- Link to howto
+Energy consumption prices can be added as values that vary over time. See section :ref:`time_series_folder` or more information.
 
 Peak demand pricing
 ===================
