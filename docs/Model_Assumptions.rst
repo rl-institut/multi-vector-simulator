@@ -194,16 +194,20 @@ A charge controller is defined by two transformers, see section :ref:`energy_con
 
 Note that capacity reduction over the lifetime of a BESS that may occur due to different effects during aging cannot be taken into consideration in MVS. A possible workaround for this could be to manipulate the lifetime.
 
+
+Hydrogen storage (H2)
+=====================
+
+Hydrogen storages are modelled as all storage types in MVS with as *GenericStorage* like described above.
+
+The most common hydrogen storages store H2 as liquid under temperatures lower than -253 °C or under high pressures.
+The energy needed to provide these requirements cannot be modelled via the storage component as another energy sector such as cooling or electricity is needed. It could therefore, be modelled as an additional demand of the energy system, see `issue #811 <https://github.com/rl-institut/multi-vector-simulator/issues/811>`_
+
 Thermal energy storage
 ======================
 
 Thermal energy storages of the type sensible heat storage (SHS) are modelled as *GenericStorage* like described above. The implementation of a specific type of SHS, the stratified thermal energy storage, is described in section :ref:`stratified_tes`.
 The modelling of latent-heat (or Phase-change) and chemical storages have not been tested with MVS, but might be achieved by precalculations.
-
-H2 storage
-==========
-
-tba
 
 .. _stratified_tes:
 
