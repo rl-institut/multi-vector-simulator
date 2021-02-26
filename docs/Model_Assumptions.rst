@@ -21,8 +21,23 @@ Non-dispatchable sources of generation
 
 `Examples`:
 
-    - PV plant
-    - Wind plant
+    - PV plants
+    - Wind plants
+    - Run-of-the-river hydro power plants
+    - Solar thermal collectors
+
+Variable renewable energy (VRE) sources, like wind and PV, are non-dispatchable due to their fluctuations in supply. They are added as sources in `energyProduction.csv`.
+
+The fluctuating nature of non-dispatchable sources is represented by generation time series that show the respective production for each time step of the simulated period. In energy system modelling it is common to use hourly time series.
+The name of the file containing the time series is added to `energyProduction.csv` with the parameter :ref:`filename-label`. For further requirements concerning the time series see section :ref:`time_series_folder`.
+
+If you cannot provide time series for your VRE assets you can consider to calculate them by using models for generating feed-in time series from weather data. The following is a list of examples, which is not exhaustive:
+
+    - PV: `pvlib <https://github.com/pvlib/pvlib-python/>`_ , `Renewables Ninja <https://www.renewables.ninja/>`_ (download capacity factors)
+    - Wind: `windpowerlib <https://github.com/wind-python/windpowerlib>`_, `Renewables Ninja <https://www.renewables.ninja/>`_ (download capacity factors)
+    - Hydro power (run-of-the-river): `hydropowerlib <https://github.com/hydro-python/hydropowerlib>`_
+    - Solar thermal: `flat plate collectors <https://oemof-thermal.readthedocs.io/en/stable/solar_thermal_collector.html>`_ of `oemof.thermal <https://github.com/oemof/oemof-thermal>`_
+
 
 Dispatchable sources of generation
 ==================================
