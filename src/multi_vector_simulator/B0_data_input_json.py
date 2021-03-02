@@ -26,6 +26,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
     DATA,
     TIMESERIES,
+    KPI,
+    KPI_COST_MATRIX,
+    KPI_SCALAR_MATRIX,
+    LABEL,
 )
 
 from multi_vector_simulator.utils.constants import (
