@@ -340,7 +340,7 @@ def load_json(
         dict_values, flag_missing=flag_missing_values, set_default=set_default_values
     )
 
-     if KPI in dict_values:
+    if KPI in dict_values:
         for kpi in (KPI_COST_MATRIX, KPI_SCALAR_MATRIX):
 
             if not isinstance(dict_values[KPI][kpi], pd.DataFrame):
