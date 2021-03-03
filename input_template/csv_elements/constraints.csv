@@ -2,3 +2,4 @@
 minimal_renewable_factor,factor
 maximum_emissions,kgCO2eq/a
 minimal_degree_of_autonomy,factor
+net_zero_energy,bool

@@ -1,0 +1,5 @@
+,unit,simulation_settings
+evaluated_period,days,7
+output_lp_file,bool,False
+start_date,str,2018-01-01 00:00:00
+timestep,minutes,60

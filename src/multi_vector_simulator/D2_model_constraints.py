@@ -37,6 +37,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MINIMAL_RENEWABLE_FACTOR,
     MAXIMUM_EMISSIONS,
     MINIMAL_DEGREE_OF_AUTONOMY,
+    DSO_FEEDIN,
+    NET_ZERO_ENERGY,
 )
 
 
@@ -71,7 +73,9 @@ def add_constraints(local_energy_system, dict_values, dict_model):
     - D2.test_add_constraints_maximum_emissions()
     - D2.test_add_constraints_maximum_emissions_None()
     - D2.test_add_constraints_minimal_renewable_share()
-    - D2.test_test_add_constraints_minimal_renewable_share_is_0()
+    - D2.test_add_constraints_minimal_renewable_share_is_0()
+    - D2.test_add_constraints_net_zero_energy_requirement_is_true()
+    - D2.test_add_constraints_net_zero_energy_requirement_is_false()
     """
     count_added_constraints = 0
 
@@ -92,6 +96,13 @@ def add_constraints(local_energy_system, dict_values, dict_model):
     if dict_values[CONSTRAINTS][MINIMAL_DEGREE_OF_AUTONOMY][VALUE] > 0:
         # Add minimal renewable factor constraint
         local_energy_system = constraint_minimal_degree_of_autonomy(
+            local_energy_system, dict_values, dict_model
+        )
+        count_added_constraints += 1
+
+    if dict_values[CONSTRAINTS][NET_ZERO_ENERGY][VALUE] == True:
+        # Add net zero energy (NZE) constraint
+        local_energy_system = constraint_net_zero_energy(
             local_energy_system, dict_values, dict_model
         )
         count_added_constraints += 1
@@ -433,10 +444,17 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
     weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
     oemof_solph_object_bus = "oemof_solph_object_bus"
 
-    (
-        demands,
-        energy_provider_consumption_sources,
-    ) = prepare_constraint_minimal_degree_of_autonomy(
+    logging.debug(f"Data considered for the minimal degree of autonomy constraint:")
+
+    demands = prepare_demand_assets(
+        dict_values,
+        dict_model,
+        oemof_solph_object_asset,
+        weighting_factor_energy_carrier,
+        oemof_solph_object_bus,
+    )
+
+    energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
         dict_values,
         dict_model,
         oemof_solph_object_asset,
@@ -495,7 +513,7 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
     return model
 
 
-def prepare_constraint_minimal_degree_of_autonomy(
+def prepare_demand_assets(
     dict_values,
     dict_model,
     oemof_solph_object_asset,
@@ -503,7 +521,10 @@ def prepare_constraint_minimal_degree_of_autonomy(
     oemof_solph_object_bus,
 ):
     r"""
-    Prepare creating the minimal degree of autonomy constraint by processing `dict_values`
+    Perpare demand assets by processing `dict_values`
+
+    Used for the following constraints:
+    - minimal degree of autonomy
 
     Parameters
     ----------
@@ -522,22 +543,21 @@ def prepare_constraint_minimal_degree_of_autonomy(
     oemof_solph_object_bus: str
         Name under which the oemof-solph object of the output bus of an asset shall be stored
 
+    Notes
+    -----
+    Tested with:
+    - test_prepare_demand_assets()
+
     Returns
     -------
     demands: dict
         Dictionary of all assets with all demands in the energy system.
         Defined by: oemof_solph_object_asset, weighting_factor_energy_carrier, oemof_solph_object_bus
 
-    energy_provider_consumption_sources: dict
-        Dictionary of all assets that are sources for the energy consumption from energy providers in the energy system.
-        Defined by: oemof_solph_object_asset, weighting_factor_energy_carrier, oemof_solph_object_bus
-
     """
     # dicts for processing
     demands = {}
     demand_list = []
-    energy_provider_consumption_sources = {}
-    dso_consumption_source_list = []
 
     # Determine energy demands
     for asset in dict_values[ENERGY_CONSUMPTION]:
@@ -565,6 +585,60 @@ def prepare_constraint_minimal_degree_of_autonomy(
             )
             demand_list.append(asset)
 
+    # Preprocessing for log messages
+    demand_string = ", ".join(map(str, demand_list))
+
+    logging.debug(f"Demands: {demand_string}")
+    return demands
+
+
+def prepare_energy_provider_consumption_sources(
+    dict_values,
+    dict_model,
+    oemof_solph_object_asset,
+    weighting_factor_energy_carrier,
+    oemof_solph_object_bus,
+):
+    r"""
+    Prepare energy provider consumption sources by processing `dict_values`.
+
+    Used for the following constraints:
+    - minimal degree of autonomy
+    - net zero energy (NZE)
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation parameters
+
+    dict_model: dict of :oemof-solph: <oemof.solph.assets>
+        Dictionary including the oemof-solph component assets, which need to be connected with constraints
+
+    oemof_solph_object_asset: str
+        Name under which the oemof-solph object of an asset shall be stored
+
+    weighting_factor_energy_carrier: str
+        Name under which the energy_carrier weighting factor shall be stored
+
+    oemof_solph_object_bus: str
+        Name under which the oemof-solph object of the output bus of an asset shall be stored
+
+    Notes
+    -----
+    Tested with:
+    - test_prepare_energy_provider_consumption_sources()
+
+    Returns
+    -------
+    energy_provider_consumption_sources: dict
+        Dictionary of all assets that are sources for the energy consumption from energy providers in the energy system.
+        Defined by: oemof_solph_object_asset, weighting_factor_energy_carrier, oemof_solph_object_bus
+
+    """
+    # dicts for processing
+    energy_provider_consumption_sources = {}
+    dso_consumption_source_list = []
+
     for dso in dict_values[ENERGY_PROVIDERS]:
         # Get source connected to the specific DSO in question
         DSO_source_name = dso + DSO_CONSUMPTION
@@ -590,12 +664,183 @@ def prepare_constraint_minimal_degree_of_autonomy(
         )
 
     # Preprocessing for log messages
-    demand_string = ", ".join(map(str, demand_list))
-
     dso_consumption_source_string = ", ".join(map(str, dso_consumption_source_list))
-    logging.debug(f"Data considered for the minimal renewable factor constraint:")
-    logging.debug(f"Demands: {demand_string}")
+
     logging.debug(
         f"Energy provider consumption sources: {dso_consumption_source_string}"
     )
-    return demands, energy_provider_consumption_sources
+    return energy_provider_consumption_sources
+
+
+def prepare_energy_provider_feedin_sinks(
+    dict_values,
+    dict_model,
+    oemof_solph_object_asset,
+    weighting_factor_energy_carrier,
+    oemof_solph_object_bus,
+):
+    r"""
+    Prepare energy provider feedin sinks by processing `dict_values`.
+
+    Used for the following constraints:
+    - net zero energy (NZE)
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation parameters
+
+    dict_model: dict of :oemof-solph: <oemof.solph.assets>
+        Dictionary including the oemof-solph component assets, which need to be connected with constraints
+
+    oemof_solph_object_asset: str
+        Name under which the oemof-solph object of an asset shall be stored
+
+    weighting_factor_energy_carrier: str
+        Name under which the energy_carrier weighting factor shall be stored
+
+    oemof_solph_object_bus: str
+        Name under which the oemof-solph object of the output bus of an asset shall be stored
+
+    Notes
+    -----
+    Tested with:
+        - test_prepare_energy_provider_feedin_sinks()
+
+    Returns
+    -------
+    energy_provider_feedin_sinks: dict
+        Dictionary of all assets that are sinks for the energy feed-in to energy providers in the energy system.
+        Defined by: oemof_solph_object_asset, weighting_factor_energy_carrier, oemof_solph_object_bus
+
+    """
+    # dicts for processing
+    energy_provider_feedin_sinks = {}
+    dso_feedin_sink_list = []
+
+    for dso in dict_values[ENERGY_PROVIDERS]:
+        # Get sink connected to the specific DSO in question
+        DSO_sink_name = dso + DSO_FEEDIN + AUTO_SINK
+        # Add DSO to assets
+        dso_feedin_sink_list.append(DSO_sink_name)
+
+        energy_provider_feedin_sinks.update(
+            {
+                DSO_sink_name: {
+                    oemof_solph_object_asset: dict_model[OEMOF_SINK][
+                        dict_values[ENERGY_CONSUMPTION][DSO_sink_name][LABEL]
+                    ],
+                    oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+                        dict_values[ENERGY_CONSUMPTION][DSO_sink_name][INFLOW_DIRECTION]
+                    ],
+                    weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+                        dict_values[ENERGY_CONSUMPTION][DSO_sink_name][ENERGY_VECTOR]
+                    ][VALUE],
+                }
+            }
+        )
+
+    # Preprocessing for log messages
+    dso_feedin_sink_string = ", ".join(map(str, dso_feedin_sink_list))
+
+    logging.debug(f"Energy provider feedin sinks: {dso_feedin_sink_string}")
+    return energy_provider_feedin_sinks
+
+
+def constraint_net_zero_energy(model, dict_values, dict_model):
+    r"""
+    Resulting in an energy system that is a net zero energy (NZE) or plus energy system.
+
+    Please be aware that the NZE constraint is not applied to each sector individually,
+    but to the overall energy system (via energy carrier weighting).
+
+    Parameters
+    ----------
+    model: :oemof-solph: <oemof.solph.model>
+        Model to which constraint is added.
+
+    dict_values: dict
+        All simulation parameters
+
+    dict_model: dict of :oemof-solph: <oemof.solph.assets>
+        Dictionary including the oemof-solph component assets, which need to be connected with constraints
+
+    Notes
+    -----
+    The constraint reads as follows:
+
+    .. math::
+        \sum_{i} {E_{feedin, DSO} (i) \cdot w_i - E_{consumption, DSO} (i) \cdot w_i} >= 0
+
+    Tested with:
+    - Test_Constraints.test_net_zero_energy_constraint()
+    """
+
+    # Keys for dicts
+    oemof_solph_object_asset = "object"
+    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
+    oemof_solph_object_bus = "oemof_solph_object_bus"
+
+    logging.debug(f"Data considered for the net zero energy (NZE) constraint:")
+
+    energy_provider_feedin_sinks = prepare_energy_provider_feedin_sinks(
+        dict_values,
+        dict_model,
+        oemof_solph_object_asset,
+        weighting_factor_energy_carrier,
+        oemof_solph_object_bus,
+    )
+
+    energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
+        dict_values,
+        dict_model,
+        oemof_solph_object_asset,
+        weighting_factor_energy_carrier,
+        oemof_solph_object_bus,
+    )
+
+    def net_zero_energy(model):
+        total_feedin_to_energy_provider = 0
+        total_consumption_from_energy_provider = 0
+
+        # Get the flows from provider sources and add weighing
+        for asset in energy_provider_consumption_sources:
+            consumption_of_one_provider = (
+                sum(
+                    model.flow[
+                        energy_provider_consumption_sources[asset][
+                            oemof_solph_object_asset
+                        ],
+                        energy_provider_consumption_sources[asset][
+                            oemof_solph_object_bus
+                        ],
+                        :,
+                    ]
+                )
+                * energy_provider_consumption_sources[asset][
+                    weighting_factor_energy_carrier
+                ]
+            )
+            total_consumption_from_energy_provider += consumption_of_one_provider
+
+        # Get the flows from provider sources and add weighing
+        for asset in energy_provider_feedin_sinks:
+            feedin_of_one_provider = (
+                sum(
+                    model.flow[
+                        energy_provider_feedin_sinks[asset][oemof_solph_object_bus],
+                        energy_provider_feedin_sinks[asset][oemof_solph_object_asset],
+                        :,
+                    ]
+                )
+                * energy_provider_feedin_sinks[asset][weighting_factor_energy_carrier]
+            )
+            total_feedin_to_energy_provider += feedin_of_one_provider
+
+        expr = total_feedin_to_energy_provider - total_consumption_from_energy_provider
+        return expr >= 0
+
+    model.constraint_net_zero_energy = po.Constraint(rule=net_zero_energy)
+
+    logging.info("Added net zero energy (NZE) constraint.")
+    return model

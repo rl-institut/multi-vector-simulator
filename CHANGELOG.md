@@ -49,6 +49,15 @@ Here is a template for new release sections
 - Section `Cost Assumptions` to `Model_Assumptions.rst` (#795)
 - Pre- and post-processing of `fixcost.csv` entries, so that they also appear in economic evaluation, including pytests (#795)
 - Update `component models` section in RTD with information on H2 storage, dispatchable and non-dispatchable sources, electrolyzers, CHP, other fuel powered plants and electric transformers. (#804)
+- Added net zero energy (NZE) constraint with `D2.constraint_net_zero_energy()` and `D2.prepare_energy_provider_feedin_sinks()` (#796)
+- Added test for `D2.prepare_energy_provider_feedin_sinks()` (#796)
+- Added benchmark test for NZE constraint (#796)
+- Added information about NZE constraint to RTD (#796)
+- Added `net_zero_energy` parameter to all `constraints.csv` files and all json files (#796)
+- Added `net_zero_energy` parameter to `MVS_parameters.rst` and `MVS_parameters_list.csv` (#796)
+- Added verification of NZE constraint in `E4.net_zero_energy_constraint_test()`, added tests for this function (#796)
+- Added test for `D2.add_constraints()` with activated NZE constraint (#796)
+
 
 ### Changed
 - Fix xlrd to xlrd==1.2.0 in requirements/default.txt (#716)
@@ -76,6 +85,8 @@ Here is a template for new release sections
 - Refactor module imports in `cli.py` and `server.py` (#783)
 - Limit index of availability timeseries to simulation timeindex (`C0.define_availability_of_peak_demand_pricing_assets`) (#783)
 - Call `E1.cut_below_micro` in `E1.get_flows`, `E1.get_optimal_cap` and `E1.get_storage_results` (#791) 
+- Split preprocessing function `D2.prepare_constraint_minimal_degree_of_autonomy()` into two functions that can be used by multiple constraints: `D2.prepare_demand_assets()` and `D2.prepare_energy_provider_consumption_sources()`, also adapted tests (#796)
+- Edited epa parser so that net zero energy constraint is added in `utils.data_parser.convert_epa_params_to_mvs()` (#796)
 - Update definition of degree of net zero energy (#797)
 - Changed `utis.data_parser.convert_epa_params_to_mvs()` to fix EPA-MVS parsing bugs, now also prints extra parameters, improved comments (#810)
 - Edited error message when a parameter is missing to make it easier to track (`A1.conversion()`) (#795)
@@ -83,6 +94,7 @@ Here is a template for new release sections
 - Changed `REQUIRED_CSV_PARAMETERS` of `FIX_COSTS`: Removed `LABEL` and `DISPATCH_PRICE` and removed those parameters from all `fixcost.csv` (#795)
 - Added exception to `E0.store_result_matrix` for `fixcost.csv` entries (#795)
 - Moved parts of `E0.evaluate_dict` into a subfunction `E0.initialize_kpi` (#795)
+
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)

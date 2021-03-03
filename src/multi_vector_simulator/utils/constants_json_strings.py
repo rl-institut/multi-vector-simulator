@@ -118,6 +118,7 @@ CONSTRAINTS = "constraints"
 MINIMAL_RENEWABLE_FACTOR = "minimal_renewable_factor"
 MAXIMUM_EMISSIONS = "maximum_emissions"
 MINIMAL_DEGREE_OF_AUTONOMY = "minimal_degree_of_autonomy"
+NET_ZERO_ENERGY = "net_zero_energy"
 
 #######################################
 # Parameters added in pre-processing #

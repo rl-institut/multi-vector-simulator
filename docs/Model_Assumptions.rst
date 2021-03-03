@@ -311,6 +311,8 @@ Constraints
 
 Constraints are controlled with the file `constraints.csv`.
 
+.. _constraint_min_re_factor:
+
 Minimal renewable factor constraint
 ###################################
 
@@ -394,7 +396,40 @@ The unit of the constraint is `kgCO2eq/a`. To select a useful value for this con
 - Firstly, optimize your system without the constraint to get an idea about the scale of the emissions and then, secondly, set the constraint and lower the emissions step by step until you receive an unbound problem (which then represents the non-archievable minimum of emissions for your energy system)
 - Check the emissions targets of your region/country and disaggregate the number
 
-The maximum emissions constraint is introduced to the energy system by `D2.constraint_maximum_emissions()` and a validation test is performed within the benchmark tests.
+The maximum emissions constraint is introduced to the energy system by `D2.constraint_maximum_emissions()` and a validation test is performed with `E4.maximum_emissions_test()`.
+
+
+Net zero energy (NZE) constraint
+################################
+
+The net zero energy (NZE) constraint requires the capacity and dispatch optimization of the MVS to result into a net zero system, but can also result in a plus energy system.
+The degree of NZE of the optimized energy system may be higher than 1, in case of a plus energy system. Please find the definition of net zero energy (NZE) and the KPI here: :ref:`kpi_degree_of_nze`.
+
+Some definitions of NZE systems in literature allow the energy system's demand solely be provided by locally generated renewable energy. In MVS this is not the case - all locally generated energy is taken into consideration. To enlarge the share of renewables in the energy system you can use the :ref:`constraint_min_re_factor`.
+
+The NZE constraint is applied to the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
+
+.. math::
+        \sum_{i} {E_{feedin, DSO} (i) \cdot w_i - E_{consumption, DSO} (i) \cdot w_i} >= 0
+
+:Deactivating the constraint:
+
+The NZE constraint is deactivated by inserting the following row in `constraints.csv` as follows:
+
+```net_zero_energy,bool,False```
+
+:Activating the constraint:
+
+The constraint is enabled when the value of the NZE constraint is set to `True` in `constraints.csv`:
+
+```net_zero_energy,bool,True```
+
+
+Depending on the energy system, especially when working with assets which are not to be capacity-optimized, it is possible that the NZE criterion cannot be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimizeCap` parameters to `True`, and then investigate further.
+
+The net zero energy constraint is introduced to the energy system by `D2.constraint_net_zero_energy()` and a validation test is performed with `E4.net_zero_energy_test()`.
+
+
 
 
 Weighting of energy carriers
@@ -964,6 +999,8 @@ A benchmark is a point of reference against which results are compared to assess
 * Parser converting an energy system model from EPA to MVS (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/epa_benchmark.json>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/test_benchmark_scenarios.py>`__)
 
 * Stratified thermal energy storage (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/Feature_stratified_thermal_storage>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/test_benchmark_stratified_thermal_storage.py>`__): With fixed thermal losses absolute and relative reduced storage capacity only if these losses apply
+
+* Net zero energy (NZE) constraint: Grid + PV and Grid + PV + Heat Pump (data `set 1 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy>`__, `set 2 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy_False>`__, `set 3 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy_sector_coupled>`__, `set 4 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy_sector_coupled_False>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/test_benchmark_constraints.py>`__): Degree of NZE >= 1 when constraint is used and degree of NZE < 1 when constraint is not used.
 
 More tests can still be implemented with regard to:
 

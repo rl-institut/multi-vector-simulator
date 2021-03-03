@@ -11,7 +11,11 @@
     "maximum_emissions": {
             "unit": "kgCO2eq/a",
             "value": 800000
-        }
+        },
+    "net_zero_energy": {
+          "unit": "bool",
+          "value": false
+      }
     },
     "economic_data": {
         "currency": "NOK",
