@@ -269,7 +269,7 @@ def convert_epa_params_to_mvs(epa_dict):
 
     - For `simulation_settings`: parameter `TIMESTEP` is parsed as unit-value pair, `OUTPUT_LP_FILE` always `False`.
     - For `project_data`: parameter `SCENARIO_DESCRIPTION` is defined as placeholder string.
-    - `fix_cost` does not have to be provided, as default parameters will be set. But, aren´t they provided in EPA?
+    - `fix_cost` is not required, default value will be set if it is not provided.
     - For missing asset group `CONSTRAINTS` following parameters are added:
         - MINIMAL_RENEWABLE_FACTOR: 0
         - MAXIMUM_EMISSIONS: None
@@ -338,7 +338,7 @@ def convert_epa_params_to_mvs(epa_dict):
             )
 
     # Loop through energy system asset groups and their assets
-    # Logging warning message for missing asset groups, will not raise fatal error as empty asset group entry is created
+    # Logging warning message for missing asset groups, will not raise error if an asset group does not contain any assets
     for asset_group in [
         ENERGY_CONSUMPTION,
         ENERGY_CONVERSION,
@@ -521,11 +521,8 @@ def convert_epa_params_to_mvs(epa_dict):
         if len(missing_params.keys()) > 0:
 
             for asset_group in missing_params.keys():
-                # If no asset is in the asset groups, all keys may be missing
-                if len(dict_values[asset_group].keys()) == 0:
-                    pass
-                # If a asset is included in the asset group, and in the missing_params, then essential parameters are missing.
-                else:
+                # Only raise an error about missing parameter if an asset group contains assets
+                if len(dict_values[asset_group].keys()) > 0:
                     error_msg.append(asset_group)
                 if missing_params[asset_group] is not None:
                     for k in missing_params[asset_group]:
