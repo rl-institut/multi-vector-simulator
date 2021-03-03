@@ -178,6 +178,8 @@ Some constraints still have to be added:
 * Minimal degree of autonomy
 * Maximum C02 emission constraint
 
+.. _fun_mvs_08:
+
 FUN-MVS-08 - Electricity cost model
 ###################################
 

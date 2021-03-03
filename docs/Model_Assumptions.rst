@@ -33,6 +33,7 @@ This is the reason that the MVS can provide a pre-feasibility study of a specifi
 but not the final sizing and system design.
 The types of assets are presented below.
 
+.. _energy_production:
 
 Energy production
 #################
@@ -102,6 +103,8 @@ This means that these parameters need to be given for the output of the asset an
 
 Conversion assets can be defined with multiple inputs or multiple outputs, but one asset currently cannot have both, multiple inputs and multiple outputs. Note that multiple inputs/output have not been tested, yet.
 
+.. _energyconversion_electric_transformers:
+
 Electric transformers
 =====================
 
@@ -112,6 +115,8 @@ The parameters `dispatch_price`, `efficiency` and `installedCap` need to be give
 
 .. note::
     When using two conversion objects to emulate a bidirectional conversion asset, their capacity should be interdependent. This is currently not the case, see `Infeasible bi-directional flow in one timestep <https://multi-vector-simulator.readthedocs.io/en/stable/Model_Assumptions.html#infeasible-bi-directional-flow-in-one-timestep>`_.
+
+.. _energyconversion_hvac:
 
 Heating, Ventilation, and Air Conditioning (HVAC)
 =================================================
@@ -124,6 +129,8 @@ Theoretically, a HVAC device can be modelled with multiple outputs (heat, coolin
 The efficiency of HVAC systems is defined by the coefficient of performance (COP), which is strongly dependent on the temperature. In order to take account of this, the efficiency can be defined as time series, see section :ref:`time_series_params`.
 If you do not provide your own COP time series you can calculate them with `oemof.thermal <https://github.com/oemof/oemof-thermal>`_, see  `documentation on compression heat pumps and chillers <https://oemof-thermal.readthedocs.io/en/stable/compression_heat_pumps_and_chillers.html>`_ and  `documentation on absorption chillers <https://oemof-thermal.readthedocs.io/en/stable/absorption_chillers.html>`_.
 
+.. _energyconversion_electrolyzers:
+
 Electrolyzers
 =============
 
@@ -131,6 +138,8 @@ Electrolyzers are added as transformers with a constant or time dependent but in
 
 Currently, electrolyzers are modelled with only one input flow (electricity), not taking into account the costs of water; see `issue #799 <https://github.com/rl-institut/multi-vector-simulator/issues/799>`_.
 The minimal operation level and consumption in standby mode are not taken into account, yet, see `issue #50 <https://github.com/rl-institut/multi-vector-simulator/issues/50>`_.
+
+.. _power_plants:
 
 Condensing power plants and Combined heat and power (CHP)
 =========================================================
@@ -173,6 +182,8 @@ Variable energy consumption prices (time-series)
 ================================================
 
 Energy consumption prices can be added as values that vary over time. See section :ref:`time_series_folder` or more information.
+
+.. _energy_providers_peak_demand_pricing:
 
 Peak demand pricing
 ===================
@@ -223,6 +234,8 @@ Hydrogen storages are modelled as all storage types in MVS with as *GenericStora
 
 The most common hydrogen storages store H2 as liquid under temperatures lower than -253 °C or under high pressures.
 The energy needed to provide these requirements cannot be modelled via the storage component as another energy sector such as cooling or electricity is needed. It could therefore, be modelled as an additional demand of the energy system, see `issue #811 <https://github.com/rl-institut/multi-vector-simulator/issues/811>`_
+
+.. _thermal_storage:
 
 Thermal energy storage
 ======================
@@ -343,6 +356,8 @@ Also, if you are aiming at very high minimal renewable factors, the simulation t
 
 The minimum renewable share is introduced to the energy system by `D2.constraint_minimal_renewable_share()` and a validation test is performed with `E4.minimal_renewable_share_test()`.
 
+.. _constraint_minimal_degree_of_autonomy:
+
 Minimal degree of autonomy constraint
 ######################################
 
@@ -370,7 +385,7 @@ Depending on the energy system, especially when working with assets which are no
 
 The minimum degree of autonomy is introduced to the energy system by `D2.constraint_minimal_degree_of_autonomy()` and a validation test is performed with `E4.minimal_degree_of_autonomy()`.
 
-
+.. _constraint_maximum_emissions:
 
 Maximum emission constraint
 ###########################

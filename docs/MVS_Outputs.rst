@@ -23,6 +23,8 @@ Optimal capacities
 Cost data
 ---------
 
+.. _net_present_costs:
+
 Net present cost
 ################
 
@@ -32,6 +34,8 @@ minus the present value of all the revenues that it earns over the project lifet
 The capital recovery factor (CRF) is used to calculate the present value of the cash flows.
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
+
+.. _lcoe:
 
 Levelized costs of energy (LCOE)
 ################################
@@ -61,6 +65,8 @@ The LCOElectricity are then calculated with:
 
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
+
+.. _lcoe_asset:
 
 Levelized Cost of Energy of Asset (LCOE ASSET)
 ##############################################
@@ -96,6 +102,8 @@ For assets in energyConsumption, the MVS outputs 0 for the LCOE ASSET.
 
 Technical data
 --------------
+
+.. _aggregated_flow:
 
 Energy flows (aggregated) per asset
 ###################################
@@ -209,6 +217,8 @@ Emissions can be of different nature: CO2 emissions, CO2 equivalents, greenhouse
 
 Currently the emissions do not include life cycle emissions of energy conversion or storage assets, nor are they calculated separately for the energy sectors. For the latter, it arises the problem of the assignment of assets to sectors. E.g. emissions caused by an electrolyser would be counted to the electricity sector although you might want to count it for the H2 sector, as the purpose of the electrolyser is to feed the H2 sector. Therefore, we will have to verify whether or not we can apply the energy carrier weighting also for this KPI.
 
+.. _kpi_degree_of_sector_coupling:
+
 Degree of sector-coupling (DSC)
 ###############################
 
@@ -222,6 +232,8 @@ To measure this, we propose to compare the energy flows in between the sectors t
         \text{with } i,j &\text{: Electricity,H2…}
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
+
+.. _kpi_onsite_energy_fraction:
 
 Onsite energy fraction (OEF)
 ############################
@@ -242,7 +254,7 @@ the feed into the grid can only be positive.
 
         &OEF \epsilon \text{[0,1]}
 
-
+.. _kpi_onsite_energy_matching:
 
 Onsite energy matching (OEM)
 ############################
@@ -298,6 +310,8 @@ As above, we apply a weighting based on Electricity Equivalent.
 .. math::
         Degree of NZE &=\frac{1 + (\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
 
+
+.. _output_report:
 
 Automatic Report
 -----------------
