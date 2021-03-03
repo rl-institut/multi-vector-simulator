@@ -84,7 +84,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
     -----
 
     Tested with:
-    -
+    - test_E0.evaluation.test_evaluate_dict_append_new_fields()
+    - test_E0.evaluation.test_evaluate_dict_important_fields_in_output_dict()
+    - test_E0.evaluation.test_evaluate_dict_fields_values_in_output_dict_are_dataframes()
     """
 
     initalize_kpi(dict_values)
