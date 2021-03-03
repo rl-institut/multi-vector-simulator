@@ -26,12 +26,6 @@ class MissingParameterError(ValueError):
     pass
 
 
-class WrongParameterWarning(UserWarning):
-    """Exception raised for errors in the parameters of a csv input file."""
-
-    pass
-
-
 class CsvParsingError(ValueError):
     """Exception raised for errors in the parameters of a csv input file."""
 

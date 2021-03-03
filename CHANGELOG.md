@@ -46,6 +46,8 @@ Here is a template for new release sections
 - Added information about degree of NZE to RTD (#776)
 - Function `E1.cut_below_micro` to round decision variables (capacities, flows) below threshold of plus/minus 10^-6 to 0, add warnings if negative value larger than threshold (invalid result). Includes pytests (#791)
 - Update `component models` section in RTD with information on energy storages, heat pumps and HVAC. (#794)
+- Section `Cost Assumptions` to `Model_Assumptions.rst` (#795)
+- Pre- and post-processing of `fixcost.csv` entries, so that they also appear in economic evaluation, including pytests (#795)
 - Update `component models` section in RTD with information on H2 storage, dispatchable and non-dispatchable sources, electrolyzers, CHP, other fuel powered plants and electric transformers. (#804)
 
 ### Changed
@@ -75,6 +77,12 @@ Here is a template for new release sections
 - Limit index of availability timeseries to simulation timeindex (`C0.define_availability_of_peak_demand_pricing_assets`) (#783)
 - Call `E1.cut_below_micro` in `E1.get_flows`, `E1.get_optimal_cap` and `E1.get_storage_results` (#791) 
 - Update definition of degree of net zero energy (#797)
+- Changed `utis.data_parser.convert_epa_params_to_mvs()` to fix EPA-MVS parsing bugs, now also prints extra parameters, improved comments (#810)
+- Edited error message when a parameter is missing to make it easier to track (`A1.conversion()`) (#795)
+- Improved warning message when a unknown parameter is added (`A1.create_json_from_csv`) (#795)
+- Changed `REQUIRED_CSV_PARAMETERS` of `FIX_COSTS`: Removed `LABEL` and `DISPATCH_PRICE` and removed those parameters from all `fixcost.csv` (#795)
+- Added exception to `E0.store_result_matrix` for `fixcost.csv` entries (#795)
+- Moved parts of `E0.evaluate_dict` into a subfunction `E0.initialize_kpi` (#795)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)
@@ -84,6 +92,7 @@ Here is a template for new release sections
 - Removed `DSM` and `TYPE_ASSET` from `input_template/energyConsumption.csv`, also in `constants.py` (#726)
 - Removed warning message about excess energy calculation that is outdated as #559 is solved (777)
 - Remove `test_C1_verification.get_json()` as now not used (#783)
+- Removed instances of `WrongParameterWarning` and replaced it with `logging.warning` in `A1` (#795)
 
 ### Fixed
 - Minor typos in D0, E4 and test_E4 files (#739)
@@ -96,6 +105,10 @@ Here is a template for new release sections
 - `mvs_config.json` is generated again, now from `cli.py` (#783)
 - Fix pytest `C1.test_check_non_dispatchable_source_time_series_passes` and `C1.test_check_non_dispatchable_source_time_series_results_in_error_msg` (#783)
 - Fix typo in `utils.data_parser` `logging.INFO` was used instead of `logging.info` (#809)
+- Fix: Asset groups that are empty are not provided by EPA, adapted parser (#810)
+- Fix: `ENERGY_PROVIDER` assets are missing parameter `DISPATCHABILITY` when parsed from EPA to MVS (#810)
+- Fix: No `DISPATCHABILITY` parameter for `ENERGY_PRODUCTION` assets in EPA (#810)
+- Fix: Default value of `MAXIMUM_EMISSIONS` when parsing from EPA (#810)
 
 ## [0.5.4] - 2020-12-18
 

@@ -11,7 +11,6 @@ import multi_vector_simulator.utils as utils
 
 from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
-    WrongParameterWarning,
     CsvParsingError,
     WrongStorageColumn,
 )
@@ -186,15 +185,18 @@ def test_create_json_from_csv_with_uncomplete_parameters_raises_MissingParameter
         utils.compare_input_parameters_with_reference(d, flag_missing=True)
 
 
-def test_create_json_from_csv_with_wrong_parameters_raises_WrongParameterWarning():
+def test_create_json_from_csv_with_wrong_parameters_raises_loggin_warning(caplog):
 
-    with pytest.warns(WrongParameterWarning):
+    with caplog.at_level(logging.WARNING):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_wrong_parameter",
             parameters=["param1", "param2"],
             asset_is_a_storage=False,
         )
+    assert (
+        ".csv is not expected." in caplog.text
+    ), f"There is an unexpected/wrong parameter in the inputs, but it is not recognized as such."
 
 
 def test_create_json_from_csv_ignore_extra_parameters_in_csv():
@@ -255,15 +257,18 @@ def test_conversion():
         assert v == CONVERSION_TYPE[k]
 
 
-def test_create_json_from_csv_storage_raises_WrongParameterWarning():
+def test_create_json_from_csv_storage_raises_logging_warning(caplog):
 
-    with pytest.warns(WrongParameterWarning):
+    with caplog.at_level(logging.WARNING):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
             parameters=[AGE_INSTALLED, DEVELOPMENT_COSTS],
             asset_is_a_storage=True,
         )
+    assert (
+        "is not recognized." in caplog.text
+    ), f"There is a unexpected/wrong parameter provided in the storage asset, but it is not recognized as such."
 
 
 def test_create_json_from_csv_storage_raises_MissingParameterError():
@@ -287,15 +292,18 @@ def test_create_json_from_csv_storage_raises_MissingParameterError():
         utils.compare_input_parameters_with_reference(d, flag_missing=True)
 
 
-def test_create_json_from_csv_storage_raises_WrongParameterWarning_for_wrong_values():
+def test_create_json_from_csv_storage_raises_logging_warning_for_wrong_values(caplog):
 
-    with pytest.warns(WrongParameterWarning):
+    with caplog.at_level(logging.WARNING):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_values",
             parameters=[AGE_INSTALLED, DEVELOPMENT_COSTS],
             asset_is_a_storage=True,
         )
+    assert (
+        "be set to NaN." in caplog.text
+    ), f"There is parameter with a wrong value in provided in the storage asset, but it is not recognized as suchblack ."
 
 
 def test_create_json_from_csv_storage_raises_WrongStorageColumn():
