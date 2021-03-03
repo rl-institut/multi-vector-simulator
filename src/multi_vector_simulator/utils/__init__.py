@@ -141,6 +141,10 @@ def compare_input_parameters_with_reference(
     -------
     A dict with the missing parameters under the key {MISSING_PARAMETERS_KEY} and extra parameters
     under the key {EXTRA_PARAMETERS_KEY}
+
+    Notes
+    -----
+    #todo This function does not check whether the storage-subassets have all necessary parameters, or if excess parameters are provided.
     """
     if ext == JSON_EXT:
 

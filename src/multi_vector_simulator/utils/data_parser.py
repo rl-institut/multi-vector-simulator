@@ -19,6 +19,7 @@ from multi_vector_simulator.utils import compare_input_parameters_with_reference
 
 from multi_vector_simulator.utils.constants import (
     MISSING_PARAMETERS_KEY,
+    EXTRA_PARAMETERS_KEY,
     DATA_TYPE_JSON_KEY,
     TYPE_SERIES,
     TYPE_NONE,
@@ -468,8 +469,20 @@ def convert_epa_params_to_mvs(epa_dict):
             dict_values.update({asset_group: {}})
 
     # Check if all necessary input parameters are provided
-    # Does this also identify excess parameters? They occur in storage_assets right now with DISPATCHABILITY.
     comparison = compare_input_parameters_with_reference(dict_values)
+
+    # ToDo compare_input_parameters_with_reference() does not identify excess/missing parameters in the subassets of energyStorages.
+    if EXTRA_PARAMETERS_KEY in comparison:
+        warning_extra_parameters = "Following parameters are provided to the MVS that may be excess information: \n"
+        for group in comparison[EXTRA_PARAMETERS_KEY]:
+            print(dict_values[group])
+            warning_extra_parameters += f"- {group} ("
+            for parameter in comparison[EXTRA_PARAMETERS_KEY][
+                group
+            ] and parameter not in [LABEL, "unique_id"]:
+                warning_extra_parameters += f"{parameter}, "
+            warning_extra_parameters = warning_extra_parameters[:-2] + ") \n"
+        logging.warning(warning_extra_parameters)
 
     if MISSING_PARAMETERS_KEY in comparison:
         error_msg = []
