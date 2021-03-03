@@ -13,7 +13,7 @@ but not the final sizing and system design.
 The types of assets are presented below.
 
 
-Energy Production
+Energy production
 #################
 
 Non-dispatchable sources of generation
