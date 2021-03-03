@@ -19,6 +19,7 @@ from multi_vector_simulator.utils import compare_input_parameters_with_reference
 
 from multi_vector_simulator.utils.constants import (
     MISSING_PARAMETERS_KEY,
+    EXTRA_PARAMETERS_KEY,
     DATA_TYPE_JSON_KEY,
     TYPE_SERIES,
     TYPE_NONE,
@@ -262,13 +263,35 @@ def convert_epa_params_to_mvs(epa_dict):
     Returns
     -------
     dict_values: dict
-        mvs parameters
+        MVS json file, generated from EPA inputs, to be provided as MVS input
 
-    """
+    Notes
+    -----
 
+    - For `simulation_settings`: parameter `TIMESTEP` is parsed as unit-value pair, `OUTPUT_LP_FILE` always `False`.
+    - For `project_data`: parameter `SCENARIO_DESCRIPTION` is defined as placeholder string.
+    - `fix_cost` is not required, default value will be set if it is not provided.
+    - For missing asset group `CONSTRAINTS` following parameters are added:
+        - MINIMAL_RENEWABLE_FACTOR: 0
+        - MAXIMUM_EMISSIONS: None
+        - MINIMAL_DEGREE_OF_AUTONOMY: 0
+    - `ENERGY_STORAGE` assets:
+        - Optimize cap written to main asset and removed from subassets
+        - Units defined automatically (assumed: electricity system)
+        - `SOC_INITIAL`: None
+        - `THERM_LOSSES_REL`: 0
+        - `THERM_LOSSES_ABS`: 0
+    - If `TIMESERIES` parameter in asset dictionary: Redefine unit, value and label.
+    - `ENERGY_PROVIDERS`: Auto-define unit as kWh(el), `INFLOW_DIRECTION=OUTFLOW_DIRECTION`
+    - `ENERGY_CONSUMPTION`: `DSM` is `False`
+    - `EMISSION_FACTOR` default value
+    - `ENERGY_PRODUCTION`: `DISPATCHABILITY` is always `False`, as no dispatchable fuel assets possible right now. Must be tackeld by EPA.
+     """
     epa_dict = deepcopy(epa_dict)
     dict_values = {}
 
+    # Loop though one-dimensional energy system data (parameters directly in group)
+    # Warnings for missing param_groups, will result in fatal error (except for fix_cost) as they can not be replaced with default values
     for param_group in [
         PROJECT_DATA,
         ECONOMIC_DATA,
@@ -278,7 +301,7 @@ def convert_epa_params_to_mvs(epa_dict):
     ]:
 
         if MAP_MVS_EPA[param_group] in epa_dict:
-
+            # Write entry of EPA to MVS json file
             dict_values[param_group] = epa_dict[MAP_MVS_EPA[param_group]]
 
             # convert fields names from EPA convention to MVS convention, if applicable
@@ -296,11 +319,6 @@ def convert_epa_params_to_mvs(epa_dict):
                         UNIT: "min",
                         VALUE: timestep,
                     }
-            if param_group == PROJECT_DATA:
-                if SCENARIO_DESCRIPTION not in dict_values[param_group]:
-                    dict_values[param_group][
-                        SCENARIO_DESCRIPTION
-                    ] = "[No scenario description available]"
 
             # Never save the oemof lp file when running on the server
             if param_group == SIMULATION_SETTINGS:
@@ -309,11 +327,19 @@ def convert_epa_params_to_mvs(epa_dict):
                     VALUE: False,
                 }
 
+            if param_group == PROJECT_DATA:
+                if SCENARIO_DESCRIPTION not in dict_values[param_group]:
+                    dict_values[param_group][
+                        SCENARIO_DESCRIPTION
+                    ] = "[No scenario description available]"
+
         else:
             logging.warning(
                 f"The parameters group '{MAP_MVS_EPA[param_group]}' is not present in the EPA parameters to be parsed into MVS json format"
             )
 
+    # Loop through energy system asset groups and their assets
+    # Logging warning message for missing asset groups, will not raise error if an asset group does not contain any assets
     for asset_group in [
         ENERGY_CONSUMPTION,
         ENERGY_CONVERSION,
@@ -379,6 +405,10 @@ def convert_epa_params_to_mvs(epa_dict):
                         DATA_TYPE_JSON_KEY
                     ] = TYPE_SERIES
 
+                # TODO remove this when change has been made on EPA side
+                if asset_group == ENERGY_PRODUCTION:
+                    dict_asset[asset_label].update({DISPATCHABILITY: False})
+
                 # typically DSO
                 if asset_group == ENERGY_PROVIDERS:
                     # unit is not provided, so default is kWh
@@ -436,8 +466,23 @@ def convert_epa_params_to_mvs(epa_dict):
             logging.info(
                 f"The assets parameters '{MAP_MVS_EPA[asset_group]}' is not present in the EPA parameters to be parsed into MVS json format"
             )
+            epa_dict.update({asset_group: {}})
+            dict_values.update({asset_group: {}})
 
+    # Check if all necessary input parameters are provided
     comparison = compare_input_parameters_with_reference(dict_values)
+
+    # ToDo compare_input_parameters_with_reference() does not identify excess/missing parameters in the subassets of energyStorages.
+    if EXTRA_PARAMETERS_KEY in comparison:
+        warning_extra_parameters = "Following parameters are provided to the MVS that may be excess information: \n"
+        for group in comparison[EXTRA_PARAMETERS_KEY]:
+            print(dict_values[group])
+            warning_extra_parameters += f"- {group} ("
+            for parameter in comparison[EXTRA_PARAMETERS_KEY][group]:
+                if parameter not in [LABEL, "unique_id"]:
+                    warning_extra_parameters += f"{parameter}, "
+            warning_extra_parameters = warning_extra_parameters[:-2] + ") \n"
+        logging.warning(warning_extra_parameters)
 
     if MISSING_PARAMETERS_KEY in comparison:
         error_msg = []
@@ -447,7 +492,7 @@ def convert_epa_params_to_mvs(epa_dict):
         if CONSTRAINTS in missing_params:
             dict_values[CONSTRAINTS] = {
                 MINIMAL_RENEWABLE_FACTOR: {UNIT: "factor", VALUE: 0},
-                MAXIMUM_EMISSIONS: {UNIT: "factor", VALUE: 0},
+                MAXIMUM_EMISSIONS: {UNIT: "factor", VALUE: None},
                 MINIMAL_DEGREE_OF_AUTONOMY: {UNIT: "factor", VALUE: 0},
                 NET_ZERO_ENERGY: {UNIT: "bool", VALUE: False},
             }
@@ -463,6 +508,7 @@ def convert_epa_params_to_mvs(epa_dict):
                     VALUE: False,
                 }
                 missing_params.pop(SIMULATION_SETTINGS)
+
         if FIX_COST in missing_params:
             dict_values[FIX_COST] = {}
             missing_params.pop(FIX_COST)
@@ -476,7 +522,9 @@ def convert_epa_params_to_mvs(epa_dict):
         if len(missing_params.keys()) > 0:
 
             for asset_group in missing_params.keys():
-                error_msg.append(asset_group)
+                # Only raise an error about missing parameter if an asset group contains assets
+                if len(dict_values[asset_group].keys()) > 0:
+                    error_msg.append(asset_group)
                 if missing_params[asset_group] is not None:
                     for k in missing_params[asset_group]:
                         error_msg.append(f"\t`{k}` parameter")

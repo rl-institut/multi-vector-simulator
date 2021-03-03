@@ -1846,10 +1846,6 @@
             "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
-                "value": 0
             }
         },
         "engineering": {
@@ -1872,10 +1868,6 @@
             },
             "specific_costs_om": {
                 "unit": "currency/year",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
                 "value": 0
             }
         },
@@ -1900,10 +1892,6 @@
             "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 4600
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
-                "value": 0
             }
         }
     },
