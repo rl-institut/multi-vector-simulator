@@ -183,9 +183,27 @@ def add_economic_parameters(economic_parameters):
 def process_all_assets(dict_values):
     """defines dict_values['energyBusses'] for later reference
 
-    :param dict_values:
-    :return:
+    Processes all assets of the energy system by evaluating them, performing economic pre-calculations and validity checks.
+
+    Parameters
+    ----------
+
+    dict_values: dict
+        All simulation inputs
+
+    Returns
+    -------
+
+    dict_values: dict
+        Updated dict_values with pre-processes assets, including economic parameters, busses and auxiliary assets like excess sinks and all assets connected to the energyProviders.
+
+    Notes
+    -----
+
+    Tested with:
+    - test_C0_data_processing.test_process_all_assets_fixcost()
     """
+
     # Define all busses based on the in- and outflow directions of the assets in the input data
     add_assets_to_asset_dict_of_connected_busses(dict_values)
     # Define all excess sinks for each energy bus
@@ -207,6 +225,14 @@ def process_all_assets(dict_values):
         ENERGY_PRODUCTION: energyProduction,
         ENERGY_CONSUMPTION: energyConsumption,
     }
+
+    logging.debug("Pre-process fix project costs")
+    for asset in dict_values[FIX_COST]:
+        evaluate_lifetime_costs(
+            dict_values[SIMULATION_SETTINGS],
+            dict_values[ECONOMIC_DATA],
+            dict_values[FIX_COST][asset],
+        )
 
     for asset_group, asset_function in asset_group_list.items():
         logging.info("Pre-processing all assets in asset group %s.", asset_group)
@@ -1369,8 +1395,8 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     - Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
 
     """
-
-    C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
+    if DISPATCH_PRICE in dict_asset:
+        C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
     (
         specific_capex,
