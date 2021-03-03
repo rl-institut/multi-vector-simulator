@@ -76,6 +76,7 @@ Here is a template for new release sections
 - Limit index of availability timeseries to simulation timeindex (`C0.define_availability_of_peak_demand_pricing_assets`) (#783)
 - Call `E1.cut_below_micro` in `E1.get_flows`, `E1.get_optimal_cap` and `E1.get_storage_results` (#791) 
 - Update definition of degree of net zero energy (#797)
+- Changed `utis.data_parser.convert_epa_params_to_mvs()` to fix EPA-MVS parsing bugs, now also prints extra parameters, improved comments (#810)
 - Edited error message when a parameter is missing to make it easier to track (`A1.conversion()`) (#795)
 - Improved warning message when a unknown parameter is added (`A1.create_json_from_csv`) (#795)
 - Changed `REQUIRED_CSV_PARAMETERS` of `FIX_COSTS`: Removed `LABEL` and `DISPATCH_PRICE` and removed those parameters from all `fixcost.csv` (#795)
@@ -103,6 +104,10 @@ Here is a template for new release sections
 - `mvs_config.json` is generated again, now from `cli.py` (#783)
 - Fix pytest `C1.test_check_non_dispatchable_source_time_series_passes` and `C1.test_check_non_dispatchable_source_time_series_results_in_error_msg` (#783)
 - Fix typo in `utils.data_parser` `logging.INFO` was used instead of `logging.info` (#809)
+- Fix: Asset groups that are empty are not provided by EPA, adapted parser (#810)
+- Fix: `ENERGY_PROVIDER` assets are missing parameter `DISPATCHABILITY` when parsed from EPA to MVS (#810)
+- Fix: No `DISPATCHABILITY` parameter for `ENERGY_PRODUCTION` assets in EPA (#810)
+- Fix: Default value of `MAXIMUM_EMISSIONS` when parsing from EPA (#810)
 
 ## [0.5.4] - 2020-12-18
 
