@@ -63,6 +63,8 @@ Please note that the allowed separators for csv files are located in `src/consta
 `CSV_SEPARATORS` variable. Currently only `[",", ";", "&"]` are allowed.
 Please note further that the column headers in the csv files need to be unique amongst all files.
 
+.. _time_series_folder:
+
 Time series: time_series folder
 ###############################
 As some parameters in the csv files link to a time series provided as a CSV,
