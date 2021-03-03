@@ -14,19 +14,15 @@ FUN-MVS-01 - Solving an energy system optimization model
 
 :Priority:  HIGH
 
-:Progress: In progress
+:Progress: Done
 
 :Progress message:
 
-The MVS can solve energy system planning optimization problems and identify the optimal additional capacities of chosen assets.
+The MVS can solve energy system planning optimization problems and identify the optimal additional capacities of chosen assets. In-code validation checks, unit tests and benchmark tests were added to ensure that the simulation runs smoothly and correctly.
 
-:ToDo:
+:Notes:
 
-There are still parts of the MVS that can be improved and some features are not integrated yet, but this is covered by the requirements below.
-There are two benchmark tests that should be added to complete this:
-
-* Investment optimization benchmark tests - check if expected capacities are installed, eg. for PV.
-* Economic evaluation benchmark test - check if NPC and LCOE are calculated correctly
+As with all simulation tools, there are always possibilities to improve the tool, specifically to address current limitations (comp. :ref:`table_limitations_label`).
 
 FUN-MVS-02 - Automatic setting up of an energy system optimization model
 ########################################################################
@@ -37,15 +33,11 @@ FUN-MVS-02 - Automatic setting up of an energy system optimization model
 
 :Priority:  HIGH
 
-:Progress: In progress
+:Progress: Done
 
 :Progress message:
 
-The MVS accepts simulation data provided as csv files and automatically sets up an energy system.
-
-:ToDo:
-
-Reading data from json files can still be improved, especially as the interface of the EPA/MVS will change the json file again.
+The MVS accepts simulation data provided as csv files and automatically sets up an energy system. It also supports the integration into the Energy Planning Application (EPA) by providing a parser for the interfaces of the two tools.
 
 FUN-MVS-03 - Manual setting up an energy system optimization model
 ##################################################################
@@ -61,17 +53,21 @@ FUN-MVS-03 - Manual setting up an energy system optimization model
 :Progress message:
 
 It is possible to add as many components as needed to the energy model that is to be simulated with the MVS.
-They can be divided into following types:
+They can be divided into following asset types:
 
-* Energy providers
-* energy production
-* energy consumption
-* energy conversion
-* energy storage
+* :ref:`Energy providers <energy_providers>`
+* :ref:`Energy production <energy_production>`
+* :ref:`Energy consumption <energy_consumption>`
+* :ref:`Energy conversion <energy_conversion>`
+* :ref:`Energy storage <energy_storage>`
 
-Details on how to model different assets are included in the model assumptions, specifically the `component models <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#component-models>`__.
+Details on how to model different assets are included in the model assumptions.
 
-:ToDo: None
+:Notes:
+
+Energy excess sinks are automatically added by the MVS to enable energy system optimization and do not have to be added by the energy system planners.
+
+In the future, it may be possible to add energy shortage sources, which would allow energy systems with a defined annual supply shortage. While this mostly will not result in an energy system many operators would require, it would also have benefits for the debugging of energy systems, as infeasible energy systems would be easier to evaluate and specific debug messages could be displayed.
 
 FUN-MVS-04 - Optimisation Results
 #################################
@@ -82,28 +78,33 @@ FUN-MVS-04 - Optimisation Results
 
 :Priority:  HIGH
 
-:Progress: In progress
+:Progress: Done
 
 :Progress message:
 
-The results of the MVS simulation is post-processed. Following information is already compiled:
+The results of the MVS simulation are post-processed, and result in numberous key performance indicators (KPI). Following information is calculated for an economic evaluation of the energy system:
 
-* Capex and opex per asset
-* NPC and annuity of the energy system
-* Aggregated energy flows as well as peak flows of each asset
-* Renewable share of the assets
-* LCOE of the energy system
+* Capital and operational expenditures (capex, opex) per asset, both as annuities as well as present costs. This includes also the first-time investment costs (FIC), the replacement costs minus residual values, and the costs for asset dispatch (equations compare :ref:`economic_precalculation-label`).
+* :ref:`NPC <net_present_costs>` and annuity of the whole energy system
+* :ref:`Levelized cost of energy (LCOE) <lcoe>` of the energy system, in electricity equivalent
+* :ref:`Levelized cost of an energy carrier <lcoe>` in electricity equivalent (LCOEleq) for each energy carrier in the energy system
+* :ref:`Levelized cost of asset dispatch <lcoe_asset>`, calculated from the annuity of an asset and their throughput
 
-:ToDo:
+Additionaly, a number of technical parameters are calculated both the energy system and the individual energy vectors:
 
-Open to implement is still:
+* Dispatch, :ref:`aggregated energy flows <aggregated_flow>` as well as :ref:`peak flows <peak_flow>` of each asset
+* :ref:`Renewable share <kpi_renewable_factor>`
+* :ref:`Renewable share of local generation <kpi_renewable_share_of_local_generation>`
+* :ref:`Degree of autonomy <kpi_degree_of_autonomy>`
+* :ref:`Degree of net zero energy <kpi_degree_of_net_zero_energy>`
+* :ref:`Onsite Energy Matching (OEM) <kpi_onsite_energy_fraction>`
+* :ref:`Onsite Energy Fraction (OEF) <kpi_onsite_energy_matching>`
+* Annual excess energy
+* :ref:`Annual GHGeq emissions <emissions>` and specific emissions per electricity equivalent
 
-* Degree of sector-coupling
-* Degree of autonomy (energy balance)
-* Percentage of self-supply (hourly)
-* Percentage of self-consumption (hourly)
-* Benchmark test for LCOE (one sector, multiple sectors with different conversion factors)
-* Excess energy evaluation needs to be benchmark-tested
+:Notes:
+
+Currently in discussion is the implementation of a so-called :ref:`degree of sector-coupling <kpi_degree_of_sector_coupling>` (`see issue 702 <https://github.com/rl-institut/multi-vector-simulator/issues/702>`__). This is a novel key performance indicator and would be integrated in addition to above mentioned parameters.
 
 FUN-MVS-05 - Production Assets
 ##############################
@@ -118,19 +119,17 @@ FUN-MVS-05 - Production Assets
 
 :Progress message:
 
-The MVS already considers
+The MVS is able to simulate a wide range of assets:
 
-* PV plants, wind plants
-* BESS
+* :ref:`PV plants, wind plants <dispatchable_sources>`
+* :ref:`Battery Electricity Storage Systems (BESS) <battery_storage>`, via generic storage object
+* :ref:`Thermal storages <thermal_storage>`, via generic or thermal storage object
+* :ref:`Power plants <power_plants>` as simple generators.
+* And many more (see below)
 
 :ToDo:
 
-Thermal storages are for now defined analogously to electrical storages.
-It could be considered whether we should actually use the new oemof_thermal object.
-It is not clear how this would fit into the EPA data bank.
-
-A CHP with fix ratio between the heat and electricity output can already be simulated.
-For a chp with a variable ration between those two outputs, we need to add the specific chp asset to the possible inputs.
+A CHP with fix ratio between the heat and electricity output can already be simulated, but has not been tested. For a CHP with a variable ration between those two outputs, we need to add the specific chp asset to the possible inputs.
 
 FUN-MVS-06 - Assets of Energy Conversion
 ########################################
@@ -141,17 +140,22 @@ FUN-MVS-06 - Assets of Energy Conversion
 
 :Priority:  LOW
 
-:Progress: In-progress
+:Progress: Done
 
 :Progress message:
 
-The MVS already covers generic conversion assets. This includes generators, transformers, heat pumps and similar.
+The MVS already covers generic conversion assets. How the generic definition can be applied to the individual assets is explained :ref:`here <energy_conversion`. This includes
+
+* :ref:`Electric transformers <_energyconversion_electric_transformers>`
+* :ref:`Power plants (Condensing power plants and Combined heat and power) <power_plants>`
+* :ref:`Heat pumps and Heating, Ventilation, and Air Conditioning (HVAC) assets <energyconversion_hvac>`
+* :ref:`Electrolyzers <energyconversion_electrolyzers>`
 
 :ToDo:
 
 A CHP with a variable share of heat and electricity output is currently not implemented. It could be added as a new oemof asset type.
 
-When using two conversion objects to emulate a bidirectional conversion assets, their capacity should be interdependent. This is currently not the case.
+When using two conversion objects to emulate a bidirectional conversion assets (eg. charge controllers, bi-directional inverters), their capacity should be interdependent. This is currently not the case, as explained in the :ref:`limitations <limitations-real-life-constraint>`
 
 
 FUN-MVS-07 - Optimisation goal
@@ -163,20 +167,17 @@ FUN-MVS-07 - Optimisation goal
 
 :Priority:  HIGH
 
-:Progress: In progress
+:Progress: Done
 
 :Progress message:
 
-In general, the MVS aims to minimize the energy supply cost of the local energy system. Additionally, following constraint can be activated:
+In general, the MVS aims to minimize the energy supply cost of the local energy system. Additionally, a number of :ref:`constraints <constraints-label>` can be activated:
 
-* Minimal renewable share constraint (see `here <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#minimal-renewable-share-constraint>`__)
-
-:ToDo:
-
-Some constraints still have to be added:
-
-* Minimal degree of autonomy
-* Maximum C02 emission constraint
+* :ref:`Minimal renewable share constraint <constraint_minimal_renewable_factor>`
+* :ref:`Minimal degree of autonomy <constraint_minimal_degree_of_autonomy>`
+* :ref:`Maximum GHG emission constraint <constraint_maximum_emissions>`
+* :ref:`Net zero energy constraint <>`
+* :ref:`Limited maximum capacities of assets to be optimized <maxcap-label>`
 
 .. _fun_mvs_08:
 
@@ -195,12 +196,9 @@ FUN-MVS-08 - Electricity cost model
 
 The different constraints regarding the electricity DSO can be considered:
 
-a) The energy price as well as the feed-in tariff of a DSO can be provided as a time series
-b) Peak demand pricing can be considered (see `here <https://mvs-eland.readthedocs.io/en/latest/Model_Assumptions.html#peak-demand-pricing>`__)
-c) The transformer station limitation can, but does not have to be added.
-
-:ToDo: None
-
+a) The energy price as well as the feed-in tariff of a DSO can be provided as a time series (see :ref:`time_series_folder`)
+b) :ref:`Peak demand pricing <energy_providers_peak_demand_pricing>` can be considered
+c) The transformer station limitation can, but does not have to, be added.
 
 FUN-MVS-09 - Load profiles
 ##########################
@@ -213,9 +211,9 @@ FUN-MVS-09 - Load profiles
 
 :Progress: Done
 
-:Progress message: The MVS can be provided with a variable number of energy consumption profiles, that can be connected to variable busses.
+:Progress message:
 
-:ToDo: None
+The MVS can be provided with a variable number of energy consumption profiles, that can be connected to variable busses. Details on how this works can be found in :ref:`these instructions <time_series_folder>`.
 
 FUN-MVS-10 - DH cost model
 ##########################
@@ -228,9 +226,7 @@ FUN-MVS-10 - DH cost model
 
 :Progress: Done
 
-:Progress message: Same as for **FUN-MVS-08 - Electricity cost model**
-
-:ToDo: None
+:Progress message: Same as for :ref:`fun_mvs_08`.
 
 
 FUN-MVS-11 - PV data
@@ -242,19 +238,18 @@ FUN-MVS-11 - PV data
 
 :Priority:  HIGH
 
-:Progress: In progress (minimal requirement met)
+:Progress: Done for option (b), no automization (minimal requirement met)
 
 :Progress message:
 
 To simulate a PV, the MVS model requires following data from the end-user:
 
-* (Historical) specific generation profile (in kWh/kWp)
-
-Optionally, an inverter that has specific efficiency can be connected to the PV.
+* (Historical) Specific PV generation profile (in kWh/kWp)
+* Inverter efficiencies can be considered with an additional energyConversion asset
 
 :ToDo:
 
-To ease the data input for the end-user, more processing could be included here. For example, the `pvfeedinlib` could be used with following data:
+To ease the data input for the end-user, more processing could be included here (option a)). For example, the `pvfeedinlib` could be used to fetch the specific PV generation profiles with following data:
 
 * Longitude and latitude
 * Module or efficiency
@@ -271,25 +266,23 @@ FUN-MVS-12 - Battery data
 
 :Priority:  HIGH
 
-:Progress: In progress (minimal requirement met)
+:Progress: Done for option (b), no default inputs, no historical data (minimal requirement met)
 
 :Progress message:
 
 For the MVS, the type of the BESS does not matter. Important are the technical parameters:
 
-* C-rate
-* Max and min state of charge (SOC)
-* Max. depth of discharge (DOD)
-* Charge- and discharge efficiency (constant or time series)
-* Self-discharge rate
+* :ref:`C-rate <crate-label>`
+* :ref:`Maximum <socmax-label>` and :ref:`minimum <socmin-label>` state of charge (SOC), wherear the latter is inverse to the maximum depth of discharge (DOD)
+* Charge- and discharge (constant or time series, equivalent to roundtrip-efficiency) as well as self-discharge rate (comp. :ref:`efficiency <efficiency-label>`)
+* It is possible to define :ref:`socin-label`, the initial storage charge at the beginning of the optimization period, which is most immportant for short-term optimizations.
+* An inverter or charge controller can be defined by defining an additional energyConversion asset
 
-Optionally, it is possible to add an inverter.
+:Notes:
 
-Historical data is not subject to the MVS for batteries.
+It may be preferrable for the end-users to have default input values for different battery types (option a)), which is not implemented. This would best be addressed in the EPA with a database of default values, but is currently not being discussed.
 
-:ToDo:
-
-Defining default values for the BESS (possibly requirement a)) could also take place in the EPA.
+Historical dispatch data of batteries is not considered, as the MVS is supposed to determine the optimal dispatch rather then only the performance of a current energy system with determined operational schedules.
 
 FUN-MVS-13 - CHP data
 #####################
@@ -304,11 +297,11 @@ FUN-MVS-13 - CHP data
 
 :Progress message:
 
-A simple CHP model is already included in the MVS. It considers a fix ratio between thermal and electric output.
+A simple CHP model is already included in the MVS (compare :ref:`power_plants`). It considers a fix ratio between thermal and electric output.
 
 :ToDo:
 
-For a variable ratio between heat and electricity output, a new, specific oemof asset would need to be added.
+For a variable ratio between heat and electricity output, a new, specific oemof asset would need to be added to the MVS.
 
 FUN-MVS-14 - Thermal storage data
 #################################
@@ -319,22 +312,18 @@ FUN-MVS-14 - Thermal storage data
 
 :Priority:  LOW
 
-:Progress: In progress (minimal requirement met)
+:Progress: Done
 
 :Progress message:
 
-It is possible to simulate thermal storage assets with the MVS that are simulated analogously to the BESS, which fulfills the requirement. They are defined by:
+It is possible to simulate thermal storage assets with the MVS. Their model is analogous to the BESS, which fulfills the requirement. They are defined by:
 
-* Charging and discharging efficiencies
-* Max/Min SOC
+* :ref:`C-rate <crate-label>`
+* :ref:`Maximum <socmax-label>` and :ref:`minimum <socmin-label>` state of charge (SOC)
+* Charge- and discharge (constant or time series, equivalent to roundtrip-efficiency) as well as self-discharge rate (comp. :ref:`efficiency <efficiency-label>`)
+* It is possible to define :ref:`socin-label`, the initial storage charge at the beginning of the optimization period, which is most immportant for short-term optimizations.
 
-
-:ToDo:
-
-The definition of an initial SOC of the thermal storages was dropped, as this does not seem relevant considering the project duration of 20 a.
-
-The simplification of a thermal storage asset as basically a BESS can be especially difficult for the end user, in case that the input data needed can not be estimated.
-One should consider using the oemof.thermal thermal storage object.
+Adding another level of detail, it is possible to model a :ref:`stratified_tes`, with additional parameters :ref:`fixed_thermal_losses_relative-label` and :ref:`fixed_thermal_losses_absolute-label`.
 
 FUN-MVS-15 - Autonomous operation data
 ######################################
@@ -345,14 +334,15 @@ FUN-MVS-15 - Autonomous operation data
 
 :Priority:  HIGH
 
-:Progress: Not started
+:Progress: Done
 
-:Progress message: This requirement was not addressed yet.
+:Progress message:
 
-:ToDo:
+This requirement is addressed by the :ref:`degree of autonomy constraint <kpi_degree_of_autonomy`. It is related to the aggregated demand of the energy system and the required consumption from the grid (comp. :ref:`DOA <kpi_degree_of_autonomy>`), and not minimum or maximum time of autonomous operation.
 
-This requirement can be translated into a constraint that needs to be added to the MVS.
-It should be addresses after the other constraints as well as the KPI regarding autonomy are integrated.
+:Notes:
+
+A constraint of time-related autonomous operation is not possible in the current MVS, as it would introduced a mixed-integer constraint, which would extend simulation times too much. It would be possible in the future to add KPI that quantify the behaviour.
 
 FUN-MVS-16 - Economic data
 ##########################
@@ -369,14 +359,14 @@ FUN-MVS-16 - Economic data
 
 The MVS receives economic data from the end-user. This includes:
 
-* Specific investment costs of assets (CAPEX/kW)
-* Dispatch costs of assets
-* Annual operation and management costs (OPEX/kWh, constant or time series))
-* Currency
-* Tax
-* Weighted Average Cost of Capital (WACC).
-
-:ToDo: None
+* :ref:`Specific investment costs of assets (CAPEX/kW) <specificcosts-label>`
+* :ref:`Dispatch price of assets <dispatchprice-label>`
+* :ref:`Specific annual operation and management costs (OPEX/kWh, constant or time serie)) <specificomcosts-label>`
+* :ref:`Currency <currency-label>`
+* :ref:`Tax <tax-label>`
+* :ref:`Weighted Average Cost of Capital (WACC) <discountfactor-label>`
+* :ref:`Lifetime of the project <_projectduration-label>`
+* :ref:`Liftetime of assets <lifetime-label>`
 
 FUN-MVS-17 - Constraints
 ########################
@@ -393,12 +383,11 @@ FUN-MVS-17 - Constraints
 
 To address the sizing constraint, the attribute `maximumCap` was introduced. This will limit the optimized capacity, even if this results in higher energy supply costs.
 
+A cost constraint is for now disregarded, as always the cheapest supply solution is identified. Limiting the overall NPC would only result in infeasible solutions and a termination of the MVS. Cost constraints considering specific technologies can be covered by adapting the `maximumCap`.
+
 :ToDo:
 
-It was decided at the beginning of the project that the operating reserve constraint will be developed in cooperation with the end-users.
-
-A cost constraint is for now disregarded. As always the cheapest supply solution is identified, limiting the overall NPC would only result in infeasible solutions and a termination of the MVS.
-Cost constraints considering specific technologies can be covered by adapting the `maximumCap`.
+It was decided at the beginning of the project that the operating reserve constraint may be developed in cooperation with the end-users. This constraint would still need to be defined with the stakeholders.
 
 Non-Functional Requirements
 ---------------------------
@@ -420,9 +409,8 @@ NF-MVS-01 - MVS pre-processing tools for LES optimization model input
 
 :Progress message:
 
-Internally, the MVS uses pd.DataFrames to set up the energy system model. However, for data exchange with the end-user the input files, ie. the csv or json file is essential. As the end user will use the MVS though the EPA, the data format that the MVS uses becomes irrelevant. It was decided to use a json file as an exchange medium between the EPA and the MVS.
+Internally, the MVS uses dictionaries (`dict`) in combination with pandas (`pd.DataFrame`) to set up the energy system model. However, for data exchange with the end-user the input files, ie. the csv or json file is essential. To be able to use all features of the MVS, the user should consider the terminal-based MVS with csv input files. For a more comfortable and interactive usage, the end user can use the MVS though the user interface of the Energy Planning Application (EPA). Here, the data format becomes irrelevant for the user.
 
-:ToDo: None
 
 NF-MVS-02 - MVS post-processing tools for LES optimization model output/results
 ###############################################################################
@@ -444,11 +432,16 @@ NF-MVS-02 - MVS post-processing tools for LES optimization model output/results
 The post-processing of results ensures that important KPI can be provided for the energy system optimization.
 There are three output formats of the MVS:
 
-* For the end-user of the standalone application, an automatic report is generated that makes scenario evaluation easy
-* For a developer of the standalone application, the results are also provided as excel files and pngs.
+* For the end-user of the standalone application, an :ref:`automatic report <output_report>` is generated that makes scenario evaluation easy
+* For a developer of the standalone application, the results are also provided as excel files and pngs
 * For the EPA, the results are provided in a json format to be displayed interactively in their environment
 
-:ToDo: Improving the outputs is a continuing task.
+:Notes:
+
+Improving the outputs is a continuing task. Following improvements can be considered in the future:
+
+* Move all KPI connected to the individual energy vectors into a seperate table and display in the report
+* Add-on requested by end-users: Cash flow projections
 
 NF-MVS-03 - Communication interface between MVS and ESB
 #######################################################
@@ -463,16 +456,19 @@ NF-MVS-03 - Communication interface between MVS and ESB
 
 :Target: Send/receive requests that can be processed without information loss
 
-:Progress: In process
+:Progress: Done
 
 :Progress message:
 
-After discussion, there is no direct interface of the ESB and the MVS.
-The MVS is a standalone application that must be usable without the ESB.
-To ease end-user use, the EPA (Energy Planning Application) is developed.
-It sends inputs in json format to the MVS, and receives a json file with the results back.
+After discussion, there is no direct interface of the ESB and the MVS. The MVS is a standalone application that must be usable without the ESB. To ease end-user use, the EPA (Energy Planning Application) is developed. It sends inputs in json format to the MVS, and receives a json file with the results back. The integration betwe
 
-:ToDo: The EPA development is a continuous process.
+:Notes:
+
+The EPA development is a continuous process, and currently the MVS has more features than the EPA. Mainly, the EPA does not feature:
+
+* Any constraints of the MVS
+* GHG emission calculation
+* Set of energy assets of different energy vectors (as EPA explicitly names the assets)
 
 NF-MVS-04 - Unit commitment time step restriction
 #################################################
@@ -491,7 +487,7 @@ NF-MVS-04 - Unit commitment time step restriction
 
 :Progress message: The MVS can be run for a variable number of days. The time series have to be provided on an hourly basis.
 
-:ToDo: A wish from the end-users war a finer resolution of eg. 15-minute time steps. This possibility still has to be explored.
+:Notes: A wish from the end-users war a finer resolution of eg. 15-minute time steps. This possibility still has to be explored.
 
 NF-MVS-05 - Interface for technical parameters and model
 ########################################################
@@ -510,8 +506,6 @@ NF-MVS-05 - Interface for technical parameters and model
 
 :Progress message: The MVS uses the input parameters to compile the component models. This is also tested using pytests and benchmark tests.
 
-:ToDo: None
-
 
 NF-MVS-06 - Interface for economic parameters and model
 #######################################################
@@ -526,8 +520,8 @@ NF-MVS-06 - Interface for economic parameters and model
 
 :Target: N/A
 
-:Progress: In progress
+:Progress: Done
 
-:Progress message: The MVS uses the input parameters to compile the component models. This is also tested using pytests and benchmark tests.
+:Progress message:
 
-:ToDo: A benchmark tests regarding the investment model and the cost post-processing should be added.
+The MVS uses the input parameters to compile the component models. This is also tested using pytests and benchmark tests.
