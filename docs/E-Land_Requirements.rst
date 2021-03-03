@@ -420,10 +420,7 @@ NF-MVS-01 - MVS pre-processing tools for LES optimization model input
 
 :Progress message:
 
-Internally, the MVS uses pd.DataFrames to set up the energy system model.
-However, for data exchange with the end-user the input files, ie. the csv or json file is essential.
-As the end user will use the MVS though the EPA, the data format that the MVS uses becomes irrelevant.
-It was decided to use a json file as an exchange medium between the EPA and the MVS.
+Internally, the MVS uses pd.DataFrames to set up the energy system model. However, for data exchange with the end-user the input files, ie. the csv or json file is essential. As the end user will use the MVS though the EPA, the data format that the MVS uses becomes irrelevant. It was decided to use a json file as an exchange medium between the EPA and the MVS.
 
 :ToDo: None
 

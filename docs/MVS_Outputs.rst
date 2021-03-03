@@ -40,29 +40,9 @@ The capital recovery factor (CRF) is used to calculate the present value of the 
 Levelized costs of energy (LCOE)
 ################################
 
-As a sector-coupled system connects energy vectors,
-not the costs associated to each individual energy carrier but the overall energy costs should be minimized.
-Therefore, we propose a new KPI:
-The levelized costs of energy (LCOEnergy) aggregates the costs for energy supply
-and distributes them over the total energy demand supplied,
-which is calculated by weighting the energy carriers by their energy content.
-To determine the weighting factors of the different energy carriers,
-we reference the method of gasoline gallon equivalent (GGE) [12],
-which enables the comparison of alternative fuels.
-Instead of comparing the energy carriers of an MES to gasoline,
-we rebase the factors introduced in [12] onto the energy carrier electricity,
-thus proposing a unit Electricity Equivalent (ElEq).
-The necessary weights are summarized in Table 1.
-With this, we propose to calculate LCOEnergy based on the annual energy demand and the systems annuity,
-calculated with the CRF, as follows:
+As a sector-coupled system connects energy vectors, not the costs associated to each individual energy carrier but the overall energy costs should be minimized. Therefore, we propose a new KPI: The levelized costs of energy (LCOEnergy) aggregates the costs for energy supply and distributes them over the total energy demand supplied, which is calculated by weighting the energy carriers by their energy content. To determine the weighting factors of the different energy carriers, we reference the method of gasoline gallon equivalent (GGE) [12], which enables the comparison of alternative fuels. Instead of comparing the energy carriers of an MES to gasoline, we rebase the factors introduced in [12] onto the energy carrier electricity, thus proposing a unit Electricity Equivalent (ElEq). The necessary weights are summarized in Table 1. With this, we propose to calculate LCOEnergy based on the annual energy demand and the systems annuity, calculated with the CRF, as follows:
 
-
-Specific electricity supply costs, eg. levelized costs of electricity (LCOElectricity) are a common KPI
-that can be compared to local prices or generation costs.
-As in a sector-coupled system the investments cannot be clearly distinguished into sectors,
-we propose to calculate the levelized costs of energy carriers by distributing the costs relative to supplied demand.
-The LCOElectricity are then calculated with:
-
+Specific electricity supply costs, eg. levelized costs of electricity (LCOElectricity) are a common KPI that can be compared to local prices or generation costs. As in a sector-coupled system the investments cannot be clearly distinguished into sectors, we propose to calculate the levelized costs of energy carriers by distributing the costs relative to supplied demand. The LCOElectricity are then calculated with:
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
@@ -107,6 +87,11 @@ Technical data
 
 Energy flows (aggregated) per asset
 ###################################
+
+.. _peak_flow:
+
+Peak dispatch per asset
+#######################
 
 
 .. _kpi_renewable_share_of_local_generation:
