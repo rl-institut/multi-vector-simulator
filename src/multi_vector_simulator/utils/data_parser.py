@@ -477,10 +477,9 @@ def convert_epa_params_to_mvs(epa_dict):
         for group in comparison[EXTRA_PARAMETERS_KEY]:
             print(dict_values[group])
             warning_extra_parameters += f"- {group} ("
-            for parameter in comparison[EXTRA_PARAMETERS_KEY][
-                group
-            ] and parameter not in [LABEL, "unique_id"]:
-                warning_extra_parameters += f"{parameter}, "
+            for parameter in comparison[EXTRA_PARAMETERS_KEY][group]:
+                if parameter not in [LABEL, "unique_id"]:
+                    warning_extra_parameters += f"{parameter}, "
             warning_extra_parameters = warning_extra_parameters[:-2] + ") \n"
         logging.warning(warning_extra_parameters)
 
