@@ -1,8 +1,8 @@
-,unit,Electricity demand,,
-unit,str,kW,,
-inflow_direction,str,Electricity,,
-file_name,str,demand.csv,,
-energyVector,str,Electricity,,
-type_oemof,str,sink,,
-type_asset,str,demand,,
-dsm,str,False,,
+,unit,Electricity demand
+unit,str,kW
+inflow_direction,str,Electricity
+file_name,str,demand.csv
+energyVector,str,Electricity
+type_oemof,str,sink
+type_asset,str,demand
+dsm,str,False
