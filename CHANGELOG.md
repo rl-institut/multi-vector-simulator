@@ -94,7 +94,7 @@ Here is a template for new release sections
 - Changed `REQUIRED_CSV_PARAMETERS` of `FIX_COSTS`: Removed `LABEL` and `DISPATCH_PRICE` and removed those parameters from all `fixcost.csv` (#795)
 - Added exception to `E0.store_result_matrix` for `fixcost.csv` entries (#795)
 - Moved parts of `E0.evaluate_dict` into a subfunction `E0.initialize_kpi` (#795)
-
+- Exchanged all demand profiles in `tests` with standardized ones (#818)
 
 ### Removed
 - Remove `MissingParameterWarning` and use `logging.warning` instead (#761)

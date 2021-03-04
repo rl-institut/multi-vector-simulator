@@ -56,27 +56,11 @@
         }
     },
     "energyConsumption": {
-        "Harbor": {
+        "Electricity demand": {
             "energyVector": "Electricity",
-            "file_name": "demand_harbor.csv",
+            "file_name": "demand.csv",
             "inflow_direction": "Electricity",
-            "label": "Harbor",
-            "type_oemof": "sink",
-            "unit": "kW"
-        },
-        "Remaining_demand": {
-            "energyVector": "Electricity",
-            "file_name": "demand_remaining.csv",
-            "inflow_direction": "Electricity",
-            "label": "Remaining_demand",
-            "type_oemof": "sink",
-            "unit": "kW"
-        },
-        "Shore_power_(docked_ships)": {
-            "energyVector": "Electricity",
-            "file_name": "demand_shore_power.csv",
-            "inflow_direction": "Electricity",
-            "label": "Shore_power_(docked_ships)",
+            "label": "Electricity demand",
             "type_oemof": "sink",
             "unit": "kW"
         }
@@ -741,15 +725,15 @@
         "resources": []
     },
     "project_data": {
-        "country": "Norway",
+        "country": "Any country",
         "label": "project_data",
-        "latitude": "59.17905",
-        "longitude": "10.95787",
+        "latitude": "0",
+        "longitude": "1",
         "project_id": "1",
-        "project_name": "Borg Havn",
-        "scenario_description": "Main features: Demand of harbour and shore power. Connection to National grid (0.54 NOK/kWh electricity price, 60 NOK/kW monthly peak demand pricing, 0.54 NOK/kWh*0.8 feedin tariff. PV system of 300 kWp. Objective: Optimize battery capacity. Outcomes: Capacity battery and utilization profile. Consumption from national grid. Feed-in into national grid. Outlook: With this, it can be compared whether or not the battery reduced the peak demand expenditures. Later, the simulation results should be compared to the consumption from national grid without batteries.",
+        "project_name": "A location",
+        "scenario_description": "MVS test data",
         "scenario_id": "1",
-        "scenario_name": "Warehouse 14"
+        "scenario_name": "Test scenario"
     },
     "simulation_settings": {
         "end_date": {
@@ -758,7 +742,7 @@
         },
         "evaluated_period": {
             "unit": "days",
-            "value": 365
+            "value": 7
         },
         "label": "simulation_settings",
         "output_lp_file": {

@@ -5,8 +5,8 @@
       "scenario_id": 1,
       "scenario_name": "A+B+E",
       "country": "Germany",
-      "latitude": 51.756961,
-      "longitude": 12.517865
+      "latitude": 51,
+      "longitude": 10
     },
     "economic_data": {
       "currency": "EUR",
