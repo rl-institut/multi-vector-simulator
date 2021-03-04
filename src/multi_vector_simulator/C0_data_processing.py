@@ -44,7 +44,6 @@ from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeri
 import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C1_verification as C1
 import multi_vector_simulator.C2_economic_functions as C2
-import multi_vector_simulator.F0_output as F0
 
 
 def all(dict_values):
