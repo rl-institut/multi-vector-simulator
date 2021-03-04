@@ -12,7 +12,13 @@ import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C0_data_processing as C0
 import multi_vector_simulator.D0_modelling_and_optimization as D0
 
+from multi_vector_simulator.utils.constants import (
+    DEFAULT_WEIGHTS_ENERGY_CARRIERS,
+    CSV_EXT,
+)
+
 from multi_vector_simulator.utils.constants_json_strings import (
+    OEMOF_SINK,
     OEMOF_SOURCE,
     OEMOF_BUSSES,
     ENERGY_PRODUCTION,
@@ -27,6 +33,14 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MAXIMUM_EMISSIONS,
     CONSTRAINTS,
     MINIMAL_RENEWABLE_FACTOR,
+    MINIMAL_DEGREE_OF_AUTONOMY,
+    ENERGY_CONSUMPTION,
+    AUTO_SINK,
+    EXCESS_SINK_POSTFIX,
+    EXCESS,
+    INFLOW_DIRECTION,
+    DSO_FEEDIN,
+    NET_ZERO_ENERGY,
 )
 
 from multi_vector_simulator.utils.constants import OUTPUT_FOLDER
@@ -158,9 +172,185 @@ def test_prepare_constraint_minimal_renewable_share():
     ), f"The renewable share of asset {dso_2 + DSO_CONSUMPTION} is added incorrectly."
 
 
+def test_prepare_demand_assets():
+    asset = "asset"
+    demand_profiles = "demand"
+    electricity = "Electricity"
+    dict_values = {
+        ENERGY_CONSUMPTION: {
+            asset + AUTO_SINK: {},
+            asset + EXCESS: {},
+            asset + EXCESS_SINK_POSTFIX: {},
+            demand_profiles: {
+                LABEL: demand_profiles,
+                INFLOW_DIRECTION: electricity,
+                ENERGY_VECTOR: electricity,
+            },
+        },
+    }
+    dict_model = {
+        OEMOF_SINK: {demand_profiles: demand_profiles},
+        OEMOF_BUSSES: {electricity: electricity},
+    }
+    oemof_solph_object_asset = "object"
+    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
+    oemof_solph_object_bus = "oemof_solph_object_bus"
+
+    demands = D2.prepare_demand_assets(
+        dict_values,
+        dict_model,
+        oemof_solph_object_asset,
+        weighting_factor_energy_carrier,
+        oemof_solph_object_bus,
+    )
+
+    assert (
+        demand_profiles in demands
+    ), f"Demand asset {demand_profiles} should be in the demands taken into account for the constraints, but is not included in it ({demands.keys()})."
+    exp = {
+        oemof_solph_object_asset: dict_model[OEMOF_SINK][
+            dict_values[ENERGY_CONSUMPTION][demand_profiles][LABEL]
+        ],
+        oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+            dict_values[ENERGY_CONSUMPTION][demand_profiles][INFLOW_DIRECTION]
+        ],
+        weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+            dict_values[ENERGY_CONSUMPTION][demand_profiles][ENERGY_VECTOR]
+        ][VALUE],
+    }
+
+    for key in exp.keys():
+        assert (
+            key in demands[demand_profiles]
+        ), f"The parameter {key} for demand {demand_profiles} not is not added for demand asset processing for the constraints."
+        assert (
+            demands[demand_profiles][key] == exp[key]
+        ), f"The expected value (exp[key]) of {key} for {demand_profiles} is not met, but is of value {demands[demand_profiles][key]}."
+
+
+def test_prepare_energy_provider_consumption_sources():
+    electricity = "Electricity"
+    dso = "DSO"
+    dict_values = {
+        ENERGY_PROVIDERS: {dso: {LABEL: dso},},
+        ENERGY_PRODUCTION: {
+            dso
+            + DSO_CONSUMPTION: {
+                LABEL: dso + DSO_CONSUMPTION,
+                OUTFLOW_DIRECTION: electricity,
+                ENERGY_VECTOR: electricity,
+            }
+        },
+    }
+    dict_model = {
+        OEMOF_SOURCE: {dso + DSO_CONSUMPTION: dso + DSO_CONSUMPTION,},
+        OEMOF_BUSSES: {electricity: electricity},
+    }
+    oemof_solph_object_asset = "object"
+    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
+    oemof_solph_object_bus = "oemof_solph_object_bus"
+
+    energy_provider_consumption_sources = D2.prepare_energy_provider_consumption_sources(
+        dict_values,
+        dict_model,
+        oemof_solph_object_asset,
+        weighting_factor_energy_carrier,
+        oemof_solph_object_bus,
+    )
+
+    DSO_source_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_CONSUMPTION
+
+    assert (
+        DSO_source_name in energy_provider_consumption_sources
+    ), f"DSO source asset {DSO_source_name} should be in the energy provider source list taken into account for the constraints, but is not included in it ({energy_provider_consumption_sources.keys()})."
+
+    exp = {
+        oemof_solph_object_asset: dict_model[OEMOF_SOURCE][
+            dict_values[ENERGY_PRODUCTION][DSO_source_name][LABEL]
+        ],
+        oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+            dict_values[ENERGY_PRODUCTION][DSO_source_name][OUTFLOW_DIRECTION]
+        ],
+        weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+            dict_values[ENERGY_PRODUCTION][DSO_source_name][ENERGY_VECTOR]
+        ][VALUE],
+    }
+
+    for key in exp.keys():
+        assert (
+            key in energy_provider_consumption_sources[DSO_source_name]
+        ), f"The parameter {key} for DSO {DSO_source_name} not is not added for energy provider sources processing for constraints."
+        assert (
+            energy_provider_consumption_sources[DSO_source_name][key] == exp[key]
+        ), f"The expected value (exp[key]) of {key} for {DSO_source_name} is not met, but is of value {energy_provider_consumption_sources[DSO_source_name][key]}."
+
+
+def test_prepare_energy_provider_feedin_sinks():
+    electricity = "Electricity"
+    dso = "DSO"
+    dict_values = {
+        ENERGY_PROVIDERS: {dso: {LABEL: dso},},
+        ENERGY_CONSUMPTION: {
+            dso
+            + DSO_FEEDIN
+            + AUTO_SINK: {
+                LABEL: dso + DSO_FEEDIN,
+                INFLOW_DIRECTION: electricity,
+                ENERGY_VECTOR: electricity,
+            }
+        },
+    }
+    dict_model = {
+        OEMOF_SINK: {dso + DSO_FEEDIN: dso + DSO_FEEDIN,},
+        OEMOF_BUSSES: {electricity: electricity},
+    }
+    oemof_solph_object_asset = "object"
+    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
+    oemof_solph_object_bus = "oemof_solph_object_bus"
+
+    energy_provider_feedin_sinks = D2.prepare_energy_provider_feedin_sinks(
+        dict_values,
+        dict_model,
+        oemof_solph_object_asset,
+        weighting_factor_energy_carrier,
+        oemof_solph_object_bus,
+    )
+
+    DSO_sink_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_FEEDIN + AUTO_SINK
+
+    assert (
+        DSO_sink_name in energy_provider_feedin_sinks
+    ), f"DSO sink asset {DSO_sink_name} should be in the energy provider sink list taken into account for the constraints, but is not included in it ({energy_provider_feedin_sinks.keys()})."
+
+    exp = {
+        oemof_solph_object_asset: dict_model[OEMOF_SINK][
+            dict_values[ENERGY_CONSUMPTION][DSO_sink_name][LABEL]
+        ],
+        oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+            dict_values[ENERGY_CONSUMPTION][DSO_sink_name][INFLOW_DIRECTION]
+        ],
+        weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+            dict_values[ENERGY_CONSUMPTION][DSO_sink_name][ENERGY_VECTOR]
+        ][VALUE],
+    }
+
+    for key in exp.keys():
+        assert (
+            key in energy_provider_feedin_sinks[DSO_sink_name]
+        ), f"The parameter {key} for DSO {DSO_sink_name} not is not added for energy provider sinks processing for constraints."
+        assert (
+            energy_provider_feedin_sinks[DSO_sink_name][key] == exp[key]
+        ), f"The expected value (exp[key]) of {key} for {DSO_sink_name} is not met, but is of value {energy_provider_feedin_sinks[DSO_sink_name][key]}."
+
+
 class TestConstraints:
     def setup_class(self):
         """Run the simulation up to constraints adding in D2 and define class attributes."""
+
+        # This function reads the json file provided in `tests/inputs` for the simulation.
+        # Therefore, if changes are applied to the json file,
+        # especially if new constraints are to be introduced,
+        # it is necessary to recompile and update the json input file.
 
         @mock.patch(
             "argparse.ArgumentParser.parse_args",
@@ -188,20 +378,25 @@ class TestConstraints:
             model = D0.model_building.adding_assets_to_energysystem_model(
                 dict_values, dict_model, model
             )
-            local_energy_system = solph.Model(model)
-            logging.debug("Created oemof model based on created components and busses.")
-            return dict_values, local_energy_system, dict_model
+            return dict_values, model, dict_model
 
         self.dict_values, self.model, self.dict_model = run_parts()
         self.exp_emission_limit = 1000
+        self.exp_min_renewable_share = 0.60
+
         self.dict_values[CONSTRAINTS].update(
             {MAXIMUM_EMISSIONS: {VALUE: self.exp_emission_limit}}
+        )
+        self.dict_values[CONSTRAINTS].update(
+            {MINIMAL_RENEWABLE_FACTOR: {VALUE: self.exp_min_renewable_share}}
         )
         return
 
     def test_constraint_maximum_emissions(self):
+        """Checks if maximum emissions limit is properly added as a constraint"""
+        # Create a solph model using the input values (especially the constraints setup as class variables above)
         model = D2.constraint_maximum_emissions(
-            model=self.model, dict_values=self.dict_values
+            model=solph.Model(self.model), dict_values=self.dict_values,
         )
         assert (
             model.integral_limit_emission_factor.NoConstraint[0]
@@ -209,9 +404,19 @@ class TestConstraints:
         ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor.NoConstraint[0]}."
 
     def test_add_constraints_maximum_emissions(self):
+        """Checks if maximum emissions constraint works as intended"""
+        dict_values = self.dict_values.copy()
+        # Modify the minimum renewable factor constraint to be 0, otherwise this constraint will also be added
+        dict_values.update(
+            {
+                MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
+                MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                NET_ZERO_ENERGY: {VALUE: False},
+            }
+        )
         model = D2.add_constraints(
-            local_energy_system=self.model,
-            dict_values=self.dict_values,
+            local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
             dict_model=self.dict_model,
         )
         assert (
@@ -220,51 +425,110 @@ class TestConstraints:
         ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor.NoConstraint[0]}."
 
     def test_add_constraints_maximum_emissions_None(self):
+        """Verifies if the max emissions constraint was not added, in case the user does not provide a value"""
         dict_values = self.dict_values.copy()
         dict_values.update(
             {
                 CONSTRAINTS: {
                     MAXIMUM_EMISSIONS: {VALUE: None},
-                    MINIMAL_RENEWABLE_FACTOR: {
-                        VALUE: self.dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][
-                            VALUE
-                        ]
-                    },
+                    MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
+                    MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                    NET_ZERO_ENERGY: {VALUE: False},
                 }
             }
         )
         model = D2.add_constraints(
-            local_energy_system=self.model,
-            dict_values=self.dict_values,
+            local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
             dict_model=self.dict_model,
         )
         assert (
-            model.integral_limit_emission_factor.NoConstraint[0]
-            == self.exp_emission_limit
+            hasattr(model, "integral_limit_emission_factor") == False
         ), f"When maximum_emission is None, no emission constraint should be added to the ESM."
 
-    """
     def test_add_constraints_minimal_renewable_share(self):
-    # todo to be added
-    pass
-    """
+        """Checks if the constraint minimal renewable share value provided by the user is being applied or not"""
+        model = D2.add_constraints(
+            local_energy_system=solph.Model(self.model),
+            dict_values=self.dict_values,
+            dict_model=self.dict_model,
+        )
 
-    """
-    def test_add_constraints_minimal_renewable_share_None(self):
+        assert (
+            hasattr(model, "constraint_minimal_renewable_share") == True
+        ), f"The minimal renewable share has not been added, something has failed."
+
+    def test_add_constraints_minimal_renewable_share_is_0(self):
+        """Checks that the minimal renewable share constraint is not added if user provides a minimal share of 0"""
         dict_values = self.dict_values.copy()
         dict_values.update(
             {
                 CONSTRAINTS: {
-                    MAXIMUM_EMISSIONS: {
-                        VALUE: self.dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]
-                    },
-                    MINIMAL_RENEWABLE_FACTOR: {VALUE: None},
+                    MAXIMUM_EMISSIONS: {VALUE: None},
+                    MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
+                    MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                    NET_ZERO_ENERGY: {VALUE: False},
                 }
             }
         )
-        # todo to be added
-        pass
-    """
+
+        model = D2.add_constraints(
+            local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
+            dict_model=self.dict_model,
+        )
+
+        assert (
+            hasattr(model, "constraint_minimal_renewable_share") == False
+        ), f"When the minimal_renewable_share is 0, no constraint should be added"
+
+    def test_add_constraints_net_zero_energy_requirement_is_true(self):
+        """Checks that the nze constraint is added if user provides the value True"""
+        dict_values = self.dict_values.copy()
+        dict_values.update(
+            {
+                CONSTRAINTS: {
+                    MAXIMUM_EMISSIONS: {VALUE: None},
+                    MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
+                    MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                    NET_ZERO_ENERGY: {VALUE: True},
+                }
+            }
+        )
+
+        model = D2.add_constraints(
+            local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
+            dict_model=self.dict_model,
+        )
+
+        assert (
+            hasattr(model, "constraint_net_zero_energy") == True
+        ), f"When the net_zero_energy constraint is activated (True), the constraint should be added. Something went wrong."
+
+    def test_add_constraints_net_zero_energy_requirement_is_false(self):
+        """Checks that the nze constraint is not added if user provides the value False"""
+        dict_values = self.dict_values.copy()
+        dict_values.update(
+            {
+                CONSTRAINTS: {
+                    MAXIMUM_EMISSIONS: {VALUE: None},
+                    MINIMAL_RENEWABLE_FACTOR: {VALUE: 0},
+                    MINIMAL_DEGREE_OF_AUTONOMY: {VALUE: 0},
+                    NET_ZERO_ENERGY: {VALUE: False},
+                }
+            }
+        )
+
+        model = D2.add_constraints(
+            local_energy_system=solph.Model(self.model),
+            dict_values=dict_values,
+            dict_model=self.dict_model,
+        )
+
+        assert (
+            hasattr(model, "constraint_net_zero_energy") == False
+        ), f"When the net_zero_energy constraint is deactivated (False), no constraint should be added"
 
     def teardown_class(self):
         # Remove the output folder

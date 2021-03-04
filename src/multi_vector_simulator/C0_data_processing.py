@@ -96,12 +96,6 @@ def all(dict_values):
     # just to be safe, run evaluation a second time
     C1.check_for_label_duplicates(dict_values)
 
-    F0.store_as_json(
-        dict_values,
-        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-        JSON_PROCESSED,
-    )
-
 
 def define_energy_vectors_from_busses(dict_values):
     """
@@ -189,9 +183,27 @@ def add_economic_parameters(economic_parameters):
 def process_all_assets(dict_values):
     """defines dict_values['energyBusses'] for later reference
 
-    :param dict_values:
-    :return:
+    Processes all assets of the energy system by evaluating them, performing economic pre-calculations and validity checks.
+
+    Parameters
+    ----------
+
+    dict_values: dict
+        All simulation inputs
+
+    Returns
+    -------
+
+    dict_values: dict
+        Updated dict_values with pre-processes assets, including economic parameters, busses and auxiliary assets like excess sinks and all assets connected to the energyProviders.
+
+    Notes
+    -----
+
+    Tested with:
+    - test_C0_data_processing.test_process_all_assets_fixcost()
     """
+
     # Define all busses based on the in- and outflow directions of the assets in the input data
     add_assets_to_asset_dict_of_connected_busses(dict_values)
     # Define all excess sinks for each energy bus
@@ -213,6 +225,14 @@ def process_all_assets(dict_values):
         ENERGY_PRODUCTION: energyProduction,
         ENERGY_CONSUMPTION: energyConsumption,
     }
+
+    logging.debug("Pre-process fix project costs")
+    for asset in dict_values[FIX_COST]:
+        evaluate_lifetime_costs(
+            dict_values[SIMULATION_SETTINGS],
+            dict_values[ECONOMIC_DATA],
+            dict_values[FIX_COST][asset],
+        )
 
     for asset_group, asset_function in asset_group_list.items():
         logging.info("Pre-processing all assets in asset group %s.", asset_group)
@@ -356,7 +376,13 @@ def energyStorage(dict_values, group):
             )
 
             # check if parameters are provided as timeseries
-            for parameter in [EFFICIENCY, SOC_MIN, SOC_MAX]:
+            for parameter in [
+                EFFICIENCY,
+                SOC_MIN,
+                SOC_MAX,
+                THERM_LOSSES_REL,
+                THERM_LOSSES_ABS,
+            ]:
                 if parameter in dict_values[group][asset][subasset] and (
                     FILENAME in dict_values[group][asset][subasset][parameter]
                     and HEADER in dict_values[group][asset][subasset][parameter]
@@ -730,6 +756,11 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
         logging.debug(
             f"The {FEEDIN_TARIFF} of {dso} is positive, which means that feeding into the grid results in a revenue stream."
         )
+    elif dict_feedin_tariff[VALUE] == 0:
+        # Add a warning msg in case the feedin induces expenses rather then revenue
+        logging.info(
+            f"The {FEEDIN_TARIFF} of {dso} is 0, which means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
+        )
     elif dict_feedin_tariff[VALUE] < 0:
         # Add a warning msg in case the feedin induces expenses rather then revenue
         logging.warning(
@@ -783,7 +814,7 @@ def define_availability_of_peak_demand_pricing_assets(
 
         availability_in_period = availability_in_period.add(
             pd.Series(1, index=time_period), fill_value=0
-        )
+        ).loc[dict_values[SIMULATION_SETTINGS][TIME_INDEX]]
         dict_availability_timeseries.update({period: availability_in_period})
 
     return dict_availability_timeseries
@@ -1364,8 +1395,8 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
     - Test_Economic_KPI.test_benchmark_Economic_KPI_C2_E2()
 
     """
-
-    C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
+    if DISPATCH_PRICE in dict_asset:
+        C2.determine_lifetime_price_dispatch(dict_asset, economic_data)
 
     (
         specific_capex,
@@ -1378,6 +1409,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         discount_factor=economic_data[DISCOUNTFACTOR][VALUE],
         tax=economic_data[TAX][VALUE],
         age_of_asset=dict_asset[AGE_INSTALLED][VALUE],
+        asset_label=dict_asset[LABEL],
     )
 
     dict_asset.update(
@@ -1473,24 +1505,24 @@ def receive_timeseries_from_csv(
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
     C1.lookup_file(file_path, dict_asset[LABEL])
 
-    data_set = pd.read_csv(file_path, sep=",")
+    data_set = pd.read_csv(file_path, sep=",", keep_default_na=True)
 
     if FILENAME in dict_asset:
         header = data_set.columns[0]
 
     if len(data_set.index) == settings[PERIODS]:
         if input_type == "input":
-            dict_asset.update(
-                {
-                    TIMESERIES: pd.Series(
-                        data_set[header].values, index=settings[TIME_INDEX]
-                    )
-                }
+            timeseries = pd.Series(data_set[header].values, index=settings[TIME_INDEX])
+            timeseries = replace_nans_in_timeseries_with_0(
+                timeseries, dict_asset[LABEL]
             )
+            dict_asset.update({TIMESERIES: timeseries})
         else:
-            dict_asset[input_type][VALUE] = pd.Series(
-                data_set[header].values, index=settings[TIME_INDEX]
+            timeseries = pd.Series(data_set[header].values, index=settings[TIME_INDEX])
+            timeseries = replace_nans_in_timeseries_with_0(
+                timeseries, dict_asset[LABEL] + "(" + input_type + ")"
             )
+            dict_asset[input_type][VALUE] = timeseries
 
         logging.debug("Added timeseries of %s (%s).", dict_asset[LABEL], file_path)
     elif len(data_set.index) >= settings[PERIODS]:
@@ -1530,10 +1562,45 @@ def receive_timeseries_from_csv(
         compute_timeseries_properties(dict_asset)
 
 
+def replace_nans_in_timeseries_with_0(timeseries, label):
+    """
+
+    Replaces nans in the timeseries (if any) with 0
+
+    Parameters
+
+    ----------
+    timeseries: pd.Series
+        demand or resource timeseries in dict_asset (having nan value(s) if any),
+        also of parameters that are not defined as scalars but as timeseries
+
+    label: str
+        Contains user-defined information about the timeseries to be printed into the eventual error message
+
+    Returns
+    ----------
+    timeseries: pd.Series
+        timeseries without NaN values
+
+    Notes
+    -----
+    Function tested with
+    - C0.test_replace_nans_in_timeseries_with_0()
+    """
+    if sum(pd.isna(timeseries)) > 0:
+        incidents = sum(pd.isna(timeseries))
+        logging.warning(
+            f"A number of {incidents} NaN value(s) found in the {TIMESERIES} of {label}. Changing NaN value(s) to 0."
+        )
+        timeseries = timeseries.fillna(0)
+    return timeseries
+
+
 def compute_timeseries_properties(dict_asset):
     """Compute peak, aggregation, average and normalize timeseries
 
     Parameters
+
     ----------
     dict_asset: dict
         dict of all asset parameters, must contain TIMESERIES key
@@ -1544,6 +1611,11 @@ def compute_timeseries_properties(dict_asset):
     Add TIMESERIES_PEAK, TIMESERIES_TOTAL, TIMESERIES_AVERAGE and TIMESERIES_NORMALIZED
     to dict_asset
 
+    Notes
+    -----
+    Function tested with
+    - C0.test_compute_timeseries_properties_TIMESERIES_in_dict_asset()
+    - C0.test_compute_timeseries_properties_TIMESERIES_not_in_dict_asset()
     """
 
     if TIMESERIES in dict_asset:

@@ -27,6 +27,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_CONVERSION,
     ENERGY_STORAGE,
+    ENERGY_CONSUMPTION,
+    ENERGY_STORAGE,
     EFFICIENCY,
     VALUE,
     DSO_CONSUMPTION,
@@ -34,6 +36,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PRICE,
     STORAGE_CAPACITY,
     SOC_MIN,
+    TIMESERIES,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -77,7 +80,8 @@ class Test_Parameter_Parsing:
         data = load_json(
             os.path.join(
                 TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
-            )
+            ),
+            flag_missing_values=False,
         )
 
         # read csv with expected values of the timeseries
@@ -93,19 +97,36 @@ class Test_Parameter_Parsing:
         electricity_price = "electricity_price"
         soc_min = "soc_min"
 
+        assert (
+            data[ENERGY_CONSUMPTION]["demand_01"][TIMESERIES][3] == 0
+        ), f"The NaN value of the demand profile is not replaced by a 0 value as it should."
         for k in range(0, len(csv_data[diesel_efficiency])):
             assert data[ENERGY_CONVERSION][diesel][EFFICIENCY][VALUE][
                 k
-            ] == pytest.approx(csv_data[diesel_efficiency][k], rel=1e-6)
+            ] == pytest.approx(
+                csv_data[diesel_efficiency][k], rel=1e-6
+            ), f"The diesel efficiency has different values then it was defined as with the csv file {csv_file}."
             assert data[ENERGY_PROVIDERS][dso][ENERGY_PRICE][VALUE][k] == pytest.approx(
                 csv_data[electricity_price][k], rel=1e-6
-            )
+            ), f"The energy price has different values then it was defined as with the csv file {csv_file}."
             assert data[ENERGY_PRODUCTION][dso + DSO_CONSUMPTION][DISPATCH_PRICE][
                 VALUE
-            ][k] == pytest.approx(csv_data[electricity_price][k], rel=1e-6)
-            assert data[ENERGY_STORAGE]["storage_01"][STORAGE_CAPACITY][SOC_MIN][VALUE][
-                k
-            ] == pytest.approx(csv_data[soc_min][k], rel=1e-6)
+            ][k] == pytest.approx(
+                csv_data[electricity_price][k], rel=1e-6
+            ), f"The feedin tariff has different values then it was defined as with the csv file {csv_file}."
+            if k == 0 or k == 1:
+                assert (
+                    data[ENERGY_STORAGE]["storage_01"][STORAGE_CAPACITY][SOC_MIN][
+                        VALUE
+                    ][k]
+                    == 0
+                ), f"The NaN value of the soc min timeseries is not parsed as 0 as it should."
+            else:
+                assert data[ENERGY_STORAGE]["storage_01"][STORAGE_CAPACITY][SOC_MIN][
+                    VALUE
+                ][k] == pytest.approx(
+                    csv_data[soc_min][k], rel=1e-6
+                ), f"The soc min has different values then it was defined as with the csv file {csv_file}."
 
     '''
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command

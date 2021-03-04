@@ -296,7 +296,8 @@ class TestLoadDictionaryFromJson:
         self.file_name = "test_json_converter"
         F0.store_as_json(JSON_TEST_DICTIONARY, OUTPUT_PATH, self.file_name)
         self.value_dict = B0.load_json(
-            os.path.join(OUTPUT_PATH, self.file_name + ".json")
+            os.path.join(OUTPUT_PATH, self.file_name + ".json"),
+            flag_missing_values=False,
         )
 
     # TODO fix input from time parameters for simulation settings

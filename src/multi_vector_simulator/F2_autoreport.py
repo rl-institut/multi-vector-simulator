@@ -7,6 +7,7 @@ This script generates a report of the simulation automatically, with all the imp
 
 import base64
 import os
+import pickle
 
 # Imports for generating pdf automatically
 import threading
@@ -70,6 +71,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ERRORS,
     WARNINGS,
     SIMULATION_RESULTS,
+    SCENARIO_DESCRIPTION,
+    KPI,
+    KPI_UNCOUPLED_DICT,
 )
 
 from multi_vector_simulator.E1_process_results import (
@@ -78,6 +82,7 @@ from multi_vector_simulator.E1_process_results import (
     convert_scalar_matrix_to_dataframe,
     convert_cost_matrix_to_dataframe,
     convert_scalars_to_dataframe,
+    convert_kpi_sector_to_dataframe,
 )
 from multi_vector_simulator.F1_plotting import (
     plot_timeseries,
@@ -601,10 +606,11 @@ def create_demands_section(output_JSON_file, sectors=None):
             )
         )
 
-        # Add the heading, table and plot(s) to the content list
-        content_of_section.extend(
-            (html.H4(sector_heading), table_with_dash, sector_demand_plots)
-        )
+        # Add the heading, table and plot(s) to the content list only if it is not empty
+        if df_sector_demands.empty is False:
+            content_of_section.extend(
+                (html.H4(sector_heading), table_with_dash, sector_demand_plots)
+            )
 
     return insert_subsection(title="Energy Demands", content=content_of_section)
 
@@ -665,34 +671,54 @@ def create_app(results_json, path_sim_output=None):
         float(dfprojectData.latitude),
         float(dfprojectData.longitude),
     )
-
     # Determining the geographical location of the project
-    geoList = rg.search(latlong)
-    geoDict = geoList[0]
-    location = geoDict["name"]
+    geo_dict_path = os.path.join(asset_folder, "geolocation")
+    if os.path.exists(geo_dict_path):
+        with open(geo_dict_path, "rb") as handle:
+            geo_dict = pickle.load(handle)
+    else:
+        geoList = rg.search(latlong)
+        geo_dict = geoList[0]
+        with open(geo_dict_path, "wb") as handle:
+            pickle.dump(geo_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-    # Adds a map to the Dash app
-    mapy = folium.Map(location=latlong, zoom_start=14)
-    tooltip = "Click here for more info"
-    folium.Marker(
-        latlong,
-        popup="Location of the project",
-        tooltip=tooltip,
-        icon=folium.Icon(color="red", icon="glyphicon glyphicon-flash"),
-    ).add_to(mapy)
-    mapy.save(os.path.join(asset_folder, "proj_map"))
+    location = geo_dict["name"]
 
-    # Adds a staticmap to the PDF
+    leaflet_map_path = os.path.join(asset_folder, "proj_map.html")
+    static_map_path = os.path.join(asset_folder, "proj_map_static.png")
 
-    longitude = latlong[1]
-    latitude = latlong[0]
-    coords = longitude, latitude
+    # Add a dynamic leaflet map to the dash app
+    if not os.path.exists(leaflet_map_path):
+        mapy = folium.Map(location=latlong, zoom_start=14)
+        tooltip = "Click here for more info"
+        folium.Marker(
+            latlong,
+            popup="Location of the project",
+            tooltip=tooltip,
+            icon=folium.Icon(color="red", icon="glyphicon glyphicon-flash"),
+        ).add_to(mapy)
+        mapy.save(leaflet_map_path)
 
-    map_static = staticmap.StaticMap(600, 600, 80)
-    marker = staticmap.CircleMarker(coords, "#13074f", 15)
-    map_static.add_marker(marker)
-    map_image = map_static.render(zoom=14)
-    map_image.save(os.path.join(asset_folder, "proj_map_static.png"))
+    # Adds a static map for the PDF report
+    MAP_STATIC = None
+    if not os.path.exists(static_map_path):
+        longitude = latlong[1]
+        latitude = latlong[0]
+        coords = longitude, latitude
+
+        map_static = staticmap.StaticMap(600, 600, 80)
+        marker = staticmap.CircleMarker(coords, "#13074f", 15)
+        map_static.add_marker(marker)
+        try:
+            map_image = map_static.render(zoom=14)
+            map_image.save(static_map_path)
+            MAP_STATIC = encode_image_file(static_map_path)
+        except RuntimeError as e:
+            if "could not download" in repr(e):
+                logging.warning(
+                    "You might not be connected to internet, skipping the download of "
+                    "location map for the report"
+                )
 
     dict_projectdata = {
         "Country": dfprojectData.country,
@@ -738,8 +764,6 @@ def create_app(results_json, path_sim_output=None):
         os.path.join(asset_folder, "logo-eland-original.jpg")
     )
 
-    MAP_STATIC = encode_image_file(os.path.join(asset_folder, "proj_map_static.png"))
-
     ENERGY_SYSTEM_GRAPH = encode_image_file(results_json[PATHS_TO_PLOTS][PLOTS_ES])
 
     # Determining the sectors which were simulated
@@ -753,6 +777,10 @@ def create_app(results_json, path_sim_output=None):
     df_scalar_matrix = convert_scalar_matrix_to_dataframe(results_json)
     df_cost_matrix = convert_cost_matrix_to_dataframe(results_json)
     df_kpi_scalars = convert_scalars_to_dataframe(results_json)
+    df_kpi_sectors = convert_kpi_sector_to_dataframe(results_json)
+
+    # Obtain the scenario description text provided by the user from the JSON results file
+    scenario_description = results_json[PROJECT_DATA].get(SCENARIO_DESCRIPTION, "")
 
     # App layout and populating it with different elements
     app.layout = html.Div(
@@ -800,6 +828,18 @@ def create_app(results_json, path_sim_output=None):
                                 ],
                             ),
                             html.Div(
+                                className="cell imp_info2",
+                                children=[]
+                                if scenario_description == ""
+                                else [
+                                    html.Span(
+                                        "Scenario description  : ",
+                                        style={"font-weight": "bold"},
+                                    ),
+                                    f"{scenario_description}",
+                                ],
+                            ),
+                            html.Div(
                                 className="blockoftext",
                                 children=[
                                     "The energy system with the ",
@@ -843,17 +883,9 @@ def create_app(results_json, path_sim_output=None):
                                             html.H4(["Project Location"]),
                                             html.Iframe(
                                                 srcDoc=open(
-                                                    os.path.join(
-                                                        asset_folder, "proj_map",
-                                                    ),
-                                                    "r",
+                                                    leaflet_map_path, "r",
                                                 ).read(),
                                                 height="400",
-                                                style={
-                                                    "margin": "30px",
-                                                    "width": "30%",
-                                                    "marginBottom": "1.5cm",
-                                                },
                                             ),
                                             html.Div(
                                                 className="staticimagepdf print-only",
@@ -864,11 +896,14 @@ def create_app(results_json, path_sim_output=None):
                                                     ),
                                                     html.Img(
                                                         id="staticmapimage",
-                                                        src="data:image/png;base64,{}".format(
+                                                        src=""
+                                                        if MAP_STATIC is None
+                                                        else "data:image/png;base64,{}".format(
                                                             MAP_STATIC.decode()
                                                         ),
                                                         width="400px",
                                                         style={"marginLeft": "30px"},
+                                                        alt="Map of the location",
                                                     ),
                                                 ],
                                             ),
@@ -947,9 +982,9 @@ def create_app(results_json, path_sim_output=None):
                                 ),
                             ),
                             insert_body_text(
-                                "This results in the following KPI of the dispatch:"
+                                "This results in the following KPI of the dispatch per energy sector:"
                             ),
-                            # TODO the table with renewable share, emissions, total renewable generation, etc.
+                            make_dash_data_table(df_kpi_sectors),
                         ],
                     ),
                     insert_subsection(

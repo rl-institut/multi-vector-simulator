@@ -4,10 +4,18 @@
             "unit": "factor",
             "value": 0
         },
+        "minimal_degree_of_autonomy": {
+            "unit": "factor",
+            "value": 0
+        },
     "maximum_emissions": {
             "unit": "kgCO2eq/a",
             "value": 800000
-        }
+        },
+    "net_zero_energy": {
+          "unit": "bool",
+          "value": false
+      }
     },
     "economic_data": {
         "currency": "NOK",
@@ -36,10 +44,6 @@
             "value": false
         },
         "start_date": "2018-01-01 00:00:00",
-        "store_oemof_results": {
-            "unit": "bool",
-            "value": true
-        },
         "timestep": {
             "unit": "minutes",
             "value": 60
@@ -67,22 +71,19 @@
             "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 4600
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
-                "value": 0
             }
         }},
     "project_data": {
-        "country": "Norway",
+        "country": "Test country",
         "label": "project_data",
-        "latitude": "59.17905",
-        "longitude": "10.95787",
+        "latitude": "1",
+        "longitude": "0",
         "project_id": "1",
-        "project_name": "Borg Havn",
+        "project_name": "A project",
         "scenario_id": "1",
-        "scenario_name": "Warehouse 14"
-    },
+        "scenario_name": "Test scenario for D1",
+        "scenario_description": "Used for pytests regarding D1 functions (unit tests)"
+        },
     "energyBusses": {},
     "energyConsumption": {
         "non_dispatchable_single": {
@@ -684,6 +685,10 @@
                     "unit": "kWh",
                     "value": 0.0
                 },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
+                },
                 "soc_initial": {
                     "unit": "None or factor",
                     "value": null
@@ -695,6 +700,14 @@
                 "soc_min": {
                     "unit": "factor",
                     "value": 0.2
+                },
+                "fixed_thermal_losses_relative": {
+                    "unit": "factor",
+                    "value": 0.001
+                },
+                "fixed_thermal_losses_absolute": {
+                    "unit": "factor",
+                    "value": 0.0002
                 },
                 "simulation_annuity": {
                     "value": 2.7,
@@ -713,6 +726,10 @@
                 "installedCap": {
                     "unit": "kWh",
                     "value": 0
+                },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
                 },
                 "dispatch_price": {
                     "unit": "currency/kWh",
@@ -735,6 +752,10 @@
                 "installedCap": {
                     "unit": "kWh",
                     "value": 0
+                },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
                 },
                 "dispatch_price": {
                     "unit": "currency/kWh",
@@ -764,6 +785,10 @@
                     "unit": "kWh",
                     "value": 0.0
                 },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
+                },
                 "soc_initial": {
                     "unit": "None or factor",
                     "value": null
@@ -775,6 +800,14 @@
                 "soc_min": {
                     "unit": "factor",
                     "value": 0.2
+                },
+                "fixed_thermal_losses_relative": {
+                    "unit": "factor",
+                    "value": 0.001
+                },
+                "fixed_thermal_losses_absolute": {
+                    "unit": "factor",
+                    "value": 0.0002
                 }
             },
             "input power": {
@@ -785,6 +818,10 @@
                 "installedCap": {
                     "unit": "kWh",
                     "value": 0
+                },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
                 },
                 "dispatch_price": {
                     "unit": "currency/kWh",
@@ -799,6 +836,10 @@
                 "installedCap": {
                     "unit": "kWh",
                     "value": 0
+                },
+                "maximumCap": {
+                    "unit": "kWh",
+                    "value": 0.0
                 },
                 "dispatch_price": {
                     "unit": "currency/kWh",

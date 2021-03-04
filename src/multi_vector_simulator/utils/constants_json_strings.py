@@ -69,12 +69,12 @@ LATITUDE = "latitude"
 # Project data and simulation settings (true/false)
 SIMULATION_SETTINGS = "simulation_settings"
 OUTPUT_LP_FILE = "output_lp_file"
-STORE_OEMOF_RESULTS = "store_oemof_results"
 PROJECT_NAME = "project_name"
 SCENARIO_NAME = "scenario_name"
 COUNTRY = "country"
 PROJECT_ID = "project_id"
 SCENARIO_ID = "scenario_id"
+SCENARIO_DESCRIPTION = "scenario_description"
 
 # Asset definitions
 DSM = "dsm"
@@ -110,11 +110,15 @@ STORAGE_CAPACITY = "storage capacity"
 SOC_INITIAL = "soc_initial"
 SOC_MAX = "soc_max"
 SOC_MIN = "soc_min"
+THERM_LOSSES_REL = "fixed_thermal_losses_relative"
+THERM_LOSSES_ABS = "fixed_thermal_losses_absolute"
 
 # Constraints
 CONSTRAINTS = "constraints"
 MINIMAL_RENEWABLE_FACTOR = "minimal_renewable_factor"
 MAXIMUM_EMISSIONS = "maximum_emissions"
+MINIMAL_DEGREE_OF_AUTONOMY = "minimal_degree_of_autonomy"
+NET_ZERO_ENERGY = "net_zero_energy"
 
 #######################################
 # Parameters added in pre-processing #
@@ -134,6 +138,7 @@ TIMESERIES_NORMALIZED = "timeseries_normalized"
 TIMESERIES_PEAK = "timeseries_peak"
 TIMESERIES_TOTAL = "timeseries_total"
 TIMESERIES_AVERAGE = "timeseries_average"
+TIMESERIES_SOC = "timeseries_soc"
 
 # Pre-processing cost parameters
 ANNUITY_FACTOR = "annuity_factor"
@@ -151,6 +156,7 @@ SIMULATION_ANNUITY = "simulation_annuity"
 SPECIFIC_REPLACEMENT_COSTS_INSTALLED = (
     "Specific_replacement_costs_of_installed_capacity"
 )
+
 SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED = (
     "Specific_replacement_costs_of_optimized_capacity"
 )
@@ -248,6 +254,7 @@ SPECIFIC_EMISSIONS_ELEQ = "Specific emissions per electricity equivalent"
 TOTAL_DEMAND = "Total_demand"
 TOTAL_EXCESS = "Total_excess"
 TOTAL_FEEDIN = "Total_feedin"
+TOTAL_CONSUMPTION_FROM_PROVIDERS = "Total_consumption_from_energy_provider"
 SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
 ATTRIBUTED_COSTS = "Attributed costs"
 LCOeleq = "Levelized costs of electricity equivalent"
@@ -256,7 +263,7 @@ DEGREE_OF_SECTOR_COUPLING = "Degree of sector coupling"
 DEGREE_OF_AUTONOMY = "Degree of autonomy"
 ONSITE_ENERGY_FRACTION = "Onsite energy fraction"
 ONSITE_ENERGY_MATCHING = "Onsite energy matching"
-
+DEGREE_OF_NZE = "Degree of NZE"
 
 # KPI_FLOW_MATRIX
 KPI_SCALARS = (

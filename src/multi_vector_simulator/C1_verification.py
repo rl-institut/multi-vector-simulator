@@ -418,7 +418,7 @@ def check_non_dispatchable_source_time_series(dict_values):
     """
     # go through all non-dispatchable sources
     for key, source in dict_values[ENERGY_PRODUCTION].items():
-        if TIMESERIES in source and source[RENEWABLE_ASSET_BOOL][VALUE] is True:
+        if TIMESERIES in source and source[DISPATCHABILITY] is False:
             # check if values between 0 and 1
             result = check_time_series_values_between_0_and_1(
                 time_series=source[TIMESERIES]

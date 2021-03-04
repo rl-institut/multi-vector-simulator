@@ -1,8 +1,9 @@
 ,unit,project_data
-country,str,Norway
-latitude,str,59.17905
-longitude,str,10.95787
+country,str,Test country
+latitude,str,0
+longitude,str,1
 project_id,str,1
-project_name,str,Borg Havn
+project_name,str,Test simulation
 scenario_id,str,1
-scenario_name,str,Warehouse 14
+scenario_name,str,Test scenario
+scenario_description,"Test scenario for test simulations with the MVS"

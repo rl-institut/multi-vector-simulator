@@ -2,6 +2,27 @@
 Modeling Assumptions of the MVS
 ================================
 
+Cost calculations
+-----------------
+
+The optimization in the MVS is mainly a cost optimization. There are some additional constraints that can be introduced, mainly by adding bounds eg. by limiting the maximum capacity that can be installed (comp. :ref:`maxcap-label`) or adding constraints for certain key performance indicators (see :ref:`constraints-label`). To optimize the energy systems properly, the economic data provided with the input data has to be pre-processed (also see :ref:`economic_precalculation-label`) and then also post-processed when evaluating the results. Following assumptions are important:
+
+* :ref:`Project lifetime <projectduration-label>`: The simulation has a defined project lifetime, for which continuous operation is assumed - which means that the first year of operation is exactly like the last year of operation. Existing and optimized assets have to be replaced to make this possible.
+* :ref:`Simulation duration <evaluatedperiod-label>`: It is advisable to simulate whole year to find the most suitable combination of energy assets for your system. Sometimes however you might want to look at specific seasons to see their effect - this is possible in the MVS by choosing a specific start date and simulation duration.
+* :ref:`Asset costs <economic_precalculation-label>`: Each asset can have development costs, specific investment costs, specific operation and management costs as well as dispatch costs.
+    * *Replacement costs* are calculated based on the lifetime of the assets, and residual values are paid at the end of the project.
+    * *Development costs* are costs that will occurr regardless of the installed capacity of an asset - even if it is not installed at all. It stands for system planning and licensing costs. If you have optimized your energy system and see that an asset might not be favourable (zero optimized capacities), you might want to run the simulation again and remove the asset, or remove the development costs of the asset.
+    * *Specific investment costs* and *specific operation and maintenance costs* are used to calculate the annual expenditures that an asset has per year, in the process also adding the replacement costs.
+    * *Dispatch price* can often be set to zero, but are supposed to cover instances where utilization of an asset requires increased operation and maintenance or leads to wear.
+* :ref:`Pre-existing capacities <installedcap-label>`: It is possible to add assets that already exist in your energy system with their capacity and age.
+    * *Replacements* - To ensure that the energy system operates continously, the existing assets are replaced with the same capacities when they reached their end of life within the project lifetime.
+    * *Replacement costs* are calculated based on the lifetime of the asset in general and the age of the pre-existing capacities
+* `Fix project costs <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/fixcost.csv>`__: It is possible to define fix costs of the project - this is important if you want to compare different project locations with each other. You can define...
+    * *Development costs*, which could for example stand for the cost of licenses of the whole energy system
+    * *(Specific) investment costs*, which could be an investment into land or buildings at the project site. When you define a lifetime for the investment, the MVS will also consider replacements and reimbursements.
+    * *(Specific) operation and management costs*, which can cover eg. the salaries of at the project site
+
+
 Component models
 ----------------
 
@@ -12,84 +33,153 @@ This is the reason that the MVS can provide a pre-feasibility study of a specifi
 but not the final sizing and system design.
 The types of assets are presented below.
 
+
+Energy production
+#################
+
 Non-dispatchable sources of generation
-######################################
+======================================
 
 `Examples`:
 
-    - PV plant
-    - Wind plant
+    - PV plants
+    - Wind plants
+    - Run-of-the-river hydro power plants
+    - Solar thermal collectors
+
+Variable renewable energy (VRE) sources, like wind and PV, are non-dispatchable due to their fluctuations in supply. They are added as sources in `energyProduction.csv`.
+
+The fluctuating nature of non-dispatchable sources is represented by generation time series that show the respective production for each time step of the simulated period. In energy system modelling it is common to use hourly time series.
+The name of the file containing the time series is added to `energyProduction.csv` with the parameter :ref:`filename-label`. For further requirements concerning the time series see section :ref:`time_series_folder`.
+
+If you cannot provide time series for your VRE assets you can consider to calculate them by using models for generating feed-in time series from weather data. The following is a list of examples, which is not exhaustive:
+
+    - PV: `pvlib <https://github.com/pvlib/pvlib-python/>`_ , `Renewables Ninja <https://www.renewables.ninja/>`_ (download capacity factors)
+    - Wind: `windpowerlib <https://github.com/wind-python/windpowerlib>`_, `Renewables Ninja <https://www.renewables.ninja/>`_ (download capacity factors)
+    - Hydro power (run-of-the-river): `hydropowerlib <https://github.com/hydro-python/hydropowerlib>`_
+    - Solar thermal: `flat plate collectors <https://oemof-thermal.readthedocs.io/en/stable/solar_thermal_collector.html>`_ of `oemof.thermal <https://github.com/oemof/oemof-thermal>`_
+
+
+.. _dispatchable_sources:
 
 Dispatchable sources of generation
-##################################
+==================================
 
 `Examples`:
 
     - Fuel sources
-    - Run-of-the-river hydro power plant
     - Deep-ground geothermal plant (ground assumed to allow unlimited extraction of heat, not depending on season)
 
-Fuel sources are added as dispatchable sources, which still can have development, investment, operational and dispatch costs.
-They are added by adding a column in `energyProviders.CSV`, and setting file_name to `None`.
+Fuel sources are added as dispatchable sources, which can have development, investment, operational and dispatch costs.
+They are added to `energyProduction.csv`, while setting :ref:`filename-label` to `None`.
 
-DSOs, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
-as there are some additional features available then.
+Fuel sources are for example needed as source for a diesel generator (diesel), biogas plant (gas) or a condensing power plant (gas, coal, ...), see :ref:`energy_conversion`.
 
-Both DSOs and the additional fuel sources are limited to the options provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
+Energy providers, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
+as there are some additional features available then, see :ref:`energy_providers`.
 
-Dispatchable conversion assets
-##############################
+Both energy providers and the additional fuel sources are limited to the options of energy carriers provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
+
+
+.. _energy_conversion:
+
+Energy conversion
+#################
 
 `Examples`:
 
-    - Diesel generator
-    - Electric transformers (rectifiers, inverters)
-    - Heat pumps (as heater and/or chiller)
+    - Electric transformers (rectifiers, inverters, transformer stations, charge controllers)
+    - HVAC and Heat pumps (as heater and/or chiller)
+    - Combined heat and power (CHP) and other condensing power plants
+    - Diesel generators
+    - Electrolyzers
+    - Biogas power plants
 
-Dispatchable conversion assets are added as transformers and are defined in `energyConversion.csv`.
+Conversion assets are added as transformers and are defined in `energyConversion.csv`.
 
-The parameters `dispatch_price`, `efficiency` and `installedCap` of transformers are assigned to the output flows.
-This means that these parameters need to be given for the electrical output power in case of a diesel generator (more examples: electrolyzer - H2, heat pumps and boiler - nominal heat ouput, inverters / rectifiers - electrical output power).
-This also means that the costs of the fuel of a diesel generator (input flow) are not included in its `dispatch_price` but in the `dispatch_price` of the fuel source.
+The parameters `dispatch_price`, `efficiency` and `installedCap` of transformers are assigned to their output flows.
+This means that these parameters need to be given for the output of the asset and that the costs of the input, e.g. fuel, if existent, are not included in its `dispatch_price` but in the `dispatch_price` of the fuel source, see :ref:`dispatchable_sources`.
 
-Energy excess
-#############
+Conversion assets can be defined with multiple inputs or multiple outputs, but one asset currently cannot have both, multiple inputs and multiple outputs. Note that multiple inputs/output have not been tested, yet.
 
-An energy excess sink is placed on each of the LES energy busses, and therefore energy excess is allowed to take place on each bus of the LES.
-This means that there are assumed to be sufficient vents (heat) or transistors (electricity) to dump excess (waste) generation.
-Excess generation can only take place when a non-dispatchable source is present or if an asset can supply energy without any fuel or dispatch costs.
+Electric transformers
+=====================
 
-In case of excessive excess energy, a warning is given that it seems to be cheaper to have high excess generation than investing into more capacities.
-High excess energy can for example result into an optimized inverter capacity that is smaller than the peak generation of installed PV.
-This becomes unrealistic when the excess is very high.
+Electric rectifiers and inverters that are transforming electricity in one direction only, are simply added as transformers.
+Bidirectional converters and transformer stations are defined by two transformers that are optimized independently from each other, if optimized.
+The same accounts for charge controllers for a :ref:`battery_storage` that are defined by two transformers, one for charging and one for discharging.
+The parameters `dispatch_price`, `efficiency` and `installedCap` need to be given for the electrical output power of the electric transformers.
 
-Energy providers (DSOs)
------------------------
+.. note::
+    When using two conversion objects to emulate a bidirectional conversion asset, their capacity should be interdependent. This is currently not the case, see `Infeasible bi-directional flow in one timestep <https://multi-vector-simulator.readthedocs.io/en/stable/Model_Assumptions.html#infeasible-bi-directional-flow-in-one-timestep>`_.
+
+Heating, Ventilation, and Air Conditioning (HVAC)
+=================================================
+
+Like other conversion assets, devices for heating, ventilation and air conditioning (HVAC) are added as transformers. As the parameters `dispatch_price`, `efficiency` and `installedCap` are assigned to the output flows they need to be given for the nominal heat output of the HVAC.
+
+Different types of HVAC can be modelled. Except for an air source device with ambient temperature as heat reservoir, the device could be modelled with two inputs (electricity and heat) in case the user is interested in the heat reservoir. This has not been tested, yet. Also note that currently efficiencies are assigned to the output flows the see `issue #799 <https://github.com/rl-institut/multi-vector-simulator/issues/799>`_.
+Theoretically, a HVAC device can be modelled with multiple outputs (heat, cooling, ...); this has not been tested, yet.
+
+The efficiency of HVAC systems is defined by the coefficient of performance (COP), which is strongly dependent on the temperature. In order to take account of this, the efficiency can be defined as time series, see section :ref:`time_series_params`.
+If you do not provide your own COP time series you can calculate them with `oemof.thermal <https://github.com/oemof/oemof-thermal>`_, see  `documentation on compression heat pumps and chillers <https://oemof-thermal.readthedocs.io/en/stable/compression_heat_pumps_and_chillers.html>`_ and  `documentation on absorption chillers <https://oemof-thermal.readthedocs.io/en/stable/absorption_chillers.html>`_.
+
+Electrolyzers
+=============
+
+Electrolyzers are added as transformers with a constant or time dependent but in any case pre-defined efficiency. The parameters `dispatch_price`, `efficiency` and `installedCap` need to be given for the output of the electrolyzers (hydrogen).
+
+Currently, electrolyzers are modelled with only one input flow (electricity), not taking into account the costs of water; see `issue #799 <https://github.com/rl-institut/multi-vector-simulator/issues/799>`_.
+The minimal operation level and consumption in standby mode are not taken into account, yet, see `issue #50 <https://github.com/rl-institut/multi-vector-simulator/issues/50>`_.
+
+Condensing power plants and Combined heat and power (CHP)
+=========================================================
+
+Condensing power plants are added as transformers with one input (fuel) and one output (electricity), while CHP plants are defined with two outputs (electricity and heat).
+The parameters `dispatch_price`, `efficiency` and `installedCap` need to be given for the electrical output power (and nominal heat output) of the power plant, while fuel costs need to be included in the `dispatch_price` of the fuel source.
+
+The ratio between the heat and electricity output of a CHP is currently simulated as fix values. This might be changed in the future by using the `ExtractionTurbineCHP <https://oemof-solph.readthedocs.io/en/latest/usage.html#extractionturbinechp-component>`_
+or the `GenericCHP <https://oemof-solph.readthedocs.io/en/latest/usage.html#genericchp-component>`_ component of oemof, see `issue #803 <https://github.com/rl-institut/multi-vector-simulator/issues/803>`_
+
+Note that multiple inputs/output have not been tested, yet.
+
+Other fuel powered plants
+=========================
+
+Fuel powered conversion assets, such as diesel generators and biogas power plants, are added as transformers.
+The parameters `dispatch_price`, `efficiency` and `installedCap` need to be given for the electrical output power of the diesel generator or biogas power plant.
+As described above, the costs for diesel and gas need to be included in the `dispatch_price` of the fuel source.
+
+
+.. _energy_providers:
+
+Energy providers
+################
 
 The energy providers are the most complex assets in the MVS model. They are composed of a number of sub-assets
 
     - Energy consumption source, providing the energy required from the system with a certain price
     - Energy peak demand pricing "transformers", which represent the costs induced due to peak demand
     - Bus connecting energy consumption source and energy peak demand pricing transformers
-    - Energy feed-in sink, able to take in generation that is provided to the DSO for revenue
-    - Optionally: Transformer Station connecting the DSO bus to the energy bus of the LES
+    - Energy feed-in sink, able to take in generation that is provided to the energy provider for revenue
+    - Optionally: Transformer Station connecting the energy provider bus to the energy bus of the LES
 
-With all these components, the DSO can be visualized as follows:
+With all these components, the energy provider can be visualized as follows:
 
 .. image:: images/Model_Assumptions_energyProvider_assets.png
  :width: 600
 
 Variable energy consumption prices (time-series)
-################################################
+================================================
 
-- Link to howto
+Energy consumption prices can be added as values that vary over time. See section :ref:`time_series_folder` or more information.
 
 Peak demand pricing
-###################
+===================
 
 A peak demand pricing scheme is based on an electricity tariff,
 that requires the consumer not only to pay for the aggregated energy consumption in a time period (eg. kWh electricity),
-but also for the maximum peak demand (load, eg. kW power) towards the DSO grid within a specific pricing period.
+but also for the maximum peak demand (load, eg. kW power) towards the grid of the energy provider within a specific pricing period.
 
 In the MVS, this information is gathered for the `energyProviders` with:
 
@@ -103,10 +193,125 @@ For two peak demand pricing periods, the resulting dispatch could look as follow
 .. image:: images/Model_Assumptions_Peak_Demand_Pricing_Dispatch_Graph.png
  :width: 600
 
+
+Energy storage
+##############
+
+Energy storages such as battery storages, thermal storages or H2 storages are modelled with the *GenericStorage* component of *oemof.solph*. They are designed for one input and one output and are defined with files `energyStorage.csv` and `storage_*.csv` and have several parameters, which are listed in the section :ref:`storage_csv`.
+
+The state of charge of a storage at the first and last time step of an optimization are equal.
+Charge and discharge of the whole capacity of the energy storage are possible within one time step in case the capacity of the storage is not optimized. In case of
+capacity optimization charge and discharge is limited by the :ref:`crate-label`.
+
+.. _battery_storage:
+
+Battery energy storage system (BESS)
+====================================
+
+BESS are modelled as *GenericStorage* like described above. The BESS can either be connected directly to the electricity bus of the LES or via a charge controller that manages the BESS.
+When choosing the second option, the capacity of the charge controller can be optimized individually, which takes its specific costs and lifetime into consideration.
+If you do not want to optimize the charge controller's capacity you can take its costs and efficiency into account when defining the storage's input and output power, see :ref:`storage_csv`.
+A charge controller is defined by two transformers, see section :ref:`energy_conversion` above.
+
+Note that capacity reduction over the lifetime of a BESS that may occur due to different effects during aging cannot be taken into consideration in MVS. A possible workaround for this could be to manipulate the lifetime.
+
+
+Hydrogen storage (H2)
+=====================
+
+Hydrogen storages are modelled as all storage types in MVS with as *GenericStorage* like described above.
+
+The most common hydrogen storages store H2 as liquid under temperatures lower than -253 °C or under high pressures.
+The energy needed to provide these requirements cannot be modelled via the storage component as another energy sector such as cooling or electricity is needed. It could therefore, be modelled as an additional demand of the energy system, see `issue #811 <https://github.com/rl-institut/multi-vector-simulator/issues/811>`_
+
+Thermal energy storage
+======================
+
+Thermal energy storages of the type sensible heat storage (SHS) are modelled as *GenericStorage* like described above. The implementation of a specific type of SHS, the stratified thermal energy storage, is described in section :ref:`stratified_tes`.
+The modelling of latent-heat (or Phase-change) and chemical storages have not been tested with MVS, but might be achieved by precalculations.
+
+.. _stratified_tes:
+
+Stratified thermal energy storage
+=================================
+
+Stratified thermal energy storage is defined by the two optional parameters `fixed_losses_relative` and `fixed_losses_absolute`. If they are not included in `storage_*.csv` or are equal to zero, then a normal generic storage is simulated.
+These two parameters are used to take into account temperature dependent losses of a thermal storage. To model a thermal energy storage without stratification, the two parameters are not set. The default values of `fixed_losses_relative` and `fixed_losses_absolute` are zero.
+Except for these two additional parameters the stratified thermal storage is implemented in the same way as other storage components.
+
+Precalculations of the `installedCap`, `efficiency`, `fixed_losses_relative` and `fixed_losses_absolute` can be done orientating on the stratified thermal storage component of `oemof.thermal  <https://github.com/oemof/oemof-thermal>`__.
+The parameters `U-value`, `volume` and `surface` of the storage, which are required to calculate `installedCap`, can be precalculated as well.
+
+The efficiency :math:`\eta` of the storage is calculated as follows:
+
+.. math::
+   \eta = 1 - loss{\_}rate
+
+This example shows how to do precalculations using stratified thermal storage specific input data:
+
+
+.. code-block:: python
+
+        from oemof.thermal.stratified_thermal_storage import (
+        calculate_storage_u_value,
+        calculate_storage_dimensions,
+        calculate_capacities,
+        calculate_losses,
+        )
+
+        # Precalculation
+        u_value = calculate_storage_u_value(
+            input_data['s_iso'],
+            input_data['lamb_iso'],
+            input_data['alpha_inside'],
+            input_data['alpha_outside'])
+
+        volume, surface = calculate_storage_dimensions(
+            input_data['height'],
+            input_data['diameter']
+        )
+
+        nominal_storage_capacity = calculate_capacities(
+            volume,
+            input_data['temp_h'],
+            input_data['temp_c'])
+
+        loss_rate, fixed_losses_relative, fixed_losses_absolute = calculate_losses(
+            u_value,
+            input_data['diameter'],
+            input_data['temp_h'],
+            input_data['temp_c'],
+            input_data['temp_env'])
+
+Please see the `oemof.thermal` `examples <https://github.com/oemof/oemof-thermal/tree/dev/examples/stratified_thermal_storage>`__ and the `documentation  <https://oemof-thermal.readthedocs.io/en/latest/stratified_thermal_storage.html>`__ for further information.
+
+For an investment optimization the height of the storage should be left open in the precalculations and `installedCap` should be set to 0 or NaN.
+
+An implementation of the stratified thermal storage component has been done in `pvcompare <https://github.com/greco-project/pvcompare>`__. You can find the precalculations of the stratified thermal energy storage made in `pvcompare` `here <https://github.com/greco-project/pvcompare/tree/dev/pvcompare/stratified_thermal_storage.py>`__.
+
+
+Energy excess
+#############
+
+.. note::
+   Energy excess components are implemented **automatically** by MVS! You do not need to define them yourself.
+
+An energy excess sink is placed on each of the LES energy busses, and therefore energy excess is allowed to take place on each bus of the LES.
+This means that there are assumed to be sufficient vents (heat) or transistors (electricity) to dump excess (waste) generation.
+Excess generation can only take place when a non-dispatchable source is present or if an asset can supply energy without any fuel or dispatch costs.
+
+In case of excessive excess energy, a warning is given that it seems to be cheaper to have high excess generation than investing into more capacities.
+High excess energy can for example result into an optimized inverter capacity that is smaller than the peak generation of installed PV.
+This becomes unrealistic when the excess is very high.
+
+.. _constraints-label:
+
 Constraints
 -----------
 
 Constraints are controlled with the file `constraints.csv`.
+
+.. _constraint_min_re_factor:
 
 Minimal renewable factor constraint
 ###################################
@@ -115,9 +320,8 @@ The minimal renewable factor constraint requires the capacity and dispatch optim
 
 The minimal renewable factor is applied to the minimal renewable factor of the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
 
-.. math:
+.. math::
         minimal renewable factor <= \frac{\sum renewable generation \cdot weighting factor}{\sum renewable generation \cdot weighting factor + \sum non-renewable generation \cdot weighting factor}
-
 
 Please be aware that the minimal renewable factor constraint defines bounds for the :ref:`kpi_renewable_factor` of the system, ie. taking into account both local generation as well as renewable supply from the energy providers. The constraint explicitly does not aim to reach a certain :ref:`kpi_renewable_share_of_local_generation` on-site.
 
@@ -138,6 +342,34 @@ Depending on the energy system, especially when working with assets which are no
 Also, if you are aiming at very high minimal renewable factors, the simulation time can increase drastically. If you do not get a result after a maximum of 20 Minutes, you should consider terminating the simulation and trying with a lower minimum renewable share.
 
 The minimum renewable share is introduced to the energy system by `D2.constraint_minimal_renewable_share()` and a validation test is performed with `E4.minimal_renewable_share_test()`.
+
+Minimal degree of autonomy constraint
+######################################
+
+The minimal degree of autonomy constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal degree of autonomy defined within the constraint. The degree of autonomy of the optimized energy system may also be higher than the minimal degree of autonomy. Please find the definition of here: :ref:`kpi_degree_of_autonomy`
+
+The minimal degree of autonomy is applied to the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
+
+.. math::
+        minimal~degree~of~autonomy <= DA = \frac{\sum E_{demand,i} \cdot w_i - \sum E_{consumption,provider,j} \cdot w_j}{\sum E_{demand,i} \cdot w_i}
+
+:Deactivating the constraint:
+
+The minimal degree of autonomy constraint is deactivated by inserting the following row in `constraints.csv` as follows:
+
+```minimal_degree_of_autonomy,factor,0```
+
+:Activating the constraint:
+
+The constraint is enabled when the value of the minimal degree of autonomy is above 0 in `constraints.csv`:
+
+```minimal_degree_of_autonomy,factor,0.3```
+
+
+Depending on the energy system, especially when working with assets which are not to be capacity-optimized, it is possible that the minimal degree of autonomy criterion cannot be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimizeCap` parameters to `True`, and then investigate further.
+
+The minimum degree of autonomy is introduced to the energy system by `D2.constraint_minimal_degree_of_autonomy()` and a validation test is performed with `E4.minimal_degree_of_autonomy()`.
+
 
 
 Maximum emission constraint
@@ -164,7 +396,40 @@ The unit of the constraint is `kgCO2eq/a`. To select a useful value for this con
 - Firstly, optimize your system without the constraint to get an idea about the scale of the emissions and then, secondly, set the constraint and lower the emissions step by step until you receive an unbound problem (which then represents the non-archievable minimum of emissions for your energy system)
 - Check the emissions targets of your region/country and disaggregate the number
 
-The maximum emissions constraint is introduced to the energy system by `D2.constraint_maximum_emissions()` and a validation test is performed within the benchmark tests.
+The maximum emissions constraint is introduced to the energy system by `D2.constraint_maximum_emissions()` and a validation test is performed with `E4.maximum_emissions_test()`.
+
+
+Net zero energy (NZE) constraint
+################################
+
+The net zero energy (NZE) constraint requires the capacity and dispatch optimization of the MVS to result into a net zero system, but can also result in a plus energy system.
+The degree of NZE of the optimized energy system may be higher than 1, in case of a plus energy system. Please find the definition of net zero energy (NZE) and the KPI here: :ref:`kpi_degree_of_nze`.
+
+Some definitions of NZE systems in literature allow the energy system's demand solely be provided by locally generated renewable energy. In MVS this is not the case - all locally generated energy is taken into consideration. To enlarge the share of renewables in the energy system you can use the :ref:`constraint_min_re_factor`.
+
+The NZE constraint is applied to the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
+
+.. math::
+        \sum_{i} {E_{feedin, DSO} (i) \cdot w_i - E_{consumption, DSO} (i) \cdot w_i} >= 0
+
+:Deactivating the constraint:
+
+The NZE constraint is deactivated by inserting the following row in `constraints.csv` as follows:
+
+```net_zero_energy,bool,False```
+
+:Activating the constraint:
+
+The constraint is enabled when the value of the NZE constraint is set to `True` in `constraints.csv`:
+
+```net_zero_energy,bool,True```
+
+
+Depending on the energy system, especially when working with assets which are not to be capacity-optimized, it is possible that the NZE criterion cannot be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimizeCap` parameters to `True`, and then investigate further.
+
+The net zero energy constraint is introduced to the energy system by `D2.constraint_net_zero_energy()` and a validation test is performed with `E4.net_zero_energy_test()`.
+
+
 
 
 Weighting of energy carriers
@@ -517,6 +782,24 @@ The perfect foresight can lead to suspicious dispatch of assets, for example cha
 
 .. _limitations-missing-kpi:
 
+
+Optimization precision
+######################
+
+:Limitation:
+
+Marginal capacities and flows below a threshold of 10^-6 are rounded to zero.
+
+:Reason:
+
+The MVS makes use of the open energy modelling framework (oemof) by using oemof-solph. For the MVS, we use the `cbc-solver` and at a `ratioGap=0.03`. This influences the precision of the optimized decision variables, ie. the optimized capacities as well as the dispatch of the assets.
+In some cases the dispatch and capacities vary around 0 with fluctuations of the order of floating point precision (well below <10e-6), thus resulting in marginal and also marginal negative dispatch or capacities. When calculating KPI from these decision variables, the results can be nonsensical, for example leading to SoC curves with negative values or values far above the viable value 1.
+As the reason for these inconsistencies is known, the MVS enforces the capacities and dispatch of to be above 10e-6, ie. all capacities or flows smaller than that are set to zero. This is applied to absolute values, so that irregular (and incorrect) values for decision variables can still be detected.
+
+:Implications:
+
+If your energy system has demand or resource profiles that include marginal values below the threshold of 10^-6, the MVS will not result in appropriate results. For example, that means that if you have an energy system with usually is measured in `MW` but one demand is in the `W` range, the dispatch of assets serving this minor demand is not displayed correctly. Please chose `kW` or even `W` as a base unit then.
+
 Extension of KPIs necessary
 ###########################
 
@@ -659,6 +942,7 @@ The inputs for a simulation with the MVS are subjected to a couple of verificati
 
 - Time series of energyProduction assets that are to be optimized have specific generation profiles (`C1.check_non_dispatchable_source_time_series`, `C1.check_time_series_values_between_0_and_1`): Raises error if time series of non-dispatchable sources are not between [0, 1].
 
+- Provided timeseries are checked for `NaN` values, which are replaced by zeroes (`C0.replace_nans_in_timeseries_with_0`).
 
 .. _validation-methodology:
 
@@ -712,6 +996,12 @@ A benchmark is a point of reference against which results are compared to assess
 
 * Maximum emissions constraint: Grid + PV + Diesel Generator (data: `set 1 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_None>`__, `set 2 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low>`__, `set 3 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/emission_constraint/tests/benchmark_test_inputs/Constraint_maximum_emissions_low_grid_RE_100>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/f459b35da6c46445e8294845604eb2b683e43680/tests/test_benchmark_constraints.py#L121>`__): Emissions are limited by constraint, more PV is installed to reduce emissions. For RE share of 100 % in grid, more electricity from the grid is used
 
+* Parser converting an energy system model from EPA to MVS (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/epa_benchmark.json>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/test_benchmark_scenarios.py>`__)
+
+* Stratified thermal energy storage (`data <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/Feature_stratified_thermal_storage>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/test_benchmark_stratified_thermal_storage.py>`__): With fixed thermal losses absolute and relative reduced storage capacity only if these losses apply
+
+* Net zero energy (NZE) constraint: Grid + PV and Grid + PV + Heat Pump (data `set 1 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy>`__, `set 2 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy_False>`__, `set 3 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy_sector_coupled>`__, `set 4 <https://github.com/rl-institut/multi-vector-simulator/tree/feature/nze_constraint/tests/benchmark_test_inputs/Constraint_net_zero_energy_sector_coupled_False>`__/`pytest <https://github.com/rl-institut/multi-vector-simulator/blob/dev/tests/test_benchmark_constraints.py>`__): Degree of NZE >= 1 when constraint is used and degree of NZE < 1 when constraint is not used.
+
 More tests can still be implemented with regard to:
 
 * The investment model within the MVS
@@ -742,3 +1032,39 @@ Comparison to Other Models
 So far, the MVS' results for a sector coupled system (electricity + hydrogen) are compared to those of HOMER for the same exact system. This comparison is important to highlight the similarities and differences between the two optimization models. On the electricity side, most of the values are comparable and in the same range. The differences mainly show on the hydrogen part in terms of investment in an electrolyzer capacity (component linking the two sectors) and the values related to that. On another note, both models have different approaches for calculating the value of the levelized cost of a certain energy carrier and therefore the values are apart. Details regarding the comparison drawn between the two models can be found `here <https://repository.tudelft.nl/islandora/object/uuid%3A50c283c7-64c9-4470-8063-140b56f18cfe?collection=education>`__ on pages 55-63.
 
 This validation method is commonly used. However, one model cannot absolutely validate another model or claim that one is better than the other. This is why the focus should be on testing the correctness, appropriateness and accuracy of a model vis-à-vis its purpose. Since the MVS is an open source tool, it is important to use a validated model for comparison, but also similar open source tools like urbs and Calliope for instance. The following two articles list some of the models that could be used for comparison to the MVS: `A review of modelling tools for energy and electricity systems with large shares of variable renewables <https://doi.org/10.1016/j.rser.2018.08.002>`__ and `Power-to-heat for renewable energy integration: A review of technologies, modeling approaches, and flexibility potentials <https://doi.org/10.1016/j.apenergy.2017.12.073>`__.
+
+
+.. _verification-tests:
+
+Automatic output verification
+#############################
+
+There is a suite of functions within the MVS codebase module E4_verification.py that run a few checks on some of the outputs of the simulation in order to make sure that the results are meaningful and if something like an excessive excess energy flow is noteworthy. These are valuable tests that act as a safeguard for the user, as the model is not only validated for benchmark tests but for every run simulation.
+The following is the list of functions in E4_verification.py that carry out the verification tests:
+
+* detect_excessive_excess_generation_in_bus
+* maximum_emissions_test
+* minimal_renewable_share_test
+* verify_state_of_charge
+
+The first test serves as an alert to the energy system modeler to check their inputs again, whereas if there are any errors raised within the other functions, it is an indication of something seriously wrong.
+
+detect_excessive_excess_generation_in_bus
+=========================================
+
+This test is here to notify to the modeler in case there is an excess generation within a bus in the energy system. Precisely, the modeler is given a heads-up when the ratio of total outflows to total inflows for one or more buses is less than 0.9
+
+maximum_emissions_test
+======================
+
+Other than renewables, source components in the energy system have a certain emissions value associated with the generation of energy. The user is able to apply a constraint on the maximum allowed emissions in the energy mix of the output energy system. This function runs a verification test on the output energy system data to determine if the user-supplied constraint on maximum emissions is correctly applied or not. If not, then the modeler is notified.
+
+minimal_renewable_share_test
+============================
+
+This test is carried out on the energy system model after optimization of its capacities. It verifies whether the user-provided constraint for the minimal share of renewables in the energy mix of the optimized system was respected or not. In case this lower bound constraint is not met, the user is notified.
+
+verify_state_of_charge
+======================
+
+This test is intended to check the time-series of the state of charge values for storages in the energy system simulation results to notify of a serious error in case, the SoC value at any time-step is not between 0 and 1, which is physically not feasible.

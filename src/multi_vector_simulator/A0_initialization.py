@@ -91,6 +91,7 @@ from multi_vector_simulator.utils.constants import (
     ARG_PDF,
     ARG_REPORT_PATH,
     ARG_PATH_SIM_OUTPUT,
+    ARG_DEBUG_REPORT,
 )
 from multi_vector_simulator.utils.constants_json_strings import LABEL
 
@@ -237,8 +238,7 @@ def report_arg_parser():
     :return: parser
     """
     parser = argparse.ArgumentParser(
-        prog="python mvs_report.py",
-        description="Display the report of a MVS simulation",
+        prog="mvs_report", description="Display the report of a MVS simulation",
     )
     parser.add_argument(
         "-pdf",
@@ -266,6 +266,15 @@ def report_arg_parser():
         type=str,
         help="path to save the pdf report",
         default="",
+    )
+    parser.add_argument(
+        "-d",
+        dest=ARG_DEBUG_REPORT,
+        nargs="?",
+        type=bool,
+        help="run the dash app in debug mode with hot-reload",
+        const=True,
+        default=False,
     )
     return parser
 

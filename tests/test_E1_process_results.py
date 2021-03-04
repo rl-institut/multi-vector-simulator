@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import numpy as np
 import logging
 import shutil
 import mock
@@ -12,6 +13,8 @@ import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C0_data_processing as C0
 import multi_vector_simulator.D0_modelling_and_optimization as D0
 import multi_vector_simulator.E1_process_results as E1
+
+from multi_vector_simulator.E0_evaluation import initalize_kpi
 
 from multi_vector_simulator.utils.constants import OUTPUT_FOLDER, CSV_EXT
 
@@ -71,6 +74,7 @@ class TestGetTimeseriesPerBus:
             path_input_folder=user_input[PATH_INPUT_FOLDER],
             path_output_folder=user_input[PATH_OUTPUT_FOLDER],
             move_copy=True,
+            set_default_values=True,
         )
         logging.debug("Accessing script: C0_data_processing")
         C0.all(dict_values)
@@ -190,6 +194,183 @@ def test_get_tuple_for_oemof_results():
         assert flux_tuple == (asset_label, bus)
 
 
+def test_cut_below_micro_scalar_value_below_0_larger_threshold(caplog):
+    value = -1
+    with caplog.at_level(logging.WARNING):
+        result = E1.cut_below_micro(value=value, label="label")
+    assert (
+        "This is so far below 0, that the value is not changed" in caplog.text
+    ), f"The value {value} is below 0 and larger then the threshold, but no warning is displayed that this value may be invalid."
+    assert (
+        result == value
+    ), f"As value {value} is below 0 but larger then the threshold, its value should not be changed (but it is {result})."
+
+
+def test_cut_below_micro_scalar_value_below_0_smaller_threshold(caplog):
+    value = -0.5 * 1e-6
+    with caplog.at_level(logging.DEBUG):
+        result = E1.cut_below_micro(value=value, label="label")
+    assert (
+        "Negative value (s)" in caplog.text
+    ), f"The value {value} is below 0 and below the threshold, but the log does not register a debug message for this."
+    assert (
+        result == 0
+    ), f"As value {value} is below 0 but smaller then the threshold, its value should be changed to zero (but it is {result})."
+
+
+def test_cut_below_micro_scalar_value_0():
+    value = 0
+    result = E1.cut_below_micro(value=value, label="label")
+    assert (
+        result == value
+    ), f"The value {value} is 0 and should not be changed (but it is {result})."
+
+
+def test_cut_below_micro_scalar_value_larger_0():
+    value = 1
+    result = E1.cut_below_micro(value=value, label="label")
+    assert (
+        result == value
+    ), f"The value {value} is larger 0 by more than the threshold and therefore should not be changed (but it is {result})."
+
+
+def test_cut_below_micro_scalar_value_larger_0_smaller_threshold(caplog):
+    value = 0.5 * 1e-6
+    with caplog.at_level(logging.DEBUG):
+        result = E1.cut_below_micro(value=value, label="label")
+    assert (
+        "The positive value" in caplog.text
+    ), f"The value {value} is larger 0 but below the threshold and should raise a debug message."
+
+    assert (
+        result == 0
+    ), f"As value {value} positive but smaller then the threshold, its value should be changed to zero (but it is {result})."
+
+
+def test_cut_below_micro_pd_Series_below_0_larger_threshold(caplog):
+    value = pd.Series([0, -0.5 * 1e-6, -1, 0])
+    with caplog.at_level(logging.WARNING):
+        result = E1.cut_below_micro(value=value, label="label")
+    assert (
+        "This is so far below 0, that the value is not changed" in caplog.text
+    ), f"One value in pd.Series is below 0 and larger then the threshold, but no warning is displayed that this value may be invalid."
+    assert (
+        result == value
+    ).all(), f"As value {value} is below 0 but larger then the threshold, its value should not be changed (but it is {result})."
+
+
+def test_cut_below_micro_pd_Series_below_0_smaller_threshold(caplog):
+    value = pd.Series([0, -0.5 * 1e-6, 0, 1])
+    exp = pd.Series([0, 0, 0, 1])
+    with caplog.at_level(logging.DEBUG):
+        result = E1.cut_below_micro(value=value, label="label")
+    assert (
+        "Negative value (s)" in caplog.text
+    ), f"One value in pd.Series is below 0 and below the threshold, but the log does not register a debug message for this."
+    assert (
+        result[1] == 0
+    ), f"As value {value[1]} is below 0 but smaller then the threshold, its value should be changed to zero (but it is {result[1]})."
+    assert (
+        result == exp
+    ).all(), f"One value in pd.Series is below 0 but smaller then the threshold, its value should be changed to zero (but it is {result})."
+
+
+def test_cut_below_micro_pd_Series_0():
+    value = pd.Series([0, 0, 0, 1])
+    result = E1.cut_below_micro(value=value, label="label")
+    assert (
+        result == value
+    ).all(), (
+        f"One value in pd.Series is 0 and should not be changed (but it is {result})."
+    )
+
+
+def test_cut_below_micro_pd_Series_larger_0():
+    value = pd.Series([1, 2, 3, 4])
+    result = E1.cut_below_micro(value=value, label="label")
+    assert (
+        result == value
+    ).all(), f"All values in pd.Series are larger 0 by more than the threshold and therefore should not be changed (but it is {result})."
+
+
+def test_cut_below_micro_pd_Series_larger_0_smaller_threshold(caplog):
+    value = pd.Series([0, 0.5 * 1e-6, 0, 1])
+    exp = pd.Series([0, 0, 0, 1])
+    with caplog.at_level(logging.DEBUG):
+        result = E1.cut_below_micro(value=value, label="label")
+    assert (
+        " positive values smaller then the threshold" in caplog.text
+    ), f"One value in pd.Series is above 0 and below the threshold, but the log does not register a debug message for this."
+    assert (
+        result[1] == 0
+    ), f"As value {value[1]} is below 0 but smaller then the threshold, its value should be changed to zero (but it is {result[1]})."
+    assert (
+        result == exp
+    ).all(), f"One value in pd.Series is below 0 but smaller then the threshold, its value should be changed to zero (but it is {result})."
+
+
+def test_process_fixcost():
+    economic_data = {
+        PROJECT_DURATION: {VALUE: 20},
+        ANNUITY_FACTOR: {VALUE: 1},
+        CRF: {VALUE: 1},
+        DISCOUNTFACTOR: {VALUE: 0},
+        TAX: {VALUE: 0},
+        CURR: CURR,
+    }
+    fix_cost_entry = "one entry"
+    dict_test = {
+        ECONOMIC_DATA: economic_data,
+        SIMULATION_SETTINGS: {EVALUATED_PERIOD: {VALUE: 365, UNIT: "Days"}},
+        FIX_COST: {
+            fix_cost_entry: {
+                LABEL: fix_cost_entry,
+                SPECIFIC_COSTS_OM: {VALUE: 1, UNIT: CURR},
+                SPECIFIC_COSTS: {VALUE: 1, UNIT: CURR},
+                DEVELOPMENT_COSTS: {VALUE: 1, UNIT: CURR},
+                LIFETIME: {VALUE: 20},
+                AGE_INSTALLED: {VALUE: 0},
+                LIFETIME_SPECIFIC_COST: {VALUE: 1, UNIT: CURR},
+                LIFETIME_SPECIFIC_COST_OM: {VALUE: 1, UNIT: CURR},
+                ANNUITY_SPECIFIC_INVESTMENT_AND_OM: {VALUE: 1, UNIT: CURR},
+                SIMULATION_ANNUITY: {VALUE: 1, UNIT: CURR},
+                SPECIFIC_REPLACEMENT_COSTS_INSTALLED: {VALUE: 1, UNIT: CURR},
+                SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED: {VALUE: 1, UNIT: CURR},
+            }
+        },
+    }
+    initalize_kpi(dict_test)
+    E1.process_fixcost(dict_test)
+    assert (
+        fix_cost_entry in dict_test[KPI][KPI_COST_MATRIX][LABEL].values
+    ), f"The fix cost entry `{fix_cost_entry}` is not added to the cost matrix ({KPI_COST_MATRIX})."
+    for k in [
+        COST_TOTAL,
+        COST_OPERATIONAL_TOTAL,
+        COST_INVESTMENT,
+        COST_UPFRONT,
+        COST_REPLACEMENT,
+        COST_OM,
+        ANNUITY_TOTAL,
+        ANNUITY_OM,
+    ]:
+        assert isinstance(dict_test[KPI][KPI_COST_MATRIX][k][0], float) or isinstance(
+            dict_test[KPI][KPI_COST_MATRIX][k][0], int
+        ), f"A float or int should be added for fix cost entry `{fix_cost_entry}` and its KPI `{k}`."
+    for k in [
+        COST_DISPATCH,
+        LCOE_ASSET,
+    ]:
+        assert np.isnan(
+            dict_test[KPI][KPI_COST_MATRIX][k][0]
+        ), f"No value should be added for fix cost entry `{fix_cost_entry}` and KPI `{k}`, but value {dict_test[KPI][KPI_COST_MATRIX][k][fix_cost_entry]} is attributed."
+
+    assert (
+        fix_cost_entry not in dict_test[KPI][KPI_SCALAR_MATRIX][LABEL].values
+    ), f"No line should be added for the fix cost entry `{fix_cost_entry}` to the scalar matrix ({KPI_SCALAR_MATRIX})."
+
+
+"""
 def test_get_optimal_cap_optimize_input_flow_timeseries_peak_provided():
     pass
 
@@ -237,3 +418,4 @@ def test_get_optimal_cap_optimizeCap_not_in_dict_asset():
 # def test_get_flow_invalid_direction_raises_value_error():
 #     pass
 # same tests as add_info_flow() just that bus and direction is provided.
+"""

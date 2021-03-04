@@ -5,6 +5,7 @@ Module E3 - Indicator calculation
 In module E3 the technical KPI are evaluated:
 - calculate renewable share
 - calculate degree of autonomy (DA)
+- calculate degree of net zero energy (NZE)
 - calculate total generation of each asset and total_internal_generation
 - calculate total feedin electricity equivalent
 - calculate energy flows between sectors
@@ -54,6 +55,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_DEMAND,
     TOTAL_EXCESS,
     TOTAL_FEEDIN,
+    TOTAL_CONSUMPTION_FROM_PROVIDERS,
     SUFFIX_ELECTRICITY_EQUIVALENT,
     LCOeleq,
     ATTRIBUTED_COSTS,
@@ -67,6 +69,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     UNIT_SPECIFIC_EMISSIONS,
     UNIT_EMISSIONS,
+    DEGREE_OF_NZE,
 )
 
 
@@ -258,10 +261,7 @@ def calculate_electricity_equivalent_for_a_set_of_aggregated_values(
     logging.info(
         f"The {kpi_name+SUFFIX_ELECTRICITY_EQUIVALENT} of the LES is: {round(total_electricity_equivalent)} kWheleq."
     )
-    if kpi_name == TOTAL_EXCESS:
-        logging.warning(
-            f"The calculation of the {TOTAL_EXCESS} per sector and their energy equivalent may currently be faulty. Please refer to issue #559"
-        )
+
     return total_electricity_equivalent
 
 
@@ -291,6 +291,7 @@ def add_total_renewable_and_non_renewable_energy_origin(dict_values):
         renewable_origin.update({sector: 0})
         non_renewable_origin.update({sector: 0})
 
+    # Aggregate the total generation of non renewable and renewable energy in the LES
     for asset in dict_values[ENERGY_PRODUCTION]:
         if RENEWABLE_ASSET_BOOL in dict_values[ENERGY_PRODUCTION][asset]:
             sector = dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
@@ -313,6 +314,7 @@ def add_total_renewable_and_non_renewable_energy_origin(dict_values):
         }
     )
 
+    # Aggregate the total use of non renewable and renewable energy at DSO level
     for dso in dict_values[ENERGY_PROVIDERS]:
         sector = dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR]
 
@@ -410,7 +412,6 @@ def add_renewable_share_of_local_generation(dict_values):
             )
         }
     )
-    return
 
 
 def add_renewable_factor(dict_values):
@@ -533,13 +534,16 @@ def add_degree_of_autonomy(dict_values):
     - test_add_degree_of_autonomy()
     """
 
-    total_generation = dict_values[KPI][KPI_SCALARS_DICT][TOTAL_GENERATION_IN_LES]
-
+    total_consumption_from_energy_provider = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
     total_demand = dict_values[KPI][KPI_SCALARS_DICT][
         TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
     ]
 
-    degree_of_autonomy = equation_degree_of_autonomy(total_generation, total_demand)
+    degree_of_autonomy = equation_degree_of_autonomy(
+        total_consumption_from_energy_provider, total_demand
+    )
 
     dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_AUTONOMY: degree_of_autonomy})
 
@@ -548,20 +552,18 @@ def add_degree_of_autonomy(dict_values):
     )
     logging.info(f"Calculated the {DEGREE_OF_AUTONOMY} of the LES.")
 
-    return
 
-
-def equation_degree_of_autonomy(total_generation, total_demand):
+def equation_degree_of_autonomy(total_consumption_from_energy_provider, total_demand):
     """
     Calculates the degree of autonomy (DA).
 
-    The degree of autonomy describes the relation of the total locally
-    generated energy to the total demand of the system.
+    The degree of autonomy describes the relation of how much demand is supplied by local generation (as opposed to
+    grid conumption) compared to the total demand of the system.
 
     Parameters
     ----------
-    total_generation: float
-        total internal generation of energy
+    total_consumption_from_energy_provider: float
+        total energy consumption from providers
 
     total_demand: float
         total demand
@@ -572,20 +574,115 @@ def equation_degree_of_autonomy(total_generation, total_demand):
         degree of autonomy
 
     .. math::
-        DA &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
+        DA &=\frac{\sum_i {E_{demand} (i) \cdot w_i} - \sum_{i} {E_{consumption,provider,j} (j) \cdot w_j}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
-    A DA = 0 : System is totally dependent on the DSO,
-    DA = 1 : System is autonomous / a net-energy system
-    DA > 1 : a plus-energy system.
+    A DA = 0 : Demand is fully supplied by DSO consumption
+    DA = 1 : System is autonomous, ie. no DSO consumption is necessary
 
     Notice: As above, we apply a weighting based on Electricity Equivalent.
 
     Tested with
     - test_equation_degree_of_autonomy()
     """
-    degree_of_autonomy = total_generation / total_demand
+    degree_of_autonomy = (
+        total_demand - total_consumption_from_energy_provider
+    ) / total_demand
 
     return degree_of_autonomy
+
+
+def add_degree_of_net_zero_energy(dict_values):
+    """
+    Determines degree of net zero energy (NZE) and adds KPI to dict_values.
+
+    Parameters
+    ----------
+    dict_values: dict
+        dict with all project information and results,
+        after applying total_renewable_and_non_renewable_energy_origin and
+        total_demand_and_excess_each_sector
+
+    Returns
+    -------
+    None
+        updated dict_values with the degree of net zero energy
+
+    Notes
+    -----
+    As for other KPI, we apply a weighting based on Electricity Equivalent.
+
+    Tested with
+    - test_add_degree_of_net_zero_energy()
+    """
+
+    total_feedin = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+
+    total_consumption_from_energy_provider = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+    total_demand = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+
+    degree_of_nze = equation_degree_of_net_zero_energy(
+        total_feedin, total_consumption_from_energy_provider, total_demand
+    )
+
+    dict_values[KPI][KPI_SCALARS_DICT].update({DEGREE_OF_NZE: degree_of_nze})
+
+    logging.debug(f"Calculated the {DEGREE_OF_NZE}: {round(degree_of_nze, 2)}")
+    logging.info(f"Calculated the {DEGREE_OF_NZE} of the LES.")
+
+
+def equation_degree_of_net_zero_energy(
+    total_feedin, total_grid_consumption, total_demand
+):
+    """
+    Calculates the degree of net zero energy (NZE).
+
+    In NZE systems import and export of energy is allowed while the balance over one
+    year should be zero, thus the degree of net zero energy would be 1. The
+    Degree of net zero energy indicates how close the system gets to the NZE ideal.
+    If more energy is exported than imported it is plus-energy system (degree of NZE > 1).
+
+    Parameters
+    ----------
+    total_feedin: float
+        total grid feed-in in electricity equivalents
+
+    total_grid_consumption: float
+        total consumption from energy provider in electricity equivalents
+    total_demand: float
+        total demand in electricity equivalents
+
+    Returns
+    -------
+    float
+        degree of net zero energy
+
+    Notes
+    -----
+
+    .. math::
+        Degree of NZE &=\frac{1 + (\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
+
+    Degree of NZE = 1 : System is a net zero energy system, as E_feedin = E_grid_consumption
+    Degree of NZE > 1 : system is a plus-energy system, as E_feedin > E_grid_consumption
+    Degree of NZE < 1 : system does not reach net zero balance. The degree indicates by how much it fails to do so.
+    Degree of NZE = 0 : system has no internal production, as E_dem = E_grid_consumption.
+
+    Tested with
+    - test_equation_degree_of_net_zero_energy()
+    - test_equation_degree_of_net_zero_energy_is_zero()
+    - test_equation_degree_of_net_zero_energy_is_one()
+    - test_equation_degree_of_net_zero_energy_greater_one()
+
+    """
+    degree_of_nze = 1 + (total_feedin - total_grid_consumption) / total_demand
+
+    return degree_of_nze
 
 
 def add_degree_of_sector_coupling(dict_values):
@@ -608,7 +705,7 @@ def add_degree_of_sector_coupling(dict_values):
         with i are conversion assets
 
     """
-    # todo actually only flows that transform an energy carrier from oone energy vector to the next should be added
+    # todo actually only flows that transform an energy carrier from one energy vector to the next should be added
     # maybe energyBusses helps?
     total_flow_of_energy_conversion_equivalent = 0
     for asset in dict_values[ENERGY_CONVERSION]:
@@ -670,7 +767,7 @@ def equation_degree_of_sector_coupling(
     return degree_of_sector_coupling
 
 
-def add_total_feedin_electricity_equivaluent(dict_values):
+def add_total_feedin_electricity_equivalent(dict_values):
     """
     Determines the total grid feed-in with weighting of electricity equivalent.
 
@@ -685,21 +782,19 @@ def add_total_feedin_electricity_equivaluent(dict_values):
         updated dict_values with KPI : total feedin
 
     Tested with
-    - test_add_total_feedin_electricity_equivaluent()
+    - test_add_total_feedin_electricity_equivalent()
     """
 
     total_feedin_dict = {}
     # Get source connected to the specific DSO in question
     for dso in dict_values[ENERGY_PROVIDERS]:
         # load total flow into the dso sink
-        consumption_asset = str(dso + DSO_FEEDIN + AUTO_SINK)
-        energy_carrier = dict_values[ENERGY_CONSUMPTION][consumption_asset][
-            ENERGY_VECTOR
-        ]
+        feedin_sink = str(dso + DSO_FEEDIN + AUTO_SINK)
+        energy_carrier = dict_values[ENERGY_CONSUMPTION][feedin_sink][ENERGY_VECTOR]
         total_feedin_dict.update({energy_carrier: {}})
         total_feedin_dict.update(
             {
-                energy_carrier: dict_values[ENERGY_CONSUMPTION][consumption_asset][
+                energy_carrier: dict_values[ENERGY_CONSUMPTION][feedin_sink][
                     TOTAL_FLOW
                 ][VALUE]
             }
@@ -708,6 +803,52 @@ def add_total_feedin_electricity_equivaluent(dict_values):
     # Append total feedin in electricity equivalent to kpi
     calculate_electricity_equivalent_for_a_set_of_aggregated_values(
         dict_values, total_feedin_dict, kpi_name=TOTAL_FEEDIN
+    )
+
+
+def add_total_consumption_from_provider_electricity_equivalent(dict_values):
+    """
+    Determines the total consumption from energy providers with weighting of electricity equivalent.
+
+    Parameters
+    ----------
+    dict_values: dict
+        dict with all project information and results
+
+    Returns
+    -------
+    None
+        updated dict_values with KPI :
+        - TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity,
+        - TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity + SUFFIX_ELECTRICITY_EQUIVALENT
+        - TOTAL_CONSUMPTION_FROM_PROVIDERS + SUFFIX_ELECTRICITY_EQUIVALENT
+
+    Notes
+    -----
+    Tested with:
+    - E3.test_add_total_consumption_from_provider_electricity_equivalent()
+    """
+
+    total_consumption_dict = {}
+    # Get source connected to the specific DSO in question
+    for dso in dict_values[ENERGY_PROVIDERS]:
+        # load total flow into the dso sink
+        consumption_source = str(dso + DSO_CONSUMPTION)
+        energy_carrier = dict_values[ENERGY_PRODUCTION][consumption_source][
+            ENERGY_VECTOR
+        ]
+        total_consumption_dict.update({energy_carrier: {}})
+        total_consumption_dict.update(
+            {
+                energy_carrier: dict_values[ENERGY_PRODUCTION][consumption_source][
+                    TOTAL_FLOW
+                ][VALUE]
+            }
+        )
+
+    # Append total feedin in electricity equivalent to kpi
+    calculate_electricity_equivalent_for_a_set_of_aggregated_values(
+        dict_values, total_consumption_dict, kpi_name=TOTAL_CONSUMPTION_FROM_PROVIDERS
     )
 
 
@@ -749,8 +890,6 @@ def add_onsite_energy_fraction(dict_values):
         f"Calculated the {ONSITE_ENERGY_FRACTION}: {round(onsite_energy_fraction, 2)}"
     )
     logging.info(f"Calculated the {ONSITE_ENERGY_FRACTION} of the LES.")
-
-    return
 
 
 def equation_onsite_energy_fraction(total_generation, total_feedin):
@@ -841,8 +980,6 @@ def add_onsite_energy_matching(dict_values):
     )
     logging.info(f"Calculated the {ONSITE_ENERGY_MATCHING} of the LES.")
 
-    return
-
 
 def equation_onsite_energy_matching(
     total_generation, total_feedin, total_excess, total_demand
@@ -905,7 +1042,6 @@ def calculate_emissions_from_flow(dict_asset):
     """
     emissions = dict_asset[TOTAL_FLOW][VALUE] * dict_asset[EMISSION_FACTOR][VALUE]
     dict_asset.update({TOTAL_EMISSIONS: {VALUE: emissions, UNIT: UNIT_EMISSIONS}})
-    return
 
 
 def add_total_emissions(dict_values):
@@ -937,7 +1073,6 @@ def add_total_emissions(dict_values):
         f"Calculated the {TOTAL_EMISSIONS}: {round(emissions, 2)} {UNIT_EMISSIONS}."
     )
     logging.info(f"Calculated the {TOTAL_EMISSIONS} ({UNIT_EMISSIONS}) of the LES.")
-    return
 
 
 def add_specific_emissions_per_electricity_equivalent(dict_values):
@@ -979,7 +1114,6 @@ def add_specific_emissions_per_electricity_equivalent(dict_values):
     logging.info(
         f"Calculated the {SPECIFIC_EMISSIONS_ELEQ} ({UNIT_SPECIFIC_EMISSIONS}) of the LES."
     )
-    return
 
 
 def add_levelized_cost_of_energy_carriers(dict_values):
@@ -1091,11 +1225,11 @@ def equation_levelized_cost_of_energy_carrier(
 
     The costs attributed to an energy carrier are calculated from the ratio of electricity equivalent of the energy carrier demand in focus to the electricity equivalent of the total demand:
 
-    .. math: attributed costs = NPC \cdot \frac{Total electricity equivalent of energy carrier demand}{Total electricity equivalent of demand}
+    .. math:: attributed costs = NPC \cdot \frac{Total electricity equivalent of energy carrier demand}{Total electricity equivalent of demand}
 
     The LCOE sets these attributed costs in relation to the energy carrier demand (in its original unit):
 
-    .. math: LCOE energy carrier = \frac{attributed costs \cdot CRF}{total energy carrier demand}
+    .. math:: LCOE energy carrier = \frac{attributed costs \cdot CRF}{total energy carrier demand}
 
     Tested with:
     - test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equivalent_larger_0_total_flow_energy_carrier_larger_0()
@@ -1157,4 +1291,3 @@ def weighting_for_sector_coupled_kpi(dict_values, kpi_name):
     )
     # Describes system wide total of the energy equivalent of the kpi
     dict_values[KPI][KPI_SCALARS_DICT].update({kpi_name: total_energy_equivalent})
-    return

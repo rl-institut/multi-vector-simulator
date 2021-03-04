@@ -219,7 +219,7 @@ It is also possible to automatically save the report as pdf by using the option 
     `mvs_report -i path_simulation_output_folder -pdf`
 
 By default, it will save the report in a ``report`` folder within your simulation's output folder
-default (``MVS_outputs/report/``). See ``mvs_report.py -h`` for more information about possible options.
+default (``MVS_outputs/report/``). See ``mvs_report -h`` for more information about possible options.
 The css and images used to make the report pretty should be located under ``report/assets``.
 
 Contributing and additional information for developers

@@ -237,7 +237,8 @@ class Test_Economic_KPI:
         data = load_json(
             os.path.join(
                 TEST_OUTPUT_PATH, USE_CASE, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
-            )
+            ),
+            flag_missing_values=False,
         )
 
         # Read expected values from file.
@@ -405,13 +406,12 @@ class TestTechnicalKPI:
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
         )
         # Check for RENEWABLE_FACTOR and RENEWABLE_SHARE_OF_LOCAL_GENERATION:
-        with open(
+        data = load_json(
             os.path.join(
                 TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
             ),
-            "r",
-        ) as results:
-            data = json.load(results)
+            flag_missing_values=False,
+        )
 
         # Get total flow of PV
         total_res_local = data[ENERGY_PRODUCTION]["pv_plant_01"][TOTAL_FLOW][VALUE]
@@ -436,20 +436,20 @@ class TestTechnicalKPI:
             data[KPI][KPI_SCALARS_DICT][TOTAL_NON_RENEWABLE_ENERGY_USE]
             == total_supply_dso
         ), "The non-renewable energy use was expected to be all grid supply, but this does not hold true."
-        assert data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == (total_res_local) / (
+        assert data[KPI][KPI_SCALARS_DICT][RENEWABLE_FACTOR] == total_res_local / (
             total_res_local + total_supply_dso
         ), f"The {RENEWABLE_FACTOR} is not as expected."
-        assert data[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_FACTOR]["Electricity"] == (
-            total_res_local
-        ) / (
-            total_res_local + total_supply_dso
+        assert data[KPI][KPI_UNCOUPLED_DICT].loc[
+            RENEWABLE_FACTOR, "Electricity"
+        ] == pytest.approx(
+            total_res_local / (total_res_local + total_supply_dso)
         ), f"The {RENEWABLE_FACTOR} is not as expected."
         assert (
             data[KPI][KPI_SCALARS_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION] == 1
         ), f"The {RENEWABLE_SHARE_OF_LOCAL_GENERATION} is not as expected."
         assert (
-            data[KPI][KPI_UNCOUPLED_DICT][RENEWABLE_SHARE_OF_LOCAL_GENERATION][
-                "Electricity"
+            data[KPI][KPI_UNCOUPLED_DICT].loc[
+                RENEWABLE_SHARE_OF_LOCAL_GENERATION, "Electricity"
             ]
             == 1
         ), f"The {RENEWABLE_SHARE_OF_LOCAL_GENERATION} is not as expected."

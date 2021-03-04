@@ -1,5 +1,5 @@
 import os
-
+import logging
 import pytest
 import pandas as pd
 import numpy as np
@@ -7,10 +7,10 @@ import numpy as np
 import multi_vector_simulator.A1_csv_to_json as A1
 import multi_vector_simulator.B0_data_input_json as data_input
 
+import multi_vector_simulator.utils as utils
+
 from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
-    MissingParameterWarning,
-    WrongParameterWarning,
     CsvParsingError,
     WrongStorageColumn,
 )
@@ -39,6 +39,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     STORAGE_CAPACITY,
     INPUT_POWER,
     OUTPUT_POWER,
+    THERM_LOSSES_REL,
+    THERM_LOSSES_ABS,
 )
 from _constants import (
     CSV_PATH,
@@ -95,39 +97,6 @@ list_of_new_parameter = {
         DEFAULT_VALUE: False,
     }
 }
-
-
-def test_if_check_for_official_extra_parameters_adds_no_parameter_when_not_necessary():
-    parameters_updated, _ = A1.check_for_official_extra_parameters(
-        filename_b,
-        df_no_new_parameter,
-        parameters,
-        official_extra_parameters=list_of_new_parameter,
-    )
-    assert parameters == parameters_updated
-
-
-def test_if_check_for_official_extra_parameters_raises_warning_if_parameter_doesnt_exist():
-    with pytest.warns(MissingParameterWarning):
-        parameters_updated, _ = A1.check_for_official_extra_parameters(
-            filename_a,
-            df_no_new_parameter,
-            parameters,
-            official_extra_parameters=list_of_new_parameter,
-        )
-
-
-df_with_new_parameter = pd.DataFrame(["a", "b", 20], index=["unit", "value", "max"])
-
-
-def test_if_check_for_official_extra_parameters_adds_to_parameter_list_when_new_parameter_exists():
-    parameters_updated, _ = A1.check_for_official_extra_parameters(
-        filename_a,
-        df_with_new_parameter,
-        parameters,
-        official_extra_parameters=list_of_new_parameter,
-    )
-    assert ["unit", "value", "max"] == parameters_updated
 
 
 def test_create_input_json_creation_of_json_file():
@@ -198,31 +167,36 @@ def test_create_json_from_csv_with_unknown_separator_for_csv_raises_CsvParsingEr
 def test_create_json_from_csv_without_providing_parameters_raises_MissingParameterError():
 
     with pytest.raises(MissingParameterError):
-        A1.create_json_from_csv(
+        d = A1.create_json_from_csv(
             DUMMY_CSV_PATH, "csv_comma", parameters=[], asset_is_a_storage=False
         )
+        utils.compare_input_parameters_with_reference(d, flag_missing=True)
 
 
 def test_create_json_from_csv_with_uncomplete_parameters_raises_MissingParameterError():
 
     with pytest.raises(MissingParameterError):
-        A1.create_json_from_csv(
+        d = A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_comma",
             parameters=["param1", "param2", "param3"],
             asset_is_a_storage=False,
         )
+        utils.compare_input_parameters_with_reference(d, flag_missing=True)
 
 
-def test_create_json_from_csv_with_wrong_parameters_raises_WrongParameterWarning():
+def test_create_json_from_csv_with_wrong_parameters_raises_loggin_warning(caplog):
 
-    with pytest.warns(WrongParameterWarning):
+    with caplog.at_level(logging.WARNING):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_wrong_parameter",
             parameters=["param1", "param2"],
             asset_is_a_storage=False,
         )
+    assert (
+        ".csv is not expected." in caplog.text
+    ), f"There is an unexpected/wrong parameter in the inputs, but it is not recognized as such."
 
 
 def test_create_json_from_csv_ignore_extra_parameters_in_csv():
@@ -283,21 +257,24 @@ def test_conversion():
         assert v == CONVERSION_TYPE[k]
 
 
-def test_create_json_from_csv_storage_raises_WrongParameterWarning():
+def test_create_json_from_csv_storage_raises_logging_warning(caplog):
 
-    with pytest.warns(WrongParameterWarning):
+    with caplog.at_level(logging.WARNING):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
             parameters=[AGE_INSTALLED, DEVELOPMENT_COSTS],
             asset_is_a_storage=True,
         )
+    assert (
+        "is not recognized." in caplog.text
+    ), f"There is a unexpected/wrong parameter provided in the storage asset, but it is not recognized as such."
 
 
 def test_create_json_from_csv_storage_raises_MissingParameterError():
 
     with pytest.raises(MissingParameterError):
-        A1.create_json_from_csv(
+        d = A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_parameter",
             parameters=[
@@ -312,17 +289,21 @@ def test_create_json_from_csv_storage_raises_MissingParameterError():
             ],
             asset_is_a_storage=True,
         )
+        utils.compare_input_parameters_with_reference(d, flag_missing=True)
 
 
-def test_create_json_from_csv_storage_raises_WrongParameterWarning_for_wrong_values():
+def test_create_json_from_csv_storage_raises_logging_warning_for_wrong_values(caplog):
 
-    with pytest.warns(WrongParameterWarning):
+    with caplog.at_level(logging.WARNING):
         A1.create_json_from_csv(
             DUMMY_CSV_PATH,
             "csv_storage_wrong_values",
             parameters=[AGE_INSTALLED, DEVELOPMENT_COSTS],
             asset_is_a_storage=True,
         )
+    assert (
+        "be set to NaN." in caplog.text
+    ), f"There is parameter with a wrong value in provided in the storage asset, but it is not recognized as suchblack ."
 
 
 def test_create_json_from_csv_storage_raises_WrongStorageColumn():
@@ -373,3 +354,71 @@ def test_add_storage_components_label_correctly_added():
 def teardown_function():
     if os.path.exists(os.path.join(CSV_PATH, CSV_FNAME)):
         os.remove(os.path.join(CSV_PATH, CSV_FNAME))
+
+
+def test_default_values_storage_without_thermal_losses():
+    exp = {
+        THERM_LOSSES_REL: {UNIT: "no_unit", VALUE: 0},
+        THERM_LOSSES_ABS: {UNIT: "kWh", VALUE: 0},
+    }
+
+    data_path = os.path.join(
+        TEST_REPO_PATH,
+        "benchmark_test_inputs",
+        "Feature_stratified_thermal_storage",
+        "csv_elements",
+    )
+
+    json = A1.create_json_from_csv(
+        input_directory=data_path,
+        filename="storage_fix_without_fixed_thermal_losses",
+        parameters=[
+            "age_installed",
+            "development_costs",
+            "specific_costs",
+            "efficiency",
+            "installedCap",
+            "lifetime",
+            "specific_costs_om",
+            "unit",
+        ],
+        asset_is_a_storage=True,
+    )
+    for param, result in exp.items():
+        assert (
+            json["storage capacity"][param][VALUE] == result[VALUE]
+        ), f"The losses set to default value should match {result[VALUE]}"
+
+
+def test_default_values_storage_with_thermal_losses():
+    exp = {
+        THERM_LOSSES_REL: {UNIT: "no_unit", VALUE: 0.001},
+        THERM_LOSSES_ABS: {UNIT: "kWh", VALUE: 0.00001},
+    }
+
+    data_path = os.path.join(
+        TEST_REPO_PATH,
+        "benchmark_test_inputs",
+        "Feature_stratified_thermal_storage",
+        "csv_elements",
+    )
+
+    json = A1.create_json_from_csv(
+        input_directory=data_path,
+        filename="storage_fix_with_fixed_thermal_losses_float",
+        parameters=[
+            "age_installed",
+            "development_costs",
+            "specific_costs",
+            "efficiency",
+            "installedCap",
+            "lifetime",
+            "specific_costs_om",
+            "unit",
+        ],
+        asset_is_a_storage=True,
+    )
+    for param, result in exp.items():
+        assert (
+            json["storage capacity"][param][VALUE] == result[VALUE]
+        ), f"{param} should match {result[VALUE]}"

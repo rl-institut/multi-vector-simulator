@@ -1,6 +1,8 @@
 import pandas as pd
+import numpy as np
 import pytest
 import logging
+import copy
 from copy import deepcopy
 
 import multi_vector_simulator.C0_data_processing as C0
@@ -16,7 +18,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_CONVERSION,
     ENERGY_BUSSES,
     OUTFLOW_DIRECTION,
-    TIMESERIES_NORMALIZED,
     INFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
@@ -50,7 +51,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ANNUITY_FACTOR,
     SIMULATION_ANNUITY,
     LIFETIME_SPECIFIC_COST,
-    TIMESERIES_PEAK,
     CRF,
     ANNUITY_SPECIFIC_INVESTMENT_AND_OM,
     LIFETIME_SPECIFIC_COST_OM,
@@ -78,6 +78,12 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_SOURCE,
     UNIT_YEAR,
     EMISSION_FACTOR,
+    TIMESERIES,
+    TIMESERIES_PEAK,
+    TIMESERIES_TOTAL,
+    TIMESERIES_AVERAGE,
+    TIMESERIES_NORMALIZED,
+    FIX_COST,
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 
@@ -114,6 +120,7 @@ dict_asset = {
     LIFETIME: {VALUE: 20},
     UNIT: "a_unit",
     AGE_INSTALLED: {VALUE: 0},
+    LABEL: "test",
 }
 
 
@@ -494,6 +501,7 @@ def test_evaluate_lifetime_costs():
         LIFETIME: {VALUE: 10},
         UNIT: UNIT,
         AGE_INSTALLED: {VALUE: 0},
+        LABEL: "test",
     }
 
     C0.evaluate_lifetime_costs(settings, economic_data, dict_asset)
@@ -1070,17 +1078,117 @@ def test_change_sign_of_feedin_tariff_zero(caplog):
     """If the feed-in tariff is zero is stays zero and no logging msg is added."""
     feedin_tariff = 0
     dict_feedin = {VALUE: feedin_tariff, UNIT: UNIT}
-    with caplog.at_level(logging.WARNING):
+    with caplog.at_level(logging.INFO):
         dict_feedin = C0.change_sign_of_feedin_tariff(dict_feedin, DSO)
     assert (
         dict_feedin[VALUE] == 0
     ), f"If the {FEEDIN_TARIFF} is zero it should stay like that but it was changed to {dict_feedin[VALUE]}."
     assert (
-        caplog.text == ""
-    ), f"A msg is logged although the feed-in tariff is not changed."
+        "which means that there is no renumeration for feed-in to the grid"
+        in caplog.text
+    ), f"No information regarding feed-in tariff zero is added to the log."
+
+
+def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
+    str = "str"
+    dict_asset = {
+        TIMESERIES: pd.Series([10, 50, 100, 150, 200]),
+        UNIT: "str",
+        LABEL: "str",
+    }
+
+    C0.compute_timeseries_properties(dict_asset)
+    print(dict_asset)
+
+    for parameter in [
+        TIMESERIES_PEAK,
+        TIMESERIES_TOTAL,
+        TIMESERIES_AVERAGE,
+    ]:
+        assert (
+            parameter in dict_asset
+        ), f"Parameter {parameter} is not in updated dict_asset."
+        assert VALUE in dict_asset[parameter]
+        assert UNIT in dict_asset[parameter]
+
+    assert dict_asset[TIMESERIES_PEAK][VALUE] == 200
+    assert dict_asset[TIMESERIES_TOTAL][VALUE] == 510
+    assert dict_asset[TIMESERIES_AVERAGE][VALUE] == 102
+    exp = pd.Series([0.05, 0.25, 0.5, 0.75, 1])
+    assert (dict_asset[TIMESERIES_NORMALIZED] == exp).all()
+
+    assert dict_asset[TIMESERIES_PEAK][UNIT] == str
+    assert dict_asset[TIMESERIES_TOTAL][UNIT] == str
+    assert dict_asset[TIMESERIES_AVERAGE][UNIT] == str
+
+
+def test_compute_timeseries_properties_TIMESERIES_not_in_dict_asset():
+    dict_asset = {
+        UNIT: "str",
+        LABEL: "str",
+    }
+    dict_exp = copy.deepcopy(dict_asset)
+    assert (
+        dict_exp == dict_asset
+    ), f"The function has changed the dict_asset to {dict_asset}, eventhough it should not have been modified and stayed identical to {dict_exp}."
+
+
+def test_replace_nans_in_timeseries_with_0(caplog):
+    timeseries = pd.Series([10, np.nan, 100, 150, 200, np.nan, 91])
+    with caplog.at_level(logging.WARNING):
+        timeseries = C0.replace_nans_in_timeseries_with_0(timeseries, "any")
+
+    assert (
+        f"NaN value(s) found in the " in caplog.text
+    ), f"Warning message about NaNs in provided timeseries not logged."
+    assert (
+        sum(pd.isna(timeseries)) == 0
+    ), f"The function did remove all NaN values from the input."
+    assert timeseries[1] == 0, f"The NaN was not replaced by zero!"
+
+
+def test_process_all_assets_fixcost():
+    fix_cost_entry = "one entry"
+    dict_test = {
+        ECONOMIC_DATA: economic_data,
+        ENERGY_PRODUCTION: {},
+        ENERGY_CONSUMPTION: {},
+        ENERGY_CONVERSION: {},
+        ENERGY_PROVIDERS: {},
+        ENERGY_STORAGE: {},
+        ENERGY_BUSSES: {},
+        SIMULATION_SETTINGS: {EVALUATED_PERIOD: {VALUE: 365, UNIT: "Days"}},
+        FIX_COST: {
+            fix_cost_entry: {
+                LABEL: "label",
+                SPECIFIC_COSTS_OM: {VALUE: 1, UNIT: CURR},
+                SPECIFIC_COSTS: {VALUE: 1, UNIT: CURR},
+                DEVELOPMENT_COSTS: {VALUE: 1, UNIT: CURR},
+                LIFETIME: {VALUE: 20},
+                AGE_INSTALLED: {VALUE: 0},
+            }
+        },
+    }
+
+    C0.process_all_assets(dict_test)
+    for k in [
+        LIFETIME_SPECIFIC_COST,
+        LIFETIME_SPECIFIC_COST_OM,
+        ANNUITY_SPECIFIC_INVESTMENT_AND_OM,
+        SIMULATION_ANNUITY,
+        SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
+        SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
+    ]:
+        assert (
+            k in dict_test[FIX_COST][fix_cost_entry]
+        ), f"Parameter {k} is missing when processing {FIX_COST} entries with C0.process_all_assets()."
+    assert (
+        LIFETIME_PRICE_DISPATCH not in dict_test[FIX_COST][fix_cost_entry]
+    ), f"Parameter {LIFETIME_PRICE_DISPATCH} should not be calculated for {FIX_COST} entries."
 
 
 """
+
 def test_asess_energyVectors_and_add_to_project_data():
     C2.identify_energy_vectors(dict_values)
     assert 1 == 0

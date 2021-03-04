@@ -10,7 +10,10 @@ import os
 import numpy as np
 import pandas as pd
 
-from multi_vector_simulator.utils import data_parser
+from multi_vector_simulator.utils import (
+    data_parser,
+    compare_input_parameters_with_reference,
+)
 
 from multi_vector_simulator.utils.constants_json_strings import (
     START_DATE,
@@ -40,6 +43,7 @@ from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
     PATH_OUTPUT_FOLDER_INPUTS,
+    MISSING_PARAMETERS_KEY,
 )
 
 """
@@ -81,6 +85,7 @@ def convert_from_json_to_special_types(a_dict, prev_key=None, time_index=None):
                 answer[k] = convert_from_json_to_special_types(
                     a_dict[k], prev_key=k, time_index=time_index
                 )
+        # TODO this cas might be obsolete with the newer version of the parser from PR #675
         elif prev_key == data_parser.MAP_MVS_EPA[TIMESERIES]:
             # the a_dict is from the EPA
             answer = pd.Series(a_dict[DATA])
@@ -130,13 +135,13 @@ def convert_from_json_to_special_types(a_dict, prev_key=None, time_index=None):
                 if time_index is not None:
                     if len(answer.index) > len(time_index):
                         logging.warning(
-                            f"The time index inferred from {SIMULATION_SETTINGS} is longer as "
-                            f"the timeserie under the field {prev_key}"
+                            f"The time index inferred from {SIMULATION_SETTINGS} is shorter as "
+                            f"the timeserie under the field {prev_key} ({len(time_index)}<{len(answer.index)})"
                         )
                     elif len(answer.index) < len(time_index):
                         logging.warning(
-                            f"The time index inferred from {SIMULATION_SETTINGS} is shorter as "
-                            f"the timeserie under the field {prev_key}"
+                            f"The time index inferred from {SIMULATION_SETTINGS} is longer as "
+                            f"the timeserie under the field {prev_key} ({len(time_index)}>{len(answer.index)})"
                         )
                     else:
                         answer.index = time_index
@@ -173,7 +178,7 @@ def convert_from_special_types_to_json(o):
         json-storable value.
 
     """
-    if isinstance(o, np.int64):
+    if isinstance(o, np.int64) or isinstance(o, np.int32):
         answer = int(o)
     elif isinstance(o, bool) or isinstance(o, str):
         answer = o
@@ -245,7 +250,12 @@ def retrieve_date_time_info(simulation_settings):
 
 
 def load_json(
-    path_input_file, path_input_folder=None, path_output_folder=None, move_copy=False
+    path_input_file,
+    path_input_folder=None,
+    path_output_folder=None,
+    move_copy=False,
+    flag_missing_values=True,
+    set_default_values=False,
 ):
     """Opens and reads json input file and parses it to dict of input parameters.
 
@@ -264,12 +274,19 @@ def load_json(
     move_copy: bool, optional
         if this is set to True, the path_input_file will be moved to the path_output_folder
         Default: False
+    flag_missing_values: bool
+        if True, raise MissingParameterError for each missing required parameter
+    set_default_values: bool
+        if True, set the default value of a missing required parameter which is listed in
+        KNOWN_EXTRA_PARAMETERS
+
 
     Returns
     -------
 
     dict of all input parameters of the MVS E-Lands simulation
     """
+
     with open(path_input_file) as json_file:
         dict_values = json.load(json_file)
 
@@ -311,4 +328,12 @@ def load_json(
     # add default value if the field PATHS_TO_PLOTS is not already present
     if PATHS_TO_PLOTS not in dict_values:
         dict_values.update(copy.deepcopy(DICT_PLOTS))
+
+    # raise a warning if required parameters are missing, see REQUIRED_MVS_PARAMETERS in
+    # constants.py for more information, note json and csv required parameter are independent from
+    # one another at the moment
+    compare_input_parameters_with_reference(
+        dict_values, flag_missing=flag_missing_values, set_default=set_default_values
+    )
+
     return dict_values

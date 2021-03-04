@@ -15,6 +15,7 @@ import pytest
 
 from pytest import approx
 from multi_vector_simulator.cli import main
+from multi_vector_simulator.server import run_simulation
 from multi_vector_simulator.B0_data_input_json import load_json
 
 from _constants import (
@@ -44,6 +45,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     FLOW,
     EFFICIENCY,
 )
+
+from multi_vector_simulator.utils.data_parser import convert_epa_params_to_mvs
+
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
@@ -174,7 +178,8 @@ class TestACElectricityBus:
         data = load_json(
             os.path.join(
                 TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
-            )
+            ),
+            flag_missing_values=False,
         )
 
         # make sure LCOE_diesel is less than grid price, so that below test makes sense
@@ -209,13 +214,12 @@ class TestACElectricityBus:
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
         )
         # read json with results file
-        with open(
+        data = load_json(
             os.path.join(
                 TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
             ),
-            "r",
-        ) as results:
-            data = json.load(results)
+            flag_missing_values=False,
+        )
         peak_demand = [
             data[ENERGY_CONVERSION]["Electricity grid DSO_consumption_period_1"][
                 OPTIMIZED_ADD_CAP
@@ -290,22 +294,21 @@ class TestACElectricityBus:
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
         )
         # read json with results file
-        with open(
+        data = load_json(
             os.path.join(
                 TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
             ),
-            "r",
-        ) as results:
-            data = json.load(results)
+            flag_missing_values=False,
+        )
         # read excel sheet with time series
         busses_flow = pd.read_excel(
             os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
             sheet_name="Heat",
         )
         # create dict with electricity prices
-        electricity_price = data[ENERGY_PROVIDERS]["Grid_DSO"][ENERGY_PRICE][VALUE][
+        electricity_price = data[ENERGY_PROVIDERS]["Grid_DSO"][ENERGY_PRICE][
             VALUE
-        ]
+        ].values
         # compare cost of using heat pump with electricity price to heat price
         cost_of_using_heatpump = "electricity_price[i] / data[ENERGY_CONVERSION]['heat_pump'][EFFICIENCY][VALUE] comp.data[ENERGY_PROVIDERS]['Heat_DSO'][ENERGY_PRICE][VALUE]"
         cost_of_using_heat_dso = (
@@ -328,3 +331,23 @@ class TestACElectricityBus:
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+
+
+# this ensure that the test is only ran if explicitly executed
+# alone is called
+@pytest.mark.skipif(
+    EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+    reason="Benchmark test deactivated, set env variable "
+    "EXECUTE_TESTS_ON to 'master' to run this test",
+)
+def test_benchmark_EPA_run_through():
+    r"""
+    Benchmark test which runs a simulation with a json file coming from EPA interface
+    """
+
+    with open(os.path.join(TEST_INPUT_PATH, "epa_benchmark.json")) as json_file:
+        epa_dict = json.load(json_file)
+
+    dict_values = convert_epa_params_to_mvs(epa_dict)
+
+    run_simulation(dict_values)

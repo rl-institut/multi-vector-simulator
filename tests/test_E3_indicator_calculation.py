@@ -27,6 +27,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_SHARE_DSO,
     RENEWABLE_ASSET_BOOL,
     DSO_CONSUMPTION,
+    TOTAL_CONSUMPTION_FROM_PROVIDERS,
     TOTAL_RENEWABLE_GENERATION_IN_LES,
     TOTAL_NON_RENEWABLE_GENERATION_IN_LES,
     TOTAL_RENEWABLE_ENERGY_USE,
@@ -51,6 +52,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SPECIFIC_EMISSIONS_ELEQ,
     UNIT_SPECIFIC_EMISSIONS,
     UNIT_EMISSIONS,
+    DEGREE_OF_NZE,
 )
 
 electricity = "Electricity"
@@ -544,7 +546,7 @@ def test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equi
     assert lcoe_energy_carrier == 0
 
 
-def test_add_total_feedin_electricity_equivaluent():
+def test_add_total_feedin_electricity_equivalent():
     """ """
 
     dso = "DSO"
@@ -562,7 +564,7 @@ def test_add_total_feedin_electricity_equivaluent():
         PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity}},
     }
 
-    E3.add_total_feedin_electricity_equivaluent(dict_values_feedin)
+    E3.add_total_feedin_electricity_equivalent(dict_values_feedin)
 
     assert (
         dict_values_feedin[KPI][KPI_SCALARS_DICT][
@@ -626,33 +628,126 @@ def test_add_onsite_energy_matching():
 def test_add_degree_of_autonomy():
     """ """
 
-    total_generation = 50
+    total_consumption_from_grid = 50
     total_demand = 100
     dict_values_DA = {
         KPI: {
             KPI_SCALARS_DICT: {
-                TOTAL_GENERATION_IN_LES: total_generation,
+                TOTAL_CONSUMPTION_FROM_PROVIDERS
+                + SUFFIX_ELECTRICITY_EQUIVALENT: total_consumption_from_grid,
                 TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
             }
         },
     }
     E3.add_degree_of_autonomy(dict_values_DA)
 
-    degree_of_autonomy = total_generation / total_demand
-
+    degree_of_autonomy = (total_demand - total_consumption_from_grid) / total_demand
+    assert (
+        DEGREE_OF_AUTONOMY in dict_values_DA[KPI][KPI_SCALARS_DICT]
+    ), f"The {DEGREE_OF_AUTONOMY} is not added to {KPI_SCALARS_DICT}"
     assert (
         dict_values_DA[KPI][KPI_SCALARS_DICT][DEGREE_OF_AUTONOMY] == degree_of_autonomy
-    ), f"The degree of autonomy is added successfully to the list of KPI's."
+    ), f"The degree of autonomy is not added successfully to the list of KPI's."
 
 
 def test_equation_degree_of_autonomy():
     """ """
-    total_generation = 30
+    total_consumption_from_grid = 30
     total_demand = 100
-    degree_of_autonomy = E3.equation_degree_of_autonomy(total_generation, total_demand)
-    assert degree_of_autonomy == total_generation / total_demand, (
+    degree_of_autonomy = E3.equation_degree_of_autonomy(
+        total_consumption_from_grid, total_demand
+    )
+    exp = (total_demand - total_consumption_from_grid) / total_demand
+    assert degree_of_autonomy == exp, (
         f"The degree_of_autonomy ({degree_of_autonomy}) is not calculated correctly. "
-        f"It should be equal to {total_generation / total_demand }."
+        f"It should be equal to {exp}."
+    )
+
+
+def test_add_degree_of_net_zero_energy():
+    """ """
+    total_feedin = 60
+    total_grid_consumption = 100
+    total_demand = 10
+    dict_values_NZE = {
+        KPI: {
+            KPI_SCALARS_DICT: {
+                TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT: total_feedin,
+                TOTAL_CONSUMPTION_FROM_PROVIDERS
+                + SUFFIX_ELECTRICITY_EQUIVALENT: total_grid_consumption,
+                TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT: total_demand,
+            }
+        },
+    }
+    E3.add_degree_of_net_zero_energy(dict_values_NZE)
+
+    degree_of_nze = 1 + (total_feedin - total_grid_consumption) / total_demand
+
+    assert (
+        DEGREE_OF_NZE in dict_values_NZE[KPI][KPI_SCALARS_DICT]
+    ), f"The {DEGREE_OF_NZE} is not added to {KPI_SCALARS_DICT}"
+    assert (
+        dict_values_NZE[KPI][KPI_SCALARS_DICT][DEGREE_OF_NZE] == degree_of_nze
+    ), f"The degree of NZE is not added successfully to the list of KPI's."
+
+
+def test_equation_degree_of_net_zero_energy():
+    """ Degree of NZE between 0 and 1."""
+    total_feedin = 60
+    total_grid_consumption = 80
+    total_demand = 100
+    degree_of_nze = E3.equation_degree_of_net_zero_energy(
+        total_feedin, total_grid_consumption, total_demand
+    )
+    exp = 1 + (total_feedin - total_grid_consumption) / total_demand
+    assert degree_of_nze == exp, (
+        f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
+        f"It should be equal to {exp}."
+    )
+
+
+def test_equation_degree_of_net_zero_energy_is_zero():
+    """ """
+    total_feedin = 0
+    total_grid_consumption = 100
+    total_demand = 100
+    degree_of_nze = E3.equation_degree_of_net_zero_energy(
+        total_feedin, total_grid_consumption, total_demand
+    )
+    exp = 0
+    assert degree_of_nze == exp, (
+        f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
+        f"It should be equal to {exp}."
+    )
+
+
+def test_equation_degree_of_net_zero_energy_is_one():
+    """ """
+    total_feedin = 100
+    total_grid_consumption = 100
+    total_demand = 100
+    degree_of_nze = E3.equation_degree_of_net_zero_energy(
+        total_feedin, total_grid_consumption, total_demand
+    )
+    exp = 1
+    assert degree_of_nze == exp, (
+        f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
+        f"It should be equal to {exp}."
+    )
+
+
+def test_equation_degree_of_net_zero_energy_greater_one():
+    """ """
+    total_feedin = 150
+    total_grid_consumption = 100
+    total_demand = 100
+    degree_of_nze = E3.equation_degree_of_net_zero_energy(
+        total_feedin, total_grid_consumption, total_demand
+    )
+    exp = 1.5
+    assert degree_of_nze == exp, (
+        f"The degree_of_nze ({degree_of_nze}) is not calculated correctly. "
+        f"It should be equal to {exp}."
     )
 
 
@@ -733,3 +828,29 @@ def test_add_specific_emissions_per_electricity_equivalent():
     assert (
         emissions_kWheleq == 0.7
     ), f"{SPECIFIC_EMISSIONS_ELEQ} [{UNIT_SPECIFIC_EMISSIONS}] should be total_emissions / total_demand_electricity_equivalent (in this case: 70/100=0.7), but is {emissions_kWheleq}."
+
+
+def test_add_total_consumption_from_provider_electricity_equivalent():
+    dso = "DSO"
+    exp = 100
+    consumption_source = str(dso + DSO_CONSUMPTION)
+    dict_values = {
+        KPI: {KPI_SCALARS_DICT: {}},
+        ENERGY_PROVIDERS: {dso: {ENERGY_VECTOR: electricity}},
+        ENERGY_PRODUCTION: {
+            consumption_source: {TOTAL_FLOW: {VALUE: exp}, ENERGY_VECTOR: electricity}
+        },
+    }
+
+    E3.add_total_consumption_from_provider_electricity_equivalent(dict_values)
+    for kpi in [
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity,
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity + SUFFIX_ELECTRICITY_EQUIVALENT,
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + SUFFIX_ELECTRICITY_EQUIVALENT,
+    ]:
+        assert (
+            kpi in dict_values[KPI][KPI_SCALARS_DICT]
+        ), f"The {kpi} is not included in the {KPI_SCALARS_DICT}, which only holds {dict_values[KPI][KPI_SCALARS_DICT].keys()}."
+        assert (
+            dict_values[KPI][KPI_SCALARS_DICT][kpi] == exp
+        ), f"The {kpi} should have been {exp} but is {dict_values[KPI][KPI_SCALARS_DICT][kpi]}."

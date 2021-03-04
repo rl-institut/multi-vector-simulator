@@ -27,6 +27,8 @@ The file `constraints.csv` includes the following parameter(s):
 
 * :ref:`minrenshare-label`
 * :ref:`maxemissions-label`
+* :ref:`minda-label`
+* :ref:`nzeconstraint-label`
 
 economic_data.csv
 ^^^^^^^^^^^^^^^^^
@@ -161,6 +163,7 @@ The file `project_data.csv` includes the following parameters:
 * :ref:`projectname-label`
 * :ref:`scenarioid-label`
 * :ref:`scenarioname-label`
+* :ref:`scenariodescription-label`
 
 simulation_settings.csv
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -171,7 +174,8 @@ The file `simulation_settings.csv` includes the following parameters:
 * :ref:`evaluatedperiod-label`
 * :ref:`timestep-label`
 * :ref:`outputlpfile-label`
-* :ref:`storeoemoefresults-label`
+
+.. _storage_csv:
 
 storage_*.csv
 ^^^^^^^^^^^^^^

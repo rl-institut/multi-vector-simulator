@@ -30,13 +30,13 @@ child-sub:  Sub-child function, feeds only back to child functions
 import logging
 import os
 
-import multi_vector_simulator.A0_initialization as initializing
-import multi_vector_simulator.A1_csv_to_json as load_data_from_csv
-import multi_vector_simulator.B0_data_input_json as data_input
-import multi_vector_simulator.C0_data_processing as data_processing
-import multi_vector_simulator.D0_modelling_and_optimization as modelling
-import multi_vector_simulator.E0_evaluation as evaluation
-import multi_vector_simulator.F0_output as output_processing
+import multi_vector_simulator.A0_initialization as A0
+import multi_vector_simulator.A1_csv_to_json as A1
+import multi_vector_simulator.B0_data_input_json as B0
+import multi_vector_simulator.C0_data_processing as C0
+import multi_vector_simulator.D0_modelling_and_optimization as D0
+import multi_vector_simulator.E0_evaluation as E0
+import multi_vector_simulator.F0_output as F0
 
 try:
     from multi_vector_simulator.F2_autoreport import (
@@ -60,6 +60,7 @@ from multi_vector_simulator.utils.constants import (
     PATH_INPUT_FILE,
     PATH_INPUT_FOLDER,
     PATH_OUTPUT_FOLDER,
+    PATH_OUTPUT_FOLDER_INPUTS,
     INPUT_TYPE,
     JSON_WITH_RESULTS,
     REPORT_FOLDER,
@@ -67,6 +68,11 @@ from multi_vector_simulator.utils.constants import (
     ARG_PDF,
     ARG_REPORT_PATH,
     ARG_PATH_SIM_OUTPUT,
+    ARG_DEBUG_REPORT,
+    SIMULATION_SETTINGS,
+    JSON_PROCESSED,
+    JSON_FILE_EXTENSION,
+    MVS_CONFIG,
 )
 
 
@@ -118,9 +124,7 @@ def main(**kwargs):
 
     logging.debug("Accessing script: A0_initialization")
 
-    user_input = initializing.process_user_arguments(
-        welcome_text=welcome_text, **kwargs
-    )
+    user_input = A0.process_user_arguments(welcome_text=welcome_text, **kwargs)
 
     # Read all inputs
     #    print("")
@@ -132,21 +136,33 @@ def main(**kwargs):
     if user_input[INPUT_TYPE] == CSV_EXT:
         logging.debug("Accessing script: A1_csv_to_json")
         move_copy_config_file = True
-        load_data_from_csv.create_input_json(
+        A1.create_input_json(
             input_directory=os.path.join(user_input[PATH_INPUT_FOLDER], CSV_ELEMENTS)
         )
 
     logging.debug("Accessing script: B0_data_input_json")
-    dict_values = data_input.load_json(
+    dict_values = B0.load_json(
         user_input[PATH_INPUT_FILE],
         path_input_folder=user_input[PATH_INPUT_FOLDER],
         path_output_folder=user_input[PATH_OUTPUT_FOLDER],
         move_copy=move_copy_config_file,
+        set_default_values=True,
+    )
+    F0.store_as_json(
+        dict_values,
+        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER_INPUTS],
+        MVS_CONFIG,
     )
 
     print("")
     logging.debug("Accessing script: C0_data_processing")
-    data_processing.all(dict_values)
+    C0.all(dict_values)
+
+    F0.store_as_json(
+        dict_values,
+        dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
+        JSON_PROCESSED,
+    )
 
     if "path_pdf_report" in user_input or "path_png_figs" in user_input:
         save_energy_system_graph = True
@@ -155,16 +171,16 @@ def main(**kwargs):
 
     print("")
     logging.debug("Accessing script: D0_modelling_and_optimization")
-    results_meta, results_main = modelling.run_oemof(
-        dict_values, save_energy_system_graph=save_energy_system_graph
+    results_meta, results_main = D0.run_oemof(
+        dict_values, save_energy_system_graph=save_energy_system_graph,
     )
 
     print("")
     logging.debug("Accessing script: E0_evaluation")
-    evaluation.evaluate_dict(dict_values, results_main, results_meta)
+    E0.evaluate_dict(dict_values, results_main, results_meta)
 
     logging.debug("Accessing script: F0_outputs")
-    output_processing.evaluate_dict(
+    F0.evaluate_dict(
         dict_values,
         path_pdf_report=user_input.get("path_pdf_report", None),
         path_png_figs=user_input.get("path_png_figs", None),
@@ -188,6 +204,7 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
       -i [OUTPUT_FOLDER]   path to the simulation result json file
                            'json_with_results.json'
       -o [REPORT_PATH]     path to save the pdf report
+      -d [DEBUG_REPORT]    run the dash app in debug mode with hot-reload
 
     Parameters
     ----------
@@ -206,9 +223,8 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
     """
 
     # Parse the arguments from the command line
-    parser = initializing.report_arg_parser()
+    parser = A0.report_arg_parser()
     args = vars(parser.parse_args())
-    print(args)
 
     # Give priority from user input kwargs over command line arguments
     # However the command line arguments have priority over default kwargs
@@ -225,11 +241,15 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
         path_simulation_output_json = os.path.join(
             path_simulation_output_json, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
         )
+        logging.warning(
+            f"Only path to a folder provided ({args.get(ARG_PATH_SIM_OUTPUT)}), looking now for default {JSON_WITH_RESULTS + JSON_FILE_EXTENSION} file within this folder"
+        )
 
     if os.path.exists(path_simulation_output_json) is False:
         raise FileNotFoundError(
-            "{} not found. You need to run a simulation to generate the data to report"
-            "see `python mvs_tool.py -h` for help".format(path_simulation_output_json)
+            "Simulation results file {} not found. You need to run a simulation to generate "
+            "the data before you can generate a report\n\n\tsee `mvs_tool -h` for help on how "
+            "to run a simulation\n".format(path_simulation_output_json)
         )
     else:
         # path to the mvs simulation output files
@@ -240,21 +260,26 @@ def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
             path_pdf_report = os.path.join(path_sim_output, REPORT_FOLDER, PDF_REPORT)
 
         # load the results of a simulation
-        dict_values = data_input.load_json(path_simulation_output_json)
+        dict_values = B0.load_json(
+            path_simulation_output_json, flag_missing_values=False
+        )
         test_app = create_app(dict_values, path_sim_output=path_sim_output)
         banner = "*" * 40
         print(banner + "\nPress ctrl+c to stop the report server\n" + banner)
         if pdf is True:
             print_pdf(test_app, path_pdf_report=path_pdf_report)
         else:
-            # run the dash server for 600s before shutting it down
-            open_in_browser(test_app, timeout=600)
-            print(
-                banner
-                + "\nThe report server has timed out.\nTo start it again run `python "
-                "mvs_report.py`.\nTo let it run for a longer time, change timeout setting in "
-                "the mvs_report.py file\n" + banner
-            )
+            if args.get(ARG_DEBUG_REPORT) is True:
+                test_app.run_server(debug=True)
+            else:
+                # run the dash server for 600s before shutting it down
+                open_in_browser(test_app, timeout=600)
+                print(
+                    banner
+                    + "\nThe report server has timed out.\nTo start it again run "
+                    "`mvs_report`.\nTo let it run for a longer time, change timeout setting in "
+                    "the cli.py file\n" + banner
+                )
 
 
 def create_input_template_folder():

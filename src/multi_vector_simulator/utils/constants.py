@@ -3,6 +3,7 @@ General Constants
 =================
 """
 import os
+from copy import deepcopy
 
 from multi_vector_simulator.utils.constants_json_strings import *
 
@@ -22,7 +23,8 @@ CSV_EXT = "csv"
 # name of the folder containing mvs model described by .csv files
 CSV_ELEMENTS = "csv_elements"
 # name of the json file which should be present in the input folder if option -i json was chosen
-JSON_FNAME = "mvs_config.json"
+MVS_CONFIG = "mvs_config"
+JSON_FNAME = MVS_CONFIG + ".json"
 # name of the json file which is should be created in the input folder if option -i csv was chosen
 CSV_FNAME = "mvs_csv_config.json"
 # allowed symbols for separating values in .csv files
@@ -46,6 +48,7 @@ ASSET_FOLDER = "assets"
 ARG_PDF = "print_report"
 ARG_REPORT_PATH = "report_path"
 ARG_PATH_SIM_OUTPUT = "output_folder"
+ARG_DEBUG_REPORT = "debug_report"
 
 # default paths to input, output and sequences folders
 DEFAULT_INPUT_PATH = os.path.join(REPO_PATH, INPUT_FOLDER)
@@ -87,12 +90,12 @@ DEFAULT_MAIN_KWARGS = dict(
 # list of csv filename which must be present within the CSV_ELEMENTS folder with the parameters
 # associated to each of these filenames
 REQUIRED_CSV_PARAMETERS = {
-    CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR],
+    CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR, MAXIMUM_EMISSIONS],
     ENERGY_BUSSES: [ENERGY_VECTOR],
     ENERGY_CONSUMPTION: [
-        DSM,
+        # DSM,
         FILENAME,
-        TYPE_ASSET,
+        # TYPE_ASSET,
         OEMOF_ASSET_TYPE,
         ENERGY_VECTOR,
         INFLOW_DIRECTION,
@@ -137,6 +140,7 @@ REQUIRED_CSV_PARAMETERS = {
         OEMOF_ASSET_TYPE,
         UNIT,
         ENERGY_VECTOR,
+        EMISSION_FACTOR,
     ],
     ENERGY_PROVIDERS: [
         ENERGY_PRICE,
@@ -148,24 +152,16 @@ REQUIRED_CSV_PARAMETERS = {
         PEAK_DEMAND_PRICING_PERIOD,
         OEMOF_ASSET_TYPE,
         ENERGY_VECTOR,
+        EMISSION_FACTOR,
     ],
     FIX_COST: [
         AGE_INSTALLED,
         DEVELOPMENT_COSTS,
         SPECIFIC_COSTS,
-        LABEL,
         LIFETIME,
         SPECIFIC_COSTS_OM,
-        DISPATCH_PRICE,
     ],
-    SIMULATION_SETTINGS: [
-        EVALUATED_PERIOD,
-        OUTPUT_LP_FILE,
-        STORE_OEMOF_RESULTS,
-        START_DATE,
-        STORE_OEMOF_RESULTS,
-        TIMESTEP,
-    ],
+    SIMULATION_SETTINGS: [EVALUATED_PERIOD, OUTPUT_LP_FILE, START_DATE, TIMESTEP,],
     PROJECT_DATA: [
         COUNTRY,
         LATITUDE,
@@ -174,6 +170,7 @@ REQUIRED_CSV_PARAMETERS = {
         PROJECT_NAME,
         SCENARIO_ID,
         SCENARIO_NAME,
+        SCENARIO_DESCRIPTION,
     ],
     ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, PROJECT_DURATION, TAX,],
 }
@@ -183,35 +180,14 @@ REQUIRED_CSV_FILES = tuple(REQUIRED_CSV_PARAMETERS.keys())
 # list of parameters which must be present within the JSON_FNAME file with the sub-parameters
 # note: if the value of a key is none, then the value is expected to be user-defined and thus cannot
 # be in a required parameters dict
-REQUIRED_JSON_PARAMETERS = {
-    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, LABEL, PROJECT_DURATION, TAX],
-    ENERGY_BUSSES: None,
-    ENERGY_CONSUMPTION: None,
-    ENERGY_CONVERSION: None,
-    ENERGY_PRODUCTION: None,
-    ENERGY_PROVIDERS: None,
-    ENERGY_STORAGE: None,
-    FIX_COST: None,
-    CONSTRAINTS: [MINIMAL_RENEWABLE_FACTOR],
-    PROJECT_DATA: [
-        COUNTRY,
-        LABEL,
-        LATITUDE,
-        LONGITUDE,
-        PROJECT_ID,
-        PROJECT_NAME,
-        SCENARIO_ID,
-        SCENARIO_NAME,
-    ],
-    SIMULATION_SETTINGS: [
-        EVALUATED_PERIOD,
-        LABEL,
-        OUTPUT_LP_FILE,
-        START_DATE,
-        STORE_OEMOF_RESULTS,
-        TIMESTEP,
-    ],
-}
+REQUIRED_JSON_PARAMETERS = deepcopy(REQUIRED_CSV_PARAMETERS)
+REQUIRED_JSON_PARAMETERS[FIX_COST] = None
+
+REQUIRED_JSON_PARAMETERS[ENERGY_CONSUMPTION].remove(FILENAME)
+REQUIRED_JSON_PARAMETERS[ENERGY_PRODUCTION].remove(FILENAME)
+REQUIRED_JSON_PARAMETERS[ENERGY_STORAGE].remove(STORAGE_FILENAME)
+
+
 # references for which parameters must be present either in the json or csv input method
 REQUIRED_MVS_PARAMETERS = {
     JSON_EXT: REQUIRED_JSON_PARAMETERS,
@@ -240,7 +216,7 @@ TYPE_STR = "str"
 TYPE_NONE = "None"
 TYPE_FLOAT = "float"
 
-EXTRA_CSV_PARAMETERS = {
+KNOWN_EXTRA_PARAMETERS = {
     UNIT: {
         DEFAULT_VALUE: "NA",
         UNIT: TYPE_STR,
@@ -275,6 +251,24 @@ EXTRA_CSV_PARAMETERS = {
         DEFAULT_VALUE: None,
         UNIT: TYPE_NONE,
         WARNING_TEXT: "allows setting a maximum amount of emissions of the optimized energy system (Values: None/Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
+    },
+    MINIMAL_DEGREE_OF_AUTONOMY: {
+        DEFAULT_VALUE: 0,
+        UNIT: TYPE_FLOAT,
+        WARNING_TEXT: "allows setting a minimum degree of autonomy of the optimized energy system (Values: Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
+    },
+    SCENARIO_DESCRIPTION: {
+        DEFAULT_VALUE: "",
+        UNIT: TYPE_STR,
+        WARNING_TEXT: "allows giving a description for the scenario being simulated",
+        REQUIRED_IN_CSV_ELEMENTS: [PROJECT_DATA],
+    },
+    NET_ZERO_ENERGY: {
+        DEFAULT_VALUE: False,
+        UNIT: TYPE_BOOL,
+        WARNING_TEXT: "allows to add a net zero energy constraint to optimization problem (activate by setting to `True`). ",
         REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
     },
 }
@@ -314,6 +308,7 @@ DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
 
 # dict keys in results_json file
 TIMESERIES = "timeseries"
+
 
 # filename of the energy system graph
 ES_GRAPH = "energy_system_graph.png"

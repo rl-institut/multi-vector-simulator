@@ -4,11 +4,19 @@
             "unit": "factor",
             "value": 0
         },
+      "minimal_degree_of_autonomy": {
+            "unit": "factor",
+            "value": 0
+        },
     "maximum_emissions": {
             "unit": "kgCO2eq/a",
             "value": 800000
-        }
-    },
+        },
+    "net_zero_energy": {
+          "unit": "bool",
+          "value": false
+      }
+     },
     "economic_data": {
         "annuity_factor": {
             "unit": "?",
@@ -47,7 +55,6 @@
           "energyVector": "Electricity",
           "Asset_list": {
             "DSO_consumption": "DSO_consumption source",
-            "DSO_feedin": "DSO_feedin_sink",
             "transformer_station_in": "Transformer station (DSO) consumption",
             "transformer_station_out": "Transformer station (DSO) feedin"}
         },
@@ -55,10 +62,7 @@
           "label": "Electricity",
           "energyVector": "Electricity",
           "Asset_list": {
-            "Electricity excess": "Electricity excess_sink",
-            "demand_01": "Harbor",
-            "demand_02": "Remaining demand",
-            "demand_03": "Shore power (docked ships)",
+            "Electricity demand": "Electricity demand",
             "solar_inverter_01": "Solar inverter (mono)",
             "storage_charge_controller_in": "Charge Contoller ESS Li-Ion (charge)",
             "storage_charge_controller_out": "Charge Contoller ESS Li-Ion (discharge)",
@@ -74,115 +78,7 @@
         }
     },
     "energyConsumption": {
-        "DSO_feedin": {
-            "annuity_capex_price_dispatch": {
-                "unit": "currency/kW/a",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "specific_costs": {
-                "unit": "currency/kW",
-                "value": 0
-            },
-            "inflow_direction": "Electricity (DSO) bus",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "DSO_feedin_sink",
-            "lifetime": {
-                "unit": "year",
-                "value": 30
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/kW",
-                "value": 0.0
-            },
-            "lifetime_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?",
-                "value": -5.505932460595773
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
-                "value": -0.4
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": false
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/simulation period",
-                "value": 0.0
-            },
-            "type_oemof": "sink",
-            "unit": "?"
-        },
-        "Electricity excess": {
-            "annuity_capex_price_dispatch": {
-                "unit": "currency/unit/a",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "specific_costs": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "inflow_direction": "Electricity",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "Electricity excess_sink",
-            "lifetime": {
-                "unit": "year",
-                "value": 30
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/unit",
-                "value": 0.0
-            },
-            "lifetime_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?",
-                "value": 0.0
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
-                "value": 0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": false
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/simulation period",
-                "value": 0.0
-            },
-            "type_oemof": "sink",
-            "unit": "?"
-        },
-        "demand_01": {
+        "Electricity demand": {
             "annuity_capex_price_dispatch": {
                 "unit": "currency/unit/a",
                 "value": 0.0
@@ -197,13 +93,13 @@
             },
             "dsm": "False",
             "energyVector": "Electricity",
-            "file_name": "demand_harbor.csv",
+            "file_name": "demand.csv",
             "inflow_direction": "Electricity",
             "installedCap": {
                 "unit": "unit",
                 "value": 0.0
             },
-            "label": "Harbor",
+            "label": "Electricity demand",
             "lifetime": {
                 "unit": "year",
                 "value": 30
@@ -238,54 +134,54 @@
             },
 "timeseries": {
                     "value": [
-                         144.37,
-                         144.15,
-                         141.58,
-                         137.67,
-                         139.23,
-                         145.41,
-                         153.76,
-                         152.99,
-                         147.58,
-                         133.64,
-                         111.66,
-                         112.99,
-                         115.97,
-                         115.28,
-                         108.42,
-                         111.25,
-                         125.01,
-                         139.87,
-                         138.5,
-                         146.34,
-                         162.11,
-                         156.96,
-                         157.35,
-                         157.88,
-                         157.03,
-                         147.05,
-                         150.6,
-                         143.59,
-                         146.08,
-                         151.38,
-                         155.08,
-                         160.3,
-                         170.13,
-                         149.2,
-                         113.87,
-                         106.72,
-                         108.12,
-                         103.74,
-                         116.07,
-                         121.93,
-                         138.56,
-                         156.61,
-                         154.31,
-                         155.43,
-                         157.92,
-                         173.73,
-                         198.72,
-                         201.1
+                      6.38E+02,
+                      7.56E+02,
+                      8.57E+02,
+                      9.35E+02,
+                      9.83E+02,
+                      1.00E+03,
+                      9.83E+02,
+                      9.35E+02,
+                      8.57E+02,
+                      7.56E+02,
+                      6.38E+02,
+                      5.12E+02,
+                      3.86E+02,
+                      2.68E+02,
+                      1.67E+02,
+                      8.97E+01,
+                      4.10E+01,
+                      2.44E+01,
+                      4.10E+01,
+                      8.97E+01,
+                      1.67E+02,
+                      2.68E+02,
+                      3.86E+02,
+                      5.12E+02,
+                      6.38E+02,
+                      7.56E+02,
+                      8.57E+02,
+                      9.35E+02,
+                      9.83E+02,
+                      1.00E+03,
+                      9.83E+02,
+                      9.35E+02,
+                      8.57E+02,
+                      7.56E+02,
+                      6.38E+02,
+                      5.12E+02,
+                      3.86E+02,
+                      2.68E+02,
+                      1.67E+02,
+                      8.97E+01,
+                      4.10E+01,
+                      2.44E+01,
+                      4.10E+01,
+                      8.97E+01,
+                      1.67E+02,
+                      2.68E+02,
+                      3.86E+02,
+                      5.12E+02
                     ],
                     "data_type": "pandas_Series",
                     "index": [
@@ -351,354 +247,6 @@
             "timeseries_total": {
                 "unit": "kW/h",
                 "value": 6837.240000000002
-            },
-            "type_asset": "demand",
-            "type_oemof": "sink",
-            "unit": "kW"
-        },
-        "demand_02": {
-            "annuity_capex_price_dispatch": {
-                "unit": "currency/unit/a",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "specific_costs": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "dsm": "False",
-            "energyVector": "Electricity",
-            "file_name": "demand_remaining.csv",
-            "inflow_direction": "Electricity",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "Remaining demand",
-            "lifetime": {
-                "unit": "year",
-                "value": 30
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/unit",
-                "value": 0.0
-            },
-            "lifetime_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?",
-                "value": 0.0
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/unit/year",
-                "value": 0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": false
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/simulation period",
-                "value": 0.0
-            },
-"timeseries": {
-                    "value": [
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0
-                    ],
-                    "data_type": "pandas_Series",
-                    "index": [
-                         1514764800000,
-                         1514768400000,
-                         1514772000000,
-                         1514775600000,
-                         1514779200000,
-                         1514782800000,
-                         1514786400000,
-                         1514790000000,
-                         1514793600000,
-                         1514797200000,
-                         1514800800000,
-                         1514804400000,
-                         1514808000000,
-                         1514811600000,
-                         1514815200000,
-                         1514818800000,
-                         1514822400000,
-                         1514826000000,
-                         1514829600000,
-                         1514833200000,
-                         1514836800000,
-                         1514840400000,
-                         1514844000000,
-                         1514847600000,
-                         1514851200000,
-                         1514854800000,
-                         1514858400000,
-                         1514862000000,
-                         1514865600000,
-                         1514869200000,
-                         1514872800000,
-                         1514876400000,
-                         1514880000000,
-                         1514883600000,
-                         1514887200000,
-                         1514890800000,
-                         1514894400000,
-                         1514898000000,
-                         1514901600000,
-                         1514905200000,
-                         1514908800000,
-                         1514912400000,
-                         1514916000000,
-                         1514919600000,
-                         1514923200000,
-                         1514926800000,
-                         1514930400000,
-                         1514934000000
-                    ],
-                    "name": null
-               },
-            "timeseries_average": {
-                "unit": "kW/h",
-                "value": 0.0
-            },
-            "timeseries_peak": {
-                "unit": "kW/h",
-                "value": 0
-            },
-            "timeseries_total": {
-                "unit": "kW/h",
-                "value": 0
-            },
-            "type_asset": "demand",
-            "type_oemof": "sink",
-            "unit": "kW"
-        },
-        "demand_03": {
-            "annuity_capex_price_dispatch": {
-                "unit": "currency/unit/a",
-                "value": 0.0
-            },
-            "development_costs": {
-                "unit": "currency",
-                "value": 0
-            },
-            "specific_costs": {
-                "unit": "currency/unit",
-                "value": 0
-            },
-            "dsm": "False",
-            "energyVector": "Electricity",
-            "file_name": "demand_shore_power.csv",
-            "inflow_direction": "Electricity",
-            "installedCap": {
-                "unit": "unit",
-                "value": 0.0
-            },
-            "label": "Shore power (docked ships)",
-            "lifetime": {
-                "unit": "year",
-                "value": 30
-            },
-            "lifetime_specific_cost": {
-                "unit": "currency/unit",
-                "value": 0.0
-            },
-            "lifetime_cost_om": {
-                "unit": "currency/ye",
-                "value": 0.0
-            },
-            "lifetime_price_dispatch": {
-                "unit": "?",
-                "value": 0.0
-            },
-            "specific_costs_om": {
-                "unit": "currency/year",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/unit/year",
-                "value": 0
-            },
-            "optimizeCap": {
-                "unit": "bool",
-                "value": false
-            },
-            "simulation_annuity": {
-                "unit": "currency/unit/simulation period",
-                "value": 0.0
-            },
-"timeseries": {
-                    "value": [
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         0,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300,
-                         300
-                    ],
-                    "data_type": "pandas_Series",
-                    "index": [
-                         1514764800000,
-                         1514768400000,
-                         1514772000000,
-                         1514775600000,
-                         1514779200000,
-                         1514782800000,
-                         1514786400000,
-                         1514790000000,
-                         1514793600000,
-                         1514797200000,
-                         1514800800000,
-                         1514804400000,
-                         1514808000000,
-                         1514811600000,
-                         1514815200000,
-                         1514818800000,
-                         1514822400000,
-                         1514826000000,
-                         1514829600000,
-                         1514833200000,
-                         1514836800000,
-                         1514840400000,
-                         1514844000000,
-                         1514847600000,
-                         1514851200000,
-                         1514854800000,
-                         1514858400000,
-                         1514862000000,
-                         1514865600000,
-                         1514869200000,
-                         1514872800000,
-                         1514876400000,
-                         1514880000000,
-                         1514883600000,
-                         1514887200000,
-                         1514890800000,
-                         1514894400000,
-                         1514898000000,
-                         1514901600000,
-                         1514905200000,
-                         1514908800000,
-                         1514912400000,
-                         1514916000000,
-                         1514919600000,
-                         1514923200000,
-                         1514926800000,
-                         1514930400000,
-                         1514934000000
-                    ],
-                    "name": null
-            },
-            "timeseries_average": {
-                "unit": "kW/h",
-                "value": 131.25
-            },
-            "timeseries_peak": {
-                "unit": "kW/h",
-                "value": 300
-            },
-            "timeseries_total": {
-                "unit": "kW/h",
-                "value": 6300
             },
             "type_asset": "demand",
             "type_oemof": "sink",
@@ -1912,6 +1460,14 @@
                     "unit": "factor",
                     "value": 0.2
                 },
+                "fixed_thermal_losses_relative": {
+                    "unit": "factor",
+                    "value": 0.001
+                },
+                "fixed_thermal_losses_absolute": {
+                    "unit": "factor",
+                    "value": 0.0002
+                },
                 "unit": "kWh"
             },
             "storage_filename": "storage_01.csv",
@@ -1940,10 +1496,6 @@
             "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
-                "value": 0
             }
         },
         "engineering": {
@@ -1966,10 +1518,6 @@
             },
             "specific_costs_om": {
                 "unit": "currency/year",
-                "value": 0
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
                 "value": 0
             }
         },
@@ -1994,36 +1542,27 @@
             "specific_costs_om": {
                 "unit": "currency/year",
                 "value": 4600
-            },
-            "dispatch_price": {
-                "unit": "currency/kWh",
-                "value": 0
             }
         }
     },
     "paths_to_plots": {
         "costs": [],
-        "demands": [
-            "D:\\PycharmProjects\\mvs_eland\\MVS_outputs\\input_timeseries_Harbor_kW.png",
-            "D:\\PycharmProjects\\mvs_eland\\MVS_outputs\\input_timeseries_Remaining demand_kW.png",
-            "D:\\PycharmProjects\\mvs_eland\\MVS_outputs\\input_timeseries_Shore power (docked ships)_kW.png"
-        ],
+        "demands": [],
         "flows_on_busses": [],
         "graphviz": [],
         "performance": [],
-        "resources": [
-            "D:\\PycharmProjects\\mvs_eland\\MVS_outputs\\input_timeseries_PV plant (mono)_kW.png"
-        ]
+        "resources": []
     },
     "project_data": {
-        "country": "Norway",
+        "country": "Test country",
         "label": "project_data",
-        "latitude": "59.17905",
-        "longitude": "10.95787",
+        "latitude": "0",
+        "longitude": "1",
         "project_id": "1",
-        "project_name": "Borg Havn",
+        "project_name": "D0 tests",
         "scenario_id": "1",
-        "scenario_name": "Warehouse 14",
+        "scenario_name": "Test scenario for D0 tests",
+        "scenario_description": "Test data for unit tests of D0",
         "sectors": {
             "Electricity": "Electricity"
         }
@@ -2044,10 +1583,6 @@
         "path_output_folder_inputs": "D:\\PycharmProjects\\mvs_eland\\MVS_outputs\\inputs",
         "periods": 48,
         "start_date": "2018-01-01 00:00:00",
-        "store_oemof_results": {
-            "unit": "bool",
-            "value": true
-        },
         "time_index": {
                "columns": [
                     0

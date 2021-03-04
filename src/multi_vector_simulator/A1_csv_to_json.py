@@ -55,11 +55,12 @@ from multi_vector_simulator.utils.constants import (
     TYPE_BOOL,
     TYPE_STR,
     TYPE_NONE,
-    EXTRA_CSV_PARAMETERS,
+    KNOWN_EXTRA_PARAMETERS,
     WARNING_TEXT,
     REQUIRED_IN_CSV_ELEMENTS,
     DEFAULT_VALUE,
     HEADER,
+    FIX_COST,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     LABEL,
@@ -77,6 +78,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SOC_INITIAL,
     SOC_MAX,
     SOC_MIN,
+    THERM_LOSSES_REL,
+    THERM_LOSSES_ABS,
     STORAGE_CAPACITY,
     FILENAME,
     UNIT,
@@ -87,8 +90,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
 
 from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
-    MissingParameterWarning,
-    WrongParameterWarning,
     CsvParsingError,
     WrongStorageColumn,
 )
@@ -148,6 +149,7 @@ def create_input_json(
                 ENERGY_CONVERSION,
                 ENERGY_PRODUCTION,
                 ENERGY_PROVIDERS,
+                FIX_COST,
             ]:
                 # use column names as labels, replace underscores and capitalize
                 for key, item in single_dict[filename].items():
@@ -217,6 +219,11 @@ def create_json_from_csv(
         add_storage_components() the
         parameter is set to True
 
+    :notes:
+    Tested with:
+    - test_default_values_storage_without_thermal_losses()
+    - test_default_values_storage_with_thermal_losses()
+
     :return: dict
         the converted dictionary
     """
@@ -227,7 +234,7 @@ def create_json_from_csv(
 
     if parameters is None:
         raise MissingParameterError(
-            f"No parameters were provided to extract from the file file {filename}.csv \n"
+            f"No parameters were provided to extract from the file {filename}.csv \n"
             f"Please check {input_directory} for correct parameter names."
         )
 
@@ -236,16 +243,25 @@ def create_json_from_csv(
 
     idx = 0
     while seperator_unknown is True and idx < len(CSV_SEPARATORS):
-        df = pd.read_csv(
-            os.path.join(input_directory, "{}.csv".format(filename)),
-            sep=CSV_SEPARATORS[idx],
-            header=0,
-            index_col=0,
-        )
 
-        if len(df.columns) > 0:
-            seperator_unknown = False
-        else:
+        try:
+            df = pd.read_csv(
+                os.path.join(input_directory, "{}.csv".format(filename)),
+                sep=CSV_SEPARATORS[idx],
+                header=0,
+                index_col=0,
+            )
+
+            if len(df.columns) > 0:
+                seperator_unknown = False
+            else:
+                idx = idx + 1
+
+        except pd.errors.ParserError:
+            logging.warning(
+                f"The file {filename} is not separated by {CSV_SEPARATORS[idx]} or has a formatting problem somewhere"
+            )
+            seperator_unknown = True
             idx = idx + 1
 
     if seperator_unknown is True:
@@ -255,10 +271,6 @@ def create_json_from_csv(
                 os.path.join(input_directory, f"{filename}.csv"), CSV_SEPARATORS
             )
         )
-
-    # Compare the csv input file potential extra parameters with the acknowledged
-    # EXTRA_CSV_PARAMETERS, update the parameters list and the values of the parameters
-    parameters, df = check_for_official_extra_parameters(filename, df, parameters)
 
     # check for wrong or missing required parameters
     missing_parameters = []
@@ -270,20 +282,15 @@ def create_json_from_csv(
                 if i in parameters:
                     missing_parameters.append(i)
                 else:
-                    wrong_parameters.append(i)
+                    if i not in KNOWN_EXTRA_PARAMETERS:
+                        wrong_parameters.append(i)
 
-    if len(missing_parameters) > 0 or len(parameters) == 0:
-        raise MissingParameterError(
-            f"In the file {filename}.csv the parameter {i} is missing. \n"
-            f"Please check {input_directory} for correct parameter names."
-        )
-    elif len(wrong_parameters) > 0:
-        warnings.warn(
-            WrongParameterWarning(
-                f"The parameter {i} in the file"
-                f"{os.path.join(input_directory,filename)}.csv is not expected. \n"
-                f"Expected parameters are {parameters}"
-            )
+    if len(wrong_parameters) > 0:
+        parameter_string = ", ".join(map(str, parameters))
+        logging.warning(
+            f"The parameter {i} in the file "
+            f"{os.path.join(input_directory,filename)}.csv is not expected. "
+            f"Expected parameters are: {str(parameter_string)}"
         )
         # ignore the wrong parameter which is in the csv but not required by the parameters list
         df = df.drop(wrong_parameters)
@@ -312,7 +319,13 @@ def create_json_from_csv(
                     )
                 # add column specific parameters
                 if column == STORAGE_CAPACITY:
-                    extra = [SOC_INITIAL, SOC_MAX, SOC_MIN]
+                    extra = [
+                        SOC_INITIAL,
+                        SOC_MAX,
+                        SOC_MIN,
+                        THERM_LOSSES_REL,
+                        THERM_LOSSES_ABS,
+                    ]
                 elif column == INPUT_POWER or column == OUTPUT_POWER:
                     extra = [C_RATE, DISPATCH_PRICE]
                 else:
@@ -325,10 +338,42 @@ def create_json_from_csv(
                 column_parameters = parameters + extra
                 # check if required parameters are missing
                 for i in set(column_parameters) - set(df_copy.index):
-                    raise MissingParameterError(
-                        f"In file {filename}.csv the parameter {i}"
-                        f" in column {column} is missing."
-                    )
+                    if i == THERM_LOSSES_REL:
+                        logging.debug(
+                            f"You are not using the parameter {THERM_LOSSES_REL}, which allows considering relative thermal energy losses (Values: Float). This is an advanced setting that most users can ignore."
+                        )
+                        # Set 0 as default parameter for losses in storage capacity
+                        losses = pd.DataFrame(
+                            data={
+                                "": THERM_LOSSES_REL,
+                                df_copy.columns[0]: ["factor"],
+                                df_copy.columns[1]: [0],
+                            }
+                        )
+                        losses = losses.set_index("")
+                        # Append missing parameter to dataframe
+                        df_copy = df_copy.append(losses, ignore_index=False, sort=False)
+                    elif i == THERM_LOSSES_ABS:
+                        logging.debug(
+                            f"You are not using the parameter {THERM_LOSSES_ABS}, which allows considering relative thermal energy losses (Values: Float). This is an advanced setting that most users can ignore."
+                        )
+                        # Set 0 as default parameter for losses in storage capacity
+                        losses = pd.DataFrame(
+                            data={
+                                "": THERM_LOSSES_ABS,
+                                df_copy.columns[0]: ["kWh"],
+                                df_copy.columns[1]: [0],
+                            }
+                        )
+                        losses = losses.set_index("")
+                        # Append missing parameter to dataframe
+                        df_copy = df_copy.append(losses, ignore_index=False, sort=False)
+                    else:
+                        raise MissingParameterError(
+                            f"In file {filename}.csv the parameter {i}"
+                            f" in column {column} is missing."
+                        )
+
                 for i in df_copy.index:
                     if i not in column_parameters:
                         # check if not required parameters are set to Nan and
@@ -339,25 +384,24 @@ def create_json_from_csv(
                             SOC_INITIAL,
                             SOC_MAX,
                             SOC_MIN,
+                            THERM_LOSSES_REL,
+                            THERM_LOSSES_ABS,
                         ]:
-                            warnings.warn(
-                                WrongParameterWarning(
-                                    f"The storage parameter {i} of the file "
-                                    f"{os.path.join(input_directory,filename)}.csv "
-                                    f"is not recognized. It will not be "
-                                    "considered in the simulation."
-                                )
+                            logging.warning(
+                                f"The storage parameter {i} of the file "
+                                f"{os.path.join(input_directory,filename)}.csv "
+                                f"is not recognized. It will not be "
+                                "considered in the simulation."
                             )
+
                             df_copy.loc[[i], [column]] = "NaN"
 
                         elif pd.isnull(df_copy.at[i, column]) is False:
-                            warnings.warn(
-                                WrongParameterWarning(
-                                    f"The storage parameter {i} in column "
-                                    f" {column} of the file {filename}.csv should "
-                                    "be set to NaN. It will not be considered in the "
-                                    "simulation"
-                                )
+                            logging.warning(
+                                f"The storage parameter {i} in column "
+                                f" {column} of the file {filename}.csv should "
+                                "be set to NaN. It will not be considered in the "
+                                "simulation"
                             )
                             df_copy.loc[[i], [column]] = "NaN"
                         else:
@@ -368,14 +412,12 @@ def create_json_from_csv(
                             )
                     # check if all other values have a value unequal to Nan
                     elif pd.isnull(df_copy.at[i, column]) is True:
-                        warnings.warn(
-                            WrongParameterWarning(
-                                f"In file {filename}.csv the parameter {i}"
-                                f" in column {column} is NaN. Please insert a value "
-                                "of 0 or int. For this "
-                                "simulation the value is set to 0 "
-                                "automatically."
-                            )
+                        logging.warning(
+                            f"In file {filename}.csv the parameter {i}"
+                            f" in column {column} is NaN. Please insert a value "
+                            "of 0 or int. For this "
+                            "simulation the value is set to 0 "
+                            "automatically."
                         )
 
                         df_copy.loc[[i], [column]] = 0
@@ -487,83 +529,6 @@ def create_json_from_csv(
         return single_dict2
 
 
-def check_for_official_extra_parameters(
-    filename, df, required_parameters, official_extra_parameters=EXTRA_CSV_PARAMETERS
-):
-    """
-    Checks if there are new parameters that should be in the csvs.
-    Adds them to the required list of parameters.
-
-    Parameters
-    ----------
-    filename: str
-        Defines the name of a csv input file (without the extension)
-    df: :py:class:`~pandas.core.frame.DataFrame`
-        Data frame read from one of the input files
-    required_parameters: list
-        Defines the required parameters
-    official_extra_parameters: dict
-        dict specifing allowed extra parameters that should be in the Data frame
-
-    Returns
-    -------
-    Updated parameters list and updated dataframe and updated :class:`pandas.DataFrame<frame>`
-    The function through a warning if a new parameter is not defined in the csv but exists inf
-    the official_extra_parameters. The parameter will then be set to it's default value.
-    """
-    df = df.copy()
-
-    # Loop through official extra parameters (i.e. not yet added to the REQUIRED_CSV_PARAMETERS)
-    for extra_parameter in official_extra_parameters:
-        # Check whether the extra parameter should be contained in the csv file named `filename`
-        if (
-            filename
-            in official_extra_parameters[extra_parameter][REQUIRED_IN_CSV_ELEMENTS]
-        ):
-            # Check if the extra parameter is included in the pandas Dataframe
-            if extra_parameter not in df.index:
-                # Add default values for each of the columns in the df
-                default_values = {}
-                for i, column in enumerate(df):
-                    if i == 0:
-                        default_values.update({column: extra_parameter})
-                    elif column == "unit":
-                        default_values.update(
-                            {
-                                column: official_extra_parameters[extra_parameter].get(
-                                    UNIT, TYPE_STR
-                                )
-                            }
-                        )
-                    else:
-                        default_values.update(
-                            {
-                                column: official_extra_parameters[extra_parameter][
-                                    DEFAULT_VALUE
-                                ]
-                            }
-                        )
-                default_values = pd.Series(data=default_values, name=extra_parameter)
-                df = df.append(default_values, ignore_index=False)
-
-                # Display warning message if the extra parameter was not present in the csv file.
-                warnings.warn(
-                    MissingParameterWarning(
-                        f"You are not using the parameter {extra_parameter} for asset group {filename}, which "
-                        + official_extra_parameters[extra_parameter][WARNING_TEXT]
-                        + ". "
-                        + f"This parameter is set to it's default value {official_extra_parameters[extra_parameter][DEFAULT_VALUE]}, which can influence the results."
-                        + "In the next release, this parameter will required."
-                    )
-                )
-
-            if extra_parameter not in required_parameters:
-                # Now that the new parameter is in the df
-                # (optional with default values being added) add the new parameter to parameter list
-                required_parameters.append(extra_parameter)
-    return required_parameters, df
-
-
 def conversion(value, asset_dict, row, param, asset, filename=""):
     r"""
     This function converts the input given in the csv to the dict used in the MVS.
@@ -590,7 +555,7 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
     """
     if pd.isnull(value):
         logging.error(
-            f"Parametr {param} of asset {asset} is missing. "
+            f"Parameter {param} of asset {asset} (group: {filename}) is missing. "
             f"The simulation may continue, but errors during execution or in the results can be expected."
         )
 

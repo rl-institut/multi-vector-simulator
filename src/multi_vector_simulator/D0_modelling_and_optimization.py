@@ -18,10 +18,10 @@ Functional requirements of module D0:
 - add simulation parameters to dict values
 """
 
-
 import logging
 import os
 import timeit
+import warnings
 
 from oemof.solph import processing
 import oemof.solph as solph
@@ -49,21 +49,16 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LABEL,
     TIME_INDEX,
     OUTPUT_LP_FILE,
-    STORE_OEMOF_RESULTS,
     SIMULATION_RESULTS,
     OBJECTIVE_VALUE,
     SIMULTATION_TIME,
 )
 
-
-class WrongOemofAssetForGroupError(ValueError):
-    # Exception raised when an asset group has an asset with an denied oemof type
-    pass
-
-
-class UnknownOemofAssetType(ValueError):
-    # Exception raised in case an asset type is defined for an asset group constants_json_strings but the oemof function is not jet defined (only dev)
-    pass
+from multi_vector_simulator.utils.exceptions import (
+    MVSOemofError,
+    WrongOemofAssetForGroupError,
+    UnknownOemofAssetType,
+)
 
 
 def run_oemof(dict_values, save_energy_system_graph=False):
@@ -102,14 +97,11 @@ def run_oemof(dict_values, save_energy_system_graph=False):
     local_energy_system = D2.add_constraints(
         local_energy_system, dict_values, dict_model
     )
-
     model_building.store_lp_file(dict_values, local_energy_system)
 
     model, results_main, results_meta = model_building.simulating(
         dict_values, model, local_energy_system
     )
-
-    model_building.store_oemof_results(dict_values, model)
 
     timer.stop(dict_values, start)
 
@@ -260,10 +252,10 @@ class model_building:
         -------
         Nothing.
         """
-        path_lp_file = os.path.join(
-            dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], "lp_file.lp"
-        )
         if dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE][VALUE] is True:
+            path_lp_file = os.path.join(
+                dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], "lp_file.lp"
+            )
             logging.debug("Saving to lp-file.")
             local_energy_system.write(
                 path_lp_file, io_options={"symbolic_solver_labels": True},
@@ -272,6 +264,15 @@ class model_building:
     def simulating(dict_values, model, local_energy_system):
         """
         Initiates the oemof-solph simulation, accesses results and writes main results into dict
+
+        If an error is encountered in the oemof solver, mvs should not be allowed to continue,
+        otherwise other errors related to the uncomplete simulation result might occur and it will
+        be more obscure to the endusers what went wrong.
+
+        A MVS error is raised if the omoef solver warning states explicitely that
+        "termination condition infeasible", otherwise the oemof solver warning is re-raised as
+        an error.
+
 
         Parameters
         ----------
@@ -288,15 +289,38 @@ class model_building:
         -------
         Updated model with results, main results (flows, assets) and meta results (simulation)
         """
+
         logging.info("Starting simulation.")
-        local_energy_system.solve(
-            solver="cbc",
-            solve_kwargs={
-                "tee": False
-            },  # if tee_switch is true solver messages will be displayed
-            cmdline_options={"ratioGap": str(0.03)},
-        )  # ratioGap allowedGap mipgap
-        logging.info("Problem solved.")
+        # turn warnings into errors
+        warnings.filterwarnings("error")
+        try:
+            local_energy_system.solve(
+                solver="cbc",
+                solve_kwargs={
+                    "tee": False
+                },  # if tee_switch is true solver messages will be displayed
+                cmdline_options={"ratioGap": str(0.03)},
+            )  # ratioGap allowedGap mipgap
+        except UserWarning as e:
+            error_message = str(e)
+            compare_message = "termination condition infeasible"
+            if compare_message in error_message:
+                error_message = (
+                    f"The following error occurred during the mvs solver: {error_message}\n\n "
+                    f"There are several reasons why this could have happened."
+                    "\n\t- the energy system is not properly connected. "
+                    "\n\t- the capacity of some assets might not have been optimized. "
+                    "\n\t- the demands might not be supplied with the installed capacities in "
+                    "current energy system. Check your maximum power demand and if your energy "
+                    "production assets and/or energy conversion assets have enough capacity to "
+                    "meet the total demand"
+                )
+                logging.error(error_message)
+                raise MVSOemofError(error_message) from None
+            else:
+                raise e
+        # stop turning warnings into errors
+        warnings.resetwarnings()
 
         # add results to the energy system to make it possible to store them.
         results_main = processing.results(local_energy_system)
@@ -319,33 +343,6 @@ class model_building:
             round(dict_values[SIMULATION_RESULTS][SIMULTATION_TIME] / 60, 2),
         )
         return model, results_main, results_main
-
-    def store_oemof_results(dict_values, model):
-        """
-        Stores oemof results to file ("oemof_simulation_results.oemof") if setting store_oemof_results is True.
-
-        Parameters
-        ----------
-        dict_values: dict
-            all simulation inputs
-
-        model: object
-            oemof object for energy system model
-
-        Returns
-        -------
-        None
-        """
-        # store energy system with results
-        if dict_values[SIMULATION_SETTINGS][STORE_OEMOF_RESULTS][VALUE] is True:
-            model.dump(
-                dpath=dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-                filename="oemof_simulation_results.oemof",
-            )
-            logging.debug(
-                "Stored results in %s/MVS_results.oemof.",
-                dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER],
-            )
 
 
 class timer:
@@ -377,6 +374,6 @@ class timer:
         dict_values[SIMULATION_RESULTS].update({"modelling_time": round(duration, 2)})
 
         logging.info(
-            "Moddeling time: %s minutes.",
+            "Modeling time: %s minutes.",
             round(dict_values[SIMULATION_RESULTS]["modelling_time"] / 60, 2),
         )

@@ -532,29 +532,29 @@ def test_check_efficiency_of_storage_capacity_is_greater_02(get_dict_vals, caplo
     ), f"Although the efficiency of a 'storage_capacity' is 0.3, a warning is logged or error is risen."
 
 
-@pytest.fixture()
-def get_json():
-    """ Reads input json file and adds time series to non-dispatchable sources. """
-    with open(os.path.join(JSON_PATH)) as json_file:
-        dict_values = json.load(json_file)
-
-    def _add_time_series_to_dict_values(ts):
-        for key, source in dict_values[ENERGY_PRODUCTION].items():
-            if source[RENEWABLE_ASSET_BOOL][VALUE] is True:
-                dict_values[ENERGY_PRODUCTION][key][TIMESERIES] = ts
-        return dict_values
-
-    return _add_time_series_to_dict_values
-
-
-def test_check_non_dispatchable_source_time_series_passes(get_json):
-    dict_values = get_json(pd.Series([0, 0.22, 0.5, 0.99, 1]))
+def test_check_non_dispatchable_source_time_series_passes():
+    dict_values = {
+        ENERGY_PRODUCTION: {
+            "asset": {
+                TIMESERIES: pd.Series([0, 0.22, 0.5, 0.99, 1]),
+                DISPATCHABILITY: False,
+            }
+        }
+    }
     return_value = C1.check_non_dispatchable_source_time_series(dict_values=dict_values)
     assert return_value is None
 
 
-def test_check_non_dispatchable_source_time_series_results_in_error_msg(get_json):
-    dict_values = get_json(pd.Series([0, 0.22, 0.5, 0.99, 1, 1.01]))
+def test_check_non_dispatchable_source_time_series_results_in_error_msg():
+    dict_values = {
+        ENERGY_PRODUCTION: {
+            "asset": {
+                TIMESERIES: pd.Series([0, 0.22, 0.5, 0.99, 1, 1.01]),
+                DISPATCHABILITY: False,
+                LABEL: "asset",
+            }
+        }
+    }
     return_value = C1.check_non_dispatchable_source_time_series(dict_values=dict_values)
     assert return_value is False
 
