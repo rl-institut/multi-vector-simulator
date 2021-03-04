@@ -71,8 +71,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LIFETIME_PRICE_DISPATCH,
 )
 
-from multi_vector_simulator.E0_evaluation import store_result_matrix
-import multi_vector_simulator.E2_economics as E2
 
 # Determines which assets are defined by...
 # a influx from a bus
@@ -1095,48 +1093,3 @@ def get_units_of_cost_matrix_entries(dict_economic, kpi_list):
         else:
             unit_list.append(kpi_cost_unit_dict[key])
     return unit_list
-
-
-def process_fixcost(dict_values):
-    r"""
-    Adds fix costs of the project to the economic evaluation of the energy system.
-
-    Parameters
-    ----------
-    dict_values: dict
-        All simulation data with inputs and results of the assets
-
-    Returns
-    -------
-    Updated dict_values with costs attributed in dict values also appended to the dict_values[KPI] (scalar results)
-
-    Notes
-    -----
-
-    Function is tested with:
-    - test_E1_process_results.test_process_fixcost()
-    """
-    for asset in dict_values[FIX_COST]:
-        # Add parameters that are needed for E2.get_costs()
-        dict_values[FIX_COST][asset].update(
-            {
-                OPTIMIZED_ADD_CAP: {VALUE: 1},
-                INSTALLED_CAP: {VALUE: 0},
-                LIFETIME_PRICE_DISPATCH: {VALUE: 0},
-                FLOW: pd.Series([0, 0]),
-            }
-        )
-
-        E2.get_costs(dict_values[FIX_COST][asset], dict_values[ECONOMIC_DATA])
-        # Remove all parameters that were added before and the KPI that do not apply
-        for key in [
-            OPTIMIZED_ADD_CAP,
-            LIFETIME_PRICE_DISPATCH,
-            INSTALLED_CAP,
-            FLOW,
-            COST_DISPATCH,
-        ]:
-            dict_values[FIX_COST][asset].pop(key)
-        store_result_matrix(
-            dict_values[KPI], dict_values[FIX_COST][asset], fix_cost=True
-        )
