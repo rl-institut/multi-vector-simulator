@@ -19,7 +19,7 @@ Here is a template for new release sections
 -
 ```
 
-## [unreleased]
+## [0.5.5] - 2021-03-04
 
 ### Added
 - Verification of the SoC values after simulation for any physically infeasible values with `E4.verify_state_of_charge` and added tests for this function (#739)
