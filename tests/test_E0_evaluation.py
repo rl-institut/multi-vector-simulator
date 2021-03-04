@@ -5,6 +5,7 @@ import shutil
 
 import mock
 import pandas as pd
+import numpy as np
 
 import multi_vector_simulator.A0_initialization as A0
 import multi_vector_simulator.B0_data_input_json as B0
@@ -14,15 +15,8 @@ import multi_vector_simulator.E0_evaluation as E0
 
 from multi_vector_simulator.utils.constants import OUTPUT_FOLDER
 
-from multi_vector_simulator.utils.constants_json_strings import (
-    VALUE,
-    KPI,
-    KPI_SCALARS,
-    KPI_COST_MATRIX,
-    KPI_SCALAR_MATRIX,
-    KPI_SCALARS_DICT,
-    OPTIMIZED_FLOWS,
-)
+from multi_vector_simulator.utils.constants_json_strings import *
+
 from _constants import (
     TEST_REPO_PATH,
     INPUT_FOLDER,
@@ -140,6 +134,67 @@ def test_evaluate_check_dict_fields_in_output_dict_under_kpi_scalar_fields():
 
     # for k in dict_values_after[KPI][KPI_SCALARS_DICT]:
     #    assert k in KPI_SCALARS
+
+
+def test_process_fixcost():
+    economic_data = {
+        PROJECT_DURATION: {VALUE: 20},
+        ANNUITY_FACTOR: {VALUE: 1},
+        CRF: {VALUE: 1},
+        DISCOUNTFACTOR: {VALUE: 0},
+        TAX: {VALUE: 0},
+        CURR: CURR,
+    }
+    fix_cost_entry = "one entry"
+    dict_test = {
+        ECONOMIC_DATA: economic_data,
+        SIMULATION_SETTINGS: {EVALUATED_PERIOD: {VALUE: 365, UNIT: "Days"}},
+        FIX_COST: {
+            fix_cost_entry: {
+                LABEL: fix_cost_entry,
+                SPECIFIC_COSTS_OM: {VALUE: 1, UNIT: CURR},
+                SPECIFIC_COSTS: {VALUE: 1, UNIT: CURR},
+                DEVELOPMENT_COSTS: {VALUE: 1, UNIT: CURR},
+                LIFETIME: {VALUE: 20},
+                AGE_INSTALLED: {VALUE: 0},
+                LIFETIME_SPECIFIC_COST: {VALUE: 1, UNIT: CURR},
+                LIFETIME_SPECIFIC_COST_OM: {VALUE: 1, UNIT: CURR},
+                ANNUITY_SPECIFIC_INVESTMENT_AND_OM: {VALUE: 1, UNIT: CURR},
+                SIMULATION_ANNUITY: {VALUE: 1, UNIT: CURR},
+                SPECIFIC_REPLACEMENT_COSTS_INSTALLED: {VALUE: 1, UNIT: CURR},
+                SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED: {VALUE: 1, UNIT: CURR},
+            }
+        },
+    }
+    E0.initalize_kpi(dict_test)
+    E0.process_fixcost(dict_test)
+    assert (
+        fix_cost_entry in dict_test[KPI][KPI_COST_MATRIX][LABEL].values
+    ), f"The fix cost entry `{fix_cost_entry}` is not added to the cost matrix ({KPI_COST_MATRIX})."
+    for k in [
+        COST_TOTAL,
+        COST_OPERATIONAL_TOTAL,
+        COST_INVESTMENT,
+        COST_UPFRONT,
+        COST_REPLACEMENT,
+        COST_OM,
+        ANNUITY_TOTAL,
+        ANNUITY_OM,
+    ]:
+        assert isinstance(dict_test[KPI][KPI_COST_MATRIX][k][0], float) or isinstance(
+            dict_test[KPI][KPI_COST_MATRIX][k][0], int
+        ), f"A float or int should be added for fix cost entry `{fix_cost_entry}` and its KPI `{k}`."
+    for k in [
+        COST_DISPATCH,
+        LCOE_ASSET,
+    ]:
+        assert np.isnan(
+            dict_test[KPI][KPI_COST_MATRIX][k][0]
+        ), f"No value should be added for fix cost entry `{fix_cost_entry}` and KPI `{k}`, but value {dict_test[KPI][KPI_COST_MATRIX][k][fix_cost_entry]} is attributed."
+
+    assert (
+        fix_cost_entry not in dict_test[KPI][KPI_SCALAR_MATRIX][LABEL].values
+    ), f"No line should be added for the fix cost entry `{fix_cost_entry}` to the scalar matrix ({KPI_SCALAR_MATRIX})."
 
 
 def teardown_module():
