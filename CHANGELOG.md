@@ -119,6 +119,7 @@ Here is a template for new release sections
 - Fix: `ENERGY_PROVIDER` assets are missing parameter `DISPATCHABILITY` when parsed from EPA to MVS (#810)
 - Fix: No `DISPATCHABILITY` parameter for `ENERGY_PRODUCTION` assets in EPA (#810)
 - Fix: Default value of `MAXIMUM_EMISSIONS` when parsing from EPA (#810)
+- Move `process_fixcost` from `E1` to `E0` to avoid circular imports (#820)
 
 ## [0.5.4] - 2020-12-18
 
