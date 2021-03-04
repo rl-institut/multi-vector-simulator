@@ -13,7 +13,7 @@
  None," Energy vector/commodity. Convention: For an energy conversion asset define energyVector of the output. For a sink define based on inflow. For a source define based on output flow. For a storage, define based on stored energy carrier."," Electricity (or heat, bio-gas, etc.)", None, str, None,energyVector,energyvector-label
  None, The number of days for which the simulation is to be run.,365, None, Numeric, Days,evaluated_period,evaluatedperiod-label
  None, Price received for feeding electricity into the grid.,0, None, Numeric, currency/kWh,feedin_tariff,feedintariff-label
- None, Name of the csv file containing the input PV generation time-series. E.g.: filename.csv, demand_harbor.csv, None, str, None,file_name,filename-label
+ None, Name of the csv file containing the input PV generation time-series. E.g.: filename.csv, demand.csv, None, str, None,file_name,filename-label
 0, Thermal losses of storage independent of state of charge and independent of nominal storage capacity between two consecutive timesteps.,0.0003, Between 0 and 1, Numeric, factor,fixed_thermal_losses_absolute,fixed_thermal_losses_absolute-label
 0, Thermal losses of storage independent of state of charge between two consecutive timesteps relative to nominal storage capacity.,0.0016, Between 0 and 1, Numeric, factor,fixed_thermal_losses_relative,fixed_thermal_losses_relative-label
  None, The bus/component from which the energyVector is arriving into the asset., Electricity, None, str, None,inflow_direction,inflowdirection-label
