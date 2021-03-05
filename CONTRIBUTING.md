@@ -97,6 +97,8 @@ EXECUTE_TESTS_ON=master pytest
 ```
 will execute *all* benchmark tests (it takes thus a longer time to run)
 
+*Note*: for windows users you can set the environnement variable with `set EXECUTE_TESTS_ON=master` and run the tests simply with `pytest`
+
 
 #### Step 4: Submit a pull request (PR)
 
@@ -120,7 +122,105 @@ Once you are satisfied with your PR you should ask someone to review it. Before 
 
 This protocol explains how to perform a release of the code on ´master´ branch before releasing the code to pypi.org. If you don't want to release on pypi.org, skip the part under "The actual release".
 
-### Before the release
+### Local packaging test
+
+Before starting uploading things to pypi.org, there are a few tests one can perform locally.
+
+0. Make sure your local tests are all passing with environment variable `EXECUTE_TESTS_ON=master pytest` (see step Run tests locally above)
+
+1. Open a fresh python3 virtual environment and make sure you have the latest versions of setuptools and wheel installed:
+
+    ```bash
+    pip install --upgrade setuptools wheel twine
+    ```
+2. Move to the root of your local copy of this repository and prepare the python package and remove previous version distribution files with 
+    ```bash
+    python prepare_package.py
+    ```
+3. Install multi-vector-simulator form the local packages
+    ```bash
+    pip install -e .
+    ```
+4. Move outside of this repository (with `cd ..`)
+    ```bash
+    cd ..
+    ```
+5. Create a new empty folder
+    ```bash
+    mkdir empty_folder
+    ```
+6. Create a new empty folder
+    ```bash
+    mkdir empty_folder
+    ```
+7. Test the multi-vector-simulator default simulation
+    ```bash
+    mvs_tool
+    ```
+    It should run the simulation and save the results in the default output folder.
+    If the simulation does not run through, find out why and fix it.
+    If you run this local packaging test multiple times, either create a new empty folder or run `mvs_tool -f` to overwrite the default output folder.
+
+If this test passes locally, you can move to next step, upload a release candidate on pypi.org
+
+### Release candidate on pypi.org
+
+As on pypi.org, one is only allowed to upload a given version only once, one need a way to test a release before making it 100% official. This is the purpose of release candidate.
+Technically, those release candidate are similar to a normal release in the sense that someone can `pip install` them. However users will know that the release candidate are only there for test purposes.
+
+1. Open a working python3 virtual environment and make sure you have the latest versions of setuptools and wheel installed:
+    ```bash
+    pip install --upgrade setuptools wheel twine
+    ```
+2. Make sure you pulled the latest version of `dev` branch from `origin`: `git checkout dev`, `git pull origin`.
+3. Change the version (without committing) with release candidates (add `rc1` to the `version_num`, for example `vX.Y.Zrc1`) before the actual release, as a release with a specific version number can only be uploaded once on pypi.
+4. Move to the root of your local copy of this repository and prepare the python package and remove previous version distribution files with 
+    ```bash
+    python prepare_package.py
+    ```
+    The last two lines should show the result of the twine check:
+    ```
+    Checking dist/multi_vector_simulator-X.Y.Zrci-py3-none-any.whl: PASSED
+    Checking dist/multi-vector-simulator-X.Y.Zrci.tar.gz: PASSED
+    ```
+    If one of the two is not `PASSED`, find out why and fix it.
+
+5. If the twine check passed you can now upload the package release candidate to pypi.org
+    1. Check the credentials of our pypi@rl-institut.de account on https://pypi.org.
+    2. Type `twine upload dist/*`
+    3. Enter `__token__` for username and your pypi token for password.
+
+6. Create a fresh virtual environment and install the release candidate version of the package
+    ```bash
+    pip install multi-vector-simulator==X.Y.Zrci
+    ```
+7. Move outside of this repository (with `cd ..`)
+    ```bash
+    cd ..
+    ```
+8. Create a new empty folder
+    ```bash
+    mkdir empty_folder
+    ```
+9. Create a new empty folder
+    ```bash
+    mkdir empty_folder
+    ```
+10. Test the multi-vector-simulator default simulation
+    ```bash
+    mvs_tool
+    ```
+    It should run the simulation and save the results in the default output folder.
+    If the simulation does not run through, find out why and fix it.
+    If you run this local packaging test multiple times, either create a new empty folder or run `mvs_tool -f` to overwrite the default output folder.
+
+11. If you notice errors in the uploaded package, fix them and bump up `rc1` to `rc2` and repeat steps 3. to 10. until you don't see any more errors.
+
+    It is encouraged to make sure step 6. to 10. are also performed on a different os than yours (ask a colleague for example)
+
+12. If your release candidate works well you can now do the actual release on `master`, followed by the release on pypi.org
+
+### Release on master
 
 1. Create a release branch by branching off from `dev`
     ```bash
@@ -130,37 +230,19 @@ This protocol explains how to perform a release of the code on ´master´ branch
 2. In your release branch, update the version number in [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py) in  in the format indicated under 1 (commit message: "Bump version number").
 3. Replace the header `[Unreleased]` in the [`CHANGELOG.md`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md)
 with the version number (see 2.) and the date of the release in [ISO format](https://xkcd.com/1179/): `[Version] - YYYY-MM-DD`.
-4. After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it into `master`.
+4. After pushing these changes, create a pull request from `release/vX.Y.Z` towards `master` and merge it into `master`. It is normal that git tells you your release is out of date with master, do not hit the "update button"!
 5. Create a [release tag](https://github.com/rl-institut/multi-vector-simulator/releases) on github.
 Please choose `master` as target and use `vX.Y.Z` as tag version. In the description field simply copy-paste the content of the `CHANGELOG`descriptions for this release and you're done!
 For help look into the [github release description](https://help.github.com/en/github/administering-a-repository/creating-releases).
 
-### The actual release
+### The actual release on pypi.org
 *Note*: the point 4 to 7 can be done automatically by running `python prepare_package.py`, they are displayed here explicitly for transparency
 
-1. Open a working python3 virtual environment and make sure you have the latest versions of setuptools and wheel installed:
-`python3 -m pip install --upgrade setuptools wheel twine`.
-2. Make sure you pulled the release on `master` branch from `origin`: `git checkout master`, `git pull origin`.
-3. Change the version without committing with release candidates (add `rc1` to the `version_num`, for example `vX.Y.Zrc1`) before the actual release, as a release with a specific version number can only be uploaded once on pypi.
-4. Delete `build/`, `dist/` and `multi_vector_simulator.egg-info` directories (from previous release) to avoid errors.
-5. Rebuild the `build/`, `dist/` and and `multi_vector_simulator.egg-info` directories `python3 setup.py sdist bdist_wheel`
-6. Check the package with twine: `python3 -m twine check dist/*` If errors occur, fix them before the release or postpone.
-7. Copy the content of `input_template` into `src/multi-vector-simulator/package_data/input_template`, `report/asset` into `src/multi-vector-simulator/package_data/assets` and `tests/inputs` into `src/multi-vector-simulator/package_data/inputs`.
-8. Test your package:
-    1. Test the upload on test.pypi.org:
-        Here you need to use username and password of our pypi@rl-institut.de account.
-       ` twine upload --repository testpypi dist/*`
-    2. Test the installation: `python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps multi_vector_simulator==X.Y.Zrci`, where you replace `X.Y.Zrci` by your current version and release candidate 
-9. If everything works as expected you can now upload the package release candidate to pypi.org
-    1. Check the credentials of our pypi@rl-institut.de account on https://pypi.org.
-    2. Type `twine upload dist/*`
-    3. Enter `__token__` for username and your pypi token for password.
-    4. Test the installation: `pip install multi-vector-simulator==X.Y.Zrci`, where you replace `X.Y.Zrci` by your current version and release candidate 
-    5. Then open a terminal
-        `mvs_tool -f -o test_pypi`
-10. If you notice errors in the uploaded package, fix them and bump up `rc1` to `rc2` and repeat steps 3. to 10. until you don't see any more mistakes.
-11. If your release candidate works well you can now do the actual release: repeat step 3. to 10. and remove `rci` from [`src/multi-vector-simulator/version.py`](https://github.com/rl-institut/multi-vector-simulator/blob/dev/src/multi_vector_simulator/version.py).
-12. Congratulations, you just updated the package on pypi.org, you deserve a treat!
+Follow the steps from the "Release candidate on pypi.org" section, without adding `rci` after the version number and ignoring step 11.
+
+Congratulations, you just updated the package on pypi.org, you deserve a treat!
+
+*Note*: should you notice a mistake/error after making the official release to pypi.org, you will have to bump the version number `Z` and publish a new version. Try to make careful checks with release candidate to prevent this from happening !
 
 ### After the release
 
