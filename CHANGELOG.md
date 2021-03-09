@@ -29,6 +29,17 @@ Here is a template for new release sections
 ### Fixed
 - 
 
+## [unreleased]
+
+### Added
+-
+### Changed
+-
+### Removed
+-
+### Fixed
+-
+
 ## [0.5.5] - 2021-03-04
 
 ### Added
