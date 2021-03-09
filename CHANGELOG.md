@@ -28,6 +28,7 @@ Here is a template for new release sections
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
+- Function `C0.define_sink()` now also defines `DISPATCHABILITY=TRUE` for the created sink.
 - Status messages of requirements in `E-Land_Requirements.rst` (#817)
 - Minor updates in `Model_Assumptions.rst` and `MVS_Outputs.rst`, mainly adding labels (#817)
 

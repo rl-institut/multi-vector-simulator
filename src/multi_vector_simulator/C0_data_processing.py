@@ -21,7 +21,6 @@ Module C0 prepares the data read from csv or json for simulation, ie. pre-proces
 - Multiply `maximumCap` of non-dispatchable sources by max(timeseries(kWh/kWp)) as the `maximumCap` is limiting the flow but we want to limit the installed capacity (see issue #446)
 """
 
-
 import logging
 import os
 import sys
@@ -299,8 +298,8 @@ def energyConversion(dict_values, group):
 
         # in case there is only one parameter provided (input bus and one output bus)
         if (
-            FILENAME in dict_values[group][asset][EFFICIENCY]
-            and HEADER in dict_values[group][asset][EFFICIENCY]
+                FILENAME in dict_values[group][asset][EFFICIENCY]
+                and HEADER in dict_values[group][asset][EFFICIENCY]
         ):
             receive_timeseries_from_csv(
                 dict_values[SIMULATION_SETTINGS], dict_values[group][asset], EFFICIENCY,
@@ -383,8 +382,8 @@ def energyStorage(dict_values, group):
                 THERM_LOSSES_ABS,
             ]:
                 if parameter in dict_values[group][asset][subasset] and (
-                    FILENAME in dict_values[group][asset][subasset][parameter]
-                    and HEADER in dict_values[group][asset][subasset][parameter]
+                        FILENAME in dict_values[group][asset][subasset][parameter]
+                        and HEADER in dict_values[group][asset][subasset][parameter]
                 ):
                     receive_timeseries_from_csv(
                         dict_values[SIMULATION_SETTINGS],
@@ -392,7 +391,7 @@ def energyStorage(dict_values, group):
                         parameter,
                     )
                 elif parameter in dict_values[group][asset][subasset] and isinstance(
-                    dict_values[group][asset][subasset][parameter][VALUE], list
+                        dict_values[group][asset][subasset][parameter][VALUE], list
                 ):
                     treat_multiple_flows(
                         dict_values[group][asset][subasset], dict_values, parameter
@@ -442,6 +441,7 @@ def energyConsumption(dict_values, group):
             )
 
         if FILENAME in dict_values[group][asset]:
+            dict_values[group][asset][DISPATCHABILITY]: {VALUE: False, UNIT: TYPE_BOOL}
             receive_timeseries_from_csv(
                 dict_values[SIMULATION_SETTINGS],
                 dict_values[group][asset],
@@ -484,8 +484,8 @@ def define_missing_cost_data(dict_values, dict_asset):
         SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + UNIT},
         SPECIFIC_COSTS_OM: {VALUE: 0, UNIT: CURR + "/" + UNIT_YEAR},
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + UNIT + "/" + UNIT_YEAR},
-        LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: UNIT_YEAR,},
-        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
+        LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: UNIT_YEAR, },
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR, },
     }
 
     # checks that an asset has all cost parameters needed for evaluation.
@@ -695,7 +695,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso):
         dict_values=dict_values,
         asset_key=dso + DSO_CONSUMPTION,
         outflow_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]
-        + DSO_PEAK_DEMAND_SUFFIX,
+                          + DSO_PEAK_DEMAND_SUFFIX,
         price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
         emission_factor=dict_values[ENERGY_PROVIDERS][dso][EMISSION_FACTOR],
@@ -776,7 +776,7 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
 
 
 def define_availability_of_peak_demand_pricing_assets(
-    dict_values, number_of_pricing_periods, months_in_a_period
+        dict_values, number_of_pricing_periods, months_in_a_period
 ):
     r"""
     Determined the availability timeseries for the later to be defined dso assets for taking into account the peak demand pricing periods.
@@ -804,10 +804,10 @@ def define_availability_of_peak_demand_pricing_assets(
         time_period = pd.date_range(
             # Period start
             start=dict_values[SIMULATION_SETTINGS][START_DATE]
-            + pd.DateOffset(months=(period - 1) * months_in_a_period),
+                  + pd.DateOffset(months=(period - 1) * months_in_a_period),
             # Period end, with months_in_a_period durartion
             end=dict_values[SIMULATION_SETTINGS][START_DATE]
-            + pd.DateOffset(months=(period) * months_in_a_period, hours=-1),
+                + pd.DateOffset(months=(period) * months_in_a_period, hours=-1),
             freq=str(dict_values[SIMULATION_SETTINGS][TIMESTEP][VALUE]) + UNIT_MINUTE,
         )
 
@@ -820,7 +820,7 @@ def define_availability_of_peak_demand_pricing_assets(
 
 
 def add_a_transformer_for_each_peak_demand_pricing_period(
-    dict_values, dict_dso, dict_availability_timeseries
+        dict_values, dict_dso, dict_availability_timeseries
 ):
     r"""
     Adds transformers that are supposed to model the peak_demand_pricing periods for each period.
@@ -856,15 +856,15 @@ def add_a_transformer_for_each_peak_demand_pricing_period(
     for key in dict_availability_timeseries.keys():
         if len(dict_availability_timeseries.keys()) == 1:
             transformer_name = (
-                dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD
+                    dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD
             )
         else:
             transformer_name = (
-                dict_dso[LABEL]
-                + DSO_CONSUMPTION
-                + DSO_PEAK_DEMAND_PERIOD
-                + "_"
-                + str(key)
+                    dict_dso[LABEL]
+                    + DSO_CONSUMPTION
+                    + DSO_PEAK_DEMAND_PERIOD
+                    + "_"
+                    + str(key)
             )
 
         define_transformer_for_peak_demand_pricing(
@@ -884,7 +884,7 @@ def add_a_transformer_for_each_peak_demand_pricing_period(
 
 
 def determine_months_in_a_peak_demand_pricing_period(
-    number_of_pricing_periods, simulation_period_lenght
+        number_of_pricing_periods, simulation_period_lenght
 ):
     r"""
     Check if the number of peak demand pricing periods is valid.
@@ -937,7 +937,7 @@ def determine_months_in_a_peak_demand_pricing_period(
 
 
 def define_transformer_for_peak_demand_pricing(
-    dict_values, dict_dso, transformer_name, timeseries_availability
+        dict_values, dict_dso, transformer_name, timeseries_availability
 ):
     r"""
     Defines a transformer for peak demand pricing in energyConverion
@@ -970,7 +970,7 @@ def define_transformer_for_peak_demand_pricing(
         AVAILABILITY_DISPATCH: timeseries_availability,
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
-        SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
+        SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT], },
         SPECIFIC_COSTS_OM: {
             VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE],
             UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
@@ -989,13 +989,13 @@ def define_transformer_for_peak_demand_pricing(
 
 
 def define_source(
-    dict_values,
-    asset_key,
-    outflow_direction,
-    energy_vector,
-    emission_factor,
-    price=None,
-    timeseries=None,
+        dict_values,
+        asset_key,
+        outflow_direction,
+        energy_vector,
+        emission_factor,
+        price=None,
+        timeseries=None,
 ):
     r"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
@@ -1051,7 +1051,7 @@ def define_source(
         },
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         MAXIMUM_CAP: {VALUE: None, UNIT: "?"},
-        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR, },
         ENERGY_VECTOR: energy_vector,
         EMISSION_FACTOR: emission_factor,
     }
@@ -1179,7 +1179,7 @@ def determine_dispatch_price(dict_values, price, source):
 
 
 def define_sink(
-    dict_values, asset_key, price, inflow_direction, energy_vector, **kwargs
+        dict_values, asset_key, price, inflow_direction, energy_vector, **kwargs
 ):
     r"""
     This automatically defines a sink for an oemof-sink object. The sinks are added to the energyConsumption assets.
@@ -1227,9 +1227,10 @@ def define_sink(
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
             UNIT: UNIT_YEAR,
         },
-        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR, },
         ENERGY_VECTOR: energy_vector,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
+        DISPATCHABILITY: {VALUE: True, UNIT: TYPE_BOOL}
     }
 
     if inflow_direction not in dict_values[ENERGY_BUSSES]:
@@ -1286,7 +1287,7 @@ def define_sink(
             dict_values[SIMULATION_SETTINGS], sink, DISPATCH_PRICE
         )
         if (
-            asset_key[-6:] == "feedin"
+                asset_key[-6:] == "feedin"
         ):  # change into negative value if this is a feedin sink
             sink[DISPATCH_PRICE].update(
                 {VALUE: [-i for i in sink[DISPATCH_PRICE][VALUE]]}
@@ -1301,7 +1302,7 @@ def define_sink(
     for item in [SPECIFIC_COSTS, SPECIFIC_COSTS_OM]:
         if item in kwargs:
             sink.update(
-                {item: kwargs[item],}
+                {item: kwargs[item], }
             )
 
     # update dictionary
@@ -1446,7 +1447,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
                     dict_asset[LIFETIME_SPECIFIC_COST][VALUE],
                     economic_data[CRF][VALUE],
                 )
-                + dict_asset[SPECIFIC_COSTS_OM][VALUE],  # changes from dispatch_price
+                       + dict_asset[SPECIFIC_COSTS_OM][VALUE],  # changes from dispatch_price
                 UNIT: dict_asset[LIFETIME_SPECIFIC_COST][UNIT] + "/" + UNIT_YEAR,
             }
         }
@@ -1456,7 +1457,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
         {
             LIFETIME_SPECIFIC_COST_OM: {
                 VALUE: dict_asset[SPECIFIC_COSTS_OM][VALUE]
-                * economic_data[ANNUITY_FACTOR][VALUE],
+                       * economic_data[ANNUITY_FACTOR][VALUE],
                 UNIT: dict_asset[SPECIFIC_COSTS_OM][UNIT][:-2],
             }
         }
@@ -1478,7 +1479,7 @@ def evaluate_lifetime_costs(settings, economic_data, dict_asset):
 # read timeseries. 2 cases are considered: Input type is related to demand or generation profiles,
 # so additional values like peak, total or average must be calculated. Any other type does not need this additional info.
 def receive_timeseries_from_csv(
-    settings, dict_asset, input_type, is_demand_profile=False
+        settings, dict_asset, input_type, is_demand_profile=False
 ):
     """
 
@@ -1529,14 +1530,14 @@ def receive_timeseries_from_csv(
             dict_asset.update(
                 {
                     TIMESERIES: pd.Series(
-                        data_set[header][0 : len(settings[TIME_INDEX])].values,
+                        data_set[header][0: len(settings[TIME_INDEX])].values,
                         index=settings[TIME_INDEX],
                     )
                 }
             )
         else:
             dict_asset[input_type][VALUE] = pd.Series(
-                data_set[header][0 : len(settings[TIME_INDEX])].values,
+                data_set[header][0: len(settings[TIME_INDEX])].values,
                 index=settings[TIME_INDEX],
             )
 
@@ -1623,8 +1624,8 @@ def compute_timeseries_properties(dict_asset):
 
         dict_asset.update(
             {
-                TIMESERIES_PEAK: {VALUE: max(timeseries), UNIT: unit,},
-                TIMESERIES_TOTAL: {VALUE: sum(timeseries), UNIT: unit,},
+                TIMESERIES_PEAK: {VALUE: max(timeseries), UNIT: unit, },
+                TIMESERIES_TOTAL: {VALUE: sum(timeseries), UNIT: unit, },
                 TIMESERIES_AVERAGE: {
                     VALUE: sum(timeseries) / len(timeseries),
                     UNIT: unit,
@@ -1643,7 +1644,7 @@ def compute_timeseries_properties(dict_asset):
             )
         if any(dict_asset[TIMESERIES_NORMALIZED].values) < 0:
             logging.error(
-                f"{ dict_asset[LABEL]} normalized timeseries has negative values."
+                f"{dict_asset[LABEL]} normalized timeseries has negative values."
             )
 
 
@@ -1711,7 +1712,7 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
         return pd.Series(data_set[header].values, index=settings[TIME_INDEX])
     elif len(data_set.index) >= settings[PERIODS]:
         return pd.Series(
-            data_set[header][0 : len(settings[TIME_INDEX])].values,
+            data_set[header][0: len(settings[TIME_INDEX])].values,
             index=settings[TIME_INDEX],
         )
     elif len(data_set.index) <= settings[PERIODS]:
@@ -1771,7 +1772,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
             # adapt maximumCap of non-dispatchable sources
             if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
                 asset_dict[MAXIMUM_CAP][VALUE] = (
-                    asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
+                        asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
                 )
                 logging.debug(
                     f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES}. This was done as the aimed constraint is to limit the power, not the flow."
