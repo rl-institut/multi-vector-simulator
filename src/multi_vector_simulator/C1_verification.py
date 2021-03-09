@@ -100,8 +100,8 @@ def lookup_file(file_path, name):
     """
     if os.path.isfile(file_path) is False:
         msg = (
-            f"Missing file! The timeseries file '{file_path}' \nof asset "
-            + f"{name} can not be found. Operation terminated."
+                f"Missing file! The timeseries file '{file_path}' \nof asset "
+                + f"{name} can not be found. Operation terminated."
         )
         raise FileNotFoundError(msg)
 
@@ -179,24 +179,24 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
         for production_asset in dict_values[ENERGY_PRODUCTION]:
             # Only compare those assets to the provider that serve the same energy vector
             if (
-                dict_values[ENERGY_PRODUCTION][production_asset][ENERGY_VECTOR]
-                == energy_vector
+                    dict_values[ENERGY_PRODUCTION][production_asset][ENERGY_VECTOR]
+                    == energy_vector
             ):
                 log_message_object = f"levelized costs of generation for energy asset '{dict_values[ENERGY_PRODUCTION][production_asset][LABEL]}'"
 
                 # If energy production asset is a non-dispatchable source (PV plant)
                 if (
-                    dict_values[ENERGY_PRODUCTION][production_asset][DISPATCHABILITY]
-                    is False
+                        dict_values[ENERGY_PRODUCTION][production_asset][DISPATCHABILITY]
+                        is False
                 ):
                     # Calculate cost per kWh generated
                     levelized_cost_of_generation = (
-                        dict_values[ENERGY_PRODUCTION][production_asset][
-                            SIMULATION_ANNUITY
-                        ][VALUE]
-                        / dict_values[ENERGY_PRODUCTION][production_asset][
-                            TIMESERIES_TOTAL
-                        ][VALUE]
+                            dict_values[ENERGY_PRODUCTION][production_asset][
+                                SIMULATION_ANNUITY
+                            ][VALUE]
+                            / dict_values[ENERGY_PRODUCTION][production_asset][
+                                TIMESERIES_TOTAL
+                            ][VALUE]
                     )
                 # If energy production asset is a dispatchable source (fuel source)
                 else:
@@ -220,16 +220,16 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
                     if diff > 0:
                         # This can result in an unbound solution if optimizeCap is True and maximumCap is None
                         if optimze_cap == True and maximum_cap is None:
-                            msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_unbound}"
+                            msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE], 4)}) > {log_message_object} with {round(levelized_cost_of_generation, 4)}. {warning_message_hint_unbound}"
                             raise ValueError(msg)
                         # If maximumCap is not None the maximum capacity of the production asset will be installed
                         elif optimze_cap == True and maximum_cap is not None:
-                            msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_maxcap}"
+                            msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE], 4)}) > {log_message_object} with {round(levelized_cost_of_generation, 4)}. {warning_message_hint_maxcap}"
                             logging.warning(msg)
                         # If the capacity of the production asset is not optimized there is no unbound problem but strange dispatch behaviour might occur
                         else:
                             logging.debug(
-                                f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_dispatch}"
+                                f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE], 4)}) > {log_message_object} with {round(levelized_cost_of_generation, 4)}. {warning_message_hint_dispatch}"
                             )
                     else:
                         logging.debug(f"Feed-in tariff < {log_message_object}.")
@@ -337,9 +337,9 @@ def check_feasibility_of_maximum_emissions_constraint(dict_values):
         count = 0
         for key, asset in dict_values[ENERGY_PRODUCTION].items():
             if (
-                asset[EMISSION_FACTOR][VALUE] == 0
-                and asset[OPTIMIZE_CAP][VALUE] == True
-                and asset[MAXIMUM_CAP][VALUE] is None
+                    asset[EMISSION_FACTOR][VALUE] == 0
+                    and asset[OPTIMIZE_CAP][VALUE] == True
+                    and asset[MAXIMUM_CAP][VALUE] is None
             ):
                 count += 1
 
@@ -496,12 +496,12 @@ def check_input_values(dict_values):
                     # logging.debug('\t Sub-asset %s checked for validation.', sub_asset_name)
                     for sub_sub_asset_name in dict_values[asset_name][sub_asset_name]:
                         if not (
-                            isinstance(
-                                dict_values[asset_name][sub_asset_name][
-                                    sub_sub_asset_name
-                                ],
-                                dict,
-                            )
+                                isinstance(
+                                    dict_values[asset_name][sub_asset_name][
+                                        sub_sub_asset_name
+                                    ],
+                                    dict,
+                                )
                         ):
                             # checking third layer of dict values
                             all_valid_intervals(
@@ -687,13 +687,13 @@ def check_if_energy_vector_of_all_assets_is_valid(dict_values):
     for level1 in dict_values.keys():
         for level2 in dict_values[level1].keys():
             if (
-                isinstance(dict_values[level1][level2], dict)
-                and ENERGY_VECTOR in dict_values[level1][level2].keys()
+                    isinstance(dict_values[level1][level2], dict)
+                    and ENERGY_VECTOR in dict_values[level1][level2].keys()
             ):
                 energy_vector_name = dict_values[level1][level2][ENERGY_VECTOR]
                 if (
-                    energy_vector_name
-                    not in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]
+                        energy_vector_name
+                        not in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]
                 ):
                     raise ValueError(
                         f"Asset {level2} of asset group {level1} has an energy vector that is not defined within the energyBusses. "
@@ -706,7 +706,7 @@ def check_if_energy_vector_of_all_assets_is_valid(dict_values):
 
 
 def check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
-    energy_carrier, asset_group, asset
+        energy_carrier, asset_group, asset
 ):
     r"""
     Raises an error message if an energy vector is unknown.
@@ -766,3 +766,22 @@ def check_for_sufficient_assets_on_busses(dict_values):
                 f"so that the bus is not a dead end should be two, excluding the excess sink. "
                 f"These are the connected assets: {asset_string}"
             )
+
+
+def check_energy_system_can_fulfill_max_demand(dict_values):
+    r"""
+    Logs a logging.warning message if the aggregated installed capacity (of non-optimizable
+    assets) and maximum capacity (of optimizable assets) of all conversion, generation and storage
+    assets is smaller than the maximum demand, for each bus. Check passes if the maximum capacity
+    of an asset is set to None for optimization.
+
+    Parameters
+    ----------
+    dict_values : dict
+        Contains all input data of the simulation.
+
+    Returns
+    -------
+    Indirectly, logs a logging.warning message if the installed and maximum capacities of
+    conversion/generation/storage assets are less than the maximum demand, for each bus.
+    """
