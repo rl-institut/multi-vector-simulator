@@ -165,8 +165,8 @@ If this test passes locally, you can move to next step, upload a release candida
 
 ### Release candidate on pypi.org
 
-As on pypi.org, one is only allowed to upload a given version only once, one need a way to test a release before making it 100% official. This is the purpose of release candidate.
-Technically, those release candidate are similar to a normal release in the sense that someone can `pip install` them. However users will know that the release candidate are only there for test purposes.
+As on pypi.org, one is allowed to upload a given version only once, one need a way to test a release before making it official. This is the purpose of a release candidate.
+Technically, a release candidate is similar to a normal release in the sense that someone can `pip install` them. However users will know that the release candidate is only there for test purposes.
 
 1. Open a working python3 virtual environment and make sure you have the latest versions of setuptools and wheel installed:
     ```bash
