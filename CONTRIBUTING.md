@@ -149,11 +149,7 @@ Before starting uploading things to pypi.org, there are a few tests one can perf
     ```bash
     mkdir empty_folder
     ```
-6. Create a new empty folder
-    ```bash
-    mkdir empty_folder
-    ```
-7. Test the multi-vector-simulator default simulation
+6. Test the multi-vector-simulator default simulation
     ```bash
     mvs_tool
     ```
@@ -202,11 +198,7 @@ Technically, a release candidate is similar to a normal release in the sense tha
     ```bash
     mkdir empty_folder
     ```
-9. Create a new empty folder
-    ```bash
-    mkdir empty_folder
-    ```
-10. Test the multi-vector-simulator default simulation
+9. Test the multi-vector-simulator default simulation
     ```bash
     mvs_tool
     ```
@@ -214,11 +206,11 @@ Technically, a release candidate is similar to a normal release in the sense tha
     If the simulation does not run through, find out why and fix it.
     If you run this local packaging test multiple times, either create a new empty folder or run `mvs_tool -f` to overwrite the default output folder.
 
-11. If you notice errors in the uploaded package, fix them and bump up `rc1` to `rc2` and repeat steps 3. to 10. until you don't see any more errors.
+10. If you notice errors in the uploaded package, fix them and bump up `rc1` to `rc2` and repeat steps 3. to 9. until you don't see any more errors.
 
-    It is encouraged to make sure step 6. to 10. are also performed on a different os than yours (ask a colleague for example)
+    It is encouraged to make sure step 6. to 9. are also performed on a different os than yours (ask a colleague for example)
 
-12. If your release candidate works well you can now do the actual release on `master`, followed by the release on pypi.org
+11. If your release candidate works well you can now do the actual release on `master`, followed by the release on pypi.org
 
 ### Release on master
 
