@@ -137,7 +137,7 @@ Before starting uploading things to pypi.org, there are a few tests one can perf
     ```bash
     python prepare_package.py
     ```
-3. Install multi-vector-simulator form the local packages
+3. Install multi-vector-simulator from the local packages
     ```bash
     pip install -e .
     ```
@@ -236,7 +236,7 @@ Please choose `master` as target and use `vX.Y.Z` as tag version. In the descrip
 For help look into the [github release description](https://help.github.com/en/github/administering-a-repository/creating-releases).
 
 ### The actual release on pypi.org
-*Note*: the point 4 to 7 can be done automatically by running `python prepare_package.py`, they are displayed here explicitly for transparency
+*Note*: The packaging process is automatized with running `python prepare_package.py`. For details on how the packaging is preformed, check that script.
 
 Follow the steps from the "Release candidate on pypi.org" section, without adding `rci` after the version number and ignoring step 11.
 
