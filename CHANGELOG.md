@@ -24,7 +24,7 @@ Here is a template for new release sections
 ### Added
 -
 ### Changed
--
+- Update the release protocol in `CONTRIBUTING.md` (#821)
 ### Removed
 -
 ### Fixed
