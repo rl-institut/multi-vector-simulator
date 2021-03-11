@@ -154,7 +154,7 @@ Before starting uploading things to pypi.org, there are a few tests one can perf
     mvs_tool
     ```
     It should run the simulation and save the results in the default output folder.
-    If the simulation does not run through, find out why and fix it.
+    If the simulation does not run through, find out why and fix it (via pull request on the `dev` branch), then repeat steps 0. to 6.
     If you run this local packaging test multiple times, either create a new empty folder or run `mvs_tool -f` to overwrite the default output folder.
 
 If this test passes locally, you can move to next step, upload a release candidate on pypi.org
