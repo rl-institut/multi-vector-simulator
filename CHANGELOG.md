@@ -27,8 +27,12 @@ Here is a template for new release sections
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
+- Status messages of requirements in `E-Land_Requirements.rst` (#817)
+- Minor updates in `Model_Assumptions.rst` and `MVS_Outputs.rst`, mainly adding labels (#817)
+
 ### Removed
 -
+
 ### Fixed
 - Skip `test_benchmark_KPI` as it was seen to be consuming the whole test time leading to timeout on github action (#826)
 - Reduce `simulation_settings.evaluated_period` to one day for the tests where simulation results are not important (for E0 and D2 test modules setup) (#826)
