@@ -49,7 +49,6 @@ jobs:
             sudo apt-get update
             sudo apt-get install coinor-cbc
             sudo apt-get install graphviz
-            sudo apt-get install wkhtmltopdf
 
       # Runs a set of commands using the runners shell
       - name: Install dependencies
