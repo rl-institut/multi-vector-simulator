@@ -41,6 +41,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INFLOW_DIRECTION,
     DSO_FEEDIN,
     NET_ZERO_ENERGY,
+    EVALUATED_PERIOD,
+    SIMULATION_SETTINGS,
 )
 
 from multi_vector_simulator.utils.constants import OUTPUT_FOLDER
@@ -370,6 +372,9 @@ class TestConstraints:
                 path_output_folder=user_input[PATH_OUTPUT_FOLDER],
                 move_copy=False,
             )
+
+            dict_values[SIMULATION_SETTINGS][EVALUATED_PERIOD][VALUE] = 1
+
             logging.debug("Accessing script: C0_data_processing")
             C0.all(dict_values)
 

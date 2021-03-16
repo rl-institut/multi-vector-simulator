@@ -49,7 +49,6 @@ jobs:
             sudo apt-get update
             sudo apt-get install coinor-cbc
             sudo apt-get install graphviz
-            sudo apt-get install wkhtmltopdf
 
       # Runs a set of commands using the runners shell
       - name: Install dependencies
@@ -65,4 +64,5 @@ jobs:
 
       - name: Test with pytest
         run: |
-          coverage run -m pytest
+          coverage run -m pytest tests/ -k "not test_benchmark_kpi" --durations-min=1.0 --durations=400
+
