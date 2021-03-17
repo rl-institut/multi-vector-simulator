@@ -296,7 +296,7 @@ and a degree of NZE higher 1 a plus-energy system.
 As above, we apply a weighting based on Electricity Equivalent.
 
 .. math::
-        Degree of NZE &=\frac{1 + (\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
+        Degree of NZE &= 1 + \frac{(\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
 
 
 Automatic Report
