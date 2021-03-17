@@ -34,7 +34,7 @@ from multi_vector_simulator.utils.constants import (
     JSON_WITH_RESULTS,
     JSON_FILE_EXTENSION,
     CSV_ELEMENTS,
-    TIME_SERIES
+    TIME_SERIES,
 )
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -131,7 +131,9 @@ class TestACElectricityBus:
         result_time_series_pv.index = input_time_series_pv_shortened.index
 
         assert_series_equal(
-            result_time_series_pv,input_time_series_pv_shortened * installed_capacity, check_names=False
+            result_time_series_pv,
+            input_time_series_pv_shortened * installed_capacity,
+            check_names=False,
         )
 
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
