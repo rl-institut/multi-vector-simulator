@@ -22,7 +22,8 @@ Here is a template for new release sections
 ## [unreleased]
 
 ### Added
--
+- Add check for correct `installedcap` processing to `AB_grid_pv` benchmark test (#831)
+
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
 ### Removed
@@ -39,7 +40,8 @@ Here is a template for new release sections
 - Add the new parameter `scenario_description` to input files and docs and a section in autoreport describing the scenario being simulated (#722)
 - Add a new sub-section in RTD describing the suite of post-simulation tests carried out through functions in `E4_verification.py` (#753)
 - Add KPI individual sectors as an own table to the report (#757)
-- Add pytests for the minimal renewable share constraint of function `D2.add_constraints()` (#742)
+- Add pytests for the minimal renewable share constraint of function `D2.add_constr
+  aints()` (#742)
 - Throw an explanatory warning in `A1` module when csv file cannot be parsed (#675)
 - Add `-d` option to `mvs_report` command to use hotreload of dash app for devs (#770)
 - Add `utils.analysis` module for overall analysis functions (#679)
