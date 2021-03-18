@@ -1793,7 +1793,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 asset_dict[MAXIMUM_CAP][VALUE] = None
 
             # check if maximumCap is 0
-            elif asset_dict[MAXIMUM_CAP][VALUE] == 0:
+            if asset_dict[MAXIMUM_CAP][VALUE] == 0:
                 message = (
                     f"The stated maximumCap of zero in {group} {asset} is invalid."
                     "For this simulation, the maximumCap will be "
