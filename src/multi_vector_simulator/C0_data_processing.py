@@ -1768,14 +1768,6 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
         asset_dict.update({MAXIMUM_CAP: {VALUE: None}})
     else:
         if asset_dict[MAXIMUM_CAP][VALUE] is not None:
-            # adapt maximumCap of non-dispatchable sources
-            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
-                asset_dict[MAXIMUM_CAP][VALUE] = (
-                    asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
-                )
-                logging.debug(
-                    f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES}. This was done as the aimed constraint is to limit the power, not the flow."
-                )
             # check if maximumCap is greater that installedCap
             if asset_dict[MAXIMUM_CAP][VALUE] < asset_dict[INSTALLED_CAP][VALUE]:
                 message = (
@@ -1787,6 +1779,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 warnings.warn(UserWarning(message))
                 logging.warning(message)
                 asset_dict[MAXIMUM_CAP][VALUE] = None
+
             # check if maximumCap is 0
             elif asset_dict[MAXIMUM_CAP][VALUE] == 0:
                 message = (
@@ -1797,5 +1790,14 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 warnings.warn(UserWarning(message))
                 logging.warning(message)
                 asset_dict[MAXIMUM_CAP][VALUE] = None
+
+            # adapt maximumCap of non-dispatchable sources
+            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
+                asset_dict[MAXIMUM_CAP][VALUE] = (
+                    asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
+                )
+                logging.debug(
+                    f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES}. This was done as the aimed constraint is to limit the power, not the flow."
+                )
 
     asset_dict[MAXIMUM_CAP].update({UNIT: asset_dict[UNIT]})
