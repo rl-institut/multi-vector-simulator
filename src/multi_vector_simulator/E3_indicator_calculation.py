@@ -666,7 +666,7 @@ def equation_degree_of_net_zero_energy(
     -----
 
     .. math::
-        Degree of NZE &=\frac{1 + (\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
+        Degree of NZE &= 1 + \frac{(\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
 
     Degree of NZE = 1 : System is a net zero energy system, as E_feedin = E_grid_consumption
     Degree of NZE > 1 : system is a plus-energy system, as E_feedin > E_grid_consumption
