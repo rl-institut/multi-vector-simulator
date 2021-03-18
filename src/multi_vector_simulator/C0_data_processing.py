@@ -1727,7 +1727,13 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
 
 def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     """
-    Checks if maximumCap is in `dict_values` and if not, adds value None.
+    Processes the maximumCap constraint depending on its value.
+
+    * If MaximumCap not in asset dict: MaximumCap is None
+    * If MaximumCap < installedCap: invalid, MaximumCap is None
+    * If MaximumCap == 0: invalid, MaximumCap is None
+    * If group == energyProduction and filename not in asset_dict (dispatchable assets): pass
+    * If group == energyProduction and filename in asset_dict (non-dispatchable assets): MaximumCap == MaximumCap*peak(timeseries)
 
     Parameters
     ----------
@@ -1740,9 +1746,22 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     asset: str
         asset name
 
-    subasset: str
+    subasset: str or None
         subasset name.
         Default: None.
+
+    Notes
+    -----
+    Tested with:
+    - test_process_maximum_cap_constraint_maximumCap_undefined()
+    - test_process_maximum_cap_constraint_maximumCap_is_None()
+    - test_process_maximum_cap_constraint_maximumCap_is_int()
+    - test_process_maximum_cap_constraint_maximumCap_is_float()
+    - test_process_maximum_cap_constraint_maximumCap_is_0()
+    - test_process_maximum_cap_constraint_maximumCap_is_int_smaller_than_installed_cap()
+    - test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_fuel_source()
+    - test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_non_dispatchable_asset()
+    - test_process_maximum_cap_constraint_subasset()
 
     Returns
     -------
@@ -1750,13 +1769,6 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
 
     * Unit of MaximumCap is asset unit
 
-    If MaximumCap is changed depends on its value:
-    * If MaximumCap not in asset dict: MaximumCap is None
-    * If MaximumCap < installed Cap: invalid, MaximumCap is None
-    * If MaximumCap == 0: invalid, MaximumCap is None
-    * If MaximumCap > installedCap and group != energyProviders: pass
-    * If MaximumCap > installedCap and group == energyProviders and filename not in asset_dict: pass
-    * If MaximumCap > installedCap and group == energyProviders and filename in asset_dict (non-dispatchable assets): MaximumCap == MaximumCap/peak(timeseries)
     """
     if subasset is None:
         asset_dict = dict_values[group][asset]
