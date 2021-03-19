@@ -25,6 +25,8 @@ Here is a template for new release sections
 - Add check for correct `installedcap` processing to `AB_grid_pv` benchmark test (#831)
 - Add check to `AB_grid_pv` benchmark test: total pv generation is used to cover demand (#831)
 - Section on energy consumption assets in `Model_Assumptions.rst` and `MVS_Outputs.rst` (#817)
+- Add check for the capability of asset capacities in an energy system to fulfill the maximum demand in `C1.check_energy_system_can_fulfill_max_demand()` (#824)
+- Add tests for `C1.check_energy_system_can_fulfill_max_demand()` (#824)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -459,7 +461,6 @@ Here is a template for new release sections
 - Benchmark test descriptions for `test_benchmark_simple_scenarios.py` (#524)
 - Create `src/mvs_eland/utils` subpackage (contains `constants.py`, `constants_json_string.py
 `, `constants_output.py` (#501)
-
 
 ### Changed
 - Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
