@@ -32,6 +32,8 @@ Here is a template for new release sections
 - Add a column `category` in the file `docs/MVS_parameters_categories.csv` to know in which csv file(s) the parameter is used (#842)
 - Define `OEMOF_SOLPH_OBJECT_ASSET`, `WEIGHTING_FACTOR_ENERGY_CARRIER`, `RENEWABLE_SHARE_ASSET_FLOW`, `OEMOF_SOLPH_OBJECT_BUS` as constants in `D2` module (#834)
 - Import and use constants from `D2` module in `test_D2_model_constraints.py` (#834)
+- Add check for the capability of asset capacities in an energy system to fulfill the maximum demand in `C1.check_energy_system_can_fulfill_max_demand()` (#824)
+- Add tests for `C1.check_energy_system_can_fulfill_max_demand()`, including pseudo-benchmark test in `test_C1` (#824)
 - Zenodo badge on README (#850)
 
 ### Changed
@@ -482,7 +484,6 @@ Here is a template for new release sections
 - Benchmark test descriptions for `test_benchmark_simple_scenarios.py` (#524)
 - Create `src/mvs_eland/utils` subpackage (contains `constants.py`, `constants_json_string.py
 `, `constants_output.py` (#501)
-
 
 ### Changed
 - Changed structure for `E2.get_cost()` and complete disaggregation of the formulas used in it (#520)
