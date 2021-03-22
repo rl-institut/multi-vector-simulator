@@ -51,6 +51,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INSTALLED_CAP,
     SIMULATION_SETTINGS,
     EVALUATED_PERIOD,
+    EXCESS_SINK_POSTFIX,
 )
 
 from multi_vector_simulator.utils.data_parser import convert_epa_params_to_mvs
@@ -100,6 +101,13 @@ class TestACElectricityBus:
 
         # make sure the sum of the bus flow is always zero (there are rounding errors)
         assert df_busses_flow.net_sum.map(lambda x: 0 if x < 1e-4 else 1).sum() == 0
+
+        # make sure that electricity excess is zero whenever demand >= generation (this means that total pv generation
+        # is used to cover the demand)
+        selected_time_steps = df_busses_flow.loc[
+            df_busses_flow["demand_01"].abs() >= df_busses_flow["pv_plant_01"]]
+        excess = selected_time_steps[f"Electricity{EXCESS_SINK_POSTFIX}"].sum()
+        assert excess == 0, f"Total PV generation should be used to cover demand, i.e. electricity excess should be zero whenever demand >= generation, but excess is {excess}."
 
         # make sure that installedCap is processed correctly - pv time series of results
         # equal input pv time series times installedCap
