@@ -106,10 +106,6 @@ def test_prepare_constraint_minimal_renewable_share():
         },
         OEMOF_BUSSES: {electricity: electricity, fuel: fuel},
     }
-    oemof_solph_object_asset = "object"
-    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
-    renewable_share_asset_flow = "renewable_share_asset_flow"
-    oemof_solph_object_bus = "oemof_solph_object_bus"
 
     (
         renewable_assets,
@@ -117,10 +113,6 @@ def test_prepare_constraint_minimal_renewable_share():
     ) = D2.prepare_constraint_minimal_renewable_share(
         dict_values=dict_values,
         dict_model=dict_model,
-        oemof_solph_object_asset=oemof_solph_object_asset,
-        weighting_factor_energy_carrier=weighting_factor_energy_carrier,
-        renewable_share_asset_flow=renewable_share_asset_flow,
-        oemof_solph_object_bus=oemof_solph_object_bus,
     )
 
     assert (
@@ -130,7 +122,7 @@ def test_prepare_constraint_minimal_renewable_share():
         pv_plant not in non_renewable_assets
     ), f"The {pv_plant} is not added to the renewable assets."
     assert (
-        renewable_assets[pv_plant][renewable_share_asset_flow] == 1
+        renewable_assets[pv_plant][D2.RENEWABLE_SHARE_ASSET_FLOW] == 1
     ), f"The renewable share of asset {pv_plant} is added incorrectly."
 
     assert (
@@ -140,35 +132,35 @@ def test_prepare_constraint_minimal_renewable_share():
         diesel not in renewable_assets
     ), f"The {diesel} is not added to the non-renewable assets."
     assert (
-        non_renewable_assets[diesel][renewable_share_asset_flow] == 0
+        non_renewable_assets[diesel][D2.RENEWABLE_SHARE_ASSET_FLOW] == 0
     ), f"The renewable share of asset {diesel} is added incorrectly."
 
     assert (
         dso_1 + DSO_CONSUMPTION in renewable_assets
     ), f"The {dso_1 + DSO_CONSUMPTION} is not added as a renewable source."
     assert (
-        renewable_assets[dso_1 + DSO_CONSUMPTION][renewable_share_asset_flow] == 0.3
+        renewable_assets[dso_1 + DSO_CONSUMPTION][D2.RENEWABLE_SHARE_ASSET_FLOW] == 0.3
     ), f"The renewable share of asset {dso_1 + DSO_CONSUMPTION} is added incorrectly."
 
     assert (
         dso_1 + DSO_CONSUMPTION in non_renewable_assets
     ), f"The {dso_1 + DSO_CONSUMPTION} is not added as a non-renewable source."
     assert (
-        non_renewable_assets[dso_1 + DSO_CONSUMPTION][renewable_share_asset_flow] == 0.3
+        non_renewable_assets[dso_1 + DSO_CONSUMPTION][D2.RENEWABLE_SHARE_ASSET_FLOW] == 0.3
     ), f"The renewable share of asset {dso_1 + DSO_CONSUMPTION} is added incorrectly."
 
     assert (
         dso_2 + DSO_CONSUMPTION in renewable_assets
     ), f"The {dso_2 + DSO_CONSUMPTION} is not added as a renewable source."
     assert (
-        renewable_assets[dso_2 + DSO_CONSUMPTION][renewable_share_asset_flow] == 0.7
+        renewable_assets[dso_2 + DSO_CONSUMPTION][D2.RENEWABLE_SHARE_ASSET_FLOW] == 0.7
     ), f"The renewable share of asset {dso_2 + DSO_CONSUMPTION} is added incorrectly."
 
     assert (
         dso_2 + DSO_CONSUMPTION in non_renewable_assets
     ), f"The {dso_2 + DSO_CONSUMPTION} is not added as a non-renewable source."
     assert (
-        non_renewable_assets[dso_2 + DSO_CONSUMPTION][renewable_share_asset_flow] == 0.7
+        non_renewable_assets[dso_2 + DSO_CONSUMPTION][D2.RENEWABLE_SHARE_ASSET_FLOW] == 0.7
     ), f"The renewable share of asset {dso_2 + DSO_CONSUMPTION} is added incorrectly."
 
 
@@ -190,29 +182,23 @@ def test_prepare_demand_assets():
         OEMOF_SINK: {demand_profiles: demand_profiles},
         OEMOF_BUSSES: {electricity: electricity},
     }
-    oemof_solph_object_asset = "object"
-    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
-    oemof_solph_object_bus = "oemof_solph_object_bus"
 
     demands = D2.prepare_demand_assets(
         dict_values,
         dict_model,
-        oemof_solph_object_asset,
-        weighting_factor_energy_carrier,
-        oemof_solph_object_bus,
     )
 
     assert (
         demand_profiles in demands
     ), f"Demand asset {demand_profiles} should be in the demands taken into account for the constraints, but is not included in it ({demands.keys()})."
     exp = {
-        oemof_solph_object_asset: dict_model[OEMOF_SINK][
+        D2.OEMOF_SOLPH_OBJECT_ASSET: dict_model[OEMOF_SINK][
             dict_values[ENERGY_CONSUMPTION][demand_profiles][LABEL]
         ],
-        oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+        D2.OEMOF_SOLPH_OBJECT_BUS: dict_model[OEMOF_BUSSES][
             dict_values[ENERGY_CONSUMPTION][demand_profiles][INFLOW_DIRECTION]
         ],
-        weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+        D2.WEIGHTING_FACTOR_ENERGY_CARRIER: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
             dict_values[ENERGY_CONSUMPTION][demand_profiles][ENERGY_VECTOR]
         ][VALUE],
     }
@@ -244,16 +230,10 @@ def test_prepare_energy_provider_consumption_sources():
         OEMOF_SOURCE: {dso + DSO_CONSUMPTION: dso + DSO_CONSUMPTION,},
         OEMOF_BUSSES: {electricity: electricity},
     }
-    oemof_solph_object_asset = "object"
-    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
-    oemof_solph_object_bus = "oemof_solph_object_bus"
 
     energy_provider_consumption_sources = D2.prepare_energy_provider_consumption_sources(
         dict_values,
         dict_model,
-        oemof_solph_object_asset,
-        weighting_factor_energy_carrier,
-        oemof_solph_object_bus,
     )
 
     DSO_source_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_CONSUMPTION
@@ -263,13 +243,13 @@ def test_prepare_energy_provider_consumption_sources():
     ), f"DSO source asset {DSO_source_name} should be in the energy provider source list taken into account for the constraints, but is not included in it ({energy_provider_consumption_sources.keys()})."
 
     exp = {
-        oemof_solph_object_asset: dict_model[OEMOF_SOURCE][
+        D2.OEMOF_SOLPH_OBJECT_ASSET: dict_model[OEMOF_SOURCE][
             dict_values[ENERGY_PRODUCTION][DSO_source_name][LABEL]
         ],
-        oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+        D2.OEMOF_SOLPH_OBJECT_BUS: dict_model[OEMOF_BUSSES][
             dict_values[ENERGY_PRODUCTION][DSO_source_name][OUTFLOW_DIRECTION]
         ],
-        weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+        D2.WEIGHTING_FACTOR_ENERGY_CARRIER: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
             dict_values[ENERGY_PRODUCTION][DSO_source_name][ENERGY_VECTOR]
         ][VALUE],
     }
@@ -301,16 +281,10 @@ def test_prepare_energy_provider_feedin_sinks():
         OEMOF_SINK: {dso + DSO_FEEDIN: dso + DSO_FEEDIN,},
         OEMOF_BUSSES: {electricity: electricity},
     }
-    oemof_solph_object_asset = "object"
-    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
-    oemof_solph_object_bus = "oemof_solph_object_bus"
 
     energy_provider_feedin_sinks = D2.prepare_energy_provider_feedin_sinks(
         dict_values,
         dict_model,
-        oemof_solph_object_asset,
-        weighting_factor_energy_carrier,
-        oemof_solph_object_bus,
     )
 
     DSO_sink_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_FEEDIN
@@ -320,13 +294,13 @@ def test_prepare_energy_provider_feedin_sinks():
     ), f"DSO sink asset {DSO_sink_name} should be in the energy provider sink list taken into account for the constraints, but is not included in it ({energy_provider_feedin_sinks.keys()})."
 
     exp = {
-        oemof_solph_object_asset: dict_model[OEMOF_SINK][
+        D2.OEMOF_SOLPH_OBJECT_ASSET: dict_model[OEMOF_SINK][
             dict_values[ENERGY_CONSUMPTION][DSO_sink_name][LABEL]
         ],
-        oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+        D2.OEMOF_SOLPH_OBJECT_BUS: dict_model[OEMOF_BUSSES][
             dict_values[ENERGY_CONSUMPTION][DSO_sink_name][INFLOW_DIRECTION]
         ],
-        weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+        D2.WEIGHTING_FACTOR_ENERGY_CARRIER: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
             dict_values[ENERGY_CONSUMPTION][DSO_sink_name][ENERGY_VECTOR]
         ][VALUE],
     }
