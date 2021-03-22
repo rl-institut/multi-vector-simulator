@@ -12,8 +12,9 @@ import json
 import mock
 import pandas as pd
 import pytest
-
 from pytest import approx
+from pandas.util.testing import assert_series_equal
+
 from multi_vector_simulator.cli import main
 from multi_vector_simulator.server import run_simulation
 from multi_vector_simulator.B0_data_input_json import load_json
@@ -32,6 +33,8 @@ from _constants import (
 from multi_vector_simulator.utils.constants import (
     JSON_WITH_RESULTS,
     JSON_FILE_EXTENSION,
+    CSV_ELEMENTS,
+    TIME_SERIES,
 )
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -44,6 +47,11 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_CONSUMPTION,
     FLOW,
     EFFICIENCY,
+    ENERGY_PRODUCTION,
+    INSTALLED_CAP,
+    SIMULATION_SETTINGS,
+    EVALUATED_PERIOD,
+    EXCESS_SINK_POSTFIX,
 )
 
 from multi_vector_simulator.utils.data_parser import convert_epa_params_to_mvs
@@ -70,7 +78,13 @@ class TestACElectricityBus:
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AB_grid_pv(self, margs):
         r"""
-        Benchmark test for simple case grid connected PV. Since the PV is already installed, this tests makes sure that the PV generation is totally used to supply the load and the rest in take from the grid.
+        Benchmark test for simple case grid connected PV, in which a fix capacity of PV is installed (installedCap, no optimization).
+
+        Assertions performed:
+        - The sum of energy consumption from the grid and PV generation is equal to the load (and flow to excess sink) at all times (ie. energy balance)
+        - The sum of the flow to the excess sink is zero for time steps where demand equals or is greater than generation. This ensures that the total PV generation is used to cover the demand.
+        - The PV generation time series in the results equals the input time series of specific PV generation multiplied by installed capacity. This ensures that `installedCap` is processed correctly within the model when an asset is not optimized.
+
         """
         use_case = "AB_grid_PV"
         main(
@@ -90,8 +104,53 @@ class TestACElectricityBus:
         # compute the sum of the in and out of the electricity bus
         df_busses_flow["net_sum"] = df_busses_flow.sum(axis=1)
 
-        # make sure the sum of the bus flow is always zero (there are rounding errors)
+        # make sure the sum of the bus flow is always zero (there are rounding errors), energy balance
         assert df_busses_flow.net_sum.map(lambda x: 0 if x < 1e-4 else 1).sum() == 0
+
+        # make sure that electricity excess is zero whenever demand >= generation (this means that total pv generation
+        # is used to cover the demand)
+        selected_time_steps = df_busses_flow.loc[
+            df_busses_flow["demand_01"].abs() >= df_busses_flow["pv_plant_01"]
+        ]
+        excess = selected_time_steps[f"Electricity{EXCESS_SINK_POSTFIX}"].sum()
+        assert (
+            excess == 0
+        ), f"Total PV generation should be used to cover demand, i.e. electricity excess should be zero whenever demand >= generation, but excess is {excess}."
+
+        # make sure that installedCap is processed correctly - pv time series of results
+        # equal input pv time series times installedCap
+        # get pv input time series and evaluated period (to shorten time series)
+        input_time_series_pv = pd.read_csv(
+            os.path.join(TEST_INPUT_PATH, use_case, TIME_SERIES, "pv_solar_input.csv")
+        )
+        simulation_settings = pd.read_csv(
+            os.path.join(
+                TEST_INPUT_PATH, use_case, CSV_ELEMENTS, f"{SIMULATION_SETTINGS}.csv"
+            )
+        ).set_index("Unnamed: 0")
+        evaluated_period = float(
+            simulation_settings[SIMULATION_SETTINGS][EVALUATED_PERIOD]
+        )
+        # shorten input pv time series according to `evaluated_period`
+        input_time_series_pv_shortened = input_time_series_pv[
+            : int(evaluated_period * 24)
+        ]["kW"]
+        # get result time series and installed pv capacity
+        result_time_series_pv = df_busses_flow["pv_plant_01"]
+        energy_production_data = pd.read_csv(
+            os.path.join(
+                TEST_INPUT_PATH, use_case, CSV_ELEMENTS, f"{ENERGY_PRODUCTION}.csv"
+            )
+        ).set_index("Unnamed: 0")
+        installed_capacity = float(energy_production_data["pv_plant_01"][INSTALLED_CAP])
+        # adapt index
+        result_time_series_pv.index = input_time_series_pv_shortened.index
+
+        assert_series_equal(
+            result_time_series_pv,
+            input_time_series_pv_shortened * installed_capacity,
+            check_names=False,
+        )
 
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
     # alone is called
