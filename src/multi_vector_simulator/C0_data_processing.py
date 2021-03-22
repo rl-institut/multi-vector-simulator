@@ -95,6 +95,10 @@ def all(dict_values):
     # just to be safe, run evaluation a second time
     C1.check_for_label_duplicates(dict_values)
 
+    # check installed and maximum capacity of all conversion, generation and storage assets
+    # connected to one bus is smaller than the maximum demand
+    C1.check_energy_system_can_fulfill_max_demand(dict_values)
+
 
 def define_energy_vectors_from_busses(dict_values):
     """
