@@ -971,6 +971,8 @@ The inputs for a simulation with the MVS are subjected to a couple of verificati
 
 - Provided timeseries are checked for `NaN` values, which are replaced by zeroes (`C0.replace_nans_in_timeseries_with_0`).
 
+- Asset capacities connected to each bus are sized sufficiently to fulfill the maximum demand (`C1.check_energy_system_can_fulfill_max_demand`): Logs a logging.warning message if the aggregated installed capacity and maximum capacity (if applicable) of all conversion, generation and storage assets connected to one bus is smaller than the maximum demand. The check is applied to each bus of the energy system. Check passes when the potential peak supply is larger then or equal to the peak demand on the bus, or if the maximum capacity of an asset is set to None when optimizing.
+
 .. _validation-methodology:
 
 Validation Methodology
