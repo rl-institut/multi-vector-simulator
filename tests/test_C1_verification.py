@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import json
 import logging
+from copy import deepcopy
 
 import multi_vector_simulator.C1_verification as C1
 from _constants import (
@@ -15,8 +16,13 @@ from _constants import (
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
+    TIMESERIES_PEAK,
+    ASSET_DICT,
     RENEWABLE_ASSET_BOOL,
     ENERGY_PRODUCTION,
+    ENERGY_CONVERSION,
+    ENERGY_CONSUMPTION,
+    ENERGY_BUSSES,
     ENERGY_STORAGE,
     PROJECT_DATA,
     ENERGY_VECTOR,
@@ -30,6 +36,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DISPATCHABILITY,
     OPTIMIZE_CAP,
     MAXIMUM_CAP,
+    INSTALLED_CAP,
+    OUTPUT_POWER,
+    OUTFLOW_DIRECTION,
     CONSTRAINTS,
     MAXIMUM_EMISSIONS,
     EMISSION_FACTOR,
@@ -588,6 +597,113 @@ def test_check_for_label_duplicates_passes():
         1 == 1
     ), f"There is no duplicate value for label, but still an error is raised."
 
+# Constants to be used in dict_values_fulfill_demand
+elec_bus = "Elec"
+demand = "Demand"
+generator = "Generator"
+storage = "Storage"
+energy_vector = "Electricity"
+production = "Production"
+time_series = pd.Series([0, 10, 100, 10, 0])
+# Dictionary to be used in the tests for check_energy_system_can_fulfill_max_demand()
+dict_values_fulfill_demand = {
+    ENERGY_BUSSES: {
+        elec_bus: {
+            ENERGY_VECTOR: energy_vector,
+            ASSET_DICT: {
+                demand: demand + LABEL,
+                generator: generator + LABEL,
+                production: production + LABEL,
+                storage: storage + LABEL,
+            },
+        }
+    },
+    ENERGY_CONSUMPTION: {
+        demand: {
+            ENERGY_VECTOR: energy_vector,
+            TIMESERIES_PEAK: {VALUE: max(time_series)},
+            DISPATCHABILITY: {VALUE: False},
+        }
+    },
+    ENERGY_CONVERSION: {
+        generator: {
+            ENERGY_VECTOR: energy_vector,
+            INSTALLED_CAP: {VALUE: 0},
+            MAXIMUM_CAP: {VALUE: None},
+            OPTIMIZE_CAP: {VALUE: False},
+            OUTFLOW_DIRECTION: elec_bus,
+        }
+    },
+    ENERGY_PRODUCTION: {},
+    ENERGY_STORAGE: {
+        storage: {
+            ENERGY_VECTOR: energy_vector,
+            OPTIMIZE_CAP: {VALUE: False},
+            OUTPUT_POWER: {INSTALLED_CAP: {VALUE: 0}},
+        }
+    },
+}
+
+
+def test_check_energy_system_can_fulfill_max_demand_sufficient_capacities(caplog):
+    dict_values_v1 = deepcopy(dict_values_fulfill_demand)
+    dict_values_v1[ENERGY_CONVERSION][generator].update({MAXIMUM_CAP: {VALUE: 100}})
+    dict_values_v1[ENERGY_CONVERSION][generator].update({OPTIMIZE_CAP: {VALUE: True}})
+
+    with caplog.at_level(logging.DEBUG):
+        peak_generation, peak_demand = C1.check_energy_system_can_fulfill_max_demand(
+            dict_values_v1
+        )
+        assert (
+                peak_generation == 100
+        ), f"The peak generation should have been 100 but is {peak_generation}"
+        assert (
+                peak_demand == 100
+        ), f"The peak demand should have been 100 but is {peak_demand}"
+    assert (
+            "The check for assets having sufficient capacities to fulfill the maximum demand has successfully passed"
+            in caplog.text
+    ), f"As the maximum/installed capacities of the assets in an energy system are sufficient, a successful debug message should have be logged. This did not happen, with peak generation of {peak_generation} and peak demand of {peak_demand}."
+
+
+def test_check_energy_system_can_fulfill_max_demand_no_maximum_capacity(caplog):
+    dict_values_v2 = deepcopy(dict_values_fulfill_demand)
+    dict_values_v2[ENERGY_CONVERSION][generator].update({MAXIMUM_CAP: {VALUE: None}})
+    dict_values_v2[ENERGY_CONVERSION][generator].update({OPTIMIZE_CAP: {VALUE: True}})
+
+    with caplog.at_level(logging.DEBUG):
+        C1.check_energy_system_can_fulfill_max_demand(dict_values_v2)
+    assert (
+            "The check for assets having sufficient capacities to fulfill the maximum demand has successfully passed"
+            in caplog.text
+    ), f"If the maximum capacity of an optimizable asset is set to None, a successful debug message should have been logged."
+
+
+def test_check_energy_system_can_fulfill_max_demand_insufficient_capacities(caplog):
+    dict_values_v3 = deepcopy(dict_values_fulfill_demand)
+    dict_values_v3[ENERGY_CONVERSION][generator].update({MAXIMUM_CAP: {VALUE: 90}})
+    dict_values_v3[ENERGY_CONVERSION][generator].update({OPTIMIZE_CAP: {VALUE: True}})
+
+    with caplog.at_level(logging.WARNING):
+        peak_generation, peak_demand = C1.check_energy_system_can_fulfill_max_demand(
+            dict_values_v3
+        )
+    assert (
+            "might have insufficient capacities" in caplog.text
+    ), f"If the maximum/installed capacities of the assets in an energy system are insufficient, a warning message should have been logged. This did not happen, with peak generation of {peak_generation} and peak demand of {peak_demand}."
+
+
+def test_check_energy_system_can_fulfill_max_demand_with_storage(caplog):
+    dict_values_v4 = deepcopy(dict_values_fulfill_demand)
+    dict_values_v4[ENERGY_CONVERSION][generator].update({INSTALLED_CAP: {VALUE: 80}})
+    dict_values_v4[ENERGY_STORAGE][storage].update({OPTIMIZE_CAP: {VALUE: True}})
+
+    with caplog.at_level(logging.DEBUG):
+        C1.check_energy_system_can_fulfill_max_demand(dict_values_v4)
+    assert (
+            "this check does not determine if the storage can be sufficiently"
+            in caplog.text
+    ), f"If a storage asset is included in the energy system, a successful debug message should have been logged."
 
 def test_check_for_sufficient_assets_on_busses_example_bus_passes():
     dict_values = {
@@ -638,7 +754,6 @@ def test_check_for_sufficient_assets_on_busses_skipped_for_peak_demand_pricing_b
 # def test_check_input_values():
 #     pass
 #     # todo note: function is not used so far
-
 
 # def test_all_valid_intervals():
 #     pass
