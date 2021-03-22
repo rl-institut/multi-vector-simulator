@@ -104,7 +104,7 @@ class TestACElectricityBus:
         # compute the sum of the in and out of the electricity bus
         df_busses_flow["net_sum"] = df_busses_flow.sum(axis=1)
 
-        # make sure the sum of the bus flow is always zero (there are rounding errors)
+        # make sure the sum of the bus flow is always zero (there are rounding errors), energy balance
         assert df_busses_flow.net_sum.map(lambda x: 0 if x < 1e-4 else 1).sum() == 0
 
         # make sure that electricity excess is zero whenever demand >= generation (this means that total pv generation
