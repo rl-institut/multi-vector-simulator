@@ -61,7 +61,7 @@ They can be divided into following asset types:
 * :ref:`Energy conversion <energy_conversion>`
 * :ref:`Energy storage <energy_storage>`
 
-Details on how to model different assets are included in the model assumptions.
+Details on how to model different assets are included in the model assumptions (see :ref:`component_models`).
 
 :Notes:
 
@@ -173,10 +173,10 @@ FUN-MVS-07 - Optimisation goal
 
 In general, the MVS aims to minimize the energy supply cost of the local energy system. Additionally, a number of :ref:`constraints <constraints-label>` can be activated:
 
-* :ref:`Minimal renewable share constraint <constraint_minimal_renewable_factor>`
+* :ref:`Minimal renewable share constraint <constraint_min_re_factor>`
 * :ref:`Minimal degree of autonomy <constraint_minimal_degree_of_autonomy>`
 * :ref:`Maximum GHG emission constraint <constraint_maximum_emissions>`
-* :ref:`Net zero energy constraint <>`
+* :ref:`Net zero energy constraint <constraint_net_zero_energy>`
 * :ref:`Limited maximum capacities of assets to be optimized <maxcap-label>`
 
 .. _fun_mvs_08:

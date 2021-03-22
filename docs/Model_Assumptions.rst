@@ -22,6 +22,7 @@ The optimization in the MVS is mainly a cost optimization. There are some additi
     * *(Specific) investment costs*, which could be an investment into land or buildings at the project site. When you define a lifetime for the investment, the MVS will also consider replacements and reimbursements.
     * *(Specific) operation and management costs*, which can cover eg. the salaries of at the project site
 
+.. _component_models:
 
 Component models
 ----------------
@@ -213,6 +214,7 @@ For two peak demand pricing periods, the resulting dispatch could look as follow
 .. image:: images/Model_Assumptions_Peak_Demand_Pricing_Dispatch_Graph.png
  :width: 600
 
+.. _energy_storage:
 
 Energy storage
 ##############
@@ -422,6 +424,7 @@ The unit of the constraint is `kgCO2eq/a`. To select a useful value for this con
 
 The maximum emissions constraint is introduced to the energy system by `D2.constraint_maximum_emissions()` and a validation test is performed with `E4.maximum_emissions_test()`.
 
+.. _constraint_net_zero_energy:
 
 Net zero energy (NZE) constraint
 ################################
