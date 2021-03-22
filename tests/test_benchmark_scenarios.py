@@ -82,7 +82,9 @@ class TestACElectricityBus:
 
         Assertions performed:
         - The sum of energy consumption from the grid and PV generation is equal to the load (and flow to excess sink) at all times (ie. energy balance)
+        - The sum of the flow to the excess sink is zero for time steps where demand equals or is greater than generation. This ensures that the total PV generation is used to cover the demand.
         - The PV generation time series in the results equals the input time series of specific PV generation multiplied by installed capacity. This ensures that `installedCap` is processed correctly within the model when an asset is not optimized.
+
         """
         use_case = "AB_grid_PV"
         main(
