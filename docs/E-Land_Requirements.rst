@@ -129,7 +129,7 @@ The MVS is able to simulate a wide range of assets:
 
 :ToDo:
 
-A CHP with fix ratio between the heat and electricity output can already be simulated, but has not been tested. For a CHP with a variable ration between those two outputs, we need to add the specific chp asset to the possible inputs.
+A CHP with fix ratio between the heat and electricity output can already be simulated, but has not been tested. For a CHP with a variable ration between those two outputs, we need to add the specific CHP asset to the possible inputs.
 
 FUN-MVS-06 - Assets of Energy Conversion
 ########################################
@@ -144,9 +144,9 @@ FUN-MVS-06 - Assets of Energy Conversion
 
 :Progress message:
 
-The MVS already covers generic conversion assets. How the generic definition can be applied to the individual assets is explained :ref:`here <energy_conversion`. This includes
+The MVS already covers generic conversion assets. How the generic definition can be applied to the individual assets is explained :ref:`here <energy_conversion>`. This includes
 
-* :ref:`Electric transformers <_energyconversion_electric_transformers>`
+* :ref:`Electric transformers <energyconversion_electric_transformers>`
 * :ref:`Power plants (Condensing power plants and Combined heat and power) <power_plants>`
 * :ref:`Heat pumps and Heating, Ventilation, and Air Conditioning (HVAC) assets <energyconversion_hvac>`
 * :ref:`Electrolyzers <energyconversion_electrolyzers>`
@@ -155,7 +155,7 @@ The MVS already covers generic conversion assets. How the generic definition can
 
 A CHP with a variable share of heat and electricity output is currently not implemented. It could be added as a new oemof asset type.
 
-When using two conversion objects to emulate a bidirectional conversion assets (eg. charge controllers, bi-directional inverters), their capacity should be interdependent. This is currently not the case, as explained in the :ref:`limitations <limitations-real-life-constraint>`
+When using two conversion objects to emulate a bidirectional conversion assets (eg. charge controllers, bi-directional inverters), their capacity should be interdependent. This is currently not the case, as explained in the :ref:`limitations <limitations-real-life-constraint>`.
 
 
 FUN-MVS-07 - Optimisation goal
@@ -242,14 +242,14 @@ FUN-MVS-11 - PV data
 
 :Progress message:
 
-To simulate a PV, the MVS model requires following data from the end-user:
+To simulate a PV plant, the MVS model requires following data from the end-user:
 
 * (Historical) Specific PV generation profile (in kWh/kWp)
 * Inverter efficiencies can be considered with an additional energyConversion asset
 
 :ToDo:
 
-To ease the data input for the end-user, more processing could be included here (option a)). For example, the `pvfeedinlib` could be used to fetch the specific PV generation profiles with following data:
+To ease the data input for the end-user, more processing could be included here (option a)). For example, the `feedinlib` could be used to fetch the specific PV generation profiles with following data:
 
 * Longitude and latitude
 * Module or efficiency
@@ -273,9 +273,9 @@ FUN-MVS-12 - Battery data
 For the MVS, the type of the BESS does not matter. Important are the technical parameters:
 
 * :ref:`C-rate <crate-label>`
-* :ref:`Maximum <socmax-label>` and :ref:`minimum <socmin-label>` state of charge (SOC), wherear the latter is inverse to the maximum depth of discharge (DOD)
+* :ref:`Maximum <socmax-label>` and :ref:`minimum <socmin-label>` state of charge (SOC), whereas the latter is inverse to the maximum depth of discharge (DOD)
 * Charge- and discharge (constant or time series, equivalent to roundtrip-efficiency) as well as self-discharge rate (comp. :ref:`efficiency <efficiency-label>`)
-* It is possible to define :ref:`socin-label`, the initial storage charge at the beginning of the optimization period, which is most immportant for short-term optimizations.
+* It is possible to define :ref:`socin-label`, the initial storage charge at the beginning of the optimization period, which is most important for short-term optimizations.
 * An inverter or charge controller can be defined by defining an additional energyConversion asset
 
 :Notes:
@@ -338,7 +338,7 @@ FUN-MVS-15 - Autonomous operation data
 
 :Progress message:
 
-This requirement is addressed by the :ref:`degree of autonomy constraint <kpi_degree_of_autonomy`. It is related to the aggregated demand of the energy system and the required consumption from the grid (comp. :ref:`DOA <kpi_degree_of_autonomy>`), and not minimum or maximum time of autonomous operation.
+This requirement is addressed by the :ref:`degree of autonomy constraint <kpi_degree_of_autonomy>`. It is related to the aggregated demand of the energy system and the required consumption from the grid (comp. :ref:`DOA <kpi_degree_of_autonomy>`), and not minimum or maximum time of autonomous operation.
 
 :Notes:
 
@@ -361,11 +361,11 @@ The MVS receives economic data from the end-user. This includes:
 
 * :ref:`Specific investment costs of assets (CAPEX/kW) <specificcosts-label>`
 * :ref:`Dispatch price of assets <dispatchprice-label>`
-* :ref:`Specific annual operation and management costs (OPEX/kWh, constant or time serie)) <specificomcosts-label>`
+* :ref:`Specific annual operation and management costs (OPEX/kWh, constant or time series)) <specificomcosts-label>`
 * :ref:`Currency <currency-label>`
 * :ref:`Tax <tax-label>`
 * :ref:`Weighted Average Cost of Capital (WACC) <discountfactor-label>`
-* :ref:`Lifetime of the project <_projectduration-label>`
+* :ref:`Lifetime of the project <projectduration-label>`
 * :ref:`Liftetime of assets <lifetime-label>`
 
 FUN-MVS-17 - Constraints
@@ -383,7 +383,7 @@ FUN-MVS-17 - Constraints
 
 To address the sizing constraint, the attribute `maximumCap` was introduced. This will limit the optimized capacity, even if this results in higher energy supply costs.
 
-A cost constraint is for now disregarded, as always the cheapest supply solution is identified. Limiting the overall NPC would only result in infeasible solutions and a termination of the MVS. Cost constraints considering specific technologies can be covered by adapting the `maximumCap`.
+A cost constraint is for now disregarded, as always the cheapest supply solution is identified. Limiting the overall NPC would result in infeasible solutions and a termination of the MVS. Cost constraints considering specific technologies can be covered by adapting the `maximumCap`.
 
 :ToDo:
 
