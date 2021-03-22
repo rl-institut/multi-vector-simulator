@@ -460,7 +460,7 @@ NF-MVS-03 - Communication interface between MVS and ESB
 
 :Progress message:
 
-After discussion, there is no direct interface of the ESB and the MVS. The MVS is a standalone application that must be usable without the ESB. To ease end-user use, the EPA (Energy Planning Application) is developed. It sends inputs in json format to the MVS, and receives a json file with the results back. The integration betwe
+After discussion, there is no direct interface of the ESB and the MVS. The MVS is a standalone application that must be usable without the ESB. To ease end-user use, the EPA (Energy Planning Application) is developed. It sends inputs in json format to the MVS, and receives a json file with the results back. Parsers are coded to allow a translation of the different formats of the MVS and the EPA.
 
 :Notes:
 
