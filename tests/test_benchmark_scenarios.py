@@ -110,9 +110,12 @@ class TestACElectricityBus:
         # make sure that electricity excess is zero whenever demand >= generation (this means that total pv generation
         # is used to cover the demand)
         selected_time_steps = df_busses_flow.loc[
-            df_busses_flow["demand_01"].abs() >= df_busses_flow["pv_plant_01"]]
+            df_busses_flow["demand_01"].abs() >= df_busses_flow["pv_plant_01"]
+        ]
         excess = selected_time_steps[f"Electricity{EXCESS_SINK_POSTFIX}"].sum()
-        assert excess == 0, f"Total PV generation should be used to cover demand, i.e. electricity excess should be zero whenever demand >= generation, but excess is {excess}."
+        assert (
+            excess == 0
+        ), f"Total PV generation should be used to cover demand, i.e. electricity excess should be zero whenever demand >= generation, but excess is {excess}."
 
         # make sure that installedCap is processed correctly - pv time series of results
         # equal input pv time series times installedCap
