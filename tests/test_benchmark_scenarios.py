@@ -78,8 +78,11 @@ class TestACElectricityBus:
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_AB_grid_pv(self, margs):
         r"""
-        Benchmark test for simple case grid connected PV. Since the PV is already installed, this tests makes sure that the PV generation is totally used to supply the load and the rest in take from the grid.
-        Additionally, in this test it is made sure that the results PV time series equals the input time series multiplied by installed capacity. This ensures that `installedCap` is processed correctly within the model.
+        Benchmark test for simple case grid connected PV, in which a fix capacity of PV is installed (installedCap, no optimization).
+
+        Assertions performed:
+        - The sum of energy consumption from the grid and PV generation is equal to the load (and flow to excess sink) at all times (ie. energy balance)
+        - The PV generation time series in the results equals the input time series of specific PV generation multiplied by installed capacity. This ensures that `installedCap` is processed correctly within the model when an asset is not optimized.
         """
         use_case = "AB_grid_PV"
         main(
