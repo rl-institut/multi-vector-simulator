@@ -33,6 +33,15 @@ This is the reason that the MVS can provide a pre-feasibility study of a specifi
 but not the final sizing and system design.
 The types of assets are presented below.
 
+.. _energy_consumption:
+
+Energy consumption
+##################
+
+Demands within the MVS are added as energy consumption assets in `energyConsumption.csv`. Most importantly, they are defined by a timeseries, representing the demand profile, and their energy vector. A number of demand profiles can be defined for one energy system, both of the same and different energy vectors.
+The main optimization goal for the MVS is to supply the defined demand withouth fail for all of the timesteps in the simulation with the least cost of supply (comp. :ref:`economic_precalculation-label`).
+
+
 .. _energy_production:
 
 Energy production
