@@ -40,7 +40,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LCOeleq,
     TOTAL_FEEDIN,
     DSO_FEEDIN,
-    AUTO_SINK,
     TOTAL_GENERATION_IN_LES,
     ONSITE_ENERGY_FRACTION,
     TOTAL_EXCESS,
@@ -551,7 +550,7 @@ def test_add_total_feedin_electricity_equivalent():
 
     dso = "DSO"
     feedin = 1000
-    consumption_asset = str(dso + DSO_FEEDIN + AUTO_SINK)
+    consumption_asset = str(dso + DSO_FEEDIN)
     dict_values_feedin = {
         ENERGY_PROVIDERS: {dso},
         ENERGY_CONSUMPTION: {

@@ -210,7 +210,7 @@ def process_all_assets(dict_values):
 
     # Needed for E3.total_demand_each_sector(), but location is not perfect as it is more about the model then the settings.
     # Decided against implementing a new major 1st level category in json to avoid an excessive datatree.
-    dict_values[SIMULATION_SETTINGS].update({EXCESS + AUTO_SINK: auto_sinks})
+    dict_values[SIMULATION_SETTINGS].update({EXCESS: auto_sinks})
 
     # process all energyAssets:
     # Attention! Order of asset_groups important. for energyProviders/energyConversion sinks and sources
@@ -708,7 +708,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso):
     # define feed-in sink of the DSO
     define_sink(
         dict_values=dict_values,
-        asset_key=dso + DSO_FEEDIN + AUTO_SINK,
+        asset_key=dso + DSO_FEEDIN,
         price=dict_feedin,
         inflow_direction=dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
@@ -719,7 +719,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso):
         {
             CONNECTED_CONSUMPTION_SOURCE: dso + DSO_CONSUMPTION,
             CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS: list_of_dso_energyConversion_assets,
-            CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN + AUTO_SINK,
+            CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN,
         }
     )
 
@@ -1216,7 +1216,7 @@ def define_sink(
     The pytests for this function are not complete. It is started with:
     - C0.test_define_sink() and only the assertion messages are missing
     """
-    sink_label = asset_key + AUTO_SINK
+    sink_label = asset_key
     # create a dictionary for the sink
     sink = {
         OEMOF_ASSET_TYPE: OEMOF_SINK,
@@ -1245,7 +1245,7 @@ def define_sink(
 
     if energy_vector is None:
         raise ValueError(
-            f"The {ENERGY_VECTOR} of the automatically defined sink {asset_key + AUTO_SINK} is invalid: {energy_vector}."
+            f"The {ENERGY_VECTOR} of the automatically defined sink {asset_key} is invalid: {energy_vector}."
         )
 
     # check if multiple busses are provided

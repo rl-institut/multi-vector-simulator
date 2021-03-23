@@ -35,7 +35,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MINIMAL_RENEWABLE_FACTOR,
     MINIMAL_DEGREE_OF_AUTONOMY,
     ENERGY_CONSUMPTION,
-    AUTO_SINK,
     EXCESS_SINK_POSTFIX,
     EXCESS,
     INFLOW_DIRECTION,
@@ -180,7 +179,7 @@ def test_prepare_demand_assets():
     electricity = "Electricity"
     dict_values = {
         ENERGY_CONSUMPTION: {
-            asset + AUTO_SINK: {},
+            asset: {},
             asset + EXCESS: {},
             asset + EXCESS_SINK_POSTFIX: {},
             demand_profiles: {
@@ -294,8 +293,7 @@ def test_prepare_energy_provider_feedin_sinks():
         ENERGY_PROVIDERS: {dso: {LABEL: dso},},
         ENERGY_CONSUMPTION: {
             dso
-            + DSO_FEEDIN
-            + AUTO_SINK: {
+            + DSO_FEEDIN: {
                 LABEL: dso + DSO_FEEDIN,
                 INFLOW_DIRECTION: electricity,
                 ENERGY_VECTOR: electricity,
@@ -318,7 +316,7 @@ def test_prepare_energy_provider_feedin_sinks():
         oemof_solph_object_bus,
     )
 
-    DSO_sink_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_FEEDIN + AUTO_SINK
+    DSO_sink_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_FEEDIN
 
     assert (
         DSO_sink_name in energy_provider_feedin_sinks

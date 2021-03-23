@@ -39,7 +39,6 @@ from multi_vector_simulator.utils.constants import (
 
 from multi_vector_simulator.utils.constants_json_strings import (
     EXCESS,
-    AUTO_SINK,
     ENERGY_CONVERSION,
     ENERGY_PROVIDERS,
     VALUE,
@@ -210,7 +209,7 @@ class TestACElectricityBus:
                 sheet_name="Electricity",
             )
             # compute the sum of the excess electricity for all timesteps
-            excess[case] = sum(busses_flow["Electricity" + EXCESS + AUTO_SINK])
+            excess[case] = sum(busses_flow["Electricity" + EXCESS])
         # compare the total excess electricity between the two cases
         assert excess["AB_grid_PV"] < excess["ABE_grid_PV_battery"]
 

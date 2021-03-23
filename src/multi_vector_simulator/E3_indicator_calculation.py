@@ -30,7 +30,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     CRF,
     LES_ENERGY_VECTOR_S,
     EXCESS,
-    AUTO_SINK,
     ENERGY_VECTOR,
     KPI,
     KPI_SCALARS_DICT,
@@ -172,10 +171,7 @@ def total_demand_and_excess_each_sector(dict_values):
                 total_demand_dict.update({energy_carrier: {}})
 
             # Evaluate excess
-            if (
-                consumption_asset
-                in dict_values[SIMULATION_SETTINGS][EXCESS + AUTO_SINK]
-            ):
+            if consumption_asset in dict_values[SIMULATION_SETTINGS][EXCESS]:
                 total_excess_dict.update(
                     {
                         energy_carrier: total_excess_dict[energy_carrier]
@@ -789,7 +785,7 @@ def add_total_feedin_electricity_equivalent(dict_values):
     # Get source connected to the specific DSO in question
     for dso in dict_values[ENERGY_PROVIDERS]:
         # load total flow into the dso sink
-        feedin_sink = str(dso + DSO_FEEDIN + AUTO_SINK)
+        feedin_sink = str(dso + DSO_FEEDIN)
         energy_carrier = dict_values[ENERGY_CONSUMPTION][feedin_sink][ENERGY_VECTOR]
         total_feedin_dict.update({energy_carrier: {}})
         total_feedin_dict.update(

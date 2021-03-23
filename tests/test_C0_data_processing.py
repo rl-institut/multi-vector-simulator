@@ -69,7 +69,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_PEAK_DEMAND_SUFFIX,
     ENERGY_PRICE,
     DSO_FEEDIN,
-    AUTO_SINK,
     CONNECTED_CONSUMPTION_SOURCE,
     CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS,
     CONNECTED_FEEDIN_SINK,
@@ -1009,7 +1008,7 @@ def test_define_auxiliary_assets_of_energy_providers():
         DSO + DSO_CONSUMPTION in dict_test_provider[ENERGY_PRODUCTION]
     ), f"No source for energy consumption from the energy provider is added."
     assert (
-        DSO + DSO_FEEDIN + AUTO_SINK in dict_test_provider[ENERGY_CONSUMPTION]
+        DSO + DSO_FEEDIN in dict_test_provider[ENERGY_CONSUMPTION]
     ), f"No sink for feed-in into the energy provider`s grid is added."
     assert (
         CONNECTED_CONSUMPTION_SOURCE in dict_test_provider[ENERGY_PROVIDERS][DSO]
@@ -1033,7 +1032,7 @@ def test_define_auxiliary_assets_of_energy_providers():
     assert (
         CONNECTED_FEEDIN_SINK in dict_test_provider[ENERGY_PROVIDERS][DSO]
     ), f"The key {CONNECTED_FEEDIN_SINK} is not added to dict_test_provider[ENERGY_PROVIDERS][DSO]."
-    exp = DSO + DSO_FEEDIN + AUTO_SINK
+    exp = DSO + DSO_FEEDIN
     assert (
         dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_FEEDIN_SINK] == exp
     ), f"The {CONNECTED_FEEDIN_SINK} is unexpected with {dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_FEEDIN_SINK]} instead of {exp}"
