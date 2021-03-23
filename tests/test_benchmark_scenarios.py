@@ -50,7 +50,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INSTALLED_CAP,
     SIMULATION_SETTINGS,
     EVALUATED_PERIOD,
-    EXCESS_SINK_POSTFIX,
 )
 
 from multi_vector_simulator.utils.data_parser import convert_epa_params_to_mvs
@@ -111,7 +110,7 @@ class TestACElectricityBus:
         selected_time_steps = df_busses_flow.loc[
             df_busses_flow["demand_01"].abs() >= df_busses_flow["pv_plant_01"]
         ]
-        excess = selected_time_steps[f"Electricity{EXCESS_SINK_POSTFIX}"].sum()
+        excess = selected_time_steps[f"Electricity{EXCESS}"].sum()
         assert (
             excess == 0
         ), f"Total PV generation should be used to cover demand, i.e. electricity excess should be zero whenever demand >= generation, but excess is {excess}."

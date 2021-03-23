@@ -31,7 +31,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_SHARE_DSO,
     RENEWABLE_ASSET_BOOL,
     EXCESS,
-    EXCESS_SINK_POSTFIX,
     CONSTRAINTS,
     MINIMAL_RENEWABLE_FACTOR,
     MAXIMUM_EMISSIONS,
@@ -560,7 +559,7 @@ def prepare_demand_assets(
 
     # Determine energy demands
     for asset in dict_values[ENERGY_CONSUMPTION]:
-        if EXCESS not in asset and EXCESS_SINK_POSTFIX not in asset:
+        if EXCESS not in asset:
             demands.update(
                 {
                     asset: {

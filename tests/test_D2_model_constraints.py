@@ -35,7 +35,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MINIMAL_RENEWABLE_FACTOR,
     MINIMAL_DEGREE_OF_AUTONOMY,
     ENERGY_CONSUMPTION,
-    EXCESS_SINK_POSTFIX,
     EXCESS,
     INFLOW_DIRECTION,
     DSO_FEEDIN,
@@ -180,7 +179,6 @@ def test_prepare_demand_assets():
     dict_values = {
         ENERGY_CONSUMPTION: {
             asset + EXCESS: {},
-            asset + EXCESS_SINK_POSTFIX: {},
             demand_profiles: {
                 LABEL: demand_profiles,
                 INFLOW_DIRECTION: electricity,
