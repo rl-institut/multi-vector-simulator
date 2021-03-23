@@ -1780,7 +1780,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
         asset_dict.update({MAXIMUM_CAP: {VALUE: None}})
     else:
         if asset_dict[MAXIMUM_CAP][VALUE] is not None:
-            # check if maximumCap is greater that installedCap
+            # set maximumCap to None if it is smaller than installedCap
             if asset_dict[MAXIMUM_CAP][VALUE] < asset_dict[INSTALLED_CAP][VALUE]:
                 message = (
                     f"The stated maximumCap in {group} {asset} is smaller than the "
@@ -1792,7 +1792,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 logging.warning(message)
                 asset_dict[MAXIMUM_CAP][VALUE] = None
 
-            # check if maximumCap is 0
+            # set maximumCap to None if it is zero
             if asset_dict[MAXIMUM_CAP][VALUE] == 0:
                 message = (
                     f"The stated maximumCap of zero in {group} {asset} is invalid."
