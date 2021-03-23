@@ -364,4 +364,26 @@ class Test_Constraints:
         With this benchmark test, the maximum capacity constraint is validated.
         The benchmark test passes if the optimized added capacity is less than or
         equal to the defined maximum capacity.
+        # ToDo: define the tests implemented
         """
+        # define the cases needed for comparison
+        # Todo: define if more cases should be tested e.g. with installed cap
+        use_case = [
+            "Constraint_maximum_capacity",
+        ]
+        # define empty dictionaries maximum capacity
+        maximum_cap = {}
+        optimized_add_cap = {}
+        for case in use_case:
+            main(
+                overwrite=True,
+                display_output="warning",
+                path_input_folder=os.path.join(TEST_INPUT_PATH, case),
+                input_type=CSV_EXT,
+                path_output_folder=os.path.join(TEST_OUTPUT_PATH, case),
+            )
+            data = load_json(
+                os.path.join(
+                    TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+                )
+            )
