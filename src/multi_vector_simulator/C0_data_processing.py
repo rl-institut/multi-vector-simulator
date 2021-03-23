@@ -700,11 +700,9 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso):
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
         emission_factor=dict_values[ENERGY_PROVIDERS][dso][EMISSION_FACTOR],
     )
-
     dict_feedin = change_sign_of_feedin_tariff(
         dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF], dso
     )
-
     # define feed-in sink of the DSO
     define_sink(
         dict_values=dict_values,
@@ -714,7 +712,6 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso):
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
         energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
     )
-
     dict_values[ENERGY_PROVIDERS][dso].update(
         {
             CONNECTED_CONSUMPTION_SOURCE: dso + DSO_CONSUMPTION,
@@ -730,6 +727,7 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
     Additionally, prints a logging.warning in case of the feed-in tariff is entered as
     negative value in 'energyProviders.csv'.
 
+    #todo This only works if the feedin tariff is not defined as a timeseries
     Parameters
     ----------
     dict_feedin_tariff: dict
@@ -1038,13 +1036,11 @@ def define_source(
     Missing:
     - C0.test_define_source_price_not_None_but_timeseries(), ie. value defined by FILENAME and HEADER
     """
-    source_label = asset_key
     default_source_dict = {
         OEMOF_ASSET_TYPE: OEMOF_SOURCE,
-        LABEL: source_label,
+        LABEL: asset_key,
         OUTFLOW_DIRECTION: outflow_direction,
         DISPATCHABILITY: True,
-        # OPEX_VAR: {VALUE: price, UNIT: CURR + "/" + UNIT},
         LIFETIME: {
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
             UNIT: UNIT_YEAR,
@@ -1062,7 +1058,7 @@ def define_source(
                 outflow_direction: {
                     LABEL: outflow_direction,
                     ENERGY_VECTOR: energy_vector,
-                    ASSET_DICT: {asset_key: source_label},
+                    ASSET_DICT: {asset_key: asset_key},
                 }
             }
         )
@@ -1216,11 +1212,11 @@ def define_sink(
     The pytests for this function are not complete. It is started with:
     - C0.test_define_sink() and only the assertion messages are missing
     """
-    sink_label = asset_key
+
     # create a dictionary for the sink
     sink = {
         OEMOF_ASSET_TYPE: OEMOF_SINK,
-        LABEL: sink_label,
+        LABEL: asset_key,
         INFLOW_DIRECTION: inflow_direction,
         # OPEX_VAR: {VALUE: price, UNIT: CURR + "/" + UNIT},
         LIFETIME: {
@@ -1238,7 +1234,7 @@ def define_sink(
                 inflow_direction: {
                     LABEL: inflow_direction,
                     ENERGY_VECTOR: energy_vector,
-                    ASSET_DICT: {asset_key: sink_label},
+                    ASSET_DICT: {asset_key: asset_key},
                 }
             }
         )
@@ -1261,7 +1257,8 @@ def define_sink(
                     element[FILENAME],
                     element[HEADER],
                 )
-                if asset_key[-6:] == "feedin":
+                # todo this should be moved to C0.change_sign_of_feedin_tariff when #354 is solved
+                if DSO_FEEDIN in asset_key:
                     sink[DISPATCH_PRICE][VALUE].append([-i for i in timeseries])
                 else:
                     sink[DISPATCH_PRICE][VALUE].append(timeseries)
@@ -1285,18 +1282,15 @@ def define_sink(
         receive_timeseries_from_csv(
             dict_values[SIMULATION_SETTINGS], sink, DISPATCH_PRICE
         )
+        # todo this should be moved to C0.change_sign_of_feedin_tariff when #354 is solved
         if (
-            asset_key[-6:] == "feedin"
+            DSO_FEEDIN in asset_key
         ):  # change into negative value if this is a feedin sink
             sink[DISPATCH_PRICE].update(
                 {VALUE: [-i for i in sink[DISPATCH_PRICE][VALUE]]}
             )
     else:
-        if asset_key[-6:] == "feedin":
-            value = -price[VALUE]
-        else:
-            value = price[VALUE]
-        sink.update({DISPATCH_PRICE: {VALUE: value, UNIT: price[UNIT]}})
+        sink.update({DISPATCH_PRICE: {VALUE: price[VALUE], UNIT: price[UNIT]}})
 
     for item in [SPECIFIC_COSTS, SPECIFIC_COSTS_OM]:
         if item in kwargs:

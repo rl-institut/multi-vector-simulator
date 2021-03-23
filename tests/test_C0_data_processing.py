@@ -1038,7 +1038,7 @@ def test_define_auxiliary_assets_of_energy_providers():
     ), f"The {CONNECTED_FEEDIN_SINK} is unexpected with {dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_FEEDIN_SINK]} instead of {exp}"
     assert (
         dict_test_provider[ENERGY_CONSUMPTION][exp][DISPATCH_PRICE][VALUE] == -float
-    ), f"The feed-in tarrif should have the inverse sign than the {FEEDIN_TARIFF} defined in the energyProvider {DSO} (ie. {float}), but this is not the case with {dict_test_provider[ENERGY_CONSUMPTION][exp][FEEDIN_TARIFF][VALUE]}"
+    ), f"The feed-in tariff should have the inverse sign than the {FEEDIN_TARIFF} defined in the energyProvider {DSO} (ie. {float}), but this is not the case with {dict_test_provider[ENERGY_CONSUMPTION][exp][DISPATCH_PRICE][VALUE]}"
 
 
 def test_change_sign_of_feedin_tariff_positive_value(caplog):
