@@ -1,0 +1,6 @@
+,unit
+age_installed,year
+development_costs,currency
+specific_costs,currency
+lifetime,year
+specific_costs_om,currency/year
