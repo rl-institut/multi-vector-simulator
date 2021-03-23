@@ -649,7 +649,8 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                 timeseries = asset[TIMESERIES_SOC].to_list()
                 asset[TIMESERIES_SOC] = {UNIT: unit_soc, VALUE: timeseries}
 
-            if "_excess" not in asset_label and "_sink" not in asset_label:
+            # Excess sinks should not be provided to the EPA
+            if "_excess" not in asset_label:
                 list_asset.append(asset)
 
         epa_dict[MAP_MVS_EPA[asset_group]] = list_asset
