@@ -179,7 +179,6 @@ def test_prepare_demand_assets():
     electricity = "Electricity"
     dict_values = {
         ENERGY_CONSUMPTION: {
-            asset: {},
             asset + EXCESS: {},
             asset + EXCESS_SINK_POSTFIX: {},
             demand_profiles: {
