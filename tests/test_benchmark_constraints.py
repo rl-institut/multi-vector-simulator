@@ -75,7 +75,7 @@ class Test_Constraints:
         Constraint_minimal_renewable_share_0 does not have a minimal renewable factor.
         Constraint_minimal_renewable_share_50 has a minimal renewable factor of 70%.
         If the renewable share of Constraint_minimal_renewable_share_0 is lower than 70%,
-        but the one of Constraint_minimal_renewable_share_50 is 70%, then the benchmark test passes.
+        but the one of Constraint_minimal_renewable_share_70 is 70%, then the benchmark test passes.
         """
 
         # define the two cases needed for comparison (no minimal renewable factor) and (minimal renewable factor of 70%)
@@ -348,3 +348,20 @@ class Test_Constraints:
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
             shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+
+    # this ensures that the test is only run if explicitly executed, ie not when the `pytest` command
+    # alone is called
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_maximum_cap_constraint(self, margs):
+        r"""
+        Notes
+        -----
+        With this benchmark test, the maximum capacity constraint is validated.
+        The benchmark test passes if the optimized added capacity is less than or
+        equal to the defined maximum capacity.
+        """
