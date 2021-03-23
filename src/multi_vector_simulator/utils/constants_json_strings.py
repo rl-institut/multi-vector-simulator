@@ -166,7 +166,7 @@ LES_ENERGY_VECTOR_S = "energy_vectors_of_the_local_energy_system"
 OUTFLOW_DIRECTION = "outflow_direction"
 INFLOW_DIRECTION = "inflow_direction"
 ENERGY_VECTOR = "energyVector"
-EXCESS = "_excess"
+EXCESS_SINK = "_excess"
 
 # DSO
 DSO_CONSUMPTION = "_consumption"

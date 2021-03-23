@@ -210,7 +210,7 @@ def process_all_assets(dict_values):
 
     # Needed for E3.total_demand_each_sector(), but location is not perfect as it is more about the model then the settings.
     # Decided against implementing a new major 1st level category in json to avoid an excessive datatree.
-    dict_values[SIMULATION_SETTINGS].update({EXCESS: auto_sinks})
+    dict_values[SIMULATION_SETTINGS].update({EXCESS_SINK: auto_sinks})
 
     # process all energyAssets:
     # Attention! Order of asset_groups important. for energyProviders/energyConversion sinks and sources
@@ -260,7 +260,7 @@ def define_excess_sinks(dict_values):
     """
     auto_sinks = []
     for bus in dict_values[ENERGY_BUSSES]:
-        excess_sink_name = bus + EXCESS
+        excess_sink_name = bus + EXCESS_SINK
         energy_vector = dict_values[ENERGY_BUSSES][bus][ENERGY_VECTOR]
         define_sink(
             dict_values=dict_values,
@@ -269,7 +269,7 @@ def define_excess_sinks(dict_values):
             inflow_direction=bus,
             energy_vector=energy_vector,
         )
-        dict_values[ENERGY_BUSSES][bus].update({EXCESS: excess_sink_name})
+        dict_values[ENERGY_BUSSES][bus].update({EXCESS_SINK: excess_sink_name})
         auto_sinks.append(excess_sink_name)
         logging.debug(
             f"Created excess sink for energy bus {bus}, connected to {ENERGY_VECTOR} {energy_vector}."

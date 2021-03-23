@@ -47,7 +47,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     FLOW,
     EFFICIENCY,
     FEEDIN_TARIFF,
-    EXCESS
+    EXCESS_SINK,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -55,7 +55,7 @@ TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
 
 FEEDIN = f"DSO{DSO_FEEDIN}"
 CONSUMPTION = f"DSO{DSO_CONSUMPTION}"
-EXCESS_SINK_NAME = f"Electricity{EXCESS}"
+EXCESS_SINK_NAME = f"Electricity{EXCESS_SINK}"
 
 
 class TestFeedinTariff:

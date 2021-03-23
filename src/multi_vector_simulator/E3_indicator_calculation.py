@@ -29,7 +29,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     CONNECTED_FEEDIN_SINK,
     CRF,
     LES_ENERGY_VECTOR_S,
-    EXCESS,
+    EXCESS_SINK,
     ENERGY_VECTOR,
     KPI,
     KPI_SCALARS_DICT,
@@ -171,7 +171,7 @@ def total_demand_and_excess_each_sector(dict_values):
                 total_demand_dict.update({energy_carrier: {}})
 
             # Evaluate excess
-            if consumption_asset in dict_values[SIMULATION_SETTINGS][EXCESS]:
+            if consumption_asset in dict_values[SIMULATION_SETTINGS][EXCESS_SINK]:
                 total_excess_dict.update(
                     {
                         energy_carrier: total_excess_dict[energy_carrier]

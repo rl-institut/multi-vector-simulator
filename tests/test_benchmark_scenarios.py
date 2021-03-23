@@ -38,7 +38,7 @@ from multi_vector_simulator.utils.constants import (
 )
 
 from multi_vector_simulator.utils.constants_json_strings import (
-    EXCESS,
+    EXCESS_SINK,
     ENERGY_CONVERSION,
     ENERGY_PROVIDERS,
     VALUE,
@@ -110,7 +110,7 @@ class TestACElectricityBus:
         selected_time_steps = df_busses_flow.loc[
             df_busses_flow["demand_01"].abs() >= df_busses_flow["pv_plant_01"]
         ]
-        excess = selected_time_steps[f"Electricity{EXCESS}"].sum()
+        excess = selected_time_steps[f"Electricity{EXCESS_SINK}"].sum()
         assert (
             excess == 0
         ), f"Total PV generation should be used to cover demand, i.e. electricity excess should be zero whenever demand >= generation, but excess is {excess}."
@@ -208,7 +208,7 @@ class TestACElectricityBus:
                 sheet_name="Electricity",
             )
             # compute the sum of the excess electricity for all timesteps
-            excess[case] = sum(busses_flow["Electricity" + EXCESS])
+            excess[case] = sum(busses_flow["Electricity" + EXCESS_SINK])
         # compare the total excess electricity between the two cases
         assert excess["AB_grid_PV"] < excess["ABE_grid_PV_battery"]
 

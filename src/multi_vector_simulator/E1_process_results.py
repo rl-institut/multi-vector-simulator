@@ -39,7 +39,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES_TOTAL,
     TIMESERIES_AVERAGE,
     DSO_FEEDIN,
-    EXCESS,
+    EXCESS_SINK,
     ENERGY_CONVERSION,
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
@@ -733,7 +733,7 @@ def convert_demand_to_dataframe(dict_values, sector_demands=None):
     # Loop though the demands identifying irrelevant demands
     for column_label in demands:
         # Identifies excess sink in demands for removal
-        if EXCESS in column_label:
+        if EXCESS_SINK in column_label:
             drop_list.append(column_label)
         # Identifies DSO_feedin sink in demands for removal
         elif DSO_FEEDIN in column_label:
