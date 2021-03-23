@@ -66,7 +66,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_PEAK_DEMAND_PERIOD,
     ECONOMIC_DATA,
     CURR,
-    AUTO_SOURCE,
     DSO_PEAK_DEMAND_SUFFIX,
     ENERGY_PRICE,
     DSO_FEEDIN,
@@ -832,9 +831,8 @@ def test_define_source():
         == OEMOF_SOURCE
     ), f"The {OEMOF_ASSET_TYPE} of the defined source is not {OEMOF_SOURCE}."
     assert (
-        dict_test_source[ENERGY_PRODUCTION][source_name][LABEL]
-        == source_name + AUTO_SOURCE
-    ), f"The {LABEL} of the defined source is not {source_name + AUTO_SOURCE}."
+        dict_test_source[ENERGY_PRODUCTION][source_name][LABEL] == source_name
+    ), f"The {LABEL} of the defined source is not {source_name}."
     assert (
         dict_test_source[ENERGY_PRODUCTION][source_name][OUTFLOW_DIRECTION] == outflow
     ), f"The {OUTFLOW_DIRECTION} of the defined source is not {outflow}."
@@ -907,7 +905,7 @@ def test_define_source_exception_unknown_bus():
         dict_test_source[ENERGY_BUSSES][outflow][ENERGY_VECTOR] == energy_vector
     ), f"The {ENERGY_VECTOR} of the bus is not {energy_vector} as it should be"
     assert dict_test_source[ENERGY_BUSSES][outflow][ASSET_DICT] == {
-        source_name: source_name + AUTO_SOURCE
+        source_name: source_name
     }, f"The new source {source_name} is not included in the {ASSET_DICT} of the newly defined bus {outflow}"
 
 
@@ -1016,7 +1014,7 @@ def test_define_auxiliary_assets_of_energy_providers():
     assert (
         CONNECTED_CONSUMPTION_SOURCE in dict_test_provider[ENERGY_PROVIDERS][DSO]
     ), f"The key {CONNECTED_CONSUMPTION_SOURCE} is not added to dict_test_provider[ENERGY_PROVIDERS][DSO]."
-    exp = DSO + DSO_CONSUMPTION + AUTO_SOURCE
+    exp = DSO + DSO_CONSUMPTION
     assert (
         dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_CONSUMPTION_SOURCE] == exp
     ), f"The {CONNECTED_CONSUMPTION_SOURCE} is unexpected with {dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_CONSUMPTION_SOURCE]} instead of {exp}"

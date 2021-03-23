@@ -32,7 +32,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     AUTO_SINK,
     DSO_CONSUMPTION,
     DSO_FEEDIN,
-    AUTO_SOURCE,
     KPI_SCALARS_DICT,
     KPI_COST_MATRIX,
     KPI_SCALAR_MATRIX,
@@ -56,7 +55,7 @@ TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
 
 FEEDIN = f"DSO{DSO_FEEDIN + AUTO_SINK + AUTO_SINK}"
-CONSUMPTION = f"DSO{DSO_CONSUMPTION + AUTO_SOURCE}"
+CONSUMPTION = f"DSO{DSO_CONSUMPTION}"
 EXCESS_SINK_NAME = f"Electricity{EXCESS_SINK_POSTFIX}"
 
 

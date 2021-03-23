@@ -717,7 +717,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso):
 
     dict_values[ENERGY_PROVIDERS][dso].update(
         {
-            CONNECTED_CONSUMPTION_SOURCE: dso + DSO_CONSUMPTION + AUTO_SOURCE,
+            CONNECTED_CONSUMPTION_SOURCE: dso + DSO_CONSUMPTION,
             CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS: list_of_dso_energyConversion_assets,
             CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN + AUTO_SINK,
         }
@@ -1038,7 +1038,7 @@ def define_source(
     Missing:
     - C0.test_define_source_price_not_None_but_timeseries(), ie. value defined by FILENAME and HEADER
     """
-    source_label = asset_key + AUTO_SOURCE
+    source_label = asset_key
     default_source_dict = {
         OEMOF_ASSET_TYPE: OEMOF_SOURCE,
         LABEL: source_label,
