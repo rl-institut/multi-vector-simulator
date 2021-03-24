@@ -559,7 +559,8 @@ def prepare_demand_assets(
 
     # Determine energy demands
     for asset in dict_values[ENERGY_CONSUMPTION]:
-        if EXCESS_SINK not in asset:
+        # Do not add flows into excess sink of feedin sink to the demands to be supplied
+        if EXCESS_SINK not in asset and DSO_FEEDIN not in asset:
             demands.update(
                 {
                     asset: {
