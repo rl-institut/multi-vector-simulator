@@ -31,7 +31,7 @@ Here is a template for new release sections
 - Status messages of requirements in `E-Land_Requirements.rst` (#817)
 - Minor updates in `Model_Assumptions.rst` and `MVS_Outputs.rst`, mainly adding labels (#817)
 - Change order of `maximumCap` check and adaption in `C0.process_maximum_cap_constraint()` (#833)
-- Adapted pv production of first day of pv time series in `tests/inputs/time_series` to make simulations of only one day with constraint work after having fixed `maximumCap` processing (#833)
+- Set constraints `minimal_renewable_factor` and `minimal_degree_of_autonomy` to zero in `test/inputs` to make simulation run without errors after correcting processing of `maximumCap` (#833)
 
 ### Removed
 -
