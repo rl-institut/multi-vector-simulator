@@ -28,6 +28,8 @@ Here is a template for new release sections
 - Constant variables: `MODELLING_TIME`, `LP_FILE` (#839)
 - Add plotly in `requirements/default.txt` (#840)
 - Pytests for `C1.check_for_sufficient_assets_on_busses()` (#837)
+- Add a parameter lookup table in RTD (#842)
+- Add a column `category` in the file `docs/MVS_parameters_categories.csv` to know in which csv file(s) the parameter is used (#842)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -40,6 +42,7 @@ Here is a template for new release sections
 - Refactored `EXCESS` to `EXCESS_SINK` as this is more intuitive (#837)
 - Change order of `maximumCap` check and adaption in `C0.process_maximum_cap_constraint()` (#833)
 - Adapt parameters in `test/inputs` to make simulation run without errors after correcting processing of `maximumCap`: set constraints `minimal_renewable_factor` and `minimal_degree_of_autonomy` to `0.01`, `maximumCap` of pv plant to `10000` and `feedin_tariff` to `0.05` (#833)
+- Generate the parameters categories automatically from `docs/MVS_parameters_categories.csv` (#842)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
