@@ -81,7 +81,62 @@ def generate_parameter_description(input_csv_file, output_rst_file):
         ofs.write("\n".join(lines))
 
 
+def generate_parameter_categories(input_param_csv_file, input_cat_csv_file, output_rst_file):
+    """Rassemble the MVS parameter categories from csv file and generate a .rst formatted document
+
+    Parameters
+    ----------
+    input_param_csv_file: str
+        path of the file with extensive description of all mvs parameters
+    input_cat_csv_file: str
+        path of the file with extensive description of all mvs parameters categories
+    output_rst_file: str
+        path of the rst file with RTD formatted mvs parameter categories
+
+    Returns
+    -------
+    None
+
+    """
+    df_param = pd.read_csv(input_param_csv_file)
+    df_cat = pd.read_csv(input_cat_csv_file)
+
+
+    lines = []
+    # formats following the template:
+    # .._<ref_name>:
+    #
+    # <name>
+    # ^^^^^^
+    #
+    # * :ref:`param1`
+    # * :ref:`param2`
+    #
+    # ----
+    #
+
+    for row in df_cat.iterrows():
+        props = row[1]
+        cat_label = props.csv_file_name + ".csv"
+
+        # lookup all parameters for which the category is tagged
+        parameter_per_cat = df_param.loc[
+            df_param.category.str.contains(props.ref), "ref"].to_list()
+
+        lines = (
+                lines
+                + [f".. _{props.ref}:", "", cat_label, "^" * len(cat_label), "", ]
+                + props.description.split("\\n")
+                + ["", ]
+                + [f"* :ref:`{p}`" for p in parameter_per_cat]
+                + ["", "", ]
+        )
+
+    with open(output_rst_file, "w") as ofs:
+        ofs.write("\n".join(lines))
+
 generate_parameter_description("MVS_parameters_list.csv", "MVS_parameters_list.inc")
+generate_parameter_categories("MVS_parameters_list.csv", "MVS_parameters_categories.csv", "MVS_parameters_categories.inc")
 
 # -- Project information -----------------------------------------------------
 
