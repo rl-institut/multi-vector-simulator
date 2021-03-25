@@ -704,6 +704,43 @@ def test_check_energy_system_can_fulfill_max_demand_with_storage(caplog):
     ), f"If a storage asset is included in the energy system, a successful debug message should have been logged."
 
 
+from multi_vector_simulator.cli import main
+import shutil
+import mock
+import argparse
+from _constants import (
+    TEST_REPO_PATH,
+    CSV_EXT,
+)
+from multi_vector_simulator.utils.constants import LOGFILE
+
+
+@mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+def test_check_energy_system_can_fulfill_max_demand_fails_mvs_runthough(caplog):
+    """This test makes sure that the C1.check_energy_system_can_fulfill_max_demand not only works as a function, but as an integrated function of the MVS model, as it is dependent on a lot of pre-processing steps where things in the future may be changed."""
+    TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
+    TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
+    if os.path.exists(TEST_OUTPUT_PATH):
+        shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+
+    try:
+        use_case = "validity_check_insufficient_capacities"
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=CSV_EXT,
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+        )
+    except:
+        pass
+
+    logfile = open(os.path.join(TEST_OUTPUT_PATH, use_case, LOGFILE), "r")
+    log = logfile.read()
+
+    assert "might have insufficient capacities" in log
+
+
 # def test_check_input_values():
 #     pass
 #     # todo note: function is not used so far
