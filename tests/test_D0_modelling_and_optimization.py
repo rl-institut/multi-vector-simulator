@@ -11,6 +11,8 @@ from multi_vector_simulator.cli import main
 import multi_vector_simulator.D0_modelling_and_optimization as D0
 from multi_vector_simulator.B0_data_input_json import load_json
 
+from multi_vector_simulator.utils.constants import LP_FILE
+
 from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_BUSSES,
     ENERGY_CONSUMPTION,
@@ -200,7 +202,8 @@ class FileCreation:
         )
         assert os.path.exists(PATH_ES_GRAPH) is False
 
-    path_lp_file = os.path.join(TEST_OUTPUT_PATH, "lp_file.lp")
+path_lp_file = os.path.join(TEST_OUTPUT_PATH, LP_FILE)
+
 
     def test_if_lp_file_is_stored_to_file_if_output_lp_file_true(dict_values):
         model, dict_model = D0.model_building.initialize(dict_values)
