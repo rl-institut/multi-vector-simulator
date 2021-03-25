@@ -46,6 +46,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TOTAL_FLOW,
     DEGREE_OF_NZE,
     ANNUAL_TOTAL_FLOW,
+    ENERGY_BUSSES,
+    ASSET_DICT,
+    MAXIMUM_CAP,
+    ENERGY_PRODUCTION
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -365,15 +369,16 @@ class Test_Constraints:
         The benchmark test passes if the optimized added capacity is less than or
         equal to the defined maximum capacity.
         # ToDo: define the tests implemented
+
         """
         # define the cases needed for comparison
+        # also test without maximum capacity
+        # use specific timeseries for all tests (input csv file)
         # Todo: define if more cases should be tested e.g. with installed cap
         use_case = [
             "Constraint_maximum_capacity",
         ]
         # define empty dictionaries maximum capacity
-        maximum_cap = {}
-        optimized_add_cap = {}
         for case in use_case:
             main(
                 overwrite=True,
@@ -387,3 +392,20 @@ class Test_Constraints:
                     TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
                 )
             )
+            # loop through each bus
+            for bus in data[ENERGY_BUSSES]:
+                # loop through assets connected to bus
+                for asset in data[ENERGY_BUSSES][bus][ASSET_DICT]:
+                    # only energy production assets considered (todo: check this is correct)
+                    if asset in data[ENERGY_PRODUCTION]:
+                        if OPTIMIZED_ADD_CAP in asset:
+                            maximum_cap = data[asset][MAXIMUM_CAP][VALUE]
+                            optimized_add_cap = data[asset][OPTIMIZED_ADD_CAP][VALUE]
+
+                            assert (optimized_add_cap <= maximum_cap), f"The optimized additional capacity of the asset should be less than or equal to the maximum capacity, but here the optimized additional capacity is {optimized_add_cap} and the maximum capacity is {maximum_cap}."
+
+            # update maximum cap dict with maximum cap value (from json_input_processed?)
+            # update optimized_add_cap dict with value (from scalars-xlsx -> optimizedAddedCap)
+            # assert optimized_added_cap value is less than or equal to maximum cap value
+
+    # Do another test asserting installedCap * time_series == time series in output
