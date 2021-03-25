@@ -26,7 +26,7 @@ Here is a template for new release sections
 - Add check to `AB_grid_pv` benchmark test: total pv generation is used to cover demand (#831)
 - Section on energy consumption assets in `Model_Assumptions.rst` and `MVS_Outputs.rst` (#817)
 - Add check for the capability of asset capacities in an energy system to fulfill the maximum demand in `C1.check_energy_system_can_fulfill_max_demand()` (#824)
-- Add tests for `C1.check_energy_system_can_fulfill_max_demand()` (#824)
+- Add tests for `C1.check_energy_system_can_fulfill_max_demand()`, including pseudo-benchmark test in `test_C1` (#824)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
