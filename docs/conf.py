@@ -33,7 +33,7 @@ def generate_parameter_description(input_csv_file, output_rst_file):
 
     """
     df = pd.read_csv(input_csv_file)
-
+    df = df.loc[df.category != "hidden"]
     parameter_properties = [
         ":Definition:",
         ":Type:",
@@ -147,6 +147,7 @@ def generate_parameter_categories(
 
 def generate_parameter_table(input_csv_file, output_csv_file):
     df = pd.read_csv(input_csv_file)
+    df = df.loc[df.category != "hidden"]
 
     parameter_properties = [
         ":Type:",
