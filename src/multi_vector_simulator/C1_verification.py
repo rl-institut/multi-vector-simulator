@@ -807,14 +807,15 @@ def check_energy_system_can_fulfill_max_demand(dict_values):
         peak_generation = 0
         for item in dict_values[ENERGY_BUSSES][bus][ASSET_DICT]:
             # filters out excess energy sinks, leaving only actual demand profiles
-            if (
-                item in dict_values[ENERGY_CONSUMPTION]
-                and dict_values[ENERGY_CONSUMPTION][item][DISPATCHABILITY][VALUE]
-                is False
-            ):
-                peak_demand += dict_values[ENERGY_CONSUMPTION][item][TIMESERIES_PEAK][
-                    VALUE
-                ]
+            if item in dict_values[ENERGY_CONSUMPTION]:
+                if DISPATCHABILITY in dict_values[ENERGY_CONSUMPTION][item]:
+                    if (
+                        dict_values[ENERGY_CONSUMPTION][item][DISPATCHABILITY][VALUE]
+                        is False
+                    ):
+                        peak_demand += dict_values[ENERGY_CONSUMPTION][item][
+                            TIMESERIES_PEAK
+                        ][VALUE]
             # Only add capacity of conversion assets that can contribute to supply
             if (
                 item in dict_values[ENERGY_CONVERSION]
