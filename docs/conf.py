@@ -61,11 +61,20 @@ def generate_parameter_description(input_csv_file, output_rst_file):
     #
     for row in df.iterrows():
         props = row[1]
+
+        if isinstance(props.see_also, str):
+            see_also = ["", "",
+                "See also: " + ", ".join([f":ref:`{ref}`" for ref in props.see_also.split(";")])]
+        else:
+            see_also = []
         lines = (
-            lines
-            + [f".. _{props.ref}:", "", props.label, "^" * len(props.label), "",]
-            + [f"{p} {props[p]}" for p in parameter_properties]
-            + ["", "",]
+                lines
+                + [f".. _{props.ref}:", "", props.label, "^" * len(props.label), "", ]
+                + [f"{p} {props[p]}" for p in parameter_properties]
+                + [""]
+                + ["This parameter is used within the following categories: " + ", ".join([f":ref:`{cat}`" for cat in props.category.split(";")])]
+                + see_also
+                + ["", "", ]
         )
 
     with open(output_rst_file, "w") as ofs:
