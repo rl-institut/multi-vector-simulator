@@ -701,7 +701,7 @@ def check_if_energy_vector_of_all_assets_is_valid(dict_values):
                     not in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]
                 ):
                     raise ValueError(
-                        f"Asset {level2} of asset group {level1} has an energy vector that is not defined within the energyBusses. "
+                        f"Asset {level2} of asset group {level1} has an energy vector ({energy_vector_name}) that is not defined within the energyBusses. "
                         f"This prohibits proper processing of the assets dispatch."
                         f"Please check for typos or define another bus, as this hints at the energy system being faulty."
                     )
