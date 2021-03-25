@@ -26,12 +26,14 @@ Here is a template for new release sections
 - Add check to `AB_grid_pv` benchmark test: total pv generation is used to cover demand (#831)
 - Section on energy consumption assets in `Model_Assumptions.rst` and `MVS_Outputs.rst` (#817)
 - Constant variables: `MODELLING_TIME`, `LP_FILE` (#839)
+- Add plotly in `requirements/default.txt` (#840)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
 - Status messages of requirements in `E-Land_Requirements.rst` (#817)
 - Minor updates in `Model_Assumptions.rst` and `MVS_Outputs.rst`, mainly adding labels (#817)
 - Pytests for `D0` to let them pass on Windows (#839)
+- Update pyomo and pandas dependencies (#840)
 
 ### Removed
 -
