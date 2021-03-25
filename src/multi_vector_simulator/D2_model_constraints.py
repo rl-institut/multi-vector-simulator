@@ -173,10 +173,9 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
     Tested with:
     - Test_Constraints.test_benchmark_minimal_renewable_share_constraint()
     """
-    
+
     renewable_assets, non_renewable_assets = prepare_constraint_minimal_renewable_share(
-        dict_values,
-        dict_model,
+        dict_values, dict_model,
     )
 
     def renewable_share_rule(model):
@@ -228,8 +227,7 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
 
 
 def prepare_constraint_minimal_renewable_share(
-    dict_values,
-    dict_model,
+    dict_values, dict_model,
 ):
     r"""
     Prepare creating the minimal renewable factor constraint by processing dict_values
@@ -419,14 +417,10 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
 
     logging.debug(f"Data considered for the minimal degree of autonomy constraint:")
 
-    demands = prepare_demand_assets(
-        dict_values,
-        dict_model,
-    )
+    demands = prepare_demand_assets(dict_values, dict_model,)
 
     energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
-        dict_values,
-        dict_model,
+        dict_values, dict_model,
     )
 
     def degree_of_autonomy_rule(model):
@@ -481,8 +475,7 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
 
 
 def prepare_demand_assets(
-    dict_values,
-    dict_model,
+    dict_values, dict_model,
 ):
     r"""
     Perpare demand assets by processing `dict_values`
@@ -545,8 +538,7 @@ def prepare_demand_assets(
 
 
 def prepare_energy_provider_consumption_sources(
-    dict_values,
-    dict_model,
+    dict_values, dict_model,
 ):
     r"""
     Prepare energy provider consumption sources by processing `dict_values`.
@@ -613,8 +605,7 @@ def prepare_energy_provider_consumption_sources(
 
 
 def prepare_energy_provider_feedin_sinks(
-    dict_values,
-    dict_model,
+    dict_values, dict_model,
 ):
     r"""
     Prepare energy provider feedin sinks by processing `dict_values`.
@@ -707,13 +698,11 @@ def constraint_net_zero_energy(model, dict_values, dict_model):
     logging.debug(f"Data considered for the net zero energy (NZE) constraint:")
 
     energy_provider_feedin_sinks = prepare_energy_provider_feedin_sinks(
-        dict_values,
-        dict_model,
+        dict_values, dict_model,
     )
 
     energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
-        dict_values,
-        dict_model,
+        dict_values, dict_model,
     )
 
     def net_zero_energy(model):
