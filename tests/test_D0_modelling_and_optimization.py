@@ -178,8 +178,14 @@ def test_error_raise_MVSOemofError_if_solver_could_not_finish_simulation(margs):
 PATH_ES_GRAPH = os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)
 
 
+def setup_function():
+    if os.path.exists(TEST_OUTPUT_PATH):
+        shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True, onerror=None)
+    os.mkdir(TEST_OUTPUT_PATH)
+
+
 def test_networkx_graph_requested_store_nx_graph_true(dict_values):
-    shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True, onerror=None)
+    setup_function()
     assert (
         os.path.isfile(PATH_ES_GRAPH) is False
     ), f"The {PATH_ES_GRAPH} does already exist before the test is run it should be non-existant, so the test can not be executed."
@@ -196,7 +202,7 @@ def test_networkx_graph_requested_store_nx_graph_true(dict_values):
 
 
 def test_networkx_graph_requested_store_nx_graph_false(dict_values):
-    shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    setup_function()
     assert (
         os.path.isfile(PATH_ES_GRAPH) is False
     ), f"The {PATH_ES_GRAPH} does already exist before the test is run it should be non-existant, so the test can not be executed."
@@ -216,7 +222,7 @@ path_lp_file = os.path.join(TEST_OUTPUT_PATH, LP_FILE)
 
 
 def test_if_lp_file_is_stored_to_file_if_output_lp_file_true(dict_values):
-    shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    setup_function()
     assert (
         os.path.isfile(path_lp_file) is False
     ), f"The {LP_FILE} does exist before the test is run eventhough it should be non-existant, so the test can not be executed."
@@ -233,7 +239,7 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_true(dict_values):
 
 
 def test_if_lp_file_is_stored_to_file_if_output_lp_file_false(dict_values):
-    shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    setup_function()
     assert (
         os.path.isfile(path_lp_file) is False
     ), f"The {LP_FILE} does already exist before the test is run it should be non-existant, so the test can not be executed."
