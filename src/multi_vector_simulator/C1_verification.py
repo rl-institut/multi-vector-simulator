@@ -808,14 +808,13 @@ def check_energy_system_can_fulfill_max_demand(dict_values):
         for item in dict_values[ENERGY_BUSSES][bus][ASSET_DICT]:
             # filters out excess energy sinks, leaving only actual demand profiles
             if item in dict_values[ENERGY_CONSUMPTION]:
-                if DISPATCHABILITY in dict_values[ENERGY_CONSUMPTION][item]:
-                    if (
-                        dict_values[ENERGY_CONSUMPTION][item][DISPATCHABILITY][VALUE]
-                        is False
-                    ):
-                        peak_demand += dict_values[ENERGY_CONSUMPTION][item][
-                            TIMESERIES_PEAK
-                        ][VALUE]
+                if (
+                    dict_values[ENERGY_CONSUMPTION][item][DISPATCHABILITY][VALUE]
+                    is False
+                ):
+                    peak_demand += dict_values[ENERGY_CONSUMPTION][item][
+                        TIMESERIES_PEAK
+                    ][VALUE]
             # Only add capacity of conversion assets that can contribute to supply
             if (
                 item in dict_values[ENERGY_CONVERSION]
@@ -831,29 +830,25 @@ def check_energy_system_can_fulfill_max_demand(dict_values):
                         peak_generation += dict_values[ENERGY_CONVERSION][item][
                             MAXIMUM_CAP
                         ][VALUE]
-                if item in dict_values[ENERGY_PRODUCTION]:
-                    # Effective generation of asset dependent on the peak of timeseries
-                    peak_generation += (
-                        dict_values[ENERGY_PRODUCTION][item][INSTALLED_CAP][VALUE]
-                        * dict_values[ENERGY_PRODUCTION][item][TIMESERIES_PEAK][VALUE]
-                    )
-                    if (
-                        dict_values[ENERGY_PRODUCTION][item][OPTIMIZE_CAP][VALUE]
-                        is True
-                    ):
-                        if (
+
+            # Add potential generation of energy production assets
+            if item in dict_values[ENERGY_PRODUCTION]:
+                # Effective generation of asset dependent on the peak of timeseries
+                peak_generation += (
+                    dict_values[ENERGY_PRODUCTION][item][INSTALLED_CAP][VALUE]
+                    * dict_values[ENERGY_PRODUCTION][item][TIMESERIES_PEAK][VALUE]
+                )
+                if dict_values[ENERGY_PRODUCTION][item][OPTIMIZE_CAP][VALUE] is True:
+                    if dict_values[ENERGY_PRODUCTION][item][MAXIMUM_CAP][VALUE] is None:
+                        pass_check = True
+                    else:
+                        # Effective generation of asset dependent on the peak of timeseries
+                        peak_generation += (
                             dict_values[ENERGY_PRODUCTION][item][MAXIMUM_CAP][VALUE]
-                            is None
-                        ):
-                            pass_check = True
-                        else:
-                            # Effective generation of asset dependent on the peak of timeseries
-                            peak_generation += (
-                                dict_values[ENERGY_PRODUCTION][item][MAXIMUM_CAP][VALUE]
-                                * dict_values[ENERGY_PRODUCTION][item][TIMESERIES_PEAK][
-                                    VALUE
-                                ]
-                            )
+                            * dict_values[ENERGY_PRODUCTION][item][TIMESERIES_PEAK][
+                                VALUE
+                            ]
+                        )
             if item in dict_values[ENERGY_STORAGE]:
                 peak_generation += dict_values[ENERGY_STORAGE][item][OUTPUT_POWER][
                     INSTALLED_CAP
@@ -872,14 +867,14 @@ def check_energy_system_can_fulfill_max_demand(dict_values):
         elif opt_cap_storage is True:
             logging.debug(
                 f"The check for assets having sufficient capacities to fulfill the"
-                f" maximum demand has successfully passed for bus {bus}. At least partially, this also happens because there is a storage asset that is being optimized."
+                f" maximum demand has successfully passed for bus {bus} (peak generation: {peak_generation}, peak demand: {peak_demand}, unlimited storage capacities in optimization: {opt_cap_storage}). At least partially, this also happens because there is a storage asset that is being optimized."
                 f" However, this check does not determine if the storage can be sufficiently"
                 f" charged by the other assets in the energy system to ensure a viable supply for each timestep."
             )
         else:
             logging.debug(
                 f"The check for assets having sufficient capacities to fulfill the"
-                f" maximum demand has successfully passed for bus {bus}."
+                f" maximum demand has successfully passed for bus {bus} (peak generation: {peak_generation}, peak demand: {peak_demand}, unlimited capacities in optimization: {pass_check})."
             )
 
         return peak_generation, peak_demand
