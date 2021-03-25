@@ -2,6 +2,23 @@
 Parameters and Definitions in CSVs/JSON
 =======================================
 
+Each of the parameters has the following properties
+
+:Definition: parameter's definition, could also contain potential use cases of the parameter
+:Type: str (text), numeric(integer or double precision number), boolean (True or False)
+:Unit: physical unit or what is the parameter an unit of
+:Example: an example of parameter's value
+:Restrictions: specific restrictions on the parameter's value (i.e., "positive integer number", "must be an even number", "must be one of ['val1', 'val2']"
+:Default: default parameter's value
+
+.. This file is generated automatically when conf.py is executed (function generate_parameter_table)
+
+.. csv-table:: Parameters summary
+   :file: MVS_parameters_list.tbl
+   :header-rows: 1
+
+
+
 ******************
 List of parameters
 ******************
