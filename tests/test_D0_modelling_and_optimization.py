@@ -92,16 +92,6 @@ def dict_values_minimal():
     }
 
 
-def setup_function():
-    if os.path.exists(TEST_OUTPUT_PATH):
-        shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
-    os.mkdir(TEST_OUTPUT_PATH)
-
-
-def teardown_function():
-    shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
-
-
 def test_if_model_building_time_measured_and_stored():
     dict_values = {SIMULATION_RESULTS: {}}
     start = D0.timer.initalize()
@@ -188,53 +178,78 @@ def test_error_raise_MVSOemofError_if_solver_could_not_finish_simulation(margs):
 PATH_ES_GRAPH = os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)
 
 
-class FileCreation:
-    def test_networkx_graph_requested_store_nx_graph_true(dict_values):
-        model, dict_model = D0.model_building.initialize(dict_values)
-        D0.model_building.adding_assets_to_energysystem_model(
-            dict_values, dict_model, model
-        )
-        D0.model_building.plot_networkx_graph(
-            dict_values, model, save_energy_system_graph=True
-        )
-        assert os.path.exists(PATH_ES_GRAPH) is True
+def test_networkx_graph_requested_store_nx_graph_true(dict_values):
+    shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True, onerror=None)
+    assert (
+        os.path.isfile(PATH_ES_GRAPH) is False
+    ), f"The {PATH_ES_GRAPH} does already exist before the test is run it should be non-existant, so the test can not be executed."
+    model, dict_model = D0.model_building.initialize(dict_values)
+    D0.model_building.adding_assets_to_energysystem_model(
+        dict_values, dict_model, model
+    )
+    D0.model_building.plot_networkx_graph(
+        dict_values, model, save_energy_system_graph=True
+    )
+    assert (
+        os.path.isfile(PATH_ES_GRAPH) is True
+    ), f"Eventhough the energy system graph is requested, it is not stored to disk"
 
-    def test_networkx_graph_requested_store_nx_graph_false(dict_values):
-        model, dict_model = D0.model_building.initialize(dict_values)
-        D0.model_building.adding_assets_to_energysystem_model(
-            dict_values, dict_model, model
-        )
-        D0.model_building.plot_networkx_graph(
-            dict_values, model, save_energy_system_graph=False
-        )
-        assert os.path.exists(PATH_ES_GRAPH) is False
+
+def test_networkx_graph_requested_store_nx_graph_false(dict_values):
+    shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    assert (
+        os.path.isfile(PATH_ES_GRAPH) is False
+    ), f"The {PATH_ES_GRAPH} does already exist before the test is run it should be non-existant, so the test can not be executed."
+    model, dict_model = D0.model_building.initialize(dict_values)
+    D0.model_building.adding_assets_to_energysystem_model(
+        dict_values, dict_model, model
+    )
+    D0.model_building.plot_networkx_graph(
+        dict_values, model, save_energy_system_graph=False
+    )
+    assert (
+        os.path.isfile(PATH_ES_GRAPH) is False
+    ), f"Eventhough the energy system graph is not requested, it is stored to disk"
+
 
 path_lp_file = os.path.join(TEST_OUTPUT_PATH, LP_FILE)
 
 
-    def test_if_lp_file_is_stored_to_file_if_output_lp_file_true(dict_values):
-        model, dict_model = D0.model_building.initialize(dict_values)
-        model = D0.model_building.adding_assets_to_energysystem_model(
-            dict_values, dict_model, model
-        )
-        local_energy_system = oemof.solph.Model(model)
-        dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE].update({VALUE: True})
-        D0.model_building.store_lp_file(dict_values, local_energy_system)
-        assert os.path.exists(path_lp_file) is True
+def test_if_lp_file_is_stored_to_file_if_output_lp_file_true(dict_values):
+    shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    assert (
+        os.path.isfile(path_lp_file) is False
+    ), f"The {LP_FILE} does exist before the test is run eventhough it should be non-existant, so the test can not be executed."
+    model, dict_model = D0.model_building.initialize(dict_values)
+    model = D0.model_building.adding_assets_to_energysystem_model(
+        dict_values, dict_model, model
+    )
+    local_energy_system = oemof.solph.Model(model)
+    dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE].update({VALUE: True})
+    D0.model_building.store_lp_file(dict_values, local_energy_system)
+    assert (
+        os.path.isfile(path_lp_file) is True
+    ), f"Eventhough the {LP_FILE} is requested, it is not stored to disk"
 
-    def test_if_lp_file_is_stored_to_file_if_output_lp_file_false(dict_values):
-        model, dict_model = D0.model_building.initialize(dict_values)
-        model = D0.model_building.adding_assets_to_energysystem_model(
-            dict_values, dict_model, model
-        )
-        local_energy_system = oemof.solph.Model(model)
-        dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE].update({VALUE: False})
-        D0.model_building.store_lp_file(dict_values, local_energy_system)
-        assert os.path.exists(path_lp_file) is False
 
-    path_oemof_file = os.path.join(TEST_OUTPUT_PATH, "oemof_simulation_results.oemof")
+def test_if_lp_file_is_stored_to_file_if_output_lp_file_false(dict_values):
+    shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    assert (
+        os.path.isfile(path_lp_file) is False
+    ), f"The {LP_FILE} does already exist before the test is run it should be non-existant, so the test can not be executed."
+    model, dict_model = D0.model_building.initialize(dict_values)
+    model = D0.model_building.adding_assets_to_energysystem_model(
+        dict_values, dict_model, model
+    )
+    local_energy_system = oemof.solph.Model(model)
+    dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE].update({VALUE: False})
+    D0.model_building.store_lp_file(dict_values, local_energy_system)
+    assert (
+        os.path.isfile(path_lp_file) is False
+    ), f"Eventhough the {LP_FILE} is not requested, it is stored to disk"
 
-    def test_if_simulation_results_added_to_dict_values(dict_values):
-        D0.run_oemof(dict_values)
-        for k in (LABEL, OBJECTIVE_VALUE, SIMULTATION_TIME):
-            assert k in dict_values[SIMULATION_RESULTS].keys()
+
+def test_if_simulation_results_added_to_dict_values(dict_values):
+    D0.run_oemof(dict_values)
+    for k in (LABEL, OBJECTIVE_VALUE, SIMULTATION_TIME):
+        assert k in dict_values[SIMULATION_RESULTS].keys()
