@@ -34,6 +34,7 @@ from multi_vector_simulator.utils.constants import (
     ES_GRAPH,
     PATHS_TO_PLOTS,
     PLOTS_ES,
+    LP_FILE,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_BUSSES,
@@ -52,6 +53,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SIMULATION_RESULTS,
     OBJECTIVE_VALUE,
     SIMULTATION_TIME,
+    MODELLING_TIME,
 )
 
 from multi_vector_simulator.utils.exceptions import (
@@ -254,7 +256,7 @@ class model_building:
         """
         if dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE][VALUE] is True:
             path_lp_file = os.path.join(
-                dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], "lp_file.lp"
+                dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER], LP_FILE
             )
             logging.debug("Saving to lp-file.")
             local_energy_system.write(
@@ -371,9 +373,9 @@ class timer:
         Simulation time in dict_values
         """
         duration = timeit.default_timer() - start
-        dict_values[SIMULATION_RESULTS].update({"modelling_time": round(duration, 2)})
+        dict_values[SIMULATION_RESULTS].update({MODELLING_TIME: round(duration, 2)})
 
         logging.info(
             "Modeling time: %s minutes.",
-            round(dict_values[SIMULATION_RESULTS]["modelling_time"] / 60, 2),
+            round(dict_values[SIMULATION_RESULTS][MODELLING_TIME] / 60, 2),
         )
