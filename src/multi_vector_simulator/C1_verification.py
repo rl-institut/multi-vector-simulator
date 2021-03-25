@@ -30,6 +30,7 @@ from multi_vector_simulator.utils.constants import (
     DISPLAY_OUTPUT,
     OVERWRITE,
     DEFAULT_WEIGHTS_ENERGY_CARRIERS,
+    DSO_PEAK_DEMAND_SUFFIX,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DURATION,
@@ -744,7 +745,15 @@ def check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS(
 
 def check_for_sufficient_assets_on_busses(dict_values):
     r"""
-    Validating model regarding busses - each bus has to have 2+ assets connected to it, exluding energy excess sinks
+    Validation check for busses, to make sure a sufficient number of assets is connected.
+
+    Each bus has to has to have 3 or more assets connected to it. The reasoning is that each bus needs:
+    - One asset for inflow into the bus
+    - One asset for outflow from the bus
+    - One energy excess asset
+    Note, however, that this test does not check whether the assets actually serve that function, so there might be false negatives: The test can for example pass, if there are two output assets, one excess asset but no input asset, which would represent a non-sensical combination.
+
+    On the bus created for the peak demand pricing function (name includes `DSO_PEAK_DEMAND_SUFFIX`) no excess sinks are added, and therefore the rule does not have to be applied to this bus.
 
     Parameters
     ----------
@@ -754,9 +763,19 @@ def check_for_sufficient_assets_on_busses(dict_values):
     Returns
     -------
     Logging error message if test fails
+
+    Notes
+    -----
+    This function is tested with:
+    - test_C1_verification.test_check_for_sufficient_assets_on_busses_example_bus_passes()
+    - test_C1_verification.test_check_for_sufficient_assets_on_busses_example_bus_fails()
+    - test_C1_verification.test_check_for_sufficient_assets_on_busses_skipped_for_peak_demand_pricing_bus()
     """
     for bus in dict_values[ENERGY_BUSSES]:
-        if len(dict_values[ENERGY_BUSSES][bus][ASSET_DICT]) < 3:
+        if (
+            len(dict_values[ENERGY_BUSSES][bus][ASSET_DICT]) < 3
+            and DSO_PEAK_DEMAND_SUFFIX not in bus
+        ):
             asset_string = ", ".join(
                 map(str, dict_values[ENERGY_BUSSES][bus][ASSET_DICT].keys())
             )
@@ -766,3 +785,5 @@ def check_for_sufficient_assets_on_busses(dict_values):
                 f"so that the bus is not a dead end should be two, excluding the excess sink. "
                 f"These are the connected assets: {asset_string}"
             )
+
+    return True

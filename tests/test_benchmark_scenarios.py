@@ -11,6 +11,7 @@ import json
 
 import mock
 import pandas as pd
+import numpy as np
 import pytest
 from pytest import approx
 from pandas.util.testing import assert_series_equal
@@ -38,8 +39,7 @@ from multi_vector_simulator.utils.constants import (
 )
 
 from multi_vector_simulator.utils.constants_json_strings import (
-    EXCESS,
-    AUTO_SINK,
+    EXCESS_SINK,
     ENERGY_CONVERSION,
     ENERGY_PROVIDERS,
     VALUE,
@@ -51,7 +51,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INSTALLED_CAP,
     SIMULATION_SETTINGS,
     EVALUATED_PERIOD,
-    EXCESS_SINK_POSTFIX,
 )
 
 from multi_vector_simulator.utils.data_parser import convert_epa_params_to_mvs
@@ -112,7 +111,7 @@ class TestACElectricityBus:
         selected_time_steps = df_busses_flow.loc[
             df_busses_flow["demand_01"].abs() >= df_busses_flow["pv_plant_01"]
         ]
-        excess = selected_time_steps[f"Electricity{EXCESS_SINK_POSTFIX}"].sum()
+        excess = selected_time_steps[f"Electricity{EXCESS_SINK}"].sum()
         assert (
             excess == 0
         ), f"Total PV generation should be used to cover demand, i.e. electricity excess should be zero whenever demand >= generation, but excess is {excess}."
@@ -147,7 +146,7 @@ class TestACElectricityBus:
         result_time_series_pv.index = input_time_series_pv_shortened.index
 
         assert_series_equal(
-            result_time_series_pv,
+            result_time_series_pv.astype(np.float64),
             input_time_series_pv_shortened * installed_capacity,
             check_names=False,
         )
@@ -210,7 +209,7 @@ class TestACElectricityBus:
                 sheet_name="Electricity",
             )
             # compute the sum of the excess electricity for all timesteps
-            excess[case] = sum(busses_flow["Electricity" + EXCESS + AUTO_SINK])
+            excess[case] = sum(busses_flow["Electricity" + EXCESS_SINK])
         # compare the total excess electricity between the two cases
         assert excess["AB_grid_PV"] < excess["ABE_grid_PV_battery"]
 

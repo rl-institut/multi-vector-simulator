@@ -34,6 +34,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MAXIMUM_EMISSIONS,
     EMISSION_FACTOR,
     RENEWABLE_SHARE_DSO,
+    ENERGY_BUSSES,
+    ASSET_DICT,
+    DSO_PEAK_DEMAND_SUFFIX,
 )
 
 from multi_vector_simulator.utils.exceptions import (
@@ -584,6 +587,52 @@ def test_check_for_label_duplicates_passes():
     assert (
         1 == 1
     ), f"There is no duplicate value for label, but still an error is raised."
+
+
+def test_check_for_sufficient_assets_on_busses_example_bus_passes():
+    dict_values = {
+        ENERGY_BUSSES: {
+            "Bus": {
+                ASSET_DICT: {
+                    "asset_1": "asset_1",
+                    "asset_2": "asset_2",
+                    "asset_3": "asset_3",
+                }
+            }
+        }
+    }
+    output = C1.check_for_sufficient_assets_on_busses(dict_values)
+    assert (
+        output == True
+    ), f"The bus has 3 assets connected to it, but the test does not pass."
+
+
+def test_check_for_sufficient_assets_on_busses_example_bus_fails(caplog):
+    dict_values = {
+        ENERGY_BUSSES: {
+            "Bus": {ASSET_DICT: {"asset_1": "asset_1", "asset_2": "asset_2"}}
+        }
+    }
+    with caplog.at_level(logging.ERROR):
+        C1.check_for_sufficient_assets_on_busses(dict_values)
+    assert (
+        "too few assets connected to it" in caplog.text
+    ), f"The bus has less then 3 assets connected to it, but the test passes."
+
+
+def test_check_for_sufficient_assets_on_busses_skipped_for_peak_demand_pricing_bus():
+    dict_values = {
+        ENERGY_BUSSES: {
+            "Bus"
+            + DSO_PEAK_DEMAND_SUFFIX: {
+                ASSET_DICT: {"asset_1": "asset_1", "asset_3": "asset_3"}
+            }
+        }
+    }
+    output = C1.check_for_sufficient_assets_on_busses(dict_values)
+    assert (
+        output == True
+    ), f"The bus is a peak demand pricing bus and has less then 3 assets connected to it.Still, the test should pass, as it should not be applied to the peak demand pricing bus."
 
 
 # def test_check_input_values():
