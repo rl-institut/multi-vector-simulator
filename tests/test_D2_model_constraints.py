@@ -111,8 +111,7 @@ def test_prepare_constraint_minimal_renewable_share():
         renewable_assets,
         non_renewable_assets,
     ) = D2.prepare_constraint_minimal_renewable_share(
-        dict_values=dict_values,
-        dict_model=dict_model,
+        dict_values=dict_values, dict_model=dict_model,
     )
 
     assert (
@@ -146,7 +145,8 @@ def test_prepare_constraint_minimal_renewable_share():
         dso_1 + DSO_CONSUMPTION in non_renewable_assets
     ), f"The {dso_1 + DSO_CONSUMPTION} is not added as a non-renewable source."
     assert (
-        non_renewable_assets[dso_1 + DSO_CONSUMPTION][D2.RENEWABLE_SHARE_ASSET_FLOW] == 0.3
+        non_renewable_assets[dso_1 + DSO_CONSUMPTION][D2.RENEWABLE_SHARE_ASSET_FLOW]
+        == 0.3
     ), f"The renewable share of asset {dso_1 + DSO_CONSUMPTION} is added incorrectly."
 
     assert (
@@ -160,7 +160,8 @@ def test_prepare_constraint_minimal_renewable_share():
         dso_2 + DSO_CONSUMPTION in non_renewable_assets
     ), f"The {dso_2 + DSO_CONSUMPTION} is not added as a non-renewable source."
     assert (
-        non_renewable_assets[dso_2 + DSO_CONSUMPTION][D2.RENEWABLE_SHARE_ASSET_FLOW] == 0.7
+        non_renewable_assets[dso_2 + DSO_CONSUMPTION][D2.RENEWABLE_SHARE_ASSET_FLOW]
+        == 0.7
     ), f"The renewable share of asset {dso_2 + DSO_CONSUMPTION} is added incorrectly."
 
 
@@ -183,10 +184,7 @@ def test_prepare_demand_assets():
         OEMOF_BUSSES: {electricity: electricity},
     }
 
-    demands = D2.prepare_demand_assets(
-        dict_values,
-        dict_model,
-    )
+    demands = D2.prepare_demand_assets(dict_values, dict_model,)
 
     assert (
         demand_profiles in demands
@@ -232,8 +230,7 @@ def test_prepare_energy_provider_consumption_sources():
     }
 
     energy_provider_consumption_sources = D2.prepare_energy_provider_consumption_sources(
-        dict_values,
-        dict_model,
+        dict_values, dict_model,
     )
 
     DSO_source_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_CONSUMPTION
@@ -283,8 +280,7 @@ def test_prepare_energy_provider_feedin_sinks():
     }
 
     energy_provider_feedin_sinks = D2.prepare_energy_provider_feedin_sinks(
-        dict_values,
-        dict_model,
+        dict_values, dict_model,
     )
 
     DSO_sink_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_FEEDIN
