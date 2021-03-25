@@ -1721,7 +1721,13 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
 
 def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     """
-    Checks if maximumCap is in `dict_values` and if not, adds value None.
+    Processes the maximumCap constraint depending on its value.
+
+    * If MaximumCap not in asset dict: MaximumCap is None
+    * If MaximumCap < installedCap: invalid, MaximumCap is None
+    * If MaximumCap == 0: invalid, MaximumCap is None
+    * If group == energyProduction and filename not in asset_dict (dispatchable assets): pass
+    * If group == energyProduction and filename in asset_dict (non-dispatchable assets): MaximumCap == MaximumCap*peak(timeseries)
 
     Parameters
     ----------
@@ -1734,9 +1740,22 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     asset: str
         asset name
 
-    subasset: str
+    subasset: str or None
         subasset name.
         Default: None.
+
+    Notes
+    -----
+    Tested with:
+    - test_process_maximum_cap_constraint_maximumCap_undefined()
+    - test_process_maximum_cap_constraint_maximumCap_is_None()
+    - test_process_maximum_cap_constraint_maximumCap_is_int()
+    - test_process_maximum_cap_constraint_maximumCap_is_float()
+    - test_process_maximum_cap_constraint_maximumCap_is_0()
+    - test_process_maximum_cap_constraint_maximumCap_is_int_smaller_than_installed_cap()
+    - test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_fuel_source()
+    - test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_non_dispatchable_asset()
+    - test_process_maximum_cap_constraint_subasset()
 
     Returns
     -------
@@ -1744,13 +1763,6 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
 
     * Unit of MaximumCap is asset unit
 
-    If MaximumCap is changed depends on its value:
-    * If MaximumCap not in asset dict: MaximumCap is None
-    * If MaximumCap < installed Cap: invalid, MaximumCap is None
-    * If MaximumCap == 0: invalid, MaximumCap is None
-    * If MaximumCap > installedCap and group != energyProviders: pass
-    * If MaximumCap > installedCap and group == energyProviders and filename not in asset_dict: pass
-    * If MaximumCap > installedCap and group == energyProviders and filename in asset_dict (non-dispatchable assets): MaximumCap == MaximumCap/peak(timeseries)
     """
     if subasset is None:
         asset_dict = dict_values[group][asset]
@@ -1762,15 +1774,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
         asset_dict.update({MAXIMUM_CAP: {VALUE: None}})
     else:
         if asset_dict[MAXIMUM_CAP][VALUE] is not None:
-            # adapt maximumCap of non-dispatchable sources
-            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
-                asset_dict[MAXIMUM_CAP][VALUE] = (
-                    asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
-                )
-                logging.debug(
-                    f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES}. This was done as the aimed constraint is to limit the power, not the flow."
-                )
-            # check if maximumCap is greater that installedCap
+            # set maximumCap to None if it is smaller than installedCap
             if asset_dict[MAXIMUM_CAP][VALUE] < asset_dict[INSTALLED_CAP][VALUE]:
                 message = (
                     f"The stated maximumCap in {group} {asset} is smaller than the "
@@ -1781,8 +1785,9 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 warnings.warn(UserWarning(message))
                 logging.warning(message)
                 asset_dict[MAXIMUM_CAP][VALUE] = None
-            # check if maximumCap is 0
-            elif asset_dict[MAXIMUM_CAP][VALUE] == 0:
+
+            # set maximumCap to None if it is zero
+            if asset_dict[MAXIMUM_CAP][VALUE] == 0:
                 message = (
                     f"The stated maximumCap of zero in {group} {asset} is invalid."
                     "For this simulation, the maximumCap will be "
@@ -1791,5 +1796,14 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 warnings.warn(UserWarning(message))
                 logging.warning(message)
                 asset_dict[MAXIMUM_CAP][VALUE] = None
+
+            # adapt maximumCap of non-dispatchable sources
+            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
+                asset_dict[MAXIMUM_CAP][VALUE] = (
+                    asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
+                )
+                logging.debug(
+                    f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES}. This was done as the aimed constraint is to limit the power, not the flow."
+                )
 
     asset_dict[MAXIMUM_CAP].update({UNIT: asset_dict[UNIT]})

@@ -2,7 +2,7 @@
 unit,str,kW
 optimizeCap,bool,True
 energy_price,currency/kWh,0.1
-feedin_tariff,currency/kWh,0.005
+feedin_tariff,currency/kWh,0.05
 peak_demand_pricing,currency/kW,60
 peak_demand_pricing_period,"times per year (1,2,3,4,6,12)",2
 renewable_share,factor,0.1

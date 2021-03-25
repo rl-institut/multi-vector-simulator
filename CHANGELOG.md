@@ -38,6 +38,8 @@ Here is a template for new release sections
 - Pass peak demand pricing bus in `C1.check_for_sufficient_assets_on_busses()` (#837)
 - Changed utils.data_parser.convert_mvs_params_to_epa(): Removed `AUTO_SINK` suffix (#837)
 - Refactored `EXCESS` to `EXCESS_SINK` as this is more intuitive (#837)
+- Change order of `maximumCap` check and adaption in `C0.process_maximum_cap_constraint()` (#833)
+- Adapt parameters in `test/inputs` to make simulation run without errors after correcting processing of `maximumCap`: set constraints `minimal_renewable_factor` and `minimal_degree_of_autonomy` to `0.01`, `maximumCap` of pv plant to `10000` and `feedin_tariff` to `0.05` (#833)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
@@ -51,6 +53,8 @@ Here is a template for new release sections
 - No excess error message regarding the auto-generated peak demand pricing bus (#837)
 - `C0.prepare_demand_assets()` did not explicitly exclude feedin sinks (#837)
 - Hotfix: `C0.define_sinks()` now works for scalar feed-in prices, but not for lists of timeseries (#837)
+- Address issue #825 by changing order of `maximumCap` check and adaption in `C0.process_maximum_cap_constraint()` (#833)
+- Bugfix in `C0.process_maximum_cap_constraint()`: Always set `maximumCap` to `None` in case its value is 0 (#833)
 
 ## [0.5.5] - 2021-03-04
 
