@@ -30,9 +30,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_CONSUMPTION,
     RENEWABLE_SHARE_DSO,
     RENEWABLE_ASSET_BOOL,
-    AUTO_SINK,
-    EXCESS,
-    EXCESS_SINK_POSTFIX,
+    EXCESS_SINK,
     CONSTRAINTS,
     MINIMAL_RENEWABLE_FACTOR,
     MAXIMUM_EMISSIONS,
@@ -561,11 +559,8 @@ def prepare_demand_assets(
 
     # Determine energy demands
     for asset in dict_values[ENERGY_CONSUMPTION]:
-        if (
-            AUTO_SINK not in asset
-            and EXCESS not in asset
-            and EXCESS_SINK_POSTFIX not in asset
-        ):
+        # Do not add flows into excess sink of feedin sink to the demands to be supplied
+        if EXCESS_SINK not in asset and DSO_FEEDIN not in asset:
             demands.update(
                 {
                     asset: {
@@ -720,7 +715,7 @@ def prepare_energy_provider_feedin_sinks(
 
     for dso in dict_values[ENERGY_PROVIDERS]:
         # Get sink connected to the specific DSO in question
-        DSO_sink_name = dso + DSO_FEEDIN + AUTO_SINK
+        DSO_sink_name = dso + DSO_FEEDIN
         # Add DSO to assets
         dso_feedin_sink_list.append(DSO_sink_name)
 

@@ -183,7 +183,7 @@ class Test_Constraints:
             grid_total_flows.update(
                 {
                     case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[TOTAL_FLOW][
-                        "Electricity_grid_DSO_consumption_source"
+                        "Electricity_grid_DSO_consumption"
                     ]
                 }
             )
@@ -318,14 +318,14 @@ class Test_Constraints:
                 {
                     case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[
                         ANNUAL_TOTAL_FLOW
-                    ]["Grid_DSO_consumption_source"]
+                    ]["Grid_DSO_consumption"]
                 }
             )
             feedin_to_grid.update(
                 {
                     case: data[KPI][KPI_SCALAR_MATRIX].set_index(LABEL)[
                         ANNUAL_TOTAL_FLOW
-                    ]["Grid_DSO_feedin_sink_sink"]
+                    ]["Grid_DSO_feedin"]
                 }
             )
 
