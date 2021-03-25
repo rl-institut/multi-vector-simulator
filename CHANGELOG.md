@@ -25,11 +25,13 @@ Here is a template for new release sections
 - Add check for correct `installedcap` processing to `AB_grid_pv` benchmark test (#831)
 - Add check to `AB_grid_pv` benchmark test: total pv generation is used to cover demand (#831)
 - Section on energy consumption assets in `Model_Assumptions.rst` and `MVS_Outputs.rst` (#817)
+- Constant variables: `MODELLING_TIME`, `LP_FILE` (#839)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
 - Status messages of requirements in `E-Land_Requirements.rst` (#817)
 - Minor updates in `Model_Assumptions.rst` and `MVS_Outputs.rst`, mainly adding labels (#817)
+- Pytests for `D0` to let them pass on Windows (#839)
 - Change order of `maximumCap` check and adaption in `C0.process_maximum_cap_constraint()` (#833)
 - Adapt parameters in `test/inputs` to make simulation run without errors after correcting processing of `maximumCap`: set constraints `minimal_renewable_factor` and `minimal_degree_of_autonomy` to `0.01`, `maximumCap` of pv plant to `10000` and `feedin_tariff` to `0.05` (#833)
 
@@ -40,6 +42,7 @@ Here is a template for new release sections
 - Skip `test_benchmark_KPI` as it was seen to be consuming the whole test time leading to timeout on github action (#826)
 - Reduce `simulation_settings.evaluated_period` to one day for the tests where simulation results are not important (for E0 and D2 test modules setup) (#826)
 - Fix formula of degree of NZE in RTD and in docstring of `E3.equation_degree_of_net_zero_energy()`  (#832)
+- Tests failing on windows with `FileExistsError` (#839)
 - Address issue #825 by changing order of `maximumCap` check and adaption in `C0.process_maximum_cap_constraint()` (#833)
 - Bugfix in `C0.process_maximum_cap_constraint()`: Always set `maximumCap` to `None` in case its value is 0 (#833)
 

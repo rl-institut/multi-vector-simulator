@@ -39,6 +39,8 @@ INPUTS_COPY = INPUT_FOLDER
 LOGFILE = "mvs_logfile.log"
 # name of the automatically generated pdf report
 PDF_REPORT = "simulation_report.pdf"
+# name of lp file stored to dick
+LP_FILE = "lp_file.lp"
 
 # path of the pdf report path
 REPORT_FOLDER = "report"

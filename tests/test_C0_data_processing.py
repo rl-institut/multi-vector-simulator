@@ -1098,7 +1098,6 @@ def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
     }
 
     C0.compute_timeseries_properties(dict_asset)
-    print(dict_asset)
 
     for parameter in [
         TIMESERIES_PEAK,
