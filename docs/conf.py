@@ -128,9 +128,10 @@ def generate_parameter_categories(
         cat_label = props.csv_file_name + ".csv"
 
         # lookup all parameters for which the category is tagged
-        parameter_per_cat = df_param.loc[
-            df_param.category.str.contains(props.ref), "ref"
-        ].to_list()
+        df_param["in_category"] = df_param.category.apply(
+            lambda x: True if props.ref in x.split(";") else False
+        )
+        parameter_per_cat = df_param.loc[df_param.in_category == True, "ref"].to_list()
 
         lines = (
             lines
