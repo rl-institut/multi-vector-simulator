@@ -53,6 +53,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SIMULATION_RESULTS,
     OBJECTIVE_VALUE,
     SIMULTATION_TIME,
+    MODELLING_TIME,
 )
 
 from multi_vector_simulator.utils.exceptions import (
@@ -372,9 +373,9 @@ class timer:
         Simulation time in dict_values
         """
         duration = timeit.default_timer() - start
-        dict_values[SIMULATION_RESULTS].update({"modelling_time": round(duration, 2)})
+        dict_values[SIMULATION_RESULTS].update({MODELLING_TIME: round(duration, 2)})
 
         logging.info(
             "Modeling time: %s minutes.",
-            round(dict_values[SIMULATION_RESULTS]["modelling_time"] / 60, 2),
+            round(dict_values[SIMULATION_RESULTS][MODELLING_TIME] / 60, 2),
         )

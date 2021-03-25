@@ -30,6 +30,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SIMULATION_RESULTS,
     OBJECTIVE_VALUE,
     SIMULTATION_TIME,
+    MODELLING_TIME,
     ASSET_DICT,
     ENERGY_VECTOR,
 )
@@ -105,8 +106,12 @@ def test_if_model_building_time_measured_and_stored():
     dict_values = {SIMULATION_RESULTS: {}}
     start = D0.timer.initalize()
     D0.timer.stop(dict_values, start)
-    assert "modelling_time" in dict_values[SIMULATION_RESULTS]
-    assert isinstance(dict_values[SIMULATION_RESULTS]["modelling_time"], float)
+    assert (
+        MODELLING_TIME in dict_values[SIMULATION_RESULTS]
+    ), f"The simulation time has not been added to to simulation results."
+    assert isinstance(
+        dict_values[SIMULATION_RESULTS][MODELLING_TIME], float
+    ), f"The simulation time should be a floating number."
 
 
 def test_energysystem_initialized(dict_values_minimal):
@@ -119,7 +124,9 @@ def test_energysystem_initialized(dict_values_minimal):
         OEMOF_GEN_STORAGE,
     ):
         assert k in dict_model.keys()
-    assert isinstance(model, oemof.solph.network.EnergySystem)
+    assert isinstance(
+        model, oemof.solph.network.EnergySystem
+    ), f"The oemof model has not been successfully created."
 
 
 def test_oemof_adding_assets_from_dict_values_passes(dict_values):

@@ -198,6 +198,7 @@ SIMULATION_RESULTS = "simulation_results"
 # oemof simulation parameters:
 OBJECTIVE_VALUE = "objective_value"
 SIMULTATION_TIME = "simulation_time"
+MODELLING_TIME = "modelling_time"
 
 # Logs
 LOGS = "logs"
