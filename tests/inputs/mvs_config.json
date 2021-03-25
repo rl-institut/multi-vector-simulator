@@ -6,11 +6,11 @@
         },
         "minimal_degree_of_autonomy": {
             "unit": "factor",
-            "value": 0
+            "value": 0.01
         },
         "minimal_renewable_factor": {
             "unit": "factor",
-            "value": 0
+            "value": 0.01
         },
         "net_zero_energy": {
             "unit": "bool",
@@ -438,7 +438,7 @@
             },
             "maximumCap": {
                 "unit": "None or float",
-                "value": 1000
+                "value": 10000
             },
             "optimizeCap": {
                 "unit": "bool",
@@ -474,7 +474,7 @@
             },
             "feedin_tariff": {
                 "unit": "currency/kWh",
-                "value": 0.005
+                "value": 0.05
             },
             "inflow_direction": "Electricity (DSO)",
             "label": "Electricity_grid_DSO",
