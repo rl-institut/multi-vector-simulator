@@ -834,9 +834,16 @@ def check_energy_system_can_fulfill_max_demand(dict_values):
             # Add potential generation of energy production assets
             if item in dict_values[ENERGY_PRODUCTION]:
                 # Effective generation of asset dependent on the peak of timeseries
+                if TIMESERIES_PEAK in dict_values[ENERGY_PRODUCTION][item]:
+                    # This is the case for all non-dispatchable assets
+                    factor = dict_values[ENERGY_PRODUCTION][item][TIMESERIES_PEAK][
+                        VALUE
+                    ]
+                else:
+                    # This is the case for all dispatchable assets, ie. fuel sources defined in `energyProduction.csv`
+                    factor = 1
                 peak_generation += (
-                    dict_values[ENERGY_PRODUCTION][item][INSTALLED_CAP][VALUE]
-                    * dict_values[ENERGY_PRODUCTION][item][TIMESERIES_PEAK][VALUE]
+                    dict_values[ENERGY_PRODUCTION][item][INSTALLED_CAP][VALUE] * factor
                 )
                 if dict_values[ENERGY_PRODUCTION][item][OPTIMIZE_CAP][VALUE] is True:
                     if dict_values[ENERGY_PRODUCTION][item][MAXIMUM_CAP][VALUE] is None:
@@ -845,9 +852,7 @@ def check_energy_system_can_fulfill_max_demand(dict_values):
                         # Effective generation of asset dependent on the peak of timeseries
                         peak_generation += (
                             dict_values[ENERGY_PRODUCTION][item][MAXIMUM_CAP][VALUE]
-                            * dict_values[ENERGY_PRODUCTION][item][TIMESERIES_PEAK][
-                                VALUE
-                            ]
+                            * factor
                         )
             if item in dict_values[ENERGY_STORAGE]:
                 peak_generation += dict_values[ENERGY_STORAGE][item][OUTPUT_POWER][
