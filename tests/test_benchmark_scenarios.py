@@ -11,6 +11,7 @@ import json
 
 import mock
 import pandas as pd
+import numpy as np
 import pytest
 from pytest import approx
 from pandas.util.testing import assert_series_equal
@@ -145,7 +146,7 @@ class TestACElectricityBus:
         result_time_series_pv.index = input_time_series_pv_shortened.index
 
         assert_series_equal(
-            result_time_series_pv,
+            result_time_series_pv.astype(np.float64),
             input_time_series_pv_shortened * installed_capacity,
             check_names=False,
         )
