@@ -445,7 +445,9 @@ def energyConsumption(dict_values, group):
             )
 
         if FILENAME in dict_values[group][asset]:
-            dict_values[group][asset][DISPATCHABILITY]: {VALUE: False, UNIT: TYPE_BOOL}
+            dict_values[group][asset].update(
+                {DISPATCHABILITY: {VALUE: False, UNIT: TYPE_BOOL}}
+            )
             receive_timeseries_from_csv(
                 dict_values[SIMULATION_SETTINGS],
                 dict_values[group][asset],
