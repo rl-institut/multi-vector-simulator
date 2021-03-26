@@ -81,35 +81,23 @@ def add_constraints(local_energy_system, dict_values, dict_model):
     - D2.test_add_constraints_net_zero_energy_requirement_is_true()
     - D2.test_add_constraints_net_zero_energy_requirement_is_false()
     """
+
+    constraint_functions = {
+        MINIMAL_RENEWABLE_FACTOR: constraint_minimal_renewable_share,
+        MAXIMUM_EMISSIONS: constraint_maximum_emissions,
+        MINIMAL_DEGREE_OF_AUTONOMY: constraint_minimal_degree_of_autonomy,
+        NET_ZERO_ENERGY: constraint_net_zero_energy,
+    }
+
     count_added_constraints = 0
 
-    if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE] > 0:
-        # Add minimal renewable factor constraint
-        local_energy_system = constraint_minimal_renewable_share(
-            local_energy_system, dict_values, dict_model
-        )
-        count_added_constraints += 1
+    for constraint in dict_values[CONSTRAINTS]:
+        # if the constraint is not within its proper range of admissible values, None is returned
+        les = constraint_functions[constraint](local_energy_system, dict_values, dict_model)
 
-    if dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE] is not None:
-        # Add maximum emissions constraint
-        local_energy_system = constraint_maximum_emissions(
-            local_energy_system, dict_values
-        )
-        count_added_constraints += 1
-
-    if dict_values[CONSTRAINTS][MINIMAL_DEGREE_OF_AUTONOMY][VALUE] > 0:
-        # Add minimal renewable factor constraint
-        local_energy_system = constraint_minimal_degree_of_autonomy(
-            local_energy_system, dict_values, dict_model
-        )
-        count_added_constraints += 1
-
-    if dict_values[CONSTRAINTS][NET_ZERO_ENERGY][VALUE] == True:
-        # Add net zero energy (NZE) constraint
-        local_energy_system = constraint_net_zero_energy(
-            local_energy_system, dict_values, dict_model
-        )
-        count_added_constraints += 1
+        if les is not None:
+            local_energy_system = les
+            count_added_constraints += 1
 
     if count_added_constraints == 0:
         logging.info("No modelling constraint to be introduced.")
