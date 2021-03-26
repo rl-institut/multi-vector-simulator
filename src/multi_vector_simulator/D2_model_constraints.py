@@ -107,7 +107,7 @@ def add_constraints(local_energy_system, dict_values, dict_model):
     return local_energy_system
 
 
-def constraint_maximum_emissions(model, dict_values):
+def constraint_maximum_emissions(model, dict_values, dict_model=None):
     r"""
     Resulting in an energy system adhering to a maximum amount of emissions.
 
@@ -119,6 +119,9 @@ def constraint_maximum_emissions(model, dict_values):
     dict_values: dict
         All simulation parameters
 
+    dict_model: None
+        To match other constraint function's format
+
     Notes
     -----
     Tested with:
@@ -126,10 +129,15 @@ def constraint_maximum_emissions(model, dict_values):
 
     """
     maximum_emissions = dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]
-    # Updates the model with the constraint for maximum amount of emissions
-    constraints.emission_limit(model, limit=maximum_emissions)
-    logging.info("Added maximum emission constraint.")
-    return model
+    if maximum_emissions is not None:
+        # Updates the model with the constraint for maximum amount of emissions
+        constraints.emission_limit(model, limit=maximum_emissions)
+        logging.info("Added maximum emission constraint.")
+        answer = model
+    else:
+        answer = None
+
+    return answer
 
 
 def constraint_minimal_renewable_share(model, dict_values, dict_model):
@@ -165,53 +173,58 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
     renewable_assets, non_renewable_assets = prepare_constraint_minimal_renewable_share(
         dict_values, dict_model,
     )
+    if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE] > 0:
 
-    def renewable_share_rule(model):
-        renewable_generation = 0
-        total_generation = 0
+        def renewable_share_rule(model):
+            renewable_generation = 0
+            total_generation = 0
 
-        # Get the flows from all renewable assets
-        for asset in renewable_assets:
-            generation = (
-                sum(
-                    model.flow[
-                        renewable_assets[asset][OEMOF_SOLPH_OBJECT_ASSET],
-                        renewable_assets[asset][OEMOF_SOLPH_OBJECT_BUS],
-                        :,
-                    ]
+            # Get the flows from all renewable assets
+            for asset in renewable_assets:
+                generation = (
+                    sum(
+                        model.flow[
+                            renewable_assets[asset][OEMOF_SOLPH_OBJECT_ASSET],
+                            renewable_assets[asset][OEMOF_SOLPH_OBJECT_BUS],
+                            :,
+                        ]
+                    )
+                    * renewable_assets[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
+                    * renewable_assets[asset][RENEWABLE_SHARE_ASSET_FLOW]
                 )
-                * renewable_assets[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
-                * renewable_assets[asset][RENEWABLE_SHARE_ASSET_FLOW]
-            )
-            total_generation += generation
-            renewable_generation += generation
+                total_generation += generation
+                renewable_generation += generation
 
-        # Get the flows from all non renewable assets
-        for asset in non_renewable_assets:
-            generation = (
-                sum(
-                    model.flow[
-                        non_renewable_assets[asset][OEMOF_SOLPH_OBJECT_ASSET],
-                        non_renewable_assets[asset][OEMOF_SOLPH_OBJECT_BUS],
-                        :,
-                    ]
+            # Get the flows from all non renewable assets
+            for asset in non_renewable_assets:
+                generation = (
+                    sum(
+                        model.flow[
+                            non_renewable_assets[asset][OEMOF_SOLPH_OBJECT_ASSET],
+                            non_renewable_assets[asset][OEMOF_SOLPH_OBJECT_BUS],
+                            :,
+                        ]
+                    )
+                    * non_renewable_assets[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
+                    * (1 - non_renewable_assets[asset][RENEWABLE_SHARE_ASSET_FLOW])
                 )
-                * non_renewable_assets[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
-                * (1 - non_renewable_assets[asset][RENEWABLE_SHARE_ASSET_FLOW])
+                total_generation += generation
+
+            expr = (
+                renewable_generation
+                - (dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE])
+                * total_generation
             )
-            total_generation += generation
+            return expr >= 0
 
-        expr = (
-            renewable_generation
-            - (dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE])
-            * total_generation
-        )
-        return expr >= 0
+        model.constraint_minimal_renewable_share = po.Constraint(rule=renewable_share_rule)
 
-    model.constraint_minimal_renewable_share = po.Constraint(rule=renewable_share_rule)
+        logging.info("Added minimal renewable factor constraint.")
+        answer = model
+    else:
+        answer = None
 
-    logging.info("Added minimal renewable factor constraint.")
-    return model
+    return answer
 
 
 def prepare_constraint_minimal_renewable_share(
@@ -405,62 +418,67 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
 
     logging.debug(f"Data considered for the minimal degree of autonomy constraint:")
 
-    demands = prepare_demand_assets(dict_values, dict_model,)
+    if dict_values[CONSTRAINTS][MINIMAL_DEGREE_OF_AUTONOMY][VALUE] > 0:
 
-    energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
-        dict_values, dict_model,
-    )
+        demands = prepare_demand_assets(dict_values, dict_model,)
 
-    def degree_of_autonomy_rule(model):
-        total_demand = 0
-        total_consumption_from_energy_provider = 0
+        energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
+            dict_values, dict_model,
+        )
 
-        # Get the flows from demands and add weighing
-        for asset in demands:
-            demand_one_asset = (
-                sum(
-                    model.flow[
-                        demands[asset][OEMOF_SOLPH_OBJECT_BUS],
-                        demands[asset][OEMOF_SOLPH_OBJECT_ASSET],
-                        :,
+        def degree_of_autonomy_rule(model):
+            total_demand = 0
+            total_consumption_from_energy_provider = 0
+
+            # Get the flows from demands and add weighing
+            for asset in demands:
+                demand_one_asset = (
+                    sum(
+                        model.flow[
+                            demands[asset][OEMOF_SOLPH_OBJECT_BUS],
+                            demands[asset][OEMOF_SOLPH_OBJECT_ASSET],
+                            :,
+                        ]
+                    )
+                    * demands[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
+                )
+                total_demand += demand_one_asset
+
+            # Get the flows from providers and add weighing
+            for asset in energy_provider_consumption_sources:
+                consumption_of_one_provider = (
+                    sum(
+                        model.flow[
+                            energy_provider_consumption_sources[asset][
+                                OEMOF_SOLPH_OBJECT_ASSET
+                            ],
+                            energy_provider_consumption_sources[asset][
+                                OEMOF_SOLPH_OBJECT_BUS
+                            ],
+                            :,
+                        ]
+                    )
+                    * energy_provider_consumption_sources[asset][
+                        WEIGHTING_FACTOR_ENERGY_CARRIER
                     ]
                 )
-                * demands[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
-            )
-            total_demand += demand_one_asset
+                total_consumption_from_energy_provider += consumption_of_one_provider
 
-        # Get the flows from providers and add weighing
-        for asset in energy_provider_consumption_sources:
-            consumption_of_one_provider = (
-                sum(
-                    model.flow[
-                        energy_provider_consumption_sources[asset][
-                            OEMOF_SOLPH_OBJECT_ASSET
-                        ],
-                        energy_provider_consumption_sources[asset][
-                            OEMOF_SOLPH_OBJECT_BUS
-                        ],
-                        :,
-                    ]
-                )
-                * energy_provider_consumption_sources[asset][
-                    WEIGHTING_FACTOR_ENERGY_CARRIER
-                ]
-            )
-            total_consumption_from_energy_provider += consumption_of_one_provider
+            expr = (
+                1 - dict_values[CONSTRAINTS][MINIMAL_DEGREE_OF_AUTONOMY][VALUE]
+            ) * total_demand - total_consumption_from_energy_provider
+            return expr >= 0
 
-        expr = (
-            1 - dict_values[CONSTRAINTS][MINIMAL_DEGREE_OF_AUTONOMY][VALUE]
-        ) * total_demand - total_consumption_from_energy_provider
-        return expr >= 0
+        model.constraint_minimal_degree_of_autonomy = po.Constraint(
+            rule=degree_of_autonomy_rule
+        )
 
-    model.constraint_minimal_degree_of_autonomy = po.Constraint(
-        rule=degree_of_autonomy_rule
-    )
+        logging.info("Added minimal degree of autonomy constraint.")
+        answer = model
+    else:
+        answer = None
 
-    logging.info("Added minimal degree of autonomy constraint.")
-    return model
-
+    return answer
 
 def prepare_demand_assets(
     dict_values, dict_model,
@@ -685,56 +703,62 @@ def constraint_net_zero_energy(model, dict_values, dict_model):
 
     logging.debug(f"Data considered for the net zero energy (NZE) constraint:")
 
-    energy_provider_feedin_sinks = prepare_energy_provider_feedin_sinks(
-        dict_values, dict_model,
-    )
+    if dict_values[CONSTRAINTS][NET_ZERO_ENERGY][VALUE] == True:
 
-    energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
-        dict_values, dict_model,
-    )
+        energy_provider_feedin_sinks = prepare_energy_provider_feedin_sinks(
+            dict_values, dict_model,
+        )
 
-    def net_zero_energy(model):
-        total_feedin_to_energy_provider = 0
-        total_consumption_from_energy_provider = 0
+        energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
+            dict_values, dict_model,
+        )
 
-        # Get the flows from provider sources and add weighing
-        for asset in energy_provider_consumption_sources:
-            consumption_of_one_provider = (
-                sum(
-                    model.flow[
-                        energy_provider_consumption_sources[asset][
-                            OEMOF_SOLPH_OBJECT_ASSET
-                        ],
-                        energy_provider_consumption_sources[asset][
-                            OEMOF_SOLPH_OBJECT_BUS
-                        ],
-                        :,
+        def net_zero_energy(model):
+            total_feedin_to_energy_provider = 0
+            total_consumption_from_energy_provider = 0
+
+            # Get the flows from provider sources and add weighing
+            for asset in energy_provider_consumption_sources:
+                consumption_of_one_provider = (
+                    sum(
+                        model.flow[
+                            energy_provider_consumption_sources[asset][
+                                OEMOF_SOLPH_OBJECT_ASSET
+                            ],
+                            energy_provider_consumption_sources[asset][
+                                OEMOF_SOLPH_OBJECT_BUS
+                            ],
+                            :,
+                        ]
+                    )
+                    * energy_provider_consumption_sources[asset][
+                        WEIGHTING_FACTOR_ENERGY_CARRIER
                     ]
                 )
-                * energy_provider_consumption_sources[asset][
-                    WEIGHTING_FACTOR_ENERGY_CARRIER
-                ]
-            )
-            total_consumption_from_energy_provider += consumption_of_one_provider
+                total_consumption_from_energy_provider += consumption_of_one_provider
 
-        # Get the flows from provider sources and add weighing
-        for asset in energy_provider_feedin_sinks:
-            feedin_of_one_provider = (
-                sum(
-                    model.flow[
-                        energy_provider_feedin_sinks[asset][OEMOF_SOLPH_OBJECT_BUS],
-                        energy_provider_feedin_sinks[asset][OEMOF_SOLPH_OBJECT_ASSET],
-                        :,
-                    ]
+            # Get the flows from provider sources and add weighing
+            for asset in energy_provider_feedin_sinks:
+                feedin_of_one_provider = (
+                    sum(
+                        model.flow[
+                            energy_provider_feedin_sinks[asset][OEMOF_SOLPH_OBJECT_BUS],
+                            energy_provider_feedin_sinks[asset][OEMOF_SOLPH_OBJECT_ASSET],
+                            :,
+                        ]
+                    )
+                    * energy_provider_feedin_sinks[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
                 )
-                * energy_provider_feedin_sinks[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
-            )
-            total_feedin_to_energy_provider += feedin_of_one_provider
+                total_feedin_to_energy_provider += feedin_of_one_provider
 
-        expr = total_feedin_to_energy_provider - total_consumption_from_energy_provider
-        return expr >= 0
+            expr = total_feedin_to_energy_provider - total_consumption_from_energy_provider
+            return expr >= 0
 
-    model.constraint_net_zero_energy = po.Constraint(rule=net_zero_energy)
+        model.constraint_net_zero_energy = po.Constraint(rule=net_zero_energy)
 
-    logging.info("Added net zero energy (NZE) constraint.")
-    return model
+        logging.info("Added net zero energy (NZE) constraint.")
+        answer = model
+    else:
+        answer = None
+
+    return answer
