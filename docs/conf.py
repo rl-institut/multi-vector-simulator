@@ -33,7 +33,7 @@ def generate_parameter_description(input_csv_file, output_rst_file):
 
     """
     df = pd.read_csv(input_csv_file)
-
+    df = df.loc[df.category != "hidden"]
     parameter_properties = [
         ":Definition:",
         ":Type:",
@@ -61,10 +61,26 @@ def generate_parameter_description(input_csv_file, output_rst_file):
     #
     for row in df.iterrows():
         props = row[1]
+
+        if isinstance(props.see_also, str):
+            see_also = [
+                "",
+                "",
+                "See also: "
+                + ", ".join([f":ref:`{ref}`" for ref in props.see_also.split(";")]),
+            ]
+        else:
+            see_also = []
         lines = (
             lines
             + [f".. _{props.ref}:", "", props.label, "^" * len(props.label), "",]
             + [f"{p} {props[p]}" for p in parameter_properties]
+            + [""]
+            + [
+                "This parameter is used within the following categories: "
+                + ", ".join([f":ref:`{cat}`" for cat in props.category.split(";")])
+            ]
+            + see_also
             + ["", "",]
         )
 
@@ -72,7 +88,95 @@ def generate_parameter_description(input_csv_file, output_rst_file):
         ofs.write("\n".join(lines))
 
 
+def generate_parameter_categories(
+    input_param_csv_file, input_cat_csv_file, output_rst_file
+):
+    """Rassemble the MVS parameter categories from csv file and generate a .rst formatted document
+
+    Parameters
+    ----------
+    input_param_csv_file: str
+        path of the file with extensive description of all mvs parameters
+    input_cat_csv_file: str
+        path of the file with extensive description of all mvs parameters categories
+    output_rst_file: str
+        path of the rst file with RTD formatted mvs parameter categories
+
+    Returns
+    -------
+    None
+
+    """
+    df_param = pd.read_csv(input_param_csv_file)
+    df_cat = pd.read_csv(input_cat_csv_file)
+
+    lines = []
+    # formats following the template:
+    # .._<ref_name>:
+    #
+    # <name>
+    # ^^^^^^
+    #
+    # * :ref:`param1`
+    # * :ref:`param2`
+    #
+    # ----
+    #
+
+    for row in df_cat.iterrows():
+        props = row[1]
+        cat_label = props.csv_file_name + ".csv"
+
+        # lookup all parameters for which the category is tagged
+        df_param["in_category"] = df_param.category.apply(
+            lambda x: True if props.ref in x.split(";") else False
+        )
+        parameter_per_cat = df_param.loc[df_param.in_category == True, "ref"].to_list()
+
+        lines = (
+            lines
+            + [f".. _{props.ref}:", "", cat_label, "^" * len(cat_label), "",]
+            + props.description.split("\\n")
+            + ["",]
+            + [f"* :ref:`{p}`" for p in parameter_per_cat]
+            + ["", "",]
+        )
+
+    with open(output_rst_file, "w") as ofs:
+        ofs.write("\n".join(lines))
+
+
+def generate_parameter_table(input_csv_file, output_csv_file):
+    df = pd.read_csv(input_csv_file)
+    df = df.loc[df.category != "hidden"]
+
+    parameter_properties = [
+        ":Type:",
+        ":Unit:",
+        ":Default:",
+        ":Example:",
+        ":Definition:",
+        ":Restrictions:",
+    ]
+
+    name_mapping = {c: c.replace(":", "") for c in parameter_properties}
+    name_mapping["label"] = "Parameter"
+
+    # replace the label by a RTD reference
+    df["label"] = df["ref"].apply(lambda x: f":ref:`{x}`")
+
+    df[["label"] + parameter_properties].rename(columns=name_mapping).to_csv(
+        output_csv_file, index=False
+    )
+
+
 generate_parameter_description("MVS_parameters_list.csv", "MVS_parameters_list.inc")
+generate_parameter_table("MVS_parameters_list.csv", "MVS_parameters_list.tbl")
+generate_parameter_categories(
+    "MVS_parameters_list.csv",
+    "MVS_parameters_categories.csv",
+    "MVS_parameters_categories.inc",
+)
 
 # -- Project information -----------------------------------------------------
 
