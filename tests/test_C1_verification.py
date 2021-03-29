@@ -640,7 +640,7 @@ dict_values_fulfill_demand = {
             ENERGY_VECTOR: energy_vector,
             INSTALLED_CAP: {VALUE: 0},
             MAXIMUM_CAP: {VALUE: None},
-            OPTIMIZE_CAP: {VALUE: False}
+            OPTIMIZE_CAP: {VALUE: False},
         }
     },
     ENERGY_STORAGE: {
@@ -760,7 +760,9 @@ def test_check_for_sufficient_assets_on_busses_skipped_for_peak_demand_pricing_b
     ), f"The bus is a peak demand pricing bus and has less then 3 assets connected to it.Still, the test should pass, as it should not be applied to the peak demand pricing bus."
 
 
-def test_check_energy_system_can_fulfill_max_demand_sufficient_dispatchable_production(caplog):
+def test_check_energy_system_can_fulfill_max_demand_sufficient_dispatchable_production(
+    caplog,
+):
     dict_values_v5 = deepcopy(dict_values_fulfill_demand)
     dict_values_v5[ENERGY_PRODUCTION][production].update({MAXIMUM_CAP: {VALUE: 100}})
     dict_values_v5[ENERGY_PRODUCTION][production].update({OPTIMIZE_CAP: {VALUE: True}})
@@ -781,7 +783,9 @@ def test_check_energy_system_can_fulfill_max_demand_sufficient_dispatchable_prod
     ), f"As the maximum/installed capacities of the assets in an energy system are sufficient, a successful debug message should have be logged. This did not happen, with peak generation of {peak_generation} and peak demand of {peak_demand}."
 
 
-def test_check_energy_system_can_fulfill_max_demand_insufficient_dispatchable_production(caplog):
+def test_check_energy_system_can_fulfill_max_demand_insufficient_dispatchable_production(
+    caplog,
+):
     dict_values_v6 = deepcopy(dict_values_fulfill_demand)
     dict_values_v6[ENERGY_PRODUCTION][production].update({MAXIMUM_CAP: {VALUE: 90}})
     dict_values_v6[ENERGY_PRODUCTION][production].update({OPTIMIZE_CAP: {VALUE: True}})
@@ -795,16 +799,20 @@ def test_check_energy_system_can_fulfill_max_demand_insufficient_dispatchable_pr
     ), f"If the maximum/installed capacities of the assets in an energy system are insufficient, a warning message should have been logged. This did not happen, with peak generation of {peak_generation} and peak demand of {peak_demand}."
 
 
-def test_check_energy_system_can_fulfill_max_demand_sufficient_non_dispatchable_production(caplog):
+def test_check_energy_system_can_fulfill_max_demand_sufficient_non_dispatchable_production(
+    caplog,
+):
     dict_values_v7 = deepcopy(dict_values_fulfill_demand)
     dict_values_v7[ENERGY_PRODUCTION][production].update({MAXIMUM_CAP: {VALUE: 200}})
     dict_values_v7[ENERGY_PRODUCTION][production].update({OPTIMIZE_CAP: {VALUE: True}})
-    dict_values_v7[ENERGY_PRODUCTION][production].update({TIMESERIES_PEAK: {VALUE: 0.5}})
+    dict_values_v7[ENERGY_PRODUCTION][production].update(
+        {TIMESERIES_PEAK: {VALUE: 0.5}}
+    )
 
     with caplog.at_level(logging.DEBUG):
         peak_generation, peak_demand = C1.check_energy_system_can_fulfill_max_demand(
             dict_values_v7
-        )                                                                                      
+        )
         assert (
             peak_generation == 100
         ), f"The peak generation should have been 100 but is {peak_generation}"
@@ -817,16 +825,20 @@ def test_check_energy_system_can_fulfill_max_demand_sufficient_non_dispatchable_
     ), f"As the maximum/installed capacities of the assets in an energy system are sufficient, a successful debug message should have be logged. This did not happen, with peak generation of {peak_generation} and peak demand of {peak_demand}."
 
 
-def test_check_energy_system_can_fulfill_max_demand_insufficient_non_dispatchable_production(caplog):
+def test_check_energy_system_can_fulfill_max_demand_insufficient_non_dispatchable_production(
+    caplog,
+):
     dict_values_v8 = deepcopy(dict_values_fulfill_demand)
     dict_values_v8[ENERGY_PRODUCTION][production].update({MAXIMUM_CAP: {VALUE: 100}})
     dict_values_v8[ENERGY_PRODUCTION][production].update({OPTIMIZE_CAP: {VALUE: True}})
-    dict_values_v8[ENERGY_PRODUCTION][production].update({TIMESERIES_PEAK: {VALUE: 0.5}})
+    dict_values_v8[ENERGY_PRODUCTION][production].update(
+        {TIMESERIES_PEAK: {VALUE: 0.5}}
+    )
 
     with caplog.at_level(logging.WARNING):
         peak_generation, peak_demand = C1.check_energy_system_can_fulfill_max_demand(
             dict_values_v8
-        )                                                                                                                                                                                                                                      
+        )
     assert (
         "might have insufficient capacities" in caplog.text
     ), f"If the maximum/installed capacities of the assets in an energy system are insufficient, a warning message should have been logged. This did not happen, with peak generation of {peak_generation} and peak demand of {peak_demand}."
@@ -867,6 +879,7 @@ def test_check_energy_system_can_fulfill_max_demand_fails_mvs_runthrough(caplog)
     log = logfile.read()
 
     assert "might have insufficient capacities" in log
+
 
 # def test_check_input_values():
 #     pass
