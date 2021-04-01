@@ -1745,11 +1745,12 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
 
 
 def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
+    # ToDo: should function be split into separate processing and validation functions?
     """
     Processes the maximumCap constraint depending on its value.
 
     * If MaximumCap not in asset dict: MaximumCap is None
-    * If MaximumCap < installedCap: invalid, MaximumCap is None
+    * If MaximumCap < installedCap: invalid, ValueError raised
     * If MaximumCap == 0: invalid, MaximumCap is None
     * If group == energyProduction and filename not in asset_dict (dispatchable assets): pass
     * If group == energyProduction and filename in asset_dict (non-dispatchable assets): MaximumCap == MaximumCap*peak(timeseries)
@@ -1794,22 +1795,24 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     else:
         asset_dict = dict_values[group][asset][subasset]
 
-    # Check if a maximumCap is defined
+    # check if a maximumCap is defined
     if MAXIMUM_CAP not in asset_dict:
         asset_dict.update({MAXIMUM_CAP: {VALUE: None}})
+        # include the maximumAddCap parameter to the asset dictionary
+        asset_dict.update({MAXIMUM_ADD_CAP: {VALUE: None}})
     else:
         if asset_dict[MAXIMUM_CAP][VALUE] is not None:
+            # maximum additional capacity = maximum total capacity - installed capacity
+            max_add_cap = asset_dict[MAXIMUM_CAP][VALUE] - asset_dict[INSTALLED_CAP][VALUE]
+            # include the maximumAddCap parameter to the asset dictionary
+            asset_dict.update({MAXIMUM_ADD_CAP: {VALUE: max_add_cap}})
             # set maximumCap to None if it is smaller than installedCap
             if asset_dict[MAXIMUM_CAP][VALUE] < asset_dict[INSTALLED_CAP][VALUE]:
                 message = (
-                    f"The stated maximumCap in {group} {asset} is smaller than the "
+                    f"The stated total maximumCap in {group} {asset} is smaller than the "
                     f"installedCap ({asset_dict[MAXIMUM_CAP][VALUE]}/{asset_dict[INSTALLED_CAP][VALUE]}). Please enter a greater maximumCap."
-                    "For this simulation, the maximumCap will be "
-                    "disregarded and not be used in the simulation"
                 )
-                warnings.warn(UserWarning(message))
-                logging.warning(message)
-                asset_dict[MAXIMUM_CAP][VALUE] = None
+                raise ValueError(message)
 
             # set maximumCap to None if it is zero
             if asset_dict[MAXIMUM_CAP][VALUE] == 0:
@@ -1822,7 +1825,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 logging.warning(message)
                 asset_dict[MAXIMUM_CAP][VALUE] = None
 
-            # adapt maximumCap of non-dispatchable sources
+            # adapt maximumCap and maximumAddCap of non-dispatchable sources
             if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
                 asset_dict[MAXIMUM_CAP][VALUE] = (
                     asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
@@ -1830,5 +1833,12 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 logging.debug(
                     f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES}. This was done as the aimed constraint is to limit the power, not the flow."
                 )
+                asset_dict[MAXIMUM_ADD_CAP][VALUE] = (
+                    asset_dict[MAXIMUM_ADD_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
+                )
+                logging.debug(
+                    f"Parameter {MAXIMUM_ADD_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES}. This was done as the aimed constraint is to limit the power, not the flow."
+                )
 
     asset_dict[MAXIMUM_CAP].update({UNIT: asset_dict[UNIT]})
+    asset_dict[MAXIMUM_ADD_CAP].update({UNIT: asset_dict[UNIT]})
