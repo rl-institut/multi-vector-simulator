@@ -48,6 +48,8 @@ Here is a template for new release sections
 - Change order of `maximumCap` check and adaption in `C0.process_maximum_cap_constraint()` (#833)
 - Adapt parameters in `test/inputs` to make simulation run without errors after correcting processing of `maximumCap`: set constraints `minimal_renewable_factor` and `minimal_degree_of_autonomy` to `0.01`, `maximumCap` of pv plant to `10000` and `feedin_tariff` to `0.05` (#833)
 - Generate the parameters categories in RTD lookup table automatically from `docs/MVS_parameters_categories.csv` (#842)
+- The `DISPATCHABILITY` of energyConsumption assets is now set to FALSE by default (#824)
+- Function `C0.define_sink()` now also defines `DISPATCHABILITY=TRUE` for the created sink.
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
