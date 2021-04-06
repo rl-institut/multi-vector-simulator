@@ -816,6 +816,11 @@ def check_energy_system_can_fulfill_max_demand(dict_values):
     - test_check_energy_system_can_fulfill_max_demand_no_maximum_capacity()
     - test_check_energy_system_can_fulfill_max_demand_insufficient_capacities()
     - test_check_energy_system_can_fulfill_max_demand_with_storage()
+    - test_check_energy_system_can_fulfill_max_demand_sufficient_dispatchable_production
+    - test_check_energy_system_can_fulfill_max_demand_insufficient_dispatchable_production
+    - test_check_energy_system_can_fulfill_max_demand_sufficient_non_dispatchable_production
+    - test_check_energy_system_can_fulfill_max_demand_insufficient_non_dispatchable_production
+    - test_check_energy_system_can_fulfill_max_demand_fails_mvs_runthrough
     """
     for bus in dict_values[ENERGY_BUSSES]:
         pass_check = False
