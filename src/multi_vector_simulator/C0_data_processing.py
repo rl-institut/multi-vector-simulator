@@ -21,7 +21,6 @@ Module C0 prepares the data read from csv or json for simulation, ie. pre-proces
 - Multiply `maximumCap` of non-dispatchable sources by max(timeseries(kWh/kWp)) as the `maximumCap` is limiting the flow but we want to limit the installed capacity (see issue #446)
 """
 
-
 import logging
 import os
 import sys
@@ -446,6 +445,7 @@ def energyConsumption(dict_values, group):
             )
 
         if FILENAME in dict_values[group][asset]:
+            dict_values[group][asset][DISPATCHABILITY]: {VALUE: False, UNIT: TYPE_BOOL}
             receive_timeseries_from_csv(
                 dict_values[SIMULATION_SETTINGS],
                 dict_values[group][asset],
@@ -1230,6 +1230,7 @@ def define_sink(
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
         ENERGY_VECTOR: energy_vector,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
+        DISPATCHABILITY: {VALUE: True, UNIT: TYPE_BOOL},
     }
 
     if inflow_direction not in dict_values[ENERGY_BUSSES]:
@@ -1641,7 +1642,7 @@ def compute_timeseries_properties(dict_asset):
             )
         if any(dict_asset[TIMESERIES_NORMALIZED].values) < 0:
             logging.error(
-                f"{ dict_asset[LABEL]} normalized timeseries has negative values."
+                f"{dict_asset[LABEL]} normalized timeseries has negative values."
             )
 
 
