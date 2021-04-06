@@ -597,6 +597,7 @@ def test_check_for_label_duplicates_passes():
         1 == 1
     ), f"There is no duplicate value for label, but still an error is raised."
 
+
 # Constants to be used in dict_values_fulfill_demand
 elec_bus = "Elec"
 demand = "Demand"
@@ -655,14 +656,14 @@ def test_check_energy_system_can_fulfill_max_demand_sufficient_capacities(caplog
             dict_values_v1
         )
         assert (
-                peak_generation == 100
+            peak_generation == 100
         ), f"The peak generation should have been 100 but is {peak_generation}"
         assert (
-                peak_demand == 100
+            peak_demand == 100
         ), f"The peak demand should have been 100 but is {peak_demand}"
     assert (
-            "The check for assets having sufficient capacities to fulfill the maximum demand has successfully passed"
-            in caplog.text
+        "The check for assets having sufficient capacities to fulfill the maximum demand has successfully passed"
+        in caplog.text
     ), f"As the maximum/installed capacities of the assets in an energy system are sufficient, a successful debug message should have be logged. This did not happen, with peak generation of {peak_generation} and peak demand of {peak_demand}."
 
 
@@ -674,8 +675,8 @@ def test_check_energy_system_can_fulfill_max_demand_no_maximum_capacity(caplog):
     with caplog.at_level(logging.DEBUG):
         C1.check_energy_system_can_fulfill_max_demand(dict_values_v2)
     assert (
-            "The check for assets having sufficient capacities to fulfill the maximum demand has successfully passed"
-            in caplog.text
+        "The check for assets having sufficient capacities to fulfill the maximum demand has successfully passed"
+        in caplog.text
     ), f"If the maximum capacity of an optimizable asset is set to None, a successful debug message should have been logged."
 
 
@@ -689,7 +690,7 @@ def test_check_energy_system_can_fulfill_max_demand_insufficient_capacities(capl
             dict_values_v3
         )
     assert (
-            "might have insufficient capacities" in caplog.text
+        "might have insufficient capacities" in caplog.text
     ), f"If the maximum/installed capacities of the assets in an energy system are insufficient, a warning message should have been logged. This did not happen, with peak generation of {peak_generation} and peak demand of {peak_demand}."
 
 
@@ -701,9 +702,10 @@ def test_check_energy_system_can_fulfill_max_demand_with_storage(caplog):
     with caplog.at_level(logging.DEBUG):
         C1.check_energy_system_can_fulfill_max_demand(dict_values_v4)
     assert (
-            "this check does not determine if the storage can be sufficiently"
-            in caplog.text
+        "this check does not determine if the storage can be sufficiently"
+        in caplog.text
     ), f"If a storage asset is included in the energy system, a successful debug message should have been logged."
+
 
 def test_check_for_sufficient_assets_on_busses_example_bus_passes():
     dict_values = {
