@@ -2,7 +2,7 @@
 MVS - Multi-Vector Simulator of the E-Land toolbox
 ##################################################
 
-|badge_docs| |badge_CI| |badge_coverage|
+|badge_docs| |badge_CI| |badge_coverage| |badge_zenodo|
 
 Depreciated: |badge_travis|
 
@@ -247,3 +247,7 @@ this `page <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANG
 .. |badge_travis| image:: https://travis-ci.com/rl-institut/mvs_eland.svg?branch=dev
     :target: https://travis-ci.com/rl-institut/mvs_eland
     :alt: Build status
+
+.. |badge_zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4610237.svg
+   :target: https://doi.org/10.5281/zenodo.4610237
+   :alt: Zenodo DOI
