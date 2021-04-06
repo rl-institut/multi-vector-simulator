@@ -32,6 +32,7 @@ Here is a template for new release sections
 - Add a column `category` in the file `docs/MVS_parameters_categories.csv` to know in which csv file(s) the parameter is used (#842)
 - Define `OEMOF_SOLPH_OBJECT_ASSET`, `WEIGHTING_FACTOR_ENERGY_CARRIER`, `RENEWABLE_SHARE_ASSET_FLOW`, `OEMOF_SOLPH_OBJECT_BUS` as constants in `D2` module (#834)
 - Import and use constants from `D2` module in `test_D2_model_constraints.py` (#834)
+- Zenodo badge on README (#850)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -49,6 +50,7 @@ Here is a template for new release sections
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
 - `EXCESS_SINK_POSTFIX` and only use `EXCESS` (#837)
+- Quotes for command line instruction in README.rst (#850)
 
 ### Fixed
 - Skip `test_benchmark_KPI` as it was seen to be consuming the whole test time leading to timeout on github action (#826)

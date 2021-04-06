@@ -2,7 +2,7 @@
 MVS - Multi-Vector Simulator of the E-Land toolbox
 ##################################################
 
-|badge_docs| |badge_CI| |badge_coverage|
+|badge_docs| |badge_CI| |badge_coverage| |badge_zenodo|
 
 Depreciated: |badge_travis|
 
@@ -99,7 +99,7 @@ Edit the json input file (or csv files) and run
 
 ::
 
-    `mvs_tool -i path_input_folder -ext json -o path_output_folder`
+    mvs_tool -i path_input_folder -ext json -o path_output_folder
 
 With ``path_input_folder``: path to folder with input data,
 
@@ -111,7 +111,7 @@ For more information about the possible command lines options
 
 ::
 
-    `mvs_tool -h`
+    mvs_tool -h
 
 Use the ``main()`` function
 ---------------------------
@@ -150,7 +150,7 @@ folder ``input_template`` for inspiration) this folder will be taken as default 
 
 ::
 
-    `mvs_tool`
+    mvs_tool
 
 A default output folder will be created, if you run the same simulation
 several time you would have to either overwrite the existing output file
@@ -158,13 +158,13 @@ with
 
 ::
 
-    `mvs_tool -f`
+    mvs_tool -f
 
 Or provide another output folder's path
 
 ::
 
-    `mvs_tool -o <path_to_other_output_folder>`
+    mvs_tool -o <path_to_other_output_folder>
 
 Generate pdf report or an app in your browser to visualise the results of the simulation
 ----------------------------------------------------------------------------------------
@@ -173,7 +173,7 @@ To use the report feature you need to install extra dependencies first
 
 ::
 
-    `pip install multi-vector-simulator[report]`
+    pip install multi-vector-simulator[report]
 
 Generate a report after running a simulation
 --------------------------------------------
@@ -183,7 +183,7 @@ Use the option ``-pdf`` in the command line ``mvs_tool`` to generate a pdf repor
 
 ::
 
-    `mvs_tool -pdf`
+    mvs_tool -pdf
 
 Generate only the figures of a simulation's results
 ---------------------------------------------------
@@ -193,7 +193,7 @@ output folder (by default in ``MVS_outputs/``):
 
 ::
 
-    `mvs_tool -png`
+    mvs_tool -png
 
 post-processing
 ---------------
@@ -202,7 +202,7 @@ To generate a report of the simulation's results, run the following command **af
 
 ::
 
-    `mvs_report -i path_simulation_output_folder -o path_pdf_report`
+    mvs_report -i path_simulation_output_folder -o path_pdf_report
 
 where ``path_simulation_output_folder`` should link to the folder of your simulation's output, or directly to a
 json file (default ``MVS_outputs/json_input_processed.json``) and ``path_pdf_report`` is the path where the report should be saved as a pdf file.
@@ -216,7 +216,7 @@ It is also possible to automatically save the report as pdf by using the option 
 
 ::
 
-    `mvs_report -i path_simulation_output_folder -pdf`
+    mvs_report -i path_simulation_output_folder -pdf
 
 By default, it will save the report in a ``report`` folder within your simulation's output folder
 default (``MVS_outputs/report/``). See ``mvs_report -h`` for more information about possible options.
@@ -247,3 +247,7 @@ this `page <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANG
 .. |badge_travis| image:: https://travis-ci.com/rl-institut/mvs_eland.svg?branch=dev
     :target: https://travis-ci.com/rl-institut/mvs_eland
     :alt: Build status
+
+.. |badge_zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4610237.svg
+   :target: https://doi.org/10.5281/zenodo.4610237
+   :alt: Zenodo DOI
