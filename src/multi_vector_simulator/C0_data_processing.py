@@ -1795,11 +1795,12 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     else:
         asset_dict = dict_values[group][asset][subasset]
 
+    # include the maximumAddCap parameter to the asset dictionary
+    asset_dict.update({MAXIMUM_ADD_CAP: {VALUE: None}})
+
     # check if a maximumCap is defined
     if MAXIMUM_CAP not in asset_dict:
         asset_dict.update({MAXIMUM_CAP: {VALUE: None}})
-        # include the maximumAddCap parameter to the asset dictionary
-        asset_dict.update({MAXIMUM_ADD_CAP: {VALUE: None}})
     else:
         if asset_dict[MAXIMUM_CAP][VALUE] is not None:
             # maximum additional capacity = maximum total capacity - installed capacity
