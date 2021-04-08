@@ -4,7 +4,7 @@ Contributing to MVS
 
 Proposed workflow
 -----------------
-The workflow is described in the  `CONTRIBUTING.md<https://github.com/rl-institut/multi-vector-simulator/blob/dev/CONTRIBUTING.md>`__ file in the repository.
+The workflow is described in the  `CONTRIBUTING.md <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CONTRIBUTING.md>`__ file in the repository.
 
 
 Unit tests (pytests)
@@ -32,7 +32,7 @@ All functions in the code will be automatically documented via their docstrings.
 
 Here is how to set that in pycharm
 
-.. image:: _static/docstring-setting.png
+.. image:: ../_static/docstring-setting.png
   :width: 600
   :alt: pycharm docstring's format setting
 
@@ -41,9 +41,9 @@ Format of Docstrings
 --------------------
 Please add docstrings for every function you add. As docstrings are a powerful means of documentation we give an example here:
 
-Download: :download:`Example docstring <files_to_be_displayed/example_docstring.py>`
+Download: :download:`Example docstring <../files_to_be_displayed/example_docstring.py>`
 
-.. literalinclude:: files_to_be_displayed/example_docstring.py
+.. literalinclude:: ../files_to_be_displayed/example_docstring.py
    :language: python
 
 
