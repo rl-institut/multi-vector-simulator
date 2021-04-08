@@ -1,3 +1,7 @@
 .. _installation-steps:
 
-.. include:: ../README.rst
+============
+Installation
+============
+
+.. include:: readme.inc
