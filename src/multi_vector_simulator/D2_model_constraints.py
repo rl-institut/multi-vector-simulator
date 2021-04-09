@@ -93,7 +93,9 @@ def add_constraints(local_energy_system, dict_values, dict_model):
 
     for constraint in dict_values[CONSTRAINTS]:
         # if the constraint is not within its proper range of admissible values, None is returned
-        les = constraint_functions[constraint](local_energy_system, dict_values, dict_model)
+        les = constraint_functions[constraint](
+            local_energy_system, dict_values, dict_model
+        )
 
         if les is not None:
             local_energy_system = les
@@ -217,7 +219,9 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
             )
             return expr >= 0
 
-        model.constraint_minimal_renewable_share = po.Constraint(rule=renewable_share_rule)
+        model.constraint_minimal_renewable_share = po.Constraint(
+            rule=renewable_share_rule
+        )
 
         logging.info("Added minimal renewable factor constraint.")
         answer = model
@@ -479,6 +483,7 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
         answer = None
 
     return answer
+
 
 def prepare_demand_assets(
     dict_values, dict_model,
@@ -743,15 +748,21 @@ def constraint_net_zero_energy(model, dict_values, dict_model):
                     sum(
                         model.flow[
                             energy_provider_feedin_sinks[asset][OEMOF_SOLPH_OBJECT_BUS],
-                            energy_provider_feedin_sinks[asset][OEMOF_SOLPH_OBJECT_ASSET],
+                            energy_provider_feedin_sinks[asset][
+                                OEMOF_SOLPH_OBJECT_ASSET
+                            ],
                             :,
                         ]
                     )
-                    * energy_provider_feedin_sinks[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
+                    * energy_provider_feedin_sinks[asset][
+                        WEIGHTING_FACTOR_ENERGY_CARRIER
+                    ]
                 )
                 total_feedin_to_energy_provider += feedin_of_one_provider
 
-            expr = total_feedin_to_energy_provider - total_consumption_from_energy_provider
+            expr = (
+                total_feedin_to_energy_provider - total_consumption_from_energy_provider
+            )
             return expr >= 0
 
         model.constraint_net_zero_energy = po.Constraint(rule=net_zero_energy)
