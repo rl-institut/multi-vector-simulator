@@ -184,6 +184,7 @@ def setup_function():
     if not os.path.exists(TEST_OUTPUT_PATH):
         os.mkdir(TEST_OUTPUT_PATH)
 
+
 def test_networkx_graph_requested_store_nx_graph_true(dict_values):
     setup_function()
     assert (
