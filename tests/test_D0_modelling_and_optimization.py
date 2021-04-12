@@ -181,7 +181,6 @@ PATH_ES_GRAPH = os.path.join(TEST_OUTPUT_PATH, ES_GRAPH)
 def setup_function():
     if os.path.exists(TEST_OUTPUT_PATH):
         shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True, onerror=None)
-    os.mkdir(TEST_OUTPUT_PATH)
 
 
 def test_networkx_graph_requested_store_nx_graph_true(dict_values):
