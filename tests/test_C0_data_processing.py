@@ -628,11 +628,8 @@ def test_process_maximum_cap_constraint_maximumCap_is_int_smaller_than_installed
             }
         }
     }
-    with pytest.warns(UserWarning):
+    with pytest.raises(ValueError):
         C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
-        assert (
-            dict_values[group][asset][MAXIMUM_CAP][VALUE] is None
-        ), f"The invalid input is not ignored by defining maximumCap as None."
 
 
 def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_fuel_source():
