@@ -1804,7 +1804,9 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     else:
         if asset_dict[MAXIMUM_CAP][VALUE] is not None:
             # maximum additional capacity = maximum total capacity - installed capacity
-            max_add_cap = asset_dict[MAXIMUM_CAP][VALUE] - asset_dict[INSTALLED_CAP][VALUE]
+            max_add_cap = (
+                asset_dict[MAXIMUM_CAP][VALUE] - asset_dict[INSTALLED_CAP][VALUE]
+            )
             # include the maximumAddCap parameter to the asset dictionary
             asset_dict.update({MAXIMUM_ADD_CAP: {VALUE: max_add_cap}})
             # set maximumCap to None if it is smaller than installedCap
@@ -1835,7 +1837,8 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                     f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES}. This was done as the aimed constraint is to limit the power, not the flow."
                 )
                 asset_dict[MAXIMUM_ADD_CAP][VALUE] = (
-                    asset_dict[MAXIMUM_ADD_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
+                    asset_dict[MAXIMUM_ADD_CAP][VALUE]
+                    * asset_dict[TIMESERIES_PEAK][VALUE]
                 )
                 logging.debug(
                     f"Parameter {MAXIMUM_ADD_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES}. This was done as the aimed constraint is to limit the power, not the flow."
