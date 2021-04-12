@@ -35,7 +35,7 @@ Here is a template for new release sections
 - Add check for the capability of asset capacities in an energy system to fulfill the maximum demand in `C1.check_energy_system_can_fulfill_max_demand()` (#824)
 - Add tests for `C1.check_energy_system_can_fulfill_max_demand()`, including pseudo-benchmark test in `test_C1` (#824)
 - Zenodo badge on README (#850)
-- `VERSION_NUM` to simulation settings, added with `C0.add_version_number_used()`
+- `VERSION_NUM` to simulation settings, added with `C0.add_version_number_used()` (#855)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
