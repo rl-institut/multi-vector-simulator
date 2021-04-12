@@ -50,7 +50,7 @@ Here is a template for new release sections
 - Generate the parameters categories in RTD lookup table automatically from `docs/MVS_parameters_categories.csv` (#842)
 - The `DISPATCHABILITY` of energyConsumption assets is now set to FALSE by default (#824)
 - Function `C0.define_sink()` now also defines `DISPATCHABILITY=TRUE` for the created sink.
-- Only implement the constraints defined by the user explicitely (#845)
+- Only implement the constraints defined by the user explicitly: move accessing the constraint key in `dict_value` in the respective constraint preparation functions (#845)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
