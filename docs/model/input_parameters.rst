@@ -16,12 +16,24 @@ The input parameters are gathered under the following categories. These categori
 .. include:: parameters/MVS_parameters_categories.inc
 
 
+*******************
+Table of parameters
+*******************
+
+.. This file is generated automatically when conf.py is executed (function generate_parameter_table)
+
+The input parameters are gathered in the table below. Each parameter is provided with unit, type and example values. For more information about one parameter, please click on it.
+
+.. csv-table:: Parameters summary
+   :file: parameters/MVS_parameters_list.tbl
+   :header-rows: 1
+
+
 ******************
 List of parameters
 ******************
 
-Below is the list of all the parameters of MVS, sorted in alphabetical order. Each parameter is provided with the definition, unit, type and example values as well to make it easy for users to provide custom values for their systems.
-
+Below is the list of all the parameters of MVS, sorted in alphabetical order.
 Each of the parameters has the following properties
 
 :Definition: parameter's definition, could also contain potential use cases of the parameter
@@ -34,14 +46,3 @@ Each of the parameters has the following properties
 .. This file is generated automatically when conf.py is executed (function generate_parameter_description)
 
 .. include:: parameters/MVS_parameters_list.inc
-
-
-*******************
-Table of parameters
-*******************
-
-.. This file is generated automatically when conf.py is executed (function generate_parameter_table)
-
-.. csv-table:: Parameters summary
-   :file: parameters/MVS_parameters_list.tbl
-   :header-rows: 1
