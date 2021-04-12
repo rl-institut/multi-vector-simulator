@@ -173,10 +173,12 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
     - Test_Constraints.test_benchmark_minimal_renewable_share_constraint()
     """
 
-    renewable_assets, non_renewable_assets = prepare_constraint_minimal_renewable_share(
-        dict_values, dict_model,
-    )
     if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE] > 0:
+
+        (
+            renewable_assets,
+            non_renewable_assets,
+        ) = prepare_constraint_minimal_renewable_share(dict_values, dict_model,)
 
         def renewable_share_rule(model):
             renewable_generation = 0
