@@ -96,7 +96,8 @@ def add_constraints(local_energy_system, dict_values, dict_model):
         les = constraint_functions[constraint](
             local_energy_system, dict_values, dict_model
         )
-
+        # if the contraint is not applied (because not defined by the user, or with a value which
+        # is not in the acceptable range the constrain function will return None
         if les is not None:
             local_energy_system = les
             count_added_constraints += 1
