@@ -1,32 +1,20 @@
-=============================
-Outputs of the MVS simulation
-=============================
+=======================
+Outputs of a simulation
+=======================
 
-System schematic
-----------------
 
-- plot_networkx_graph
+KPIs
+----
 
-Optimized dispatch
-------------------
+.. the .inc files describing the kpis are automatically generated in `conf.py` from the `MVS_kpis_list.csv` file
 
-Dispatch of all assets (timeseries)
-###################################
-
-Energy flows on each bus (graphic)
-##################################
-
-Optimal capacities
-------------------
-
+.. TODO: write the `MVS_kpis_list.csv` file, the function to generate the .inc files and add ..include:: for each file
 
 Cost data
----------
+#########
 
-.. _net_present_costs:
 
-Net present cost
-################
+.. include:: outputs/net_present_costs.inc
 
 The Net present cost (NPC) is the present value of all the costs associated with installation, operation,
 maintenance and replacement of energy technologies comprising the sector-coupled system over the project lifetime,
@@ -38,7 +26,7 @@ The capital recovery factor (CRF) is used to calculate the present value of the 
 .. _lcoe:
 
 Levelized costs of energy (LCOE)
-################################
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As a sector-coupled system connects energy vectors, not the costs associated to each individual energy carrier but the overall energy costs should be minimized. Therefore, we propose a new KPI: The levelized costs of energy (LCOEnergy) aggregates the costs for energy supply and distributes them over the total energy demand supplied, which is calculated by weighting the energy carriers by their energy content. To determine the weighting factors of the different energy carriers, we reference the method of gasoline gallon equivalent (GGE) [12], which enables the comparison of alternative fuels. Instead of comparing the energy carriers of an MES to gasoline, we rebase the factors introduced in [12] onto the energy carrier electricity, thus proposing a unit Electricity Equivalent (ElEq). The necessary weights are summarized in Table 1. With this, we propose to calculate LCOEnergy based on the annual energy demand and the systems annuity, calculated with the CRF, as follows:
 
@@ -49,7 +37,7 @@ Specific electricity supply costs, eg. levelized costs of electricity (LCOElectr
 .. _lcoe_asset:
 
 Levelized Cost of Energy of Asset (LCOE ASSET)
-##############################################
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This KPI measures the cost of generating 1 kWh for each asset in the system.
 It can be used to assess and compare the available alternative methods of energy production.
@@ -81,23 +69,23 @@ For assets in energyConsumption, the MVS outputs 0 for the LCOE ASSET.
 
 
 Technical data
---------------
+##############
 
 .. _aggregated_flow:
 
 Energy flows (aggregated) per asset
-###################################
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. _peak_flow:
 
 Peak dispatch per asset
-#######################
+^^^^^^^^^^^^^^^^^^^^^^^
 
 
 .. _kpi_renewable_share_of_local_generation:
 
 Renewable share of local generation (REGen)
-###########################################
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The renewable share of local generation describes how much of the energy generated locally is produced from renewable sources.
 It does not take into account the consumption from energy providers.
@@ -146,7 +134,7 @@ This results in:
 .. _kpi_renewable_factor:
 
 Renewable factor (RF)
-#####################
+^^^^^^^^^^^^^^^^^^^^^
 
 Describes the share of the energy influx to the local energy system that is provided from renewable sources.
 This includes both local generation as well as consumption from energy providers.
@@ -183,7 +171,7 @@ The renewable factor can, just like the :ref:`kpi_renewable_share_of_local_gener
 .. _emissions:
 
 Emissions
-#########
+^^^^^^^^^
 
 The total emissions of the MES in question are calculated with all aggregated energy flows from the generation assets including energy providers and their subsequent emission factor:
 
@@ -205,7 +193,7 @@ Currently the emissions do not include life cycle emissions of energy conversion
 .. _kpi_degree_of_sector_coupling:
 
 Degree of sector-coupling (DSC)
-###############################
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 While a MES includes multiple energy carriers,
 this fact does not define how strongly interconnected its sectors are.
@@ -221,7 +209,7 @@ To measure this, we propose to compare the energy flows in between the sectors t
 .. _kpi_onsite_energy_fraction:
 
 Onsite energy fraction (OEF)
-############################
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 Onsite energy fraction is also referred to as self-consumption. It describes
@@ -242,7 +230,7 @@ the feed into the grid can only be positive.
 .. _kpi_onsite_energy_matching:
 
 Onsite energy matching (OEM)
-############################
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The onsite energy matching is also referred to as "self-sufficiency". It
 describes the fraction of the total demand that can be
@@ -265,7 +253,7 @@ or an excess sink.
 .. _kpi_degree_of_autonomy:
 
 Degree of autonomy (DA)
-#######################
+^^^^^^^^^^^^^^^^^^^^^^^
 
 The degree of autonomy describes the overall energy consumed minus the energy consumed from the grid divided by the overall energy consumed. Adapted from this definition `[3] <https://pvspeicher.htw-berlin.de/solarspeicherstudie/>`__.
 
@@ -278,11 +266,11 @@ As above, we apply a weighting based on Electricity Equivalent.
 .. _kpi_degree_of_nze:
 
 Degree of net zero energy (NZE)
-###############################
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The degree of net zero energy describes the ability of an energy system to provide its aggregated annual demand though local sources. For that, the balance between local generation as well as consumption from and feed-in towards the energy provider is compared.
 In a net zero energy system, demand can be supplied by energy import, but then local energy generation must provide an equally high energy export of energy in the course of the year. In a plus energy system, the export exceeds the import, while local generation can supply all demand (from an aggregated perspective).
-To calculate the degree of NZE, the margin between grid feed-in and grid consumption is compared to the overall demand. 
+To calculate the degree of NZE, the margin between grid feed-in and grid consumption is compared to the overall demand.
 
 Some definitions of NZE systems require that the local demand is solely covered by locally generated renewable energy. In MVS this is not the case - all locally generated energy is taken into consideration. For information about the share of renewables in the local energy system checkout :ref:`kpi_renewable_share_of_local_generation`.
 
@@ -296,10 +284,31 @@ As above, we apply a weighting based on Electricity Equivalent.
         Degree of NZE &= 1 + \frac{(\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
 
 
+
+Suffixes
+--------
+
+Explain the logic of the suffixes for the output parameters
+
+
+Files
+-----
+Energy system model graph
+#########################
+- plot_networkx_graph
+
+Figures
+#######
+
+- Energy flows on each bus (graphic)
+- Optimal Capacities
+- Optimized dispatch
+- Dispatch of all assets (timeseries)
+
 .. _output_report:
 
 Automatic Report
------------------
+################
 MVS has a feature to automatically `generate a PDF report <https://mvs-eland.readthedocs.io/en/latest/Installation.html#generate-pdf-report-or-an-app-in-your-browser-to-visualise-the-results-of-the-simulation>`__ that contains the main elements from the input data as well as the simulation results' data.
 The report can also be viewed as a web app on the browser, which provides some interactivity.
 
@@ -316,3 +325,4 @@ Please, refer to the `report section <https://mvs-eland.readthedocs.io/en/latest
     mvs_report -h
 
 in your terminal or command line.
+

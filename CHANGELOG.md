@@ -36,6 +36,8 @@ Here is a template for new release sections
 - Add tests for `C1.check_energy_system_can_fulfill_max_demand()`, including pseudo-benchmark test in `test_C1` (#824)
 - Zenodo badge on README (#850)
 - `VERSION_NUM` to simulation settings, added with `C0.add_version_number_used()` (#855)
+- Generation of pdf version of the readthedocs (#853)
+- `sphinx.ext.imgconverter` in `docs/conf.py` for svg images into pdf (#853)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -52,11 +54,14 @@ Here is a template for new release sections
 - The `DISPATCHABILITY` of energyConsumption assets is now set to FALSE by default (#824)
 - Function `C0.define_sink()` now also defines `DISPATCHABILITY=TRUE` for the created sink.
 - Only implement the constraints defined by the user explicitly: move accessing the constraint key in `dict_value` in the respective constraint preparation functions (#845)
+- Readthedocs restructure of chapters (#853)
+
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
 - `EXCESS_SINK_POSTFIX` and only use `EXCESS` (#837)
 - Quotes for command line instruction in README.rst (#850)
+- Superfluous `docs/readthedocs.yml` file (#853)
 
 ### Fixed
 - Skip `test_benchmark_KPI` as it was seen to be consuming the whole test time leading to timeout on github action (#826)

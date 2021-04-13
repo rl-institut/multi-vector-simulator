@@ -154,9 +154,6 @@ def generate_parameter_table(input_csv_file, output_csv_file):
         ":Type:",
         ":Unit:",
         ":Default:",
-        ":Example:",
-        ":Definition:",
-        ":Restrictions:",
     ]
 
     name_mapping = {c: c.replace(":", "") for c in parameter_properties}
@@ -170,13 +167,25 @@ def generate_parameter_table(input_csv_file, output_csv_file):
     )
 
 
-generate_parameter_description("MVS_parameters_list.csv", "MVS_parameters_list.inc")
-generate_parameter_table("MVS_parameters_list.csv", "MVS_parameters_list.tbl")
+def copy_readme():
+    with open("../README.rst", "r", encoding="utf8") as fp:
+        data = fp.readlines()
+    with open("readme.inc", "w") as fp:
+        fp.writelines(data[data.index("Setup\n") :])
+
+
+generate_parameter_description(
+    "MVS_parameters_list.csv", "model/parameters/MVS_parameters_list.inc"
+)
+generate_parameter_table(
+    "MVS_parameters_list.csv", "model/parameters/MVS_parameters_list.tbl"
+)
 generate_parameter_categories(
     "MVS_parameters_list.csv",
     "MVS_parameters_categories.csv",
-    "MVS_parameters_categories.inc",
+    "model/parameters/MVS_parameters_categories.inc",
 )
+copy_readme()
 
 # -- Project information -----------------------------------------------------
 
@@ -201,6 +210,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.imgmath",
     "sphinx.ext.autosummary",
+    "sphinx.ext.imgconverter",
     "numpydoc",
 ]
 

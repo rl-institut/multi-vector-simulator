@@ -2,6 +2,8 @@
 Code documentation
 ==================
 
+TODO : add an explanation about the different modules
+
 Util functions
 --------------
 
@@ -23,7 +25,7 @@ Initialization
 .. automodule:: multi_vector_simulator.A1_csv_to_json
    :members:
    :undoc-members:
-   
+
 Data input
 ----------
 
