@@ -45,6 +45,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INSTALLED_CAP,
     TIMESERIES_SOC,
     KPI_UNCOUPLED_DICT,
+    CONSTRAINTS,
+    MAXIMUM_EMISSIONS,
+    NET_ZERO_ENERGY,
     MINIMAL_DEGREE_OF_AUTONOMY,
     MINIMAL_RENEWABLE_FACTOR,
     RENEWABLE_FACTOR,
@@ -197,12 +200,22 @@ def evaluate_dict(dict_values, results_main, results_meta):
 
     # Tests and checks
     logging.info("Running validity checks.")
-    E4.minimal_constraint_test(dict_values, MINIMAL_RENEWABLE_FACTOR, RENEWABLE_FACTOR)
-    E4.minimal_constraint_test(
-        dict_values, MINIMAL_DEGREE_OF_AUTONOMY, DEGREE_OF_AUTONOMY
-    )
-    E4.maximum_emissions_test(dict_values)
-    E4.net_zero_energy_constraint_test(dict_values)
+
+    if MINIMAL_RENEWABLE_FACTOR in dict_values[CONSTRAINTS]:
+        E4.minimal_constraint_test(
+            dict_values, MINIMAL_RENEWABLE_FACTOR, RENEWABLE_FACTOR
+        )
+
+    if MINIMAL_DEGREE_OF_AUTONOMY in dict_values[CONSTRAINTS]:
+        E4.minimal_constraint_test(
+            dict_values, MINIMAL_DEGREE_OF_AUTONOMY, DEGREE_OF_AUTONOMY
+        )
+    if MAXIMUM_EMISSIONS in dict_values[CONSTRAINTS]:
+        E4.maximum_emissions_test(dict_values)
+
+    if NET_ZERO_ENERGY in dict_values[CONSTRAINTS]:
+        E4.net_zero_energy_constraint_test(dict_values)
+
     E4.detect_excessive_excess_generation_in_bus(dict_values)
     E4.verify_state_of_charge(dict_values)
 

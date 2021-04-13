@@ -140,6 +140,9 @@ TIMESERIES_TOTAL = "timeseries_total"
 TIMESERIES_AVERAGE = "timeseries_average"
 TIMESERIES_SOC = "timeseries_soc"
 
+# Other pre-processing
+VERSION_NUM = "Version number"
+
 # Pre-processing cost parameters
 ANNUITY_FACTOR = "annuity_factor"
 CRF = "CRF"

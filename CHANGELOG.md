@@ -35,6 +35,7 @@ Here is a template for new release sections
 - Add check for the capability of asset capacities in an energy system to fulfill the maximum demand in `C1.check_energy_system_can_fulfill_max_demand()` (#824)
 - Add tests for `C1.check_energy_system_can_fulfill_max_demand()`, including pseudo-benchmark test in `test_C1` (#824)
 - Zenodo badge on README (#850)
+- `VERSION_NUM` to simulation settings, added with `C0.add_version_number_used()` (#855)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -50,6 +51,7 @@ Here is a template for new release sections
 - Generate the parameters categories in RTD lookup table automatically from `docs/MVS_parameters_categories.csv` (#842)
 - The `DISPATCHABILITY` of energyConsumption assets is now set to FALSE by default (#824)
 - Function `C0.define_sink()` now also defines `DISPATCHABILITY=TRUE` for the created sink.
+- Only implement the constraints defined by the user explicitly: move accessing the constraint key in `dict_value` in the respective constraint preparation functions (#845)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
