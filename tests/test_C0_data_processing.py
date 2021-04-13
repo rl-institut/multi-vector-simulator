@@ -82,8 +82,11 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES_AVERAGE,
     TIMESERIES_NORMALIZED,
     FIX_COST,
+    VERSION_NUM,
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
+
+from multi_vector_simulator.version import version_num
 
 
 def test_add_economic_parameters():
@@ -1181,6 +1184,13 @@ def test_process_all_assets_fixcost():
     assert (
         LIFETIME_PRICE_DISPATCH not in dict_test[FIX_COST][fix_cost_entry]
     ), f"Parameter {LIFETIME_PRICE_DISPATCH} should not be calculated for {FIX_COST} entries."
+
+
+def test_add_version_number_used():
+    settings = {}
+    C0.add_version_number_used(settings)
+    assert VERSION_NUM in settings
+    assert settings[VERSION_NUM] == version_num
 
 
 """
