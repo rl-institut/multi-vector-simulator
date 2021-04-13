@@ -7,7 +7,22 @@
 
 Multi-vector simulator
 ======================
-|badge_docs| |badge_CI| |badge_coverage| |badge_zenodo|
+
+.. only:: html
+    .. image:: https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest
+        :target: https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest
+        :alt: Documentation Status
+
+    .. image:: https://github.com/rl-institut/multi-vector-simulator/workflows/CI/badge.svg
+        :alt: Build status
+
+    .. image:: https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg
+        :target: https://coveralls.io/github/rl-institut/multi-vector-simulator
+        :alt: Test coverage
+
+    .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4610237.svg
+       :target: https://doi.org/10.5281/zenodo.4610237
+       :alt: Zenodo DOI
 
 The MVS' global flowchart, or graphical model, is divided into three connected blocks that trace the logic sequence: inputs, system model, and outputs. This is a typical representation of a simulation model.
 
@@ -107,23 +122,6 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-
-.. |badge_docs| image:: https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest
-    :target: https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
-
-.. |badge_CI| image:: https://github.com/rl-institut/multi-vector-simulator/workflows/CI/badge.svg
-    :alt: Build status
-
-.. |badge_coverage| image:: https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg
-    :target: https://coveralls.io/github/rl-institut/multi-vector-simulator
-    :alt: Test coverage
-
-.. |badge_zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4610237.svg
-   :target: https://doi.org/10.5281/zenodo.4610237
-   :alt: Zenodo DOI
 
 
 
