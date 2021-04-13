@@ -20,6 +20,12 @@ class UnknownOemofAssetType(ValueError):
     pass
 
 
+class MissingCsvEndingError(ValueError):
+    """Exeption raised if the filename of a storage input file in energyStorage.csv misses the suffix '.csv'."""
+
+    pass
+
+
 class MissingParameterError(ValueError):
     """Exception raised for missing parameters of a csv input file."""
 
