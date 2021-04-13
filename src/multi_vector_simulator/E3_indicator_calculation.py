@@ -550,7 +550,7 @@ def add_degree_of_autonomy(dict_values):
 
 
 def equation_degree_of_autonomy(total_consumption_from_energy_provider, total_demand):
-    """
+    r"""
     Calculates the degree of autonomy (DA).
 
     The degree of autonomy describes the relation of how much demand is supplied by local generation (as opposed to
@@ -635,7 +635,7 @@ def add_degree_of_net_zero_energy(dict_values):
 def equation_degree_of_net_zero_energy(
     total_feedin, total_grid_consumption, total_demand
 ):
-    """
+    r"""
     Calculates the degree of net zero energy (NZE).
 
     In NZE systems import and export of energy is allowed while the balance over one
@@ -736,7 +736,7 @@ def add_degree_of_sector_coupling(dict_values):
 def equation_degree_of_sector_coupling(
     total_flow_of_energy_conversion_equivalent, total_demand_equivalent
 ):
-    """Calculates degree of sector coupling.
+    r"""Calculates degree of sector coupling.
 
     Parameters
     ----------
@@ -752,7 +752,7 @@ def equation_degree_of_sector_coupling(
         Degree of sector coupling based on conversion flows and energy demands in electricity equivalent.
 
     .. math::
-       DSC=\frac{\sum_{i,j}{E_{conversion} (i,j)⋅w_i}}{\sum_i {E_{demand} (i)⋅w_i}}
+       DSC=\frac{\sum_{i,j}{E_{conversion} (i,j) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
         with i,j \epsilon [Electricity,H2…]
 
@@ -980,7 +980,7 @@ def add_onsite_energy_matching(dict_values):
 def equation_onsite_energy_matching(
     total_generation, total_feedin, total_excess, total_demand
 ):
-    """
+    r"""
     Calculates onsite energy matching (OEM), i.e. self-sufficiency.
 
     OEM describes the fraction of the total demand that can be
