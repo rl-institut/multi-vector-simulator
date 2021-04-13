@@ -302,6 +302,10 @@
                 "unit": "kW",
                 "value": null
             },
+            "maximumAddCap": {
+                "unit": "kW",
+                "value": null
+            },
             "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
@@ -367,6 +371,10 @@
                 "value": 0.0
             },
             "maximumCap": {
+                "unit": "kW",
+                "value": null
+            },
+            "maximumAddCap": {
                 "unit": "kW",
                 "value": null
             },
@@ -438,6 +446,10 @@
                 "unit": "kW",
                 "value": null
             },
+            "maximumAddCap": {
+                "unit": "kW",
+                "value": null
+            },
             "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
@@ -504,6 +516,10 @@
             },
             "maximumCap": {
                 "unit": "kVA",
+                "value": null
+            },
+            "maximumAddCap": {
+                "unit": "kVa",
                 "value": null
             },
             "specific_costs_om": {
@@ -574,6 +590,10 @@
                 "unit": "kVA",
                 "value": null
             },
+            "maximumAddCap": {
+                "unit": "kVa",
+                "value": null
+            },
             "specific_costs_om": {
                 "unit": "currency/kW/year",
                 "value": 0.0
@@ -632,6 +652,10 @@
                 "value": 7.433008821804292
             },
             "maximumCap": {
+                "unit": "kWp",
+                "value": null
+            },
+            "maximumAddCap": {
                 "unit": "kWp",
                 "value": null
             },
@@ -913,6 +937,10 @@
             },
             "maximumCap": {
                 "unit": " kWp",
+                "value": null
+            },
+            "maximumAddCap": {
+                "unit": "kWp",
                 "value": null
             },
             "emission_factor": {
@@ -1293,6 +1321,10 @@
                     "unit": "kW",
                     "value": null
                 },
+                "maximumAddCap": {
+                    "unit": "kW",
+                    "value": null
+                },
                 "specific_costs_om": {
                     "unit": "currency/unit/year",
                     "value": 0
@@ -1367,6 +1399,10 @@
                     "unit": "kW",
                     "value": null
                 },
+                "maximumAddCap": {
+                    "unit": "kW",
+                    "value": null
+                },
                 "specific_costs_om": {
                     "unit": "currency/unit/year",
                     "value": 0
@@ -1429,6 +1465,10 @@
                     "value": 0.0
                 },
                 "maximumCap": {
+                    "unit": "kWh",
+                    "value": null
+                },
+                "maximumAddCap": {
                     "unit": "kWh",
                     "value": null
                 },
