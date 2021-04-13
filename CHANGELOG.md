@@ -57,7 +57,6 @@ Here is a template for new release sections
 - Readthedocs restructure of chapters (#853)
 - Load svg badges only for html readthedocs (#857)
 
-
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
 - `EXCESS_SINK_POSTFIX` and only use `EXCESS` (#837)
