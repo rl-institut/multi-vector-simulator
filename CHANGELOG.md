@@ -41,6 +41,10 @@ Here is a template for new release sections
 - Add a function `generate_kpi_description` in `docs/conf.py` module to generate documentation of kpi parameters listed in `docs/MVS_kpis_list.csv`(#863)
 - Add badges for pypi, black linter and license in `docs/index.rst` and `README.rst` (#865)
 - ´--version´ option for the command line `mvs_tool` (#866)
+- `sphinx.ext.imgconverter` in `docs/conf.py` for svg images into pdf (#853)
+- Introduce new parameter `maximumAddCap` where `maximumAddCap=maximumCap-installedCap` in `C0.process_maximum_cap_constraint()` (#848)
+- Implement definition for `maximumAddCap` in `docs/MVS_parameters_list.csv` (#848)
+- Include new parameter `maximumAddCap` in `tests/test_data/inputs_for_D0/mvs_config.json` and `tests/test_data/inputs_for_D1/mvs_config.json` (#848)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -60,8 +64,16 @@ Here is a template for new release sections
 - Readthedocs restructure of chapters (#853, #860)
 - Load svg badges only for html readthedocs (#857) (reversed in #860)
 - Turn docs build warnings into errors (#863)
+<<<<<<< HEAD
 - Pytest runs the kpi benchmark tests (which was not the case before) (#864)
 
+=======
+- Readthedocs restructure of chapters (#853)
+- Load svg badges only for html readthedocs (#857)
+- Deactivate optimization when `maximumCap<=installedCap and maximumCap!=0` in `C0.process_maximum_cap_constraint()` (#848)
+- Replace usage of `maximumCap` in `D1` with `maximumAddCap` calculated in `C0` (#848)
+- Adjust `tests/test_benchmark_feedin.test_benchmark_feedin_tariff_optimize_positive_value()` and `tests/benchmark_test_inputs/Feedin_optimize/csv_elements/energyProduction.csv` to fit new `maximumCap` and `maximumAddCap` definitions (#848)
+>>>>>>> Update CHANGELOG.md
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
@@ -82,6 +94,7 @@ Here is a template for new release sections
 - Bugfix in `C0.process_maximum_cap_constraint()`: Always set `maximumCap` to `None` in case its value is 0 (#833)
 - ReadTheDocs warnings (#863)
 - Reenable the coverage tests on github actions (#864)
+- Adjust definition for `maximumCap` in `docs/MVS_parameters_list.csv` (#848)
 
 ## [0.5.5] - 2021-03-04
 
