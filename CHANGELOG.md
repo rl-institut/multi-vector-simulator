@@ -55,6 +55,7 @@ Here is a template for new release sections
 - Function `C0.define_sink()` now also defines `DISPATCHABILITY=TRUE` for the created sink.
 - Only implement the constraints defined by the user explicitly: move accessing the constraint key in `dict_value` in the respective constraint preparation functions (#845)
 - Readthedocs restructure of chapters (#853)
+- Load svg badges only for html readthedocs (#857)
 
 
 ### Removed
