@@ -1810,7 +1810,10 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
             # include the maximumAddCap parameter to the asset dictionary
             asset_dict.update({MAXIMUM_ADD_CAP: {VALUE: max_add_cap}})
             # raise error if maximumCap is smaller than installedCap and is not set to zero
-            if asset_dict[MAXIMUM_CAP][VALUE] < asset_dict[INSTALLED_CAP][VALUE] and asset_dict[MAXIMUM_CAP][VALUE] != 0:
+            if (
+                asset_dict[MAXIMUM_CAP][VALUE] < asset_dict[INSTALLED_CAP][VALUE]
+                and asset_dict[MAXIMUM_CAP][VALUE] != 0
+            ):
                 message = (
                     f"The stated total maximumCap in {group} {asset} is smaller than the "
                     f"installedCap ({asset_dict[MAXIMUM_CAP][VALUE]}/{asset_dict[INSTALLED_CAP][VALUE]}). Please enter a greater maximumCap."
