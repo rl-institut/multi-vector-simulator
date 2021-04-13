@@ -62,7 +62,7 @@ Here is a template for new release sections
 - Skip `test_benchmark_KPI` as it was seen to be consuming the whole test time leading to timeout on github action (#826)
 - Reduce `simulation_settings.evaluated_period` to one day for the tests where simulation results are not important (for E0 and D2 test modules setup) (#826)
 - Fix formula of degree of NZE in RTD and in docstring of `E3.equation_degree_of_net_zero_energy()`  (#832)
-- Tests failing on windows with `FileExistsError` (#839)
+- Tests failing on windows with `FileExistsError` (#839, #854)
 - No excess error message regarding the auto-generated peak demand pricing bus (#837)
 - `C0.prepare_demand_assets()` did not explicitly exclude feedin sinks (#837)
 - Hotfix: `C0.define_sinks()` now works for scalar feed-in prices, but not for lists of timeseries (#837)
