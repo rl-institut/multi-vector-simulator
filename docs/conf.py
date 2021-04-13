@@ -168,7 +168,7 @@ def generate_parameter_table(input_csv_file, output_csv_file):
 
 
 def copy_readme():
-    with open("../README.rst", "r") as fp:
+    with open("../README.rst", "r", encoding="utf8") as fp:
         data = fp.readlines()
     with open("readme.inc", "w") as fp:
         fp.writelines(data[data.index("Setup\n") :])
