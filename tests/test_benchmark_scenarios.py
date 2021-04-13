@@ -25,10 +25,6 @@ from _constants import (
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
     CSV_EXT,
-    ENERGY_PRICE,
-    OPTIMIZED_ADD_CAP,
-    INPUT_POWER,
-    OUTPUT_POWER,
 )
 
 from multi_vector_simulator.utils.constants import (
@@ -42,15 +38,24 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EXCESS_SINK,
     ENERGY_CONVERSION,
     ENERGY_PROVIDERS,
+    ENERGY_STORAGE,
     VALUE,
     LCOE_ASSET,
     ENERGY_CONSUMPTION,
+    TOTAL_FLOW,
     FLOW,
     EFFICIENCY,
     ENERGY_PRODUCTION,
     INSTALLED_CAP,
     SIMULATION_SETTINGS,
     EVALUATED_PERIOD,
+    ENERGY_PRICE,
+    OPTIMIZED_ADD_CAP,
+    OPTIMIZE_CAP,
+    INPUT_POWER,
+    OUTPUT_POWER,
+    STORAGE_CAPACITY,
+    TIMESERIES_SOC,
 )
 
 from multi_vector_simulator.utils.data_parser import convert_epa_params_to_mvs
@@ -172,15 +177,97 @@ class TestACElectricityBus:
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
         )
 
-        df_busses_flow = pd.read_excel(
-            os.path.join(TEST_OUTPUT_PATH, use_case, "timeseries_all_busses.xlsx"),
-            sheet_name="Electricity",
+        data = load_json(
+            os.path.join(
+                TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+            )
         )
-        # make the time the index
-        df_busses_flow = df_busses_flow.set_index("Unnamed: 0")
-        # make sure battery is not used
-        assert sum(df_busses_flow[f"battery {INPUT_POWER}"]) == 0
-        assert sum(df_busses_flow[f"battery {OUTPUT_POWER}"]) == 0
+
+        No_optimize_no_cap_in_out = "No_optimize_no_cap_in_out"
+        No_optimize_with_cap_in_out = "No_optimize_with_cap_in_out"
+
+        description = "description"
+        implemented_storage_assets = {
+            No_optimize_no_cap_in_out: {
+                description: "Storage asset with a set storage capacity but no input or output power capacity, not to be optimized.",
+                OPTIMIZE_CAP: False,
+            },
+            No_optimize_with_cap_in_out: {
+                description: "Storage asset with a set storage capacity as well as set input or output power capacity, not to be optimized.",
+                OPTIMIZE_CAP: False,
+            },
+        }
+
+        for storage_asset in data[ENERGY_STORAGE].keys():
+            # Assertions that validate that the input files have not been changed.
+            assert (
+                storage_asset in implemented_storage_assets
+            ), f"The defined storage asset {storage_asset} is not expected. It should be one of the assets {implemented_storage_assets.keys()}. It should be {implemented_storage_assets[storage_asset][description]}"
+            exp_optimize = implemented_storage_assets[storage_asset][OPTIMIZE_CAP]
+            res_optimize = data[ENERGY_STORAGE][storage_asset][OPTIMIZE_CAP][VALUE]
+            assert (
+                res_optimize == exp_optimize
+            ), f"The {OPTIMIZE_CAP} of storage asset {storage_asset} should be {exp_optimize}, but is {res_optimize}. "
+
+            if storage_asset == No_optimize_no_cap_in_out:
+                for sub_item in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
+                    # Assertions that validate that the input files are correct
+                    if sub_item == STORAGE_CAPACITY:
+                        assert (
+                            data[ENERGY_STORAGE][storage_asset][sub_item][
+                                INSTALLED_CAP
+                            ][VALUE]
+                            > 0
+                        ), f"For this storage asset {storage_asset} the {INSTALLED_CAP} or {sub_item} should be > 0, as {implemented_storage_assets[storage_asset][description]}"
+                        # Assertion that checks if flows are as expected
+                        res = data[ENERGY_STORAGE][storage_asset][sub_item][TOTAL_FLOW][
+                            VALUE
+                        ]
+                        assert (
+                            res is None
+                        ), f"With no input/output power capacities, storage asset {storage_asset} should have no flow though the {sub_item}."
+
+                    else:
+                        assert (
+                            data[ENERGY_STORAGE][storage_asset][sub_item][
+                                INSTALLED_CAP
+                            ][VALUE]
+                            == 0
+                        ), f"For this storage asset {storage_asset} the {INSTALLED_CAP} or {sub_item} should be == 0, as {implemented_storage_assets[storage_asset][description]}."
+                        # Assertion that checks if flows are as expected
+                        res = data[ENERGY_STORAGE][storage_asset][sub_item][TOTAL_FLOW][
+                            VALUE
+                        ]
+                        assert (
+                            res == 0
+                        ), f"With no input/output power capacities, storage asset {storage_asset} should have 0 flow though the {sub_item}."
+
+            if storage_asset == No_optimize_with_cap_in_out:
+                for sub_item in [INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY]:
+                    # Assertions that validate that the input files are correct
+                    assert (
+                        data[ENERGY_STORAGE][storage_asset][sub_item][INSTALLED_CAP][
+                            VALUE
+                        ]
+                        > 0
+                    ), f"For this storage asset {storage_asset} the {INSTALLED_CAP} or {sub_item} should be > 0, as {implemented_storage_assets[storage_asset][description]}."
+
+                    # Assertion that checks if flows are as expected
+                    res = data[ENERGY_STORAGE][storage_asset][sub_item][TOTAL_FLOW][
+                        VALUE
+                    ]
+                    if sub_item == STORAGE_CAPACITY:
+                        assert (
+                            res is None
+                        ), f"With input/output power capacities, storage asset {storage_asset} does have a timeseries, but as the stored energy in a timestep is not a flow, it does not have a {TOTAL_FLOW}."
+                    else:
+                        assert (
+                            res >= 0
+                        ), f"With input/output power capacities, storage asset {storage_asset} can have an flow though the {sub_item}, ie. {TOTAL_FLOW} can be >=0. Its value, though, is {res}."
+
+            assert (
+                TIMESERIES_SOC in data[ENERGY_STORAGE][storage_asset]
+            ), f"The {TIMESERIES_SOC} of {storage_asset} was not calculated."
 
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
