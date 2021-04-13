@@ -210,6 +210,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.imgmath",
     "sphinx.ext.autosummary",
+    "sphinx.ext.imgconverter",
     "numpydoc",
 ]
 
