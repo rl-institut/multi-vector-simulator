@@ -231,7 +231,7 @@ class TestFeedinTariff:
         optimized_added_cap = scalar_matrix[OPTIMIZED_ADD_CAP]["pv_plant_01"]
         assert (
             optimized_added_cap == 5000
-        ), f"At a high positive feed-in tariff and moderate specific PV costs the maximum PV capacity should be installed (5000 kWp), however {optimized_added_cap} kWp is installed."
+        ), f"At a high positive feed-in tariff and moderate specific PV costs the maximum additional PV capacity should be installed (5000 kWp), however {optimized_added_cap} kWp is installed."
         excess_sum = df_busses_flow[EXCESS_SINK_NAME].sum()
         assert (
             excess_sum == 0
