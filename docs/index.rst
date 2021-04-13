@@ -7,7 +7,6 @@
 
 Multi-vector simulator
 ======================
-|badge_docs| |badge_CI| |badge_coverage| |badge_zenodo|
 
 The MVS' global flowchart, or graphical model, is divided into three connected blocks that trace the logic sequence: inputs, system model, and outputs. This is a typical representation of a simulation model.
 
@@ -56,41 +55,12 @@ Follow the  :ref:`Quick start guide <installation-steps>`
    Installation
    simulating_with_the_mvs
 
-.. toctree::
-   :hidden:
-   :maxdepth: 1
-   :caption: Examples
-
-   examples/time_series_params
-   examples/multiple_busses
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: 1
-   :caption: Model Reference
-
-   model/assumptions
-   model/components
-   model/constraints
-   model/limitations
-   model/input_parameters
-   model/simulation_outputs
-   model/validation
-   model/eland_requirements
-
-..
-    release_notes (for website, remove for report, not implemented yet, nice to have)
-    contributing (here paste content of contributing.md --> convert to RST and include it as we did for readme, the mention to contributing in getting started will link to this chapter)
-
 
 .. toctree::
    :hidden:
    :maxdepth: 1
    :caption: References
 
-   references/code
-   references/release_notes
    references/license
    references/contributing
    references/publications
@@ -107,23 +77,6 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-
-.. |badge_docs| image:: https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest
-    :target: https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
-
-.. |badge_CI| image:: https://github.com/rl-institut/multi-vector-simulator/workflows/CI/badge.svg
-    :alt: Build status
-
-.. |badge_coverage| image:: https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg
-    :target: https://coveralls.io/github/rl-institut/multi-vector-simulator
-    :alt: Test coverage
-
-.. |badge_zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4610237.svg
-   :target: https://doi.org/10.5281/zenodo.4610237
-   :alt: Zenodo DOI
 
 
 
