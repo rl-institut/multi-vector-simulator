@@ -166,6 +166,8 @@ Or provide another output folder's path
 
     mvs_tool -o <path_to_other_output_folder>
 
+.. _pdf-report-commands:
+
 Generate pdf report or an app in your browser to visualise the results of the simulation
 ----------------------------------------------------------------------------------------
 

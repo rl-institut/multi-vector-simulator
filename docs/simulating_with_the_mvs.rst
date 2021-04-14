@@ -57,7 +57,7 @@ You can conveniently create a copy of this folder in your local path with the co
 
 A simple example system is setup with this `input folder <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/inputs>`__.
 When defining your energy system with this CSV files,
-please also refer to the definition of parameters that you can find here: `stable <https://mvs-eland.readthedocs.io/en/stable/MVS_parameters.html>`__ / `latest <https://mvs-eland.readthedocs.io/en/latest/MVS_parameters.html>`__.
+please also refer to the definition of parameters that you can find here: :ref:`stable <input_parameters>`.
 
 Please note that the allowed separators for csv files are located in `src/constants.py` under the
 `CSV_SEPARATORS` variable. Currently only `[",", ";", "&"]` are allowed.

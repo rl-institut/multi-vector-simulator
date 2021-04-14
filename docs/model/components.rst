@@ -100,7 +100,7 @@ The same accounts for charge controllers for a :ref:`battery_storage` that are d
 The parameters `dispatch_price`, `efficiency` and `installedCap` need to be given for the electrical output power of the electric transformers.
 
 .. note::
-    When using two conversion objects to emulate a bidirectional conversion asset, their capacity should be interdependent. This is currently not the case, see `Infeasible bi-directional flow in one timestep <https://multi-vector-simulator.readthedocs.io/en/stable/Model_Assumptions.html#infeasible-bi-directional-flow-in-one-timestep>`_.
+    When using two conversion objects to emulate a bidirectional conversion asset, their capacity should be interdependent. This is currently not the case, see :ref:`Infeasible bi-directional flow in one timestep <limitations-real-life-constraint>`.
 
 .. _energyconversion_hvac:
 
