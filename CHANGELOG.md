@@ -63,6 +63,7 @@ Here is a template for new release sections
 - `EXCESS_SINK_POSTFIX` and only use `EXCESS` (#837)
 - Quotes for command line instruction in README.rst (#850)
 - Superfluous `docs/readthedocs.yml` file (#853)
+- Broken links in readthedocs (#861)
 
 ### Fixed
 - Skip `test_benchmark_KPI` as it was seen to be consuming the whole test time leading to timeout on github action (#826)
