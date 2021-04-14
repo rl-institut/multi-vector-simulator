@@ -51,6 +51,12 @@ class UnknownEnergyVectorError(ValueError):
 
 
 class DuplicateLabels(ValueError):
-    """Exception raised in case an label is defined multiple times as Oemof requires labels to be unique"""
+    """Exception raised in case a label is defined multiple times as Oemof requires labels to be unique"""
+
+    pass
+
+
+class MaximumCapValueInvalid(ValueError):
+    """Exception raised if the defined maximum capacity of an asset is invalid"""
 
     pass

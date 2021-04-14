@@ -83,7 +83,6 @@ EFFICIENCY = "efficiency"
 OPTIMIZE_CAP = "optimizeCap"
 INSTALLED_CAP = "installedCap"
 MAXIMUM_CAP = "maximumCap"
-MAXIMUM_ADD_CAP = "maximumAddCap"
 AGE_INSTALLED = "age_installed"
 LIFETIME = "lifetime"
 DEVELOPMENT_COSTS = "development_costs"
@@ -171,6 +170,8 @@ OUTFLOW_DIRECTION = "outflow_direction"
 INFLOW_DIRECTION = "inflow_direction"
 ENERGY_VECTOR = "energyVector"
 EXCESS_SINK = "_excess"
+# The maximum additional capacity of an asset (MAXIMUM_ADD_CAP = MAXIMUM_CAP - INSTALLED_CAP)
+MAXIMUM_ADD_CAP = "maximumAddCap"
 
 # DSO
 DSO_CONSUMPTION = "_consumption"

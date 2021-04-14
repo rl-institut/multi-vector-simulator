@@ -25,7 +25,7 @@ Here is a template for new release sections
 - Add check for correct `installedcap` processing to `AB_grid_pv` benchmark test (#831)
 - Add check to `AB_grid_pv` benchmark test: total pv generation is used to cover demand (#831)
 - Section on energy consumption assets in `Model_Assumptions.rst` and `MVS_Outputs.rst` (#817)
-- Constant variables: `MODELLING_TIME`, `LP_FILE` (#839)
+- Constant variables: `MODELLING_TIME`, `LP_FILE` (#839), `MAXIMUM_ADD_CAP` (#848)
 - Add plotly in `requirements/default.txt` (#840)
 - Pytests for `C1.check_for_sufficient_assets_on_busses()` (#837)
 - Add a parameter lookup table in RTD (#842)
@@ -43,8 +43,6 @@ Here is a template for new release sections
 - ´--version´ option for the command line `mvs_tool` (#866)
 - `sphinx.ext.imgconverter` in `docs/conf.py` for svg images into pdf (#853)
 - Introduce new parameter `maximumAddCap` where `maximumAddCap=maximumCap-installedCap` in `C0.process_maximum_cap_constraint()` (#848)
-- Implement definition for `maximumAddCap` in `docs/MVS_parameters_list.csv` (#848)
-- Include new parameter `maximumAddCap` in `tests/test_data/inputs_for_D0/mvs_config.json` and `tests/test_data/inputs_for_D1/mvs_config.json` (#848)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -64,16 +62,13 @@ Here is a template for new release sections
 - Readthedocs restructure of chapters (#853, #860)
 - Load svg badges only for html readthedocs (#857) (reversed in #860)
 - Turn docs build warnings into errors (#863)
-<<<<<<< HEAD
 - Pytest runs the kpi benchmark tests (which was not the case before) (#864)
-
-=======
 - Readthedocs restructure of chapters (#853)
 - Load svg badges only for html readthedocs (#857)
 - Deactivate optimization when `maximumCap<=installedCap and maximumCap!=0` in `C0.process_maximum_cap_constraint()` (#848)
 - Replace usage of `maximumCap` in `D1` with `maximumAddCap` calculated in `C0` (#848)
 - Adjust `tests/test_benchmark_feedin.test_benchmark_feedin_tariff_optimize_positive_value()` and `tests/benchmark_test_inputs/Feedin_optimize/csv_elements/energyProduction.csv` to fit new `maximumCap` and `maximumAddCap` definitions (#848)
->>>>>>> Update CHANGELOG.md
+- Include new parameter `maximumAddCap` in `tests/test_data/inputs_for_D0/mvs_config.json` and `tests/test_data/inputs_for_D1/mvs_config.json` (#848)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)

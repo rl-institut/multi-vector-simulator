@@ -39,6 +39,8 @@ from multi_vector_simulator.utils.constants import (
     JSON_PROCESSED,
 )
 
+from multi_vector_simulator.utils.exceptions import MaximumCapValueInvalid
+
 from multi_vector_simulator.utils.constants_json_strings import *
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 import multi_vector_simulator.B0_data_input_json as B0
@@ -1796,7 +1798,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
         asset_dict = dict_values[group][asset][subasset]
 
     # include the maximumAddCap parameter to the asset dictionary
-    asset_dict.update({MAXIMUM_ADD_CAP: {VALUE: None}})
+    asset_dict.update({MAXIMUM_ADD_CAP: {VALUE: None, UNIT: asset_dict[UNIT]}})
 
     # check if a maximumCap is defined
     if MAXIMUM_CAP not in asset_dict:
@@ -1808,7 +1810,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 asset_dict[MAXIMUM_CAP][VALUE] - asset_dict[INSTALLED_CAP][VALUE]
             )
             # include the maximumAddCap parameter to the asset dictionary
-            asset_dict.update({MAXIMUM_ADD_CAP: {VALUE: max_add_cap}})
+            asset_dict[MAXIMUM_ADD_CAP].update({VALUE: max_add_cap})
             # raise error if maximumCap is smaller than installedCap and is not set to zero
             if (
                 asset_dict[MAXIMUM_CAP][VALUE] < asset_dict[INSTALLED_CAP][VALUE]
@@ -1818,7 +1820,7 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                     f"The stated total maximumCap in {group} {asset} is smaller than the "
                     f"installedCap ({asset_dict[MAXIMUM_CAP][VALUE]}/{asset_dict[INSTALLED_CAP][VALUE]}). Please enter a greater maximumCap."
                 )
-                raise ValueError(message)
+                raise MaximumCapValueInvalid(message)
 
             # set maximumCap to None if it is zero
             if asset_dict[MAXIMUM_CAP][VALUE] == 0:
@@ -1848,4 +1850,3 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 )
 
     asset_dict[MAXIMUM_CAP].update({UNIT: asset_dict[UNIT]})
-    asset_dict[MAXIMUM_ADD_CAP].update({UNIT: asset_dict[UNIT]})
