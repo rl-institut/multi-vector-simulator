@@ -57,7 +57,7 @@ What started MVS
 Getting Started
 ===============
 
-Follow the  :ref:`Quick start guide <installation-steps>`
+Follow the  :doc:`Quick start guide <Installation>`
 
 .. Documentation
 .. =============
@@ -78,6 +78,14 @@ Follow the  :ref:`Quick start guide <installation-steps>`
    examples/time_series_params
    examples/multiple_busses
 
+Model Reference
+===============
+
+* **How the energy system is modelled**: :doc:`Assumption behind the model <model/assumptions>` |:doc:`Available components for modelling <model/components>` | :doc:`Setting constraints on model or components <model/constraints>` | :doc:`Scope and limitation of the model <model/limitations>`
+* **Description of parameters**: :doc:`Input parameters <model/input_parameters>` | :doc:`Output variables and KPIs <model/simulation_outputs>`
+* **Validation of the model**: :doc:`Benchmark tests <model/validation>`
+
+    .. maybe add Pilot projects here as well?
 
 .. toctree::
    :hidden:
@@ -98,6 +106,15 @@ Follow the  :ref:`Quick start guide <installation-steps>`
     contributing (here paste content of contributing.md --> convert to RST and include it as we did for readme, the mention to contributing in getting started will link to this chapter)
 
 
+API Reference
+=============
+
+* **Documentation**: :doc:`Modules and functions <references/code>`
+* **Getting involved**: :doc:`Contributing guidelines and protocols <references/contributing>`
+* **Academic references**: :doc:`Publications <references/publications>` | :doc:`Cite MVS <references/citations>`
+* **Using or modifying MVS**: :doc:`License <references/license>` | :doc:`Cite MVS <references/citations>`
+* **Getting help**: :doc:`Know issues and workaround <references/troubleshooting>` | :doc:`Report a bug or issue <references/bug_report>`
+
 .. toctree::
    :hidden:
    :maxdepth: 1
@@ -113,8 +130,6 @@ Follow the  :ref:`Quick start guide <installation-steps>`
    references/bug_report
 
 
-
-==================
 Indices and tables
 ==================
 
