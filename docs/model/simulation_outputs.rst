@@ -309,7 +309,7 @@ Figures
 
 Automatic Report
 ################
-MVS has a feature to automatically `generate a PDF report <https://mvs-eland.readthedocs.io/en/latest/Installation.html#generate-pdf-report-or-an-app-in-your-browser-to-visualise-the-results-of-the-simulation>`__ that contains the main elements from the input data as well as the simulation results' data.
+MVS has a feature to automatically :ref:`generate a PDF report <pdf-report-commands>` that contains the main elements from the input data as well as the simulation results' data.
 The report can also be viewed as a web app on the browser, which provides some interactivity.
 
 MVS version number, the branch ID and the simulation date are provided as well in the report, under the MVS logo.
@@ -318,7 +318,7 @@ A commit hash number is provided at the end of the report in order to prevent th
 It includes several tables with project data, simulation settings, the various demands supplied by the user, the various components of the system and the optimization results such as the energy flows and the costs.
 The report also provides several plots which help to visualize the flows and costs.
 
-Please, refer to the `report section <https://mvs-eland.readthedocs.io/en/latest/Installation.html#generate-pdf-report-or-an-app-in-your-browser-to-visualise-the-results-of-the-simulation>`__ for more information on how to setup and use this feature, or type
+Please, refer to the :ref:`report section <pdf-report-commands>` for more information on how to setup and use this feature, or type
 
 ::
 
