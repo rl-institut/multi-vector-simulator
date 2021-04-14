@@ -34,6 +34,6 @@ You can see an implemented example here, where the heat pump has a time-dependen
 The features were integrated with `Pull Request #63 <https://github.com/rl-institut/multi-vector-simulator/pull/63>`__.
 For more information, you might also reference following issues:
 
-- Parameters can now be a list of values, eg. efficiencies for two busses or multiple input/output vectors(`Issue #52 <https://github.com/rl-institut/multi-vector-simulator/issue/52>`__)
+- Parameters can now be a list of values, eg. efficiencies for two busses or multiple input/output vectors(`Issue #52 <https://github.com/rl-institut/multi-vector-simulator/issues/52>`__)
 
-- Parameters can now be defined as a list as well as as a timeseries (`Issue #52 <https://github.com/rl-institut/multi-vector-simulator/issue/52>`__, `Issue #82 <https://github.com/rl-institut/multi-vector-simulator/issue/82>`__)
+- Parameters can now be defined as a list as well as as a timeseries (`Issue #52 <https://github.com/rl-institut/multi-vector-simulator/issues/52>`__, `Issue #82 <https://github.com/rl-institut/multi-vector-simulator/issues/82>`__)

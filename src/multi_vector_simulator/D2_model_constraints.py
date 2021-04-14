@@ -5,7 +5,7 @@ Module D2 - Model constraints
 This module gathers all constraints that can be added to the MVS optimisation. 
 we will probably require another input CSV file or further parameters in simulation_settings.
 
-Future constraints are discussed in issue #133 (https://github.com/rl-institut/mvs_eland/issues/133)
+Future constraints are discussed in issue #133 (https://github.com/rl-institut/multi-vector-simulator/issues/133)
 
 constraints should be tested in-code (examples) and by comparing the lp file generated.
 """

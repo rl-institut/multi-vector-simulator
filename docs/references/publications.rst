@@ -31,4 +31,4 @@ pvcompare
 - `_pvcompare_ <https://github.com/greco-project/pvcompare>`__ is a model for comparing the benefits of different PV technologies in local energy systems in different energy supply scenarios. It uses MVS for optimizing these energy systems and calculating specific KPIs.
 - Functionalities of _pvcompare_ include among others the calculation of an area potential for PV on roof-tops and facades, heat and electricity demand profiles, PV feed-in time series for different technologies, temperature dependent COPs for heat pumps and pre-calculations for a stratified thermal storage.
 - _pvcompare_ concentrates on the integration of PV technologies into local energy systems but could easily be enhanced to analyze other conversion technologies.
-- Checkout the `documentation <https://pvcompare.readthedocs.io/en/latest/about.html>`__ to learn more about _pvcompare_.
+- Checkout the `documentation <https://pvcompare.readthedocs.io/en/latest>`__ to learn more about _pvcompare_.

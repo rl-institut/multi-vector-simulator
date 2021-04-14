@@ -287,7 +287,7 @@ Please see the `oemof.thermal` `examples <https://github.com/oemof/oemof-thermal
 
 For an investment optimization the height of the storage should be left open in the precalculations and `installedCap` should be set to 0 or NaN.
 
-An implementation of the stratified thermal storage component has been done in `pvcompare <https://github.com/greco-project/pvcompare>`__. You can find the precalculations of the stratified thermal energy storage made in `pvcompare` `here <https://github.com/greco-project/pvcompare/tree/dev/pvcompare/stratified_thermal_storage.py>`__.
+An implementation of the stratified thermal storage component has been done in `pvcompare <https://github.com/greco-project/pvcompare>`__. You can find the precalculations of the stratified thermal energy storage made in `pvcompare` `here <https://github.com/greco-project/pvcompare/blob/dev/pvcompare/stratified_thermal_storage.py>`__.
 
 
 Energy excess

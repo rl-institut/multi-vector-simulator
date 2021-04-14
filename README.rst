@@ -57,7 +57,7 @@ To set up the MVS, follow the steps below:
    and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables
    (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights).
 
-   You can also follow the `steps <https://oemof.readthedocs.io/en/latest/installation_and_setup.html>`__
+   You can also follow the `steps <https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver>`__
    from the oemof setup instructions
 
 -  Test if that the cbc solver is properly installed by typing
