@@ -23,6 +23,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DISCOUNTFACTOR,
     OPTIMIZE_CAP,
     MAXIMUM_CAP,
+    MAXIMUM_CAP_NORMALIZED,
+    MAXIMUM_ADD_CAP_NORMALIZED,
     INSTALLED_CAP,
     FILENAME,
     PEAK_DEMAND_PRICING,
@@ -654,6 +656,7 @@ def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_fuel_source()
 
 
 def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_non_dispatchable_asset():
+    #ToDo: change assertion errors
     """The asset belongs to the energy production group, and is a non-dispatchable asset.
     As the maximumCap is used to define the maximum capacity of an asset, but used in oemof-solph to limit a flow, the value has to be translated."""
     timeseries_peak = 0.8
@@ -673,9 +676,11 @@ def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_non_dispatcha
     }
     C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
     assert (
-        dict_values[group][asset][MAXIMUM_CAP][VALUE] == maxCap * timeseries_peak
+        dict_values[group][asset][MAXIMUM_CAP_NORMALIZED][VALUE] == maxCap * timeseries_peak
     ), f"The initial maximumCap defined by the end-user ({maxCap}) is overwritten by a different value ({dict_values[group][asset][MAXIMUM_CAP][VALUE]})."
-
+    assert (
+        dict_values[group][asset][MAXIMUM_ADD_CAP_NORMALIZED][VALUE] == (maxCap - installed_cap) * timeseries_peak
+    ), f"Message about the normalized value"
 
 def test_process_maximum_cap_constraint_subasset():
     """For storages, the subassets have to be processes. This tests the procedure examplary."""

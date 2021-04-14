@@ -172,6 +172,8 @@ ENERGY_VECTOR = "energyVector"
 EXCESS_SINK = "_excess"
 # The maximum additional capacity of an asset (MAXIMUM_ADD_CAP = MAXIMUM_CAP - INSTALLED_CAP)
 MAXIMUM_ADD_CAP = "maximumAddCap"
+MAXIMUM_CAP_NORMALIZED = "maximumCap_normalized"
+MAXIMUM_ADD_CAP_NORMALIZED = "maximumAddCap_normalized"
 
 # DSO
 DSO_CONSUMPTION = "_consumption"
