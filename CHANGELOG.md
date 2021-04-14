@@ -42,7 +42,7 @@ Here is a template for new release sections
 - Add badges for pypi, black linter and license in `docs/index.rst` and `README.rst` (#865)
 - ´--version´ option for the command line `mvs_tool` (#866)
 - `sphinx.ext.imgconverter` in `docs/conf.py` for svg images into pdf (#853)
-- Introduce new parameter `maximumAddCap` where `maximumAddCap=maximumCap-installedCap` in `C0.process_maximum_cap_constraint()` (#848)
+- Introduce new parameter `maximumAddCap` where `maximumAddCap=maximumCap-installedCap` in `C0.process_maximum_cap_constraint()`, ie. make the coupling of the two parameters `installedCap` with `maximumCap` explicit (#848)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -89,7 +89,7 @@ Here is a template for new release sections
 - Bugfix in `C0.process_maximum_cap_constraint()`: Always set `maximumCap` to `None` in case its value is 0 (#833)
 - ReadTheDocs warnings (#863)
 - Reenable the coverage tests on github actions (#864)
-- Adjust definition for `maximumCap` in `docs/MVS_parameters_list.csv` (#848)
+- Adjust definition for `maximumCap` in `docs/MVS_parameters_list.csv`: Total maximum installable capacity (#848)
 
 ## [0.5.5] - 2021-03-04
 
