@@ -41,6 +41,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OUTFLOW_DIRECTION,
     SIMULATION_ANNUITY,
     MAXIMUM_ADD_CAP,
+    MAXIMUM_ADD_CAP_NORMALIZED,
     DISPATCHABILITY,
     OEMOF_ASSET_TYPE,
     OEMOF_GEN_STORAGE,
@@ -746,7 +747,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
             investment=solph.Investment(
                 ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
-                maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
+                maximum=dict_asset[MAXIMUM_ADD_CAP_NORMALIZED][VALUE],
                 existing=dict_asset[INSTALLED_CAP][VALUE],
             ),
             # variable_costs are devided by time series peak as normalized time series are used as actual_value

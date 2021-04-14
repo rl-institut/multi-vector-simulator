@@ -943,6 +943,14 @@
                 "unit": "kWp",
                 "value": null
             },
+            "maximumCap_normalized": {
+                "unit": "kWp",
+                "value": null
+            },
+            "maximumAddCap_normalized": {
+                "unit": "kWp",
+                "value": null
+            },
             "emission_factor": {
                 "unit": "kgCO2eq/unit",
                 "value": 0
