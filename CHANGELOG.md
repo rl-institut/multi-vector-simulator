@@ -37,7 +37,7 @@ Here is a template for new release sections
 - Zenodo badge on README (#850)
 - `VERSION_NUM` to simulation settings, added with `C0.add_version_number_used()` (#855)
 - Generation of pdf version of the readthedocs (#853)
-- `sphinx.ext.imgconverter` in `docs/conf.py` for svg images into pdf (#853)
+- `sphinxcontrib-svg2pdfconverter` in `docs/conf.py` for svg images into pdf (also added in `requirements/docs.txt`(#853)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -54,8 +54,8 @@ Here is a template for new release sections
 - The `DISPATCHABILITY` of energyConsumption assets is now set to FALSE by default (#824)
 - Function `C0.define_sink()` now also defines `DISPATCHABILITY=TRUE` for the created sink.
 - Only implement the constraints defined by the user explicitly: move accessing the constraint key in `dict_value` in the respective constraint preparation functions (#845)
-- Readthedocs restructure of chapters (#853)
-- Load svg badges only for html readthedocs (#857)
+- Readthedocs restructure of chapters (#853, #860)
+- Load svg badges only for html readthedocs (#857) (reversed in #860)
 
 
 ### Removed
