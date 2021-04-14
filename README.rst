@@ -4,8 +4,6 @@ MVS - Multi-Vector Simulator of the E-Land toolbox
 
 |badge_docs| |badge_CI| |badge_coverage| |badge_zenodo|
 
-Depreciated: |badge_travis|
-
 Rights: `Reiner Lemoine Institut (Berlin) <https://reiner-lemoine-institut.de/>`__
 
 The Multi-Vector Simulator (MVS) allows the evaluation of local sector-coupled energy systems that include the energy carriers electricity, heat and/or gas. The MVS has three main features:
@@ -33,6 +31,23 @@ Maybe you have ideas that can help the MVS move forward? Maybe you noticed a bug
 
 For advanced programmers: You can also use the ``dev`` branch that includes the latest updates and changes.
 You find the changelog `HERE <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`__.
+
+.. |badge_docs| image:: https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest
+    :target: https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+.. |badge_CI| image:: https://github.com/rl-institut/multi-vector-simulator/workflows/CI/badge.svg
+    :alt: Build status
+
+.. |badge_coverage| image:: https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg
+    :target: https://coveralls.io/github/rl-institut/multi-vector-simulator
+    :alt: Test coverage
+
+.. |badge_zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4610237.svg
+   :target: https://doi.org/10.5281/zenodo.4610237
+   :alt: Zenodo DOI
+
+
 
 ========================
 Getting started with MVS
@@ -234,22 +249,3 @@ github users, we propose a `workflow <https://github.com/rl-institut/multi-vecto
 For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in
 turn might not be tested. You can find the CHANGELOG.md on
 this `page <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`__.
-
-.. |badge_docs| image:: https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest
-    :target: https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
-
-.. |badge_CI| image:: https://github.com/rl-institut/multi-vector-simulator/workflows/CI/badge.svg
-    :alt: Build status
-
-.. |badge_coverage| image:: https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg
-    :target: https://coveralls.io/github/rl-institut/multi-vector-simulator
-    :alt: Test coverage
-
-.. |badge_travis| image:: https://travis-ci.com/rl-institut/mvs_eland.svg?branch=dev
-    :target: https://travis-ci.com/rl-institut/mvs_eland
-    :alt: Build status
-
-.. |badge_zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4610237.svg
-   :target: https://doi.org/10.5281/zenodo.4610237
-   :alt: Zenodo DOI
