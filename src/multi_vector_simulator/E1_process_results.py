@@ -70,6 +70,11 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LIFETIME_PRICE_DISPATCH,
 )
 
+# Oemof.solph variables
+OEMOF_FLOW = "flow"
+OEMOF_SEQUENCES = "sequences"
+OEMOF_INVEST = "invest"
+OEMOF_SCALARS = "scalars"
 
 # Determines which assets are defined by...
 # a influx from a bus
@@ -219,17 +224,19 @@ def get_timeseries_per_bus(dict_values, bus_data):
         # obtain flows that flow into the bus
         to_bus = {
             key[0][0]: key
-            for key in bus_data[bus]["sequences"].keys()
-            if key[0][1] == bus and key[1] == "flow"
+            for key in bus_data[bus][OEMOF_SEQUENCES].keys()
+            if key[0][1] == bus and key[1] == OEMOF_FLOW
         }
         for asset in to_bus:
-            bus_data_timeseries[bus][asset] = bus_data[bus]["sequences"][to_bus[asset]]
+            bus_data_timeseries[bus][asset] = bus_data[bus][OEMOF_SEQUENCES][
+                to_bus[asset]
+            ]
 
         # obtain flows that flow out of the bus
         from_bus = {
             key[0][1]: key
-            for key in bus_data[bus]["sequences"].keys()
-            if key[0][0] == bus and key[1] == "flow"
+            for key in bus_data[bus][OEMOF_SEQUENCES].keys()
+            if key[0][0] == bus and key[1] == OEMOF_FLOW
         }
         for asset in from_bus:
             try:
@@ -243,10 +250,10 @@ def get_timeseries_per_bus(dict_values, bus_data):
                 # Now the "from_bus" ie. the charging/input power of the storage asset is added to the data set:
                 bus_data_timeseries[bus][" ".join([asset, INPUT_POWER])] = -bus_data[
                     bus
-                ]["sequences"][from_bus[asset]]
+                ][OEMOF_SEQUENCES][from_bus[asset]]
             except KeyError:
                 # The asset was not previously added to the `OPTIMIZED_FLOWS`, ie. is not a storage asset
-                bus_data_timeseries[bus][asset] = -bus_data[bus]["sequences"][
+                bus_data_timeseries[bus][asset] = -bus_data[bus][OEMOF_SEQUENCES][
                     from_bus[asset]
                 ]
 
@@ -276,14 +283,14 @@ def get_storage_results(settings, storage_bus, dict_asset):
     storage.
 
     """
-    power_charge = storage_bus["sequences"][
-        ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), "flow")
+    power_charge = storage_bus[OEMOF_SEQUENCES][
+        ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), OEMOF_FLOW)
     ]
     power_charge = cut_below_micro(power_charge, dict_asset[LABEL] + " charge flow")
     add_info_flows(settings, dict_asset[INPUT_POWER], power_charge)
 
-    power_discharge = storage_bus["sequences"][
-        ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), "flow")
+    power_discharge = storage_bus[OEMOF_SEQUENCES][
+        ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), OEMOF_FLOW)
     ]
     power_discharge = cut_below_micro(
         power_discharge, dict_asset[LABEL] + " discharge flow"
@@ -291,7 +298,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
     add_info_flows(settings, dict_asset[OUTPUT_POWER], power_discharge)
 
-    capacity = storage_bus["sequences"][
+    capacity = storage_bus[OEMOF_SEQUENCES][
         ((dict_asset[LABEL], TYPE_NONE), "storage_content")
     ]
     capacity = cut_below_micro(capacity, dict_asset[LABEL] + " storage capacity")
@@ -300,8 +307,8 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
     if OPTIMIZE_CAP in dict_asset:
         if dict_asset[OPTIMIZE_CAP][VALUE] is True:
-            power_charge = storage_bus["scalars"][
-                ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), "invest")
+            power_charge = storage_bus[OEMOF_SCALARS][
+                ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), OEMOF_INVEST)
             ]
             dict_asset[INPUT_POWER].update(
                 {
@@ -317,8 +324,8 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_charge,
             )
 
-            power_discharge = storage_bus["scalars"][
-                ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), "invest")
+            power_discharge = storage_bus[OEMOF_SCALARS][
+                ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), OEMOF_INVEST)
             ]
             dict_asset[OUTPUT_POWER].update(
                 {
@@ -334,8 +341,8 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_discharge,
             )
 
-            capacity = storage_bus["scalars"][
-                ((dict_asset[LABEL], TYPE_NONE), "invest")
+            capacity = storage_bus[OEMOF_SCALARS][
+                ((dict_asset[LABEL], TYPE_NONE), OEMOF_INVEST)
             ]
             dict_asset[STORAGE_CAPACITY].update(
                 {
@@ -379,7 +386,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
     dict_asset.update(  # todo: this could be a separate function for testing.
         {
-            TIMESERIES_SOC: dict_asset[STORAGE_CAPACITY]["flow"]
+            TIMESERIES_SOC: dict_asset[STORAGE_CAPACITY][FLOW]
             / (
                 dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
                 + dict_asset[STORAGE_CAPACITY][OPTIMIZED_ADD_CAP][VALUE]
@@ -576,9 +583,9 @@ def get_optimal_cap(bus, dict_asset, flow_tuple):
     if OPTIMIZE_CAP in dict_asset:
         if (
             dict_asset[OPTIMIZE_CAP][VALUE] is True
-            and (flow_tuple, "invest") in bus["scalars"]
+            and (flow_tuple, OEMOF_INVEST) in bus[OEMOF_SCALARS]
         ):
-            optimal_capacity = bus["scalars"][(flow_tuple, "invest")]
+            optimal_capacity = bus[OEMOF_SCALARS][(flow_tuple, OEMOF_INVEST)]
             optimal_capacity = cut_below_micro(optimal_capacity, dict_asset[LABEL])
             if TIMESERIES_PEAK in dict_asset:
                 if dict_asset[TIMESERIES_PEAK][VALUE] > 0:
@@ -647,8 +654,8 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
     the flow ('average_flow').
 
     """
-    flow = bus["sequences"][(flow_tuple, "flow")]
-    cut_below_micro(flow, dict_asset[LABEL] + " flow")
+    flow = bus[OEMOF_SEQUENCES][(flow_tuple, OEMOF_FLOW)]
+    cut_below_micro(flow, dict_asset[LABEL] + FLOW)
     add_info_flows(settings, dict_asset, flow)
 
     logging.debug(
