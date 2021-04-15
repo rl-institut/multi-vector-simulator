@@ -289,7 +289,11 @@ def get_storage_results(settings, storage_bus, dict_asset):
         ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), OEMOF_FLOW)
     ]
     power_charge = cut_below_micro(power_charge, dict_asset[LABEL] + " charge flow")
-    add_info_flows(settings, dict_asset[INPUT_POWER], power_charge)
+    add_info_flows(
+        evaluated_period=settings[EVALUATED_PERIOD][VALUE],
+        dict_asset=dict_asset[INPUT_POWER],
+        flow=power_charge,
+    )
 
     power_discharge = storage_bus[OEMOF_SEQUENCES][
         ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), OEMOF_FLOW)
@@ -298,15 +302,24 @@ def get_storage_results(settings, storage_bus, dict_asset):
         power_discharge, dict_asset[LABEL] + " discharge flow"
     )
 
-    add_info_flows(settings, dict_asset[OUTPUT_POWER], power_discharge)
+    add_info_flows(
+        evaluated_period=settings[EVALUATED_PERIOD][VALUE],
+        dict_asset=dict_asset[OUTPUT_POWER],
+        flow=power_discharge,
+    )
 
     storage_capacity = storage_bus[OEMOF_SEQUENCES][
         ((dict_asset[LABEL], TYPE_NONE), OEMOF_STORAGE_CONTENT)
     ]
-    capacity = cut_below_micro(capacity, dict_asset[LABEL] + " storage capacity")
+    storage_capacity = cut_below_micro(
+        storage_capacity, dict_asset[LABEL] + " " + STORAGE_CAPACITY
+    )
 
     add_info_flows(
-        settings, dict_asset[STORAGE_CAPACITY], capacity, type=STORAGE_CAPACITY
+        evaluated_period=settings[EVALUATED_PERIOD][VALUE],
+        dict_asset=dict_asset[STORAGE_CAPACITY],
+        flow=storage_capacity,
+        type=STORAGE_CAPACITY,
     )
 
     if OPTIMIZE_CAP in dict_asset:
@@ -345,13 +358,13 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_discharge,
             )
 
-            capacity = storage_bus[OEMOF_SCALARS][
+            storage_capacity = storage_bus[OEMOF_SCALARS][
                 ((dict_asset[LABEL], TYPE_NONE), OEMOF_INVEST)
             ]
             dict_asset[STORAGE_CAPACITY].update(
                 {
                     OPTIMIZED_ADD_CAP: {
-                        VALUE: capacity,
+                        VALUE: storage_capacity,
                         UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
                 }
@@ -359,7 +372,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
             logging.debug(
                 "Accessed optimized capacity of asset %s: %s",
                 dict_asset[STORAGE_CAPACITY][LABEL],
-                capacity,
+                storage_capacity,
             )
 
         else:
@@ -665,7 +678,11 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
     """
     flow = bus[OEMOF_SEQUENCES][(flow_tuple, OEMOF_FLOW)]
     cut_below_micro(flow, dict_asset[LABEL] + FLOW)
-    add_info_flows(settings, dict_asset, flow)
+    add_info_flows(
+        evaluated_period=settings[EVALUATED_PERIOD][VALUE],
+        dict_asset=dict_asset,
+        flow=flow,
+    )
 
     logging.debug(
         "Accessed simulated timeseries of asset %s (total sum: %s)",
@@ -674,16 +691,14 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
     )
 
 
-def add_info_flows(settings, dict_asset, flow, type=None):
+def add_info_flows(evaluated_period, dict_asset, flow, type=None):
     r"""
     Adds `flow` and total flow amongst other information to `dict_asset`.
 
     Parameters
     ----------
-    settings : dict
-        Contains simulation settings from `simulation_settings.csv` with
-        additional information like the amount of time steps simulated in the
-        optimization ('periods').
+    evaluated_period : int
+        The number of days simulated with the energy system model.
     dict_asset : dict
         Contains information about the asset `flow` belongs to.
     flow : pd.Series
@@ -698,6 +713,13 @@ def add_info_flows(settings, dict_asset, flow, type=None):
     the flow ('average_flow'). As Storage capacity is not a flow, an aggregation of the timeseries does not make sense
     and the parameters TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW are added set to None.
 
+    Notes
+    -----
+
+    Tested with:
+    - E1.test_add_info_flows_365_days()
+    - E1.test_add_info_flows_1_day()
+    - E1.test_add_info_flows_storage_capacity()
     """
     total_flow = sum(flow)
     dict_asset.update({FLOW: flow})
@@ -712,7 +734,7 @@ def add_info_flows(settings, dict_asset, flow, type=None):
             {
                 TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
                 ANNUAL_TOTAL_FLOW: {
-                    VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
+                    VALUE: total_flow * 365 / evaluated_period,
                     UNIT: "kWh",
                 },
                 PEAK_FLOW: {VALUE: max(flow), UNIT: "kW"},

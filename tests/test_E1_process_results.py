@@ -1,4 +1,6 @@
 import pandas as pd
+from pandas.util.testing import assert_series_equal
+
 import os
 import numpy as np
 import logging
@@ -306,6 +308,107 @@ def test_cut_below_micro_pd_Series_larger_0_smaller_threshold(caplog):
     ).all(), f"One value in pd.Series is below 0 but smaller then the threshold, its value should be changed to zero (but it is {result})."
 
 
+def test_add_info_flows_storage_capacity():
+    dict_test = {}
+    flow = pd.Series(
+        [0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2]
+    )
+    E1.add_info_flows(
+        evaluated_period=1, dict_asset=dict_test, flow=flow, type=STORAGE_CAPACITY
+    )
+    for parameter in [FLOW, TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW]:
+        assert (
+            parameter in dict_test
+        ), f"Parameter {parameter} should have been added to the dict_asset."
+        if parameter == FLOW:
+            assert_series_equal(
+                dict_test[FLOW].astype(np.int64), flow, check_names=False,
+            )
+        else:
+            assert (
+                UNIT in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+            assert (
+                VALUE in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+            assert (
+                dict_test[parameter][VALUE] is None
+            ), f"For {STORAGE_CAPACITY}, the parameter {parameter} should have 'None' as value. It is {dict_test[parameter][VALUE]}."
+            assert (
+                dict_test[parameter][UNIT] == "NaN"
+            ), f"For {STORAGE_CAPACITY}, the parameter {parameter} should have 'NaN'  as unit. It is {dict_test[parameter][UNIT]}."
+
+
+def test_add_info_flows_1_day():
+    dict_test = {}
+    flow = pd.Series(
+        [0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2]
+    )
+    E1.add_info_flows(evaluated_period=1, dict_asset=dict_test, flow=flow)
+    for parameter in [FLOW, TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW]:
+        assert (
+            parameter in dict_test
+        ), f"Parameter {parameter} should have been added to the dict_asset."
+        if parameter != FLOW:
+            assert (
+                UNIT in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+            assert (
+                VALUE in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+
+    assert_series_equal(
+        dict_test[FLOW].astype(np.int64), flow, check_names=False,
+    )
+    assert dict_test[TOTAL_FLOW][VALUE] == sum(
+        flow
+    ), f"The {TOTAL_FLOW} should be {sum(flow)}, but is {dict_test[TOTAL_FLOW][VALUE]}"
+    assert (
+        dict_test[ANNUAL_TOTAL_FLOW][VALUE] == sum(flow) * 365
+    ), f"The {ANNUAL_TOTAL_FLOW} should be {sum(flow)*365}, but is {dict_test[ANNUAL_TOTAL_FLOW][VALUE]}"
+    assert dict_test[PEAK_FLOW][VALUE] == max(
+        flow
+    ), f"The {PEAK_FLOW} should be {max(flow)}, but is {dict_test[PEAK_FLOW][VALUE]}"
+    assert (
+        dict_test[AVERAGE_FLOW][VALUE] == flow.mean()
+    ), f"The {AVERAGE_FLOW} should be {flow.mean()}, but is {dict_test[AVERAGE_FLOW][VALUE]}"
+
+
+def test_add_info_flows_365_days():
+    dict_test = {}
+    flow = pd.Series(
+        [0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2]
+    )
+    E1.add_info_flows(evaluated_period=365, dict_asset=dict_test, flow=flow)
+    for parameter in [FLOW, TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW]:
+        assert (
+            parameter in dict_test
+        ), f"Parameter {parameter} should have been added to the dict_asset."
+        if parameter != FLOW:
+            assert (
+                UNIT in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+            assert (
+                VALUE in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+
+    assert_series_equal(
+        dict_test[FLOW].astype(np.int64), flow, check_names=False,
+    )
+    assert dict_test[TOTAL_FLOW][VALUE] == sum(
+        flow
+    ), f"The {TOTAL_FLOW} should be {sum(flow)}, but is {dict_test[TOTAL_FLOW][VALUE]}"
+    assert dict_test[ANNUAL_TOTAL_FLOW][VALUE] == sum(
+        flow
+    ), f"The {ANNUAL_TOTAL_FLOW} should be {sum(flow)}, but is {dict_test[ANNUAL_TOTAL_FLOW][VALUE]}"
+    assert dict_test[PEAK_FLOW][VALUE] == max(
+        flow
+    ), f"The {PEAK_FLOW} should be {max(flow)}, but is {dict_test[PEAK_FLOW][VALUE]}"
+    assert (
+        dict_test[AVERAGE_FLOW][VALUE] == flow.mean()
+    ), f"The {AVERAGE_FLOW} should be {flow.mean()}, but is {dict_test[AVERAGE_FLOW][VALUE]}"
+
+
 """
 def test_get_optimal_cap_optimize_input_flow_timeseries_peak_provided():
     pass
@@ -340,18 +443,4 @@ def test_get_opitmal_cap_no_optimization():
 def test_get_optimal_cap_optimizeCap_not_in_dict_asset():
     pass
     # check that dict_asset did not change
-
-
-# NOTE: I decided to not test get_flow() and add_info_flow() as they are tested by other functions extensively.
-#       Please comment if you are of another opinion.
-
-# def test_get_flow_input():
-#     pass
-#
-# def test_get_flow_output():
-#     pass
-#
-# def test_get_flow_invalid_direction_raises_value_error():
-#     pass
-# same tests as add_info_flow() just that bus and direction is provided.
 """
