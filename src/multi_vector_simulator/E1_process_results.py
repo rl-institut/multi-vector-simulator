@@ -405,6 +405,24 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
 
 def get_state_of_charge_info(dict_asset):
+    r"""
+    Adds state of charge timeseries and average value of the timeseries to the storage dict.
+
+    Parameters
+    ----------
+    dict_asset: dict
+        Dict of the asset, specifically including the STORAGE_CAPACITY
+
+    Returns
+    -------
+    Updated dict_asset
+
+    Notes
+    -----
+
+    Tested with:
+    - E1.test_get_state_of_charge_info()
+    """
     timeseries_soc = dict_asset[STORAGE_CAPACITY][FLOW] / (
         dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
         + dict_asset[STORAGE_CAPACITY][OPTIMIZED_ADD_CAP][VALUE]

@@ -409,6 +409,42 @@ def test_add_info_flows_365_days():
     ), f"The {AVERAGE_FLOW} should be {flow.mean()}, but is {dict_test[AVERAGE_FLOW][VALUE]}"
 
 
+def test_get_state_of_charge_info():
+    flow = pd.Series([0, 2, 0, 2, 0, 2])
+    dict_test = {
+        STORAGE_CAPACITY: {
+            FLOW: flow,
+            INSTALLED_CAP: {VALUE: 1},
+            OPTIMIZED_ADD_CAP: {VALUE: 1},
+        }
+    }
+    E1.get_state_of_charge_info(dict_test)
+    assert (
+        TIMESERIES_SOC in dict_test
+    ), f"Parameter {TIMESERIES_SOC} should be added to the dict."
+    exp_timeseries_soc = pd.Series([0, 1, 0, 1, 0, 1])
+    assert_series_equal(
+        dict_test[TIMESERIES_SOC].astype(np.int64),
+        exp_timeseries_soc,
+        check_names=False,
+    )
+    assert (
+        AVERAGE_SOC in dict_test
+    ), f"Parameter {AVERAGE_SOC} should be added to the dict."
+    assert (
+        VALUE in dict_test[AVERAGE_SOC]
+    ), f"Parameter {AVERAGE_SOC} should be added to the dict with a {VALUE}."
+    assert (
+        UNIT in dict_test[AVERAGE_SOC]
+    ), f"Parameter {AVERAGE_SOC} should be added to the dict with a {UNIT}."
+    assert (
+        dict_test[AVERAGE_SOC][VALUE] == 0.5
+    ), f"Parameter {AVERAGE_SOC} should have {VALUE} 0.5 but has {dict_test[AVERAGE_SOC][VALUE] }."
+    assert (
+        dict_test[AVERAGE_SOC][UNIT] == "factor"
+    ), f"Parameter {AVERAGE_SOC} should have {UNIT} 'factor' but has {dict_test[AVERAGE_SOC][UNIT]}"
+
+
 """
 def test_get_optimal_cap_optimize_input_flow_timeseries_peak_provided():
     pass
