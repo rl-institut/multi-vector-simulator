@@ -68,6 +68,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     KPI_UNCOUPLED_DICT,
     FIX_COST,
     LIFETIME_PRICE_DISPATCH,
+    AVERAGE_SOC,
 )
 
 # Oemof.solph variables
@@ -386,13 +387,18 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 }
             )
 
-    dict_asset.update(  # todo: this could be a separate function for testing.
+    get_state_of_charge_info(dict_asset)
+
+
+def get_state_of_charge_info(dict_asset):
+    timeseries_soc = dict_asset[STORAGE_CAPACITY][FLOW] / (
+        dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
+        + dict_asset[STORAGE_CAPACITY][OPTIMIZED_ADD_CAP][VALUE]
+    )
+    dict_asset.update(
         {
-            TIMESERIES_SOC: dict_asset[STORAGE_CAPACITY][FLOW]
-            / (
-                dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
-                + dict_asset[STORAGE_CAPACITY][OPTIMIZED_ADD_CAP][VALUE]
-            )
+            TIMESERIES_SOC: timeseries_soc,
+            AVERAGE_SOC: {VALUE: timeseries_soc.mean(), UNIT: "factor"},
         }
     )
 

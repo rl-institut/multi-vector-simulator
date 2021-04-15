@@ -138,7 +138,6 @@ TIMESERIES_NORMALIZED = "timeseries_normalized"
 TIMESERIES_PEAK = "timeseries_peak"
 TIMESERIES_TOTAL = "timeseries_total"
 TIMESERIES_AVERAGE = "timeseries_average"
-TIMESERIES_SOC = "timeseries_soc"
 
 # Other pre-processing
 VERSION_NUM = "Version number"
@@ -220,6 +219,8 @@ TOTAL_FLOW = "total_flow"
 ANNUAL_TOTAL_FLOW = "annual_total_flow"
 PEAK_FLOW = "peak_flow"
 AVERAGE_FLOW = "average_flow"
+TIMESERIES_SOC = "timeseries_soc"
+AVERAGE_SOC = "average_soc"
 
 # Capacity
 OPTIMIZED_ADD_CAP = "optimizedAddCap"
