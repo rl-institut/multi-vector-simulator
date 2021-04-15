@@ -303,7 +303,9 @@ def get_storage_results(settings, storage_bus, dict_asset):
     ]
     capacity = cut_below_micro(capacity, dict_asset[LABEL] + " storage capacity")
 
-    add_info_flows(settings, dict_asset[STORAGE_CAPACITY], capacity)
+    add_info_flows(
+        settings, dict_asset[STORAGE_CAPACITY], capacity, type=STORAGE_CAPACITY
+    )
 
     if OPTIMIZE_CAP in dict_asset:
         if dict_asset[OPTIMIZE_CAP][VALUE] is True:
@@ -665,7 +667,7 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
     )
 
 
-def add_info_flows(settings, dict_asset, flow):
+def add_info_flows(settings, dict_asset, flow, type=None):
     r"""
     Adds `flow` and total flow amongst other information to `dict_asset`.
 
@@ -679,27 +681,37 @@ def add_info_flows(settings, dict_asset, flow):
         Contains information about the asset `flow` belongs to.
     flow : pd.Series
         Time series of the flow.
+    type: str, default: None
+        type of the flow, only exception is "STORAGE_CAPACITY".
 
     Returns
     -------
     Indirectly updates `dict_asset` with the `flow`, the total flow, the annual
     total flow, the maximum of the flow ('peak_flow') and the average value of
-    the flow ('average_flow').
+    the flow ('average_flow'). As Storage capacity is not a flow, an aggregation of the timeseries does not make sense
+    and the parameters TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW are added set to None.
 
     """
     total_flow = sum(flow)
-    dict_asset.update(
-        {
-            FLOW: flow,
-            TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
-            ANNUAL_TOTAL_FLOW: {
-                VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
-                UNIT: "kWh",
-            },
-            PEAK_FLOW: {VALUE: max(flow), UNIT: "kW"},
-            AVERAGE_FLOW: {VALUE: total_flow / len(flow), UNIT: "kW"},
-        }
-    )
+    dict_asset.update({FLOW: flow})
+
+    if type == STORAGE_CAPACITY:
+        # The oemof-solph "flow" connected to the storage capacity describes the energy stored in the storage asset, not the actual flow. As such, the below parameters are non-sensical, especially TOTAL_FLOW and ANNUAL_TOTAL_FLOW. PEAK_FLOW and AVERAGE_FLOW are, as a consequence, also not captured. Instead, the AVERAGE_SOC is calculated in a later processing step.
+        for parameter in [TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW]:
+            dict_asset.update({parameter: {VALUE: None, UNIT: "NaN"}})
+
+    else:
+        dict_asset.update(
+            {
+                TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
+                ANNUAL_TOTAL_FLOW: {
+                    VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
+                    UNIT: "kWh",
+                },
+                PEAK_FLOW: {VALUE: max(flow), UNIT: "kW"},
+                AVERAGE_FLOW: {VALUE: flow.mean(), UNIT: "kW"},
+            }
+        )
 
 
 def convert_demand_to_dataframe(dict_values, sector_demands=None):
