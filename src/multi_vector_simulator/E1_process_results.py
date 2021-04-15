@@ -76,6 +76,7 @@ OEMOF_FLOW = "flow"
 OEMOF_SEQUENCES = "sequences"
 OEMOF_INVEST = "invest"
 OEMOF_SCALARS = "scalars"
+OEMOF_STORAGE_CONTENT = "storage_content"
 
 # Determines which assets are defined by...
 # a influx from a bus
@@ -299,8 +300,8 @@ def get_storage_results(settings, storage_bus, dict_asset):
 
     add_info_flows(settings, dict_asset[OUTPUT_POWER], power_discharge)
 
-    capacity = storage_bus[OEMOF_SEQUENCES][
-        ((dict_asset[LABEL], TYPE_NONE), "storage_content")
+    storage_capacity = storage_bus[OEMOF_SEQUENCES][
+        ((dict_asset[LABEL], TYPE_NONE), OEMOF_STORAGE_CONTENT)
     ]
     capacity = cut_below_micro(capacity, dict_asset[LABEL] + " storage capacity")
 
