@@ -194,7 +194,6 @@ def create_input_json(
 def create_json_from_csv(
     input_directory, filename, parameters=None, asset_is_a_storage=False
 ):
-
     """
     One csv file is loaded and it's parameters are checked. The csv file is
     then converted to a dictionary; the name of the csv file is used as the
@@ -205,27 +204,31 @@ def create_json_from_csv(
     files (names of the "storage" columns in "energyStorage" are called and
     added to the energyStorage Dictionary.
 
-
-    :param input_directory: str
+    Parameters
+    ----------
+    input_directory : str
         path of the directory where the input csv files can be found
-    :param filename: str
+    filename : str
         name of the input file that is transformed into a json, without
         extension
-    :param parameters: list
+    parameters : list
         List of parameters names that are required
 
-    :param asset_is_a_storage : bool
+    asset_is_a_storage : bool
         default value is False. If the function is called by
         add_storage_components() the
         parameter is set to True
 
-    :notes:
+    Returns
+    -------
+    dict
+        the converted dictionary
+
+    Notes
+    -----
     Tested with:
     - test_default_values_storage_without_thermal_losses()
     - test_default_values_storage_with_thermal_losses()
-
-    :return: dict
-        the converted dictionary
     """
 
     logging.debug("Loading input data from csv: %s", filename)

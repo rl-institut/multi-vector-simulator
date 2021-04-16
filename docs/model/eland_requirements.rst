@@ -85,7 +85,7 @@ FUN-MVS-04 - Optimisation Results
 The results of the MVS simulation are post-processed, and result in numberous key performance indicators (KPI). Following information is calculated for an economic evaluation of the energy system:
 
 * Capital and operational expenditures (capex, opex) per asset, both as annuities as well as present costs. This includes also the first-time investment costs (FIC), the replacement costs minus residual values, and the costs for asset dispatch (equations compare :ref:`economic_precalculation-label`).
-* :ref:`NPC <net_present_costs>` and annuity of the whole energy system
+* :ref:`NPC <net_present_cost>` and annuity of the whole energy system
 * :ref:`Levelized cost of energy (LCOE) <lcoe>` of the energy system, in electricity equivalent
 * :ref:`Levelized cost of an energy carrier <lcoe>` in electricity equivalent (LCOEleq) for each energy carrier in the energy system
 * :ref:`Levelized cost of asset dispatch <lcoe_asset>`, calculated from the annuity of an asset and their throughput
@@ -96,7 +96,7 @@ Additionaly, a number of technical parameters are calculated both the energy sys
 * :ref:`Renewable share <kpi_renewable_factor>`
 * :ref:`Renewable share of local generation <kpi_renewable_share_of_local_generation>`
 * :ref:`Degree of autonomy <kpi_degree_of_autonomy>`
-* :ref:`Degree of net zero energy <kpi_degree_of_net_zero_energy>`
+* :ref:`Degree of net zero energy <kpi_degree_of_nze>`
 * :ref:`Onsite Energy Matching (OEM) <kpi_onsite_energy_fraction>`
 * :ref:`Onsite Energy Fraction (OEF) <kpi_onsite_energy_matching>`
 * Annual excess energy

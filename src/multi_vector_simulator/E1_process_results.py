@@ -562,15 +562,15 @@ def get_optimal_cap(bus, dict_asset, flow_tuple):
     flow_tuple : tuple
         Key of the oemof-solph outputs dict mapping the value to be evaluated
 
-    possible todos
-    --------------
-    * direction as optimal parameter or with default value None (direction is
-        not needed if 'optimizeCap' is not in `dict_asset` or if it's value is False
-
     Returns
     -------
     Indirectly updated `dict_asset` with optimal capacity to be added
     ('optimizedAddCap').
+
+    TODOS
+    ^^^^^
+    * direction as optimal parameter or with default value None (direction is
+        not needed if 'optimizeCap' is not in `dict_asset` or if it's value is False
 
     """
     if OPTIMIZE_CAP in dict_asset:

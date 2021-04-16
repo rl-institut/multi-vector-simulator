@@ -229,6 +229,11 @@ def source(model, dict_asset, **kwargs):
     transformers : dict, optional
     storages : dict, optional
 
+    TODOS
+    ^^^^^
+    * We should actually not allow multiple output busses, probably - because a pv would then
+    feed in twice as much as solar_gen_specific for example, see issue #121
+
     Notes
     -----
     The following functions are used for defining the source:
@@ -244,13 +249,6 @@ def source(model, dict_asset, **kwargs):
     - test_source_dispatchable_optimize_timeseries_not_normalized_timeseries()
     - test_source_dispatchable_fix_normalized_timeseries()
     - test_source_dispatchable_fix_timeseries_not_normalized_timeseries()
-
-    Todos
-    -----
-    * We should actually not allow multiple output busses, probably - because a
-        pv would then feed in twice as much as solar_gen_specific for example,
-        see issue #121
-
     """
     if DISPATCHABILITY in dict_asset and dict_asset[DISPATCHABILITY] is True:
         check_optimize_cap(
@@ -300,19 +298,19 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
     transformers : dict, optional
     storages : dict, optional
 
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the component object.
+
+    TODOS
+    ^^^^^
+    Might be possible to drop non invest optimization in favour of invest optimization if max_capactiy
+    attributes ie. are set to 0 for fix (but less beautiful, and in case of generator even blocks nonconvex opt.).
+
     Notes
     -----
     Tested with:
     - test_check_optimize_cap_raise_error()
-
-    Todos
-    -----
-    Might be possible to drop non invest optimization in favour of invest optimization if max_capactiy
-    attributes ie. are set to 0 for fix (but less beautiful, and in case of generator even blocks nonconvex opt.).
-
-    Returns
-    -------
-    Indirectly updated `model` and dict of asset in `kwargs` with the component object.
 
     """
     if dict_asset[OPTIMIZE_CAP][VALUE] is False:

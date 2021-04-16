@@ -14,7 +14,7 @@ Cost data
 #########
 
 
-.. include:: outputs/net_present_costs.inc
+.. include:: outputs/net_present_cost.inc
 
 The Net present cost (NPC) is the present value of all the costs associated with installation, operation,
 maintenance and replacement of energy technologies comprising the sector-coupled system over the project lifetime,
