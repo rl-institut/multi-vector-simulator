@@ -217,7 +217,7 @@ def generate_kpi_description(input_csv_file, output_path):
             + [""]
             + [
                 "This parameter is used within the following categories: "
-                + ", ".join([f":ref:`{cat}`" for cat in props.category.split(";")])
+                + ", ".join([f"{cat}" for cat in props.category.split(";")])
             ]
             + ["", "",]
         )
