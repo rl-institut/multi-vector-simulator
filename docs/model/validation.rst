@@ -4,7 +4,7 @@
 Validation Methodology
 ----------------------
 
-As mentioned in :ref:`validation-plan`, the MVS is validated using three validation methods: conceptual model validation, model verification and operational validity.
+As mentioned in OLD REF (validation-plan in owerview.rst), the MVS is validated using three validation methods: conceptual model validation, model verification and operational validity.
 
 **Conceptual model validation** consists of looking into the underlying theories and assumptions. Therefore, the conceptual validation scheme includes a comprehensive review of the generated equations by the oemof-solph python library and the components’ models. Next step is to try and adapt them to a sector coupled example with specific constraints. Tracing and examining the flowchart is also considered as part of this validation type which can be found in :ref:`Flowchart`. The aim is to assess the reasonability of the model behavior through pre-requisite knowledge; this technique is known as face validity.
 

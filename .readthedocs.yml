@@ -15,6 +15,7 @@ python:
    install:
       - requirements: requirements/docs.txt
       - requirements: requirements/default.txt
+      - requirements: requirements/report.txt
       - method: setuptools
         path: .
 # Optionally build your docs in additional formats such as PDF
