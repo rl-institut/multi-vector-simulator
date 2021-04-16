@@ -174,6 +174,58 @@ def copy_readme():
         fp.writelines(data[data.index("Setup\n") :])
 
 
+def generate_kpi_description(input_csv_file, output_path):
+    """Generate a .rst formatted document for each kpi in a given csv file
+
+    Parameters
+    ----------
+    input_csv_file: str
+        path of the file with extensive description of all mvs kpis
+    output_path: str
+        path of where the .inc files should be saved for each parameter
+
+    Returns
+    -------
+    None
+
+    """
+    df = pd.read_csv(input_csv_file)
+    df = df.loc[df.category != "hidden"]
+    parameter_properties = [
+        ":Definition:",
+        ":Type:",
+        ":Unit:",
+        ":Valid Interval:",
+    ]
+
+    # formats following the template:
+    # .._<ref_name>:
+    #
+    # <name>
+    # ^^^^^^
+    #
+    # :Definition:
+    # :Type:
+    # :Unit:
+    # :Valid Interval:
+    #
+    for row in df.iterrows():
+        props = row[1]
+        lines = (
+            [f".. _{props.ref}:", "", props.label, "^" * len(props.label), "",]
+            + [f"{p} {props[p]}" for p in parameter_properties]
+            + [""]
+            + [
+                "This parameter is used within the following categories: "
+                + ", ".join([f":ref:`{cat}`" for cat in props.category.split(";")])
+            ]
+            + ["", "",]
+        )
+
+        with open(os.path.join(output_path, props.ref + ".inc"), "w") as ofs:
+            ofs.write("\n".join(lines))
+
+
 generate_parameter_description(
     "MVS_parameters_list.csv", "model/parameters/MVS_parameters_list.inc"
 )
@@ -185,6 +237,9 @@ generate_parameter_categories(
     "MVS_parameters_categories.csv",
     "model/parameters/MVS_parameters_categories.inc",
 )
+
+generate_kpi_description("MVS_kpis_list.csv", "model/outputs")
+
 copy_readme()
 
 # -- Project information -----------------------------------------------------
@@ -232,6 +287,8 @@ autosummary_imported_members = True
 # a list of builtin themes.
 #
 import sphinx_rtd_theme
+
+numpydoc_show_class_members = False
 
 html_theme = "sphinx_rtd_theme"
 
