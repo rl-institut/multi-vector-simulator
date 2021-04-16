@@ -20,4 +20,5 @@ python:
       - method: setuptools
         path: .
 # Optionally build your docs in additional formats such as PDF
-formats: all
+formats:
+  - pdf
