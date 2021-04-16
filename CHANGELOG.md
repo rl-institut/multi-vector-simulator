@@ -38,6 +38,7 @@ Here is a template for new release sections
 - `VERSION_NUM` to simulation settings, added with `C0.add_version_number_used()` (#855)
 - Generation of pdf version of the readthedocs (#853)
 - `sphinxcontrib-svg2pdfconverter` in `docs/conf.py` for svg images into pdf (also added in `requirements/docs.txt`(#853)
+- Add a function `generate_kpi_description` in `docs/conf.py` module to generate documentation of kpi parameters listed in `docs/MVS_kpis_list.csv`(#863)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -56,6 +57,7 @@ Here is a template for new release sections
 - Only implement the constraints defined by the user explicitly: move accessing the constraint key in `dict_value` in the respective constraint preparation functions (#845)
 - Readthedocs restructure of chapters (#853, #860)
 - Load svg badges only for html readthedocs (#857) (reversed in #860)
+- Turn docs build warnings into errors (#863)
 
 
 ### Removed
@@ -75,6 +77,7 @@ Here is a template for new release sections
 - Hotfix: `C0.define_sinks()` now works for scalar feed-in prices, but not for lists of timeseries (#837)
 - Address issue #825 by changing order of `maximumCap` check and adaption in `C0.process_maximum_cap_constraint()` (#833)
 - Bugfix in `C0.process_maximum_cap_constraint()`: Always set `maximumCap` to `None` in case its value is 0 (#833)
+- ReadTheDocs warnings (#863)
 
 ## [0.5.5] - 2021-03-04
 
