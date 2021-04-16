@@ -60,6 +60,7 @@ Here is a template for new release sections
 - Readthedocs restructure of chapters (#853, #860)
 - Load svg badges only for html readthedocs (#857) (reversed in #860)
 - Turn docs build warnings into errors (#863)
+- Pytest runs the kpi benchmark tests (which was not the case before) (#864)
 
 
 ### Removed
@@ -80,6 +81,7 @@ Here is a template for new release sections
 - Address issue #825 by changing order of `maximumCap` check and adaption in `C0.process_maximum_cap_constraint()` (#833)
 - Bugfix in `C0.process_maximum_cap_constraint()`: Always set `maximumCap` to `None` in case its value is 0 (#833)
 - ReadTheDocs warnings (#863)
+- Reenable the coverage tests on github actions (#864)
 
 ## [0.5.5] - 2021-03-04
 
