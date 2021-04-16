@@ -81,7 +81,7 @@ Follow the  :doc:`Quick start guide <Installation>`
 Model Reference
 ===============
 
-* **How the energy system is modelled**: :doc:`Assumption behind the model <model/assumptions>` |:doc:`Available components for modelling <model/components>` | :doc:`Setting constraints on model or components <model/constraints>` | :doc:`Scope and limitation of the model <model/limitations>`
+* **How the energy system is modelled**: :doc:`Assumption behind the model <model/assumptions>` | :doc:`Available components for modelling <model/components>` | :doc:`Setting constraints on model or components <model/constraints>` | :doc:`Scope and limitation of the model <model/limitations>`
 * **Description of parameters**: :doc:`Input parameters <model/input_parameters>` | :doc:`Output variables and KPIs <model/simulation_outputs>`
 * **Validation of the model**: :doc:`Benchmark tests <model/validation>`
 

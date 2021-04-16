@@ -1587,8 +1587,8 @@ def replace_nans_in_timeseries_with_0(timeseries, label):
     Replaces nans in the timeseries (if any) with 0
 
     Parameters
-
     ----------
+
     timeseries: pd.Series
         demand or resource timeseries in dict_asset (having nan value(s) if any),
         also of parameters that are not defined as scalars but as timeseries
@@ -1619,7 +1619,6 @@ def compute_timeseries_properties(dict_asset):
     """Compute peak, aggregation, average and normalize timeseries
 
     Parameters
-
     ----------
     dict_asset: dict
         dict of all asset parameters, must contain TIMESERIES key

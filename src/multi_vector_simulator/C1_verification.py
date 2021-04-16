@@ -798,19 +798,23 @@ def check_energy_system_can_fulfill_max_demand(dict_values):
     r"""
     Helps to do oemof-solph termination debugging: Logs a logging.warning message if the aggregated installed capacity and maximum capacity (if applicable)
     of all conversion, generation and storage assets connected to one bus is smaller than the maximum demand.
-   The check is applied to each bus of the energy system. Check passes when the potential peak supply is
-   larger then or equal to the peak demand on the bus, or if the maximum capacity of an asset is set to
-   None when optimizing.
+    The check is applied to each bus of the energy system. Check passes when the potential peak supply is
+    larger then or equal to the peak demand on the bus, or if the maximum capacity of an asset is set to
+    None when optimizing.
+
     Parameters
     ----------
     dict_values : dict
         Contains all input data of the simulation.
+
     Returns
     -------
     Indirectly, logs a logging.warning message if the installed and maximum capacities of
     conversion/generation/storage assets are less than the maximum demand, for each bus.
+
     Notes
     -----
+
     Tested with:
     - test_check_energy_system_can_fulfill_max_demand_sufficient_capacities()
     - test_check_energy_system_can_fulfill_max_demand_no_maximum_capacity()
@@ -821,6 +825,7 @@ def check_energy_system_can_fulfill_max_demand(dict_values):
     - test_check_energy_system_can_fulfill_max_demand_sufficient_non_dispatchable_production
     - test_check_energy_system_can_fulfill_max_demand_insufficient_non_dispatchable_production
     - test_check_energy_system_can_fulfill_max_demand_fails_mvs_runthrough
+
     """
     for bus in dict_values[ENERGY_BUSSES]:
         pass_check = False

@@ -463,7 +463,7 @@ def add_renewable_factor(dict_values):
 
 
 def equation_renewable_share(total_res, total_non_res):
-    """Calculates the renewable share
+    r"""Calculates the renewable share
 
     Parameters
     ----------
@@ -480,13 +480,13 @@ def equation_renewable_share(total_res, total_non_res):
 
     Notes
     -----
+
     Used both to calculate RENEWABLE_FACTOR and RENEWABLE_SHARE_OF_LOCAL_GENERATION.
 
     Equation:
 
     .. math::
-            RES = \frac{total_res}{total_non_res + total_res}
-
+        RES = \frac{total_res}{total_non_res + total_res}
 
     The renewable share is relative to generation, but not consumption of energy, the renewable share can not be larger 1.
     If there is no generation or consumption from a DSO within an energyVector and supply is solely reached by energy conversion from another vector, the renewable share is defined to be zero.
@@ -495,8 +495,8 @@ def equation_renewable_share(total_res, total_non_res):
     * renewable share < 1 - part of the energy in the system is of renewable origin
     * renewable share = 0 - no energy is of renewable origin
 
-
     Tested with:
+
     - test_renewable_share_equation_no_generation()
     - test_renewable_share_equation_below_1()
     - test_renewable_share_equation_is_0()
@@ -889,7 +889,7 @@ def add_onsite_energy_fraction(dict_values):
 
 
 def equation_onsite_energy_fraction(total_generation, total_feedin):
-    """
+    r"""
     Calculates onsite energy fraction (OEF), i.e. self-consumption.
 
     OEF describes the fraction of all locally generated energy that is consumed
@@ -904,12 +904,11 @@ def equation_onsite_energy_fraction(total_generation, total_feedin):
 
     Returns
     -------
-        float
-            Onsite energy fraction.
+    float
+        Onsite energy fraction.
 
     .. math::
             OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
-
             &OEF \epsilon \text{[0,1]}
 
     Tested with
