@@ -64,7 +64,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          coverage run -m pytest tests/ -k "not test_benchmark_kpi" --durations-min=1.0 --durations=400
+          coverage run -m pytest tests/ --durations-min=1.0 --durations=400
 
       - name: Check test coverage
         run: |
