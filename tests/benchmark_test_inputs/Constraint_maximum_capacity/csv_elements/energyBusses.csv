@@ -1,2 +1,2 @@
-,unit,Electricity
-energyVector,str,Electricity
+,unit,Electricity,Electricity (DSO),Fuel,PV plant (mono) bus
+energyVector,str,Electricity,Electricity,Electricity,Electricity
