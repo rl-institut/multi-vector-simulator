@@ -49,7 +49,11 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_BUSSES,
     ASSET_DICT,
     MAXIMUM_CAP,
-    ENERGY_PRODUCTION
+    MAXIMUM_ADD_CAP,
+    INSTALLED_CAP,
+    ENERGY_PRODUCTION,
+    ENERGY_CONVERSION,
+    TIMESERIES
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -392,20 +396,57 @@ class Test_Constraints:
                     TEST_OUTPUT_PATH, case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
                 )
             )
-            # loop through each bus
-            for bus in data[ENERGY_BUSSES]:
-                # loop through assets connected to bus
-                for asset in data[ENERGY_BUSSES][bus][ASSET_DICT]:
-                    # only energy production assets considered (todo: check this is correct)
-                    if asset in data[ENERGY_PRODUCTION]:
-                        if OPTIMIZED_ADD_CAP in asset:
-                            maximum_cap = data[asset][MAXIMUM_CAP][VALUE]
-                            optimized_add_cap = data[asset][OPTIMIZED_ADD_CAP][VALUE]
 
-                            assert (optimized_add_cap <= maximum_cap), f"The optimized additional capacity of the asset should be less than or equal to the maximum capacity, but here the optimized additional capacity is {optimized_add_cap} and the maximum capacity is {maximum_cap}."
+            # Energy conversion assets
+            for conv_asset in data[ENERGY_CONVERSION]:
+                # ToDo: Issue 829 must be resolved for the following to be true
+                # ToDo: Should both cases where installed cap < maximum cap and installed cap > maximum cap be considered?
+                # ToDo: another test asserting installedCap * time_series == time series in output
+                # using the coupled definition for MaximumCap (includes InstalledCap + additional maximum optimizable capacity)
+                max_tot_cap = data[ENERGY_CONVERSION][conv_asset][MAXIMUM_CAP][VALUE]
+                max_add_cap = data[ENERGY_CONVERSION][conv_asset][MAXIMUM_ADD_CAP][VALUE]
+                opt_add_cap = data[ENERGY_CONVERSION][conv_asset][OPTIMIZED_ADD_CAP][VALUE]
+                inst_cap = data[ENERGY_CONVERSION][conv_asset][INSTALLED_CAP][VALUE]
+                # case a) inst_cap > 0, max_tot_cap is None (optimizable capacity is unbounded)
+                if conv_asset == 'transformer_station_in':
+                    assert (inst_cap <= inst_cap + opt_add_cap), f"The installed capacity of {conv_asset} prior to optimization should be less than or equal to the total installed capacity after optimization, but here {inst_cap} > {inst_cap} + {opt_add_cap}."
+                    assert (max_tot_cap is None), f"The total maximum capacity of {conv_asset} should be None (as the user has defined it this way), but instead it is {max_tot_cap}."
+                    assert (max_add_cap is None), f"The total maximum capacity of {conv_asset} is set to None which means that the maximum additional capacity should also be None, but here it is {max_add_cap}."
+                # case b) inst_cap > 0, max_tot_cap > 0
+                if conv_asset == 'diesel_generator_1':
+                    assert (opt_add_cap <= max_add_cap), f"The optimized additional capacity of {conv_asset} should be less than or equal to the total maximum capacity - the installed capacity, but {opt_add_cap} > {max_add_cap}."
+                    assert (max_tot_cap == inst_cap + max_add_cap), f"The maximum total capacity of {conv_asset} should be equal to the already installed capacity + the maximum additional optimizable capacity, but {max_tot_cap} is not equal to {inst_cap} + {max_add_cap}."
+                # case c) ?
+                # case d) inst_cap = 0, max_tot_cap > 0
+                if conv_asset == 'solar_inverter_(mono)':
+                    assert (max_add_cap == max_tot_cap), f"Because the installed capacity of {conv_asset} is zero, the maximum additional capacity should be equal to the total maximum capacity, but {max_add_cap} is not equal to {max_tot_cap}."
+                    assert (opt_add_cap <= max_add_cap), f"The optimized additional capacity of {conv_asset} should be less than the maximum possible additional capacity, but {opt_add_cap} > {max_add_cap}."
 
-            # update maximum cap dict with maximum cap value (from json_input_processed?)
-            # update optimized_add_cap dict with value (from scalars-xlsx -> optimizedAddedCap)
-            # assert optimized_added_cap value is less than or equal to maximum cap value
-
-    # Do another test asserting installedCap * time_series == time series in output
+            for prod_asset in data[ENERGY_PRODUCTION]:
+                # using the coupled definition for MaximumCap (includes InstalledCap +  additional maximum optimizable capacity)
+                max_tot_cap = data[ENERGY_PRODUCTION][prod_asset][MAXIMUM_CAP][VALUE]
+                max_add_cap = data[ENERGY_PRODUCTION][conv_asset][MAXIMUM_ADD_CAP][VALUE]
+                opt_add_cap = data[ENERGY_PRODUCTION][prod_asset][OPTIMIZED_ADD_CAP][VALUE]
+                inst_cap = data[conv_asset][INSTALLED_CAP][VALUE]
+                # case a) inst_cap > 0, max_tot_cap is None (optimizable capacity is unbounded)
+                if prod_asset == 'pv_plant_01':
+                    assert (inst_cap <= inst_cap + opt_add_cap), f"The installed capacity of {prod_asset} prior to optimization should be less than or equal to the total installed capacity after optimization, but here {inst_cap} > {inst_cap} + {opt_add_cap}."
+                    assert (max_tot_cap is None), f"The total maximum capacity of {prod_asset} should be None (as the user has defined it this way), but instead it is {max_tot_cap}."
+                    assert (max_add_cap is None), f"The total maximum capacity of {conv_asset} is set to None which means that the maximum additional capacity should also be None, but here it is {max_add_cap}."
+                    assert ((opt_add_cap + inst_cap) * data[ENERGY_PRODUCTION][prod_asset][TIMESERIES].sum() ==
+                            data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
+                                VALUE]), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
+                # case b) inst_cap > 0, max_tot_cap > 0
+                if prod_asset == 'pv_plant_02':
+                    assert (opt_add_cap <= max_add_cap), f"The optimized additional capacity of the asset should be less than or equal to the total maximum capacity - the installed capacity, but {opt_add_cap} > {max_add_cap}."
+                    assert ((opt_add_cap + inst_cap) * data[ENERGY_PRODUCTION][prod_asset][TIMESERIES].sum() ==
+                            data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
+                                VALUE]), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
+                # case c) ?
+                # case d) inst_cap = 0, max_tot_cap > 0
+                if prod_asset == 'pv_plant_03':
+                    assert (max_add_cap == max_tot_cap), f"Because the installed capacity of {prod_asset} is zero, the maximum additional capacity should be equal to the total maximum capacity, but {max_add_cap} is not equal to {max_tot_cap}."
+                    assert (opt_add_cap <= max_add_cap), f"The optimized additional capacity of {prod_asset} should be less than the maximum possible additional capacity, but {opt_add_cap} > {max_add_cap}."
+                    assert (opt_add_cap * data[ENERGY_PRODUCTION][prod_asset][TIMESERIES].sum() ==
+                            data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
+                                VALUE]), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
