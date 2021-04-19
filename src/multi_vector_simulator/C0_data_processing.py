@@ -1835,13 +1835,32 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
 
             # adapt maximumCap and maximumAddCap of non-dispatchable sources
             if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
-                max_cap_norm = asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
-                asset_dict.update({MAXIMUM_CAP_NORMALIZED: {VALUE: max_cap_norm, UNIT: asset_dict[UNIT]}})
+                max_cap_norm = (
+                    asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
+                )
+                asset_dict.update(
+                    {
+                        MAXIMUM_CAP_NORMALIZED: {
+                            VALUE: max_cap_norm,
+                            UNIT: asset_dict[UNIT],
+                        }
+                    }
+                )
                 logging.debug(
                     f"Parameter {MAXIMUM_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES} to obtain {MAXIMUM_CAP_NORMALIZED}. This was done as the aimed constraint is to limit the power, not the flow."
                 )
-                max_add_cap_norm = asset_dict[MAXIMUM_ADD_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
-                asset_dict.update({MAXIMUM_ADD_CAP_NORMALIZED: {VALUE: max_add_cap_norm, UNIT: asset_dict[UNIT]}})
+                max_add_cap_norm = (
+                    asset_dict[MAXIMUM_ADD_CAP][VALUE]
+                    * asset_dict[TIMESERIES_PEAK][VALUE]
+                )
+                asset_dict.update(
+                    {
+                        MAXIMUM_ADD_CAP_NORMALIZED: {
+                            VALUE: max_add_cap_norm,
+                            UNIT: asset_dict[UNIT],
+                        }
+                    }
+                )
                 logging.debug(
                     f"Parameter {MAXIMUM_ADD_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES} to obtain {MAXIMUM_ADD_CAP_NORMALIZED}. This was done as the aimed constraint is to limit the power, not the flow."
                 )
