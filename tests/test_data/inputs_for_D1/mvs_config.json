@@ -554,6 +554,14 @@
                     "value": 3.3,
                     "unit": "currency/unit/simulation period"
                 },
+            "maximumCap_normalized": {
+                "unit": "kWp",
+                "value": 10
+            },
+            "maximumAddCap_normalized": {
+                "unit": "kWp",
+                "value": 10
+            },
             "maximumCap": {
                 "unit": "kWp",
                 "value": 10
