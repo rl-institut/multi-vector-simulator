@@ -95,6 +95,7 @@ from multi_vector_simulator.utils.constants import (
 from multi_vector_simulator.utils.constants_json_strings import LABEL
 from multi_vector_simulator.version import version_num
 
+
 def mvs_arg_parser():
     """Create a command line argument parser for MVS
 
@@ -104,6 +105,7 @@ def mvs_arg_parser():
 
         python mvs_tool.py [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]] [-o [PATH_OUTPUT_FOLDER]]
         [-log [{debug,info,error,warning}]] [-f [OVERWRITE]] [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
+        [--version]
 
     Usage when multi-vector-simulator is installed as a package:
 
@@ -111,6 +113,7 @@ def mvs_arg_parser():
 
         mvs_tool [-h] [-i [PATH_INPUT_FOLDER]] [-ext [{json,csv}]] [-o [PATH_OUTPUT_FOLDER]]
         [-log [{debug,info,error,warning}]] [-f [OVERWRITE]] [-pdf [PDF_REPORT]] [-png [SAVE_PNG]]
+        [--version]
 
     Process MVS arguments
 
@@ -139,6 +142,8 @@ def mvs_arg_parser():
         -png [SAVE_PNG]
             generate png figures of the simulation in the output_folder if True (default: False)
 
+        --version
+            show program's version number and exit
 
     :return: parser
     """
@@ -208,7 +213,7 @@ def mvs_arg_parser():
         type=bool,
     )
 
-    parser.add_argument('--version', action='version', version=version_num)
+    parser.add_argument("--version", action="version", version=version_num)
 
     return parser
 
