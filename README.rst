@@ -111,6 +111,10 @@ To set up the MVS, follow the steps below:
 
 This should create a folder ``MVS_outputs`` with the example simulation's results
 
+You can always check which version you installed with the following command
+
+   ``mvs_tool --version``
+
 
 Using the MVS
 =============
