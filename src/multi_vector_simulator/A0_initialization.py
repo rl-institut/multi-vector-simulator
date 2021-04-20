@@ -59,7 +59,6 @@ import shutil
 
 from oemof.tools import logger
 
-
 from multi_vector_simulator.utils.constants import (
     REPO_PATH,
     PACKAGE_DATA_PATH,
@@ -94,7 +93,7 @@ from multi_vector_simulator.utils.constants import (
     ARG_DEBUG_REPORT,
 )
 from multi_vector_simulator.utils.constants_json_strings import LABEL
-
+from multi_vector_simulator.version import version_num
 
 def mvs_arg_parser():
     """Create a command line argument parser for MVS
@@ -208,6 +207,9 @@ def mvs_arg_parser():
         default=False,
         type=bool,
     )
+
+    parser.add_argument('--version', action='version', version=version_num)
+
     return parser
 
 
