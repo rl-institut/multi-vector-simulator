@@ -39,6 +39,8 @@ Here is a template for new release sections
 - Generation of pdf version of the readthedocs (#853)
 - `sphinxcontrib-svg2pdfconverter` in `docs/conf.py` for svg images into pdf (also added in `requirements/docs.txt`(#853)
 - Add a function `generate_kpi_description` in `docs/conf.py` module to generate documentation of kpi parameters listed in `docs/MVS_kpis_list.csv`(#863)
+- Add badges for pypi, black linter and license in `docs/index.rst` and `README.rst` (#865)
+
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)

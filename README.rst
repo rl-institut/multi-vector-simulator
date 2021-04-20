@@ -2,7 +2,7 @@
 MVS - Multi-Vector Simulator of the E-Land toolbox
 ##################################################
 
-|badge_docs| |badge_CI| |badge_coverage| |badge_zenodo|
+|badge_docs| |badge_CI| |badge_coverage| |badge_zenodo| |badge_pypi| |badge_gpl2| |badge_black|
 
 Rights: `Reiner Lemoine Institut (Berlin) <https://reiner-lemoine-institut.de/>`__
 
@@ -44,10 +44,20 @@ You find the changelog `HERE <https://github.com/rl-institut/multi-vector-simula
     :alt: Test coverage
 
 .. |badge_zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4610237.svg
-   :target: https://doi.org/10.5281/zenodo.4610237
-   :alt: Zenodo DOI
+    :target: https://doi.org/10.5281/zenodo.4610237
+    :alt: Zenodo DOI
 
+.. |badge_gpl2| image:: https://img.shields.io/badge/License-GPL%20v2-blue.svg
+    :target: https://img.shields.io/badge/License-GPL%20v2-blue.svg
+    :alt: License gpl2
 
+.. |badge_pypi| image:: https://badge.fury.io/py/multi-vector-simulator.svg
+    :target: https://pypi.org/project/multi-vector-simulator/
+    :alt: Pypi version
+
+.. |badge_black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
+    :alt: black linter
 
 ========================
 Getting started with MVS
