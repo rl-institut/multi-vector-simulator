@@ -741,42 +741,26 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
 
     """
     if MAXIMUM_ADD_CAP_NORMALIZED in dict_asset:
-        outputs = {
-            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-                label=dict_asset[LABEL],
-                fix=dict_asset[TIMESERIES_NORMALIZED],
-                investment=solph.Investment(
-                    ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
-                    / dict_asset[TIMESERIES_PEAK][VALUE],
-                    maximum=dict_asset[MAXIMUM_ADD_CAP_NORMALIZED][VALUE],
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
-                ),
-                # variable_costs are devided by time series peak as normalized time series are used as actual_value
-                variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
-                / dict_asset[TIMESERIES_PEAK][VALUE],
-                # add emission_factor for emission contraint
-                emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
-            )
-        }
-
+        maximum = dict_asset[MAXIMUM_ADD_CAP_NORMALIZED][VALUE]
     else:
-        outputs = {
-            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-                label=dict_asset[LABEL],
-                fix=dict_asset[TIMESERIES_NORMALIZED],
-                investment=solph.Investment(
-                    ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
-                    / dict_asset[TIMESERIES_PEAK][VALUE],
-                    maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
-                    existing=dict_asset[INSTALLED_CAP][VALUE],
-                ),
-                # variable_costs are devided by time series peak as normalized time series are used as actual_value
-                variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
+        maximum = dict_asset[MAXIMUM_ADD_CAP][VALUE]
+    outputs = {
+        kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
+            label=dict_asset[LABEL],
+            fix=dict_asset[TIMESERIES_NORMALIZED],
+            investment=solph.Investment(
+                ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
-                # add emission_factor for emission contraint
-                emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
-            )
-        }
+                maximum=maximum,
+                existing=dict_asset[INSTALLED_CAP][VALUE],
+            ),
+            # variable_costs are devided by time series peak as normalized time series are used as actual_value
+            variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
+            / dict_asset[TIMESERIES_PEAK][VALUE],
+            # add emission_factor for emission contraint
+            emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
+        )
+    }
 
     source_non_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs)
 
