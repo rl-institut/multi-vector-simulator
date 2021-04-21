@@ -82,7 +82,7 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
         + '\n Part of the toolbox of H2020 project "E-LAND", '
         + "Integrated multi-vector management system for Energy isLANDs"
         + "\n Coded at: Reiner Lemoine Institute (Berlin) "
-        + "\n Contributors: Martha M. Hoffmann \n \n "
+        + "\n Reference: https://zenodo.org/record/4610237 \n \n "
     )
 
     logging.info(welcome_text)
