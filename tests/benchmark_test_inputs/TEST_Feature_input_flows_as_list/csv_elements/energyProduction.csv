@@ -1,0 +1,17 @@
+,unit,Diesel
+age_installed,year,0
+development_costs,currency,0
+specific_costs,currency/unit,0
+file_name,str,None
+installedCap,kWp,0
+maximumCap,kWp,None
+lifetime,year,20
+specific_costs_om,currency/unit/year,0
+dispatch_price,currency/kWh,0.1
+optimizeCap,bool,True
+outflow_direction,str,Electricity (diesel)
+type_oemof,str,source
+unit,str,kWh_chem
+energyVector,str,Electricity
+renewableAsset,bool,False
+emission_factor,kgCO2eq/unit,0

@@ -1752,10 +1752,10 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
     Processes the maximumCap constraint depending on its value.
 
     * If MaximumCap not in asset dict: MaximumCap is None
-    * If MaximumCap < installedCap: invalid, ValueError raised
+    * If MaximumCap < installedCap: invalid, MaximumCapValueInvalid raised
     * If MaximumCap == 0: invalid, MaximumCap is None
     * If group == energyProduction and filename not in asset_dict (dispatchable assets): pass
-    * If group == energyProduction and filename in asset_dict (non-dispatchable assets): MaximumCap == MaximumCap*peak(timeseries)
+    * If group == energyProduction and filename in asset_dict (non-dispatchable assets): MaximumCapNormalized == MaximumCap*peak(timeseries), MaximumAddCapNormalized == MaximumAddCap*peak(timeseries)
 
     Parameters
     ----------
