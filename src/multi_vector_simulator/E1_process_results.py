@@ -128,7 +128,9 @@ def cut_below_micro(value, label):
     text_block_set_0 = f"Negative value (s) are smaller than {-THRESHOLD}. This is likely a result of the termination/precision settings of the cbc solver. As the difference is marginal, the value will be set to 0. "
     text_block_oemof = "This is so far below 0, that the value is not changed. All oemof decision variables should be positive so this needs to be investigated. "
 
-    logging.debug(f"Check if the dispatch of asset {label} as per the oemof results is within the defined margin of precision ({THRESHOLD})")
+    logging.debug(
+        f"Check if the dispatch of asset {label} as per the oemof results is within the defined margin of precision ({THRESHOLD})"
+    )
 
     # flows
     if isinstance(value, pd.Series):
@@ -236,9 +238,7 @@ def get_timeseries_per_bus(dict_values, bus_data):
             if key[0][1] == bus and key[1] == OEMOF_FLOW
         }
         for asset in to_bus:
-            flow = bus_data[bus][OEMOF_SEQUENCES][
-                to_bus[asset]
-            ]
+            flow = bus_data[bus][OEMOF_SEQUENCES][to_bus[asset]]
             flow = cut_below_micro(flow, bus + "/" + asset)
             bus_data_timeseries[bus][asset] = flow
         # obtain flows that flow out of the bus
