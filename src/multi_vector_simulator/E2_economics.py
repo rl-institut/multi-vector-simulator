@@ -531,6 +531,10 @@ def lcoe_assets(dict_asset, asset_group):
                 dict_asset[component].update(
                     {LCOE_ASSET: {VALUE: 0, UNIT: CURR + "/kWh"}}
                 )
+                if component == INPUT_POWER:
+                    dict_asset[STORAGE_CAPACITY].update(
+                        {LCOE_ASSET: {VALUE: 0, UNIT: CURR + "/kWh"}}
+                    )
 
     elif dict_asset[TOTAL_FLOW][VALUE] > 0:
         lcoe_a = dict_asset[ANNUITY_TOTAL][VALUE] / dict_asset[TOTAL_FLOW][VALUE]
