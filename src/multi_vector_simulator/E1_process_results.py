@@ -84,6 +84,9 @@ ASSET_GROUPS_DEFINED_BY_INFLUX = [ENERGY_CONSUMPTION]
 # b outflux into a bus
 ASSET_GROUPS_DEFINED_BY_OUTFLUX = [ENERGY_CONVERSION, ENERGY_PRODUCTION]
 
+# Threshold for precision limit:
+THRESHOLD = 10 ** (-6)
+
 
 def cut_below_micro(value, label):
     r"""
@@ -121,10 +124,11 @@ def cut_below_micro(value, label):
     - E1.test_cut_below_micro_pd_Series_larger_0
     - E1.test_cut_below_micro_pd_Series_larger_0_smaller_threshold
     """
-    threshold = 10 ** (-6)
     text_block_start = f"The value of {label} is below 0"
-    text_block_set_0 = f"Negative value (s) are smaller than {-threshold}. This is likely a result of the termination/precision settings of the cbc solver. As the difference is marginal, the value will be set to 0. "
+    text_block_set_0 = f"Negative value (s) are smaller than {-THRESHOLD}. This is likely a result of the termination/precision settings of the cbc solver. As the difference is marginal, the value will be set to 0. "
     text_block_oemof = "This is so far below 0, that the value is not changed. All oemof decision variables should be positive so this needs to be investigated. "
+
+    logging.debug(f"Check if the dispatch of asset {label} as per the oemof results is within the defined margin of precision ({THRESHOLD})")
 
     # flows
     if isinstance(value, pd.Series):
@@ -136,23 +140,23 @@ def cut_below_micro(value, label):
                 instances = sum(value < 0)
                 log_msg += f" in {instances} instances. "
             # Checks that all values are at least within the threshold for negative values.
-            if (value > -threshold).all():
+            if (value > -THRESHOLD).all():
                 log_msg += text_block_set_0
                 logging.debug(log_msg)
                 value = value.clip(lower=0)
             # If any value has a large negative value (lower then threshold), no values are changed.
             else:
-                test = value.clip(upper=-threshold).abs()
-                log_msg += f"At least one value is exceeds the scale of {-threshold}. The highest negative value is -{max(test)}. "
+                test = value.clip(upper=-THRESHOLD).abs()
+                log_msg += f"At least one value is exceeds the scale of {-THRESHOLD}. The highest negative value is -{max(test)}. "
                 log_msg += text_block_oemof
                 logging.warning(log_msg)
 
         # Determine if there are any positive values that are between 0 and the threshold:
         # Clip to interval
-        positive_threshold = value.clip(lower=0, upper=threshold)
+        positive_threshold = value.clip(lower=0, upper=THRESHOLD)
         # Determine instances in which bounds are met: 1=either 0 or larger threshold, 0=smaller threshold
         positive_threshold = (positive_threshold == 0) + (
-            positive_threshold == threshold
+            positive_threshold == THRESHOLD
         )
         # Instances in which values are in determined interval:
         instances = len(value) - sum(positive_threshold)
@@ -169,19 +173,19 @@ def cut_below_micro(value, label):
         if value < 0:
             log_msg = text_block_start
             # Value between [threshold, 0] = [-10**(-6)], ie. is so small that it can be neglected.
-            if value > -threshold:
+            if value > -THRESHOLD:
                 log_msg += text_block_set_0
                 logging.debug(log_msg)
                 value = 0
             # Value is below 0 but already large enough that it should not be neglected.
             else:
-                log_msg += f"The value exceeds the scale of {-threshold}, with {value}."
+                log_msg += f"The value exceeds the scale of {-THRESHOLD}, with {value}."
                 log_msg += text_block_oemof
                 logging.warning(log_msg)
         # Value is above 0 but below threshold, should be rounded
-        elif value < threshold:
+        elif value < THRESHOLD:
             logging.debug(
-                f"The positive value {value} is below the {threshold}, and rounded to 0."
+                f"The positive value {value} is below the {THRESHOLD}, and rounded to 0."
             )
             value = 0
 
@@ -209,6 +213,8 @@ def get_timeseries_per_bus(dict_values, bus_data):
     Tested with:
     - test_get_timeseries_per_bus_two_timeseries_for_directly_connected_storage()
 
+    #Todo: This is a duplicate of the `E1.get_flow()` assertions, and thus `E1.cut_below_micro` is applied twice for each flow. This should rather be merged into the other functions.
+
     Returns
     -------
     Indirectly updated `dict_values` with 'optimizedFlows' - one data frame for each bus.
@@ -230,10 +236,11 @@ def get_timeseries_per_bus(dict_values, bus_data):
             if key[0][1] == bus and key[1] == OEMOF_FLOW
         }
         for asset in to_bus:
-            bus_data_timeseries[bus][asset] = bus_data[bus][OEMOF_SEQUENCES][
+            flow = bus_data[bus][OEMOF_SEQUENCES][
                 to_bus[asset]
             ]
-
+            flow = cut_below_micro(flow, bus + "/" + asset)
+            bus_data_timeseries[bus][asset] = flow
         # obtain flows that flow out of the bus
         from_bus = {
             key[0][1]: key
@@ -695,7 +702,7 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
 
     """
     flow = bus[OEMOF_SEQUENCES][(flow_tuple, OEMOF_FLOW)]
-    cut_below_micro(flow, dict_asset[LABEL] + FLOW)
+    flow = cut_below_micro(flow, dict_asset[LABEL] + FLOW)
     add_info_flows(
         evaluated_period=settings[EVALUATED_PERIOD][VALUE],
         dict_asset=dict_asset,

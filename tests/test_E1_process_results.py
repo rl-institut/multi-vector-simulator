@@ -206,7 +206,7 @@ def test_cut_below_micro_scalar_value_below_0_larger_threshold(caplog):
 
 
 def test_cut_below_micro_scalar_value_below_0_smaller_threshold(caplog):
-    value = -0.5 * 1e-6
+    value = -0.5 * E1.THRESHOLD
     with caplog.at_level(logging.DEBUG):
         result = E1.cut_below_micro(value=value, label="label")
     assert (
@@ -234,7 +234,7 @@ def test_cut_below_micro_scalar_value_larger_0():
 
 
 def test_cut_below_micro_scalar_value_larger_0_smaller_threshold(caplog):
-    value = 0.5 * 1e-6
+    value = 0.5 * E1.THRESHOLD
     with caplog.at_level(logging.DEBUG):
         result = E1.cut_below_micro(value=value, label="label")
     assert (
@@ -247,7 +247,7 @@ def test_cut_below_micro_scalar_value_larger_0_smaller_threshold(caplog):
 
 
 def test_cut_below_micro_pd_Series_below_0_larger_threshold(caplog):
-    value = pd.Series([0, -0.5 * 1e-6, -1, 0])
+    value = pd.Series([0, -0.5 * E1.THRESHOLD, -1, 0])
     with caplog.at_level(logging.WARNING):
         result = E1.cut_below_micro(value=value, label="label")
     assert (
@@ -259,7 +259,7 @@ def test_cut_below_micro_pd_Series_below_0_larger_threshold(caplog):
 
 
 def test_cut_below_micro_pd_Series_below_0_smaller_threshold(caplog):
-    value = pd.Series([0, -0.5 * 1e-6, 0, 1])
+    value = pd.Series([0, -0.5 * E1.THRESHOLD, 0, 1])
     exp = pd.Series([0, 0, 0, 1])
     with caplog.at_level(logging.DEBUG):
         result = E1.cut_below_micro(value=value, label="label")
@@ -293,7 +293,7 @@ def test_cut_below_micro_pd_Series_larger_0():
 
 
 def test_cut_below_micro_pd_Series_larger_0_smaller_threshold(caplog):
-    value = pd.Series([0, 0.5 * 1e-6, 0, 1])
+    value = pd.Series([0, 0.5 * E1.THRESHOLD, 0, 1])
     exp = pd.Series([0, 0, 0, 1])
     with caplog.at_level(logging.DEBUG):
         result = E1.cut_below_micro(value=value, label="label")
