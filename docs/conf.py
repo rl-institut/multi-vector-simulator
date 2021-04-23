@@ -125,12 +125,14 @@ def generate_parameter_categories(
 
     for row in df_cat.iterrows():
         props = row[1]
+
         cat_label = props.csv_file_name + ".csv"
 
         # lookup all parameters for which the category is tagged
         df_param["in_category"] = df_param.category.apply(
             lambda x: True if props.ref in x.split(";") else False
         )
+
         parameter_per_cat = df_param.loc[df_param.in_category == True, "ref"].to_list()
 
         lines = (
@@ -281,6 +283,7 @@ def generate_kpi_description(input_csv_file, output_path):
             ofs.write("\n".join(lines))
 
 
+# Input parameters
 generate_parameter_description(
     "MVS_parameters_list.csv", "model/parameters/MVS_parameters_list.inc"
 )
