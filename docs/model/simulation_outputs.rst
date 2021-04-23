@@ -1,7 +1,12 @@
+.. _simulation_outputs:
+
 =======================
 Outputs of a simulation
 =======================
 
+After optimization of an energy system, the MVS evaluates the simulation output. It evaluates the flows, costs and performance of the system. As a result, it calculates a number of :ref:`key performance indicators (KPI) <key_performance_indicators_overview>`, namely :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI. Depending on the simulation settings, it can also generate different :ref:`figures <output_figures>` of the results and an :ref:`automatic report <output_report>` in `pdf` or `html` format.
+
+.. _key_performance_indicators_overview:
 
 KPIs
 ----
@@ -304,6 +309,7 @@ Figures
 - Optimal Capacities
 - Optimized dispatch
 - Dispatch of all assets (timeseries)
+- plot_networkx_graph
 
 .. _output_report:
 
@@ -325,4 +331,3 @@ Please, refer to the :ref:`report section <pdf-report-commands>` for more inform
     mvs_report -h
 
 in your terminal or command line.
-
