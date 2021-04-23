@@ -17,13 +17,38 @@ Overview of Key Performance Indicators
 
 .. the .inc files describing the kpis are automatically generated in `conf.py` from the `MVS_kpis_list.csv` file
 
-.. TODO: write the `MVS_kpis_list.csv` file, the function to generate the .inc files and add ..include:: for each file
+In the sections :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI these parameters are further defined. This takes place with following structure:
 
-Cost data
-#########
+:Definition: Definition of the defined KPI, can be used as tooltips.
 
+:Type: ?
 
-.. include:: outputs/net_present_cost.inc
+:Unit: Unit of the KPI, multiple units possible if KPI can be applied to individual sectors (comp. :ref:`kpi_suffixes`).
+
+:Valid Interval: Expected valid range of the KPI. Exceptions are possible under certain conditions.
+
+Below these reoccurring definitions, the underlying equation of the KPI may be presented and explained, or further hints might be collected for the parameter evaluation or for special cases.
+
+.. _kpi_suffixes:
+
+Suffixes of KPI
+###############
+
+The KPI calculated by the MVS can sometimes be calculated per asset, for each sector or for the overall system.
+
+KPI calculated per asset are not included in the scalar results of the automatic report or in the stored Excel file, but are displayed seperately. They do not need suffixes, as they are always displayed in tables next to the respective asset.
+
+KPI calculated for each vector are specifically these KPI that aggregate the dispatch and costs of multiple assets. For cost-related KPI, such aggregating KPI have the energy vector they are describing as a suffix. An example would be the `attributed_costs` of each energy vector - the attributed costs of the electricity and H2 sector would be called `Attributed_costs_electricity` and `attributed_costs_H2` respectively.
+For technical KPI, this suffix also applies, but additionally, due to the :ref:`energy carrier weighting <energy_carrier_weighting>`, they also feature the suffix `electricity equivalent` when the weighting has been applied. The energy demand of the system is an example: The demand per sector would be `total_demand_electricity` and `total_demand_H2`. To be able to aggregate these cost into an overall KPI for the system, the electricity equivalents of both values are calculated. They then are named `total_demand_electricity_electricity_equivalent` and `total_demand_H2_electricity_equivalent`.
+
+KPI that describe the costs of the overall energy system do not have suffixes. Technical KPI often have the suffix `electricity_equivalent` to underline the energy carrier that the parameter is relative to.
+
+.. _kpi_economic:
+
+Economic KPI
+############
+
+.. include:: outputs/costs_total.inc
 
 The Net present cost (NPC) is the present value of all the costs associated with installation, operation,
 maintenance and replacement of energy technologies comprising the sector-coupled system over the project lifetime,
@@ -32,10 +57,25 @@ The capital recovery factor (CRF) is used to calculate the present value of the 
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
-.. _lcoe:
+.. include:: outputs/costs_cost_om.inc
 
-Levelized costs of energy (LCOE)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. include:: outputs/costs_om_total.inc
+
+.. include:: outputs/costs_dispatch.inc
+
+.. include:: outputs/costs_investment_over_lifetime.inc
+
+.. include:: outputs/costs_upfront_in_year_zero.inc
+
+.. include:: outputs/Replacement_costs_during_project_lifetime.inc
+
+.. include:: outputs/Attributed_costs.inc
+
+.. include:: outputs/annuity_total.inc
+
+.. include:: outputs/annuity_om.inc
+
+.. include:: outputs/Levelized_costs_of_electricity_equivalent.inc
 
 As a sector-coupled system connects energy vectors, not the costs associated to each individual energy carrier but the overall energy costs should be minimized. Therefore, we propose a new KPI: The levelized costs of energy (LCOEnergy) aggregates the costs for energy supply and distributes them over the total energy demand supplied, which is calculated by weighting the energy carriers by their energy content. To determine the weighting factors of the different energy carriers, we reference the method of gasoline gallon equivalent (GGE) [12], which enables the comparison of alternative fuels. Instead of comparing the energy carriers of an MES to gasoline, we rebase the factors introduced in [12] onto the energy carrier electricity, thus proposing a unit Electricity Equivalent (ElEq). The necessary weights are summarized in Table 1. With this, we propose to calculate LCOEnergy based on the annual energy demand and the systems annuity, calculated with the CRF, as follows:
 
@@ -43,10 +83,7 @@ Specific electricity supply costs, eg. levelized costs of electricity (LCOElectr
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
-.. _lcoe_asset:
-
-Levelized Cost of Energy of Asset (LCOE ASSET)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. include:: outputs/levelized_cost_of_energy_of_asset.inc
 
 This KPI measures the cost of generating 1 kWh for each asset in the system.
 It can be used to assess and compare the available alternative methods of energy production.
@@ -76,25 +113,36 @@ For assets in energyConsumption, the MVS outputs 0 for the LCOE ASSET.
 .. math::
         LCOE~ASSET{i} = 0
 
+.. _kpi_technical:
 
-Technical data
-##############
+Technical KPI
+#############
 
-.. _aggregated_flow:
+.. include:: outputs/Total_demand.inc
 
-Energy flows (aggregated) per asset
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. include:: outputs/optimizedAddCap.inc
 
-.. _peak_flow:
+.. include:: outputs/annual_total_flow.inc
 
-Peak dispatch per asset
-^^^^^^^^^^^^^^^^^^^^^^^
+.. include:: outputs/average_flow.inc
 
+.. include:: outputs/peak_flow.inc
 
-.. _kpi_renewable_share_of_local_generation:
+.. include:: outputs/Total_feedin.inc
 
-Renewable share of local generation (REGen)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. include:: outputs/Total_internal_non-renewable_generation.inc
+
+.. include:: outputs/Total_internal_renewable_generation.inc
+
+.. include:: outputs/Total_internal_generation.inc
+
+.. include:: outputs/Total_excess.inc
+
+.. include:: outputs/Total_renewable_energy_use.inc
+
+.. include:: outputs/Total_non-renewable_energy_use.inc
+
+.. include:: outputs/Renewable_share_of_local_generation.inc
 
 The renewable share of local generation describes how much of the energy generated locally is produced from renewable sources.
 It does not take into account the consumption from energy providers.
@@ -139,11 +187,7 @@ This results in:
 * A single-vector renewable share of local generation of 100% for the electricity sector.
 * A system-wide renewable share of local generation of 100%.
 
-
-.. _kpi_renewable_factor:
-
-Renewable factor (RF)
-^^^^^^^^^^^^^^^^^^^^^
+.. include:: outputs/Renewable_factor.inc
 
 Describes the share of the energy influx to the local energy system that is provided from renewable sources.
 This includes both local generation as well as consumption from energy providers.
@@ -177,28 +221,6 @@ Again, the heat sector would have a renewable factor of 0% when considered separ
 
 The renewable factor can, just like the :ref:`kpi_renewable_share_of_local_generation` not indicate how much renewable energy is used in each of the sectors. In the future, it may be possible to dive into this together with the degree of sector-coupling.
 
-.. _emissions:
-
-Emissions
-^^^^^^^^^
-
-The total emissions of the MES in question are calculated with all aggregated energy flows from the generation assets including energy providers and their subsequent emission factor:
-
-.. math::
-        Total\_emissions &= \sum_i {E_{gen} (i) \cdot emission\_factor (i)}
-
-        \text{with~} &i \text{: generation assets 1,2,…}
-
-The emissions of each generation asset and provider are also calculated and displayed separately in the outputs of MVS.
-Additionally, the specific emissions per electricity equivalent of the MES are calculated in :math:`\text{kg/kWh}_{eleq}`:
-
-.. math::
-        Specific\_emissions &= \frac{Total\_emissions}{total\_demand_{eleq}}
-
-Emissions can be of different nature: CO2 emissions, CO2 equivalents, greenhouse gases, ...
-
-Currently the emissions do not include life cycle emissions of energy conversion or storage assets, nor are they calculated separately for the energy sectors. For the latter, it arises the problem of the assignment of assets to sectors. E.g. emissions caused by an electrolyser would be counted to the electricity sector although you might want to count it for the H2 sector, as the purpose of the electrolyser is to feed the H2 sector. Therefore, we will have to verify whether or not we can apply the energy carrier weighting also for this KPI.
-
 .. _kpi_degree_of_sector_coupling:
 
 Degree of sector-coupling (DSC)
@@ -215,11 +237,7 @@ To measure this, we propose to compare the energy flows in between the sectors t
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
-.. _kpi_onsite_energy_fraction:
-
-Onsite energy fraction (OEF)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+.. include:: outputs/Onsite_energy_fraction.inc
 
 Onsite energy fraction is also referred to as self-consumption. It describes
 the fraction of all locally generated energy that is consumed by the system
@@ -236,10 +254,7 @@ the feed into the grid can only be positive.
 
         &OEF \epsilon \text{[0,1]}
 
-.. _kpi_onsite_energy_matching:
-
-Onsite energy matching (OEM)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. include:: outputs/Onsite_energy_matching.inc
 
 The onsite energy matching is also referred to as "self-sufficiency". It
 describes the fraction of the total demand that can be
@@ -259,10 +274,7 @@ or an excess sink.
 
         &OEM \epsilon \text{[0,1]}
 
-.. _kpi_degree_of_autonomy:
-
-Degree of autonomy (DA)
-^^^^^^^^^^^^^^^^^^^^^^^
+.. include:: outputs/Degree_of_autonomy.inc
 
 The degree of autonomy describes the overall energy consumed minus the energy consumed from the grid divided by the overall energy consumed. Adapted from this definition `[3] <https://pvspeicher.htw-berlin.de/solarspeicherstudie/>`__.
 
@@ -293,18 +305,36 @@ As above, we apply a weighting based on Electricity Equivalent.
         Degree of NZE &= 1 + \frac{(\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
 
 
+.. _kpi_environmental:
 
-Suffixes
---------
-
-Explain the logic of the suffixes for the output parameters
+Environmental KPI
+#################
 
 
-Files
------
-Energy system model graph
-#########################
-- plot_networkx_graph
+.. include:: outputs/Total_emissions.inc
+
+The total emissions of the MES in question are calculated with all aggregated energy flows from the generation assets including energy providers and their subsequent emission factor:
+
+.. math::
+        Total\_emissions &= \sum_i {E_{gen} (i) \cdot emission\_factor (i)}
+
+        \text{with~} &i \text{: generation assets 1,2,…}
+
+The emissions of each generation asset and provider are also calculated and displayed separately in the outputs of MVS.
+
+.. include:: outputs/Specific_emissions_per_electricity_equivalent.inc
+
+The specific emissions per electricity equivalent of the MES are calculated in :math:`\text{kg/kWh}_{eleq}`:
+
+.. math::
+        Specific\_emissions &= \frac{Total\_emissions}{total\_demand_{eleq}}
+
+Emissions can be of different nature: CO2 emissions, CO2 equivalents, greenhouse gases, ...
+
+Currently the emissions do not include life cycle emissions of energy conversion or storage assets, nor are they calculated separately for the energy sectors. For the latter, it arises the problem of the assignment of assets to sectors. E.g. emissions caused by an electrolyser would be counted to the electricity sector although you might want to count it for the H2 sector, as the purpose of the electrolyser is to feed the H2 sector. Therefore, we will have to verify whether or not we can apply the energy carrier weighting also for this KPI.
+
+
+.. _output_figures:
 
 Figures
 #######

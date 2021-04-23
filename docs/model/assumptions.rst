@@ -348,10 +348,7 @@ The optimization in the MVS is mainly a cost optimization. There are some additi
     * *(Specific) operation and management costs*, which can cover eg. the salaries of at the project site
 
 
-
-
-
-
+.. _energy_carrier_weighting:
 
 Weighting of energy carriers
 ----------------------------
