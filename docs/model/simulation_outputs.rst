@@ -8,8 +8,12 @@ After optimization of an energy system, the MVS evaluates the simulation output.
 
 .. _key_performance_indicators_overview:
 
-KPIs
-----
+Overview of Key Performance Indicators
+######################################
+
+.. Bullet list of all the KPI of the different KPI categories:
+
+.. include:: outputs/MVS_kpi_categories.inc
 
 .. the .inc files describing the kpis are automatically generated in `conf.py` from the `MVS_kpis_list.csv` file
 
