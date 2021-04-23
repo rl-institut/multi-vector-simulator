@@ -211,8 +211,9 @@ def generate_kpi_description(input_csv_file, output_path):
     #
     for row in df.iterrows():
         props = row[1]
+        title = props.label + " (" + props.ref + ")"
         lines = (
-            [f".. _{props.ref}:", "", props.label, "^" * len(props.label), "",]
+            [f".. _{props.ref}:", "", title, "^" * len(title), "",]
             + [f"{p} {props[p]}" for p in parameter_properties]
             + [""]
             + [
@@ -238,6 +239,7 @@ generate_parameter_categories(
     "model/parameters/MVS_parameters_categories.inc",
 )
 
+# Output parameters
 generate_kpi_description("MVS_kpis_list.csv", "model/outputs")
 
 copy_readme()
