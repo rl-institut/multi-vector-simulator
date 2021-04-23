@@ -1,0 +1,4 @@
+ref,category,description
+technical_kpi,technical,"Technical KPI are calculated to assess the performance of a simulated energy system, ie. represent the technical system configuration and operation. They are calculated based on the asset capacities and asset dispatch. They should allow the comparision of different energy system topologies and different project sites with each other."
+economic_kpi,economic,"Economic KPI are calculated to assess the costs of a simulated energy system. They include the costs per asset as well as the system's overall costs. Relative values like the levelized costs of supply allow a comparision to other investment options."
+environmental_kpi,environmental,"Environmental KPI are calculated to assess the impact of a simulated energy system on the environment."

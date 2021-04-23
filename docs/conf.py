@@ -146,6 +146,60 @@ def generate_parameter_categories(
         ofs.write("\n".join(lines))
 
 
+def generate_kpi_categories(input_param_csv_file, input_cat_csv_file, output_rst_file):
+    """Rassemble the MVS parameter categories from csv file and generate a .rst formatted document
+
+    Parameters
+    ----------
+    input_param_csv_file: str
+        path of the file with extensive description of all mvs parameters
+    input_cat_csv_file: str
+        path of the file with extensive description of all mvs parameters categories
+    output_rst_file: str
+        path of the rst file with RTD formatted mvs parameter categories
+
+    Returns
+    -------
+    None
+
+    """
+    df_param = pd.read_csv(input_param_csv_file)
+    df_cat = pd.read_csv(input_cat_csv_file)
+
+    lines = []
+    # formats following the template:
+    #
+    # <Description>
+    #
+    # * :ref:`param1`
+    # * :ref:`param2`
+    #
+
+    for row in df_cat.iterrows():
+        props = row[1]
+
+        cat_label = props.category
+        df_param["in_category"] = df_param.category == props.category
+
+        parameter_per_cat = df_param.loc[df_param.in_category == True, "ref"].to_list()
+        parameter_names = df_param.loc[df_param.in_category == True, "label"].to_list()
+
+        parameters = {}
+        for i in range(0, len(parameter_per_cat)):
+            parameters.update({parameter_per_cat[i]: parameter_names[i]})
+
+        lines = (
+            lines
+            + [f"{props.description} These are the calculated {props.category} KPI:",]
+            + ["",]
+            + [f"* :ref:`{parameters[p]} <{p}>`" for p in parameter_per_cat]
+            + ["", "",]
+        )
+
+    with open(output_rst_file, "w") as ofs:
+        ofs.write("\n".join(lines))
+
+
 def generate_parameter_table(input_csv_file, output_csv_file):
     df = pd.read_csv(input_csv_file)
     df = df.loc[df.category != "hidden"]
@@ -242,6 +296,11 @@ generate_parameter_categories(
 # Output parameters
 generate_kpi_description("MVS_kpis_list.csv", "model/outputs")
 
+generate_kpi_categories(
+    "MVS_kpis_list.csv",
+    "MVS_kpi_categories.csv",
+    "model/outputs/MVS_kpi_categories.inc",
+)
 copy_readme()
 
 # -- Project information -----------------------------------------------------
