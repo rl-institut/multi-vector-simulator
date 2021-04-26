@@ -67,7 +67,7 @@ The capital recovery factor (CRF) is used to calculate the present value of the 
 
 .. include:: outputs/costs_upfront_in_year_zero.inc
 
-.. include:: outputs/Replacement_costs_during_project_lifetime.inc
+.. include:: outputs/replacement_costs_during_project_lifetime.inc
 
 .. include:: outputs/Attributed_costs.inc
 
