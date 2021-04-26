@@ -142,7 +142,7 @@ Technical KPI
 
 .. include:: outputs/total_non-renewable_energy_use.inc
 
-.. include:: outputs/Renewable_share_of_local_generation.inc
+.. include:: outputs/renewable_share_of_local_generation.inc
 
 The renewable share of local generation describes how much of the energy generated locally is produced from renewable sources.
 It does not take into account the consumption from energy providers.

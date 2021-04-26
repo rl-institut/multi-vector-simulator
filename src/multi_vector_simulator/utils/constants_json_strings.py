@@ -250,7 +250,7 @@ TOTAL_GENERATION_IN_LES = "total_internal_generation"
 TOTAL_RENEWABLE_ENERGY_USE = "total_renewable_energy_use"
 TOTAL_NON_RENEWABLE_ENERGY_USE = "total_non-renewable_energy_use"
 RENEWABLE_FACTOR = "renewable_factor"
-RENEWABLE_SHARE_OF_LOCAL_GENERATION = "Renewable share of local generation"
+RENEWABLE_SHARE_OF_LOCAL_GENERATION = "renewable_share_of_local_generation"
 TOTAL_EMISSIONS = "Total emissions"
 SPECIFIC_EMISSIONS_ELEQ = "Specific emissions per electricity equivalent"
 
