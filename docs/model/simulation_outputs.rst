@@ -284,10 +284,7 @@ As above, we apply a weighting based on Electricity Equivalent.
 .. math::
        Degree of Autonomy = \frac{\sum_{i} E_{demand,i} \cdot w_i - \sum_{j} E_{consumption,provider,j} \cdot w_j}{\sum_{i} E_{demand,i} \cdot w_i}
 
-.. _degree_of_nze:
-
-Degree of net zero energy (NZE)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. include:: outputs/degree_of_nze.inc
 
 The degree of net zero energy describes the ability of an energy system to provide its aggregated annual demand though local sources. For that, the balance between local generation as well as consumption from and feed-in towards the energy provider is compared.
 In a net zero energy system, demand can be supplied by energy import, but then local energy generation must provide an equally high energy export of energy in the course of the year. In a plus energy system, the export exceeds the import, while local generation can supply all demand (from an aggregated perspective).
