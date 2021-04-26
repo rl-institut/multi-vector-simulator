@@ -149,7 +149,7 @@ def cut_below_micro(value, label):
             # If any value has a large negative value (lower then threshold), no values are changed.
             else:
                 test = value.clip(upper=-THRESHOLD).abs()
-                log_msg += f"At least one value is exceeds the scale of {-THRESHOLD}. The highest negative value is -{max(test)}. "
+                log_msg += f"At least one value exceeds the scale of {-THRESHOLD}. The highest negative value is -{max(test)}. "
                 log_msg += text_block_oemof
                 logging.warning(log_msg)
 
