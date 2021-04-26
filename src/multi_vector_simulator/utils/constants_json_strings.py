@@ -160,7 +160,7 @@ SPECIFIC_REPLACEMENT_COSTS_INSTALLED = (
 )
 
 SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED = (
-    "Specific_replacement_costs_of_optimized_capacity"
+    "specific_replacement_costs_of_optimized_capacity"
 )
 
 # Other Parameters
