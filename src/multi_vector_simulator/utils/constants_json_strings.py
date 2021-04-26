@@ -254,7 +254,7 @@ RENEWABLE_SHARE_OF_LOCAL_GENERATION = "renewable_share_of_local_generation"
 TOTAL_EMISSIONS = "total_emissions"
 SPECIFIC_EMISSIONS_ELEQ = "specific_emissions_per_electricity_equivalent"
 
-TOTAL_DEMAND = "Total_demand"
+TOTAL_DEMAND = "total_demand"
 TOTAL_EXCESS = "Total_excess"
 TOTAL_FEEDIN = "Total_feedin"
 TOTAL_CONSUMPTION_FROM_PROVIDERS = "total_consumption_from_energy_provider"

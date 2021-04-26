@@ -27,6 +27,6 @@ total_internal_non-renewable_generation,Total non-renewable local generation,kWh
 total_internal_renewable_generation,Total renewable local generation,kWheleq,">=0",Numeric,technical,"Total internal generation, Total internal non-renewable generation",Aggregated amount of renewable energy generated within the energy system
 total_non-renewable_energy_use,Total non-renewable energy use,kWheleq,">=0",Numeric,technical,Total renewable energy use,Aggregated amount of non-renewable energy used within the energy system (ie. Including local generation and external supply).
 total_renewable_energy_use,Total renewable energy use,kWheleq,">=0",Numeric,technical,Total non-renewable energy use,Aggregated amount of renewable energy used within the energy system (ie. Including local generation and external supply).
-Total_demand,Energy demand,kWh/kWheleq/...,">=0",Numeric,technical,,Demand of electricity in local energy system.
+total_demand,Energy demand,kWh/kWheleq/...,">=0",Numeric,technical,,Demand of electricity in local energy system.
 Total_excess,Energy excess,kWh/kWheleq/...,">=0",Numeric,technical,,Excess of electricity / unused electricity in local energy system.
 Total_feedin,Energy export,kWh/kWheleq/...,">=0",Numeric,technical,Onsite energy fraction,Feed-in of electricity into external grid.

@@ -118,7 +118,7 @@ For assets in energyConsumption, the MVS outputs 0 for the LCOE ASSET.
 Technical KPI
 #############
 
-.. include:: outputs/Total_demand.inc
+.. include:: outputs/total_demand.inc
 
 .. include:: outputs/optimizedAddCap.inc
 
