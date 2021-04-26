@@ -371,6 +371,7 @@ def energyProduction(dict_values, group):
                 )
                 # If Filename defines the generation timeseries, then we have an asset with a lack of dispatchability
                 dict_values[group][asset].update({DISPATCHABILITY: False})
+                process_normalized_installed_cap(dict_values, group, asset)
         else:
             logging.debug(
                 f"Not loading {group} asset {asset} from a file, timeseries is provided"
@@ -1892,3 +1893,30 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 )
 
     asset_dict[MAXIMUM_CAP].update({UNIT: asset_dict[UNIT]})
+
+
+def process_normalized_installed_cap(dict_values, group, asset, subasset=None):
+    """
+    # ToDo: write test for this function
+    Parameters
+    ----------
+    dict_values
+    group
+    asset
+    subasset
+
+    Returns
+    -------
+
+    """
+    if subasset is None:
+        asset_dict = dict_values[group][asset]
+    else:
+        asset_dict = dict_values[group][asset][subasset]
+
+    if asset_dict[FILENAME] is not None:
+        inst_cap_norm = asset_dict[INSTALLED_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
+        asset_dict.update({INSTALLED_CAP_NORMALIZED: {VALUE: inst_cap_norm, UNIT: asset_dict[UNIT]}})
+        logging.debug(
+            f"Parameter {INSTALLED_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES} to obtain {INSTALLED_CAP_NORMALIZED}."
+        )
