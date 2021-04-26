@@ -252,7 +252,7 @@ TOTAL_NON_RENEWABLE_ENERGY_USE = "total_non-renewable_energy_use"
 RENEWABLE_FACTOR = "renewable_factor"
 RENEWABLE_SHARE_OF_LOCAL_GENERATION = "renewable_share_of_local_generation"
 TOTAL_EMISSIONS = "total_emissions"
-SPECIFIC_EMISSIONS_ELEQ = "Specific emissions per electricity equivalent"
+SPECIFIC_EMISSIONS_ELEQ = "specific_emissions_per_electricity_equivalent"
 
 TOTAL_DEMAND = "Total_demand"
 TOTAL_EXCESS = "Total_excess"

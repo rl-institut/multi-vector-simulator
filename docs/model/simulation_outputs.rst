@@ -322,7 +322,7 @@ The total emissions of the MES in question are calculated with all aggregated en
 
 The emissions of each generation asset and provider are also calculated and displayed separately in the outputs of MVS.
 
-.. include:: outputs/Specific_emissions_per_electricity_equivalent.inc
+.. include:: outputs/specific_emissions_per_electricity_equivalent.inc
 
 The specific emissions per electricity equivalent of the MES are calculated in :math:`\text{kg/kWh}_{eleq}`:
 
