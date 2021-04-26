@@ -75,7 +75,7 @@ The capital recovery factor (CRF) is used to calculate the present value of the 
 
 .. include:: outputs/annuity_om.inc
 
-.. include:: outputs/Levelized_costs_of_electricity_equivalent.inc
+.. include:: outputs/levelized_costs_of_electricity_equivalent.inc
 
 As a sector-coupled system connects energy vectors, not the costs associated to each individual energy carrier but the overall energy costs should be minimized. Therefore, we propose a new KPI: The levelized costs of energy (LCOEnergy) aggregates the costs for energy supply and distributes them over the total energy demand supplied, which is calculated by weighting the energy carriers by their energy content. To determine the weighting factors of the different energy carriers, we reference the method of gasoline gallon equivalent (GGE) [12], which enables the comparison of alternative fuels. Instead of comparing the energy carriers of an MES to gasoline, we rebase the factors introduced in [12] onto the energy carrier electricity, thus proposing a unit Electricity Equivalent (ElEq). The necessary weights are summarized in Table 1. With this, we propose to calculate LCOEnergy based on the annual energy demand and the systems annuity, calculated with the CRF, as follows:
 

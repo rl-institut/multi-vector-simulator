@@ -260,7 +260,7 @@ TOTAL_FEEDIN = "Total_feedin"
 TOTAL_CONSUMPTION_FROM_PROVIDERS = "total_consumption_from_energy_provider"
 SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
 ATTRIBUTED_COSTS = "attributed_costs"
-LCOeleq = "Levelized costs of electricity equivalent"
+LCOeleq = "levelized_costs_of_electricity_equivalent"
 
 DEGREE_OF_SECTOR_COUPLING = "Degree of sector coupling"
 DEGREE_OF_AUTONOMY = "Degree of autonomy"
