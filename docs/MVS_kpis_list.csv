@@ -29,4 +29,4 @@ total_non-renewable_energy_use,Total non-renewable energy use,kWheleq,">=0",Nume
 total_renewable_energy_use,Total renewable energy use,kWheleq,">=0",Numeric,technical,Total non-renewable energy use,Aggregated amount of renewable energy used within the energy system (ie. Including local generation and external supply).
 total_demand,Energy demand,kWh/kWheleq/...,">=0",Numeric,technical,,Demand of electricity in local energy system.
 total_excess,Energy excess,kWh/kWheleq/...,">=0",Numeric,technical,,Excess of electricity / unused electricity in local energy system.
-Total_feedin,Energy export,kWh/kWheleq/...,">=0",Numeric,technical,Onsite energy fraction,Feed-in of electricity into external grid.
+total_feedin,Energy export,kWh/kWheleq/...,">=0",Numeric,technical,Onsite energy fraction,Feed-in of electricity into external grid.

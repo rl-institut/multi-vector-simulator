@@ -128,7 +128,7 @@ Technical KPI
 
 .. include:: outputs/peak_flow.inc
 
-.. include:: outputs/Total_feedin.inc
+.. include:: outputs/total_feedin.inc
 
 .. include:: outputs/total_internal_non-renewable_generation.inc
 
