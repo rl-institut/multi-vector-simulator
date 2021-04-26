@@ -140,7 +140,7 @@ Technical KPI
 
 .. include:: outputs/total_renewable_energy_use.inc
 
-.. include:: outputs/Total_non-renewable_energy_use.inc
+.. include:: outputs/total_non_renewable_energy_use.inc
 
 .. include:: outputs/Renewable_share_of_local_generation.inc
 
