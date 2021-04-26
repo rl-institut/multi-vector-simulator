@@ -239,7 +239,7 @@ To measure this, we propose to compare the energy flows in between the sectors t
 
 ** The content of this section was copied from the conference paper handed in to CIRED 2020**
 
-.. include:: outputs/Onsite_energy_fraction.inc
+.. include:: outputs/onsite_energy_fraction.inc
 
 Onsite energy fraction is also referred to as self-consumption. It describes
 the fraction of all locally generated energy that is consumed by the system

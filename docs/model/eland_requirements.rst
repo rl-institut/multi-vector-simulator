@@ -85,14 +85,14 @@ FUN-MVS-04 - Optimisation Results
 The results of the MVS simulation are post-processed, and result in numberous key performance indicators (KPI). Following information is calculated for an economic evaluation of the energy system:
 
 * Capital and operational expenditures (capex, opex) per asset, both as annuities as well as present costs. This includes also the first-time investment costs (FIC), the replacement costs minus residual values, and the costs for asset dispatch (equations compare :ref:`economic_precalculation-label`).
-* :ref:`NPC <net_present_cost>` and annuity of the whole energy system
-* :ref:`Levelized cost of energy (LCOE) <lcoe>` of the energy system, in electricity equivalent
-* :ref:`Levelized cost of an energy carrier <lcoe>` in electricity equivalent (LCOEleq) for each energy carrier in the energy system
-* :ref:`Levelized cost of asset dispatch <lcoe_asset>`, calculated from the annuity of an asset and their throughput
+* :ref:`NPC <costs_total>` and annuity of the whole energy system
+* :ref:`Levelized cost of energy (LCOE) <levelized_costs_of_electricity_equivalent>` of the energy system, in electricity equivalent
+* :ref:`Levelized cost of an energy carrier <levelized_costs_of_electricity_equivalent>` in electricity equivalent (LCOEleq) for each energy carrier in the energy system
+* :ref:`Levelized cost of asset dispatch <levelized_cost_of_energy_of_asset>`, calculated from the annuity of an asset and their throughput
 
 Additionaly, a number of technical parameters are calculated both the energy system and the individual energy vectors:
 
-* Dispatch, :ref:`aggregated energy flows <aggregated_flow>` as well as :ref:`peak flows <peak_flow>` of each asset
+* Dispatch, :ref:`aggregated energy flows <annual_total_flow>` as well as :ref:`peak flows <peak_flow>` of each asset
 * :ref:`Renewable share <renewable_factor>`
 * :ref:`Renewable share of local generation <renewable_share_of_local_generation>`
 * :ref:`Degree of autonomy <degree_of_autonomy>`
@@ -100,11 +100,11 @@ Additionaly, a number of technical parameters are calculated both the energy sys
 * :ref:`Onsite Energy Matching (OEM) <onsite_energy_fraction>`
 * :ref:`Onsite Energy Fraction (OEF) <onsite_energy_matching>`
 * Annual excess energy
-* :ref:`Annual GHGeq emissions <emissions>` and specific emissions per electricity equivalent
+* :ref:`Annual GHGeq emissions <total_emissions>` and specific emissions per electricity equivalent
 
 :Notes:
 
-Currently in discussion is the implementation of a so-called :ref:`degree of sector-coupling <kpi_degree_of_sector_coupling>` (`see issue 702 <https://github.com/rl-institut/multi-vector-simulator/issues/702>`__). This is a novel key performance indicator and would be integrated in addition to above mentioned parameters.
+Currently in discussion is the implementation of a so-called :ref:`degree of sector-coupling <degree_of_sector_coupling>` (`see issue 702 <https://github.com/rl-institut/multi-vector-simulator/issues/702>`__). This is a novel key performance indicator and would be integrated in addition to above mentioned parameters.
 
 FUN-MVS-05 - Production Assets
 ##############################
@@ -338,7 +338,7 @@ FUN-MVS-15 - Autonomous operation data
 
 :Progress message:
 
-This requirement is addressed by the :ref:`degree of autonomy constraint <kpi_degree_of_autonomy>`. It is related to the aggregated demand of the energy system and the required consumption from the grid (comp. :ref:`DOA <kpi_degree_of_autonomy>`), and not minimum or maximum time of autonomous operation.
+This requirement is addressed by the :ref:`degree of autonomy constraint <constraint_minimal_degree_of_autonomy>`. It is related to the aggregated demand of the energy system and the required consumption from the grid (comp. :ref:`DOA <degree_of_autonomy>`), and not minimum or maximum time of autonomous operation.
 
 :Notes:
 

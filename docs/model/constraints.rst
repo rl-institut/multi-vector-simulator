@@ -17,7 +17,7 @@ The minimal renewable factor is applied to the minimal renewable factor of the w
 .. math::
         minimal renewable factor <= \frac{\sum renewable generation \cdot weighting factor}{\sum renewable generation \cdot weighting factor + \sum non-renewable generation \cdot weighting factor}
 
-Please be aware that the minimal renewable factor constraint defines bounds for the :ref:`kpi_renewable_factor` of the system, ie. taking into account both local generation as well as renewable supply from the energy providers. The constraint explicitly does not aim to reach a certain :ref:`renewable_share_of_local_generation` on-site.
+Please be aware that the minimal renewable factor constraint defines bounds for the :ref:`renewable_factor` of the system, ie. taking into account both local generation as well as renewable supply from the energy providers. The constraint explicitly does not aim to reach a certain :ref:`renewable_share_of_local_generation` on-site.
 
 :Deactivating the constraint:
 
@@ -42,7 +42,7 @@ The minimum renewable share is introduced to the energy system by `D2.constraint
 Minimal degree of autonomy constraint
 ######################################
 
-The minimal degree of autonomy constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal degree of autonomy defined within the constraint. The degree of autonomy of the optimized energy system may also be higher than the minimal degree of autonomy. Please find the definition of here: :ref:`kpi_degree_of_autonomy`
+The minimal degree of autonomy constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal degree of autonomy defined within the constraint. The degree of autonomy of the optimized energy system may also be higher than the minimal degree of autonomy. Please find the definition of here: :ref:`degree_of_autonomy`
 
 The minimal degree of autonomy is applied to the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
 
@@ -73,7 +73,7 @@ Maximum emission constraint
 
 The maximum emission constraint limits the maximum amount of total emissions per year of the energy system. It allows the capacity and dispatch optimization of the MVS to result into a maximum amount of emissions defined by the maximum emission constraint. The yearly emissions of the optimized energy system may also be lower than the maximum emission constraint.
 
-Please note that the maximum emissions constraint currently does not take into consideration life cycle emissions, also see :ref:`emissions` section for an explanation.
+Please note that the maximum emissions constraint currently does not take into consideration life cycle emissions, also see :ref:`total_emissions` section for an explanation.
 
 :Activating the constraint:
 
