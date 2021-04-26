@@ -136,7 +136,7 @@ Technical KPI
 
 .. include:: outputs/total_internal_generation.inc
 
-.. include:: outputs/Total_excess.inc
+.. include:: outputs/total_excess.inc
 
 .. include:: outputs/total_renewable_energy_use.inc
 

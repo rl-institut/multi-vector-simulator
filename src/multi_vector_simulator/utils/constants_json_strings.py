@@ -255,7 +255,7 @@ TOTAL_EMISSIONS = "total_emissions"
 SPECIFIC_EMISSIONS_ELEQ = "specific_emissions_per_electricity_equivalent"
 
 TOTAL_DEMAND = "total_demand"
-TOTAL_EXCESS = "Total_excess"
+TOTAL_EXCESS = "total_excess"
 TOTAL_FEEDIN = "Total_feedin"
 TOTAL_CONSUMPTION_FROM_PROVIDERS = "total_consumption_from_energy_provider"
 SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
