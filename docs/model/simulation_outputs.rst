@@ -254,7 +254,7 @@ the feed into the grid can only be positive.
 
         &OEF \epsilon \text{[0,1]}
 
-.. include:: outputs/Onsite_energy_matching.inc
+.. include:: outputs/onsite_energy_matching.inc
 
 The onsite energy matching is also referred to as "self-sufficiency". It
 describes the fraction of the total demand that can be
