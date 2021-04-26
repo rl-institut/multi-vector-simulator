@@ -238,7 +238,7 @@ COST_DISPATCH = (
 )
 COST_INVESTMENT = "costs_investment_over_lifetime"
 COST_UPFRONT = "costs_upfront_in_year_zero"
-COST_REPLACEMENT = "Replacement_costs_during_project_lifetime"
+COST_REPLACEMENT = "replacement_costs_during_project_lifetime"
 
 # Levelized cost of electricity
 LCOE_ASSET = "levelized_cost_of_energy_of_asset"
