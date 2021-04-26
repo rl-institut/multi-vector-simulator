@@ -17,6 +17,6 @@ if __name__ == "__main__":
             [1, 2, 3],
             os.path.join(REPO_PATH, "MVS_outputs", "json_input_processed.json"),
             ("simulation_settings", "evaluated_period", "value"),
-            json_path_to_output_value=(("kpi", "KPI individual sectors"),),
+            json_path_to_output_value=(("kpi", "KPI_individual_sectors"),),
         )
     )

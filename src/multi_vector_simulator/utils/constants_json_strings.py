@@ -208,7 +208,7 @@ WARNINGS = "warnings"
 # Names for KPI output
 KPI = "kpi"
 KPI_SCALARS_DICT = "scalars"
-KPI_UNCOUPLED_DICT = "KPI individual sectors"
+KPI_UNCOUPLED_DICT = "KPI_individual_sectors"
 KPI_COST_MATRIX = "cost_matrix"
 KPI_SCALAR_MATRIX = "scalar_matrix"
 
