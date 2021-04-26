@@ -259,7 +259,7 @@ TOTAL_EXCESS = "Total_excess"
 TOTAL_FEEDIN = "Total_feedin"
 TOTAL_CONSUMPTION_FROM_PROVIDERS = "total_consumption_from_energy_provider"
 SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
-ATTRIBUTED_COSTS = "Attributed costs"
+ATTRIBUTED_COSTS = "attributed_costs"
 LCOeleq = "Levelized costs of electricity equivalent"
 
 DEGREE_OF_SECTOR_COUPLING = "Degree of sector coupling"

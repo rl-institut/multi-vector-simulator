@@ -38,7 +38,7 @@ The KPI calculated by the MVS can sometimes be calculated per asset, for each se
 
 KPI calculated per asset are not included in the scalar results of the automatic report or in the stored Excel file, but are displayed seperately. They do not need suffixes, as they are always displayed in tables next to the respective asset.
 
-KPI calculated for each vector are specifically these KPI that aggregate the dispatch and costs of multiple assets. For cost-related KPI, such aggregating KPI have the energy vector they are describing as a suffix. An example would be the `attributed_costs` of each energy vector - the attributed costs of the electricity and H2 sector would be called `Attributed_costs_electricity` and `attributed_costs_H2` respectively.
+KPI calculated for each vector are specifically these KPI that aggregate the dispatch and costs of multiple assets. For cost-related KPI, such aggregating KPI have the energy vector they are describing as a suffix. An example would be the `attributed_costs` of each energy vector - the attributed costs of the electricity and H2 sector would be called `attributed_costs_electricity` and `attributed_costs_H2` respectively.
 For technical KPI, this suffix also applies, but additionally, due to the :ref:`energy carrier weighting <energy_carrier_weighting>`, they also feature the suffix `electricity equivalent` when the weighting has been applied. The energy demand of the system is an example: The demand per sector would be `total_demand_electricity` and `total_demand_H2`. To be able to aggregate these cost into an overall KPI for the system, the electricity equivalents of both values are calculated. They then are named `total_demand_electricity_electricity_equivalent` and `total_demand_H2_electricity_equivalent`.
 
 KPI that describe the costs of the overall energy system do not have suffixes. Technical KPI often have the suffix `electricity_equivalent` to underline the energy carrier that the parameter is relative to.
@@ -69,7 +69,7 @@ The capital recovery factor (CRF) is used to calculate the present value of the 
 
 .. include:: outputs/replacement_costs_during_project_lifetime.inc
 
-.. include:: outputs/Attributed_costs.inc
+.. include:: outputs/attributed_costs.inc
 
 .. include:: outputs/annuity_total.inc
 
