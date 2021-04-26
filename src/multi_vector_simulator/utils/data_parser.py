@@ -612,7 +612,7 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                     # convert some keys MVS to EPA style according to the mapping
                     asset[MAP_MVS_EPA[k]] = asset.pop(k)
                 # TODO change energy busses from dict to list in MVS
-                if asset_group == ENERGY_BUSSES and k == "Asset_list":
+                if asset_group == ENERGY_BUSSES and k == "asset_list":
                     asset["assets"] = list(asset.pop(k).keys())
                 if asset_group == ENERGY_STORAGE:
                     if k in (INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY):

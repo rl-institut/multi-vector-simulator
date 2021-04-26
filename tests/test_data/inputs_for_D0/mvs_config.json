@@ -45,7 +45,7 @@
         "ESS Li-Ion bus": {
           "label": "ESS Li-Ion bus",
           "energyVector": "Electricity",
-          "Asset_list": {
+          "asset_list": {
             "storage_01": "ESS Li-Ion",
             "storage_charge_controller_in": "Charge Contoller ESS Li-Ion (charge)",
             "storage_charge_controller_out": "Charge Contoller ESS Li-Ion (discharge)"}
@@ -53,7 +53,7 @@
         "Electricity (DSO) bus": {
           "label": "Electricity (DSO) bus",
           "energyVector": "Electricity",
-          "Asset_list": {
+          "asset_list": {
             "DSO_consumption": "DSO_consumption source",
             "transformer_station_in": "Transformer station (DSO) consumption",
             "transformer_station_out": "Transformer station (DSO) feedin"}
@@ -61,7 +61,7 @@
         "Electricity": {
           "label": "Electricity",
           "energyVector": "Electricity",
-          "Asset_list": {
+          "asset_list": {
             "Electricity demand": "Electricity demand",
             "solar_inverter_01": "Solar inverter (mono)",
             "storage_charge_controller_in": "Charge Contoller ESS Li-Ion (charge)",
@@ -72,7 +72,7 @@
         "PV plant (mono) bus": {
           "label": "PV plant (mono) bus",
           "energyVector": "Electricity",
-          "Asset_list": {
+          "asset_list": {
             "pv_plant_01": "PV plant (mono)",
             "solar_inverter_01": "Solar inverter (mono)"}
         }
