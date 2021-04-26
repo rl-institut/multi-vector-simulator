@@ -93,12 +93,12 @@ The results of the MVS simulation are post-processed, and result in numberous ke
 Additionaly, a number of technical parameters are calculated both the energy system and the individual energy vectors:
 
 * Dispatch, :ref:`aggregated energy flows <aggregated_flow>` as well as :ref:`peak flows <peak_flow>` of each asset
-* :ref:`Renewable share <kpi_renewable_factor>`
-* :ref:`Renewable share of local generation <kpi_renewable_share_of_local_generation>`
-* :ref:`Degree of autonomy <kpi_degree_of_autonomy>`
-* :ref:`Degree of net zero energy <kpi_degree_of_nze>`
-* :ref:`Onsite Energy Matching (OEM) <kpi_onsite_energy_fraction>`
-* :ref:`Onsite Energy Fraction (OEF) <kpi_onsite_energy_matching>`
+* :ref:`Renewable share <renewable_factor>`
+* :ref:`Renewable share of local generation <renewable_share_of_local_generation>`
+* :ref:`Degree of autonomy <degree_of_autonomy>`
+* :ref:`Degree of net zero energy <degree_of_nze>`
+* :ref:`Onsite Energy Matching (OEM) <onsite_energy_fraction>`
+* :ref:`Onsite Energy Fraction (OEF) <onsite_energy_matching>`
 * Annual excess energy
 * :ref:`Annual GHGeq emissions <emissions>` and specific emissions per electricity equivalent
 
