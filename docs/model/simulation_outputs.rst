@@ -187,7 +187,7 @@ This results in:
 * A single-vector renewable share of local generation of 100% for the electricity sector.
 * A system-wide renewable share of local generation of 100%.
 
-.. include:: outputs/Renewable_factor.inc
+.. include:: outputs/renewable_factor.inc
 
 Describes the share of the energy influx to the local energy system that is provided from renewable sources.
 This includes both local generation as well as consumption from energy providers.
