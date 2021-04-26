@@ -156,7 +156,7 @@ ANNUITY_SPECIFIC_INVESTMENT_AND_OM = (
 SIMULATION_ANNUITY = "simulation_annuity"
 
 SPECIFIC_REPLACEMENT_COSTS_INSTALLED = (
-    "Specific_replacement_costs_of_installed_capacity"
+    "specific_replacement_costs_of_installed_capacity"
 )
 
 SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED = (
