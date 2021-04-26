@@ -372,8 +372,6 @@ class Test_Constraints:
         With this benchmark test, the maximum capacity constraint is validated.
         The benchmark test passes if the optimized added capacity is less than or
         equal to the defined maximum capacity.
-        # ToDo: define the tests implemented
-
         """
         # define the cases needed for comparison
         # also test without maximum capacity
@@ -412,12 +410,11 @@ class Test_Constraints:
                     assert (inst_cap <= inst_cap + opt_add_cap), f"The installed capacity of {conv_asset} prior to optimization should be less than or equal to the total installed capacity after optimization, but here {inst_cap} > {inst_cap} + {opt_add_cap}."
                     assert (max_tot_cap is None), f"The total maximum capacity of {conv_asset} should be None (as the user has defined it this way), but instead it is {max_tot_cap}."
                     assert (max_add_cap is None), f"The total maximum capacity of {conv_asset} is set to None which means that the maximum additional capacity should also be None, but here it is {max_add_cap}."
-                # case b) inst_cap > 0, max_tot_cap > 0
+                # case b) inst_cap > 0, max_tot_cap > 0, inst_cap <= max_tot_cap
                 if conv_asset == 'diesel_generator_1':
                     assert (opt_add_cap <= max_add_cap), f"The optimized additional capacity of {conv_asset} should be less than or equal to the total maximum capacity - the installed capacity, but {opt_add_cap} > {max_add_cap}."
                     assert (max_tot_cap == inst_cap + max_add_cap), f"The maximum total capacity of {conv_asset} should be equal to the already installed capacity + the maximum additional optimizable capacity, but {max_tot_cap} is not equal to {inst_cap} + {max_add_cap}."
-                # case c) ?
-                # case d) inst_cap = 0, max_tot_cap > 0
+                # case c) inst_cap = 0, max_tot_cap > 0
                 if conv_asset == 'solar_inverter_(mono)':
                     assert (max_add_cap == max_tot_cap), f"Because the installed capacity of {conv_asset} is zero, the maximum additional capacity should be equal to the total maximum capacity, but {max_add_cap} is not equal to {max_tot_cap}."
                     assert (opt_add_cap <= max_add_cap), f"The optimized additional capacity of {conv_asset} should be less than the maximum possible additional capacity, but {opt_add_cap} > {max_add_cap}."
@@ -425,28 +422,29 @@ class Test_Constraints:
             for prod_asset in data[ENERGY_PRODUCTION]:
                 # using the coupled definition for MaximumCap (includes InstalledCap +  additional maximum optimizable capacity)
                 max_tot_cap = data[ENERGY_PRODUCTION][prod_asset][MAXIMUM_CAP][VALUE]
-                max_add_cap = data[ENERGY_PRODUCTION][conv_asset][MAXIMUM_ADD_CAP][VALUE]
+                max_add_cap = data[ENERGY_PRODUCTION][prod_asset][MAXIMUM_ADD_CAP][VALUE]
                 opt_add_cap = data[ENERGY_PRODUCTION][prod_asset][OPTIMIZED_ADD_CAP][VALUE]
-                inst_cap = data[conv_asset][INSTALLED_CAP][VALUE]
+                inst_cap = data[ENERGY_PRODUCTION][prod_asset][INSTALLED_CAP][VALUE]
                 # case a) inst_cap > 0, max_tot_cap is None (optimizable capacity is unbounded)
                 if prod_asset == 'pv_plant_01':
                     assert (inst_cap <= inst_cap + opt_add_cap), f"The installed capacity of {prod_asset} prior to optimization should be less than or equal to the total installed capacity after optimization, but here {inst_cap} > {inst_cap} + {opt_add_cap}."
                     assert (max_tot_cap is None), f"The total maximum capacity of {prod_asset} should be None (as the user has defined it this way), but instead it is {max_tot_cap}."
-                    assert (max_add_cap is None), f"The total maximum capacity of {conv_asset} is set to None which means that the maximum additional capacity should also be None, but here it is {max_add_cap}."
+                    assert (max_add_cap is None), f"The total maximum capacity of {prod_asset} is set to None which means that the maximum additional capacity should also be None, but here it is {max_add_cap}."
                     assert ((opt_add_cap + inst_cap) * data[ENERGY_PRODUCTION][prod_asset][TIMESERIES].sum() ==
                             data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
                                 VALUE]), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
-                # case b) inst_cap > 0, max_tot_cap > 0
+                # case b) inst_cap > 0, max_tot_cap > 0, inst_cap <= max_tot_cap
                 if prod_asset == 'pv_plant_02':
                     assert (opt_add_cap <= max_add_cap), f"The optimized additional capacity of the asset should be less than or equal to the total maximum capacity - the installed capacity, but {opt_add_cap} > {max_add_cap}."
                     assert ((opt_add_cap + inst_cap) * data[ENERGY_PRODUCTION][prod_asset][TIMESERIES].sum() ==
                             data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
                                 VALUE]), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
-                # case c) ?
-                # case d) inst_cap = 0, max_tot_cap > 0
+                # case c) inst_cap = 0, max_tot_cap > 0
                 if prod_asset == 'pv_plant_03':
                     assert (max_add_cap == max_tot_cap), f"Because the installed capacity of {prod_asset} is zero, the maximum additional capacity should be equal to the total maximum capacity, but {max_add_cap} is not equal to {max_tot_cap}."
                     assert (opt_add_cap <= max_add_cap), f"The optimized additional capacity of {prod_asset} should be less than the maximum possible additional capacity, but {opt_add_cap} > {max_add_cap}."
                     assert (opt_add_cap * data[ENERGY_PRODUCTION][prod_asset][TIMESERIES].sum() ==
                             data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
                                 VALUE]), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
+
+Test_Constraints.test_maximum_cap_constraint(argparse.Namespace())
