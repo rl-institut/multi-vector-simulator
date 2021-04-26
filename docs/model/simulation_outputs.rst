@@ -311,7 +311,7 @@ Environmental KPI
 #################
 
 
-.. include:: outputs/Total_emissions.inc
+.. include:: outputs/total_emissions.inc
 
 The total emissions of the MES in question are calculated with all aggregated energy flows from the generation assets including energy providers and their subsequent emission factor:
 
