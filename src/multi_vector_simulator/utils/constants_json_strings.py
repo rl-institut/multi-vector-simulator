@@ -264,7 +264,7 @@ LCOeleq = "Levelized costs of electricity equivalent"
 
 DEGREE_OF_SECTOR_COUPLING = "Degree of sector coupling"
 DEGREE_OF_AUTONOMY = "Degree of autonomy"
-ONSITE_ENERGY_FRACTION = "Onsite energy fraction"
+ONSITE_ENERGY_FRACTION = "onsite_energy_fraction"
 ONSITE_ENERGY_MATCHING = "onsite_energy_matching"
 DEGREE_OF_NZE = "degree_of_NZE"
 
