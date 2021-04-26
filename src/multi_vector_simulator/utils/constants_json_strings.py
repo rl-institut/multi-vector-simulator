@@ -246,7 +246,7 @@ LCOE_ASSET = "levelized_cost_of_energy_of_asset"
 # Other KPI
 TOTAL_RENEWABLE_GENERATION_IN_LES = "total_internal_renewable_generation"
 TOTAL_NON_RENEWABLE_GENERATION_IN_LES = "total_internal_non-renewable_generation"
-TOTAL_GENERATION_IN_LES = "Total internal generation"
+TOTAL_GENERATION_IN_LES = "total_internal_generation"
 TOTAL_RENEWABLE_ENERGY_USE = "Total renewable energy use"
 TOTAL_NON_RENEWABLE_ENERGY_USE = "Total non-renewable energy use"
 RENEWABLE_FACTOR = "Renewable factor"
