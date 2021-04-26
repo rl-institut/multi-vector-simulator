@@ -274,7 +274,7 @@ or an excess sink.
 
         &OEM \epsilon \text{[0,1]}
 
-.. include:: outputs/Degree_of_autonomy.inc
+.. include:: outputs/degree_of_autonomy.inc
 
 The degree of autonomy describes the overall energy consumed minus the energy consumed from the grid divided by the overall energy consumed. Adapted from this definition `[3] <https://pvspeicher.htw-berlin.de/solarspeicherstudie/>`__.
 
