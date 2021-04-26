@@ -36,36 +36,45 @@ Multi-vector simulator
         :target: https://github.com/psf/black
         :alt: black linter
 
-The MVS' global flowchart, or graphical model, is divided into three connected blocks that trace the logic sequence: inputs, system model, and outputs. This is a typical representation of a simulation model.
+The multi-vector simulator (hereafter MVS) is an `oemof <https:/github.com/oemof>`__ -based Python package which aims at facilitating the modelling of multi-energy carriers energy Systems in island mode.
+
+The main goals of the MVS are
+
+#. to minimize the production costs by determining the generating units' optimal output, which meets the total demand
+
+#. to optimize near-future investments in generation and storage assets with the least possible cost of energy.
+
+
+
+The MVS graphical model is divided into three connected blocks that trace the logic sequence: inputs, system model, and outputs. This is a typical representation of a simulation model:
 
 .. image:: images/MVS_flowchart.png
  :width: 600
 
-The user is asked to enter the required data through a web interface. In developer mode, the data is submitted as a number of csv files. This input data is split into  four categories:
+The user is asked to provide the required data via a collection of csv files or a unique json file with particular format. The input data is split into the following categories:
 
-1.	Project description, which entails the general information regarding the project (country, coordinates, etc.), as well as the economic data such as the discount factor, project duration, or tax;
+*	Project description, which entails the general information regarding the project (country, coordinates, etc.), as well as the economic data such as the discount factor, project duration, or tax;
 
-2.	Energy consumption, which is expressed as times series based on the type of energy (in this case: electrical and therma);
+*	Energy consumption, which is expressed as times series based on the type of energy (in this case: electrical and therma);
 
-3.	System configuration, in which the user specifies the technical and financial data of each asset; and
+*	System configuration, in which the user specifies the technical and financial data of each asset; and
 
-4.	Meteorological data, which is related to the components that generate electricity by harnessing an existing source of energy that is weather- and time-dependent (e.g., solar and wind power).
+*	Meteorological data, which is related to the components that generate electricity by harnessing an existing source of energy that is weather- and time-dependent (e.g., solar and wind power).
 
-This set of input data is then translated to a linear programming problem, also known as a constrained optimization problem. The MVS is based on the oemof-solph python library that describes the problem by specifying the objective function, the decision variables and the bounds and constraints. The goal is to (1) minimize the production costs by determining the generating units' optimal output, which meets the total demand, and (2) optimize near-future investments in generation and storage assets with the least possible cost of energy.
-The simulation outputs are also separated into categories: the economic results used for the financial evaluation, such as the levelized cost of electricity or heat or the net present value of the projected investments, the technical results that include the optimized capacities and dispatch of each asset for instance, and the system’s environmental contribution in terms of CO2 emissions. All these results are valuable for the decision making.
+This set of input data is then translated to a linear programming problem, also known as a constrained optimization problem. The MVS is based on the `oemof-solph <https://github.com/oemof/oemof-solph>`__ python library that describes the problem by specifying an objective function to minimize, the decision variables and the bounds and constraints.
+
+The simulation outputs are also separated into categories:
+
+* Economic results used for the financial evaluation, such as the levelized cost of electricity/heat or the net present value of the projected investments
+* Technical results that include the optimized capacities and dispatch of each asset or the system’s environmental contribution in terms of CO2 emissions.
 
 
 Maintainers
 ===========
 
-Say who develop and maintains this
+The multi-vector simulator is currently maintained by staff from `Reiner Lemoine Institute <https://reiner-lemoine-institut.de/>`__.
 
-Say a word about funding
-
-Origin
-======
-
-What started MVS
+It is developed as a work package in the European Union’s Horizon 2020 Research `E-Land project <https://elandh2020.eu/>`__
 
 Getting Started
 ===============
