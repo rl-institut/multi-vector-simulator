@@ -262,7 +262,7 @@ SUFFIX_ELECTRICITY_EQUIVALENT = "_electricity_equivalent"
 ATTRIBUTED_COSTS = "attributed_costs"
 LCOeleq = "levelized_costs_of_electricity_equivalent"
 
-DEGREE_OF_SECTOR_COUPLING = "Degree of sector coupling"
+DEGREE_OF_SECTOR_COUPLING = "degree_of_sector_coupling"
 DEGREE_OF_AUTONOMY = "degree_of_autonomy"
 ONSITE_ENERGY_FRACTION = "onsite_energy_fraction"
 ONSITE_ENERGY_MATCHING = "onsite_energy_matching"
