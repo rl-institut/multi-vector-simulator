@@ -22,6 +22,7 @@ renewable_factor,Renewable factor,Factor,"[0,1]",Numeric,technical,"renewable_sh
 renewable_share_of_local_generation,Renewable share of local generation,Factor,"[0,1]",Numeric,technical,renewable_factor,The renewable share of local generation describes how much of the energy generated locally is produced from renewable sources. It does not take into account the consumption from energy providers.
 replacement_costs_during_project_lifetime,Replacement costs,currency,>=0,Numeric,economic,costs_investment_over_lifetime,Costs for replacement of assets which occur over the project lifetime.
 specific_emissions_per_electricity_equivalent,Specific GHG per electricity equivalent,kg GHGeq/kWh,>=0,Numeric,environmental,total_emissions,Specific GHG emissions per supplied electricity equivalent
+total_consumption_from_energy_provider,Energy import,kWh/kWheleq/...,>=0,Numeric,technical,,Aggregated energy imports into the local energy system from the provider.
 total_demand,Energy demand,kWh/kWheleq/...,>=0,Numeric,technical,,Demand of electricity in local energy system.
 total_emissions,Total GHG emissions,kg GHGeq,>=0,Numeric,environmental,"renewable_factor, specific_emissions_per_electricity_equivalent",Total greenhouse gas emissions in kg.
 total_excess,Energy excess,kWh/kWheleq/...,>=0,Numeric,technical,,Excess of electricity / unused electricity in local energy system.

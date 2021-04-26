@@ -130,6 +130,8 @@ Technical KPI
 
 .. include:: outputs/total_feedin.inc
 
+.. include:: outputs/total_consumption_from_energy_provider.inc
+
 .. include:: outputs/total_internal_non-renewable_generation.inc
 
 .. include:: outputs/total_internal_renewable_generation.inc
