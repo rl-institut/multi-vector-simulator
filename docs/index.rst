@@ -7,33 +7,34 @@
 
 Multi-vector simulator
 ======================
+.. only:: html
 
-.. image:: https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest
-    :target: https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
+    .. image:: https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest
+        :target: https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest
+        :alt: Documentation Status
 
-.. image:: https://github.com/rl-institut/multi-vector-simulator/workflows/CI/badge.svg
-    :alt: Build status
+    .. image:: https://github.com/rl-institut/multi-vector-simulator/workflows/CI/badge.svg
+        :alt: Build status
 
-.. image:: https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg
-    :target: https://coveralls.io/github/rl-institut/multi-vector-simulator
-    :alt: Test coverage
+    .. image:: https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg
+        :target: https://coveralls.io/github/rl-institut/multi-vector-simulator
+        :alt: Test coverage
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4610237.svg
-    :target: https://doi.org/10.5281/zenodo.4610237
-    :alt: Zenodo DOI
+    .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4610237.svg
+        :target: https://doi.org/10.5281/zenodo.4610237
+        :alt: Zenodo DOI
 
-.. image:: https://img.shields.io/badge/License-GPL%20v2-blue.svg
-    :target: https://img.shields.io/badge/License-GPL%20v2-blue.svg
-    :alt: License gpl2
+    .. image:: https://img.shields.io/badge/License-GPL%20v2-blue.svg
+        :target: https://img.shields.io/badge/License-GPL%20v2-blue.svg
+        :alt: License gpl2
 
-.. image:: https://badge.fury.io/py/multi-vector-simulator.svg
-    :target: https://pypi.org/project/multi-vector-simulator/
-    :alt: Pypi version
+    .. image:: https://badge.fury.io/py/multi-vector-simulator.svg
+        :target: https://pypi.org/project/multi-vector-simulator/
+        :alt: Pypi version
 
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/psf/black
-    :alt: black linter
+    .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+        :target: https://github.com/psf/black
+        :alt: black linter
 
 The MVS' global flowchart, or graphical model, is divided into three connected blocks that trace the logic sequence: inputs, system model, and outputs. This is a typical representation of a simulation model.
 
