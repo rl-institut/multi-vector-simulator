@@ -49,6 +49,7 @@ Here is a template for new release sections
 - Create constant variables in `E1`: `THRESHOLD` for central definition of precision limit (#859)
 - `docs/MVS_kpi_categories.csv` and `conf.generate_kpi_categories()` to list KPI under in the RTD (#869)
 - `docs/MVS_kpi_categories.csv` and `conf.generate_kpi_categories()` to list KPI under in the RTD (#869)
+- Descriptions of all output files to RTD (#874)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
