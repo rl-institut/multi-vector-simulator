@@ -25,7 +25,7 @@ Here is a template for new release sections
 - Add check for correct `installedcap` processing to `AB_grid_pv` benchmark test (#831)
 - Add check to `AB_grid_pv` benchmark test: total pv generation is used to cover demand (#831)
 - Section on energy consumption assets in `Model_Assumptions.rst` and `MVS_Outputs.rst` (#817)
-- Constant variables: `MODELLING_TIME`, `LP_FILE` (#839), `MAXIMUM_ADD_CAP` (#848)
+- Constant variables: `MODELLING_TIME`, `LP_FILE` (#839), `MAXIMUM_ADD_CAP` (#848), `TIMESERIES_SOC`, `AVERAGE_SOC` (#859)
 - Add plotly in `requirements/default.txt` (#840)
 - Pytests for `C1.check_for_sufficient_assets_on_busses()` (#837)
 - Add a parameter lookup table in RTD (#842)
@@ -43,6 +43,10 @@ Here is a template for new release sections
 - ´--version´ option for the command line `mvs_tool` (#866)
 - `sphinx.ext.imgconverter` in `docs/conf.py` for svg images into pdf (#853)
 - Introduce new parameter `maximumAddCap` where `maximumAddCap=maximumCap-installedCap` in `C0.process_maximum_cap_constraint()`, ie. make the coupling of the two parameters `installedCap` with `maximumCap` explicit (#848)
+- Check that storage file name defined with ending `.csv` with new `A1.check_storage_file_is_csv()` in `A1.create_json_from_csv()` (#859)
+- Class in `exceptions.py`: `MissingCsvEndingError` (#859)
+- Create constant variables in `E1` for accessing oemof-solph results: `OEMOF_FLOW`, `OEMOF_SEQUENCES`, `OEMOF_INVEST`, `OEMOF_SCALARS` (#859)
+- Create constant variables in `E1`: `THRESHOLD` for central definition of precision limit (#859)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -70,6 +74,11 @@ Here is a template for new release sections
 - Adjust `tests/test_benchmark_feedin.test_benchmark_feedin_tariff_optimize_positive_value()` and `tests/benchmark_test_inputs/Feedin_optimize/csv_elements/energyProduction.csv` to fit new `maximumCap` and `maximumAddCap` definitions (#848)
 - Include new parameter `maximumAddCap` in `tests/test_data/inputs_for_D0/mvs_config.json` and `tests/test_data/inputs_for_D1/mvs_config.json` (#848)
 - Explicitely include badges only for the html version of the RTD and not the pdf (#870)
+- Change `E1.get_timeseries_per_bus()` and `E1.get_flows` and utilize `E1.cut_below_micro` to apply precision limit (#859)
+- Separate calculation of SOC into own function: `E1.get_state_of_charge_info` (#859)
+- Change `E1.add_info_flows()` so that storage peculiarities for the information is considered (#859)
+- Benchmark tests for `AE-Grid-Battery`: Input files and pytests (#859)
+- `E1.lcoe_assets` to calculate LCOE of storage capacity throughput based on input flow. Required change of `test_benchmark_KPI` (storage not used, LCOE=0) (#589)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
@@ -77,7 +86,8 @@ Here is a template for new release sections
 - Quotes for command line instruction in README.rst (#850)
 - Superfluous `docs/readthedocs.yml` file (#853)
 - Broken links in readthedocs (#861)
-
+- Calculation of `LCOE_Asset` for energy storage capacity are not calculated anymore in `E2.lcoe_assets` (#589)
+ 
 ### Fixed
 - Skip `test_benchmark_KPI` as it was seen to be consuming the whole test time leading to timeout on github action (#826)
 - Reduce `simulation_settings.evaluated_period` to one day for the tests where simulation results are not important (for E0 and D2 test modules setup) (#826)
@@ -89,8 +99,9 @@ Here is a template for new release sections
 - Address issue #825 by changing order of `maximumCap` check and adaption in `C0.process_maximum_cap_constraint()` (#833)
 - Bugfix in `C0.process_maximum_cap_constraint()`: Always set `maximumCap` to `None` in case its value is 0 (#833)
 - ReadTheDocs warnings (#863)
-- Reenable the coverage tests on github actions (#864)
+- Re-enable the coverage tests on github actions (#864)
 - Adjust definition for `maximumCap` in `docs/MVS_parameters_list.csv`: Total maximum installable capacity (#848)
+- Negative values within the precision limit in `timeseries.xlsx` (#859)
 
 ## [0.5.5] - 2021-03-04
 

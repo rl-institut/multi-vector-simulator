@@ -68,14 +68,24 @@ from multi_vector_simulator.utils.constants_json_strings import (
     KPI_UNCOUPLED_DICT,
     FIX_COST,
     LIFETIME_PRICE_DISPATCH,
+    AVERAGE_SOC,
 )
 
+# Oemof.solph variables
+OEMOF_FLOW = "flow"
+OEMOF_SEQUENCES = "sequences"
+OEMOF_INVEST = "invest"
+OEMOF_SCALARS = "scalars"
+OEMOF_STORAGE_CONTENT = "storage_content"
 
 # Determines which assets are defined by...
 # a influx from a bus
 ASSET_GROUPS_DEFINED_BY_INFLUX = [ENERGY_CONSUMPTION]
 # b outflux into a bus
 ASSET_GROUPS_DEFINED_BY_OUTFLUX = [ENERGY_CONVERSION, ENERGY_PRODUCTION]
+
+# Threshold for precision limit:
+THRESHOLD = 10 ** (-6)
 
 
 def cut_below_micro(value, label):
@@ -114,10 +124,13 @@ def cut_below_micro(value, label):
     - E1.test_cut_below_micro_pd_Series_larger_0
     - E1.test_cut_below_micro_pd_Series_larger_0_smaller_threshold
     """
-    threshold = 10 ** (-6)
     text_block_start = f"The value of {label} is below 0"
-    text_block_set_0 = f"Negative value (s) are smaller than {-threshold}. This is likely a result of the termination/precision settings of the cbc solver. As the difference is marginal, the value will be set to 0. "
+    text_block_set_0 = f"Negative value (s) are smaller than {-THRESHOLD}. This is likely a result of the termination/precision settings of the cbc solver. As the difference is marginal, the value will be set to 0. "
     text_block_oemof = "This is so far below 0, that the value is not changed. All oemof decision variables should be positive so this needs to be investigated. "
+
+    logging.debug(
+        f"Check if the dispatch of asset {label} as per the oemof results is within the defined margin of precision ({THRESHOLD})"
+    )
 
     # flows
     if isinstance(value, pd.Series):
@@ -129,23 +142,23 @@ def cut_below_micro(value, label):
                 instances = sum(value < 0)
                 log_msg += f" in {instances} instances. "
             # Checks that all values are at least within the threshold for negative values.
-            if (value > -threshold).all():
+            if (value > -THRESHOLD).all():
                 log_msg += text_block_set_0
                 logging.debug(log_msg)
                 value = value.clip(lower=0)
             # If any value has a large negative value (lower then threshold), no values are changed.
             else:
-                test = value.clip(upper=-threshold).abs()
-                log_msg += f"At least one value is exceeds the scale of {-threshold}. The highest negative value is -{max(test)}. "
+                test = value.clip(upper=-THRESHOLD).abs()
+                log_msg += f"At least one value exceeds the scale of {-THRESHOLD}. The highest negative value is -{max(test)}. "
                 log_msg += text_block_oemof
                 logging.warning(log_msg)
 
         # Determine if there are any positive values that are between 0 and the threshold:
         # Clip to interval
-        positive_threshold = value.clip(lower=0, upper=threshold)
+        positive_threshold = value.clip(lower=0, upper=THRESHOLD)
         # Determine instances in which bounds are met: 1=either 0 or larger threshold, 0=smaller threshold
         positive_threshold = (positive_threshold == 0) + (
-            positive_threshold == threshold
+            positive_threshold == THRESHOLD
         )
         # Instances in which values are in determined interval:
         instances = len(value) - sum(positive_threshold)
@@ -162,19 +175,19 @@ def cut_below_micro(value, label):
         if value < 0:
             log_msg = text_block_start
             # Value between [threshold, 0] = [-10**(-6)], ie. is so small that it can be neglected.
-            if value > -threshold:
+            if value > -THRESHOLD:
                 log_msg += text_block_set_0
                 logging.debug(log_msg)
                 value = 0
             # Value is below 0 but already large enough that it should not be neglected.
             else:
-                log_msg += f"The value exceeds the scale of {-threshold}, with {value}."
+                log_msg += f"The value exceeds the scale of {-THRESHOLD}, with {value}."
                 log_msg += text_block_oemof
                 logging.warning(log_msg)
         # Value is above 0 but below threshold, should be rounded
-        elif value < threshold:
+        elif value < THRESHOLD:
             logging.debug(
-                f"The positive value {value} is below the {threshold}, and rounded to 0."
+                f"The positive value {value} is below the {THRESHOLD}, and rounded to 0."
             )
             value = 0
 
@@ -202,6 +215,8 @@ def get_timeseries_per_bus(dict_values, bus_data):
     Tested with:
     - test_get_timeseries_per_bus_two_timeseries_for_directly_connected_storage()
 
+    #Todo: This is a duplicate of the `E1.get_flow()` assertions, and thus `E1.cut_below_micro` is applied twice for each flow. This should rather be merged into the other functions.
+
     Returns
     -------
     Indirectly updated `dict_values` with 'optimizedFlows' - one data frame for each bus.
@@ -219,17 +234,18 @@ def get_timeseries_per_bus(dict_values, bus_data):
         # obtain flows that flow into the bus
         to_bus = {
             key[0][0]: key
-            for key in bus_data[bus]["sequences"].keys()
-            if key[0][1] == bus and key[1] == "flow"
+            for key in bus_data[bus][OEMOF_SEQUENCES].keys()
+            if key[0][1] == bus and key[1] == OEMOF_FLOW
         }
         for asset in to_bus:
-            bus_data_timeseries[bus][asset] = bus_data[bus]["sequences"][to_bus[asset]]
-
+            flow = bus_data[bus][OEMOF_SEQUENCES][to_bus[asset]]
+            flow = cut_below_micro(flow, bus + "/" + asset)
+            bus_data_timeseries[bus][asset] = flow
         # obtain flows that flow out of the bus
         from_bus = {
             key[0][1]: key
-            for key in bus_data[bus]["sequences"].keys()
-            if key[0][0] == bus and key[1] == "flow"
+            for key in bus_data[bus][OEMOF_SEQUENCES].keys()
+            if key[0][0] == bus and key[1] == OEMOF_FLOW
         }
         for asset in from_bus:
             try:
@@ -243,10 +259,10 @@ def get_timeseries_per_bus(dict_values, bus_data):
                 # Now the "from_bus" ie. the charging/input power of the storage asset is added to the data set:
                 bus_data_timeseries[bus][" ".join([asset, INPUT_POWER])] = -bus_data[
                     bus
-                ]["sequences"][from_bus[asset]]
+                ][OEMOF_SEQUENCES][from_bus[asset]]
             except KeyError:
                 # The asset was not previously added to the `OPTIMIZED_FLOWS`, ie. is not a storage asset
-                bus_data_timeseries[bus][asset] = -bus_data[bus]["sequences"][
+                bus_data_timeseries[bus][asset] = -bus_data[bus][OEMOF_SEQUENCES][
                     from_bus[asset]
                 ]
 
@@ -276,32 +292,47 @@ def get_storage_results(settings, storage_bus, dict_asset):
     storage.
 
     """
-    power_charge = storage_bus["sequences"][
-        ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), "flow")
+    power_charge = storage_bus[OEMOF_SEQUENCES][
+        ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), OEMOF_FLOW)
     ]
     power_charge = cut_below_micro(power_charge, dict_asset[LABEL] + " charge flow")
-    add_info_flows(settings, dict_asset[INPUT_POWER], power_charge)
+    add_info_flows(
+        evaluated_period=settings[EVALUATED_PERIOD][VALUE],
+        dict_asset=dict_asset[INPUT_POWER],
+        flow=power_charge,
+    )
 
-    power_discharge = storage_bus["sequences"][
-        ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), "flow")
+    power_discharge = storage_bus[OEMOF_SEQUENCES][
+        ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), OEMOF_FLOW)
     ]
     power_discharge = cut_below_micro(
         power_discharge, dict_asset[LABEL] + " discharge flow"
     )
 
-    add_info_flows(settings, dict_asset[OUTPUT_POWER], power_discharge)
+    add_info_flows(
+        evaluated_period=settings[EVALUATED_PERIOD][VALUE],
+        dict_asset=dict_asset[OUTPUT_POWER],
+        flow=power_discharge,
+    )
 
-    capacity = storage_bus["sequences"][
-        ((dict_asset[LABEL], TYPE_NONE), "storage_content")
+    storage_capacity = storage_bus[OEMOF_SEQUENCES][
+        ((dict_asset[LABEL], TYPE_NONE), OEMOF_STORAGE_CONTENT)
     ]
-    capacity = cut_below_micro(capacity, dict_asset[LABEL] + " storage capacity")
+    storage_capacity = cut_below_micro(
+        storage_capacity, dict_asset[LABEL] + " " + STORAGE_CAPACITY
+    )
 
-    add_info_flows(settings, dict_asset[STORAGE_CAPACITY], capacity)
+    add_info_flows(
+        evaluated_period=settings[EVALUATED_PERIOD][VALUE],
+        dict_asset=dict_asset[STORAGE_CAPACITY],
+        flow=storage_capacity,
+        type=STORAGE_CAPACITY,
+    )
 
     if OPTIMIZE_CAP in dict_asset:
         if dict_asset[OPTIMIZE_CAP][VALUE] is True:
-            power_charge = storage_bus["scalars"][
-                ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), "invest")
+            power_charge = storage_bus[OEMOF_SCALARS][
+                ((dict_asset[INFLOW_DIRECTION], dict_asset[LABEL]), OEMOF_INVEST)
             ]
             dict_asset[INPUT_POWER].update(
                 {
@@ -317,8 +348,8 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_charge,
             )
 
-            power_discharge = storage_bus["scalars"][
-                ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), "invest")
+            power_discharge = storage_bus[OEMOF_SCALARS][
+                ((dict_asset[LABEL], dict_asset[OUTFLOW_DIRECTION]), OEMOF_INVEST)
             ]
             dict_asset[OUTPUT_POWER].update(
                 {
@@ -334,13 +365,13 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 power_discharge,
             )
 
-            capacity = storage_bus["scalars"][
-                ((dict_asset[LABEL], TYPE_NONE), "invest")
+            storage_capacity = storage_bus[OEMOF_SCALARS][
+                ((dict_asset[LABEL], TYPE_NONE), OEMOF_INVEST)
             ]
             dict_asset[STORAGE_CAPACITY].update(
                 {
                     OPTIMIZED_ADD_CAP: {
-                        VALUE: capacity,
+                        VALUE: storage_capacity,
                         UNIT: dict_asset[STORAGE_CAPACITY][UNIT],
                     }
                 }
@@ -348,7 +379,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
             logging.debug(
                 "Accessed optimized capacity of asset %s: %s",
                 dict_asset[STORAGE_CAPACITY][LABEL],
-                capacity,
+                storage_capacity,
             )
 
         else:
@@ -377,13 +408,36 @@ def get_storage_results(settings, storage_bus, dict_asset):
                 }
             )
 
-    dict_asset.update(  # todo: this could be a separate function for testing.
+    get_state_of_charge_info(dict_asset)
+
+
+def get_state_of_charge_info(dict_asset):
+    r"""
+    Adds state of charge timeseries and average value of the timeseries to the storage dict.
+
+    Parameters
+    ----------
+    dict_asset: dict
+        Dict of the asset, specifically including the STORAGE_CAPACITY
+
+    Returns
+    -------
+    Updated dict_asset
+
+    Notes
+    -----
+
+    Tested with:
+    - E1.test_get_state_of_charge_info()
+    """
+    timeseries_soc = dict_asset[STORAGE_CAPACITY][FLOW] / (
+        dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
+        + dict_asset[STORAGE_CAPACITY][OPTIMIZED_ADD_CAP][VALUE]
+    )
+    dict_asset.update(
         {
-            TIMESERIES_SOC: dict_asset[STORAGE_CAPACITY]["flow"]
-            / (
-                dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE]
-                + dict_asset[STORAGE_CAPACITY][OPTIMIZED_ADD_CAP][VALUE]
-            )
+            TIMESERIES_SOC: timeseries_soc,
+            AVERAGE_SOC: {VALUE: timeseries_soc.mean(), UNIT: "factor"},
         }
     )
 
@@ -576,9 +630,9 @@ def get_optimal_cap(bus, dict_asset, flow_tuple):
     if OPTIMIZE_CAP in dict_asset:
         if (
             dict_asset[OPTIMIZE_CAP][VALUE] is True
-            and (flow_tuple, "invest") in bus["scalars"]
+            and (flow_tuple, OEMOF_INVEST) in bus[OEMOF_SCALARS]
         ):
-            optimal_capacity = bus["scalars"][(flow_tuple, "invest")]
+            optimal_capacity = bus[OEMOF_SCALARS][(flow_tuple, OEMOF_INVEST)]
             optimal_capacity = cut_below_micro(optimal_capacity, dict_asset[LABEL])
             if TIMESERIES_PEAK in dict_asset:
                 if dict_asset[TIMESERIES_PEAK][VALUE] > 0:
@@ -647,9 +701,13 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
     the flow ('average_flow').
 
     """
-    flow = bus["sequences"][(flow_tuple, "flow")]
-    cut_below_micro(flow, dict_asset[LABEL] + " flow")
-    add_info_flows(settings, dict_asset, flow)
+    flow = bus[OEMOF_SEQUENCES][(flow_tuple, OEMOF_FLOW)]
+    flow = cut_below_micro(flow, dict_asset[LABEL] + FLOW)
+    add_info_flows(
+        evaluated_period=settings[EVALUATED_PERIOD][VALUE],
+        dict_asset=dict_asset,
+        flow=flow,
+    )
 
     logging.debug(
         "Accessed simulated timeseries of asset %s (total sum: %s)",
@@ -658,41 +716,56 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
     )
 
 
-def add_info_flows(settings, dict_asset, flow):
+def add_info_flows(evaluated_period, dict_asset, flow, type=None):
     r"""
     Adds `flow` and total flow amongst other information to `dict_asset`.
 
     Parameters
     ----------
-    settings : dict
-        Contains simulation settings from `simulation_settings.csv` with
-        additional information like the amount of time steps simulated in the
-        optimization ('periods').
+    evaluated_period : int
+        The number of days simulated with the energy system model.
     dict_asset : dict
         Contains information about the asset `flow` belongs to.
     flow : pd.Series
         Time series of the flow.
+    type: str, default: None
+        type of the flow, only exception is "STORAGE_CAPACITY".
 
     Returns
     -------
     Indirectly updates `dict_asset` with the `flow`, the total flow, the annual
     total flow, the maximum of the flow ('peak_flow') and the average value of
-    the flow ('average_flow').
+    the flow ('average_flow'). As Storage capacity is not a flow, an aggregation of the timeseries does not make sense
+    and the parameters TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW are added set to None.
 
+    Notes
+    -----
+
+    Tested with:
+    - E1.test_add_info_flows_365_days()
+    - E1.test_add_info_flows_1_day()
+    - E1.test_add_info_flows_storage_capacity()
     """
     total_flow = sum(flow)
-    dict_asset.update(
-        {
-            FLOW: flow,
-            TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
-            ANNUAL_TOTAL_FLOW: {
-                VALUE: total_flow * 365 / settings[EVALUATED_PERIOD][VALUE],
-                UNIT: "kWh",
-            },
-            PEAK_FLOW: {VALUE: max(flow), UNIT: "kW"},
-            AVERAGE_FLOW: {VALUE: total_flow / len(flow), UNIT: "kW"},
-        }
-    )
+    dict_asset.update({FLOW: flow})
+
+    if type == STORAGE_CAPACITY:
+        # The oemof-solph "flow" connected to the storage capacity describes the energy stored in the storage asset, not the actual flow. As such, the below parameters are non-sensical, especially TOTAL_FLOW and ANNUAL_TOTAL_FLOW. PEAK_FLOW and AVERAGE_FLOW are, as a consequence, also not captured. Instead, the AVERAGE_SOC is calculated in a later processing step.
+        for parameter in [TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW]:
+            dict_asset.update({parameter: {VALUE: None, UNIT: "NaN"}})
+
+    else:
+        dict_asset.update(
+            {
+                TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
+                ANNUAL_TOTAL_FLOW: {
+                    VALUE: total_flow * 365 / evaluated_period,
+                    UNIT: "kWh",
+                },
+                PEAK_FLOW: {VALUE: max(flow), UNIT: "kW"},
+                AVERAGE_FLOW: {VALUE: flow.mean(), UNIT: "kW"},
+            }
+        )
 
 
 def convert_demand_to_dataframe(dict_values, sector_demands=None):

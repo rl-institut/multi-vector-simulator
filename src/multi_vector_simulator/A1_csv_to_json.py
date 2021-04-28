@@ -92,6 +92,7 @@ from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
     CsvParsingError,
     WrongStorageColumn,
+    MissingCsvEndingError,
 )
 
 
@@ -503,10 +504,11 @@ def create_json_from_csv(
             single_dict.update({column: column_dict})
             # add exception for energyStorage
             if filename == ENERGY_STORAGE:
+                storage_file_name = check_storage_file_is_csv(
+                    df.loc[STORAGE_FILENAME][column]
+                )
                 storage_dict = add_storage_components(
-                    df.loc[STORAGE_FILENAME][column][:-4],
-                    input_directory,
-                    single_dict[column][LABEL],
+                    storage_file_name, input_directory, single_dict[column][LABEL],
                 )
                 single_dict[column].update(storage_dict)
 
@@ -530,6 +532,33 @@ def create_json_from_csv(
         single_dict2 = {}
         single_dict2.update({filename: single_dict})
         return single_dict2
+
+
+def check_storage_file_is_csv(storage_file):
+    r"""
+    Checks that the storage file name defined in `energyStorage.csv` has ending `.csv`.
+
+    Parameters
+    ----------
+    storage_file: str
+        Defined storage file name
+
+    Returns
+    -------
+
+    If test fails: MissingCsvEndingError(ValueError), else:
+
+    storage_file: str
+        Storage file name without ending '.csv'
+
+    """
+    if storage_file[-4:] == ".csv":
+        storage_file = storage_file[:-4]
+    else:
+        raise MissingCsvEndingError(
+            f"The storage file defined as input in {ENERGY_STORAGE} does not end with '.csv' but is only {storage_file}. Please add the file ending."
+        )
+    return storage_file
 
 
 def conversion(value, asset_dict, row, param, asset, filename=""):
@@ -648,7 +677,6 @@ def add_storage_components(storage_filename, input_directory, storage_label):
     dict
         dictionary containing the storage parameters
     """
-
     if not os.path.exists(os.path.join(input_directory, f"{storage_filename}.csv")):
         logging.error(f"The storage file {storage_filename}.csv is missing!")
     else:
