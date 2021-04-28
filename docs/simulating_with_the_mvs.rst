@@ -19,51 +19,58 @@ Input files
 
 All input files need to be within a folder with the following structure.
 
-| inputs
-| ├── csv_elements
-|         ├── constraints.csv
-|         ├── economic_data.csv
-|         ├── energyBusses.csv
-|         ├── energyConsumption.csv
-|         ├── energyConversion.csv
-|         ├── energyProduction.csv
-|         ├── energyProviders.csv
-|         ├── energyStorage.csv
-|         ├── fixcost.csv
-|         ├── project_data.csv
-|         ├── simulation_settings.csv
-|         └── storage_01.csv
-| ├── time_series
-|        └── blank
-| └── mvs_config.json
+| input_folder
+|     ├── csv_elements
+|             ├── constraints.csv
+|             ├── economic_data.csv
+|             ├── energyBusses.csv
+|             ├── energyConsumption.csv
+|             ├── energyConversion.csv
+|             ├── energyProduction.csv
+|             ├── energyProviders.csv
+|             ├── energyStorage.csv
+|             ├── fixcost.csv
+|             ├── project_data.csv
+|             ├── simulation_settings.csv
+|             └── storage_01.csv
+|     ├── time_series
+|            └── blank
+|     └── mvs_config.json
 
 
-There are two options to insert all input data – Json and CSV. These will be explained below.
+The name and location of the `input_folder` is up to the user. The underlying structure and file names within this folder should not be altered.
+
+There are two allowed formats to provide input data to the MVS: Json or CSV (comma separated values).
+
+For the Json format, only the `file mvs_config.json` is required, whereas for the CSV format only the folder `csv_elements` is required.
+The folder `time_series` is always required, it should contain the timeseries for energy demand or production.
+
+The CSV format is more user-friendly to design a local energy system model and the Json format is more compact (the whole model is contained in only one file)
 
 Csv files: csv_elements folder
 ##############################
 
-Usually a user, that is not using the MVS in combination with the EPA,
-will use CSV input files to define the local energy system, and respectively, the scenario.
+To use the CSV format, each of the following files have to be present in the folder `csv_elements`.
 
-Specifically, the MVS will create a Json file ("mvs_csv_config.json") from the provided input data,
-that works just like above described "mvs_config.json".
-For that, each of the following files have to be present in the folder "csv_elements":
+Files containting enumeration of energy system's assets (or components):
 
-- `economic_data.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/economic_data.csv>`__ - Major economic parameters of the project
-- `energyBusses.csv  <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyBusses.csv>`__ - Energy busses of the energy system to be simulated
 - `energyConsumption.csv  <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyConsumption.csv>`__ - Energy demands and paths to their time series as csv
 - `energyConversion.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyConversion.csv>`__ - Conversion/transformer objects, eg. transformers, generators, heat pumps
 - `energyProduction.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyProduction.csv>`__ - Act as energy "sources", ie. PV or wind plants, with paths to their generation time series as csv
 - `energyProviders.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyProviders.csv>`__ - Specifics of energy providers, ie. DSOs that are connected to the local energy system, including energy prices and feed-in tariffs
 - `energyStorage.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyStorage.csv>`__ - List of energy storages of the energy system
 - `storage_01.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/storage_01.csv>`__ - Technical parameters of each energy system
+- `energyBusses.csv  <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/energyBusses.csv>`__ - Energy busses of the energy system to be simulated
+
+Files containing enumeration of energy system's global parameters:
+
 - `fixcost.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/fixcost.csv>`__ - fix project development/maintenance costs (should not be used currently)
 - `simulation_settings.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/simulation_settings.csv>`__ - Simulation settings, including start date and duration
 - `project_data.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/project_data.csv>`__ - some generic project information
+- `constraints.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/constraints.csv>`__ - Constraints on the energy system
+- `economic_data.csv <https://github.com/rl-institut/multi-vector-simulator/blob/dev/input_template/csv_elements/economic_data.csv>`__ - Major economic parameters of the project
 
-For easy set-up of your energy system, we have provided an empty input folder template as well
-`here <https://github.com/rl-institut/multi-vector-simulator/tree/dev/input_template>`__.
+The detailed description of the content of those files is available in the :ref:`input parameters <input_csv_categories>` section. Moreover, an input folder template is available `here <https://github.com/rl-institut/multi-vector-simulator/tree/dev/input_template>`__.
 
 You can conveniently create a copy of this folder in your local path with the command (after having followed :ref:`the installation steps<installation-steps>`)
 .. code::
@@ -71,12 +78,18 @@ You can conveniently create a copy of this folder in your local path with the co
     mvs_create_input_template
 
 A simple example system is setup with this `input folder <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/inputs>`__.
-When defining your energy system with this CSV files,
-please also refer to the definition of parameters that you can find here: :ref:`stable <input_parameters>`.
 
-Please note that the allowed separators for csv files are located in `src/constants.py` under the
-`CSV_SEPARATORS` variable. Currently only `[",", ";", "&"]` are allowed.
-Please note further that the column headers in the csv files need to be unique amongst all files.
+.. note::
+    Currently only one of `[",", ";", "&"]` is allowed as value separation for the CSV files (each file should make a coherent use of a unique separator, otherwise leading to parsing problems).
+
+    *For developpers*: the allowed separators for csv files are located in `src/constants.py` under the `CSV_SEPARATORS` variable.
+
+.. note::
+    The name (or label) of each assets needs to be unique and used coherently across the various csv files.
+
+.. note::
+    If the user used the CSV format to simulate a local energy system, the MVS will automatically create a Json file (`mvs_csv_config.json`) from the provided input data.
+    The user could rename this file `mvs_config.json` and use it as input for the simulation.
 
 .. _time_series_folder:
 
@@ -94,19 +107,13 @@ time series and demand time series.
 Json file: mvs_config.json
 ##########################
 
-In combination especially with the planned graphical user interface for the MVS (EPA),
-a json file will be used to store and provide all input data necessary to understand relation.
-The Json file itself is created by the EPA, ie. there are no manual changes.
-You can use a specific Json input file if you want to test a simulation that has been made public online,
-one test simulation, or as a developer that has knowingly edited the Json file.
+The structure of the Json file matches the one described by the `csv_elements` folder. The Json format is intended for easier exchange: via http requests for online services such as EPA for example
 
-As this requires to adhere to quite specific formatting rules,
-this can really only be recommended for advanced users.
+Use of Json file is recommended for advanced users only.
 
-There can only be a single Json file in your input folder.
-As some parameters in the Json file link to a time series provided as a CSV,
-the folder "time_series" should be present in your input folder, as clarified in the next section.
+There can only be a single Json file in your input folder and it must be named `mvs_config.json`.
 
+An example of a Json file structure is available from the `default scenario <https://github.com/rl-institut/blob/dev/tests/inputs/mvs_config.json>`__ of the MVS
 
 Defining an energy system
 -------------------------

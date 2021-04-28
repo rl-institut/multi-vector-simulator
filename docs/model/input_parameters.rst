@@ -4,6 +4,7 @@
 Input parameters
 ================
 
+.. _input_csv_categories:
 
 ************************************
 Parameters in each category/CSV file
