@@ -3,7 +3,7 @@ Simulating with the MVS
 =======================
 
 The MVS can perform capacity as well as dispatch optimisations of a specific energy system.
-This means that both the extra capacity that is to be bought is optimised as well as the respective asset's operation.
+This means that both the needed additional capacity to be installed is optimised as well as the respective asset's operation.
 To perform an energy system simulation, a multitude of input parameters is needed. They are described in details in the :ref:`input parameters <input_parameters>` section.
 They include economic parameters, technological parameters and project settings.
 Together they define all aspects of the energy system to be simulated and optimised.
@@ -38,14 +38,13 @@ All input files need to be within a folder with the following structure.
 |     └── mvs_config.json
 
 
-The name and location of the :code:`input_folder` is up to the user. The underlying structure and file names within this folder should not be altered.
+The name and location of the :code:`input_folder` is up to the user. The underlying structure and file names within this folder should not be altered (with the exception of :code:`storage_01.csv` which is only required to match a filename provided in `energyStorage.csv`.
 
 There are two allowed formats to provide input data to the MVS: Json or CSV (comma separated values).
 
-For the Json format, only the :code:`file mvs_config.json` is required, whereas for the CSV format only the folder :code:`csv_elements` is required.
-The folder :code:`time_series` is always required, it should contain the timeseries for energy demand or production.
+The folder :code:`time_series` is always required, it should contain the timeseries for energy demand, energy production and potentially other time-dependent  parameters. To provide the inputs using the Json format, only the :code:`file mvs_config.json` is required, whereas for the CSV format only the folder :code:`csv_elements` is required.
 
-The CSV format is more user-friendly to design a local energy system model and the Json format is more compact (the whole model is contained in only one file)
+The CSV format is more user-friendly to design a local energy system model and the Json format is more compact (the whole model is contained in only one file). 
 
 Csv files: csv_elements folder
 ##############################
@@ -82,7 +81,7 @@ A simple example system is setup with this `input folder <https://github.com/rl-
 .. note::
     Currently only one of :code:`,`, :code:`;` or :code:`&` is allowed as value separation for the CSV files (each file should make a coherent use of a unique separator, otherwise leading to parsing problems).
 
-    *For developpers*: the allowed separators for csv files are located in :code:`src/constants.py` under the :code:`CSV_SEPARATORS` variable.
+    *For developers*: the allowed separators for csv files are located in :code:`src/constants.py` under the :code:`CSV_SEPARATORS` variable.
 
 .. note::
     The name (or label) of each assets needs to be unique and used coherently across the various csv files.
@@ -94,27 +93,27 @@ A simple example system is setup with this `input folder <https://github.com/rl-
 Json file: mvs_config.json
 ##########################
 
-The structure of the Json file matches the one described by the :code:`csv_elements` folder. The Json format is intended for easier exchange: via http requests for online services such as EPA for example
+The structure of the Json file matches the one described by the :code:`csv_elements` folder. The Json format is intended for easier exchange: via http requests for online services such as EPA for example.
 
 Use of Json file is recommended for advanced users only.
 
 There can only be a single Json file in your input folder and it must be named :code:`mvs_config.json`.
 
-An example of a Json file structure is available from the `default scenario <https://github.com/rl-institut/blob/dev/tests/inputs/mvs_config.json>`__ of the MVS
+An example of a Json file structure is available from the `default scenario <https://github.com/rl-institut/blob/dev/tests/inputs/mvs_config.json>`__ of the MVS.
 
 
 .. _time_series_folder:
 
 Time series: time_series folder
 ###############################
-Some parameters value in the CSV/Json files are filenames. Those filenames correspond to files which must be present in the folder :code:`time_series` in your input folder, formatted as CSV.
+In the CSV and Json files, the value of the parameter :ref:`filename-label` are filenames. Those filenames correspond to files which must be present in the folder :code:`time_series` in your input folder, formatted as CSV.
 As an example, if one asset listed in :ref:`energy production <production>` has :code:`generation_pv.csv` as value for the :ref:`file_name <filename-label>`. The file :code:`generation_pv.csv` containing a value of the pv generation for each timestep of the simulation should be present in the :code:`time_series` folder.
 
 .. note::
-    The time series describing a non-dispatchable demand or when a time series defines an otherwise scalar value of a parameter (eg. energy price), the time series can have any absolute values.
+    When a time series describes a non-dispatchable demand or an otherwise scalar value of a parameter (eg. energy price), the values of the time series can have any positive value.
 
 .. note::
-    For non-dispatchable sources, eg. the generation of a PV plant, you need to provide a specific time series (unit: kWh/kWp, etc.). For the latter, make sure that its values are between zero and one ([0, 1]).
+    For non-dispatchable sources, eg. the generation of a PV plant, you need to provide a specific time series (unit: kWh/kWp, etc.). For the latter, make sure that its values are between zero and one (:code:`[0, 1]`).
 
 Defining an energy system
 -------------------------
@@ -177,6 +176,9 @@ When interconnecting different assets make sure that you use the correct bus nam
 The bus names are defined with *input_direction* and *output_direction*.
 If you interconnect your assets or buses incorrectly the system will still be built but the simulation terminated.
 When executing a simulation, the MVS will generate a rough graphic visualisation of your energy system if you use the option :code:`-png`.
+
+.. TODO: add reference to :ref:`network_graph` here
+
 There, all components and buses should be part of a single system (i.e. linked to each other) - otherwise you misconfigured your energy system.
 
 .. warning::
