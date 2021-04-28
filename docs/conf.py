@@ -271,16 +271,16 @@ def generate_kpi_description(input_csv_file, output_path):
     for row in df.iterrows():
         props = row[1]
         if isinstance(props.see_also, str):
-            see_also = ", ".join([f":ref:`{ref.replace(' ', '')}`" for ref in props.see_also.split(",")])
+            see_also = ", ".join(
+                [f":ref:`{ref.replace(' ', '')}`" for ref in props.see_also.split(",")]
+            )
         else:
             see_also = "None"
         title = props.label + " (" + props.ref + ")"
         lines = (
             [f".. _{props.ref}:", "", title, "^" * len(title), "",]
             + [f"{p} {props[p]}" for p in parameter_properties]
-            + [
-                f":Connected indicators: {see_also}"
-            ]
+            + [f":Connected indicators: {see_also}"]
             + ["", "",]
         )
 
