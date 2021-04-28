@@ -171,14 +171,14 @@ The information fed into the MVS via the CSV's would therefore define following 
 .. image:: images/energy_system_model.png
  :width: 200
 
-Ideally you scratch down the energy system you want to simulate with the above-mentioned granularity
+Ideally you sketch down the energy system you want to simulate with the above-mentioned granularity
 and only using sources, sinks, transformers and buses (meaning the oemof components).
 When interconnecting different assets make sure that you use the correct bus name in each of the CSV input files.
 The bus names are defined with *input_direction* and *output_direction*.
 If you interconnect your assets or buses incorrectly the system will still be built but the simulation terminated.
-If you're not sure whether or not you build your system correctly change the parameter *plot_networkx_graph* in the simulation_settings to True.
-When executing the simulation, the MVS will now generate a rough graphic visualisation of your energy system.
+When executing a simulation, the MVS will generate a rough graphic visualisation of your energy system if you use the option :code:`-png`.
 There, all components and buses should be part of a single system (i.e. linked to each other) - otherwise you misconfigured your energy system.
 
-**You need to be aware that you yourself have to make sure that the units you assign to your assets and energy flows make sense.
-The MVS does neither perform a logical check, nor does it transform units, eg. from MWh to kWh.**
+.. warning::
+    You need to be aware that you yourself have to make sure that the units you assign to your assets and energy flows make sense.
+    The MVS does neither perform a logical check, nor does it transform units, eg. from MWh to kWh.
