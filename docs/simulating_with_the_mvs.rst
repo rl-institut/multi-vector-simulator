@@ -91,19 +91,6 @@ A simple example system is setup with this `input folder <https://github.com/rl-
     If the user used the CSV format to simulate a local energy system, the MVS will automatically create a Json file (`mvs_csv_config.json`) from the provided input data.
     The user could rename this file `mvs_config.json` and use it as input for the simulation.
 
-.. _time_series_folder:
-
-Time series: time_series folder
-###############################
-As some parameters in the csv files link to a time series provided as a CSV,
-the folder "time_series" should be present in your input folder
-and provide all necessary input time series. This can include for example PV generation
-time series and demand time series.
-
-* The time series describing a non-dispatchable demand or when a time series defines an otherwise scalar value of a parameter (eg. energy price), the time series can have any absolute values.
-* For non-dispatchable sources, eg. the generation of a PV plant, you need to provide a specific time series (unit: kWh/kWp, etc.). For the latter, make sure that its values are between zero and one ([0, 1]).
-
-
 Json file: mvs_config.json
 ##########################
 
@@ -115,18 +102,34 @@ There can only be a single Json file in your input folder and it must be named `
 
 An example of a Json file structure is available from the `default scenario <https://github.com/rl-institut/blob/dev/tests/inputs/mvs_config.json>`__ of the MVS
 
+
+.. _time_series_folder:
+
+Time series: time_series folder
+###############################
+Some parameters value in the CSV/Json files are filenames. Those filenames correspond to files which must be present in the folder `time_series` in your input folder, formatted as CSV.
+As an example, if one asset listed in :ref:`energy production <production>` has `generation_pv.csv` as value for the :ref:`file_name <filename-label>`. The file `generation_pv.csv` containing a value of the pv generation for each timestep of the simulation should be present in the `time_series` folder.
+
+.. note::
+    The time series describing a non-dispatchable demand or when a time series defines an otherwise scalar value of a parameter (eg. energy price), the time series can have any absolute values.
+
+.. note::
+    For non-dispatchable sources, eg. the generation of a PV plant, you need to provide a specific time series (unit: kWh/kWp, etc.). For the latter, make sure that its values are between zero and one ([0, 1]).
+
 Defining an energy system
 -------------------------
 
-For defining your energy system you basically have to fill out the CSV sheets that are provided in the folder "csv_elements".
-For each asset you want to add, you have to add a new column.
+To define your energy system you have to fill out the CSV sheets that are provided in the folder `csv_elements`.
+For each asset you want to add, you have to add a new column to a file.
 If you do not have an asset of a specific type,
 simply leave the columns empty (but leave the columns with the parameter names and units).
 
-The unit columns also tell you what type of information is required from you (string, boolean, number).
-In case of doubts, also consider the parameter list that is linked above.
-Do not delete any of the rows of the CSV´s – each parameter is needed for the simulation.
-There will also be warnings if you do so.
+The unit columns can indicate you what is the type of the parameter which is required from you (string, boolean, number) if it is not a physical unit.
+In case of doubts, also consider having a look in the :ref:`parameter list <input_list_parameters>`.
+
+.. warning::
+    Do not delete any of the rows of the CSV´s – each parameter is needed for the simulation.
+    There will also be warnings if a parameters is missing or misspelled.
 
 Example of simple energy systems
 ################################

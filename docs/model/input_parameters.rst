@@ -31,6 +31,7 @@ The input parameters are gathered in the table below. Each parameter is provided
    :file: parameters/MVS_parameters_list.tbl
    :header-rows: 1
 
+.. _input_list_parameters:
 
 ******************
 List of parameters
