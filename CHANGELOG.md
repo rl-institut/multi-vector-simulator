@@ -73,6 +73,7 @@ Here is a template for new release sections
 - Replace usage of `maximumCap` in `D1` with `maximumAddCap` calculated in `C0` (#848)
 - Adjust `tests/test_benchmark_feedin.test_benchmark_feedin_tariff_optimize_positive_value()` and `tests/benchmark_test_inputs/Feedin_optimize/csv_elements/energyProduction.csv` to fit new `maximumCap` and `maximumAddCap` definitions (#848)
 - Include new parameter `maximumAddCap` in `tests/test_data/inputs_for_D0/mvs_config.json` and `tests/test_data/inputs_for_D1/mvs_config.json` (#848)
+- Explicitely include badges only for the html version of the RTD and not the pdf (#870)
 - Change `E1.get_timeseries_per_bus()` and `E1.get_flows` and utilize `E1.cut_below_micro` to apply precision limit (#859)
 - Separate calculation of SOC into own function: `E1.get_state_of_charge_info` (#859)
 - Change `E1.add_info_flows()` so that storage peculiarities for the information is considered (#859)
