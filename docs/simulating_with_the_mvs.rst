@@ -17,11 +17,26 @@ First we will explain the two possible ways to provide the input parameters to t
 Input files
 -----------
 
-All input files need to be stored in a specifically formatted input folder.
-The path to the input folder is up to you.
+All input files need to be within a folder with the following structure.
 
-.. image:: images/folder_structure_inputs.png
- :width: 200
+| inputs
+| ├── csv_elements
+|         ├── constraints.csv
+|         ├── economic_data.csv
+|         ├── energyBusses.csv
+|         ├── energyConsumption.csv
+|         ├── energyConversion.csv
+|         ├── energyProduction.csv
+|         ├── energyProviders.csv
+|         ├── energyStorage.csv
+|         ├── fixcost.csv
+|         ├── project_data.csv
+|         ├── simulation_settings.csv
+|         └── storage_01.csv
+| ├── time_series
+|        └── blank
+| └── mvs_config.json
+
 
 There are two options to insert all input data – Json and CSV. These will be explained below.
 
