@@ -38,19 +38,19 @@ All input files need to be within a folder with the following structure.
 |     └── mvs_config.json
 
 
-The name and location of the `input_folder` is up to the user. The underlying structure and file names within this folder should not be altered.
+The name and location of the :code:`input_folder` is up to the user. The underlying structure and file names within this folder should not be altered.
 
 There are two allowed formats to provide input data to the MVS: Json or CSV (comma separated values).
 
-For the Json format, only the `file mvs_config.json` is required, whereas for the CSV format only the folder `csv_elements` is required.
-The folder `time_series` is always required, it should contain the timeseries for energy demand or production.
+For the Json format, only the :code:`file mvs_config.json` is required, whereas for the CSV format only the folder :code:`csv_elements` is required.
+The folder :code:`time_series` is always required, it should contain the timeseries for energy demand or production.
 
 The CSV format is more user-friendly to design a local energy system model and the Json format is more compact (the whole model is contained in only one file)
 
 Csv files: csv_elements folder
 ##############################
 
-To use the CSV format, each of the following files have to be present in the folder `csv_elements`.
+To use the CSV format, each of the following files have to be present in the folder :code:`csv_elements`.
 
 Files containting enumeration of energy system's assets (or components):
 
@@ -80,25 +80,25 @@ You can conveniently create a copy of this folder in your local path with the co
 A simple example system is setup with this `input folder <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/inputs>`__.
 
 .. note::
-    Currently only one of `[",", ";", "&"]` is allowed as value separation for the CSV files (each file should make a coherent use of a unique separator, otherwise leading to parsing problems).
+    Currently only one of :code:`,`, :code:`;` or :code:`&` is allowed as value separation for the CSV files (each file should make a coherent use of a unique separator, otherwise leading to parsing problems).
 
-    *For developpers*: the allowed separators for csv files are located in `src/constants.py` under the `CSV_SEPARATORS` variable.
+    *For developpers*: the allowed separators for csv files are located in :code:`src/constants.py` under the :code:`CSV_SEPARATORS` variable.
 
 .. note::
     The name (or label) of each assets needs to be unique and used coherently across the various csv files.
 
 .. note::
-    If the user used the CSV format to simulate a local energy system, the MVS will automatically create a Json file (`mvs_csv_config.json`) from the provided input data.
-    The user could rename this file `mvs_config.json` and use it as input for the simulation.
+    If the user used the CSV format to simulate a local energy system, the MVS will automatically create a Json file (:code:`mvs_csv_config.json`) from the provided input data.
+    The user could rename this file :code:`mvs_config.json` and use it as input for the simulation.
 
 Json file: mvs_config.json
 ##########################
 
-The structure of the Json file matches the one described by the `csv_elements` folder. The Json format is intended for easier exchange: via http requests for online services such as EPA for example
+The structure of the Json file matches the one described by the :code:`csv_elements` folder. The Json format is intended for easier exchange: via http requests for online services such as EPA for example
 
 Use of Json file is recommended for advanced users only.
 
-There can only be a single Json file in your input folder and it must be named `mvs_config.json`.
+There can only be a single Json file in your input folder and it must be named :code:`mvs_config.json`.
 
 An example of a Json file structure is available from the `default scenario <https://github.com/rl-institut/blob/dev/tests/inputs/mvs_config.json>`__ of the MVS
 
@@ -107,8 +107,8 @@ An example of a Json file structure is available from the `default scenario <htt
 
 Time series: time_series folder
 ###############################
-Some parameters value in the CSV/Json files are filenames. Those filenames correspond to files which must be present in the folder `time_series` in your input folder, formatted as CSV.
-As an example, if one asset listed in :ref:`energy production <production>` has `generation_pv.csv` as value for the :ref:`file_name <filename-label>`. The file `generation_pv.csv` containing a value of the pv generation for each timestep of the simulation should be present in the `time_series` folder.
+Some parameters value in the CSV/Json files are filenames. Those filenames correspond to files which must be present in the folder :code:`time_series` in your input folder, formatted as CSV.
+As an example, if one asset listed in :ref:`energy production <production>` has :code:`generation_pv.csv` as value for the :ref:`file_name <filename-label>`. The file :code:`generation_pv.csv` containing a value of the pv generation for each timestep of the simulation should be present in the :code:`time_series` folder.
 
 .. note::
     The time series describing a non-dispatchable demand or when a time series defines an otherwise scalar value of a parameter (eg. energy price), the time series can have any absolute values.
@@ -119,7 +119,7 @@ As an example, if one asset listed in :ref:`energy production <production>` has 
 Defining an energy system
 -------------------------
 
-To define your energy system you have to fill out the CSV sheets that are provided in the folder `csv_elements`.
+To define your energy system you have to fill out the CSV sheets that are provided in the folder :code:`csv_elements`.
 For each asset you want to add, you have to add a new column to a file.
 If you do not have an asset of a specific type,
 simply leave the columns empty (but leave the columns with the parameter names and units).
