@@ -131,8 +131,7 @@ There will also be warnings if you do so.
 Example of simple energy systems
 ################################
 
-Input files of simple benchmarks (PV + battery + grid) scenarios can be found
-`here <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests/benchmark_test_inputs/>`__
+Please refer to the :ref:`Examples <benchmarks_examples>` section
 
 
 Building a model from assets and energy flows

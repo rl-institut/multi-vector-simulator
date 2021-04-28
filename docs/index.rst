@@ -104,6 +104,7 @@ Follow the  :doc:`Quick start guide <Installation>`
    :maxdepth: 1
    :caption: Examples
 
+   examples/simple_les
    examples/time_series_params
    examples/multiple_busses
 
