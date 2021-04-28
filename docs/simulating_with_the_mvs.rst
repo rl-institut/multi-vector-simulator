@@ -3,16 +3,16 @@ Simulating with the MVS
 =======================
 
 The MVS can perform capacity as well as dispatch optimisations of a specific energy system.
-This means that both the capacity that is to be bought is optimised as well as the respective asset's operation.
-To perform an energy system simulation, a multitude of input parameters is needed, which are described in link.
+This means that both the extra capacity that is to be bought is optimised as well as the respective asset's operation.
+To perform an energy system simulation, a multitude of input parameters is needed. They are described in details in the :ref:`input parameters <input_parameters>` section.
 They include economic parameters, technological parameters and project settings.
 Together they define all aspects of the energy system to be simulated and optimised.
-With this, the MVS builds an energy system model which is translated to an equation system which is to be solved.
-The MVS tries to minimise the annual costs of demand supply.
+With these parameters, the MVS builds an energy system model which is translated to a system of linear equations. The MVS tries to find an optimal solution which minimizes the annual costs of demand supply.
 
-In this section, we want to provide you with all information needed to run your own optimisations.
-First we will explain the two input types, json and csv,
-and then how to make an energy system model out of your real local energy system configuration.
+In this section, we want to provide you with all information needed to design your own energy system and run your own optimisations.
+First we will explain the two possible ways to provide the input parameters to the MVS. Then how to draft an energy system model out of a real local energy system configuration.
+
+.. TODO: provide the example
 
 Input files
 -----------
