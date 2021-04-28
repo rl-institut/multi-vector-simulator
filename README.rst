@@ -206,18 +206,13 @@ To use the report feature you need to install extra dependencies first
 
     pip install multi-vector-simulator[report]
 
-Generate a report after running a simulation
---------------------------------------------
 
-Use the option ``-pdf`` in the command line ``mvs_tool`` to generate a pdf report in the simulation's output folder
+Use the option ``-pdf`` in the command line ``mvs_tool`` to generate a pdf report in a simulation's output folder
 (by default in ``MVS_outputs/report/simulation_report.pdf``):
 
 ::
 
     mvs_tool -pdf
-
-Generate only the figures of a simulation's results
----------------------------------------------------
 
 Use the option ``-png`` in the command line ``mvs_tool`` to generate png figures of the results in the simulation's
 output folder (by default in ``MVS_outputs/``):
@@ -226,8 +221,6 @@ output folder (by default in ``MVS_outputs/``):
 
     mvs_tool -png
 
-Generate a report from simulation's output results
---------------------------------------------------
 
 To generate a report of the simulation's results, run the following command **after** a simulation generated an output folder:
 
