@@ -4,7 +4,7 @@
 Outputs of a simulation
 =======================
 
-After optimization of an energy system, the MVS evaluates the simulation output. It evaluates the flows, costs and performance of the system. As a result, it calculates a number of :ref:`key performance indicators (KPI) <key_performance_indicators_overview>`, namely :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI. Depending on the simulation settings, it can also generate different :ref:`figures <output_figures>` of the results and an :ref:`automatic report <output_report>` in `pdf` or `html` format.
+After optimization of an energy system, the MVS evaluates the simulation output. It evaluates the flows, costs and performance of the system. As a result, it calculates a number of :ref:`key performance indicators (KPI) <key_performance_indicators_overview>`, namely :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI. Depending on the simulation settings, it can also generate different :ref:`figures <output_figures>` of the results and an :ref:`automatic report <automatic_report>` in `pdf` or `html` format.
 
 .. _key_performance_indicators_overview:
 
@@ -120,15 +120,17 @@ For assets in energyConsumption, the MVS outputs 0 for the LCOE ASSET.
 Technical KPI
 #############
 
-.. include:: outputs/total_demand.inc
-
 .. include:: outputs/optimizedAddCap.inc
 
-.. include:: outputs/annual_total_flow.inc
+.. include:: outputs/flow.inc
+
+.. include:: outputs/peak_flow.inc
 
 .. include:: outputs/average_flow.inc
 
-.. include:: outputs/peak_flow.inc
+.. include:: outputs/annual_total_flow.inc
+
+.. include:: outputs/total_demand.inc
 
 .. include:: outputs/total_feedin.inc
 
@@ -340,16 +342,20 @@ Currently the emissions do not include life cycle emissions of energy conversion
 Figures
 #######
 
-- Energy flows on each bus (graphic)
-- Optimal Capacities
-- Optimized dispatch
-- Dispatch of all assets (timeseries)
-- plot_networkx_graph
+.. include:: outputs/bar_chart_optimizedAddCap.inc
 
-.. _output_report:
+.. include:: outputs/pie_chart_costs.inc
 
-Automatic Report
-################
+.. include:: outputs/dispatch_plot.inc
+
+.. include:: outputs/network_graph.inc
+
+.. include:: outputs/excel_scalar_kpi.inc
+
+.. include:: outputs/excel_timeseries.inc
+
+.. include:: outputs/automatic_report.inc
+
 MVS has a feature to automatically :ref:`generate a PDF report <pdf-report-commands>` that contains the main elements from the input data as well as the simulation results' data.
 The report can also be viewed as a web app on the browser, which provides some interactivity.
 

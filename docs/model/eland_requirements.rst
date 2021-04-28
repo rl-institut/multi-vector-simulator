@@ -432,7 +432,7 @@ NF-MVS-02 - MVS post-processing tools for LES optimization model output/results
 The post-processing of results ensures that important KPI can be provided for the energy system optimization.
 There are three output formats of the MVS:
 
-* For the end-user of the standalone application, an :ref:`automatic report <output_report>` is generated that makes scenario evaluation easy
+* For the end-user of the standalone application, an :ref:`automatic report <automatic_report>` is generated that makes scenario evaluation easy
 * For a developer of the standalone application, the results are also provided as excel files and pngs
 * For the EPA, the results are provided in a json format to be displayed interactively in their environment
 
