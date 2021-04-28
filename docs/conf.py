@@ -57,6 +57,8 @@ def generate_parameter_description(input_csv_file, output_rst_file):
     # :Restrictions:
     # :Default:
     #
+    # This parameter is used within the following categories: [List of categories]
+    #
     # ----
     #
     for row in df.iterrows():
@@ -264,17 +266,20 @@ def generate_kpi_description(input_csv_file, output_path):
     # :Type:
     # :Unit:
     # :Valid Interval:
+    # :Connected indicators: List of indicators that are connected to the described indicator, to ease referencing
     #
     for row in df.iterrows():
         props = row[1]
+        if isinstance(props.see_also, str):
+            see_also = ", ".join([f":ref:`{ref.replace(' ', '')}`" for ref in props.see_also.split(",")])
+        else:
+            see_also = "None"
         title = props.label + " (" + props.ref + ")"
         lines = (
             [f".. _{props.ref}:", "", title, "^" * len(title), "",]
             + [f"{p} {props[p]}" for p in parameter_properties]
-            + [""]
             + [
-                "This parameter is used within the following categories: "
-                + ", ".join([f"{cat}" for cat in props.category.split(";")])
+                f":Connected indicators: {see_also}"
             ]
             + ["", "",]
         )

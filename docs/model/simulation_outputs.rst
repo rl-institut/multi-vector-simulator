@@ -27,6 +27,8 @@ In the sections :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>`
 
 :Valid Interval: Expected valid range of the KPI. Exceptions are possible under certain conditions.
 
+:Connected indicators: List of indicators that are related to the described KPI, either because they are part of its calculation or can be compared to it.
+
 Below these reoccurring definitions, the underlying equation of the KPI may be presented and explained, or further hints might be collected for the parameter evaluation or for special cases.
 
 .. _kpi_suffixes:
