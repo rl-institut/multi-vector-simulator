@@ -206,18 +206,13 @@ To use the report feature you need to install extra dependencies first
 
     pip install multi-vector-simulator[report]
 
-Generate a report after running a simulation
---------------------------------------------
 
-Use the option ``-pdf`` in the command line ``mvs_tool`` to generate a pdf report in the simulation's output folder
+Use the option ``-pdf`` in the command line ``mvs_tool`` to generate a pdf report in a simulation's output folder
 (by default in ``MVS_outputs/report/simulation_report.pdf``):
 
 ::
 
     mvs_tool -pdf
-
-Generate only the figures of a simulation's results
----------------------------------------------------
 
 Use the option ``-png`` in the command line ``mvs_tool`` to generate png figures of the results in the simulation's
 output folder (by default in ``MVS_outputs/``):
@@ -226,8 +221,6 @@ output folder (by default in ``MVS_outputs/``):
 
     mvs_tool -png
 
-post-processing
----------------
 
 To generate a report of the simulation's results, run the following command **after** a simulation generated an output folder:
 
@@ -260,6 +253,4 @@ If you want to contribute to this project, please read
 `CONTRIBUTING.md <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CONTRIBUTING.md>`__. For less experienced
 github users, we propose a `workflow <https://github.com/rl-institut/multi-vector-simulator/wiki/Examplary-Workflow>`__.
 
-For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in
-turn might not be tested. You can find the CHANGELOG.md on
-this `page <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`__.
+For advanced programmers: please checkout the `dev` branch that includes the latest updates and changes. You can find out about the latest changes in the `CHANGELOG.md file <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`__.
