@@ -868,21 +868,23 @@ def convert_components_to_dataframe(dict_values):
     """
 
     # Read the subdicts energyProduction, energyConversion and energyStorage as separate dicts
-    components1 = dict_values[ENERGY_PRODUCTION]
-    components2 = dict_values[ENERGY_CONVERSION]
-    components3 = dict_values[ENERGY_STORAGE]
+    dict_energy_production = dict_values[ENERGY_PRODUCTION]
+    dict_energy_conversion = dict_values[ENERGY_CONVERSION]
+    dict_energy_storage = dict_values[ENERGY_STORAGE]
 
     # Read the keys of the above dicts into separate lists
-    comp1_keys = list(components1.keys())
-    comp2_keys = list(components2.keys())
-    comp3_keys = list(components3.keys())
-
-    # Add the above dictionaries and lists of keys into new lists for iterating through, later
-    comp_dict_list = [components1, components2]
-    components_list = [comp1_keys, comp2_keys]
+    keys_production = list(dict_energy_production.keys())
+    keys_conversion = list(dict_energy_conversion.keys())
+    keys_storage = list(dict_energy_storage.keys())
 
     # Dict to hold the data for creating a pandas dataframe
     components = {}
+
+    # Energy production and conversion have the same tree structure, can be processed together:
+
+    # Add the above dictionaries and lists of keys into new lists for iterating through, later
+    comp_dict_list = [dict_energy_production, dict_energy_conversion]
+    components_list = [keys_production, keys_conversion]
 
     # Defining the columns of the table and filling them up with the appropriate data
     for (component_key, comp_dict) in zip(components_list, comp_dict_list):
@@ -899,23 +901,29 @@ def convert_components_to_dataframe(dict_values):
                 }
             )
 
-    for storage_component in comp3_keys:
+    # Energy storage assets have different structure, added individually
+
+    for storage_component in keys_storage:
+
         for sub_stor_comp in [INPUT_POWER, STORAGE_CAPACITY, OUTPUT_POWER]:
-            comp_label = components3[storage_component][sub_stor_comp][LABEL]
+            comp_label = dict_energy_storage[storage_component][sub_stor_comp][LABEL]
             components.update(
                 {
                     comp_label: [
-                        components3[storage_component][OEMOF_ASSET_TYPE],
-                        components3[storage_component][ENERGY_VECTOR],
-                        components3[storage_component][sub_stor_comp][INSTALLED_CAP][
-                            UNIT
-                        ],
-                        components3[storage_component][sub_stor_comp][INSTALLED_CAP][
-                            VALUE
-                        ],
-                        components3[storage_component][sub_stor_comp][OPTIMIZE_CAP][
-                            VALUE
-                        ],
+                        dict_energy_storage[storage_component][OEMOF_ASSET_TYPE],
+                        dict_energy_storage[storage_component][ENERGY_VECTOR],
+                        dict_energy_storage[storage_component][sub_stor_comp][
+                            INSTALLED_CAP
+                        ][UNIT],
+                        dict_energy_storage[storage_component][sub_stor_comp][
+                            INSTALLED_CAP
+                        ][VALUE],
+                        # Currently, storage optimization setting applies to all sub-categories
+                        dict_energy_storage[storage_component][OPTIMIZE_CAP][VALUE],
+                        # Can be re-used when storage asset sub-components can be optimized individually
+                        # dict_energy_storage[storage_component][sub_stor_comp][OPTIMIZE_CAP][
+                        #    VALUE
+                        # ],
                     ]
                 }
             )
