@@ -6,7 +6,10 @@ name: CI
 # events but only for the dev and master branches
 on:
   push:
-
+    paths-ignore:
+      - 'docs/**'
+      - 'CHANGELOG.md'
+      - 'README.rst'
   pull_request:
     branches: 
       -dev

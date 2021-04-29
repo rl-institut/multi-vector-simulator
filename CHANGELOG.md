@@ -79,6 +79,7 @@ Here is a template for new release sections
 - Change `E1.add_info_flows()` so that storage peculiarities for the information is considered (#859)
 - Benchmark tests for `AE-Grid-Battery`: Input files and pytests (#859)
 - `E1.lcoe_assets` to calculate LCOE of storage capacity throughput based on input flow. Required change of `test_benchmark_KPI` (storage not used, LCOE=0) (#589)
+- Modified github action workflow so that it is not triggered when one modifies the README, CHANGELOG or the docs (#872)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
