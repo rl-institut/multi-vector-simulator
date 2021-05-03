@@ -47,6 +47,7 @@ Here is a template for new release sections
 - Class in `exceptions.py`: `MissingCsvEndingError` (#859)
 - Create constant variables in `E1` for accessing oemof-solph results: `OEMOF_FLOW`, `OEMOF_SEQUENCES`, `OEMOF_INVEST`, `OEMOF_SCALARS` (#859)
 - Create constant variables in `E1`: `THRESHOLD` for central definition of precision limit (#859)
+- `docs/MVS_kpi_categories.csv` and `conf.generate_kpi_categories()` to list KPI under in the RTD (#869)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -81,6 +82,8 @@ Here is a template for new release sections
 - `E1.lcoe_assets` to calculate LCOE of storage capacity throughput based on input flow. Required change of `test_benchmark_KPI` (storage not used, LCOE=0) (#589)
 - Modified github action workflow so that it is not triggered when one modifies the README, CHANGELOG or the docs (#872)
 - Proofread RTD for the release of the ELAND report (#871)
+- Prepared `docs/MVS_kpis_list.csv` summarizing all simulation outputs (#869)
+- Changed a great number of variable names in `constants_json_strings.py` by decapitalizing and removing spaces (#869)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
