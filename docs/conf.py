@@ -151,7 +151,7 @@ def generate_parameter_categories(
 
 
 def generate_kpi_categories(input_param_csv_file, input_cat_csv_file, output_rst_file):
-    """Rassemble the MVS parameter categories from csv file and generate a .rst formatted document
+    """Reassemble the MVS parameter categories from csv file and generate a .rst formatted document
 
     Parameters
     ----------
