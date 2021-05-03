@@ -358,6 +358,8 @@ An examplary pie chart is displayed below, in this case for the operation and ma
 
 .. include:: outputs/plot_input_timeseries.inc
 
+An example of the graph created from the timeseries, eg. specific generation timeseries, provided by the input files is shown below.
+
 .. image:: images/example_input_timeseries.png
  :width: 600
 
