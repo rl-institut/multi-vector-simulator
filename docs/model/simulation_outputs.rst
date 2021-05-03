@@ -17,13 +17,13 @@ Overview of Key Performance Indicators
 
 .. the .inc files describing the kpis are automatically generated in `conf.py` from the `MVS_kpis_list.csv` file
 
-In the sections :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI these parameters are further defined. This takes place with following structure:
+In the sections :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI, these indicators are further defined. This takes place with the following structure:
 
 :Definition: Definition of the defined KPI, can be used as tooltips.
 
 :Type: ?
 
-:Unit: Unit of the KPI, multiple units possible if KPI can be applied to individual sectors (comp. :ref:`kpi_suffixes`).
+:Unit: Unit of the KPI, multiple units possible if KPI can be applied to individual sectors (see also: :ref:`kpi_suffixes`).
 
 :Valid Interval: Expected valid range of the KPI. Exceptions are possible under certain conditions.
 
