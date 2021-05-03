@@ -42,7 +42,7 @@ It is expressed as follows:
 .. math::
         a_i &= \left( capex_i + \sum_{k=1}^{n} \frac{capex_i}{(1+d)^{k \cdot t_a}} - c_{res,i} \right) \cdot CRF(T) + opex_i
 
-        CRF(T) &= \frac{d \cdot (1+d)^T}{(1+d)^t - 1}
+        CRF(T) &= \frac{d \cdot (1+d)^T}{(1+d)^T - 1}
 
 .. math::
         capex_i &\text{: specific investment costs [currency/unit]}
