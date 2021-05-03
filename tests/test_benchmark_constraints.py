@@ -9,6 +9,7 @@ import os
 import shutil
 
 import pytest
+from pytest import approx
 import mock
 
 from multi_vector_simulator.cli import main
@@ -431,20 +432,18 @@ class Test_Constraints:
                     assert (max_tot_cap is None), f"The total maximum capacity of {prod_asset} should be None (as the user has defined it this way), but instead it is {max_tot_cap}."
                     assert (max_add_cap is None), f"The total maximum capacity of {prod_asset} is set to None which means that the maximum additional capacity should also be None, but here it is {max_add_cap}."
                     assert ((opt_add_cap + inst_cap) * data[ENERGY_PRODUCTION][prod_asset][TIMESERIES].sum() ==
-                            data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
-                                VALUE]), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
+                            approx(data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
+                                VALUE], rel=1e-3)), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
                 # case b) inst_cap > 0, max_tot_cap > 0, inst_cap <= max_tot_cap
                 if prod_asset == 'pv_plant_02':
                     assert (opt_add_cap <= max_add_cap), f"The optimized additional capacity of the asset should be less than or equal to the total maximum capacity - the installed capacity, but {opt_add_cap} > {max_add_cap}."
                     assert ((opt_add_cap + inst_cap) * data[ENERGY_PRODUCTION][prod_asset][TIMESERIES].sum() ==
-                            data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
-                                VALUE]), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
+                            approx(data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
+                                VALUE], rel=1e-3)), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
                 # case c) inst_cap = 0, max_tot_cap > 0
                 if prod_asset == 'pv_plant_03':
                     assert (max_add_cap == max_tot_cap), f"Because the installed capacity of {prod_asset} is zero, the maximum additional capacity should be equal to the total maximum capacity, but {max_add_cap} is not equal to {max_tot_cap}."
                     assert (opt_add_cap <= max_add_cap), f"The optimized additional capacity of {prod_asset} should be less than the maximum possible additional capacity, but {opt_add_cap} > {max_add_cap}."
                     assert (opt_add_cap * data[ENERGY_PRODUCTION][prod_asset][TIMESERIES].sum() ==
-                            data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
-                                VALUE]), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
-
-Test_Constraints.test_maximum_cap_constraint(argparse.Namespace())
+                            approx(data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][
+                                VALUE], rel=1e-3)), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
