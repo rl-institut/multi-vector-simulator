@@ -270,13 +270,23 @@ def generate_kpi_description(input_csv_file, output_path):
     #
     for row in df.iterrows():
         props = row[1]
+        # Create a string with references to all the indicators connected to the current indicator
         if isinstance(props.see_also, str):
             see_also = ", ".join(
                 [f":ref:`{ref.replace(' ', '')}`" for ref in props.see_also.split(",")]
             )
         else:
             see_also = "None"
-        title = props.label + " (" + props.ref + ")"
+
+        # Define the title of the *.inc files
+        if props.category == "files":
+            # For files, only show the readable label
+            title = props.label
+        else:
+            # For other KPI show both the readable label (name) as well as the constant variable name as defined in `constants_json_strings.py`
+            title = props.label + " (" + props.ref + ")"
+
+        # Write lines based on definitions to an *.inc file
         lines = (
             [f".. _{props.ref}:", "", title, "^" * len(title), "",]
             + [f"{p} {props[p]}" for p in parameter_properties]

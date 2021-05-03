@@ -4,7 +4,7 @@
 Outputs of a simulation
 =======================
 
-After optimization of an energy system, the MVS evaluates the simulation output. It evaluates the flows, costs and performance of the system. As a result, it calculates a number of :ref:`key performance indicators (KPI) <key_performance_indicators_overview>`, namely :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI. Depending on the simulation settings, it can also generate different :ref:`figures <output_figures>` of the results and an :ref:`automatic report <output_report>` in `pdf` or `html` format.
+After optimization of an energy system, the MVS evaluates the simulation output. It evaluates the flows, costs and performance of the system. As a result, it calculates a number of :ref:`key performance indicators (KPI) <key_performance_indicators_overview>`, namely :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI. Depending on the simulation settings, it can also generate different :ref:`figures <output_figures>` of the results and an :ref:`automatic report <automatic_report>` in `pdf` or `html` format.
 
 .. _key_performance_indicators_overview:
 
@@ -120,15 +120,17 @@ For assets in energyConsumption, the MVS outputs 0 for the LCOE ASSET.
 Technical KPI
 #############
 
-.. include:: outputs/total_demand.inc
-
 .. include:: outputs/optimizedAddCap.inc
 
-.. include:: outputs/annual_total_flow.inc
+.. include:: outputs/flow.inc
+
+.. include:: outputs/peak_flow.inc
 
 .. include:: outputs/average_flow.inc
 
-.. include:: outputs/peak_flow.inc
+.. include:: outputs/annual_total_flow.inc
+
+.. include:: outputs/total_demand.inc
 
 .. include:: outputs/total_feedin.inc
 
@@ -340,16 +342,64 @@ Currently the emissions do not include life cycle emissions of energy conversion
 Figures
 #######
 
-- Energy flows on each bus (graphic)
-- Optimal Capacities
-- Optimized dispatch
-- Dispatch of all assets (timeseries)
-- plot_networkx_graph
+.. include:: outputs/bar_chart_optimizedAddCap.inc
 
-.. _output_report:
+An example of a bar chart of recommended additional asset capacities is shown below. As displayed, the units of the different capacities are not identical.
 
-Automatic Report
-################
+.. image:: images/example_optimal_additional_capacities.png
+ :width: 600
+
+.. include:: outputs/pie_chart_costs.inc
+
+An examplary pie chart is displayed below, in this case for the operation and management costs of an energy system.
+
+.. image:: images/example_om_pie_chart.png
+ :width: 600
+
+.. include:: outputs/plot_input_timeseries.inc
+
+An example of the graph created from the timeseries, eg. specific generation timeseries, provided by the input files is shown below.
+
+.. image:: images/example_input_timeseries.png
+ :width: 600
+
+.. include:: outputs/plot_dispatch.inc
+
+An example of the graph vizualizing the asset dispatch on a specific bus is shown below.
+
+.. image:: images/example_dispatch_assets.png
+ :width: 600
+
+.. include:: outputs/network_graph.inc
+
+An example of the created energy system model graphs is shown below.
+
+.. image:: images/network_graph.png
+ :width: 600
+
+.. include:: outputs/excel_scalar_kpi.inc
+
+The file is named `scalars.xlsx`. An example is shown below.
+
+.. image:: images/example_excel_scalar.png
+ :width: 600
+
+.. include:: outputs/excel_timeseries.inc
+
+The file is named `timeseries_all_busses.xlsx`. An example is shown below.
+
+.. image:: images/example_excel_timeseries.png
+ :width: 600
+
+.. include:: outputs/logfile.inc
+
+The file is named `mvs_logfile.log`. An example is shown below.
+
+.. image:: images/example_logfile.png
+ :width: 600
+
+.. include:: outputs/automatic_report.inc
+
 MVS has a feature to automatically :ref:`generate a PDF report <pdf-report-commands>` that contains the main elements from the input data as well as the simulation results' data.
 The report can also be viewed as a web app on the browser, which provides some interactivity.
 
@@ -366,3 +416,12 @@ Please, refer to the :ref:`report section <pdf-report-commands>` for more inform
     mvs_report -h
 
 in your terminal or command line.
+
+An example report using test data is shown below.
+
+.. image:: images/example_miniature_report.png
+ :width: 600
+
+.. include:: outputs/json_input_processed.inc
+
+.. include:: outputs/json_with_results.inc
