@@ -326,6 +326,7 @@ The DS Bus shows an example of a fuel source providing an energy carrier (biogas
         E_{turb} &\text{: turbine (biogas turbine) energy}
 
 
+.. _Cost_calculations:
 
 Cost calculations
 -----------------
