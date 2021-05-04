@@ -29,16 +29,16 @@ In the sections :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>`
 
 :Connected indicators: List of indicators that are related to the described KPI, either because they are part of its calculation or can be compared to it.
 
-Below these reoccurring definitions, the underlying equation of the KPI may be presented and explained, or further hints might be collected for the parameter evaluation or for special cases.
+Below these reoccurring definitions, the underlying equation of the KPI may be presented and explained, or further hints might be provided for the parameter evaluation or for special cases.
 
 .. _kpi_suffixes:
 
 Suffixes of KPI
 ###############
 
-The KPI calculated by the MVS can sometimes be calculated per asset, for each sector or for the overall system.
+The KPI of the MVS can be calculated per asset, for each sector or for the overall system.
 
-KPI calculated per asset are not included in the scalar results of the automatic report or in the stored Excel file, but are displayed seperately. They do not need suffixes, as they are always displayed in tables next to the respective asset.
+KPI calculated per asset are not included in the scalar results of the automatic report or in the stored Excel file, but are displayed separately. They do not need suffixes, as they are always displayed in tables next to the respective asset.
 
 KPI calculated for each vector are specifically these KPI that aggregate the dispatch and costs of multiple assets. For cost-related KPI, such aggregating KPI have the energy vector they are describing as a suffix. An example would be the :code:`attributed_costs` of each energy vector - the attributed costs of the electricity and H2 sector would be called :code:`attributed_costs_electricity` and :code:`attributed_costs_H2` respectively.
 For technical KPI, this suffix also applies, but additionally, due to the :ref:`energy carrier weighting <energy_carrier_weighting>`, they also feature the suffix :code:`electricity equivalent` when the weighting has been applied. The energy demand of the system is an example: the demand per sector would be :code:`total_demand_electricity` and :code:`total_demand_H2`. To be able to aggregate these cost into an overall KPI for the system, the electricity equivalents of both values are calculated. They then are named :code:`total_demand_electricity_electricity_equivalent` and :code:`total_demand_H2_electricity_equivalent`.
@@ -298,7 +298,7 @@ To calculate the degree of NZE, the margin between grid feed-in and grid consump
 
 Some definitions of NZE systems require that the local demand is solely covered by locally generated renewable energy. In MVS this is not the case - all locally generated energy is taken into consideration. For information about the share of renewables in the local energy system checkout :ref:`renewable_share_of_local_generation`.
 
-A degree of NZE lower 1 shows that the energy system can not reach a net zero balance, and indicates by how much it fails to do so,
+A degree of NZE lower than 1 shows that the energy system can not reach a net zero balance, and indicates by how much it fails to do so,
 while a degree of NZE of 1 represents a net zero energy system
 and a degree of NZE higher 1 a plus-energy system.
 
