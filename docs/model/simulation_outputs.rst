@@ -344,7 +344,7 @@ Figures
 
 .. include:: outputs/bar_chart_optimizedAddCap.inc
 
-An example of a bar chart of recommended additional asset capacities is shown below. As displayed, the units of the different capacities are not identical.
+An example of a bar chart of recommended additional asset capacities is shown below. Note that currently kWp are displayed on the same scale as kW (or kWh or gkH2), which is not ideal.
 
 .. image:: images/example_optimal_additional_capacities.png
  :width: 600
