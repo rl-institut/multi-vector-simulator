@@ -272,7 +272,7 @@ def generate_kpi_description(input_csv_file, output_path):
         props = row[1]
         # Create a string with references to all the indicators connected to the current indicator
         if isinstance(props.see_also, str):
-            see_also = ", ".join(
+            see_also = " | ".join(
                 [f":ref:`{ref.replace(' ', '')}`" for ref in props.see_also.split(",")]
             )
         else:
@@ -290,7 +290,7 @@ def generate_kpi_description(input_csv_file, output_path):
         lines = (
             [f".. _{props.ref}:", "", title, "^" * len(title), "",]
             + [f"{p} {props[p]}" for p in parameter_properties]
-            + [f":Connected indicators: {see_also}"]
+            + [f":Related indicators: {see_also}"]
             + ["", "",]
         )
 
