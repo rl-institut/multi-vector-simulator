@@ -54,7 +54,7 @@ All the KPI related to costs described below are provided in net present value.
 
 .. include:: outputs/costs_total.inc
 
-The Net present cost (NPC) is the present value of all the costs associated with installation, operation,
+The Net present costs (NPC) is the present value of all the costs associated with installation, operation,
 maintenance and replacement of energy technologies comprising the sector-coupled system over the project lifetime,
 minus the present value of all the revenues that it earns over the project lifetime.
 The capital recovery factor (CRF) is used to calculate the present value of the cash flows.
@@ -81,17 +81,21 @@ The capital recovery factor (CRF) is used to calculate the present value of the 
 
 .. include:: outputs/levelized_costs_of_electricity_equivalent.inc
 
-As a sector-coupled system connects energy vectors, not the costs associated to each individual energy carrier but the overall energy costs should be minimized. Therefore, we propose a new KPI: The levelized costs of energy (LCOEnergy) aggregates the costs for energy supply and distributes them over the total energy demand supplied, which is calculated by weighting the energy carriers by their energy content. To determine the weighting factors of the different energy carriers, we reference the method of gasoline gallon equivalent (GGE) [12], which enables the comparison of alternative fuels. Instead of comparing the energy carriers of an MES to gasoline, we rebase the factors introduced in [12] onto the energy carrier electricity, thus proposing a unit Electricity Equivalent (ElEq). The necessary weights are summarized in Table 1. With this, we propose to calculate LCOEnergy based on the annual energy demand and the systems annuity, calculated with the CRF, as follows:
+A sector-coupled system connects energy vectors, not the costs associated to each individual energy carrier. However, the overall energy costs should be minimized. Therefore, we define a new KPI: The levelized costs of energy (LCOEnergy), which aggregates the costs for energy supply and distributes them over the total energy demand supplied. The latter is calculated with weighting factors for each energy carriers. To determine the weighting factors of the different energy carriers, we reference the method of gasoline gallon equivalent (GGE) `[12] <https://epact.energy.gov/fuel-conversion-factors>`_, which enables the comparison of alternative fuels. Instead of comparing the energy carriers of an MES to gasoline, we rebase the factors introduced in `[12] <https://epact.energy.gov/fuel-conversion-factors>`_ onto the energy carrier electricity, thus proposing a unit Electricity Equivalent (ElEq). The necessary weights are summarized in Table 1. With this, we propose to calculate LCOEnergy based on the annual energy demand and the systems annuity, calculated with the CRF, as follows:
+
+.. TODO: nothing follows as mentionned in the text ...
+
+.. TODO: add link to Table 1. within readthedocs
 
 Specific electricity supply costs, eg. levelized costs of electricity (LCOElectricity) are a common KPI that can be compared to local prices or generation costs. As in a sector-coupled system the investments cannot be clearly distinguished into sectors, we propose to calculate the levelized costs of energy carriers by distributing the costs relative to supplied demand. The LCOElectricity are then calculated with:
 
-** The content of this section was copied from the conference paper handed in to CIRED 2020**
+**The content of this section was copied from the** `conference paper <http://doi.org/10.5281/zenodo.4449918>`_ **handed in to CIRED 2020**
 
 .. include:: outputs/levelized_cost_of_energy_of_asset.inc
 
 This KPI measures the cost of generating 1 kWh for each asset in the system.
 It can be used to assess and compare the available alternative methods of energy production.
-The levelized cost of energy of an asset (LCOE ASSET) is usually obtained
+The levelized cost of energy of an asset (:math:`LCOE~ASSET_i`) is usually obtained
 by looking at the lifetime costs of building and operating the asset per unit of total energy throughput of an asset
 over the assumed lifetime [currency/kWh].
 
