@@ -383,6 +383,9 @@ An example of the created energy system model graphs is shown below.
 .. image:: images/network_graph.png
  :width: 600
 
+Files
+#####
+
 .. include:: outputs/excel_scalar_kpi.inc
 
 The file is named :code:`scalars.xlsx`. An example is shown below.
