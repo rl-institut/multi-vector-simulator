@@ -231,7 +231,7 @@ Again, the heat sector would have a renewable factor of 0% when considered separ
 
 .. math:: RF = \frac{ 100 kWh(el)\cdot \frac{kWh(eleq)}{kWh(el)} +50 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}}{200 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}} = 3/4 = \text{75 \%}
 
-The renewable factor can, just like the :ref:`renewable_share_of_local_generation` not indicate how much renewable energy is used in each of the sectors. In the future, it may be possible to dive into this together with the degree of sector-coupling.
+The renewable factor, just like the :ref:`renewable_share_of_local_generation`, cannot indicate how much renewable energy is used in each of the sectors. It is nevertheless possible to tackle this issue with the degree of sector-coupling.
 
 .. _degree_of_sector_coupling:
 
@@ -247,22 +247,21 @@ To measure this, we propose to compare the energy flows in between the sectors t
 
         \text{with } i,j &\text{: Electricity,H2…}
 
-** The content of this section was copied from the conference paper handed in to CIRED 2020**
+**The content of this section was copied from the** `conference paper <http://doi.org/10.5281/zenodo.4449918>`_ **handed in to CIRED 2020**
 
 .. include:: outputs/onsite_energy_fraction.inc
 
-Onsite energy fraction is also referred to as self-consumption. It describes
+Onsite energy fraction is also referred to as "self-consumption". It describes
 the fraction of all locally generated energy that is consumed by the system
 itself. (see `[1] <https://www.sciencedirect.com/science/article/pii/S0960148119315216>`__ and `[2] <https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf>`__).
 
 An OEF close to zero shows that only a very small amount of locally generated
 energy is consumed by the system itself. It is at the same time an indicator
 that a large amount is fed into the grid instead. A OEF close to one shows that
-almost all locally produced energy is consumed by the system itself. Notice that
-the feed into the grid can only be positive.
+almost all locally produced energy is consumed by the system itself.
 
 .. math::
-        OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
+        OEF &=\frac{\sum_{i} {(E_{generation} (i) - E_{gridfeedin}(i)) \cdot w_i}}{\sum_{i} {E_{generation} (i) \cdot w_i}}
 
         &OEF \epsilon \text{[0,1]}
 
@@ -272,7 +271,7 @@ The onsite energy matching is also referred to as "self-sufficiency". It
 describes the fraction of the total demand that can be
 covered by the locally generated energy (see
 `[1] <https://www.sciencedirect.com/science/article/pii/S0960148119315216>`__ and `[2] <https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf>`__).
-Notice that the feed into the grid should only be positive.
+
 
 An OEM close to zero shows that very little of the demand can be covered by
 locally produced energy. Am OEM close to one shows that almost all of the demand
@@ -282,9 +281,13 @@ or an excess sink.
 
 
 .. math::
-        OEM &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i - E_{excess}(i) \cdot w_i}{\sum_i {E_{demand} (i) \cdot w_i}}
+        OEM &=\frac{\sum_{i} {(E_{generation} (i) - E_{gridfeedin}(i) - E_{excess}(i)) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
         &OEM \epsilon \text{[0,1]}
+
+.. note::
+    The feed into the grid should only be positive.
+
 
 .. include:: outputs/degree_of_autonomy.inc
 
@@ -311,7 +314,7 @@ and a degree of NZE higher 1 a plus-energy system.
 As above, we apply a weighting based on Electricity Equivalent.
 
 .. math::
-        Degree of NZE &= 1 + \frac{(\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
+        Degree of NZE &= 1 + \frac{\sum_{i} {(E_{grid feedin}(i) - E_{grid consumption} (i) )\cdot w_i}}{\sum_i {E_{demand, i} \cdot w_i}}
 
 
 .. _kpi_environmental:
@@ -371,7 +374,7 @@ An example of the graph created from the timeseries, eg. specific generation tim
 
 .. include:: outputs/plot_dispatch.inc
 
-An example of the graph vizualizing the asset dispatch on a specific bus is shown below.
+An example of the graph displaying the asset dispatch on a specific bus is shown below.
 
 .. image:: images/example_dispatch_assets.png
  :width: 600
