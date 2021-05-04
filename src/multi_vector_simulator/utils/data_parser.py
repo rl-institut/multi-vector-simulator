@@ -98,6 +98,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     THERM_LOSSES_REL,
     THERM_LOSSES_ABS,
     NET_ZERO_ENERGY,
+    COST_REPLACEMENT,
 )
 
 from multi_vector_simulator.utils.exceptions import MissingParameterError
@@ -130,7 +131,7 @@ MAP_EPA_MVS = {
     FIX_COST: FIX_COST,
     "time_step": TIMESTEP,
     "data": VALUE,
-    "replacement_costs_during_project_lifetime": "Replacement_costs_during_project_lifetime",
+    "replacement_costs_during_project_lifetime": COST_REPLACEMENT,
     "specific_replacement_costs_of_installed_capacity": SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
     "specific_replacement_costs_of_optimized_capacity": SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
     "asset_type": TYPE_ASSET,
@@ -611,7 +612,7 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                     # convert some keys MVS to EPA style according to the mapping
                     asset[MAP_MVS_EPA[k]] = asset.pop(k)
                 # TODO change energy busses from dict to list in MVS
-                if asset_group == ENERGY_BUSSES and k == "Asset_list":
+                if asset_group == ENERGY_BUSSES and k == "asset_list":
                     asset["assets"] = list(asset.pop(k).keys())
                 if asset_group == ENERGY_STORAGE:
                     if k in (INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY):
