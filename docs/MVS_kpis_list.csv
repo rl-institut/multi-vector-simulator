@@ -1,9 +1,9 @@
 ref,label,:Unit:,:Valid Interval:,:Type:,category,see_also,:Definition:
 annual_total_flow,Aggregated flow,kWh,>=0,Numeric,technical,"average_flow, peak_flow","Dispatch of the asset over a year, aggregated generation, demand or throughput."
-annuity_om,"Annual operation, maintenance and dispatch expenses",currency/a,>=0,Numeric,economic,"annuity_total, costs_om_total","Annuity of the operation, maintenance and dispatch costs of the energy system, ie. Ballpoint number of the annual expenses for system operation."
-annuity_total,Annuity,currency/a,>=0,Numeric,economic,"annuity_om, costs_total",Annuity of the net present costs (NPC) of the energy system.
-attributed_costs,Costs attributed to the electricity sector,currency,>=0,Numeric,economic,costs_total,"Costs attributed to supplying the electricity sectors demand, based on Net Present Costs of the energy system and the share of electricity compared to the overall system demand."
-average_flow,Average flow,kWh,>=0,Numeric,technical,"annual_total_flow, peak_flow",Average value of the assets dispatch. Relation of peak dispatch and average dispatch indicates how much the asset is used in comparison to its actual installed capacity.
+annuity_om,"Annual operation, maintenance and dispatch expenses",currency/a,>=0,Numeric,economic,"annuity_total, costs_om_total","Annuity of the operation, maintenance and dispatch costs of the energy system, i.e. ballpark number of the annual expenses for system operation."
+annuity_total,Annuity,currency/a,>=0,Numeric,economic,"annuity_om, costs_total",Annuity of the energy system's :ref:`net present costs (NPC) <costs_total>` .
+attributed_costs,Costs attributed to the electricity sector,currency,>=0,Numeric,economic,costs_total,"Costs attributed to supplying the electricity sectors demand, based on the :ref:`net present costs (NPC) <costs_total>` of the energy system and the share of electricity compared to the overall system demand."
+average_flow,Average flow,kWh,>=0,Numeric,technical,"annual_total_flow, peak_flow",Average value of the assets dispatch. The ratio of average dispatch to peak dispatch indicates how much the asset is used in comparison to its actual installed capacity.
 automatic_report,Simulation report (html),None,None,html/pdf,files,,"Automatically generated simulation report, including the most important input data as well as all output data. The `html` be used interactively, while the `pdf` can be shared with partners."
 bar_chart_optimizedAddCap,Bar chart of optimal capacities,"kWh, kWp, kW, ...",None,Figure,files,optimizedAddCap,A bar chart to compare the optimized additional capacities for each asset to be installed in the energy system. Please be aware that the units of the capacities may different.
 costs_cost_om,Operation and maintenance costs,currency,>=0,Numeric,economic,"costs_dispatch, costs_investment_over_lifetime, costs_om_total, costs_total, costs_upfront_in_year_zero","Costs for fix annual operation and maintenance costs over the whole project lifetime, that do not depend on the assets dispatch but solely on installed capacity."
@@ -38,7 +38,7 @@ renewable_share_of_local_generation,Renewable share of local generation,Factor,"
 replacement_costs_during_project_lifetime,Replacement costs,currency,>=0,Numeric,economic,costs_investment_over_lifetime,Costs for replacement of assets which occur over the project lifetime.
 specific_emissions_per_electricity_equivalent,Specific GHG per electricity equivalent,kg GHGeq/kWh,>=0,Numeric,environmental,total_emissions,Specific GHG emissions per supplied electricity equivalent.
 total_consumption_from_energy_provider,Energy import,kWh/kWheleq/...,>=0,Numeric,technical,,Aggregated energy imports into the local energy system from the provider.
-total_demand,Energy demand,kWh/kWheleq/...,>=0,Numeric,technical,,Demand of electricity in local energy system.
+total_demand,Energy demand,kWh/kWheleq/...,>=0,Numeric,technical,,Demand of electricity in local energy system over a the project lifetime.
 total_emissions,Total GHG emissions,kg GHGeq,>=0,Numeric,environmental,"renewable_factor, specific_emissions_per_electricity_equivalent",Total greenhouse gas emissions in kg.
 total_excess,Energy excess,kWh/kWheleq/...,>=0,Numeric,technical,,Excess of electricity / unused electricity in local energy system.
 total_feedin,Energy export,kWh/kWheleq/...,>=0,Numeric,technical,onsite_energy_fraction,Feed-in of electricity into external grid.
