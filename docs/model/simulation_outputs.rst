@@ -96,26 +96,26 @@ by looking at the lifetime costs of building and operating the asset per unit of
 over the assumed lifetime [currency/kWh].
 
 Since not all assets are production assets, the MVS distinguishes between the type of assets.
-For assets in energyConversion and energyProduction the MVS calculates the LCOE ASSET
-by dividing the total annuity :math:`a_i` of the asset :math:`i` by the total flow :math:`\sum{t} E_i(t)`.
+For assets in energyConversion and energyProduction the MVS calculates the :math:`LCOE~ASSET_i`
+by dividing the total annuity :math:`a_i` of the asset :math:`i` by the total flow :math:`\sum_{t} E_i(t)`.
 
 .. math::
-        LCOE~ASSET_i = \frac{a_i}{\sum^{t} E_i(t)}
+        LCOE~ASSET_i = \frac{a_i}{\sum_{t} E_i(t)}
   
-For assets in :code:`energyStorage`, the MVS sums the annuity for :code:`storage capacity` :math:`a_{i,sc}`, :code:`input power` $a_{i,ip}$ and :code:`output power` :math:`a_{i,op}` and divides it by the :code:`output power` total flow :math:`\sum{t} E_{i,op}(t)`.
+For assets in :code:`energyStorage`, the MVS sums the annuity for :code:`storage capacity` :math:`a_{i,sc}`, :code:`input power` :math:`a_{i,ip}` and :code:`output power` :math:`a_{i,op}` and divides it by the :code:`output power` total flow :math:`\sum{t} E_{i,op}(t)`.
 
 .. math::
-        LCOE~ASSET_i = \frac{a_{i,sc} + a_{i,ip} + a_{i,op}}{\sum^{t}{E_{i,op}(t)}}
+        LCOE~ASSET_i = \frac{a_{i,sc} + a_{i,ip} + a_{i,op}}{\sum_{t}{E_{i,op}(t)}}
 
-If the total flow is 0 in any of the previous cases, then the :code:`LCOE~ASSET` is set to :code:`None`.
+If the total flow is 0 in any of the previous cases, then the :math:`LCOE~ASSET` is set to :code:`None`.
 
 .. math::
-        LCOE~ASSET{i} = None
+        LCOE~ASSET_i = None
   
-For assets in :code:`energyConsumption`, the MVS outputs 0 for the :code:`LCOE~ASSET`.
+For assets in :ref:`energyConsumption <consumption>`, the MVS outputs 0 for the :math:`LCOE~ASSET_i`.
 
 .. math::
-        LCOE~ASSET{i} = 0
+        LCOE~ASSET_i = 0
 
 .. _kpi_technical:
 
