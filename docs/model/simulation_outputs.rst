@@ -21,7 +21,7 @@ In the sections :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>`
 
 :Definition: Definition of the defined KPI, can be used as tooltips.
 
-:Type: ?
+:Type:  One of Numeric, Figure, Excel File, JSON, Time series, Logfile or html/pdf
 
 :Unit: Unit of the KPI, multiple units possible if KPI can be applied to individual sectors (see also: :ref:`kpi_suffixes`).
 
@@ -29,7 +29,7 @@ In the sections :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>`
 
 :Connected indicators: List of indicators that are related to the described KPI, either because they are part of its calculation or can be compared to it.
 
-Below these reoccurring definitions, the underlying equation of the KPI may be presented and explained, or further hints might be provided for the parameter evaluation or for special cases.
+Besides these parameters attributes, the underlying equation of a specific KPI may be presented and explained, or further hints might be provided for the parameter evaluation or for special cases.
 
 .. _kpi_suffixes:
 
