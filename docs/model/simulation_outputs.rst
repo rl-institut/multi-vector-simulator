@@ -59,7 +59,7 @@ maintenance and replacement of energy technologies comprising the sector-coupled
 minus the present value of all the revenues that it earns over the project lifetime.
 The capital recovery factor (CRF) is used to calculate the present value of the cash flows.
 
-** The content of this section was copied from the conference paper handed in to CIRED 2020**
+**The content of this section was copied from the** `conference paper <http://doi.org/10.5281/zenodo.4449918>`_ **handed in to CIRED 2020**
 
 .. include:: outputs/costs_cost_om.inc
 
