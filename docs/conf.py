@@ -268,6 +268,8 @@ def generate_kpi_description(input_csv_file, output_path):
     # :Valid Interval:
     # :Connected indicators: List of indicators that are connected to the described indicator, to ease referencing
     #
+
+    df = df.replace("None", "NA")
     for row in df.iterrows():
         props = row[1]
         # Create a string with references to all the indicators connected to the current indicator
