@@ -50,6 +50,8 @@ KPI that describe the costs of the overall energy system do not have suffixes. T
 Economic KPI
 ############
 
+All the KPI related to costs described below are provided in net present value.
+
 .. include:: outputs/costs_total.inc
 
 The Net present cost (NPC) is the present value of all the costs associated with installation, operation,
