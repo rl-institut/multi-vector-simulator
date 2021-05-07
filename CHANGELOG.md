@@ -88,6 +88,7 @@ Here is a template for new release sections
 - Changed formatting of code snippets in RTD to `:code:` (#880)
 - `E3.add_levelized_cost_of_energy_carriers` to fix wrong variable definition, extend pytest (#890)
 - `E2.convert_components_to_dataframe()` to correctly display when an asset is optimized, add pytests (#875)
+- If the `TIMESERIES` key is in the `dict_values` and the file under `FILENAME` key cannot be found, the timeseries is loaded from `TIMESERIES` (#881)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
