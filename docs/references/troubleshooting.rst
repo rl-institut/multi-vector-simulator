@@ -60,7 +60,7 @@ cbc-solver
 
 While with Ubuntu the installation of the cbc solver should work rather well, even when adding it to the environment variables (like described in the installation instructions) can sometimes not work on Windows. This was experienced with Windows 10.
 
-A workaround is to directly put the :code:`cbc.exe` file into the pycharm project, ie. in the same folder where also the :code:`CHANGELOG.md` is located. Python/Oemof/Pyomo then are able to find the solver.
+A workaround is to directly put the :code:`cbc.exe` file into the root of the MVS repository, ie. in the same folder where also the :code:`CHANGELOG.md` file is located. Python/Oemof/Pyomo then are able to find the solver.
 
 pyppeteer
 ##########
@@ -89,5 +89,4 @@ If the error :code:`json.decoder.JSONDecodeError` is raised, there is a formatti
 Have you changed the json file manually? Please check for correct formatting, ie. apostrophes, commas, brackets, and so on.
 
 If you have not changed the Json file yourself please consider raising an issue in the github project.
-
 
