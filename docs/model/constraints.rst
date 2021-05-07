@@ -107,7 +107,7 @@ Some definitions of NZE systems in literature allow the energy system's demand s
 The NZE constraint is applied to the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
 
 .. math::
-        \sum_{i} {E_{feedin, DSO} (i) \cdot w_i - E_{consumption, DSO} (i) \cdot w_i} >= 0
+        \sum_{i} {E_{feedin, provider} (i) \cdot w_i - E_{consumption, provider} (i) \cdot w_i} >= 0
 
 :Deactivating the constraint:
 
