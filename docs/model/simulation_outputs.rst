@@ -75,19 +75,24 @@ The capital recovery factor (CRF) is used to calculate the present value of the 
 
 .. include:: outputs/attributed_costs.inc
 
+A multi-vector energy system connects energy vectors into a joined energy system and the system is then designed to have an optimial, joined operation. With other systems, the costs associated to each individual energy vector would be used to calculate the costs to supply the individual sector. With the multi-vector system, this could lead to distorted costs - for example if there is a lot of PV (electricity sector), which in the end is only supplying an electrolyzer (H2 sector). The investment and operational costs of the electricity sector assets would thus turn out to be very high, which could be considered unfair as the electricity from PV is solely used to provide the H2 demand.
+Therefore, we define the :ref:`attributed costs of each energy vector <attributed_costs>`, to determine how much of the overall system costs should be attributed to one sector, depending on the energy demand it has compared to the other sectors. To be able to compare the demands of different energy carriers, :ref:`energy carrier weighting <energy_carrier_weighting>` is applied.
+
 .. include:: outputs/annuity_total.inc
 
 .. include:: outputs/annuity_om.inc
 
 .. include:: outputs/levelized_costs_of_electricity_equivalent.inc
 
-A multi-vector energy system connects energy vectors into a joined energy system. The optimization objective of the MVS then is to minimize the overall energy costs, without distinguising between the different sectors. This sector-coupled energy system is then designed to have an optimial, joined operation. With other systems, the costs associated to each individual energy vector would be used to calculate the levelized costs of energy (LCOEnergy). With the multi-vector system, this could lead to distorted costs - for example if there is a lot of PV (electricity sector), which in the end is only supplying an electrolyzer (H2 sector). The LCOE of electricity would thus turn out to be very high, which could be considered unfair as the electricity from PV is solely used to provide the H2 demand. 
-Therefore, we define the :ref:`attributed costs of each energy vector <attributed_costs>`, to determine how much of the overall system costs should be attributed to one sector, depending on the energy demand it has compared to the other sectors. To be able to compare the demands of different energy carriers, :ref:`energy carrier weighting <energy_carrier_weighting>` is applied. 
-We then define the the levelized costs of energy (LCOEnergy), based on the annuity of the attributed costs and the demand of one energy sector.  
+Specific electricity supply costs, eg. levelized costs of electricity are commonly used to compare the supply costs of different investment decisions or also energy provider prices to local generation costs. However, the a multi-vector energy system connects energy vectors into a joined energy system and the optimization objective of the MVS then is to minimize the overall energy costs, without distinguising between the different sectors. This sector-coupled energy system is then designed to have an optimial, joined operation. With other systems, the costs associated to each individual energy vector would be used to calculate the levelized costs of energy (LCOEnergy). With the multi-vector system, this could lead to distorted costs - for example if there is a lot of PV (electricity sector), which in the end is only supplying an electrolyzer (H2 sector). The LCOE of electricity would thus turn out to be very high, which could be considered unfair as the electricity from PV is solely used to provide the H2 demand.
+Therefore, we define the :ref:`attributed costs of each energy vector <attributed_costs>`, to determine how much of the overall system costs should be attributed to one sector, depending on the energy demand it has compared to the other sectors. To be able to compare the demands of different energy carriers, :ref:`energy carrier weighting <energy_carrier_weighting>` is applied.
 
-Specific electricity supply costs, eg. levelized costs of electricity (LCOElectricity) are a common KPI that can be compared to local prices or generation costs. As in a sector-coupled system the investments cannot be clearly distinguished into sectors, we propose to calculate the levelized costs of energy carriers by distributing the costs relative to supplied demand. The LCOElectricity are then calculated with:
+Therefore the levelized costs of energy (LCOEnergy) for energy carrier :math:`i` are defined based on the annuity of the attributed costs, the CRF and the demand of one energy sector :math:`E_{dem,i}`:
 
-**The content of this section was copied from the** `conference paper <http://doi.org/10.5281/zenodo.4449918>`_ **handed in to CIRED 2020**
+.. math::
+        LCOEnergy_i = \frac{Attributed~costs \cdot CRF}{\sum_{t} E_{dem,i}(t)}
+
+The LCOEnergy are are calculated for each sector (resulting in the levelized costs of electricity, heat, H2...), but also for the overall energy system. For the overall energy system, the levelized costs of electricity equivalent are calculated, as this system may supply different energy vectors.
 
 .. include:: outputs/levelized_cost_of_energy_of_asset.inc
 
