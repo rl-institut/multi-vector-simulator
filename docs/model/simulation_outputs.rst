@@ -426,9 +426,11 @@ Please, refer to the :ref:`report section <pdf-report-commands>` for more inform
 
 in your terminal or command line.
 
-An example report using test data is shown below.
+A screenshot of the example report header is displayed below. The full examplary report can be accessed on github in :code:`docs/model/images/example_simulation_report.pdf`.
 
-.. image:: images/example_miniature_report.png
+.. todo: Add permalink when example report on dev?
+
+.. image:: images/example_report_header.png
  :width: 600
 
 .. include:: outputs/json_input_processed.inc
