@@ -54,12 +54,10 @@ All the KPI related to costs described below are provided in net present value.
 
 .. include:: outputs/costs_total.inc
 
-The Net present costs (NPC) is the present value of all the costs associated with installation, operation,
-maintenance and replacement of energy technologies comprising the sector-coupled system over the project lifetime,
-minus the present value of all the revenues that it earns over the project lifetime.
-The capital recovery factor (CRF) is used to calculate the present value of the cash flows.
+The Net present costs (NPC) is the present value of all the costs associated with installation, operation, maintenance and replacement of energy assets within the optimized multi-vector energy system over the whole project lifetime, deducting the present value of the residual values of asset at project and as well as all the revenues that it earns over the project lifetime. The capital recovery factor (CRF) is used to calculate the present value of the cash flows.
 
-**The content of this section was copied from the** `conference paper <http://doi.org/10.5281/zenodo.4449918>`_ **handed in to CIRED 2020**
+.. math::
+    NPC = \sum_i{(c_specific + c_replacement + c_residual) \cdot CAP_i} + \sum_i{\sum_t{E_i(t)} \cdot p_dispatch}
 
 .. include:: outputs/costs_cost_om.inc
 
