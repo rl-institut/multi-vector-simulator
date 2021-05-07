@@ -86,6 +86,7 @@ Here is a template for new release sections
 - Proofread RTD for the release of the ELAND report (#871)
 - Prepared `docs/MVS_kpis_list.csv` summarizing all simulation outputs (#869)
 - Changed a great number of variable names in `constants_json_strings.py` by decapitalizing and removing spaces (#869)
+- Changed formatting of code snippets in RTD to `:code:` (#888)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
