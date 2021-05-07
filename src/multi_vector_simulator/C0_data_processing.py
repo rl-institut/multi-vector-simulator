@@ -1509,6 +1509,9 @@ def receive_timeseries_from_csv(
     :param type:
     :return:
     """
+
+    load_from_timeseries_instead_of_file = False
+
     if input_type == "input" and "input" in dict_asset:
         file_name = dict_asset[input_type][FILENAME]
         header = dict_asset[input_type][HEADER]
@@ -1518,47 +1521,66 @@ def receive_timeseries_from_csv(
         # if only filename is given here, then only one column can be in the csv
         file_name = dict_asset[FILENAME]
         unit = dict_asset[UNIT] + "/" + UNIT_HOUR
-    else:
+    elif FILENAME in dict_asset[input_type]:
         file_name = dict_asset[input_type][FILENAME]
         header = dict_asset[input_type][HEADER]
         unit = dict_asset[input_type][UNIT]
+    else:
+        load_from_timeseries_instead_of_file = True
 
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
-    C1.lookup_file(file_path, dict_asset[LABEL])
+    if os.path.exists(file_path) is False:
+        msg = (
+            f"Missing file! The timeseries file '{file_path}' \nof asset "
+            + f"{dict_asset[LABEL]} can not be found."
+        )
+        logging.warning(msg + " Looking for {TIMESERIES} entry.")
+        # if the file is not found
+        load_from_timeseries_instead_of_file = True
 
-    data_set = pd.read_csv(file_path, sep=",", keep_default_na=True)
+    else:
+        data_set = pd.read_csv(file_path, sep=",", keep_default_na=True)
 
-    if FILENAME in dict_asset:
-        header = data_set.columns[0]
+    # If loading the data from the file does not work (file not present), the data might be
+    # already present in dict_values under TIMESERIES
+    if load_from_timeseries_instead_of_file is False:
+        if FILENAME in dict_asset:
+            header = data_set.columns[0]
+        series_values = data_set[header]
+    else:
+        if TIMESERIES in dict_asset:
+            series_values = dict_asset[TIMESERIES]
+        else:
+            FileNotFoundError(msg)
 
-    if len(data_set.index) == settings[PERIODS]:
+    if len(series_values.index) == settings[PERIODS]:
         if input_type == "input":
-            timeseries = pd.Series(data_set[header].values, index=settings[TIME_INDEX])
+            timeseries = pd.Series(series_values.values, index=settings[TIME_INDEX])
             timeseries = replace_nans_in_timeseries_with_0(
                 timeseries, dict_asset[LABEL]
             )
             dict_asset.update({TIMESERIES: timeseries})
         else:
-            timeseries = pd.Series(data_set[header].values, index=settings[TIME_INDEX])
+            timeseries = pd.Series(series_values.values, index=settings[TIME_INDEX])
             timeseries = replace_nans_in_timeseries_with_0(
                 timeseries, dict_asset[LABEL] + "(" + input_type + ")"
             )
             dict_asset[input_type][VALUE] = timeseries
 
         logging.debug("Added timeseries of %s (%s).", dict_asset[LABEL], file_path)
-    elif len(data_set.index) >= settings[PERIODS]:
+    elif len(series_values.index) >= settings[PERIODS]:
         if input_type == "input":
             dict_asset.update(
                 {
                     TIMESERIES: pd.Series(
-                        data_set[header][0 : len(settings[TIME_INDEX])].values,
+                        series_values[0 : len(settings[TIME_INDEX])].values,
                         index=settings[TIME_INDEX],
                     )
                 }
             )
         else:
             dict_asset[input_type][VALUE] = pd.Series(
-                data_set[header][0 : len(settings[TIME_INDEX])].values,
+                series_values[0 : len(settings[TIME_INDEX])].values,
                 index=settings[TIME_INDEX],
             )
 
@@ -1569,10 +1591,10 @@ def receive_timeseries_from_csv(
             file_path,
         )
 
-    elif len(data_set.index) <= settings[PERIODS]:
+    elif len(series_values.index) <= settings[PERIODS]:
         logging.critical(
             "Input error! "
-            "Provided timeseries of %s (%s) shorter then evaluated period. "
+            "Provided timeseries of %s (%s) shorter than evaluated period. "
             "Operation terminated",
             dict_asset[LABEL],
             file_path,
@@ -1726,6 +1748,8 @@ def get_timeseries_multiple_flows(settings, dict_asset, file_name, header):
     """
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
     C1.lookup_file(file_path, dict_asset[LABEL])
+
+    # TODO if FILENAME is not defined
 
     data_set = pd.read_csv(file_path, sep=",")
     if len(data_set.index) == settings[PERIODS]:
