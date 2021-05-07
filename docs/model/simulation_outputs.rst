@@ -97,8 +97,7 @@ The LCOEnergy are are calculated for each sector (resulting in the levelized cos
 This KPI measures the cost of generating 1 kWh for each asset in the system.
 It can be used to assess and compare the available alternative methods of energy production.
 The levelized cost of energy of an asset (:math:`LCOE~ASSET_i`) is usually obtained
-by looking at the lifetime costs of building and operating the asset per unit of total energy throughput of an asset
-over the assumed lifetime [currency/kWh].
+by looking at the lifetime costs of building and operating the asset per unit of total energy throughput of an asset over the assumed lifetime [currency/kWh].
 
 Since not all assets are production assets, the MVS distinguishes between the type of assets.
 For assets in energyConversion and energyProduction the MVS calculates the :math:`LCOE~ASSET_i`
