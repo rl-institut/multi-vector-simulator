@@ -21,24 +21,24 @@ In the sections :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>`
 
 :Definition: Definition of the defined KPI, can be used as tooltips.
 
-:Type: ?
+:Type:  One of Numeric, Figure, Excel File, JSON, Time series, Logfile or html/pdf
 
 :Unit: Unit of the KPI, multiple units possible if KPI can be applied to individual sectors (see also: :ref:`kpi_suffixes`).
 
 :Valid Interval: Expected valid range of the KPI. Exceptions are possible under certain conditions.
 
-:Connected indicators: List of indicators that are related to the described KPI, either because they are part of its calculation or can be compared to it.
+:Related indicators: List of indicators that are related to the described KPI, either because they are part of its calculation or can be compared to it.
 
-Below these reoccurring definitions, the underlying equation of the KPI may be presented and explained, or further hints might be collected for the parameter evaluation or for special cases.
+Besides these parameters attributes, the underlying equation of a specific KPI may be presented and explained, or further hints might be provided for the parameter evaluation or for special cases.
 
 .. _kpi_suffixes:
 
 Suffixes of KPI
 ###############
 
-The KPI calculated by the MVS can sometimes be calculated per asset, for each sector or for the overall system.
+The KPI of the MVS can be calculated per asset, for each sector or for the overall system.
 
-KPI calculated per asset are not included in the scalar results of the automatic report or in the stored Excel file, but are displayed seperately. They do not need suffixes, as they are always displayed in tables next to the respective asset.
+KPI calculated per asset are not included in the scalar results of the automatic report or in the stored Excel file, but are displayed separately. They do not need suffixes, as they are always displayed in tables next to the respective asset.
 
 KPI calculated for each vector are specifically these KPI that aggregate the dispatch and costs of multiple assets. For cost-related KPI, such aggregating KPI have the energy vector they are describing as a suffix. An example would be the `attributed_costs` of each energy vector - the attributed costs of the electricity and H2 sector would be called `attributed_costs_electricity` and `attributed_costs_H2` respectively.
 For technical KPI, this suffix also applies, but additionally, due to the :ref:`energy carrier weighting <energy_carrier_weighting>`, they also feature the suffix `electricity equivalent` when the weighting has been applied. The energy demand of the system is an example: the demand per sector would be `total_demand_electricity` and `total_demand_H2`. To be able to aggregate these cost into an overall KPI for the system, the electricity equivalents of both values are calculated. They then are named `total_demand_electricity_electricity_equivalent` and `total_demand_H2_electricity_equivalent`.
@@ -50,14 +50,16 @@ KPI that describe the costs of the overall energy system do not have suffixes. T
 Economic KPI
 ############
 
+All the KPI related to costs described below are provided in net present value.
+
 .. include:: outputs/costs_total.inc
 
-The Net present cost (NPC) is the present value of all the costs associated with installation, operation,
+The Net present costs (NPC) is the present value of all the costs associated with installation, operation,
 maintenance and replacement of energy technologies comprising the sector-coupled system over the project lifetime,
 minus the present value of all the revenues that it earns over the project lifetime.
 The capital recovery factor (CRF) is used to calculate the present value of the cash flows.
 
-** The content of this section was copied from the conference paper handed in to CIRED 2020**
+**The content of this section was copied from the** `conference paper <http://doi.org/10.5281/zenodo.4449918>`_ **handed in to CIRED 2020**
 
 .. include:: outputs/costs_cost_om.inc
 
@@ -79,41 +81,43 @@ The capital recovery factor (CRF) is used to calculate the present value of the 
 
 .. include:: outputs/levelized_costs_of_electricity_equivalent.inc
 
-As a sector-coupled system connects energy vectors, not the costs associated to each individual energy carrier but the overall energy costs should be minimized. Therefore, we propose a new KPI: The levelized costs of energy (LCOEnergy) aggregates the costs for energy supply and distributes them over the total energy demand supplied, which is calculated by weighting the energy carriers by their energy content. To determine the weighting factors of the different energy carriers, we reference the method of gasoline gallon equivalent (GGE) [12], which enables the comparison of alternative fuels. Instead of comparing the energy carriers of an MES to gasoline, we rebase the factors introduced in [12] onto the energy carrier electricity, thus proposing a unit Electricity Equivalent (ElEq). The necessary weights are summarized in Table 1. With this, we propose to calculate LCOEnergy based on the annual energy demand and the systems annuity, calculated with the CRF, as follows:
+A multi-vector energy system connects energy vectors into a joined energy system. The optimization objective of the MVS then is to minimize the overall energy costs, without distinguising between the different sectors. This sector-coupled energy system is then designed to have an optimial, joined operation. With other systems, the costs associated to each individual energy vector would be used to calculate the levelized costs of energy (LCOEnergy). With the multi-vector system, this could lead to distorted costs - for example if there is a lot of PV (electricity sector), which in the end is only supplying an electrolyzer (H2 sector). The LCOE of electricity would thus turn out to be very high, which could be considered unfair as the electricity from PV is solely used to provide the H2 demand. 
+Therefore, we define the :ref:`attributed costs of each energy vector <attributed_costs>`, to determine how much of the overall system costs should be attributed to one sector, depending on the energy demand it has compared to the other sectors. To be able to compare the demands of different energy carriers, :ref:`energy carrier weighting <energy_carrier_weighting>` is applied. 
+We then define the the levelized costs of energy (LCOEnergy), based on the annuity of the attributed costs and the demand of one energy sector.  
 
 Specific electricity supply costs, eg. levelized costs of electricity (LCOElectricity) are a common KPI that can be compared to local prices or generation costs. As in a sector-coupled system the investments cannot be clearly distinguished into sectors, we propose to calculate the levelized costs of energy carriers by distributing the costs relative to supplied demand. The LCOElectricity are then calculated with:
 
-** The content of this section was copied from the conference paper handed in to CIRED 2020**
+**The content of this section was copied from the** `conference paper <http://doi.org/10.5281/zenodo.4449918>`_ **handed in to CIRED 2020**
 
 .. include:: outputs/levelized_cost_of_energy_of_asset.inc
 
 This KPI measures the cost of generating 1 kWh for each asset in the system.
 It can be used to assess and compare the available alternative methods of energy production.
-The levelized cost of energy of an asset (LCOE ASSET) is usually obtained
+The levelized cost of energy of an asset (:math:`LCOE~ASSET_i`) is usually obtained
 by looking at the lifetime costs of building and operating the asset per unit of total energy throughput of an asset
 over the assumed lifetime [currency/kWh].
 
 Since not all assets are production assets, the MVS distinguishes between the type of assets.
-For assets in energyConversion and energyProduction the MVS calculates the LCOE ASSET
-by dividing the total annuity :math:`a_i` of the asset :math:`i` by the total flow :math:`\sum{t} E_i(t)`.
+For assets in energyConversion and energyProduction the MVS calculates the :math:`LCOE~ASSET_i`
+by dividing the total annuity :math:`a_i` of the asset :math:`i` by the total flow :math:`\sum_{t} E_i(t)`.
 
 .. math::
-        LCOE~ASSET_i = \frac{a_i}{\sum^{t} E_i(t)}
+        LCOE~ASSET_i = \frac{a_i}{\sum_{t} E_i(t)}
   
-For assets in energyStorage, the MVS sums the annuity for `storage capacity` :math:`a_{i,sc}`, `input power` $a_{i,ip}$ and `output power` :math:`a_{i,op}` and divides it by the `output power` total flow :math:`\sum{t} E_{i,op}(t)`.
+For assets in energyStorage, the MVS sums the annuity for `storage capacity` :math:`a_{i,sc}`, `input power` :math:`a_{i,ip}` and `output power` :math:`a_{i,op}` and divides it by the `output power` total flow :math:`\sum_{t} E_{i,op}(t)`.
 
 .. math::
-        LCOE~ASSET_i = \frac{a_{i,sc} + a_{i,ip} + a_{i,op}}{\sum^{t}{E_{i,op}(t)}}
+        LCOE~ASSET_i = \frac{a_{i,sc} + a_{i,ip} + a_{i,op}}{\sum_{t}{E_{i,op}(t)}}
 
-If the total flow is 0 in any of the previous cases, then the LCOE ASSET is set to None.
+If the total flow is 0 in any of the previous cases, then the :math:`LCOE~ASSET_i` is set to None.
 
 .. math::
-        LCOE~ASSET{i} = None
+        LCOE~ASSET_i = None
   
-For assets in energyConsumption, the MVS outputs 0 for the LCOE ASSET.
+For assets in :ref:`energyConsumption <consumption>`, the MVS outputs 0 for the :math:`LCOE~ASSET_i`.
 
 .. math::
-        LCOE~ASSET{i} = 0
+        LCOE~ASSET_i = 0
 
 .. _kpi_technical:
 
@@ -225,7 +229,7 @@ Again, the heat sector would have a renewable factor of 0% when considered separ
 
 .. math:: RF = \frac{ 100 kWh(el)\cdot \frac{kWh(eleq)}{kWh(el)} +50 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}}{200 kWh(el) \cdot \frac{kWh(eleq)}{kWh(el)}} = 3/4 = \text{75 \%}
 
-The renewable factor can, just like the :ref:`renewable_share_of_local_generation` not indicate how much renewable energy is used in each of the sectors. In the future, it may be possible to dive into this together with the degree of sector-coupling.
+The renewable factor, just like the :ref:`renewable_share_of_local_generation`, cannot indicate how much renewable energy is used in each of the sectors. In the future, it might be possible to get a clearer picture of the flows between the sectors with the proposed :ref:`degree of sector-coupling <degree_of_sector_coupling>`.
 
 .. _degree_of_sector_coupling:
 
@@ -241,22 +245,21 @@ To measure this, we propose to compare the energy flows in between the sectors t
 
         \text{with } i,j &\text{: Electricity,H2…}
 
-** The content of this section was copied from the conference paper handed in to CIRED 2020**
+**The content of this section was copied from the** `conference paper <http://doi.org/10.5281/zenodo.4449918>`_ **handed in to CIRED 2020**
 
 .. include:: outputs/onsite_energy_fraction.inc
 
-Onsite energy fraction is also referred to as self-consumption. It describes
+Onsite energy fraction is also referred to as "self-consumption". It describes
 the fraction of all locally generated energy that is consumed by the system
 itself. (see `[1] <https://www.sciencedirect.com/science/article/pii/S0960148119315216>`__ and `[2] <https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf>`__).
 
 An OEF close to zero shows that only a very small amount of locally generated
 energy is consumed by the system itself. It is at the same time an indicator
 that a large amount is fed into the grid instead. A OEF close to one shows that
-almost all locally produced energy is consumed by the system itself. Notice that
-the feed into the grid can only be positive.
+almost all locally produced energy is consumed by the system itself.
 
 .. math::
-        OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
+        OEF &=\frac{\sum_{i} {(E_{generation} (i) - E_{gridfeedin}(i)) \cdot w_i}}{\sum_{i} {E_{generation} (i) \cdot w_i}}
 
         &OEF \epsilon \text{[0,1]}
 
@@ -266,7 +269,7 @@ The onsite energy matching is also referred to as "self-sufficiency". It
 describes the fraction of the total demand that can be
 covered by the locally generated energy (see
 `[1] <https://www.sciencedirect.com/science/article/pii/S0960148119315216>`__ and `[2] <https://www.iip.kit.edu/downloads/McKennaetal_paper_full.pdf>`__).
-Notice that the feed into the grid should only be positive.
+
 
 An OEM close to zero shows that very little of the demand can be covered by
 locally produced energy. Am OEM close to one shows that almost all of the demand
@@ -276,9 +279,13 @@ or an excess sink.
 
 
 .. math::
-        OEM &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i - E_{excess}(i) \cdot w_i}{\sum_i {E_{demand} (i) \cdot w_i}}
+        OEM &=\frac{\sum_{i} {(E_{generation} (i) - E_{gridfeedin}(i) - E_{excess}(i)) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
         &OEM \epsilon \text{[0,1]}
+
+.. note::
+    The feed into the grid should only be positive.
+
 
 .. include:: outputs/degree_of_autonomy.inc
 
@@ -298,14 +305,14 @@ To calculate the degree of NZE, the margin between grid feed-in and grid consump
 
 Some definitions of NZE systems require that the local demand is solely covered by locally generated renewable energy. In MVS this is not the case - all locally generated energy is taken into consideration. For information about the share of renewables in the local energy system checkout :ref:`renewable_share_of_local_generation`.
 
-A degree of NZE lower 1 shows that the energy system can not reach a net zero balance, and indicates by how much it fails to do so,
+A degree of NZE lower than 1 shows that the energy system can not reach a net zero balance, and indicates by how much it fails to do so,
 while a degree of NZE of 1 represents a net zero energy system
 and a degree of NZE higher 1 a plus-energy system.
 
 As above, we apply a weighting based on Electricity Equivalent.
 
 .. math::
-        Degree of NZE &= 1 + \frac{(\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
+        Degree of NZE &= 1 + \frac{\sum_{i} {(E_{grid feedin}(i) - E_{grid consumption} (i) )\cdot w_i}}{\sum_i {E_{demand, i} \cdot w_i}}
 
 
 .. _kpi_environmental:
@@ -344,7 +351,7 @@ Figures
 
 .. include:: outputs/bar_chart_optimizedAddCap.inc
 
-An example of a bar chart of recommended additional asset capacities is shown below. As displayed, the units of the different capacities are not identical.
+An example of a bar chart of recommended additional asset capacities is shown below. Note that currently kWp are displayed on the same scale as kW (or kWh or gkH2), which is not ideal.
 
 .. image:: images/example_optimal_additional_capacities.png
  :width: 600
@@ -365,7 +372,7 @@ An example of the graph created from the timeseries, eg. specific generation tim
 
 .. include:: outputs/plot_dispatch.inc
 
-An example of the graph vizualizing the asset dispatch on a specific bus is shown below.
+An example of the graph displaying the asset dispatch on a specific bus is shown below.
 
 .. image:: images/example_dispatch_assets.png
  :width: 600
@@ -376,6 +383,9 @@ An example of the created energy system model graphs is shown below.
 
 .. image:: images/network_graph.png
  :width: 600
+
+Files
+#####
 
 .. include:: outputs/excel_scalar_kpi.inc
 
