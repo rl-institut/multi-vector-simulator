@@ -249,7 +249,7 @@ To simulate a PV plant, the MVS model requires following data from the end-user:
 
 :ToDo:
 
-To ease the data input for the end-user, more processing could be included here (option a)). For example, the `feedinlib` could be used to fetch the specific PV generation profiles with following data:
+To ease the data input for the end-user, more processing could be included here (option a)). For example, the :code:`feedinlib` could be used to fetch the specific PV generation profiles with following data:
 
 * Longitude and latitude
 * Module or efficiency
@@ -381,9 +381,9 @@ FUN-MVS-17 - Constraints
 
 :Progress message:
 
-To address the sizing constraint, the attribute `maximumCap` was introduced. This will limit the optimized capacity, even if this results in higher energy supply costs.
+To address the sizing constraint, the attribute :code:`maximumCap` was introduced. This will limit the optimized capacity, even if this results in higher energy supply costs.
 
-A cost constraint is for now disregarded, as always the cheapest supply solution is identified. Limiting the overall NPC would result in infeasible solutions and a termination of the MVS. Cost constraints considering specific technologies can be covered by adapting the `maximumCap`.
+A cost constraint is for now disregarded, as always the cheapest supply solution is identified. Limiting the overall NPC would result in infeasible solutions and a termination of the MVS. Cost constraints considering specific technologies can be covered by adapting the :code:`maximumCap`.
 
 :ToDo:
 

@@ -3,7 +3,7 @@
 Component models
 ----------------
 
-The component models of the MVS result from the used python-library `oemof-solph` for energy modeling.
+The component models of the MVS result from the used python-library :code:`oemof-solph` for energy modeling.
 
 It requires component models to be simplified and linearized.
 This is the reason that the MVS can provide a pre-feasibility study of a specific system setup,
@@ -15,7 +15,7 @@ The types of assets are presented below.
 Energy consumption
 ##################
 
-Demands within the MVS are added as energy consumption assets in `energyConsumption.csv`. Most importantly, they are defined by a timeseries, representing the demand profile, and their energy vector. A number of demand profiles can be defined for one energy system, both of the same and different energy vectors.
+Demands within the MVS are added as energy consumption assets in :code:`energyConsumption.csv`. Most importantly, they are defined by a timeseries, representing the demand profile, and their energy vector. A number of demand profiles can be defined for one energy system, both of the same and different energy vectors.
 The main optimization goal for the MVS is to supply the defined demand withouth fail for all of the timesteps in the simulation with the least cost of supply (comp. :ref:`economic_precalculation-label`).
 
 
@@ -34,10 +34,10 @@ Non-dispatchable sources of generation
     - Run-of-the-river hydro power plants
     - Solar thermal collectors
 
-Variable renewable energy (VRE) sources, like wind and PV, are non-dispatchable due to their fluctuations in supply. They are added as sources in `energyProduction.csv`.
+Variable renewable energy (VRE) sources, like wind and PV, are non-dispatchable due to their fluctuations in supply. They are added as sources in :code:`energyProduction.csv`.
 
 The fluctuating nature of non-dispatchable sources is represented by generation time series that show the respective production for each time step of the simulated period. In energy system modelling it is common to use hourly time series.
-The name of the file containing the time series is added to `energyProduction.csv` with the parameter :ref:`filename-label`. For further requirements concerning the time series see section :ref:`time_series_folder`.
+The name of the file containing the time series is added to :code:`energyProduction.csv` with the parameter :ref:`filename-label`. For further requirements concerning the time series see section :ref:`time_series_folder`.
 
 If you cannot provide time series for your VRE assets you can consider to calculate them by using models for generating feed-in time series from weather data. The following is a list of examples, which is not exhaustive:
 
@@ -58,7 +58,7 @@ Dispatchable sources of generation
     - Deep-ground geothermal plant (ground assumed to allow unlimited extraction of heat, not depending on season)
 
 Fuel sources are added as dispatchable sources, which can have development, investment, operational and dispatch costs.
-They are added to `energyProduction.csv`, while setting :ref:`filename-label` to `None`.
+They are added to :code:`energyProduction.csv`, while setting :ref:`filename-label` to `None`.
 
 Fuel sources are for example needed as source for a diesel generator (diesel), biogas plant (gas) or a condensing power plant (gas, coal, ...), see :ref:`energy_conversion`.
 
@@ -195,7 +195,7 @@ For two peak demand pricing periods, the resulting dispatch could look as follow
 Energy storage
 ##############
 
-Energy storages such as battery storages, thermal storages or H2 storages are modelled with the *GenericStorage* component of *oemof.solph*. They are designed for one input and one output and are defined with files `energyStorage.csv` and `storage_*.csv` and have several parameters, which are listed in the section :ref:`storage_csv`.
+Energy storages such as battery storages, thermal storages or H2 storages are modelled with the :code:`GenericStorage` component of :code:`oemof.solph`. They are designed for one input and one output and are defined with files :code:`energyStorage.csv` and :code:`storage_*.csv` and have several parameters, which are listed in the section :ref:`storage_csv`.
 
 The state of charge of a storage at the first and last time step of an optimization are equal.
 Charge and discharge of the whole capacity of the energy storage are possible within one time step in case the capacity of the storage is not optimized. In case of
@@ -206,7 +206,7 @@ capacity optimization charge and discharge is limited by the :ref:`crate-label`.
 Battery energy storage system (BESS)
 ====================================
 
-BESS are modelled as *GenericStorage* like described above. The BESS can either be connected directly to the electricity bus of the LES or via a charge controller that manages the BESS.
+BESS are modelled as :code:`GenericStorage` like described above. The BESS can either be connected directly to the electricity bus of the LES or via a charge controller that manages the BESS.
 When choosing the second option, the capacity of the charge controller can be optimized individually, which takes its specific costs and lifetime into consideration.
 If you do not want to optimize the charge controller's capacity you can take its costs and efficiency into account when defining the storage's input and output power, see :ref:`storage_csv`.
 A charge controller is defined by two transformers, see section :ref:`energy_conversion` above.
@@ -217,7 +217,7 @@ Note that capacity reduction over the lifetime of a BESS that may occur due to d
 Hydrogen storage (H2)
 =====================
 
-Hydrogen storages are modelled as all storage types in MVS with as *GenericStorage* like described above.
+Hydrogen storages are modelled as all storage types in MVS with as :code:`GenericStorage` like described above.
 
 The most common hydrogen storages store H2 as liquid under temperatures lower than -253 °C or under high pressures.
 The energy needed to provide these requirements cannot be modelled via the storage component as another energy sector such as cooling or electricity is needed. It could therefore, be modelled as an additional demand of the energy system, see `issue #811 <https://github.com/rl-institut/multi-vector-simulator/issues/811>`_
@@ -227,7 +227,7 @@ The energy needed to provide these requirements cannot be modelled via the stora
 Thermal energy storage
 ======================
 
-Thermal energy storages of the type sensible heat storage (SHS) are modelled as *GenericStorage* like described above. The implementation of a specific type of SHS, the stratified thermal energy storage, is described in section :ref:`stratified_tes`.
+Thermal energy storages of the type sensible heat storage (SHS) are modelled as :code:`GenericStorage` like described above. The implementation of a specific type of SHS, the stratified thermal energy storage, is described in section :ref:`stratified_tes`.
 The modelling of latent-heat (or Phase-change) and chemical storages have not been tested with MVS, but might be achieved by precalculations.
 
 .. _stratified_tes:
@@ -235,8 +235,8 @@ The modelling of latent-heat (or Phase-change) and chemical storages have not be
 Stratified thermal energy storage
 =================================
 
-Stratified thermal energy storage is defined by the two optional parameters `fixed_losses_relative` and `fixed_losses_absolute`. If they are not included in `storage_*.csv` or are equal to zero, then a normal generic storage is simulated.
-These two parameters are used to take into account temperature dependent losses of a thermal storage. To model a thermal energy storage without stratification, the two parameters are not set. The default values of `fixed_losses_relative` and `fixed_losses_absolute` are zero.
+Stratified thermal energy storage is defined by the two optional parameters :code:`fixed_losses_relative` and :code:`fixed_losses_absolute`. If they are not included in :code:`storage_*.csv` or are equal to zero, then a normal generic storage is simulated.
+These two parameters are used to take into account temperature dependent losses of a thermal storage. To model a thermal energy storage without stratification, the two parameters are not set. The default values of :code:`fixed_losses_relative` and :code:`fixed_losses_absolute` are zero.
 Except for these two additional parameters the stratified thermal storage is implemented in the same way as other storage components.
 
 Precalculations of the `installedCap`, `efficiency`, `fixed_losses_relative` and `fixed_losses_absolute` can be done orientating on the stratified thermal storage component of `oemof.thermal  <https://github.com/oemof/oemof-thermal>`__.

@@ -3,7 +3,7 @@
 Constraints
 -----------
 
-Constraints are controlled with the file `constraints.csv`.
+Constraints are controlled with the file :code:`constraints.csv`.
 
 .. _constraint_min_re_factor:
 
@@ -21,21 +21,21 @@ Please be aware that the minimal renewable factor constraint defines bounds for 
 
 :Deactivating the constraint:
 
-The minimal renewable factor constraint is deactivated by inserting the following row in `constraints.csv` as follows:
+The minimal renewable factor constraint is deactivated by inserting the following row in :code:`constraints.csv` as follows:
 
 ```minimal_renewable_factor,factor,0```
 
 :Activating the constraint:
 
-The constraint is enabled when the value of the minimal renewable factor factor is above 0 in `constraints.csv`:
+The constraint is enabled when the value of the minimal renewable factor factor is above 0 in :code:`constraints.csv`:
 
 ```minimal_renewable_factor,factor,0.3```
 
 
-Depending on the energy system, especially when working with assets which are not to be capacity-optimized, it is possible that the minimal renewable factor criterion cannot be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimize_Cap` parameters to `True`, and then investigate further.
+Depending on the energy system, especially when working with assets which are not to be capacity-optimized, it is possible that the minimal renewable factor criterion cannot be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all :code:`optimize_Cap` parameters to :code:`True`, and then investigate further.
 Also, if you are aiming at very high minimal renewable factors, the simulation time can increase drastically. If you do not get a result after a maximum of 20 Minutes, you should consider terminating the simulation and trying with a lower minimum renewable share.
 
-The minimum renewable share is introduced to the energy system by `D2.constraint_minimal_renewable_share()` and a validation test is performed with `E4.minimal_renewable_share_test()`.
+The minimum renewable share is introduced to the energy system by :code:`D2.constraint_minimal_renewable_share()` and a validation test is performed with :code:`E4.minimal_renewable_share_test()`.
 
 .. _constraint_minimal_degree_of_autonomy:
 

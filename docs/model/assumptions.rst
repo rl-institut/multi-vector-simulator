@@ -2,7 +2,7 @@
 Assumptions
 ===========
 
-The MVS is based on the programming framework `oemof-solph` and builds an energy system model based up on its nomenclature.
+The MVS is based on the programming framework :code:`oemof-solph` and builds an energy system model based up on its nomenclature.
 As such, the energy system model can be described with a linear equation system.
 Below, the most important aspects are described in a genrealized way, as well as explained based on an example.
 This will ease the comparision to other energy system models.
@@ -14,7 +14,7 @@ Economic Dispatch
 
 Linear programming is a mathematical modelling and optimization technique for a system of a linear objective function subject to linear constraints.
 The goal of a linear programming problem is to find the optimal value for the objective function, be it a maximum or a minimum.
-The MVS is based on `oemof-solph`, which in turn uses `Pyomo` to create a linear problem.
+The MVS is based on :code:`oemof-solph`, which in turn uses :code:`Pyomo` to create a linear problem.
 The economic dispatch problem in the MVS has the objective of minimizing the production cost by allocating the total demand among the generating units at each time step.
 The equation is the following:
 
@@ -484,7 +484,7 @@ As it can be noticed, the conversion factor between heat (kWh(therm)) and electr
 
 :Code:
 
-Currently, the energy carrier conversion factors are defined in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be added to its list when needed. Unknown carriers raise an `UnknownEnergyVectorError` error.
+Currently, the energy carrier conversion factors are defined in :code:`constants.py` with :code:`DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be added to its list when needed. Unknown carriers raise an :code:`UnknownEnergyVectorError` error.
 
 :Comment:
 
