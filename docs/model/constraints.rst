@@ -83,7 +83,7 @@ The maximum emissions constraint is enabled by inserting the following row in `c
 
 :Deactivating the constraint:
 
-The constraint is deactivated by setting the value in `constraints.csv` to None:
+The constraint is deactivated by setting the value in :code:`constraints.csv` to :code:`None`:
 
 ```maximum_emissions,kgCO2eq/a,None```
 
@@ -92,7 +92,7 @@ The unit of the constraint is `kgCO2eq/a`. To select a useful value for this con
 - Firstly, optimize your system without the constraint to get an idea about the scale of the emissions and then, secondly, set the constraint and lower the emissions step by step until you receive an unbound problem (which then represents the non-archievable minimum of emissions for your energy system)
 - Check the emissions targets of your region/country and disaggregate the number
 
-The maximum emissions constraint is introduced to the energy system by `D2.constraint_maximum_emissions()` and a validation test is performed with `E4.maximum_emissions_test()`.
+The maximum emissions constraint is introduced to the energy system by :code:`D2.constraint_maximum_emissions()` and a validation test is performed with `E4.maximum_emissions_test()`.
 
 .. _constraint_net_zero_energy:
 

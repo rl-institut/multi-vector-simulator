@@ -100,17 +100,17 @@ by dividing the total annuity :math:`a_i` of the asset :math:`i` by the total fl
 .. math::
         LCOE~ASSET_i = \frac{a_i}{\sum^{t} E_i(t)}
   
-For assets in energyStorage, the MVS sums the annuity for :code:`storage capacity` :math:`a_{i,sc}`, :code:`input power` $a_{i,ip}$ and :code:`output power` :math:`a_{i,op}` and divides it by the :code:`output power` total flow :math:`\sum{t} E_{i,op}(t)`.
+For assets in :code:`energyStorage`, the MVS sums the annuity for :code:`storage capacity` :math:`a_{i,sc}`, :code:`input power` $a_{i,ip}$ and :code:`output power` :math:`a_{i,op}` and divides it by the :code:`output power` total flow :math:`\sum{t} E_{i,op}(t)`.
 
 .. math::
         LCOE~ASSET_i = \frac{a_{i,sc} + a_{i,ip} + a_{i,op}}{\sum^{t}{E_{i,op}(t)}}
 
-If the total flow is 0 in any of the previous cases, then the LCOE ASSET is set to None.
+If the total flow is 0 in any of the previous cases, then the :code:`LCOE~ASSET` is set to :code:`None`.
 
 .. math::
         LCOE~ASSET{i} = None
   
-For assets in energyConsumption, the MVS outputs 0 for the LCOE ASSET.
+For assets in :code:`energyConsumption`, the MVS outputs 0 for the :code:`LCOE~ASSET`.
 
 .. math::
         LCOE~ASSET{i} = 0

@@ -58,11 +58,11 @@ Dispatchable sources of generation
     - Deep-ground geothermal plant (ground assumed to allow unlimited extraction of heat, not depending on season)
 
 Fuel sources are added as dispatchable sources, which can have development, investment, operational and dispatch costs.
-They are added to :code:`energyProduction.csv`, while setting :ref:`filename-label` to `None`.
+They are added to :code:`energyProduction.csv`, while setting :ref:`filename-label` to :code:`None`.
 
 Fuel sources are for example needed as source for a diesel generator (diesel), biogas plant (gas) or a condensing power plant (gas, coal, ...), see :ref:`energy_conversion`.
 
-Energy providers, even though also dispatchable sources of generation, should be added via `energyProviders.csv`,
+Energy providers, even though also dispatchable sources of generation, should be added via :code:`energyProviders.csv`,
 as there are some additional features available then, see :ref:`energy_providers`.
 
 Both energy providers and the additional fuel sources are limited to the options of energy carriers provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
@@ -82,7 +82,7 @@ Energy conversion
     - Electrolyzers
     - Biogas power plants
 
-Conversion assets are added as transformers and are defined in `energyConversion.csv`.
+Conversion assets are added as transformers and are defined in :code:`energyConversion.csv`.
 
 The parameters `dispatch_price`, `efficiency` and `installedCap` of transformers are assigned to their output flows.
 This means that these parameters need to be given for the output of the asset and that the costs of the input, e.g. fuel, if existent, are not included in its `dispatch_price` but in the `dispatch_price` of the fuel source, see :ref:`dispatchable_sources`.
@@ -239,8 +239,8 @@ Stratified thermal energy storage is defined by the two optional parameters :cod
 These two parameters are used to take into account temperature dependent losses of a thermal storage. To model a thermal energy storage without stratification, the two parameters are not set. The default values of :code:`fixed_losses_relative` and :code:`fixed_losses_absolute` are zero.
 Except for these two additional parameters the stratified thermal storage is implemented in the same way as other storage components.
 
-Precalculations of the `installedCap`, `efficiency`, `fixed_losses_relative` and `fixed_losses_absolute` can be done orientating on the stratified thermal storage component of `oemof.thermal  <https://github.com/oemof/oemof-thermal>`__.
-The parameters `U-value`, `volume` and `surface` of the storage, which are required to calculate `installedCap`, can be precalculated as well.
+Precalculations of the :code:`installedCap`, :code:`efficiency`, :code:`fixed_losses_relative` and :code:`fixed_losses_absolute` can be done orientating on the stratified thermal storage component of `oemof.thermal  <https://github.com/oemof/oemof-thermal>`__.
+The parameters :code:`U-value`, :code:`volume` and :code:`surface` of the storage, which are required to calculate :code:`installedCap`, can be precalculated as well.
 
 The efficiency :math:`\eta` of the storage is calculated as follows:
 
