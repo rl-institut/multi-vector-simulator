@@ -239,16 +239,15 @@ The renewable factor, just like the :ref:`renewable_share_of_local_generation`, 
 Degree of sector-coupling (DSC)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-While a MES includes multiple energy carriers,
-this fact does not define how strongly interconnected its sectors are.
-To measure this, we propose to compare the energy flows in between the sectors to the energy demand supplied:
+To assess how much an optimized multi-vector energy system makes use of the potential of sector-coupling, it is planned to introduce the degree of sector-coupling in the future. This level of interconnection is to be calculated with the ratio of energy flows in between the sectors (ie. those, where energy carriers are converted to another energy carrier) to the energy demand supplied:
 
 .. math::
         DSC & =\frac{\sum_{i,j}{E_{conversion} (i,j) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
         \text{with } i,j &\text{: Electricity,H2…}
 
-**The content of this section was copied from the** `conference paper <http://doi.org/10.5281/zenodo.4449918>`_ **handed in to CIRED 2020**
+.. note::
+    This feature is currently not implemented.
 
 .. include:: outputs/onsite_energy_fraction.inc
 
