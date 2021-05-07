@@ -35,10 +35,10 @@ renewable_share_of_local_generation,Renewable share of local generation,Factor,"
 replacement_costs_during_project_lifetime,Replacement costs,currency,>=0,Numeric,economic,costs_investment_over_lifetime,Costs for replacement of assets which occur over the project lifetime.
 specific_emissions_per_electricity_equivalent,Specific GHG per electricity equivalent,kg GHGeq/kWh,>=0,Numeric,environmental,total_emissions,Specific GHG emissions per supplied electricity equivalent.
 total_consumption_from_energy_provider,Energy import,"kWh, kWheleq, ...",>=0,Numeric,technical,,Aggregated energy imports into the local energy system from the provider.
-total_demand,Energy demand,"kWh, kWheleq, ...",>=0,Numeric,technical,,Demand of electricity in local energy system over a the project lifetime.
+total_demand,Energy demand,"kWh, kWheleq, ...",>=0,Numeric,technical,,Demand of energy in local energy system over a the project lifetime.
 total_emissions,Total GHG emissions,kg GHGeq,>=0,Numeric,environmental,"renewable_factor, specific_emissions_per_electricity_equivalent",Total greenhouse gas emissions in kg.
-total_excess,Energy excess,"kWh, kWheleq, ...",>=0,Numeric,technical,,Excess of electricity / unused electricity in local energy system.
-total_feedin,Energy export,"kWh, kWheleq, ...",>=0,Numeric,technical,onsite_energy_fraction,Feed-in of electricity into external grid.
+total_excess,Energy excess,"kWh, kWheleq, ...",>=0,Numeric,technical,,Excess of energy, ie. unused energy in local energy system.
+total_feedin,Energy export,"kWh, kWheleq, ...",>=0,Numeric,technical,onsite_energy_fraction,Feed-in of energy into external grid.
 total_internal_generation,Total local generation,kWheleq,>=0,Numeric,technical,"total_internal_non-renewable_generation, total_internal_renewable_generation",Aggregated amount of energy generated within the energy system.
 total_internal_non-renewable_generation,Total non-renewable local generation,kWheleq,>=0,Numeric,technical,"total_internal_generation, total_internal_renewable_generation",Aggregated amount of non-renewable energy generated within the energy system.
 total_internal_renewable_generation,Total renewable local generation,kWheleq,>=0,Numeric,technical,"total_internal_generation, total_internal_non-renewable_generation",Aggregated amount of renewable energy generated within the energy system.
