@@ -2,7 +2,7 @@
 Assumptions
 ===========
 
-The MVS is based on the programming framework `oemof-solph` and builds an energy system model based up on its nomenclature.
+The MVS is based on the programming framework :code:`oemof-solph` and builds an energy system model based up on its nomenclature.
 As such, the energy system model can be described with a linear equation system.
 Below, the most important aspects are described in a genrealized way, as well as explained based on an example.
 This will ease the comparision to other energy system models.
@@ -14,7 +14,7 @@ Economic Dispatch
 
 Linear programming is a mathematical modelling and optimization technique for a system of a linear objective function subject to linear constraints.
 The goal of a linear programming problem is to find the optimal value for the objective function, be it a maximum or a minimum.
-The MVS is based on `oemof-solph`, which in turn uses `Pyomo` to create a linear problem.
+The MVS is based on :code:`oemof-solph`, which in turn uses :code:`Pyomo` to create a linear problem.
 The economic dispatch problem in the MVS has the objective of minimizing the production cost by allocating the total demand among the generating units at each time step.
 The equation is the following:
 
@@ -484,7 +484,7 @@ As it can be noticed, the conversion factor between heat (kWh(therm)) and electr
 
 :Code:
 
-Currently, the energy carrier conversion factors are defined in `constants.py` with `DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be added to its list when needed. Unknown carriers raise an `UnknownEnergyVectorError` error.
+Currently, the energy carrier conversion factors are defined in :code:`constants.py` with :code:`DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be added to its list when needed. Unknown carriers raise an :code:`UnknownEnergyVectorError` error.
 
 :Comment:
 
@@ -591,20 +591,20 @@ Input verification
 
 The inputs for a simulation with the MVS are subjected to a couple of verification tests to make sure that the inputs result in valid oemof simulations. This should ensure:
 
-- Uniqueness of labels (`C1.check_for_label_duplicates`): This function checks if any LABEL provided for the energy system model in dict_values is a duplicate. This is not allowed, as oemof can not build a model with identical labels.
+- Uniqueness of labels (:code:`C1.check_for_label_duplicates`): This function checks if any LABEL provided for the energy system model in dict_values is a duplicate. This is not allowed, as oemof can not build a model with identical labels.
 
-- No levelized costs of generation lower than feed-in tariff of same energy vector in case of investment optimization (`optimizeCap` is True) (`C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_providers`):  Raises error if feed-in tariff > levelized costs of generation if `maximumCap` is None for energy asset in ENERGY_PRODUCTION. This is not allowed, as oemof otherwise may be subjected to an unbound problem, ie. a business case in which an asset should be installed with infinite capacities to maximize revenue. If maximumCap is not None a logging.warning is shown as the maximum capacity of the asset will be installed.
+- No levelized costs of generation lower than feed-in tariff of same energy vector in case of investment optimization (:code:`optimizeCap` is :code:`True`) (:code:`C1.check_feedin_tariff_vs_levelized_cost_of_generation_of_providers`):  Raises error if feed-in tariff > levelized costs of generation if :code:`maximumCap` is :code:`None` for energy asset in :code:`ENERGY_PRODUCTION`. This is not allowed, as oemof otherwise may be subjected to an unbound problem, ie. a business case in which an asset should be installed with infinite capacities to maximize revenue. If maximumCap is not :code:`None` a :code:`logging.warning` is shown as the maximum capacity of the asset will be installed.
 
-- No feed-in tariff higher then energy price from an energy provider (`C1.check_feedin_tariff_vs_energy_price`): Raises error if feed-in tariff > energy price of any asset in 'energyProvider.csv'. This is not allowed, as oemof otherwise is subjected to an unbound and unrealistic problem, eg. one where the owner should consume electricity to feed it directly back into the grid for its revenue.
+- No feed-in tariff higher then energy price from an energy provider (:code:`C1.check_feedin_tariff_vs_energy_price`): Raises error if feed-in tariff > energy price of any asset in :code:`energyProvider.csv`. This is not allowed, as oemof otherwise is subjected to an unbound and unrealistic problem, eg. one where the owner should consume electricity to feed it directly back into the grid for its revenue.
 
-- Assets have well-defined energy vectors and belong to an existing bus (`C1.check_if_energy_vector_of_all_assets_is_valid`):     Validates for all assets, whether 'energyVector' is defined within DEFAULT_WEIGHTS_ENERGY_CARRIERS and within the energyBusses.
+- Assets have well-defined energy vectors and belong to an existing bus (:code:`C1.check_if_energy_vector_of_all_assets_is_valid`):     Validates for all assets, whether :code:`energyVector` is defined within :code:`DEFAULT_WEIGHTS_ENERGY_CARRIERS` and within the :code:`energyBusses`.
 
-- Energy carriers used in the simulation have defined factors for the electricity equivalency weighting (`C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS`): Raises an error message if an energy vector is unknown. It then needs to be added to the DEFAULT_WEIGHTS_ENERGY_CARRIERS in constants.py
+- Energy carriers used in the simulation have defined factors for the electricity equivalency weighting (:code:`C1.check_if_energy_vector_is_defined_in_DEFAULT_WEIGHTS_ENERGY_CARRIERS`): Raises an error message if an energy vector is unknown. It then needs to be added to the :code:`DEFAULT_WEIGHTS_ENERGY_CARRIERS` in :code:`constants.py`
 
-- An energy bus is always connected to one inflow and one outflow (`C1.check_for_sufficient_assets_on_busses`): Validating model regarding busses - each bus has to have 2+ assets connected to it, exluding energy excess sinks
+- An energy bus is always connected to one inflow and one outflow (:code:`C1.check_for_sufficient_assets_on_busses`): Validating model regarding busses - each bus has to have more then two assets connected to it, exluding energy excess sinks
 
-- Time series of energyProduction assets that are to be optimized have specific generation profiles (`C1.check_non_dispatchable_source_time_series`, `C1.check_time_series_values_between_0_and_1`): Raises error if time series of non-dispatchable sources are not between [0, 1].
+- Time series of energyProduction assets that are to be optimized have specific generation profiles (:code:`C1.check_non_dispatchable_source_time_series`, :code:`C1.check_time_series_values_between_0_and_1`): Raises error if time series of non-dispatchable sources are not between [0, 1].
 
-- Provided timeseries are checked for `NaN` values, which are replaced by zeroes (`C0.replace_nans_in_timeseries_with_0`).
+- Provided timeseries are checked for :code:`NaN` values, which are replaced by zeroes (:code:`C0.replace_nans_in_timeseries_with_0`).
 
-- Asset capacities connected to each bus are sized sufficiently to fulfill the maximum demand (`C1.check_energy_system_can_fulfill_max_demand`): Logs a logging.warning message if the aggregated installed capacity and maximum capacity (if applicable) of all conversion, generation and storage assets connected to one bus is smaller than the maximum demand. The check is applied to each bus of the energy system. Check passes when the potential peak supply is larger then or equal to the peak demand on the bus, or if the maximum capacity of an asset is set to None when optimizing.
+- Asset capacities connected to each bus are sized sufficiently to fulfill the maximum demand (:code:`C1.check_energy_system_can_fulfill_max_demand`): Logs a logging.warning message if the aggregated installed capacity and maximum capacity (if applicable) of all conversion, generation and storage assets connected to one bus is smaller than the maximum demand. The check is applied to each bus of the energy system. Check passes when the potential peak supply is larger then or equal to the peak demand on the bus, or if the maximum capacity of an asset is set to :code:`None` when optimizing.

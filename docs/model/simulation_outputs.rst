@@ -4,7 +4,7 @@
 Outputs of a simulation
 =======================
 
-After optimization of an energy system, the MVS evaluates the simulation output. It evaluates the flows, costs and performance of the system. As a result, it calculates a number of :ref:`key performance indicators (KPI) <key_performance_indicators_overview>`, namely :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI. Depending on the simulation settings, it can also generate different :ref:`figures <output_figures>` of the results and an :ref:`automatic report <automatic_report>` in `pdf` or `html` format.
+After optimization of an energy system, the MVS evaluates the simulation output. It evaluates the flows, costs and performance of the system. As a result, it calculates a number of :ref:`key performance indicators (KPI) <key_performance_indicators_overview>`, namely :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI. Depending on the simulation settings, it can also generate different :ref:`figures <output_figures>` of the results and an :ref:`automatic report <automatic_report>` in :code:`pdf` or :code:`html` format.
 
 .. _key_performance_indicators_overview:
 
@@ -40,10 +40,10 @@ The KPI calculated by the MVS can sometimes be calculated per asset, for each se
 
 KPI calculated per asset are not included in the scalar results of the automatic report or in the stored Excel file, but are displayed seperately. They do not need suffixes, as they are always displayed in tables next to the respective asset.
 
-KPI calculated for each vector are specifically these KPI that aggregate the dispatch and costs of multiple assets. For cost-related KPI, such aggregating KPI have the energy vector they are describing as a suffix. An example would be the `attributed_costs` of each energy vector - the attributed costs of the electricity and H2 sector would be called `attributed_costs_electricity` and `attributed_costs_H2` respectively.
-For technical KPI, this suffix also applies, but additionally, due to the :ref:`energy carrier weighting <energy_carrier_weighting>`, they also feature the suffix `electricity equivalent` when the weighting has been applied. The energy demand of the system is an example: the demand per sector would be `total_demand_electricity` and `total_demand_H2`. To be able to aggregate these cost into an overall KPI for the system, the electricity equivalents of both values are calculated. They then are named `total_demand_electricity_electricity_equivalent` and `total_demand_H2_electricity_equivalent`.
+KPI calculated for each vector are specifically these KPI that aggregate the dispatch and costs of multiple assets. For cost-related KPI, such aggregating KPI have the energy vector they are describing as a suffix. An example would be the :code:`attributed_costs` of each energy vector - the attributed costs of the electricity and H2 sector would be called :code:`attributed_costs_electricity` and :code:`attributed_costs_H2` respectively.
+For technical KPI, this suffix also applies, but additionally, due to the :ref:`energy carrier weighting <energy_carrier_weighting>`, they also feature the suffix :code:`electricity equivalent` when the weighting has been applied. The energy demand of the system is an example: the demand per sector would be :code:`total_demand_electricity` and :code:`total_demand_H2`. To be able to aggregate these cost into an overall KPI for the system, the electricity equivalents of both values are calculated. They then are named :code:`total_demand_electricity_electricity_equivalent` and :code:`total_demand_H2_electricity_equivalent`.
 
-KPI that describe the costs of the overall energy system do not have suffixes. Technical KPI often have the suffix `electricity_equivalent` to underline the energy carrier that the parameter is relative to.
+KPI that describe the costs of the overall energy system do not have suffixes. Technical KPI often have the suffix :code:`electricity_equivalent` to underline the energy carrier that the parameter is relative to.
 
 .. _kpi_economic:
 
@@ -100,17 +100,17 @@ by dividing the total annuity :math:`a_i` of the asset :math:`i` by the total fl
 .. math::
         LCOE~ASSET_i = \frac{a_i}{\sum^{t} E_i(t)}
   
-For assets in energyStorage, the MVS sums the annuity for `storage capacity` :math:`a_{i,sc}`, `input power` $a_{i,ip}$ and `output power` :math:`a_{i,op}` and divides it by the `output power` total flow :math:`\sum{t} E_{i,op}(t)`.
+For assets in :code:`energyStorage`, the MVS sums the annuity for :code:`storage capacity` :math:`a_{i,sc}`, :code:`input power` $a_{i,ip}$ and :code:`output power` :math:`a_{i,op}` and divides it by the :code:`output power` total flow :math:`\sum{t} E_{i,op}(t)`.
 
 .. math::
         LCOE~ASSET_i = \frac{a_{i,sc} + a_{i,ip} + a_{i,op}}{\sum^{t}{E_{i,op}(t)}}
 
-If the total flow is 0 in any of the previous cases, then the LCOE ASSET is set to None.
+If the total flow is 0 in any of the previous cases, then the :code:`LCOE~ASSET` is set to :code:`None`.
 
 .. math::
         LCOE~ASSET{i} = None
   
-For assets in energyConsumption, the MVS outputs 0 for the LCOE ASSET.
+For assets in :code:`energyConsumption`, the MVS outputs 0 for the :code:`LCOE~ASSET`.
 
 .. math::
         LCOE~ASSET{i} = 0
@@ -379,21 +379,21 @@ An example of the created energy system model graphs is shown below.
 
 .. include:: outputs/excel_scalar_kpi.inc
 
-The file is named `scalars.xlsx`. An example is shown below.
+The file is named :code:`scalars.xlsx`. An example is shown below.
 
 .. image:: images/example_excel_scalar.png
  :width: 600
 
 .. include:: outputs/excel_timeseries.inc
 
-The file is named `timeseries_all_busses.xlsx`. An example is shown below.
+The file is named :code:`timeseries_all_busses.xlsx`. An example is shown below.
 
 .. image:: images/example_excel_timeseries.png
  :width: 600
 
 .. include:: outputs/logfile.inc
 
-The file is named `mvs_logfile.log`. An example is shown below.
+The file is named :code:`mvs_logfile.log`. An example is shown below.
 
 .. image:: images/example_logfile.png
  :width: 600
