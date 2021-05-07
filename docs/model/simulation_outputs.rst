@@ -17,7 +17,7 @@ Overview of Key Performance Indicators
 
 .. the .inc files describing the kpis are automatically generated in `conf.py` from the `MVS_kpis_list.csv` file
 
-In the sections :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI, these indicators are further defined. This takes place with the following structure:
+In the sections :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI, these indicators are further defined and in :ref:`Files <output_files>` the possible exportable figures and files are presented. This takes place with the following structure:
 
 :Definition: Definition of the defined KPI, can be used as tooltips.
 
@@ -345,10 +345,10 @@ Emissions can be of different nature: CO2 emissions, CO2 equivalents, greenhouse
 Currently the emissions do not include life cycle emissions of energy conversion or storage assets, nor are they calculated separately for the energy sectors. For the latter, the problem of the assignment of assets to sectors arises e.g. emissions caused by an electrolyser would be counted to the electricity sector although you might want to count it for the H2 sector, as the purpose of the electrolyser is to feed the H2 sector. Therefore, we will have to verify whether or not we can apply the energy carrier weighting also for this KPI.
 
 
-.. _output_figures:
+.. _output_files:
 
-Figures
-#######
+Files
+#####
 
 .. include:: outputs/bar_chart_optimizedAddCap.inc
 
@@ -385,8 +385,6 @@ An example of the created energy system model graphs is shown below.
 .. image:: images/network_graph.png
  :width: 600
 
-Files
-#####
 
 .. include:: outputs/excel_scalar_kpi.inc
 
