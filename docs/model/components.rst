@@ -58,7 +58,7 @@ Dispatchable sources of generation
     - Deep-ground geothermal plant (ground assumed to allow unlimited extraction of heat, not depending on season)
 
 Fuel sources are added as dispatchable sources, which can have development, investment, operational and dispatch costs.
-They are added to :code:`energyProduction.csv`, while setting :ref:`filename-label` to `None`.
+They are added to :code:`energyProduction.csv`, while setting :ref:`filename-label` to :code:`None`.
 
 Fuel sources are for example needed as source for a diesel generator (diesel), biogas plant (gas) or a condensing power plant (gas, coal, ...), see :ref:`energy_conversion`.
 
