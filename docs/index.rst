@@ -107,6 +107,7 @@ Follow the  :doc:`Quick start guide <Installation>`
    examples/simple_les
    examples/time_series_params
    examples/multiple_busses
+   examples/tips_and_tricks
 
 Model Reference
 ===============
