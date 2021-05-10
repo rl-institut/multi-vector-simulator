@@ -4,7 +4,7 @@
 Outputs of a simulation
 =======================
 
-After optimization of an energy system, the MVS evaluates the simulation output. It evaluates the flows, costs and performance of the system. As a result, it calculates a number of :ref:`key performance indicators (KPI) <key_performance_indicators_overview>`, namely :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI. Depending on the simulation settings, it can also generate different :ref:`figures <output_figures>` of the results and an :ref:`automatic report <automatic_report>` in :code:`pdf` or :code:`html` format.
+After optimization of an energy system, the MVS evaluates the simulation output. It evaluates the flows, costs and performance of the system. As a result, it calculates a number of :ref:`key performance indicators (KPI) <key_performance_indicators_overview>`, namely :ref:`economic <kpi_economic>`, :ref:`technical <kpi_technical>` and :ref:`environmental <kpi_environmental>` KPI. Depending on the simulation settings, it can also generate different :ref:`output files and figures <output_files>` of the results, including an :ref:`automatic report <automatic_report>` in :code:`pdf` or :code:`html` format.
 
 .. _key_performance_indicators_overview:
 
