@@ -3,7 +3,7 @@
 Constraints
 -----------
 
-Constraints are controlled with the file :code:`constraints.csv`.
+Constraints are controlled via the file :ref:`constraints.csv <constraints>`.
 
 .. _constraint_min_re_factor:
 
@@ -21,13 +21,13 @@ Please be aware that the minimal renewable factor constraint defines bounds for 
 
 :Deactivating the constraint:
 
-The minimal renewable factor constraint is deactivated by inserting the following row in :code:`constraints.csv` as follows:
+The minimal renewable factor constraint is deactivated by inserting the following row in :ref:`constraints.csv <constraints>` as follows:
 
 ```minimal_renewable_factor,factor,0```
 
 :Activating the constraint:
 
-The constraint is enabled when the value of the minimal renewable factor factor is above 0 in :code:`constraints.csv`:
+The constraint is enabled when the value of the minimal renewable factor factor is above 0 in :ref:`constraints.csv <constraints>`:
 
 ```minimal_renewable_factor,factor,0.3```
 
@@ -51,13 +51,13 @@ The minimal degree of autonomy is applied to the whole, sector-coupled energy sy
 
 :Deactivating the constraint:
 
-The minimal degree of autonomy constraint is deactivated by inserting the following row in `constraints.csv` as follows:
+The minimal degree of autonomy constraint is deactivated by inserting the following row in :ref:`constraints.csv <constraints>` as follows:
 
 ```minimal_degree_of_autonomy,factor,0```
 
 :Activating the constraint:
 
-The constraint is enabled when the value of the minimal degree of autonomy is above 0 in `constraints.csv`:
+The constraint is enabled when the value of the minimal degree of autonomy is above 0 in :ref:`constraints.csv <constraints>`:
 
 ```minimal_degree_of_autonomy,factor,0.3```
 
@@ -77,13 +77,13 @@ Please note that the maximum emissions constraint currently does not take into c
 
 :Activating the constraint:
 
-The maximum emissions constraint is enabled by inserting the following row in `constraints.csv` as follows:
+The maximum emissions constraint is enabled by inserting the following row in :ref:`constraints.csv <constraints>` as follows:
 
 ```maximum_emissions,kgCO2eq/a,800000```
 
 :Deactivating the constraint:
 
-The constraint is deactivated by setting the value in :code:`constraints.csv` to :code:`None`:
+The constraint is deactivated by setting the value in :ref:`constraints.csv <constraints>` to :code:`None`:
 
 ```maximum_emissions,kgCO2eq/a,None```
 
@@ -111,13 +111,13 @@ The NZE constraint is applied to the whole, sector-coupled energy system, but no
 
 :Deactivating the constraint:
 
-The NZE constraint is deactivated by inserting the following row in `constraints.csv` as follows:
+The NZE constraint is deactivated by inserting the following row in :ref:`constraints.csv <constraints>` as follows:
 
 ```net_zero_energy,bool,False```
 
 :Activating the constraint:
 
-The constraint is enabled when the value of the NZE constraint is set to `True` in `constraints.csv`:
+The constraint is enabled when the value of the NZE constraint is set to `True` in :ref:`constraints.csv <constraints>`:
 
 ```net_zero_energy,bool,True```
 
