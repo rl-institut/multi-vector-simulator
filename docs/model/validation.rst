@@ -103,32 +103,23 @@ This validation method is commonly used. However, one model cannot absolutely va
 Automatic output verification
 #############################
 
-There is a suite of functions within the MVS codebase module E4_verification.py that run a few checks on some of the outputs of the simulation in order to make sure that the results are meaningful and if something like an excessive excess energy flow is noteworthy. These are valuable tests that act as a safeguard for the user, as the model is not only validated for benchmark tests but for every run simulation.
-The following is the list of functions in E4_verification.py that carry out the verification tests:
+In addition to the aforementioned validation tests, a couple of verification tests are implemented. They serve as a safeguard against issues that indicate noteworthy misbehaviour of the model, and are tested with each MVS execution. Some of the issues are fatal issues that the users need to be protected of, others indicate possible unrealistic system optimization (and input) results. The tests are provided in the MVS codebase module :code:`E4_verification`.
 
-* detect_excessive_excess_generation_in_bus
-* maximum_emissions_test
-* minimal_renewable_share_test
-* verify_state_of_charge
+Following test serves as an alert to the energy system modeler to check their inputs again:
 
-The first test serves as an alert to the energy system modeler to check their inputs again, whereas if there are any errors raised within the other functions, it is an indication of something seriously wrong.
+* **Excessive excess generation**: Certain combinations of inputs can lead to excessive excess generation on a bus, for example if PV panels itself are very cheap compared to electricity input, while inverter capacity is very expensive. The test :code:`E4.detect_excessive_excess_generation_in_bus` notifies to user of optimal but overly high excess generation of a bus within the energy system. Excess generation is defined to be excessive, if the ratio of total outflows to total inflows is less than 90%. The test is applied to each bus individually. The user should check the inputs again and potentially define a :code:`maximumCap` for the generation asset at the root of the problem.
 
-detect_excessive_excess_generation_in_bus
-=========================================
+Following tests ensure that introduced constraints where applied correctly:
 
-This test is here to notify to the modeler in case there is an excess generation within a bus in the energy system. Precisely, the modeler is given a heads-up when the ratio of total outflows to total inflows for one or more buses is less than 0.9
+* **Adherence to maximum emissions constraint**: With the :ref:`maximum emission constraint <constraint_maximum_emissions>` the user can  define the maximum allowed emissions in the energy mix of the optimized energy system. The test :code:`E4.maximum_emissions_test` runs a verifies that the constraint is adhered to.
 
-maximum_emissions_test
-======================
+* **Adherence to minimal renewable share constraint**: Test :code:`E4.minimal_renewable_share_test` makes sure that the user-defined constraint of the :ref:`minimal share of renewables <constraint_min_re_factor>` in the energy mix of the optimized system is respected.
 
-Other than renewables, source components in the energy system have a certain emissions value associated with the generation of energy. The user is able to apply a constraint on the maximum allowed emissions in the energy mix of the output energy system. This function runs a verification test on the output energy system data to determine if the user-supplied constraint on maximum emissions is correctly applied or not. If not, then the modeler is notified.
+* **Adherence to net zero energy constraint**: If the user activated the :ref:`net zero energy constraint <constraint_net_zero_energy>`, the test :code:`E4.net_zero_energy_constraint_test` makes sure that the optimized energy system adheres to it.
 
-minimal_renewable_share_test
-============================
+* **Adherence to realistic SOC values**: Test :code:`E4.verify_state_of_charge` makes sure that the timeseries of the state of charge (SOC) values for storages in the energy system simulation results are within the valid interval of :math:`[0,1]`. A SOC value out of bounds is physically not feasible, but can occurr when the optimized storage capacity is so marginal that it is in the range of the :ref:`precision limit <limitation_precision_limit>` of the MVS.
 
-This test is carried out on the energy system model after optimization of its capacities. It verifies whether the user-provided constraint for the minimal share of renewables in the energy mix of the optimized system was respected or not. In case this lower bound constraint is not met, the user is notified.
 
-verify_state_of_charge
-======================
-
-This test is intended to check the time-series of the state of charge values for storages in the energy system simulation results to notify of a serious error in case, the SoC value at any time-step is not between 0 and 1, which is physically not feasible.
+.. note::
+    If there is an :code:`ERROR` displayed in the log file (or the automatic report), the user should follow the instructions of the error message. Some will require the user to check and adapt their input data, others will indicate serious misbehaviour.
+    A :code:`WARNING` in the log file (or the automatic report) is important information about the perfomed system optimization which the user should be aware of.
