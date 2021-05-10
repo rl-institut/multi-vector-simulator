@@ -14,6 +14,8 @@ The minimal renewable factor constraint requires the capacity and dispatch optim
 
 The minimal renewable factor is applied to the minimal renewable factor of the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
 
+.. TODO: express this equation with variables as used with output KPIs
+
 .. math::
         minimal renewable factor <= \frac{\sum renewable generation \cdot weighting factor}{\sum renewable generation \cdot weighting factor + \sum non-renewable generation \cdot weighting factor}
 
@@ -47,6 +49,10 @@ Minimal degree of autonomy constraint
 The minimal degree of autonomy constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal degree of autonomy defined within the constraint. The degree of autonomy of the optimized energy system may also be higher than the minimal degree of autonomy. For more details, refer to the definition of :ref:`degree of autonomy <degree_of_autonomy>`
 
 The minimal degree of autonomy is applied to the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results.
+
+.. TODO clarify what is the intent of this sentence, I would expect an example of an "unexpected results situation"
+
+The constraint reads as follows:
 
 .. math::
         minimal~degree~of~autonomy <= DA = \frac{\sum E_{demand,i} \cdot w_i - \sum E_{consumption,provider,j} \cdot w_j}{\sum E_{demand,i} \cdot w_i}
@@ -103,6 +109,8 @@ Net zero energy (NZE) constraint
 
 The net zero energy (NZE) constraint requires the capacity and dispatch optimization of the MVS to result into a net zero system, but can also result in a plus energy system.
 The degree of NZE of the optimized energy system may be higher than 1, in case of a plus energy system. Please find the definition of net zero energy (NZE) and the KPI here: :ref:`degree_of_nze`.
+
+.. TODO quote the literature references here
 
 Some definitions of NZE systems in literature allow the energy system's demand solely be provided by locally generated renewable energy. In MVS this is not the case - all locally generated energy is taken into consideration. To enlarge the share of renewables in the energy system you can use the :ref:`constraint_min_re_factor`.
 
