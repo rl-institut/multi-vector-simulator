@@ -5,23 +5,28 @@
 Validation Methodology
 ======================
 
-As mentioned in OLD REF (validation-plan in owerview.rst), the MVS is validated using three validation methods: conceptual model validation, model verification and operational validity.
+MVS is validated using three validation methods: conceptual model validation, model verification and operational validity.
 
-**Conceptual model validation** consists of looking into the underlying theories and assumptions. Therefore, the conceptual validation scheme includes a comprehensive review of the generated equations by the oemof-solph python library and the components’ models. Next step is to try and adapt them to a sector coupled example with specific constraints. Tracing and examining the flowchart is also considered as part of this validation type which can be found in :ref:`Flowchart`. The aim is to assess the reasonability of the model behavior through pre-requisite knowledge; this technique is known as face validity.
+**Conceptual model validation** consists of looking into the underlying theories and assumptions. Therefore, the conceptual validation scheme includes a comprehensive review of the generated equations by the oemof-solph python library (see :ref:`economic_precalculation-label` and :ref:`equation_energy_balance`) and the :ref:`components’ models <component_models>`. Next step is to try and adapt them to a sector coupled :ref:`example with specific constraints <example_energy_balance_equations>`. Tracing and examining the flowchart is also considered as part of this validation type,  which is presented in :ref:`Flowchart`. The aim is to assess the reasonability of the model behavior through pre-requisite knowledge; this technique is known as face validity.
 
-**Model verification** is related to computer programming and looks into whether the code is a correct representation of the conceptual model. To accomplish this, static testing methods are used to validate the output with respect to an input. Unit tests and integration tests, using proof of correctness techniques, are integrated within the code and evaluate the output of the MVS for any change occuring as they are automated. Unit tests target a single unit such as an individual component, while integration tests target more general parts such as entire modules. Both tests are implemented as pytests for the MVS, which allows automatized testing.
+**Model validation** is related to computer programming and looks into whether the code is a correct representation of the conceptual model. To accomplish this, static testing methods are used to validate the output with respect to an input. Unit tests and integration tests, using proof of correctness techniques, are integrated within the code. Unit tests target a single unit such as an individual component, while integration tests target more general parts such as entire modules. Both test types are implemented using :code:`pytest` for the MVS, their evaluation is automatized and they are executed with each change of the MVS. The unit tests are further described in :ref:`validation_unit_tests`.
 
 **Operational validity** assesses the model’s output with respect to the required accuracy. In order to achieve that, several validation techniques are used, namely:
 
-* **Graphical display**, which is the use of model generated or own graphs for result interpretation. Graphs are simultaneously used with other validation techniques to inspect the results;
+* **Graphical display**, which is the use of model generated or own graphs for result interpretation. Graphs are simultaneously used with other validation techniques to inspect the results. This technique was regularly applied within the MVS developing process, especially with the help of real use cases from the E-Land pilot sites.
 
-*	**Benchmark testing**, through which scenarios are created with different constraints and component combinations, and the output is calculated and compared to the expected one to evaluate the performance of the model;
+*	**Benchmark testing**, through which scenarios are created with different constraints and component combinations, and the output is calculated and compared to the expected one to evaluate the performance of the model. The applied benchmark tests are described in :ref:`validation_benchmark_tests`.
 
-*	**Extreme scenarios** (e.g., drastic meteorological conditions, very high costs, etc.) are created to make sure the simulation runs through and check if the output behavior is still valid by the use of graphs and qualitative analysis;
+*	**Extreme scenarios** (e.g., drastic meteorological conditions, very high costs, etc.) are created to make sure the simulation runs through and check if the output behavior is still valid by the use of graphs and qualitative analysis.
 
-*	**Comparison to other validated model**, which compares the results of a case study simulated with the model at hand to the results of a validated optimization model in order to identify the similarities and differences in results;
+*	**Comparison to other validated model**, which compares the results of a case study simulated with the model at hand to the results of a validated optimization model in order to identify the similarities and differences in results
 
-*	**Sensitivity analysis**, through which input-output transformations are studied to show the impact of changing the values of some input parameters.
+*	**Sensitivity analysis**, through which input-output transformations are studied to show the impact of changing the values of some input parameters
+
+Additionally to the presented validation tests, a couple of input verification tests are implemented in the pre-processing module :code:`C` and a number of output verification tests in `E4` (see :ref:`verification_output_tests`).
+
+
+.. _validation_unit_tests:
 
 Unit and Integration Tests
 ##########################
@@ -31,7 +36,8 @@ The goal is to have unit tests for each single function of the MVS, and integrat
 .. image:: ../images/Test_coverage.png
  :width: 200
 
-Since those tests are automated, this coverage is updated for any changes in the model.
+
+.. _validation_benchmark_tests:
 
 Benchmark Tests
 ###############
@@ -64,6 +70,8 @@ More tests can still be implemented with regard to:
 
 * Components with two input sources
 
+.. _validation_sensitivity_test:
+
 Sensitivity Analysis Tests
 ##########################
 
@@ -82,6 +90,8 @@ More input-output transformations for sensitivity analyses can be investigated s
 
 * Checking if a diesel generator actually replaces the consumption from the grid at times of peak demand--i.e., dispatch_price is less or equal to peak_demand_charge
 
+.. _validation_other_models:
+
 Comparison to Other Models
 ##########################
 
@@ -90,7 +100,7 @@ So far, the MVS' results for a sector coupled system (electricity + hydrogen) ar
 This validation method is commonly used. However, one model cannot absolutely validate another model or claim that one is better than the other. This is why the focus should be on testing the correctness, appropriateness and accuracy of a model vis-à-vis its purpose. Since the MVS is an open source tool, it is important to use a validated model for comparison, but also similar open source tools like urbs and Calliope for instance. The following two articles list some of the models that could be used for comparison to the MVS: `A review of modelling tools for energy and electricity systems with large shares of variable renewables <https://doi.org/10.1016/j.rser.2018.08.002>`__ and `Power-to-heat for renewable energy integration: A review of technologies, modeling approaches, and flexibility potentials <https://doi.org/10.1016/j.apenergy.2017.12.073>`__.
 
 
-.. _verification-tests:
+.. _verification_output_tests:
 
 Automatic output verification
 #############################
