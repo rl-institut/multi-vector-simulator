@@ -31,11 +31,9 @@ Additionally to the presented validation tests, a couple of input verification t
 Unit and Integration Tests
 ##########################
 
-The goal is to have unit tests for each single function of the MVS, and integration tests for the larger modules. As previously mentioned, pytests are used for those kind of tests as they always assert that an externally determined output is archieved when applying a specific function. Unit tests and integration tests are gauged by using test coverage measurement. Examples of those tests can be found `here <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests>`__  and it is possible to distinguish them from other tests from the nomination that refers to the names of the source modules (e.g., A0, A1, B0, etc.). The MVS covers so far 80% of the modules and sub-modules as seen in the next figure.
+To make sure that the MVS works correctly from a programming perspective, its functions need to be tested by unit tests, while its modules should be tested with integration tests. To automatize the testing process, the tests are implemented as :code:`pytest` functions, which also allows to test the test coverage with :code:`coveralls`. They also ensure that no bugs are introduced within the coding process of the MVS, as each proposed pull request must first pass all defined pytests. The unit and integration tests can be found in the folder :code:`tests` of the `MVS github repository <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests>`__ . Each of the files represent tests for one of the codebase modules (e.g., A0, A1, B0, etc.), and are named respectively: as such, the test file for the codebase module :code:`C2_economic_functions` is named :code:`test_C2_economic_functions`.
 
-.. image:: ../images/Test_coverage.png
- :width: 200
-
+As of MVS release 0.5.5, the unit tests covered 74% of the code lines of the MVS. The :ref:`benchmark tests <validation_benchmark_tests>`, which also also include integration tests, increase this coverage to 91%.
 
 .. _validation_benchmark_tests:
 
