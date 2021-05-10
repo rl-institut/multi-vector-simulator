@@ -1,8 +1,9 @@
 
 .. _validation-methodology:
 
+======================
 Validation Methodology
-----------------------
+======================
 
 As mentioned in OLD REF (validation-plan in owerview.rst), the MVS is validated using three validation methods: conceptual model validation, model verification and operational validity.
 
