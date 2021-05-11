@@ -6,7 +6,7 @@ Component models
 The component models of the MVS result from the used python-library :code:`oemof-solph` for energy modeling.
 
 It requires component models to be simplified and linearized.
-This is the reason that the MVS can provide a pre-feasibility study of a specific system setup,
+This is the reason why the MVS can provide a pre-feasibility study of a specific system setup,
 but not the final sizing and system design.
 The types of assets are presented below.
 
@@ -15,7 +15,7 @@ The types of assets are presented below.
 Energy consumption
 ##################
 
-Demands within the MVS are added as energy consumption assets in :code:`energyConsumption.csv`. Most importantly, they are defined by a timeseries, representing the demand profile, and their energy vector. A number of demand profiles can be defined for one energy system, both of the same and different energy vectors.
+Demands within the MVS are added as energy consumption assets in :ref:`energyConsumption.csv <consumption>`. Most importantly, they are defined by a timeseries, representing the demand profile, and their energy vector. A number of demand profiles can be defined for one energy system, both of the same and different energy vectors.
 The main optimization goal for the MVS is to supply the defined demand withouth fail for all of the timesteps in the simulation with the least cost of supply (comp. :ref:`economic_precalculation-label`).
 
 
@@ -34,15 +34,15 @@ Non-dispatchable sources of generation
     - Run-of-the-river hydro power plants
     - Solar thermal collectors
 
-Variable renewable energy (VRE) sources, like wind and PV, are non-dispatchable due to their fluctuations in supply. They are added as sources in :code:`energyProduction.csv`.
+Variable renewable energy (VRE) sources, like wind and PV, are non-dispatchable due to their fluctuations in supply. They are added as sources in :ref:`energyProduction.csv <production>`.
 
 The fluctuating nature of non-dispatchable sources is represented by generation time series that show the respective production for each time step of the simulated period. In energy system modelling it is common to use hourly time series.
-The name of the file containing the time series is added to :code:`energyProduction.csv` with the parameter :ref:`filename-label`. For further requirements concerning the time series see section :ref:`time_series_folder`.
+The name of the file containing the time series is added to :ref:`energyProduction.csv <production>` with the parameter :ref:`filename-label`. For further requirements concerning the time series see section :ref:`time_series_folder`.
 
 If you cannot provide time series for your VRE assets you can consider to calculate them by using models for generating feed-in time series from weather data. The following is a list of examples, which is not exhaustive:
 
-    - PV: `pvlib <https://github.com/pvlib/pvlib-python/>`_ , `Renewables Ninja <https://www.renewables.ninja/>`_ (download capacity factors)
-    - Wind: `windpowerlib <https://github.com/wind-python/windpowerlib>`_, `Renewables Ninja <https://www.renewables.ninja/>`_ (download capacity factors)
+    - PV: `pvlib <https://github.com/pvlib/pvlib-python/>`_ , `Renewables Ninja <https://www.renewables.ninja/>`_ (download capacity factors), `altlite <https://github.com/PyPSA/atlite>`__
+    - Wind: `windpowerlib <https://github.com/wind-python/windpowerlib>`_, `Renewables Ninja <https://www.renewables.ninja/>`_ (download capacity factors), `altlite <https://github.com/PyPSA/atlite>`__
     - Hydro power (run-of-the-river): `hydropowerlib <https://github.com/hydro-python/hydropowerlib>`_
     - Solar thermal: `flat plate collectors <https://oemof-thermal.readthedocs.io/en/stable/solar_thermal_collector.html>`_ of `oemof.thermal <https://github.com/oemof/oemof-thermal>`_
 
@@ -58,11 +58,11 @@ Dispatchable sources of generation
     - Deep-ground geothermal plant (ground assumed to allow unlimited extraction of heat, not depending on season)
 
 Fuel sources are added as dispatchable sources, which can have development, investment, operational and dispatch costs.
-They are added to :code:`energyProduction.csv`, while setting :ref:`filename-label` to :code:`None`.
+They are added to :ref:`energyProduction.csv <production>`, while setting :ref:`filename-label` to :code:`None`.
 
 Fuel sources are for example needed as source for a diesel generator (diesel), biogas plant (gas) or a condensing power plant (gas, coal, ...), see :ref:`energy_conversion`.
 
-Energy providers, even though also dispatchable sources of generation, should be added via :code:`energyProviders.csv`,
+Energy providers, even though also dispatchable sources of generation, should be added via :ref:`energyProviders.csv <providers>`,
 as there are some additional features available then, see :ref:`energy_providers`.
 
 Both energy providers and the additional fuel sources are limited to the options of energy carriers provided in the table of :ref:`table_default_energy_carrier_weights_label`, as the default weighting factors to translate the energy carrier into electricity equivalent need to be defined.
@@ -82,12 +82,12 @@ Energy conversion
     - Electrolyzers
     - Biogas power plants
 
-Conversion assets are added as transformers and are defined in :code:`energyConversion.csv`.
+Conversion assets are added as transformers and are defined in :ref:`energyConversion.csv <conversion>`.
 
-The parameters `dispatch_price`, `efficiency` and `installedCap` of transformers are assigned to their output flows.
-This means that these parameters need to be given for the output of the asset and that the costs of the input, e.g. fuel, if existent, are not included in its `dispatch_price` but in the `dispatch_price` of the fuel source, see :ref:`dispatchable_sources`.
+The parameters :ref:`dispatch_price <dispatchprice-label>`, :ref:`efficiency <efficiency-label>` and :ref:`installedCap <installedcap-label>` of transformers are assigned to their output flows.
+This means that these parameters need to be provided for the output of the asset and that the costs of the input, (e.g. cost of fuel) are not included in its :ref:`dispatch_price <dispatchprice-label>` but in the :ref:`dispatch_price <dispatchprice-label>` of the fuel source, see :ref:`dispatchable_sources`.
 
-Conversion assets can be defined with multiple inputs or multiple outputs, but one asset currently cannot have both, multiple inputs and multiple outputs. Note that multiple inputs/output have not been tested, yet.
+Conversion assets can be defined with multiple inputs or multiple outputs, but one asset currently cannot have both, multiple inputs and multiple outputs. Note that multiple inputs/output is possible but this feature is not currently tested.
 
 .. _energyconversion_electric_transformers:
 
@@ -97,7 +97,7 @@ Electric transformers
 Electric rectifiers and inverters that are transforming electricity in one direction only, are simply added as transformers.
 Bidirectional converters and transformer stations are defined by two transformers that are optimized independently from each other, if optimized.
 The same accounts for charge controllers for a :ref:`battery_storage` that are defined by two transformers, one for charging and one for discharging.
-The parameters `dispatch_price`, `efficiency` and `installedCap` need to be given for the electrical output power of the electric transformers.
+The parameters :ref:`dispatch_price <dispatchprice-label>`, :ref:`efficiency <efficiency-label>` and :ref:`installedCap <installedcap-label>` need to be given for the electrical output power of the electric transformers.
 
 .. note::
     When using two conversion objects to emulate a bidirectional conversion asset, their capacity should be interdependent. This is currently not the case, see :ref:`Infeasible bi-directional flow in one timestep <limitations-real-life-constraint>`.
@@ -107,10 +107,10 @@ The parameters `dispatch_price`, `efficiency` and `installedCap` need to be give
 Heating, Ventilation, and Air Conditioning (HVAC)
 =================================================
 
-Like other conversion assets, devices for heating, ventilation and air conditioning (HVAC) are added as transformers. As the parameters `dispatch_price`, `efficiency` and `installedCap` are assigned to the output flows they need to be given for the nominal heat output of the HVAC.
+Like other conversion assets, devices for heating, ventilation and air conditioning (HVAC) are added as transformers. As the parameters :ref:`dispatch_price <dispatchprice-label>`, :ref:`efficiency <efficiency-label>` and :ref:`installedCap <installedcap-label>` are assigned to the output flows they need to be given for the nominal heat output of the HVAC.
 
-Different types of HVAC can be modelled. Except for an air source device with ambient temperature as heat reservoir, the device could be modelled with two inputs (electricity and heat) in case the user is interested in the heat reservoir. This has not been tested, yet. Also note that currently efficiencies are assigned to the output flows the see `issue #799 <https://github.com/rl-institut/multi-vector-simulator/issues/799>`_.
-Theoretically, a HVAC device can be modelled with multiple outputs (heat, cooling, ...); this has not been tested, yet.
+Different types of HVAC can be modelled. Except for an air source device with ambient temperature as heat reservoir, the device could be modelled with two inputs (electricity and heat) in case the user is interested in the heat reservoir. This has not been tested yet. Also note that currently efficiencies are assigned to the output flows the see `issue #799 <https://github.com/rl-institut/multi-vector-simulator/issues/799>`_.
+Theoretically, a HVAC device can be modelled with multiple outputs (heat, cooling, ...); this has not been tested yet.
 
 The efficiency of HVAC systems is defined by the coefficient of performance (COP), which is strongly dependent on the temperature. In order to take account of this, the efficiency can be defined as time series, see section :ref:`time_series_params_example`.
 If you do not provide your own COP time series you can calculate them with `oemof.thermal <https://github.com/oemof/oemof-thermal>`_, see  `documentation on compression heat pumps and chillers <https://oemof-thermal.readthedocs.io/en/stable/compression_heat_pumps_and_chillers.html>`_ and  `documentation on absorption chillers <https://oemof-thermal.readthedocs.io/en/stable/absorption_chillers.html>`_.
@@ -120,7 +120,7 @@ If you do not provide your own COP time series you can calculate them with `oemo
 Electrolyzers
 =============
 
-Electrolyzers are added as transformers with a constant or time dependent but in any case pre-defined efficiency. The parameters `dispatch_price`, `efficiency` and `installedCap` need to be given for the output of the electrolyzers (hydrogen).
+Electrolyzers are added as transformers with a constant or time dependent but in any case pre-defined efficiency. The parameters :ref:`dispatch_price <dispatchprice-label>`, :ref:`efficiency <efficiency-label>` and :ref:`installedCap <installedcap-label>` need to be given for the output of the electrolyzers (hydrogen).
 
 Currently, electrolyzers are modelled with only one input flow (electricity), not taking into account the costs of water; see `issue #799 <https://github.com/rl-institut/multi-vector-simulator/issues/799>`_.
 The minimal operation level and consumption in standby mode are not taken into account, yet, see `issue #50 <https://github.com/rl-institut/multi-vector-simulator/issues/50>`_.
@@ -131,19 +131,19 @@ Condensing power plants and Combined heat and power (CHP)
 =========================================================
 
 Condensing power plants are added as transformers with one input (fuel) and one output (electricity), while CHP plants are defined with two outputs (electricity and heat).
-The parameters `dispatch_price`, `efficiency` and `installedCap` need to be given for the electrical output power (and nominal heat output) of the power plant, while fuel costs need to be included in the `dispatch_price` of the fuel source.
+The parameters :ref:`dispatch_price <dispatchprice-label>`, :ref:`efficiency <efficiency-label>` and :ref:`installedCap <installedcap-label>` need to be given for the electrical output power (and nominal heat output) of the power plant, while fuel costs need to be included in the :ref:`dispatch_price <dispatchprice-label>` of the fuel source.
 
 The ratio between the heat and electricity output of a CHP is currently simulated as fix values. This might be changed in the future by using the `ExtractionTurbineCHP <https://oemof-solph.readthedocs.io/en/latest/usage.html#extractionturbinechp-component>`_
 or the `GenericCHP <https://oemof-solph.readthedocs.io/en/latest/usage.html#genericchp-component>`_ component of oemof, see `issue #803 <https://github.com/rl-institut/multi-vector-simulator/issues/803>`_
 
-Note that multiple inputs/output have not been tested, yet.
+Note that multiple inputs/output have not been tested yet.
 
 Other fuel powered plants
 =========================
 
 Fuel powered conversion assets, such as diesel generators and biogas power plants, are added as transformers.
-The parameters `dispatch_price`, `efficiency` and `installedCap` need to be given for the electrical output power of the diesel generator or biogas power plant.
-As described above, the costs for diesel and gas need to be included in the `dispatch_price` of the fuel source.
+The parameters :ref:`dispatch_price <dispatchprice-label>`, :ref:`efficiency <efficiency-label>` and :ref:`installedCap <installedcap-label>` need to be given for the electrical output power of the diesel generator or biogas power plant.
+As described above, the costs for diesel and gas need to be included in the :ref:`dispatch_price <dispatchprice-label>` of the fuel source.
 
 
 .. _energy_providers:
@@ -178,9 +178,9 @@ A peak demand pricing scheme is based on an electricity tariff,
 that requires the consumer not only to pay for the aggregated energy consumption in a time period (eg. kWh electricity),
 but also for the maximum peak demand (load, eg. kW power) towards the grid of the energy provider within a specific pricing period.
 
-In the MVS, this information is gathered for the `energyProviders` with:
+In the MVS, this information is gathered in `energyProviders` assets with:
 
-    - :const:`multi_vector_simulator.utils.constants_json_strings.PEAK_DEMAND_PRICING_PERIOD` as the period used in peak demand pricing. Possible is 1 (yearly), 2 (half-yearly), 3 (each trimester), 4 (quaterly), 6 (every 2 months) and 12 (each month). If you have a `simulation_duration` < 365 days, the periods will still be set up assuming a year! This means, that if you are simulating 14 days, you will never be able to have more than one peak demand pricing period in place.
+    - :const:`multi_vector_simulator.utils.constants_json_strings.PEAK_DEMAND_PRICING_PERIOD` as the period used in peak demand pricing. Possible values are 1 (yearly), 2 (half-yearly), 3 (each trimester), 4 (quaterly), 6 (every 2 months) and 12 (each month). If you have a `simulation_duration` < 365 days, the periods will still be set up assuming a year! This means, that if you are simulating 14 days, you will never be able to have more than one peak demand pricing period in place.
 
     - :const:`multi_vector_simulator.utils.constants_json_strings.PEAK_DEMAND_PRICING` as the costs per peak load unit, eg. kW
 
@@ -195,7 +195,7 @@ For two peak demand pricing periods, the resulting dispatch could look as follow
 Energy storage
 ##############
 
-Energy storages such as battery storages, thermal storages or H2 storages are modelled with the :code:`GenericStorage` component of :code:`oemof.solph`. They are designed for one input and one output and are defined with files :code:`energyStorage.csv` and :code:`storage_*.csv` and have several parameters, which are listed in the section :ref:`storage_csv`.
+Energy storages such as battery storages, thermal storages or H2 storages are modelled with the :code:`GenericStorage` component of :code:`oemof.solph`. They are designed for one input and one output and are defined within the files :ref:`energyStorage.csv <storage>` and :ref:`storage_*.csv <storage_csv>`.
 
 The state of charge of a storage at the first and last time step of an optimization are equal.
 Charge and discharge of the whole capacity of the energy storage are possible within one time step in case the capacity of the storage is not optimized. In case of
@@ -235,12 +235,12 @@ The modelling of latent-heat (or Phase-change) and chemical storages have not be
 Stratified thermal energy storage
 =================================
 
-Stratified thermal energy storage is defined by the two optional parameters :code:`fixed_losses_relative` and :code:`fixed_losses_absolute`. If they are not included in :code:`storage_*.csv` or are equal to zero, then a normal generic storage is simulated.
-These two parameters are used to take into account temperature dependent losses of a thermal storage. To model a thermal energy storage without stratification, the two parameters are not set. The default values of :code:`fixed_losses_relative` and :code:`fixed_losses_absolute` are zero.
+Stratified thermal energy storage is defined by the two optional parameters :ref:`fixed_thermal_losses_relative-label` and :ref:`fixed_thermal_losses_absolute-label`. If they are not included in :ref:`storage_*.csv <storage_csv>` or are equal to zero, then a normal generic storage is simulated instead.
+These two parameters are used to take into account temperature dependent losses of a thermal storage. To model a thermal energy storage without stratification, the two parameters are not set. The default values of :ref:`fixed_thermal_losses_relative-label` and :ref:`fixed_thermal_losses_absolute-label` are zero.
 Except for these two additional parameters the stratified thermal storage is implemented in the same way as other storage components.
 
-Precalculations of the :code:`installedCap`, :code:`efficiency`, :code:`fixed_losses_relative` and :code:`fixed_losses_absolute` can be done orientating on the stratified thermal storage component of `oemof.thermal  <https://github.com/oemof/oemof-thermal>`__.
-The parameters :code:`U-value`, :code:`volume` and :code:`surface` of the storage, which are required to calculate :code:`installedCap`, can be precalculated as well.
+Precalculations of the :ref:`installedcap-label`, :ref:`efficiency-label`, :ref:`fixed_thermal_losses_relative-label` and :ref:`fixed_thermal_losses_absolute-label` can be done orientating on the stratified thermal storage component of `oemof.thermal  <https://github.com/oemof/oemof-thermal>`__.
+The parameters :code:`U-value`, :code:`volume` and :code:`surface` of the storage, which are required to calculate :ref:`installedcap-label`, can be precalculated as well.
 
 The efficiency :math:`\eta` of the storage is calculated as follows:
 
@@ -297,9 +297,9 @@ Energy excess
    Energy excess components are implemented **automatically** by MVS! You do not need to define them yourself.
 
 An energy excess sink is placed on each of the LES energy busses, and therefore energy excess is allowed to take place on each bus of the LES.
-This means that there are assumed to be sufficient vents (heat) or transistors (electricity) to dump excess (waste) generation.
-Excess generation can only take place when a non-dispatchable source is present or if an asset can supply energy without any fuel or dispatch costs.
+This means that there are assumed to be sufficient vents (heat) or resistors (electricity) to dump excess (waste) generation.
+Excess generation can only take place when a non-dispatchable source is present or if an asset is allowed to supply energy without any fuel or dispatch costs.
 
-In case of excessive excess energy, a warning is given that it seems to be cheaper to have high excess generation than investing into more capacities.
+In case of excessive excess energy, a warning is issued that it seems to be cheaper to have high excess generation than investing into more capacities.
 High excess energy can for example result into an optimized inverter capacity that is smaller than the peak generation of installed PV.
-This becomes unrealistic when the excess is very high.
+The model becomes unrealistic when the excess is very high.
