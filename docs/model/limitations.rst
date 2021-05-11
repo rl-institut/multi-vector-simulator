@@ -209,6 +209,8 @@ This is an approach that the MVS currently uses.
 
 By weighing the energy carriers according to their energy content (Gasoline Gallon Equivalent (GGE)), the MVS might result in values that can't be directly assessed. Those ratings affect the calculation of the levelized cost of the energy carriers, but also the minimum renewable energy share constraint.
 
+.. TODO: I am not sure I understand what values can't be assessed here?
+
 .. _limitations-energy_shortage:
 
 Events of energy shortage or grid interruption cannot be modelled
@@ -237,6 +239,8 @@ Need to model one technical unit with two transformer assets
 :Limitation:
 
 Two transformer objects representing one technical unit in real life are currently unlinked in terms of capacity and attributed costs.
+
+.. TODO: the last sentence is not very good, what did you mean here?
 
 :Reason:
 
