@@ -86,7 +86,9 @@ The MVS is developed as a work package in the European Union’s Horizon 2020 Re
 Getting Started
 ===============
 
-Follow the  :doc:`Quick start guide <Installation>`
+.. only:: html
+
+    Follow the  :doc:`Quick start guide <Installation>`
 
 .. Documentation
 .. =============

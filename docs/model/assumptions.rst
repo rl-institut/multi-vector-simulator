@@ -47,13 +47,13 @@ It is expressed as follows:
 .. math::
         capex_i &\text{: specific investment costs [currency/unit]}
 
-        n &\text{: number of replacements of an asset within project lifetime T}
+        n &\text{: number of replacements of an asset within project lifetime } T
 
         t_a &\text{: asset lifetime [years]}
 
         CRF &\text{: capital recovery factor}
 
-        c_{res,i} &\text{: residual value of asset i at the end of project lifetime T [currency/unit]}
+        c_{res,i} &\text{: residual value of asset i at the end of project lifetime } T \text{ [currency/unit]}
 
         opex_i &\text{: annual operational and management costs [currency/unit/year]}
 
@@ -70,8 +70,8 @@ hence, the number of replacements n is estimated using the equation below:
 .. math::
         n = round \left( \frac{T}{t_a} + 0.5 \right) - 1
 
-The residual value is also known as salvage value and it represents an estimate of the monetary value of an asset at the end of the project lifetime T.
-The MVS considers a linear depreciation over T and accounts for the time value of money by using the following equation:
+The residual value is also known as salvage value and it represents an estimate of the monetary value of an asset at the end of the project lifetime :math:`T`.
+The MVS considers a linear depreciation over :math:`T` and accounts for the time value of money by using the following equation:
 
 .. math::
         c_{res,i} = \frac{capex_i}{(1+d)^{n \cdot t_a}} \cdot \frac{1}{T} \cdot \frac{(n+1) \cdot t_a - T}{(1+d)^T}

@@ -2,7 +2,7 @@
 Code documentation
 ==================
 
-TODO : add an explanation about the different modules
+.. TODO : add an explanation about the different modules
 
 Util functions
 --------------
