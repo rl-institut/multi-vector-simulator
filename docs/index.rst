@@ -141,7 +141,7 @@ API Reference
 
 * **Documentation**: :doc:`Modules and functions <references/code>`
 * **Getting involved**: :doc:`Contributing guidelines and protocols <references/contributing>`
-* **Academic references**: :doc:`Publications <references/publications>` | :doc:`Cite MVS <references/citations>`
+* **Academic references**: :doc:`Publications and Bibliography <references/publications>` | :doc:`How to cite MVS <references/citations>`
 * **Using or modifying MVS**: :doc:`License <references/license>` | :doc:`Cite MVS <references/citations>`
 * **Getting help**: :doc:`Know issues and workaround <references/troubleshooting>` | :doc:`Report a bug or issue <references/bug_report>`
 
