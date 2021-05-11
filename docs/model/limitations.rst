@@ -17,7 +17,7 @@ The following table (:ref:`table_limitations_label`) lists the MVS limitations b
    * - Inherited
      - Can be addressed
    * - :ref:`limitations-real-life-constraint`
-     - :ref:`limitations-missing-kpi`
+     - :ref:`limitations-bidirectional-transformers`
    * - :ref:`limitations-simplified_model`
      - :ref:`limitations-random-excess`
    * - :ref:`limitations-degradation`
@@ -26,8 +26,6 @@ The following table (:ref:`table_limitations_label`) lists the MVS limitations b
      - :ref:`limitations-energy_carrier_weighting`
    * -
      - :ref:`limitations-energy_shortage`
-   * -
-     - :ref:`limitations-bidirectional-transformers`
 
 .. _limitations-real-life-constraint:
 
@@ -113,8 +111,8 @@ As the MVS and thus oemof-solph, which is handling the energy system model, know
 
 The perfect foresight can lead to suspicious dispatch of assets, for example charging of a battery right before a (in real-life) random blackout occurs. The systems optimized with the MVS therefore, represent their optimal potential, which in reality could not be reached. The MVS has thus a tendency to underestimate the needed battery capacity or the minimal state of charge for backup purposes, and also designs the PV system and backup power according to perfect forecasts. In reality, operational margins would need to be added.
 
-.. _limitations-missing-kpi:
 
+.. _limitation_precision_limit:
 
 Optimization precision
 ######################

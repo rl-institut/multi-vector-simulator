@@ -77,7 +77,7 @@ Maintainers
 
 The multi-vector simulator is currently maintained by staff from `Reiner Lemoine Institute <https://reiner-lemoine-institut.de/>`__.
 
-The MVS is developed as a work package in the European Union’s Horizon 2020 Research `E-Land project <https://elandh2020.eu/>`__
+The MVS is developed as a work package in the European Union’s Horizon 2020 Research `E-LAND project <https://elandh2020.eu/>`__
 
 :Acknowledgement: This project has received funding from the European Union’s Horizon 2020 Research and Innovation programme under Grant Agreement No 824388. 
 
@@ -113,7 +113,7 @@ Model Reference
 
 * **How the energy system is modelled**: :doc:`Assumption behind the model <model/assumptions>` | :doc:`Available components for modelling <model/components>` | :doc:`Setting constraints on model or components <model/constraints>` | :doc:`Scope and limitation of the model <model/limitations>`
 * **Description of parameters**: :doc:`Input parameters <model/input_parameters>` | :doc:`Output variables and KPIs <model/simulation_outputs>`
-* **Validation of the model**: :doc:`Benchmark tests <model/validation>`
+* **Validation of the model**: :doc:`Validation methodology <model/validation>`
 
     .. maybe add Pilot projects here as well?
 
@@ -141,8 +141,8 @@ API Reference
 
 * **Documentation**: :doc:`Modules and functions <references/code>`
 * **Getting involved**: :doc:`Contributing guidelines and protocols <references/contributing>`
-* **Academic references**: :doc:`Publications <references/publications>` | :doc:`Cite MVS <references/citations>`
-* **Using or modifying MVS**: :doc:`License <references/license>` | :doc:`Cite MVS <references/citations>`
+* **Academic references**: :doc:`Publications and Bibliography <references/publications>`
+* **Using or modifying MVS**: :doc:`License <references/license>` | :doc:`How to cite MVS <references/citations>`
 * **Getting help**: :doc:`Know issues and workaround <references/troubleshooting>` | :doc:`Report a bug or issue <references/bug_report>`
 
 .. toctree::

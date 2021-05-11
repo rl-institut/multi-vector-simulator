@@ -1,5 +1,5 @@
 ##################################################
-MVS - Multi-Vector Simulator of the E-Land toolbox
+MVS - Multi-Vector Simulator of the E-LAND toolbox
 ##################################################
 
 |badge_docs| |badge_CI| |badge_coverage| |badge_zenodo| |badge_pypi| |badge_gpl2| |badge_black|
@@ -159,7 +159,7 @@ The possible arguments to this functions are:
 
 - ``path_input_folder`` (str): The path to the directory where the input CSVs/JSON files are located. Default: ``inputs/`` (Command line "-i").
 
-- ``path_output_folder`` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands (Command line "-o"). Default: ``MVS_outputs/``.
+- ``path_output_folder`` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS (Command line "-o"). Default: ``MVS_outputs/``.
 
 - ``display_output`` (str): Sets the level of displayed logging messages. Options: "debug", "info", "warning", "error". Default: "info".
 

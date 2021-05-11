@@ -76,6 +76,8 @@ The MVS considers a linear depreciation over T and accounts for the time value o
 .. math::
         c_{res,i} = \frac{capex_i}{(1+d)^{n \cdot t_a}} \cdot \frac{1}{T} \cdot \frac{(n+1) \cdot t_a - T}{(1+d)^T}
 
+.. _equation_energy_balance:
+
 Energy Balance Equation
 -----------------------
 
@@ -94,6 +96,7 @@ This balancing equation is applicable to all bus types, be it electrical, therma
 It is very important to note that assets i and j can be the same asset (e.g., battery).
 `oemof-solph` allows both :math:`E_{in}` or :math:`E_{out}` to be larger zero in same time step t (see :ref:`limitations-real-life-constraint`).
 
+.. _example_energy_balance_equations:
 
 Example: Sector Coupled Energy System
 -------------------------------------
