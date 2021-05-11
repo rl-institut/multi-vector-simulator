@@ -30,10 +30,11 @@ Presentations
 Master thesis
 ^^^^^^^^^^^^^
 
-* :(Backhaus, 2021*): Andra Backhaus: *Analyzing the application of different energy cell sizes as an approach for the integration of decentralized renewable energy sources*. Master of Science Thesis, Albert-Ludwigs Universität Freiburg. To be submitted in July 2021. Written in scope of the H2020 research project `open_plan <https://open-plan-tool.org/>`__
+* :(Backhaus, 2021*): Andra Backhaus: *Analyzing the application of different energy cell sizes as an approach for the integration of decentralized renewable energy sources*. Master of Science Thesis, Albert-Ludwigs Universität Freiburg. To be submitted in June 2021. Written in scope of the H2020 research project `open_plan <https://open-plan-tool.org/>`__
+
+* :(Gering, 2021*): Marie-Claire Gering: *Modellierung und Analyse von sektorgekoppelten Energiesystemen mit photovoltaisch betriebenen Wärmepumpen und thermischen Energiespeichern*. Master of Science Thesis, Technische Universität Berlin. To be submitted in June 2021. Written in scope of the research project `GRECO <https://www.greco-project.eu/>`__.
 
 * :(El Mir, 2020): Ursula El Mir: *Identification of a Validation Method for Open Source Simulation Tools and Application of Said Method to the MVS: Multi-Vector Simulator - Sector Coupled Systems*. Master of Science Thesis, Delft University of Technology. September 2020. Link: `http://resolver.tudelft.nl/uuid:50c283c7-64c9-4470-8063-140b56f18cfe <http://resolver.tudelft.nl/uuid:50c283c7-64c9-4470-8063-140b56f18cfe>`__ . Written in scope of the H2020 research project `E-LAND <https://elandh2020.eu/>`__
-
 
 Reference projects
 ##################
