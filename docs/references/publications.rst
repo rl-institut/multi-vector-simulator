@@ -30,9 +30,9 @@ Presentations
 Master thesis
 ^^^^^^^^^^^^^
 
-* :(Backhaus, 2021*): Andra Backhaus: *Analyzing the application of different energy cell sizes as an approach for the integration of decentralized renewable energy sources*. Master of Science Thesis, Albert-Ludwigs Universität Freiburg. To be submitted in July 2021. Written in scope of the H2020 research project `open_plan <https://open-plan-tool.org/>`__ .
+* :(Backhaus, 2021*): Andra Backhaus: *Analyzing the application of different energy cell sizes as an approach for the integration of decentralized renewable energy sources*. Master of Science Thesis, Albert-Ludwigs Universität Freiburg. To be submitted in July 2021. Written in scope of the H2020 research project `open_plan <https://open-plan-tool.org/>`__
 
-* :(El Mir, 2020): Ursula El Mir: *Identification of a Validation Method for Open Source Simulation Tools and Application of Said Method to the MVS: Multi-Vector Simulator - Sector Coupled Systems*. Master of Science Thesis, Delft University of Technology. September 2020. Link: `http://resolver.tudelft.nl/uuid:50c283c7-64c9-4470-8063-140b56f18cfe <http://resolver.tudelft.nl/uuid:50c283c7-64c9-4470-8063-140b56f18cfe>`__ . Written in scope of the H2020 research project `E-LAND <https://elandh2020.eu/>`__ .
+* :(El Mir, 2020): Ursula El Mir: *Identification of a Validation Method for Open Source Simulation Tools and Application of Said Method to the MVS: Multi-Vector Simulator - Sector Coupled Systems*. Master of Science Thesis, Delft University of Technology. September 2020. Link: `http://resolver.tudelft.nl/uuid:50c283c7-64c9-4470-8063-140b56f18cfe <http://resolver.tudelft.nl/uuid:50c283c7-64c9-4470-8063-140b56f18cfe>`__ . Written in scope of the H2020 research project `E-LAND <https://elandh2020.eu/>`__
 
 
 Reference projects
@@ -60,5 +60,5 @@ This RTD referenced following sources:
 
 * :(Bloess, 2017): Andreas Bloess, Wolf-Peter Schill, Alexander Zerrahn: *Power-to-heat for renewable energy integration: A review of technologies, modeling approaches, and flexibility potentials*. Applied Energy, 2018. DOI: `10.1016/j.apenergy.2017.12.073 <https://doi.org/10.1016/j.apenergy.2017.12.073>`__
 
-* :(Ringkjøb, 2018): Hans-Kristian Ringkjøb, Peter M. Haugan, Ida Marie Solbrekke: * A review of modelling tools for energy and electricity systems with large shares of variable renewables*. Renewable and Sustainable Energy Reviews, 2018. DOI: `10.1016/j.rser.2018.08.002 <https://doi.org/10.1016/j.rser.2018.08.002>`__
+* :(Ringkjøb, 2018): Hans-Kristian Ringkjøb, Peter M. Haugan, Ida Marie Solbrekke: *A review of modelling tools for energy and electricity systems with large shares of variable renewables*. Renewable and Sustainable Energy Reviews, 2018. DOI: `10.1016/j.rser.2018.08.002 <https://doi.org/10.1016/j.rser.2018.08.002>`__
 
