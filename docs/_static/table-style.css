@@ -1,0 +1,3 @@
+table.limitations-table>tbody>tr>td, table.limitations-table>tbody>tr>th {
+    white-space: normal;
+}
