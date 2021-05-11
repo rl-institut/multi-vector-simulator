@@ -48,7 +48,6 @@ Here is a template for new release sections
 - Create constant variables in `E1` for accessing oemof-solph results: `OEMOF_FLOW`, `OEMOF_SEQUENCES`, `OEMOF_INVEST`, `OEMOF_SCALARS` (#859)
 - Create constant variables in `E1`: `THRESHOLD` for central definition of precision limit (#859)
 - `docs/MVS_kpi_categories.csv` and `conf.generate_kpi_categories()` to list KPI under in the RTD (#869)
-- `docs/MVS_kpi_categories.csv` and `conf.generate_kpi_categories()` to list KPI under in the RTD (#869)
 - Descriptions of all output files to RTD (#874)
 
 ### Changed
