@@ -25,6 +25,7 @@ MVS is validated using three validation methods: conceptual model validation, mo
 
 Additionally to the presented validation tests, a couple of input verification tests are implemented in the pre-processing module :code:`C` and a number of output verification tests in `E4` (see :ref:`verification_output_tests`).
 
+The validation process of the MVS was identified and defined within the master thesis :ref:`(El Mir, 2020) <references_scientific_publications>`. The evaluation of extreme scenarios and senstivity analysis are contents of that thesis only, as they are tests that, to be precise, should be repeated for each MVS release.
 
 .. _validation_unit_tests:
 
