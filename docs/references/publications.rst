@@ -25,13 +25,12 @@ Presentations
 
 * :(Hoffmann, 2020c): *Introducing an os simulation tool for sector-coupled energy sys opt: Multi-Vector Simulator (MVS)* Presentation at Energy Modelling Platform for Europe (EMP-E) 2020, 06. – 08. October 2020, online. Link to session: `Youtube <https://www.youtube.com/watch?v=ob2JRAZYC7E>`__
 
-The MVS is currently under development in the H2020 research project `E-Land`. Still, there are already some references where additional information can be found regarding its intention, application, and method.
+* :(Hoffmann, 2020d): *Multi-Vector Simulator*, session: *Building on experience: What to take from individual models for the oemof-community*, presentation at oemof developer meeting, 02. - 04. December 2020, online. Link: `conference schedule <https://github.com/oemof/oemof/wiki/Meeting-December-2020-%28online%29>`__
 
 Master thesis
 ^^^^^^^^^^^^^
 
-Article
--------
+* :(Backhaus, 2021*): Andra Backhaus: *Analyzing the application of different energy cell sizes as an approach for the integration of decentralized renewable energy sources*. Master of Science Thesis, Albert-Ludwigs Universität Freiburg. To be submitted in July 2021. Written in scope of the H2020 research project `open_plan <https://open-plan-tool.org/>`__ .
 
 * :(El Mir, 2020): Ursula El Mir: *Identification of a Validation Method for Open Source Simulation Tools and Application of Said Method to the MVS: Multi-Vector Simulator - Sector Coupled Systems*. Master of Science Thesis, Delft University of Technology. September 2020. Link: `http://resolver.tudelft.nl/uuid:50c283c7-64c9-4470-8063-140b56f18cfe`__. Written in scope of the H2020 research project `E-LAND <https://elandh2020.eu/>`__ .
 
