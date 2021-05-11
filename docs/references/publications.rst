@@ -46,6 +46,11 @@ H2020 research project GRECO and tool pvcompare
 Within the `H2020 research project GRECO <https://www.greco-project.eu/>`__ the model :code:`pvcompare` (`github reprository  <https://github.com/greco-project/pvcompare>`__) was developed to compare the benefits of different PV technologies in local energy systems in different energy supply scenarios. It uses MVS for optimizing these energy systems and calculating specific KPIs.
 Functionalities of :code:`pvcompare` include among others the calculation of an area potential for PV on roof-tops and facades, heat and electricity demand profiles, PV feed-in time series for different technologies, temperature dependent COPs for heat pumps and pre-calculations for a stratified thermal storage. :code:`pvcompare` concentrates on the integration of PV technologies into local energy systems but could easily be enhanced to analyze other conversion technologies. Checkout the `documentation <https://pvcompare.readthedocs.io/en/latest>`__ to learn more about :code:`pvcompare`.
 
+H2020 research project open_Plan
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The `H2020 research project open_plan <https://open-plan-tool.org/>`__ aims to build an open source tool to plan the design of a single energy cell. It will extend on the existing features of MVS to fullfil the requirements of its pilot projects. The project open_plan is funded until December 2022, the development of the graphical user interface will take place on the `github repository of open_plan <https://github.com/rl-institut/open_plan>`__.
+
 .. _reference_bibliography:
 
 Bibliography
