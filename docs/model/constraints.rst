@@ -70,7 +70,7 @@ The constraint is enabled when the value of the minimal degree of autonomy is ab
 ```minimal_degree_of_autonomy,factor,0.3```
 
 
-Depending on the energy system, especially when working with assets which are not subject to the optimization of their capacitiesd, it is possible that the minimal degree of autonomy criterion cannot be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all `optimizeCap` parameters of your optimizable assets to `True`, and then investigate further.
+Depending on the energy system, especially when working with assets which are not subject to the optimization of their capacities, it is possible that the minimal degree of autonomy criterion cannot be met. The simulation terminates in that case. If you are not sure if your energy system can meet the constraint, set all :ref:`optimizecap-label` parameters of your optimizable assets to :code:`True`, and then investigate further.
 
 The minimum degree of autonomy is introduced to the energy system by :func:`D2.constraint_minimal_degree_of_autonomy() <multi_vector_simulator.D2_model_constraints.constraint_minimal_degree_of_autonomy>` and a validation test is performed with :func:`E4.minimal_constraint_test() <multi_vector_simulator.E4_verification.minimal_constraint_test>`.
 
@@ -127,11 +127,11 @@ The NZE constraint is deactivated by inserting the following row in :ref:`constr
 
 :Activating the constraint:
 
-The constraint is enabled when the value of the NZE constraint is set to `True` in :ref:`constraints.csv <constraints>`:
+The constraint is enabled when the value of the NZE constraint is set to :code:`True` in :ref:`constraints.csv <constraints>`:
 
 ```net_zero_energy,bool,True```
 
 
-Depending on the energy system, especially when working with assets which are not subject to the optimization of their capacities, it is possible that the NZE criterion cannot be met. The simulation terminates in that case. If you are not sure whether your energy system can meet the constraint, set all `optimizeCap` parameters of your optimizable assets to `True`, and then investigate further.
+Depending on the energy system, especially when working with assets which are not subject to the optimization of their capacities, it is possible that the NZE criterion cannot be met. The simulation terminates in that case. If you are not sure whether your energy system can meet the constraint, set all :ref:`optimizecap-label` parameters of your optimizable assets to :code:`True`, and then investigate further.
 
 The net zero energy constraint is introduced to the energy system by :func:`D2.constraint_net_zero_energy() <multi_vector_simulator.D2_model_constraints.constraint_net_zero_energy>` and a validation test is performed with :func:`E4.net_zero_energy_test() <multi_vector_simulator.E4_verification.net_zero_energy_constraint_test()>`.
