@@ -8,7 +8,7 @@ Scientific Publications
 #######################
 
 
-The MVS is currently under development in the H2020 research project `E-Land`. Still, there are already some references where additional information can be found regarding its intention, application, and method. More information about E-LAND can be found on the research project website: `E-LAND Horizon 2020. Novel solutions for decarbonized energy islands <https://elandh2020.eu/>`__
+The MVS is currently under development in the H2020 research project `E-LAND`. Still, there are already some references where additional information can be found regarding its intention, application, and method. More information about E-LAND can be found on the research project website: `E-LAND Horizon 2020. Novel solutions for decarbonized energy islands <https://elandh2020.eu/>`__
 
 Articles
 ^^^^^^^^

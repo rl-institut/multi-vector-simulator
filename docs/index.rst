@@ -77,7 +77,7 @@ Maintainers
 
 The multi-vector simulator is currently maintained by staff from `Reiner Lemoine Institute <https://reiner-lemoine-institut.de/>`__.
 
-The MVS is developed as a work package in the European Union’s Horizon 2020 Research `E-Land project <https://elandh2020.eu/>`__
+The MVS is developed as a work package in the European Union’s Horizon 2020 Research `E-LAND project <https://elandh2020.eu/>`__
 
 :Acknowledgement: This project has received funding from the European Union’s Horizon 2020 Research and Innovation programme under Grant Agreement No 824388. 
 

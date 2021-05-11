@@ -1,5 +1,5 @@
 ==============================
-E-Land requirements of the MVS
+E-LAND requirements of the MVS
 ==============================
 
 Functional Requirements

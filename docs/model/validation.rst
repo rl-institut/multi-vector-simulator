@@ -13,7 +13,7 @@ MVS is validated using three validation methods: conceptual model validation, mo
 
 **Operational validity** assesses the model’s output with respect to the required accuracy. In order to achieve that, several validation techniques are used, namely:
 
-* **Graphical display**, which is the use of model generated or own graphs for result interpretation. Graphs are simultaneously used with other validation techniques to inspect the results. This technique was regularly applied within the MVS developing process, especially with the help of real use cases from the E-Land pilot sites.
+* **Graphical display**, which is the use of model generated or own graphs for result interpretation. Graphs are simultaneously used with other validation techniques to inspect the results. This technique was regularly applied within the MVS developing process, especially with the help of real use cases from the E-LAND pilot sites.
 
 *	**Benchmark testing**, through which scenarios are created with different constraints and component combinations, and the output is calculated and compared to the expected one to evaluate the performance of the model. The applied benchmark tests are described in :ref:`validation_benchmark_tests`.
 
