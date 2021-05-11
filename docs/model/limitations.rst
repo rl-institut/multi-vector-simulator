@@ -3,8 +3,7 @@ Limitations
 
 When running simulations with the MVS, there are certain peculiarities to be aware of.
 The peculiarities can be considered as limitations, some of which are merely model assumptions and others are drawbacks of the model.
-A number of those are inherited due to the nature of the MVS and its underlying modules,
-and others can still be addressed in the future during the MVS development process, which is still ongoing.
+A number of those are inherited due to the nature of the MVS and its underlying modules.
 The following table (:ref:`table_limitations_label`) lists the MVS limitations based on their type.
 
 
@@ -35,7 +34,7 @@ Infeasible bi-directional flow in one timestep
 
 :Limitation:
 
-The real life constraint of the dispatch of assets, that it is not possible to have two flows in opposite directions at the same time step, is not adhered to in the MVS.
+It is not possible to model two flows in opposite directions during the same time step.
 
 :Reason:
 
@@ -55,7 +54,7 @@ However, this relation creates a non-linear problem and can not be implemented i
 
 This limitation means that the MVS might result in infeasible dispatch of assets. For instance, a bus might be supplied by a rectifier and itself supplying an inverter at the same time step t, which cannot logically happen if these assets are part of one physical bi-directional inverter. Another case that could occur is feeding the grid and consuming from it at the same time t.
 
-Under certain conditions, including an excess generation as well as dispatch costs of zero, the infeasible dispatch can also be observed for batteries and result in a parallel charge and discharge of the battery. If this occurs, a solution may be to set a marginal dispatch cost of battery charge.
+Under certain conditions, including excess generation as well as dispatch costs of zero, the infeasible dispatch can also be observed for batteries and result in a parallel charge and discharge of the battery. If this occurs, a solution may be to set a marginal dispatch cost of battery charge.
 
 .. _limitations-simplified_model:
 
@@ -72,11 +71,11 @@ The MVS simplifies the component model of some assets.
 
 :Reason:
 
-The MVS is based oemof-solph python library and uses its generic components to set up an energy system. Transformers and storages cannot have variable efficiencies.
+The MVS is based :code:`oemof-solph` python library and uses its generic components to set up an energy system. Transformers and storages cannot have variable efficiencies, because otherwise the system of equation to solve would not be linear.
 
 :Implications:
 
-Simplifying the implementation of some component specifications can be beneficial for the ease of the model, however, it contributes to the lack of realism and might result in less accurate values. The MVS accepts the decreased level of detail in return for a quick evaluation of its scenarios, which are often only used for a pre-feasibility analysis.
+Simplifying the implementation of some component specifications can be beneficial for the ease of the model, however, it contributes to the lack of realism and might result in less accurate values. The MVS trades off the decreased level of detail for a quick evaluation of its scenarios, which are often only used for a pre-feasibility analysis.
 
 .. _limitations-degradation:
 
@@ -106,11 +105,11 @@ The optimal solution of the energy system is based on perfect foresight.
 
 :Reason:
 
-As the MVS and thus oemof-solph, which is handling the energy system model, know the generation and demand profiles for the whole simulation time and solve the optimization problem based on a linear equation system, the solver knows their dispatch for certain, whereas in reality the generation and demand could only be forecasted.
+As the MVS and thus :code:`oemof-solph`, which is handling the energy system model, know the generation and demand profiles for the whole simulation time and solve the optimization problem based on a linear equation system, the solver knows their dispatch for certain, whereas in reality the generation and demand could only be forecasted.
 
 :Implications:
 
-The perfect foresight can lead to suspicious dispatch of assets, for example charging of a battery right before a (in real-life) random blackout occurs. The systems optimized with the MVS therefore, represent their optimal potential, which in reality could not be reached. The MVS has thus a tendency to underestimate the needed battery capacity or the minimal state of charge for backup purposes, and also designs the PV system and backup power according to perfect forecasts. In reality, operational margins would need to be added.
+The perfect foresight can lead to suspicious dispatch of assets, for example charging of a battery right before a (in real-life) random blackout occurs. The systems optimized with the MVS therefore, represent their optimal potential, which in reality could not be reached. The MVS has thus a tendency to underestimate the needed battery capacity or the minimal state of charge for backup purposes, and also designs the PV system and backup power according to perfect forecasts. In reality, operational margins would need to be considered.
 
 
 .. _limitation_precision_limit:
@@ -124,20 +123,21 @@ Marginal capacities and flows below a threshold of 10^-6 are rounded to zero.
 
 :Reason:
 
-The MVS makes use of the open energy modelling framework (oemof) by using :code:`oemof-solph`. For the MVS, we use the :code:`cbc-solver` and at a :code:`ratioGap=0.03`. This influences the precision of the optimized decision variables, ie. the optimized capacities as well as the dispatch of the assets.
-In some cases the dispatch and capacities vary around 0 with fluctuations of the order of floating point precision (well below <10e-6), thus resulting in marginal and also marginal negative dispatch or capacities. When calculating KPI from these decision variables, the results can be nonsensical, for example leading to SoC curves with negative values or values far above the viable value 1.
-As the reason for these inconsistencies is known, the MVS enforces the capacities and dispatch of to be above 10e-6, ie. all capacities or flows smaller than that are set to zero. This is applied to absolute values, so that irregular (and incorrect) values for decision variables can still be detected.
+The MVS makes use of the open energy modelling framework (oemof) by using :code:`oemof-solph`. For the MVS, we use the :code:`cbc-solver` with a :code:`ratioGap=0.03`. This influences the precision of the optimized decision variables, ie. the optimized capacities as well as the dispatch of the assets.
+In some cases the dispatch and capacities vary around 0 with fluctuations of the order of floating point precision (well below <10e-6), thus resulting sometimes in marginal fluctuations dispatch or capacities around 0. When calculating KPI from these decision variables, the results can be nonsensical, for example leading to SoC curves with negative values or values far above the viable value 1.
+As the reason for these inconsistencies is known, the MVS enforces the capacities and dispatch of to be above 10e-6, ie. all capacities or flows smaller than that are automatically set to zero. This is applied to absolute values, so that irregular (and incorrect) values for decision variables can still be detected.
+
 
 :Implications:
 
-If your energy system has demand or resource profiles that include marginal values below the threshold of 10^-6, the MVS will not result in appropriate results. For example, that means that if you have an energy system with usually is measured in `MW` but one demand is in the `W` range, the dispatch of assets serving this minor demand is not displayed correctly. Please chose `kW` or even `W` as a base unit then.
+If your energy system has demand or resource profiles that include marginal values below the threshold of 10^-6, the MVS will not result in appropriate results. For example, that means that if you have an energy system with usually is measured in `MW` but one demand is in the `W` range, the dispatch of assets serving this minor demand is not displayed correctly. Please consider using `kW` or even `W` as a base unit then.
 
 Extension of KPIs necessary
 ###########################
 
 :Limitation:
 
-Some important KPIs usually required by developers are currently not implemented in the MVS:
+Some important KPIs usually required by developers are currently not implemented within the MVS:
 
 * Internal rate of return (IRR)
 * Payback period
@@ -170,8 +170,8 @@ On the first glance, the distribution of excess energy onto both feed-in sink an
 
 .. _limitations-renewable-share-definition:
 
-Renewable energy share defintion relative to energy carriers
-############################################################
+Renewable energy share definition relative to energy carriers
+#############################################################
 
 :Limitation:
 
@@ -199,7 +199,7 @@ Energy carrier weighting
 
 :Limitation:
 
-The MVS assumes a usable potential/energy content rating for every energy carrier. The current version assumes that 1 kWh thermal is equivalent to 1 kWh electricity.
+The MVS assumes a usable energy content rating for every energy carrier. The current version assumes that 1 kWh thermal is equivalent to 1 kWh electricity.
 
 :Reason:
 
@@ -211,8 +211,8 @@ By weighing the energy carriers according to their energy content (Gasoline Gall
 
 .. _limitations-energy_shortage:
 
-Events of energy shortage or grid interruption can not be modelled
-##################################################################
+Events of energy shortage or grid interruption cannot be modelled
+#################################################################
 
 :Limitation:
 
@@ -227,12 +227,12 @@ The aim of the MVS does not cover this scenario.
 Electricity shortages due to power cuts might happen in real life and the MVS currently omits this scenario.
 If a system is self-sufficient but relies on grid-connected PV systems,
 the latter stop feeding the load if any power cuts occur
-and the battery storage systems might not be enough to serve the load (energy shortage).
+and the battery storage systems might not be enough to serve the load thus resulting energy shortage.
 
 .. _limitations-bidirectional-transformers:
 
-Need of two transformer assets for of one technical unit
-########################################################
+Need to model one technical unit with two transformer assets
+############################################################
 
 :Limitation:
 
@@ -240,15 +240,14 @@ Two transformer objects representing one technical unit in real life are current
 
 :Reason:
 
-The MVS uses oemof-solph's generic components which are unidirectional so for a bidirectional asset,
+The MVS uses :code:`oemof-solph`'s generic components which are unidirectional so for a bidirectional asset,
 two transformer objects have to be used.
 
 :Implications:
 
-Since one input is only allowed, such technical units are modelled as two separate transformers that are currently unlinked in the MVS
-(e.g., hybrid inverter, heat pump, distribution transformer, etc.).
+Since only one input is allowed, such technical units are modelled as two separate transformers that are currently unlinked in the MVS (e.g., hybrid inverter, heat pump, distribution transformer, etc.).
 This raises a difficulty to define costs in the input data.
 It also results in two optimized capacities for one logical unit.
 
-This limitation is to be addressed with a constraint which links both capacities of one logical unit,
+This limitation can be addressed with a constraint which links both capacities of one logical unit,
 and therefore solves both the problem to attribute costs and the previously differing capacities.
