@@ -11,8 +11,9 @@ The following table (:ref:`table_limitations_label`) lists the MVS limitations b
 .. _table_limitations_label:
 
 .. list-table:: Limitations
-   :widths: 25 25
+   :widths: 15 15
    :header-rows: 1
+   :class: limitations-table
 
    * - Inherited
      - Can be addressed
