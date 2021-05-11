@@ -38,19 +38,22 @@ Master thesis
 Reference projects
 ##################
 
-Projects using MVS
-------------------
+As an publicly developed open-source tool, the MVS can also be used, adapted and improved in other projects. The current projects that an serve as a reference for MVS utilization are listed.
 
 H2020 research project GRECO and tool pvcompare
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Andra Backhaus is using the MVS to simulate different energy systems and compare them to each other. He uses the MVS to see how energy systems planned on different levels influence the consumption and feedin on the national electricity grid. His research on "Analyzing the application of different energy cell sizes as an approach for the integration of decentralized renewable energy sources" is done in the context of the master Renewable Energy Engineering and Management at Albert-Ludwigs Universität Freiburg.
+Within the `H2020 research project GRECO <https://www.greco-project.eu/>`__ the model :code:`pvcompare` (`github reprository  <https://github.com/greco-project/pvcompare>`__) was developed to compare the benefits of different PV technologies in local energy systems in different energy supply scenarios. It uses MVS for optimizing these energy systems and calculating specific KPIs.
+Functionalities of :code:`pvcompare` include among others the calculation of an area potential for PV on roof-tops and facades, heat and electricity demand profiles, PV feed-in time series for different technologies, temperature dependent COPs for heat pumps and pre-calculations for a stratified thermal storage. :code:`pvcompare` concentrates on the integration of PV technologies into local energy systems but could easily be enhanced to analyze other conversion technologies. Checkout the `documentation <https://pvcompare.readthedocs.io/en/latest>`__ to learn more about :code:`pvcompare`.
 
-pvcompare
-#########
+.. _reference_bibliography:
 
+Bibliography
+############
 
-- `_pvcompare_ <https://github.com/greco-project/pvcompare>`__ is a model for comparing the benefits of different PV technologies in local energy systems in different energy supply scenarios. It uses MVS for optimizing these energy systems and calculating specific KPIs.
-- Functionalities of _pvcompare_ include among others the calculation of an area potential for PV on roof-tops and facades, heat and electricity demand profiles, PV feed-in time series for different technologies, temperature dependent COPs for heat pumps and pre-calculations for a stratified thermal storage.
-- _pvcompare_ concentrates on the integration of PV technologies into local energy systems but could easily be enhanced to analyze other conversion technologies.
-- Checkout the `documentation <https://pvcompare.readthedocs.io/en/latest>`__ to learn more about _pvcompare_.
+This RTD referenced following sources:
+
+* :(Bloess, 2017): Andreas Bloess, Wolf-Peter Schill, Alexander Zerrahn: *Power-to-heat for renewable energy integration: A review of technologies, modeling approaches, and flexibility potentials*. Applied Energy, 2018. DOI: `https://doi.org/10.1016/j.apenergy.2017.12.073`__
+
+* :(Ringkjøb, 2018): Hans-Kristian Ringkjøb, Peter M. Haugan, Ida Marie Solbrekke: * A review of modelling tools for energy and electricity systems with large shares of variable renewables*. Renewable and Sustainable Energy Reviews, 2018. DOI: `https://doi.org/10.1016/j.rser.2018.08.002`__
+
