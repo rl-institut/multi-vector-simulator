@@ -2,7 +2,7 @@
 .. _validation-methodology:
 
 ======================
-Validation Methodology
+Validation methodology
 ======================
 
 MVS is validated using three validation methods: conceptual model validation, model verification and operational validity.
@@ -29,7 +29,7 @@ The validation process of the MVS was identified and defined within the master t
 
 .. _validation_unit_tests:
 
-Unit and Integration Tests
+Unit and integration tests
 ##########################
 
 To make sure that the MVS works correctly from a programming perspective, its functions need to be tested by unit tests, while its modules should be tested with integration tests. To automatize the testing process, the tests are implemented as :code:`pytest` functions, which also allows to test the test coverage with :code:`coveralls`. They also ensure that no bugs are introduced within the coding process of the MVS, as each proposed pull request must first pass all defined pytests. The unit and integration tests can be found in the folder :code:`tests` of the `MVS github repository <https://github.com/rl-institut/multi-vector-simulator/tree/dev/tests>`__ . Each of the files represent tests for one of the codebase modules (e.g., A0, A1, B0, etc.), and are named respectively: as such, the test file for the codebase module :code:`C2_economic_functions` is named :code:`test_C2_economic_functions`.
@@ -38,7 +38,7 @@ As of MVS release 0.5.5, the unit tests covered 74% of the code lines of the MVS
 
 .. _validation_benchmark_tests:
 
-Benchmark Tests
+Benchmark tests
 ###############
 
 A benchmark is a point of reference against which results are compared to assess the operational validity of a model. Benchmark tests are also automated like unit and integration tests, hence it is necessary to check that they are always passing for any implemented changes in the model. A list of selected benchmark tests, which cover several features and functionalities of the MVS, are listed here below. The list is not exhaustive, some additional tests are provided in :code:`tests`.

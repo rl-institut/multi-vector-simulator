@@ -113,7 +113,7 @@ Model Reference
 
 * **How the energy system is modelled**: :doc:`Assumption behind the model <model/assumptions>` | :doc:`Available components for modelling <model/components>` | :doc:`Setting constraints on model or components <model/constraints>` | :doc:`Scope and limitation of the model <model/limitations>`
 * **Description of parameters**: :doc:`Input parameters <model/input_parameters>` | :doc:`Output variables and KPIs <model/simulation_outputs>`
-* **Validation of the model**: :doc:`Benchmark tests <model/validation>`
+* **Validation of the model**: :doc:`Validation methodology <model/validation>`
 
     .. maybe add Pilot projects here as well?
 
