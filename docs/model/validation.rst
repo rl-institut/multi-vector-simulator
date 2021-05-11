@@ -19,7 +19,7 @@ MVS is validated using three validation methods: conceptual model validation, mo
 
 *	**Extreme scenarios** (e.g., drastic meteorological conditions, very high costs, etc.) are created to make sure the simulation runs through and check if the output behavior is still valid by the use of graphs and qualitative analysis.
 
-*	**Comparison to other validated model**, which compares the results of a case study simulated with the model at hand to the results of a validated optimization model in order to identify the similarities and differences in results
+*	**Comparison to other validated model**, which compares the results of a case study simulated with the model at hand to the results of a validated optimization model in order to identify the similarities and differences in results. Further information are provided in :ref:`validation_other_models`
 
 *	**Sensitivity analysis**, through which input-output transformations are studied to show the impact of changing the values of some input parameters
 
@@ -90,13 +90,13 @@ More input-output transformations for sensitivity analyses can be investigated s
 
 .. _validation_other_models:
 
-Comparison to Other Models
+Comparison to other models
 ##########################
 
-So far, the MVS' results for a sector coupled system (electricity + hydrogen) are compared to those of HOMER for the same exact system. This comparison is important to highlight the similarities and differences between the two optimization models. On the electricity side, most of the values are comparable and in the same range. The differences mainly show on the hydrogen part in terms of investment in an electrolyzer capacity (component linking the two sectors) and the values related to that. On another note, both models have different approaches for calculating the value of the levelized cost of a certain energy carrier and therefore the values are apart. Details regarding the comparison drawn between the two models can be found `here <https://repository.tudelft.nl/islandora/object/uuid%3A50c283c7-64c9-4470-8063-140b56f18cfe?collection=education>`__ on pages 55-63.
+A comparision of the results of different models regarding an identical reference system is a validation method that is commonly used. However, one model cannot absolutely validate another model or claim that one is better than the other. This is why the focus should be on testing the correctness, appropriateness and accuracy of a model vis-à-vis its purpose.
+Since the MVS is an open source tool, it is important to use a validated model for comparison, but also similar open source tools like urbs and Calliope for instance. The following two articles list some of the models that could be used for comparison to the MVS: :ref:`(Ringkjøb, 2018) <reference_bibliography>` and :ref:`(Bloess, 2017) <reference_bibliography>`. A thorough comparison to other models able to perform optimizations for sector-coupled energy systems is something that should be performed in the future.
 
-This validation method is commonly used. However, one model cannot absolutely validate another model or claim that one is better than the other. This is why the focus should be on testing the correctness, appropriateness and accuracy of a model vis-à-vis its purpose. Since the MVS is an open source tool, it is important to use a validated model for comparison, but also similar open source tools like urbs and Calliope for instance. The following two articles list some of the models that could be used for comparison to the MVS: `A review of modelling tools for energy and electricity systems with large shares of variable renewables <https://doi.org/10.1016/j.rser.2018.08.002>`__ and `Power-to-heat for renewable energy integration: A review of technologies, modeling approaches, and flexibility potentials <https://doi.org/10.1016/j.apenergy.2017.12.073>`__.
-
+So far, the MVS has been compared to HOMER for a sector coupled energy system combining electricity and hydrogen sectors. This comparison was able to highlight the similarities and differences between the two optimization models. On the electricity side, most of the values are comparable and in the same range. The differences mainly show on the hydrogen part in terms of investment into electrolyzer capacity, i.e. the component linking the two sectors, as well as related values. The calculation of the levelized cost of a certain energy carrier appear very different, which, however, was expected due to the :ref:`energy carrier weighting approach <energy_carrier_weighting>`. Details regarding the comparison drawn between the two models can be found in :ref:`(El Mir, 2020, p. 55ff) <references_scientific_publications>`.
 
 .. _verification_output_tests:
 
