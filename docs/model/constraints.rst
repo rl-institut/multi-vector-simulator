@@ -42,7 +42,7 @@ The minimum renewable share is introduced to the energy system by :code:`D2.cons
 Minimal degree of autonomy constraint
 ######################################
 
-The minimal degree of autonomy constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal degree of autonomy defined within the constraint. The degree of autonomy of the optimized energy system may also be higher than the minimal degree of autonomy. Please find the definition of here: :ref:`degree_of_autonomy`
+The minimal degree of autonomy constraint requires the capacity and dispatch optimization of the MVS to reach at least the minimal degree of autonomy defined within the constraint. The degree of autonomy of the optimized energy system may also be higher than the minimal degree of autonomy. For more details, refer to the definition of :ref:`degree of autonomy <degree_of_autonomy>`
 
 The minimal degree of autonomy is applied to the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
 
@@ -107,7 +107,7 @@ Some definitions of NZE systems in literature allow the energy system's demand s
 The NZE constraint is applied to the whole, sector-coupled energy system, but not to specific sectors. As such, energy carrier weighting plays a role and may lead to unexpected results. The constraint reads as follows:
 
 .. math::
-        \sum_{i} {E_{feedin, DSO} (i) \cdot w_i - E_{consumption, DSO} (i) \cdot w_i} >= 0
+        \sum_{i} {E_{feedin, provider} (i) \cdot w_i - E_{consumption, provider} (i) \cdot w_i} >= 0
 
 :Deactivating the constraint:
 

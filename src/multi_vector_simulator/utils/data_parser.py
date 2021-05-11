@@ -99,6 +99,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     THERM_LOSSES_ABS,
     NET_ZERO_ENERGY,
     COST_REPLACEMENT,
+    ASSET_DICT,
 )
 
 from multi_vector_simulator.utils.exceptions import MissingParameterError
@@ -612,7 +613,7 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                     # convert some keys MVS to EPA style according to the mapping
                     asset[MAP_MVS_EPA[k]] = asset.pop(k)
                 # TODO change energy busses from dict to list in MVS
-                if asset_group == ENERGY_BUSSES and k == "asset_list":
+                if asset_group == ENERGY_BUSSES and k == ASSET_DICT:
                     asset["assets"] = list(asset.pop(k).keys())
                 if asset_group == ENERGY_STORAGE:
                     if k in (INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY):

@@ -33,6 +33,8 @@ Data input
    :members:
    :undoc-members:
 
+.. _module_C0:
+
 Data pre-processing and validity checks
 ---------------------------------------
 
