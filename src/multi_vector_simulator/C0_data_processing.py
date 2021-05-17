@@ -1922,5 +1922,5 @@ def process_normalized_installed_cap(dict_values, group, asset, subasset=None):
             {INSTALLED_CAP_NORMALIZED: {VALUE: inst_cap_norm, UNIT: asset_dict[UNIT]}}
         )
         logging.debug(
-            f"Parameter {INSTALLED_CAP} of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES} to obtain {INSTALLED_CAP_NORMALIZED}."
+            f"Parameter {INSTALLED_CAP} ({asset_dict[INSTALLED_CAP][VALUE]}) of asset '{asset_dict[LABEL]}' was multiplied by the peak value of {TIMESERIES} to obtain {INSTALLED_CAP_NORMALIZED}  ({asset_dict[INSTALLED_CAP_NORMALIZED][VALUE]})."
         )

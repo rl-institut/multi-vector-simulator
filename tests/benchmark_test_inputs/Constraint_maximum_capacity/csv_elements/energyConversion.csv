@@ -14,4 +14,3 @@ outflow_direction,str,Electricity,Electricity,Electricity
 energyVector,str,Electricity,Electricity,Electricity
 type_oemof,str,transformer,transformer,transformer
 unit,str,kVa,kVa,kW
-,,,,
