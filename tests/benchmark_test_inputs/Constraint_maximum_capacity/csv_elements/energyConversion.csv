@@ -9,7 +9,7 @@ maximumCap,kW,None,1000,5000
 lifetime,year,30,30,15
 specific_costs_om,currency/kW/year,0,5,3000
 dispatch_price,currency/kWh,0,0,0
-optimizeCap,bool,False,True,True
+optimizeCap,bool,True,True,True
 outflow_direction,str,Electricity,Electricity,Electricity
 energyVector,str,Electricity,Electricity,Electricity
 type_oemof,str,transformer,transformer,transformer

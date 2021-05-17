@@ -1897,16 +1897,27 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
 
 def process_normalized_installed_cap(dict_values, group, asset, subasset=None):
     """
+    Processes the normalized installed capacity value based on the installed capacity value and the chosen timeseries.
+
     # ToDo: write test for this function
     Parameters
     ----------
-    dict_values
-    group
-    asset
-    subasset
+    dict_values: dict
+        dictionary of all assets
+
+    group: str
+        Group that the asset belongs to (str). Used to acces sub-asset data and for error messages.
+
+    asset: str
+        asset name
+
+    subasset: str or None
+        subasset name.
+        Default: None.
 
     Returns
     -------
+    Updates the asset dictionary with the normalizedInstalledCap value.
 
     """
     if subasset is None:
