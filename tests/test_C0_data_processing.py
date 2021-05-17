@@ -30,6 +30,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MAXIMUM_CAP_NORMALIZED,
     MAXIMUM_ADD_CAP_NORMALIZED,
     INSTALLED_CAP,
+    INSTALLED_CAP_NORMALIZED,
     FILENAME,
     PEAK_DEMAND_PRICING,
     AVAILABILITY_DISPATCH,
@@ -709,6 +710,30 @@ def test_process_maximum_cap_constraint_subasset():
     ), f"The maximumCap is in {dict_values[group][asset][subasset][MAXIMUM_CAP][UNIT]}, while the asset itself has unit {dict_values[group][asset][subasset][UNIT]}."
 
 
+def test_process_normalized_installed_cap():
+    """The asset has a normalized timeseries (timeseries peak < 1) which the installedCap value should be normalized with."""
+    timeseries_peak = 0.8
+    installed_cap = 10
+    dict_values = {
+        group: {
+            asset: {
+                LABEL: asset,
+                UNIT: unit,
+                INSTALLED_CAP: {VALUE: installed_cap},
+                FILENAME: "a_name",
+                TIMESERIES_PEAK: {VALUE: timeseries_peak},
+            }
+        }
+    }
+    C0.process_normalized_installed_cap(dict_values, group, asset, subasset=None)
+    assert (
+        dict_values[group][asset][INSTALLED_CAP_NORMALIZED][VALUE] == installed_cap * timeseries_peak
+    ), f"The function does not calculate the INSTALLED_CAP_NORMALIZED parameter correctly."
+    assert (
+        dict_values[group][asset][INSTALLED_CAP_NORMALIZED][UNIT] == unit
+    ), f"The installedCapNormalized is in {dict_values[group][asset][INSTALLED_CAP_NORMALIZED][UNIT]}, while the asset itself has unit {dict_values[group][asset][UNIT]}."
+
+
 DSO = "dso"
 dict_test = deepcopy(dict_test_avilability)
 dict_test[SIMULATION_SETTINGS].update({EVALUATED_PERIOD: {VALUE: 7}})
@@ -730,7 +755,6 @@ dict_test.update(
         },
     }
 )
-
 
 def test_add_a_transformer_for_each_peak_demand_pricing_period_1_period():
     dict_test_trafo = deepcopy(dict_test)

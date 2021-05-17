@@ -374,7 +374,7 @@ class Test_Constraints:
         With this benchmark test, the maximum capacity constraint is validated.
         The benchmark test passes if the optimized added capacity is less than or
         equal to the defined maximum capacity.
-        
+
         """
         use_case = [
             "Constraint_maximum_capacity",

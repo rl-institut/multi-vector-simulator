@@ -1899,7 +1899,6 @@ def process_normalized_installed_cap(dict_values, group, asset, subasset=None):
     """
     Processes the normalized installed capacity value based on the installed capacity value and the chosen timeseries.
 
-    # ToDo: write test for this function
     Parameters
     ----------
     dict_values: dict
@@ -1914,6 +1913,11 @@ def process_normalized_installed_cap(dict_values, group, asset, subasset=None):
     subasset: str or None
         subasset name.
         Default: None.
+
+    Notes
+    -----
+    Tested with:
+    - test_process_normalized_installed_cap()
 
     Returns
     -------
