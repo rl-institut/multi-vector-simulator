@@ -865,6 +865,11 @@ def convert_components_to_dataframe(dict_values):
     -------
     :class:`pandas.DataFrame<frame>`
 
+    Notes
+    -----
+
+    Tested with:
+        - test_E1_process_results.test_convert_components_to_dataframe()
     """
 
     # Read the subdicts energyProduction, energyConversion and energyStorage as separate dicts
@@ -889,6 +894,10 @@ def convert_components_to_dataframe(dict_values):
     # Defining the columns of the table and filling them up with the appropriate data
     for (component_key, comp_dict) in zip(components_list, comp_dict_list):
         for comps in component_key:
+            # Define whether optimization takes place
+            optimize = translate_optimizeCap_from_boolean_to_yes_no(
+                comp_dict[comps][OPTIMIZE_CAP][VALUE]
+            )
             components.update(
                 {
                     comps: [
@@ -896,17 +905,22 @@ def convert_components_to_dataframe(dict_values):
                         comp_dict[comps][ENERGY_VECTOR],
                         comp_dict[comps][UNIT],
                         comp_dict[comps][INSTALLED_CAP][VALUE],
-                        comp_dict[comps][OPTIMIZE_CAP][VALUE],
+                        optimize,
                     ]
                 }
             )
 
     # Energy storage assets have different structure, added individually
-
     for storage_component in keys_storage:
-
         for sub_stor_comp in [INPUT_POWER, STORAGE_CAPACITY, OUTPUT_POWER]:
             comp_label = dict_energy_storage[storage_component][sub_stor_comp][LABEL]
+            # Define whether optimization takes place
+            # Currently, storage optimization setting applies to all sub-categories.
+            # Can be re-used when storage asset sub-components can be optimized individually:
+            # dict_energy_storage[storage_component][sub_stor_comp][OPTIMIZE_CAP][VALUE]
+            optimize = translate_optimizeCap_from_boolean_to_yes_no(
+                dict_energy_storage[storage_component][OPTIMIZE_CAP][VALUE]
+            )
             components.update(
                 {
                     comp_label: [
@@ -918,12 +932,7 @@ def convert_components_to_dataframe(dict_values):
                         dict_energy_storage[storage_component][sub_stor_comp][
                             INSTALLED_CAP
                         ][VALUE],
-                        # Currently, storage optimization setting applies to all sub-categories
-                        dict_energy_storage[storage_component][OPTIMIZE_CAP][VALUE],
-                        # Can be re-used when storage asset sub-components can be optimized individually
-                        # dict_energy_storage[storage_component][sub_stor_comp][OPTIMIZE_CAP][
-                        #    VALUE
-                        # ],
+                        optimize,
                     ]
                 }
             )
@@ -942,15 +951,33 @@ def convert_components_to_dataframe(dict_values):
     )
     df_comp.index.name = "Component"
     df_comp = df_comp.reset_index()
-
-    # Add True or False for each component in the column for capacity optimization
-    for i in range(len(df_comp)):
-        if df_comp.at[i, "Capacity optimization"] is True:
-            df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "Yes"
-        else:
-            df_comp.iloc[i, df_comp.columns.get_loc("Capacity optimization")] = "No"
-
     return df_comp
+
+
+def translate_optimizeCap_from_boolean_to_yes_no(optimize_cap):
+    r"""
+    Translates the boolean OPTIMIZE_CAP to a yes-no value for readability of auto report
+
+    Parameters
+    ----------
+    optimize_cap: bool
+        Setting whether asset is optimized or not
+
+    Returns
+    -------
+    optimize: str
+        If OPTIMIZE_CAP==True: "Yes", else "No".
+
+    Notes
+    -----
+    Tested with:
+    - test_E1_process_results.test_translate_optimizeCap_from_boolean_to_yes_no()
+    """
+    if optimize_cap is True:
+        optimize = "Yes"
+    else:
+        optimize = "No"
+    return optimize
 
 
 def convert_scalar_matrix_to_dataframe(dict_values):

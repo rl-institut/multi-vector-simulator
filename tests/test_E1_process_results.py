@@ -445,6 +445,111 @@ def test_get_state_of_charge_info():
     ), f"Parameter {AVERAGE_SOC} should have {UNIT} 'factor' but has {dict_test[AVERAGE_SOC][UNIT]}"
 
 
+def test_convert_components_to_dataframe():
+    pv = "PV"
+    diesel = "diesel"
+    storage = "storage"
+    generator = "genset"
+    dict_components = {
+        # 2 examples energy production assets, as this does not seem to work currently
+        ENERGY_PRODUCTION: {
+            pv: {
+                OEMOF_ASSET_TYPE: OEMOF_SOURCE,
+                ENERGY_VECTOR: "vector",
+                UNIT: UNIT,
+                INSTALLED_CAP: {VALUE: 1},
+                OPTIMIZE_CAP: {VALUE: True},
+            },
+            diesel: {
+                OEMOF_ASSET_TYPE: OEMOF_SOURCE,
+                ENERGY_VECTOR: "vector",
+                UNIT: UNIT,
+                INSTALLED_CAP: {VALUE: 1},
+                OPTIMIZE_CAP: {VALUE: True},
+            },
+        },
+        # Example for energy conversion asset, not optimized
+        ENERGY_CONVERSION: {
+            generator: {
+                OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
+                ENERGY_VECTOR: "vector",
+                UNIT: UNIT,
+                INSTALLED_CAP: {VALUE: 1},
+                OPTIMIZE_CAP: {VALUE: False},
+            }
+        },
+        # Example for energy storage asset
+        ENERGY_STORAGE: {
+            storage: {
+                OPTIMIZE_CAP: {VALUE: True},
+                OEMOF_ASSET_TYPE: OEMOF_GEN_STORAGE,
+                ENERGY_VECTOR: "vector",
+                INPUT_POWER: {
+                    LABEL: storage + INPUT_POWER,
+                    INSTALLED_CAP: {VALUE: 1, UNIT: UNIT},
+                },
+                OUTPUT_POWER: {
+                    LABEL: storage + OUTPUT_POWER,
+                    INSTALLED_CAP: {VALUE: 1, UNIT: UNIT},
+                },
+                STORAGE_CAPACITY: {
+                    LABEL: storage + STORAGE_CAPACITY,
+                    INSTALLED_CAP: {VALUE: 1, UNIT: UNIT},
+                },
+            }
+        },
+    }
+
+    df_comp = E1.convert_components_to_dataframe(dict_components)
+
+    for parameter in [
+        "Type of Component",
+        "Energy Vector",
+        UNIT,
+        "Installed Capacity",
+        "Capacity optimization",
+    ]:
+        assert (
+            parameter in df_comp.columns
+        ), f"Parameter {parameter} has not been added as a column to the table to be printed in the autoreport."
+
+    for component in [
+        pv,
+        diesel,
+        generator,
+        storage + INPUT_POWER,
+        storage + OUTPUT_POWER,
+        storage + STORAGE_CAPACITY,
+    ]:
+        assert (
+            component in df_comp["Component"].values
+        ), f"Asset {component} is not included in the table to be printed in the autoreport."
+
+    for row in range(0, len(df_comp)):
+        if df_comp.iloc[row, df_comp.columns.get_loc("Component")] == generator:
+            assert (
+                df_comp.iloc[row, df_comp.columns.get_loc("Capacity optimization")]
+                == "No"
+            ), f"The {generator} is not being capacity optimized, so `Capacity optimization` should be `No`, which is not the case."
+        else:
+            assert (
+                df_comp.iloc[row, df_comp.columns.get_loc("Capacity optimization")]
+                == "Yes"
+            ), f"The {df_comp.iloc[row,df_comp.columns.get_loc('Component')]} is being capacity optimized, so `Capacity optimization` should be `Yes`, which is not the case."
+
+
+def test_translate_optimizeCap_from_boolean_to_yes_no():
+    # Not optimized:
+    optimize = E1.translate_optimizeCap_from_boolean_to_yes_no(False)
+    assert (
+        optimize == "No"
+    ), f"Without optimization, `no` should be returned but it is not."
+    optimize = E1.translate_optimizeCap_from_boolean_to_yes_no(True)
+    assert (
+        optimize == "Yes"
+    ), f"Without optimization, `no` should be returned but it is not."
+
+
 """
 def test_get_optimal_cap_optimize_input_flow_timeseries_peak_provided():
     pass
