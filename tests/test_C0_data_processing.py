@@ -727,7 +727,8 @@ def test_process_normalized_installed_cap():
     }
     C0.process_normalized_installed_cap(dict_values, group, asset, subasset=None)
     assert (
-        dict_values[group][asset][INSTALLED_CAP_NORMALIZED][VALUE] == installed_cap * timeseries_peak
+        dict_values[group][asset][INSTALLED_CAP_NORMALIZED][VALUE]
+        == installed_cap * timeseries_peak
     ), f"The function does not calculate the INSTALLED_CAP_NORMALIZED parameter correctly."
     assert (
         dict_values[group][asset][INSTALLED_CAP_NORMALIZED][UNIT] == unit
@@ -755,6 +756,7 @@ dict_test.update(
         },
     }
 )
+
 
 def test_add_a_transformer_for_each_peak_demand_pricing_period_1_period():
     dict_test_trafo = deepcopy(dict_test)
