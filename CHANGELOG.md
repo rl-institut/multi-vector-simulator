@@ -25,7 +25,7 @@ Here is a template for new release sections
 - Add check for correct `installedcap` processing to `AB_grid_pv` benchmark test (#831)
 - Add check to `AB_grid_pv` benchmark test: total pv generation is used to cover demand (#831)
 - Section on energy consumption assets in `Model_Assumptions.rst` and `MVS_Outputs.rst` (#817)
-- Constant variables: `MODELLING_TIME`, `LP_FILE` (#839), `MAXIMUM_ADD_CAP` (#848), `TIMESERIES_SOC`, `AVERAGE_SOC` (#859)
+- Constant variables: `MODELLING_TIME`, `LP_FILE` (#839), `MAXIMUM_ADD_CAP` (#848), `TIMESERIES_SOC`, `AVERAGE_SOC` (#859), `INSTALLED_CAP_NORMALIZED` (#835)
 - Add plotly in `requirements/default.txt` (#840)
 - Pytests for `C1.check_for_sufficient_assets_on_busses()` (#837)
 - Add a parameter lookup table in RTD (#842)
@@ -49,6 +49,9 @@ Here is a template for new release sections
 - Create constant variables in `E1`: `THRESHOLD` for central definition of precision limit (#859)
 - `docs/MVS_kpi_categories.csv` and `conf.generate_kpi_categories()` to list KPI under in the RTD (#869)
 - Descriptions of all output files to RTD (#874)
+- Create benchmark test for maximumCap constraint in `test_benchmark_constraints.py` (#835)
+- Add `C0.process_normalized_installed_cap()` to process the normalized installed capacity value (#835)
+- Add test for `C0.process_normalized_installed_cap()` (#835)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
