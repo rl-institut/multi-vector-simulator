@@ -547,7 +547,7 @@ def test_translate_optimizeCap_from_boolean_to_yes_no():
     optimize = E1.translate_optimizeCap_from_boolean_to_yes_no(True)
     assert (
         optimize == "Yes"
-    ), f"Without optimization, `no` should be returned but it is not."
+    ), f"Without optimization, `yes` should be returned but it is not."
 
 
 """
