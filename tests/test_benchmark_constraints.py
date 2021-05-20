@@ -55,7 +55,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_CONVERSION,
     TIMESERIES,
-    FILENAME
+    FILENAME,
 )
 
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
@@ -472,6 +472,8 @@ class Test_Constraints:
                 if prod_asset in ["pv_plant_01", "pv_plant_02", "pv_plant_03"]:
                     # check that the power output timeseries * total capacity of each production asset is equal to
                     # the calculated total flow (of each asset)
-                    assert (opt_add_cap + inst_cap) * data[ENERGY_PRODUCTION][prod_asset][TIMESERIES].sum() == approx(
+                    assert (opt_add_cap + inst_cap) * data[ENERGY_PRODUCTION][
+                        prod_asset
+                    ][TIMESERIES].sum() == approx(
                         data[ENERGY_PRODUCTION][prod_asset][TOTAL_FLOW][VALUE], rel=1e-3
                     ), f"The sum of the power output timeseries * total capacity chosen of {prod_asset} should be equal to calculated total flow of the asset, but this is not the case."
