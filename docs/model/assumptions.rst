@@ -422,7 +422,7 @@ Following conversion factors and energy carriers are defined:
 
 The values of ethanol and biodiesel seem comparably low in [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`__] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`__] and do not seem to be representative of the net heating value (or lower heating value) that was expected to be used here.
 
-From this, the energy weighting factors using the baseline energy carrier electricity are calculated (see :ref:`table_default_energy_carrier_weights_label`).
+From this, the energy weighting factors are calculated using the electricity content for crude oil as baseline (see :ref:`table_default_energy_carrier_weights_label` below).
 
 .. _table_default_energy_carrier_weights_label:
 
@@ -430,54 +430,54 @@ From this, the energy weighting factors using the baseline energy carrier electr
    :widths: 50 25 25
    :header-rows: 1
 
-   * - Product
+   * - Energy carrier
      - Unit
      - Value
    * - LNG
      - kWh(eleq)/kg
-     - 33.4728198
+     - 12.6927
    * - Crude oil
      - kWh(eleq)/kg
-     - 12.6927029
-   * - Gas oil/diesel
+     - 11.6304
+   * - Diesel
      - kWh(eleq)/litre
-     - 11.630422
+     - 9.4803
    * - Kerosene
      - kWh(eleq)/litre
-     - 9.48030688
+     - 8.9080
    * - Gasoline
      - kWh(eleq)/litre
-     - 8.90807395
+     - 8.7358
    * - LPG
      - kWh(eleq)/litre
-     - 8.73575397
+     - 6.4728
    * - Ethane
      - kWh(eleq)/litre
-     - 6.47282161
+     - 5.1498
    * - H2
      - kWh(eleq)/kgH2
-     - 5.14976795
+     - 33.4728
    * - Electricity
      - kWh(eleq)/kWh(el)
      - 1
    * - Biodiesel
      - kWh(eleq)/litre
-     - 0.06290669
+     - 0.0629
    * - Ethanol
      - kWh(eleq)/litre
-     - 0.04242544
+     - 0.0424
    * - Natural gas
      - kWh(eleq)/litre
-     - 0.00933273
+     - 0.009
    * - Heat
      - kWh(eleq)/kWh(therm)
-     - 1.0002163
+     - 1.0002
    * - Heat
      - kWh(eleq)/kcal
-     - 0.00116304
+     - 0.0011
    * - Heat
      - kWh(eleq)/BTU
-     - 0.00029076
+     - 0.0003
 
 With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, compared to electricity, can be calculated with its conversion factor *w*:sub:`i` as:
 
