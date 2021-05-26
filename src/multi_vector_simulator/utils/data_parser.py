@@ -458,10 +458,14 @@ def convert_epa_params_to_mvs(epa_dict):
                     if DSM not in dict_asset[asset_label]:
                         dict_asset[asset_label][DSM] = False
 
-                if EMISSION_FACTOR not in dict_asset[asset_label]:
-                    dict_asset[asset_label][EMISSION_FACTOR] = {
-                        VALUE: KNOWN_EXTRA_PARAMETERS[EMISSION_FACTOR][DEFAULT_VALUE]
-                    }
+                if asset_group == ENERGY_PRODUCTION or ENERGY_PROVIDERS:
+                    # Emission factor only applicable for energy production assets and energy providers
+                    if EMISSION_FACTOR not in dict_asset[asset_label]:
+                        dict_asset[asset_label][EMISSION_FACTOR] = {
+                            VALUE: KNOWN_EXTRA_PARAMETERS[EMISSION_FACTOR][
+                                DEFAULT_VALUE
+                            ]
+                        }
 
             dict_values[asset_group] = dict_asset
         else:
