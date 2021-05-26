@@ -1122,7 +1122,7 @@ def add_levelized_cost_of_energy_carriers(dict_values):
 
     Returns
     -------
-    Updates KPI_SCALAR_DICT
+    Updated KPI_SCALAR_DICT: Add `ATTRIBUTED_COSTS` and `LCOeleq` for each energy carrier as well as `LCOeleq` for overall energy system
 
     Notes
     -----
