@@ -455,8 +455,13 @@ def convert_epa_params_to_mvs(epa_dict):
                         )
 
                 if asset_group == ENERGY_CONSUMPTION:
+                    # DSM not used parameters, but to be sure it will be defined as False
                     if DSM not in dict_asset[asset_label]:
                         dict_asset[asset_label][DSM] = False
+                    # Dispatchability of energy consumption assets always False
+                    dict_asset[asset_label].update(
+                        {DISPATCHABILITY: {UNIT: TYPE_BOOL, VALUE: False},}
+                    )
 
                 if asset_group == ENERGY_PRODUCTION or ENERGY_PROVIDERS:
                     # Emission factor only applicable for energy production assets and energy providers
