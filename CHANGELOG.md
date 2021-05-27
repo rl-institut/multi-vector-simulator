@@ -86,6 +86,7 @@ Here is a template for new release sections
 - Prepared `docs/MVS_kpis_list.csv` summarizing all simulation outputs (#869)
 - Changed a great number of variable names in `constants_json_strings.py` by decapitalizing and removing spaces (#869)
 - Changed formatting of code snippets in RTD to `:code:` (#880)
+- `E3.add_levelized_cost_of_energy_carriers` to fix wrong variable definition, extend pytest (#890)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
@@ -110,6 +111,7 @@ Here is a template for new release sections
 - Adjust definition for `maximumCap` in `docs/MVS_parameters_list.csv`: Total maximum installable capacity (#848)
 - Negative values within the precision limit in `timeseries.xlsx` (#859)
 - Introduce new standard for cites (#885)
+- Faulty calculation of attributed costs (#890)
 
 ## [0.5.5] - 2021-03-04
 
