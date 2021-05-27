@@ -51,6 +51,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
 from multi_vector_simulator.utils.exceptions import (
     UnknownEnergyVectorError,
     DuplicateLabels,
+    MVSOemofError,
 )
 
 
@@ -862,8 +863,7 @@ def test_check_energy_system_can_fulfill_max_demand_fails_mvs_runthrough(caplog)
     TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
     if os.path.exists(TEST_OUTPUT_PATH):
         shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
-
-    try:
+    with pytest.raises(MVSOemofError):
         use_case = "validity_check_insufficient_capacities"
         main(
             overwrite=True,
@@ -872,12 +872,11 @@ def test_check_energy_system_can_fulfill_max_demand_fails_mvs_runthrough(caplog)
             input_type=CSV_EXT,
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
         )
-    except:
-        pass
+
 
     logfile = open(os.path.join(TEST_OUTPUT_PATH, use_case, LOGFILE), "r")
     log = logfile.read()
-
+    logfile.close()
     assert "might have insufficient capacities" in log
 
 
