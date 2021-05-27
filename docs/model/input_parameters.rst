@@ -11,8 +11,8 @@ Parameters in each category/CSV file
 ************************************
 
 Important note: Each asset and bus needs to have an unique label.
-In the `csv` input files, these are defined by the column headers.
-The input parameters are gathered under the following categories. These categories reflect the structure of the `csv` input files or the firsts keys of the `json` input file.
+In the :code:`csv` input files, these are defined by the column headers.
+The input parameters are gathered under the following categories. These categories reflect the structure of the :code:`csv` input files or the firsts keys of the :code:`json` input file.
 
 .. This file is generated automatically when conf.py is executed (function generate_parameter_categories)
 

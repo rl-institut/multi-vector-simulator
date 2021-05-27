@@ -10,7 +10,7 @@ The workflow is described in the  `CONTRIBUTING.md <https://github.com/rl-instit
 Unit tests (pytests)
 --------------------
 
-When developing code for the MVS please make sure that you always also develop test in `tests`. We integrate those unit tests with `pytest`.
+When developing code for the MVS please make sure that you always also develop test in :code:`tests`. We integrate those unit tests with :code:`pytest`.
 Make sure that your tests are as lightweight as possible - this means that you do not always have to run the whole code to test for one feature, but can test a function with a standalone tests. Please refer to the other tests that have already been introduced.
 
 Always aim for the test coverage button on `the main page of the github repository <https://github.com/rl-institut/multi-vector-simulator/>`__ to reach 100%!

@@ -33,7 +33,7 @@ Here is a template for new release sections
 - Define `OEMOF_SOLPH_OBJECT_ASSET`, `WEIGHTING_FACTOR_ENERGY_CARRIER`, `RENEWABLE_SHARE_ASSET_FLOW`, `OEMOF_SOLPH_OBJECT_BUS` as constants in `D2` module (#834)
 - Import and use constants from `D2` module in `test_D2_model_constraints.py` (#834)
 - Add check for the capability of asset capacities in an energy system to fulfill the maximum demand in `C1.check_energy_system_can_fulfill_max_demand()` (#824)
-- Add tests for `C1.check_energy_system_can_fulfill_max_demand()`, including pseudo-benchmark test in `test_C1` (#824)
+- Add tests for `C1.check_energy_system_can_fulfill_max_demand()`, including pseudo-benchmark test in `test_C1` (#824, #896)
 - Zenodo badge on README (#850)
 - `VERSION_NUM` to simulation settings, added with `C0.add_version_number_used()` (#855)
 - Generation of pdf version of the readthedocs (#853)
@@ -48,7 +48,6 @@ Here is a template for new release sections
 - Create constant variables in `E1` for accessing oemof-solph results: `OEMOF_FLOW`, `OEMOF_SEQUENCES`, `OEMOF_INVEST`, `OEMOF_SCALARS` (#859)
 - Create constant variables in `E1`: `THRESHOLD` for central definition of precision limit (#859)
 - `docs/MVS_kpi_categories.csv` and `conf.generate_kpi_categories()` to list KPI under in the RTD (#869)
-- `docs/MVS_kpi_categories.csv` and `conf.generate_kpi_categories()` to list KPI under in the RTD (#869)
 - Descriptions of all output files to RTD (#874)
 
 ### Changed
@@ -56,7 +55,7 @@ Here is a template for new release sections
 - Status messages of requirements in `E-Land_Requirements.rst` (#817)
 - Minor updates in `Model_Assumptions.rst` and `MVS_Outputs.rst`, mainly adding labels (#817)
 - Pytests for `D0` to let them pass on Windows (#839)
-- Update pyomo and pandas dependencies (#840)
+- Update pyomo and pandas dependencies (#840, #896)
 - Pass peak demand pricing bus in `C1.check_for_sufficient_assets_on_busses()` (#837)
 - Changed utils.data_parser.convert_mvs_params_to_epa(): Removed `AUTO_SINK` suffix (#837)
 - Refactored `EXCESS` to `EXCESS_SINK` as this is more intuitive (#837)
@@ -83,9 +82,10 @@ Here is a template for new release sections
 - Benchmark tests for `AE-Grid-Battery`: Input files and pytests (#859)
 - `E1.lcoe_assets` to calculate LCOE of storage capacity throughput based on input flow. Required change of `test_benchmark_KPI` (storage not used, LCOE=0) (#589)
 - Modified github action workflow so that it is not triggered when one modifies the README, CHANGELOG or the docs (#872)
-- Proofread RTD for the release of the ELAND report (#871)
+- Proofread RTD for the release of the ELAND report (#871, #878, #884, #885, #886, #887)
 - Prepared `docs/MVS_kpis_list.csv` summarizing all simulation outputs (#869)
 - Changed a great number of variable names in `constants_json_strings.py` by decapitalizing and removing spaces (#869)
+- Changed formatting of code snippets in RTD to `:code:` (#880)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
@@ -109,6 +109,7 @@ Here is a template for new release sections
 - Re-enable the coverage tests on github actions (#864)
 - Adjust definition for `maximumCap` in `docs/MVS_parameters_list.csv`: Total maximum installable capacity (#848)
 - Negative values within the precision limit in `timeseries.xlsx` (#859)
+- Introduce new standard for cites (#885)
 
 ## [0.5.5] - 2021-03-04
 

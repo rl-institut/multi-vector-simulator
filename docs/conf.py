@@ -268,11 +268,13 @@ def generate_kpi_description(input_csv_file, output_path):
     # :Valid Interval:
     # :Connected indicators: List of indicators that are connected to the described indicator, to ease referencing
     #
+
+    df = df.replace("None", "NA")
     for row in df.iterrows():
         props = row[1]
         # Create a string with references to all the indicators connected to the current indicator
         if isinstance(props.see_also, str):
-            see_also = ", ".join(
+            see_also = " | ".join(
                 [f":ref:`{ref.replace(' ', '')}`" for ref in props.see_also.split(",")]
             )
         else:
@@ -290,7 +292,7 @@ def generate_kpi_description(input_csv_file, output_path):
         lines = (
             [f".. _{props.ref}:", "", title, "^" * len(title), "",]
             + [f"{p} {props[p]}" for p in parameter_properties]
-            + [f":Connected indicators: {see_also}"]
+            + [f":Related indicators: {see_also}"]
             + ["", "",]
         )
 
@@ -377,3 +379,9 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    'table-style.css',
+]
