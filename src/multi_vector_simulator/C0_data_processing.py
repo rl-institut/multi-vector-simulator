@@ -1521,15 +1521,17 @@ def receive_timeseries_from_csv(
         # if only filename is given here, then only one column can be in the csv
         file_name = dict_asset[FILENAME]
         unit = dict_asset[UNIT] + "/" + UNIT_HOUR
-    elif FILENAME in dict_asset[input_type]:
+    elif FILENAME in dict_asset.get(input_type, []):
         file_name = dict_asset[input_type][FILENAME]
         header = dict_asset[input_type][HEADER]
         unit = dict_asset[input_type][UNIT]
     else:
         load_from_timeseries_instead_of_file = True
+        file_name = ""
 
     file_path = os.path.join(settings[PATH_INPUT_FOLDER], TIME_SERIES, file_name)
-    if os.path.exists(file_path) is False:
+
+    if os.path.exists(file_path) is False or os.path.isfile(file_path) is False:
         msg = (
             f"Missing file! The timeseries file '{file_path}' \nof asset "
             + f"{dict_asset[LABEL]} can not be found."
