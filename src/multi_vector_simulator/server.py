@@ -36,6 +36,8 @@ child-sub:  Sub-child function, feeds only back to child functions
 import logging
 import json
 
+from oemof.tools import logger
+
 # Loading all child functions
 import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C0_data_processing as C0
@@ -71,6 +73,21 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
          Default: False.
 
     """
+    display_output = kwargs.get("display_output", None)
+
+    if display_output == "debug":
+        screen_level = logging.DEBUG
+    elif display_output == "info":
+        screen_level = logging.INFO
+    elif display_output == "warning":
+        screen_level = logging.WARNING
+    elif display_output == "error":
+        screen_level = logging.ERROR
+    else:
+        screen_level = logging.INFO
+
+    # Define logging settings and path for saving log
+    logger.define_logging(screen_level=screen_level)
 
     welcome_text = (
         "\n \n Multi-Vector Simulation Tool (MVS) V"
