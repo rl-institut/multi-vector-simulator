@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import pytest
@@ -7,7 +8,12 @@ from copy import deepcopy
 
 import multi_vector_simulator.C0_data_processing as C0
 
-from multi_vector_simulator.utils.constants import TYPE_BOOL
+from multi_vector_simulator.utils.constants import (
+    TYPE_BOOL,
+    PATH_INPUT_FOLDER,
+    DATA_TYPE_JSON_KEY,
+    TYPE_SERIES,
+)
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     PROJECT_DATA,
@@ -17,8 +23,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_CONVERSION,
     ENERGY_BUSSES,
-    OUTFLOW_DIRECTION,
-    INFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
     OPTIMIZE_CAP,
@@ -76,6 +80,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     CONNECTED_FEEDIN_SINK,
     DISPATCHABILITY,
     OEMOF_SOURCE,
+    OEMOF_SINK,
     UNIT_YEAR,
     EMISSION_FACTOR,
     TIMESERIES,
@@ -89,6 +94,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 
 from multi_vector_simulator.version import version_num
+
+from _constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
 
 def test_add_economic_parameters():
@@ -1196,6 +1203,61 @@ def test_add_version_number_used():
     C0.add_version_number_used(settings)
     assert VERSION_NUM in settings
     assert settings[VERSION_NUM] == version_num
+
+
+settings_dict = {
+    TIME_INDEX: pd.date_range(start=start_date, periods=3, freq=str(60) + UNIT_MINUTE),
+    PERIODS: 3,
+    START_DATE: start_date,
+    TIMESTEP: {VALUE: 60},
+    PATH_INPUT_FOLDER: os.path.join(
+        TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_for_C0"
+    ),
+}
+
+
+def test_load_timeseries_from_csv_file_over_TIMESERIES():
+
+    dict_asset = {
+        ENERGY_VECTOR: "Electricity",
+        FILENAME: "timeseries.csv",
+        INFLOW_DIRECTION: "Electricity",
+        LABEL: "Electricity demand",
+        OEMOF_ASSET_TYPE: OEMOF_SINK,
+        UNIT: "kW",
+        TIMESERIES: {VALUE: [4, 5, 6], DATA_TYPE_JSON_KEY: TYPE_SERIES,},
+    }
+    C0.receive_timeseries_from_csv(settings_dict, dict_asset, input_type="input")
+    assert (dict_asset[TIMESERIES].values == np.array([1, 2, 3])).all()
+
+
+def test_load_timeseries_from_TIMESERIES_if_file_under_FILENAME_not_exist():
+
+    dict_asset = {
+        ENERGY_VECTOR: "Electricity",
+        FILENAME: "not_exsiting.csv",
+        INFLOW_DIRECTION: "Electricity",
+        LABEL: "Electricity demand",
+        OEMOF_ASSET_TYPE: OEMOF_SINK,
+        UNIT: "kW",
+        TIMESERIES: pd.Series([4, 5, 6]),
+    }
+    C0.receive_timeseries_from_csv(settings_dict, dict_asset, input_type="input")
+    assert (dict_asset[TIMESERIES].values == np.array([4, 5, 6])).all()
+
+
+def test_load_timeseries_from_TIMESERIES_if_FILENAME_not_in_dict():
+
+    dict_asset = {
+        ENERGY_VECTOR: "Electricity",
+        INFLOW_DIRECTION: "Electricity",
+        LABEL: "Electricity demand",
+        OEMOF_ASSET_TYPE: OEMOF_SINK,
+        UNIT: "kW",
+        TIMESERIES: pd.Series([4, 5, 6]),
+    }
+    C0.receive_timeseries_from_csv(settings_dict, dict_asset, input_type="input")
+    assert (dict_asset[TIMESERIES].values == np.array([4, 5, 6])).all()
 
 
 """
