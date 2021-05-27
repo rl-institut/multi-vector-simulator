@@ -873,7 +873,6 @@ def test_check_energy_system_can_fulfill_max_demand_fails_mvs_runthrough(caplog)
             path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
         )
 
-
     logfile = open(os.path.join(TEST_OUTPUT_PATH, use_case, LOGFILE), "r")
     log = logfile.read()
     logfile.close()
