@@ -173,6 +173,7 @@ EXCESS_SINK = "_excess"
 MAXIMUM_ADD_CAP = "maximumAddCap"
 MAXIMUM_CAP_NORMALIZED = "maximumCap_normalized"
 MAXIMUM_ADD_CAP_NORMALIZED = "maximumAddCap_normalized"
+INSTALLED_CAP_NORMALIZED = "installedCap_normalized"
 
 # DSO
 DSO_CONSUMPTION = "_consumption"

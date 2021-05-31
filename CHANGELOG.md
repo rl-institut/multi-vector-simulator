@@ -25,7 +25,7 @@ Here is a template for new release sections
 - Add check for correct `installedcap` processing to `AB_grid_pv` benchmark test (#831)
 - Add check to `AB_grid_pv` benchmark test: total pv generation is used to cover demand (#831)
 - Section on energy consumption assets in `Model_Assumptions.rst` and `MVS_Outputs.rst` (#817)
-- Constant variables: `MODELLING_TIME`, `LP_FILE` (#839), `MAXIMUM_ADD_CAP` (#848), `TIMESERIES_SOC`, `AVERAGE_SOC` (#859)
+- Constant variables: `MODELLING_TIME`, `LP_FILE` (#839), `MAXIMUM_ADD_CAP` (#848), `TIMESERIES_SOC`, `AVERAGE_SOC` (#859), `INSTALLED_CAP_NORMALIZED` (#835)
 - Add plotly in `requirements/default.txt` (#840)
 - Pytests for `C1.check_for_sufficient_assets_on_busses()` (#837)
 - Add a parameter lookup table in RTD (#842)
@@ -49,6 +49,9 @@ Here is a template for new release sections
 - Create constant variables in `E1`: `THRESHOLD` for central definition of precision limit (#859)
 - `docs/MVS_kpi_categories.csv` and `conf.generate_kpi_categories()` to list KPI under in the RTD (#869)
 - Descriptions of all output files to RTD (#874)
+- Create benchmark test for maximumCap constraint in `test_benchmark_constraints.py` (#835)
+- Add `C0.process_normalized_installed_cap()` to process the normalized installed capacity value (#835)
+- Add test for `C0.process_normalized_installed_cap()` (#835)
 - Tips and Tricks in the RTD (#876)
 
 ### Changed
@@ -87,6 +90,9 @@ Here is a template for new release sections
 - Prepared `docs/MVS_kpis_list.csv` summarizing all simulation outputs (#869)
 - Changed a great number of variable names in `constants_json_strings.py` by decapitalizing and removing spaces (#869)
 - Changed formatting of code snippets in RTD to `:code:` (#880)
+- `E3.add_levelized_cost_of_energy_carriers` to fix wrong variable definition, extend pytest (#890)
+- `E2.convert_components_to_dataframe()` to correctly display when an asset is optimized, add pytests (#875)
+- If the `TIMESERIES` key is in the `dict_values` and the file under `FILENAME` key cannot be found, the timeseries is loaded from `TIMESERIES` (#881)
 - updated the SOC defintions in RTD (#876)
 
 ### Removed
@@ -112,6 +118,8 @@ Here is a template for new release sections
 - Adjust definition for `maximumCap` in `docs/MVS_parameters_list.csv`: Total maximum installable capacity (#848)
 - Negative values within the precision limit in `timeseries.xlsx` (#859)
 - Introduce new standard for cites (#885)
+- Faulty calculation of attributed costs (#890)
+- Show actual setting of `OPTIMIZE_CAP` in autoreport for storages and energy production fuel sources (#875)
 
 ## [0.5.5] - 2021-03-04
 

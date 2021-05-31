@@ -6,4 +6,4 @@ project_id,str,1
 project_name,str,Test simulation
 scenario_id,str,1
 scenario_name,str,Test scenario
-scenario_description,"Test scenario for test simulations with the MVS"
+scenario_description,str,"Test scenario for test simulations with the MVS"
