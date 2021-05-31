@@ -49,6 +49,7 @@ Here is a template for new release sections
 - Create constant variables in `E1`: `THRESHOLD` for central definition of precision limit (#859)
 - `docs/MVS_kpi_categories.csv` and `conf.generate_kpi_categories()` to list KPI under in the RTD (#869)
 - Descriptions of all output files to RTD (#874)
+- Tips and Tricks in the RTD (#876)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -86,6 +87,7 @@ Here is a template for new release sections
 - Prepared `docs/MVS_kpis_list.csv` summarizing all simulation outputs (#869)
 - Changed a great number of variable names in `constants_json_strings.py` by decapitalizing and removing spaces (#869)
 - Changed formatting of code snippets in RTD to `:code:` (#880)
+- updated the SOC defintions in RTD (#876)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
