@@ -53,6 +53,7 @@ Here is a template for new release sections
 - Add `C0.process_normalized_installed_cap()` to process the normalized installed capacity value (#835)
 - Add test for `C0.process_normalized_installed_cap()` (#835)
 - Tips and Tricks in the RTD (#876)
+- Add logging option for server (#895)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
@@ -95,6 +96,7 @@ Here is a template for new release sections
 - If the `TIMESERIES` key is in the `dict_values` and the file under `FILENAME` key cannot be found, the timeseries is loaded from `TIMESERIES` (#881)
 - updated the SOC defintions in RTD (#876)
 - Corrected faulty weighting factors (`DEFAULT_WEIGHTS_ENERGY_CARRIERS` in `utils/constants.py`, `docs/model/assumptions.rst`) (#894)
+- MVS-EPA parser (`utils.data_parser.convert_epa_params_to_mvs()`) (#895)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)

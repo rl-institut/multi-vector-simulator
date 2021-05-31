@@ -255,8 +255,9 @@ def compare_input_parameters_with_reference(
                     else:
                         # the sub parameter is provided but is not required --> extra
                         param_list = extra_parameters.get(mp, [])
-                        param_list.append(sp)
-                        extra_parameters[mp] = param_list
+                        if sp not in param_list:
+                            param_list.append(sp)
+                            extra_parameters[mp] = param_list
 
     for mp in required_parameters.keys():
         if mp not in main_parameters:
