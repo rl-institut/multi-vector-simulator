@@ -25,7 +25,7 @@ Here is a template for new release sections
 - Add check for correct `installedcap` processing to `AB_grid_pv` benchmark test (#831)
 - Add check to `AB_grid_pv` benchmark test: total pv generation is used to cover demand (#831)
 - Section on energy consumption assets in `Model_Assumptions.rst` and `MVS_Outputs.rst` (#817)
-- Constant variables: `MODELLING_TIME`, `LP_FILE` (#839), `MAXIMUM_ADD_CAP` (#848), `TIMESERIES_SOC`, `AVERAGE_SOC` (#859)
+- Constant variables: `MODELLING_TIME`, `LP_FILE` (#839), `MAXIMUM_ADD_CAP` (#848), `TIMESERIES_SOC`, `AVERAGE_SOC` (#859), `INSTALLED_CAP_NORMALIZED` (#835)
 - Add plotly in `requirements/default.txt` (#840)
 - Pytests for `C1.check_for_sufficient_assets_on_busses()` (#837)
 - Add a parameter lookup table in RTD (#842)
@@ -33,7 +33,7 @@ Here is a template for new release sections
 - Define `OEMOF_SOLPH_OBJECT_ASSET`, `WEIGHTING_FACTOR_ENERGY_CARRIER`, `RENEWABLE_SHARE_ASSET_FLOW`, `OEMOF_SOLPH_OBJECT_BUS` as constants in `D2` module (#834)
 - Import and use constants from `D2` module in `test_D2_model_constraints.py` (#834)
 - Add check for the capability of asset capacities in an energy system to fulfill the maximum demand in `C1.check_energy_system_can_fulfill_max_demand()` (#824)
-- Add tests for `C1.check_energy_system_can_fulfill_max_demand()`, including pseudo-benchmark test in `test_C1` (#824)
+- Add tests for `C1.check_energy_system_can_fulfill_max_demand()`, including pseudo-benchmark test in `test_C1` (#824, #896)
 - Zenodo badge on README (#850)
 - `VERSION_NUM` to simulation settings, added with `C0.add_version_number_used()` (#855)
 - Generation of pdf version of the readthedocs (#853)
@@ -49,13 +49,18 @@ Here is a template for new release sections
 - Create constant variables in `E1`: `THRESHOLD` for central definition of precision limit (#859)
 - `docs/MVS_kpi_categories.csv` and `conf.generate_kpi_categories()` to list KPI under in the RTD (#869)
 - Descriptions of all output files to RTD (#874)
+- Create benchmark test for maximumCap constraint in `test_benchmark_constraints.py` (#835)
+- Add `C0.process_normalized_installed_cap()` to process the normalized installed capacity value (#835)
+- Add test for `C0.process_normalized_installed_cap()` (#835)
+- Tips and Tricks in the RTD (#876)
+- Add logging option for server (#895)
 
 ### Changed
 - Update the release protocol in `CONTRIBUTING.md` (#821)
 - Status messages of requirements in `E-Land_Requirements.rst` (#817)
 - Minor updates in `Model_Assumptions.rst` and `MVS_Outputs.rst`, mainly adding labels (#817)
 - Pytests for `D0` to let them pass on Windows (#839)
-- Update pyomo and pandas dependencies (#840)
+- Update pyomo and pandas dependencies (#840, #896)
 - Pass peak demand pricing bus in `C1.check_for_sufficient_assets_on_busses()` (#837)
 - Changed utils.data_parser.convert_mvs_params_to_epa(): Removed `AUTO_SINK` suffix (#837)
 - Refactored `EXCESS` to `EXCESS_SINK` as this is more intuitive (#837)
@@ -86,6 +91,12 @@ Here is a template for new release sections
 - Prepared `docs/MVS_kpis_list.csv` summarizing all simulation outputs (#869)
 - Changed a great number of variable names in `constants_json_strings.py` by decapitalizing and removing spaces (#869)
 - Changed formatting of code snippets in RTD to `:code:` (#880)
+- `E3.add_levelized_cost_of_energy_carriers` to fix wrong variable definition, extend pytest (#890)
+- `E2.convert_components_to_dataframe()` to correctly display when an asset is optimized, add pytests (#875)
+- If the `TIMESERIES` key is in the `dict_values` and the file under `FILENAME` key cannot be found, the timeseries is loaded from `TIMESERIES` (#881)
+- updated the SOC defintions in RTD (#876)
+- Corrected faulty weighting factors (`DEFAULT_WEIGHTS_ENERGY_CARRIERS` in `utils/constants.py`, `docs/model/assumptions.rst`) (#894)
+- MVS-EPA parser (`utils.data_parser.convert_epa_params_to_mvs()`) (#895)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
@@ -110,6 +121,9 @@ Here is a template for new release sections
 - Adjust definition for `maximumCap` in `docs/MVS_parameters_list.csv`: Total maximum installable capacity (#848)
 - Negative values within the precision limit in `timeseries.xlsx` (#859)
 - Introduce new standard for cites (#885)
+- Faulty calculation of attributed costs (#890)
+- Show actual setting of `OPTIMIZE_CAP` in autoreport for storages and energy production fuel sources (#875)
+- Faulty weighting factors (#894)
 
 ## [0.5.5] - 2021-03-04
 

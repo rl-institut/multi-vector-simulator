@@ -24,6 +24,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     AVAILABILITY_DISPATCH,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
+    INSTALLED_CAP_NORMALIZED,
     EFFICIENCY,
     INPUT_POWER,
     OUTPUT_POWER,
@@ -316,7 +317,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
     """
     if dict_asset[OPTIMIZE_CAP][VALUE] is False:
         func_constant(model, dict_asset, **kwargs)
-        if dict_asset[OEMOF_ASSET_TYPE] != "source":
+        if dict_asset[OEMOF_ASSET_TYPE] != OEMOF_SOURCE:
             logging.debug(
                 "Added: %s %s (fixed capacity)",
                 dict_asset[OEMOF_ASSET_TYPE].capitalize(),
@@ -325,7 +326,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
 
     elif dict_asset[OPTIMIZE_CAP][VALUE] is True:
         func_optimize(model, dict_asset, **kwargs)
-        if dict_asset[OEMOF_ASSET_TYPE] != "source":
+        if dict_asset[OEMOF_ASSET_TYPE] != OEMOF_SOURCE:
             logging.debug(
                 "Added: %s %s (capacity to be optimized)",
                 dict_asset[OEMOF_ASSET_TYPE].capitalize(),
@@ -744,6 +745,10 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
         maximum = dict_asset[MAXIMUM_ADD_CAP_NORMALIZED][VALUE]
     else:
         maximum = dict_asset[MAXIMUM_ADD_CAP][VALUE]
+    if INSTALLED_CAP_NORMALIZED in dict_asset:
+        existing = dict_asset[INSTALLED_CAP_NORMALIZED][VALUE]
+    else:
+        existing = dict_asset[INSTALLED_CAP][VALUE]
     outputs = {
         kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
             label=dict_asset[LABEL],
@@ -752,7 +757,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
                 ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
                 maximum=maximum,
-                existing=dict_asset[INSTALLED_CAP][VALUE],
+                existing=existing,
             ),
             # variable_costs are devided by time series peak as normalized time series are used as actual_value
             variable_costs=dict_asset[DISPATCH_PRICE][VALUE]

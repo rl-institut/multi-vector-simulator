@@ -1122,7 +1122,14 @@ def add_levelized_cost_of_energy_carriers(dict_values):
 
     Returns
     -------
-    Updates KPI_SCALAR_DICT
+    Updated KPI_SCALAR_DICT: Add `ATTRIBUTED_COSTS` and `LCOeleq` for each energy carrier as well as `LCOeleq` for overall energy system
+
+    Notes
+    -----
+
+    Tested with:
+        - test_E3_indicator_calculation.test_add_levelized_cost_of_energy_carriers_one_sector()
+        - test_E3_indicator_calculation.test_add_levelized_cost_of_energy_carriers_two_sectors()
     """
     # Abbreviate costs accessed
     NPC = dict_values[KPI][KPI_SCALARS_DICT][COST_TOTAL]
@@ -1136,10 +1143,10 @@ def add_levelized_cost_of_energy_carriers(dict_values):
     for energy_carrier in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
         # Get energy carrier specific values
         energy_carrier_label = TOTAL_DEMAND + energy_carrier
-        total_flow_energy_carrier_eleq = dict_values[KPI][KPI_SCALARS_DICT][
+        total_flow_energy_carrier = dict_values[KPI][KPI_SCALARS_DICT][
             energy_carrier_label
         ]
-        total_flow_energy_carrier = dict_values[KPI][KPI_SCALARS_DICT][
+        total_flow_energy_carrier_eleq = dict_values[KPI][KPI_SCALARS_DICT][
             energy_carrier_label + SUFFIX_ELECTRICITY_EQUIVALENT
         ]
         # Calculate LCOE of energy carrier
