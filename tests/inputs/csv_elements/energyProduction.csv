@@ -1,7 +1,7 @@
 ,unit,PV_plant_(mono),Diesel
 unit,str,kWp,l
 optimizeCap,bool,True,True
-maximumCap,None or float,1000,None
+maximumCap,None or float,10000,None
 installedCap,kWp,50,0
 age_installed,year,0,0
 lifetime,year,30,20

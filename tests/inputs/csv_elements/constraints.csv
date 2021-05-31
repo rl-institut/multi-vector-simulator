@@ -1,5 +1,5 @@
 ,unit,constraints
-minimal_renewable_factor,factor,0.3
+minimal_renewable_factor,factor,0.01
 maximum_emissions,kgCO2eq/a,8000000
-minimal_degree_of_autonomy,factor,0.1
+minimal_degree_of_autonomy,factor,0.01
 net_zero_energy,bool,False

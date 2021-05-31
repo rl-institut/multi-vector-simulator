@@ -282,6 +282,9 @@ class Test_Economic_KPI:
                 asset_data = data[asset_group][asset]
             # assertion
             for key in KEYS_TO_BE_EVALUATED_PER_ASSET:
+                assert (
+                    key in asset_data
+                ), f"{key} is not in the asset data of {asset_group}, {asset}. It includes: {asset_data.keys()}."
                 assert expected_values.loc[asset, key] == pytest.approx(
                     asset_data[key][VALUE], rel=1e-3
                 ), f"Parameter {key} of asset {asset} is not of expected value, expected {expected_values.loc[asset, key]}, got {asset_data[key][VALUE]}."

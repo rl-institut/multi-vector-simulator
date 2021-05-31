@@ -1,10 +1,8 @@
 ##################################################
-MVS - Multi-Vector Simulator of the E-Land toolbox
+MVS - Multi-Vector Simulator of the E-LAND toolbox
 ##################################################
 
-|badge_docs| |badge_CI| |badge_coverage|
-
-Depreciated: |badge_travis|
+|badge_docs| |badge_CI| |badge_coverage| |badge_zenodo| |badge_pypi| |badge_gpl2| |badge_black|
 
 Rights: `Reiner Lemoine Institut (Berlin) <https://reiner-lemoine-institut.de/>`__
 
@@ -34,6 +32,33 @@ Maybe you have ideas that can help the MVS move forward? Maybe you noticed a bug
 For advanced programmers: You can also use the ``dev`` branch that includes the latest updates and changes.
 You find the changelog `HERE <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`__.
 
+.. |badge_docs| image:: https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest
+    :target: https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+.. |badge_CI| image:: https://github.com/rl-institut/multi-vector-simulator/workflows/CI/badge.svg
+    :alt: Build status
+
+.. |badge_coverage| image:: https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg
+    :target: https://coveralls.io/github/rl-institut/multi-vector-simulator
+    :alt: Test coverage
+
+.. |badge_zenodo| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4610237.svg
+    :target: https://doi.org/10.5281/zenodo.4610237
+    :alt: Zenodo DOI
+
+.. |badge_gpl2| image:: https://img.shields.io/badge/License-GPL%20v2-blue.svg
+    :target: https://img.shields.io/badge/License-GPL%20v2-blue.svg
+    :alt: License gpl2
+
+.. |badge_pypi| image:: https://badge.fury.io/py/multi-vector-simulator.svg
+    :target: https://pypi.org/project/multi-vector-simulator/
+    :alt: Pypi version
+
+.. |badge_black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
+    :alt: black linter
+
 ========================
 Getting started with MVS
 ========================
@@ -57,7 +82,7 @@ To set up the MVS, follow the steps below:
    and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables
    (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights).
 
-   You can also follow the `steps <https://oemof.readthedocs.io/en/latest/installation_and_setup.html>`__
+   You can also follow the `steps <https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver>`__
    from the oemof setup instructions
 
 -  Test if that the cbc solver is properly installed by typing
@@ -86,6 +111,10 @@ To set up the MVS, follow the steps below:
 
 This should create a folder ``MVS_outputs`` with the example simulation's results
 
+You can always check which version you installed with the following command
+
+   ``mvs_tool --version``
+
 
 Using the MVS
 =============
@@ -99,7 +128,7 @@ Edit the json input file (or csv files) and run
 
 ::
 
-    `mvs_tool -i path_input_folder -ext json -o path_output_folder`
+    mvs_tool -i path_input_folder -ext json -o path_output_folder
 
 With ``path_input_folder``: path to folder with input data,
 
@@ -111,7 +140,7 @@ For more information about the possible command lines options
 
 ::
 
-    `mvs_tool -h`
+    mvs_tool -h
 
 Use the ``main()`` function
 ---------------------------
@@ -130,7 +159,7 @@ The possible arguments to this functions are:
 
 - ``path_input_folder`` (str): The path to the directory where the input CSVs/JSON files are located. Default: ``inputs/`` (Command line "-i").
 
-- ``path_output_folder`` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS E-Lands (Command line "-o"). Default: ``MVS_outputs/``.
+- ``path_output_folder`` (str): The path to the directory where the results of the simulation such as the plots, time series, results JSON files are saved by MVS (Command line "-o"). Default: ``MVS_outputs/``.
 
 - ``display_output`` (str): Sets the level of displayed logging messages. Options: "debug", "info", "warning", "error". Default: "info".
 
@@ -150,7 +179,7 @@ folder ``input_template`` for inspiration) this folder will be taken as default 
 
 ::
 
-    `mvs_tool`
+    mvs_tool
 
 A default output folder will be created, if you run the same simulation
 several time you would have to either overwrite the existing output file
@@ -158,13 +187,15 @@ with
 
 ::
 
-    `mvs_tool -f`
+    mvs_tool -f
 
 Or provide another output folder's path
 
 ::
 
-    `mvs_tool -o <path_to_other_output_folder>`
+    mvs_tool -o <path_to_other_output_folder>
+
+.. _pdf-report-commands:
 
 Generate pdf report or an app in your browser to visualise the results of the simulation
 ----------------------------------------------------------------------------------------
@@ -173,36 +204,29 @@ To use the report feature you need to install extra dependencies first
 
 ::
 
-    `pip install multi-vector-simulator[report]`
+    pip install multi-vector-simulator[report]
 
-Generate a report after running a simulation
---------------------------------------------
 
-Use the option ``-pdf`` in the command line ``mvs_tool`` to generate a pdf report in the simulation's output folder
+Use the option ``-pdf`` in the command line ``mvs_tool`` to generate a pdf report in a simulation's output folder
 (by default in ``MVS_outputs/report/simulation_report.pdf``):
 
 ::
 
-    `mvs_tool -pdf`
-
-Generate only the figures of a simulation's results
----------------------------------------------------
+    mvs_tool -pdf
 
 Use the option ``-png`` in the command line ``mvs_tool`` to generate png figures of the results in the simulation's
 output folder (by default in ``MVS_outputs/``):
 
 ::
 
-    `mvs_tool -png`
+    mvs_tool -png
 
-post-processing
----------------
 
 To generate a report of the simulation's results, run the following command **after** a simulation generated an output folder:
 
 ::
 
-    `mvs_report -i path_simulation_output_folder -o path_pdf_report`
+    mvs_report -i path_simulation_output_folder -o path_pdf_report
 
 where ``path_simulation_output_folder`` should link to the folder of your simulation's output, or directly to a
 json file (default ``MVS_outputs/json_input_processed.json``) and ``path_pdf_report`` is the path where the report should be saved as a pdf file.
@@ -216,7 +240,7 @@ It is also possible to automatically save the report as pdf by using the option 
 
 ::
 
-    `mvs_report -i path_simulation_output_folder -pdf`
+    mvs_report -i path_simulation_output_folder -pdf
 
 By default, it will save the report in a ``report`` folder within your simulation's output folder
 default (``MVS_outputs/report/``). See ``mvs_report -h`` for more information about possible options.
@@ -229,21 +253,4 @@ If you want to contribute to this project, please read
 `CONTRIBUTING.md <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CONTRIBUTING.md>`__. For less experienced
 github users, we propose a `workflow <https://github.com/rl-institut/multi-vector-simulator/wiki/Examplary-Workflow>`__.
 
-For advanced programmers: You can also use the dev version that includes the latest updates and changes, but which in
-turn might not be tested. You can find the CHANGELOG.md on
-this `page <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`__.
-
-.. |badge_docs| image:: https://readthedocs.org/projects/multi-vector-simulator/badge/?version=latest
-    :target: https://multi-vector-simulator.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
-
-.. |badge_CI| image:: https://github.com/rl-institut/multi-vector-simulator/workflows/CI/badge.svg
-    :alt: Build status
-
-.. |badge_coverage| image:: https://coveralls.io/repos/github/rl-institut/multi-vector-simulator/badge.svg
-    :target: https://coveralls.io/github/rl-institut/multi-vector-simulator
-    :alt: Test coverage
-
-.. |badge_travis| image:: https://travis-ci.com/rl-institut/mvs_eland.svg?branch=dev
-    :target: https://travis-ci.com/rl-institut/mvs_eland
-    :alt: Build status
+For advanced programmers: please checkout the `dev` branch that includes the latest updates and changes. You can find out about the latest changes in the `CHANGELOG.md file <https://github.com/rl-institut/multi-vector-simulator/blob/dev/CHANGELOG.md>`__.

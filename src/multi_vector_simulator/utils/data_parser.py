@@ -98,6 +98,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     THERM_LOSSES_REL,
     THERM_LOSSES_ABS,
     NET_ZERO_ENERGY,
+    COST_REPLACEMENT,
+    ASSET_DICT,
 )
 
 from multi_vector_simulator.utils.exceptions import MissingParameterError
@@ -130,7 +132,7 @@ MAP_EPA_MVS = {
     FIX_COST: FIX_COST,
     "time_step": TIMESTEP,
     "data": VALUE,
-    "replacement_costs_during_project_lifetime": "Replacement_costs_during_project_lifetime",
+    "replacement_costs_during_project_lifetime": COST_REPLACEMENT,
     "specific_replacement_costs_of_installed_capacity": SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
     "specific_replacement_costs_of_optimized_capacity": SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
     "asset_type": TYPE_ASSET,
@@ -268,7 +270,9 @@ def convert_epa_params_to_mvs(epa_dict):
     Notes
     -----
 
-    - For `simulation_settings`: parameter `TIMESTEP` is parsed as unit-value pair, `OUTPUT_LP_FILE` always `False`.
+    - For `simulation_settings`:
+        - parameter `TIMESTEP` is parsed as unit-value pair
+        - `OUTPUT_LP_FILE` always `False`
     - For `project_data`: parameter `SCENARIO_DESCRIPTION` is defined as placeholder string.
     - `fix_cost` is not required, default value will be set if it is not provided.
     - For missing asset group `CONSTRAINTS` following parameters are added:
@@ -282,10 +286,16 @@ def convert_epa_params_to_mvs(epa_dict):
         - `THERM_LOSSES_REL`: 0
         - `THERM_LOSSES_ABS`: 0
     - If `TIMESERIES` parameter in asset dictionary: Redefine unit, value and label.
-    - `ENERGY_PROVIDERS`: Auto-define unit as kWh(el), `INFLOW_DIRECTION=OUTFLOW_DIRECTION`
-    - `ENERGY_CONSUMPTION`: `DSM` is `False`
-    - `EMISSION_FACTOR` default value
-    - `ENERGY_PRODUCTION`: `DISPATCHABILITY` is always `False`, as no dispatchable fuel assets possible right now. Must be tackeld by EPA.
+    - `ENERGY_PROVIDERS`:
+        - Auto-define unit as kWh(el)
+        - `INFLOW_DIRECTION=OUTFLOW_DIRECTION`
+        - Default value for `EMISSION_FACTOR` added
+    - `ENERGY_CONSUMPTION`:
+        - `DSM` is `False`
+        - `DISPATCHABILITY` is FALSE
+    - `ENERGY_PRODUCTION`:
+        - Default value for `EMISSION_FACTOR` added
+        - `DISPATCHABILITY` is always `False`, as no dispatchable fuel assets possible right now. Must be tackeld by EPA.
      """
     epa_dict = deepcopy(epa_dict)
     dict_values = {}
@@ -453,13 +463,22 @@ def convert_epa_params_to_mvs(epa_dict):
                         )
 
                 if asset_group == ENERGY_CONSUMPTION:
+                    # DSM not used parameters, but to be sure it will be defined as False
                     if DSM not in dict_asset[asset_label]:
                         dict_asset[asset_label][DSM] = False
+                    # Dispatchability of energy consumption assets always False
+                    dict_asset[asset_label].update(
+                        {DISPATCHABILITY: {UNIT: TYPE_BOOL, VALUE: False},}
+                    )
 
-                if EMISSION_FACTOR not in dict_asset[asset_label]:
-                    dict_asset[asset_label][EMISSION_FACTOR] = {
-                        VALUE: KNOWN_EXTRA_PARAMETERS[EMISSION_FACTOR][DEFAULT_VALUE]
-                    }
+                if asset_group == ENERGY_PRODUCTION or ENERGY_PROVIDERS:
+                    # Emission factor only applicable for energy production assets and energy providers
+                    if EMISSION_FACTOR not in dict_asset[asset_label]:
+                        dict_asset[asset_label][EMISSION_FACTOR] = {
+                            VALUE: KNOWN_EXTRA_PARAMETERS[EMISSION_FACTOR][
+                                DEFAULT_VALUE
+                            ]
+                        }
 
             dict_values[asset_group] = dict_asset
         else:
@@ -611,7 +630,7 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                     # convert some keys MVS to EPA style according to the mapping
                     asset[MAP_MVS_EPA[k]] = asset.pop(k)
                 # TODO change energy busses from dict to list in MVS
-                if asset_group == ENERGY_BUSSES and k == "Asset_list":
+                if asset_group == ENERGY_BUSSES and k == ASSET_DICT:
                     asset["assets"] = list(asset.pop(k).keys())
                 if asset_group == ENERGY_STORAGE:
                     if k in (INPUT_POWER, OUTPUT_POWER, STORAGE_CAPACITY):
@@ -649,7 +668,8 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                 timeseries = asset[TIMESERIES_SOC].to_list()
                 asset[TIMESERIES_SOC] = {UNIT: unit_soc, VALUE: timeseries}
 
-            if "_excess" not in asset_label and "_sink" not in asset_label:
+            # Excess sinks should not be provided to the EPA
+            if "_excess" not in asset_label:
                 list_asset.append(asset)
 
         epa_dict[MAP_MVS_EPA[asset_group]] = list_asset

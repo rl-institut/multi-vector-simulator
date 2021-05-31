@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import pytest
@@ -7,7 +8,12 @@ from copy import deepcopy
 
 import multi_vector_simulator.C0_data_processing as C0
 
-from multi_vector_simulator.utils.constants import TYPE_BOOL
+from multi_vector_simulator.utils.constants import (
+    TYPE_BOOL,
+    PATH_INPUT_FOLDER,
+    DATA_TYPE_JSON_KEY,
+    TYPE_SERIES,
+)
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     PROJECT_DATA,
@@ -17,13 +23,14 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_CONVERSION,
     ENERGY_BUSSES,
-    OUTFLOW_DIRECTION,
-    INFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
     OPTIMIZE_CAP,
     MAXIMUM_CAP,
+    MAXIMUM_CAP_NORMALIZED,
+    MAXIMUM_ADD_CAP_NORMALIZED,
     INSTALLED_CAP,
+    INSTALLED_CAP_NORMALIZED,
     FILENAME,
     PEAK_DEMAND_PRICING,
     AVAILABILITY_DISPATCH,
@@ -66,16 +73,15 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_PEAK_DEMAND_PERIOD,
     ECONOMIC_DATA,
     CURR,
-    AUTO_SOURCE,
     DSO_PEAK_DEMAND_SUFFIX,
     ENERGY_PRICE,
     DSO_FEEDIN,
-    AUTO_SINK,
     CONNECTED_CONSUMPTION_SOURCE,
     CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS,
     CONNECTED_FEEDIN_SINK,
     DISPATCHABILITY,
     OEMOF_SOURCE,
+    OEMOF_SINK,
     UNIT_YEAR,
     EMISSION_FACTOR,
     TIMESERIES,
@@ -84,8 +90,13 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES_AVERAGE,
     TIMESERIES_NORMALIZED,
     FIX_COST,
+    VERSION_NUM,
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
+
+from multi_vector_simulator.version import version_num
+
+from _constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
 
 def test_add_economic_parameters():
@@ -627,11 +638,8 @@ def test_process_maximum_cap_constraint_maximumCap_is_int_smaller_than_installed
             }
         }
     }
-    with pytest.warns(UserWarning):
+    with pytest.raises(ValueError):
         C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
-        assert (
-            dict_values[group][asset][MAXIMUM_CAP][VALUE] is None
-        ), f"The invalid input is not ignored by defining maximumCap as None."
 
 
 def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_fuel_source():
@@ -656,6 +664,7 @@ def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_fuel_source()
 
 
 def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_non_dispatchable_asset():
+    # ToDo: change assertion errors
     """The asset belongs to the energy production group, and is a non-dispatchable asset.
     As the maximumCap is used to define the maximum capacity of an asset, but used in oemof-solph to limit a flow, the value has to be translated."""
     timeseries_peak = 0.8
@@ -675,8 +684,13 @@ def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_non_dispatcha
     }
     C0.process_maximum_cap_constraint(dict_values, group, asset, subasset=None)
     assert (
-        dict_values[group][asset][MAXIMUM_CAP][VALUE] == maxCap * timeseries_peak
+        dict_values[group][asset][MAXIMUM_CAP_NORMALIZED][VALUE]
+        == maxCap * timeseries_peak
     ), f"The initial maximumCap defined by the end-user ({maxCap}) is overwritten by a different value ({dict_values[group][asset][MAXIMUM_CAP][VALUE]})."
+    assert (
+        dict_values[group][asset][MAXIMUM_ADD_CAP_NORMALIZED][VALUE]
+        == (maxCap - installed_cap) * timeseries_peak
+    ), f"Message about the normalized value"
 
 
 def test_process_maximum_cap_constraint_subasset():
@@ -694,6 +708,31 @@ def test_process_maximum_cap_constraint_subasset():
     assert (
         dict_values[group][asset][subasset][MAXIMUM_CAP][UNIT] == unit
     ), f"The maximumCap is in {dict_values[group][asset][subasset][MAXIMUM_CAP][UNIT]}, while the asset itself has unit {dict_values[group][asset][subasset][UNIT]}."
+
+
+def test_process_normalized_installed_cap():
+    """The asset has a normalized timeseries (timeseries peak < 1) which the installedCap value should be normalized with."""
+    timeseries_peak = 0.8
+    installed_cap = 10
+    dict_values = {
+        group: {
+            asset: {
+                LABEL: asset,
+                UNIT: unit,
+                INSTALLED_CAP: {VALUE: installed_cap},
+                FILENAME: "a_name",
+                TIMESERIES_PEAK: {VALUE: timeseries_peak},
+            }
+        }
+    }
+    C0.process_normalized_installed_cap(dict_values, group, asset, subasset=None)
+    assert (
+        dict_values[group][asset][INSTALLED_CAP_NORMALIZED][VALUE]
+        == installed_cap * timeseries_peak
+    ), f"The function does not calculate the INSTALLED_CAP_NORMALIZED parameter correctly."
+    assert (
+        dict_values[group][asset][INSTALLED_CAP_NORMALIZED][UNIT] == unit
+    ), f"The installedCapNormalized is in {dict_values[group][asset][INSTALLED_CAP_NORMALIZED][UNIT]}, while the asset itself has unit {dict_values[group][asset][UNIT]}."
 
 
 DSO = "dso"
@@ -832,9 +871,8 @@ def test_define_source():
         == OEMOF_SOURCE
     ), f"The {OEMOF_ASSET_TYPE} of the defined source is not {OEMOF_SOURCE}."
     assert (
-        dict_test_source[ENERGY_PRODUCTION][source_name][LABEL]
-        == source_name + AUTO_SOURCE
-    ), f"The {LABEL} of the defined source is not {source_name + AUTO_SOURCE}."
+        dict_test_source[ENERGY_PRODUCTION][source_name][LABEL] == source_name
+    ), f"The {LABEL} of the defined source is not {source_name}."
     assert (
         dict_test_source[ENERGY_PRODUCTION][source_name][OUTFLOW_DIRECTION] == outflow
     ), f"The {OUTFLOW_DIRECTION} of the defined source is not {outflow}."
@@ -907,7 +945,7 @@ def test_define_source_exception_unknown_bus():
         dict_test_source[ENERGY_BUSSES][outflow][ENERGY_VECTOR] == energy_vector
     ), f"The {ENERGY_VECTOR} of the bus is not {energy_vector} as it should be"
     assert dict_test_source[ENERGY_BUSSES][outflow][ASSET_DICT] == {
-        source_name: source_name + AUTO_SOURCE
+        source_name: source_name
     }, f"The new source {source_name} is not included in the {ASSET_DICT} of the newly defined bus {outflow}"
 
 
@@ -1011,12 +1049,12 @@ def test_define_auxiliary_assets_of_energy_providers():
         DSO + DSO_CONSUMPTION in dict_test_provider[ENERGY_PRODUCTION]
     ), f"No source for energy consumption from the energy provider is added."
     assert (
-        DSO + DSO_FEEDIN + AUTO_SINK in dict_test_provider[ENERGY_CONSUMPTION]
+        DSO + DSO_FEEDIN in dict_test_provider[ENERGY_CONSUMPTION]
     ), f"No sink for feed-in into the energy provider`s grid is added."
     assert (
         CONNECTED_CONSUMPTION_SOURCE in dict_test_provider[ENERGY_PROVIDERS][DSO]
     ), f"The key {CONNECTED_CONSUMPTION_SOURCE} is not added to dict_test_provider[ENERGY_PROVIDERS][DSO]."
-    exp = DSO + DSO_CONSUMPTION + AUTO_SOURCE
+    exp = DSO + DSO_CONSUMPTION
     assert (
         dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_CONSUMPTION_SOURCE] == exp
     ), f"The {CONNECTED_CONSUMPTION_SOURCE} is unexpected with {dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_CONSUMPTION_SOURCE]} instead of {exp}"
@@ -1035,13 +1073,13 @@ def test_define_auxiliary_assets_of_energy_providers():
     assert (
         CONNECTED_FEEDIN_SINK in dict_test_provider[ENERGY_PROVIDERS][DSO]
     ), f"The key {CONNECTED_FEEDIN_SINK} is not added to dict_test_provider[ENERGY_PROVIDERS][DSO]."
-    exp = DSO + DSO_FEEDIN + AUTO_SINK
+    exp = DSO + DSO_FEEDIN
     assert (
         dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_FEEDIN_SINK] == exp
     ), f"The {CONNECTED_FEEDIN_SINK} is unexpected with {dict_test_provider[ENERGY_PROVIDERS][DSO][CONNECTED_FEEDIN_SINK]} instead of {exp}"
     assert (
         dict_test_provider[ENERGY_CONSUMPTION][exp][DISPATCH_PRICE][VALUE] == -float
-    ), f"The feed-in tarrif should have the inverse sign than the {FEEDIN_TARIFF} defined in the energyProvider {DSO} (ie. {float}), but this is not the case with {dict_test_provider[ENERGY_CONSUMPTION][exp][FEEDIN_TARIFF][VALUE]}"
+    ), f"The feed-in tariff should have the inverse sign than the {FEEDIN_TARIFF} defined in the energyProvider {DSO} (ie. {float}), but this is not the case with {dict_test_provider[ENERGY_CONSUMPTION][exp][DISPATCH_PRICE][VALUE]}"
 
 
 def test_change_sign_of_feedin_tariff_positive_value(caplog):
@@ -1098,7 +1136,6 @@ def test_compute_timeseries_properties_TIMESERIES_in_dict_asset():
     }
 
     C0.compute_timeseries_properties(dict_asset)
-    print(dict_asset)
 
     for parameter in [
         TIMESERIES_PEAK,
@@ -1185,6 +1222,68 @@ def test_process_all_assets_fixcost():
     assert (
         LIFETIME_PRICE_DISPATCH not in dict_test[FIX_COST][fix_cost_entry]
     ), f"Parameter {LIFETIME_PRICE_DISPATCH} should not be calculated for {FIX_COST} entries."
+
+
+def test_add_version_number_used():
+    settings = {}
+    C0.add_version_number_used(settings)
+    assert VERSION_NUM in settings
+    assert settings[VERSION_NUM] == version_num
+
+
+settings_dict = {
+    TIME_INDEX: pd.date_range(start=start_date, periods=3, freq=str(60) + UNIT_MINUTE),
+    PERIODS: 3,
+    START_DATE: start_date,
+    TIMESTEP: {VALUE: 60},
+    PATH_INPUT_FOLDER: os.path.join(
+        TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_for_C0"
+    ),
+}
+
+
+def test_load_timeseries_from_csv_file_over_TIMESERIES():
+
+    dict_asset = {
+        ENERGY_VECTOR: "Electricity",
+        FILENAME: "timeseries.csv",
+        INFLOW_DIRECTION: "Electricity",
+        LABEL: "Electricity demand",
+        OEMOF_ASSET_TYPE: OEMOF_SINK,
+        UNIT: "kW",
+        TIMESERIES: {VALUE: [4, 5, 6], DATA_TYPE_JSON_KEY: TYPE_SERIES,},
+    }
+    C0.receive_timeseries_from_csv(settings_dict, dict_asset, input_type="input")
+    assert (dict_asset[TIMESERIES].values == np.array([1, 2, 3])).all()
+
+
+def test_load_timeseries_from_TIMESERIES_if_file_under_FILENAME_not_exist():
+
+    dict_asset = {
+        ENERGY_VECTOR: "Electricity",
+        FILENAME: "not_exsiting.csv",
+        INFLOW_DIRECTION: "Electricity",
+        LABEL: "Electricity demand",
+        OEMOF_ASSET_TYPE: OEMOF_SINK,
+        UNIT: "kW",
+        TIMESERIES: pd.Series([4, 5, 6]),
+    }
+    C0.receive_timeseries_from_csv(settings_dict, dict_asset, input_type="input")
+    assert (dict_asset[TIMESERIES].values == np.array([4, 5, 6])).all()
+
+
+def test_load_timeseries_from_TIMESERIES_if_FILENAME_not_in_dict():
+
+    dict_asset = {
+        ENERGY_VECTOR: "Electricity",
+        INFLOW_DIRECTION: "Electricity",
+        LABEL: "Electricity demand",
+        OEMOF_ASSET_TYPE: OEMOF_SINK,
+        UNIT: "kW",
+        TIMESERIES: pd.Series([4, 5, 6]),
+    }
+    C0.receive_timeseries_from_csv(settings_dict, dict_asset, input_type="input")
+    assert (dict_asset[TIMESERIES].values == np.array([4, 5, 6])).all()
 
 
 """

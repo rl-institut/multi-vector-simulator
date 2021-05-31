@@ -44,7 +44,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
 )
 
 dict_asset = {
-    LABEL: "DSO_feedin_sink",
+    LABEL: "DSO_feedin",
     DISPATCH_PRICE: {VALUE: -0.4, UNIT: "currency/kWh"},
     SPECIFIC_COSTS: {VALUE: 0, UNIT: "currency/kW"},
     INSTALLED_CAP: {VALUE: 0.0, UNIT: UNIT},

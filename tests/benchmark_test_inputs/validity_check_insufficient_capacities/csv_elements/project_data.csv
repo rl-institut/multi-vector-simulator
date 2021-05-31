@@ -1,0 +1,9 @@
+,unit,project_data
+country,str,country
+latitude,str,0
+longitude,str,0
+project_id,str,1
+project_name,str,Benchmark test for simple case electricity bus
+scenario_id,str,2
+scenario_name,str,A+B
+scenario_description,str,"One electricity bus including two PV systems, one with only InstalledCap, one with InstalledCap and MaximumCap, one with MaximumCap, which in sum are not able to supply the demand."

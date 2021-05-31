@@ -40,7 +40,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LCOeleq,
     TOTAL_FEEDIN,
     DSO_FEEDIN,
-    AUTO_SINK,
     TOTAL_GENERATION_IN_LES,
     ONSITE_ENERGY_FRACTION,
     TOTAL_EXCESS,
@@ -427,7 +426,7 @@ def test_add_levelized_cost_of_energy_carriers_one_sector():
 
 
 def test_add_levelized_cost_of_energy_carriers_two_sectors():
-    dict_values[KPI][KPI_SCALARS_DICT].update({TOTAL_DEMAND + h2: 100})
+    dict_values[KPI][KPI_SCALARS_DICT].update({TOTAL_DEMAND + h2: total_demand})
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {
             TOTAL_DEMAND
@@ -454,7 +453,7 @@ def test_add_levelized_cost_of_energy_carriers_two_sectors():
 
     expected_value = {
         ATTRIBUTED_COSTS
-        + electricity: 1000
+        + electricity: npc
         * dict_values[KPI][KPI_SCALARS_DICT][
             TOTAL_DEMAND + electricity + SUFFIX_ELECTRICITY_EQUIVALENT
         ]
@@ -462,7 +461,7 @@ def test_add_levelized_cost_of_energy_carriers_two_sectors():
             TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
         ],
         ATTRIBUTED_COSTS
-        + h2: 1000
+        + h2: npc
         * dict_values[KPI][KPI_SCALARS_DICT][
             TOTAL_DEMAND + h2 + SUFFIX_ELECTRICITY_EQUIVALENT
         ]
@@ -479,10 +478,10 @@ def test_add_levelized_cost_of_energy_carriers_two_sectors():
             * dict_values[ECONOMIC_DATA][CRF][VALUE]
             / dict_values[KPI][KPI_SCALARS_DICT][TOTAL_DEMAND + electricity],
             LCOeleq
-            + electricity: dict_values[KPI][KPI_SCALARS_DICT][ATTRIBUTED_COSTS + h2]
+            + h2: dict_values[KPI][KPI_SCALARS_DICT][ATTRIBUTED_COSTS + h2]
             * dict_values[ECONOMIC_DATA][CRF][VALUE]
             / dict_values[KPI][KPI_SCALARS_DICT][TOTAL_DEMAND + h2],
-            LCOeleq: 1000
+            LCOeleq: npc
             * dict_values[ECONOMIC_DATA][CRF][VALUE]
             / dict_values[KPI][KPI_SCALARS_DICT][
                 TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
@@ -490,15 +489,22 @@ def test_add_levelized_cost_of_energy_carriers_two_sectors():
         }
     )
 
-    for kpi in [ATTRIBUTED_COSTS, LCOeleq]:
-        assert kpi + electricity in dict_values[KPI][KPI_SCALARS_DICT]
-        assert (
-            dict_values[KPI][KPI_SCALARS_DICT][kpi + electricity]
-            == expected_value[kpi + electricity]
-        )
+    for sector in [electricity, h2]:
+        for kpi in [ATTRIBUTED_COSTS, LCOeleq]:
+            assert (
+                kpi + sector in dict_values[KPI][KPI_SCALARS_DICT]
+            ), f"The KPI {kpi+sector} is not in dict_values[KPI][KPI_SCALARS_DICT]."
+            assert (
+                dict_values[KPI][KPI_SCALARS_DICT][kpi + sector]
+                == expected_value[kpi + sector]
+            ), f"The expected {kpi + sector} of {expected_value[kpi + sector]} is not equal to the calculated result {dict_values[KPI][KPI_SCALARS_DICT][kpi + sector]}."
 
-    assert LCOeleq in dict_values[KPI][KPI_SCALARS_DICT]
-    assert dict_values[KPI][KPI_SCALARS_DICT][LCOeleq] == expected_value[LCOeleq]
+    assert (
+        LCOeleq in dict_values[KPI][KPI_SCALARS_DICT]
+    ), f"The KPI {LCOeleq} is not in dict_values[KPI][KPI_SCALARS_DICT]"
+    assert (
+        dict_values[KPI][KPI_SCALARS_DICT][LCOeleq] == expected_value[LCOeleq]
+    ), f"The expected {LCOeleq} of {expected_value[LCOeleq]} is not equal to the calculated result {dict_values[KPI][KPI_SCALARS_DICT][LCOeleq]}."
 
 
 def test_equation_levelized_cost_of_energy_carrier_total_demand_electricity_equivalent_larger_0_total_flow_energy_carrier_larger_0():
@@ -551,7 +557,7 @@ def test_add_total_feedin_electricity_equivalent():
 
     dso = "DSO"
     feedin = 1000
-    consumption_asset = str(dso + DSO_FEEDIN + AUTO_SINK)
+    consumption_asset = str(dso + DSO_FEEDIN)
     dict_values_feedin = {
         ENERGY_PROVIDERS: {dso},
         ENERGY_CONSUMPTION: {

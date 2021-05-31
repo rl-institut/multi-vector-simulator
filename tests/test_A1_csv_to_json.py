@@ -13,6 +13,7 @@ from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
     CsvParsingError,
     WrongStorageColumn,
+    MissingCsvEndingError,
 )
 from multi_vector_simulator.utils.constants import (
     WARNING_TEXT,
@@ -334,6 +335,18 @@ def test_create_json_from_csv_float_int_parsing():
     assert type(json["csv_float_int"]["col1"]["param1"][VALUE]) is int
     assert type(json["csv_float_int"]["col1"]["param2"][VALUE]) is float
     assert type(json["csv_float_int"]["col1"]["param3"][VALUE]) is float
+
+
+def test_check_storage_file_is_csv_passes():
+    string = A1.check_storage_file_is_csv("A.csv")
+    assert (
+        string == "A"
+    ), f"The storage file name had an extension '.csv', but this was not recognized."
+
+
+def test_check_storage_file_is_csv_fails():
+    with pytest.raises(MissingCsvEndingError):
+        A1.check_storage_file_is_csv("A")
 
 
 def test_add_storage_components_label_correctly_added():

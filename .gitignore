@@ -131,4 +131,5 @@ mvs_csv_config.json
 
 /validation_tests/
 
-/docs/*.inc
+*.inc
+*.tbl

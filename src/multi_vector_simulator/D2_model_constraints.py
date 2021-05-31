@@ -5,7 +5,7 @@ Module D2 - Model constraints
 This module gathers all constraints that can be added to the MVS optimisation. 
 we will probably require another input CSV file or further parameters in simulation_settings.
 
-Future constraints are discussed in issue #133 (https://github.com/rl-institut/mvs_eland/issues/133)
+Future constraints are discussed in issue #133 (https://github.com/rl-institut/multi-vector-simulator/issues/133)
 
 constraints should be tested in-code (examples) and by comparing the lp file generated.
 """
@@ -30,9 +30,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_CONSUMPTION,
     RENEWABLE_SHARE_DSO,
     RENEWABLE_ASSET_BOOL,
-    AUTO_SINK,
-    EXCESS,
-    EXCESS_SINK_POSTFIX,
+    EXCESS_SINK,
     CONSTRAINTS,
     MINIMAL_RENEWABLE_FACTOR,
     MAXIMUM_EMISSIONS,
@@ -40,6 +38,12 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_FEEDIN,
     NET_ZERO_ENERGY,
 )
+
+# Keys for dicts renewable_assets and non_renewable_assets
+OEMOF_SOLPH_OBJECT_ASSET = "object"
+WEIGHTING_FACTOR_ENERGY_CARRIER = "weighting_factor_energy_carrier"
+RENEWABLE_SHARE_ASSET_FLOW = "renewable_share_asset_flow"
+OEMOF_SOLPH_OBJECT_BUS = "oemof_solph_object_bus"
 
 
 def add_constraints(local_energy_system, dict_values, dict_model):
@@ -77,35 +81,26 @@ def add_constraints(local_energy_system, dict_values, dict_model):
     - D2.test_add_constraints_net_zero_energy_requirement_is_true()
     - D2.test_add_constraints_net_zero_energy_requirement_is_false()
     """
+
+    constraint_functions = {
+        MINIMAL_RENEWABLE_FACTOR: constraint_minimal_renewable_share,
+        MAXIMUM_EMISSIONS: constraint_maximum_emissions,
+        MINIMAL_DEGREE_OF_AUTONOMY: constraint_minimal_degree_of_autonomy,
+        NET_ZERO_ENERGY: constraint_net_zero_energy,
+    }
+
     count_added_constraints = 0
 
-    if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE] > 0:
-        # Add minimal renewable factor constraint
-        local_energy_system = constraint_minimal_renewable_share(
+    for constraint in dict_values[CONSTRAINTS]:
+        # if the constraint is not within its proper range of admissible values, None is returned
+        les = constraint_functions[constraint](
             local_energy_system, dict_values, dict_model
         )
-        count_added_constraints += 1
-
-    if dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE] is not None:
-        # Add maximum emissions constraint
-        local_energy_system = constraint_maximum_emissions(
-            local_energy_system, dict_values
-        )
-        count_added_constraints += 1
-
-    if dict_values[CONSTRAINTS][MINIMAL_DEGREE_OF_AUTONOMY][VALUE] > 0:
-        # Add minimal renewable factor constraint
-        local_energy_system = constraint_minimal_degree_of_autonomy(
-            local_energy_system, dict_values, dict_model
-        )
-        count_added_constraints += 1
-
-    if dict_values[CONSTRAINTS][NET_ZERO_ENERGY][VALUE] == True:
-        # Add net zero energy (NZE) constraint
-        local_energy_system = constraint_net_zero_energy(
-            local_energy_system, dict_values, dict_model
-        )
-        count_added_constraints += 1
+        # if the contraint is not applied (because not defined by the user, or with a value which
+        # is not in the acceptable range the constrain function will return None
+        if les is not None:
+            local_energy_system = les
+            count_added_constraints += 1
 
     if count_added_constraints == 0:
         logging.info("No modelling constraint to be introduced.")
@@ -115,7 +110,7 @@ def add_constraints(local_energy_system, dict_values, dict_model):
     return local_energy_system
 
 
-def constraint_maximum_emissions(model, dict_values):
+def constraint_maximum_emissions(model, dict_values, dict_model=None):
     r"""
     Resulting in an energy system adhering to a maximum amount of emissions.
 
@@ -127,6 +122,9 @@ def constraint_maximum_emissions(model, dict_values):
     dict_values: dict
         All simulation parameters
 
+    dict_model: None
+        To match other constraint function's format
+
     Notes
     -----
     Tested with:
@@ -134,10 +132,15 @@ def constraint_maximum_emissions(model, dict_values):
 
     """
     maximum_emissions = dict_values[CONSTRAINTS][MAXIMUM_EMISSIONS][VALUE]
-    # Updates the model with the constraint for maximum amount of emissions
-    constraints.emission_limit(model, limit=maximum_emissions)
-    logging.info("Added maximum emission constraint.")
-    return model
+    if maximum_emissions is not None:
+        # Updates the model with the constraint for maximum amount of emissions
+        constraints.emission_limit(model, limit=maximum_emissions)
+        logging.info("Added maximum emission constraint.")
+        answer = model
+    else:
+        answer = None
+
+    return answer
 
 
 def constraint_minimal_renewable_share(model, dict_values, dict_model):
@@ -170,76 +173,69 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
     - Test_Constraints.test_benchmark_minimal_renewable_share_constraint()
     """
 
-    # Keys for dicts renewable_assets and non_renewable_assets
-    oemof_solph_object_asset = "object"
-    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
-    renewable_share_asset_flow = "renewable_share_asset_flow"
-    oemof_solph_object_bus = "oemof_solph_object_bus"
+    if dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE] > 0:
 
-    renewable_assets, non_renewable_assets = prepare_constraint_minimal_renewable_share(
-        dict_values,
-        dict_model,
-        oemof_solph_object_asset,
-        weighting_factor_energy_carrier,
-        renewable_share_asset_flow,
-        oemof_solph_object_bus,
-    )
+        (
+            renewable_assets,
+            non_renewable_assets,
+        ) = prepare_constraint_minimal_renewable_share(dict_values, dict_model,)
 
-    def renewable_share_rule(model):
-        renewable_generation = 0
-        total_generation = 0
+        def renewable_share_rule(model):
+            renewable_generation = 0
+            total_generation = 0
 
-        # Get the flows from all renewable assets
-        for asset in renewable_assets:
-            generation = (
-                sum(
-                    model.flow[
-                        renewable_assets[asset][oemof_solph_object_asset],
-                        renewable_assets[asset][oemof_solph_object_bus],
-                        :,
-                    ]
+            # Get the flows from all renewable assets
+            for asset in renewable_assets:
+                generation = (
+                    sum(
+                        model.flow[
+                            renewable_assets[asset][OEMOF_SOLPH_OBJECT_ASSET],
+                            renewable_assets[asset][OEMOF_SOLPH_OBJECT_BUS],
+                            :,
+                        ]
+                    )
+                    * renewable_assets[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
+                    * renewable_assets[asset][RENEWABLE_SHARE_ASSET_FLOW]
                 )
-                * renewable_assets[asset][weighting_factor_energy_carrier]
-                * renewable_assets[asset][renewable_share_asset_flow]
-            )
-            total_generation += generation
-            renewable_generation += generation
+                total_generation += generation
+                renewable_generation += generation
 
-        # Get the flows from all non renewable assets
-        for asset in non_renewable_assets:
-            generation = (
-                sum(
-                    model.flow[
-                        non_renewable_assets[asset][oemof_solph_object_asset],
-                        non_renewable_assets[asset][oemof_solph_object_bus],
-                        :,
-                    ]
+            # Get the flows from all non renewable assets
+            for asset in non_renewable_assets:
+                generation = (
+                    sum(
+                        model.flow[
+                            non_renewable_assets[asset][OEMOF_SOLPH_OBJECT_ASSET],
+                            non_renewable_assets[asset][OEMOF_SOLPH_OBJECT_BUS],
+                            :,
+                        ]
+                    )
+                    * non_renewable_assets[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
+                    * (1 - non_renewable_assets[asset][RENEWABLE_SHARE_ASSET_FLOW])
                 )
-                * non_renewable_assets[asset][weighting_factor_energy_carrier]
-                * (1 - non_renewable_assets[asset][renewable_share_asset_flow])
-            )
-            total_generation += generation
+                total_generation += generation
 
-        expr = (
-            renewable_generation
-            - (dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE])
-            * total_generation
+            expr = (
+                renewable_generation
+                - (dict_values[CONSTRAINTS][MINIMAL_RENEWABLE_FACTOR][VALUE])
+                * total_generation
+            )
+            return expr >= 0
+
+        model.constraint_minimal_renewable_share = po.Constraint(
+            rule=renewable_share_rule
         )
-        return expr >= 0
 
-    model.constraint_minimal_renewable_share = po.Constraint(rule=renewable_share_rule)
+        logging.info("Added minimal renewable factor constraint.")
+        answer = model
+    else:
+        answer = None
 
-    logging.info("Added minimal renewable factor constraint.")
-    return model
+    return answer
 
 
 def prepare_constraint_minimal_renewable_share(
-    dict_values,
-    dict_model,
-    oemof_solph_object_asset,
-    weighting_factor_energy_carrier,
-    renewable_share_asset_flow,
-    oemof_solph_object_bus,
+    dict_values, dict_model,
 ):
     r"""
     Prepare creating the minimal renewable factor constraint by processing dict_values
@@ -251,18 +247,6 @@ def prepare_constraint_minimal_renewable_share(
 
     dict_model: dict of :oemof-solph: <oemof.solph.assets>
         Dictionary including the oemof-solph component assets, which need to be connected with constraints
-
-    oemof_solph_object_asset: str
-        Name under which the oemof-solph object of an asset shall be stored
-
-    weighting_factor_energy_carrier: str
-        Name under which the energy_carrier weighting factor shall be stored
-
-    renewable_share_asset_flow: str
-        Name under which the renewable weighting factor (renewable share of an asset`s flow) shall be stored
-
-    oemof_solph_object_bus: str
-        Name under which the oemof-solph object of the output bus of an asset shall be stored
 
     Returns
     -------
@@ -291,18 +275,18 @@ def prepare_constraint_minimal_renewable_share(
                 renewable_assets.update(
                     {
                         asset: {
-                            oemof_solph_object_asset: dict_model[OEMOF_SOURCE][
+                            OEMOF_SOLPH_OBJECT_ASSET: dict_model[OEMOF_SOURCE][
                                 dict_values[ENERGY_PRODUCTION][asset][LABEL]
                             ],
-                            oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+                            OEMOF_SOLPH_OBJECT_BUS: dict_model[OEMOF_BUSSES][
                                 dict_values[ENERGY_PRODUCTION][asset][OUTFLOW_DIRECTION]
                             ],
-                            weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+                            WEIGHTING_FACTOR_ENERGY_CARRIER: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
                                 dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
                             ][
                                 VALUE
                             ],
-                            renewable_share_asset_flow: 1,
+                            RENEWABLE_SHARE_ASSET_FLOW: 1,
                         }
                     }
                 )
@@ -313,18 +297,18 @@ def prepare_constraint_minimal_renewable_share(
                 non_renewable_assets.update(
                     {
                         asset: {
-                            oemof_solph_object_asset: dict_model[OEMOF_SOURCE][
+                            OEMOF_SOLPH_OBJECT_ASSET: dict_model[OEMOF_SOURCE][
                                 dict_values[ENERGY_PRODUCTION][asset][LABEL]
                             ],
-                            oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+                            OEMOF_SOLPH_OBJECT_BUS: dict_model[OEMOF_BUSSES][
                                 dict_values[ENERGY_PRODUCTION][asset][OUTFLOW_DIRECTION]
                             ],
-                            weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+                            WEIGHTING_FACTOR_ENERGY_CARRIER: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
                                 dict_values[ENERGY_PRODUCTION][asset][ENERGY_VECTOR]
                             ][
                                 VALUE
                             ],
-                            renewable_share_asset_flow: 0,
+                            RENEWABLE_SHARE_ASSET_FLOW: 0,
                         }
                     }
                 )
@@ -354,18 +338,18 @@ def prepare_constraint_minimal_renewable_share(
         renewable_assets.update(
             {
                 DSO_source_name: {
-                    oemof_solph_object_asset: dict_model[OEMOF_SOURCE][
+                    OEMOF_SOLPH_OBJECT_ASSET: dict_model[OEMOF_SOURCE][
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][LABEL]
                     ],
-                    oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+                    OEMOF_SOLPH_OBJECT_BUS: dict_model[OEMOF_BUSSES][
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][
                             OUTFLOW_DIRECTION
                         ]
                     ],
-                    weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+                    WEIGHTING_FACTOR_ENERGY_CARRIER: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][ENERGY_VECTOR]
                     ][VALUE],
-                    renewable_share_asset_flow: dict_values[ENERGY_PROVIDERS][dso][
+                    RENEWABLE_SHARE_ASSET_FLOW: dict_values[ENERGY_PROVIDERS][dso][
                         RENEWABLE_SHARE_DSO
                     ][VALUE],
                 }
@@ -374,18 +358,18 @@ def prepare_constraint_minimal_renewable_share(
         non_renewable_assets.update(
             {
                 DSO_source_name: {
-                    oemof_solph_object_asset: dict_model[OEMOF_SOURCE][
+                    OEMOF_SOLPH_OBJECT_ASSET: dict_model[OEMOF_SOURCE][
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][LABEL]
                     ],
-                    oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+                    OEMOF_SOLPH_OBJECT_BUS: dict_model[OEMOF_BUSSES][
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][
                             OUTFLOW_DIRECTION
                         ]
                     ],
-                    weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+                    WEIGHTING_FACTOR_ENERGY_CARRIER: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][ENERGY_VECTOR]
                     ][VALUE],
-                    renewable_share_asset_flow: dict_values[ENERGY_PROVIDERS][dso][
+                    RENEWABLE_SHARE_ASSET_FLOW: dict_values[ENERGY_PROVIDERS][dso][
                         RENEWABLE_SHARE_DSO
                     ][VALUE],
                 }
@@ -439,86 +423,73 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
     - Test_Constraints.test_benchmark_minimal_degree_of_autonomy()
     """
 
-    # Keys for dicts renewable_assets and non_renewable_assets
-    oemof_solph_object_asset = "object"
-    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
-    oemof_solph_object_bus = "oemof_solph_object_bus"
-
     logging.debug(f"Data considered for the minimal degree of autonomy constraint:")
 
-    demands = prepare_demand_assets(
-        dict_values,
-        dict_model,
-        oemof_solph_object_asset,
-        weighting_factor_energy_carrier,
-        oemof_solph_object_bus,
-    )
+    if dict_values[CONSTRAINTS][MINIMAL_DEGREE_OF_AUTONOMY][VALUE] > 0:
 
-    energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
-        dict_values,
-        dict_model,
-        oemof_solph_object_asset,
-        weighting_factor_energy_carrier,
-        oemof_solph_object_bus,
-    )
+        demands = prepare_demand_assets(dict_values, dict_model,)
 
-    def degree_of_autonomy_rule(model):
-        total_demand = 0
-        total_consumption_from_energy_provider = 0
+        energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
+            dict_values, dict_model,
+        )
 
-        # Get the flows from demands and add weighing
-        for asset in demands:
-            demand_one_asset = (
-                sum(
-                    model.flow[
-                        demands[asset][oemof_solph_object_bus],
-                        demands[asset][oemof_solph_object_asset],
-                        :,
+        def degree_of_autonomy_rule(model):
+            total_demand = 0
+            total_consumption_from_energy_provider = 0
+
+            # Get the flows from demands and add weighing
+            for asset in demands:
+                demand_one_asset = (
+                    sum(
+                        model.flow[
+                            demands[asset][OEMOF_SOLPH_OBJECT_BUS],
+                            demands[asset][OEMOF_SOLPH_OBJECT_ASSET],
+                            :,
+                        ]
+                    )
+                    * demands[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
+                )
+                total_demand += demand_one_asset
+
+            # Get the flows from providers and add weighing
+            for asset in energy_provider_consumption_sources:
+                consumption_of_one_provider = (
+                    sum(
+                        model.flow[
+                            energy_provider_consumption_sources[asset][
+                                OEMOF_SOLPH_OBJECT_ASSET
+                            ],
+                            energy_provider_consumption_sources[asset][
+                                OEMOF_SOLPH_OBJECT_BUS
+                            ],
+                            :,
+                        ]
+                    )
+                    * energy_provider_consumption_sources[asset][
+                        WEIGHTING_FACTOR_ENERGY_CARRIER
                     ]
                 )
-                * demands[asset][weighting_factor_energy_carrier]
-            )
-            total_demand += demand_one_asset
+                total_consumption_from_energy_provider += consumption_of_one_provider
 
-        # Get the flows from providers and add weighing
-        for asset in energy_provider_consumption_sources:
-            consumption_of_one_provider = (
-                sum(
-                    model.flow[
-                        energy_provider_consumption_sources[asset][
-                            oemof_solph_object_asset
-                        ],
-                        energy_provider_consumption_sources[asset][
-                            oemof_solph_object_bus
-                        ],
-                        :,
-                    ]
-                )
-                * energy_provider_consumption_sources[asset][
-                    weighting_factor_energy_carrier
-                ]
-            )
-            total_consumption_from_energy_provider += consumption_of_one_provider
+            expr = (
+                1 - dict_values[CONSTRAINTS][MINIMAL_DEGREE_OF_AUTONOMY][VALUE]
+            ) * total_demand - total_consumption_from_energy_provider
+            return expr >= 0
 
-        expr = (
-            1 - dict_values[CONSTRAINTS][MINIMAL_DEGREE_OF_AUTONOMY][VALUE]
-        ) * total_demand - total_consumption_from_energy_provider
-        return expr >= 0
+        model.constraint_minimal_degree_of_autonomy = po.Constraint(
+            rule=degree_of_autonomy_rule
+        )
 
-    model.constraint_minimal_degree_of_autonomy = po.Constraint(
-        rule=degree_of_autonomy_rule
-    )
+        logging.info("Added minimal degree of autonomy constraint.")
+        answer = model
+    else:
+        answer = None
 
-    logging.info("Added minimal degree of autonomy constraint.")
-    return model
+    return answer
 
 
 def prepare_demand_assets(
-    dict_values,
-    dict_model,
-    oemof_solph_object_asset,
-    weighting_factor_energy_carrier,
-    oemof_solph_object_bus,
+    dict_values, dict_model,
 ):
     r"""
     Perpare demand assets by processing `dict_values`
@@ -533,15 +504,6 @@ def prepare_demand_assets(
 
     dict_model: dict of :oemof-solph: <oemof.solph.assets>
         Dictionary including the oemof-solph component assets, which need to be connected with constraints
-
-    oemof_solph_object_asset: str
-        Name under which the oemof-solph object of an asset shall be stored
-
-    weighting_factor_energy_carrier: str
-        Name under which the energy_carrier weighting factor shall be stored
-
-    oemof_solph_object_bus: str
-        Name under which the oemof-solph object of the output bus of an asset shall be stored
 
     Notes
     -----
@@ -561,21 +523,18 @@ def prepare_demand_assets(
 
     # Determine energy demands
     for asset in dict_values[ENERGY_CONSUMPTION]:
-        if (
-            AUTO_SINK not in asset
-            and EXCESS not in asset
-            and EXCESS_SINK_POSTFIX not in asset
-        ):
+        # Do not add flows into excess sink of feedin sink to the demands to be supplied
+        if EXCESS_SINK not in asset and DSO_FEEDIN not in asset:
             demands.update(
                 {
                     asset: {
-                        oemof_solph_object_asset: dict_model[OEMOF_SINK][
+                        OEMOF_SOLPH_OBJECT_ASSET: dict_model[OEMOF_SINK][
                             dict_values[ENERGY_CONSUMPTION][asset][LABEL]
                         ],
-                        oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+                        OEMOF_SOLPH_OBJECT_BUS: dict_model[OEMOF_BUSSES][
                             dict_values[ENERGY_CONSUMPTION][asset][INFLOW_DIRECTION]
                         ],
-                        weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+                        WEIGHTING_FACTOR_ENERGY_CARRIER: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
                             dict_values[ENERGY_CONSUMPTION][asset][ENERGY_VECTOR]
                         ][
                             VALUE
@@ -593,11 +552,7 @@ def prepare_demand_assets(
 
 
 def prepare_energy_provider_consumption_sources(
-    dict_values,
-    dict_model,
-    oemof_solph_object_asset,
-    weighting_factor_energy_carrier,
-    oemof_solph_object_bus,
+    dict_values, dict_model,
 ):
     r"""
     Prepare energy provider consumption sources by processing `dict_values`.
@@ -613,15 +568,6 @@ def prepare_energy_provider_consumption_sources(
 
     dict_model: dict of :oemof-solph: <oemof.solph.assets>
         Dictionary including the oemof-solph component assets, which need to be connected with constraints
-
-    oemof_solph_object_asset: str
-        Name under which the oemof-solph object of an asset shall be stored
-
-    weighting_factor_energy_carrier: str
-        Name under which the energy_carrier weighting factor shall be stored
-
-    oemof_solph_object_bus: str
-        Name under which the oemof-solph object of the output bus of an asset shall be stored
 
     Notes
     -----
@@ -648,15 +594,15 @@ def prepare_energy_provider_consumption_sources(
         energy_provider_consumption_sources.update(
             {
                 DSO_source_name: {
-                    oemof_solph_object_asset: dict_model[OEMOF_SOURCE][
+                    OEMOF_SOLPH_OBJECT_ASSET: dict_model[OEMOF_SOURCE][
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][LABEL]
                     ],
-                    oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+                    OEMOF_SOLPH_OBJECT_BUS: dict_model[OEMOF_BUSSES][
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][
                             OUTFLOW_DIRECTION
                         ]
                     ],
-                    weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+                    WEIGHTING_FACTOR_ENERGY_CARRIER: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
                         dict_values[ENERGY_PRODUCTION][DSO_source_name][ENERGY_VECTOR]
                     ][VALUE],
                 }
@@ -673,11 +619,7 @@ def prepare_energy_provider_consumption_sources(
 
 
 def prepare_energy_provider_feedin_sinks(
-    dict_values,
-    dict_model,
-    oemof_solph_object_asset,
-    weighting_factor_energy_carrier,
-    oemof_solph_object_bus,
+    dict_values, dict_model,
 ):
     r"""
     Prepare energy provider feedin sinks by processing `dict_values`.
@@ -692,15 +634,6 @@ def prepare_energy_provider_feedin_sinks(
 
     dict_model: dict of :oemof-solph: <oemof.solph.assets>
         Dictionary including the oemof-solph component assets, which need to be connected with constraints
-
-    oemof_solph_object_asset: str
-        Name under which the oemof-solph object of an asset shall be stored
-
-    weighting_factor_energy_carrier: str
-        Name under which the energy_carrier weighting factor shall be stored
-
-    oemof_solph_object_bus: str
-        Name under which the oemof-solph object of the output bus of an asset shall be stored
 
     Notes
     -----
@@ -720,20 +653,20 @@ def prepare_energy_provider_feedin_sinks(
 
     for dso in dict_values[ENERGY_PROVIDERS]:
         # Get sink connected to the specific DSO in question
-        DSO_sink_name = dso + DSO_FEEDIN + AUTO_SINK
+        DSO_sink_name = dso + DSO_FEEDIN
         # Add DSO to assets
         dso_feedin_sink_list.append(DSO_sink_name)
 
         energy_provider_feedin_sinks.update(
             {
                 DSO_sink_name: {
-                    oemof_solph_object_asset: dict_model[OEMOF_SINK][
+                    OEMOF_SOLPH_OBJECT_ASSET: dict_model[OEMOF_SINK][
                         dict_values[ENERGY_CONSUMPTION][DSO_sink_name][LABEL]
                     ],
-                    oemof_solph_object_bus: dict_model[OEMOF_BUSSES][
+                    OEMOF_SOLPH_OBJECT_BUS: dict_model[OEMOF_BUSSES][
                         dict_values[ENERGY_CONSUMPTION][DSO_sink_name][INFLOW_DIRECTION]
                     ],
-                    weighting_factor_energy_carrier: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
+                    WEIGHTING_FACTOR_ENERGY_CARRIER: DEFAULT_WEIGHTS_ENERGY_CARRIERS[
                         dict_values[ENERGY_CONSUMPTION][DSO_sink_name][ENERGY_VECTOR]
                     ][VALUE],
                 }
@@ -776,71 +709,70 @@ def constraint_net_zero_energy(model, dict_values, dict_model):
     - Test_Constraints.test_net_zero_energy_constraint()
     """
 
-    # Keys for dicts
-    oemof_solph_object_asset = "object"
-    weighting_factor_energy_carrier = "weighting_factor_energy_carrier"
-    oemof_solph_object_bus = "oemof_solph_object_bus"
-
     logging.debug(f"Data considered for the net zero energy (NZE) constraint:")
 
-    energy_provider_feedin_sinks = prepare_energy_provider_feedin_sinks(
-        dict_values,
-        dict_model,
-        oemof_solph_object_asset,
-        weighting_factor_energy_carrier,
-        oemof_solph_object_bus,
-    )
+    if dict_values[CONSTRAINTS][NET_ZERO_ENERGY][VALUE] == True:
 
-    energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
-        dict_values,
-        dict_model,
-        oemof_solph_object_asset,
-        weighting_factor_energy_carrier,
-        oemof_solph_object_bus,
-    )
+        energy_provider_feedin_sinks = prepare_energy_provider_feedin_sinks(
+            dict_values, dict_model,
+        )
 
-    def net_zero_energy(model):
-        total_feedin_to_energy_provider = 0
-        total_consumption_from_energy_provider = 0
+        energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
+            dict_values, dict_model,
+        )
 
-        # Get the flows from provider sources and add weighing
-        for asset in energy_provider_consumption_sources:
-            consumption_of_one_provider = (
-                sum(
-                    model.flow[
-                        energy_provider_consumption_sources[asset][
-                            oemof_solph_object_asset
-                        ],
-                        energy_provider_consumption_sources[asset][
-                            oemof_solph_object_bus
-                        ],
-                        :,
+        def net_zero_energy(model):
+            total_feedin_to_energy_provider = 0
+            total_consumption_from_energy_provider = 0
+
+            # Get the flows from provider sources and add weighing
+            for asset in energy_provider_consumption_sources:
+                consumption_of_one_provider = (
+                    sum(
+                        model.flow[
+                            energy_provider_consumption_sources[asset][
+                                OEMOF_SOLPH_OBJECT_ASSET
+                            ],
+                            energy_provider_consumption_sources[asset][
+                                OEMOF_SOLPH_OBJECT_BUS
+                            ],
+                            :,
+                        ]
+                    )
+                    * energy_provider_consumption_sources[asset][
+                        WEIGHTING_FACTOR_ENERGY_CARRIER
                     ]
                 )
-                * energy_provider_consumption_sources[asset][
-                    weighting_factor_energy_carrier
-                ]
-            )
-            total_consumption_from_energy_provider += consumption_of_one_provider
+                total_consumption_from_energy_provider += consumption_of_one_provider
 
-        # Get the flows from provider sources and add weighing
-        for asset in energy_provider_feedin_sinks:
-            feedin_of_one_provider = (
-                sum(
-                    model.flow[
-                        energy_provider_feedin_sinks[asset][oemof_solph_object_bus],
-                        energy_provider_feedin_sinks[asset][oemof_solph_object_asset],
-                        :,
+            # Get the flows from provider sources and add weighing
+            for asset in energy_provider_feedin_sinks:
+                feedin_of_one_provider = (
+                    sum(
+                        model.flow[
+                            energy_provider_feedin_sinks[asset][OEMOF_SOLPH_OBJECT_BUS],
+                            energy_provider_feedin_sinks[asset][
+                                OEMOF_SOLPH_OBJECT_ASSET
+                            ],
+                            :,
+                        ]
+                    )
+                    * energy_provider_feedin_sinks[asset][
+                        WEIGHTING_FACTOR_ENERGY_CARRIER
                     ]
                 )
-                * energy_provider_feedin_sinks[asset][weighting_factor_energy_carrier]
+                total_feedin_to_energy_provider += feedin_of_one_provider
+
+            expr = (
+                total_feedin_to_energy_provider - total_consumption_from_energy_provider
             )
-            total_feedin_to_energy_provider += feedin_of_one_provider
+            return expr >= 0
 
-        expr = total_feedin_to_energy_provider - total_consumption_from_energy_provider
-        return expr >= 0
+        model.constraint_net_zero_energy = po.Constraint(rule=net_zero_energy)
 
-    model.constraint_net_zero_energy = po.Constraint(rule=net_zero_energy)
+        logging.info("Added net zero energy (NZE) constraint.")
+        answer = model
+    else:
+        answer = None
 
-    logging.info("Added net zero energy (NZE) constraint.")
-    return model
+    return answer

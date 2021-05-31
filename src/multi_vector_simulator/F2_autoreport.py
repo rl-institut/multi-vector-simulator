@@ -378,7 +378,7 @@ def insert_plotly_figure(
 
     Returns
     -------
-    :dash:`dash_html_components.Div`
+    `dash_html_components.Div`
         Html Div component containing an image for the print-only version and a plotly figure for
         the online (no-print) app (in the app the user can interact with plotly figure,
         whereas the image is static).

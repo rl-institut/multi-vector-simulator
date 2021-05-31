@@ -69,10 +69,8 @@ def translates_epa_strings_to_mvs_readable(folder_name, file_name):
     Stores converted json file to current dict
 
     Usage:
-    ```
-    import multi_vector_simulator.utils.helpers as helpers
-    helpers.translates_epa_strings_to_mvs_readable("./epa_benchmark", "epa_benchmark.json-original")
-    ```
+        `import multi_vector_simulator.utils.helpers as helpers`
+        `helpers.translates_epa_strings_to_mvs_readable("./epa_benchmark", "epa_benchmark.json-original")`
     """
     import json
     from multi_vector_simulator.utils.data_parser import convert_epa_params_to_mvs

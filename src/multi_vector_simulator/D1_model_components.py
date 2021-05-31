@@ -24,6 +24,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     AVAILABILITY_DISPATCH,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
+    INSTALLED_CAP_NORMALIZED,
     EFFICIENCY,
     INPUT_POWER,
     OUTPUT_POWER,
@@ -40,7 +41,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INFLOW_DIRECTION,
     OUTFLOW_DIRECTION,
     SIMULATION_ANNUITY,
-    MAXIMUM_CAP,
+    MAXIMUM_ADD_CAP,
+    MAXIMUM_ADD_CAP_NORMALIZED,
     DISPATCHABILITY,
     OEMOF_ASSET_TYPE,
     OEMOF_GEN_STORAGE,
@@ -229,6 +231,11 @@ def source(model, dict_asset, **kwargs):
     transformers : dict, optional
     storages : dict, optional
 
+    TODOS
+    ^^^^^
+    * We should actually not allow multiple output busses, probably - because a pv would then
+    feed in twice as much as solar_gen_specific for example, see issue #121
+
     Notes
     -----
     The following functions are used for defining the source:
@@ -244,13 +251,6 @@ def source(model, dict_asset, **kwargs):
     - test_source_dispatchable_optimize_timeseries_not_normalized_timeseries()
     - test_source_dispatchable_fix_normalized_timeseries()
     - test_source_dispatchable_fix_timeseries_not_normalized_timeseries()
-
-    Todos
-    -----
-    * We should actually not allow multiple output busses, probably - because a
-        pv would then feed in twice as much as solar_gen_specific for example,
-        see issue #121
-
     """
     if DISPATCHABILITY in dict_asset and dict_asset[DISPATCHABILITY] is True:
         check_optimize_cap(
@@ -300,24 +300,24 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
     transformers : dict, optional
     storages : dict, optional
 
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the component object.
+
+    TODOS
+    ^^^^^
+    Might be possible to drop non invest optimization in favour of invest optimization if max_capactiy
+    attributes ie. are set to 0 for fix (but less beautiful, and in case of generator even blocks nonconvex opt.).
+
     Notes
     -----
     Tested with:
     - test_check_optimize_cap_raise_error()
 
-    Todos
-    -----
-    Might be possible to drop non invest optimization in favour of invest optimization if max_capactiy
-    attributes ie. are set to 0 for fix (but less beautiful, and in case of generator even blocks nonconvex opt.).
-
-    Returns
-    -------
-    Indirectly updated `model` and dict of asset in `kwargs` with the component object.
-
     """
     if dict_asset[OPTIMIZE_CAP][VALUE] is False:
         func_constant(model, dict_asset, **kwargs)
-        if dict_asset[OEMOF_ASSET_TYPE] != "source":
+        if dict_asset[OEMOF_ASSET_TYPE] != OEMOF_SOURCE:
             logging.debug(
                 "Added: %s %s (fixed capacity)",
                 dict_asset[OEMOF_ASSET_TYPE].capitalize(),
@@ -326,7 +326,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
 
     elif dict_asset[OPTIMIZE_CAP][VALUE] is True:
         func_optimize(model, dict_asset, **kwargs)
-        if dict_asset[OEMOF_ASSET_TYPE] != "source":
+        if dict_asset[OEMOF_ASSET_TYPE] != OEMOF_SOURCE:
             logging.debug(
                 "Added: %s %s (capacity to be optimized)",
                 dict_asset[OEMOF_ASSET_TYPE].capitalize(),
@@ -466,7 +466,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
-                        maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                        maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
                         existing=dict_asset[INSTALLED_CAP][VALUE],
                     ),
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
@@ -487,7 +487,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
-                        maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                        maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
                         existing=dict_asset[INSTALLED_CAP][VALUE],
                     ),
                     variable_costs=variable_costs,
@@ -507,7 +507,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
-                        maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                        maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
                         existing=dict_asset[INSTALLED_CAP][VALUE],
                     ),
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
@@ -519,7 +519,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                     investment=solph.Investment(
                         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
-                        maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                        maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
                         existing=dict_asset[INSTALLED_CAP][VALUE],
                     ),
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
@@ -639,14 +639,14 @@ def storage_optimize(model, dict_asset, **kwargs):
         investment=solph.Investment(
             ep_costs=dict_asset[STORAGE_CAPACITY][SIMULATION_ANNUITY][VALUE],
             minimum=minimum,
-            maximum=dict_asset[STORAGE_CAPACITY][MAXIMUM_CAP][VALUE],
+            maximum=dict_asset[STORAGE_CAPACITY][MAXIMUM_ADD_CAP][VALUE],
             existing=dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE],
         ),
         inputs={
             kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
                 investment=solph.Investment(
                     ep_costs=dict_asset[INPUT_POWER][SIMULATION_ANNUITY][VALUE],
-                    maximum=dict_asset[INPUT_POWER][MAXIMUM_CAP][VALUE],
+                    maximum=dict_asset[INPUT_POWER][MAXIMUM_ADD_CAP][VALUE],
                     existing=dict_asset[INPUT_POWER][INSTALLED_CAP][
                         VALUE
                     ],  # todo: `existing needed here?`
@@ -658,7 +658,7 @@ def storage_optimize(model, dict_asset, **kwargs):
             kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                 investment=solph.Investment(
                     ep_costs=dict_asset[OUTPUT_POWER][SIMULATION_ANNUITY][VALUE],
-                    maximum=dict_asset[OUTPUT_POWER][MAXIMUM_CAP][VALUE],
+                    maximum=dict_asset[OUTPUT_POWER][MAXIMUM_ADD_CAP][VALUE],
                     existing=dict_asset[OUTPUT_POWER][INSTALLED_CAP][
                         VALUE
                     ],  # todo: `existing needed here?`
@@ -741,6 +741,14 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
     Indirectly updated `model` and dict of asset in `kwargs` with the source object.
 
     """
+    if MAXIMUM_ADD_CAP_NORMALIZED in dict_asset:
+        maximum = dict_asset[MAXIMUM_ADD_CAP_NORMALIZED][VALUE]
+    else:
+        maximum = dict_asset[MAXIMUM_ADD_CAP][VALUE]
+    if INSTALLED_CAP_NORMALIZED in dict_asset:
+        existing = dict_asset[INSTALLED_CAP_NORMALIZED][VALUE]
+    else:
+        existing = dict_asset[INSTALLED_CAP][VALUE]
     outputs = {
         kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
             label=dict_asset[LABEL],
@@ -748,8 +756,8 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
             investment=solph.Investment(
                 ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
-                maximum=dict_asset[MAXIMUM_CAP][VALUE],
-                existing=dict_asset[INSTALLED_CAP][VALUE],
+                maximum=maximum,
+                existing=existing,
             ),
             # variable_costs are devided by time series peak as normalized time series are used as actual_value
             variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
@@ -758,6 +766,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
             emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
         )
     }
+
     source_non_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs)
 
     model.add(source_non_dispatchable)
@@ -792,7 +801,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                 investment=solph.Investment(
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
                     / dict_asset[TIMESERIES_PEAK][VALUE],
-                    maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                    maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
                     existing=dict_asset[INSTALLED_CAP][VALUE],
                 ),
                 # variable_costs are devided by time series peak as normalized time series are used as actual_value
@@ -819,7 +828,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                 investment=solph.Investment(
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                     existing=dict_asset[INSTALLED_CAP][VALUE],
-                    maximum=dict_asset[MAXIMUM_CAP][VALUE],
+                    maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
                 ),
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                 # add emission_factor for emission contraint

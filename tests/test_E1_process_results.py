@@ -1,4 +1,6 @@
 import pandas as pd
+from pandas.util.testing import assert_series_equal
+
 import os
 import numpy as np
 import logging
@@ -204,7 +206,7 @@ def test_cut_below_micro_scalar_value_below_0_larger_threshold(caplog):
 
 
 def test_cut_below_micro_scalar_value_below_0_smaller_threshold(caplog):
-    value = -0.5 * 1e-6
+    value = -0.5 * E1.THRESHOLD
     with caplog.at_level(logging.DEBUG):
         result = E1.cut_below_micro(value=value, label="label")
     assert (
@@ -232,7 +234,7 @@ def test_cut_below_micro_scalar_value_larger_0():
 
 
 def test_cut_below_micro_scalar_value_larger_0_smaller_threshold(caplog):
-    value = 0.5 * 1e-6
+    value = 0.5 * E1.THRESHOLD
     with caplog.at_level(logging.DEBUG):
         result = E1.cut_below_micro(value=value, label="label")
     assert (
@@ -245,7 +247,7 @@ def test_cut_below_micro_scalar_value_larger_0_smaller_threshold(caplog):
 
 
 def test_cut_below_micro_pd_Series_below_0_larger_threshold(caplog):
-    value = pd.Series([0, -0.5 * 1e-6, -1, 0])
+    value = pd.Series([0, -0.5 * E1.THRESHOLD, -1, 0])
     with caplog.at_level(logging.WARNING):
         result = E1.cut_below_micro(value=value, label="label")
     assert (
@@ -257,7 +259,7 @@ def test_cut_below_micro_pd_Series_below_0_larger_threshold(caplog):
 
 
 def test_cut_below_micro_pd_Series_below_0_smaller_threshold(caplog):
-    value = pd.Series([0, -0.5 * 1e-6, 0, 1])
+    value = pd.Series([0, -0.5 * E1.THRESHOLD, 0, 1])
     exp = pd.Series([0, 0, 0, 1])
     with caplog.at_level(logging.DEBUG):
         result = E1.cut_below_micro(value=value, label="label")
@@ -291,7 +293,7 @@ def test_cut_below_micro_pd_Series_larger_0():
 
 
 def test_cut_below_micro_pd_Series_larger_0_smaller_threshold(caplog):
-    value = pd.Series([0, 0.5 * 1e-6, 0, 1])
+    value = pd.Series([0, 0.5 * E1.THRESHOLD, 0, 1])
     exp = pd.Series([0, 0, 0, 1])
     with caplog.at_level(logging.DEBUG):
         result = E1.cut_below_micro(value=value, label="label")
@@ -304,6 +306,248 @@ def test_cut_below_micro_pd_Series_larger_0_smaller_threshold(caplog):
     assert (
         result == exp
     ).all(), f"One value in pd.Series is below 0 but smaller then the threshold, its value should be changed to zero (but it is {result})."
+
+
+def test_add_info_flows_storage_capacity():
+    dict_test = {}
+    flow = pd.Series(
+        [0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2]
+    )
+    E1.add_info_flows(
+        evaluated_period=1, dict_asset=dict_test, flow=flow, type=STORAGE_CAPACITY
+    )
+    for parameter in [FLOW, TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW]:
+        assert (
+            parameter in dict_test
+        ), f"Parameter {parameter} should have been added to the dict_asset."
+        if parameter == FLOW:
+            assert_series_equal(
+                dict_test[FLOW].astype(np.int64), flow, check_names=False,
+            )
+        else:
+            assert (
+                UNIT in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+            assert (
+                VALUE in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+            assert (
+                dict_test[parameter][VALUE] is None
+            ), f"For {STORAGE_CAPACITY}, the parameter {parameter} should have 'None' as value. It is {dict_test[parameter][VALUE]}."
+            assert (
+                dict_test[parameter][UNIT] == "NaN"
+            ), f"For {STORAGE_CAPACITY}, the parameter {parameter} should have 'NaN'  as unit. It is {dict_test[parameter][UNIT]}."
+
+
+def test_add_info_flows_1_day():
+    dict_test = {}
+    flow = pd.Series(
+        [0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2]
+    )
+    E1.add_info_flows(evaluated_period=1, dict_asset=dict_test, flow=flow)
+    for parameter in [FLOW, TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW]:
+        assert (
+            parameter in dict_test
+        ), f"Parameter {parameter} should have been added to the dict_asset."
+        if parameter != FLOW:
+            assert (
+                UNIT in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+            assert (
+                VALUE in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+
+    assert_series_equal(
+        dict_test[FLOW].astype(np.int64), flow, check_names=False,
+    )
+    assert dict_test[TOTAL_FLOW][VALUE] == sum(
+        flow
+    ), f"The {TOTAL_FLOW} should be {sum(flow)}, but is {dict_test[TOTAL_FLOW][VALUE]}"
+    assert (
+        dict_test[ANNUAL_TOTAL_FLOW][VALUE] == sum(flow) * 365
+    ), f"The {ANNUAL_TOTAL_FLOW} should be {sum(flow)*365}, but is {dict_test[ANNUAL_TOTAL_FLOW][VALUE]}"
+    assert dict_test[PEAK_FLOW][VALUE] == max(
+        flow
+    ), f"The {PEAK_FLOW} should be {max(flow)}, but is {dict_test[PEAK_FLOW][VALUE]}"
+    assert (
+        dict_test[AVERAGE_FLOW][VALUE] == flow.mean()
+    ), f"The {AVERAGE_FLOW} should be {flow.mean()}, but is {dict_test[AVERAGE_FLOW][VALUE]}"
+
+
+def test_add_info_flows_365_days():
+    dict_test = {}
+    flow = pd.Series(
+        [0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2]
+    )
+    E1.add_info_flows(evaluated_period=365, dict_asset=dict_test, flow=flow)
+    for parameter in [FLOW, TOTAL_FLOW, ANNUAL_TOTAL_FLOW, PEAK_FLOW, AVERAGE_FLOW]:
+        assert (
+            parameter in dict_test
+        ), f"Parameter {parameter} should have been added to the dict_asset."
+        if parameter != FLOW:
+            assert (
+                UNIT in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+            assert (
+                VALUE in dict_test[parameter]
+            ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
+
+    assert_series_equal(
+        dict_test[FLOW].astype(np.int64), flow, check_names=False,
+    )
+    assert dict_test[TOTAL_FLOW][VALUE] == sum(
+        flow
+    ), f"The {TOTAL_FLOW} should be {sum(flow)}, but is {dict_test[TOTAL_FLOW][VALUE]}"
+    assert dict_test[ANNUAL_TOTAL_FLOW][VALUE] == sum(
+        flow
+    ), f"The {ANNUAL_TOTAL_FLOW} should be {sum(flow)}, but is {dict_test[ANNUAL_TOTAL_FLOW][VALUE]}"
+    assert dict_test[PEAK_FLOW][VALUE] == max(
+        flow
+    ), f"The {PEAK_FLOW} should be {max(flow)}, but is {dict_test[PEAK_FLOW][VALUE]}"
+    assert (
+        dict_test[AVERAGE_FLOW][VALUE] == flow.mean()
+    ), f"The {AVERAGE_FLOW} should be {flow.mean()}, but is {dict_test[AVERAGE_FLOW][VALUE]}"
+
+
+def test_get_state_of_charge_info():
+    flow = pd.Series([0, 2, 0, 2, 0, 2])
+    dict_test = {
+        STORAGE_CAPACITY: {
+            FLOW: flow,
+            INSTALLED_CAP: {VALUE: 1},
+            OPTIMIZED_ADD_CAP: {VALUE: 1},
+        }
+    }
+    E1.get_state_of_charge_info(dict_test)
+    assert (
+        TIMESERIES_SOC in dict_test
+    ), f"Parameter {TIMESERIES_SOC} should be added to the dict."
+    exp_timeseries_soc = pd.Series([0, 1, 0, 1, 0, 1])
+    assert_series_equal(
+        dict_test[TIMESERIES_SOC].astype(np.int64),
+        exp_timeseries_soc,
+        check_names=False,
+    )
+    assert (
+        AVERAGE_SOC in dict_test
+    ), f"Parameter {AVERAGE_SOC} should be added to the dict."
+    assert (
+        VALUE in dict_test[AVERAGE_SOC]
+    ), f"Parameter {AVERAGE_SOC} should be added to the dict with a {VALUE}."
+    assert (
+        UNIT in dict_test[AVERAGE_SOC]
+    ), f"Parameter {AVERAGE_SOC} should be added to the dict with a {UNIT}."
+    assert (
+        dict_test[AVERAGE_SOC][VALUE] == 0.5
+    ), f"Parameter {AVERAGE_SOC} should have {VALUE} 0.5 but has {dict_test[AVERAGE_SOC][VALUE] }."
+    assert (
+        dict_test[AVERAGE_SOC][UNIT] == "factor"
+    ), f"Parameter {AVERAGE_SOC} should have {UNIT} 'factor' but has {dict_test[AVERAGE_SOC][UNIT]}"
+
+
+def test_convert_components_to_dataframe():
+    pv = "PV"
+    diesel = "diesel"
+    storage = "storage"
+    generator = "genset"
+    dict_components = {
+        # 2 examples energy production assets, as this does not seem to work currently
+        ENERGY_PRODUCTION: {
+            pv: {
+                OEMOF_ASSET_TYPE: OEMOF_SOURCE,
+                ENERGY_VECTOR: "vector",
+                UNIT: UNIT,
+                INSTALLED_CAP: {VALUE: 1},
+                OPTIMIZE_CAP: {VALUE: True},
+            },
+            diesel: {
+                OEMOF_ASSET_TYPE: OEMOF_SOURCE,
+                ENERGY_VECTOR: "vector",
+                UNIT: UNIT,
+                INSTALLED_CAP: {VALUE: 1},
+                OPTIMIZE_CAP: {VALUE: True},
+            },
+        },
+        # Example for energy conversion asset, not optimized
+        ENERGY_CONVERSION: {
+            generator: {
+                OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
+                ENERGY_VECTOR: "vector",
+                UNIT: UNIT,
+                INSTALLED_CAP: {VALUE: 1},
+                OPTIMIZE_CAP: {VALUE: False},
+            }
+        },
+        # Example for energy storage asset
+        ENERGY_STORAGE: {
+            storage: {
+                OPTIMIZE_CAP: {VALUE: True},
+                OEMOF_ASSET_TYPE: OEMOF_GEN_STORAGE,
+                ENERGY_VECTOR: "vector",
+                INPUT_POWER: {
+                    LABEL: storage + INPUT_POWER,
+                    INSTALLED_CAP: {VALUE: 1, UNIT: UNIT},
+                },
+                OUTPUT_POWER: {
+                    LABEL: storage + OUTPUT_POWER,
+                    INSTALLED_CAP: {VALUE: 1, UNIT: UNIT},
+                },
+                STORAGE_CAPACITY: {
+                    LABEL: storage + STORAGE_CAPACITY,
+                    INSTALLED_CAP: {VALUE: 1, UNIT: UNIT},
+                },
+            }
+        },
+    }
+
+    df_comp = E1.convert_components_to_dataframe(dict_components)
+
+    for parameter in [
+        "Type of Component",
+        "Energy Vector",
+        UNIT,
+        "Installed Capacity",
+        "Capacity optimization",
+    ]:
+        assert (
+            parameter in df_comp.columns
+        ), f"Parameter {parameter} has not been added as a column to the table to be printed in the autoreport."
+
+    for component in [
+        pv,
+        diesel,
+        generator,
+        storage + INPUT_POWER,
+        storage + OUTPUT_POWER,
+        storage + STORAGE_CAPACITY,
+    ]:
+        assert (
+            component in df_comp["Component"].values
+        ), f"Asset {component} is not included in the table to be printed in the autoreport."
+
+    for row in range(0, len(df_comp)):
+        if df_comp.iloc[row, df_comp.columns.get_loc("Component")] == generator:
+            assert (
+                df_comp.iloc[row, df_comp.columns.get_loc("Capacity optimization")]
+                == "No"
+            ), f"The {generator} is not being capacity optimized, so `Capacity optimization` should be `No`, which is not the case."
+        else:
+            assert (
+                df_comp.iloc[row, df_comp.columns.get_loc("Capacity optimization")]
+                == "Yes"
+            ), f"The {df_comp.iloc[row,df_comp.columns.get_loc('Component')]} is being capacity optimized, so `Capacity optimization` should be `Yes`, which is not the case."
+
+
+def test_translate_optimizeCap_from_boolean_to_yes_no():
+    # Not optimized:
+    optimize = E1.translate_optimizeCap_from_boolean_to_yes_no(False)
+    assert (
+        optimize == "No"
+    ), f"Without optimization, `no` should be returned but it is not."
+    optimize = E1.translate_optimizeCap_from_boolean_to_yes_no(True)
+    assert (
+        optimize == "Yes"
+    ), f"Without optimization, `yes` should be returned but it is not."
 
 
 """
@@ -340,18 +584,4 @@ def test_get_opitmal_cap_no_optimization():
 def test_get_optimal_cap_optimizeCap_not_in_dict_asset():
     pass
     # check that dict_asset did not change
-
-
-# NOTE: I decided to not test get_flow() and add_info_flow() as they are tested by other functions extensively.
-#       Please comment if you are of another opinion.
-
-# def test_get_flow_input():
-#     pass
-#
-# def test_get_flow_output():
-#     pass
-#
-# def test_get_flow_invalid_direction_raises_value_error():
-#     pass
-# same tests as add_info_flow() just that bus and direction is provided.
 """

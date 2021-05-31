@@ -53,6 +53,9 @@ def setup_module(m_args):
         path_output_folder=user_input[PATH_OUTPUT_FOLDER],
         move_copy=False,
     )
+
+    dict_values[SIMULATION_SETTINGS][EVALUATED_PERIOD][VALUE] = 1
+
     logging.debug("Accessing script: C0_data_processing")
     C0.all(dict_values)
 

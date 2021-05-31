@@ -29,8 +29,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     CONNECTED_FEEDIN_SINK,
     CRF,
     LES_ENERGY_VECTOR_S,
-    EXCESS,
-    AUTO_SINK,
+    EXCESS_SINK,
     ENERGY_VECTOR,
     KPI,
     KPI_SCALARS_DICT,
@@ -172,10 +171,7 @@ def total_demand_and_excess_each_sector(dict_values):
                 total_demand_dict.update({energy_carrier: {}})
 
             # Evaluate excess
-            if (
-                consumption_asset
-                in dict_values[SIMULATION_SETTINGS][EXCESS + AUTO_SINK]
-            ):
+            if consumption_asset in dict_values[SIMULATION_SETTINGS][EXCESS_SINK]:
                 total_excess_dict.update(
                     {
                         energy_carrier: total_excess_dict[energy_carrier]
@@ -467,7 +463,7 @@ def add_renewable_factor(dict_values):
 
 
 def equation_renewable_share(total_res, total_non_res):
-    """Calculates the renewable share
+    r"""Calculates the renewable share
 
     Parameters
     ----------
@@ -484,13 +480,13 @@ def equation_renewable_share(total_res, total_non_res):
 
     Notes
     -----
+
     Used both to calculate RENEWABLE_FACTOR and RENEWABLE_SHARE_OF_LOCAL_GENERATION.
 
     Equation:
 
     .. math::
-            RES = \frac{total_res}{total_non_res + total_res}
-
+        RES = \frac{total_res}{total_non_res + total_res}
 
     The renewable share is relative to generation, but not consumption of energy, the renewable share can not be larger 1.
     If there is no generation or consumption from a DSO within an energyVector and supply is solely reached by energy conversion from another vector, the renewable share is defined to be zero.
@@ -499,8 +495,8 @@ def equation_renewable_share(total_res, total_non_res):
     * renewable share < 1 - part of the energy in the system is of renewable origin
     * renewable share = 0 - no energy is of renewable origin
 
-
     Tested with:
+
     - test_renewable_share_equation_no_generation()
     - test_renewable_share_equation_below_1()
     - test_renewable_share_equation_is_0()
@@ -554,7 +550,7 @@ def add_degree_of_autonomy(dict_values):
 
 
 def equation_degree_of_autonomy(total_consumption_from_energy_provider, total_demand):
-    """
+    r"""
     Calculates the degree of autonomy (DA).
 
     The degree of autonomy describes the relation of how much demand is supplied by local generation (as opposed to
@@ -639,7 +635,7 @@ def add_degree_of_net_zero_energy(dict_values):
 def equation_degree_of_net_zero_energy(
     total_feedin, total_grid_consumption, total_demand
 ):
-    """
+    r"""
     Calculates the degree of net zero energy (NZE).
 
     In NZE systems import and export of energy is allowed while the balance over one
@@ -666,7 +662,7 @@ def equation_degree_of_net_zero_energy(
     -----
 
     .. math::
-        Degree of NZE &=\frac{1 + (\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
+        Degree of NZE &= 1 + \frac{(\sum_{i} {E_{grid feedin}(i)} \cdot w_i - E_{grid consumption} (i) \cdot w_i)}{\sum_i {E_{demand, i} \cdot w_i}}
 
     Degree of NZE = 1 : System is a net zero energy system, as E_feedin = E_grid_consumption
     Degree of NZE > 1 : system is a plus-energy system, as E_feedin > E_grid_consumption
@@ -740,7 +736,7 @@ def add_degree_of_sector_coupling(dict_values):
 def equation_degree_of_sector_coupling(
     total_flow_of_energy_conversion_equivalent, total_demand_equivalent
 ):
-    """Calculates degree of sector coupling.
+    r"""Calculates degree of sector coupling.
 
     Parameters
     ----------
@@ -756,7 +752,7 @@ def equation_degree_of_sector_coupling(
         Degree of sector coupling based on conversion flows and energy demands in electricity equivalent.
 
     .. math::
-       DSC=\frac{\sum_{i,j}{E_{conversion} (i,j)⋅w_i}}{\sum_i {E_{demand} (i)⋅w_i}}
+       DSC=\frac{\sum_{i,j}{E_{conversion} (i,j) \cdot w_i}}{\sum_i {E_{demand} (i) \cdot w_i}}
 
         with i,j \epsilon [Electricity,H2…]
 
@@ -789,7 +785,7 @@ def add_total_feedin_electricity_equivalent(dict_values):
     # Get source connected to the specific DSO in question
     for dso in dict_values[ENERGY_PROVIDERS]:
         # load total flow into the dso sink
-        feedin_sink = str(dso + DSO_FEEDIN + AUTO_SINK)
+        feedin_sink = str(dso + DSO_FEEDIN)
         energy_carrier = dict_values[ENERGY_CONSUMPTION][feedin_sink][ENERGY_VECTOR]
         total_feedin_dict.update({energy_carrier: {}})
         total_feedin_dict.update(
@@ -893,7 +889,7 @@ def add_onsite_energy_fraction(dict_values):
 
 
 def equation_onsite_energy_fraction(total_generation, total_feedin):
-    """
+    r"""
     Calculates onsite energy fraction (OEF), i.e. self-consumption.
 
     OEF describes the fraction of all locally generated energy that is consumed
@@ -908,12 +904,11 @@ def equation_onsite_energy_fraction(total_generation, total_feedin):
 
     Returns
     -------
-        float
-            Onsite energy fraction.
+    float
+        Onsite energy fraction.
 
     .. math::
             OEF &=\frac{\sum_{i} {E_{generation} (i) \cdot w_i} - E_{gridfeedin}(i) \cdot w_i}{\sum_{i} {E_{generation} (i) \cdot w_i}}
-
             &OEF \epsilon \text{[0,1]}
 
     Tested with
@@ -984,7 +979,7 @@ def add_onsite_energy_matching(dict_values):
 def equation_onsite_energy_matching(
     total_generation, total_feedin, total_excess, total_demand
 ):
-    """
+    r"""
     Calculates onsite energy matching (OEM), i.e. self-sufficiency.
 
     OEM describes the fraction of the total demand that can be
@@ -1127,7 +1122,14 @@ def add_levelized_cost_of_energy_carriers(dict_values):
 
     Returns
     -------
-    Updates KPI_SCALAR_DICT
+    Updated KPI_SCALAR_DICT: Add `ATTRIBUTED_COSTS` and `LCOeleq` for each energy carrier as well as `LCOeleq` for overall energy system
+
+    Notes
+    -----
+
+    Tested with:
+        - test_E3_indicator_calculation.test_add_levelized_cost_of_energy_carriers_one_sector()
+        - test_E3_indicator_calculation.test_add_levelized_cost_of_energy_carriers_two_sectors()
     """
     # Abbreviate costs accessed
     NPC = dict_values[KPI][KPI_SCALARS_DICT][COST_TOTAL]
@@ -1141,10 +1143,10 @@ def add_levelized_cost_of_energy_carriers(dict_values):
     for energy_carrier in dict_values[PROJECT_DATA][LES_ENERGY_VECTOR_S]:
         # Get energy carrier specific values
         energy_carrier_label = TOTAL_DEMAND + energy_carrier
-        total_flow_energy_carrier_eleq = dict_values[KPI][KPI_SCALARS_DICT][
+        total_flow_energy_carrier = dict_values[KPI][KPI_SCALARS_DICT][
             energy_carrier_label
         ]
-        total_flow_energy_carrier = dict_values[KPI][KPI_SCALARS_DICT][
+        total_flow_energy_carrier_eleq = dict_values[KPI][KPI_SCALARS_DICT][
             energy_carrier_label + SUFFIX_ELECTRICITY_EQUIVALENT
         ]
         # Calculate LCOE of energy carrier
