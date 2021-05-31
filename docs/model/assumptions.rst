@@ -486,6 +486,11 @@ With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, com
 
 As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`__] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`__]. The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable factor or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
 
+For the most part, the energy carrier weighting factors are similar to the lower heating value of the fuel in question. A stark deviation is noticable for ethanol and biodiesel. This deviation should be investigated further. In the future, it should be discussed whether it would be better to directly use the lower heating values of a fuel as its energy carrier weighting factor, as this would be more intuitive.
+
+.. note::
+   The :code:`energy_vector` of each of the assets and busses must be identical in spelling to one of the energy carriers defined in the above table. Spaces should be translated to underscores (ie. Crude oil as an energy carrier is defined as :code:`Crude_oil` in the input files). Other energy carriers can not be parsed and will raise a warning. Please note that `Heat` currently has to be measured in kWh(thermal).
+
 :Code:
 
 Currently, the energy carrier conversion factors are defined in :code:`constants.py` with :code:`DEFAULT_WEIGHTS_ENERGY_CARRIERS`. New energy carriers should be added to its list when needed. Unknown carriers raise an :code:`UnknownEnergyVectorError` error.
