@@ -278,16 +278,14 @@ KNOWN_EXTRA_PARAMETERS = {
 ENERGY_CARRIER_UNIT = "energy_carrier_unit"
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
     "LNG": {UNIT: "kWh_eleq/kg", VALUE: 12.69270292, ENERGY_CARRIER_UNIT: "kg",},
-    "Crude_oil": {UNIT: "kWh_eleq/kg", VALUE: 11.63042204
-, ENERGY_CARRIER_UNIT: "kg",},
+    "Crude_oil": {UNIT: "kWh_eleq/kg", VALUE: 11.63042204, ENERGY_CARRIER_UNIT: "kg",},
     "Diesel": {
         UNIT: "kWh_eleq/l",
         VALUE: 9.48030688,
         ENERGY_CARRIER_UNIT: "l",
     },  # https://epact.energy.gov/fuel-conversion-factors, conversion gallon->4.546092 l
     "Kerosene": {UNIT: "kWh_eleq/l", VALUE: 8.908073954, ENERGY_CARRIER_UNIT: "l",},
-    "Gasoline": {UNIT: "kWh_eleq/l", VALUE: 8.735753974
-, ENERGY_CARRIER_UNIT: "l",},
+    "Gasoline": {UNIT: "kWh_eleq/l", VALUE: 8.735753974, ENERGY_CARRIER_UNIT: "l",},
     "LPG": {UNIT: "kWh_eleq/l", VALUE: 6.472821609, ENERGY_CARRIER_UNIT: "l",},
     "Ethane": {UNIT: "kWh_eleq/l", VALUE: 5.149767951, ENERGY_CARRIER_UNIT: "l",},
     "H2": {
