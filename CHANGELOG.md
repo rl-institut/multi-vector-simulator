@@ -94,6 +94,7 @@ Here is a template for new release sections
 - `E2.convert_components_to_dataframe()` to correctly display when an asset is optimized, add pytests (#875)
 - If the `TIMESERIES` key is in the `dict_values` and the file under `FILENAME` key cannot be found, the timeseries is loaded from `TIMESERIES` (#881)
 - updated the SOC defintions in RTD (#876)
+- Corrected faulty weighting factors (`DEFAULT_WEIGHTS_ENERGY_CARRIERS` in `utils/constants.py`, `docs/model/assumptions.rst`) (#894)
 
 ### Removed
 - `AUTO_SOURCE` and `AUTO_SINK` as this overcomplicated the labelling process (#837)
@@ -120,6 +121,7 @@ Here is a template for new release sections
 - Introduce new standard for cites (#885)
 - Faulty calculation of attributed costs (#890)
 - Show actual setting of `OPTIMIZE_CAP` in autoreport for storages and energy production fuel sources (#875)
+- Faulty weighting factors (#894)
 
 ## [0.5.5] - 2021-03-04
 
