@@ -422,7 +422,7 @@ Following conversion factors and energy carriers are defined:
 
 The values of ethanol and biodiesel seem comparably low in [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`__] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`__] and do not seem to be representative of the net heating value (or lower heating value) that was expected to be used here.
 
-From this, the energy weighting factors using the baseline energy carrier electricity are calculated (see :ref:`table_default_energy_carrier_weights_label`).
+From this, the energy weighting factors are calculated using the electricity content for crude oil as baseline (see :ref:`table_default_energy_carrier_weights_label` below).
 
 .. _table_default_energy_carrier_weights_label:
 
@@ -430,54 +430,54 @@ From this, the energy weighting factors using the baseline energy carrier electr
    :widths: 50 25 25
    :header-rows: 1
 
-   * - Product
+   * - Energy carrier
      - Unit
      - Value
    * - LNG
      - kWh(eleq)/kg
-     - 33.4728198
+     - 12.6927
    * - Crude oil
      - kWh(eleq)/kg
-     - 12.6927029
-   * - Gas oil/diesel
+     - 11.6304
+   * - Diesel
      - kWh(eleq)/litre
-     - 11.630422
+     - 9.4803
    * - Kerosene
      - kWh(eleq)/litre
-     - 9.48030688
+     - 8.9080
    * - Gasoline
      - kWh(eleq)/litre
-     - 8.90807395
+     - 8.7358
    * - LPG
      - kWh(eleq)/litre
-     - 8.73575397
+     - 6.4728
    * - Ethane
      - kWh(eleq)/litre
-     - 6.47282161
+     - 5.1498
    * - H2
      - kWh(eleq)/kgH2
-     - 5.14976795
+     - 33.4728
    * - Electricity
      - kWh(eleq)/kWh(el)
      - 1
    * - Biodiesel
      - kWh(eleq)/litre
-     - 0.06290669
+     - 0.0629
    * - Ethanol
      - kWh(eleq)/litre
-     - 0.04242544
+     - 0.0424
    * - Natural gas
      - kWh(eleq)/litre
-     - 0.00933273
+     - 0.009
    * - Heat
      - kWh(eleq)/kWh(therm)
-     - 1.0002163
+     - 1.0002
    * - Heat
      - kWh(eleq)/kcal
-     - 0.00116304
+     - 0.0011
    * - Heat
      - kWh(eleq)/BTU
-     - 0.00029076
+     - 0.0003
 
 With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, compared to electricity, can be calculated with its conversion factor *w*:sub:`i` as:
 
@@ -485,6 +485,11 @@ With this, the equivalent potential of an energy carrier *E*:sub:`{eleq,i}`, com
         E_{eleq,i} = E_{i} \cdot w_{i}
 
 As it can be noticed, the conversion factor between heat (kWh(therm)) and electricity (kWh(el)) is almost 1. The deviation stems from the data available in source [`1  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2019-approximate-conversion-factors.pdf>`__] and [`2  <https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2020-full-report.pdf>`__]. The equivalency of heat and electricity can be a source of discussion, as from an exergy point of view these energy carriers can not be considered equivalent. When combined, say with a heat pump, the equivalency can also result in ripple effects in combination with the minimal renewable factor or the minimal degree of autonomy, which need to be evaluated during the pilot simulations.
+
+For the most part, the energy carrier weighting factors are similar to the lower heating value of the fuel in question. A stark deviation is noticable for ethanol and biodiesel. This deviation should be investigated further. In the future, it should be discussed whether it would be better to directly use the lower heating values of a fuel as its energy carrier weighting factor, as this would be more intuitive.
+
+.. note::
+   The :code:`energy_vector` of each of the assets and busses must be identical in spelling to one of the energy carriers defined in the above table. Spaces should be translated to underscores (ie. Crude oil as an energy carrier is defined as :code:`Crude_oil` in the input files). Other energy carriers can not be parsed and will raise a warning. Please note that `Heat` currently has to be measured in kWh(thermal).
 
 :Code:
 
