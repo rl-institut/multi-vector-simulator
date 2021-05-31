@@ -120,7 +120,7 @@ Here is a template for new release sections
 - Introduce new standard for cites (#885)
 - Faulty calculation of attributed costs (#890)
 - Show actual setting of `OPTIMIZE_CAP` in autoreport for storages and energy production fuel sources (#875)
-- Faulty weighting factors (#894)
+- Faulty weighting factors, now energy carrier weights mostly in the range of lower heating value (#894)
 
 ## [0.5.5] - 2021-03-04
 
