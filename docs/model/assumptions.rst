@@ -2,10 +2,10 @@
 Assumptions
 ===========
 
-The MVS is based on the programming framework :code:`oemof-solph` and builds an energy system model based up on its nomenclature.
+The MVS uses the programming framework :code:`oemof-solph` at its core and builds an energy system model based upon its nomenclature.
 As such, the energy system model can be described with a linear equation system.
-Below, the most important aspects are described in a genrealized way, as well as explained based on an example.
-This will ease the comparision to other energy system models.
+The most important aspects of a linear equation system are described below in a generalized way, and additionally explained through the use of an example.
+This will enable the clear comparision to other energy system models.
 
 .. _economic_precalculation-label:
 
@@ -61,17 +61,17 @@ It is expressed as follows:
 
         T &\text{: project lifetime [years]}
 
-The CRF is a ratio used to calculate the present value of the the annuity.
+The CRF is a ratio used to calculate the present value of the annuity.
 The discount factor can be replaced by the weighted average cost of capital (WACC), calculated by the user.
 
 The lifetime of the asset :math:`t_a` and the lifetime of the project :math:`T` can be different from each other;
-hence, the number of replacements n is estimated using the equation below:
+as a result, the number of replacements :math:`n` is estimated using the equation below:
 
 .. math::
         n = round \left( \frac{T}{t_a} + 0.5 \right) - 1
 
-The residual value is also known as salvage value and it represents an estimate of the monetary value of an asset at the end of the project lifetime :math:`T`.
-The MVS considers a linear depreciation over :math:`T` and accounts for the time value of money by using the following equation:
+The residual value is also known as the salvage value and it represents an estimate of the monetary value of an asset at the end of the project lifetime :math:`T`.
+The MVS considers a linear depreciation over :math:`T` and accounts for the time value of money through the use of the following equation:
 
 .. math::
         c_{res,i} = \frac{capex_i}{(1+d)^{n \cdot t_a}} \cdot \frac{1}{T} \cdot \frac{(n+1) \cdot t_a - T}{(1+d)^T}
@@ -81,9 +81,8 @@ The MVS considers a linear depreciation over :math:`T` and accounts for the time
 Energy Balance Equation
 -----------------------
 
-One main constraint that the optimization model is subject to is the energy balance equation.
-The latter maintains equality between the incoming energy into a bus and the outgoing energy from that bus.
-This balancing equation is applicable to all bus types, be it electrical, thermal, hydrogen or for any other energy carrier.
+One main constraint that the optimization model is subject to is the energy balance equation, which specifically maintains equality between the total incoming and outgoing energy of a bus.
+This balancing equation is applicable to all bus types, be it electrical, thermal, hydrogen or any other energy carrier.
 
 .. math::
         \sum E_{in,i}(t) - \sum E_{out,j}(t) = 0 \qquad  \forall t
@@ -93,16 +92,16 @@ This balancing equation is applicable to all bus types, be it electrical, therma
 
         E_{out,j} &\text{: energy flowing from the bus to asset j}
 
-It is very important to note that assets i and j can be the same asset (e.g., battery).
-`oemof-solph` allows both :math:`E_{in}` or :math:`E_{out}` to be larger zero in same time step t (see :ref:`limitations-real-life-constraint`).
+It is very important to note that assets i and j can be the same asset (e.g. a battery with an electrical inflow/outflow).
+`Oemof-solph` allows both :math:`E_{in}` and :math:`E_{out}` to be larger than zero in the same time step t (see :ref:`limitations-real-life-constraint`).
 
 .. _example_energy_balance_equations:
 
 Example: Sector Coupled Energy System
 -------------------------------------
 
-In order to understand the component models, a generic sector coupled example is shown in the next figure.
-It brings together the electricity and heat sector through Transformer 4 as it connects the two sector buses.
+In order to understand the component models, a generic sector coupled energy system example is shown in the figure below.
+It brings together the electricity and heat sector through a transformer (Transformer 4) which connects the two sector buses.
 
 .. image:: ../images/26-10-2020_sector_coupled_example.png
  :width: 600
@@ -158,16 +157,15 @@ For the sake of simplicity, the following table gives an example for each asset 
      - hp
      - kWth
 
-All grids and dispatchable sources are assumed to be available 100% of the time with no consumption limits.
-The MVS includes a sink component for excess energy, connected to each bus in the system and denoted by :math:`E_{ex}` in the equations.
+All grid and dispatchable source asset types are assumed to be available 100% of the time with no consumption limits.
+For each bus in the system, the MVS automatically includes a sink component for excess energy related to the bus, which is denoted :math:`E_{ex}` in the equations.
 This excess sink accounts for the extra energy in the system that has to be dumped.
 
 Electricity Grid Equation
 #########################
 
-The electricity grid is modeled though a feed-in and a consumption node.
-Transformers limit the peak flow into or from the local electricity line.
-Electricity sold to the grid experiences losses in the transformer :math:`(ts,f)`.
+The electricity grid is modeled through a feed-in and a consumption node.
+Transformers limit the peak flow into or from the local electricity line, and electricity sold to the grid experiences losses in the transformer :math:`(ts,f)`.
 
 .. math::
         E_{grid,c}(t) - E_{grid,f}(t) + E_{ts,f}(t) \cdot \eta_{ts,f} - E_{ts,c}(t) = 0 \qquad  \forall t
@@ -186,8 +184,8 @@ Electricity sold to the grid experiences losses in the transformer :math:`(ts,f)
 Non-Dispatchable Source Equations
 #################################
 
-Non-dispatchable sources in our example are wind, pv and solar thermal plant.
-Their generation is determined by the provided timeseries of instantaneous generation, providing :math:`\alpha`, :math:`\beta`, :math:`\gamma` respectively.
+Non-dispatchable sources in the sector coupled energy system example are wind, PV and solar thermal power.
+Their generation is determined by the provided timeseries of instantaneous generation, providing :math:`\alpha`, :math:`\beta`, :math:`\gamma` in relation to wind, PV and solar thermal power respectively.
 
 .. math::
         E_{wind}(t) &= CAP_{wind} \cdot \alpha_{wind}(t) \qquad  \forall t
@@ -218,8 +216,8 @@ Their generation is determined by the provided timeseries of instantaneous gener
 Storage Model
 #############
 
-There are two storages in our system: An electrical energy storage (Storage 1, :math:`bat`) and a thermal energy storage (Storage 2, :math:`tes`).
-Below, the equations for the Storage 1 are provided, but Storage 2 follows analogous equations for charge, discharge and bounds.
+There are two storages in the defined example system: An electrical energy storage (Storage 1, :math:`bat`) and a thermal energy storage (Storage 2, :math:`tes`).
+Below, the equations for Storage 1 are provided, but Storage 2 follows analogous equations for charge, discharge and bounds.
 
 .. math::
         E_{bat}(t) = E_{bat}(t - 1) + E_{bat,in}(t) \cdot \eta_{bat,in} - \frac{E_{bat,out}}{\eta_{bat,out}} - E_{bat}(t - 1) \cdot \epsilon \qquad  \forall t
@@ -257,7 +255,7 @@ Below, the equations for the Storage 1 are provided, but Storage 2 follows analo
 DC Electricity Bus Equation
 ###########################
 
-This is an example of a DC bus with a battery, PV and a bi-directional inverter.
+The following equation illustrates an example of a DC bus with a battery, PV and a bi-directional inverter.
 
 .. math::
         E_{pv}(t) + E_{bat,out}(t) \cdot \eta_{bat,out} + E_{rec}(t) \cdot \eta_{rec} - E_{inv}(t) - E_{bat,in} - E_{ex}(t) = 0 \qquad  \forall t
@@ -272,7 +270,7 @@ This is an example of a DC bus with a battery, PV and a bi-directional inverter.
 AC Electricity Bus Equation
 ###########################
 
-This describes the local electricity grid and all connected assets:
+This equation describes the local electricity grid and all connected assets:
 
 .. math::
         E_{ts,c}(t) \cdot \eta_{ts,c} + E_{wind}(t) + E_{inv}(t) \cdot \eta_{inv} - E_{ts,c}(t) - E_{rec}(t) - E_{hp}(t) - E_{el}(t) - E_{ex}(t) = 0 \qquad  \forall t
@@ -289,7 +287,7 @@ This describes the local electricity grid and all connected assets:
 Heat Bus Equation
 #################
 
-This describes the heat bus and all connected assets:
+This equation describes the heat bus and all connected assets:
 
 .. math::
         E_{tes}(t) \cdot \eta_{tes} + E_{turb}(t) \cdot \eta_{turb} + E_{hp}(t) \cdot COP - E_{th}(t) - E_{ex}(t) = 0
@@ -306,7 +304,7 @@ This describes the heat bus and all connected assets:
 NDS3 Bus Equation
 #################
 
-The NDS3 Bus is an example of a bus, which does not serve both as in- and output of a storage system.
+The NDS3 Bus is an example of a bus which does not serve both as the input and output of a storage system.
 Instead, the thermal storage is charged from the NDS3 bus, but discharges into the heat bus.
 
 .. math::
@@ -334,10 +332,12 @@ The DS Bus shows an example of a fuel source providing an energy carrier (biogas
 Cost calculations
 -----------------
 
-The optimization in the MVS is mainly a cost optimization. There are some additional constraints that can be introduced, mainly by adding bounds eg. by limiting the maximum capacity that can be installed (comp. :ref:`maxcap-label`) or adding constraints for certain key performance indicators (see :ref:`constraints-label`). To optimize the energy systems properly, the economic data provided with the input data has to be pre-processed (also see :ref:`economic_precalculation-label`) and then also post-processed when evaluating the results. Following assumptions are important:
+The optimization of the MVS is mainly based on costs.
+There is, however, the possibility of introducing additional constraints which will impact the optimization results e.g. implementing a maximum installable capacity limit (comp. :ref:`maxcap-label`) or adding constraints for certain key performance indicators (see :ref:`constraints-label`).
+In order to optimize the energy systems properly, the economic data provided with the input data has to be pre-processed (also see :ref:`economic_precalculation-label`) and then also post-processed when evaluating the results. The following assumptions are therefore important:
 
-* :ref:`Project lifetime <projectduration-label>`: The simulation has a defined project lifetime, for which continuous operation is assumed - which means that the first year of operation is exactly like the last year of operation. Existing and optimized assets have to be replaced to make this possible.
-* :ref:`Simulation duration <evaluatedperiod-label>`: It is advisable to simulate whole year to find the most suitable combination of energy assets for your system. Sometimes however you might want to look at specific seasons to see their effect - this is possible in the MVS by choosing a specific start date and simulation duration.
+* :ref:`Project lifetime <projectduration-label>`: The simulation has a defined project lifetime, for which continuous operation is assumed - which means that the first year of operation is considered to be the same as the last year of operation. Existing and optimized assets have to be replaced (if their lifetime preceeds the system lifetime) to make this possible.
+* :ref:`Simulation duration <evaluatedperiod-label>`: It is advisable to simulate the whole year to find the most suitable combination of energy assets for your system. Sometimes however you might want to look at specific seasons to see their effect - this is possible in the MVS by choosing a specific start date and simulation duration.
 * :ref:`Asset costs <economic_precalculation-label>`: Each asset can have development costs, specific investment costs, specific operation and management costs as well as dispatch costs.
     * *Replacement costs* are calculated based on the lifetime of the assets, and residual values are paid at the end of the project.
     * *Development costs* are costs that will occurr regardless of the installed capacity of an asset - even if it is not installed at all. It stands for system planning and licensing costs. If you have optimized your energy system and see that an asset might not be favourable (zero optimized capacities), you might want to run the simulation again and remove the asset, or remove the development costs of the asset.
