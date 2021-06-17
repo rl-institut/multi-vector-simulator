@@ -231,6 +231,11 @@ def parse_simulation_log(path_log_file, dict_values):
     -------
     Updates the results dictionary with the log messages of the simulation
 
+    Notes
+    -----
+    This function is tested with:
+    - test_F0_output.TestLogCreation.test_parse_simulation_log
+
     """
     # Dictionaries to gather non-fatal warning and error messages that appear during the simulation
 
@@ -259,7 +264,7 @@ def parse_simulation_log(path_log_file, dict_values):
 
     log_dict = {ERRORS: error_dict, WARNINGS: warning_dict}
 
-    dict_values.update({SIMULATION_RESULTS: {LOGS: log_dict}})
+    dict_values[SIMULATION_RESULTS].update({LOGS: log_dict})
 
 
 def store_as_json(dict_values, output_folder=None, file_name=None):
