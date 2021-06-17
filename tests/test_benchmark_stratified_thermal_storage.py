@@ -23,6 +23,8 @@ from _constants import (
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
     CSV_EXT,
+    BENCHMARK_TEST_OUTPUT_FOLDER,
+    BENCHMARK_TEST_INPUT_FOLDER,
 )
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -32,9 +34,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
 )
 
 TEST_INPUT_PATH = os.path.join(
-    TEST_REPO_PATH, "benchmark_test_inputs", "Feature_stratified_thermal_storage"
+    TEST_REPO_PATH, BENCHMARK_TEST_INPUT_FOLDER, "Feature_stratified_thermal_storage"
 )
-TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_OUTPUT_FOLDER)
 
 
 class TestStratifiedThermalStorage:

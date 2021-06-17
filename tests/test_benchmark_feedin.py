@@ -20,6 +20,8 @@ from _constants import (
     OPTIMIZED_ADD_CAP,
     LABEL,
     CSV_ELEMENTS,
+    BENCHMARK_TEST_OUTPUT_FOLDER,
+    BENCHMARK_TEST_INPUT_FOLDER,
 )
 
 from multi_vector_simulator.utils.constants import (
@@ -50,8 +52,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EXCESS_SINK,
 )
 
-TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
-TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
+TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_INPUT_FOLDER)
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_OUTPUT_FOLDER)
 
 FEEDIN = f"DSO{DSO_FEEDIN}"
 CONSUMPTION = f"DSO{DSO_CONSUMPTION}"

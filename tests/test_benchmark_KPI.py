@@ -24,6 +24,8 @@ from _constants import (
     TEST_REPO_PATH,
     CSV_EXT,
     TIME_SERIES,
+    BENCHMARK_TEST_INPUT_FOLDER,
+    BENCHMARK_TEST_OUTPUT_FOLDER,
 )
 
 from multi_vector_simulator.utils.constants import (
@@ -84,8 +86,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_CONSUMPTION,
 )
 
-TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
-TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
+TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_INPUT_FOLDER)
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_OUTPUT_FOLDER)
 
 DICT_ECONOMIC = {
     CURR: "Euro",

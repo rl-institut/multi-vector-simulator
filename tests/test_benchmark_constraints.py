@@ -20,6 +20,8 @@ from _constants import (
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
     CSV_EXT,
+    BENCHMARK_TEST_INPUT_FOLDER,
+    BENCHMARK_TEST_OUTPUT_FOLDER,
 )
 
 from multi_vector_simulator.utils.constants import (
@@ -58,8 +60,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     FILENAME,
 )
 
-TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
-TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
+TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_INPUT_FOLDER)
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_OUTPUT_FOLDER)
 
 
 class Test_Constraints:

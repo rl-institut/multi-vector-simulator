@@ -23,7 +23,7 @@ import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.F0_output as F0
 from multi_vector_simulator.cli import main
 
-from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS
+from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS, CSV_EXT
 
 from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DATA,
@@ -57,6 +57,7 @@ from _constants import (
     TYPE_STR,
     PATH_OUTPUT_FOLDER,
     START_DATE,
+    BENCHMARK_TEST_INPUT_FOLDER,
 )
 
 PARSER = initializing.mvs_arg_parser()
@@ -220,7 +221,7 @@ class TestLogCreation:
             shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
 
     test = "objective_value_exception_equal_annuity_total"
-    test_folder = os.path.join("tests", "benchmark_test_inputs", test)
+    test_folder = os.path.join("tests", BENCHMARK_TEST_INPUT_FOLDER, test)
 
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
@@ -230,7 +231,17 @@ class TestLogCreation:
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=PARSER.parse_args(
-            ["-f", "-log", "warning", "-o", OUTPUT_PATH, "-i", test_folder, "-ext", "csv"]
+            [
+                "-f",
+                "-log",
+                "warning",
+                "-o",
+                OUTPUT_PATH,
+                "-i",
+                test_folder,
+                "-ext",
+                CSV_EXT,
+            ]
         ),
     )
     def test_parse_simulation_log(self, m_args):

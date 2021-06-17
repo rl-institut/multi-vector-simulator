@@ -51,6 +51,8 @@ from _constants import (
     PATHS_TO_PLOTS,
     TYPE_BOOL,
     TEST_REPO_PATH,
+    BENCHMARK_TEST_INPUT_FOLDER,
+    BENCHMARK_TEST_OUTPUT_FOLDER,
 )
 
 CSV_PARAMETERS = ["param1", "param2"]
@@ -377,7 +379,7 @@ def test_default_values_storage_without_thermal_losses():
 
     data_path = os.path.join(
         TEST_REPO_PATH,
-        "benchmark_test_inputs",
+        BENCHMARK_TEST_INPUT_FOLDER,
         "Feature_stratified_thermal_storage",
         "csv_elements",
     )
@@ -411,7 +413,7 @@ def test_default_values_storage_with_thermal_losses():
 
     data_path = os.path.join(
         TEST_REPO_PATH,
-        "benchmark_test_inputs",
+        BENCHMARK_TEST_INPUT_FOLDER,
         "Feature_stratified_thermal_storage",
         "csv_elements",
     )
