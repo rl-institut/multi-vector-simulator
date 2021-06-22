@@ -24,6 +24,8 @@ from _constants import (
     EXECUTE_TESTS_ON,
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
+    BENCHMARK_TEST_INPUT_FOLDER,
+    BENCHMARK_TEST_OUTPUT_FOLDER,
     CSV_EXT,
 )
 
@@ -61,8 +63,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
 from multi_vector_simulator.utils.data_parser import convert_epa_params_to_mvs
 
 
-TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
-TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
+TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_INPUT_FOLDER)
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_OUTPUT_FOLDER)
 
 
 class TestACElectricityBus:

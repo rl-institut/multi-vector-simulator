@@ -1,0 +1,8 @@
+,unit,demand_01
+dsm,str,False
+file_name,str,demand.csv
+type_asset,str,demand
+type_oemof,str,sink
+energyVector,str,Electricity
+inflow_direction,str,Electricity
+unit,str,kW
