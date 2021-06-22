@@ -489,7 +489,7 @@ def create_json_from_csv(
                         else:
                             column_dict.update({param: value_list})
                         logging.info(
-                            f"Parameter {param} of asset {column} is defined as a list."
+                            f"Parameter {param} of asset {column} is defined as a list: {value_list}"
                         )
                 else:
                     column_dict = conversion(
