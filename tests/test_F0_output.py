@@ -250,7 +250,6 @@ class TestLogCreation:
             os.path.join(OUTPUT_PATH, JSON_WITH_RESULTS + ".json"),
             flag_missing_values=False,
         )
-        print(json_with_results[SIMULATION_RESULTS])
         assert (
             SIMULATION_RESULTS in json_with_results
         ), f"There should be a subcategory {SIMULATION_RESULTS} in the output json file, including amongst others the objective value and the log messages. {SIMULATION_RESULTS} is missing."
