@@ -407,6 +407,40 @@ def test_add_asset_to_asset_dict_for_each_flow_direction():
         ), f"The asset label of asset {asset_name} in the asset list of {bus} is of unexpected value."
 
 
+def test_add_asset_to_asset_dict_for_each_flow_direction_multiple_output_and_input_flows():
+    bus_names = ["bus_name_" + str(i) for i in range(1, 5)]
+    asset_name = "asset"
+    asset_label = "asset_label"
+    energy_vector = "Electricity"
+    dict_test = {
+        ENERGY_BUSSES: {
+            bus_names[0]: {LABEL: bus_names[0], ENERGY_VECTOR: energy_vector},
+            bus_names[1]: {LABEL: bus_names[1], ENERGY_VECTOR: energy_vector},
+            bus_names[2]: {LABEL: bus_names[2], ENERGY_VECTOR: energy_vector},
+            bus_names[3]: {LABEL: bus_names[3], ENERGY_VECTOR: energy_vector},
+        },
+        ENERGY_CONVERSION: {
+            asset_name: {
+                LABEL: asset_label,
+                OUTFLOW_DIRECTION: [bus_names[0], bus_names[1]],
+                INFLOW_DIRECTION: [bus_names[2], bus_names[3]],
+                ENERGY_VECTOR: energy_vector,
+            }
+        },
+    }
+    C0.add_asset_to_asset_dict_for_each_flow_direction(
+        dict_test, dict_test[ENERGY_CONVERSION][asset_name], asset_name
+    )
+
+    for bus in bus_names:
+        assert (
+            asset_name in dict_test[ENERGY_BUSSES][bus][ASSET_DICT]
+        ), f"The asset {asset_name} is not added to the list of assets attached to the bus {bus}."
+        assert (
+            dict_test[ENERGY_BUSSES][bus][ASSET_DICT][asset_name] == asset_label
+        ), f"The asset {asset_name} is not added with its {LABEL} to the list of assets attached to the bus."
+
+
 def test_add_asset_to_asset_dict_of_bus_ValueError():
     bus_name = "bus_name"
     asset_name = "asset"

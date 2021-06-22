@@ -583,6 +583,7 @@ def add_asset_to_asset_dict_for_each_flow_direction(dict_values, dict_asset, ass
     -----
     Tested with:
     - C0.test_add_asset_to_asset_dict_for_each_flow_direction()
+    - C0.test_add_asset_to_asset_dict_for_each_flow_direction_multiple_output_and_input_flows()
     """
 
     # The asset needs to be added both to the inflow as well as the outflow bus:
