@@ -1,7 +1,5 @@
 ,unit,demand_01,demand_02
-dsm,str,False,False
 file_name,str,demand.csv,demand.csv
-type_asset,str,demand,demand
 type_oemof,str,sink,sink
 energyVector,str,Electricity,Heat
 inflow_direction,str,Electricity,Heat

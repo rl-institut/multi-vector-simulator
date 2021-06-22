@@ -9,7 +9,7 @@ lifetime,year,30
 specific_costs_om,currency/kW/year,5
 dispatch_price,currency/kWh,0.5
 optimizeCap,bool,False
-outflow_direction,str,"['Electricity', 'Heat`]"
+outflow_direction,str,"[Electricity, Heat]"
 energyVector,str,Electricity
 type_oemof,str,transformer
 unit,str,kVA
