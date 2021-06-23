@@ -33,6 +33,8 @@ from multi_vector_simulator.utils.constants import (
     DSO_PEAK_DEMAND_SUFFIX,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
+    INFLOW_DIRECTION,
+    OUTFLOW_DIRECTION,
     PROJECT_DURATION,
     DISCOUNTFACTOR,
     TAX,
@@ -910,3 +912,119 @@ def check_energy_system_can_fulfill_max_demand(dict_values):
             )
 
         return peak_generation, peak_demand
+
+
+def check_if_that_no_parameters_are_defined_as_lists_for_assets_where_it_is_not_allowed(
+    dict_values,
+):
+    """
+    Checks that no assets in the groups ENERGY_PROVIDERS, ENERGY_PRODUCTION, ENERGY_STORAGE, ENERGY_CONSUMPTION have parameters defined as lists.
+
+    It is not possible for those assets to have parameters defined as lists. Multiple outputs would rather have to be modelled with additional ENERGY_BUSSES and ENERGY_CONVERSION assets.
+
+    Parameters
+    ----------
+    dict_values: dict
+        All simulation information
+
+    Returns
+    -------
+    Nothing if tests passes. ValueError if test fails.
+
+    Notes
+    -----
+
+    Tested with:
+    - test_C1_verification.test_check_if_that_no_parameters_are_defined_as_lists_for_assets_where_it_is_not_allowed_fails()
+        - test_C1_verification.test_check_if_that_no_parameters_are_defined_as_lists_for_assets_where_it_is_not_allowed_passes()
+
+    """
+
+    for asset_group in [
+        ENERGY_PROVIDERS,
+        ENERGY_PRODUCTION,
+        ENERGY_STORAGE,
+        ENERGY_CONSUMPTION,
+    ]:
+        for asset in dict_values[asset_group]:
+            for key in dict_values[asset_group][asset]:
+                if isinstance(dict_values[asset_group][asset][key], list):
+                    raise ValueError(
+                        f"Asset {asset} of asset group {asset_group} has parameter {key} defined as a list. It is not possible to define parameters as lists for this group."
+                    )
+    return True
+
+
+def check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided(
+    dict_values,
+):
+    """
+    Checks if all parameters of an asset of group ENERGY_CONVERSION are provided according to their multiple input- or output directions.
+
+    The dispatch ratio of multiple outputs is currently fixed, ie. CHP with variable ratio between heat and electricity output can not be modeled.
+
+    It is not possible to have both INFLOW_DIRECTION as well as OUTFLOW_DIRECTION defined as a list.
+
+    If an asset has multiple input flows (INFLOW_DIRECTION is defined as a list) it should also have an equally long list of values for following parameters (if applicable):
+    - efficiency
+
+    If an asset has multiple input flows (INFLOW_DIRECTION is defined as a list) it should also have an equally long list of values for following parameters (if applicable):
+    - efficiency
+    - dispatch_price
+    - energyVector
+
+    Returns
+    -------
+    Nothing if check passes. ValueError if test does not pass.
+
+    Notes
+    -----
+
+    Tested with:
+    - test_C1_verification.test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_passes_two_inflows()
+    - test_C1_verification.test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_passes_two_outflows()
+    - test_C1_verification.test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_passes_one_inflow()
+    - test_C1_verification.test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_passes_one_outflow()
+    - test_C1_verification.test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_fails_invalid_list()
+    - test_C1_verification.test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_fails_two_inflows_and_two_outflows()
+    - test_C1_verification.test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_fails_multiple_outputs_invalid_list
+    - test_C1.verification.test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_fails_multiple_outputs_insufficient_listed_parameters()
+    """
+    REQUIRED_PARAMETERS = {
+        INFLOW_DIRECTION: [EFFICIENCY],
+        OUTFLOW_DIRECTION: [EFFICIENCY, DISPATCH_PRICE, ENERGY_VECTOR],
+    }
+    asset_group = ENERGY_CONVERSION
+    for asset in dict_values[asset_group]:
+        list_keys = []
+        for key in dict_values[asset_group][asset]:
+            if isinstance(dict_values[asset_group][asset][key], list):
+                list_keys.append(key)
+
+        if len(list_keys) > 0:
+            if INFLOW_DIRECTION in list_keys and OUTFLOW_DIRECTION in list_keys:
+                raise ValueError(
+                    f"Both {INFLOW_DIRECTION} and {OUTFLOW_DIRECTION} of  asset {asset} of asset group {asset_group} are defined as lists. This is not possible. Please only define one of the directions with a list. "
+                )
+            elif INFLOW_DIRECTION in list_keys:
+                multiple = INFLOW_DIRECTION
+            elif OUTFLOW_DIRECTION in list_keys:
+                multiple = OUTFLOW_DIRECTION
+            else:
+                raise ValueError(
+                    f"Some parameters of asset {asset} of asset group {asset_group} are defined as lists {list_keys}. This can only be if {INFLOW_DIRECTION} or {OUTFLOW_DIRECTION} is a list as well."
+                )
+
+            for key in list_keys:
+                if key is not INFLOW_DIRECTION and key is not OUTFLOW_DIRECTION:
+                    if key not in REQUIRED_PARAMETERS[multiple]:
+                        raise ValueError(
+                            f"Asset {asset} of asset group {ENERGY_CONVERSION} has multiple {multiple}, but {key} should not be a list."
+                        )
+            for key in REQUIRED_PARAMETERS[multiple]:
+                if key not in list_keys:
+                    raise ValueError(
+                        f"Asset {asset} of asset group {ENERGY_CONVERSION} has multiple {multiple}, but {key} is incorrectly not provided as a list."
+                    )
+
+    return True

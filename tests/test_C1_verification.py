@@ -38,6 +38,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MAXIMUM_CAP,
     INSTALLED_CAP,
     OUTPUT_POWER,
+    INFLOW_DIRECTION,
     OUTFLOW_DIRECTION,
     CONSTRAINTS,
     MAXIMUM_EMISSIONS,
@@ -879,6 +880,151 @@ def test_check_energy_system_can_fulfill_max_demand_fails_mvs_runthrough(caplog)
     log = logfile.read()
     logfile.close()
     assert "might have insufficient capacities" in log
+
+
+def test_check_if_that_no_parameters_are_defined_as_lists_for_assets_where_it_is_not_allowed_passes():
+    asset = "asset"
+    test_dict = {
+        ENERGY_PROVIDERS: {},
+        ENERGY_PRODUCTION: {asset: {}},
+        ENERGY_STORAGE: {asset + "2": {}, asset + "1": {}},
+        ENERGY_CONSUMPTION: {asset: {LABEL: asset}},
+    }
+    bool = C1.check_if_that_no_parameters_are_defined_as_lists_for_assets_where_it_is_not_allowed(
+        test_dict
+    )
+    assert (
+        bool is True
+    ), f"The test should have passed, as no lists are incorrectly provided for the assets."
+
+
+def test_check_if_that_no_parameters_are_defined_as_lists_for_assets_where_it_is_not_allowed_fails():
+    asset = "asset"
+    test_dict = {
+        ENERGY_PROVIDERS: {},
+        ENERGY_PRODUCTION: {asset: {ENERGY_VECTOR: [1, 2]}},
+        ENERGY_STORAGE: {asset + "2": {}, asset + "1": {}},
+        ENERGY_CONSUMPTION: {asset: {LABEL: asset}},
+    }
+    with pytest.raises(ValueError):
+        C1.check_if_that_no_parameters_are_defined_as_lists_for_assets_where_it_is_not_allowed(
+            test_dict
+        )
+
+
+def test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_passes_two_inflows():
+    asset = "asset"
+    bus = ["bus" + str(i) for i in range(0, 2)]
+    test_dict = {
+        ENERGY_CONVERSION: {
+            asset: {INFLOW_DIRECTION: [bus[0], bus[1]], EFFICIENCY: [0, 0]}
+        }
+    }
+    bool = C1.check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided(
+        test_dict
+    )
+    assert (
+        bool is True
+    ), f"The test should have passed, as parameters are provided appropriately for two inflows ({EFFICIENCY})."
+
+
+def test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_passes_two_outflows():
+    asset = "asset"
+    bus = ["bus" + str(i) for i in range(0, 2)]
+    test_dict = {
+        ENERGY_CONVERSION: {
+            asset[1]: {
+                OUTFLOW_DIRECTION: [bus[0], bus[1]],
+                EFFICIENCY: [0, 0],
+                DISPATCH_PRICE: [0, 0],
+                ENERGY_VECTOR: ["a", "b"],
+            },
+        }
+    }
+    bool = C1.check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided(
+        test_dict
+    )
+    assert (
+        bool is True
+    ), f"The test should have passed, as parameters are provided appropriately for two outputs ({EFFICIENCY, DISPATCH_PRICE, ENERGY_VECTOR})."
+
+
+def test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_passes_one_inflow():
+    asset = "asset"
+    bus = "bus"
+    test_dict = {ENERGY_CONVERSION: {asset: {INFLOW_DIRECTION: bus},}}
+    bool = C1.check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided(
+        test_dict
+    )
+    assert (
+        bool is True
+    ), f"The test should have passed, as parameters are provided appropriately for one input."
+
+
+def test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_passes_one_outflow():
+    asset = "asset"
+    bus = "bus"
+    test_dict = {ENERGY_CONVERSION: {asset: {OUTFLOW_DIRECTION: bus},}}
+    bool = C1.check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided(
+        test_dict
+    )
+    assert (
+        bool is True
+    ), f"The test should have passed, as parameters are provided appropriately for one output."
+
+
+def test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_fails_two_inflows_and_two_outflows():
+    asset = "asset"
+    bus = ["bus" + str(i) for i in range(0, 4)]
+    test_dict = {
+        ENERGY_CONVERSION: {
+            asset: {
+                OUTFLOW_DIRECTION: [bus[0], bus[1]],
+                INFLOW_DIRECTION: [bus[2], bus[3]],
+            },
+        }
+    }
+    with pytest.raises(ValueError):
+        C1.check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided(
+            test_dict
+        ), f"It is not possible to provide two inflows as well as two outputs. Only one of those can be defined as list."
+
+
+def test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_fails_invalid_list():
+    asset = "asset"
+    test_dict = {ENERGY_CONVERSION: {asset: {EFFICIENCY: [0, 0],}}}
+    with pytest.raises(ValueError):
+        C1.check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided(
+            test_dict
+        ), f"It is not possible to provide two a parameter as a list if {INFLOW_DIRECTION} or {OUTFLOW_DIRECTION} are not also provided as a list."
+
+
+def test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_fails_multiple_outputs_invalid_list():
+    asset = "asset"
+    bus = ["bus" + str(i) for i in range(0, 2)]
+    test_dict = {
+        ENERGY_CONVERSION: {
+            asset: {OUTFLOW_DIRECTION: [bus[0], bus[1]], LABEL: [0, 0],}
+        }
+    }
+    with pytest.raises(ValueError):
+        C1.check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided(
+            test_dict
+        ), f"Not all parameters can be provided as lists, even if {OUTFLOW_DIRECTION} or {INFLOW_DIRECTION} are provided as list. {LABEL} for example can not, and a ValueError should be raised."
+
+
+def test_check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided_fails_multiple_outputs_insufficient_listed_parameters():
+    asset = "asset"
+    bus = ["bus" + str(i) for i in range(0, 2)]
+    test_dict = {
+        ENERGY_CONVERSION: {
+            asset: {OUTFLOW_DIRECTION: [bus[0], bus[1]], EFFICIENCY: [0, 0],}
+        }
+    }
+    with pytest.raises(ValueError):
+        C1.check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided(
+            test_dict
+        ), f"For defining {OUTFLOW_DIRECTION} as a list, {EFFICIENCY, DISPATCH_PRICE, ENERGY_VECTOR} have to provided as lists as well. This is not the case here and an error message should be raised."
 
 
 # def test_check_input_values():
