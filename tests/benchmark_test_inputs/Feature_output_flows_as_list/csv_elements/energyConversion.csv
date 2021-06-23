@@ -7,7 +7,7 @@ inflow_direction,str,Electricity
 installedCap,kW,1250
 lifetime,year,30
 specific_costs_om,currency/kW/year,5
-dispatch_price,currency/kWh,0.5
+dispatch_price,currency/kWh,"[0,0]"
 optimizeCap,bool,False
 outflow_direction,str,"[Electricity, Heat]"
 energyVector,str,Electricity
