@@ -63,7 +63,15 @@ def all(dict_values):
     B0.retrieve_date_time_info(dict_values[SIMULATION_SETTINGS])
     add_economic_parameters(dict_values[ECONOMIC_DATA])
     define_energy_vectors_from_busses(dict_values)
+
+    # Run validity checks on input data
     C1.check_if_energy_vector_of_all_assets_is_valid(dict_values)
+    C1.check_if_that_no_parameters_are_defined_as_lists_for_assets_where_it_is_not_allowed(
+        dict_values
+    )
+    C1.check_if_all_parameters_for_multiple_inflow_outflow_directions_are_provided(
+        dict_values
+    )
 
     ## Verify inputs
     # todo check whether input values can be true
