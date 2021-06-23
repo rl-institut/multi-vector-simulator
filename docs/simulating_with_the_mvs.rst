@@ -173,7 +173,7 @@ The information fed into the MVS via the CSV's would therefore define following 
 Ideally you sketch down the energy system you want to simulate with the above-mentioned granularity
 and only using sources, sinks, transformers and buses (meaning the oemof components).
 When interconnecting different assets make sure that you use the correct bus name in each of the CSV input files.
-The bus names are defined with :code:`input_direction` and :code:`output_direction`.
+The bus names are defined with :code:`inflow_direction` and :code:`outflow_direction`.
 If you interconnect your assets or buses incorrectly the system will still be built but the simulation terminated.
 When executing a simulation, the MVS will generate a rough graphic visualisation of your energy system if you use the option :code:`-png`.
 
