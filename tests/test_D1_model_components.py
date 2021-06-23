@@ -224,7 +224,7 @@ class TestTransformerComponent:
             optimize=True, dict_asset=dict_asset, multiple_outputs=True
         )
 
-    def test_transformer_fix_cap_single_busses(self):
+    def test_transformer_constant_efficiency_fix_single_busses(self):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_single_busses"
         ]
@@ -249,7 +249,7 @@ class TestTransformerComponent:
             optimize=False, dict_asset=dict_asset
         )
 
-    def test_transformer_fix_cap_multiple_input_busses(self,):
+    def test_transformer_constant_efficiency_fix_multiple_input_busses(self,):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_multiple_input_busses"
         ]
@@ -274,7 +274,7 @@ class TestTransformerComponent:
             optimize=False, dict_asset=dict_asset
         )
 
-    def test_transformer_fix_cap_multiple_output_busses(self):
+    def test_transformer_constant_efficiency_fix_multiple_output_busses(self):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_multiple_output_busses"
         ]
@@ -298,6 +298,21 @@ class TestTransformerComponent:
         self.helper_test_transformer_in_model_and_dict(
             optimize=False, dict_asset=dict_asset, multiple_outputs=True
         )
+
+    def test_transformer_constant_efficiency_fix_multiple_input_busses_and_output_busses(
+        self,
+    ):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_fix_multiple_input_busses_multiple_output_busses"
+        ]
+
+        with pytest.raises(ValueError):
+            D1.transformer(
+                model=self.model,
+                dict_asset=dict_asset,
+                transformer=self.transformers,
+                bus=self.busses,
+            )
 
 
 class TestSinkComponent:

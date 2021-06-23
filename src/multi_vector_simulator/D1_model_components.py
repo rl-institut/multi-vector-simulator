@@ -364,9 +364,10 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
     Notes
     -----
     Tested with:
-    - test_transformer_fix_cap_single_busses()
-    - test_transformer_fix_cap_multiple_input_busses()
-    - test_transformer_fix_cap_multiple_output_busses()
+    - test_D1_model_components.test_transformer_constant_efficiency_fix_single_busses()
+    - test_D1_model_components.test_transformer_constant_efficiency_fix_multiple_input_busses()
+    - test_D1_model_components.test_transformer_constant_efficiency_fix_multiple_output_busses()
+    - test_D1_model_components.test_transformer_constant_efficiency_fix_multiple_input_and_output_busses()
 
     Returns
     -------
@@ -374,41 +375,52 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
 
     """
     # check if the transformer has multiple input or multiple output busses
-    if isinstance(dict_asset[INFLOW_DIRECTION], list) or isinstance(
+    if isinstance(dict_asset[INFLOW_DIRECTION], list) and isinstance(
         dict_asset[OUTFLOW_DIRECTION], list
     ):
-        if isinstance(dict_asset[INFLOW_DIRECTION], list):
-            inputs = {}
-            for bus in dict_asset[INFLOW_DIRECTION]:
-                inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow()
-            outputs = {
-                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-                    nominal_value=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
-                )
-            }
-            efficiencies = {
-                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: dict_asset[
-                    EFFICIENCY
-                ][VALUE]
-            }
+        raise ValueError(
+            f"Currently, it is not possible to simulate energyConversion assets with {len(dict_asset[INFLOW_DIRECTION])} inflow directions and {len(dict_asset[OUTFLOW_DIRECTION])} outflow directions. Please use either multiple inflow or outflow directions."
+        )
 
-        else:
-            inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
-            outputs = {}
-            index = 0
-            for bus in dict_asset[OUTFLOW_DIRECTION]:
-                variable_costs = dict_asset[DISPATCH_PRICE][VALUE][index]
-                outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
-                    nominal_value=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=variable_costs,
-                )
-                index += 1
-            efficiencies = {}
-            for i in range(len(dict_asset[EFFICIENCY][VALUE])):
-                efficiencies[
-                    kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][i]]
-                ] = dict_asset[EFFICIENCY][VALUE][i]
+    # Multiple inflow directions
+    elif isinstance(dict_asset[INFLOW_DIRECTION], list):
+        inputs = {}
+        efficiencies = {}
+        index = 0
+        for bus in dict_asset[INFLOW_DIRECTION]:
+            inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow()
+            efficiencies.update(
+                {
+                    kwargs[OEMOF_BUSSES][
+                        dict_asset[INFLOW_DIRECTION][index]
+                    ]: dict_asset[EFFICIENCY][VALUE][index]
+                }
+            )
+            index += 1
+
+        outputs = {
+            kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
+                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
+                variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+            )
+        }
+
+    # Multiple inflow directions
+    elif isinstance(dict_asset[OUTFLOW_DIRECTION], list):
+        inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
+        outputs = {}
+        efficiencies = {}
+        index = 0
+        for bus in dict_asset[OUTFLOW_DIRECTION]:
+            variable_costs = dict_asset[DISPATCH_PRICE][VALUE][index]
+            outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
+                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
+                variable_costs=variable_costs,
+            )
+            efficiencies[
+                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][index]]
+            ] = dict_asset[EFFICIENCY][VALUE][index]
+            index += 1
 
     else:
         inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
