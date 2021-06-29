@@ -1,13 +1,13 @@
 ,unit
 unit,str
 optimizeCap,bool
-energy_price,currency/kWh
-feedin_tariff,currency/kWh
-peak_demand_pricing,currency/kW
+energy_price,currency/unit
+feedin_tariff,currency/unit
+peak_demand_pricing,currency/unit power
 peak_demand_pricing_period,"times per year (1,2,3,4,6,12)"
 renewable_share,factor
 inflow_direction,str
 outflow_direction,str
 energyVector,str
-emission_factor,kgCO2eq/kWh
+emission_factor,kgCO2eq/unit
 type_oemof,str

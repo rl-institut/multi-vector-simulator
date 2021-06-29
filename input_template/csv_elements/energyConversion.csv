@@ -1,15 +1,16 @@
 ,unit
 unit,str
 optimizeCap,bool
-installedCap,kW
+installedCap,unit
 age_installed,year
 lifetime,year
 development_costs,currency
-specific_costs,currency/kW
-specific_costs_om,currency/kW/year
-dispatch_price,currency/kWh
+specific_costs,currency/unit
+specific_costs_om,currency/unit/year
+dispatch_price,currency/unit dispatch
 efficiency,factor
 inflow_direction,str
 outflow_direction,str
 energyVector,str
 type_oemof,str
+maximumCap,float or None

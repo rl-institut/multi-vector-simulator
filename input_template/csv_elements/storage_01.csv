@@ -6,7 +6,7 @@ lifetime,year,,,
 development_costs,currency,,,
 specific_costs,currency/unit,,,
 specific_costs_om,currency/unit/year,,,
-dispatch_price,currency/kWh,,,
+dispatch_price,currency/unit dispatch,,,
 c_rate,factor of total capacity (kWh),NA,,
 efficiency,factor,,,
 soc_initial,None or factor,,NA,NA
