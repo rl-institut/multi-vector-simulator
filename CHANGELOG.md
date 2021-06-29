@@ -27,12 +27,15 @@ Here is a template for new release sections
 
 ### Changed
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
+- `input_template/csv_elements`: Added missing parameters and generalized units (#904)
+- `CONTRIBUTING.md` according to last lessons learnt (#904)
 
 ### Removed
 -
 
 ### Fixed
 - `OBJECTIVE_VALUE`, `SIMULTATION_TIME`, `MODELLING_TIME` now included in the `json_with_results.json` (#901)
+- Missing parameters in `input_template/csv_elements` (#904)
 
 ## [1.0.0] - 2021-05-31
 
