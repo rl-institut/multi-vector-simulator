@@ -1,7 +1,6 @@
 import json
 import logging
 from oemof.tools import logger
-from multi_vector_simulator.cli import main
 
 logger.define_logging(
     logpath=".",
