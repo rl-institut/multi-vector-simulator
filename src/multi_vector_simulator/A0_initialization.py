@@ -550,9 +550,8 @@ def process_user_arguments(
     else:
         screen_level = logging.INFO
 
-    if sensitivity is None:
-        sensitivity = args.get(RUN_SENSITIVITY, DEFAULT_MAIN_KWARGS[RUN_SENSITIVITY])
-
+    #if sensitivity is None:
+    #    sensitivity = args.get(RUN_SENSITIVITY, DEFAULT_MAIN_KWARGS[RUN_SENSITIVITY])
 
 
     # Define logging settings and path for saving log
