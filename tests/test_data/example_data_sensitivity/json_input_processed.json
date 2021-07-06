@@ -337,7 +337,6 @@
                 "value": 0
             },
             "energyVector": "Electricity",
-            "file_name": "Residential_demand_electricity.csv",
             "inflow_direction": "Low voltage",
             "installedCap": {
                 "unit": "unit",
@@ -17947,7 +17946,6 @@
                 "value": 0
             },
             "energyVector": "Heat",
-            "file_name": "Residential_demand_heat.csv",
             "inflow_direction": "Thermal bus",
             "installedCap": {
                 "unit": "unit",
@@ -45056,7 +45054,7 @@
             },
             "dispatch_price": {
                 "unit": "currency/kWh",
-                "value": 0.0034
+                "value": 0.045
             },
             "dispatchable": true,
             "emission_factor": {
@@ -45145,7 +45143,6 @@
                 "value": 0
             },
             "energyVector": "Electricity",
-            "file_name": "pv_solar_input.csv",
             "installedCap": {
                 "unit": "kW",
                 "value": 0
@@ -62856,7 +62853,7 @@
             },
             "feedin_tariff": {
                 "unit": "currency/kWh",
-                "value": 0.043
+                "value": 0.0003
             },
             "inflow_direction": "Transmission grid",
             "installedCap": {
@@ -63210,16 +63207,14 @@
         },
         "evaluated_period": {
             "unit": "days",
-            "value": 365
+            "value": 7
         },
         "label": "simulation_settings",
         "output_lp_file": {
             "unit": "bool",
             "value": false
         },
-        "path_input_folder": "C:\\Andra\\RLI\\Master_Thesis\\Data\\MVS\\Input_templates\\Zoom_M_SC\\Residential",
-        "path_output_folder": "C:\\Andra\\RLI\\Master_Thesis\\Data\\MVS\\Simulations\\Zoom_M\\Residential\\base_updated_costs",
-        "path_output_folder_inputs": "C:\\Andra\\RLI\\Master_Thesis\\Data\\MVS\\Simulations\\Zoom_M\\Residential\\base_updated_costs\\inputs",
+        "path_input_folder": ".",
         "periods": 8760,
         "start_date": {
             "data_type": "pandas_Timestamp",
