@@ -90,7 +90,7 @@ DEFAULT_MAIN_KWARGS = dict(
     path_output_folder=DEFAULT_OUTPUT_PATH,
     display_output="info",
     lp_file_output=False,
-    sensitivity=False
+    sensitivity=False,
 )
 # list of csv filename which must be present within the CSV_ELEMENTS folder with the parameters
 # associated to each of these filenames
