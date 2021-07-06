@@ -64,6 +64,7 @@ from multi_vector_simulator.utils.constants import (
     PACKAGE_DATA_PATH,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
+    RUN_SENSITIVITY,
     JSON_FNAME,
     CSV_FNAME,
     JSON_EXT,
@@ -215,6 +216,14 @@ def mvs_arg_parser():
 
     parser.add_argument("--version", action="version", version=version_num)
 
+    parser.add_argument(
+        "-s",
+        dest=RUN_SENSITIVITY,
+        nargs="?",
+        type=str,
+        help="path to the output folder for the simulation's results",
+        default=True,
+    )
     return parser
 
 
@@ -394,6 +403,7 @@ def process_user_arguments(
     save_png=None,
     lp_file_output=False,
     welcome_text=None,
+    sensitivity=None,
 ):
     """
     Process user command from terminal inputs. If inputs provided as arguments of the function,
@@ -539,6 +549,11 @@ def process_user_arguments(
         screen_level = logging.ERROR
     else:
         screen_level = logging.INFO
+
+    if sensitivity is None:
+        sensitivity = args.get(RUN_SENSITIVITY, DEFAULT_MAIN_KWARGS[RUN_SENSITIVITY])
+
+
 
     # Define logging settings and path for saving log
     logger.define_logging(
