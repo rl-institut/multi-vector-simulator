@@ -3,13 +3,14 @@ import logging
 from oemof.tools import logger
 
 logger.define_logging(
-    logpath=".",
-    logfile="log",
-    file_level=logging.DEBUG,
-    screen_level="DEBUG",
+    logpath=".", logfile="log", file_level=logging.DEBUG, screen_level="DEBUG",
 )
 
-from multi_vector_simulator.utils.constants_json_strings import KPI, KPI_COST_MATRIX, KPI_SCALAR_MATRIX
+from multi_vector_simulator.utils.constants_json_strings import (
+    KPI,
+    KPI_COST_MATRIX,
+    KPI_SCALAR_MATRIX,
+)
 
 from multi_vector_simulator.utils import (
     get_nested_value,
@@ -70,11 +71,11 @@ def single_param_variation_analysis(
             )
             # run a simulation with next value of the variable parameter and convert the result to
             # mvs special json type
-            #try:
+            # try:
 
             sim_output_json = run_simulation(
-                    modified_input, display_output="error", epa_format=False
-                )
+                modified_input, display_output="error", epa_format=False
+            )
 
             if json_path_to_output_value is None:
                 answer.append(sim_output_json)
@@ -85,14 +86,19 @@ def single_param_variation_analysis(
                 # post-processing
                 for output_param in json_path_to_output_value:
                     # For KPI_COST_MATRIX and KPI_SCALAR_MATRIX items of a pd.DataFrame need to be accessed
-                    if KPI_COST_MATRIX in output_param or KPI_SCALAR_MATRIX in output_param:
+                    if (
+                        KPI_COST_MATRIX in output_param
+                        or KPI_SCALAR_MATRIX in output_param
+                    ):
                         # Get corresponding matrix
                         matrix = sim_output_json[output_param[0]][output_param[1]]
                         # Only get row with relevant asset
                         matrix = matrix[(matrix == output_param[3]).any(axis=1)]
                         # Make sure there is only one asset with string output_param[3]
                         if len(matrix.index) > 1:
-                            logging.warning(f"The matrix with asset {output_param[3]} has multiple rows: {matrix}")
+                            logging.warning(
+                                f"The matrix with asset {output_param[3]} has multiple rows: {matrix}"
+                            )
                         # Get parameter value for the asset from the matrix
                         output_parameters[output_param] = matrix[output_param[2]]
 
@@ -101,23 +107,30 @@ def single_param_variation_analysis(
                         output_param = split_nested_path(output_param)
                         output_parameters[output_param] = get_nested_value(
                             sim_output_json, output_param
-                    )
+                        )
                 answer.append(output_parameters)
-            #except:
+            # except:
             #    logging.warning(f"The sensitivity did not work.")
             #    answer.append(None)
     print({"parameters": param_values, "outputs": answer})
     return {"parameters": param_values, "outputs": answer}
 
+
 from multi_vector_simulator.cli import main
-import pvcompare.constants as constants
+from multi_vector_simulator.utils.constants import (
+    DEFAULT_INPUT_PATH,
+    DEFAULT_OUTPUT_PATH,
+    CSV_ELEMENTS,
+)
 import os
 import pandas as pd
 import numpy as np
 import shutil
 import glob
-import matplotlib.pyplot as plt
 import logging
+
+FOLDER_NAME_SCALARS = "scalars"
+FOLDER_NAME_TIMESERIES = "timeseries"
 
 
 def create_loop_output_structure(outputs_directory, scenario_name, variable_name):
@@ -128,18 +141,23 @@ def create_loop_output_structure(outputs_directory, scenario_name, variable_name
     ----------
     outputs_directory: str
         Path to output directory.
-        Default: constants.DEFAULT_OUTPUTS_DIRECTORY.
+        Default: DEFAULT_OUTPUT_PATH
+
     scenario_name: str
         Name of the Scenario. The name should follow the scheme:
         "Scenario_A1", "Scenario_A2", "Scenario_B1" etc.
+
     variable_name: str
-        name of the variable that is atapted in each loop.
+        name of the variable that is adapted in each loop.
 
     Returns
     -------
     str
         path of the loop_output_directory.
     """
+
+    if not os.path.isdir(outputs_directory):
+        os.mkdir(outputs_directory)
 
     # defines scenario folder and loop_output_directory
     scenario_folder = os.path.join(outputs_directory, scenario_name)
@@ -163,14 +181,14 @@ def create_loop_output_structure(outputs_directory, scenario_name, variable_name
     else:
         os.mkdir(loop_output_directory)
 
-    # create two folder in loop_output_directories for "scalars" and "timeseries"
-    os.mkdir(os.path.join(loop_output_directory, "scalars"))
-    os.mkdir(os.path.join(loop_output_directory, "timeseries"))
+    # create two folder in loop_output_directories for FOLDER_NAME_SCALARS and FOLDER_NAME_TIMESERIES
+    os.mkdir(os.path.join(loop_output_directory, FOLDER_NAME_SCALARS))
+    os.mkdir(os.path.join(loop_output_directory, FOLDER_NAME_TIMESERIES))
 
     return loop_output_directory
 
+
 def loop_mvs(
-    years,
     variable_name,
     variable_column,
     csv_file_variable,
@@ -191,9 +209,6 @@ def loop_mvs(
 
     Parameters
     ----------
-
-    years: list
-        year(s) for simulation
 
     variable_name: str
         name of the variable that is atapted in each loop
@@ -218,11 +233,11 @@ def loop_mvs(
         "Scenario_A1", "Scenario_A2", "Scenario_B1" etc.
 
     user_inputs_mvs_directory: str or None
-        Default: `user_inputs_mvs_directory = constants.DEFAULT_USER_INPUTS_MVS_DIRECTORY`
+        Default: `user_inputs_mvs_directory = DEFAULT_INPUT_PATH`
 
     outputs_directory: str or None
         Path to output directory.
-        Default: `outputs_directory = constants.DEFAULT_OUTPUTS_DIRECTORY`
+        Default: `outputs_directory = DEFAULT_OUTPUT_PATH`
 
     Returns
     -------
@@ -230,84 +245,66 @@ def loop_mvs(
     """
 
     if outputs_directory is None:
-        outputs_directory = constants.DEFAULT_OUTPUTS_DIRECTORY
+        outputs_directory = DEFAULT_OUTPUT_PATH
     loop_output_directory = create_loop_output_structure(
         outputs_directory, scenario_name, variable_name
     )
     # define filename of variable that should be looped over
     if user_inputs_mvs_directory is None:
-        user_inputs_mvs_directory = constants.DEFAULT_USER_INPUTS_MVS_DIRECTORY
+        user_inputs_mvs_directory = DEFAULT_INPUT_PATH
     csv_filename = os.path.join(
-        user_inputs_mvs_directory, "csv_elements", csv_file_variable
+        user_inputs_mvs_directory, CSV_ELEMENTS, csv_file_variable
     )
 
-    # loop over years
-    for year in years:
-        # loop over the variable
-        i = start
-        while i <= stop:
-            # change variable value and save this value to csv
-            csv_file = pd.read_csv(csv_filename, index_col=0)
-            csv_file.loc[[variable_name], [variable_column]] = i
-            csv_file.to_csv(csv_filename)
+    # todo
+    # loop over the variable
+    i = start
+    while i <= stop:
+        # change variable value and save this value to csv
+        csv_file = pd.read_csv(csv_filename, index_col=0)
+        csv_file.loc[[variable_name], [variable_column]] = i
+        csv_file.to_csv(csv_filename)
 
-            # define mvs_output_directory for every looping step
-            mvs_output_directory = os.path.join(
-                outputs_directory,
-                scenario_name,
-                "mvs_outputs_loop_"
-                + str(variable_name)
-                + "_"
-                + str(year)
-                + "_"
-                + str(i),
-            )
+        # define mvs_output_directory for every looping step
+        mvs_output_directory = os.path.join(
+            outputs_directory,
+            scenario_name,
+            "mvs_outputs_loop_" + str(variable_name) + "_" + str(i),
+        )
 
+        # apply mvs for every looping step
+        apply_mvs(
+            scenario_name=scenario_name,
+            mvs_output_directory=mvs_output_directory,
+            user_inputs_mvs_directory=user_inputs_mvs_directory,
+            outputs_directory=outputs_directory,
+        )
 
-            # apply mvs for every looping step
-            apply_mvs(
-                scenario_name=scenario_name,
-                mvs_output_directory=mvs_output_directory,
-                user_inputs_mvs_directory=user_inputs_mvs_directory,
-                outputs_directory=outputs_directory,
-            )
+        excel_file1 = "scalars.xlsx"
+        new_excel_file1 = "scalars_" + variable_name + "_" + str(i) + ".xlsx"
+        src_dir = os.path.join(mvs_output_directory, excel_file1)
+        dst_dir = os.path.join(
+            loop_output_directory, FOLDER_NAME_SCALARS, new_excel_file1
+        )
+        shutil.copy(src_dir, dst_dir)
 
-            # copy excel sheets to loop_output_directory
-            number_digits = len(str(stop)) - len(str(i))
+        excel_file2 = "timeseries_all_busses.xlsx"
+        new_excel_file2 = (
+            "timeseries_all_busses_" + variable_name + "_" + str(i) + ".xlsx"
+        )
+        src_dir = os.path.join(mvs_output_directory, excel_file2)
+        dst_dir = os.path.join(
+            loop_output_directory, FOLDER_NAME_TIMESERIES, new_excel_file2
+        )
+        shutil.copy(src_dir, dst_dir)
 
-            if number_digits == 0:
-                j = str(i)
-            elif number_digits == 1:
-                j = "0" + str(i)
-            elif number_digits == 2:
-                j = "00" + str(i)
-            elif number_digits == 3:
-                j = "000" + str(i)
-            elif number_digits == 4:
-                j = "0000" + str(i)
-
-            excel_file1 = "scalars.xlsx"
-            new_excel_file1 = "scalars_" + str(year) + "_" + str(j) + ".xlsx"
-            src_dir = os.path.join(mvs_output_directory, excel_file1)
-            dst_dir = os.path.join(loop_output_directory, "scalars", new_excel_file1)
-            shutil.copy(src_dir, dst_dir)
-
-            excel_file2 = "timeseries_all_busses.xlsx"
-            new_excel_file2 = (
-                "timeseries_all_busses_" + str(year) + "_" + str(j) + ".xlsx"
-            )
-            src_dir = os.path.join(mvs_output_directory, excel_file2)
-            dst_dir = os.path.join(loop_output_directory, "timeseries", new_excel_file2)
-            shutil.copy(src_dir, dst_dir)
-
-            # add another step
-            i = i + step
-    logging.info("starting postprocessing KPI")
-    postprocessing_kpi(
-        scenario_name=scenario_name,
-        variable_name=variable_name,
-        outputs_directory=outputs_directory,
-    )
+        # add another step
+        i = i + step
+    # postprocessing_kpi(
+    #    scenario_name=scenario_name,
+    #    variable_name=variable_name,
+    #    outputs_directory=outputs_directory,
+    # )
 
 
 def apply_mvs(
@@ -325,11 +322,11 @@ def apply_mvs(
     user_inputs_mvs_directory: str or None
         Path to input directory containing files that describe the energy
         system and that are an input to MVS. If None,
-        `constants.DEFAULT_USER_INPUTS_MVS_DIRECTORY` is used.
+        `DEFAULT_INPUT_PATH` is used.
         Default: None.
     outputs_directory: str
         Path to output directory where results are saved in case `mvs_output_directory`
-        is None. If None, `constants.DEFAULT_OUTPUTS_DIRECTORY` is used.
+        is None. If None, `DEFAULT_OUTPUT_PATH` is used.
         Default: None.
     mvs_output_directory: str or None
         Path to output directory where results are saved. If None, it is filled in
@@ -342,9 +339,9 @@ def apply_mvs(
     """
 
     if user_inputs_mvs_directory is None:
-        user_inputs_mvs_directory = constants.DEFAULT_USER_INPUTS_MVS_DIRECTORY
+        user_inputs_mvs_directory = DEFAULT_INPUT_PATH
     if outputs_directory is None:
-        outputs_directory = constants.DEFAULT_OUTPUTS_DIRECTORY
+        outputs_directory = DEFAULT_OUTPUT_PATH
     if not os.path.isdir(outputs_directory):
         os.mkdir(outputs_directory)
 
@@ -365,9 +362,7 @@ def apply_mvs(
         )
 
     # adapt parameter 'scenario_name' in 'project_data.csv'.
-    add_scenario_name_to_project_data(
-        user_inputs_mvs_directory, scenario_name
-    )
+    add_scenario_name_to_project_data(user_inputs_mvs_directory, scenario_name)
 
     main(
         path_input_folder=user_inputs_mvs_directory,
@@ -375,6 +370,7 @@ def apply_mvs(
         input_type="csv",
         overwrite=True,
         save_png=True,
+        display_output="warning",
     )
 
 
@@ -388,7 +384,7 @@ def add_scenario_name_to_project_data(user_inputs_mvs_directory, scenario_name):
     ----------
     user_inputs_mvs_directory: str or None
         Path to MVS specific input directory. If None,
-        `constants.DEFAULT_USER_INPUTS_MVS_DIRECTORY` is used.
+        `DEFAULT_INPUT_PATH` is used.
         Default: None.
     scenario_name: str
         Name of the Scenario.
@@ -404,6 +400,8 @@ def add_scenario_name_to_project_data(user_inputs_mvs_directory, scenario_name):
         pvcompare_parameter=scenario_name,
         warning=True,
     )
+
+
 def add_parameter_to_mvs_file(
     user_inputs_mvs_directory,
     mvs_filename,
@@ -418,7 +416,7 @@ def add_parameter_to_mvs_file(
     ----------
     user_inputs_mvs_directory: str or None
         Path to MVS specific input directory. If None,
-        `constants.DEFAULT_USER_INPUTS_MVS_DIRECTORY` is used.
+        `DEFAULT_INPUT_PATH` is used.
         Default: None.
     mvs_filename: str
         Name of the mvs-csv file.
@@ -436,7 +434,7 @@ def add_parameter_to_mvs_file(
     None
     """
     if user_inputs_mvs_directory == None:
-        user_inputs_mvs_directory = constants.DEFAULT_USER_INPUTS_MVS_DIRECTORY
+        user_inputs_mvs_directory = DEFAULT_INPUT_PATH
 
     filename = os.path.join(user_inputs_mvs_directory, "csv_elements", mvs_filename)
     # load mvs_csv_file
@@ -456,6 +454,7 @@ def add_parameter_to_mvs_file(
         f"The parameter {mvs_row} has been added to the "
         f"mvs input file {mvs_filename}."
     )
+
 
 def postprocessing_kpi(
     scenario_name,
@@ -483,43 +482,12 @@ def postprocessing_kpi(
         Saves new sheet in output excel file
     """
     if outputs_directory == None:
-        outputs_directory = constants.DEFAULT_OUTPUTS_DIRECTORY
+        outputs_directory = DEFAULT_OUTPUT_PATH
         scenario_folder = os.path.join(outputs_directory, scenario_name)
     else:
         scenario_folder = os.path.join(outputs_directory, scenario_name)
         if not os.path.isdir(scenario_folder):
             logging.warning(f"The scenario folder {scenario_name} does not exist.")
-    if user_inputs_pvcompare_directory == None:
-        user_inputs_pvcompare_directory = (
-            constants.DEFAULT_USER_INPUTS_PVCOMPARE_DIRECTORY
-        )
-
-    # Get stratified TES inputs
-    strat_tes_inputs = os.path.join(
-        user_inputs_pvcompare_directory, "stratified_thermal_storage.csv"
-    )
-    if os.path.exists(strat_tes_inputs):
-        strat_tes = pd.read_csv(strat_tes_inputs, index_col=0)
-        heat_capacity = 4195.52
-        density = 971.803
-        temp_h = strat_tes.at["temp_h", "var_value"]
-        temp_c = strat_tes.at["temp_c", "var_value"]
-        diameter = strat_tes.at["diameter", "var_value"]
-
-    # Get number of households in simulation
-    building_params = pd.read_csv(
-        os.path.join(user_inputs_pvcompare_directory, "building_parameters.csv"),
-        index_col=0,
-    )
-
-    # Calculate the toal number of households
-    # and hence obtain number of plants in simulation by assuming
-    # that every household has one plant
-    total_number_households = (
-        float(building_params.at["number of houses", "value"])
-        * float(building_params.at["number of storeys", "value"])
-        * (float(building_params.at["population per storey", "value"]) / 4)
-    )
 
     # # loop over all loop output folders with variable name
     loop_output_directory = os.path.join(
@@ -532,7 +500,7 @@ def postprocessing_kpi(
         )
     # parse through scalars folder and read in all excel sheets
     for filepath_s in list(
-        glob.glob(os.path.join(loop_output_directory, "scalars", "*.xlsx"))
+        glob.glob(os.path.join(loop_output_directory, FOLDER_NAME_SCALARS, "*.xlsx"))
     ):
         # read sheets of scalars
         scalars = pd.read_excel(filepath_s, sheet_name=None)
@@ -543,113 +511,6 @@ def postprocessing_kpi(
         file_sheet3 = scalars["scalars"]
         file_sheet3.index = file_sheet3.iloc[:, 0]
         file_sheet4 = scalars["KPI individual sectors"]
-
-        # get variable value from filepath
-        split_path = filepath_s.split("_")
-        get_year = split_path[::-1][1]
-        get_step = split_path[::-1][0]
-        ending = str(get_year) + "_" + str(get_step)
-
-        # load timeseries_all_busses
-        for filepath_t in list(
-            glob.glob(os.path.join(loop_output_directory, "timeseries", "*.xlsx"))
-        ):
-            heat_exists = False
-            if filepath_t.endswith(ending) is True:
-                # add heat demand to electricty demand it heat demand exists
-                timeseries = pd.read_excel(filepath_t, sheet_name="Electricity bus")
-                if "Heat pump" in timeseries.columns:
-                    heat_exists = True
-                    electricity_demand = (
-                        timeseries["Electricity demand"] + timeseries["Heat pump"]
-                    )
-                    timeseries["Electricity demand"] = electricity_demand
-                    with pd.ExcelWriter(filepath_t, mode="a") as writer:
-                        timeseries.to_excel(writer, sheet_name="Electricity bus")
-                    logging.info(
-                        f"The timeseries_all_flows file {filepath_t} has been overwritten with the new electricity demand."
-                    )
-                else:
-                    electricity_demand = timeseries["Electricity demand"]
-
-                if heat_exists == True:
-                    timeseries_heat = pd.read_excel(filepath_t, sheet_name="Heat bus")
-                    if "TES output power" in timeseries_heat:
-                        # Calculate maximum capacity, nominal capacity and height
-                        # of one storage unit
-                        maximal_tes_capacity = file_sheet2.at[
-                            "TES storage capacity", "optimizedAddCap"
-                        ]
-                        # There is 15 % of unused storage volume according to
-                        # https://op.europa.eu/en/publication-detail/-/publication/312f0f62-dfbd-11e7-9749-01aa75ed71a1/language-en
-                        # The nominal storage capacity is hence the maximum storage capacity multiplied by 1.15
-                        nominal_storage_capacity = maximal_tes_capacity * 1.15
-                        # Calculate volume of TES using oemof-thermal's equations
-                        # in stratified_thermal_storage.py
-                        volume = (
-                            maximal_tes_capacity
-                            * 1000
-                            / (heat_capacity * density * (temp_h - temp_c) * (1 / 3600))
-                        )
-                        # Calculate height of TES using oemof-thermal's equations
-                        # in stratified_thermal_storage.py
-                        height = volume / (0.25 * np.pi * diameter ** 2)
-                        file_sheet3.at[
-                            "Installed capacity per TES", "Unnamed: 0"
-                        ] = "Installed capacity per TES"
-                        # Divide total capacity through number of households = number of plants
-                        file_sheet3.at["Installed capacity per TES", 0] = (
-                            maximal_tes_capacity / total_number_households
-                        )
-                        file_sheet3.at[
-                            "Installed nominal capacity per TES", "Unnamed: 0"
-                        ] = "Installed nominal capacity per TES"
-                        # Divide total nominal capacity through number of households = number of plants
-                        file_sheet3.at["Installed nominal capacity per TES", 0] = (
-                            nominal_storage_capacity / total_number_households
-                        )
-                        file_sheet3.at[
-                            "Height of each TES", "Unnamed: 0"
-                        ] = "Height of each TES"
-                        # Divide total height of all TES through number of households = number of plants
-                        file_sheet3.at["Height of each TES", 0] = (
-                            height / total_number_households
-                        )
-                    if "Heat pump" in timeseries_heat.columns:
-                        # Calculate maximum capacity of one heat pump unit and write to scalars
-                        maximal_hp_capacity = max(timeseries_heat["Heat pump"])
-                        file_sheet3.at[
-                            "Installed capacity per heat pump", "Unnamed: 0"
-                        ] = "Installed capacity per heat pump"
-                        # Divide total capacity through number of households = number of plants
-                        file_sheet3.at["Installed capacity per heat pump", 0] = (
-                            maximal_hp_capacity / total_number_households
-                        )
-
-        # recalculate KPI
-        file_sheet2.at["Electricity demand", "total_flow"] = sum(electricity_demand) * (
-            -1
-        )
-        file_sheet3.at["Total_demandElectricity", 0] = sum(electricity_demand) * (-1)
-        file_sheet3.at["Degree of NZE", 0] = (
-            1
-            + (
-                file_sheet3.at["Total_feedinElectricity", 0]
-                - file_sheet3.at[
-                    "Total_consumption_from_energy_provider_electricity_equivalent", 0
-                ]
-            )
-            / file_sheet3.at["Total_demandElectricity", 0]
-        )
-        file_sheet3.at["Degree of autonomy", 0] = (
-            file_sheet3.at["Total_demandElectricity", 0]
-            - file_sheet3.at["Total_consumption_from_energy_providerElectricity", 0]
-        ) / file_sheet3.at["Total_demandElectricity", 0]
-        file_sheet3.at["Onsite energy fraction", 0] = (
-            file_sheet3.at["Total internal renewable generation", 0]
-            - file_sheet3.at["Total_feedinElectricity", 0]
-            - file_sheet3.at["Total_excessElectricity", 0]
-        ) / file_sheet3.at["Total internal renewable generation", 0]
 
         # save excel sheets
         with pd.ExcelWriter(filepath_s, mode="a") as writer:
@@ -662,3 +523,16 @@ def postprocessing_kpi(
         logging.info(
             f"Scalars file sheet {filepath_s} has been overwritten with new KPI's"
         )
+
+
+loop_mvs(
+    variable_name="energy_price",
+    variable_column="Electricity_grid_DSO",
+    csv_file_variable="energyProviders.csv",
+    start=0.1,
+    stop=0.5,
+    step=0.1,
+    scenario_name="energy_price_variablity",
+    user_inputs_mvs_directory="tests/inputs",
+    outputs_directory="sensitivity_outputs",
+)
