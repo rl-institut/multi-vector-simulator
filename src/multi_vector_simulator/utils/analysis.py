@@ -1,5 +1,17 @@
 import json
 import logging
+from oemof.tools import logger
+from multi_vector_simulator.cli import main
+
+logger.define_logging(
+    logpath=".",
+    logfile="log",
+    file_level=logging.DEBUG,
+    screen_level="DEBUG",
+)
+
+from multi_vector_simulator.utils.constants_json_strings import KPI, KPI_COST_MATRIX, KPI_SCALAR_MATRIX
+
 from multi_vector_simulator.utils import (
     get_nested_value,
     set_nested_value,
@@ -59,10 +71,12 @@ def single_param_variation_analysis(
             )
             # run a simulation with next value of the variable parameter and convert the result to
             # mvs special json type
+            #try:
+
             sim_output_json = run_simulation(
-                modified_input, display_output="error", epa_format=False
-            )
-            print(sim_output_json)
+                    modified_input, display_output="error", epa_format=False
+                )
+
             if json_path_to_output_value is None:
                 answer.append(sim_output_json)
             else:
@@ -71,10 +85,27 @@ def single_param_variation_analysis(
                 # the final json dict, that could also be applied to the full json dict as
                 # post-processing
                 for output_param in json_path_to_output_value:
-                    output_param = split_nested_path(output_param)
-                    output_parameters[output_param] = get_nested_value(
-                        sim_output_json, output_param
+                    # For KPI_COST_MATRIX and KPI_SCALAR_MATRIX items of a pd.DataFrame need to be accessed
+                    if KPI_COST_MATRIX in output_param or KPI_SCALAR_MATRIX in output_param:
+                        # Get corresponding matrix
+                        matrix = sim_output_json[output_param[0]][output_param[1]]
+                        # Only get row with relevant asset
+                        matrix = matrix[(matrix == output_param[3]).any(axis=1)]
+                        # Make sure there is only one asset with string output_param[3]
+                        if len(matrix.index) > 1:
+                            logging.warning(f"The matrix with asset {output_param[3]} has multiple rows: {matrix}")
+                        # Get parameter value for the asset from the matrix
+                        output_parameters[output_param] = matrix[output_param[2]]
+
+                    # For others, the output can be identified following the json structure.
+                    else:
+                        output_param = split_nested_path(output_param)
+                        output_parameters[output_param] = get_nested_value(
+                            sim_output_json, output_param
                     )
                 answer.append(output_parameters)
-
+            #except:
+            #    logging.warning(f"The sensitivity did not work.")
+            #    answer.append(None)
+    print({"parameters": param_values, "outputs": answer})
     return {"parameters": param_values, "outputs": answer}
