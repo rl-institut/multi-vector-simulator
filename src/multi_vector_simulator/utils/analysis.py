@@ -10,6 +10,19 @@ from multi_vector_simulator.utils.constants_json_strings import (
     KPI,
     KPI_COST_MATRIX,
     KPI_SCALAR_MATRIX,
+    KPI_SCALARS_DICT,
+    COST_TOTAL,
+    COST_UPFRONT,
+    COST_OM,
+    ANNUITY_TOTAL,
+    ANNUITY_OM,
+    RENEWABLE_FACTOR,
+    DEGREE_OF_AUTONOMY,
+    TOTAL_EMISSIONS,
+    TOTAL_EXCESS,
+    TOTAL_RENEWABLE_GENERATION_IN_LES,
+    LCOeleq,
+    SUFFIX_ELECTRICITY_EQUIVALENT,
 )
 
 from multi_vector_simulator.utils import (
@@ -121,19 +134,47 @@ from multi_vector_simulator.utils.constants import (
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
     CSV_ELEMENTS,
+    JSON_WITH_RESULTS,
+    JSON_FILE_EXTENSION,
 )
 import os
 import pandas as pd
-import numpy as np
 import shutil
 import glob
 import logging
+import matplotlib.pyplot as plt
 
-FOLDER_NAME_SCALARS = "scalars"
-FOLDER_NAME_TIMESERIES = "timeseries"
+FILE_NAME_SCALARS = "scalars"
+FILE_NAME_TIMESERIES = "timeseries_all_busses"
+PARAMETER = "senstivity_parameter"
+SCENARIO_OUTPUT_PATH = "scenario_output_path"
+VALUES = "values"
+EXPERIMENT_OUTPUT_PATHS = "scenario_output_path"
+WORKING_DIR = "working_dir"
+
+dict_result_paths = {}
 
 
-def create_loop_output_structure(outputs_directory, scenario_name, variable_name):
+def check_for_directory_and_create(directory, overwrite):
+    if not os.path.isdir(directory):
+        os.mkdir(directory)
+        logging.debug(f"Created empty directory {directory}.")
+    elif os.path.isdir(directory) and overwrite is True:
+        shutil.rmtree(directory)
+        os.mkdir(directory)
+        logging.info(
+            f"Path {directory} existed. It was removed and replaced by an empty directory."
+        )
+    else:
+        raise FileExistsError(
+            f"Path {directory} already exists. Either set {overwrite} to True, or define a different output path."
+        )
+    return
+
+
+def create_loop_output_structure(
+    outputs_directory, scenario_name, variable_name, dict_result_paths, overwrite
+):
     """
     Defines the path of the loop_output_directory.
 
@@ -156,15 +197,23 @@ def create_loop_output_structure(outputs_directory, scenario_name, variable_name
         path of the loop_output_directory.
     """
 
-    if not os.path.isdir(outputs_directory):
-        os.mkdir(outputs_directory)
+    check_for_directory_and_create(outputs_directory, overwrite)
 
     # defines scenario folder and loop_output_directory
     scenario_folder = os.path.join(outputs_directory, scenario_name)
     # creates scenario folder if it doesn't exist yet
-    if not os.path.isdir(scenario_folder):
-        # create scenario folder
-        os.mkdir(scenario_folder)
+    check_for_directory_and_create(scenario_folder, overwrite)
+
+    dict_result_paths.update(
+        {
+            scenario_name: {
+                PARAMETER: variable_name,
+                SCENARIO_OUTPUT_PATH: scenario_folder,
+                VALUES: [],
+                EXPERIMENT_OUTPUT_PATHS: [],
+            }
+        }
+    )
 
     #  defines loop output directory in scenario_folder
     loop_output_directory = os.path.join(
@@ -172,20 +221,105 @@ def create_loop_output_structure(outputs_directory, scenario_name, variable_name
     )
 
     # checks if loop_output_directory already exists, otherwise create it
-    if os.path.isdir(loop_output_directory):
-        raise NameError(
-            f"The loop output directory {loop_output_directory} "
-            f"already exists. Please "
-            f"delete the existing folder or rename {scenario_name}."
-        )
-    else:
-        os.mkdir(loop_output_directory)
+    check_for_directory_and_create(loop_output_directory, overwrite)
 
     # create two folder in loop_output_directories for FOLDER_NAME_SCALARS and FOLDER_NAME_TIMESERIES
-    os.mkdir(os.path.join(loop_output_directory, FOLDER_NAME_SCALARS))
-    os.mkdir(os.path.join(loop_output_directory, FOLDER_NAME_TIMESERIES))
+    path_to_folder_with_scalar_results = os.path.join(
+        loop_output_directory, FILE_NAME_SCALARS
+    )
+    check_for_directory_and_create(path_to_folder_with_scalar_results, overwrite)
+
+    path_to_folder_with_timeseries_results = os.path.join(
+        loop_output_directory, FILE_NAME_TIMESERIES
+    )
+    check_for_directory_and_create(path_to_folder_with_timeseries_results, overwrite)
 
     return loop_output_directory
+
+
+def determine_variable_name_value_vector(variable_name, start, stop, step):
+    number_of_steps = (stop - start) / step
+
+    if number_of_steps.is_integer() is False:
+        logging.warning(
+            f"With the chosen start {start}, stop {stop} and step {step} of {variable_name}, the number of steps between start and stop is uneven."
+        )
+        number_of_steps = round(number_of_steps + 0.5) + 1
+    else:
+        number_of_steps = round(number_of_steps + 0.5)
+
+    value_vector = [start + i * step for i in range(0, number_of_steps)]
+    logging.info(f"The {variable_name} will be set to following values: {value_vector}")
+    return value_vector
+
+
+def clone_input_dir_into_working_dir(
+    original_input_directory, original_outputs_directory, overwrite
+):
+    """
+    Creates a working directory folder and clones inputs into that folder
+
+    The working directory folder is changed in order to produce the experiments within the loop. This should not change the initial input files.
+
+    Parameters
+    ----------
+    original_input_directory: <os.path>
+        Path to input directory
+
+    original_outputs_directory: <os.path>
+        Path to output directory
+
+    Returns
+    -------
+    working_directory_path: <os.path>
+        Path to the newly created working directory
+
+    """
+    working_directory_path = os.path.join(original_outputs_directory, WORKING_DIR)
+    shutil.copytree(original_input_directory, working_directory_path)
+    logging.debug(
+        f"Created working directory {working_directory_path} and copied the original input file from {original_input_directory}"
+    )
+    return working_directory_path
+
+
+def adapt_input_csv_files(
+    csv_filename,
+    variable_name,
+    variable_column,
+    value,
+    experiment_name,
+    working_directory_path,
+):
+    """
+
+    Parameters
+    ----------
+    csv_filename
+    variable_name
+    variable_column
+    value
+    experiment_name
+    working_directory_path
+
+    Returns
+    -------
+
+    """
+    # change variable value and save this value to csv
+    csv_file = pd.read_csv(csv_filename, index_col=0)
+    csv_file.loc[[variable_name], [variable_column]] = value
+    csv_file.to_csv(csv_filename)
+    # adapt parameter 'scenario_name' in 'project_data.csv'.
+    add_parameter_to_mvs_file(
+        input_path=working_directory_path,
+        mvs_filename="project_data.csv",
+        mvs_row="scenario_name",
+        mvs_column="project_data",
+        pvcompare_parameter=experiment_name,
+        warning=True,
+    )
+    return
 
 
 def loop_mvs(
@@ -196,8 +330,9 @@ def loop_mvs(
     stop,
     step,
     scenario_name,
-    user_inputs_mvs_directory=None,
-    outputs_directory=None,
+    original_input_directory=DEFAULT_INPUT_PATH,
+    original_outputs_directory=DEFAULT_OUTPUT_PATH,
+    overwrite=False,
 ):
     """
     Starts multiple MVS simulations with a range of values for a specific parameter.
@@ -232,10 +367,10 @@ def loop_mvs(
         Name of the Scenario. The name should follow the scheme:
         "Scenario_A1", "Scenario_A2", "Scenario_B1" etc.
 
-    user_inputs_mvs_directory: str or None
+    original_input_directory: str or None
         Default: `user_inputs_mvs_directory = DEFAULT_INPUT_PATH`
 
-    outputs_directory: str or None
+    original_outputs_directory: str or None
         Path to output directory.
         Default: `outputs_directory = DEFAULT_OUTPUT_PATH`
 
@@ -244,177 +379,93 @@ def loop_mvs(
 
     """
 
-    if outputs_directory is None:
-        outputs_directory = DEFAULT_OUTPUT_PATH
     loop_output_directory = create_loop_output_structure(
-        outputs_directory, scenario_name, variable_name
-    )
-    # define filename of variable that should be looped over
-    if user_inputs_mvs_directory is None:
-        user_inputs_mvs_directory = DEFAULT_INPUT_PATH
-    csv_filename = os.path.join(
-        user_inputs_mvs_directory, CSV_ELEMENTS, csv_file_variable
+        original_outputs_directory,
+        scenario_name,
+        variable_name,
+        dict_result_paths,
+        overwrite,
     )
 
-    # todo
-    # loop over the variable
-    i = start
-    while i <= stop:
-        # change variable value and save this value to csv
-        csv_file = pd.read_csv(csv_filename, index_col=0)
-        csv_file.loc[[variable_name], [variable_column]] = i
-        csv_file.to_csv(csv_filename)
+    working_directory_path = clone_input_dir_into_working_dir(
+        original_input_directory, original_outputs_directory, overwrite
+    )
 
-        # define mvs_output_directory for every looping step
-        mvs_output_directory = os.path.join(
-            outputs_directory,
-            scenario_name,
-            "mvs_outputs_loop_" + str(variable_name) + "_" + str(i),
+    csv_filename = os.path.join(working_directory_path, CSV_ELEMENTS, csv_file_variable)
+
+    value_vector = determine_variable_name_value_vector(
+        variable_name, start, stop, step
+    )
+
+    for value in value_vector:
+        dict_result_paths[scenario_name][VALUES].append(value)
+        experiment_name = (
+            scenario_name
+            + "_"
+            + variable_column
+            + "_"
+            + variable_name
+            + "_"
+            + str(value)
+        )
+
+        adapt_input_csv_files(
+            csv_filename,
+            variable_name,
+            variable_column,
+            value,
+            experiment_name,
+            working_directory_path,
+        )
+
+        # define experiment_output_directory for every looping step
+        experiment_output_directory = os.path.join(
+            original_outputs_directory, scenario_name, experiment_name,
+        )
+        dict_result_paths[scenario_name][EXPERIMENT_OUTPUT_PATHS].append(
+            experiment_output_directory
         )
 
         # apply mvs for every looping step
-        apply_mvs(
-            scenario_name=scenario_name,
-            mvs_output_directory=mvs_output_directory,
-            user_inputs_mvs_directory=user_inputs_mvs_directory,
-            outputs_directory=outputs_directory,
+        main(
+            path_input_folder=working_directory_path,
+            path_output_folder=experiment_output_directory,
+            input_type="csv",
+            overwrite=overwrite,
+            save_png=True,
+            display_output="warning",
         )
 
-        excel_file1 = "scalars.xlsx"
-        new_excel_file1 = "scalars_" + variable_name + "_" + str(i) + ".xlsx"
-        src_dir = os.path.join(mvs_output_directory, excel_file1)
-        dst_dir = os.path.join(
-            loop_output_directory, FOLDER_NAME_SCALARS, new_excel_file1
-        )
-        shutil.copy(src_dir, dst_dir)
+        for excel_file in [FILE_NAME_SCALARS, FILE_NAME_TIMESERIES]:
+            name_excel_file = excel_file + ".xlsx"
+            new_name_excel_file = (
+                excel_file + "_" + variable_name + "_" + str(value) + ".xlsx"
+            )
+            src_dir = os.path.join(experiment_output_directory, name_excel_file)
+            dst_dir = os.path.join(
+                loop_output_directory, excel_file, new_name_excel_file
+            )
+            shutil.copy(src_dir, dst_dir)
 
-        excel_file2 = "timeseries_all_busses.xlsx"
-        new_excel_file2 = (
-            "timeseries_all_busses_" + variable_name + "_" + str(i) + ".xlsx"
-        )
-        src_dir = os.path.join(mvs_output_directory, excel_file2)
-        dst_dir = os.path.join(
-            loop_output_directory, FOLDER_NAME_TIMESERIES, new_excel_file2
-        )
-        shutil.copy(src_dir, dst_dir)
+    # Remove working directory
+    shutil.rmtree(working_directory_path)
 
-        # add another step
-        i = i + step
-    # postprocessing_kpi(
-    #    scenario_name=scenario_name,
-    #    variable_name=variable_name,
-    #    outputs_directory=outputs_directory,
-    # )
-
-
-def apply_mvs(
-    scenario_name,
-    user_inputs_mvs_directory=None,
-    outputs_directory=None,
-    mvs_output_directory=None,
-):
-    r"""
-    Starts the energy system optimization with MVS and stores results.
-    Parameters
-    ----------
-    scenario_name: str
-        Name of the Scenario.
-    user_inputs_mvs_directory: str or None
-        Path to input directory containing files that describe the energy
-        system and that are an input to MVS. If None,
-        `DEFAULT_INPUT_PATH` is used.
-        Default: None.
-    outputs_directory: str
-        Path to output directory where results are saved in case `mvs_output_directory`
-        is None. If None, `DEFAULT_OUTPUT_PATH` is used.
-        Default: None.
-    mvs_output_directory: str or None
-        Path to output directory where results are saved. If None, it is filled in
-        automatically according to `outputs_directory` and `scenario_name`:
-        'outputs_directory/scenario_name/mvs_output'.
-        Default: None.
-    Returns
-    -------
-        Stores simulation results in directory according to `outputs_directory` and `scenario_name` in 'outputs_directory/scenario_name/mvs_outputs'.
-    """
-
-    if user_inputs_mvs_directory is None:
-        user_inputs_mvs_directory = DEFAULT_INPUT_PATH
-    if outputs_directory is None:
-        outputs_directory = DEFAULT_OUTPUT_PATH
-    if not os.path.isdir(outputs_directory):
-        os.mkdir(outputs_directory)
-
-    scenario_folder = os.path.join(outputs_directory, scenario_name)
-    if mvs_output_directory is None:
-        mvs_output_directory = os.path.join(scenario_folder, "mvs_outputs")
-    # check if output folder exists, if not: create it
-    if not os.path.isdir(scenario_folder):
-        # create output folder
-        os.mkdir(scenario_folder)
-    # check if mvs_output_directory already exists. If yes, raise error
-    if os.path.isdir(mvs_output_directory):
-        raise NameError(
-            f"The mvs output directory {mvs_output_directory} "
-            f"already exists. Please delete the folder or "
-            f"rename 'scenario_name' to create a different scenario "
-            f"folder."
-        )
-
-    # adapt parameter 'scenario_name' in 'project_data.csv'.
-    add_scenario_name_to_project_data(user_inputs_mvs_directory, scenario_name)
-
-    main(
-        path_input_folder=user_inputs_mvs_directory,
-        path_output_folder=mvs_output_directory,
-        input_type="csv",
-        overwrite=True,
-        save_png=True,
-        display_output="warning",
-    )
-
-
-def add_scenario_name_to_project_data(user_inputs_mvs_directory, scenario_name):
-    r"""
-    Matches user input `scenario_name` with `scenario_name` in 'project_data.csv'.
-    If user input `scenario_name` is different to the parameter in
-    'project_data.csv', a warning is returned and 'project_data.csv' is
-    overwritten.
-    Parameters
-    ----------
-    user_inputs_mvs_directory: str or None
-        Path to MVS specific input directory. If None,
-        `DEFAULT_INPUT_PATH` is used.
-        Default: None.
-    scenario_name: str
-        Name of the Scenario.
-    Returns
-    -------
-    None
-    """
-    add_parameter_to_mvs_file(
-        user_inputs_mvs_directory=user_inputs_mvs_directory,
-        mvs_filename="project_data.csv",
-        mvs_row="scenario_name",
-        mvs_column="project_data",
-        pvcompare_parameter=scenario_name,
-        warning=True,
+    postprocessing_kpi(
+        variable_name=variable_name,
+        variable_value_vector=dict_result_paths[scenario_name][VALUES],
+        output_path_vector=dict_result_paths[scenario_name][EXPERIMENT_OUTPUT_PATHS],
+        output_path_summary=loop_output_directory,
     )
 
 
 def add_parameter_to_mvs_file(
-    user_inputs_mvs_directory,
-    mvs_filename,
-    mvs_row,
-    mvs_column,
-    pvcompare_parameter,
-    warning=True,
+    input_path, mvs_filename, mvs_row, mvs_column, pvcompare_parameter, warning=True,
 ):
     r"""
     Overwrites a value from a file in 'mvs_inputs/csv_elements' with a user input.
     Parameters
     ----------
-    user_inputs_mvs_directory: str or None
+    input_path: str or None
         Path to MVS specific input directory. If None,
         `DEFAULT_INPUT_PATH` is used.
         Default: None.
@@ -433,10 +484,8 @@ def add_parameter_to_mvs_file(
     ------
     None
     """
-    if user_inputs_mvs_directory == None:
-        user_inputs_mvs_directory = DEFAULT_INPUT_PATH
 
-    filename = os.path.join(user_inputs_mvs_directory, "csv_elements", mvs_filename)
+    filename = os.path.join(input_path, "csv_elements", mvs_filename)
     # load mvs_csv_file
     mvs_file = pd.read_csv(filename, index_col=0)
 
@@ -457,10 +506,7 @@ def add_parameter_to_mvs_file(
 
 
 def postprocessing_kpi(
-    scenario_name,
-    variable_name,
-    user_inputs_pvcompare_directory=None,
-    outputs_directory=None,
+    variable_name, variable_value_vector, output_path_vector, output_path_summary
 ):
     """
     Overwrites all output excel files "timeseries_all_flows.xlsx" and "scalars.xlsx"
@@ -475,54 +521,53 @@ def postprocessing_kpi(
         scenario name
     user_inputs_pvcompare_directory: str
         pvcompare inputs directory
-    outputs_directory: str
+    original_outputs_directory: str
         output directory
 
     Returns
         Saves new sheet in output excel file
     """
-    if outputs_directory == None:
-        outputs_directory = DEFAULT_OUTPUT_PATH
-        scenario_folder = os.path.join(outputs_directory, scenario_name)
-    else:
-        scenario_folder = os.path.join(outputs_directory, scenario_name)
-        if not os.path.isdir(scenario_folder):
-            logging.warning(f"The scenario folder {scenario_name} does not exist.")
 
-    # # loop over all loop output folders with variable name
-    loop_output_directory = os.path.join(
-        scenario_folder, "loop_outputs_" + str(variable_name)
-    )
-    if not os.path.isdir(loop_output_directory):
-        logging.warning(
-            f"The loop output folder {loop_output_directory} does not exist. "
-            f"Please check the variable_name"
+    KEY_INTEREST_KPI = [
+        COST_TOTAL,
+        COST_UPFRONT,
+        COST_OM,
+        ANNUITY_TOTAL,
+        ANNUITY_OM,
+        RENEWABLE_FACTOR,
+        DEGREE_OF_AUTONOMY,
+        TOTAL_EMISSIONS,
+        TOTAL_EXCESS + SUFFIX_ELECTRICITY_EQUIVALENT,
+        TOTAL_RENEWABLE_GENERATION_IN_LES,
+        LCOeleq,
+    ]
+
+    senstivitiy_data = pd.DataFrame(index=KEY_INTEREST_KPI)
+
+    for item in range(0, len(output_path_vector)):
+        output_json = os.path.join(
+            output_path_vector[item], JSON_WITH_RESULTS + JSON_FILE_EXTENSION
         )
-    # parse through scalars folder and read in all excel sheets
-    for filepath_s in list(
-        glob.glob(os.path.join(loop_output_directory, FOLDER_NAME_SCALARS, "*.xlsx"))
-    ):
-        # read sheets of scalars
-        scalars = pd.read_excel(filepath_s, sheet_name=None)
-
-        file_sheet1 = scalars["cost_matrix"]
-        file_sheet2 = scalars["scalar_matrix"]
-        file_sheet2.index = file_sheet2["label"]
-        file_sheet3 = scalars["scalars"]
-        file_sheet3.index = file_sheet3.iloc[:, 0]
-        file_sheet4 = scalars["KPI individual sectors"]
-
-        # save excel sheets
-        with pd.ExcelWriter(filepath_s, mode="a") as writer:
-            file_sheet1.to_excel(writer, sheet_name="cost_matrix", index=None)
-            file_sheet2.to_excel(writer, sheet_name="scalar_matrix", index=None)
-            file_sheet3.to_excel(writer, sheet_name="scalars", index=None)
-            file_sheet4.to_excel(
-                writer, sheet_name="KPI individual sectors", index=None
-            )
+        json = load_json(output_json)
+        sensitivity_results = [json[KPI][KPI_SCALARS_DICT][i] for i in KEY_INTEREST_KPI]
+        senstivitiy_data[variable_value_vector[item]] = sensitivity_results
         logging.info(
-            f"Scalars file sheet {filepath_s} has been overwritten with new KPI's"
+            f"Gathered simulation results from {variable_name}={variable_value_vector[item]}, output folder {output_path_vector[item]}"
         )
+
+    senstivitiy_data = senstivitiy_data.transpose()
+
+    for kpi in KEY_INTEREST_KPI:
+        plot_data = pd.Series(senstivitiy_data[kpi], index=senstivitiy_data.index)
+        plot_data.plot()
+        plt.xlabel(variable_name)
+        plt.ylabel(kpi)
+        plt.savefig(
+            os.path.join(output_path_summary, f"{variable_name}_effect_on_{kpi}.png")
+        )
+        plt.close()
+
+    senstivitiy_data.to_csv(output_path_summary + "summary.csv")
 
 
 loop_mvs(
@@ -530,9 +575,10 @@ loop_mvs(
     variable_column="Electricity_grid_DSO",
     csv_file_variable="energyProviders.csv",
     start=0.1,
-    stop=0.5,
+    stop=0.2,
     step=0.1,
     scenario_name="energy_price_variablity",
-    user_inputs_mvs_directory="tests/inputs",
-    outputs_directory="sensitivity_outputs",
+    original_input_directory="tests/inputs",
+    original_outputs_directory="sensitivity_outputs",
+    overwrite=True,
 )
