@@ -570,6 +570,7 @@ def postprocessing_kpi(
     senstivitiy_data.to_csv(output_path_summary + "summary.csv")
 
 
+"""
 loop_mvs(
     variable_name="energy_price",
     variable_column="Electricity_grid_DSO",
@@ -580,5 +581,30 @@ loop_mvs(
     scenario_name="energy_price_variablity",
     original_input_directory="tests/inputs",
     original_outputs_directory="sensitivity_outputs",
+    overwrite=True,
+)
+"""
+loop_mvs(
+    variable_name="dispatch_price",
+    variable_column="Diesel",
+    csv_file_variable="energyProduction.csv",
+    start=0.8,
+    stop=1.8,
+    step=0.1,
+    scenario_name="diesel_price",
+    original_input_directory="Aysen/two_storages",
+    original_outputs_directory="Aysen_diesel_price",
+    overwrite=True,
+)
+loop_mvs(
+    variable_name="H2_storage_tank",
+    variable_column="specific_costs",
+    csv_file_variable="H2_storage_tank.csv",
+    start=1800,
+    stop=2800,
+    step=100,
+    scenario_name="H2_tank_costs",
+    original_input_directory="Aysen/two_storages",
+    original_outputs_directory="Aysen_H2_tank_costs",
     overwrite=True,
 )
