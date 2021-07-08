@@ -3,7 +3,7 @@ import logging
 from oemof.tools import logger
 
 logger.define_logging(
-    logpath=".", logfile="log", file_level=logging.DEBUG, screen_level="DEBUG",
+    logpath=".", logfile="log", file_level=logging.INFO, screen_level="INFO",
 )
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -544,6 +544,38 @@ def postprocessing_kpi(
 
     senstivitiy_data = pd.DataFrame(index=KEY_INTEREST_KPI)
 
+    json_parameter_paths = {
+        "diesel_fuel_consumption": (
+            "energyProduction",
+            "Diesel",
+            "total_flow",
+            "value",
+        ),
+        "diesel_fuel_expenses": ("energyProduction", "Diesel", "annuity_om", "value"),
+        "capacity_h2_electrolyzer": (
+            "energyConversion",
+            "Electrolyzer",
+            "optimizedAddCap",
+            "value",
+        ),
+        "capacity_h2_tank": (
+            "energyStorage",
+            "H2 storage",
+            "storage capacity",
+            "optimizedAddCap",
+            "value",
+        ),
+    }
+
+    other_scalars = pd.DataFrame(
+        index=[
+            "diesel_fuel_consumption",
+            "diesel_fuel_expenses",
+            "capacity_h2_electrolyzer",
+            "capacity_h2_tank",
+        ]
+    )
+
     for item in range(0, len(output_path_vector)):
         output_json = os.path.join(
             output_path_vector[item], JSON_WITH_RESULTS + JSON_FILE_EXTENSION
@@ -552,7 +584,14 @@ def postprocessing_kpi(
         sensitivity_results = [json[KPI][KPI_SCALARS_DICT][i] for i in KEY_INTEREST_KPI]
         senstivitiy_data[variable_value_vector[item]] = sensitivity_results
         logging.info(
-            f"Gathered simulation results from {variable_name}={variable_value_vector[item]}, output folder {output_path_vector[item]}"
+            f"Gathered simulation results (KPIS) from {variable_name}={variable_value_vector[item]}, output folder {output_path_vector[item]}"
+        )
+
+        other_scalars = get_asset_results(
+            json, json_parameter_paths, other_scalars, variable_value_vector[item]
+        )
+        logging.info(
+            f"Gathered simulation results (assets) from {variable_name}={variable_value_vector[item]}, output folder {output_path_vector[item]}"
         )
 
     senstivitiy_data = senstivitiy_data.transpose()
@@ -567,7 +606,35 @@ def postprocessing_kpi(
         )
         plt.close()
 
-    senstivitiy_data.to_csv(output_path_summary + "summary.csv")
+    senstivitiy_data.to_csv(output_path_summary + "kpi_summary.csv")
+
+    other_scalars = other_scalars.transpose()
+
+    for scalar in [
+        "diesel_fuel_consumption",
+        "diesel_fuel_expenses",
+        "capacity_h2_electrolyzer",
+        "capacity_h2_tank",
+    ]:
+        plot_data = pd.Series(other_scalars[scalar], index=other_scalars.index)
+        plot_data.plot()
+        plt.xlabel(variable_name)
+        plt.ylabel(scalar)
+        plt.savefig(
+            os.path.join(output_path_summary, f"{variable_name}_effect_on_{scalar}.png")
+        )
+        plt.close()
+
+    other_scalars.to_csv(output_path_summary + "other_scalars_summary.csv")
+
+
+def get_asset_results(json, parameters, df, value):
+    results = []
+    for key in parameters:
+        key_value = get_nested_value(json, parameters[key])
+        results.append(key_value)
+    df[value] = results
+    return df
 
 
 """
@@ -589,7 +656,7 @@ loop_mvs(
     variable_column="Diesel",
     csv_file_variable="energyProduction.csv",
     start=0.8,
-    stop=1.8,
+    stop=0.9,
     step=0.1,
     scenario_name="diesel_price",
     original_input_directory="Aysen/two_storages",
@@ -600,8 +667,8 @@ loop_mvs(
     variable_name="H2_storage_tank",
     variable_column="specific_costs",
     csv_file_variable="H2_storage_tank.csv",
-    start=1800,
-    stop=2800,
+    start=2300,
+    stop=2400,
     step=100,
     scenario_name="H2_tank_costs",
     original_input_directory="Aysen/two_storages",
