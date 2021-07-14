@@ -544,21 +544,27 @@ def postprocessing_kpi(
 
     senstivitiy_data = pd.DataFrame(index=KEY_INTEREST_KPI)
 
+    diesel_fuel_consumption = "Annual_diesel_fuel_consumption_in_l"
+    diesel_fuel_expenses = "Annual_diesel_fuel_expenses_in_USD"
+    capacity_h2_electrolyzer = "Capacity_H2_electrolyzer_in_kgH2"
+    capacity_h2_tank = "Capacit_H2_tank_in_kgH2"
+    capacity_fuel_cell = "Capacity_fuel_cell_in_kW"
     json_parameter_paths = {
-        "diesel_fuel_consumption": (
-            "energyProduction",
-            "Diesel",
-            "total_flow",
-            "value",
-        ),
-        "diesel_fuel_expenses": ("energyProduction", "Diesel", "annuity_om", "value"),
-        "capacity_h2_electrolyzer": (
+        diesel_fuel_consumption: ("energyProduction", "Diesel", "total_flow", "value",),
+        diesel_fuel_expenses: ("energyProduction", "Diesel", "annuity_om", "value"),
+        capacity_h2_electrolyzer: (
             "energyConversion",
             "Electrolyzer",
             "optimizedAddCap",
             "value",
         ),
-        "capacity_h2_tank": (
+        capacity_fuel_cell: (
+            "energyConversion",
+            "Fuel cell",
+            "optimizedAddCap",
+            "value",
+        ),
+        capacity_h2_tank: (
             "energyStorage",
             "H2 storage",
             "storage capacity",
@@ -567,14 +573,7 @@ def postprocessing_kpi(
         ),
     }
 
-    other_scalars = pd.DataFrame(
-        index=[
-            "diesel_fuel_consumption",
-            "diesel_fuel_expenses",
-            "capacity_h2_electrolyzer",
-            "capacity_h2_tank",
-        ]
-    )
+    other_scalars = pd.DataFrame(index=json_parameter_paths.keys())
 
     for item in range(0, len(output_path_vector)):
         output_json = os.path.join(
@@ -610,12 +609,7 @@ def postprocessing_kpi(
 
     other_scalars = other_scalars.transpose()
 
-    for scalar in [
-        "diesel_fuel_consumption",
-        "diesel_fuel_expenses",
-        "capacity_h2_electrolyzer",
-        "capacity_h2_tank",
-    ]:
+    for scalar in other_scalars.columns:
         plot_data = pd.Series(other_scalars[scalar], index=other_scalars.index)
         plot_data.plot()
         plt.xlabel(variable_name)
