@@ -611,10 +611,16 @@ def postprocessing_kpi(
         os.path.join("docs", "MVS_parameters_list.csv"), index_col=6
     )
     try:
-        unit = variable_definitions[":Unit:"][variable_name]
+        unit = + variable_definitions[":Unit:"][variable_name]
     except:
-        unit=""
-    x_label = f"{variable_name.replace('_', ' ')} of {variable_column.replace('_', ' ')} in {unit}"
+        unit= ""
+
+
+    x_label = f"{variable_name.replace('_', ' ')}"
+    if len(variable_column)>1:
+        x_label += f" of {variable_column.replace('_', ' ')}"
+    if len(unit)>0:
+        x_label += f" in {unit}"
 
     kpi_definitions = pd.read_csv(
         os.path.join("docs", "MVS_kpis_list.csv"), index_col=0
@@ -630,7 +636,10 @@ def postprocessing_kpi(
         plot_data = pd.Series(senstivitiy_data[kpi], index=senstivitiy_data.index)
         plot_data.plot()
         plt.xlabel(x_label)
-        plt.ylabel(f"{name} in {unit}")
+        y_label = name
+        if len(unit) > 0:
+            y_label += f" in {unit}"
+        plt.ylabel(y_label)
         plt.savefig(
             os.path.join(output_path_summary, f"{variable_name}_effect_on_{kpi}.png")
         )
