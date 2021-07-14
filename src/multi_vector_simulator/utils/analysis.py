@@ -610,7 +610,10 @@ def postprocessing_kpi(
     variable_definitions = pd.read_csv(
         os.path.join("docs", "MVS_parameters_list.csv"), index_col=6
     )
-    unit = variable_definitions[":Unit:"][variable_name]
+    try:
+        unit = variable_definitions[":Unit:"][variable_name]
+    except:
+        unit=""
     x_label = f"{variable_name.replace('_', ' ')} of {variable_column.replace('_', ' ')} in {unit}"
 
     kpi_definitions = pd.read_csv(
