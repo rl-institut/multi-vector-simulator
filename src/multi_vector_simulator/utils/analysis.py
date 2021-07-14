@@ -439,7 +439,14 @@ def loop_mvs(
         for excel_file in [FILE_NAME_SCALARS, FILE_NAME_TIMESERIES]:
             name_excel_file = excel_file + ".xlsx"
             new_name_excel_file = (
-                excel_file + "_" + variable_name + "_" + str(value) + ".xlsx"
+                excel_file
+                + "_"
+                + variable_column
+                + "_"
+                + variable_name
+                + "_"
+                + str(value)
+                + ".xlsx"
             )
             src_dir = os.path.join(experiment_output_directory, name_excel_file)
             dst_dir = os.path.join(
@@ -452,6 +459,7 @@ def loop_mvs(
 
     postprocessing_kpi(
         variable_name=variable_name,
+        variable_column=variable_column,
         variable_value_vector=dict_result_paths[scenario_name][VALUES],
         output_path_vector=dict_result_paths[scenario_name][EXPERIMENT_OUTPUT_PATHS],
         output_path_summary=loop_output_directory,
@@ -506,7 +514,11 @@ def add_parameter_to_mvs_file(
 
 
 def postprocessing_kpi(
-    variable_name, variable_value_vector, output_path_vector, output_path_summary
+    variable_name,
+    variable_column,
+    variable_value_vector,
+    output_path_vector,
+    output_path_summary,
 ):
     """
     Overwrites all output excel files "timeseries_all_flows.xlsx" and "scalars.xlsx"
@@ -595,11 +607,27 @@ def postprocessing_kpi(
 
     senstivitiy_data = senstivitiy_data.transpose()
 
+    variable_definitions = pd.read_csv(
+        os.path.join("docs", "MVS_parameters_list.csv"), index_col=6
+    )
+    unit = variable_definitions[":Unit:"][variable_name]
+    x_label = f"{variable_name.replace('_', ' ')} of {variable_column.replace('_', ' ')} in {unit}"
+
+    kpi_definitions = pd.read_csv(
+        os.path.join("docs", "MVS_kpis_list.csv"), index_col=0
+    )
+
     for kpi in KEY_INTEREST_KPI:
+        try:
+            name = kpi_definitions["label"][kpi]
+            unit = kpi_definitions[":Unit:"][kpi]
+        except:
+            name = kpi
+            unit = ""
         plot_data = pd.Series(senstivitiy_data[kpi], index=senstivitiy_data.index)
         plot_data.plot()
-        plt.xlabel(variable_name)
-        plt.ylabel(kpi)
+        plt.xlabel(x_label)
+        plt.ylabel(f"{name} in {unit}")
         plt.savefig(
             os.path.join(output_path_summary, f"{variable_name}_effect_on_{kpi}.png")
         )
@@ -612,10 +640,13 @@ def postprocessing_kpi(
     for scalar in other_scalars.columns:
         plot_data = pd.Series(other_scalars[scalar], index=other_scalars.index)
         plot_data.plot()
-        plt.xlabel(variable_name)
-        plt.ylabel(scalar)
+        plt.xlabel(x_label)
+        plt.ylabel(scalar.replace("_", " "))
         plt.savefig(
-            os.path.join(output_path_summary, f"{variable_name}_effect_on_{scalar}.png")
+            os.path.join(
+                output_path_summary,
+                f"{variable_name}_{variable_column}_effect_on_{scalar}.png",
+            )
         )
         plt.close()
 
