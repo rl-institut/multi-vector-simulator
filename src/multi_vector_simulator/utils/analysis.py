@@ -561,6 +561,7 @@ def postprocessing_kpi(
     capacity_h2_electrolyzer = "Capacity_H2_electrolyzer_in_kgH2"
     capacity_h2_tank = "Capacit_H2_tank_in_kgH2"
     capacity_fuel_cell = "Capacity_fuel_cell_in_kW"
+    capacity_lithium_ion_storage = "Capacity_lithium_ion_storage_kWh"
     json_parameter_paths = {
         diesel_fuel_consumption: ("energyProduction", "Diesel", "total_flow", "value",),
         diesel_fuel_expenses: ("energyProduction", "Diesel", "annuity_om", "value"),
@@ -579,6 +580,13 @@ def postprocessing_kpi(
         capacity_h2_tank: (
             "energyStorage",
             "H2 storage",
+            "storage capacity",
+            "optimizedAddCap",
+            "value",
+        ),
+        capacity_lithium_ion_storage: (
+            "energyStorage",
+            "Battery storage",
             "storage capacity",
             "optimizedAddCap",
             "value",
