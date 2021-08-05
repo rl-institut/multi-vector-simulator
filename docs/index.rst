@@ -36,7 +36,7 @@ Multi-vector simulator
         :target: https://github.com/psf/black
         :alt: black linter
 
-The Multi-Vector Simulator (hereafter MVS) is an `oemof <https:/github.com/oemof>`__ -based Python package which aims at facilitating the modelling of multi-energy carriers energy systems in island or grid connected mode.
+The open_plan tool is an `oemof <https:/github.com/oemof>`__ -based Python package which aims at facilitating the modelling of multi-energy carriers energy systems in island or grid connected mode.
 
 The main goals of the MVS are
 
