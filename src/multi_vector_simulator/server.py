@@ -53,7 +53,10 @@ from multi_vector_simulator.utils import data_parser
 from multi_vector_simulator.utils.constants_json_strings import (
     SIMULATION_SETTINGS,
     OUTPUT_LP_FILE,
+    VALUE,
+    UNIT,
 )
+from multi_vector_simulator.utils.constants import TYPE_STR
 
 
 def run_simulation(json_dict, epa_format=True, **kwargs):
@@ -94,8 +97,6 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
     else:
         screen_level = logging.INFO
 
-    lp_file_output = kwargs.get("lp_file_output", True)
-
     # Define logging settings and path for saving log
     logger.define_logging(screen_level=screen_level)
 
@@ -117,6 +118,11 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
     logging.debug("Accessing script: B0_data_input_json")
     dict_values = B0.convert_from_json_to_special_types(json_dict)
 
+    # if True will return the lp file's content in dict_values
+    lp_file_output = dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE][VALUE]
+    # to avoid the lp file being saved somewhere on the server
+    dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE][VALUE] = False
+
     print("")
     logging.debug("Accessing script: C0_data_processing")
     C0.all(dict_values)
@@ -137,7 +143,8 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
             with open(os.path.join(tmpdirname, "lp_file.lp")) as fp:
                 file_content = fp.read()
 
-        dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE] = file_content
+        dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE][VALUE] = file_content
+        dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE][UNIT] = TYPE_STR
 
     print("")
     logging.debug("Accessing script: E0_evaluation")
