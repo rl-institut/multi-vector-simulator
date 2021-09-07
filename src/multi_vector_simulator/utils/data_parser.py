@@ -143,7 +143,7 @@ MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
 # Fields expected for parameters of json returned to EPA, all assets will be returned
 EPA_PARAM_KEYS = {
     PROJECT_DATA: [PROJECT_ID, PROJECT_NAME, SCENARIO_ID, SCENARIO_NAME],
-    SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP],
+    SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP, OUTPUT_LP_FILE],
     KPI: [KPI_SCALARS_DICT, KPI_UNCOUPLED_DICT, KPI_COST_MATRIX, KPI_SCALAR_MATRIX],
 }
 
@@ -272,7 +272,7 @@ def convert_epa_params_to_mvs(epa_dict):
 
     - For `simulation_settings`:
         - parameter `TIMESTEP` is parsed as unit-value pair
-        - `OUTPUT_LP_FILE` always `False`
+        - `OUTPUT_LP_FILE` always `True`
     - For `project_data`: parameter `SCENARIO_DESCRIPTION` is defined as placeholder string.
     - `fix_cost` is not required, default value will be set if it is not provided.
     - For missing asset group `CONSTRAINTS` following parameters are added:
@@ -330,13 +330,12 @@ def convert_epa_params_to_mvs(epa_dict):
                         VALUE: timestep,
                     }
 
-            # Never save the oemof lp file when running on the server
+            # Always save the oemof lp file when running on the server
             if param_group == SIMULATION_SETTINGS:
                 dict_values[param_group][OUTPUT_LP_FILE] = {
                     UNIT: TYPE_BOOL,
-                    VALUE: False,
+                    VALUE: True,
                 }
-
             if param_group == PROJECT_DATA:
                 if SCENARIO_DESCRIPTION not in dict_values[param_group]:
                     dict_values[param_group][
@@ -603,6 +602,11 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                         .set_index("label")
                         .to_json(orient="index")
                     )
+
+                # if the parameter is of type
+                if k == OUTPUT_LP_FILE:
+                    if epa_dict[param_group_epa][k][UNIT] == TYPE_BOOL:
+                        epa_dict[param_group_epa].pop(k)
 
     # manage which assets parameters are kept and which one are removed in epa_dict
     for asset_group in EPA_ASSET_KEYS:
