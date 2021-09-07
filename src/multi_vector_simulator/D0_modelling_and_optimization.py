@@ -63,7 +63,7 @@ from multi_vector_simulator.utils.exceptions import (
 )
 
 
-def run_oemof(dict_values, save_energy_system_graph=False):
+def run_oemof(dict_values, save_energy_system_graph=False, return_les=False):
     """
     Creates and solves energy system model generated from excel template inputs.
     Each component is included by calling its constructor function in D1_model_components.
@@ -74,6 +74,12 @@ def run_oemof(dict_values, save_energy_system_graph=False):
         Includes all dictionary values describing the whole project, including costs,
         technical parameters and components. In C0_data_processing, each component was attributed
         with a certain in/output bus.
+
+    save_energy_system_graph: bool
+        if set to True, saves a local copy of the energy system's graph
+
+    return_les: bool
+        if set to True, the return also includes the local_energy_system in third position
 
     Returns
     -------
@@ -107,7 +113,10 @@ def run_oemof(dict_values, save_energy_system_graph=False):
 
     timer.stop(dict_values, start)
 
-    return results_meta, results_main
+    if return_les is True:
+        return results_meta, results_main, local_energy_system
+    else:
+        return results_meta, results_main
 
 
 class model_building:
