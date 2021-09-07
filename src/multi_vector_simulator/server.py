@@ -35,6 +35,8 @@ child-sub:  Sub-child function, feeds only back to child functions
 
 import logging
 import json
+import os
+import tempfile
 
 from oemof.tools import logger
 
@@ -46,6 +48,12 @@ import multi_vector_simulator.E0_evaluation as E0
 import multi_vector_simulator.F0_output as F0
 from multi_vector_simulator.version import version_num, version_date
 from multi_vector_simulator.utils import data_parser
+
+
+from multi_vector_simulator.utils.constants_json_strings import (
+    SIMULATION_SETTINGS,
+    OUTPUT_LP_FILE,
+)
 
 
 def run_simulation(json_dict, epa_format=True, **kwargs):
@@ -86,6 +94,8 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
     else:
         screen_level = logging.INFO
 
+    lp_file_output = kwargs.get("lp_file_output", True)
+
     # Define logging settings and path for saving log
     logger.define_logging(screen_level=screen_level)
 
@@ -113,7 +123,21 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
 
     print("")
     logging.debug("Accessing script: D0_modelling_and_optimization")
-    results_meta, results_main = D0.run_oemof(dict_values)
+    results_meta, results_main, local_energy_system = D0.run_oemof(
+        dict_values, return_les=True
+    )
+
+    if lp_file_output is True:
+        logging.debug("Saving the content of the model's lp file")
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            local_energy_system.write(
+                os.path.join(tmpdirname, "lp_file.lp"),
+                io_options={"symbolic_solver_labels": True},
+            )
+            with open(os.path.join(tmpdirname, "lp_file.lp")) as fp:
+                file_content = fp.read()
+
+        dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE] = file_content
 
     print("")
     logging.debug("Accessing script: E0_evaluation")
