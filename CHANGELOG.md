@@ -29,6 +29,7 @@ Here is a template for new release sections
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
 - `input_template/csv_elements`: Added missing parameters and generalized units (#904)
 - `CONTRIBUTING.md` according to last lessons learnt (#904)
+-  Set numpy version to lower or equal than `1.19.4` (#924)
 
 ### Removed
 -
