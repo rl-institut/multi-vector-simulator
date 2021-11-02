@@ -15,6 +15,11 @@ Articles
 
 * :(Hoffmann, 2020b): Martha M. Hoffmann, Sanket Puranik, Marc Juanpera, José M. Martín-Rapún, Heidi Tuiskula, & Philipp Blechinger: *Investment planning in multi-vector energy systems: Definition of key performance indicators*, Conference paper, presented at the CIRED 2020 Berlin Workshop (CIRED 2020), Berlin / online. 2020. DOI: `10.5281/zenodo.4449918 <http://doi.org/10.5281/zenodo.4449918>`__
 
+Reports
+^^^^^^^
+
+* :(AHK Chile, 2021): Christoph Meyer, Mar Ortiz, Annika Schüttler. AHK Chile, August 2021: German: Einsatz von grünem Wasserstoff zur netzfernen Stromversorgung in Insel- und kleineren Stromnetzen in Chile. Spanish: Uso de hidrógeno verde para el suministro de energía fuera de la red en microrredes y redes pequeñas de electricidad en Chile. Available on: <https://chile.ahk.de/themen/energie/>`__
+
 Posters
 ^^^^^^^
 
@@ -51,6 +56,11 @@ H2020 research project open_Plan
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The `H2020 research project open_plan <https://open-plan-tool.org/>`__ aims to build an open source tool to plan the design of a single energy cell. It will extend on the existing features of MVS to fullfil the requirements of its pilot projects. The project open_plan is funded until December 2022, the development of the graphical user interface will take place on the `github repository of open_plan <https://github.com/rl-institut/open_plan>`__.
+
+Consulting project with AHK Chile
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The MVS was applied to three case study locations in Chile to determine the local potential to use hydrogen for storing renewable generation. The locations included a grid on an island (Melinka), a region (Aysén) and a industrial site (Multiexport). More information can be found on the `RLI website <https://reiner-lemoine-institut.de/en/hydrogen-storage-potential-study-for-mini-grids-in-chile/>`__. A report in German and Spanish is available.
 
 .. _reference_bibliography:
 
