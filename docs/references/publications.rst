@@ -20,12 +20,12 @@ Reports
 
 * :(AHK Chile, 2021): Christoph Meyer, Mar Ortiz, Annika Schüttler. AHK Chile, August 2021: German: Einsatz von grünem Wasserstoff zur netzfernen Stromversorgung in Insel- und kleineren Stromnetzen in Chile. Spanish: Uso de hidrógeno verde para el suministro de energía fuera de la red en microrredes y redes pequeñas de electricidad en Chile. Available on: <https://chile.ahk.de/themen/energie/>`__
 
-* :(E-LAND, 2021): Martha Hoffmann, Ciara Dunks, Sabine Haas. May 2021: Innovative Multi-Vector Simulator. Deliverable 4.4
+* :(E-LAND, 2021b): Martha Hoffmann, Ciara Dunks, Sabine Haas. May 2021: Innovative Multi-Vector Simulator. Deliverable 4.4
 
 Posters
 ^^^^^^^
 
-* :(E-LAND, 2021): E-LAND, 2021: Multi-vector simulator. Planning the energy supply system of the future. Product sheet. Available: <https://elandh2020.eu/wp-content/uploads/2021/06/MVS-Tool-7.pdf>`__
+* :(E-LAND, 2021a): E-LAND, 2021: Multi-Vector Simulator. Planning the energy supply system of the future. Product sheet. Available: <https://elandh2020.eu/wp-content/uploads/2021/06/MVS-Tool-7.pdf>`__
 
 * :(Hoffmann, 2020a): Martha M. Hoffmann, Sanket Puranik, Marc Juanpera, José M. Martín-Rapún, Heidi Tuiskula, & Philipp Blechinger: *Investment planning in multi-vector energy systems: Definition of key performance indicators*, Conference poster, presented at the CIRED 2020 Berlin Workshop (CIRED 2020), Berlin / online: DOI: `10.5281/zenodo.4449969 <http://doi.org/10.5281/zenodo.4449969>`__
 
