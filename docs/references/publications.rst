@@ -23,6 +23,8 @@ Reports
 Posters
 ^^^^^^^
 
+* :(E-LAND, 2021): E-LAND, 2021: Multi-vector simulator. Planning the energy supply system of the future. Product sheet. Available: <https://elandh2020.eu/wp-content/uploads/2021/06/MVS-Tool-7.pdf>`__
+
 * :(Hoffmann, 2020a): Martha M. Hoffmann, Sanket Puranik, Marc Juanpera, José M. Martín-Rapún, Heidi Tuiskula, & Philipp Blechinger: *Investment planning in multi-vector energy systems: Definition of key performance indicators*, Conference poster, presented at the CIRED 2020 Berlin Workshop (CIRED 2020), Berlin / online: DOI: `10.5281/zenodo.4449969 <http://doi.org/10.5281/zenodo.4449969>`__
 
 Presentations
