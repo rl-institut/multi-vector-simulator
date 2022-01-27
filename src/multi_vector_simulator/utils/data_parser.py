@@ -340,7 +340,7 @@ def convert_epa_params_to_mvs(epa_dict):
                 else:
                     dict_values[param_group][OUTPUT_LP_FILE] = {
                         UNIT: TYPE_BOOL,
-                        VALUE: output_lp_file,
+                        VALUE: True if output_lp_file == "true" else False,
                     }
 
             if param_group == PROJECT_DATA:
