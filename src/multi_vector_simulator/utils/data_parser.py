@@ -272,13 +272,14 @@ def convert_epa_params_to_mvs(epa_dict):
 
     - For `simulation_settings`:
         - parameter `TIMESTEP` is parsed as unit-value pair
-        - `OUTPUT_LP_FILE` always `True`
+        - `OUTPUT_LP_FILE` is set to `False` by default
     - For `project_data`: parameter `SCENARIO_DESCRIPTION` is defined as placeholder string.
     - `fix_cost` is not required, default value will be set if it is not provided.
     - For missing asset group `CONSTRAINTS` following parameters are added:
         - MINIMAL_RENEWABLE_FACTOR: 0
         - MAXIMUM_EMISSIONS: None
         - MINIMAL_DEGREE_OF_AUTONOMY: 0
+        - NET_ZERO_ENERGY: False
     - `ENERGY_STORAGE` assets:
         - Optimize cap written to main asset and removed from subassets
         - Units defined automatically (assumed: electricity system)
@@ -329,13 +330,19 @@ def convert_epa_params_to_mvs(epa_dict):
                         UNIT: "min",
                         VALUE: timestep,
                     }
+                # by default the lp file will not be outputted
+                output_lp_file = dict_values[param_group].get(OUTPUT_LP_FILE)
+                if output_lp_file is None:
+                    dict_values[param_group][OUTPUT_LP_FILE] = {
+                        UNIT: TYPE_BOOL,
+                        VALUE: False,
+                    }
+                else:
+                    dict_values[param_group][OUTPUT_LP_FILE] = {
+                        UNIT: TYPE_BOOL,
+                        VALUE: output_lp_file,
+                    }
 
-            # Always save the oemof lp file when running on the server
-            if param_group == SIMULATION_SETTINGS:
-                dict_values[param_group][OUTPUT_LP_FILE] = {
-                    UNIT: TYPE_BOOL,
-                    VALUE: True,
-                }
             if param_group == PROJECT_DATA:
                 if SCENARIO_DESCRIPTION not in dict_values[param_group]:
                     dict_values[param_group][
