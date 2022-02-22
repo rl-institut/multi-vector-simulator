@@ -331,15 +331,23 @@ def set_nested_value(dct, value, keys):
     {'a': {'a1': 1, 'a2': 2}, 'b': {'b1': {'b11': 11, 'b12': {'b121': 400}}}}
     """
     if isinstance(keys, tuple) is True:
-        answer = copy.deepcopy(dct)
-        if len(keys) > 1:
-            answer[keys[0]] = set_nested_value(dct[keys[0]], value, keys[1:])
-        elif len(keys) == 1:
-            answer[keys[0]] = value
-        else:
-            raise ValueError(
-                "The tuple argument 'keys' from set_nested_value() should not be empty"
-            )
+        try:
+            answer = copy.deepcopy(dct)
+            if keys[0] not in answer:
+                raise KeyError(": pathError: that path does not exist in the nested dict")
+            if len(keys) > 1:
+                answer[keys[0]] = set_nested_value(dct[keys[0]], value, keys[1:])
+            elif len(keys) == 1:
+                answer[keys[0]] = value
+            else:
+                raise ValueError(
+                    "The tuple argument 'keys' from set_nested_value() should not be empty"
+                )
+        except KeyError as e:
+            if "pathError" in str(e):
+                raise KeyError(str(keys[0]) + ", " + str(e))
+    elif isinstance(keys, str) is True:
+        return set_nested_value(dct, value, split_nested_path(keys))
     else:
         raise TypeError("The argument 'keys' from set_nested_value() should be a tuple")
     return answer
@@ -366,14 +374,21 @@ def get_nested_value(dct, keys):
     121
     """
     if isinstance(keys, tuple) is True:
-        if len(keys) > 1:
-            answer = get_nested_value(dct[keys[0]], keys[1:])
-        elif len(keys) == 1:
-            answer = dct[keys[0]]
-        else:
-            raise ValueError(
-                "The tuple argument 'keys' from get_nested_value() should not be empty"
-            )
+        try:
+            if len(keys) > 1:
+                answer = get_nested_value(dct[keys[0]], keys[1:])
+            elif len(keys) == 1:
+                answer = dct[keys[0]]
+            else:
+                raise ValueError(
+                    "The tuple argument 'keys' from get_nested_value() should not be empty"
+                )
+        except KeyError as e:
+            if "pathError" in str(e):
+                raise KeyError(str(keys[0]) + ", " + str(e))
+            else:
+                raise KeyError(str(keys[0]) + ": pathError: that path does not exist in the nested dict")
+
     else:
         raise TypeError("The argument 'keys' from get_nested_value() should be a tuple")
     return answer
@@ -413,9 +428,9 @@ def split_nested_path(path):
     elif isinstance(path, tuple):
         keys_list = path
     else:
-        raise TypeError("The argument path is not str type")
+        raise TypeError("The argument path is not tuple or str type")
 
-    return tuple(keys_list)
+    return keys_list
 
 
 def copy_report_assets(path_destination_folder):
