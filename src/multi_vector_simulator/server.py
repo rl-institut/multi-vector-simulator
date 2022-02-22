@@ -47,7 +47,11 @@ import multi_vector_simulator.D0_modelling_and_optimization as D0
 import multi_vector_simulator.E0_evaluation as E0
 import multi_vector_simulator.F0_output as F0
 from multi_vector_simulator.version import version_num, version_date
-from multi_vector_simulator.utils import data_parser
+from multi_vector_simulator.utils import (
+    data_parser,
+    nested_dict_crawler,
+    get_nested_value,
+)
 
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -162,3 +166,84 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
         answer = dict_values
 
     return answer
+
+
+def run_sensitivity_analysis_step(
+    json_input, step_idx, output_variables, epa_format=True, **kwargs
+):
+    r"""
+     Starts MVS tool simulation from an input json file
+
+     Parameters
+    -----------
+    json_input: dict
+        json from http request
+    step_idx: int
+        step of the sensitivity analysis
+    output_variables: tuple of str
+        collection of output variables names
+    epa_format: bool, optional
+        Specifies whether the output is formatted for EPA standards
+        Default: True
+
+     Other Parameters
+     ----------------
+     pdf_report: bool, optional
+         Can generate an automatic pdf report of the simulation's results (True) or not (False)
+         Default: False.
+     display_output : str, optional
+         Sets the level of displayed logging messages.
+         Options: "debug", "info", "warning", "error". Default: "info".
+     lp_file_output : bool, optional
+         Specifies whether linear equation system generated is saved as lp file.
+         Default: False.
+
+    """
+
+    # Process the argument json_input based on its type
+    if isinstance(json_input, str):
+        # load the file if it is a path
+        simulation_input = B0.load_json(json_input)
+    elif isinstance(json_input, dict):
+        # this is already a json variable
+        simulation_input = json_input
+    else:
+        simulation_input = None
+        logging.error(
+            f"Simulation input `{json_input}` is neither a file path, nor a json dict. "
+            f"It can therefore not be processed."
+        )
+
+    sim_output_json = run_simulation(
+        simulation_input, display_output="error", epa_format=epa_format
+    )
+    output_variables_paths = nested_dict_crawler(sim_output_json)
+
+    output_parameters = {}
+    # for each of the output parameter path, add the value located under this path in
+    # the final json dict, that could also be applied to the full json dict as
+    # post-processing
+    for output_param in output_variables:
+        output_param_pathes = output_variables_paths.get(output_param, [])
+
+        if len(output_param_pathes) == 0:
+            output_parameters[output_param] = dict(
+                value=None,
+                path=f"Not found in mvs results (version {version_num}), check if you have typos in output parameter name",
+            )
+
+        for output_param_path in output_param_pathes:
+            if output_param not in output_parameters:
+                output_parameters[output_param] = dict(
+                    value=[get_nested_value(sim_output_json, output_param_path)],
+                    path=[".".join(output_param_path)],
+                )
+            else:
+                output_parameters[output_param]["value"].append(
+                    get_nested_value(sim_output_json, output_param_path)
+                )
+                output_parameters[output_param]["path"].append(
+                    ".".join(output_param_path)
+                )
+
+    return {"step_idx": step_idx, "output_values": output_parameters}
