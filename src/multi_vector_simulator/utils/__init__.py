@@ -340,14 +340,21 @@ def set_nested_value(dct, value, keys):
             if len(keys) > 1:
                 answer[keys[0]] = set_nested_value(dct[keys[0]], value, keys[1:])
             elif len(keys) == 1:
-                answer[keys[0]] = value
+                # if the value is a dict with structure {VALUE: ..., UNIT: ...}
+                if isinstance(answer[keys[0]], dict):
+                    if VALUE in answer[keys[0]]:
+                        answer[keys[0]][VALUE] = value
+                    else:
+                        answer[keys[0]] = value
+                else:
+                    answer[keys[0]] = value
             else:
                 raise ValueError(
                     "The tuple argument 'keys' from set_nested_value() should not be empty"
                 )
         except KeyError as e:
             if "pathError" in str(e):
-                raise KeyError(str(keys[0]) + ", " + str(e))
+                raise KeyError(keys[0] + ", " + e.args[0])
     elif isinstance(keys, str) is True:
         return set_nested_value(dct, value, split_nested_path(keys))
     else:
