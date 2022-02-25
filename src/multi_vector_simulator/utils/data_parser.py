@@ -59,6 +59,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LIFETIME,
     MAXIMUM_CAP,
     OPTIMIZE_CAP,
+    OPTIMIZED_ADD_CAP,
     SPECIFIC_COSTS,
     SPECIFIC_COSTS_OM,
     SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
@@ -136,6 +137,10 @@ MAP_EPA_MVS = {
     "specific_replacement_costs_of_installed_capacity": SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
     "specific_replacement_costs_of_optimized_capacity": SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
     "asset_type": TYPE_ASSET,
+    "capex_fix": DEVELOPMENT_COSTS,
+    "capex_var": SPECIFIC_COSTS,
+    "opex_fix": SPECIFIC_COSTS_OM,
+    "opex_var": DISPATCH_PRICE,
 }
 
 MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
@@ -208,6 +213,7 @@ EPA_ASSET_KEYS = {
         LIFETIME,
         "maximum_capacity",
         "optimize_capacity",
+        OPTIMIZED_ADD_CAP,
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
         FLOW,
@@ -226,6 +232,7 @@ EPA_ASSET_KEYS = {
         LIFETIME,
         "maximum_capacity",
         "optimize_capacity",
+        OPTIMIZED_ADD_CAP,
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
         "input_timeseries",
@@ -247,6 +254,7 @@ EPA_ASSET_KEYS = {
         OUTPUT_POWER,
         STORAGE_CAPACITY,
         "optimize_capacity",
+        OPTIMIZED_ADD_CAP,
         "input_timeseries",
         TIMESERIES_SOC,
     ],
@@ -501,7 +509,6 @@ def convert_epa_params_to_mvs(epa_dict):
     if EXTRA_PARAMETERS_KEY in comparison:
         warning_extra_parameters = "Following parameters are provided to the MVS that may be excess information: \n"
         for group in comparison[EXTRA_PARAMETERS_KEY]:
-            print(dict_values[group])
             warning_extra_parameters += f"- {group} ("
             for parameter in comparison[EXTRA_PARAMETERS_KEY][group]:
                 if parameter not in [LABEL, "unique_id"]:
