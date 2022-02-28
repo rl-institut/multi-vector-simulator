@@ -402,10 +402,6 @@ def convert_epa_params_to_mvs(epa_dict):
                                 if sk in MAP_EPA_MVS:
                                     subasset[MAP_EPA_MVS[sk]] = subasset.pop(sk)
 
-                            # remove non-implemented parameter if provided faultily
-                            if OPTIMIZE_CAP in subasset:
-                                subasset.pop(OPTIMIZE_CAP)
-
                             # add unit if not provided
                             # TODO deal with other vectors than electricity
                             if UNIT not in subasset:
@@ -416,6 +412,11 @@ def convert_epa_params_to_mvs(epa_dict):
                             # set the initial value of the state of charge to None
                             if k == MAP_MVS_EPA[STORAGE_CAPACITY]:
                                 subasset[SOC_INITIAL] = {VALUE: None, UNIT: TYPE_NONE}
+                                # move the optimize cap property from STORAGE_CAPACITY to the asset level
+                                if OPTIMIZE_CAP in subasset:
+                                    dict_asset[asset_label][
+                                        OPTIMIZE_CAP
+                                    ] = subasset.pop(OPTIMIZE_CAP)
 
                 # move the unit outside the timeseries dict
                 if TIMESERIES in dict_asset[asset_label]:
