@@ -779,6 +779,7 @@ def add_total_feedin_electricity_equivalent(dict_values):
 
     Tested with
     - test_add_total_feedin_electricity_equivalent()
+    - test_add_total_feedin_electricity_equivalent_two_providers_one_energy_carrier
     """
 
     total_feedin_dict = {}
@@ -823,6 +824,7 @@ def add_total_consumption_from_provider_electricity_equivalent(dict_values):
     -----
     Tested with:
     - E3.test_add_total_consumption_from_provider_electricity_equivalent()
+    - E3.test_add_total_consumption_from_provider_electricity_equivalent_two_providers_one_energy_carrier
     """
 
     total_consumption_dict = {}
