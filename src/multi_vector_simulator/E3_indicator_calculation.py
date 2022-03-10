@@ -788,14 +788,12 @@ def add_total_feedin_electricity_equivalent(dict_values):
         # load total flow into the dso sink
         feedin_sink = str(dso + DSO_FEEDIN)
         energy_carrier = dict_values[ENERGY_CONSUMPTION][feedin_sink][ENERGY_VECTOR]
-        total_feedin_dict.update({energy_carrier: {}})
-        total_feedin_dict.update(
-            {
-                energy_carrier: dict_values[ENERGY_CONSUMPTION][feedin_sink][
-                    TOTAL_FLOW
-                ][VALUE]
-            }
-        )
+        if energy_carrier not in total_feedin_dict:
+            total_feedin_dict.update({energy_carrier: 0})
+
+        total_feedin_dict[energy_carrier] += dict_values[ENERGY_CONSUMPTION][
+            feedin_sink
+        ][TOTAL_FLOW][VALUE]
 
     # Append total feedin in electricity equivalent to kpi
     calculate_electricity_equivalent_for_a_set_of_aggregated_values(
@@ -835,14 +833,12 @@ def add_total_consumption_from_provider_electricity_equivalent(dict_values):
         energy_carrier = dict_values[ENERGY_PRODUCTION][consumption_source][
             ENERGY_VECTOR
         ]
-        total_consumption_dict.update({energy_carrier: {}})
-        total_consumption_dict.update(
-            {
-                energy_carrier: dict_values[ENERGY_PRODUCTION][consumption_source][
-                    TOTAL_FLOW
-                ][VALUE]
-            }
-        )
+        if energy_carrier not in total_consumption_dict:
+            total_consumption_dict.update({energy_carrier: 0})
+
+        total_consumption_dict[energy_carrier] += dict_values[ENERGY_PRODUCTION][
+            consumption_source
+        ][TOTAL_FLOW][VALUE]
 
     # Append total feedin in electricity equivalent to kpi
     calculate_electricity_equivalent_for_a_set_of_aggregated_values(
