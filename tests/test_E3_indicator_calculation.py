@@ -580,6 +580,38 @@ def test_add_total_feedin_electricity_equivalent():
     ), f"The total_feedin_electricity_equivalent is added successfully to the list of KPI's."
 
 
+def test_add_total_feedin_electricity_equivalent_two_providers_one_energy_carrier():
+    """ """
+
+    dso = ["DSO-1", "DSO-2"]
+    feedin = 1000
+    consumption_asset = [str(dso[0] + DSO_FEEDIN), str(dso[1] + DSO_FEEDIN)]
+    dict_values_feedin = {
+        ENERGY_PROVIDERS: {dso[0], dso[1]},
+        ENERGY_CONSUMPTION: {
+            consumption_asset[0]: {
+                ENERGY_VECTOR: "Electricity",
+                TOTAL_FLOW: {VALUE: feedin},
+            },
+            consumption_asset[1]: {
+                ENERGY_VECTOR: "Electricity",
+                TOTAL_FLOW: {VALUE: feedin},
+            },
+        },
+        KPI: {KPI_SCALARS_DICT: {}},
+        PROJECT_DATA: {LES_ENERGY_VECTOR_S: {electricity: electricity}},
+    }
+
+    E3.add_total_feedin_electricity_equivalent(dict_values_feedin)
+
+    assert (
+        dict_values_feedin[KPI][KPI_SCALARS_DICT][
+            TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT
+        ]
+        == 2 * feedin
+    ), f"Multiple energy providers are not correctly evaluated, the total feedin is not the aggregated flow of each energy provider, which would be {2*feedin}, but {dict_values_feedin[KPI][KPI_SCALARS_DICT][TOTAL_FEEDIN + SUFFIX_ELECTRICITY_EQUIVALENT]}."
+
+
 def test_add_onsite_energy_fraction():
     """ """
 
@@ -860,3 +892,37 @@ def test_add_total_consumption_from_provider_electricity_equivalent():
         assert (
             dict_values[KPI][KPI_SCALARS_DICT][kpi] == exp
         ), f"The {kpi} should have been {exp} but is {dict_values[KPI][KPI_SCALARS_DICT][kpi]}."
+
+
+def test_add_total_consumption_from_provider_electricity_equivalent_two_providers_one_energy_carrier():
+    dso = ["DSO-1", "DSO-2"]
+    exp = 100
+    consumption_source = [str(dso[0] + DSO_CONSUMPTION), str(dso[1] + DSO_CONSUMPTION)]
+
+    dict_values = {
+        KPI: {KPI_SCALARS_DICT: {}},
+        ENERGY_PROVIDERS: {
+            dso[0]: {ENERGY_VECTOR: electricity},
+            dso[1]: {ENERGY_VECTOR: electricity},
+        },
+        ENERGY_PRODUCTION: {
+            consumption_source[0]: {
+                TOTAL_FLOW: {VALUE: exp},
+                ENERGY_VECTOR: electricity,
+            },
+            consumption_source[1]: {
+                TOTAL_FLOW: {VALUE: exp},
+                ENERGY_VECTOR: electricity,
+            },
+        },
+    }
+
+    E3.add_total_consumption_from_provider_electricity_equivalent(dict_values)
+    for kpi in [
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity,
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + electricity + SUFFIX_ELECTRICITY_EQUIVALENT,
+        TOTAL_CONSUMPTION_FROM_PROVIDERS + SUFFIX_ELECTRICITY_EQUIVALENT,
+    ]:
+        assert (
+            dict_values[KPI][KPI_SCALARS_DICT][kpi] == 2 * exp
+        ), f"Multiple energy providers are not correctly evaluated, the  {kpi}  is not the aggregated flow of each energy provider, which would be {2*exp}, but is {dict_values[KPI][KPI_SCALARS_DICT][kpi]}."

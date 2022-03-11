@@ -24,6 +24,7 @@ Here is a template for new release sections
 ### Added
 - Benchmark test (`tests/benchmark_test_inputs/objective_value_exception_equal_annuity`) for in `F0_output.parse_simulation_log` and data stored to `SIMULATION_RESULTS` as well as `OBJECTIVE_VALUE` (#901)
 - Constants `BENCHMARK_TEST_INPUT_FOLDER` and `BENCHMARK_TEST_OUTPUT_FOLDER` in `tests/_constants.py` (#901)
+- Tests `E3.test_add_total_consumption_from_provider_electricity_equivalent_two_providers_one_energy_carrier` and `E3.test_add_total_feedin_electricity_equivalent_two_providers_one_energy_carrier`(#932)
 
 ### Changed
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
@@ -31,6 +32,8 @@ Here is a template for new release sections
 - `CONTRIBUTING.md` according to last lessons learnt (#904)
 - Set numpy version to lower or equal than `1.19.4` (#924)
 - `F2.create_app()` to specify tab name of Dash report to `scenario_name` (`scenario_id`) instead of `Dash` (#934)
+- Bugfix in functions `test_add_total_consumption_from_provider_electricity_equivalent` and `E3.test_add_total_feedin_electricity_equivalent` (#932)
+- `version.py`: Version number increased to 1.0.2dev, so simulations run before and after this fix can easily be identified (in the autoreport) (#932)
 
 ### Removed
 -
@@ -39,7 +42,8 @@ Here is a template for new release sections
 - `OBJECTIVE_VALUE`, `SIMULTATION_TIME`, `MODELLING_TIME` now included in the `json_with_results.json` (#901)
 - Missing parameters in `input_template/csv_elements` (#904)
 - Confusing Dash report tab names (#933)
-- 
+- Calculation of `total_feedin` and `total_consumption_from_providers`, where multiple providers of one energy carrier were not aggregated correctly (#931)
+
 ## [1.0.0] - 2021-05-31
 
 ### Added
