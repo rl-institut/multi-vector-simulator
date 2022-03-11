@@ -29,7 +29,8 @@ Here is a template for new release sections
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
 - `input_template/csv_elements`: Added missing parameters and generalized units (#904)
 - `CONTRIBUTING.md` according to last lessons learnt (#904)
--  Set numpy version to lower or equal than `1.19.4` (#924)
+- Set numpy version to lower or equal than `1.19.4` (#924)
+- `F2.create_app()` to specify tab name of Dash report to `scenario_name` (`scenario_id`) instead of `Dash` (#934)
 
 ### Removed
 -
@@ -37,7 +38,8 @@ Here is a template for new release sections
 ### Fixed
 - `OBJECTIVE_VALUE`, `SIMULTATION_TIME`, `MODELLING_TIME` now included in the `json_with_results.json` (#901)
 - Missing parameters in `input_template/csv_elements` (#904)
-
+- Confusing Dash report tab names (#933)
+- 
 ## [1.0.0] - 2021-05-31
 
 ### Added
