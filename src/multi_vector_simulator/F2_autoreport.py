@@ -171,7 +171,6 @@ def open_in_browser(app, timeout=600):
     -------
     Nothing, but the web app version of the auto-report is displayed in a browser.
     """
-
     td = threading.Thread(target=app.run_server)
     td.daemon = True
     td.start()
@@ -654,8 +653,11 @@ def create_app(results_json, path_sim_output=None):
         },
     ]
 
+    tab_name = f"{results_json[PROJECT_DATA][SCENARIO_NAME]} ({results_json[PROJECT_DATA][SCENARIO_ID]})"
     app = dash.Dash(
-        assets_folder=asset_folder, external_stylesheets=external_stylesheets,
+        assets_folder=asset_folder,
+        external_stylesheets=external_stylesheets,
+        title=tab_name,
     )
 
     # Reading the relevant user-inputs from the JSON_WITH_RESULTS.json file into Pandas dataframes
