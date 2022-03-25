@@ -23,7 +23,7 @@ import os
 import timeit
 import warnings
 
-from oemof.solph import processing
+from oemof.solph import processing, network
 import oemof.solph as solph
 
 import multi_vector_simulator.D1_model_components as D1
@@ -33,6 +33,7 @@ from multi_vector_simulator.utils.constants import (
     PATH_OUTPUT_FOLDER,
     ES_GRAPH,
     PATHS_TO_PLOTS,
+    PLOT_SANKEY,
     PLOTS_ES,
     LP_FILE,
 )
@@ -109,6 +110,10 @@ def run_oemof(dict_values, save_energy_system_graph=False, return_les=False):
 
     model, results_main, results_meta = model_building.simulating(
         dict_values, model, local_energy_system
+    )
+
+    model_building.plot_sankey_diagramm(
+        dict_values, model, save_energy_system_graph=save_energy_system_graph
     )
 
     timer.stop(dict_values, start)
@@ -246,6 +251,34 @@ class model_building:
             logging.debug("Created graph of the energy system model.")
 
             graph.render()
+
+    def plot_sankey_diagramm(dict_values, model, save_energy_system_graph=False):
+        """
+        Prepare a sankey diagram of the simulated energy model
+
+        Parameters
+        ----------
+        dict_values: dict
+            All simulation inputs
+
+         model: `oemof.solph.network.EnergySystem`
+            oemof-solph object for energy system model
+
+        save_energy_system_graph: bool
+            if True, save the graph in the mvs output folder
+            Default: False
+
+        Returns
+        -------
+
+        """
+        if save_energy_system_graph is True:
+            from multi_vector_simulator.F1_plotting import ESGraphRenderer
+
+            graph = ESGraphRenderer(model)
+            dict_values[PATHS_TO_PLOTS][PLOT_SANKEY] = graph.sankey(
+                model.results["main"]
+            )
 
     def store_lp_file(dict_values, local_energy_system):
         """

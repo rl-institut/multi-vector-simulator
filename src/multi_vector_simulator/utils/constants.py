@@ -329,6 +329,7 @@ PLOTS_ES = "graphviz"
 PLOTS_PERFORMANCE = "performance"
 PLOTS_COSTS = "costs"
 PLOTS_BUSSES = "flows_on_busses"
+PLOT_SANKEY = "sankey"
 
 # structure of the dict containing generated plots filenames in results_json file
 DICT_PLOTS = {
