@@ -44,6 +44,7 @@ from multi_vector_simulator.utils.constants import (
     REPO_PATH,
     PATH_OUTPUT_FOLDER,
     PATHS_TO_PLOTS,
+    PLOT_SANKEY,
     OUTPUT_FOLDER,
     INPUTS_COPY,
     CSV_ELEMENTS,
@@ -89,6 +90,7 @@ from multi_vector_simulator.F1_plotting import (
     plot_piecharts_of_costs,
     plot_optimized_capacities,
     plot_instant_power,
+    plot_sankey,
 )
 
 from multi_vector_simulator.version import version_num, version_date
@@ -526,6 +528,40 @@ def ready_costs_pie_plots(dict_values, only_print=False):
         for comp_id, fig in figs.items()
     ]
     return pie_plots
+
+
+def ready_sankey_diagram(dict_values, only_print=False):
+    fig = plot_sankey(dict_values)
+    # Specific modifications for print-only version
+    # fig2 = copy.deepcopy(fig)
+    # Make the legend horizontally oriented so as to prevent the legend from being cut off
+    # fig2.update_layout(legend=dict(orientation="h", y=-0.3, x=0.5, xanchor="center"))
+
+    # Static image for the pdf report
+    rendered_plots = [
+        html.Img(
+            className="print-only dash-plot",
+            src="data:image/png;base64,{}".format(
+                base64.b64encode(
+                    fig.to_image(format="png", height=500, width=900)
+                ).decode(),
+            ),
+        )
+    ]
+
+    # Dynamic plotly figure for the app
+    if only_print is False:
+        rendered_plots.append(
+            dcc.Graph(
+                className="no-print",
+                id="sankey-diagram",
+                figure=fig,
+                responsive=True,
+                style={"width": "100%", "height": "900px"},
+            )
+        )
+
+    return rendered_plots
 
 
 def encode_image_file(img_path):
@@ -988,6 +1024,12 @@ def create_app(results_json, path_sim_output=None):
                             ),
                             make_dash_data_table(df_kpi_sectors),
                         ],
+                    ),
+                    insert_subsection(
+                        title="Sankey diagram",
+                        content=ready_sankey_diagram(
+                            dict_values=results_json, only_print=False,
+                        ),
                     ),
                     insert_subsection(
                         title="Economic Evaluation",
