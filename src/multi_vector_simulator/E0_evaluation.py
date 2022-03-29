@@ -279,7 +279,11 @@ def store_result_matrix(dict_kpi, dict_asset, fix_cost=False):
             asset_result_df = pd.DataFrame([asset_result_dict])
 
             dict_kpi.update(
-                {kpi_storage: pd.concat([dict_kpi[kpi_storage], asset_result_df], ignore_index=True)}
+                {
+                    kpi_storage: pd.concat(
+                        [dict_kpi[kpi_storage], asset_result_df], ignore_index=True
+                    )
+                }
             )
 
 
