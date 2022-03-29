@@ -1554,7 +1554,7 @@ def receive_timeseries_from_csv(
         if TIMESERIES in dict_asset:
             series_values = dict_asset[TIMESERIES]
         else:
-            FileNotFoundError(msg)
+            raise FileNotFoundError(msg)
 
     if len(series_values.index) == settings[PERIODS]:
         if input_type == "input":
