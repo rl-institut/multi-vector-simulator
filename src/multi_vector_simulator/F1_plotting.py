@@ -1127,9 +1127,8 @@ def plot_piecharts_of_costs(dict_values, file_path=None):
 
         # Drop the total row in the dataframe
         df_temp.drop(df_temp.tail(1).index, inplace=True)
-
         # Gather the data for each asset for the particular KPI, in a dict
-        for row_index in range(0, len(df_temp)):
+        for row_index in df_temp.index:
             pie_data_dict[df_temp.at[row_index, LABEL]] = df_temp.at[
                 row_index, kp_indic
             ]

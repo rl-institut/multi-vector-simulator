@@ -3,3 +3,4 @@ black==19.10b0
 coverage>=4.5
 coveralls>=3.0.1
 mock>=3.0.5
+click==8.0.4 #this is to solve an issue with click form black https://github.com/psf/black/issues/2964

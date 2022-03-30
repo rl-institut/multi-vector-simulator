@@ -356,7 +356,7 @@ def create_json_from_csv(
                         )
                         losses = losses.set_index("")
                         # Append missing parameter to dataframe
-                        df_copy = df_copy.append(losses, ignore_index=False, sort=False)
+                        df_copy = pd.concat([df_copy, losses])
                     elif i == THERM_LOSSES_ABS:
                         logging.debug(
                             f"You are not using the parameter {THERM_LOSSES_ABS}, which allows considering relative thermal energy losses (Values: Float). This is an advanced setting that most users can ignore."
@@ -371,7 +371,7 @@ def create_json_from_csv(
                         )
                         losses = losses.set_index("")
                         # Append missing parameter to dataframe
-                        df_copy = df_copy.append(losses, ignore_index=False, sort=False)
+                        df_copy = pd.concat([df_copy, losses])
                     else:
                         raise MissingParameterError(
                             f"In file {filename}.csv the parameter {i}"

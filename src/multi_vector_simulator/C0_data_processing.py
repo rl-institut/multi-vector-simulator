@@ -1554,7 +1554,7 @@ def receive_timeseries_from_csv(
         if TIMESERIES in dict_asset:
             series_values = dict_asset[TIMESERIES]
         else:
-            FileNotFoundError(msg)
+            raise FileNotFoundError(msg)
 
     if len(series_values.index) == settings[PERIODS]:
         if input_type == "input":
@@ -1609,9 +1609,7 @@ def receive_timeseries_from_csv(
 
 
 def replace_nans_in_timeseries_with_0(timeseries, label):
-    """
-
-    Replaces nans in the timeseries (if any) with 0
+    """Replaces nans in the timeseries (if any) with 0
 
     Parameters
     ----------
@@ -1624,7 +1622,7 @@ def replace_nans_in_timeseries_with_0(timeseries, label):
         Contains user-defined information about the timeseries to be printed into the eventual error message
 
     Returns
-    ----------
+    -------
     timeseries: pd.Series
         timeseries without NaN values
 

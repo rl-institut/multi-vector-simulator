@@ -16,9 +16,9 @@ import webbrowser
 
 # Importing necessary packages
 import dash
-import dash_html_components as html
-import dash_core_components as dcc
-import dash_table
+from dash import html
+from dash import dcc
+from dash import dash_table
 import folium
 import pandas as pd
 import reverse_geocoder as rg

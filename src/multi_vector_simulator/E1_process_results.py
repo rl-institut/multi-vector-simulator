@@ -1082,9 +1082,7 @@ def convert_costs_to_dataframe(dict_values):
     df_pie_plot = df_pie_plot[costs_needed]
 
     # Add a row with total of each column, except label
-    df_pie_plot = df_pie_plot.append(
-        df_pie_plot.sum(numeric_only=True), ignore_index=True
-    )
+    df_pie_plot = pd.concat([df_pie_plot, df_pie_plot.sum().to_frame().T])
 
     # Add a label for the row holding the sum of each column
     df_pie_plot.iloc[-1, 0] = "Total"
