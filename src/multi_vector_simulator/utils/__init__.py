@@ -331,15 +331,32 @@ def set_nested_value(dct, value, keys):
     {'a': {'a1': 1, 'a2': 2}, 'b': {'b1': {'b11': 11, 'b12': {'b121': 400}}}}
     """
     if isinstance(keys, tuple) is True:
-        answer = copy.deepcopy(dct)
-        if len(keys) > 1:
-            answer[keys[0]] = set_nested_value(dct[keys[0]], value, keys[1:])
-        elif len(keys) == 1:
-            answer[keys[0]] = value
-        else:
-            raise ValueError(
-                "The tuple argument 'keys' from set_nested_value() should not be empty"
-            )
+        try:
+            answer = copy.deepcopy(dct)
+            if keys[0] not in answer:
+                raise KeyError(
+                    ": pathError: that path does not exist in the nested dict"
+                )
+            if len(keys) > 1:
+                answer[keys[0]] = set_nested_value(dct[keys[0]], value, keys[1:])
+            elif len(keys) == 1:
+                # if the value is a dict with structure {VALUE: ..., UNIT: ...}
+                if isinstance(answer[keys[0]], dict):
+                    if VALUE in answer[keys[0]]:
+                        answer[keys[0]][VALUE] = value
+                    else:
+                        answer[keys[0]] = value
+                else:
+                    answer[keys[0]] = value
+            else:
+                raise ValueError(
+                    "The tuple argument 'keys' from set_nested_value() should not be empty"
+                )
+        except KeyError as e:
+            if "pathError" in str(e):
+                raise KeyError(keys[0] + ", " + e.args[0])
+    elif isinstance(keys, str) is True:
+        return set_nested_value(dct, value, split_nested_path(keys))
     else:
         raise TypeError("The argument 'keys' from set_nested_value() should be a tuple")
     return answer
@@ -366,14 +383,24 @@ def get_nested_value(dct, keys):
     121
     """
     if isinstance(keys, tuple) is True:
-        if len(keys) > 1:
-            answer = get_nested_value(dct[keys[0]], keys[1:])
-        elif len(keys) == 1:
-            answer = dct[keys[0]]
-        else:
-            raise ValueError(
-                "The tuple argument 'keys' from get_nested_value() should not be empty"
-            )
+        try:
+            if len(keys) > 1:
+                answer = get_nested_value(dct[keys[0]], keys[1:])
+            elif len(keys) == 1:
+                answer = dct[keys[0]]
+            else:
+                raise ValueError(
+                    "The tuple argument 'keys' from get_nested_value() should not be empty"
+                )
+        except KeyError as e:
+            if "pathError" in str(e):
+                raise KeyError(str(keys[0]) + ", " + str(e))
+            else:
+                raise KeyError(
+                    str(keys[0])
+                    + ": pathError: that path does not exist in the nested dict"
+                )
+
     else:
         raise TypeError("The argument 'keys' from get_nested_value() should be a tuple")
     return answer
@@ -413,9 +440,60 @@ def split_nested_path(path):
     elif isinstance(path, tuple):
         keys_list = path
     else:
-        raise TypeError("The argument path is not str type")
+        raise TypeError("The argument path is not tuple or str type")
 
-    return tuple(keys_list)
+    return keys_list
+
+
+def nested_dict_crawler(dct, path=None, path_dct=None):
+    r"""A recursive algorithm that crawls through a (nested) dictionary and returns
+    a dictionary of endkeys mapped to a list of the paths leading to each endkey.
+    An endkey is defined the last key in the nested dict before a value of type different than dict or the last key
+    before a dict containing only {"unit": ..., "value": ...}
+            Parameters
+            ----------
+            dct: dict
+                the (potentially nested) dict from which we want to get the endkeys
+            path: list
+                storing the current path that the algorithm is on
+            path_dct: dict
+                result dictionary where each key is assigned to its (multiple) paths within the (nested) dictionary
+            Returns
+            -------
+            Dictionary of key and paths to the respective key within the nested dictionary structure
+            Example
+            -------
+            >>> dct = dict(a=dict(a1=1, a2=2),b=dict(b1=dict(b11=11,b12=dict(b121=121))))
+            >>> nested_dict_crawler(dct)
+            {
+                "a1": [("a", "a1")],
+                "a2": [("a", "a2")],
+                "b11": [("b", "b1", "b11")],
+                "b121": [("b", "b1", "b12", "b121")],
+            }
+    """
+    if path is None:
+        path = []
+    if path_dct is None:
+        path_dct = dict()
+
+    for key, value in dct.items():
+        path.append(key)
+        if isinstance(value, dict):
+            if "value" in value.keys() and "unit" in value.keys():
+                if path[-1] in path_dct:
+                    path_dct[path[-1]].append(tuple(path))
+                else:
+                    path_dct[path[-1]] = [tuple(path)]
+            else:
+                nested_dict_crawler(value, path, path_dct)
+        else:
+            if path[-1] in path_dct:
+                path_dct[path[-1]].append(tuple(path))
+            else:
+                path_dct[path[-1]] = [tuple(path)]
+        path.pop()
+    return path_dct
 
 
 def copy_report_assets(path_destination_folder):

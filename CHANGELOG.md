@@ -28,6 +28,9 @@ Here is a template for new release sections
 - Add the argument `return_les` to the function `D0.run_oemof` to return the energy system if set to `True` (#923)
 - Save the content of the lp file into a string in the `dict_values` under `SIMULATION_SETTINGS->OUTPUT_LP_FILE` in server mode (#923)
 - Set `OUTPUT_LP_FILE` value to be by default `False` when coming from EPA in server mode (#923)
+- Function `server.run_sensitivity_analysis_step` to perform one step of a sensitivity analysis (#936)
+- Function `utils.nested_dict_crawler` to return mapping of path within a nested dict to the keys at the lowest nested level (#936)
+- Test `test_utils.TestAccessKPIs` to test the nested dict utils functions (#936)
 
 ### Changed
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
@@ -37,9 +40,11 @@ Here is a template for new release sections
 - `F2.create_app()` to specify tab name of Dash report to `scenario_name` (`scenario_id`) instead of `Dash` (#934)
 - Bugfix in functions `test_add_total_consumption_from_provider_electricity_equivalent` and `E3.test_add_total_feedin_electricity_equivalent` (#932)
 - `version.py`: Version number increased to 1.0.2dev, so simulations run before and after this fix can easily be identified (in the autoreport) (#932)
+- Enable capacity optimization for storage assets in the epa (#936)
+- Make the `utils` function `get_nested_value`and `set_nested_value` raise a Key error with a traceback indicating where in the nested dict this key was missing to help debugging (#936)
 
 ### Removed
--
+- Input timeseries is now not returned to epa in `utils.data_parser.py` (#936)
 
 ### Fixed
 - `OBJECTIVE_VALUE`, `SIMULTATION_TIME`, `MODELLING_TIME` now included in the `json_with_results.json` (#901)

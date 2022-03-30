@@ -1,9 +1,14 @@
 import os
 import shutil
 import pandas as pd
+import unittest
 
 from _constants import TEST_REPO_PATH
-
+from multi_vector_simulator.utils import (
+    nested_dict_crawler,
+    set_nested_value,
+    get_nested_value,
+)
 from multi_vector_simulator.utils.helpers import find_value_by_key
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
@@ -65,3 +70,72 @@ def test_find_value_by_key_multiple_key_apperance():
     assert (
         result == expected_output
     ), f"Not all key duplicates ({expected_output}) were identified, but {result}."
+
+
+class TestAccessKPIs(unittest.TestCase):
+    """
+    KPIs are non dict variables (usually scalars, or a dict containing the keys 'unit' and 'value' only)
+    which one can find at the very end path of nested dict
+    """
+
+    def test_dict_crawler(self):
+        dct = dict(a=dict(a1=1, a2=2), b=dict(b1=dict(b11=11, b12=dict(b121=121))))
+        self.assertDictEqual(
+            {
+                "a1": [("a", "a1")],
+                "a2": [("a", "a2")],
+                "b11": [("b", "b1", "b11")],
+                "b121": [("b", "b1", "b12", "b121")],
+            },
+            nested_dict_crawler(dct),
+        )
+
+    def test_dict_crawler_doubled_path(self):
+        """If an KPI is present at two places within the dict, the 2 paths should be returned"""
+        dct = dict(a=dict(a1=1, a2=2), b=dict(b1=dict(a2=11)))
+        self.assertDictEqual(
+            {"a1": [("a", "a1")], "a2": [("a", "a2"), ("b", "b1", "a2")]},
+            nested_dict_crawler(dct),
+        )
+
+    def test_dict_crawler_finds_non_scalar_value(self):
+        """
+        If a KPI value is not a simple scalar but a dict in the format {'unit':..., 'value':...},
+        the crawler should stop the path finding there and consider this last dict to be the value of the KPI
+        """
+        dct = dict(
+            a=dict(a1=1, a2=dict(unit="EUR", value=30)),
+            b=dict(b1=dict(b11=11, b12=dict(unit="kWh", value=12))),
+        )
+        self.assertDictEqual(
+            {
+                "a1": [("a", "a1")],
+                "a2": [("a", "a2")],
+                "b11": [("b", "b1", "b11")],
+                "b12": [("b", "b1", "b12")],
+            },
+            nested_dict_crawler(dct),
+        )
+
+    def test_set_nested_value_with_correct_path(self):
+        dct = dict(a=dict(a1=1, a2=2), b=dict(b1=dict(b11=11, b12=dict(b121=121))))
+        self.assertDictEqual(
+            {"a": {"a1": 1, "a2": 2}, "b": {"b1": {"b11": 11, "b12": {"b121": 400}}}},
+            set_nested_value(dct, 400, ("b", "b1", "b12", "b121")),
+        )
+
+    def test_set_nested_value_with_unexisting_key_at_end_of_path(self):
+        dct = dict(a=dict(a1=1, a2=2), b=dict(b1=dict(b11=11, b12=dict(b121=121))))
+        with self.assertRaises(KeyError):
+            set_nested_value(dct, 400, ("b", "b1", "b12", "b122"))
+
+    def test_set_nested_value_with_unexisting_key_in_middle_of_path(self):
+        """because the path diverges """
+        dct = dict(a=dict(a1=1, a2=2), b=dict(b1=dict(b11=11, b12=dict(b121=121))))
+        with self.assertRaises(KeyError):
+            set_nested_value(dct, 400, ("b", "d1", "b12", "b121"))
+
+    def test_get_nested_value_with_unexisting_path(self):
+        dct = dict(a=dict(a1=1, a2=2), b=dict(b1=dict(b11=11, b12=dict(b121=121))))
+        with self.assertRaises(KeyError):
+            get_nested_value(dct, ("b", "b1", "b12", "b122"))

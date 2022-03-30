@@ -59,6 +59,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     LIFETIME,
     MAXIMUM_CAP,
     OPTIMIZE_CAP,
+    OPTIMIZED_ADD_CAP,
     SPECIFIC_COSTS,
     SPECIFIC_COSTS_OM,
     SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
@@ -136,6 +137,10 @@ MAP_EPA_MVS = {
     "specific_replacement_costs_of_installed_capacity": SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
     "specific_replacement_costs_of_optimized_capacity": SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
     "asset_type": TYPE_ASSET,
+    "capex_fix": DEVELOPMENT_COSTS,
+    "capex_var": SPECIFIC_COSTS,
+    "opex_fix": SPECIFIC_COSTS_OM,
+    "opex_var": DISPATCH_PRICE,
 }
 
 MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
@@ -187,7 +192,6 @@ EPA_ASSET_KEYS = {
         "optimize_capacity",
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
-        "input_timeseries",
         "energy_vector",
         FLOW,
     ],
@@ -199,7 +203,6 @@ EPA_ASSET_KEYS = {
         OEMOF_ASSET_TYPE,
         INFLOW_DIRECTION,
         OUTFLOW_DIRECTION,
-        OUTFLOW_DIRECTION,
         AGE_INSTALLED,
         DEVELOPMENT_COSTS,
         DISPATCH_PRICE,
@@ -208,6 +211,7 @@ EPA_ASSET_KEYS = {
         LIFETIME,
         "maximum_capacity",
         "optimize_capacity",
+        OPTIMIZED_ADD_CAP,
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
         FLOW,
@@ -218,7 +222,6 @@ EPA_ASSET_KEYS = {
         LABEL,
         OEMOF_ASSET_TYPE,
         OUTFLOW_DIRECTION,
-        OUTFLOW_DIRECTION,
         DEVELOPMENT_COSTS,
         DISPATCH_PRICE,
         DISPATCHABILITY,
@@ -226,9 +229,9 @@ EPA_ASSET_KEYS = {
         LIFETIME,
         "maximum_capacity",
         "optimize_capacity",
+        OPTIMIZED_ADD_CAP,
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
-        "input_timeseries",
         AGE_INSTALLED,
         "renewable_asset",
         "energy_vector",
@@ -241,13 +244,12 @@ EPA_ASSET_KEYS = {
         "energy_vector",
         INFLOW_DIRECTION,
         OUTFLOW_DIRECTION,
-        OUTFLOW_DIRECTION,
         OEMOF_ASSET_TYPE,
         INPUT_POWER,
         OUTPUT_POWER,
         STORAGE_CAPACITY,
         "optimize_capacity",
-        "input_timeseries",
+        OPTIMIZED_ADD_CAP,
         TIMESERIES_SOC,
     ],
     ENERGY_BUSSES: [LABEL, "assets", "energy_vector"],
@@ -394,10 +396,6 @@ def convert_epa_params_to_mvs(epa_dict):
                                 if sk in MAP_EPA_MVS:
                                     subasset[MAP_EPA_MVS[sk]] = subasset.pop(sk)
 
-                            # remove non-implemented parameter if provided faultily
-                            if OPTIMIZE_CAP in subasset:
-                                subasset.pop(OPTIMIZE_CAP)
-
                             # add unit if not provided
                             # TODO deal with other vectors than electricity
                             if UNIT not in subasset:
@@ -408,6 +406,11 @@ def convert_epa_params_to_mvs(epa_dict):
                             # set the initial value of the state of charge to None
                             if k == MAP_MVS_EPA[STORAGE_CAPACITY]:
                                 subasset[SOC_INITIAL] = {VALUE: None, UNIT: TYPE_NONE}
+                                # move the optimize cap property from STORAGE_CAPACITY to the asset level
+                                if OPTIMIZE_CAP in subasset:
+                                    dict_asset[asset_label][
+                                        OPTIMIZE_CAP
+                                    ] = subasset.pop(OPTIMIZE_CAP)
 
                 # move the unit outside the timeseries dict
                 if TIMESERIES in dict_asset[asset_label]:
@@ -501,7 +504,6 @@ def convert_epa_params_to_mvs(epa_dict):
     if EXTRA_PARAMETERS_KEY in comparison:
         warning_extra_parameters = "Following parameters are provided to the MVS that may be excess information: \n"
         for group in comparison[EXTRA_PARAMETERS_KEY]:
-            print(dict_values[group])
             warning_extra_parameters += f"- {group} ("
             for parameter in comparison[EXTRA_PARAMETERS_KEY][group]:
                 if parameter not in [LABEL, "unique_id"]:

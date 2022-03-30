@@ -14,6 +14,7 @@ do not nessarily raise an error immediately, making the typo harder to fix.
 
 ECONOMIC_DATA = "economic_data"
 PROJECT_DATA = "project_data"
+SIMULATION_SETTINGS = "simulation_settings"
 FIX_COST = "fixcost"
 
 # Asset groups
@@ -67,7 +68,6 @@ LONGITUDE = "longitude"
 LATITUDE = "latitude"
 
 # Project data and simulation settings (true/false)
-SIMULATION_SETTINGS = "simulation_settings"
 OUTPUT_LP_FILE = "output_lp_file"
 PROJECT_NAME = "project_name"
 SCENARIO_NAME = "scenario_name"
