@@ -30,12 +30,15 @@ except ModuleNotFoundError:
 
 import graphviz
 import oemof
+import oemof.solph as solph
 
 from multi_vector_simulator.utils.constants import (
     PROJECT_DATA,
     ECONOMIC_DATA,
     LABEL,
     OUTPUT_FOLDER,
+    PATHS_TO_PLOTS,
+    PLOT_SANKEY,
     SOC,
 )
 
@@ -229,6 +232,8 @@ class ESGraphRenderer:
         """
         file_name, file_ext = os.path.splitext(filepath)
 
+        self.energy_system = energy_system
+
         if img_format is None:
             if file_ext != "":
                 img_format = file_ext.replace(".", "")
@@ -253,7 +258,7 @@ class ESGraphRenderer:
                 self.add_storage(subgraph=c)
 
         # draw a node for each of the network's component. The shape depends on the component's type
-        for nd in energy_system.nodes:
+        for nd in self.energy_system.nodes:
             if isinstance(nd, oemof.solph.network.Bus):
                 self.add_bus(nd.label)
                 # keep the bus reference for drawing edges later
@@ -383,6 +388,84 @@ class ESGraphRenderer:
     def render(self, **kwargs):
         """Call the render method of the DiGraph instance"""
         self.dot.render(**kwargs)
+
+    def sankey(self, results):
+        """Return a dict to a plotly sankey diagram"""
+        busses = []
+
+        labels = []
+        sources = []
+        targets = []
+        values = []
+
+        # bus_data.update({bus: solph.views.node(results_main, bus)})
+
+        # draw a node for each of the network's component. The shape depends on the component's type
+        for nd in self.energy_system.nodes:
+            if isinstance(nd, oemof.solph.network.Bus):
+
+                # keep the bus reference for drawing edges later
+                bus = nd
+                busses.append(bus)
+
+                bus_label = bus.label
+
+                labels.append(nd.label)
+
+                flows = solph.views.node(results, bus_label)["sequences"]
+
+                # draw an arrow from the component to the bus
+                for component in bus.inputs:
+                    if component.label not in labels:
+                        labels.append(component.label)
+
+                    sources.append(labels.index(component.label))
+                    targets.append(labels.index(bus_label))
+
+                    val = flows[((component.label, bus_label), "flow")].sum()
+                    # if val == 0:
+                    #     val = 1
+                    values.append(val)
+
+                for component in bus.outputs:
+                    # draw an arrow from the bus to the component
+                    if component.label not in labels:
+                        labels.append(component.label)
+
+                    sources.append(labels.index(bus_label))
+                    targets.append(labels.index(component.label))
+
+                    val = flows[((bus_label, component.label), "flow")].sum()
+
+                    # if val == 0:
+                    #     val = 1
+                    values.append(val)
+
+        fig = go.Figure(
+            data=[
+                go.Sankey(
+                    node=dict(
+                        pad=15,
+                        thickness=20,
+                        line=dict(color="black", width=0.5),
+                        label=labels,
+                        hovertemplate="Node has total value %{value}<extra></extra>",
+                        color="blue",
+                    ),
+                    link=dict(
+                        source=sources,  # indices correspond to labels, eg A1, A2, A2, B1, ...
+                        target=targets,
+                        value=values,
+                        hovertemplate="Link from node %{source.label}<br />"
+                        + "to node%{target.label}<br />has value %{value}"
+                        + "<br />and data <extra></extra>",
+                    ),
+                )
+            ]
+        )
+
+        fig.update_layout(title_text="Basic Sankey Diagram", font_size=10)
+        return fig.to_dict()
 
 
 def get_color(idx_line, color_list=None):
@@ -638,6 +721,16 @@ def plot_timeseries(
             plots[comp_id] = fig
 
     return plots
+
+
+def plot_sankey(dict_values):
+    """"""
+    fig_dict = dict_values[PATHS_TO_PLOTS].get(PLOT_SANKEY, None)
+    if fig_dict is not None:
+        fig = go.Figure(**fig_dict)
+    else:
+        fig = go.Figure()
+    return fig
 
 
 def create_plotly_barplot_fig(

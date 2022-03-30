@@ -31,6 +31,9 @@ Here is a template for new release sections
 - Function `server.run_sensitivity_analysis_step` to perform one step of a sensitivity analysis (#936)
 - Function `utils.nested_dict_crawler` to return mapping of path within a nested dict to the keys at the lowest nested level (#936)
 - Test `test_utils.TestAccessKPIs` to test the nested dict utils functions (#936)
+- `sankey` method to the `ESGraphRenderer` class to return a sankey diagram (#935)
+- `plot_sankey_diagramm` function in `D0_modelling_and_optimization.py` to add the dict of the sankey diagram (#935)
+- `ready_sankey_diagram` in `F2_autoreport.py` to add sankey diagram to output and report (#935)
 
 ### Changed
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
@@ -42,6 +45,7 @@ Here is a template for new release sections
 - `version.py`: Version number increased to 1.0.2dev, so simulations run before and after this fix can easily be identified (in the autoreport) (#932)
 - Enable capacity optimization for storage assets in the epa (#936)
 - Make the `utils` function `get_nested_value`and `set_nested_value` raise a Key error with a traceback indicating where in the nested dict this key was missing to help debugging (#936)
+- When the user ask for images to be produced (`-pdf` or `-png` options) a sankey diagram is added to the report and to the `dict_values` under `[PATH_TO_PLOTS][PLOT_SANKEY]` (#935)
 
 ### Removed
 - Input timeseries is now not returned to epa in `utils.data_parser.py` (#936)
