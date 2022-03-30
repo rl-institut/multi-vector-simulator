@@ -25,6 +25,9 @@ Here is a template for new release sections
 - Benchmark test (`tests/benchmark_test_inputs/objective_value_exception_equal_annuity`) for in `F0_output.parse_simulation_log` and data stored to `SIMULATION_RESULTS` as well as `OBJECTIVE_VALUE` (#901)
 - Constants `BENCHMARK_TEST_INPUT_FOLDER` and `BENCHMARK_TEST_OUTPUT_FOLDER` in `tests/_constants.py` (#901)
 - Tests `E3.test_add_total_consumption_from_provider_electricity_equivalent_two_providers_one_energy_carrier` and `E3.test_add_total_feedin_electricity_equivalent_two_providers_one_energy_carrier`(#932)
+- Add the argument `return_les` to the function `D0.run_oemof` to return the energy system if set to `True` (#923)
+- Save the content of the lp file into a string in the `dict_values` under `SIMULATION_SETTINGS->OUTPUT_LP_FILE` in server mode (#923)
+- Set `OUTPUT_LP_FILE` value to be by default `False` when coming from EPA in server mode (#923)
 
 ### Changed
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
