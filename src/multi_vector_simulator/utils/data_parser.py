@@ -208,6 +208,7 @@ EPA_ASSET_KEYS = {
         DISPATCH_PRICE,
         EFFICIENCY,
         "installed_capacity",
+        OPTIMIZED_ADD_CAP,
         LIFETIME,
         "maximum_capacity",
         "optimize_capacity",
