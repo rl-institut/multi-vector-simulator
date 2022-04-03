@@ -46,6 +46,7 @@ Here is a template for new release sections
 - Enable capacity optimization for storage assets in the epa (#936)
 - Make the `utils` function `get_nested_value`and `set_nested_value` raise a Key error with a traceback indicating where in the nested dict this key was missing to help debugging (#936)
 - When the user ask for images to be produced (`-pdf` or `-png` options) a sankey diagram is added to the report and to the `dict_values` under `[PATH_TO_PLOTS][PLOT_SANKEY]` (#935)
+- Update requirements for numpy (v 1.21.0 or greater) and for dash (v 2.3.1 or greater) (#938)
 
 ### Removed
 - Input timeseries is now not returned to epa in `utils.data_parser.py` (#936)
