@@ -7,5 +7,4 @@ psutil
 kaleido>=0.0.2
 openpyxl>=3.0.5
 xlrd==1.2.0
-numpy<=1.19.4
-Werkzeug<2.1.0 # temporary until https://github.com/plotly/dash/issues/1992 is solved
+numpy>=1.21.0
