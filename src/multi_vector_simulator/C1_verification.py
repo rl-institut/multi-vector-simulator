@@ -30,7 +30,6 @@ from multi_vector_simulator.utils.constants import (
     DISPLAY_OUTPUT,
     OVERWRITE,
     DEFAULT_WEIGHTS_ENERGY_CARRIERS,
-    DSO_PEAK_DEMAND_SUFFIX,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DURATION,
@@ -86,6 +85,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MAXIMUM_EMISSIONS,
     CONSTRAINTS,
     RENEWABLE_SHARE_DSO,
+    DSO_PEAK_DEMAND_SUFFIX,
     DSO_FEEDIN_CAP,
 )
 

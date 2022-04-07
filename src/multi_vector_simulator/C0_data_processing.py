@@ -44,6 +44,7 @@ from multi_vector_simulator.utils.exceptions import MaximumCapValueInvalid
 from multi_vector_simulator.utils.constants_json_strings import *
 from multi_vector_simulator.utils.helpers import (
     feedin_cap_bus_name,
+    peak_demand_bus_name,
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 import multi_vector_simulator.B0_data_input_json as B0
@@ -1004,7 +1005,7 @@ def define_transformer_for_peak_demand_pricing(
         LABEL: transformer_name,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         INSTALLED_CAP: {VALUE: 0, UNIT: dict_dso[UNIT]},
-        INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION] + DSO_PEAK_DEMAND_SUFFIX,
+        INFLOW_DIRECTION: peak_demand_bus_name(dict_dso[INFLOW_DIRECTION]),
         OUTFLOW_DIRECTION: dict_dso[OUTFLOW_DIRECTION],
         AVAILABILITY_DISPATCH: timeseries_availability,
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
