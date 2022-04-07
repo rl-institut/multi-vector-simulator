@@ -34,6 +34,7 @@ Here is a template for new release sections
 - `sankey` method to the `ESGraphRenderer` class to return a sankey diagram (#935)
 - `plot_sankey_diagramm` function in `D0_modelling_and_optimization.py` to add the dict of the sankey diagram (#935)
 - `ready_sankey_diagram` in `F2_autoreport.py` to add sankey diagram to output and report (#935)
+- "maximum_add_cap" to the keys returned to EPA after simulating got production assets (#939)
 
 ### Changed
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
@@ -47,6 +48,8 @@ Here is a template for new release sections
 - Make the `utils` function `get_nested_value`and `set_nested_value` raise a Key error with a traceback indicating where in the nested dict this key was missing to help debugging (#936)
 - When the user ask for images to be produced (`-pdf` or `-png` options) a sankey diagram is added to the report and to the `dict_values` under `[PATH_TO_PLOTS][PLOT_SANKEY]` (#935)
 - Update requirements for numpy (v 1.21.0 or greater) and for dash (v 2.3.1 or greater) (#938)
+- `OPTIMIZED_ADD_CAP` replaced by "optimized_add_cap" in the assets keys returned to EPA after simulating (#939)
+- The if statement for adapting `MAXIMUM_CAP` for non-dispatchable production assets is now based on the value of `DISPATCHABILITY` and not on the existence of the key `FILENAME` in the `asset_dict` (#939)
 
 ### Removed
 - Input timeseries is now not returned to epa in `utils.data_parser.py` (#936)
