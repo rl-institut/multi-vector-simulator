@@ -1859,7 +1859,11 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 asset_dict[MAXIMUM_CAP][VALUE] = None
 
             # adapt maximumCap and maximumAddCap of non-dispatchable sources
-            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
+            if (
+                group == ENERGY_PRODUCTION
+                and asset_dict.get(DISPATCHABILITY, True) is False
+                and asset_dict[MAXIMUM_CAP][VALUE] is not None
+            ):
                 max_cap_norm = (
                     asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
                 )

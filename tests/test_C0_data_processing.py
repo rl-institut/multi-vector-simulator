@@ -677,7 +677,7 @@ def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_non_dispatcha
                 UNIT: unit,
                 INSTALLED_CAP: {VALUE: installed_cap},
                 MAXIMUM_CAP: {VALUE: maxCap},
-                FILENAME: "a_name",
+                DISPATCHABILITY: False,
                 TIMESERIES_PEAK: {VALUE: timeseries_peak},
             }
         }
