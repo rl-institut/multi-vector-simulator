@@ -608,6 +608,11 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                     )
 
                 if k in (KPI_SCALAR_MATRIX, KPI_COST_MATRIX):
+
+                    cols = epa_dict[param_group_epa][k].columns
+                    epa_dict[param_group_epa][k].columns = [
+                        MAP_MVS_EPA.get(k, k) for k in cols
+                    ]
                     epa_dict[param_group_epa][k] = json.loads(
                         epa_dict[param_group_epa][k]
                         .set_index("label")
