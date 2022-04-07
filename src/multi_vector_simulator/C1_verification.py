@@ -86,6 +86,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MAXIMUM_EMISSIONS,
     CONSTRAINTS,
     RENEWABLE_SHARE_DSO,
+    DSO_FEEDIN_CAP,
 )
 
 # Necessary for check_for_label_duplicates()
@@ -777,9 +778,8 @@ def check_for_sufficient_assets_on_busses(dict_values):
     - test_C1_verification.test_check_for_sufficient_assets_on_busses_skipped_for_peak_demand_pricing_bus()
     """
     for bus in dict_values[ENERGY_BUSSES]:
-        if (
-            len(dict_values[ENERGY_BUSSES][bus][ASSET_DICT]) < 3
-            and DSO_PEAK_DEMAND_SUFFIX not in bus
+        if len(dict_values[ENERGY_BUSSES][bus][ASSET_DICT]) < 3 and (
+            DSO_PEAK_DEMAND_SUFFIX not in bus or DSO_FEEDIN_CAP not in bus
         ):
             asset_string = ", ".join(
                 map(str, dict_values[ENERGY_BUSSES][bus][ASSET_DICT].keys())
