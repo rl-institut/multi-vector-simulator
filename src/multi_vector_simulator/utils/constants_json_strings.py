@@ -179,6 +179,7 @@ INSTALLED_CAP_NORMALIZED = "installedCap_normalized"
 DSO_CONSUMPTION = "_consumption"
 DSO_FEEDIN = "_feedin"
 DSO_PEAK_DEMAND_SUFFIX = "_pdp"  # short for peak demand pricing
+DSO_FEEDIN_CAP = "feedin_cap"
 DSO_PEAK_DEMAND_PERIOD = "_period"
 CONNECTED_CONSUMPTION_SOURCE = "connected_consumption_sources"
 CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS = (

@@ -239,6 +239,12 @@ KNOWN_EXTRA_PARAMETERS = {
         WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_CONVERSION, ENERGY_PRODUCTION],
     },
+    DSO_FEEDIN_CAP: {
+        DEFAULT_VALUE: None,
+        UNIT: TYPE_NONE,
+        WARNING_TEXT: "allows setting a maximum capacity for DSO feedin (Values: None/Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
+    },
     RENEWABLE_ASSET_BOOL: {
         DEFAULT_VALUE: False,
         UNIT: TYPE_BOOL,
