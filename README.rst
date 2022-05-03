@@ -206,7 +206,13 @@ To use the report feature you need to install extra dependencies first
 
     pip install multi-vector-simulator[report]
 
+If you are using zsh terminals and recieve the error message "no matches found", you might need to run 
 
+::
+
+    pip install 'multi-vector-simulator[report]'
+
+    
 Use the option ``-pdf`` in the command line ``mvs_tool`` to generate a pdf report in a simulation's output folder
 (by default in ``MVS_outputs/report/simulation_report.pdf``):
 
