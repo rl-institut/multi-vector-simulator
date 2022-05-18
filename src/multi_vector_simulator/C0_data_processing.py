@@ -782,12 +782,12 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
             f"The {FEEDIN_TARIFF} of {dso} is positive, which means that feeding into the grid results in a revenue stream."
         )
     elif dict_feedin_tariff[VALUE] == 0:
-        # Add a warning msg in case the feedin induces expenses rather then revenue
-        logging.info(
+        # Add a warning msg in case the feedin induces expenses rather than revenue
+        logging.warning(
             f"The {FEEDIN_TARIFF} of {dso} is 0, which means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
         )
     elif dict_feedin_tariff[VALUE] < 0:
-        # Add a warning msg in case the feedin induces expenses rather then revenue
+        # Add a warning msg in case the feedin induces expenses rather than revenue
         logging.warning(
             f"The {FEEDIN_TARIFF} of {dso} is negative, which means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
         )
@@ -1859,7 +1859,11 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 asset_dict[MAXIMUM_CAP][VALUE] = None
 
             # adapt maximumCap and maximumAddCap of non-dispatchable sources
-            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
+            if (
+                group == ENERGY_PRODUCTION
+                and asset_dict.get(DISPATCHABILITY, True) is False
+                and asset_dict[MAXIMUM_CAP][VALUE] is not None
+            ):
                 max_cap_norm = (
                     asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
                 )

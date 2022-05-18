@@ -58,6 +58,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INSTALLED_CAP,
     LIFETIME,
     MAXIMUM_CAP,
+    MAXIMUM_ADD_CAP,
     OPTIMIZE_CAP,
     OPTIMIZED_ADD_CAP,
     SPECIFIC_COSTS,
@@ -125,7 +126,9 @@ MAP_EPA_MVS = {
     "input_power": INPUT_POWER,
     "output_power": OUTPUT_POWER,
     "optimize_capacity": OPTIMIZE_CAP,
+    "optimized_add_cap": OPTIMIZED_ADD_CAP,
     "maximum_capacity": MAXIMUM_CAP,
+    "maximum_add_cap": MAXIMUM_ADD_CAP,
     "input_timeseries": TIMESERIES,
     "constraints": CONSTRAINTS,
     "renewable_asset": RENEWABLE_ASSET_BOOL,
@@ -189,7 +192,6 @@ EPA_ASSET_KEYS = {
         DISPATCH_PRICE,
         "installed_capacity",
         LIFETIME,
-        "optimize_capacity",
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
         "energy_vector",
@@ -208,11 +210,9 @@ EPA_ASSET_KEYS = {
         DISPATCH_PRICE,
         EFFICIENCY,
         "installed_capacity",
-        OPTIMIZED_ADD_CAP,
         LIFETIME,
-        "maximum_capacity",
         "optimize_capacity",
-        OPTIMIZED_ADD_CAP,
+        "optimize_add_cap",
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
         FLOW,
@@ -229,8 +229,9 @@ EPA_ASSET_KEYS = {
         "installed_capacity",
         LIFETIME,
         "maximum_capacity",
+        "maximum_add_cap",
         "optimize_capacity",
-        OPTIMIZED_ADD_CAP,
+        "optimize_add_cap",
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
         AGE_INSTALLED,
@@ -250,7 +251,7 @@ EPA_ASSET_KEYS = {
         OUTPUT_POWER,
         STORAGE_CAPACITY,
         "optimize_capacity",
-        OPTIMIZED_ADD_CAP,
+        "optimize_add_cap",
         TIMESERIES_SOC,
     ],
     ENERGY_BUSSES: [LABEL, "assets", "energy_vector"],
@@ -607,6 +608,11 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
                     )
 
                 if k in (KPI_SCALAR_MATRIX, KPI_COST_MATRIX):
+
+                    cols = epa_dict[param_group_epa][k].columns
+                    epa_dict[param_group_epa][k].columns = [
+                        MAP_MVS_EPA.get(k, k) for k in cols
+                    ]
                     epa_dict[param_group_epa][k] = json.loads(
                         epa_dict[param_group_epa][k]
                         .set_index("label")
