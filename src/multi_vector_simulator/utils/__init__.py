@@ -518,7 +518,8 @@ def copy_report_assets(path_destination_folder):
                 os.path.join(PACKAGE_DATA_PATH, "assets"), assets_folder
             )
         except FileNotFoundError:
-            assets_folder = shutil.copytree(os.path.join(REPO_PATH, "multi-vector-simulator", "report", "assets"), assets_folder)
+            assets_folder = shutil.copytree(os.path.join(REPO_PATH, "multi-vector-simulator", 
+                                                         "report", "assets"), assets_folder)
     else:
         logging.warning(
             "The assets folder {} exists already, it will not be replaced by default folder "
