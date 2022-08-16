@@ -241,7 +241,7 @@
         "transformer_fix_multiple_input_busses": {
             "efficiency": {
                 "unit": "factor",
-                "value": 0.33
+                "value": [0.6, 1]
             },
             "installedCap": {
                 "unit": "kW",
@@ -251,7 +251,7 @@
             "label": "Transformer fix multiple input busses",
             "dispatch_price": {
                 "unit": "currency/kWh",
-                "value": 0
+                "value": [0, 0.15]
             },
             "optimizeCap": {
                 "unit": "bool",
