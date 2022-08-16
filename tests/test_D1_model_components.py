@@ -167,7 +167,7 @@ class TestTransformerComponent:
         ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
         assert (
             len([str(i) for i in self.model.entities[-1].inputs]) == 1
-        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+        ), f"Amount of input busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
@@ -192,8 +192,11 @@ class TestTransformerComponent:
         ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
         assert (
             len([str(i) for i in self.model.entities[-1].inputs]) == 2
-        ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].inputs])}."
-
+        ), f"Amount of input busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+        assert (
+            len(self.model.entities[-1].conversion_factors) == 2,
+            f"The amount of conversion factors should be two to match the amount of input busses but is {len(self.model.entities[-1].conversion_factors)}",
+        )
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
             optimize=True, dict_asset=dict_asset
@@ -217,8 +220,11 @@ class TestTransformerComponent:
         ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].outputs])}."
         assert (
             len([str(i) for i in self.model.entities[-1].inputs]) == 1
-        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
-
+        ), f"Amount of input busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+        assert (
+            len(self.model.entities[-1].conversion_factors) == 2,
+            f"The amount of conversion factors should be two to match the amount of output busses but is {len(self.model.entities[-1].conversion_factors)}",
+        )
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
             optimize=True, dict_asset=dict_asset, multiple_outputs=True
@@ -242,13 +248,14 @@ class TestTransformerComponent:
         ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
         assert (
             len([str(i) for i in self.model.entities[-1].inputs]) == 1
-        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+        ), f"Amount of input busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
             optimize=False, dict_asset=dict_asset
         )
 
+    # ToDo
     def test_transformer_fix_cap_multiple_input_busses(self,):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_multiple_input_busses"
@@ -267,7 +274,11 @@ class TestTransformerComponent:
         ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].outputs])}."
         assert (
             len([str(i) for i in self.model.entities[-1].inputs]) == 2
-        ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+        ), f"Amount of input busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+        assert (
+            len(self.model.entities[-1].conversion_factors) == 2,
+            f"The amount of conversion factors should be two to match the amount of input busses but is {len(self.model.entities[-1].conversion_factors)}",
+        )
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(
@@ -292,7 +303,11 @@ class TestTransformerComponent:
         ), f"Amount of output busses of transformer should be two but is {len([str(i) for i in self.model.entities[-1].outputs])}."
         assert (
             len([str(i) for i in self.model.entities[-1].inputs]) == 1
-        ), f"Amount of output busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+        ), f"Amount of input busses of transformer should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+        assert (
+            len(self.model.entities[-1].conversion_factors) == 2,
+            f"The amount of conversion factors should be two to match the amount of output busses but is {len(self.model.entities[-1].conversion_factors)}",
+        )
 
         # checks done with helper function (see func for more information)
         self.helper_test_transformer_in_model_and_dict(

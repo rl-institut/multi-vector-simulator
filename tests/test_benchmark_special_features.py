@@ -130,7 +130,6 @@ class Test_Parameter_Parsing:
                     csv_data[soc_min][k], rel=1e-6
                 ), f"The soc min has different values then it was defined as with the csv file {csv_file}."
 
-    '''
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
     # alone is called
     @pytest.mark.skipif(
@@ -157,11 +156,17 @@ class Test_Parameter_Parsing:
         )
 
         # read json with results file
-        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS+JSON_FILE_EXTENSION))
+        data = load_json(
+            os.path.join(
+                TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+            )
+        )
 
-        assert 1 == 1
-    '''
-    '''
+        transformer = data[ENERGY_CONVERSION]["diesel_generator"]
+
+        assert transformer[EFFICIENCY][VALUE] == [0.6, 1]
+        assert transformer[DISPATCH_PRICE][VALUE] == [0, 0.15]
+
     # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
     # alone is called
     @pytest.mark.skipif(
@@ -170,7 +175,6 @@ class Test_Parameter_Parsing:
                "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
-
     def test_benchmark_feature_output_flows_as_list(self, margs):
         r"""
         Notes
@@ -189,9 +193,16 @@ class Test_Parameter_Parsing:
         )
 
         # read json with results file
-        data = load_json(os.path.join(TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS))
-        assert 1 == 1
-    '''
+        data = load_json(
+            os.path.join(
+                TEST_OUTPUT_PATH, use_case, JSON_WITH_RESULTS + JSON_FILE_EXTENSION
+            )
+        )
+
+        transformer = data[ENERGY_CONVERSION]["diesel_generator"]
+
+        assert transformer[EFFICIENCY][VALUE] == [0.3, 0.5]
+        assert transformer[DISPATCH_PRICE][VALUE] == [0.5, 0.6]
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
