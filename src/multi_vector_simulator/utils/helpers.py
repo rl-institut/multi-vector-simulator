@@ -82,3 +82,19 @@ def translates_epa_strings_to_mvs_readable(folder_name, file_name):
 
     with open(os.path.join(folder_name, "mvs_config.json"), "w") as json_file:
         json.dump(dict_values, json_file, indent=4)
+
+
+def get_item_if_list(list_or_float, index):
+    if isinstance(list_or_float, list):
+        answer = list_or_float[index]
+    else:
+        answer = list_or_float
+    return answer
+
+
+def get_length_if_list(list_or_float):
+    if isinstance(list_or_float, list):
+        answer = len(list_or_float)
+    else:
+        answer = 0
+    return answer
