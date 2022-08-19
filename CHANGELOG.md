@@ -61,6 +61,7 @@ Here is a template for new release sections
 - Calculation of `total_feedin` and `total_consumption_from_providers`, where multiple providers of one energy carrier were not aggregated correctly (#931)
 - Used `pandas.concat` instead of `DataFrame.append` to add rows to a `pandas.DataFrame` instance to suppress UserWarning (#937)
 - Add missing file for test `test_F0_output.TestLogCreation.test_parse_simulation_log` (#937)
+- Transformers can have multiple input or output busses (#949)
 
 ## [1.0.0] - 2021-05-31
 
