@@ -138,6 +138,32 @@ class Test_Parameter_Parsing:
         "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_benchmark_feature_parameters_as_timeseries_multiple_inputs(self, margs):
+        r"""
+        Notes
+        -----
+        This benchmark test checks if a scalar value can be provided as a timeseries within a csv file.
+        It also checks whether these timeseries can be provided within a single csv file.
+        """
+        use_case = "Feature_parameters_as_timeseries_multiple_inputs"
+
+        # Execute the script
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=CSV_EXT,
+            path_output_folder=os.path.join(TEST_OUTPUT_PATH, use_case),
+        )
+
+    # this ensure that the test is only ran if explicitly executed, ie not when the `pytest` command
+    # alone is called
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_benchmark_feature_input_flows_as_list(self, margs):
         r"""
         Notes
