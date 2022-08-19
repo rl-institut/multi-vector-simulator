@@ -150,7 +150,7 @@
         "transformer_optimize_multiple_input_busses": {
             "efficiency": {
                 "unit": "factor",
-                "value": 0.33
+                "value": [0.33, 0.45]
             },
             "installedCap": {
                 "unit": "kW",
@@ -160,7 +160,7 @@
             "label": "Transformer optimize multiple input busses",
             "dispatch_price": {
                 "unit": "currency/kWh",
-                "value": 0
+                "value": [0, 0.2]
             },
             "optimizeCap": {
                 "unit": "bool",
