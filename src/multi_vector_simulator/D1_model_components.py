@@ -405,7 +405,9 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             inputs = {}
             for i, bus in enumerate(dict_asset[INFLOW_DIRECTION]):
                 inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE][i]
+                    variable_costs=get_item_if_list(
+                        dict_asset[DISPATCH_PRICE][VALUE], i
+                    )
                 )
 
             outputs = {
@@ -444,8 +446,10 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             outputs = {}
             for i, bus in enumerate(dict_asset[OUTFLOW_DIRECTION]):
                 outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
-                    nominal_value=dict_asset[INSTALLED_CAP][VALUE],
-                    variable_costs=dict_asset[EFFICIENCY][VALUE][i],
+                    nominal_value=get_item_if_list(dict_asset[INSTALLED_CAP][VALUE], i),
+                    variable_costs=get_item_if_list(
+                        dict_asset[DISPATCH_PRICE][VALUE], i
+                    ),
                 )
 
             efficiencies = {}
