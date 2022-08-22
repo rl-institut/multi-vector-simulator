@@ -20,6 +20,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_STORAGE,
     ENERGY_PRODUCTION,
     DISPATCH_PRICE,
+    EFFICIENCY,
     OPTIMIZE_CAP,
     INSTALLED_CAP,
     INPUT_POWER,
@@ -35,6 +36,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OUTFLOW_DIRECTION,
     SIMULATION_ANNUITY,
     MAXIMUM_CAP,
+    MAXIMUM_ADD_CAP,
 )
 from _constants import TEST_REPO_PATH, TEST_INPUT_DIRECTORY
 
@@ -230,6 +232,82 @@ class TestTransformerComponent:
             optimize=True, dict_asset=dict_asset, multiple_outputs=True
         )
 
+    def test_transformer_optimize_cap_multiple_output_busses_multiple_inst_cap(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_optimize_multiple_output_busses"
+        ]
+
+        inst_cap = [10, 15]
+        dict_asset[INSTALLED_CAP][VALUE] = inst_cap
+
+        D1.transformer(
+            model=self.model,
+            dict_asset=dict_asset,
+            transformer=self.transformers,
+            bus=self.busses,
+        )
+
+        output_bus_list = [
+            self.model.entities[-1].outputs.data[self.busses[bus_name]]
+            for bus_name in dict_asset[OUTFLOW_DIRECTION]
+        ]
+        for cap, output_bus in zip(inst_cap, output_bus_list):
+            assert output_bus.investment.existing == cap
+
+    def test_transformer_optimize_cap_multiple_output_busses_multiple_max_add_cap(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_optimize_multiple_output_busses"
+        ]
+
+        inst_cap = [100, 500]
+        dict_asset[MAXIMUM_ADD_CAP][VALUE] = inst_cap
+
+        D1.transformer(
+            model=self.model,
+            dict_asset=dict_asset,
+            transformer=self.transformers,
+            bus=self.busses,
+        )
+
+        output_bus_list = [
+            self.model.entities[-1].outputs.data[self.busses[bus_name]]
+            for bus_name in dict_asset[OUTFLOW_DIRECTION]
+        ]
+        for cap, output_bus in zip(inst_cap, output_bus_list):
+            assert output_bus.investment.maximum == cap
+
+    def test_transformer_optimize_cap_multiple_output_busses_multiple_single_dispatch_price_raises_error(
+        self,
+    ):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_optimize_multiple_output_busses"
+        ]
+
+        dict_asset[DISPATCH_PRICE][VALUE] = 0.1
+        with pytest.raises(ValueError):
+            D1.transformer(
+                model=self.model,
+                dict_asset=dict_asset,
+                transformer=self.transformers,
+                bus=self.busses,
+            )
+
+    def test_transformer_optimize_cap_multiple_output_busses_multiple_single_efficiency_raises_error(
+        self,
+    ):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_optimize_multiple_output_busses"
+        ]
+
+        dict_asset[EFFICIENCY][VALUE] = 0.1
+        with pytest.raises(ValueError):
+            D1.transformer(
+                model=self.model,
+                dict_asset=dict_asset,
+                transformer=self.transformers,
+                bus=self.busses,
+            )
+
     def test_transformer_fix_cap_single_busses(self):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_single_busses"
@@ -255,7 +333,6 @@ class TestTransformerComponent:
             optimize=False, dict_asset=dict_asset
         )
 
-    # ToDo
     def test_transformer_fix_cap_multiple_input_busses(self,):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_multiple_input_busses"
@@ -313,6 +390,60 @@ class TestTransformerComponent:
         self.helper_test_transformer_in_model_and_dict(
             optimize=False, dict_asset=dict_asset, multiple_outputs=True
         )
+
+    def test_transformer_fix_cap_multiple_output_busses_multiple_inst_cap(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_fix_multiple_output_busses"
+        ]
+
+        inst_cap = [10, 15]
+        dict_asset[INSTALLED_CAP][VALUE] = inst_cap
+
+        D1.transformer(
+            model=self.model,
+            dict_asset=dict_asset,
+            transformer=self.transformers,
+            bus=self.busses,
+        )
+
+        output_bus_list = [
+            self.model.entities[-1].outputs.data[self.busses[bus_name]]
+            for bus_name in dict_asset[OUTFLOW_DIRECTION]
+        ]
+        for cap, output_bus in zip(inst_cap, output_bus_list):
+            assert output_bus.nominal_value == cap
+
+    def test_transformer_fix_cap_multiple_output_busses_multiple_single_dispatch_price_raises_error(
+        self,
+    ):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_fix_multiple_output_busses"
+        ]
+
+        dict_asset[DISPATCH_PRICE][VALUE] = 0.1
+        with pytest.raises(ValueError):
+            D1.transformer(
+                model=self.model,
+                dict_asset=dict_asset,
+                transformer=self.transformers,
+                bus=self.busses,
+            )
+
+    def test_transformer_fix_cap_multiple_output_busses_multiple_single_efficiency_raises_error(
+        self,
+    ):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_fix_multiple_output_busses"
+        ]
+
+        dict_asset[EFFICIENCY][VALUE] = 0.1
+        with pytest.raises(ValueError):
+            D1.transformer(
+                model=self.model,
+                dict_asset=dict_asset,
+                transformer=self.transformers,
+                bus=self.busses,
+            )
 
 
 class TestSinkComponent:
