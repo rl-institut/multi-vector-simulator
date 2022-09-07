@@ -61,7 +61,7 @@ Here is a template for new release sections
 - Calculation of `total_feedin` and `total_consumption_from_providers`, where multiple providers of one energy carrier were not aggregated correctly (#931)
 - Used `pandas.concat` instead of `DataFrame.append` to add rows to a `pandas.DataFrame` instance to suppress UserWarning (#937)
 - Add missing file for test `test_F0_output.TestLogCreation.test_parse_simulation_log` (#937)
-- Transformers can have multiple input or output busses (#949)
+- Transformers can have multiple input or output busses (tested in `tests/test_D1_model_components` by `test_transformer_optimize_cap_multiple_output_busses_multiple_inst_cap`, `test_transformer_optimize_cap_multiple_output_busses_multiple_max_add_cap`, `test_transformer_fix_cap_multiple_output_busses_multiple_inst_cap` and in `tests/test_benchmark_special_features` by `test_benchmark_feature_parameters_as_timeseries_multiple_inputs`)(#949)
 
 ## [1.0.0] - 2021-05-31
 
