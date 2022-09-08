@@ -271,8 +271,8 @@ class TestLogCreation:
         ), f"{ANNUITY_TOTAL} should be in {KPI_SCALARS_DICT}, subcategory {KPI} of the json result file."
         obj = json_with_results[SIMULATION_RESULTS][OBJECTIVE_VALUE]
         annuity_total = json_with_results[KPI][KPI_SCALARS_DICT][ANNUITY_TOTAL]
-        assert pytest.approx(
-            annuity_total == obj, rel=1e-3
+        assert annuity_total == pytest.approx(
+            obj, rel=1e-3
         ), f"The {OBJECTIVE_VALUE} ({obj}) should be equal to the {ANNUITY_TOTAL} ({annuity_total}) in this specific case."
 
     def teardown_method(self):

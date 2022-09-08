@@ -130,6 +130,6 @@ mvs_csv_config.json
 /inputs/
 
 /validation_tests/
-
+*.DS_Store
 *.inc
 *.tbl

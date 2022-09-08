@@ -442,24 +442,30 @@ def create_json_from_csv(
                             f"or ']' is missing."
                         )
                     else:
-                        # Define list of efficiencies by efficiency,factor,"[1,2]"
-                        value_string = row[column].replace("[", "").replace("]", "")
+                        if "{" in row[column]:
+                            # Define parameter as a list, containing a timeseries, eg "[1,{}]"
+                            value_string = row[column].replace("'", '"')
+                            value_list = json.loads(value_string)
+                            value_list = [str(v) for v in value_list]
+                        else:
+                            # Define parameter as a list eg "[1,2]"
+                            value_string = row[column].replace("[", "").replace("]", "")
 
-                        # find the separator used for the list amongst the CSV_SEPARATORS
-                        list_separator = None
-                        separator_count = 0
-                        for separator in CSV_SEPARATORS:
-                            if separator in value_string:
-                                if value_string.count(separator) > separator_count:
-                                    if separator_count > 0:
-                                        raise ValueError(
-                                            f"The separator of the list for the "
-                                            f"parameter {param} is not unique"
-                                        )
-                                    separator_count = value_string.count(separator)
-                                    list_separator = separator
+                            # find the separator used for the list amongst the CSV_SEPARATORS
+                            list_separator = None
+                            separator_count = 0
+                            for separator in CSV_SEPARATORS:
+                                if separator in value_string:
+                                    if value_string.count(separator) > separator_count:
+                                        if separator_count > 0:
+                                            raise ValueError(
+                                                f"The separator of the list for the "
+                                                f"parameter {param} is not unique"
+                                            )
+                                        separator_count = value_string.count(separator)
+                                        list_separator = separator
 
-                        value_list = value_string.split(list_separator)
+                            value_list = value_string.split(list_separator)
 
                         for item in range(0, len(value_list)):
                             column_dict = conversion(
