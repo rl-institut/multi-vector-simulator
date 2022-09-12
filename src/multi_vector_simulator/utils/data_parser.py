@@ -427,6 +427,16 @@ def convert_epa_params_to_mvs(epa_dict):
                         DATA_TYPE_JSON_KEY
                     ] = TYPE_SERIES
 
+                if asset_group == ENERGY_CONVERSION:
+                    if DISPATCH_PRICE not in dict_asset[asset_label]:
+                        dict_asset[asset_label].update(
+                            {DISPATCH_PRICE: {VALUE: 0, UNIT: "factor"}}
+                        )
+                    if DEVELOPMENT_COSTS not in dict_asset[asset_label]:
+                        dict_asset[asset_label].update(
+                            {DEVELOPMENT_COSTS: {VALUE: 0, UNIT: "factor"}}
+                        )
+
                 # TODO remove this when change has been made on EPA side
                 if asset_group == ENERGY_PRODUCTION:
                     dict_asset[asset_label].update({DISPATCHABILITY: False})
