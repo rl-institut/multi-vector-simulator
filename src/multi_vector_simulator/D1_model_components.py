@@ -63,6 +63,24 @@ from multi_vector_simulator.utils.exceptions import (
 )
 
 
+def check_list_parameters_transformers_single_input_single_output(dict_asset):
+    parameters_defined_as_list = []
+    for parameter in [DISPATCH_PRICE, EFFICIENCY]:
+        if get_length_if_list(dict_asset[parameter][VALUE]) != 0:
+            parameters_defined_as_list.append(parameter)
+
+    if parameters_defined_as_list:
+        parameters_defined_as_list = ", ".join(parameters_defined_as_list)
+        missing_dispatch_prices_or_efficiencies = (
+            f"You defined multiple values for parameter(s) '{parameters_defined_as_list}'"
+            f" although you you have one input and one output for"
+            f" the conversion asset named '{dict_asset[LABEL]}', please provide only scalars"
+            f" or define more input/output busses"
+        )
+        logging.error(missing_dispatch_prices_or_efficiencies)
+        raise ValueError(missing_dispatch_prices_or_efficiencies)
+
+
 def transformer(model, dict_asset, **kwargs):
     r"""
     Defines a transformer component specified in `dict_asset`.
@@ -588,6 +606,9 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             raise ValueError(missing_dispatch_prices_or_efficiencies)
     else:
         # single input and single output
+
+        check_list_parameters_transformers_single_input_single_output(dict_asset)
+
         inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
         outputs = {
             kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
@@ -766,6 +787,8 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             logging.error(missing_dispatch_prices_or_efficiencies)
             raise ValueError(missing_dispatch_prices_or_efficiencies)
     else:
+        check_list_parameters_transformers_single_input_single_output(dict_asset)
+
         # single input and single output
         inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
         if AVAILABILITY_DISPATCH in dict_asset.keys():
