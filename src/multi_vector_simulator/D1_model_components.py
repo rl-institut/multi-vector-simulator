@@ -497,30 +497,37 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             dict_asset[OUTFLOW_DIRECTION], str
         ):
             # multiple inputs and single output
+            inputs = {}
+
             num_inputs = len(dict_asset[INFLOW_DIRECTION])
-            if (
-                get_length_if_list(dict_asset[DISPATCH_PRICE][VALUE]) != num_inputs
-                or get_length_if_list(dict_asset[EFFICIENCY][VALUE]) != num_inputs
-            ):
-                inputs_names = ", ".join(
-                    [f"'{n}'" for n in dict_asset[INFLOW_DIRECTION]]
-                )
+            inputs_names = ", ".join([f"'{n}'" for n in dict_asset[INFLOW_DIRECTION]])
+            if get_length_if_list(dict_asset[EFFICIENCY][VALUE]) != num_inputs:
                 missing_dispatch_prices_or_efficiencies = (
                     f"You defined multiple values for parameter '{INFLOW_DIRECTION}' "
                     f"({inputs_names}) of the conversion asset named '{dict_asset[LABEL]}'. "
-                    f"You must also provide exactly {num_inputs} values for the parameters "
-                    f"'{DISPATCH_PRICE}' and '{EFFICIENCY}'."
+                    f"You must also provide exactly {num_inputs} values for the parameter '{EFFICIENCY}'."
                 )
                 logging.error(missing_dispatch_prices_or_efficiencies)
                 raise ValueError(missing_dispatch_prices_or_efficiencies)
 
-            inputs = {}
-            for i, bus in enumerate(dict_asset[INFLOW_DIRECTION]):
-                inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
-                    variable_costs=get_item_if_list(
-                        dict_asset[DISPATCH_PRICE][VALUE], i
-                    )
+            if get_length_if_list(dict_asset[DISPATCH_PRICE][VALUE]) == 0:
+                # only one dispatch price provided --> it will be ignored
+                warning_msg = (
+                    f"You defined multiple values for parameter '{INFLOW_DIRECTION}' "
+                    f"({inputs_names}) of the conversion asset named '{dict_asset[LABEL]}'. "
+                    f"You can also provide exactly {num_inputs} values for the parameter '{DISPATCH_PRICE}'."
+                    f"You did only provide one value, so we will ignore it"
                 )
+                logging.warning(warning_msg)
+                for i, bus in enumerate(dict_asset[INFLOW_DIRECTION]):
+                    inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow()
+            else:
+                for i, bus in enumerate(dict_asset[INFLOW_DIRECTION]):
+                    inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
+                        variable_costs=get_item_if_list(
+                            dict_asset[DISPATCH_PRICE][VALUE], i
+                        )
+                    )
 
             outputs = {
                 kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
@@ -538,10 +545,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
         ):
             # single input and multiple outputs
             num_outputs = len(dict_asset[OUTFLOW_DIRECTION])
-            if (
-                get_length_if_list(dict_asset[DISPATCH_PRICE][VALUE]) != num_outputs
-                or get_length_if_list(dict_asset[EFFICIENCY][VALUE]) != num_outputs
-            ):
+            if get_length_if_list(dict_asset[EFFICIENCY][VALUE]) != num_outputs:
                 outputs_names = ", ".join(
                     [f"'{n}'" for n in dict_asset[OUTFLOW_DIRECTION]]
                 )
@@ -549,7 +553,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
                     f"You defined multiple values for parameter '{OUTFLOW_DIRECTION}' "
                     f"({outputs_names}) of the conversion asset named '{dict_asset[LABEL]}'. "
                     f"You must also provide exactly {num_outputs} values for the parameters "
-                    f"'{DISPATCH_PRICE}' and '{EFFICIENCY}'."
+                    f"'{EFFICIENCY}' and you can for the parameter '{DISPATCH_PRICE}'."
                 )
                 logging.error(missing_dispatch_prices_or_efficiencies)
                 raise ValueError(missing_dispatch_prices_or_efficiencies)
@@ -682,10 +686,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
         ):
             # single input and multiple outputs
             num_outputs = len(dict_asset[OUTFLOW_DIRECTION])
-            if (
-                get_length_if_list(dict_asset[DISPATCH_PRICE][VALUE]) != num_outputs
-                or get_length_if_list(dict_asset[EFFICIENCY][VALUE]) != num_outputs
-            ):
+            if get_length_if_list(dict_asset[EFFICIENCY][VALUE]) != num_outputs:
                 outputs_names = ", ".join(
                     [f"'{n}'" for n in dict_asset[OUTFLOW_DIRECTION]]
                 )
@@ -693,7 +694,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                     f"You defined multiple values for parameter '{OUTFLOW_DIRECTION}' "
                     f"({outputs_names}) of the conversion asset named '{dict_asset[LABEL]}'. "
                     f"You must also provide exactly {num_outputs} values for the parameters "
-                    f"'{DISPATCH_PRICE}' and '{EFFICIENCY}'."
+                    f"'{EFFICIENCY}' and you can for the parameter '{DISPATCH_PRICE}'."
                 )
                 logging.error(missing_dispatch_prices_or_efficiencies)
                 raise ValueError(missing_dispatch_prices_or_efficiencies)
@@ -702,17 +703,49 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
             outputs = {}
 
+            single_investment = False
+            if get_length_if_list(dict_asset[SIMULATION_ANNUITY][VALUE]) == 0:
+                single_investment = True
+
             for i, bus in enumerate(dict_asset[OUTFLOW_DIRECTION]):
-                outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
-                    investment=solph.Investment(
-                        ep_costs=get_item_if_list(
-                            dict_asset[SIMULATION_ANNUITY][VALUE], i
+                if single_investment is True:
+                    if kwargs[OEMOF_BUSSES][bus].energy_vector == "Electricity":
+                        flow_params = dict(
+                            investment=solph.Investment(
+                                ep_costs=get_item_if_list(
+                                    dict_asset[SIMULATION_ANNUITY][VALUE], i
+                                ),
+                                maximum=get_item_if_list(
+                                    dict_asset[MAXIMUM_ADD_CAP][VALUE], i
+                                ),
+                                existing=get_item_if_list(
+                                    dict_asset[INSTALLED_CAP][VALUE], i
+                                ),
+                            ),
+                        )
+                    else:
+                        flow_params = {}
+
+                    if dict_asset[DISPATCH_PRICE][VALUE] is not None:
+                        flow_params["variable_costs"] = dict_asset[DISPATCH_PRICE][
+                            VALUE
+                        ]
+                else:
+                    flow_params = dict(
+                        investment=solph.Investment(
+                            ep_costs=get_item_if_list(
+                                dict_asset[SIMULATION_ANNUITY][VALUE], i
+                            ),
+                            maximum=get_item_if_list(
+                                dict_asset[MAXIMUM_ADD_CAP][VALUE], i
+                            ),
+                            existing=get_item_if_list(
+                                dict_asset[INSTALLED_CAP][VALUE], i
+                            ),
                         ),
-                        maximum=get_item_if_list(dict_asset[MAXIMUM_ADD_CAP][VALUE], i),
-                        existing=get_item_if_list(dict_asset[INSTALLED_CAP][VALUE], i),
-                    ),
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE][i],
-                )
+                        variable_costs=dict_asset[DISPATCH_PRICE][VALUE][i],
+                    )
+                outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(**flow_params)
 
             efficiencies = {}
             for i, efficiency in enumerate(dict_asset[EFFICIENCY][VALUE]):
