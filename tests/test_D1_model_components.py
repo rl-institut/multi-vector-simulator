@@ -326,6 +326,40 @@ class TestTransformerComponent:
             optimize=False, dict_asset=dict_asset
         )
 
+    def test_transformer_fix_cap_single_busses_raises_error_if_parameter_provided_as_list(
+        self,
+    ):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_fix_single_busses"
+        ]
+
+        dict_asset[EFFICIENCY][VALUE] = [0.1, 0.2]
+
+        with pytest.raises(ValueError):
+            D1.transformer(
+                model=self.model,
+                dict_asset=dict_asset,
+                transformer=self.transformers,
+                bus=self.busses,
+            )
+
+    def test_transformer_optimize_cap_single_busses_raises_error_if_parameter_provided_as_list(
+        self,
+    ):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "transformer_optimize_single_busses"
+        ]
+
+        dict_asset[EFFICIENCY][VALUE] = [0.1, 0.2]
+
+        with pytest.raises(ValueError):
+            D1.transformer(
+                model=self.model,
+                dict_asset=dict_asset,
+                transformer=self.transformers,
+                bus=self.busses,
+            )
+
     def test_transformer_fix_cap_multiple_input_busses(self,):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_multiple_input_busses"
