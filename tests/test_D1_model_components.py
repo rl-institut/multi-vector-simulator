@@ -285,22 +285,6 @@ class TestTransformerComponent:
         for cap, output_bus in zip(inst_cap, output_bus_list):
             assert output_bus.investment.maximum == cap
 
-    def test_transformer_optimize_cap_multiple_output_busses_multiple_single_dispatch_price_raises_error(
-        self,
-    ):
-        dict_asset = self.dict_values[ENERGY_CONVERSION][
-            "transformer_optimize_multiple_output_busses"
-        ]
-
-        dict_asset[DISPATCH_PRICE][VALUE] = 0.1
-        with pytest.raises(ValueError):
-            D1.transformer(
-                model=self.model,
-                dict_asset=dict_asset,
-                transformer=self.transformers,
-                bus=self.busses,
-            )
-
     def test_transformer_optimize_cap_multiple_output_busses_multiple_single_efficiency_raises_error(
         self,
     ):
@@ -421,22 +405,6 @@ class TestTransformerComponent:
         ]
         for cap, output_bus in zip(inst_cap, output_bus_list):
             assert output_bus.nominal_value == cap
-
-    def test_transformer_fix_cap_multiple_output_busses_multiple_single_dispatch_price_raises_error(
-        self,
-    ):
-        dict_asset = self.dict_values[ENERGY_CONVERSION][
-            "transformer_fix_multiple_output_busses"
-        ]
-
-        dict_asset[DISPATCH_PRICE][VALUE] = 0.1
-        with pytest.raises(ValueError):
-            D1.transformer(
-                model=self.model,
-                dict_asset=dict_asset,
-                transformer=self.transformers,
-                bus=self.busses,
-            )
 
     def test_transformer_fix_cap_multiple_output_busses_multiple_single_efficiency_raises_error(
         self,
