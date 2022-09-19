@@ -50,6 +50,7 @@ Here is a template for new release sections
 - Update requirements for numpy (v 1.21.0 or greater) and for dash (v 2.3.1 or greater) (#938)
 - `OPTIMIZED_ADD_CAP` replaced by "optimized_add_cap" in the assets keys returned to EPA after simulating (#939)
 - The if statement for adapting `MAXIMUM_CAP` for non-dispatchable production assets is now based on the value of `DISPATCHABILITY` and not on the existence of the key `FILENAME` in the `asset_dict` (#939)
+- The default values for the constraints are now located in `src/constants.py` under the variable `DEFAULT_CONSTRAINT_VALUES` (#953)
 
 ### Removed
 - Input timeseries is now not returned to epa in `utils.data_parser.py` (#936)
@@ -62,6 +63,7 @@ Here is a template for new release sections
 - Used `pandas.concat` instead of `DataFrame.append` to add rows to a `pandas.DataFrame` instance to suppress UserWarning (#937)
 - Add missing file for test `test_F0_output.TestLogCreation.test_parse_simulation_log` (#937)
 - Transformers can have multiple input or output busses (tested in `tests/test_D1_model_components` by `test_transformer_optimize_cap_multiple_output_busses_multiple_inst_cap`, `test_transformer_optimize_cap_multiple_output_busses_multiple_max_add_cap`, `test_transformer_fix_cap_multiple_output_busses_multiple_inst_cap` and in `tests/test_benchmark_special_features` by `test_benchmark_feature_parameters_as_timeseries_multiple_inputs`)(#949)
+- The constraints are not all set to default values if only one constraint is missing, only the missing constraint is set to default value (#953)
 
 ## [1.0.0] - 2021-05-31
 
