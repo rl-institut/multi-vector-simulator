@@ -25,6 +25,7 @@ from multi_vector_simulator.utils.constants import (
     TYPE_NONE,
     TYPE_BOOL,
     KNOWN_EXTRA_PARAMETERS,
+    DEFAULT_CONSTRAINT_VALUES,
     DEFAULT_VALUE,
 )
 
@@ -517,14 +518,16 @@ def convert_epa_params_to_mvs(epa_dict):
         error_msg = []
 
         missing_params = comparison[MISSING_PARAMETERS_KEY]
-        # this should not be missing on EPA side, but in case it is take default value 0
         if CONSTRAINTS in missing_params:
-            dict_values[CONSTRAINTS] = {
-                MINIMAL_RENEWABLE_FACTOR: {UNIT: "factor", VALUE: 0},
-                MAXIMUM_EMISSIONS: {UNIT: "factor", VALUE: None},
-                MINIMAL_DEGREE_OF_AUTONOMY: {UNIT: "factor", VALUE: 0},
-                NET_ZERO_ENERGY: {UNIT: "bool", VALUE: False},
-            }
+
+            if CONSTRAINTS not in dict_values:
+                dict_values[CONSTRAINTS] = {}
+
+            for missing_constraint in missing_params[CONSTRAINTS]:
+                dict_values[CONSTRAINTS][
+                    missing_constraint
+                ] = DEFAULT_CONSTRAINT_VALUES[missing_constraint]
+
             missing_params.pop(CONSTRAINTS)
 
         if SIMULATION_SETTINGS in missing_params:
