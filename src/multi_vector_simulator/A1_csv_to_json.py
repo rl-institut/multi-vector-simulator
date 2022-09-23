@@ -651,7 +651,13 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                     if value.is_integer() is True:
                         value = int(value)
                 except:
-                    value = int(value)
+                    try:
+                        value = int(value)
+                    except:
+                        logging.debug(
+                            f"Of asset {asset} the parameter {param} is defined by {value} of type {type(value)}. This is unexpected-"
+                        )
+
         asset_dict.update({param: {VALUE: value, UNIT: row[UNIT]}})
     return asset_dict
 
