@@ -42,6 +42,9 @@ from multi_vector_simulator.utils.constants import (
 from multi_vector_simulator.utils.exceptions import MaximumCapValueInvalid
 
 from multi_vector_simulator.utils.constants_json_strings import *
+from multi_vector_simulator.utils.helpers import (
+    feedin_cap_bus_name,
+)
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C1_verification as C1
@@ -732,12 +735,18 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
     )
     dict_feedin = change_sign_of_feedin_tariff(dso_dict[FEEDIN_TARIFF], dso_name)
 
+    # insert a transformer and a bus between existing bus and dso feedin in order to cap the maximal amount of feedin
+    if dso_dict.get(DSO_FEEDIN_CAP, None) is not None:
+        inflow_bus_name = feedin_cap_bus_name(dso_dict[INFLOW_DIRECTION])
+    else:
+        inflow_bus_name = dso_dict[INFLOW_DIRECTION]
+
     # define feed-in sink of the DSO
     define_sink(
         dict_values=dict_values,
         asset_key=dso_name + DSO_FEEDIN,
         price=dict_feedin,
-        inflow_direction=dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
+        inflow_direction=inflow_bus_name,
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
         energy_vector=dso_dict[ENERGY_VECTOR],
     )

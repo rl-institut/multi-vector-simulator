@@ -191,6 +191,7 @@ CONNECTED_FEEDIN_SINK = "connected_feedin_sink"
 DISPATCHABILITY = "dispatchable"
 AVAILABILITY_DISPATCH = "availability_timeseries"
 ASSET_DICT = "asset_list"
+AUTO_CREATED_HIGHLIGHT = "(@)"
 #######################################
 # Parameters added in post-processing #
 #######################################

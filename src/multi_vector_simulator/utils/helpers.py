@@ -10,6 +10,11 @@ Including:
 
 import os
 
+from multi_vector_simulator.utils.constants_json_strings import (
+    DSO_FEEDIN_CAP,
+    AUTO_CREATED_HIGHLIGHT,
+)
+
 
 def find_value_by_key(data, target, result=None):
     """
@@ -98,3 +103,8 @@ def get_length_if_list(list_or_float):
     else:
         answer = 0
     return answer
+
+
+def feedin_cap_bus_name(dso_name):
+    """Name for auto created bus related to feedin cap of DSO"""
+    return f"{dso_name}_{DSO_FEEDIN_CAP} {AUTO_CREATED_HIGHLIGHT}"
