@@ -13,6 +13,7 @@ Module F1 describes all the functions that create plots.
 import logging
 import os
 import textwrap
+import numpy as np
 
 import pandas as pd
 
@@ -87,7 +88,6 @@ def convert_plot_data_to_dataframe(plot_data_dict, data_type):
     df: pandas:`pandas.DataFrame<frame>`,
         timeseries for plotting
     """
-
     # Later, this dataframe can be passed to a function directly make the graphs with Plotly
     df = pd.DataFrame.from_dict(plot_data_dict[data_type], orient="columns")
 
@@ -701,6 +701,14 @@ def plot_timeseries(
     if max_days is not None:
         if df_pd["timestamp"].empty:
             logging.warning("The timeseries for {} are empty".format(data_type))
+        elif df_pd.timestamp.dtype == np.int64:
+            logging.warning(
+                "The timeseries for {} do not have correct timestamps, it is likely that you uploaded "
+                "a timeseries with more or less values than the number of days multiplied by number of "
+                "timesteps within a day.".format(
+                    data_type
+                )
+            )
         else:
             if not isinstance(df_pd["timestamp"], pd.DatetimeIndex):
                 dti = dict_values[SIMULATION_SETTINGS][TIME_INDEX]
