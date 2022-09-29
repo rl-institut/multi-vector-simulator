@@ -571,7 +571,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
                     f"You defined multiple values for parameter '{OUTFLOW_DIRECTION}' "
                     f"({outputs_names}) of the conversion asset named '{dict_asset[LABEL]}'. "
                     f"You must also provide exactly {num_outputs} values for the parameters "
-                    f"'{EFFICIENCY}' and you can for the parameter '{DISPATCH_PRICE}'."
+                    f"'{EFFICIENCY}' and you can do so for the parameter '{DISPATCH_PRICE}'."
                 )
                 logging.error(missing_dispatch_prices_or_efficiencies)
                 raise ValueError(missing_dispatch_prices_or_efficiencies)
@@ -664,18 +664,15 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
         ):
             # multiple inputs and single output
             num_inputs = len(dict_asset[INFLOW_DIRECTION])
-            if (
-                get_length_if_list(dict_asset[DISPATCH_PRICE][VALUE]) != num_inputs
-                or get_length_if_list(dict_asset[EFFICIENCY][VALUE]) != num_inputs
-            ):
+            if get_length_if_list(dict_asset[EFFICIENCY][VALUE]) != num_inputs:
                 inputs_names = ", ".join(
                     [f"'{n}'" for n in dict_asset[INFLOW_DIRECTION]]
                 )
                 missing_dispatch_prices_or_efficiencies = (
                     f"You defined multiple values for parameter '{INFLOW_DIRECTION}' "
                     f"({inputs_names}) of the conversion asset named '{dict_asset[LABEL]}'. "
-                    f"You must also provide exactly {num_inputs} values for the parameters "
-                    f"'{DISPATCH_PRICE}' and '{EFFICIENCY}'."
+                    f"You must also provide exactly {num_inputs} values for the parameter "
+                    f"'{EFFICIENCY}' and you can do so for the parameter '{DISPATCH_PRICE}'."
                 )
                 logging.error(missing_dispatch_prices_or_efficiencies)
                 raise ValueError(missing_dispatch_prices_or_efficiencies)
@@ -714,8 +711,8 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 missing_dispatch_prices_or_efficiencies = (
                     f"You defined multiple values for parameter '{OUTFLOW_DIRECTION}' "
                     f"({outputs_names}) of the conversion asset named '{dict_asset[LABEL]}'. "
-                    f"You must also provide exactly {num_outputs} values for the parameters "
-                    f"'{EFFICIENCY}' and you can for the parameter '{DISPATCH_PRICE}'."
+                    f"You must also provide exactly {num_outputs} values for the parameter "
+                    f"'{EFFICIENCY}' and you can do so for the parameter '{DISPATCH_PRICE}'."
                 )
                 logging.error(missing_dispatch_prices_or_efficiencies)
                 raise ValueError(missing_dispatch_prices_or_efficiencies)
