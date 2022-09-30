@@ -680,7 +680,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             inputs = {}
             for i, bus in enumerate(dict_asset[INFLOW_DIRECTION]):
                 inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
-                    variable_costs=dict_asset[DISPATCH_PRICE][VALUE][i]
+                    variable_costs=get_item_if_list(dict_asset[DISPATCH_PRICE][VALUE], i)
                 )
 
             outputs = {
