@@ -122,6 +122,8 @@ MAP_EPA_MVS = {
     "energy_vector": ENERGY_VECTOR,
     "installed_capacity": INSTALLED_CAP,
     "capacity": STORAGE_CAPACITY,
+    "input_bus_name": INFLOW_DIRECTION,
+    "output_bus_name": OUTFLOW_DIRECTION,
     "input_power": INPUT_POWER,
     "output_power": OUTPUT_POWER,
     "optimize_capacity": OPTIMIZE_CAP,
