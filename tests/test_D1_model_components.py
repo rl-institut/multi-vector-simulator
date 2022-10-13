@@ -69,11 +69,16 @@ def get_busses():
     """ Creates busses (solph.Bus) dictionary. """
     yield {
         "Fuel bus": solph.Bus(label="Fuel bus"),
-        "Electricity bus": solph.Bus(label="Electricity bus"),
-        "Electricity bus 2": solph.Bus(label="Electricity bus 2"),
+        "Electricity bus": D1.CustomBus(
+            label="Electricity bus", energy_vector="Electricity"
+        ),
+        "Electricity bus 2": D1.CustomBus(
+            label="Electricity bus 2", energy_vector="Electricity"
+        ),
         "Coal bus": solph.Bus(label="Coal bus"),
         "Storage bus": solph.Bus(label="Storage bus"),
-        "Heat bus": solph.Bus(label="Heat bus"),
+        "Heat bus": D1.CustomBus(label="Heat bus", energy_vector="Heat"),
+        "Gas bus": solph.Bus(label="Gas bus"),
     }
 
 
@@ -444,6 +449,73 @@ class TestTransformerComponent:
                 transformer=self.transformers,
                 bus=self.busses,
             )
+
+    def test_chp_fix_cap(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION]["chp_fix"]
+
+        D1.chp(
+            model=self.model,
+            dict_asset=dict_asset,
+            transformer=self.transformers,
+            bus=self.busses,
+        )
+
+        # only one output and one input bus
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 2
+        ), f"Amount of output busses of chp should be 2 but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of input busses of chp should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+
+        # input_bus = self.model.entities[-1].inputs.data[self.busses[dict_asset[INFLOW_DIRECTION]]]
+        #
+        #
+        # # output_bus_list = [
+        # #     self.model.entities[-1].outputs.data[self.busses[bus_name]]
+        # #     for bus_name in dict_asset[OUTFLOW_DIRECTION]
+        # # ]
+        #
+        # assert (
+        #         input_bus.investment is None
+        # ), f" The `investment` attribute of transformer '{dict_asset[LABEL]}' should be None."
+        # assert (
+        #         hasattr(input_bus.investment, "existing") is False
+        # ), f"`existing` of the `investment` attribute of the output bus of transformer '{dict_asset[LABEL]}' should not exist."
+        # assert (
+        #         input_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
+        # ), f"The `nominal_value` of the output bus of transformer '{dict_asset[LABEL]}' should be {dict_asset[INSTALLED_CAP][VALUE]}."
+
+    def test_chp_optimize_cap(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION]["chp_optimize"]
+
+        D1.chp(
+            model=self.model,
+            dict_asset=dict_asset,
+            transformer=self.transformers,
+            bus=self.busses,
+        )
+
+        # only one output and one input bus
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 2
+        ), f"Amount of output busses of chp should be 2 but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of input busses of chp should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+        # print(self.model.entities[-1].inputs["target"].__dict__)
+        # print(self.model.entities[-1].outputs.__dict__)
+        # input_bus = self.model.entities[-1].inputs.data[self.busses[dict_asset[INFLOW_DIRECTION]]]
+        #
+        # assert isinstance(
+        #     input_bus.investment, solph.options.Investment
+        # ), f"The output bus of transformer '{dict_asset[LABEL]}' misses an investment object."
+        # assert (
+        #         input_bus.investment.existing == dict_asset[INSTALLED_CAP][VALUE]
+        # ), f"`existing` of the `investment` attribute of the output bus of transformer '{dict_asset[LABEL]}' should be {dict_asset[INSTALLED_CAP][VALUE]}."
+        # assert (
+        #         input_bus.nominal_value is None
+        # ), f"The output bus of transformer '{dict_asset[LABEL]}' should have a `nominal_value` of value None."
 
 
 class TestSinkComponent:
