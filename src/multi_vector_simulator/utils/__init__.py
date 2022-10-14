@@ -7,7 +7,6 @@ import warnings
 import pandas as pd
 from .constants import (
     PACKAGE_DATA_PATH,
-    REPO_PATH,
     JSON_FNAME,
     CSV_ELEMENTS,
     OUTPUT_FOLDER,
@@ -124,9 +123,15 @@ class ParameterDocumentation:
         return self.__get_doc_parameter_info(param_label, ":Type:")
 
 
-PARAMETERS_DOC = ParameterDocumentation(
-    param_info_file=os.path.join(REPO_PATH, "docs", "MVS_parameters_list.csv")
-)
+try:
+    REPO_PATH = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    )
+    PARAMETERS_DOC = ParameterDocumentation(
+        param_info_file=os.path.join(REPO_PATH, "docs", "MVS_parameters_list.csv")
+    )
+except FileNotFoundError:
+    PARAMETERS_DOC = None
 
 
 def find_json_input_folders(
