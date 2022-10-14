@@ -7,6 +7,7 @@ import warnings
 import pandas as pd
 from .constants import (
     PACKAGE_DATA_PATH,
+    REPO_PATH,
     JSON_FNAME,
     CSV_ELEMENTS,
     OUTPUT_FOLDER,
@@ -39,6 +40,93 @@ from .constants_json_strings import (
 )
 
 from .exceptions import MissingParameterError
+
+
+class ParameterDocumentation:
+    """Helper to access a parameter's information given its variable name"""
+
+    def __init__(
+        self, param_info_file, label_header="label",
+    ):
+        self.param_doc = pd.read_csv(param_info_file).set_index(label_header)
+        self.label_hdr = label_header
+        self.fname = param_info_file
+        self.param_format = {"numeric": float, "str": str, "boolean": bool}
+
+    @property
+    def where_to_find_param_documentation(self):
+        return (
+            "*" * 5
+            + f" Note: The documentation about each of the MVS parameters can be found in the csv file {self.fname}. "
+            + "*" * 5
+        )
+
+    def __get_doc_parameter_info(self, param_label, column_name):
+        """Search the value of a parameter information in the parameter doc
+
+        Parameters
+        ----------
+        param_label: str
+            name of the variable as referenced in the column "label" of the
+            documentation csv file
+        column_name:
+            name of the documentation csv file's column corresponding to the
+            desired information about the parameter
+
+        Returns
+        -------
+        str: value of the given parameter information
+        """
+        if isinstance(param_label, list):
+            answer = []
+            for p_name in param_label:
+                answer.append(self.__get_doc_parameter_info(p_name, column_name))
+        else:
+            try:
+                answer = self.param_doc.loc[param_label][column_name]
+            except KeyError as e:
+                raise KeyError(
+                    f"Either {param_label} is not part of the {self.label_hdr} column of the file {self.fname}, or the column {column_name} does not exist in this file"
+                ).with_traceback(e.__traceback__)
+        return answer
+
+    def get_doc_verbose(self, param_label):
+        answer = self.__get_doc_parameter_info(param_label, "verbose")
+        answer_is_list = True
+        if not isinstance(param_label, list):
+            answer_is_list = False
+            answer = [answer]
+            param_label = [param_label]
+
+        for i in range(len(answer)):
+            if answer[i] == "None":
+                answer[i] = param_label[i].replace("_", " ").title()
+        if answer_is_list is False:
+            answer = answer[0]
+        return answer
+
+    def get_doc_definition(self, param_label):
+        return self.__get_doc_parameter_info(param_label, ":Definition:")
+
+    def get_doc_default(self, param_label):
+        answer = self.__get_doc_parameter_info(param_label, ":Default:")
+        param_type = self.get_doc_type(param_label)
+        if answer == "None":
+            answer = None
+        else:
+            answer = self.param_format[param_type](answer)
+        return answer
+
+    def get_doc_unit(self, param_label):
+        return self.__get_doc_parameter_info(param_label, ":Unit:")
+
+    def get_doc_type(self, param_label):
+        return self.__get_doc_parameter_info(param_label, ":Type:")
+
+
+PARAMETERS_DOC = ParameterDocumentation(
+    param_info_file=os.path.join(REPO_PATH, "docs", "MVS_parameters_list.csv")
+)
 
 
 def find_json_input_folders(
