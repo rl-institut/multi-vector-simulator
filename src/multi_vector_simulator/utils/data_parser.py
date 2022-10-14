@@ -501,7 +501,7 @@ def convert_epa_params_to_mvs(epa_dict):
             dict_values.update({asset_group: {}})
 
     # Check if all necessary input parameters are provided
-    comparison = compare_input_parameters_with_reference(dict_values)
+    comparison = compare_input_parameters_with_reference(dict_values, set_default=True)
 
     # ToDo compare_input_parameters_with_reference() does not identify excess/missing parameters in the subassets of energyStorages.
     if EXTRA_PARAMETERS_KEY in comparison:
