@@ -335,6 +335,17 @@ def compare_input_parameters_with_reference(
                                     + " which can influence the results."
                                     + "In the next release, this parameter will required."
                                 )
+                        elif set_default is True:
+
+                            main_parameters[mp][k][sp] = {
+                                VALUE: PARAMETERS_DOC.get_doc_default(sp),
+                                UNIT: PARAMETERS_DOC.get_doc_unit(sp),
+                            }
+                            logging.warning(
+                                f"You are not providing a value for the parameter '{sp}' of asset '{k}' in asset group '{mp}'"
+                                + f"This parameter is then set to it's default value ({PARAMETERS_DOC.get_doc_default(sp)}).\n"
+                                + PARAMETERS_DOC.where_to_find_param_documentation
+                            )
                         else:
                             # the sub parameter is not provided but is required --> missing
                             param_list = missing_parameters.get(mp, [])
