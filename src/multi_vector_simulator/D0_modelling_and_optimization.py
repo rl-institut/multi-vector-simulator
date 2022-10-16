@@ -47,6 +47,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_SOURCE,
     OEMOF_TRANSFORMER,
     OEMOF_BUSSES,
+    OEMOF_ExtractionTurbineCHP,
     VALUE,
     SIMULATION_SETTINGS,
     LABEL,
@@ -151,6 +152,7 @@ class model_building:
             OEMOF_SOURCE: {},
             OEMOF_TRANSFORMER: {},
             OEMOF_GEN_STORAGE: {},
+            OEMOF_ExtractionTurbineCHP: {},
         }
 
         return model, dict_model
@@ -196,6 +198,8 @@ class model_building:
                             D1.transformer(
                                 model, dict_values[asset_group][asset], **dict_model
                             )
+                        elif type == OEMOF_ExtractionTurbineCHP:
+                            D1.chp(model, dict_values[asset_group][asset], **dict_model)
                         elif type == OEMOF_SINK:
                             D1.sink(
                                 model, dict_values[asset_group][asset], **dict_model
