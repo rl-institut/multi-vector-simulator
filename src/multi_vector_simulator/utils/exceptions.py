@@ -32,6 +32,12 @@ class MissingParameterError(ValueError):
     pass
 
 
+class WrongParameterFormatError(ValueError):
+    """Exception raised for parameters with the wrong expected format."""
+
+    pass
+
+
 class CsvParsingError(ValueError):
     """Exception raised for errors in the parameters of a csv input file."""
 

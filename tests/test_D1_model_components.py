@@ -10,6 +10,10 @@ from pandas.testing import assert_series_equal
 import multi_vector_simulator.D1_model_components as D1
 
 from multi_vector_simulator.utils.constants import JSON_FNAME
+from multi_vector_simulator.utils.exceptions import (
+    MissingParameterError,
+    WrongParameterFormatError,
+)
 
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
@@ -456,35 +460,17 @@ class TestTransformerComponent:
         D1.chp(
             model=self.model,
             dict_asset=dict_asset,
-            transformer=self.transformers,
+            extractionTurbineCHP=self.transformers,
             bus=self.busses,
         )
 
-        # only one output and one input bus
+        # only two output and one input bus
         assert (
             len([str(i) for i in self.model.entities[-1].outputs]) == 2
         ), f"Amount of output busses of chp should be 2 but is {len([str(i) for i in self.model.entities[-1].outputs])}."
         assert (
             len([str(i) for i in self.model.entities[-1].inputs]) == 1
         ), f"Amount of input busses of chp should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
-
-        # input_bus = self.model.entities[-1].inputs.data[self.busses[dict_asset[INFLOW_DIRECTION]]]
-        #
-        #
-        # # output_bus_list = [
-        # #     self.model.entities[-1].outputs.data[self.busses[bus_name]]
-        # #     for bus_name in dict_asset[OUTFLOW_DIRECTION]
-        # # ]
-        #
-        # assert (
-        #         input_bus.investment is None
-        # ), f" The `investment` attribute of transformer '{dict_asset[LABEL]}' should be None."
-        # assert (
-        #         hasattr(input_bus.investment, "existing") is False
-        # ), f"`existing` of the `investment` attribute of the output bus of transformer '{dict_asset[LABEL]}' should not exist."
-        # assert (
-        #         input_bus.nominal_value == dict_asset[INSTALLED_CAP][VALUE]
-        # ), f"The `nominal_value` of the output bus of transformer '{dict_asset[LABEL]}' should be {dict_asset[INSTALLED_CAP][VALUE]}."
 
     def test_chp_optimize_cap(self):
         dict_asset = self.dict_values[ENERGY_CONVERSION]["chp_optimize"]
@@ -492,30 +478,65 @@ class TestTransformerComponent:
         D1.chp(
             model=self.model,
             dict_asset=dict_asset,
-            transformer=self.transformers,
+            extractionTurbineCHP=self.transformers,
             bus=self.busses,
         )
 
-        # only one output and one input bus
+        # only two output and one input bus
         assert (
             len([str(i) for i in self.model.entities[-1].outputs]) == 2
         ), f"Amount of output busses of chp should be 2 but is {len([str(i) for i in self.model.entities[-1].outputs])}."
         assert (
             len([str(i) for i in self.model.entities[-1].inputs]) == 1
         ), f"Amount of input busses of chp should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
-        # print(self.model.entities[-1].inputs["target"].__dict__)
-        # print(self.model.entities[-1].outputs.__dict__)
-        # input_bus = self.model.entities[-1].inputs.data[self.busses[dict_asset[INFLOW_DIRECTION]]]
-        #
-        # assert isinstance(
-        #     input_bus.investment, solph.options.Investment
-        # ), f"The output bus of transformer '{dict_asset[LABEL]}' misses an investment object."
-        # assert (
-        #         input_bus.investment.existing == dict_asset[INSTALLED_CAP][VALUE]
-        # ), f"`existing` of the `investment` attribute of the output bus of transformer '{dict_asset[LABEL]}' should be {dict_asset[INSTALLED_CAP][VALUE]}."
-        # assert (
-        #         input_bus.nominal_value is None
-        # ), f"The output bus of transformer '{dict_asset[LABEL]}' should have a `nominal_value` of value None."
+
+    def test_chp_missing_beta(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION]["chp_missing_beta"]
+
+        with pytest.raises(MissingParameterError):
+            D1.chp(
+                model=self.model,
+                dict_asset=dict_asset,
+                extractionTurbineCHP=self.transformers,
+                bus=self.busses,
+            )
+
+    def test_chp_wrong_beta_formatting(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION]["chp_wrong_beta_formatting"]
+
+        with pytest.raises(WrongParameterFormatError):
+            D1.chp(
+                model=self.model,
+                dict_asset=dict_asset,
+                extractionTurbineCHP=self.transformers,
+                bus=self.busses,
+            )
+
+    def test_chp_wrong_efficiency_formatting(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "chp_wrong_efficiency_formatting"
+        ]
+
+        with pytest.raises(WrongParameterFormatError):
+            D1.chp(
+                model=self.model,
+                dict_asset=dict_asset,
+                extractionTurbineCHP=self.transformers,
+                bus=self.busses,
+            )
+
+    def test_chp_wrong_outflow_bus_energy_vector(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "chp_wrong_outflow_bus_energy_vector"
+        ]
+
+        with pytest.raises(WrongParameterFormatError):
+            D1.chp(
+                model=self.model,
+                dict_asset=dict_asset,
+                extractionTurbineCHP=self.transformers,
+                bus=self.busses,
+            )
 
 
 class TestSinkComponent:
