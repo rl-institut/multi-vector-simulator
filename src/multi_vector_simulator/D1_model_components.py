@@ -19,6 +19,7 @@ import oemof.solph as solph
 
 from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
+    UNIT,
     LABEL,
     DISPATCH_PRICE,
     AVAILABILITY_DISPATCH,
@@ -56,6 +57,10 @@ from multi_vector_simulator.utils.constants_json_strings import (
     BETA,
 )
 from multi_vector_simulator.utils.helpers import get_item_if_list, get_length_if_list
+from multi_vector_simulator.utils.exceptions import (
+    MissingParameterError,
+    WrongParameterFormatError,
+)
 
 
 def transformer(model, dict_asset, **kwargs):
@@ -140,6 +145,7 @@ def chp(model, dict_asset, **kwargs):
     sources : dict, optional
     transformers : dict
     storages : dict, optional
+    extractionTurbineCHP: dict, optional
 
     Notes
     -----
@@ -149,21 +155,61 @@ def chp(model, dict_asset, **kwargs):
     * :py:func:`~.chp_fix`
     * :py:func:`~.chp_optimize` for investment optimization
 
-    Tested with: #TODO update this
-    - test_transformer_optimize_cap_single_busses()
-    - test_transformer_optimize_cap_multiple_input_busses()
-    - test_transformer_optimize_cap_multiple_output_busses()
-    - test_transformer_fix_cap_single_busses()
-    - test_transformer_fix_cap_multiple_input_busses()
-    - test_transformer_fix_cap_multiple_output_busses()
+    Tested with:
+    - test_chp_fix_cap()
+    - test_chp_optimize_cap()
+    - test_chp_missing_beta()
+    - test_chp_wrong_beta_formatting()
+    - test_chp_wrong_efficiency_formatting()
+    - test_chp_wrong_outflow_bus_energy_vector()
 
     Returns
     -------
     Indirectly updated `model` and dict of asset in `kwargs` with chp object.
 
     """
-    # TODO
-    # import ipdb;ipdb.set_trace()
+    if BETA in dict_asset:
+        beta = dict_asset[BETA]
+        if isinstance(beta, dict) is False:
+            raise WrongParameterFormatError(
+                f"For the conversion asset named '{dict_asset[LABEL]}' of type {OEMOF_ExtractionTurbineCHP}, "
+                f"the {BETA} parameter should have the following format {{ '{VALUE}': ..., '{UNIT}': ... }}"
+            )
+        else:
+            beta = beta[VALUE]
+        if 0 <= beta <= 1:
+            pass
+        else:
+            raise ValueError("beta should be a number between 0 and 1.")
+    else:
+        raise MissingParameterError("No beta for extraction turbine chp specified.")
+
+    if isinstance(dict_asset[EFFICIENCY][VALUE], list) is False:
+        missing_efficiencies = (
+            f"For the conversion asset named '{dict_asset[LABEL]}' of type {OEMOF_ExtractionTurbineCHP} "
+            f"you must provide exactly 2 values for the parameter '{EFFICIENCY}'."
+        )
+        logging.error(missing_efficiencies)
+        raise WrongParameterFormatError(missing_efficiencies)
+
+    busses_energy_vectors = [
+        kwargs[OEMOF_BUSSES][b].energy_vector for b in dict_asset[OUTFLOW_DIRECTION]
+    ]
+    if (
+        "Heat" not in busses_energy_vectors
+        or "Electricity" not in busses_energy_vectors
+    ):
+        mapping_busses = [
+            f"'{v}' (from '{k}')"
+            for k, v in zip(dict_asset[OUTFLOW_DIRECTION], busses_energy_vectors)
+        ]
+        wrong_output_energy_vectors = (
+            f"For the conversion asset named '{dict_asset[LABEL]}' of type {OEMOF_ExtractionTurbineCHP} "
+            f"you must provide 1 output bus for energy vector 'Heat' and one for 'Electricity'. You provided "
+            f"{' and '.join(mapping_busses)}"
+        )
+        logging.error(wrong_output_energy_vectors)
+        raise WrongParameterFormatError(wrong_output_energy_vectors)
 
     check_optimize_cap(
         model, dict_asset, func_constant=chp_fix, func_optimize=chp_optimize, **kwargs
@@ -1197,15 +1243,6 @@ def chp_fix(model, dict_asset, **kwargs):
         )
     }
 
-    if BETA in dict_asset:
-        Beta = dict_asset[BETA][VALUE]
-        if 0 <= Beta <= 1:
-            pass
-        else:
-            raise ValueError("Beta should be a number between 0 and 1.")
-    else:
-        raise ValueError("No beta for extraction turbine chp specified.")
-
     busses_energy_vectors = [
         kwargs[OEMOF_BUSSES][b].energy_vector for b in dict_asset[OUTFLOW_DIRECTION]
     ]
@@ -1219,10 +1256,12 @@ def chp_fix(model, dict_asset, **kwargs):
         th_bus: solph.Flow(),
     }  # if kW for heat and kW for elect then insert it under nominal_value
 
+    beta = dict_asset[BETA][VALUE]
+
     efficiency_el_wo_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_th]
     efficiency_th_max_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_el]
     efficiency_el_max_heat_extraction = (
-        efficiency_el_wo_heat_extraction - Beta * efficiency_th_max_heat_extraction
+        efficiency_el_wo_heat_extraction - beta * efficiency_th_max_heat_extraction
     )
     efficiency_full_condensation = {el_bus: efficiency_el_wo_heat_extraction}
 
@@ -1263,15 +1302,6 @@ def chp_optimize(model, dict_asset, **kwargs):
         kwargs[OEMOF_BUSSES][b].energy_vector for b in dict_asset[OUTFLOW_DIRECTION]
     ]
 
-    if BETA in dict_asset:
-        Beta = dict_asset[BETA][VALUE]
-        if 0 <= Beta <= 1:
-            pass
-        else:
-            raise ValueError("Beta should be a number between 0 and 1.")
-    else:
-        raise ValueError("No beta for extraction turbine chp specified.")
-
     idx_el = busses_energy_vectors.index("Electricity")
     idx_th = busses_energy_vectors.index("Heat")
     el_bus = kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][idx_el]]
@@ -1288,10 +1318,12 @@ def chp_optimize(model, dict_asset, **kwargs):
         th_bus: solph.Flow(),
     }
 
+    beta = dict_asset[BETA][VALUE]
+
     efficiency_el_wo_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_el]
     efficiency_th_max_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_th]
     efficiency_el_max_heat_extraction = (
-        efficiency_el_wo_heat_extraction - Beta * efficiency_th_max_heat_extraction
+        efficiency_el_wo_heat_extraction - beta * efficiency_th_max_heat_extraction
     )
     efficiency_full_condensation = {el_bus: efficiency_el_wo_heat_extraction}
 
