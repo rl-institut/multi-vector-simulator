@@ -26,6 +26,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INSTALLED_CAP,
     INSTALLED_CAP_NORMALIZED,
     EFFICIENCY,
+    ENERGY_VECTOR,
     INPUT_POWER,
     OUTPUT_POWER,
     C_RATE,
@@ -340,6 +341,13 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
         )
 
 
+class CustomBus(solph.Bus):
+    def __init__(self, *args, **kwargs):
+        ev = kwargs.pop("energy_vector", None)  # change to ENERGY_VECTOR
+        super(CustomBus, self).__init__(*args, **kwargs)
+        self.energy_vector = ev
+
+
 def bus(model, name, **kwargs):
     r"""
     Adds bus `name` to `model` and to 'busses' in `kwargs`.
@@ -352,7 +360,8 @@ def bus(model, name, **kwargs):
 
     """
     logging.debug(f"Added: Bus {name}")
-    bus = solph.Bus(label=name)
+    energy_vector = kwargs.get("energy_vector", None)  # change to ENERGY_VECTOR
+    bus = CustomBus(label=name, energy_vector=energy_vector)
     kwargs[OEMOF_BUSSES].update({name: bus})
     model.add(bus)
 
