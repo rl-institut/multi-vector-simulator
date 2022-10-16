@@ -51,6 +51,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_SOURCE,
     OEMOF_TRANSFORMER,
     OEMOF_BUSSES,
+    OEMOF_ExtractionTurbineCHP,
     EMISSION_FACTOR,
     BETA,
 )
@@ -111,6 +112,61 @@ def transformer(model, dict_asset, **kwargs):
         func_constant=transformer_constant_efficiency_fix,
         func_optimize=transformer_constant_efficiency_optimize,
         **kwargs,
+    )
+
+
+def chp(model, dict_asset, **kwargs):
+    r"""
+    Defines a chp component specified in `dict_asset`.
+
+    Depending on the 'value' of 'optimizeCap' in `dict_asset` the chp
+    is defined with a fixed capacity or a capacity to be optimized.
+    The chp has single input and multiple output busses.
+
+    Parameters
+    ----------
+    model : oemof.solph.network.EnergySystem object
+        See the oemof documentation for more information.
+    dict_asset : dict
+        Contains information about the chp like (not exhaustive):
+        efficiency, installed capacity ('installedCap'), information on the
+        busses the chp is connected to ('inflow_direction',
+        'outflow_direction'), beta coefficient.
+
+    Other Parameters
+    ----------------
+    busses : dict
+    sinks : dict, optional
+    sources : dict, optional
+    transformers : dict
+    storages : dict, optional
+
+    Notes
+    -----
+    The transformer has either multiple input or multiple output busses.
+
+    The following functions are used for defining the chp:
+    * :py:func:`~.chp_fix`
+    * :py:func:`~.chp_optimize` for investment optimization
+
+    Tested with: #TODO update this
+    - test_transformer_optimize_cap_single_busses()
+    - test_transformer_optimize_cap_multiple_input_busses()
+    - test_transformer_optimize_cap_multiple_output_busses()
+    - test_transformer_fix_cap_single_busses()
+    - test_transformer_fix_cap_multiple_input_busses()
+    - test_transformer_fix_cap_multiple_output_busses()
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with chp object.
+
+    """
+    # TODO
+    # import ipdb;ipdb.set_trace()
+
+    check_optimize_cap(
+        model, dict_asset, func_constant=chp_fix, func_optimize=chp_optimize, **kwargs
     )
 
 
@@ -596,6 +652,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 logging.error(missing_dispatch_prices_or_efficiencies)
                 raise ValueError(missing_dispatch_prices_or_efficiencies)
 
+            # TODO move the investment in the input bus???
             inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
             outputs = {}
 
@@ -1118,3 +1175,138 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     logging.debug(
         f"Added: Non-dispatchable sink {dict_asset[LABEL]} to bus {dict_asset[INFLOW_DIRECTION]}"
     )
+
+
+def chp_fix(model, dict_asset, **kwargs):
+    r"""
+    Extraction turbine chp from Oemof solph. Extraction turbine must have one input and two outputs
+    Notes
+    -----
+    Tested with:
+    - test_to_be_written()
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the extraction turbine component.
+
+    """
+
+    inputs = {
+        kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
+            nominal_value=dict_asset[INSTALLED_CAP][VALUE]
+        )
+    }
+
+    if BETA in dict_asset:
+        Beta = dict_asset[BETA][VALUE]
+        if 0 <= Beta <= 1:
+            pass
+        else:
+            raise ValueError("Beta should be a number between 0 and 1.")
+    else:
+        raise ValueError("No beta for extraction turbine chp specified.")
+
+    busses_energy_vectors = [
+        kwargs[OEMOF_BUSSES][b].energy_vector for b in dict_asset[OUTFLOW_DIRECTION]
+    ]
+    idx_el = busses_energy_vectors.index("Electricity")
+    idx_th = busses_energy_vectors.index("Heat")
+    el_bus = kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][idx_el]]
+    th_bus = kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][idx_th]]
+
+    outputs = {
+        el_bus: solph.Flow(),
+        th_bus: solph.Flow(),
+    }  # if kW for heat and kW for elect then insert it under nominal_value
+
+    efficiency_el_wo_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_th]
+    efficiency_th_max_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_el]
+    efficiency_el_max_heat_extraction = (
+        efficiency_el_wo_heat_extraction - Beta * efficiency_th_max_heat_extraction
+    )
+    efficiency_full_condensation = {el_bus: efficiency_el_wo_heat_extraction}
+
+    efficiencies = {
+        el_bus: efficiency_el_max_heat_extraction,
+        th_bus: efficiency_th_max_heat_extraction,
+    }
+
+    ext_turb_chp = solph.components.ExtractionTurbineCHP(
+        label=dict_asset[LABEL],
+        inputs=inputs,
+        outputs=outputs,
+        conversion_factors=efficiencies,
+        conversion_factor_full_condensation=efficiency_full_condensation,
+    )
+
+    model.add(ext_turb_chp)
+    kwargs[OEMOF_ExtractionTurbineCHP].update({dict_asset[LABEL]: ext_turb_chp})
+
+
+def chp_optimize(model, dict_asset, **kwargs):
+    r"""
+    Extraction turbine chp from Oemof solph. Extraction turbine must have one input and two outputs
+    Notes
+    -----
+    Tested with:
+    - test_to_be_written()
+    
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the extraction turbine component.
+
+    """
+
+    inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
+
+    busses_energy_vectors = [
+        kwargs[OEMOF_BUSSES][b].energy_vector for b in dict_asset[OUTFLOW_DIRECTION]
+    ]
+
+    if BETA in dict_asset:
+        Beta = dict_asset[BETA][VALUE]
+        if 0 <= Beta <= 1:
+            pass
+        else:
+            raise ValueError("Beta should be a number between 0 and 1.")
+    else:
+        raise ValueError("No beta for extraction turbine chp specified.")
+
+    idx_el = busses_energy_vectors.index("Electricity")
+    idx_th = busses_energy_vectors.index("Heat")
+    el_bus = kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][idx_el]]
+    th_bus = kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][idx_th]]
+
+    outputs = {
+        el_bus: solph.Flow(
+            investment=solph.Investment(
+                ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
+                maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
+                existing=dict_asset[INSTALLED_CAP][VALUE],
+            )
+        ),
+        th_bus: solph.Flow(),
+    }
+
+    efficiency_el_wo_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_el]
+    efficiency_th_max_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_th]
+    efficiency_el_max_heat_extraction = (
+        efficiency_el_wo_heat_extraction - Beta * efficiency_th_max_heat_extraction
+    )
+    efficiency_full_condensation = {el_bus: efficiency_el_wo_heat_extraction}
+
+    efficiencies = {
+        el_bus: efficiency_el_max_heat_extraction,
+        th_bus: efficiency_th_max_heat_extraction,
+    }
+
+    ext_turb_chp = solph.components.ExtractionTurbineCHP(
+        label=dict_asset[LABEL],
+        inputs=inputs,
+        outputs=outputs,
+        conversion_factors=efficiencies,
+        conversion_factor_full_condensation=efficiency_full_condensation,
+    )
+
+    model.add(ext_turb_chp)
+    kwargs[OEMOF_ExtractionTurbineCHP].update({dict_asset[LABEL]: ext_turb_chp})
