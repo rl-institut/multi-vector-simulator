@@ -124,12 +124,24 @@ class ParameterDocumentation:
 
 
 try:
-    REPO_PATH = os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    mvs_parameter_file = "MVS_parameters_list.csv"
+    DOC_PATH = os.path.join(
+        os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        ),
+        "docs",
     )
-    PARAMETERS_DOC = ParameterDocumentation(
-        param_info_file=os.path.join(REPO_PATH, "docs", "MVS_parameters_list.csv")
-    )
+    if os.path.exists(DOC_PATH):
+        PARAMETERS_DOC = ParameterDocumentation(
+            param_info_file=os.path.join(DOC_PATH, mvs_parameter_file)
+        )
+    elif os.path.exists(PACKAGE_DATA_PATH):
+        PARAMETERS_DOC = ParameterDocumentation(
+            param_info_file=os.path.join(PACKAGE_DATA_PATH, mvs_parameter_file)
+        )
+    else:
+        PARAMETERS_DOC = None
+
 except FileNotFoundError:
     PARAMETERS_DOC = None
 
