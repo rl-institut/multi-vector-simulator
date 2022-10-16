@@ -52,6 +52,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
     DISPATCHABILITY,
     ENERGY_PRODUCTION,
+    SIMULATION_SETTINGS,
     OPTIMIZED_ADD_CAP,
     TOTAL_FLOW,
     ANNUAL_TOTAL_FLOW,
@@ -61,6 +62,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OPTIMIZED_FLOWS,
     DEMANDS,
     RESOURCES,
+    TIME_INDEX,
 )
 
 from multi_vector_simulator.E1_process_results import (
@@ -700,7 +702,13 @@ def plot_timeseries(
         if df_pd["timestamp"].empty:
             logging.warning("The timeseries for {} are empty".format(data_type))
         else:
-            max_date = df_pd["timestamp"][0] + pd.Timedelta("{} day".format(max_days))
+            if not isinstance(df_pd["timestamp"], pd.DatetimeIndex):
+                dti = dict_values[SIMULATION_SETTINGS][TIME_INDEX]
+                df_pd = df_pd.loc[: len(dti) - 1]
+                df_pd["timestamp"] = dti
+                max_date = df_pd["timestamp"][0] + pd.Timedelta(
+                    "{} day".format(max_days)
+                )
             df_pd = df_pd.loc[df_pd["timestamp"] < max_date]
         title_addendum = " ({} days)".format(max_days)
     else:
