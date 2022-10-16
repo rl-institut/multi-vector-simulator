@@ -39,6 +39,7 @@ from multi_vector_simulator.utils.constants import (
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_BUSSES,
+    ENERGY_VECTOR,
     OEMOF_ASSET_TYPE,
     ACCEPTED_ASSETS_FOR_ASSET_GROUPS,
     OEMOF_GEN_STORAGE,
@@ -176,7 +177,12 @@ class model_building:
 
         # Busses have to be defined first
         for bus in dict_values[ENERGY_BUSSES]:
-            D1.bus(model, dict_values[ENERGY_BUSSES][bus][LABEL], **dict_model)
+            D1.bus(
+                model,
+                dict_values[ENERGY_BUSSES][bus][LABEL],
+                energy_vector=dict_values[ENERGY_BUSSES][bus][ENERGY_VECTOR],
+                **dict_model,
+            )
 
         # Adding step by step all assets defined within the asset groups
         for asset_group in ACCEPTED_ASSETS_FOR_ASSET_GROUPS:
