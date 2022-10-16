@@ -684,8 +684,14 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
             # convert pandas.Series to a timeseries dict with key DATA value list,
             # move the unit inside the timeseries dict under key UNIT
             if FLOW in asset:
-                timeseries = asset[FLOW].to_list()
-                asset[FLOW] = {UNIT: unit, VALUE: timeseries}
+                if isinstance(asset.get(MAP_MVS_EPA[OUTFLOW_DIRECTION], None), list):
+                    timeseries = {}
+                    for bus in asset[MAP_MVS_EPA[OUTFLOW_DIRECTION]]:
+                        timeseries[bus] = asset[FLOW][bus].to_list()
+                    asset[FLOW] = {UNIT: unit, VALUE: timeseries}
+                else:
+                    timeseries = asset[FLOW].to_list()
+                    asset[FLOW] = {UNIT: unit, VALUE: timeseries}
 
             if TIMESERIES_SOC in asset:
                 timeseries = asset[TIMESERIES_SOC].to_list()
