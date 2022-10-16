@@ -51,6 +51,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_TRANSFORMER,
     OEMOF_BUSSES,
     EMISSION_FACTOR,
+    BETA,
 )
 from multi_vector_simulator.utils.helpers import get_item_if_list, get_length_if_list
 

@@ -86,6 +86,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MAXIMUM_EMISSIONS,
     CONSTRAINTS,
     RENEWABLE_SHARE_DSO,
+    BETA,
 )
 
 # Necessary for check_for_label_duplicates()
@@ -587,6 +588,7 @@ def all_valid_intervals(name, value, title):
         DISCOUNTFACTOR: [0, 1],
         PROJECT_DURATION: ["largerzero", "any"],
         TAX: [0, 1],
+        BETA: [0, 1],
     }
 
     if name in valid_type_int:
