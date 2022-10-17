@@ -680,7 +680,9 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             inputs = {}
             for i, bus in enumerate(dict_asset[INFLOW_DIRECTION]):
                 inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
-                    variable_costs=get_item_if_list(dict_asset[DISPATCH_PRICE][VALUE], i)
+                    variable_costs=get_item_if_list(
+                        dict_asset[DISPATCH_PRICE][VALUE], i
+                    )
                 )
 
             outputs = {
@@ -717,60 +719,25 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 logging.error(missing_dispatch_prices_or_efficiencies)
                 raise ValueError(missing_dispatch_prices_or_efficiencies)
 
-            # TODO move the investment in the input bus???
             inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
             outputs = {}
-
-            single_investment = False
-            if get_length_if_list(dict_asset[SIMULATION_ANNUITY][VALUE]) == 0:
-                single_investment = True
-
-            for i, bus in enumerate(dict_asset[OUTFLOW_DIRECTION]):
-                if single_investment is True:
-                    if kwargs[OEMOF_BUSSES][bus].energy_vector == "Electricity":
-                        flow_params = dict(
-                            investment=solph.Investment(
-                                ep_costs=get_item_if_list(
-                                    dict_asset[SIMULATION_ANNUITY][VALUE], i
-                                ),
-                                maximum=get_item_if_list(
-                                    dict_asset[MAXIMUM_ADD_CAP][VALUE], i
-                                ),
-                                existing=get_item_if_list(
-                                    dict_asset[INSTALLED_CAP][VALUE], i
-                                ),
-                            ),
-                        )
-                    else:
-                        flow_params = {}
-
-                    if dict_asset[DISPATCH_PRICE][VALUE] is not None:
-                        flow_params["variable_costs"] = dict_asset[DISPATCH_PRICE][
-                            VALUE
-                        ]
-                else:
-                    flow_params = dict(
-                        investment=solph.Investment(
-                            ep_costs=get_item_if_list(
-                                dict_asset[SIMULATION_ANNUITY][VALUE], i
-                            ),
-                            maximum=get_item_if_list(
-                                dict_asset[MAXIMUM_ADD_CAP][VALUE], i
-                            ),
-                            existing=get_item_if_list(
-                                dict_asset[INSTALLED_CAP][VALUE], i
-                            ),
-                        ),
-                        variable_costs=dict_asset[DISPATCH_PRICE][VALUE][i],
-                    )
-                outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(**flow_params)
-
             efficiencies = {}
-            for i, efficiency in enumerate(dict_asset[EFFICIENCY][VALUE]):
-                efficiencies[
-                    kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][i]]
-                ] = efficiency
 
+            for i, (bus, efficiency) in enumerate(
+                zip(dict_asset[OUTFLOW_DIRECTION], dict_asset[EFFICIENCY][VALUE])
+            ):
+                if i == 0:
+                    investment_params = dict(
+                        investment=solph.Investment(
+                            ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
+                            maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
+                            existing=dict_asset[INSTALLED_CAP][VALUE],
+                        )
+                    )
+                else:
+                    investment_params = {}
+                outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(**investment_params)
+                efficiencies[kwargs[OEMOF_BUSSES][bus]] = efficiency
         else:
             # multiple inputs and multiple outputs
             inputs_names = ", ".join([f"'{n}'" for n in dict_asset[INFLOW_DIRECTION]])
