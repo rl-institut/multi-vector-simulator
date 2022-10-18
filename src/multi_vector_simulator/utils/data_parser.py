@@ -122,8 +122,8 @@ MAP_EPA_MVS = {
     "energy_vector": ENERGY_VECTOR,
     "installed_capacity": INSTALLED_CAP,
     "capacity": STORAGE_CAPACITY,
-    "input_bus_name": INFLOW_DIRECTION,
-    "output_bus_name": OUTFLOW_DIRECTION,
+    # "input_bus_name": INFLOW_DIRECTION,
+    # "output_bus_name": OUTFLOW_DIRECTION,
     "input_power": INPUT_POWER,
     "output_power": OUTPUT_POWER,
     "optimize_capacity": OPTIMIZE_CAP,
@@ -694,9 +694,9 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
             # convert pandas.Series to a timeseries dict with key DATA value list,
             # move the unit inside the timeseries dict under key UNIT
             if FLOW in asset:
-                if isinstance(asset.get(MAP_MVS_EPA[OUTFLOW_DIRECTION], None), list):
+                if isinstance(asset.get(OUTFLOW_DIRECTION, None), list):
                     timeseries = {}
-                    for bus in asset[MAP_MVS_EPA[OUTFLOW_DIRECTION]]:
+                    for bus in asset[OUTFLOW_DIRECTION]:
                         timeseries[bus] = asset[FLOW][bus].to_list()
                     asset[FLOW] = {UNIT: unit, VALUE: timeseries}
                 else:
