@@ -35,7 +35,7 @@ Here is a template for new release sections
 - `plot_sankey_diagramm` function in `D0_modelling_and_optimization.py` to add the dict of the sankey diagram (#935)
 - `ready_sankey_diagram` in `F2_autoreport.py` to add sankey diagram to output and report (#935)
 - "maximum_add_cap" to the keys returned to EPA after simulating got production assets (#939)
-
+- `PARAMETER_DOC` in `utils` can be used to get information about a parameter directly from the csv file `docs/MVS_parameters_list.csv` (#956)
 ### Changed
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
 - `input_template/csv_elements`: Added missing parameters and generalized units (#904)
@@ -51,7 +51,7 @@ Here is a template for new release sections
 - `OPTIMIZED_ADD_CAP` replaced by "optimized_add_cap" in the assets keys returned to EPA after simulating (#939)
 - The if statement for adapting `MAXIMUM_CAP` for non-dispatchable production assets is now based on the value of `DISPATCHABILITY` and not on the existence of the key `FILENAME` in the `asset_dict` (#939)
 - The default values for the constraints are now located in `src/constants.py` under the variable `DEFAULT_CONSTRAINT_VALUES` (#953)
-
+- When a required parameter is missing its default value, defined in `docs/MVS_parameters_list.csv`, is used instead of raising an error (#956)
 ### Removed
 - Input timeseries is now not returned to epa in `utils.data_parser.py` (#936)
 
