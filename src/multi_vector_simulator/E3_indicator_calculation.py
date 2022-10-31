@@ -580,9 +580,12 @@ def equation_degree_of_autonomy(total_consumption_from_energy_provider, total_de
     Tested with
     - test_equation_degree_of_autonomy()
     """
-    degree_of_autonomy = (
-        total_demand - total_consumption_from_energy_provider
-    ) / total_demand
+    if total_demand == 0:
+        degree_of_autonomy = 0
+    else:
+        degree_of_autonomy = (
+            total_demand - total_consumption_from_energy_provider
+        ) / total_demand
 
     return degree_of_autonomy
 
@@ -676,7 +679,10 @@ def equation_degree_of_net_zero_energy(
     - test_equation_degree_of_net_zero_energy_greater_one()
 
     """
-    degree_of_nze = 1 + (total_feedin - total_grid_consumption) / total_demand
+    if total_demand == 0:
+        degree_of_nze = 1
+    else:
+        degree_of_nze = 1 + (total_feedin - total_grid_consumption) / total_demand
 
     return degree_of_nze
 
@@ -1006,6 +1012,8 @@ def equation_onsite_energy_matching(
     Tested with
     - test_equation_onsite_energy_matching()
     """
+    if total_demand == 0:
+        total_demand = total_feedin
     onsite_energy_matching = (
         total_generation - total_feedin - total_excess
     ) / total_demand
@@ -1092,12 +1100,16 @@ def add_specific_emissions_per_electricity_equivalent(dict_values):
 
     """
     # emissions per kWheleq
-    emissions_kWheleq = (
-        dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS]
-        / dict_values[KPI][KPI_SCALARS_DICT][
+    total_demand = dict_values[KPI][KPI_SCALARS_DICT][
             TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
         ]
-    )
+    if total_demand == 0:
+        emissions_kWheleq = 0
+    else:
+        emissions_kWheleq = (
+            dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS]
+            / total_demand
+        )
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {SPECIFIC_EMISSIONS_ELEQ: emissions_kWheleq}
     )
