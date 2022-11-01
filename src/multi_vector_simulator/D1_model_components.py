@@ -63,10 +63,11 @@ from multi_vector_simulator.utils.exceptions import (
 )
 
 
-def check_list_parameters_transformers_single_input_single_output(dict_asset):
+def check_list_parameters_transformers_single_input_single_output(dict_asset, n_timesteps):
     parameters_defined_as_list = []
     for parameter in [DISPATCH_PRICE, EFFICIENCY]:
-        if get_length_if_list(dict_asset[parameter][VALUE]) != 0:
+        len_param = get_length_if_list(dict_asset[parameter][VALUE])
+        if len_param != 0 and len_param != n_timesteps:
             parameters_defined_as_list.append(parameter)
 
     if parameters_defined_as_list:
@@ -607,7 +608,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
     else:
         # single input and single output
 
-        check_list_parameters_transformers_single_input_single_output(dict_asset)
+        check_list_parameters_transformers_single_input_single_output(dict_asset, model.timeindex.size)
 
         inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
         outputs = {
@@ -751,7 +752,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             logging.error(missing_dispatch_prices_or_efficiencies)
             raise ValueError(missing_dispatch_prices_or_efficiencies)
     else:
-        check_list_parameters_transformers_single_input_single_output(dict_asset)
+        check_list_parameters_transformers_single_input_single_output(dict_asset, model.timeindex.size)
 
         # single input and single output
         inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
