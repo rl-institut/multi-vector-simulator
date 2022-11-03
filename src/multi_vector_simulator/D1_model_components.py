@@ -680,19 +680,23 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
 
             inputs = {}
             for i, bus in enumerate(dict_asset[INFLOW_DIRECTION]):
+                if i==0 :
+                    opts=dict(investment=solph.Investment(
+                        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
+                        maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
+                        existing=dict_asset[INSTALLED_CAP][VALUE],
+                    ))
+                else:
+                    opts = {}
                 inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
                     variable_costs=get_item_if_list(
                         dict_asset[DISPATCH_PRICE][VALUE], i
-                    )
+                    ),
+                    **opts
                 )
 
             outputs = {
                 kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-                    investment=solph.Investment(
-                        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
-                        maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
-                        existing=dict_asset[INSTALLED_CAP][VALUE],
-                    )
                 )
             }
 
