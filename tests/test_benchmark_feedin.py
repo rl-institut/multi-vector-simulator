@@ -291,7 +291,7 @@ class TestFeedinTariff:
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
         reason="Benchmark test deactivated, set env variable "
-               "EXECUTE_TESTS_ON to 'master' to run this test",
+        "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_dso_energy_price_scalar_feedin_tariff_scalar(self, margs):
@@ -313,7 +313,7 @@ class TestFeedinTariff:
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
         reason="Benchmark test deactivated, set env variable "
-               "EXECUTE_TESTS_ON to 'master' to run this test",
+        "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_dso_energy_price_series_feedin_tariff_scalar(self, margs):
@@ -335,7 +335,7 @@ class TestFeedinTariff:
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
         reason="Benchmark test deactivated, set env variable "
-               "EXECUTE_TESTS_ON to 'master' to run this test",
+        "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_dso_energy_price_scalar_feedin_tariff_series(self, margs):
@@ -357,7 +357,7 @@ class TestFeedinTariff:
     @pytest.mark.skipif(
         EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
         reason="Benchmark test deactivated, set env variable "
-               "EXECUTE_TESTS_ON to 'master' to run this test",
+        "EXECUTE_TESTS_ON to 'master' to run this test",
     )
     @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
     def test_dso_energy_price_series_feedin_tariff_series(self, margs):

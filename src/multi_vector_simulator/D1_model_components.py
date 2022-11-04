@@ -63,7 +63,9 @@ from multi_vector_simulator.utils.exceptions import (
 )
 
 
-def check_list_parameters_transformers_single_input_single_output(dict_asset, n_timesteps):
+def check_list_parameters_transformers_single_input_single_output(
+    dict_asset, n_timesteps
+):
     parameters_defined_as_list = []
     for parameter in [DISPATCH_PRICE, EFFICIENCY]:
         len_param = get_length_if_list(dict_asset[parameter][VALUE])
@@ -608,7 +610,9 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
     else:
         # single input and single output
 
-        check_list_parameters_transformers_single_input_single_output(dict_asset, model.timeindex.size)
+        check_list_parameters_transformers_single_input_single_output(
+            dict_asset, model.timeindex.size
+        )
 
         inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
         outputs = {
@@ -821,7 +825,9 @@ def storage_fix(model, dict_asset, **kwargs):
     """
     storage = solph.components.GenericStorage(
         label=dict_asset[LABEL],
-        nominal_storage_capacity=dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][VALUE], #THERMAL --> yes
+        nominal_storage_capacity=dict_asset[STORAGE_CAPACITY][INSTALLED_CAP][
+            VALUE
+        ],  # THERMAL --> yes
         inputs={
             kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
                 nominal_value=dict_asset[INPUT_POWER][INSTALLED_CAP][
@@ -839,9 +845,16 @@ def storage_fix(model, dict_asset, **kwargs):
                 variable_costs=dict_asset[OUTPUT_POWER][DISPATCH_PRICE][VALUE],
             )
         },  # maximum discharge possible in one timestep
-        loss_rate=1 - dict_asset[STORAGE_CAPACITY][EFFICIENCY][VALUE],  # from timestep to timestep #THERMAL
-        fixed_losses_absolute=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][VALUE], #THERMAL
-        fixed_losses_relative=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][VALUE], #THERMAL
+        loss_rate=1
+        - dict_asset[STORAGE_CAPACITY][EFFICIENCY][
+            VALUE
+        ],  # from timestep to timestep #THERMAL
+        fixed_losses_absolute=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_ABS][
+            VALUE
+        ],  # THERMAL
+        fixed_losses_relative=dict_asset[STORAGE_CAPACITY][THERM_LOSSES_REL][
+            VALUE
+        ],  # THERMAL
         min_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE],
         max_storage_level=dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE],
         initial_storage_level=dict_asset[STORAGE_CAPACITY][SOC_INITIAL][
