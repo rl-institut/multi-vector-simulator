@@ -804,13 +804,21 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
     else:
         if (dict_feedin_tariff[VALUE] < 0).any():
             # Add a warning msg in case the feedin induces expenses rather than revenue
-            ts_info = ", ".join(dict_feedin_tariff[VALUE].loc[dict_feedin_tariff[VALUE] < 0].index.astype(str))
+            ts_info = ", ".join(
+                dict_feedin_tariff[VALUE]
+                .loc[dict_feedin_tariff[VALUE] < 0]
+                .index.astype(str)
+            )
             logging.warning(
                 f"The {FEEDIN_TARIFF} of {dso} is 0 for the following timestamps:\n{ts_info}\n. This means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
             )
         elif (dict_feedin_tariff[VALUE] < 0).any():
             # Add a warning msg in case the feedin induces expenses rather than revenue
-            ts_info = ", ".join(dict_feedin_tariff[VALUE].loc[dict_feedin_tariff[VALUE] < 0].index.astype(str))
+            ts_info = ", ".join(
+                dict_feedin_tariff[VALUE]
+                .loc[dict_feedin_tariff[VALUE] < 0]
+                .index.astype(str)
+            )
             logging.warning(
                 f"The {FEEDIN_TARIFF} of {dso} is negative for the following timestamps:\n{ts_info}\n. A negative value means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
             )
