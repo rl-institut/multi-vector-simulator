@@ -104,6 +104,9 @@ FEEDIN_TARIFF = "feedin_tariff"
 PEAK_DEMAND_PRICING = "peak_demand_pricing"
 PEAK_DEMAND_PRICING_PERIOD = "peak_demand_pricing_period"
 
+# Asset definitions: Transformer
+INVESTMENT_BUS = "investment_bus"
+
 # Asset definitions: Storage
 C_RATE = "c_rate"
 INPUT_POWER = "input power"

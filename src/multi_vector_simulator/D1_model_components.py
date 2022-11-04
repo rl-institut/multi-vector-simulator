@@ -55,6 +55,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_ExtractionTurbineCHP,
     EMISSION_FACTOR,
     BETA,
+    INVESTMENT_BUS,
 )
 from multi_vector_simulator.utils.helpers import get_item_if_list, get_length_if_list
 from multi_vector_simulator.utils.exceptions import (
@@ -659,6 +660,13 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
     """
     missing_dispatch_prices_or_efficiencies = None
 
+    investment_bus = dict_asset.get(INVESTMENT_BUS)
+    investment = solph.Investment(
+        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
+        maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
+        existing=dict_asset[INSTALLED_CAP][VALUE],
+    )
+
     # check if the transformer has multiple input or multiple output busses
     # the investment object is always in the output bus
     if isinstance(dict_asset[INFLOW_DIRECTION], list) or isinstance(
@@ -682,25 +690,22 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 logging.error(missing_dispatch_prices_or_efficiencies)
                 raise ValueError(missing_dispatch_prices_or_efficiencies)
 
+            if investment_bus is None:
+                investment_bus = dict_asset[OUTFLOW_DIRECTION]
+
             inputs = {}
             for i, bus in enumerate(dict_asset[INFLOW_DIRECTION]):
-                if i==0 :
-                    opts=dict(investment=solph.Investment(
-                        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
-                        maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
-                        existing=dict_asset[INSTALLED_CAP][VALUE],
-                    ))
-                else:
-                    opts = {}
                 inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
                     variable_costs=get_item_if_list(
                         dict_asset[DISPATCH_PRICE][VALUE], i
                     ),
-                    **opts
+                    investment=investment if bus == investment_bus else None,
                 )
 
+            bus = dict_asset[OUTFLOW_DIRECTION]
             outputs = {
-                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
+                kwargs[OEMOF_BUSSES][bus]: solph.Flow(
+                    investment=investment if bus == investment_bus else None
                 )
             }
 
@@ -728,24 +733,24 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 logging.error(missing_dispatch_prices_or_efficiencies)
                 raise ValueError(missing_dispatch_prices_or_efficiencies)
 
-            inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
+            if investment_bus is None:
+                investment_bus = dict_asset[INFLOW_DIRECTION]
+            bus = dict_asset[INFLOW_DIRECTION]
+            inputs = {
+                kwargs[OEMOF_BUSSES][bus]: solph.Flow(
+                    investment=investment if bus == investment_bus else None
+                )
+            }
             outputs = {}
             efficiencies = {}
 
             for i, (bus, efficiency) in enumerate(
                 zip(dict_asset[OUTFLOW_DIRECTION], dict_asset[EFFICIENCY][VALUE])
             ):
-                if i == 0:
-                    investment_params = dict(
-                        investment=solph.Investment(
-                            ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
-                            maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
-                            existing=dict_asset[INSTALLED_CAP][VALUE],
-                        )
-                    )
-                else:
-                    investment_params = {}
-                outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(**investment_params)
+
+                outputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
+                    investment=investment if bus == investment_bus else None
+                )
                 efficiencies[kwargs[OEMOF_BUSSES][bus]] = efficiency
         else:
             # multiple inputs and multiple outputs
@@ -760,31 +765,36 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             logging.error(missing_dispatch_prices_or_efficiencies)
             raise ValueError(missing_dispatch_prices_or_efficiencies)
     else:
-        check_list_parameters_transformers_single_input_single_output(dict_asset, model.timeindex.size)
+        check_list_parameters_transformers_single_input_single_output(
+            dict_asset, model.timeindex.size
+        )
 
         # single input and single output
-        inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
+
+        if investment_bus is None:
+            investment_bus = dict_asset[OUTFLOW_DIRECTION]
+
+        bus = dict_asset[INFLOW_DIRECTION]
+        inputs = {
+            kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
+                investment=investment if bus == investment_bus else None
+            )
+        }
+
+        bus = dict_asset[OUTFLOW_DIRECTION]
         if AVAILABILITY_DISPATCH in dict_asset.keys():
             # This key is only present in DSO peak demand pricing transformers.
             outputs = {
-                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-                    investment=solph.Investment(
-                        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
-                        maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
-                        existing=dict_asset[INSTALLED_CAP][VALUE],
-                    ),
+                kwargs[OEMOF_BUSSES][bus]: solph.Flow(
+                    investment=investment if bus == investment_bus else None,
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                     max=dict_asset[AVAILABILITY_DISPATCH].values,
                 )
             }
         else:
             outputs = {
-                kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-                    investment=solph.Investment(
-                        ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
-                        maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
-                        existing=dict_asset[INSTALLED_CAP][VALUE],
-                    ),
+                kwargs[OEMOF_BUSSES][bus]: solph.Flow(
+                    investment=investment if bus == investment_bus else None,
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                 )
             }
