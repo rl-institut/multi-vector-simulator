@@ -705,9 +705,7 @@ def plot_timeseries(
             logging.warning(
                 "The timeseries for {} do not have correct timestamps, it is likely that you uploaded "
                 "a timeseries with more or less values than the number of days multiplied by number of "
-                "timesteps within a day.".format(
-                    data_type
-                )
+                "timesteps within a day.".format(data_type)
             )
         else:
             if not isinstance(df_pd["timestamp"], pd.DatetimeIndex):
