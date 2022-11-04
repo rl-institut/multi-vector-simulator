@@ -383,5 +383,5 @@ html_static_path = ["_static"]
 # These paths are either relative to html_static_path
 # or fully qualified paths (eg. https://...)
 html_css_files = [
-    'table-style.css',
+    "table-style.css",
 ]

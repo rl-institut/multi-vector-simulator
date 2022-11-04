@@ -457,7 +457,7 @@ def convert_epa_params_to_mvs(epa_dict):
                         if isinstance(param_value, list):
                             dict_asset[asset_label][asset_param][VALUE] = {
                                 VALUE: param_value,
-                                DATA_TYPE_JSON_KEY: TYPE_SERIES
+                                DATA_TYPE_JSON_KEY: TYPE_SERIES,
                             }
 
                 # TODO remove this when change has been made on EPA side
