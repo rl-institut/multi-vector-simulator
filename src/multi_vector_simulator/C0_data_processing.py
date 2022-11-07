@@ -989,7 +989,7 @@ def define_transformer_for_peak_demand_pricing(
     Updated dict_values with newly added transformer asset in the energyConversion asset group.
     """
 
-    default_dso_transformer = {
+    dso_consumption_transformer = {
         LABEL: transformer_name,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         INSTALLED_CAP: {VALUE: 0, UNIT: dict_dso[UNIT]},
@@ -999,8 +999,9 @@ def define_transformer_for_peak_demand_pricing(
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
         SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
+        # the demand pricing is split between consumption and feedin
         SPECIFIC_COSTS_OM: {
-            VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE],
+            VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE] / 2,
             UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
         },
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
@@ -1009,59 +1010,51 @@ def define_transformer_for_peak_demand_pricing(
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
     }
 
-    dict_values[ENERGY_CONVERSION].update({transformer_name: default_dso_transformer})
-
-    logging.debug(
-        f"Model for peak demand pricing: Adding transfomer {transformer_name}."
+    dict_values[ENERGY_CONVERSION].update(
+        {transformer_name: dso_consumption_transformer}
     )
 
+    logging.debug(
+        f"Model for peak demand pricing on consumption side: Adding transfomer {transformer_name}."
+    )
 
-def define_transformer_for_dso_feedin_capping(dict_values, dict_dso, transformer_name):
-    r"""
-    Defines a transformer for DSO feedin maximum capacity in energyConverion
-
-    Parameters
-    ----------
-    dict_values: dict
-        All simulation parameters
-
-    dict_dso: dict
-        All values connected to the DSO
-
-    transformer_name: str
-        label of the transformer to be added
-
-    Returns
-    -------
-    Updated dict_values with newly added transformer asset in the energyConversion asset group.
-    """
-
-    default_dso_transformer = {
+    transformer_name = transformer_name.replace(DSO_CONSUMPTION, DSO_FEEDIN)
+    dso_feedin_transformer = {
         LABEL: transformer_name,
-        OPTIMIZE_CAP: {VALUE: False, UNIT: TYPE_BOOL},
-        INSTALLED_CAP: {VALUE: dict_dso[DSO_FEEDIN_CAP][VALUE], UNIT: dict_dso[UNIT]},
+        OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
+        INSTALLED_CAP: {VALUE: 0, UNIT: dict_dso[UNIT]},
         INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION],
         OUTFLOW_DIRECTION: peak_demand_bus_name(
             dict_dso[INFLOW_DIRECTION], feedin=True
         ),
+        AVAILABILITY_DISPATCH: timeseries_availability,
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
         SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
+        # the demand pricing is split between consumption and feedin
         SPECIFIC_COSTS_OM: {
-            VALUE: 0,
+            VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE] / 2,
             UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
         },
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
-        AGE_INSTALLED: {VALUE: 5, UNIT: UNIT_YEAR},
-        LIFETIME: {VALUE: 100, UNIT: UNIT_YEAR},
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
+        # LIFETIME: {VALUE: 100, UNIT: UNIT_YEAR},
     }
+    if dict_dso.get(DSO_FEEDIN_CAP, None) is not None:
+        dso_feedin_transformer[MAXIMUM_CAP] = (
+            {VALUE: dict_dso[DSO_FEEDIN_CAP][VALUE], UNIT: dict_dso[UNIT]},
+        )
 
-    dict_values[ENERGY_CONVERSION].update({transformer_name: default_dso_transformer})
+        logging.info(
+            f"Capping {dict_dso[LABEL]} feedin with maximum capacity {dict_dso[DSO_FEEDIN_CAP][VALUE]}"
+        )
+
+    dict_values[ENERGY_CONVERSION].update({transformer_name: dso_feedin_transformer})
 
     logging.debug(
-        f"Model for capping DSO feedin with maximum capacity {dict_dso[DSO_FEEDIN_CAP][VALUE]}: Adding transfomer {transformer_name}."
+        f"Model for peak demand pricing on feedin side: Adding transfomer {transformer_name}."
     )
 
 
