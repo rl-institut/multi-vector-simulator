@@ -229,7 +229,10 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
                         if optimze_cap == True and maximum_cap is None:
 
                             msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_unbound}"
-                            if DSO_FEEDIN_CAP in dict_values[ENERGY_PROVIDERS][provider]:
+                            if (
+                                DSO_FEEDIN_CAP
+                                in dict_values[ENERGY_PROVIDERS][provider]
+                            ):
                                 logging.warning(msg)
                             else:
                                 raise ValueError(msg)
@@ -254,7 +257,10 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
                         if optimze_cap == True and maximum_cap is None:
                             instances = sum(boolean)  # Count instances
                             msg = f"Feed-in tariff of {energy_vector} > {log_message_object} in {instances} during the simulation time. {warning_message_hint_unbound}"
-                            if DSO_FEEDIN_CAP in dict_values[ENERGY_PROVIDERS][provider]:
+                            if (
+                                DSO_FEEDIN_CAP
+                                in dict_values[ENERGY_PROVIDERS][provider]
+                            ):
                                 logging.warning(msg)
                             else:
                                 raise ValueError(msg)

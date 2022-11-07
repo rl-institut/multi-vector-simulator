@@ -126,18 +126,19 @@ class TestFeedinTariff:
             total_excess_scalar == 0
         ), f"When the feed-in tariff is positive there should be no electricity excess, however the scalar matrix shows an excess of {total_excess_scalar}"
 
+        dso_name = "DSO"
         # costs of DSO feed-in sink in scalars.xlsx should be negative, while they
         # should be substracted from the summed-up costs of the whole system
         # negative costs in cost_matrix:
         assert (
-            cost_matrix[COST_TOTAL][FEEDIN] < 0
-            and cost_matrix[COST_OPERATIONAL_TOTAL][FEEDIN] < 0
-            and cost_matrix[COST_DISPATCH][FEEDIN] < 0
-            and cost_matrix[LCOE_ASSET][FEEDIN] < 0
+            cost_matrix[COST_TOTAL][dso_name + DSO_FEEDIN] < 0
+            and cost_matrix[COST_OPERATIONAL_TOTAL][dso_name + DSO_FEEDIN] < 0
+            and cost_matrix[COST_DISPATCH][dso_name + DSO_FEEDIN] < 0
+            and cost_matrix[LCOE_ASSET][dso_name + DSO_FEEDIN] < 0
         ), f"When the feed-in tariff is positive the costs of the feed-in should be negative (scalar_matrix: {COST_TOTAL}, {COST_OPERATIONAL_TOTAL}, {COST_DISPATCH}, {LCOE_ASSET})."
         # costs substracted from total costs:
-        total_costs_feedin = cost_matrix[COST_TOTAL][FEEDIN]
-        total_costs_consumption = cost_matrix[COST_TOTAL][CONSUMPTION]
+        total_costs_feedin = cost_matrix[COST_TOTAL][dso_name + DSO_FEEDIN]
+        total_costs_consumption = cost_matrix[COST_TOTAL][dso_name + DSO_CONSUMPTION]
         total_costs_all_assets = scalars.loc[COST_TOTAL][0]
         assert (
             total_costs_all_assets == total_costs_feedin + total_costs_consumption
@@ -160,7 +161,8 @@ class TestFeedinTariff:
             TEST_INPUT_PATH, use_case, CSV_ELEMENTS, f"{ENERGY_PROVIDERS}.csv"
         )
         df = pd.read_csv(filename).set_index("Unnamed: 0")
-        df["DSO"][FEEDIN_TARIFF] = -float(df["DSO"][FEEDIN_TARIFF])
+        dso_name = df.columns[1]
+        df[dso_name][FEEDIN_TARIFF] = -float(df[dso_name][FEEDIN_TARIFF])
         df.to_csv(filename)
 
         main(
@@ -174,7 +176,7 @@ class TestFeedinTariff:
         )
 
         # reset feed-in tariff just in case
-        df["DSO"][FEEDIN_TARIFF] = -float(df["DSO"][FEEDIN_TARIFF])
+        df[dso_name][FEEDIN_TARIFF] = -float(df[dso_name][FEEDIN_TARIFF])
         df.to_csv(filename)
 
         df_busses_flow, cost_matrix, scalar_matrix, scalars = self.get_results(
@@ -252,7 +254,8 @@ class TestFeedinTariff:
             TEST_INPUT_PATH, use_case, CSV_ELEMENTS, f"{ENERGY_PROVIDERS}.csv"
         )
         df = pd.read_csv(filename).set_index("Unnamed: 0")
-        df["DSO"][FEEDIN_TARIFF] = -float(df["DSO"][FEEDIN_TARIFF])
+        dso_name = df.columns[1]
+        df[dso_name][FEEDIN_TARIFF] = -float(df[dso_name][FEEDIN_TARIFF])
         df.to_csv(filename)
 
         main(
@@ -265,7 +268,7 @@ class TestFeedinTariff:
             ),
         )
         # reset feed-in tariff just in case
-        df["DSO"][FEEDIN_TARIFF] = -float(df["DSO"][FEEDIN_TARIFF])
+        df[dso_name][FEEDIN_TARIFF] = -float(df[dso_name][FEEDIN_TARIFF])
         df.to_csv(filename)
 
         # get results
