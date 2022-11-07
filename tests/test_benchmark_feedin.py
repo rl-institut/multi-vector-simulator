@@ -24,10 +24,7 @@ from _constants import (
     BENCHMARK_TEST_INPUT_FOLDER,
 )
 
-from multi_vector_simulator.utils.constants import (
-    JSON_WITH_RESULTS,
-    JSON_FILE_EXTENSION,
-)
+from multi_vector_simulator.utils.helpers import peak_demand_transformer_name
 
 from multi_vector_simulator.utils.constants_json_strings import (
     DSO_CONSUMPTION,
@@ -55,8 +52,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
 TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_INPUT_FOLDER)
 TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_OUTPUT_FOLDER)
 
-FEEDIN = f"DSO{DSO_FEEDIN}"
-CONSUMPTION = f"DSO{DSO_CONSUMPTION}"
+FEEDIN = peak_demand_transformer_name("DSO", feedin=True)
+CONSUMPTION = peak_demand_transformer_name("DSO")
 EXCESS_SINK_NAME = f"Electricity{EXCESS_SINK}"
 
 

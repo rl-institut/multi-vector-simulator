@@ -43,8 +43,8 @@ from multi_vector_simulator.utils.exceptions import MaximumCapValueInvalid
 
 from multi_vector_simulator.utils.constants_json_strings import *
 from multi_vector_simulator.utils.helpers import (
-    feedin_cap_bus_name,
     peak_demand_bus_name,
+    peak_demand_transformer_name,
 )
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 import multi_vector_simulator.B0_data_input_json as B0
@@ -736,14 +736,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
     )
     dict_feedin = change_sign_of_feedin_tariff(dso_dict[FEEDIN_TARIFF], dso_name)
 
-    # insert a transformer and a bus between existing bus and dso feedin in order to cap the maximal amount of feedin
-    if dso_dict.get(DSO_FEEDIN_CAP, None) is not None:
-        define_transformer_for_dso_feedin_capping(
-            dict_values, dso_dict, transformer_name=feedin_cap_bus_name(dso_name)
-        )
-        inflow_bus_name = feedin_cap_bus_name(dso_dict[INFLOW_DIRECTION])
-    else:
-        inflow_bus_name = dso_dict[INFLOW_DIRECTION]
+    inflow_bus_name = peak_demand_bus_name(dso_dict[INFLOW_DIRECTION], feedin=True)
 
     # define feed-in sink of the DSO
     define_sink(
@@ -894,18 +887,13 @@ def add_a_transformer_for_each_peak_demand_pricing_period(
 
     list_of_dso_energyConversion_assets = []
     for key in dict_availability_timeseries.keys():
-        if len(dict_availability_timeseries.keys()) == 1:
-            transformer_name = (
-                dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD
+
+        if len(dict_availability_timeseries.keys()) > 1:
+            transformer_name = peak_demand_transformer_name(
+                dict_dso[LABEL], peak_number=key
             )
         else:
-            transformer_name = (
-                dict_dso[LABEL]
-                + DSO_CONSUMPTION
-                + DSO_PEAK_DEMAND_PERIOD
-                + "_"
-                + str(key)
-            )
+            transformer_name = peak_demand_transformer_name(dict_dso[LABEL])
 
         define_transformer_for_peak_demand_pricing(
             dict_values=dict_values,
@@ -1053,7 +1041,9 @@ def define_transformer_for_dso_feedin_capping(dict_values, dict_dso, transformer
         OPTIMIZE_CAP: {VALUE: False, UNIT: TYPE_BOOL},
         INSTALLED_CAP: {VALUE: dict_dso[DSO_FEEDIN_CAP][VALUE], UNIT: dict_dso[UNIT]},
         INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION],
-        OUTFLOW_DIRECTION: feedin_cap_bus_name(dict_dso[INFLOW_DIRECTION]),
+        OUTFLOW_DIRECTION: peak_demand_bus_name(
+            dict_dso[INFLOW_DIRECTION], feedin=True
+        ),
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
         SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
