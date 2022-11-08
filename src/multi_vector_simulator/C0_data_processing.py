@@ -1043,9 +1043,7 @@ def define_transformer_for_peak_demand_pricing(
         # LIFETIME: {VALUE: 100, UNIT: UNIT_YEAR},
     }
     if dict_dso.get(DSO_FEEDIN_CAP, None) is not None:
-        dso_feedin_transformer[MAXIMUM_CAP] = (
-            {VALUE: dict_dso[DSO_FEEDIN_CAP][VALUE], UNIT: dict_dso[UNIT]},
-        )
+        dso_feedin_transformer[MAXIMUM_CAP] = {VALUE: dict_dso[DSO_FEEDIN_CAP][VALUE], UNIT: dict_dso[UNIT]}
 
         logging.info(
             f"Capping {dict_dso[LABEL]} feedin with maximum capacity {dict_dso[DSO_FEEDIN_CAP][VALUE]}"

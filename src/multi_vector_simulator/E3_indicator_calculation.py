@@ -1014,9 +1014,12 @@ def equation_onsite_energy_matching(
     """
     if total_demand == 0:
         total_demand = total_feedin
-    onsite_energy_matching = (
-        total_generation - total_feedin - total_excess
-    ) / total_demand
+    if total_demand != 0:
+        onsite_energy_matching = (
+            total_generation - total_feedin - total_excess
+        ) / total_demand
+    else:
+        onsite_energy_matching = 0
     return onsite_energy_matching
 
 
