@@ -296,6 +296,7 @@ def define_excess_sinks(dict_values):
             price={VALUE: 0, UNIT: CURR + "/" + UNIT},
             inflow_direction=bus,
             energy_vector=energy_vector,
+            asset_type="excess",
         )
         dict_values[ENERGY_BUSSES][bus].update({EXCESS_SINK: excess_sink_name})
         auto_sinks.append(excess_sink_name)
@@ -733,6 +734,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
         price=dso_dict[ENERGY_PRICE],
         energy_vector=dso_dict[ENERGY_VECTOR],
         emission_factor=dso_dict[EMISSION_FACTOR],
+        asset_type=dso_dict.get(TYPE_ASSET),
     )
     dict_feedin = change_sign_of_feedin_tariff(dso_dict[FEEDIN_TARIFF], dso_name)
 
@@ -746,6 +748,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
         inflow_direction=inflow_bus_name,
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
         energy_vector=dso_dict[ENERGY_VECTOR],
+        asset_type=dso_dict.get(TYPE_ASSET),
     )
     dso_dict.update(
         {
@@ -1030,6 +1033,7 @@ def define_transformer_for_peak_demand_pricing(
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
+        TYPE_ASSET: dict_dso[TYPE_ASSET],
     }
 
     dict_values[ENERGY_CONVERSION].update(
@@ -1062,6 +1066,7 @@ def define_transformer_for_peak_demand_pricing(
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
+        TYPE_ASSET: dict_dso[TYPE_ASSET]
         # LIFETIME: {VALUE: 100, UNIT: UNIT_YEAR},
     }
     if dict_dso.get(DSO_FEEDIN_CAP, None) is not None:
@@ -1089,6 +1094,7 @@ def define_source(
     emission_factor,
     price=None,
     timeseries=None,
+    asset_type=None,
 ):
     r"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
@@ -1145,6 +1151,7 @@ def define_source(
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
         ENERGY_VECTOR: energy_vector,
         EMISSION_FACTOR: emission_factor,
+        TYPE_ASSET: asset_type,
     }
 
     if outflow_direction not in dict_values[ENERGY_BUSSES]:
@@ -1271,7 +1278,13 @@ def determine_dispatch_price(dict_values, price, source):
 
 
 def define_sink(
-    dict_values, asset_key, price, inflow_direction, energy_vector, **kwargs
+    dict_values,
+    asset_key,
+    price,
+    inflow_direction,
+    energy_vector,
+    asset_type=None,
+    **kwargs,
 ):
     r"""
     This automatically defines a sink for an oemof-sink object. The sinks are added to the energyConsumption assets.
@@ -1323,6 +1336,7 @@ def define_sink(
         ENERGY_VECTOR: energy_vector,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         DISPATCHABILITY: {VALUE: True, UNIT: TYPE_BOOL},
+        TYPE_ASSET: asset_type,
     }
 
     if inflow_direction not in dict_values[ENERGY_BUSSES]:

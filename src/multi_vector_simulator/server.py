@@ -39,6 +39,7 @@ import os
 import tempfile
 
 from oemof.tools import logger
+import oemof.solph as solph
 
 # Loading all child functions
 import multi_vector_simulator.B0_data_input_json as B0
@@ -59,8 +60,98 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OUTPUT_LP_FILE,
     VALUE,
     UNIT,
+    ENERGY_BUSSES,
+    AUTO_CREATED_HIGHLIGHT,
+    ENERGY_VECTOR,
+    TYPE_ASSET,
+    OEMOF_ASSET_TYPE,
 )
 from multi_vector_simulator.utils.constants import TYPE_STR
+from multi_vector_simulator.utils.helpers import get_asset_types
+
+
+import pandas as pd
+
+
+def bus_flow(
+    flow_tuple, busses_info, asset_types=None
+):  # can work as well with nodes (assets)
+    if not isinstance(busses_info, dict):
+        raise ValueError("Expected a dict")
+    busses_names = [bn for bn in busses_info]
+    bus_name = set(busses_names).intersection(set(flow_tuple))
+    answer = None
+    if len(bus_name) == 1:
+        bus_name = bus_name.pop()
+        idx_bus = flow_tuple.index(bus_name)
+        if idx_bus == 0:
+            asset_name = flow_tuple[1]
+            answer = (bus_name, busses_info[bus_name][ENERGY_VECTOR], "out", asset_name)
+        elif idx_bus == 1:
+            asset_name = flow_tuple[0]
+            answer = (bus_name, busses_info[bus_name][ENERGY_VECTOR], "in", asset_name)
+        if asset_types is not None:
+            df_at = pd.DataFrame.from_records(asset_types).set_index("label")
+            answer = answer + (
+                df_at.loc[asset_name, TYPE_ASSET],
+                df_at.loc[asset_name, OEMOF_ASSET_TYPE],
+            )
+    return answer
+
+
+class OemofBusResults(pd.DataFrame):  # real results
+    def __init__(self, results, busses_info=None, asset_types=None):
+        if isinstance(results, dict):
+            ts = []
+            flows = []
+            for x, res in solph.views.convert_keys_to_strings(results).items():
+                if x[1] != "None":
+                    col_name = res["sequences"].columns[0]
+                    ts.append(
+                        res["sequences"].rename(
+                            columns={col_name: x, "variable_name": "timesteps"}
+                        )
+                    )
+                    flows.append(bus_flow(x, busses_info, asset_types))
+            df = pd.concat(ts, axis=1, join="inner")
+            mindex = pd.MultiIndex.from_tuples(
+                flows,
+                names=[
+                    "bus",
+                    "energy_vector",
+                    "direction",
+                    "asset",
+                    "asset_type",
+                    "oemof_type",
+                ],
+            )
+
+        elif isinstance(results, str):
+            js = json.loads(results)
+            mindex = pd.MultiIndex.from_tuples(
+                js["columns"],
+                names=[
+                    "bus",
+                    "energy_vector",
+                    "direction",
+                    "asset",
+                    "asset_type",
+                    "oemof_type",
+                ],
+            )
+            df = pd.DataFrame(data=js["data"], index=js["index"])
+            df.index = pd.to_datetime(df.index, unit="ms")
+        super().__init__(
+            data=df.T.to_dict(orient="split")["data"], index=mindex, columns=df.index
+        )
+        self.sort_index(inplace=True)
+
+    def to_json(self, **kwargs):
+        kwargs["orient"] = "split"
+        return self.T.to_json(**kwargs)
+
+    def bus_flows(self, bus_name):
+        return self.loc[bus_name].T
 
 
 def run_simulation(json_dict, epa_format=True, **kwargs):
@@ -137,6 +228,12 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
         dict_values, return_les=True
     )
 
+    br = OemofBusResults(
+        results_main,
+        busses_info=dict_values[ENERGY_BUSSES],
+        asset_types=get_asset_types(dict_values),
+    )  # if AUTO_CREATED_HIGHLIGHT not in bl])
+    dict_values["raw_results"] = br.to_json()  # to_dict(orient="split") #
     if lp_file_output is True:
         logging.debug("Saving the content of the model's lp file")
         with tempfile.TemporaryDirectory() as tmpdirname:
@@ -161,7 +258,6 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
 
         json_values = F0.store_as_json(epa_dict_values)
         answer = json.loads(json_values)
-
     else:
         answer = dict_values
 
