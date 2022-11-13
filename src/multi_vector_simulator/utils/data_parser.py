@@ -153,7 +153,8 @@ MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
 EPA_PARAM_KEYS = {
     PROJECT_DATA: [PROJECT_ID, PROJECT_NAME, SCENARIO_ID, SCENARIO_NAME],
     SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP, OUTPUT_LP_FILE],
-    KPI: [KPI_SCALARS_DICT, KPI_UNCOUPLED_DICT, KPI_COST_MATRIX, KPI_SCALAR_MATRIX],
+    KPI: [KPI_SCALARS_DICT, KPI_UNCOUPLED_DICT, KPI_COST_MATRIX, KPI_SCALAR_MATRIX,],
+    "raw_results": ["index", "columns", "data"],
 }
 
 # Fields expected for assets' parameters of json returned to EPA
@@ -605,45 +606,49 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
     for param_group in EPA_PARAM_KEYS:
 
         # translate field name from mvs to epa
-        param_group_epa = MAP_MVS_EPA[param_group]
+        param_group_epa = MAP_MVS_EPA.get(param_group, param_group)
 
         # assign the whole MVS value to the EPA field
         epa_dict[param_group_epa] = mvs_dict[param_group]
+        if isinstance(epa_dict[param_group_epa], str):
+            pass
+        else:
+            keys_list = list(epa_dict[param_group_epa].keys())
+            for k in keys_list:
+                # ditch all subfields which are not present in the EPA_PARAM_KEYS value corresponding
+                # to the parameter group (except for CONSTRAINTS)
+                if k not in EPA_PARAM_KEYS[param_group] or param_group in (
+                    CONSTRAINTS,
+                ):
+                    epa_dict[param_group_epa].pop(k)
+                else:
+                    # convert fields names from MVS convention to EPA convention, if applicable
+                    if k in MAP_MVS_EPA:
+                        epa_dict[param_group_epa][MAP_MVS_EPA[k]] = epa_dict[
+                            param_group_epa
+                        ].pop(k)
 
-        keys_list = list(epa_dict[param_group_epa].keys())
-        for k in keys_list:
-            # ditch all subfields which are not present in the EPA_PARAM_KEYS value corresponding
-            # to the parameter group (except for CONSTRAINTS)
-            if k not in EPA_PARAM_KEYS[param_group] or param_group in (CONSTRAINTS,):
-                epa_dict[param_group_epa].pop(k)
-            else:
-                # convert fields names from MVS convention to EPA convention, if applicable
-                if k in MAP_MVS_EPA:
-                    epa_dict[param_group_epa][MAP_MVS_EPA[k]] = epa_dict[
-                        param_group_epa
-                    ].pop(k)
+                    if k == KPI_UNCOUPLED_DICT:
+                        epa_dict[param_group_epa][k] = json.loads(
+                            epa_dict[param_group_epa][k].to_json(orient="index")
+                        )
 
-                if k == KPI_UNCOUPLED_DICT:
-                    epa_dict[param_group_epa][k] = json.loads(
-                        epa_dict[param_group_epa][k].to_json(orient="index")
-                    )
+                    if k in (KPI_SCALAR_MATRIX, KPI_COST_MATRIX):
 
-                if k in (KPI_SCALAR_MATRIX, KPI_COST_MATRIX):
+                        cols = epa_dict[param_group_epa][k].columns
+                        epa_dict[param_group_epa][k].columns = [
+                            MAP_MVS_EPA.get(k, k) for k in cols
+                        ]
+                        epa_dict[param_group_epa][k] = json.loads(
+                            epa_dict[param_group_epa][k]
+                            .set_index("label")
+                            .to_json(orient="index")
+                        )
 
-                    cols = epa_dict[param_group_epa][k].columns
-                    epa_dict[param_group_epa][k].columns = [
-                        MAP_MVS_EPA.get(k, k) for k in cols
-                    ]
-                    epa_dict[param_group_epa][k] = json.loads(
-                        epa_dict[param_group_epa][k]
-                        .set_index("label")
-                        .to_json(orient="index")
-                    )
-
-                # if the parameter is of type
-                if k == OUTPUT_LP_FILE:
-                    if epa_dict[param_group_epa][k][UNIT] == TYPE_BOOL:
-                        epa_dict[param_group_epa].pop(k)
+                    # if the parameter is of type
+                    if k == OUTPUT_LP_FILE:
+                        if epa_dict[param_group_epa][k][UNIT] == TYPE_BOOL:
+                            epa_dict[param_group_epa].pop(k)
 
     # manage which assets parameters are kept and which one are removed in epa_dict
     for asset_group in EPA_ASSET_KEYS:
