@@ -776,7 +776,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
 
         bus = dict_asset[INFLOW_DIRECTION]
         inputs = {
-            kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
+            kwargs[OEMOF_BUSSES][bus]: solph.Flow(
                 investment=investment if bus == investment_bus else None
             )
         }
