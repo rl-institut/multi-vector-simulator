@@ -103,6 +103,7 @@ class OemofBusResults(pd.DataFrame):  # real results
     def __init__(self, results, busses_info=None, asset_types=None):
         if isinstance(results, dict):
             ts = []
+            investments = []
             flows = []
             for x, res in solph.views.convert_keys_to_strings(results).items():
                 if x[1] != "None":
@@ -113,7 +114,9 @@ class OemofBusResults(pd.DataFrame):  # real results
                         )
                     )
                     flows.append(bus_flow(x, busses_info, asset_types))
-            df = pd.concat(ts, axis=1, join="inner")
+                    invest = None if res["scalars"].empty is True else res["scalars"].invest
+                    investments.append(invest)
+            ts_df = pd.concat(ts, axis=1, join="inner")
             mindex = pd.MultiIndex.from_tuples(
                 flows,
                 names=[
@@ -139,11 +142,18 @@ class OemofBusResults(pd.DataFrame):  # real results
                     "oemof_type",
                 ],
             )
-            df = pd.DataFrame(data=js["data"], index=js["index"])
-            df.index = pd.to_datetime(df.index, unit="ms")
+            df = pd.DataFrame(data=js["data"], columns=mindex)
+
+            ts_df = df.iloc[:-1]
+            ts_index = pd.to_datetime(js["index"][:-1], unit="ms")
+            investments = df.iloc[-1]
+            ts_df.index = ts_index
+
         super().__init__(
-            data=df.T.to_dict(orient="split")["data"], index=mindex, columns=df.index
+            data=ts_df.T.to_dict(orient="split")["data"], index=mindex, columns=ts_df.index
         )
+
+        self["investments"] = investments
         self.sort_index(inplace=True)
 
     def to_json(self, **kwargs):
@@ -151,7 +161,16 @@ class OemofBusResults(pd.DataFrame):  # real results
         return self.T.to_json(**kwargs)
 
     def bus_flows(self, bus_name):
-        return self.loc[bus_name].T
+        return self.loc[bus_name, self.columns != "investments"].T
+
+    def asset_optimized_capacities(self):
+        return self.loc[:, "investments"]
+
+    def asset_optimized_capacity(self, asset_name):
+        optimized_capacity = self.loc[self.index.get_level_values("asset") == asset_name, "investments"].dropna()
+        if len(optimized_capacity) == 1:
+            optimized_capacity = optimized_capacity[0]
+        return optimized_capacity
 
 
 def run_simulation(json_dict, epa_format=True, **kwargs):
