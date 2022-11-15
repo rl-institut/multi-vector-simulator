@@ -114,7 +114,9 @@ class OemofBusResults(pd.DataFrame):  # real results
                         )
                     )
                     flows.append(bus_flow(x, busses_info, asset_types))
-                    invest = None if res["scalars"].empty is True else res["scalars"].invest
+                    invest = (
+                        None if res["scalars"].empty is True else res["scalars"].invest
+                    )
                     investments.append(invest)
             ts_df = pd.concat(ts, axis=1, join="inner")
             mindex = pd.MultiIndex.from_tuples(
@@ -150,7 +152,9 @@ class OemofBusResults(pd.DataFrame):  # real results
             ts_df.index = ts_index
 
         super().__init__(
-            data=ts_df.T.to_dict(orient="split")["data"], index=mindex, columns=ts_df.index
+            data=ts_df.T.to_dict(orient="split")["data"],
+            index=mindex,
+            columns=ts_df.index,
         )
 
         self["investments"] = investments
@@ -167,7 +171,9 @@ class OemofBusResults(pd.DataFrame):  # real results
         return self.loc[:, "investments"]
 
     def asset_optimized_capacity(self, asset_name):
-        optimized_capacity = self.loc[self.index.get_level_values("asset") == asset_name, "investments"].dropna()
+        optimized_capacity = self.loc[
+            self.index.get_level_values("asset") == asset_name, "investments"
+        ].dropna()
         if len(optimized_capacity) == 1:
             optimized_capacity = optimized_capacity[0]
         return optimized_capacity
