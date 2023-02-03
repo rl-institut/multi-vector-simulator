@@ -16,6 +16,7 @@ from _constants import (
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
     CSV_EXT,
+    JSON_EXT,
     ENERGY_PRICE,
     OPTIMIZED_ADD_CAP,
     LABEL,
@@ -286,6 +287,94 @@ class TestFeedinTariff:
         assert (
             feedin_sum == 0
         ), f"When the feed-in tariff is negative there should be no feed-in to the grid, however the sum of the feed-in time series is {feedin_sum}"
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+               "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_dso_energy_price_scalar_feedin_tariff_scalar(self, margs):
+        r"""
+        Benchmark test for feed-in in a simple invest case with grid connected PV and negative feed-in tariff (pay for feed-in).
+        """
+        use_case = "dso_energy_price_scalar_feedin_tariff_scalar"
+
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=JSON_EXT,
+            path_output_folder=os.path.join(
+                TEST_OUTPUT_PATH, use_case, "scalar-scalar"
+            ),
+        )
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+               "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_dso_energy_price_series_feedin_tariff_scalar(self, margs):
+        r"""
+        Benchmark test for feed-in in a simple invest case with grid connected PV and negative feed-in tariff (pay for feed-in).
+        """
+        use_case = "dso_energy_price_series_feedin_tariff_scalar"
+
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=JSON_EXT,
+            path_output_folder=os.path.join(
+                TEST_OUTPUT_PATH, use_case, "series-scalar"
+            ),
+        )
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+               "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_dso_energy_price_scalar_feedin_tariff_series(self, margs):
+        r"""
+        Benchmark test for feed-in in a simple invest case with grid connected PV and negative feed-in tariff (pay for feed-in).
+        """
+        use_case = "dso_energy_price_scalar_feedin_tariff_series"
+
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=JSON_EXT,
+            path_output_folder=os.path.join(
+                TEST_OUTPUT_PATH, use_case, "scalar-series"
+            ),
+        )
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+               "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_dso_energy_price_series_feedin_tariff_series(self, margs):
+        r"""
+        Benchmark test for feed-in in a simple invest case with grid connected PV and negative feed-in tariff (pay for feed-in).
+        """
+        use_case = "dso_energy_price_series_feedin_tariff_series"
+
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=JSON_EXT,
+            path_output_folder=os.path.join(
+                TEST_OUTPUT_PATH, use_case, "series-series"
+            ),
+        )
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):
