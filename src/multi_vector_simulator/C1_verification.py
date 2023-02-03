@@ -303,7 +303,17 @@ def check_feedin_tariff_vs_energy_price(dict_values):
     for provider in dict_values[ENERGY_PROVIDERS].keys():
         feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]
         electricity_price = dict_values[ENERGY_PROVIDERS][provider][ENERGY_PRICE]
-        diff = feedin_tariff[VALUE] - electricity_price[VALUE]
+        if isinstance(feedin_tariff[VALUE], pd.Series):
+            feedin_tariff = feedin_tariff[VALUE].values
+        else:
+            feedin_tariff = feedin_tariff[VALUE]
+
+        if isinstance(electricity_price[VALUE], pd.Series):
+            electricity_price = electricity_price[VALUE].values
+        else:
+            electricity_price = electricity_price[VALUE]
+
+        diff = feedin_tariff - electricity_price
         if isinstance(diff, float) or isinstance(diff, int):
             if diff > 0:
 
@@ -318,7 +328,7 @@ def check_feedin_tariff_vs_energy_price(dict_values):
                 )
         else:
             boolean = [
-                k > 0 for k in diff.values
+                k > 0 for k in diff
             ]  # True if there is an instance where feed-in tariff > electricity_price
             if any(boolean) is True:
                 instances = sum(boolean)  # Count instances
