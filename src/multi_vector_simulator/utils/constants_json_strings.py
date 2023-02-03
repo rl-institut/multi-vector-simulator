@@ -90,6 +90,7 @@ SPECIFIC_COSTS = "specific_costs"
 SPECIFIC_COSTS_OM = "specific_costs_om"
 DISPATCH_PRICE = "dispatch_price"
 OEMOF_ASSET_TYPE = "type_oemof"
+BETA = "beta"
 
 # Specific parameters
 RENEWABLE_ASSET_BOOL = "renewableAsset"
