@@ -34,12 +34,14 @@ from multi_vector_simulator.utils.constants_json_strings import (
     SPECIFIC_COSTS,
     INSTALLED_CAP,
     SIMULATION_SETTINGS,
+    OUTFLOW_DIRECTION,
     LIFETIME_SPECIFIC_COST,
     CRF,
     LIFETIME_SPECIFIC_COST_OM,
     LIFETIME_PRICE_DISPATCH,
     ANNUAL_TOTAL_FLOW,
     OPTIMIZED_ADD_CAP,
+    OUTFLOW_DIRECTION,
     ANNUITY_OM,
     ANNUITY_TOTAL,
     COST_TOTAL,
@@ -182,11 +184,20 @@ def get_costs(dict_asset, economic_data):
     )
 
     # Dispatch expenditures of the asset over the project lifetime
-    costs_dispatch = calculate_dispatch_expenditures(
-        dispatch_price=dict_asset[LIFETIME_PRICE_DISPATCH][VALUE],
-        flow=dict_asset[FLOW],
-        asset=dict_asset[LABEL],
-    )
+    if isinstance(dict_asset.get(OUTFLOW_DIRECTION, None), list):
+        costs_dispatch = 0
+        for bus in dict_asset[OUTFLOW_DIRECTION]:
+            costs_dispatch += calculate_dispatch_expenditures(
+                dispatch_price=dict_asset[LIFETIME_PRICE_DISPATCH][VALUE],
+                flow=dict_asset[FLOW][bus],
+                asset=dict_asset[LABEL],
+            )
+    else:
+        costs_dispatch = calculate_dispatch_expenditures(
+            dispatch_price=dict_asset[LIFETIME_PRICE_DISPATCH][VALUE],
+            flow=dict_asset[FLOW],
+            asset=dict_asset[LABEL],
+        )
 
     dict_asset.update(
         {COST_DISPATCH: {VALUE: costs_dispatch, UNIT: economic_data[CURR]}}

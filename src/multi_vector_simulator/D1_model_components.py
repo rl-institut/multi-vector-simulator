@@ -19,6 +19,7 @@ import oemof.solph as solph
 
 from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
+    UNIT,
     LABEL,
     DISPATCH_PRICE,
     AVAILABILITY_DISPATCH,
@@ -26,6 +27,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INSTALLED_CAP,
     INSTALLED_CAP_NORMALIZED,
     EFFICIENCY,
+    ENERGY_VECTOR,
     INPUT_POWER,
     OUTPUT_POWER,
     C_RATE,
@@ -50,9 +52,15 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_SOURCE,
     OEMOF_TRANSFORMER,
     OEMOF_BUSSES,
+    OEMOF_ExtractionTurbineCHP,
     EMISSION_FACTOR,
+    BETA,
 )
 from multi_vector_simulator.utils.helpers import get_item_if_list, get_length_if_list
+from multi_vector_simulator.utils.exceptions import (
+    MissingParameterError,
+    WrongParameterFormatError,
+)
 
 
 def transformer(model, dict_asset, **kwargs):
@@ -109,6 +117,102 @@ def transformer(model, dict_asset, **kwargs):
         func_constant=transformer_constant_efficiency_fix,
         func_optimize=transformer_constant_efficiency_optimize,
         **kwargs,
+    )
+
+
+def chp(model, dict_asset, **kwargs):
+    r"""
+    Defines a chp component specified in `dict_asset`.
+
+    Depending on the 'value' of 'optimizeCap' in `dict_asset` the chp
+    is defined with a fixed capacity or a capacity to be optimized.
+    The chp has single input and multiple output busses.
+
+    Parameters
+    ----------
+    model : oemof.solph.network.EnergySystem object
+        See the oemof documentation for more information.
+    dict_asset : dict
+        Contains information about the chp like (not exhaustive):
+        efficiency, installed capacity ('installedCap'), information on the
+        busses the chp is connected to ('inflow_direction',
+        'outflow_direction'), beta coefficient.
+
+    Other Parameters
+    ----------------
+    busses : dict
+    sinks : dict, optional
+    sources : dict, optional
+    transformers : dict
+    storages : dict, optional
+    extractionTurbineCHP: dict, optional
+
+    Notes
+    -----
+    The transformer has either multiple input or multiple output busses.
+
+    The following functions are used for defining the chp:
+    * :py:func:`~.chp_fix`
+    * :py:func:`~.chp_optimize` for investment optimization
+
+    Tested with:
+    - test_chp_fix_cap()
+    - test_chp_optimize_cap()
+    - test_chp_missing_beta()
+    - test_chp_wrong_beta_formatting()
+    - test_chp_wrong_efficiency_formatting()
+    - test_chp_wrong_outflow_bus_energy_vector()
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with chp object.
+
+    """
+    if BETA in dict_asset:
+        beta = dict_asset[BETA]
+        if isinstance(beta, dict) is False:
+            raise WrongParameterFormatError(
+                f"For the conversion asset named '{dict_asset[LABEL]}' of type {OEMOF_ExtractionTurbineCHP}, "
+                f"the {BETA} parameter should have the following format {{ '{VALUE}': ..., '{UNIT}': ... }}"
+            )
+        else:
+            beta = beta[VALUE]
+        if 0 <= beta <= 1:
+            pass
+        else:
+            raise ValueError("beta should be a number between 0 and 1.")
+    else:
+        raise MissingParameterError("No beta for extraction turbine chp specified.")
+
+    if isinstance(dict_asset[EFFICIENCY][VALUE], list) is False:
+        missing_efficiencies = (
+            f"For the conversion asset named '{dict_asset[LABEL]}' of type {OEMOF_ExtractionTurbineCHP} "
+            f"you must provide exactly 2 values for the parameter '{EFFICIENCY}'."
+        )
+        logging.error(missing_efficiencies)
+        raise WrongParameterFormatError(missing_efficiencies)
+
+    busses_energy_vectors = [
+        kwargs[OEMOF_BUSSES][b].energy_vector for b in dict_asset[OUTFLOW_DIRECTION]
+    ]
+    if (
+        "Heat" not in busses_energy_vectors
+        or "Electricity" not in busses_energy_vectors
+    ):
+        mapping_busses = [
+            f"'{v}' (from '{k}')"
+            for k, v in zip(dict_asset[OUTFLOW_DIRECTION], busses_energy_vectors)
+        ]
+        wrong_output_energy_vectors = (
+            f"For the conversion asset named '{dict_asset[LABEL]}' of type {OEMOF_ExtractionTurbineCHP} "
+            f"you must provide 1 output bus for energy vector 'Heat' and one for 'Electricity'. You provided "
+            f"{' and '.join(mapping_busses)}"
+        )
+        logging.error(wrong_output_energy_vectors)
+        raise WrongParameterFormatError(wrong_output_energy_vectors)
+
+    check_optimize_cap(
+        model, dict_asset, func_constant=chp_fix, func_optimize=chp_optimize, **kwargs
     )
 
 
@@ -339,6 +443,13 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
         )
 
 
+class CustomBus(solph.Bus):
+    def __init__(self, *args, **kwargs):
+        ev = kwargs.pop("energy_vector", None)  # change to ENERGY_VECTOR
+        super(CustomBus, self).__init__(*args, **kwargs)
+        self.energy_vector = ev
+
+
 def bus(model, name, **kwargs):
     r"""
     Adds bus `name` to `model` and to 'busses' in `kwargs`.
@@ -351,7 +462,8 @@ def bus(model, name, **kwargs):
 
     """
     logging.debug(f"Added: Bus {name}")
-    bus = solph.Bus(label=name)
+    energy_vector = kwargs.get("energy_vector", None)  # change to ENERGY_VECTOR
+    bus = CustomBus(label=name, energy_vector=energy_vector)
     kwargs[OEMOF_BUSSES].update({name: bus})
     model.add(bus)
 
@@ -586,6 +698,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 logging.error(missing_dispatch_prices_or_efficiencies)
                 raise ValueError(missing_dispatch_prices_or_efficiencies)
 
+            # TODO move the investment in the input bus???
             inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
             outputs = {}
 
@@ -1108,3 +1221,124 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     logging.debug(
         f"Added: Non-dispatchable sink {dict_asset[LABEL]} to bus {dict_asset[INFLOW_DIRECTION]}"
     )
+
+
+def chp_fix(model, dict_asset, **kwargs):
+    r"""
+    Extraction turbine chp from Oemof solph. Extraction turbine must have one input and two outputs
+    Notes
+    -----
+    Tested with:
+    - test_to_be_written()
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the extraction turbine component.
+
+    """
+
+    inputs = {
+        kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
+            nominal_value=dict_asset[INSTALLED_CAP][VALUE]
+        )
+    }
+
+    busses_energy_vectors = [
+        kwargs[OEMOF_BUSSES][b].energy_vector for b in dict_asset[OUTFLOW_DIRECTION]
+    ]
+    idx_el = busses_energy_vectors.index("Electricity")
+    idx_th = busses_energy_vectors.index("Heat")
+    el_bus = kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][idx_el]]
+    th_bus = kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][idx_th]]
+
+    outputs = {
+        el_bus: solph.Flow(),
+        th_bus: solph.Flow(),
+    }  # if kW for heat and kW for elect then insert it under nominal_value
+
+    beta = dict_asset[BETA][VALUE]
+
+    efficiency_el_wo_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_th]
+    efficiency_th_max_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_el]
+    efficiency_el_max_heat_extraction = (
+        efficiency_el_wo_heat_extraction - beta * efficiency_th_max_heat_extraction
+    )
+    efficiency_full_condensation = {el_bus: efficiency_el_wo_heat_extraction}
+
+    efficiencies = {
+        el_bus: efficiency_el_max_heat_extraction,
+        th_bus: efficiency_th_max_heat_extraction,
+    }
+
+    ext_turb_chp = solph.components.ExtractionTurbineCHP(
+        label=dict_asset[LABEL],
+        inputs=inputs,
+        outputs=outputs,
+        conversion_factors=efficiencies,
+        conversion_factor_full_condensation=efficiency_full_condensation,
+    )
+
+    model.add(ext_turb_chp)
+    kwargs[OEMOF_ExtractionTurbineCHP].update({dict_asset[LABEL]: ext_turb_chp})
+
+
+def chp_optimize(model, dict_asset, **kwargs):
+    r"""
+    Extraction turbine chp from Oemof solph. Extraction turbine must have one input and two outputs
+    Notes
+    -----
+    Tested with:
+    - test_to_be_written()
+    
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the extraction turbine component.
+
+    """
+
+    inputs = {kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow()}
+
+    busses_energy_vectors = [
+        kwargs[OEMOF_BUSSES][b].energy_vector for b in dict_asset[OUTFLOW_DIRECTION]
+    ]
+
+    idx_el = busses_energy_vectors.index("Electricity")
+    idx_th = busses_energy_vectors.index("Heat")
+    el_bus = kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][idx_el]]
+    th_bus = kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][idx_th]]
+
+    outputs = {
+        el_bus: solph.Flow(
+            investment=solph.Investment(
+                ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
+                maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
+                existing=dict_asset[INSTALLED_CAP][VALUE],
+            )
+        ),
+        th_bus: solph.Flow(),
+    }
+
+    beta = dict_asset[BETA][VALUE]
+
+    efficiency_el_wo_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_el]
+    efficiency_th_max_heat_extraction = dict_asset[EFFICIENCY][VALUE][idx_th]
+    efficiency_el_max_heat_extraction = (
+        efficiency_el_wo_heat_extraction - beta * efficiency_th_max_heat_extraction
+    )
+    efficiency_full_condensation = {el_bus: efficiency_el_wo_heat_extraction}
+
+    efficiencies = {
+        el_bus: efficiency_el_max_heat_extraction,
+        th_bus: efficiency_th_max_heat_extraction,
+    }
+
+    ext_turb_chp = solph.components.ExtractionTurbineCHP(
+        label=dict_asset[LABEL],
+        inputs=inputs,
+        outputs=outputs,
+        conversion_factors=efficiencies,
+        conversion_factor_full_condensation=efficiency_full_condensation,
+    )
+
+    model.add(ext_turb_chp)
+    kwargs[OEMOF_ExtractionTurbineCHP].update({dict_asset[LABEL]: ext_turb_chp})

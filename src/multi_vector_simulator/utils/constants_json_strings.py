@@ -32,10 +32,11 @@ OEMOF_GEN_STORAGE = "storage"
 OEMOF_SOURCE = "source"
 OEMOF_SINK = "sink"
 OEMOF_BUSSES = "bus"
+OEMOF_ExtractionTurbineCHP = "extractionTurbineCHP"
 
 # Dict generated from above defined strings
 ACCEPTED_ASSETS_FOR_ASSET_GROUPS = {
-    ENERGY_CONVERSION: [OEMOF_TRANSFORMER],
+    ENERGY_CONVERSION: [OEMOF_TRANSFORMER, OEMOF_ExtractionTurbineCHP],
     ENERGY_STORAGE: [OEMOF_GEN_STORAGE],
     ENERGY_PRODUCTION: [OEMOF_SOURCE],
     ENERGY_CONSUMPTION: [OEMOF_SINK],
@@ -90,6 +91,7 @@ SPECIFIC_COSTS = "specific_costs"
 SPECIFIC_COSTS_OM = "specific_costs_om"
 DISPATCH_PRICE = "dispatch_price"
 OEMOF_ASSET_TYPE = "type_oemof"
+BETA = "beta"
 
 # Specific parameters
 RENEWABLE_ASSET_BOOL = "renewableAsset"

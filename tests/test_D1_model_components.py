@@ -10,6 +10,10 @@ from pandas.testing import assert_series_equal
 import multi_vector_simulator.D1_model_components as D1
 
 from multi_vector_simulator.utils.constants import JSON_FNAME
+from multi_vector_simulator.utils.exceptions import (
+    MissingParameterError,
+    WrongParameterFormatError,
+)
 
 from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
@@ -69,11 +73,16 @@ def get_busses():
     """ Creates busses (solph.Bus) dictionary. """
     yield {
         "Fuel bus": solph.Bus(label="Fuel bus"),
-        "Electricity bus": solph.Bus(label="Electricity bus"),
-        "Electricity bus 2": solph.Bus(label="Electricity bus 2"),
+        "Electricity bus": D1.CustomBus(
+            label="Electricity bus", energy_vector="Electricity"
+        ),
+        "Electricity bus 2": D1.CustomBus(
+            label="Electricity bus 2", energy_vector="Electricity"
+        ),
         "Coal bus": solph.Bus(label="Coal bus"),
         "Storage bus": solph.Bus(label="Storage bus"),
-        "Heat bus": solph.Bus(label="Heat bus"),
+        "Heat bus": D1.CustomBus(label="Heat bus", energy_vector="Heat"),
+        "Gas bus": solph.Bus(label="Gas bus"),
     }
 
 
@@ -442,6 +451,90 @@ class TestTransformerComponent:
                 model=self.model,
                 dict_asset=dict_asset,
                 transformer=self.transformers,
+                bus=self.busses,
+            )
+
+    def test_chp_fix_cap(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION]["chp_fix"]
+
+        D1.chp(
+            model=self.model,
+            dict_asset=dict_asset,
+            extractionTurbineCHP=self.transformers,
+            bus=self.busses,
+        )
+
+        # only two output and one input bus
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 2
+        ), f"Amount of output busses of chp should be 2 but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of input busses of chp should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+
+    def test_chp_optimize_cap(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION]["chp_optimize"]
+
+        D1.chp(
+            model=self.model,
+            dict_asset=dict_asset,
+            extractionTurbineCHP=self.transformers,
+            bus=self.busses,
+        )
+
+        # only two output and one input bus
+        assert (
+            len([str(i) for i in self.model.entities[-1].outputs]) == 2
+        ), f"Amount of output busses of chp should be 2 but is {len([str(i) for i in self.model.entities[-1].outputs])}."
+        assert (
+            len([str(i) for i in self.model.entities[-1].inputs]) == 1
+        ), f"Amount of input busses of chp should be one but is {len([str(i) for i in self.model.entities[-1].inputs])}."
+
+    def test_chp_missing_beta(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION]["chp_missing_beta"]
+
+        with pytest.raises(MissingParameterError):
+            D1.chp(
+                model=self.model,
+                dict_asset=dict_asset,
+                extractionTurbineCHP=self.transformers,
+                bus=self.busses,
+            )
+
+    def test_chp_wrong_beta_formatting(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION]["chp_wrong_beta_formatting"]
+
+        with pytest.raises(WrongParameterFormatError):
+            D1.chp(
+                model=self.model,
+                dict_asset=dict_asset,
+                extractionTurbineCHP=self.transformers,
+                bus=self.busses,
+            )
+
+    def test_chp_wrong_efficiency_formatting(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "chp_wrong_efficiency_formatting"
+        ]
+
+        with pytest.raises(WrongParameterFormatError):
+            D1.chp(
+                model=self.model,
+                dict_asset=dict_asset,
+                extractionTurbineCHP=self.transformers,
+                bus=self.busses,
+            )
+
+    def test_chp_wrong_outflow_bus_energy_vector(self):
+        dict_asset = self.dict_values[ENERGY_CONVERSION][
+            "chp_wrong_outflow_bus_energy_vector"
+        ]
+
+        with pytest.raises(WrongParameterFormatError):
+            D1.chp(
+                model=self.model,
+                dict_asset=dict_asset,
+                extractionTurbineCHP=self.transformers,
                 bus=self.busses,
             )
 
