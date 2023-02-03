@@ -1033,7 +1033,7 @@ def define_transformer_for_peak_demand_pricing(
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
-        TYPE_ASSET: dict_dso[TYPE_ASSET],
+        TYPE_ASSET: dict_dso.get(TYPE_ASSET),
     }
 
     dict_values[ENERGY_CONVERSION].update(
@@ -1066,7 +1066,7 @@ def define_transformer_for_peak_demand_pricing(
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
-        TYPE_ASSET: dict_dso[TYPE_ASSET]
+        TYPE_ASSET: dict_dso.get(TYPE_ASSET)
         # LIFETIME: {VALUE: 100, UNIT: UNIT_YEAR},
     }
     if dict_dso.get(DSO_FEEDIN_CAP, None) is not None:
