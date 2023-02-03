@@ -1104,14 +1104,13 @@ def add_specific_emissions_per_electricity_equivalent(dict_values):
     """
     # emissions per kWheleq
     total_demand = dict_values[KPI][KPI_SCALARS_DICT][
-            TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
-        ]
+        TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
     if total_demand == 0:
         emissions_kWheleq = 0
     else:
         emissions_kWheleq = (
-            dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS]
-            / total_demand
+            dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS] / total_demand
         )
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {SPECIFIC_EMISSIONS_ELEQ: emissions_kWheleq}
