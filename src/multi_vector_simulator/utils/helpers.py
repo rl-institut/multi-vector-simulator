@@ -10,6 +10,15 @@ Including:
 
 import os
 
+from multi_vector_simulator.utils.constants_json_strings import (
+    DSO_FEEDIN_CAP,
+    AUTO_CREATED_HIGHLIGHT,
+    DSO_CONSUMPTION,
+    DSO_FEEDIN,
+    DSO_PEAK_DEMAND_PERIOD,
+    DSO_PEAK_DEMAND_SUFFIX,
+)
+
 
 def find_value_by_key(data, target, result=None):
     """
@@ -98,3 +107,31 @@ def get_length_if_list(list_or_float):
     else:
         answer = 0
     return answer
+
+
+def peak_demand_bus_name(dso_name: str, feedin: bool = False):
+    """Name for auto created bus related to peak demand pricing period"""
+
+    if feedin is False:
+        dso_direction = DSO_CONSUMPTION
+    else:
+        dso_direction = DSO_FEEDIN
+
+    return (
+        f"{dso_name}{dso_direction}_{DSO_PEAK_DEMAND_SUFFIX} {AUTO_CREATED_HIGHLIGHT}"
+    )
+
+
+def peak_demand_transformer_name(
+    dso_name: str, peak_number: int = None, feedin: bool = False
+):
+    """Name for auto created bus related to peak demand pricing period"""
+    if feedin is False:
+        dso_direction = DSO_CONSUMPTION
+    else:
+        dso_direction = DSO_FEEDIN
+    transformer_name = f"{dso_name}{dso_direction}{DSO_PEAK_DEMAND_PERIOD}"
+    if peak_number is not None:
+        transformer_name = f"{transformer_name}_{str(peak_number)}"
+
+    return f"{transformer_name} {AUTO_CREATED_HIGHLIGHT}"

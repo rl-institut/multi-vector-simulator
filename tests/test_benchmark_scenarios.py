@@ -29,6 +29,8 @@ from _constants import (
     CSV_EXT,
 )
 
+from multi_vector_simulator.utils.helpers import peak_demand_transformer_name
+
 from multi_vector_simulator.utils.constants import (
     JSON_WITH_RESULTS,
     JSON_FILE_EXTENSION,
@@ -368,15 +370,10 @@ class TestACElectricityBus:
             flag_missing_values=False,
         )
         peak_demand = [
-            data[ENERGY_CONVERSION]["Electricity grid DSO_consumption_period_1"][
-                OPTIMIZED_ADD_CAP
-            ][VALUE],
-            data[ENERGY_CONVERSION]["Electricity grid DSO_consumption_period_2"][
-                OPTIMIZED_ADD_CAP
-            ][VALUE],
-            data[ENERGY_CONVERSION]["Electricity grid DSO_consumption_period_2"][
-                OPTIMIZED_ADD_CAP
-            ][VALUE],
+            data[ENERGY_CONVERSION][
+                peak_demand_transformer_name("Electricity grid DSO", peak_number=i)
+            ][OPTIMIZED_ADD_CAP][VALUE]
+            for i in (1, 2, 3)
         ]
         # read timeseries_all_busses excel file
         busses_flow = pd.read_excel(
@@ -387,9 +384,10 @@ class TestACElectricityBus:
         busses_flow = busses_flow.set_index("Unnamed: 0")
         # read the columns with the values to be used
         DSO_periods = [
-            busses_flow["Electricity grid DSO_consumption_period_1"],
-            busses_flow["Electricity grid DSO_consumption_period_2"],
-            busses_flow["Electricity grid DSO_consumption_period_3"],
+            busses_flow[
+                peak_demand_transformer_name("Electricity grid DSO", peak_number=i)
+            ]
+            for i in (1, 2, 3)
         ]
         demand = busses_flow["demand_01"]
         battery_charge = busses_flow[f"battery {INPUT_POWER}"]
@@ -467,7 +465,9 @@ class TestACElectricityBus:
                 / data[ENERGY_CONVERSION]["heat_pump"][EFFICIENCY][VALUE]
                 > data[ENERGY_PROVIDERS]["Heat_DSO"][ENERGY_PRICE][VALUE]
             ):
-                assert busses_flow["Heat_DSO_consumption_period"][i] == approx(
+                assert busses_flow[peak_demand_transformer_name("Heat_DSO")][
+                    i
+                ] == approx(
                     abs(busses_flow["demand_heat"][i])
                 ), f"Even though the marginal costs to use the heat pump are higher than the heat DSO price with {cost_of_using_heatpump} comp. {cost_of_using_heat_dso}, the heat DSO is not solely used for energy supply."
             else:

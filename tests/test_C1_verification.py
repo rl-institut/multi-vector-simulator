@@ -45,7 +45,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_SHARE_DSO,
     ENERGY_BUSSES,
     ASSET_DICT,
-    DSO_PEAK_DEMAND_SUFFIX,
 )
 
 from multi_vector_simulator.utils.exceptions import (
@@ -53,6 +52,8 @@ from multi_vector_simulator.utils.exceptions import (
     DuplicateLabels,
     MVSOemofError,
 )
+
+from multi_vector_simulator.utils.helpers import peak_demand_bus_name
 
 
 def test_lookup_file_existing_file():
@@ -749,8 +750,7 @@ def test_check_for_sufficient_assets_on_busses_example_bus_fails(caplog):
 def test_check_for_sufficient_assets_on_busses_skipped_for_peak_demand_pricing_bus():
     dict_values = {
         ENERGY_BUSSES: {
-            "Bus"
-            + DSO_PEAK_DEMAND_SUFFIX: {
+            peak_demand_bus_name("Bus"): {
                 ASSET_DICT: {"asset_1": "asset_1", "asset_3": "asset_3"}
             }
         }
