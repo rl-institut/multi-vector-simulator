@@ -499,7 +499,7 @@ def get_results(settings, bus_data, dict_asset, asset_group):
             logging.info(
                 f"The asset {dict_asset[LABEL]} of group {asset_group} had 'investment_bus' set to '{investment_bus}'"
             )
-            if investment_bus in dict_asset.get(INFLOW_DIRECTION,[]):
+            if investment_bus in dict_asset.get(INFLOW_DIRECTION, []):
                 flow_tuple = (bus_name, dict_asset[LABEL])
             elif investment_bus in dict_asset.get(OUTFLOW_DIRECTION, []):
                 flow_tuple = (dict_asset[LABEL], bus_name)
