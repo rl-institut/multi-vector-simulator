@@ -727,29 +727,63 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
         dict_values, dso_dict, dict_availability_timeseries,
     )
 
-    define_source(
-        dict_values=dict_values,
-        asset_key=dso_name + DSO_CONSUMPTION,
-        outflow_direction=peak_demand_bus_name(dso_dict[OUTFLOW_DIRECTION]),
-        price=dso_dict[ENERGY_PRICE],
-        energy_vector=dso_dict[ENERGY_VECTOR],
-        emission_factor=dso_dict[EMISSION_FACTOR],
-        asset_type=dso_dict.get(TYPE_ASSET),
-    )
+    grid_availability = False
+    if grid_availability is False:
+        define_source(
+            dict_values=dict_values,
+            asset_key=dso_name + DSO_CONSUMPTION,
+            outflow_direction=peak_demand_bus_name(dso_dict[OUTFLOW_DIRECTION]),
+            price=dso_dict[ENERGY_PRICE],
+            energy_vector=dso_dict[ENERGY_VECTOR],
+            emission_factor=dso_dict[EMISSION_FACTOR],
+            asset_type=dso_dict.get(TYPE_ASSET),
+        )
+    else:
+        pass
+        # in case of grid availablity the price should be 0 and and extra sink should be added
+
     dict_feedin = change_sign_of_feedin_tariff(dso_dict[FEEDIN_TARIFF], dso_name)
 
     inflow_bus_name = peak_demand_bus_name(dso_dict[INFLOW_DIRECTION], feedin=True)
 
     # define feed-in sink of the DSO
-    define_sink(
-        dict_values=dict_values,
-        asset_key=dso_name + DSO_FEEDIN,
-        price=dict_feedin,
-        inflow_direction=inflow_bus_name,
-        specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
-        energy_vector=dso_dict[ENERGY_VECTOR],
-        asset_type=dso_dict.get(TYPE_ASSET),
-    )
+    if grid_availability is False:
+        define_sink(
+            dict_values=dict_values,
+            asset_key=dso_name + DSO_FEEDIN,
+            price=dict_feedin,
+            inflow_direction=inflow_bus_name,
+            specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
+            energy_vector=dso_dict[ENERGY_VECTOR],
+            asset_type=dso_dict.get(TYPE_ASSET),
+        )
+    else:
+        # def maingrid_feedin(micro_grid_system, experiment):
+        #     logging.debug("Added to oemof model: maingrid feedin")
+        #     bus_electricity_ng_feedin = solph.Bus(label=BUS_ELECTRICITY_NG_FEEDIN)
+        #     micro_grid_system.add(bus_electricity_ng_feedin)
+        #
+        #     # create and add demand sink to micro_grid_system - fixed
+        #     sink_maingrid_feedin = solph.Sink(
+        #         label=SINK_MAINGRID_FEEDIN,
+        #         inputs={
+        #             bus_electricity_ng_feedin: solph.Flow(
+        #                 fix=experiment[GRID_AVAILABILITY],
+        #                 investment=solph.Investment(ep_costs=0),
+        #             )
+        #         },
+        #     )
+        #     micro_grid_system.add(sink_maingrid_feedin)
+        #
+        #     # to fill in for not really provided feed in
+        #     source_maingrid_feedin_symbolic = solph.Source(
+        #         label=SINK_MAINGRID_FEEDIN_SYMBOLIC,
+        #         outputs={bus_electricity_ng_feedin: solph.Flow()},
+        #     )
+        #     micro_grid_system.add(source_maingrid_feedin_symbolic)
+        #     return bus_electricity_ng_feedin
+        # the price should be 0 and an extra source should be added here
+        pass
     dso_dict.update(
         {
             CONNECTED_CONSUMPTION_SOURCE: dso_name + DSO_CONSUMPTION,
@@ -1062,6 +1096,7 @@ def define_transformer_for_peak_demand_pricing(
             VALUE: 0,
             UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
         },
+        # add price here instead of in sinks
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
