@@ -296,6 +296,7 @@ def define_excess_sinks(dict_values):
             price={VALUE: 0, UNIT: CURR + "/" + UNIT},
             inflow_direction=bus,
             energy_vector=energy_vector,
+            asset_type="excess",
         )
         dict_values[ENERGY_BUSSES][bus].update({EXCESS_SINK: excess_sink_name})
         auto_sinks.append(excess_sink_name)
@@ -733,6 +734,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
         price=dso_dict[ENERGY_PRICE],
         energy_vector=dso_dict[ENERGY_VECTOR],
         emission_factor=dso_dict[EMISSION_FACTOR],
+        asset_type=dso_dict.get(TYPE_ASSET),
     )
     dict_feedin = change_sign_of_feedin_tariff(dso_dict[FEEDIN_TARIFF], dso_name)
 
@@ -746,6 +748,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
         inflow_direction=inflow_bus_name,
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
         energy_vector=dso_dict[ENERGY_VECTOR],
+        asset_type=dso_dict.get(TYPE_ASSET),
     )
     dso_dict.update(
         {
@@ -762,7 +765,6 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
     Additionally, prints a logging.warning in case of the feed-in tariff is entered as
     negative value in 'energyProviders.csv'.
 
-    #todo This only works if the feedin tariff is not defined as a timeseries
     Parameters
     ----------
     dict_feedin_tariff: dict
@@ -783,23 +785,46 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
     - C0.test_change_sign_of_feedin_tariff_negative_value()
     - C0.test_change_sign_of_feedin_tariff_zero()
     """
-    if dict_feedin_tariff[VALUE] > 0:
-        # Add a debug message in case the feed-in is interpreted as revenue-inducing.
-        logging.debug(
-            f"The {FEEDIN_TARIFF} of {dso} is positive, which means that feeding into the grid results in a revenue stream."
-        )
-    elif dict_feedin_tariff[VALUE] == 0:
-        # Add a warning msg in case the feedin induces expenses rather than revenue
-        logging.warning(
-            f"The {FEEDIN_TARIFF} of {dso} is 0, which means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
-        )
-    elif dict_feedin_tariff[VALUE] < 0:
-        # Add a warning msg in case the feedin induces expenses rather than revenue
-        logging.warning(
-            f"The {FEEDIN_TARIFF} of {dso} is negative, which means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
-        )
+
+    if isinstance(dict_feedin_tariff[VALUE], pd.Series) is False:
+        if dict_feedin_tariff[VALUE] > 0:
+            # Add a debug message in case the feed-in is interpreted as revenue-inducing.
+            logging.debug(
+                f"The {FEEDIN_TARIFF} of {dso} is positive, which means that feeding into the grid results in a revenue stream."
+            )
+        elif dict_feedin_tariff[VALUE] == 0:
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is 0, which means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
+            )
+        elif dict_feedin_tariff[VALUE] < 0:
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is negative, which means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
+            )
+        else:
+            pass
     else:
-        pass
+        if (dict_feedin_tariff[VALUE] < 0).any():
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            ts_info = ", ".join(
+                dict_feedin_tariff[VALUE]
+                .loc[dict_feedin_tariff[VALUE] < 0]
+                .index.astype(str)
+            )
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is 0 for the following timestamps:\n{ts_info}\n. This means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
+            )
+        elif (dict_feedin_tariff[VALUE] < 0).any():
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            ts_info = ", ".join(
+                dict_feedin_tariff[VALUE]
+                .loc[dict_feedin_tariff[VALUE] < 0]
+                .index.astype(str)
+            )
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is negative for the following timestamps:\n{ts_info}\n. A negative value means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
+            )
 
     dict_feedin_tariff = {
         VALUE: -dict_feedin_tariff[VALUE],
@@ -1001,13 +1026,14 @@ def define_transformer_for_peak_demand_pricing(
         SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
         # the demand pricing is split between consumption and feedin
         SPECIFIC_COSTS_OM: {
-            VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE] / 2,
+            VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE],
             UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
         },
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
+        TYPE_ASSET: dict_dso.get(TYPE_ASSET),
     }
 
     dict_values[ENERGY_CONVERSION].update(
@@ -1033,13 +1059,14 @@ def define_transformer_for_peak_demand_pricing(
         SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
         # the demand pricing is split between consumption and feedin
         SPECIFIC_COSTS_OM: {
-            VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE] / 2,
+            VALUE: 0,
             UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
         },
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
+        TYPE_ASSET: dict_dso.get(TYPE_ASSET)
         # LIFETIME: {VALUE: 100, UNIT: UNIT_YEAR},
     }
     if dict_dso.get(DSO_FEEDIN_CAP, None) is not None:
@@ -1067,6 +1094,7 @@ def define_source(
     emission_factor,
     price=None,
     timeseries=None,
+    asset_type=None,
 ):
     r"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
@@ -1123,6 +1151,7 @@ def define_source(
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
         ENERGY_VECTOR: energy_vector,
         EMISSION_FACTOR: emission_factor,
+        TYPE_ASSET: asset_type,
     }
 
     if outflow_direction not in dict_values[ENERGY_BUSSES]:
@@ -1137,6 +1166,7 @@ def define_source(
         )
 
     if price is not None:
+
         if FILENAME in price and HEADER in price:
             price.update(
                 {
@@ -1248,7 +1278,13 @@ def determine_dispatch_price(dict_values, price, source):
 
 
 def define_sink(
-    dict_values, asset_key, price, inflow_direction, energy_vector, **kwargs
+    dict_values,
+    asset_key,
+    price,
+    inflow_direction,
+    energy_vector,
+    asset_type=None,
+    **kwargs,
 ):
     r"""
     This automatically defines a sink for an oemof-sink object. The sinks are added to the energyConsumption assets.
@@ -1300,6 +1336,7 @@ def define_sink(
         ENERGY_VECTOR: energy_vector,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         DISPATCHABILITY: {VALUE: True, UNIT: TYPE_BOOL},
+        TYPE_ASSET: asset_type,
     }
 
     if inflow_direction not in dict_values[ENERGY_BUSSES]:

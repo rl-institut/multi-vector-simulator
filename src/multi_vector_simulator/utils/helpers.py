@@ -17,6 +17,17 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_FEEDIN,
     DSO_PEAK_DEMAND_PERIOD,
     DSO_PEAK_DEMAND_SUFFIX,
+    ENERGY_CONSUMPTION,
+    ENERGY_CONVERSION,
+    ENERGY_STORAGE,
+    ENERGY_PRODUCTION,
+    ENERGY_PROVIDERS,
+    ENERGY_BUSSES,
+    OEMOF_ASSET_TYPE,
+    TYPE_ASSET,
+    INFLOW_DIRECTION,
+    OUTFLOW_DIRECTION,
+    ENERGY_VECTOR,
 )
 
 
@@ -135,3 +146,41 @@ def peak_demand_transformer_name(
         transformer_name = f"{transformer_name}_{str(peak_number)}"
 
     return f"{transformer_name} {AUTO_CREATED_HIGHLIGHT}"
+
+
+def get_asset_types(dict_values):
+    """Function which returns records of assets in the energy system"""
+    asset_types = []
+    for asset_group in (
+        ENERGY_CONSUMPTION,
+        ENERGY_CONVERSION,
+        ENERGY_STORAGE,
+        ENERGY_PRODUCTION,
+        ENERGY_PROVIDERS,
+    ):
+        for asset_name, asset_params in dict_values.get(asset_group, {}).items():
+            asset_type = {"label": asset_name}
+            for param in (OEMOF_ASSET_TYPE, TYPE_ASSET):
+                asset_type[param] = asset_params.get(param)
+            asset_busses = {}
+            input_bus = asset_params.get(INFLOW_DIRECTION)
+            if input_bus is not None:
+                if not isinstance(input_bus, list):
+                    # print("not a list :", input_bus)
+                    input_bus = [input_bus]
+            else:
+                input_bus = []
+
+            output_bus = asset_params.get(OUTFLOW_DIRECTION)
+            if output_bus is not None:
+                if not isinstance(output_bus, list):
+                    # print("not a list: ", output_bus)
+                    output_bus = [output_bus]
+            else:
+                output_bus = []
+
+            for bus in input_bus + output_bus:
+                asset_busses[bus] = dict_values[ENERGY_BUSSES][bus].get(ENERGY_VECTOR)
+            asset_type["busses"] = asset_busses
+            asset_types.append(asset_type)
+    return asset_types

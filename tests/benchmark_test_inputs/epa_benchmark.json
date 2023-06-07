@@ -38,7 +38,7 @@
         "unique_id": "4db66fd3-9a2b-459c-b577-9521accc0cc3",
         "type_oemof": "source",
         "energy_vector": "Electricity",
-        "output_bus_name": "Electricity (DSO)",
+        "outflow_direction": "Electricity (DSO)",
         "dispatchable": false,
         "energy_price": {
           "unit": "currency/kWh",
@@ -73,7 +73,7 @@
         "unique_id": "5ba307e6-5c5b-4129-833a-d8e1651a83db",
         "type_oemof": "sink",
         "energy_vector": "Electricity",
-        "input_bus_name": "Electricity",
+        "inflow_direction": "Electricity",
         "input_timeseries": {
           "unit": "kWh",
           "value": [
@@ -256,8 +256,8 @@
         "unique_id": "2ede85aa-c9c5-4f1e-a603-98afeb450105",
         "type_oemof": "transformer",
         "energy_vector": "Electricity",
-        "input_bus_name": "Electricity (DSO)",
-        "output_bus_name": "Electricity",
+        "inflow_direction": "Electricity (DSO)",
+        "outflow_direction": "Electricity",
         "dispatchable": false,
         "age_installed": {
           "unit": "year",
@@ -305,7 +305,7 @@
         "unique_id": "23827549-fdf2-4237-bfa5-1cfd7dc1997a",
         "type_oemof": "source",
         "energy_vector": "Electricity",
-        "output_bus_name": "Electricity",
+        "outflow_direction": "Electricity",
         "dispatchable": false,
         "age_installed": {
           "unit": "year",
@@ -524,8 +524,8 @@
         "label": "storage",
         "type_oemof": "storage",
         "energy_vector": "Electricity",
-        "input_bus_name": "Electricity",
-        "output_bus_name": "Electricity",
+        "inflow_direction": "Electricity",
+        "outflow_direction": "Electricity",
         "input_power": {
           "asset_type": "charging_power",
           "label": "input power",
