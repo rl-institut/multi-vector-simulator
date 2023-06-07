@@ -1024,9 +1024,9 @@ def define_transformer_for_peak_demand_pricing(
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
         SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
-        # the demand pricing is split between consumption and feedin
+        # the demand pricing is only applied to consumption
         SPECIFIC_COSTS_OM: {
-            VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE] / 2,
+            VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE],
             UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
         },
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
@@ -1057,9 +1057,9 @@ def define_transformer_for_peak_demand_pricing(
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
         SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
-        # the demand pricing is split between consumption and feedin
+        # the demand pricing is only applied to consumption
         SPECIFIC_COSTS_OM: {
-            VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE] / 2,
+            VALUE: 0,
             UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
         },
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
