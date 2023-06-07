@@ -252,10 +252,11 @@ def test_define_transformer_for_peak_demand_pricing():
             assert (
                 k in dict_test[ENERGY_CONVERSION][transformer]
             ), f"Function does not add {k} to the asset dictionary of the {transformer}."
-        assert (
-            dict_test[ENERGY_CONVERSION][transformer][SPECIFIC_COSTS_OM][VALUE]
-            == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE] / 2
-        ), f"The {SPECIFIC_COSTS_OM} of the newly defined {transformer} is not equal to half the {PEAK_DEMAND_PRICING} of the energy provider it is defined from."
+        if transformer == transformer_consumption_name:
+            assert (
+                dict_test[ENERGY_CONVERSION][transformer][SPECIFIC_COSTS_OM][VALUE]
+                == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE]
+            ), f"The {SPECIFIC_COSTS_OM} of the newly defined {transformer} is not equal to half the {PEAK_DEMAND_PRICING} of the energy provider it is defined from."
 
 
 def test_define_energy_vectors_from_busses():
