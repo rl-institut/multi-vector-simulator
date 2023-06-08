@@ -764,7 +764,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
         #     micro_grid_system.add(bus_electricity_ng_feedin)
         #
         #     # create and add demand sink to micro_grid_system - fixed
-        #     sink_maingrid_feedin = solph.Sink(
+        #     sink_maingrid_feedin = solph.components.Sink(
         #         label=SINK_MAINGRID_FEEDIN,
         #         inputs={
         #             bus_electricity_ng_feedin: solph.Flow(
@@ -776,7 +776,7 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
         #     micro_grid_system.add(sink_maingrid_feedin)
         #
         #     # to fill in for not really provided feed in
-        #     source_maingrid_feedin_symbolic = solph.Source(
+        #     source_maingrid_feedin_symbolic = solph.components.Source(
         #         label=SINK_MAINGRID_FEEDIN_SYMBOLIC,
         #         outputs={bus_electricity_ng_feedin: solph.Flow()},
         #     )

@@ -24,7 +24,7 @@ import timeit
 import warnings
 
 from oemof.solph import processing, network
-import oemof.solph as solph
+from oemof import solph
 
 import multi_vector_simulator.D1_model_components as D1
 import multi_vector_simulator.D2_model_constraints as D2
@@ -100,7 +100,8 @@ def run_oemof(dict_values, save_energy_system_graph=False, return_les=False):
     model_building.plot_networkx_graph(
         dict_values, model, save_energy_system_graph=save_energy_system_graph
     )
-
+    # import logging
+    # logging.getLogger().setLevel(logging.INFO)
     logging.debug("Creating oemof model based on created components and busses...")
     local_energy_system = solph.Model(model)
     logging.debug("Created oemof model based on created components and busses.")
@@ -108,6 +109,8 @@ def run_oemof(dict_values, save_energy_system_graph=False, return_les=False):
     local_energy_system = D2.add_constraints(
         local_energy_system, dict_values, dict_model
     )
+    import ipdb;ipdb.set_trace()
+
     model_building.store_lp_file(dict_values, local_energy_system)
 
     model, results_main, results_meta = model_building.simulating(

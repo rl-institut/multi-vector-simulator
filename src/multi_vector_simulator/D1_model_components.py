@@ -15,7 +15,7 @@ Module D1 includes all functions that are required to build an oemof model with 
 
 import logging
 
-import oemof.solph as solph
+from oemof import solph
 
 from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
@@ -640,7 +640,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
         }
 
     if missing_dispatch_prices_or_efficiencies is None:
-        t = solph.Transformer(
+        t = solph.components.Transformer(
             label=dict_asset[LABEL],
             inputs=inputs,
             outputs=outputs,
@@ -817,7 +817,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
         }
 
     if missing_dispatch_prices_or_efficiencies is None:
-        t = solph.Transformer(
+        t = solph.components.Transformer(
             label=dict_asset[LABEL],
             inputs=inputs,
             outputs=outputs,
@@ -1002,15 +1002,17 @@ def source_non_dispatchable_fix(model, dict_asset, **kwargs):
     """
     outputs = {
         kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-            label=dict_asset[LABEL],
+            # label=dict_asset[LABEL],
             fix=dict_asset[TIMESERIES],
             nominal_value=dict_asset[INSTALLED_CAP][VALUE],
             variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
-            emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
+            custom_attributes=dict(
+                emission_factor=dict_asset[EMISSION_FACTOR][VALUE]
+            )
         )
     }
 
-    source_non_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs)
+    source_non_dispatchable = solph.components.Source(label=dict_asset[LABEL], outputs=outputs)
 
     model.add(source_non_dispatchable)
     kwargs[OEMOF_SOURCE].update({dict_asset[LABEL]: source_non_dispatchable})
@@ -1045,7 +1047,7 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
         existing = dict_asset[INSTALLED_CAP][VALUE]
     outputs = {
         kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-            label=dict_asset[LABEL],
+            # label=dict_asset[LABEL],
             fix=dict_asset[TIMESERIES_NORMALIZED],
             investment=solph.Investment(
                 ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
@@ -1057,11 +1059,13 @@ def source_non_dispatchable_optimize(model, dict_asset, **kwargs):
             variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
             / dict_asset[TIMESERIES_PEAK][VALUE],
             # add emission_factor for emission contraint
-            emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
+            custom_attributes=dict(
+                emission_factor=dict_asset[EMISSION_FACTOR][VALUE]
+            )
         )
     }
 
-    source_non_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs)
+    source_non_dispatchable = solph.components.Source(label=dict_asset[LABEL], outputs=outputs)
 
     model.add(source_non_dispatchable)
     kwargs[OEMOF_SOURCE].update({dict_asset[LABEL]: source_non_dispatchable})
@@ -1090,7 +1094,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
     if TIMESERIES_NORMALIZED in dict_asset:
         outputs = {
             kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-                label=dict_asset[LABEL],
+                # label=dict_asset[LABEL],
                 max=dict_asset[TIMESERIES_NORMALIZED],
                 investment=solph.Investment(
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE]
@@ -1102,10 +1106,12 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE]
                 / dict_asset[TIMESERIES_PEAK][VALUE],
                 # add emission_factor for emission contraint
-                emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
+                custom_attributes=dict(
+                    emission_factor=dict_asset[EMISSION_FACTOR][VALUE]
+                )
             )
         }
-        source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
+        source_dispatchable = solph.components.Source(label=dict_asset[LABEL], outputs=outputs,)
     else:
         if TIMESERIES in dict_asset:
             logging.info(
@@ -1118,7 +1124,7 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
             )
         outputs = {
             kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-                label=dict_asset[LABEL],
+
                 investment=solph.Investment(
                     ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
                     existing=dict_asset[INSTALLED_CAP][VALUE],
@@ -1126,10 +1132,14 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
                 ),
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                 # add emission_factor for emission contraint
-                emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
+                custom_attributes=dict(
+                    #label=dict_asset[LABEL],
+                    emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
+                )
             )
         }
-        source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
+        print(dict_asset[LABEL])
+        source_dispatchable = solph.components.Source(label=dict_asset[LABEL], outputs=outputs)
     model.add(source_dispatchable)
     kwargs[OEMOF_SOURCE].update({dict_asset[LABEL]: source_dispatchable})
     logging.debug(
@@ -1157,15 +1167,17 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
     if TIMESERIES_NORMALIZED in dict_asset:
         outputs = {
             kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-                label=dict_asset[LABEL],
+                # label=dict_asset[LABEL],
                 max=dict_asset[TIMESERIES_NORMALIZED],
-                existing=dict_asset[INSTALLED_CAP][VALUE],
+                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                 # add emission_factor for emission contraint
-                emission_factor=dict_asset[EMISSION_FACTOR][VALUE],
+                custom_attributes=dict(
+                    emission_factor=dict_asset[EMISSION_FACTOR][VALUE]
+                )
             )
         }
-        source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
+        source_dispatchable = solph.components.Source(label=dict_asset[LABEL], outputs=outputs,)
     else:
         if TIMESERIES in dict_asset:
             logging.info(
@@ -1178,12 +1190,12 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
             )
         outputs = {
             kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
-                label=dict_asset[LABEL],
-                existing=dict_asset[INSTALLED_CAP][VALUE],
+                # label=dict_asset[LABEL],
+                nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
             )
         }
-        source_dispatchable = solph.Source(label=dict_asset[LABEL], outputs=outputs,)
+        source_dispatchable = solph.components.Source(label=dict_asset[LABEL], outputs=outputs,)
     model.add(source_dispatchable)
     kwargs[OEMOF_SOURCE].update({dict_asset[LABEL]: source_dispatchable})
     logging.debug(
@@ -1217,7 +1229,7 @@ def sink_dispatchable_optimize(model, dict_asset, **kwargs):
         index = 0
         for bus in dict_asset[INFLOW_DIRECTION]:
             inputs[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
-                label=dict_asset[LABEL],
+                # label=dict_asset[LABEL],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE][index],
                 investment=solph.Investment(),
             )
@@ -1225,14 +1237,14 @@ def sink_dispatchable_optimize(model, dict_asset, **kwargs):
     else:
         inputs = {
             kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
-                label=dict_asset[LABEL],
+                # label=dict_asset[LABEL],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
                 investment=solph.Investment(),
             )
         }
 
     # create and add excess electricity sink to micro_grid_system - variable
-    sink_dispatchable = solph.Sink(label=dict_asset[LABEL], inputs=inputs,)
+    sink_dispatchable = solph.components.Sink(label=dict_asset[LABEL], inputs=inputs,)
     model.add(sink_dispatchable)
     kwargs[OEMOF_SINK].update({dict_asset[LABEL]: sink_dispatchable})
     logging.debug(
@@ -1258,7 +1270,7 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
 
     """
 
-    # sink_maingrid_feedin = solph.Sink(
+    # sink_maingrid_feedin = solph.components.Sink(
     #     label=SINK_MAINGRID_FEEDIN,
     #     inputs={
     #         bus_electricity_ng_feedin: solph.Flow(
@@ -1286,7 +1298,7 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
         }
 
     # create and add demand sink to micro_grid_system - fixed
-    sink_demand = solph.Sink(label=dict_asset[LABEL], inputs=inputs,)
+    sink_demand = solph.components.Sink(label=dict_asset[LABEL], inputs=inputs,)
     model.add(sink_demand)
     kwargs[OEMOF_SINK].update({dict_asset[LABEL]: sink_demand})
     logging.debug(

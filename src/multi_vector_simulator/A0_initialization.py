@@ -510,7 +510,7 @@ def process_user_arguments(
     logger.define_logging(
         logpath=path_output_folder,
         logfile=LOGFILE,
-        file_level=logging.DEBUG,
+        file_level=logging.INFO,
         screen_level=screen_level,
     )
 
