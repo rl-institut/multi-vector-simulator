@@ -1,10 +1,7 @@
-oemof.solph==0.4.4
-pandas>=0.24.0,!=1.1.0,!=1.1.1,!=1.1.2
-pyomo!=5.7.3,!=6.0 # version 5.7.3 and 6.0 make mvs very slow
 graphviz>=0.14.1
 plotly
 psutil
 kaleido>=0.0.2
 openpyxl>=3.0.5
 xlrd==1.2.0
-numpy>=1.21.0
+oemof.solph #==0.5.1.dev1
