@@ -155,6 +155,7 @@ EPA_PARAM_KEYS = {
     SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP, OUTPUT_LP_FILE],
     KPI: [KPI_SCALARS_DICT, KPI_UNCOUPLED_DICT, KPI_COST_MATRIX, KPI_SCALAR_MATRIX,],
     "raw_results": ["index", "columns", "data"],
+    "simulation_results": ["logs"],
 }
 
 # Fields expected for assets' parameters of json returned to EPA
