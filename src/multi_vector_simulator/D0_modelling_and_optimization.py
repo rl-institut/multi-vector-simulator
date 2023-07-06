@@ -23,6 +23,7 @@ import os
 import timeit
 import warnings
 
+import ipdb
 from oemof.solph import processing, network
 import oemof.solph as solph
 
@@ -57,6 +58,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OBJECTIVE_VALUE,
     SIMULTATION_TIME,
     MODELLING_TIME,
+    OEMOF_RAW,
 )
 
 from multi_vector_simulator.utils.exceptions import (
@@ -105,9 +107,22 @@ def run_oemof(dict_values, save_energy_system_graph=False, return_les=False):
     local_energy_system = solph.Model(model)
     logging.debug("Created oemof model based on created components and busses.")
 
-    local_energy_system = D2.add_constraints(
-        local_energy_system, dict_values, dict_model
-    )
+    # for n in model.nodes:
+    #     print(n.label)
+    #     print(vars(n))
+    #     print()
+    #
+    # import ipdb
+    # ipdb.set_trace()
+
+    from oemof_visio import ESCodeRenderer
+    cr = ESCodeRenderer(model)
+    cr.print()
+    ipdb.set_trace()
+
+    # local_energy_system = D2.add_constraints(
+    #     local_energy_system, dict_values, dict_model
+    # )
     model_building.store_lp_file(dict_values, local_energy_system)
 
     model, results_main, results_meta = model_building.simulating(
@@ -191,9 +206,21 @@ class model_building:
             if asset_group in dict_values:
                 for asset in dict_values[asset_group]:
                     type = dict_values[asset_group][asset][OEMOF_ASSET_TYPE]
+
+                    # print(type)
+                    # print(dict_values[asset_group][asset])
+
+                    if OEMOF_RAW in dict_values[asset_group][asset]:
+                        solph_asset = D1.raw_oemof_component(
+                            type, dict_values[asset_group][asset], dict_model
+                        )
+                        model.add(solph_asset)
+                        dict_model[type].update({asset: solph_asset})
+
                     # Checking if the asset type is one accepted for the asset group (security measure)
-                    if type in ACCEPTED_ASSETS_FOR_ASSET_GROUPS[asset_group]:
+                    elif type in ACCEPTED_ASSETS_FOR_ASSET_GROUPS[asset_group]:
                         # if so, then the appropriate function of D1 should be called
+
                         if type == OEMOF_TRANSFORMER:
                             D1.transformer(
                                 model, dict_values[asset_group][asset], **dict_model

@@ -9,6 +9,7 @@ import os
 
 import numpy as np
 import pandas as pd
+import oemof.solph as solph
 
 from multi_vector_simulator.utils import (
     data_parser,
@@ -26,6 +27,8 @@ from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
     DATA,
     TIMESERIES,
+    OEMOF_FLOW,
+    OEMOF_INVESTMENT,
 )
 
 from multi_vector_simulator.utils.constants import (
@@ -193,6 +196,19 @@ def convert_from_special_types_to_json(o):
     elif isinstance(o, pd.DataFrame):
         answer = {DATA_TYPE_JSON_KEY: TYPE_DATAFRAME}
         answer.update(json.loads(o.to_json(orient="split")))
+    elif isinstance(o, solph.Flow):
+        # TODO find a way to extract parameters and reverse it
+        answer = {
+            DATA_TYPE_JSON_KEY: OEMOF_FLOW,
+            VALUE: "reverse of oemof flow not supported yet",
+        }
+
+    elif isinstance(o, solph.Investment):
+        # TODO find a way to extract parameters and reverse it
+        answer = {
+            DATA_TYPE_JSON_KEY: OEMOF_INVESTMENT,
+            VALUE: "reverse of oemof investment not supported yet",
+        }
     else:
         raise TypeError(
             "An error occurred when converting the simulation data (dict_values) to json, as the type is not recognized: \n"

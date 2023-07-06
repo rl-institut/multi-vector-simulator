@@ -33,6 +33,16 @@ OEMOF_SOURCE = "source"
 OEMOF_SINK = "sink"
 OEMOF_BUSSES = "bus"
 OEMOF_ExtractionTurbineCHP = "extractionTurbineCHP"
+OEMOF_RAW = "oemof_raw"
+
+
+# Oemof.solph variables
+OEMOF_FLOW = "flow"
+OEMOF_INVESTMENT = "investment"
+OEMOF_SEQUENCES = "sequences"
+OEMOF_INVEST = "invest"
+OEMOF_SCALARS = "scalars"
+OEMOF_STORAGE_CONTENT = "storage_content"
 
 # Dict generated from above defined strings
 ACCEPTED_ASSETS_FOR_ASSET_GROUPS = {
@@ -103,6 +113,7 @@ ENERGY_PRICE = "energy_price"
 FEEDIN_TARIFF = "feedin_tariff"
 PEAK_DEMAND_PRICING = "peak_demand_pricing"
 PEAK_DEMAND_PRICING_PERIOD = "peak_demand_pricing_period"
+GRID_AVAILABILITY = "grid_availability"
 
 # Asset definitions: Transformer
 INVESTMENT_BUS = "investment_bus"

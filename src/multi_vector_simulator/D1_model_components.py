@@ -56,12 +56,21 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EMISSION_FACTOR,
     BETA,
     INVESTMENT_BUS,
+    GRID_AVAILABILITY,
+    OEMOF_RAW,
 )
 from multi_vector_simulator.utils.helpers import get_item_if_list, get_length_if_list
 from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
     WrongParameterFormatError,
 )
+
+OEMOF_RAW_ASSETS = {
+    OEMOF_TRANSFORMER: solph.Transformer,
+    OEMOF_GEN_STORAGE:solph.GenericStorage,
+    OEMOF_SOURCE:solph.Source,
+    OEMOF_SINK:solph.Sink,
+}
 
 
 def check_list_parameters_transformers_single_input_single_output(
@@ -83,6 +92,58 @@ def check_list_parameters_transformers_single_input_single_output(
         )
         logging.error(missing_dispatch_prices_or_efficiencies)
         raise ValueError(missing_dispatch_prices_or_efficiencies)
+
+
+def raw_oemof_component(oemof_type, dict_asset, dict_model):
+    """
+
+    Parameters
+    ----------
+    oemof_type : str
+        One of the keys of the OEMOF_RAW_ASSETS dict
+    dict_asset
+        Contains information about the transformer like (not exhaustive):
+        efficiency, installed capacity ('installedCap'), information on the
+        busses the transformer is connected to ('inflow_direction',
+        'outflow_direction'). It is expected the dict asset contains the key `OEMOF_RAW`
+        which contains the arguments dict passed to the oemof component
+    Returns
+    -------
+
+    """
+    asset = None
+    if OEMOF_RAW in dict_asset:
+        if oemof_type in OEMOF_RAW_ASSETS:
+            oemof_params = dict_asset[OEMOF_RAW]
+            # replace busses name by busses instances
+            if "inputs" in oemof_params:
+                new_inputs = {}
+                for bus_name in oemof_params["inputs"]:
+                    new_inputs[dict_model[OEMOF_BUSSES][bus_name]] = oemof_params[
+                        "inputs"
+                    ][bus_name]
+                oemof_params.update({"inputs": new_inputs})
+            if "outputs" in oemof_params:
+                new_outputs = {}
+                for bus_name in oemof_params["outputs"]:
+                    new_outputs[dict_model[OEMOF_BUSSES][bus_name]] = oemof_params[
+                        "outputs"
+                    ][bus_name]
+                oemof_params.update({"outputs": new_outputs})
+
+            # create oemof asset
+            asset = OEMOF_RAW_ASSETS[oemof_type](**oemof_params)
+        else:
+            import ipdb;ipdb.set_trace()
+            logging.error(
+                f"The oemof type {oemof_type} of the asset {dict_asset.get(LABEL,'no_name')} is not defined in dict OEMOF_RAW_ASSETS keys in D1.model_components"
+            )
+    else:
+        logging.error(
+            f"The key {OEMOF_RAW} is not present in the asset {dict_asset.get(LABEL, 'no_name')} although the function 'raw_oemof_component' has been called on this asset"
+        )
+
+    return asset
 
 
 def transformer(model, dict_asset, **kwargs):
@@ -324,8 +385,12 @@ def sink(model, dict_asset, **kwargs):
     - test_sink_dispatchable_multiple_input_busses()
 
     """
-    if TIMESERIES in dict_asset:
+    if GRID_AVAILABILITY in dict_asset:
+        pass
+        # add the sink and symbolic source directly here for simplicity
+    elif TIMESERIES in dict_asset:
         sink_non_dispatchable(model, dict_asset, **kwargs)
+
     else:
         sink_dispatchable_optimize(model, dict_asset, **kwargs)
 
@@ -379,7 +444,11 @@ def source(model, dict_asset, **kwargs):
     - test_source_dispatchable_fix_normalized_timeseries()
     - test_source_dispatchable_fix_timeseries_not_normalized_timeseries()
     """
-    if DISPATCHABILITY in dict_asset and dict_asset[DISPATCHABILITY] is True:
+    if GRID_AVAILABILITY in dict_asset:
+        pass
+        # add the source and symbolic sink directly here for simplicity
+
+    elif DISPATCHABILITY in dict_asset and dict_asset[DISPATCHABILITY] is True:
         check_optimize_cap(
             model,
             dict_asset,
@@ -1246,6 +1315,17 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     Indirectly updated `model` and dict of asset in `kwargs` with the sink object.
 
     """
+
+    # sink_maingrid_feedin = solph.Sink(
+    #     label=SINK_MAINGRID_FEEDIN,
+    #     inputs={
+    #         bus_electricity_ng_feedin: solph.Flow(
+    #             fix=experiment[GRID_AVAILABILITY],
+    #             investment=solph.Investment(ep_costs=0),
+    #         )
+    #     },
+    # )
+
     # check if the sink has multiple input busses
     if isinstance(dict_asset[INFLOW_DIRECTION], list):
         inputs = {}

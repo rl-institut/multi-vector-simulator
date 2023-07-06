@@ -70,14 +70,13 @@ from multi_vector_simulator.utils.constants_json_strings import (
     FIX_COST,
     LIFETIME_PRICE_DISPATCH,
     AVERAGE_SOC,
+    OEMOF_FLOW,
+    OEMOF_SEQUENCES,
+    OEMOF_INVEST,
+    OEMOF_SCALARS,
+    OEMOF_STORAGE_CONTENT,
 )
 
-# Oemof.solph variables
-OEMOF_FLOW = "flow"
-OEMOF_SEQUENCES = "sequences"
-OEMOF_INVEST = "invest"
-OEMOF_SCALARS = "scalars"
-OEMOF_STORAGE_CONTENT = "storage_content"
 
 # Determines which assets are defined by...
 # a influx from a bus

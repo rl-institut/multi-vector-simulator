@@ -27,6 +27,8 @@ import sys
 import pprint as pp
 import pandas as pd
 import warnings
+import oemof.solph as solph
+
 from multi_vector_simulator.version import version_num
 
 from multi_vector_simulator.utils.constants import (
@@ -727,29 +729,151 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
         dict_values, dso_dict, dict_availability_timeseries,
     )
 
-    define_source(
-        dict_values=dict_values,
-        asset_key=dso_name + DSO_CONSUMPTION,
-        outflow_direction=peak_demand_bus_name(dso_dict[OUTFLOW_DIRECTION]),
-        price=dso_dict[ENERGY_PRICE],
-        energy_vector=dso_dict[ENERGY_VECTOR],
-        emission_factor=dso_dict[EMISSION_FACTOR],
-        asset_type=dso_dict.get(TYPE_ASSET),
-    )
+    if GRID_AVAILABILITY in dso_dict:
+        grid_availability = dso_dict[GRID_AVAILABILITY]
+    else:
+        grid_availability = True
+        dso_dict[GRID_AVAILABILITY] = grid_availability
+
+    dso_bus_name = peak_demand_bus_name(dso_dict[OUTFLOW_DIRECTION])
+
+    if grid_availability is False:
+        define_source(
+            dict_values=dict_values,
+            asset_key=dso_name + DSO_CONSUMPTION,
+            outflow_direction=dso_bus_name,
+            price=dso_dict[ENERGY_PRICE],
+            energy_vector=dso_dict[ENERGY_VECTOR],
+            emission_factor=dso_dict[EMISSION_FACTOR],
+            asset_type=dso_dict.get(TYPE_ASSET),
+        )
+    else:
+        asset_key = dso_name + DSO_CONSUMPTION
+        define_raw_oemof_component(
+            dict_values=dict_values,
+            asset_group=ENERGY_PRODUCTION,
+            asset_key=asset_key,
+            energy_vector=dso_dict[ENERGY_VECTOR],
+            oemof_type=OEMOF_SOURCE,
+            oemof_params=dict(
+                label=asset_key,
+                outputs={
+                    dso_bus_name: solph.Flow(
+                        fix=1,  # TODO replace by grid availability
+                        investment=solph.Investment(ep_costs=0),
+                    )
+                },
+            ),
+            outflow_direction=peak_demand_bus_name(dso_dict[OUTFLOW_DIRECTION]),
+            inflow_direction=None,
+        )
+        dict_values[ENERGY_PRODUCTION][asset_key].update(
+            {DISPATCHABILITY: True, EMISSION_FACTOR: dso_dict[EMISSION_FACTOR]}
+        )
+
+        asset_key = dso_name + DSO_CONSUMPTION + "symbolic_sink"
+        define_raw_oemof_component(
+            dict_values=dict_values,
+            asset_group=ENERGY_CONSUMPTION,
+            asset_key=asset_key,
+            energy_vector=dso_dict[ENERGY_VECTOR],
+            oemof_type=OEMOF_SINK,
+            oemof_params=dict(
+                label=asset_key,
+                inputs={
+                    dso_bus_name: solph.Flow(
+                    )
+                },
+            ),
+            outflow_direction=None,
+            inflow_direction=dso_bus_name,
+        )
+
+        # in case of grid availablity the price should be 0 and an extra sink should be added
+
     dict_feedin = change_sign_of_feedin_tariff(dso_dict[FEEDIN_TARIFF], dso_name)
 
     inflow_bus_name = peak_demand_bus_name(dso_dict[INFLOW_DIRECTION], feedin=True)
 
     # define feed-in sink of the DSO
-    define_sink(
-        dict_values=dict_values,
-        asset_key=dso_name + DSO_FEEDIN,
-        price=dict_feedin,
-        inflow_direction=inflow_bus_name,
-        specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
-        energy_vector=dso_dict[ENERGY_VECTOR],
-        asset_type=dso_dict.get(TYPE_ASSET),
-    )
+    if grid_availability is False:
+        define_sink(
+            dict_values=dict_values,
+            asset_key=dso_name + DSO_FEEDIN,
+            price=dict_feedin,
+            inflow_direction=inflow_bus_name,
+            specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
+            energy_vector=dso_dict[ENERGY_VECTOR],
+            asset_type=dso_dict.get(TYPE_ASSET),
+        )
+    else:
+        asset_key = dso_name + DSO_FEEDIN
+        define_raw_oemof_component(
+            dict_values=dict_values,
+            asset_group=ENERGY_CONSUMPTION,
+            asset_key=asset_key,
+            energy_vector=dso_dict[ENERGY_VECTOR],
+            oemof_type=OEMOF_SINK,
+            oemof_params=dict(
+                label=asset_key,
+                inputs={
+                    inflow_bus_name: solph.Flow(
+                        fix=1,  # TODO replace by grid availability
+                        investment=solph.Investment(ep_costs=0),
+                    )
+                },
+            ),
+            outflow_direction=None,
+            inflow_direction=inflow_bus_name,
+        )
+        dict_values[ENERGY_CONSUMPTION][asset_key].update({DISPATCHABILITY: True})
+
+        asset_key = dso_name + DSO_FEEDIN + "symbolic_source"
+        define_raw_oemof_component(
+            dict_values=dict_values,
+            asset_group=ENERGY_PRODUCTION,
+            asset_key=asset_key,
+            energy_vector=dso_dict[ENERGY_VECTOR],
+            oemof_type=OEMOF_SOURCE,
+            oemof_params=dict(
+                label=asset_key,
+                outputs={
+                    inflow_bus_name: solph.Flow()
+                },
+            ),
+            outflow_direction=inflow_bus_name,
+            inflow_direction=None,
+        )
+        print(dso_dict[EMISSION_FACTOR])
+        dict_values[ENERGY_PRODUCTION][asset_key].update({DISPATCHABILITY: True, EMISSION_FACTOR: {UNIT: 'kgCO2eq/kWh', VALUE: 0}})
+        print(dict_values[ENERGY_PRODUCTION][asset_key].keys())
+
+        # def maingrid_feedin(micro_grid_system, experiment):
+        #     logging.debug("Added to oemof model: maingrid feedin")
+        #     bus_electricity_ng_feedin = solph.Bus(label=BUS_ELECTRICITY_NG_FEEDIN)
+        #     micro_grid_system.add(bus_electricity_ng_feedin)
+        #
+        #     # create and add demand sink to micro_grid_system - fixed
+        #     sink_maingrid_feedin = solph.Sink(
+        #         label=SINK_MAINGRID_FEEDIN,
+        #         inputs={
+        #             bus_electricity_ng_feedin: solph.Flow(
+        #                 fix=experiment[GRID_AVAILABILITY],
+        #                 investment=solph.Investment(ep_costs=0),
+        #             )
+        #         },
+        #     )
+        #     micro_grid_system.add(sink_maingrid_feedin)
+        #
+        #     # to fill in for not really provided feed in
+        #     source_maingrid_feedin_symbolic = solph.Source(
+        #         label=SINK_MAINGRID_FEEDIN_SYMBOLIC,
+        #         outputs={bus_electricity_ng_feedin: solph.Flow()},
+        #     )
+        #     micro_grid_system.add(source_maingrid_feedin_symbolic)
+        #     return bus_electricity_ng_feedin
+        # the price should be 0 and an extra source should be added here
+        pass
     dso_dict.update(
         {
             CONNECTED_CONSUMPTION_SOURCE: dso_name + DSO_CONSUMPTION,
@@ -1062,6 +1186,7 @@ def define_transformer_for_peak_demand_pricing(
             VALUE: 0,
             UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
         },
+        # add price here instead of in sinks
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
@@ -1084,6 +1209,61 @@ def define_transformer_for_peak_demand_pricing(
     logging.debug(
         f"Model for peak demand pricing on feedin side: Adding transfomer {transformer_name}."
     )
+
+
+def define_raw_oemof_component(
+    dict_values,
+    asset_group,
+    asset_key,
+    energy_vector,
+    oemof_type,
+    oemof_params,
+    inflow_direction,
+    outflow_direction,
+):
+    logging.info(f"Asset {asset_key} was added as a raw oemof component.")
+
+    default_asset_dict = {
+        OEMOF_ASSET_TYPE: oemof_type,
+        LABEL: asset_key,
+        ENERGY_VECTOR: energy_vector,
+        OEMOF_RAW: oemof_params,
+    }
+
+    if outflow_direction is not None:
+        default_asset_dict[OUTFLOW_DIRECTION] = outflow_direction
+        if outflow_direction not in dict_values[ENERGY_BUSSES]:
+            dict_values[ENERGY_BUSSES].update(
+                {
+                    outflow_direction: {
+                        LABEL: outflow_direction,
+                        ENERGY_VECTOR: energy_vector,
+                        ASSET_DICT: {asset_key: asset_key},
+                    }
+                }
+            )
+    if inflow_direction is not None:
+        default_asset_dict[INFLOW_DIRECTION] = inflow_direction
+        if inflow_direction not in dict_values[ENERGY_BUSSES]:
+            dict_values[ENERGY_BUSSES].update(
+                {
+                    inflow_direction: {
+                        LABEL: inflow_direction,
+                        ENERGY_VECTOR: energy_vector,
+                        ASSET_DICT: {asset_key: asset_key},
+                    }
+                }
+            )
+
+    # todo update the bus asset dict
+    # # If the EnergyBus has no ASSET_DICT to which the asset can be added later, add it
+    # if ASSET_DICT not in dict_values[ENERGY_BUSSES][bus]:
+    #     dict_values[ENERGY_BUSSES][bus].update({ASSET_DICT: {}})
+    #
+    # # Asset should added to respective bus
+    # dict_values[ENERGY_BUSSES][bus][ASSET_DICT].update({asset_key: asset_label})
+
+    dict_values[asset_group].update({asset_key: default_asset_dict})
 
 
 def define_source(

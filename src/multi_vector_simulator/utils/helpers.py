@@ -28,6 +28,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INFLOW_DIRECTION,
     OUTFLOW_DIRECTION,
     ENERGY_VECTOR,
+    OEMOF_RAW,
 )
 
 
@@ -68,7 +69,8 @@ def find_value_by_key(data, target, result=None):
                 result.append(v)
         # Check next level for target
         if isinstance(v, dict):
-            result = find_value_by_key(data=v, target=target, result=result)
+            if k != OEMOF_RAW:
+                result = find_value_by_key(data=v, target=target, result=result)
     return result
 
 
