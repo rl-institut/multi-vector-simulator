@@ -65,6 +65,15 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_VECTOR,
     TYPE_ASSET,
     OEMOF_ASSET_TYPE,
+    ENERGY_PRODUCTION,
+    ENERGY_CONSUMPTION,
+    ENERGY_CONVERSION,
+    ENERGY_PROVIDERS,
+    ENERGY_STORAGE,
+    TIMESERIES_PEAK,
+    OPTIMIZE_CAP,
+    OPTIMIZED_ADD_CAP,
+    VALUE,
 )
 from multi_vector_simulator.utils.constants import TYPE_STR
 from multi_vector_simulator.utils.helpers import get_asset_types
@@ -101,6 +110,7 @@ def bus_flow(
 
 class OemofBusResults(pd.DataFrame):  # real results
     def __init__(self, results, busses_info=None, asset_types=None):
+        # TODO add a division by timeseries peak
         if isinstance(results, dict):
             ts = []
             investments = []
@@ -258,7 +268,7 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
         busses_info=dict_values[ENERGY_BUSSES],
         asset_types=get_asset_types(dict_values),
     )  # if AUTO_CREATED_HIGHLIGHT not in bl])
-    dict_values["raw_results"] = br.to_json()  # to_dict(orient="split") #
+
     if lp_file_output is True:
         logging.debug("Saving the content of the model's lp file")
         with tempfile.TemporaryDirectory() as tmpdirname:
@@ -275,6 +285,26 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
     print("")
     logging.debug("Accessing script: E0_evaluation")
     E0.evaluate_dict(dict_values, results_main, results_meta)
+
+    # Correct the optimized values
+    for asset_group in [
+        ENERGY_PRODUCTION,
+        ENERGY_CONSUMPTION,
+        ENERGY_CONVERSION,
+        ENERGY_PROVIDERS,
+        ENERGY_STORAGE,
+    ]:
+        for asset_name, asset in dict_values[asset_group].items():
+            if (
+                asset.get(OPTIMIZE_CAP, {VALUE: False}).get(VALUE, False) is True
+                and TIMESERIES_PEAK in asset
+            ):
+                corrected_optimized_capacity = asset[OPTIMIZED_ADD_CAP][VALUE]
+                br.loc[
+                    br.index.get_level_values("asset") == asset_name, "investments"
+                ] = corrected_optimized_capacity
+
+    dict_values["raw_results"] = br.to_json()  # to_dict(orient="split") #
 
     logging.debug("Convert results to json")
 
