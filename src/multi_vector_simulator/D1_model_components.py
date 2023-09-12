@@ -274,6 +274,25 @@ def storage(model, dict_asset, **kwargs):
     - test_storage_fix()
 
     """
+
+    # Make sure the initial storage level is within the max and min values
+    initial_storage_level = dict_asset[STORAGE_CAPACITY][SOC_INITIAL][VALUE]
+
+    if initial_storage_level is not None:
+        min_storage_level = dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE]
+        max_storage_level = dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE]
+
+        if initial_storage_level < min_storage_level:
+            dict_asset[STORAGE_CAPACITY][SOC_INITIAL][VALUE] = min_storage_level
+            logging.warning(
+                f"The initial storage level of the battery asset {dict_asset[LABEL]} was below the minimal allowed value ({initial_storage_level} < {min_storage_level}), the initial level was ajusted to be equal to the minimum, please check your input files."
+            )
+        elif initial_storage_level > max_storage_level:
+            dict_asset[STORAGE_CAPACITY][SOC_INITIAL][VALUE] = max_storage_level
+            logging.warning(
+                f"The initial storage level of the battery asset {dict_asset[LABEL]} was above the maximal allowed value ({initial_storage_level} > {max_storage_level}), the initial level was ajusted to be equal to the maximum, please check your input files."
+            )
+
     check_optimize_cap(
         model,
         dict_asset,

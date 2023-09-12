@@ -14,7 +14,7 @@ import pandas as pd
 import numpy as np
 import pytest
 from pytest import approx
-from pandas.util.testing import assert_series_equal
+from pandas.testing import assert_series_equal
 
 from multi_vector_simulator.cli import main
 from multi_vector_simulator.server import run_simulation
