@@ -10,7 +10,7 @@ Module E0 evaluates the oemof results and calculates the KPI
 
 import logging
 
-import oemof.solph as solph
+from oemof import solph
 import pandas as pd
 
 import multi_vector_simulator.E1_process_results as E1

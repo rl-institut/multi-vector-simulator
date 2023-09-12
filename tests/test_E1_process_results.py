@@ -6,7 +6,7 @@ import numpy as np
 import logging
 import shutil
 import mock
-import oemof.solph as solph
+from oemof import solph
 import pickle
 
 import multi_vector_simulator.A0_initialization as A0
