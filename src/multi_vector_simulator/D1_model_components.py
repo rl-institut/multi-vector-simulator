@@ -56,6 +56,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EMISSION_FACTOR,
     BETA,
     INVESTMENT_BUS,
+    GRID_AVAILABILITY,
 )
 from multi_vector_simulator.utils.helpers import get_item_if_list, get_length_if_list
 from multi_vector_simulator.utils.exceptions import (
@@ -324,7 +325,10 @@ def sink(model, dict_asset, **kwargs):
     - test_sink_dispatchable_multiple_input_busses()
 
     """
-    if TIMESERIES in dict_asset:
+    if GRID_AVAILABILITY in dict_asset:
+        pass
+        # add the sink and symbolic source directly here for simplicity
+    elif TIMESERIES in dict_asset:
         sink_non_dispatchable(model, dict_asset, **kwargs)
 
     else:
@@ -380,7 +384,11 @@ def source(model, dict_asset, **kwargs):
     - test_source_dispatchable_fix_normalized_timeseries()
     - test_source_dispatchable_fix_timeseries_not_normalized_timeseries()
     """
-    if DISPATCHABILITY in dict_asset and dict_asset[DISPATCHABILITY] is True:
+    if GRID_AVAILABILITY in dict_asset:
+        pass
+        # add the source and symbolic sink directly here for simplicity
+
+    elif DISPATCHABILITY in dict_asset and dict_asset[DISPATCHABILITY] is True:
         check_optimize_cap(
             model,
             dict_asset,
@@ -1258,6 +1266,17 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     Indirectly updated `model` and dict of asset in `kwargs` with the sink object.
 
     """
+
+    # sink_maingrid_feedin = solph.components.Sink(
+    #     label=SINK_MAINGRID_FEEDIN,
+    #     inputs={
+    #         bus_electricity_ng_feedin: solph.Flow(
+    #             fix=experiment[GRID_AVAILABILITY],
+    #             investment=solph.Investment(ep_costs=0),
+    #         )
+    #     },
+    # )
+
     # check if the sink has multiple input busses
     if isinstance(dict_asset[INFLOW_DIRECTION], list):
         inputs = {}

@@ -175,6 +175,10 @@ def main(**kwargs):
         dict_values, save_energy_system_graph=save_energy_system_graph,
     )
 
+    import ipdb
+
+    ipdb.set_trace()
+
     print("")
     logging.debug("Accessing script: E0_evaluation")
     E0.evaluate_dict(dict_values, results_main, results_meta)

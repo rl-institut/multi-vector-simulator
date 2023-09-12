@@ -39,7 +39,7 @@ import os
 import tempfile
 
 from oemof.tools import logger
-import oemof.solph as solph
+from oemof import solph
 
 # Loading all child functions
 import multi_vector_simulator.B0_data_input_json as B0
