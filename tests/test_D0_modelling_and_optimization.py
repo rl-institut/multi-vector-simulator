@@ -2,7 +2,7 @@ import os
 import shutil
 import argparse
 
-import oemof.solph
+from oemof import solph
 import pandas as pd
 import pytest
 import mock
@@ -115,7 +115,7 @@ def test_energysystem_initialized(dict_values_minimal):
     ):
         assert k in dict_model.keys()
     assert isinstance(
-        model, oemof.solph.network.EnergySystem
+        model, solph.network.EnergySystem
     ), f"The oemof model has not been successfully created."
 
 
@@ -231,7 +231,7 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_true(dict_values):
     model = D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    local_energy_system = oemof.solph.Model(model)
+    local_energy_system = solph.Model(model)
     dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE].update({VALUE: True})
     D0.model_building.store_lp_file(dict_values, local_energy_system)
     assert (
@@ -248,7 +248,7 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_false(dict_values):
     model = D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    local_energy_system = oemof.solph.Model(model)
+    local_energy_system = solph.Model(model)
     dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE].update({VALUE: False})
     D0.model_building.store_lp_file(dict_values, local_energy_system)
     assert (

@@ -31,7 +31,7 @@ except ModuleNotFoundError:
 
 import graphviz
 import oemof
-import oemof.solph as solph
+from oemof import solph
 
 from multi_vector_simulator.utils.constants import (
     PROJECT_DATA,
