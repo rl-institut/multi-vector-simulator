@@ -739,7 +739,7 @@ def get_flow(settings, bus, dict_asset, flow_tuple, multi_bus=None):
     add_info_flows(
         evaluated_period=settings[EVALUATED_PERIOD][VALUE],
         dict_asset=dict_asset,
-        flow=flow,
+        flow=flow.dropna(),
         bus_name=multi_bus,
     )
     if multi_bus is None:
