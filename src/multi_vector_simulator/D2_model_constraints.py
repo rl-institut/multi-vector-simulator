@@ -192,6 +192,7 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
                             renewable_assets[asset][OEMOF_SOLPH_OBJECT_ASSET],
                             renewable_assets[asset][OEMOF_SOLPH_OBJECT_BUS],
                             :,
+                            :
                         ]
                     )
                     * renewable_assets[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
@@ -208,6 +209,7 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
                             non_renewable_assets[asset][OEMOF_SOLPH_OBJECT_ASSET],
                             non_renewable_assets[asset][OEMOF_SOLPH_OBJECT_BUS],
                             :,
+                            :
                         ]
                     )
                     * non_renewable_assets[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
@@ -439,17 +441,20 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
 
             # Get the flows from demands and add weighing
             for asset in demands:
+
                 demand_one_asset = (
                     sum(
                         model.flow[
                             demands[asset][OEMOF_SOLPH_OBJECT_BUS],
                             demands[asset][OEMOF_SOLPH_OBJECT_ASSET],
                             :,
+                            :
                         ]
                     )
                     * demands[asset][WEIGHTING_FACTOR_ENERGY_CARRIER]
                 )
                 total_demand += demand_one_asset
+
 
             # Get the flows from providers and add weighing
             for asset in energy_provider_consumption_sources:
@@ -463,6 +468,7 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
                                 OEMOF_SOLPH_OBJECT_BUS
                             ],
                             :,
+                            :
                         ]
                     )
                     * energy_provider_consumption_sources[asset][
@@ -737,6 +743,7 @@ def constraint_net_zero_energy(model, dict_values, dict_model):
                                 OEMOF_SOLPH_OBJECT_BUS
                             ],
                             :,
+                            :
                         ]
                     )
                     * energy_provider_consumption_sources[asset][
@@ -755,6 +762,7 @@ def constraint_net_zero_energy(model, dict_values, dict_model):
                                 OEMOF_SOLPH_OBJECT_ASSET
                             ],
                             :,
+                            :
                         ]
                     )
                     * energy_provider_feedin_sinks[asset][
