@@ -426,6 +426,9 @@ def create_json_from_csv(
                         )
 
                         df_copy.loc[[i], [column]] = 0
+                # if "orage" in filename:
+                #     print(df_copy)
+                #     import ipdb;ipdb.set_trace()
                 # delete not required rows in column
                 df = df_copy[df_copy[column].notna()]
 

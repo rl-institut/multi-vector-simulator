@@ -421,7 +421,7 @@ def determine_lifetime_price_dispatch(dict_asset, economic_data):
 
 def get_lifetime_price_dispatch_one_value(dispatch_price, economic_data):
     """
-    Lifetime dispatch price is a scalar value that is calulated with the annuity
+    Lifetime dispatch price is a scalar value that is calculated with the annuity
 
     By doing this, the operational expenditures, in the simulation only taken into account for a year,
     can be compared to the investment costs.

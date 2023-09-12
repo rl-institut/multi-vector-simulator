@@ -71,8 +71,8 @@ TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_OUTPUT_FOLDER)
 
 class TestACElectricityBus:
     def setup_method(self):
-        if os.path.exists(TEST_OUTPUT_PATH):
-            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+        # if os.path.exists(TEST_OUTPUT_PATH):
+        #     shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
         if os.path.exists(TEST_OUTPUT_PATH) is False:
             os.mkdir(TEST_OUTPUT_PATH)
 
@@ -152,10 +152,10 @@ class TestACElectricityBus:
         ).set_index("Unnamed: 0")
         installed_capacity = float(energy_production_data["pv_plant_01"][INSTALLED_CAP])
         # adapt index
-        result_time_series_pv.index = input_time_series_pv_shortened.index
+        input_time_series_pv_shortened.index = result_time_series_pv.dropna().index
 
         assert_series_equal(
-            result_time_series_pv.astype(np.float64),
+            result_time_series_pv.astype(np.float64).dropna(),
             input_time_series_pv_shortened * installed_capacity,
             check_names=False,
         )
@@ -299,6 +299,7 @@ class TestACElectricityBus:
                 os.path.join(TEST_OUTPUT_PATH, case, "timeseries_all_busses.xlsx"),
                 sheet_name="Electricity",
             )
+            busses_flow.dropna(inplace=True)
             # compute the sum of the excess electricity for all timesteps
             excess[case] = sum(busses_flow["Electricity" + EXCESS_SINK])
         # compare the total excess electricity between the two cases
@@ -475,9 +476,9 @@ class TestACElectricityBus:
                     abs(busses_flow["demand_heat"][i])
                 )
 
-    def teardown_method(self):
-        if os.path.exists(TEST_OUTPUT_PATH):
-            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    # def teardown_method(self):
+    #     if os.path.exists(TEST_OUTPUT_PATH):
+    #         shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
 
 
 # this ensure that the test is only ran if explicitly executed

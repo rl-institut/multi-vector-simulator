@@ -15,6 +15,7 @@ Module D1 includes all functions that are required to build an oemof model with 
 
 import logging
 
+import pandas as pd
 from oemof import solph
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -255,10 +256,15 @@ def storage(model, dict_asset, **kwargs):
 
     # Make sure the initial storage level is within the max and min values
     initial_storage_level = dict_asset[STORAGE_CAPACITY][SOC_INITIAL][VALUE]
+    min_storage_level = dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE]
+    max_storage_level = dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE]
 
     if initial_storage_level is not None:
-        min_storage_level = dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE]
-        max_storage_level = dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE]
+        print("hereoe")
+        print(initial_storage_level)
+        print(min_storage_level)
+        if pd.isna(initial_storage_level):
+            dict_asset[STORAGE_CAPACITY][SOC_INITIAL][VALUE] = min_storage_level
 
         if initial_storage_level < min_storage_level:
             dict_asset[STORAGE_CAPACITY][SOC_INITIAL][VALUE] = min_storage_level
@@ -270,6 +276,11 @@ def storage(model, dict_asset, **kwargs):
             logging.warning(
                 f"The initial storage level of the battery asset {dict_asset[LABEL]} was above the maximal allowed value ({initial_storage_level} > {max_storage_level}), the initial level was ajusted to be equal to the maximum, please check your input files."
             )
+    else:
+        print("hereoe NONE")
+        print(initial_storage_level)
+        print(min_storage_level)
+        dict_asset[STORAGE_CAPACITY][SOC_INITIAL][VALUE] = min_storage_level
 
     check_optimize_cap(
         model,
