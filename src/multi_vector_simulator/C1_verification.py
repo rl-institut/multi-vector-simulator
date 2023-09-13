@@ -403,6 +403,8 @@ def check_emission_factor_of_providers(dict_values):
 
     """
     for key, asset in dict_values[ENERGY_PROVIDERS].items():
+        print("emission: ", asset[EMISSION_FACTOR][VALUE])
+        # TODO change path of emission_factor
         if asset[EMISSION_FACTOR][VALUE] > 0 and asset[RENEWABLE_SHARE_DSO][VALUE] == 1:
             logging.warning(
                 f"The renewable share of provider {key} is {asset[RENEWABLE_SHARE_DSO][VALUE] * 100} % while its emission_factor is >0. Check if this is what you intended to define."

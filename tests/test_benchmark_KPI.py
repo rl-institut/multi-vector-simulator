@@ -371,9 +371,9 @@ class Test_Economic_KPI:
             attributed_costs == data[KPI][KPI_SCALARS_DICT][COST_TOTAL]
         ), f"The total attributed costs are not the costs of the total system."
 
-    def teardown_method(self):
-        if os.path.exists(TEST_OUTPUT_PATH):
-            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    # def teardown_method(self):
+    #     if os.path.exists(TEST_OUTPUT_PATH):
+    #         shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
 
 
 class TestTechnicalKPI:

@@ -23,8 +23,8 @@ import os
 import timeit
 import warnings
 
-from oemof.solph import processing, network
-import oemof.solph as solph
+from oemof.solph import processing
+from oemof import solph
 
 import multi_vector_simulator.D1_model_components as D1
 import multi_vector_simulator.D2_model_constraints as D2
@@ -142,7 +142,8 @@ class model_building:
         """
         logging.info("Initializing oemof simulation.")
         model = solph.EnergySystem(
-            timeindex=dict_values[SIMULATION_SETTINGS][TIME_INDEX]
+            timeindex=dict_values[SIMULATION_SETTINGS][TIME_INDEX],
+            infer_last_interval=True,
         )
 
         # this dictionary will include all generated oemof objects

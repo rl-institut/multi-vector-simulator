@@ -1,5 +1,5 @@
 diesel_efficiency,electricity_price,soc_min
-0.03,0.077,
+0.03,0.077,NA
 0.922,0.048,NA
 0.802,0.282,0.1
 0.669,0.498,0.2

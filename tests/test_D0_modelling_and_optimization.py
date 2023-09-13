@@ -2,14 +2,18 @@ import os
 import shutil
 import argparse
 
-import oemof.solph
+
+from oemof import solph
 import pandas as pd
 import pytest
 import mock
 
 from multi_vector_simulator.cli import main
 import multi_vector_simulator.D0_modelling_and_optimization as D0
-from multi_vector_simulator.B0_data_input_json import load_json
+from multi_vector_simulator.B0_data_input_json import (
+    load_json,
+    convert_from_json_to_special_types,
+)
 
 from multi_vector_simulator.utils.constants import LP_FILE
 
@@ -75,21 +79,23 @@ def dict_values_minimal():
         start="2020-01-01 00:00", periods=3, freq="60min"
     )
 
-    return {
-        SIMULATION_SETTINGS: {
-            TIME_INDEX: {
-                DATA_TYPE_JSON_KEY: TYPE_DATETIMEINDEX,
-                VALUE: pandas_DatetimeIndex,
-            }
-        },
-        ENERGY_BUSSES: {
-            "bus": {
-                LABEL: "bus",
-                ENERGY_VECTOR: "Electricity",
-                ASSET_DICT: {"asset": "asset_label"},
-            }
-        },
-    }
+    return convert_from_json_to_special_types(
+        {
+            SIMULATION_SETTINGS: {
+                TIME_INDEX: {
+                    DATA_TYPE_JSON_KEY: TYPE_DATETIMEINDEX,
+                    VALUE: pandas_DatetimeIndex,
+                }
+            },
+            ENERGY_BUSSES: {
+                "bus": {
+                    LABEL: "bus",
+                    ENERGY_VECTOR: "Electricity",
+                    ASSET_DICT: {"asset": "asset_label"},
+                }
+            },
+        }
+    )
 
 
 def test_if_model_building_time_measured_and_stored():
@@ -115,7 +121,7 @@ def test_energysystem_initialized(dict_values_minimal):
     ):
         assert k in dict_model.keys()
     assert isinstance(
-        model, oemof.solph.network.EnergySystem
+        model, solph.EnergySystem
     ), f"The oemof model has not been successfully created."
 
 
@@ -231,7 +237,7 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_true(dict_values):
     model = D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    local_energy_system = oemof.solph.Model(model)
+    local_energy_system = solph.Model(model)
     dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE].update({VALUE: True})
     D0.model_building.store_lp_file(dict_values, local_energy_system)
     assert (
@@ -248,7 +254,7 @@ def test_if_lp_file_is_stored_to_file_if_output_lp_file_false(dict_values):
     model = D0.model_building.adding_assets_to_energysystem_model(
         dict_values, dict_model, model
     )
-    local_energy_system = oemof.solph.Model(model)
+    local_energy_system = solph.Model(model)
     dict_values[SIMULATION_SETTINGS][OUTPUT_LP_FILE].update({VALUE: False})
     D0.model_building.store_lp_file(dict_values, local_energy_system)
     assert (
