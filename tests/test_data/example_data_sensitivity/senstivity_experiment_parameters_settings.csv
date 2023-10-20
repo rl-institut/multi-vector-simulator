@@ -1,0 +1,2 @@
+setting group,setting,min,max,step
+constraints,minimal_renewable_share,0,1,0.5
