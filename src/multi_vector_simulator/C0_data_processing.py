@@ -762,7 +762,6 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
     Additionally, prints a logging.warning in case of the feed-in tariff is entered as
     negative value in 'energyProviders.csv'.
 
-    #todo This only works if the feedin tariff is not defined as a timeseries
     Parameters
     ----------
     dict_feedin_tariff: dict
@@ -783,23 +782,46 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
     - C0.test_change_sign_of_feedin_tariff_negative_value()
     - C0.test_change_sign_of_feedin_tariff_zero()
     """
-    if dict_feedin_tariff[VALUE] > 0:
-        # Add a debug message in case the feed-in is interpreted as revenue-inducing.
-        logging.debug(
-            f"The {FEEDIN_TARIFF} of {dso} is positive, which means that feeding into the grid results in a revenue stream."
-        )
-    elif dict_feedin_tariff[VALUE] == 0:
-        # Add a warning msg in case the feedin induces expenses rather than revenue
-        logging.warning(
-            f"The {FEEDIN_TARIFF} of {dso} is 0, which means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
-        )
-    elif dict_feedin_tariff[VALUE] < 0:
-        # Add a warning msg in case the feedin induces expenses rather than revenue
-        logging.warning(
-            f"The {FEEDIN_TARIFF} of {dso} is negative, which means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
-        )
+
+    if isinstance(dict_feedin_tariff[VALUE], pd.Series) is False:
+        if dict_feedin_tariff[VALUE] > 0:
+            # Add a debug message in case the feed-in is interpreted as revenue-inducing.
+            logging.debug(
+                f"The {FEEDIN_TARIFF} of {dso} is positive, which means that feeding into the grid results in a revenue stream."
+            )
+        elif dict_feedin_tariff[VALUE] == 0:
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is 0, which means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
+            )
+        elif dict_feedin_tariff[VALUE] < 0:
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is negative, which means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
+            )
+        else:
+            pass
     else:
-        pass
+        if (dict_feedin_tariff[VALUE] < 0).any():
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            ts_info = ", ".join(
+                dict_feedin_tariff[VALUE]
+                .loc[dict_feedin_tariff[VALUE] < 0]
+                .index.astype(str)
+            )
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is 0 for the following timestamps:\n{ts_info}\n. This means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
+            )
+        elif (dict_feedin_tariff[VALUE] < 0).any():
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            ts_info = ", ".join(
+                dict_feedin_tariff[VALUE]
+                .loc[dict_feedin_tariff[VALUE] < 0]
+                .index.astype(str)
+            )
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is negative for the following timestamps:\n{ts_info}\n. A negative value means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
+            )
 
     dict_feedin_tariff = {
         VALUE: -dict_feedin_tariff[VALUE],
@@ -1137,6 +1159,7 @@ def define_source(
         )
 
     if price is not None:
+
         if FILENAME in price and HEADER in price:
             price.update(
                 {
