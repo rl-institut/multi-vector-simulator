@@ -412,6 +412,10 @@ def check_emission_factor_of_providers(dict_values):
 
     """
     for key, asset in dict_values[ENERGY_PROVIDERS].items():
+        if isinstance(asset[EMISSION_FACTOR][VALUE], str):
+            raise TypeError(
+                f"The emission factor of the provider asset {asset[LABEL]} is a string, this is likely due to a missing value in the csv input file 'energyProviders.csv', please check your input file for missing values or typos"
+            )
         if asset[EMISSION_FACTOR][VALUE] > 0 and asset[RENEWABLE_SHARE_DSO][VALUE] == 1:
             logging.warning(
                 f"The renewable share of provider {key} is {asset[RENEWABLE_SHARE_DSO][VALUE] * 100} % while its emission_factor is >0. Check if this is what you intended to define."
