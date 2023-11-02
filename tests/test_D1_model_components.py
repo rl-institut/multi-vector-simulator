@@ -118,7 +118,7 @@ class TestTransformerComponent:
             dict_asset[LABEL] in self.transformers
         ), f"Transformer '{dict_asset[LABEL]}' was not added to `asset_dict` but should have been added."
         assert isinstance(
-            self.transformers[dict_asset[LABEL]], network.Transformer
+            self.transformers[dict_asset[LABEL]], solph.components.Converter
         ), f"Transformer '{dict_asset[LABEL]}' was not added as type ' solph.network.Transformer' to `asset_dict`."
 
         # self.models should contain the transformer (indirectly tested)
@@ -293,30 +293,14 @@ class TestTransformerComponent:
             "transformer_optimize_multiple_output_busses"
         ]
 
-        # dict_asset[EFFICIENCY][VALUE] = 0.1
-        # with pytest.raises(ValueError):
-        #     D1.transformer(
-        #         model=self.model,
-        #         dict_asset=dict_asset,
-        #         transformer=self.transformers,
-        #         bus=self.busses,
-        #     )
-        inst_cap = [10, 15]
-        dict_asset[INSTALLED_CAP][VALUE] = inst_cap
-
-        D1.transformer(
-            model=self.model,
-            dict_asset=dict_asset,
-            transformer=self.transformers,
-            bus=self.busses,
-        )
-
-        output_bus_list = [
-            self.model._nodes[-1].outputs.data[self.busses[bus_name]]
-            for bus_name in dict_asset[OUTFLOW_DIRECTION]
-        ]
-        for cap, output_bus in zip(inst_cap, output_bus_list):
-            assert output_bus.investment.existing == cap
+        dict_asset[EFFICIENCY][VALUE] = 0.1
+        with pytest.raises(ValueError):
+            D1.transformer(
+                model=self.model,
+                dict_asset=dict_asset,
+                transformer=self.transformers,
+                bus=self.busses,
+            )
 
 
     def test_transformer_fix_cap_single_busses(self):

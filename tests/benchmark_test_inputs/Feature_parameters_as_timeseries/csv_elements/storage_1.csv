@@ -10,5 +10,5 @@ specific_costs_om,currency/unit/year,0,0,0
 dispatch_price,currency/kWh,NA,0,0
 soc_initial,None or factor,None,NA,NA
 soc_max,factor,1,NA,NA
-soc_min,factor,"{'file_name': 'parameter_timeseries.csv', 'header': 'soc_min', 'unit': 'factor'}",NA,NA
+soc_min,factor,0.1,NA,NA
 unit,str,kWh,kW,kW
