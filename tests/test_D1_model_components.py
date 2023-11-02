@@ -118,7 +118,7 @@ class TestTransformerComponent:
             dict_asset[LABEL] in self.transformers
         ), f"Transformer '{dict_asset[LABEL]}' was not added to `asset_dict` but should have been added."
         assert isinstance(
-            self.transformers[dict_asset[LABEL]], network.Transformer
+            self.transformers[dict_asset[LABEL]], network.Converter
         ), f"Transformer '{dict_asset[LABEL]}' was not added as type ' solph.network.Transformer' to `asset_dict`."
 
         # self.models should contain the transformer (indirectly tested)

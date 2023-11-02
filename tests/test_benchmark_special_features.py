@@ -230,6 +230,6 @@ class Test_Parameter_Parsing:
         assert transformer[EFFICIENCY][VALUE] == [0.3, 0.5]
         assert transformer[DISPATCH_PRICE][VALUE] == [0.5, 0.7]
 
-    def teardown_method(self):
-        if os.path.exists(TEST_OUTPUT_PATH):
-            shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
+    # def teardown_method(self):
+    #     if os.path.exists(TEST_OUTPUT_PATH):
+    #         shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
