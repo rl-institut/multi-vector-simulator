@@ -15,6 +15,7 @@ Module D1 includes all functions that are required to build an oemof model with 
 
 import logging
 
+import pandas as pd
 from oemof import solph
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -277,10 +278,12 @@ def storage(model, dict_asset, **kwargs):
 
     # Make sure the initial storage level is within the max and min values
     initial_storage_level = dict_asset[STORAGE_CAPACITY][SOC_INITIAL][VALUE]
+    min_storage_level = dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE]
+    max_storage_level = dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE]
 
     if initial_storage_level is not None:
-        min_storage_level = dict_asset[STORAGE_CAPACITY][SOC_MIN][VALUE]
-        max_storage_level = dict_asset[STORAGE_CAPACITY][SOC_MAX][VALUE]
+        if pd.isna(initial_storage_level):
+            dict_asset[STORAGE_CAPACITY][SOC_INITIAL][VALUE] = min_storage_level
 
         if initial_storage_level < min_storage_level:
             dict_asset[STORAGE_CAPACITY][SOC_INITIAL][VALUE] = min_storage_level
@@ -292,6 +295,13 @@ def storage(model, dict_asset, **kwargs):
             logging.warning(
                 f"The initial storage level of the battery asset {dict_asset[LABEL]} was above the maximal allowed value ({initial_storage_level} > {max_storage_level}), the initial level was ajusted to be equal to the maximum, please check your input files."
             )
+    else:
+        if not isinstance(min_storage_level, float):
+            raise ValueError(
+                f"At the moment it is not possible to use multiple values of min_storage level"
+            )
+            min_storage_level = min_storage_level[0]
+        dict_asset[STORAGE_CAPACITY][SOC_INITIAL][VALUE] = min_storage_level
 
     check_optimize_cap(
         model,
@@ -649,7 +659,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
         }
 
     if missing_dispatch_prices_or_efficiencies is None:
-        t = solph.components.Transformer(
+        t = solph.components.Converter(
             label=dict_asset[LABEL],
             inputs=inputs,
             outputs=outputs,
@@ -826,7 +836,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
         }
 
     if missing_dispatch_prices_or_efficiencies is None:
-        t = solph.components.Transformer(
+        t = solph.components.Converter(
             label=dict_asset[LABEL],
             inputs=inputs,
             outputs=outputs,
