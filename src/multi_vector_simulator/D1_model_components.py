@@ -641,6 +641,23 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
     else:
         # single input and single output
 
+        min_load_opts = {"min": 0, "max": 1}
+        min_load = dict_asset.get(SOC_MIN, None)
+        if min_load is not None:
+            if min_load[VALUE] != 0:
+                logging.warning(
+                    f"Minimal load of {min_load[VALUE]} was set to asset {dict_asset[LABEL]}"
+                )
+            min_load_opts["min"] = min_load[VALUE]
+        max_load = dict_asset.get(SOC_MAX, None)
+        if max_load is not None:
+            if max_load[VALUE] != 1:
+                logging.warning(
+                    f"Maximal load of {max_load[VALUE]} was set to asset {dict_asset[LABEL]}"
+                )
+
+            min_load_opts["max"] = max_load[VALUE]
+
         check_list_parameters_transformers_single_input_single_output(
             dict_asset, model.timeindex.size
         )
@@ -650,6 +667,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                 nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+                **min_load_opts,
             )
         }
         efficiencies = {
@@ -801,6 +819,23 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
 
         # single input and single output
 
+        min_load_opts = {"min": 0, "max": 1}
+        min_load = dict_asset.get(SOC_MIN, None)
+        if min_load is not None:
+            if min_load[VALUE] != 0:
+                logging.warning(
+                    f"Minimal load of {min_load[VALUE]} was set to asset {dict_asset[LABEL]}"
+                )
+            min_load_opts["min"] = min_load[VALUE]
+        max_load = dict_asset.get(SOC_MAX, None)
+        if max_load is not None:
+            if max_load[VALUE] != 1:
+                logging.warning(
+                    f"Maximal load of {max_load[VALUE]} was set to asset {dict_asset[LABEL]}"
+                )
+
+            min_load_opts["max"] = max_load[VALUE]
+
         if investment_bus is None:
             investment_bus = dict_asset[OUTFLOW_DIRECTION]
 
@@ -826,6 +861,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 kwargs[OEMOF_BUSSES][bus]: solph.Flow(
                     investment=investment if bus == investment_bus else None,
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+                    **min_load_opts,
                 )
             }
 
@@ -842,7 +878,6 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             outputs=outputs,
             conversion_factors=efficiencies,
         )
-
         model.add(t)
         kwargs[OEMOF_TRANSFORMER].update({dict_asset[LABEL]: t})
 
