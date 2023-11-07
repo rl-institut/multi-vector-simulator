@@ -290,10 +290,12 @@ def define_excess_sinks(dict_values):
     for bus in dict_values[ENERGY_BUSSES]:
         excess_sink_name = bus + EXCESS_SINK
         energy_vector = dict_values[ENERGY_BUSSES][bus][ENERGY_VECTOR]
+        # TODO make this official if needed
+        excess_price = dict_values[ENERGY_BUSSES][bus].get("price", 0)
         define_sink(
             dict_values=dict_values,
             asset_key=excess_sink_name,
-            price={VALUE: 0, UNIT: CURR + "/" + UNIT},
+            price={VALUE: excess_price, UNIT: CURR + "/" + UNIT},
             inflow_direction=bus,
             energy_vector=energy_vector,
             asset_type="excess",
