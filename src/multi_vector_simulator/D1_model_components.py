@@ -17,6 +17,7 @@ import logging
 
 import pandas as pd
 from oemof import solph
+from oemof.network import Node
 
 from multi_vector_simulator.utils.constants_json_strings import (
     VALUE,
@@ -495,7 +496,7 @@ def check_optimize_cap(model, dict_asset, func_constant, func_optimize, **kwargs
         )
 
 
-class CustomBus(solph.Bus):
+class CustomBus(Node):
     def __init__(self, *args, **kwargs):
         ev = kwargs.pop("energy_vector", None)  # change to ENERGY_VECTOR
         super(CustomBus, self).__init__(*args, **kwargs)
