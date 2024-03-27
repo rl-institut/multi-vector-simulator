@@ -311,7 +311,9 @@ def run_simulation(json_dict, epa_format=True, verbatim=True, **kwargs):
     logging.debug("Convert results to json")
 
     if epa_format is True:
-        epa_dict_values = data_parser.convert_mvs_params_to_epa(dict_values, verbatim=verbatim)
+        epa_dict_values = data_parser.convert_mvs_params_to_epa(
+            dict_values, verbatim=verbatim
+        )
 
         json_values = F0.store_as_json(epa_dict_values)
         answer = json.loads(json_values)
