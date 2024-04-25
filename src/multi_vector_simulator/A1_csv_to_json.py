@@ -254,6 +254,7 @@ def create_json_from_csv(
                 sep=CSV_SEPARATORS[idx],
                 header=0,
                 index_col=0,
+                na_filter=False,
             )
 
             if len(df.columns) > 0:

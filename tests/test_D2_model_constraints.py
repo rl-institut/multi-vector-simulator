@@ -369,9 +369,9 @@ class TestConstraints:
             model=solph.Model(self.model), dict_values=self.dict_values,
         )
         assert (
-            model.integral_limit_emission_factor.NoConstraint[0]
+            model.integral_limit_emission_factor_constraint.upper.value
             == self.exp_emission_limit
-        ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor.NoConstraint[0]}."
+        ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor_constraint.upper.value}."
 
     def test_add_constraints_maximum_emissions(self):
         """Checks if maximum emissions constraint works as intended"""
@@ -390,9 +390,9 @@ class TestConstraints:
             dict_model=self.dict_model,
         )
         assert (
-            model.integral_limit_emission_factor.NoConstraint[0]
+            model.integral_limit_emission_factor_constraint.upper.value
             == self.exp_emission_limit
-        ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor.NoConstraint[0]}."
+        ), f"Either the maximum emission constraint has not been added or the wrong limit has been added; limit is {model.integral_limit_emission_factor_constraint.upper.value}."
 
     def test_add_constraints_maximum_emissions_None(self):
         """Verifies if the max emissions constraint was not added, in case the user does not provide a value"""
