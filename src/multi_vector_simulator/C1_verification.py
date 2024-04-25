@@ -217,7 +217,7 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
                 # Determine the margin between feedin tariff and generation costs
                 diff = feedin_tariff[VALUE] - levelized_cost_of_generation
                 # Get value of optimizeCap and maximumCap of production_asset
-                optimze_cap = dict_values[ENERGY_PRODUCTION][production_asset][
+                optimize_cap = dict_values[ENERGY_PRODUCTION][production_asset][
                     OPTIMIZE_CAP
                 ][VALUE]
                 maximum_cap = dict_values[ENERGY_PRODUCTION][production_asset][
@@ -227,8 +227,7 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
                 if isinstance(diff, float) or isinstance(diff, int):
                     if diff > 0:
                         # This can result in an unbound solution if optimizeCap is True and maximumCap is None
-                        if optimze_cap == True and maximum_cap is None:
-
+                        if optimize_cap is True and maximum_cap is None:
                             msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_unbound}"
                             if (
                                 DSO_FEEDIN_CAP
@@ -238,7 +237,7 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
                             else:
                                 raise ValueError(msg)
                         # If maximumCap is not None the maximum capacity of the production asset will be installed
-                        elif optimze_cap == True and maximum_cap is not None:
+                        elif optimize_cap is True and maximum_cap is not None:
                             msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_maxcap}"
                             logging.warning(msg)
                         # If the capacity of the production asset is not optimized there is no unbound problem but strange dispatch behaviour might occur
@@ -254,9 +253,9 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
                         k > 0 for k in diff.values
                     ]  # True if there is an instance where feed-in tariff > electricity_price
                     if any(boolean) is True:
+                        instances = sum(boolean)  # Count instances
                         # This can result in an unbound solution if optimizeCap is True and maximumCap is None
-                        if optimze_cap == True and maximum_cap is None:
-                            instances = sum(boolean)  # Count instances
+                        if optimize_cap is True and maximum_cap is None:
                             msg = f"Feed-in tariff of {energy_vector} > {log_message_object} in {instances} during the simulation time. {warning_message_hint_unbound}"
                             if (
                                 DSO_FEEDIN_CAP
@@ -266,7 +265,7 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
                             else:
                                 raise ValueError(msg)
                         # If maximumCap is not None the maximum capacity of the production asset will be installed
-                        elif optimze_cap == True and maximum_cap is not None:
+                        elif optimize_cap is True and maximum_cap is not None:
                             msg = f"Feed-in tariff of {energy_vector} > {log_message_object} in {instances} during the simulation time. {warning_message_hint_maxcap}"
                             logging.warning(msg)
                         # If the capacity of the production asset is not optimized there is no unbound problem but strange dispatch behaviour might occur
@@ -303,7 +302,17 @@ def check_feedin_tariff_vs_energy_price(dict_values):
     for provider in dict_values[ENERGY_PROVIDERS].keys():
         feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]
         electricity_price = dict_values[ENERGY_PROVIDERS][provider][ENERGY_PRICE]
-        diff = feedin_tariff[VALUE] - electricity_price[VALUE]
+        if isinstance(feedin_tariff[VALUE], pd.Series):
+            feedin_tariff = feedin_tariff[VALUE].values
+        else:
+            feedin_tariff = feedin_tariff[VALUE]
+
+        if isinstance(electricity_price[VALUE], pd.Series):
+            electricity_price = electricity_price[VALUE].values
+        else:
+            electricity_price = electricity_price[VALUE]
+
+        diff = feedin_tariff - electricity_price
         if isinstance(diff, float) or isinstance(diff, int):
             if diff > 0:
 
@@ -318,7 +327,7 @@ def check_feedin_tariff_vs_energy_price(dict_values):
                 )
         else:
             boolean = [
-                k > 0 for k in diff.values
+                k > 0 for k in diff
             ]  # True if there is an instance where feed-in tariff > electricity_price
             if any(boolean) is True:
                 instances = sum(boolean)  # Count instances
