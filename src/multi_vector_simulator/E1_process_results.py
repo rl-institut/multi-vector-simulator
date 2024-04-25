@@ -44,6 +44,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
     OEMOF_ASSET_TYPE,
+    INVESTMENT_BUS,
     ENERGY_VECTOR,
     KPI,
     KPI_COST_MATRIX,
@@ -480,7 +481,7 @@ def get_results(settings, bus_data, dict_asset, asset_group):
     # Check if the parameter/bus is defined for dict_asset
     if parameter_to_be_evaluated not in dict_asset:
         logging.warning(
-            f"The asset {dict_asset[LCOE_ASSET]} of group {asset_group} should contain parameter {parameter_to_be_evaluated}, but it does not."
+            f"The asset {dict_asset[LABEL]} of group {asset_group} should contain parameter {parameter_to_be_evaluated}, but it does not."
         )
 
     # Determine bus that needs to be evaluated
@@ -491,6 +492,17 @@ def get_results(settings, bus_data, dict_asset, asset_group):
         flow_tuple = get_tuple_for_oemof_results(
             dict_asset[LABEL], asset_group, bus_name
         )
+
+        investment_bus = dict_asset.get(INVESTMENT_BUS)
+        if investment_bus is not None:
+            bus_name = investment_bus
+            logging.info(
+                f"The asset {dict_asset[LABEL]} of group {asset_group} had 'investment_bus' set to '{investment_bus}'"
+            )
+            if investment_bus in dict_asset.get(INFLOW_DIRECTION, []):
+                flow_tuple = (bus_name, dict_asset[LABEL])
+            elif investment_bus in dict_asset.get(OUTFLOW_DIRECTION, []):
+                flow_tuple = (dict_asset[LABEL], bus_name)
 
         # Get flow information
         get_flow(
@@ -640,6 +652,7 @@ def get_optimal_cap(bus, dict_asset, flow_tuple):
 
     """
     if OPTIMIZE_CAP in dict_asset:
+
         if (
             dict_asset[OPTIMIZE_CAP][VALUE] is True
             and (flow_tuple, OEMOF_INVEST) in bus[OEMOF_SCALARS]

@@ -38,6 +38,7 @@ Here is a template for new release sections
 - `PARAMETER_DOC` in `utils` can be used to get information about a parameter directly from the csv file `docs/MVS_parameters_list.csv` (#956)
 - Now oemof-solph ExtractionTurbine CHP component can be simulated (only tested from the json input) (#952)
 - The heat pump and chp components can now be simulated with MVS although no explicit support/documentation is present for running from the command line (#954)
+- Saving the raw oemof result in a pandas Dataframe with multi index (#958)
 
 ### Changed
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
@@ -58,6 +59,7 @@ Here is a template for new release sections
 - If an asset has 2 output busses, the output flow of only one of the busses is provided using its name `asset[FLOW][bus_name]` (#952)
 - The user can choose on which bus the investment will take place (useful for transformers with 2 inputs and 1 outputs or 1 input and 2 outputs) (#954)
 - energy_price and feedin of DSO (providers) can be provided as timeseries (#954)
+- The peak-demand pricing cost is applied to the consumption of DSO only (before was split between consumption and feedin) (#958)
 
 ### Removed
 - Input timeseries is now not returned to epa in `utils.data_parser.py` (#936)
