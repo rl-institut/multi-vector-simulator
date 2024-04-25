@@ -37,6 +37,7 @@ Here is a template for new release sections
 - "maximum_add_cap" to the keys returned to EPA after simulating got production assets (#939)
 - `PARAMETER_DOC` in `utils` can be used to get information about a parameter directly from the csv file `docs/MVS_parameters_list.csv` (#956)
 - Now oemof-solph ExtractionTurbine CHP component can be simulated (only tested from the json input) (#952)
+- The heat pump and chp components can now be simulated with MVS although no explicit support/documentation is present for running from the command line (#954)
 
 ### Changed
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
@@ -55,6 +56,8 @@ Here is a template for new release sections
 - The default values for the constraints are now located in `src/constants.py` under the variable `DEFAULT_CONSTRAINT_VALUES` (#953)
 - When a required parameter is missing its default value, defined in `docs/MVS_parameters_list.csv`, is used instead of raising an error (#956)
 - If an asset has 2 output busses, the output flow of only one of the busses is provided using its name `asset[FLOW][bus_name]` (#952)
+- The user can choose on which bus the investment will take place (useful for transformers with 2 inputs and 1 outputs or 1 input and 2 outputs) (#954)
+- energy_price and feedin of DSO (providers) can be provided as timeseries (#954)
 
 ### Removed
 - Input timeseries is now not returned to epa in `utils.data_parser.py` (#936)
