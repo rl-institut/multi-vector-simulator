@@ -56,9 +56,12 @@ def annuity_factor(project_life, discount_factor):
         discountfactor \cdot (1 + discount factor)^{project life}}
 
     """
-    annuity_factor = 1 / discount_factor - 1 / (
-        discount_factor * (1 + discount_factor) ** project_life
-    )
+    if discount_factor != 0:
+        annuity_factor = 1 / discount_factor - 1 / (
+            discount_factor * (1 + discount_factor) ** project_life
+        )
+    else:
+        annuity_factor = project_life
     return annuity_factor
 
 
@@ -71,9 +74,13 @@ def crf(project_life, discount_factor):
     :param discount_factor: weighted average cost of capital, which is the after-tax average cost of various capital sources
     :return: capital recovery factor, a ratio used to calculate the present value of an annuity
     """
-    crf = (discount_factor * (1 + discount_factor) ** project_life) / (
-        (1 + discount_factor) ** project_life - 1
-    )
+    if discount_factor != 0:
+        crf = (discount_factor * (1 + discount_factor) ** project_life) / (
+            (1 + discount_factor) ** project_life - 1
+        )
+    else:
+        crf = 1 / project_life
+
     return crf
 
 
@@ -201,12 +208,11 @@ def get_replacement_costs(
         )
 
     replacement_costs = 0
-
     # Latest investment is first investment
     latest_investment = first_time_investment
     # Starting from first investment (in the past for installed capacities)
     year = -age_of_asset
-    if abs(year) >= asset_lifetime:
+    if abs(year) > asset_lifetime:
         logging.error(
             f"The age of the asset `{asset_label}` ({age_of_asset} years) is lower or equal than "
             f"the asset lifetime ({asset_lifetime} years). This does not make sense, as a "
@@ -222,16 +228,24 @@ def get_replacement_costs(
     for count_of_replacements in range(1, number_of_investments):
         # replacements taking place after an asset ends its lifetime
         year += asset_lifetime
-
-        # Update latest_investment (to be used for residual value)
-        latest_investment = first_time_investment / ((1 + discount_factor) ** (year))
-        # Add latest investment to replacement costs
-        replacement_costs += latest_investment
-        # Update cash flow projection (specific)
-        present_value_of_capital_expenditures.loc[year] = latest_investment
+        if year < project_lifetime:
+            # Update latest_investment (to be used for residual value)
+            latest_investment = first_time_investment / (
+                (1 + discount_factor) ** (year)
+            )
+            # Add latest investment to replacement costs
+            replacement_costs += latest_investment
+            # Update cash flow projection (specific)
+            present_value_of_capital_expenditures.loc[year] = latest_investment
+        elif year == project_lifetime:
+            logging.warning(
+                f"No asset `{asset_label}` replacement costs are computed for the project's "
+                f"last year as the asset reach its end-of-life exactly on that year"
+            )
 
     # Calculation of residual value / value at project end
-    year += asset_lifetime
+    if year != project_lifetime:
+        year += asset_lifetime
     if year > project_lifetime:
         # the residual of the capex at the end of the simulation time takes into
         linear_depreciation_last_investment = latest_investment / asset_lifetime

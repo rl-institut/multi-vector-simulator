@@ -580,9 +580,12 @@ def equation_degree_of_autonomy(total_consumption_from_energy_provider, total_de
     Tested with
     - test_equation_degree_of_autonomy()
     """
-    degree_of_autonomy = (
-        total_demand - total_consumption_from_energy_provider
-    ) / total_demand
+    if total_demand == 0:
+        degree_of_autonomy = 0
+    else:
+        degree_of_autonomy = (
+            total_demand - total_consumption_from_energy_provider
+        ) / total_demand
 
     return degree_of_autonomy
 
@@ -676,7 +679,10 @@ def equation_degree_of_net_zero_energy(
     - test_equation_degree_of_net_zero_energy_greater_one()
 
     """
-    degree_of_nze = 1 + (total_feedin - total_grid_consumption) / total_demand
+    if total_demand == 0:
+        degree_of_nze = 1
+    else:
+        degree_of_nze = 1 + (total_feedin - total_grid_consumption) / total_demand
 
     return degree_of_nze
 
@@ -779,6 +785,7 @@ def add_total_feedin_electricity_equivalent(dict_values):
 
     Tested with
     - test_add_total_feedin_electricity_equivalent()
+    - test_add_total_feedin_electricity_equivalent_two_providers_one_energy_carrier
     """
 
     total_feedin_dict = {}
@@ -787,14 +794,12 @@ def add_total_feedin_electricity_equivalent(dict_values):
         # load total flow into the dso sink
         feedin_sink = str(dso + DSO_FEEDIN)
         energy_carrier = dict_values[ENERGY_CONSUMPTION][feedin_sink][ENERGY_VECTOR]
-        total_feedin_dict.update({energy_carrier: {}})
-        total_feedin_dict.update(
-            {
-                energy_carrier: dict_values[ENERGY_CONSUMPTION][feedin_sink][
-                    TOTAL_FLOW
-                ][VALUE]
-            }
-        )
+        if energy_carrier not in total_feedin_dict:
+            total_feedin_dict.update({energy_carrier: 0})
+
+        total_feedin_dict[energy_carrier] += dict_values[ENERGY_CONSUMPTION][
+            feedin_sink
+        ][TOTAL_FLOW][VALUE]
 
     # Append total feedin in electricity equivalent to kpi
     calculate_electricity_equivalent_for_a_set_of_aggregated_values(
@@ -823,6 +828,7 @@ def add_total_consumption_from_provider_electricity_equivalent(dict_values):
     -----
     Tested with:
     - E3.test_add_total_consumption_from_provider_electricity_equivalent()
+    - E3.test_add_total_consumption_from_provider_electricity_equivalent_two_providers_one_energy_carrier
     """
 
     total_consumption_dict = {}
@@ -833,14 +839,12 @@ def add_total_consumption_from_provider_electricity_equivalent(dict_values):
         energy_carrier = dict_values[ENERGY_PRODUCTION][consumption_source][
             ENERGY_VECTOR
         ]
-        total_consumption_dict.update({energy_carrier: {}})
-        total_consumption_dict.update(
-            {
-                energy_carrier: dict_values[ENERGY_PRODUCTION][consumption_source][
-                    TOTAL_FLOW
-                ][VALUE]
-            }
-        )
+        if energy_carrier not in total_consumption_dict:
+            total_consumption_dict.update({energy_carrier: 0})
+
+        total_consumption_dict[energy_carrier] += dict_values[ENERGY_PRODUCTION][
+            consumption_source
+        ][TOTAL_FLOW][VALUE]
 
     # Append total feedin in electricity equivalent to kpi
     calculate_electricity_equivalent_for_a_set_of_aggregated_values(
@@ -1008,9 +1012,14 @@ def equation_onsite_energy_matching(
     Tested with
     - test_equation_onsite_energy_matching()
     """
-    onsite_energy_matching = (
-        total_generation - total_feedin - total_excess
-    ) / total_demand
+    if total_demand == 0:
+        total_demand = total_feedin
+    if total_demand != 0:
+        onsite_energy_matching = (
+            total_generation - total_feedin - total_excess
+        ) / total_demand
+    else:
+        onsite_energy_matching = 0
     return onsite_energy_matching
 
 
@@ -1094,12 +1103,15 @@ def add_specific_emissions_per_electricity_equivalent(dict_values):
 
     """
     # emissions per kWheleq
-    emissions_kWheleq = (
-        dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS]
-        / dict_values[KPI][KPI_SCALARS_DICT][
-            TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
-        ]
-    )
+    total_demand = dict_values[KPI][KPI_SCALARS_DICT][
+        TOTAL_DEMAND + SUFFIX_ELECTRICITY_EQUIVALENT
+    ]
+    if total_demand == 0:
+        emissions_kWheleq = 0
+    else:
+        emissions_kWheleq = (
+            dict_values[KPI][KPI_SCALARS_DICT][TOTAL_EMISSIONS] / total_demand
+        )
     dict_values[KPI][KPI_SCALARS_DICT].update(
         {SPECIFIC_EMISSIONS_ELEQ: emissions_kWheleq}
     )

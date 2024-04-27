@@ -1,4 +1,4 @@
-dash>=1.11.0
+dash>=2.3.1
 kaleido>=0.0.2
 folium>=0.10.1
 reverse_geocoder>=1.5.1

@@ -150,7 +150,7 @@
         "transformer_optimize_multiple_input_busses": {
             "efficiency": {
                 "unit": "factor",
-                "value": 0.33
+                "value": [0.33, 0.45]
             },
             "installedCap": {
                 "unit": "kW",
@@ -160,7 +160,7 @@
             "label": "Transformer optimize multiple input busses",
             "dispatch_price": {
                 "unit": "currency/kWh",
-                "value": 0
+                "value": [0, 0.2]
             },
             "optimizeCap": {
                 "unit": "bool",
@@ -241,7 +241,7 @@
         "transformer_fix_multiple_input_busses": {
             "efficiency": {
                 "unit": "factor",
-                "value": 0.33
+                "value": [0.6, 1]
             },
             "installedCap": {
                 "unit": "kW",
@@ -251,7 +251,7 @@
             "label": "Transformer fix multiple input busses",
             "dispatch_price": {
                 "unit": "currency/kWh",
-                "value": 0
+                "value": [0, 0.15]
             },
             "optimizeCap": {
                 "unit": "bool",
@@ -287,6 +287,205 @@
                 "value": 60,
                 "unit": "currency/unit/simulation period"},
             "type_oemof": "transformer"
+        },
+        "chp_fix": {
+            "efficiency": {
+                "unit": "factor",
+                "value": [
+                    0.5,
+                    0.7
+                ]
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 0
+            },
+            "inflow_direction": "Gas bus",
+            "label": "chp_fix",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": false
+            },
+            "outflow_direction": [
+                "Electricity bus",
+                "Heat bus"
+            ],
+            "simulation_annuity": {
+                "value": 1.1737292452043855,
+                "unit": "currency/unit/simulation period"
+            },
+            "type_oemof": "extractionTurbineCHP",
+            "beta": {
+                "unit": "factor",
+                "value": 0.5
+            }
+        },
+        "chp_optimize": {
+            "efficiency": {
+                "unit": "factor",
+                "value": [
+                    0.5,
+                    0.7
+                ]
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 0
+            },
+            "inflow_direction": "Gas bus",
+            "label": "chp_fix",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "maximumAddCap": {
+                "unit": "kW",
+                "value": null
+            },
+            "outflow_direction": [
+                "Electricity bus",
+                "Heat bus"
+            ],
+            "simulation_annuity": {
+                "value": 1.1737292452043855,
+                "unit": "currency/unit/simulation period"
+            },
+            "type_oemof": "extractionTurbineCHP",
+            "beta": {
+                "unit": "factor",
+                "value": 0.5
+            }
+        },
+        "chp_missing_beta": {
+            "efficiency": {
+                "unit": "factor",
+                "value": [
+                    0.5,
+                    0.7
+                ]
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 0
+            },
+            "inflow_direction": "Gas bus",
+            "label": "chp_fix",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "maximumAddCap": {
+                "unit": "kW",
+                "value": null
+            },
+            "outflow_direction": [
+                "Electricity bus",
+                "Heat bus"
+            ],
+            "simulation_annuity": {
+                "value": 1.1737292452043855,
+                "unit": "currency/unit/simulation period"
+            },
+            "type_oemof": "extractionTurbineCHP"
+        },
+        "chp_wrong_beta_formatting": {
+            "efficiency": {
+                "unit": "factor",
+                "value": [
+                    0.5,
+                    0.7
+                ]
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 0
+            },
+            "inflow_direction": "Gas bus",
+            "label": "chp_fix",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "maximumAddCap": {
+                "unit": "kW",
+                "value": null
+            },
+            "outflow_direction": [
+                "Electricity bus",
+                "Heat bus"
+            ],
+            "simulation_annuity": {
+                "value": 1.1737292452043855,
+                "unit": "currency/unit/simulation period"
+            },
+            "type_oemof": "extractionTurbineCHP",
+            "beta": 0.5
+        },
+        "chp_wrong_efficiency_formatting": {
+            "efficiency": {
+                "unit": "factor",
+                "value": 0.5
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 0
+            },
+            "inflow_direction": "Gas bus",
+            "label": "chp_fix",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "maximumAddCap": {
+                "unit": "kW",
+                "value": null
+            },
+            "outflow_direction": [
+                "Electricity bus",
+                "Heat bus"
+            ],
+            "simulation_annuity": {
+                "value": 1.1737292452043855,
+                "unit": "currency/unit/simulation period"
+            },
+            "type_oemof": "extractionTurbineCHP",
+            "beta": {
+                "unit": "factor",
+                "value": 0.5
+            }
+        },
+        "chp_wrong_outflow_bus_energy_vector": {
+            "efficiency": {
+                "unit": "factor",
+                "value": [0.5, 0.6]
+            },
+            "installedCap": {
+                "unit": "kW",
+                "value": 0
+            },
+            "inflow_direction": "Gas bus",
+            "label": "chp_fix",
+            "optimizeCap": {
+                "unit": "bool",
+                "value": true
+            },
+            "maximumAddCap": {
+                "unit": "kW",
+                "value": null
+            },
+            "outflow_direction": [
+                "Electricity bus",
+                "Electricity bus 2"
+            ],
+            "simulation_annuity": {
+                "value": 1.1737292452043855,
+                "unit": "currency/unit/simulation period"
+            },
+            "type_oemof": "extractionTurbineCHP",
+            "beta": {
+                "unit": "factor",
+                "value": 0.5
+            }
         },
         "test_asset_for_error_raising": {
             "efficiency": {

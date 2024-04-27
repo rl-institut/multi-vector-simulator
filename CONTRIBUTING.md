@@ -120,7 +120,7 @@ Once you are satisfied with your PR you should ask someone to review it. Before 
 
 ## Release protocol
 
-This protocol explains how to perform a release of the code on ´master´ branch before releasing the code to pypi.org. If you don't want to release on pypi.org, skip the part under "The actual release".
+This protocol explains how to perform a release of the code on ´master´ branch before releasing the code to pypi.org. If you don't want to release on pypi.org, skip the part under "The actual release". You need at least three clean and fresh new environments to follow though the whole release process. You can prepare those in advance.
 
 ### Local packaging test
 
@@ -149,15 +149,22 @@ Before starting uploading things to pypi.org, there are a few tests one can perf
     ```bash
     mkdir empty_folder
     ```
-6. Test the multi-vector-simulator default simulation
+    
+6. Move into empty folder, so that results will be stored in there:
+    ```bash
+    cd empty_folder
+    ```
+      
+7. Test the multi-vector-simulator default simulation
     ```bash
     mvs_tool
     ```
     It should run the simulation and save the results in the default output folder.
-    If the simulation does not run through, find out why and fix it (via pull request on the `dev` branch), then repeat steps 0. to 6.
+    If the simulation does not run through, find out why and fix it (via pull request on the `dev` branch), then repeat steps 0. to 7.
     If you run this local packaging test multiple times, either create a new empty folder or run `mvs_tool -f` to overwrite the default output folder.
 
-If this test passes locally, you can move to next step, upload a release candidate on pypi.org
+If this test passes locally, you can move to next step, upload a release candidate on pypi.org. You can also remove the folder `empty_folder` and its content.
+
 
 ### Release candidate on pypi.org
 
@@ -198,7 +205,13 @@ Technically, a release candidate is similar to a normal release in the sense tha
     ```bash
     mkdir empty_folder
     ```
-9. Test the multi-vector-simulator default simulation
+
+9. Move into empty folder, so that results will be stored in there:
+    ```bash
+    cd empty_folder
+    ```
+    
+10. Test the multi-vector-simulator default simulation
     ```bash
     mvs_tool
     ```
@@ -206,11 +219,11 @@ Technically, a release candidate is similar to a normal release in the sense tha
     If the simulation does not run through, find out why and fix it.
     If you run this local packaging test multiple times, either create a new empty folder or run `mvs_tool -f` to overwrite the default output folder.
 
-10. If you notice errors in the uploaded package, fix them and bump up `rc1` to `rc2` and repeat steps 3. to 9. until you don't see any more errors.
+11. If you notice errors in the uploaded package, fix them and bump up `rc1` to `rc2` and repeat steps 3. to 10. until you don't see any more errors.
 
-    It is encouraged to make sure step 6. to 9. are also performed on a different os than yours (ask a colleague for example)
+    It is encouraged to make sure step 6. to 10. are also performed on a different os than yours (ask a colleague for example)
 
-11. If your release candidate works well you can now do the actual release on `master`, followed by the release on pypi.org
+12. If your release candidate works well, you can now do the actual release on `master`, followed by the release on pypi.org. You can also remove the folder `empty_folder` and its content.
 
 ### Release on master
 
@@ -230,7 +243,7 @@ For help look into the [github release description](https://help.github.com/en/g
 ### The actual release on pypi.org
 *Note*: The packaging process is automatized with running `python prepare_package.py`. For details on how the packaging is preformed, check that script.
 
-Follow the steps from the "Release candidate on pypi.org" section, without adding `rci` after the version number and ignoring step 11.
+Follow the steps from the "Release candidate on pypi.org" section, without adding `rci` after the version number and ignoring step 12.
 
 Congratulations, you just updated the package on pypi.org, you deserve a treat!
 

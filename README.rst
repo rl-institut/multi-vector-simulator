@@ -70,6 +70,12 @@ To set up the MVS, follow the steps below:
 
 -  If python3 is not pre-installed: Install miniconda (for python 3.7: https://docs.conda.io/en/latest/miniconda.html)
 
+- WINDOWS USERS: Using an Anaconda virtual environment is highly recommended for being able to fully utilize the tool. Venv 
+  environtments works only for running the optimization tool (mvs_tool). For this, updating Pandas to at least version 1.3.5 
+  and installing the package pygraphviz as indicated in this link https://pygraphviz.github.io/documentation/stable/install.html
+  is necessary. However, it is not possible to run the interactive report (mvs_report) with venv, as it gives an error. 
+  Therefore, it is best to use conda environments.
+
 -  Open Anaconda prompt (or other software as Pycharm) to create and activate a virtual environment
 
    ``conda create -n [your_env_name] python=3.6 activate [your env_name]``
@@ -206,7 +212,13 @@ To use the report feature you need to install extra dependencies first
 
     pip install multi-vector-simulator[report]
 
+If you are using zsh terminals and recieve the error message "no matches found", you might need to run 
 
+::
+
+    pip install 'multi-vector-simulator[report]'
+
+    
 Use the option ``-pdf`` in the command line ``mvs_tool`` to generate a pdf report in a simulation's output folder
 (by default in ``MVS_outputs/report/simulation_report.pdf``):
 

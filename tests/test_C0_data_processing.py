@@ -76,6 +76,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     DSO_PEAK_DEMAND_SUFFIX,
     ENERGY_PRICE,
     DSO_FEEDIN,
+    AUTO_CREATED_HIGHLIGHT,
     CONNECTED_CONSUMPTION_SOURCE,
     CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS,
     CONNECTED_FEEDIN_SINK,
@@ -223,34 +224,39 @@ def test_define_transformer_for_peak_demand_pricing():
         },
     }
     dict_test_dso = dict_test[ENERGY_PROVIDERS]["dso"].copy()
-    transformer_name = "a_name"
+    transformer_consumption_name = f"a_name_{DSO_CONSUMPTION}"
+    transformer_feedin_name = transformer_consumption_name.replace(
+        DSO_CONSUMPTION, DSO_FEEDIN
+    )
     timeseries_availability = pd.Series()
     C0.define_transformer_for_peak_demand_pricing(
-        dict_test, dict_test_dso, transformer_name, timeseries_availability
+        dict_test, dict_test_dso, transformer_consumption_name, timeseries_availability
     )
-    assert transformer_name in dict_test[ENERGY_CONVERSION]
-    for k in [
-        LABEL,
-        OPTIMIZE_CAP,
-        INSTALLED_CAP,
-        INFLOW_DIRECTION,
-        OUTFLOW_DIRECTION,
-        AVAILABILITY_DISPATCH,
-        DISPATCH_PRICE,
-        SPECIFIC_COSTS,
-        DEVELOPMENT_COSTS,
-        SPECIFIC_COSTS_OM,
-        OEMOF_ASSET_TYPE,
-        EFFICIENCY,
-        ENERGY_VECTOR,
-    ]:
-        assert (
-            k in dict_test[ENERGY_CONVERSION][transformer_name]
-        ), f"Function does not add {k} to the asset dictionary of the {transformer_name}."
-    assert (
-        dict_test[ENERGY_CONVERSION][transformer_name][SPECIFIC_COSTS_OM][VALUE]
-        == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE]
-    ), f"The {SPECIFIC_COSTS_OM} of the newly defined {transformer_name} is not equal to the {PEAK_DEMAND_PRICING} of the energy provider it is defined from."
+    for transformer in (transformer_consumption_name, transformer_feedin_name):
+        assert transformer in dict_test[ENERGY_CONVERSION]
+        for k in [
+            LABEL,
+            OPTIMIZE_CAP,
+            INSTALLED_CAP,
+            INFLOW_DIRECTION,
+            OUTFLOW_DIRECTION,
+            AVAILABILITY_DISPATCH,
+            DISPATCH_PRICE,
+            SPECIFIC_COSTS,
+            DEVELOPMENT_COSTS,
+            SPECIFIC_COSTS_OM,
+            OEMOF_ASSET_TYPE,
+            EFFICIENCY,
+            ENERGY_VECTOR,
+        ]:
+            assert (
+                k in dict_test[ENERGY_CONVERSION][transformer]
+            ), f"Function does not add {k} to the asset dictionary of the {transformer}."
+        if transformer == transformer_consumption_name:
+            assert (
+                dict_test[ENERGY_CONVERSION][transformer][SPECIFIC_COSTS_OM][VALUE]
+                == dict_test[ENERGY_PROVIDERS]["dso"][PEAK_DEMAND_PRICING][VALUE]
+            ), f"The {SPECIFIC_COSTS_OM} of the newly defined {transformer} is not equal to half the {PEAK_DEMAND_PRICING} of the energy provider it is defined from."
 
 
 def test_define_energy_vectors_from_busses():
@@ -677,7 +683,7 @@ def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_non_dispatcha
                 UNIT: unit,
                 INSTALLED_CAP: {VALUE: installed_cap},
                 MAXIMUM_CAP: {VALUE: maxCap},
-                FILENAME: "a_name",
+                DISPATCHABILITY: False,
                 TIMESERIES_PEAK: {VALUE: timeseries_peak},
             }
         }
@@ -773,6 +779,8 @@ def test_add_a_transformer_for_each_peak_demand_pricing_period_1_period():
         dict_test_trafo[ENERGY_PROVIDERS][DSO][LABEL]
         + DSO_CONSUMPTION
         + DSO_PEAK_DEMAND_PERIOD
+        + " "
+        + AUTO_CREATED_HIGHLIGHT
     ]
     assert (
         list_of_dso_energyConversion_assets == exp_list
@@ -799,12 +807,16 @@ def test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods():
         + DSO_CONSUMPTION
         + DSO_PEAK_DEMAND_PERIOD
         + "_"
-        + str(1),
+        + str(1)
+        + " "
+        + AUTO_CREATED_HIGHLIGHT,
         dict_test[ENERGY_PROVIDERS][DSO][LABEL]
         + DSO_CONSUMPTION
         + DSO_PEAK_DEMAND_PERIOD
         + "_"
-        + str(2),
+        + str(2)
+        + " "
+        + AUTO_CREATED_HIGHLIGHT,
     ]
     assert (
         list_of_dso_energyConversion_assets == exp_list

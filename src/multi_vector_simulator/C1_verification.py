@@ -30,7 +30,6 @@ from multi_vector_simulator.utils.constants import (
     DISPLAY_OUTPUT,
     OVERWRITE,
     DEFAULT_WEIGHTS_ENERGY_CARRIERS,
-    DSO_PEAK_DEMAND_SUFFIX,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DURATION,
@@ -86,6 +85,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MAXIMUM_EMISSIONS,
     CONSTRAINTS,
     RENEWABLE_SHARE_DSO,
+    DSO_PEAK_DEMAND_SUFFIX,
+    DSO_FEEDIN_CAP,
+    BETA,
 )
 
 # Necessary for check_for_label_duplicates()
@@ -215,7 +217,7 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
                 # Determine the margin between feedin tariff and generation costs
                 diff = feedin_tariff[VALUE] - levelized_cost_of_generation
                 # Get value of optimizeCap and maximumCap of production_asset
-                optimze_cap = dict_values[ENERGY_PRODUCTION][production_asset][
+                optimize_cap = dict_values[ENERGY_PRODUCTION][production_asset][
                     OPTIMIZE_CAP
                 ][VALUE]
                 maximum_cap = dict_values[ENERGY_PRODUCTION][production_asset][
@@ -225,11 +227,17 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
                 if isinstance(diff, float) or isinstance(diff, int):
                     if diff > 0:
                         # This can result in an unbound solution if optimizeCap is True and maximumCap is None
-                        if optimze_cap == True and maximum_cap is None:
+                        if optimize_cap is True and maximum_cap is None:
                             msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_unbound}"
-                            raise ValueError(msg)
+                            if (
+                                DSO_FEEDIN_CAP
+                                in dict_values[ENERGY_PROVIDERS][provider]
+                            ):
+                                logging.warning(msg)
+                            else:
+                                raise ValueError(msg)
                         # If maximumCap is not None the maximum capacity of the production asset will be installed
-                        elif optimze_cap == True and maximum_cap is not None:
+                        elif optimize_cap is True and maximum_cap is not None:
                             msg = f"Feed-in tariff of {energy_vector} ({round(feedin_tariff[VALUE],4)}) > {log_message_object} with {round(levelized_cost_of_generation,4)}. {warning_message_hint_maxcap}"
                             logging.warning(msg)
                         # If the capacity of the production asset is not optimized there is no unbound problem but strange dispatch behaviour might occur
@@ -245,13 +253,19 @@ def check_feedin_tariff_vs_levelized_cost_of_generation_of_production(dict_value
                         k > 0 for k in diff.values
                     ]  # True if there is an instance where feed-in tariff > electricity_price
                     if any(boolean) is True:
+                        instances = sum(boolean)  # Count instances
                         # This can result in an unbound solution if optimizeCap is True and maximumCap is None
-                        if optimze_cap == True and maximum_cap is None:
-                            instances = sum(boolean)  # Count instances
+                        if optimize_cap is True and maximum_cap is None:
                             msg = f"Feed-in tariff of {energy_vector} > {log_message_object} in {instances} during the simulation time. {warning_message_hint_unbound}"
-                            raise ValueError(msg)
+                            if (
+                                DSO_FEEDIN_CAP
+                                in dict_values[ENERGY_PROVIDERS][provider]
+                            ):
+                                logging.warning(msg)
+                            else:
+                                raise ValueError(msg)
                         # If maximumCap is not None the maximum capacity of the production asset will be installed
-                        elif optimze_cap == True and maximum_cap is not None:
+                        elif optimize_cap is True and maximum_cap is not None:
                             msg = f"Feed-in tariff of {energy_vector} > {log_message_object} in {instances} during the simulation time. {warning_message_hint_maxcap}"
                             logging.warning(msg)
                         # If the capacity of the production asset is not optimized there is no unbound problem but strange dispatch behaviour might occur
@@ -288,23 +302,40 @@ def check_feedin_tariff_vs_energy_price(dict_values):
     for provider in dict_values[ENERGY_PROVIDERS].keys():
         feedin_tariff = dict_values[ENERGY_PROVIDERS][provider][FEEDIN_TARIFF]
         electricity_price = dict_values[ENERGY_PROVIDERS][provider][ENERGY_PRICE]
-        diff = feedin_tariff[VALUE] - electricity_price[VALUE]
+        if isinstance(feedin_tariff[VALUE], pd.Series):
+            feedin_tariff = feedin_tariff[VALUE].values
+        else:
+            feedin_tariff = feedin_tariff[VALUE]
+
+        if isinstance(electricity_price[VALUE], pd.Series):
+            electricity_price = electricity_price[VALUE].values
+        else:
+            electricity_price = electricity_price[VALUE]
+
+        diff = feedin_tariff - electricity_price
         if isinstance(diff, float) or isinstance(diff, int):
             if diff > 0:
+
                 msg = f"Feed-in tariff > energy price for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}' would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
-                raise ValueError(msg)
+                if DSO_FEEDIN_CAP in dict_values[ENERGY_PROVIDERS][provider]:
+                    logging.warning(msg)
+                else:
+                    raise ValueError(msg)
             else:
                 logging.debug(
                     f"Feed-in tariff < energy price for energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'"
                 )
         else:
             boolean = [
-                k > 0 for k in diff.values
+                k > 0 for k in diff
             ]  # True if there is an instance where feed-in tariff > electricity_price
             if any(boolean) is True:
                 instances = sum(boolean)  # Count instances
-                msg = f"Feed-in tariff > energy price in {instances} during the simulation time for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'. This would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
-                raise ValueError(msg)
+                msg = f"Feed-in tariff > energy price during {instances} timesteps of the simulation for the energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'. This would cause an unbound solution and terminate the optimization. Please reconsider your feed-in tariff and energy price."
+                if DSO_FEEDIN_CAP in dict_values[ENERGY_PROVIDERS][provider]:
+                    logging.warning(msg)
+                else:
+                    raise ValueError(msg)
             else:
                 logging.debug(
                     f"Feed-in tariff < energy price for energy provider asset '{dict_values[ENERGY_PROVIDERS][provider][LABEL]}'"
@@ -381,6 +412,10 @@ def check_emission_factor_of_providers(dict_values):
 
     """
     for key, asset in dict_values[ENERGY_PROVIDERS].items():
+        if isinstance(asset[EMISSION_FACTOR][VALUE], str):
+            raise TypeError(
+                f"The emission factor of the provider asset {asset[LABEL]} is a string, this is likely due to a missing value in the csv input file 'energyProviders.csv', please check your input file for missing values or typos"
+            )
         if asset[EMISSION_FACTOR][VALUE] > 0 and asset[RENEWABLE_SHARE_DSO][VALUE] == 1:
             logging.warning(
                 f"The renewable share of provider {key} is {asset[RENEWABLE_SHARE_DSO][VALUE] * 100} % while its emission_factor is >0. Check if this is what you intended to define."
@@ -587,6 +622,7 @@ def all_valid_intervals(name, value, title):
         DISCOUNTFACTOR: [0, 1],
         PROJECT_DURATION: ["largerzero", "any"],
         TAX: [0, 1],
+        BETA: [0, 1],
     }
 
     if name in valid_type_int:
@@ -780,6 +816,7 @@ def check_for_sufficient_assets_on_busses(dict_values):
         if (
             len(dict_values[ENERGY_BUSSES][bus][ASSET_DICT]) < 3
             and DSO_PEAK_DEMAND_SUFFIX not in bus
+            and DSO_FEEDIN_CAP not in bus
         ):
             asset_string = ", ".join(
                 map(str, dict_values[ENERGY_BUSSES][bus][ASSET_DICT].keys())

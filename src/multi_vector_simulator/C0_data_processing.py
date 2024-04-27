@@ -42,6 +42,10 @@ from multi_vector_simulator.utils.constants import (
 from multi_vector_simulator.utils.exceptions import MaximumCapValueInvalid
 
 from multi_vector_simulator.utils.constants_json_strings import *
+from multi_vector_simulator.utils.helpers import (
+    peak_demand_bus_name,
+    peak_demand_transformer_name,
+)
 from multi_vector_simulator.utils.exceptions import InvalidPeakDemandPricingPeriodsError
 import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.C1_verification as C1
@@ -292,6 +296,7 @@ def define_excess_sinks(dict_values):
             price={VALUE: 0, UNIT: CURR + "/" + UNIT},
             inflow_direction=bus,
             energy_vector=energy_vector,
+            asset_type="excess",
         )
         dict_values[ENERGY_BUSSES][bus].update({EXCESS_SINK: excess_sink_name})
         auto_sinks.append(excess_sink_name)
@@ -435,7 +440,7 @@ def energyProviders(dict_values, group):
     """
     # add sources and sinks depending on items in energy providers as pre-processing
     for asset in dict_values[group]:
-        define_auxiliary_assets_of_energy_providers(dict_values, asset)
+        define_auxiliary_assets_of_energy_providers(dict_values, dso_name=asset)
 
         # Add lifetime capex (incl. replacement costs), calculate annuity
         # (incl. om), and simulation annuity to each asset
@@ -667,14 +672,17 @@ def add_asset_to_asset_dict_of_bus(bus, dict_values, asset_key, asset_label):
     logging.debug(f"Added asset {asset_label} to bus {bus}")
 
 
-def define_auxiliary_assets_of_energy_providers(dict_values, dso):
+def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
     r"""
     Defines all sinks and sources that need to be added to model the transformer using assets of energyConsumption, energyProduction and energyConversion.
 
     Parameters
     ----------
-    dict_values
-    dso
+    dict_values: dict
+        All simulation parameters
+
+    dso_name: str
+        the name of the energy provider asset
 
     Returns
     -------
@@ -702,9 +710,9 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso):
     - C0.test_change_sign_of_feedin_tariff_zero()
     """
 
-    number_of_pricing_periods = dict_values[ENERGY_PROVIDERS][dso][
-        PEAK_DEMAND_PRICING_PERIOD
-    ][VALUE]
+    dso_dict = dict_values[ENERGY_PROVIDERS][dso_name]
+
+    number_of_pricing_periods = dso_dict[PEAK_DEMAND_PRICING_PERIOD][VALUE]
 
     months_in_a_period = determine_months_in_a_peak_demand_pricing_period(
         number_of_pricing_periods,
@@ -716,35 +724,37 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso):
     )
 
     list_of_dso_energyConversion_assets = add_a_transformer_for_each_peak_demand_pricing_period(
-        dict_values, dict_values[ENERGY_PROVIDERS][dso], dict_availability_timeseries,
+        dict_values, dso_dict, dict_availability_timeseries,
     )
 
     define_source(
         dict_values=dict_values,
-        asset_key=dso + DSO_CONSUMPTION,
-        outflow_direction=dict_values[ENERGY_PROVIDERS][dso][OUTFLOW_DIRECTION]
-        + DSO_PEAK_DEMAND_SUFFIX,
-        price=dict_values[ENERGY_PROVIDERS][dso][ENERGY_PRICE],
-        energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
-        emission_factor=dict_values[ENERGY_PROVIDERS][dso][EMISSION_FACTOR],
+        asset_key=dso_name + DSO_CONSUMPTION,
+        outflow_direction=peak_demand_bus_name(dso_dict[OUTFLOW_DIRECTION]),
+        price=dso_dict[ENERGY_PRICE],
+        energy_vector=dso_dict[ENERGY_VECTOR],
+        emission_factor=dso_dict[EMISSION_FACTOR],
+        asset_type=dso_dict.get(TYPE_ASSET),
     )
-    dict_feedin = change_sign_of_feedin_tariff(
-        dict_values[ENERGY_PROVIDERS][dso][FEEDIN_TARIFF], dso
-    )
+    dict_feedin = change_sign_of_feedin_tariff(dso_dict[FEEDIN_TARIFF], dso_name)
+
+    inflow_bus_name = peak_demand_bus_name(dso_dict[INFLOW_DIRECTION], feedin=True)
+
     # define feed-in sink of the DSO
     define_sink(
         dict_values=dict_values,
-        asset_key=dso + DSO_FEEDIN,
+        asset_key=dso_name + DSO_FEEDIN,
         price=dict_feedin,
-        inflow_direction=dict_values[ENERGY_PROVIDERS][dso][INFLOW_DIRECTION],
+        inflow_direction=inflow_bus_name,
         specific_costs={VALUE: 0, UNIT: CURR + "/" + UNIT},
-        energy_vector=dict_values[ENERGY_PROVIDERS][dso][ENERGY_VECTOR],
+        energy_vector=dso_dict[ENERGY_VECTOR],
+        asset_type=dso_dict.get(TYPE_ASSET),
     )
-    dict_values[ENERGY_PROVIDERS][dso].update(
+    dso_dict.update(
         {
-            CONNECTED_CONSUMPTION_SOURCE: dso + DSO_CONSUMPTION,
+            CONNECTED_CONSUMPTION_SOURCE: dso_name + DSO_CONSUMPTION,
             CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS: list_of_dso_energyConversion_assets,
-            CONNECTED_FEEDIN_SINK: dso + DSO_FEEDIN,
+            CONNECTED_FEEDIN_SINK: dso_name + DSO_FEEDIN,
         }
     )
 
@@ -755,7 +765,6 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
     Additionally, prints a logging.warning in case of the feed-in tariff is entered as
     negative value in 'energyProviders.csv'.
 
-    #todo This only works if the feedin tariff is not defined as a timeseries
     Parameters
     ----------
     dict_feedin_tariff: dict
@@ -776,23 +785,46 @@ def change_sign_of_feedin_tariff(dict_feedin_tariff, dso):
     - C0.test_change_sign_of_feedin_tariff_negative_value()
     - C0.test_change_sign_of_feedin_tariff_zero()
     """
-    if dict_feedin_tariff[VALUE] > 0:
-        # Add a debug message in case the feed-in is interpreted as revenue-inducing.
-        logging.debug(
-            f"The {FEEDIN_TARIFF} of {dso} is positive, which means that feeding into the grid results in a revenue stream."
-        )
-    elif dict_feedin_tariff[VALUE] == 0:
-        # Add a warning msg in case the feedin induces expenses rather then revenue
-        logging.info(
-            f"The {FEEDIN_TARIFF} of {dso} is 0, which means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
-        )
-    elif dict_feedin_tariff[VALUE] < 0:
-        # Add a warning msg in case the feedin induces expenses rather then revenue
-        logging.warning(
-            f"The {FEEDIN_TARIFF} of {dso} is negative, which means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
-        )
+
+    if isinstance(dict_feedin_tariff[VALUE], pd.Series) is False:
+        if dict_feedin_tariff[VALUE] > 0:
+            # Add a debug message in case the feed-in is interpreted as revenue-inducing.
+            logging.debug(
+                f"The {FEEDIN_TARIFF} of {dso} is positive, which means that feeding into the grid results in a revenue stream."
+            )
+        elif dict_feedin_tariff[VALUE] == 0:
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is 0, which means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
+            )
+        elif dict_feedin_tariff[VALUE] < 0:
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is negative, which means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
+            )
+        else:
+            pass
     else:
-        pass
+        if (dict_feedin_tariff[VALUE] < 0).any():
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            ts_info = ", ".join(
+                dict_feedin_tariff[VALUE]
+                .loc[dict_feedin_tariff[VALUE] < 0]
+                .index.astype(str)
+            )
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is 0 for the following timestamps:\n{ts_info}\n. This means that there is no renumeration for feed-in to the grid. Potentially, this can lead to random dispatch into feed-in and excess sinks."
+            )
+        elif (dict_feedin_tariff[VALUE] < 0).any():
+            # Add a warning msg in case the feedin induces expenses rather than revenue
+            ts_info = ", ".join(
+                dict_feedin_tariff[VALUE]
+                .loc[dict_feedin_tariff[VALUE] < 0]
+                .index.astype(str)
+            )
+            logging.warning(
+                f"The {FEEDIN_TARIFF} of {dso} is negative for the following timestamps:\n{ts_info}\n. A negative value means that payments are necessary to be allowed to feed-into the grid. If you intended a revenue stream, set the feedin tariff to a positive value."
+            )
 
     dict_feedin_tariff = {
         VALUE: -dict_feedin_tariff[VALUE],
@@ -880,18 +912,13 @@ def add_a_transformer_for_each_peak_demand_pricing_period(
 
     list_of_dso_energyConversion_assets = []
     for key in dict_availability_timeseries.keys():
-        if len(dict_availability_timeseries.keys()) == 1:
-            transformer_name = (
-                dict_dso[LABEL] + DSO_CONSUMPTION + DSO_PEAK_DEMAND_PERIOD
+
+        if len(dict_availability_timeseries.keys()) > 1:
+            transformer_name = peak_demand_transformer_name(
+                dict_dso[LABEL], peak_number=key
             )
         else:
-            transformer_name = (
-                dict_dso[LABEL]
-                + DSO_CONSUMPTION
-                + DSO_PEAK_DEMAND_PERIOD
-                + "_"
-                + str(key)
-            )
+            transformer_name = peak_demand_transformer_name(dict_dso[LABEL])
 
         define_transformer_for_peak_demand_pricing(
             dict_values=dict_values,
@@ -987,16 +1014,17 @@ def define_transformer_for_peak_demand_pricing(
     Updated dict_values with newly added transformer asset in the energyConversion asset group.
     """
 
-    default_dso_transformer = {
+    dso_consumption_transformer = {
         LABEL: transformer_name,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         INSTALLED_CAP: {VALUE: 0, UNIT: dict_dso[UNIT]},
-        INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION] + DSO_PEAK_DEMAND_SUFFIX,
+        INFLOW_DIRECTION: peak_demand_bus_name(dict_dso[INFLOW_DIRECTION]),
         OUTFLOW_DIRECTION: dict_dso[OUTFLOW_DIRECTION],
         AVAILABILITY_DISPATCH: timeseries_availability,
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
         SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
+        # the demand pricing is only applied to consumption
         SPECIFIC_COSTS_OM: {
             VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE],
             UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
@@ -1005,12 +1033,56 @@ def define_transformer_for_peak_demand_pricing(
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
+        TYPE_ASSET: dict_dso.get(TYPE_ASSET),
     }
 
-    dict_values[ENERGY_CONVERSION].update({transformer_name: default_dso_transformer})
+    dict_values[ENERGY_CONVERSION].update(
+        {transformer_name: dso_consumption_transformer}
+    )
 
     logging.debug(
-        f"Model for peak demand pricing: Adding transfomer {transformer_name}."
+        f"Model for peak demand pricing on consumption side: Adding transfomer {transformer_name}."
+    )
+
+    transformer_name = transformer_name.replace(DSO_CONSUMPTION, DSO_FEEDIN)
+    dso_feedin_transformer = {
+        LABEL: transformer_name,
+        OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
+        INSTALLED_CAP: {VALUE: 0, UNIT: dict_dso[UNIT]},
+        INFLOW_DIRECTION: dict_dso[INFLOW_DIRECTION],
+        OUTFLOW_DIRECTION: peak_demand_bus_name(
+            dict_dso[INFLOW_DIRECTION], feedin=True
+        ),
+        AVAILABILITY_DISPATCH: timeseries_availability,
+        EFFICIENCY: {VALUE: 1, UNIT: "factor"},
+        DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
+        SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
+        # the demand pricing is only applied to consumption
+        SPECIFIC_COSTS_OM: {
+            VALUE: 0,
+            UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_YEAR,
+        },
+        DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT] + "/" + UNIT_HOUR},
+        OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
+        ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
+        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
+        TYPE_ASSET: dict_dso.get(TYPE_ASSET)
+        # LIFETIME: {VALUE: 100, UNIT: UNIT_YEAR},
+    }
+    if dict_dso.get(DSO_FEEDIN_CAP, None) is not None:
+        dso_feedin_transformer[MAXIMUM_CAP] = {
+            VALUE: dict_dso[DSO_FEEDIN_CAP][VALUE],
+            UNIT: dict_dso[UNIT],
+        }
+
+        logging.info(
+            f"Capping {dict_dso[LABEL]} feedin with maximum capacity {dict_dso[DSO_FEEDIN_CAP][VALUE]}"
+        )
+
+    dict_values[ENERGY_CONVERSION].update({transformer_name: dso_feedin_transformer})
+
+    logging.debug(
+        f"Model for peak demand pricing on feedin side: Adding transfomer {transformer_name}."
     )
 
 
@@ -1022,6 +1094,7 @@ def define_source(
     emission_factor,
     price=None,
     timeseries=None,
+    asset_type=None,
 ):
     r"""
     Defines a source with default input values. If kwargs are given, the default values are overwritten.
@@ -1078,6 +1151,7 @@ def define_source(
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
         ENERGY_VECTOR: energy_vector,
         EMISSION_FACTOR: emission_factor,
+        TYPE_ASSET: asset_type,
     }
 
     if outflow_direction not in dict_values[ENERGY_BUSSES]:
@@ -1092,6 +1166,7 @@ def define_source(
         )
 
     if price is not None:
+
         if FILENAME in price and HEADER in price:
             price.update(
                 {
@@ -1203,7 +1278,13 @@ def determine_dispatch_price(dict_values, price, source):
 
 
 def define_sink(
-    dict_values, asset_key, price, inflow_direction, energy_vector, **kwargs
+    dict_values,
+    asset_key,
+    price,
+    inflow_direction,
+    energy_vector,
+    asset_type=None,
+    **kwargs,
 ):
     r"""
     This automatically defines a sink for an oemof-sink object. The sinks are added to the energyConsumption assets.
@@ -1255,6 +1336,7 @@ def define_sink(
         ENERGY_VECTOR: energy_vector,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         DISPATCHABILITY: {VALUE: True, UNIT: TYPE_BOOL},
+        TYPE_ASSET: asset_type,
     }
 
     if inflow_direction not in dict_values[ENERGY_BUSSES]:
@@ -1554,7 +1636,7 @@ def receive_timeseries_from_csv(
         if TIMESERIES in dict_asset:
             series_values = dict_asset[TIMESERIES]
         else:
-            FileNotFoundError(msg)
+            raise FileNotFoundError(msg)
 
     if len(series_values.index) == settings[PERIODS]:
         if input_type == "input":
@@ -1609,9 +1691,7 @@ def receive_timeseries_from_csv(
 
 
 def replace_nans_in_timeseries_with_0(timeseries, label):
-    """
-
-    Replaces nans in the timeseries (if any) with 0
+    """Replaces nans in the timeseries (if any) with 0
 
     Parameters
     ----------
@@ -1624,7 +1704,7 @@ def replace_nans_in_timeseries_with_0(timeseries, label):
         Contains user-defined information about the timeseries to be printed into the eventual error message
 
     Returns
-    ----------
+    -------
     timeseries: pd.Series
         timeseries without NaN values
 
@@ -1861,7 +1941,11 @@ def process_maximum_cap_constraint(dict_values, group, asset, subasset=None):
                 asset_dict[MAXIMUM_CAP][VALUE] = None
 
             # adapt maximumCap and maximumAddCap of non-dispatchable sources
-            if group == ENERGY_PRODUCTION and asset_dict[FILENAME] is not None:
+            if (
+                group == ENERGY_PRODUCTION
+                and asset_dict.get(DISPATCHABILITY, True) is False
+                and asset_dict[MAXIMUM_CAP][VALUE] is not None
+            ):
                 max_cap_norm = (
                     asset_dict[MAXIMUM_CAP][VALUE] * asset_dict[TIMESERIES_PEAK][VALUE]
                 )

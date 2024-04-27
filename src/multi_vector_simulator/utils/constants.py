@@ -199,6 +199,14 @@ REQUIRED_MVS_PARAMETERS = {
 MISSING_PARAMETERS_KEY = "missing_parameters"
 EXTRA_PARAMETERS_KEY = "extra_parameters"
 
+DEFAULT_CONSTRAINT_VALUES = {
+    MINIMAL_RENEWABLE_FACTOR: {UNIT: "factor", VALUE: 0},
+    MAXIMUM_EMISSIONS: {UNIT: "factor", VALUE: None},
+    MINIMAL_DEGREE_OF_AUTONOMY: {UNIT: "factor", VALUE: 0},
+    NET_ZERO_ENERGY: {UNIT: "bool", VALUE: False},
+}
+
+
 # Instroducting new parameters (later to be merged into list ll.77)
 WARNING_TEXT = "warning_text"
 REQUIRED_IN_CSV_ELEMENTS = "required in files"
@@ -231,6 +239,12 @@ KNOWN_EXTRA_PARAMETERS = {
         WARNING_TEXT: "allows setting a maximum capacity for an asset that is being capacity optimized (Values: None/Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_CONVERSION, ENERGY_PRODUCTION],
     },
+    DSO_FEEDIN_CAP: {
+        DEFAULT_VALUE: None,
+        UNIT: TYPE_NONE,
+        WARNING_TEXT: "allows setting a maximum capacity for DSO feedin (Values: None/Float). ",
+        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PROVIDERS],
+    },
     RENEWABLE_ASSET_BOOL: {
         DEFAULT_VALUE: False,
         UNIT: TYPE_BOOL,
@@ -250,13 +264,13 @@ KNOWN_EXTRA_PARAMETERS = {
         REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PRODUCTION, ENERGY_PROVIDERS,],
     },
     MAXIMUM_EMISSIONS: {
-        DEFAULT_VALUE: None,
+        DEFAULT_VALUE: DEFAULT_CONSTRAINT_VALUES[MAXIMUM_EMISSIONS][VALUE],
         UNIT: TYPE_NONE,
         WARNING_TEXT: "allows setting a maximum amount of emissions of the optimized energy system (Values: None/Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
     },
     MINIMAL_DEGREE_OF_AUTONOMY: {
-        DEFAULT_VALUE: 0,
+        DEFAULT_VALUE: DEFAULT_CONSTRAINT_VALUES[MINIMAL_DEGREE_OF_AUTONOMY][VALUE],
         UNIT: TYPE_FLOAT,
         WARNING_TEXT: "allows setting a minimum degree of autonomy of the optimized energy system (Values: Float). ",
         REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
@@ -268,7 +282,7 @@ KNOWN_EXTRA_PARAMETERS = {
         REQUIRED_IN_CSV_ELEMENTS: [PROJECT_DATA],
     },
     NET_ZERO_ENERGY: {
-        DEFAULT_VALUE: False,
+        DEFAULT_VALUE: DEFAULT_CONSTRAINT_VALUES[NET_ZERO_ENERGY][VALUE],
         UNIT: TYPE_BOOL,
         WARNING_TEXT: "allows to add a net zero energy constraint to optimization problem (activate by setting to `True`). ",
         REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
@@ -329,6 +343,7 @@ PLOTS_ES = "graphviz"
 PLOTS_PERFORMANCE = "performance"
 PLOTS_COSTS = "costs"
 PLOTS_BUSSES = "flows_on_busses"
+PLOT_SANKEY = "sankey"
 
 # structure of the dict containing generated plots filenames in results_json file
 DICT_PLOTS = {

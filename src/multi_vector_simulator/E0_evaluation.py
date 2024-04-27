@@ -10,7 +10,7 @@ Module E0 evaluates the oemof results and calculates the KPI
 
 import logging
 
-import oemof.solph as solph
+from oemof import solph
 import pandas as pd
 
 import multi_vector_simulator.E1_process_results as E1
@@ -279,7 +279,11 @@ def store_result_matrix(dict_kpi, dict_asset, fix_cost=False):
             asset_result_df = pd.DataFrame([asset_result_dict])
 
             dict_kpi.update(
-                {kpi_storage: dict_kpi[kpi_storage].append(asset_result_df, sort=False)}
+                {
+                    kpi_storage: pd.concat(
+                        [dict_kpi[kpi_storage], asset_result_df], ignore_index=True
+                    )
+                }
             )
 
 

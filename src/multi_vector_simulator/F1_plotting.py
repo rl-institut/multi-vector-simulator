@@ -13,6 +13,7 @@ Module F1 describes all the functions that create plots.
 import logging
 import os
 import textwrap
+import numpy as np
 
 import pandas as pd
 
@@ -30,12 +31,15 @@ except ModuleNotFoundError:
 
 import graphviz
 import oemof
+from oemof import solph
 
 from multi_vector_simulator.utils.constants import (
     PROJECT_DATA,
     ECONOMIC_DATA,
     LABEL,
     OUTPUT_FOLDER,
+    PATHS_TO_PLOTS,
+    PLOT_SANKEY,
     SOC,
 )
 
@@ -49,6 +53,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     TIMESERIES,
     DISPATCHABILITY,
     ENERGY_PRODUCTION,
+    SIMULATION_SETTINGS,
     OPTIMIZED_ADD_CAP,
     TOTAL_FLOW,
     ANNUAL_TOTAL_FLOW,
@@ -58,6 +63,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OPTIMIZED_FLOWS,
     DEMANDS,
     RESOURCES,
+    TIME_INDEX,
 )
 
 from multi_vector_simulator.E1_process_results import (
@@ -82,7 +88,6 @@ def convert_plot_data_to_dataframe(plot_data_dict, data_type):
     df: pandas:`pandas.DataFrame<frame>`,
         timeseries for plotting
     """
-
     # Later, this dataframe can be passed to a function directly make the graphs with Plotly
     df = pd.DataFrame.from_dict(plot_data_dict[data_type], orient="columns")
 
@@ -229,6 +234,8 @@ class ESGraphRenderer:
         """
         file_name, file_ext = os.path.splitext(filepath)
 
+        self.energy_system = energy_system
+
         if img_format is None:
             if file_ext != "":
                 img_format = file_ext.replace(".", "")
@@ -253,18 +260,18 @@ class ESGraphRenderer:
                 self.add_storage(subgraph=c)
 
         # draw a node for each of the network's component. The shape depends on the component's type
-        for nd in energy_system.nodes:
-            if isinstance(nd, oemof.solph.network.Bus):
+        for nd in self.energy_system.nodes:
+            if isinstance(nd, oemof.network.Bus):
                 self.add_bus(nd.label)
                 # keep the bus reference for drawing edges later
                 self.busses.append(nd)
-            elif isinstance(nd, oemof.solph.network.Sink):
+            elif isinstance(nd, oemof.network.Sink):
                 self.add_sink(nd.label)
-            elif isinstance(nd, oemof.solph.network.Source):
+            elif isinstance(nd, oemof.network.Source):
                 self.add_source(nd.label)
-            elif isinstance(nd, oemof.solph.network.Transformer):
+            elif isinstance(nd, oemof.network.Transformer):
                 self.add_transformer(nd.label)
-            elif isinstance(nd, oemof.solph.components.GenericStorage):
+            elif isinstance(nd, solph.components.GenericStorage):
                 self.add_storage(nd.label)
             else:
                 logging.warning(
@@ -365,11 +372,11 @@ class ESGraphRenderer:
         b: `oemof.solph.network.Node`
             An oemof node (usually a Bus or a Component)
         """
-        if not isinstance(a, oemof.solph.network.Bus):
+        if not isinstance(a, oemof.network.Bus):
             a = fixed_width_text(a.label, char_num=self.txt_width)
         else:
             a = a.label
-        if not isinstance(b, oemof.solph.network.Bus):
+        if not isinstance(b, oemof.network.Bus):
             b = fixed_width_text(b.label, char_num=self.txt_width)
         else:
             b = b.label
@@ -383,6 +390,84 @@ class ESGraphRenderer:
     def render(self, **kwargs):
         """Call the render method of the DiGraph instance"""
         self.dot.render(**kwargs)
+
+    def sankey(self, results):
+        """Return a dict to a plotly sankey diagram"""
+        busses = []
+
+        labels = []
+        sources = []
+        targets = []
+        values = []
+
+        # bus_data.update({bus: solph.views.node(results_main, bus)})
+
+        # draw a node for each of the network's component. The shape depends on the component's type
+        for nd in self.energy_system.nodes:
+            if isinstance(nd, oemof.network.Bus):
+
+                # keep the bus reference for drawing edges later
+                bus = nd
+                busses.append(bus)
+
+                bus_label = bus.label
+
+                labels.append(nd.label)
+
+                flows = solph.views.node(results, bus_label)["sequences"]
+
+                # draw an arrow from the component to the bus
+                for component in bus.inputs:
+                    if component.label not in labels:
+                        labels.append(component.label)
+
+                    sources.append(labels.index(component.label))
+                    targets.append(labels.index(bus_label))
+
+                    val = flows[((component.label, bus_label), "flow")].sum()
+                    # if val == 0:
+                    #     val = 1
+                    values.append(val)
+
+                for component in bus.outputs:
+                    # draw an arrow from the bus to the component
+                    if component.label not in labels:
+                        labels.append(component.label)
+
+                    sources.append(labels.index(bus_label))
+                    targets.append(labels.index(component.label))
+
+                    val = flows[((bus_label, component.label), "flow")].sum()
+
+                    # if val == 0:
+                    #     val = 1
+                    values.append(val)
+
+        fig = go.Figure(
+            data=[
+                go.Sankey(
+                    node=dict(
+                        pad=15,
+                        thickness=20,
+                        line=dict(color="black", width=0.5),
+                        label=labels,
+                        hovertemplate="Node has total value %{value}<extra></extra>",
+                        color="blue",
+                    ),
+                    link=dict(
+                        source=sources,  # indices correspond to labels, eg A1, A2, A2, B1, ...
+                        target=targets,
+                        value=values,
+                        hovertemplate="Link from node %{source.label}<br />"
+                        + "to node%{target.label}<br />has value %{value}"
+                        + "<br />and data <extra></extra>",
+                    ),
+                )
+            ]
+        )
+
+        fig.update_layout(title_text="Basic Sankey Diagram", font_size=10)
+        return fig.to_dict()
 
 
 def get_color(idx_line, color_list=None):
@@ -616,8 +701,20 @@ def plot_timeseries(
     if max_days is not None:
         if df_pd["timestamp"].empty:
             logging.warning("The timeseries for {} are empty".format(data_type))
+        elif df_pd.timestamp.dtype == np.int64:
+            logging.warning(
+                "The timeseries for {} do not have correct timestamps, it is likely that you uploaded "
+                "a timeseries with more or less values than the number of days multiplied by number of "
+                "timesteps within a day.".format(data_type)
+            )
         else:
-            max_date = df_pd["timestamp"][0] + pd.Timedelta("{} day".format(max_days))
+            if not isinstance(df_pd["timestamp"], pd.DatetimeIndex):
+                dti = dict_values[SIMULATION_SETTINGS][TIME_INDEX]
+                df_pd = df_pd.loc[: len(dti) - 1]
+                df_pd["timestamp"] = dti
+                max_date = df_pd["timestamp"][0] + pd.Timedelta(
+                    "{} day".format(max_days)
+                )
             df_pd = df_pd.loc[df_pd["timestamp"] < max_date]
         title_addendum = " ({} days)".format(max_days)
     else:
@@ -638,6 +735,16 @@ def plot_timeseries(
             plots[comp_id] = fig
 
     return plots
+
+
+def plot_sankey(dict_values):
+    """"""
+    fig_dict = dict_values[PATHS_TO_PLOTS].get(PLOT_SANKEY, None)
+    if fig_dict is not None:
+        fig = go.Figure(**fig_dict)
+    else:
+        fig = go.Figure()
+    return fig
 
 
 def create_plotly_barplot_fig(
@@ -1127,9 +1234,8 @@ def plot_piecharts_of_costs(dict_values, file_path=None):
 
         # Drop the total row in the dataframe
         df_temp.drop(df_temp.tail(1).index, inplace=True)
-
         # Gather the data for each asset for the particular KPI, in a dict
-        for row_index in range(0, len(df_temp)):
+        for row_index in df_temp.index:
             pie_data_dict[df_temp.at[row_index, LABEL]] = df_temp.at[
                 row_index, kp_indic
             ]

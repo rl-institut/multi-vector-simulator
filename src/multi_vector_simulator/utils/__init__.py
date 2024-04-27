@@ -41,6 +41,111 @@ from .constants_json_strings import (
 from .exceptions import MissingParameterError
 
 
+class ParameterDocumentation:
+    """Helper to access a parameter's information given its variable name"""
+
+    def __init__(
+        self, param_info_file, label_header="label",
+    ):
+        self.param_doc = pd.read_csv(param_info_file).set_index(label_header)
+        self.label_hdr = label_header
+        self.fname = param_info_file
+        self.param_format = {"numeric": float, "str": str, "boolean": bool}
+
+    @property
+    def where_to_find_param_documentation(self):
+        return (
+            "*" * 5
+            + f" Note: The documentation about each of the MVS parameters can be found in the csv file {self.fname}. "
+            + "*" * 5
+        )
+
+    def __get_doc_parameter_info(self, param_label, column_name):
+        """Search the value of a parameter information in the parameter doc
+
+        Parameters
+        ----------
+        param_label: str
+            name of the variable as referenced in the column "label" of the
+            documentation csv file
+        column_name:
+            name of the documentation csv file's column corresponding to the
+            desired information about the parameter
+
+        Returns
+        -------
+        str: value of the given parameter information
+        """
+        if isinstance(param_label, list):
+            answer = []
+            for p_name in param_label:
+                answer.append(self.__get_doc_parameter_info(p_name, column_name))
+        else:
+            try:
+                answer = self.param_doc.loc[param_label][column_name]
+            except KeyError as e:
+                raise KeyError(
+                    f"Either {param_label} is not part of the {self.label_hdr} column of the file {self.fname}, or the column {column_name} does not exist in this file"
+                ).with_traceback(e.__traceback__)
+        return answer
+
+    def get_doc_verbose(self, param_label):
+        answer = self.__get_doc_parameter_info(param_label, "verbose")
+        answer_is_list = True
+        if not isinstance(param_label, list):
+            answer_is_list = False
+            answer = [answer]
+            param_label = [param_label]
+
+        for i in range(len(answer)):
+            if answer[i] == "None":
+                answer[i] = param_label[i].replace("_", " ").title()
+        if answer_is_list is False:
+            answer = answer[0]
+        return answer
+
+    def get_doc_definition(self, param_label):
+        return self.__get_doc_parameter_info(param_label, ":Definition:")
+
+    def get_doc_default(self, param_label):
+        answer = self.__get_doc_parameter_info(param_label, ":Default:")
+        param_type = self.get_doc_type(param_label)
+        if answer == "None":
+            answer = None
+        else:
+            answer = self.param_format[param_type](answer)
+        return answer
+
+    def get_doc_unit(self, param_label):
+        return self.__get_doc_parameter_info(param_label, ":Unit:")
+
+    def get_doc_type(self, param_label):
+        return self.__get_doc_parameter_info(param_label, ":Type:")
+
+
+try:
+    mvs_parameter_file = "MVS_parameters_list.csv"
+    DOC_PATH = os.path.join(
+        os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        ),
+        "docs",
+    )
+    if os.path.exists(DOC_PATH):
+        PARAMETERS_DOC = ParameterDocumentation(
+            param_info_file=os.path.join(DOC_PATH, mvs_parameter_file)
+        )
+    elif os.path.exists(PACKAGE_DATA_PATH):
+        PARAMETERS_DOC = ParameterDocumentation(
+            param_info_file=os.path.join(PACKAGE_DATA_PATH, mvs_parameter_file)
+        )
+    else:
+        PARAMETERS_DOC = None
+
+except FileNotFoundError:
+    PARAMETERS_DOC = None
+
+
 def find_json_input_folders(
     path, specific_file_name=JSON_FNAME, ignore_folders=(OUTPUT_FOLDER,)
 ):
@@ -247,6 +352,29 @@ def compare_input_parameters_with_reference(
                                     + " which can influence the results."
                                     + "In the next release, this parameter will required."
                                 )
+                        elif set_default is True:
+
+                            if k == "non-asset":
+                                main_parameters[mp][sp] = {
+                                    VALUE: PARAMETERS_DOC.get_doc_default(sp),
+                                    UNIT: PARAMETERS_DOC.get_doc_unit(sp),
+                                }
+                                logging.warning(
+                                    f"You are not providing a value for the parameter '{sp}' in parameter group '{mp}'"
+                                    + f"This parameter is then set to it's default value ({PARAMETERS_DOC.get_doc_default(sp)}).\n"
+                                    + PARAMETERS_DOC.where_to_find_param_documentation
+                                )
+                            else:
+                                main_parameters[mp][k][sp] = {
+                                    VALUE: PARAMETERS_DOC.get_doc_default(sp),
+                                    UNIT: PARAMETERS_DOC.get_doc_unit(sp),
+                                }
+
+                                logging.warning(
+                                    f"You are not providing a value for the parameter '{sp}' of asset '{k}' in asset group '{mp}'"
+                                    + f"This parameter is then set to it's default value ({PARAMETERS_DOC.get_doc_default(sp)}).\n"
+                                    + PARAMETERS_DOC.where_to_find_param_documentation
+                                )
                         else:
                             # the sub parameter is not provided but is required --> missing
                             param_list = missing_parameters.get(mp, [])
@@ -331,15 +459,32 @@ def set_nested_value(dct, value, keys):
     {'a': {'a1': 1, 'a2': 2}, 'b': {'b1': {'b11': 11, 'b12': {'b121': 400}}}}
     """
     if isinstance(keys, tuple) is True:
-        answer = copy.deepcopy(dct)
-        if len(keys) > 1:
-            answer[keys[0]] = set_nested_value(dct[keys[0]], value, keys[1:])
-        elif len(keys) == 1:
-            answer[keys[0]] = value
-        else:
-            raise ValueError(
-                "The tuple argument 'keys' from set_nested_value() should not be empty"
-            )
+        try:
+            answer = copy.deepcopy(dct)
+            if keys[0] not in answer:
+                raise KeyError(
+                    ": pathError: that path does not exist in the nested dict"
+                )
+            if len(keys) > 1:
+                answer[keys[0]] = set_nested_value(dct[keys[0]], value, keys[1:])
+            elif len(keys) == 1:
+                # if the value is a dict with structure {VALUE: ..., UNIT: ...}
+                if isinstance(answer[keys[0]], dict):
+                    if VALUE in answer[keys[0]]:
+                        answer[keys[0]][VALUE] = value
+                    else:
+                        answer[keys[0]] = value
+                else:
+                    answer[keys[0]] = value
+            else:
+                raise ValueError(
+                    "The tuple argument 'keys' from set_nested_value() should not be empty"
+                )
+        except KeyError as e:
+            if "pathError" in str(e):
+                raise KeyError(keys[0] + ", " + e.args[0])
+    elif isinstance(keys, str) is True:
+        return set_nested_value(dct, value, split_nested_path(keys))
     else:
         raise TypeError("The argument 'keys' from set_nested_value() should be a tuple")
     return answer
@@ -366,14 +511,24 @@ def get_nested_value(dct, keys):
     121
     """
     if isinstance(keys, tuple) is True:
-        if len(keys) > 1:
-            answer = get_nested_value(dct[keys[0]], keys[1:])
-        elif len(keys) == 1:
-            answer = dct[keys[0]]
-        else:
-            raise ValueError(
-                "The tuple argument 'keys' from get_nested_value() should not be empty"
-            )
+        try:
+            if len(keys) > 1:
+                answer = get_nested_value(dct[keys[0]], keys[1:])
+            elif len(keys) == 1:
+                answer = dct[keys[0]]
+            else:
+                raise ValueError(
+                    "The tuple argument 'keys' from get_nested_value() should not be empty"
+                )
+        except KeyError as e:
+            if "pathError" in str(e):
+                raise KeyError(str(keys[0]) + ", " + str(e))
+            else:
+                raise KeyError(
+                    str(keys[0])
+                    + ": pathError: that path does not exist in the nested dict"
+                )
+
     else:
         raise TypeError("The argument 'keys' from get_nested_value() should be a tuple")
     return answer
@@ -413,9 +568,60 @@ def split_nested_path(path):
     elif isinstance(path, tuple):
         keys_list = path
     else:
-        raise TypeError("The argument path is not str type")
+        raise TypeError("The argument path is not tuple or str type")
 
-    return tuple(keys_list)
+    return keys_list
+
+
+def nested_dict_crawler(dct, path=None, path_dct=None):
+    r"""A recursive algorithm that crawls through a (nested) dictionary and returns
+    a dictionary of endkeys mapped to a list of the paths leading to each endkey.
+    An endkey is defined the last key in the nested dict before a value of type different than dict or the last key
+    before a dict containing only {"unit": ..., "value": ...}
+            Parameters
+            ----------
+            dct: dict
+                the (potentially nested) dict from which we want to get the endkeys
+            path: list
+                storing the current path that the algorithm is on
+            path_dct: dict
+                result dictionary where each key is assigned to its (multiple) paths within the (nested) dictionary
+            Returns
+            -------
+            Dictionary of key and paths to the respective key within the nested dictionary structure
+            Example
+            -------
+            >>> dct = dict(a=dict(a1=1, a2=2),b=dict(b1=dict(b11=11,b12=dict(b121=121))))
+            >>> nested_dict_crawler(dct)
+            {
+                "a1": [("a", "a1")],
+                "a2": [("a", "a2")],
+                "b11": [("b", "b1", "b11")],
+                "b121": [("b", "b1", "b12", "b121")],
+            }
+    """
+    if path is None:
+        path = []
+    if path_dct is None:
+        path_dct = dict()
+
+    for key, value in dct.items():
+        path.append(key)
+        if isinstance(value, dict):
+            if "value" in value.keys() and "unit" in value.keys():
+                if path[-1] in path_dct:
+                    path_dct[path[-1]].append(tuple(path))
+                else:
+                    path_dct[path[-1]] = [tuple(path)]
+            else:
+                nested_dict_crawler(value, path, path_dct)
+        else:
+            if path[-1] in path_dct:
+                path_dct[path[-1]].append(tuple(path))
+            else:
+                path_dct[path[-1]] = [tuple(path)]
+        path.pop()
+    return path_dct
 
 
 def copy_report_assets(path_destination_folder):

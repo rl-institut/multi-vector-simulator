@@ -16,16 +16,16 @@ from _constants import (
     TESTS_ON_MASTER,
     TEST_REPO_PATH,
     CSV_EXT,
+    JSON_EXT,
     ENERGY_PRICE,
     OPTIMIZED_ADD_CAP,
     LABEL,
     CSV_ELEMENTS,
+    BENCHMARK_TEST_OUTPUT_FOLDER,
+    BENCHMARK_TEST_INPUT_FOLDER,
 )
 
-from multi_vector_simulator.utils.constants import (
-    JSON_WITH_RESULTS,
-    JSON_FILE_EXTENSION,
-)
+from multi_vector_simulator.utils.helpers import peak_demand_transformer_name
 
 from multi_vector_simulator.utils.constants_json_strings import (
     DSO_CONSUMPTION,
@@ -50,11 +50,11 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EXCESS_SINK,
 )
 
-TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
-TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
+TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_INPUT_FOLDER)
+TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_OUTPUT_FOLDER)
 
-FEEDIN = f"DSO{DSO_FEEDIN}"
-CONSUMPTION = f"DSO{DSO_CONSUMPTION}"
+FEEDIN = peak_demand_transformer_name("DSO", feedin=True)
+CONSUMPTION = peak_demand_transformer_name("DSO")
 EXCESS_SINK_NAME = f"Electricity{EXCESS_SINK}"
 
 
@@ -127,18 +127,19 @@ class TestFeedinTariff:
             total_excess_scalar == 0
         ), f"When the feed-in tariff is positive there should be no electricity excess, however the scalar matrix shows an excess of {total_excess_scalar}"
 
+        dso_name = "DSO"
         # costs of DSO feed-in sink in scalars.xlsx should be negative, while they
         # should be substracted from the summed-up costs of the whole system
         # negative costs in cost_matrix:
         assert (
-            cost_matrix[COST_TOTAL][FEEDIN] < 0
-            and cost_matrix[COST_OPERATIONAL_TOTAL][FEEDIN] < 0
-            and cost_matrix[COST_DISPATCH][FEEDIN] < 0
-            and cost_matrix[LCOE_ASSET][FEEDIN] < 0
+            cost_matrix[COST_TOTAL][dso_name + DSO_FEEDIN] < 0
+            and cost_matrix[COST_OPERATIONAL_TOTAL][dso_name + DSO_FEEDIN] < 0
+            and cost_matrix[COST_DISPATCH][dso_name + DSO_FEEDIN] < 0
+            and cost_matrix[LCOE_ASSET][dso_name + DSO_FEEDIN] < 0
         ), f"When the feed-in tariff is positive the costs of the feed-in should be negative (scalar_matrix: {COST_TOTAL}, {COST_OPERATIONAL_TOTAL}, {COST_DISPATCH}, {LCOE_ASSET})."
         # costs substracted from total costs:
-        total_costs_feedin = cost_matrix[COST_TOTAL][FEEDIN]
-        total_costs_consumption = cost_matrix[COST_TOTAL][CONSUMPTION]
+        total_costs_feedin = cost_matrix[COST_TOTAL][dso_name + DSO_FEEDIN]
+        total_costs_consumption = cost_matrix[COST_TOTAL][dso_name + DSO_CONSUMPTION]
         total_costs_all_assets = scalars.loc[COST_TOTAL][0]
         assert (
             total_costs_all_assets == total_costs_feedin + total_costs_consumption
@@ -161,7 +162,8 @@ class TestFeedinTariff:
             TEST_INPUT_PATH, use_case, CSV_ELEMENTS, f"{ENERGY_PROVIDERS}.csv"
         )
         df = pd.read_csv(filename).set_index("Unnamed: 0")
-        df["DSO"][FEEDIN_TARIFF] = -float(df["DSO"][FEEDIN_TARIFF])
+        dso_name = df.columns[1]
+        df[dso_name][FEEDIN_TARIFF] = -float(df[dso_name][FEEDIN_TARIFF])
         df.to_csv(filename)
 
         main(
@@ -175,7 +177,7 @@ class TestFeedinTariff:
         )
 
         # reset feed-in tariff just in case
-        df["DSO"][FEEDIN_TARIFF] = -float(df["DSO"][FEEDIN_TARIFF])
+        df[dso_name][FEEDIN_TARIFF] = -float(df[dso_name][FEEDIN_TARIFF])
         df.to_csv(filename)
 
         df_busses_flow, cost_matrix, scalar_matrix, scalars = self.get_results(
@@ -253,7 +255,8 @@ class TestFeedinTariff:
             TEST_INPUT_PATH, use_case, CSV_ELEMENTS, f"{ENERGY_PROVIDERS}.csv"
         )
         df = pd.read_csv(filename).set_index("Unnamed: 0")
-        df["DSO"][FEEDIN_TARIFF] = -float(df["DSO"][FEEDIN_TARIFF])
+        dso_name = df.columns[1]
+        df[dso_name][FEEDIN_TARIFF] = -float(df[dso_name][FEEDIN_TARIFF])
         df.to_csv(filename)
 
         main(
@@ -266,7 +269,7 @@ class TestFeedinTariff:
             ),
         )
         # reset feed-in tariff just in case
-        df["DSO"][FEEDIN_TARIFF] = -float(df["DSO"][FEEDIN_TARIFF])
+        df[dso_name][FEEDIN_TARIFF] = -float(df[dso_name][FEEDIN_TARIFF])
         df.to_csv(filename)
 
         # get results
@@ -284,6 +287,94 @@ class TestFeedinTariff:
         assert (
             feedin_sum == 0
         ), f"When the feed-in tariff is negative there should be no feed-in to the grid, however the sum of the feed-in time series is {feedin_sum}"
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_dso_energy_price_scalar_feedin_tariff_scalar(self, margs):
+        r"""
+        Benchmark test for feed-in in a simple invest case with grid connected PV and negative feed-in tariff (pay for feed-in).
+        """
+        use_case = "dso_energy_price_scalar_feedin_tariff_scalar"
+
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=JSON_EXT,
+            path_output_folder=os.path.join(
+                TEST_OUTPUT_PATH, use_case, "scalar-scalar"
+            ),
+        )
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_dso_energy_price_series_feedin_tariff_scalar(self, margs):
+        r"""
+        Benchmark test for feed-in in a simple invest case with grid connected PV and negative feed-in tariff (pay for feed-in).
+        """
+        use_case = "dso_energy_price_series_feedin_tariff_scalar"
+
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=JSON_EXT,
+            path_output_folder=os.path.join(
+                TEST_OUTPUT_PATH, use_case, "series-scalar"
+            ),
+        )
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_dso_energy_price_scalar_feedin_tariff_series(self, margs):
+        r"""
+        Benchmark test for feed-in in a simple invest case with grid connected PV and negative feed-in tariff (pay for feed-in).
+        """
+        use_case = "dso_energy_price_scalar_feedin_tariff_series"
+
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=JSON_EXT,
+            path_output_folder=os.path.join(
+                TEST_OUTPUT_PATH, use_case, "scalar-series"
+            ),
+        )
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
+    def test_dso_energy_price_series_feedin_tariff_series(self, margs):
+        r"""
+        Benchmark test for feed-in in a simple invest case with grid connected PV and negative feed-in tariff (pay for feed-in).
+        """
+        use_case = "dso_energy_price_series_feedin_tariff_series"
+
+        main(
+            overwrite=True,
+            display_output="warning",
+            path_input_folder=os.path.join(TEST_INPUT_PATH, use_case),
+            input_type=JSON_EXT,
+            path_output_folder=os.path.join(
+                TEST_OUTPUT_PATH, use_case, "series-series"
+            ),
+        )
 
     def teardown_method(self):
         if os.path.exists(TEST_OUTPUT_PATH):

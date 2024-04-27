@@ -25,6 +25,7 @@ from multi_vector_simulator.utils.constants import (
     TYPE_NONE,
     TYPE_BOOL,
     KNOWN_EXTRA_PARAMETERS,
+    DEFAULT_CONSTRAINT_VALUES,
     DEFAULT_VALUE,
 )
 
@@ -58,7 +59,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INSTALLED_CAP,
     LIFETIME,
     MAXIMUM_CAP,
+    MAXIMUM_ADD_CAP,
     OPTIMIZE_CAP,
+    OPTIMIZED_ADD_CAP,
     SPECIFIC_COSTS,
     SPECIFIC_COSTS_OM,
     SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
@@ -115,16 +118,18 @@ MAP_EPA_MVS = {
     "energy_production": ENERGY_PRODUCTION,
     "energy_storage": ENERGY_STORAGE,
     "project_data": PROJECT_DATA,
-    "input_bus_name": INFLOW_DIRECTION,  # TODO remove this when it is updated on EPA side
-    "output_bus_name": OUTFLOW_DIRECTION,  # TODO remove this when it is updated on EPA side
     "simulation_settings": SIMULATION_SETTINGS,
     "energy_vector": ENERGY_VECTOR,
     "installed_capacity": INSTALLED_CAP,
     "capacity": STORAGE_CAPACITY,
+    # "input_bus_name": INFLOW_DIRECTION,
+    # "output_bus_name": OUTFLOW_DIRECTION,
     "input_power": INPUT_POWER,
     "output_power": OUTPUT_POWER,
     "optimize_capacity": OPTIMIZE_CAP,
+    "optimized_add_cap": OPTIMIZED_ADD_CAP,
     "maximum_capacity": MAXIMUM_CAP,
+    "maximum_add_cap": MAXIMUM_ADD_CAP,
     "input_timeseries": TIMESERIES,
     "constraints": CONSTRAINTS,
     "renewable_asset": RENEWABLE_ASSET_BOOL,
@@ -136,6 +141,10 @@ MAP_EPA_MVS = {
     "specific_replacement_costs_of_installed_capacity": SPECIFIC_REPLACEMENT_COSTS_INSTALLED,
     "specific_replacement_costs_of_optimized_capacity": SPECIFIC_REPLACEMENT_COSTS_OPTIMIZED,
     "asset_type": TYPE_ASSET,
+    "capex_fix": DEVELOPMENT_COSTS,
+    "capex_var": SPECIFIC_COSTS,
+    "opex_fix": SPECIFIC_COSTS_OM,
+    "opex_var": DISPATCH_PRICE,
 }
 
 MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
@@ -143,8 +152,10 @@ MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
 # Fields expected for parameters of json returned to EPA, all assets will be returned
 EPA_PARAM_KEYS = {
     PROJECT_DATA: [PROJECT_ID, PROJECT_NAME, SCENARIO_ID, SCENARIO_NAME],
-    SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP],
-    KPI: [KPI_SCALARS_DICT, KPI_UNCOUPLED_DICT, KPI_COST_MATRIX, KPI_SCALAR_MATRIX],
+    SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP, OUTPUT_LP_FILE],
+    KPI: [KPI_SCALARS_DICT, KPI_UNCOUPLED_DICT, KPI_COST_MATRIX, KPI_SCALAR_MATRIX,],
+    "raw_results": ["index", "columns", "data"],
+    "simulation_results": ["logs"],
 }
 
 # Fields expected for assets' parameters of json returned to EPA
@@ -184,10 +195,8 @@ EPA_ASSET_KEYS = {
         DISPATCH_PRICE,
         "installed_capacity",
         LIFETIME,
-        "optimize_capacity",
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
-        "input_timeseries",
         "energy_vector",
         FLOW,
     ],
@@ -199,15 +208,14 @@ EPA_ASSET_KEYS = {
         OEMOF_ASSET_TYPE,
         INFLOW_DIRECTION,
         OUTFLOW_DIRECTION,
-        OUTFLOW_DIRECTION,
         AGE_INSTALLED,
         DEVELOPMENT_COSTS,
         DISPATCH_PRICE,
         EFFICIENCY,
         "installed_capacity",
         LIFETIME,
-        "maximum_capacity",
         "optimize_capacity",
+        "optimized_add_cap",
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
         FLOW,
@@ -218,17 +226,17 @@ EPA_ASSET_KEYS = {
         LABEL,
         OEMOF_ASSET_TYPE,
         OUTFLOW_DIRECTION,
-        OUTFLOW_DIRECTION,
         DEVELOPMENT_COSTS,
         DISPATCH_PRICE,
         DISPATCHABILITY,
         "installed_capacity",
         LIFETIME,
         "maximum_capacity",
+        "maximum_add_cap",
         "optimize_capacity",
+        "optimized_add_cap",
         SPECIFIC_COSTS,
         SPECIFIC_COSTS_OM,
-        "input_timeseries",
         AGE_INSTALLED,
         "renewable_asset",
         "energy_vector",
@@ -241,13 +249,12 @@ EPA_ASSET_KEYS = {
         "energy_vector",
         INFLOW_DIRECTION,
         OUTFLOW_DIRECTION,
-        OUTFLOW_DIRECTION,
         OEMOF_ASSET_TYPE,
         INPUT_POWER,
         OUTPUT_POWER,
         STORAGE_CAPACITY,
         "optimize_capacity",
-        "input_timeseries",
+        "optimized_add_cap",
         TIMESERIES_SOC,
     ],
     ENERGY_BUSSES: [LABEL, "assets", "energy_vector"],
@@ -272,13 +279,14 @@ def convert_epa_params_to_mvs(epa_dict):
 
     - For `simulation_settings`:
         - parameter `TIMESTEP` is parsed as unit-value pair
-        - `OUTPUT_LP_FILE` always `False`
+        - `OUTPUT_LP_FILE` is set to `False` by default
     - For `project_data`: parameter `SCENARIO_DESCRIPTION` is defined as placeholder string.
     - `fix_cost` is not required, default value will be set if it is not provided.
     - For missing asset group `CONSTRAINTS` following parameters are added:
         - MINIMAL_RENEWABLE_FACTOR: 0
         - MAXIMUM_EMISSIONS: None
         - MINIMAL_DEGREE_OF_AUTONOMY: 0
+        - NET_ZERO_ENERGY: False
     - `ENERGY_STORAGE` assets:
         - Optimize cap written to main asset and removed from subassets
         - Units defined automatically (assumed: electricity system)
@@ -329,13 +337,18 @@ def convert_epa_params_to_mvs(epa_dict):
                         UNIT: "min",
                         VALUE: timestep,
                     }
-
-            # Never save the oemof lp file when running on the server
-            if param_group == SIMULATION_SETTINGS:
-                dict_values[param_group][OUTPUT_LP_FILE] = {
-                    UNIT: TYPE_BOOL,
-                    VALUE: False,
-                }
+                # by default the lp file will not be outputted
+                output_lp_file = dict_values[param_group].get(OUTPUT_LP_FILE)
+                if output_lp_file is None:
+                    dict_values[param_group][OUTPUT_LP_FILE] = {
+                        UNIT: TYPE_BOOL,
+                        VALUE: False,
+                    }
+                else:
+                    dict_values[param_group][OUTPUT_LP_FILE] = {
+                        UNIT: TYPE_BOOL,
+                        VALUE: True if output_lp_file == "true" else False,
+                    }
 
             if param_group == PROJECT_DATA:
                 if SCENARIO_DESCRIPTION not in dict_values[param_group]:
@@ -388,10 +401,6 @@ def convert_epa_params_to_mvs(epa_dict):
                                 if sk in MAP_EPA_MVS:
                                     subasset[MAP_EPA_MVS[sk]] = subasset.pop(sk)
 
-                            # remove non-implemented parameter if provided faultily
-                            if OPTIMIZE_CAP in subasset:
-                                subasset.pop(OPTIMIZE_CAP)
-
                             # add unit if not provided
                             # TODO deal with other vectors than electricity
                             if UNIT not in subasset:
@@ -402,6 +411,11 @@ def convert_epa_params_to_mvs(epa_dict):
                             # set the initial value of the state of charge to None
                             if k == MAP_MVS_EPA[STORAGE_CAPACITY]:
                                 subasset[SOC_INITIAL] = {VALUE: None, UNIT: TYPE_NONE}
+                                # move the optimize cap property from STORAGE_CAPACITY to the asset level
+                                if OPTIMIZE_CAP in subasset:
+                                    dict_asset[asset_label][
+                                        OPTIMIZE_CAP
+                                    ] = subasset.pop(OPTIMIZE_CAP)
 
                 # move the unit outside the timeseries dict
                 if TIMESERIES in dict_asset[asset_label]:
@@ -414,6 +428,16 @@ def convert_epa_params_to_mvs(epa_dict):
                     dict_asset[asset_label][TIMESERIES][
                         DATA_TYPE_JSON_KEY
                     ] = TYPE_SERIES
+
+                if asset_group == ENERGY_CONVERSION:
+                    if DISPATCH_PRICE not in dict_asset[asset_label]:
+                        dict_asset[asset_label].update(
+                            {DISPATCH_PRICE: {VALUE: 0, UNIT: "factor"}}
+                        )
+                    if DEVELOPMENT_COSTS not in dict_asset[asset_label]:
+                        dict_asset[asset_label].update(
+                            {DEVELOPMENT_COSTS: {VALUE: 0, UNIT: "factor"}}
+                        )
 
                 # TODO remove this when change has been made on EPA side
                 if asset_group == ENERGY_PRODUCTION:
@@ -429,6 +453,14 @@ def convert_epa_params_to_mvs(epa_dict):
                         dict_asset[asset_label][INFLOW_DIRECTION] = dict_asset[
                             asset_label
                         ][OUTFLOW_DIRECTION]
+                    # format the energy price and feedin tariffs as timeseries
+                    for asset_param in (ENERGY_PRICE, FEEDIN_TARIFF):
+                        param_value = dict_asset[asset_label][asset_param][VALUE]
+                        if isinstance(param_value, list):
+                            dict_asset[asset_label][asset_param][VALUE] = {
+                                VALUE: param_value,
+                                DATA_TYPE_JSON_KEY: TYPE_SERIES,
+                            }
 
                 # TODO remove this when change has been made on EPA side
                 if asset_group == ENERGY_STORAGE:
@@ -489,13 +521,12 @@ def convert_epa_params_to_mvs(epa_dict):
             dict_values.update({asset_group: {}})
 
     # Check if all necessary input parameters are provided
-    comparison = compare_input_parameters_with_reference(dict_values)
+    comparison = compare_input_parameters_with_reference(dict_values, set_default=True)
 
     # ToDo compare_input_parameters_with_reference() does not identify excess/missing parameters in the subassets of energyStorages.
     if EXTRA_PARAMETERS_KEY in comparison:
         warning_extra_parameters = "Following parameters are provided to the MVS that may be excess information: \n"
         for group in comparison[EXTRA_PARAMETERS_KEY]:
-            print(dict_values[group])
             warning_extra_parameters += f"- {group} ("
             for parameter in comparison[EXTRA_PARAMETERS_KEY][group]:
                 if parameter not in [LABEL, "unique_id"]:
@@ -507,14 +538,16 @@ def convert_epa_params_to_mvs(epa_dict):
         error_msg = []
 
         missing_params = comparison[MISSING_PARAMETERS_KEY]
-        # this should not be missing on EPA side, but in case it is take default value 0
         if CONSTRAINTS in missing_params:
-            dict_values[CONSTRAINTS] = {
-                MINIMAL_RENEWABLE_FACTOR: {UNIT: "factor", VALUE: 0},
-                MAXIMUM_EMISSIONS: {UNIT: "factor", VALUE: None},
-                MINIMAL_DEGREE_OF_AUTONOMY: {UNIT: "factor", VALUE: 0},
-                NET_ZERO_ENERGY: {UNIT: "bool", VALUE: False},
-            }
+
+            if CONSTRAINTS not in dict_values:
+                dict_values[CONSTRAINTS] = {}
+
+            for missing_constraint in missing_params[CONSTRAINTS]:
+                dict_values[CONSTRAINTS][
+                    missing_constraint
+                ] = DEFAULT_CONSTRAINT_VALUES[missing_constraint]
+
             missing_params.pop(CONSTRAINTS)
 
         if SIMULATION_SETTINGS in missing_params:
@@ -574,35 +607,49 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
     for param_group in EPA_PARAM_KEYS:
 
         # translate field name from mvs to epa
-        param_group_epa = MAP_MVS_EPA[param_group]
+        param_group_epa = MAP_MVS_EPA.get(param_group, param_group)
 
         # assign the whole MVS value to the EPA field
         epa_dict[param_group_epa] = mvs_dict[param_group]
+        if isinstance(epa_dict[param_group_epa], str):
+            pass
+        else:
+            keys_list = list(epa_dict[param_group_epa].keys())
+            for k in keys_list:
+                # ditch all subfields which are not present in the EPA_PARAM_KEYS value corresponding
+                # to the parameter group (except for CONSTRAINTS)
+                if k not in EPA_PARAM_KEYS[param_group] or param_group in (
+                    CONSTRAINTS,
+                ):
+                    epa_dict[param_group_epa].pop(k)
+                else:
+                    # convert fields names from MVS convention to EPA convention, if applicable
+                    if k in MAP_MVS_EPA:
+                        epa_dict[param_group_epa][MAP_MVS_EPA[k]] = epa_dict[
+                            param_group_epa
+                        ].pop(k)
 
-        keys_list = list(epa_dict[param_group_epa].keys())
-        for k in keys_list:
-            # ditch all subfields which are not present in the EPA_PARAM_KEYS value corresponding
-            # to the parameter group (except for CONSTRAINTS)
-            if k not in EPA_PARAM_KEYS[param_group] or param_group in (CONSTRAINTS,):
-                epa_dict[param_group_epa].pop(k)
-            else:
-                # convert fields names from MVS convention to EPA convention, if applicable
-                if k in MAP_MVS_EPA:
-                    epa_dict[param_group_epa][MAP_MVS_EPA[k]] = epa_dict[
-                        param_group_epa
-                    ].pop(k)
+                    if k == KPI_UNCOUPLED_DICT:
+                        epa_dict[param_group_epa][k] = json.loads(
+                            epa_dict[param_group_epa][k].to_json(orient="index")
+                        )
 
-                if k == KPI_UNCOUPLED_DICT:
-                    epa_dict[param_group_epa][k] = json.loads(
-                        epa_dict[param_group_epa][k].to_json(orient="index")
-                    )
+                    if k in (KPI_SCALAR_MATRIX, KPI_COST_MATRIX):
 
-                if k in (KPI_SCALAR_MATRIX, KPI_COST_MATRIX):
-                    epa_dict[param_group_epa][k] = json.loads(
-                        epa_dict[param_group_epa][k]
-                        .set_index("label")
-                        .to_json(orient="index")
-                    )
+                        cols = epa_dict[param_group_epa][k].columns
+                        epa_dict[param_group_epa][k].columns = [
+                            MAP_MVS_EPA.get(k, k) for k in cols
+                        ]
+                        epa_dict[param_group_epa][k] = json.loads(
+                            epa_dict[param_group_epa][k]
+                            .set_index("label")
+                            .to_json(orient="index")
+                        )
+
+                    # if the parameter is of type
+                    if k == OUTPUT_LP_FILE:
+                        if epa_dict[param_group_epa][k][UNIT] == TYPE_BOOL:
+                            epa_dict[param_group_epa].pop(k)
 
     # manage which assets parameters are kept and which one are removed in epa_dict
     for asset_group in EPA_ASSET_KEYS:
@@ -661,8 +708,14 @@ def convert_mvs_params_to_epa(mvs_dict, verbatim=False):
             # convert pandas.Series to a timeseries dict with key DATA value list,
             # move the unit inside the timeseries dict under key UNIT
             if FLOW in asset:
-                timeseries = asset[FLOW].to_list()
-                asset[FLOW] = {UNIT: unit, VALUE: timeseries}
+                if isinstance(asset.get(OUTFLOW_DIRECTION, None), list):
+                    timeseries = {}
+                    for bus in asset[OUTFLOW_DIRECTION]:
+                        timeseries[bus] = asset[FLOW][bus].to_list()
+                    asset[FLOW] = {UNIT: unit, VALUE: timeseries}
+                else:
+                    timeseries = asset[FLOW].to_list()
+                    asset[FLOW] = {UNIT: unit, VALUE: timeseries}
 
             if TIMESERIES_SOC in asset:
                 timeseries = asset[TIMESERIES_SOC].to_list()

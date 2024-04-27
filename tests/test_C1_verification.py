@@ -45,7 +45,6 @@ from multi_vector_simulator.utils.constants_json_strings import (
     RENEWABLE_SHARE_DSO,
     ENERGY_BUSSES,
     ASSET_DICT,
-    DSO_PEAK_DEMAND_SUFFIX,
 )
 
 from multi_vector_simulator.utils.exceptions import (
@@ -53,6 +52,8 @@ from multi_vector_simulator.utils.exceptions import (
     DuplicateLabels,
     MVSOemofError,
 )
+
+from multi_vector_simulator.utils.helpers import peak_demand_bus_name
 
 
 def test_lookup_file_existing_file():
@@ -749,8 +750,7 @@ def test_check_for_sufficient_assets_on_busses_example_bus_fails(caplog):
 def test_check_for_sufficient_assets_on_busses_skipped_for_peak_demand_pricing_bus():
     dict_values = {
         ENERGY_BUSSES: {
-            "Bus"
-            + DSO_PEAK_DEMAND_SUFFIX: {
+            peak_demand_bus_name("Bus"): {
                 ASSET_DICT: {"asset_1": "asset_1", "asset_3": "asset_3"}
             }
         }
@@ -852,6 +852,8 @@ import argparse
 from _constants import (
     TEST_REPO_PATH,
     CSV_EXT,
+    BENCHMARK_TEST_INPUT_FOLDER,
+    BENCHMARK_TEST_OUTPUT_FOLDER,
 )
 from multi_vector_simulator.utils.constants import LOGFILE
 
@@ -859,8 +861,8 @@ from multi_vector_simulator.utils.constants import LOGFILE
 @mock.patch("argparse.ArgumentParser.parse_args", return_value=argparse.Namespace())
 def test_check_energy_system_can_fulfill_max_demand_fails_mvs_runthrough(caplog):
     """This test makes sure that the C1.check_energy_system_can_fulfill_max_demand not only works as a function, but as an integrated function of the MVS model, as it is dependent on a lot of pre-processing steps where things in the future may be changed."""
-    TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_inputs")
-    TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, "benchmark_test_outputs")
+    TEST_INPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_INPUT_FOLDER)
+    TEST_OUTPUT_PATH = os.path.join(TEST_REPO_PATH, BENCHMARK_TEST_OUTPUT_FOLDER)
     if os.path.exists(TEST_OUTPUT_PATH):
         shutil.rmtree(TEST_OUTPUT_PATH, ignore_errors=True)
     with pytest.raises(MVSOemofError):

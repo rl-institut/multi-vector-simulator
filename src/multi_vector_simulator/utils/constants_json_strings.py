@@ -14,6 +14,7 @@ do not nessarily raise an error immediately, making the typo harder to fix.
 
 ECONOMIC_DATA = "economic_data"
 PROJECT_DATA = "project_data"
+SIMULATION_SETTINGS = "simulation_settings"
 FIX_COST = "fixcost"
 
 # Asset groups
@@ -31,10 +32,11 @@ OEMOF_GEN_STORAGE = "storage"
 OEMOF_SOURCE = "source"
 OEMOF_SINK = "sink"
 OEMOF_BUSSES = "bus"
+OEMOF_ExtractionTurbineCHP = "extractionTurbineCHP"
 
 # Dict generated from above defined strings
 ACCEPTED_ASSETS_FOR_ASSET_GROUPS = {
-    ENERGY_CONVERSION: [OEMOF_TRANSFORMER],
+    ENERGY_CONVERSION: [OEMOF_TRANSFORMER, OEMOF_ExtractionTurbineCHP],
     ENERGY_STORAGE: [OEMOF_GEN_STORAGE],
     ENERGY_PRODUCTION: [OEMOF_SOURCE],
     ENERGY_CONSUMPTION: [OEMOF_SINK],
@@ -67,7 +69,6 @@ LONGITUDE = "longitude"
 LATITUDE = "latitude"
 
 # Project data and simulation settings (true/false)
-SIMULATION_SETTINGS = "simulation_settings"
 OUTPUT_LP_FILE = "output_lp_file"
 PROJECT_NAME = "project_name"
 SCENARIO_NAME = "scenario_name"
@@ -90,6 +91,7 @@ SPECIFIC_COSTS = "specific_costs"
 SPECIFIC_COSTS_OM = "specific_costs_om"
 DISPATCH_PRICE = "dispatch_price"
 OEMOF_ASSET_TYPE = "type_oemof"
+BETA = "beta"
 
 # Specific parameters
 RENEWABLE_ASSET_BOOL = "renewableAsset"
@@ -101,6 +103,9 @@ ENERGY_PRICE = "energy_price"
 FEEDIN_TARIFF = "feedin_tariff"
 PEAK_DEMAND_PRICING = "peak_demand_pricing"
 PEAK_DEMAND_PRICING_PERIOD = "peak_demand_pricing_period"
+
+# Asset definitions: Transformer
+INVESTMENT_BUS = "investment_bus"
 
 # Asset definitions: Storage
 C_RATE = "c_rate"
@@ -178,7 +183,8 @@ INSTALLED_CAP_NORMALIZED = "installedCap_normalized"
 # DSO
 DSO_CONSUMPTION = "_consumption"
 DSO_FEEDIN = "_feedin"
-DSO_PEAK_DEMAND_SUFFIX = "_pdp"  # short for peak demand pricing
+DSO_FEEDIN_CAP = "feedin_cap"
+DSO_PEAK_DEMAND_SUFFIX = "pdp"  # short for peak demand pricing
 DSO_PEAK_DEMAND_PERIOD = "_period"
 CONNECTED_CONSUMPTION_SOURCE = "connected_consumption_sources"
 CONNECTED_PEAK_DEMAND_PRICING_TRANSFORMERS = (
@@ -190,6 +196,7 @@ CONNECTED_FEEDIN_SINK = "connected_feedin_sink"
 DISPATCHABILITY = "dispatchable"
 AVAILABILITY_DISPATCH = "availability_timeseries"
 ASSET_DICT = "asset_list"
+AUTO_CREATED_HIGHLIGHT = "(@)"
 #######################################
 # Parameters added in post-processing #
 #######################################

@@ -254,6 +254,7 @@ def create_json_from_csv(
                 sep=CSV_SEPARATORS[idx],
                 header=0,
                 index_col=0,
+                na_filter=False,
             )
 
             if len(df.columns) > 0:
@@ -356,7 +357,7 @@ def create_json_from_csv(
                         )
                         losses = losses.set_index("")
                         # Append missing parameter to dataframe
-                        df_copy = df_copy.append(losses, ignore_index=False, sort=False)
+                        df_copy = pd.concat([df_copy, losses])
                     elif i == THERM_LOSSES_ABS:
                         logging.debug(
                             f"You are not using the parameter {THERM_LOSSES_ABS}, which allows considering relative thermal energy losses (Values: Float). This is an advanced setting that most users can ignore."
@@ -371,7 +372,7 @@ def create_json_from_csv(
                         )
                         losses = losses.set_index("")
                         # Append missing parameter to dataframe
-                        df_copy = df_copy.append(losses, ignore_index=False, sort=False)
+                        df_copy = pd.concat([df_copy, losses])
                     else:
                         raise MissingParameterError(
                             f"In file {filename}.csv the parameter {i}"
@@ -442,24 +443,30 @@ def create_json_from_csv(
                             f"or ']' is missing."
                         )
                     else:
-                        # Define list of efficiencies by efficiency,factor,"[1,2]"
-                        value_string = row[column].replace("[", "").replace("]", "")
+                        if "{" in row[column]:
+                            # Define parameter as a list, containing a timeseries, eg "[1,{}]"
+                            value_string = row[column].replace("'", '"')
+                            value_list = json.loads(value_string)
+                            value_list = [str(v) for v in value_list]
+                        else:
+                            # Define parameter as a list eg "[1,2]"
+                            value_string = row[column].replace("[", "").replace("]", "")
 
-                        # find the separator used for the list amongst the CSV_SEPARATORS
-                        list_separator = None
-                        separator_count = 0
-                        for separator in CSV_SEPARATORS:
-                            if separator in value_string:
-                                if value_string.count(separator) > separator_count:
-                                    if separator_count > 0:
-                                        raise ValueError(
-                                            f"The separator of the list for the "
-                                            f"parameter {param} is not unique"
-                                        )
-                                    separator_count = value_string.count(separator)
-                                    list_separator = separator
+                            # find the separator used for the list amongst the CSV_SEPARATORS
+                            list_separator = None
+                            separator_count = 0
+                            for separator in CSV_SEPARATORS:
+                                if separator in value_string:
+                                    if value_string.count(separator) > separator_count:
+                                        if separator_count > 0:
+                                            raise ValueError(
+                                                f"The separator of the list for the "
+                                                f"parameter {param} is not unique"
+                                            )
+                                        separator_count = value_string.count(separator)
+                                        list_separator = separator
 
-                        value_list = value_string.split(list_separator)
+                            value_list = value_string.split(list_separator)
 
                         for item in range(0, len(value_list)):
                             column_dict = conversion(
@@ -645,7 +652,13 @@ def conversion(value, asset_dict, row, param, asset, filename=""):
                     if value.is_integer() is True:
                         value = int(value)
                 except:
-                    value = int(value)
+                    try:
+                        value = int(value)
+                    except:
+                        logging.debug(
+                            f"Of asset {asset} the parameter {param} is defined by {value} of type {type(value)}. This is unexpected-"
+                        )
+
         asset_dict.update({param: {VALUE: value, UNIT: row[UNIT]}})
     return asset_dict
 

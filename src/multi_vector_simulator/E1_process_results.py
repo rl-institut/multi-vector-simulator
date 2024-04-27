@@ -44,6 +44,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_PRODUCTION,
     ENERGY_STORAGE,
     OEMOF_ASSET_TYPE,
+    INVESTMENT_BUS,
     ENERGY_VECTOR,
     KPI,
     KPI_COST_MATRIX,
@@ -299,7 +300,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     add_info_flows(
         evaluated_period=settings[EVALUATED_PERIOD][VALUE],
         dict_asset=dict_asset[INPUT_POWER],
-        flow=power_charge,
+        flow=power_charge.dropna(),
     )
 
     power_discharge = storage_bus[OEMOF_SEQUENCES][
@@ -312,7 +313,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     add_info_flows(
         evaluated_period=settings[EVALUATED_PERIOD][VALUE],
         dict_asset=dict_asset[OUTPUT_POWER],
-        flow=power_discharge,
+        flow=power_discharge.dropna(),
     )
 
     storage_capacity = storage_bus[OEMOF_SEQUENCES][
@@ -325,7 +326,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     add_info_flows(
         evaluated_period=settings[EVALUATED_PERIOD][VALUE],
         dict_asset=dict_asset[STORAGE_CAPACITY],
-        flow=storage_capacity,
+        flow=storage_capacity.dropna(),
         type=STORAGE_CAPACITY,
     )
 
@@ -480,7 +481,7 @@ def get_results(settings, bus_data, dict_asset, asset_group):
     # Check if the parameter/bus is defined for dict_asset
     if parameter_to_be_evaluated not in dict_asset:
         logging.warning(
-            f"The asset {dict_asset[LCOE_ASSET]} of group {asset_group} should contain parameter {parameter_to_be_evaluated}, but it does not."
+            f"The asset {dict_asset[LABEL]} of group {asset_group} should contain parameter {parameter_to_be_evaluated}, but it does not."
         )
 
     # Determine bus that needs to be evaluated
@@ -491,6 +492,17 @@ def get_results(settings, bus_data, dict_asset, asset_group):
         flow_tuple = get_tuple_for_oemof_results(
             dict_asset[LABEL], asset_group, bus_name
         )
+
+        investment_bus = dict_asset.get(INVESTMENT_BUS)
+        if investment_bus is not None:
+            bus_name = investment_bus
+            logging.info(
+                f"The asset {dict_asset[LABEL]} of group {asset_group} had 'investment_bus' set to '{investment_bus}'"
+            )
+            if investment_bus in dict_asset.get(INFLOW_DIRECTION, []):
+                flow_tuple = (bus_name, dict_asset[LABEL])
+            elif investment_bus in dict_asset.get(OUTFLOW_DIRECTION, []):
+                flow_tuple = (dict_asset[LABEL], bus_name)
 
         # Get flow information
         get_flow(
@@ -508,15 +520,27 @@ def get_results(settings, bus_data, dict_asset, asset_group):
             flow_tuple = get_tuple_for_oemof_results(
                 dict_asset[LABEL], asset_group, bus_instance
             )
-            # Get flow information
             get_flow(
                 settings=settings,
                 bus=bus_data[bus_instance],
                 dict_asset=dict_asset,
                 flow_tuple=flow_tuple,
+                multi_bus=bus_instance,
             )
             # Get capacity information
             get_optimal_cap(bus_data[bus_instance], dict_asset, flow_tuple)
+
+        # For assets with multiple output busses
+        if parameter_to_be_evaluated == OUTFLOW_DIRECTION:
+            cumulative_flow = 0
+            for bus_instance in bus_name:
+                cumulative_flow += dict_asset[FLOW][bus_instance]
+            dict_asset[PEAK_FLOW][VALUE] = max(cumulative_flow)
+            dict_asset[PEAK_FLOW][VALUE] = cumulative_flow.mean()
+        elif parameter_to_be_evaluated == INFLOW_DIRECTION:
+            logging.error(
+                "The result processing of asset with multiple inputs might not be done correctly"
+            )
 
 
 def get_parameter_to_be_evaluated_from_oemof_results(asset_group, asset_label):
@@ -628,6 +652,7 @@ def get_optimal_cap(bus, dict_asset, flow_tuple):
 
     """
     if OPTIMIZE_CAP in dict_asset:
+
         if (
             dict_asset[OPTIMIZE_CAP][VALUE] is True
             and (flow_tuple, OEMOF_INVEST) in bus[OEMOF_SCALARS]
@@ -667,10 +692,15 @@ def get_optimal_cap(bus, dict_asset, flow_tuple):
                 optimal_capacity,
             )
         else:
-            dict_asset.update({OPTIMIZED_ADD_CAP: {VALUE: 0, UNIT: dict_asset[UNIT]}})
+            # only set a default optimized add cap value if the key does not exist already
+            # this prevent erasing the value in case of multiple in/output busses
+            if OPTIMIZED_ADD_CAP not in dict_asset:
+                dict_asset.update(
+                    {OPTIMIZED_ADD_CAP: {VALUE: 0, UNIT: dict_asset[UNIT]}}
+                )
 
 
-def get_flow(settings, bus, dict_asset, flow_tuple):
+def get_flow(settings, bus, dict_asset, flow_tuple, multi_bus=None):
     r"""
     Adds flow of `bus` and total flow amongst other information to `dict_asset`.
 
@@ -694,6 +724,9 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
     flow_tuple : tuple
         Entry of the oemof-solph outputs to be evaluated
 
+    multi_bus: str or None
+        The name of the current bus (for asset connected to more than one bus)
+
     Returns
     -------
     Indirectly updates `dict_asset` with the flow of `bus`, the total flow, the annual
@@ -706,17 +739,25 @@ def get_flow(settings, bus, dict_asset, flow_tuple):
     add_info_flows(
         evaluated_period=settings[EVALUATED_PERIOD][VALUE],
         dict_asset=dict_asset,
-        flow=flow,
+        flow=flow.dropna(),
+        bus_name=multi_bus,
     )
+    if multi_bus is None:
+        total_flow = dict_asset[TOTAL_FLOW][VALUE]
+        bus_info = ""
+    else:
+        total_flow = dict_asset[TOTAL_FLOW][multi_bus]
+        bus_info = f" for bus '{multi_bus}'"
 
     logging.debug(
-        "Accessed simulated timeseries of asset %s (total sum: %s)",
+        "Accessed simulated timeseries of asset %s (total sum: %s)%s",
         dict_asset[LABEL],
-        round(dict_asset[TOTAL_FLOW][VALUE]),
+        round(total_flow),
+        bus_info,
     )
 
 
-def add_info_flows(evaluated_period, dict_asset, flow, type=None):
+def add_info_flows(evaluated_period, dict_asset, flow, type=None, bus_name=None):
     r"""
     Adds `flow` and total flow amongst other information to `dict_asset`.
 
@@ -730,6 +771,8 @@ def add_info_flows(evaluated_period, dict_asset, flow, type=None):
         Time series of the flow.
     type: str, default: None
         type of the flow, only exception is "STORAGE_CAPACITY".
+    bus_name: str or None
+        The name of the current bus (for asset connected to more than one bus)
 
     Returns
     -------
@@ -747,7 +790,14 @@ def add_info_flows(evaluated_period, dict_asset, flow, type=None):
     - E1.test_add_info_flows_storage_capacity()
     """
     total_flow = sum(flow)
-    dict_asset.update({FLOW: flow})
+    # import ipdb;ipdb.set_trace()
+    if bus_name is None:
+        dict_asset.update({FLOW: flow})
+    else:
+        if FLOW not in dict_asset:
+            dict_asset.update({FLOW: {bus_name: flow}})
+        else:
+            dict_asset[FLOW][bus_name] = flow
 
     if type == STORAGE_CAPACITY:
         # The oemof-solph "flow" connected to the storage capacity describes the energy stored in the storage asset, not the actual flow. As such, the below parameters are non-sensical, especially TOTAL_FLOW and ANNUAL_TOTAL_FLOW. PEAK_FLOW and AVERAGE_FLOW are, as a consequence, also not captured. Instead, the AVERAGE_SOC is calculated in a later processing step.
@@ -755,17 +805,55 @@ def add_info_flows(evaluated_period, dict_asset, flow, type=None):
             dict_asset.update({parameter: {VALUE: None, UNIT: "NaN"}})
 
     else:
-        dict_asset.update(
-            {
-                TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
-                ANNUAL_TOTAL_FLOW: {
-                    VALUE: total_flow * 365 / evaluated_period,
-                    UNIT: "kWh",
-                },
-                PEAK_FLOW: {VALUE: max(flow), UNIT: "kW"},
-                AVERAGE_FLOW: {VALUE: flow.mean(), UNIT: "kW"},
-            }
-        )
+        if bus_name is None:
+            dict_asset.update(
+                {
+                    TOTAL_FLOW: {VALUE: total_flow, UNIT: "kWh"},
+                    ANNUAL_TOTAL_FLOW: {
+                        VALUE: total_flow * 365 / evaluated_period,
+                        UNIT: "kWh",
+                    },
+                    PEAK_FLOW: {VALUE: max(flow), UNIT: "kW"},
+                    AVERAGE_FLOW: {VALUE: flow.mean(), UNIT: "kW"},
+                }
+            )
+
+        else:
+            if TOTAL_FLOW not in dict_asset:
+                dict_asset.update(
+                    {TOTAL_FLOW: {bus_name: total_flow, VALUE: total_flow, UNIT: "kWh"}}
+                )
+            else:
+                dict_asset[TOTAL_FLOW][bus_name] = total_flow
+                dict_asset[TOTAL_FLOW][VALUE] += total_flow * 365 / evaluated_period
+
+            if ANNUAL_TOTAL_FLOW not in dict_asset:
+                dict_asset.update(
+                    {
+                        ANNUAL_TOTAL_FLOW: {
+                            bus_name: total_flow * 365 / evaluated_period,
+                            VALUE: total_flow * 365 / evaluated_period,
+                            UNIT: "kWh",
+                        }
+                    }
+                )
+            else:
+                dict_asset[ANNUAL_TOTAL_FLOW][bus_name] = (
+                    total_flow * 365 / evaluated_period
+                )
+                dict_asset[ANNUAL_TOTAL_FLOW][VALUE] += (
+                    total_flow * 365 / evaluated_period
+                )
+
+            if PEAK_FLOW not in dict_asset:
+                dict_asset.update({PEAK_FLOW: {bus_name: max(flow), UNIT: "kW"}})
+            else:
+                dict_asset[PEAK_FLOW][bus_name] = max(flow)
+
+            if AVERAGE_FLOW not in dict_asset:
+                dict_asset.update({AVERAGE_FLOW: {bus_name: flow.mean(), UNIT: "kW"}})
+            else:
+                dict_asset[AVERAGE_FLOW][bus_name] = flow.mean()
 
 
 def convert_demand_to_dataframe(dict_values, sector_demands=None):
@@ -1082,9 +1170,7 @@ def convert_costs_to_dataframe(dict_values):
     df_pie_plot = df_pie_plot[costs_needed]
 
     # Add a row with total of each column, except label
-    df_pie_plot = df_pie_plot.append(
-        df_pie_plot.sum(numeric_only=True), ignore_index=True
-    )
+    df_pie_plot = pd.concat([df_pie_plot, df_pie_plot.sum().to_frame().T])
 
     # Add a label for the row holding the sum of each column
     df_pie_plot.iloc[-1, 0] = "Total"

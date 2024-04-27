@@ -22,16 +22,27 @@ import multi_vector_simulator.A0_initialization as initializing
 import multi_vector_simulator.B0_data_input_json as B0
 import multi_vector_simulator.F0_output as F0
 from multi_vector_simulator.cli import main
+
+from multi_vector_simulator.utils.constants import JSON_WITH_RESULTS, CSV_EXT
+
 from multi_vector_simulator.utils.constants_json_strings import (
     PROJECT_DATA,
     SIMULATION_SETTINGS,
     PROJECT_NAME,
     SCENARIO_NAME,
     KPI,
+    KPI_SCALARS_DICT,
+    ANNUITY_TOTAL,
     OPTIMIZED_FLOWS,
+    SIMULATION_RESULTS,
+    LOGS,
+    OBJECTIVE_VALUE,
+    SIMULTATION_TIME,
+    MODELLING_TIME,
 )
 from _constants import (
     EXECUTE_TESTS_ON,
+    TESTS_ON_MASTER,
     TEST_REPO_PATH,
     DICT_PLOTS,
     PDF_REPORT,
@@ -46,6 +57,7 @@ from _constants import (
     TYPE_STR,
     PATH_OUTPUT_FOLDER,
     START_DATE,
+    BENCHMARK_TEST_INPUT_FOLDER,
 )
 
 PARSER = initializing.mvs_arg_parser()
@@ -195,6 +207,73 @@ class TestPDFReportCreation:
         """Run the simulation with -pdf option to make sure the pdf file is generated """
         main()
         assert os.path.exists(os.path.join(OUTPUT_PATH, PDF_REPORT)) is True
+
+    def teardown_method(self):
+        """ """
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+
+
+class TestLogCreation:
+    def setup_method(self):
+        """ """
+        if os.path.exists(OUTPUT_PATH):
+            shutil.rmtree(OUTPUT_PATH, ignore_errors=True)
+
+    test = "objective_value_exception_equal_annuity_total"
+    test_folder = os.path.join("tests", BENCHMARK_TEST_INPUT_FOLDER, test)
+
+    @pytest.mark.skipif(
+        EXECUTE_TESTS_ON not in (TESTS_ON_MASTER),
+        reason="Benchmark test deactivated, set env variable "
+        "EXECUTE_TESTS_ON to 'master' to run this test",
+    )
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=PARSER.parse_args(
+            [
+                "-f",
+                "-log",
+                "warning",
+                "-o",
+                OUTPUT_PATH,
+                "-i",
+                test_folder,
+                "-ext",
+                CSV_EXT,
+            ]
+        ),
+    )
+    def test_parse_simulation_log(self, m_args):
+        main()
+        json_with_results = B0.load_json(
+            os.path.join(OUTPUT_PATH, JSON_WITH_RESULTS + ".json"),
+            flag_missing_values=False,
+        )
+        assert (
+            SIMULATION_RESULTS in json_with_results
+        ), f"There should be a subcategory {SIMULATION_RESULTS} in the output json file, including amongst others the objective value and the log messages. {SIMULATION_RESULTS} is missing."
+        assert (
+            LOGS in json_with_results[SIMULATION_RESULTS]
+        ), f"In {SIMULATION_RESULTS} of the json results, the log messages should be compiled."
+        for result in [OBJECTIVE_VALUE, SIMULTATION_TIME, MODELLING_TIME]:
+            assert (
+                result in json_with_results[SIMULATION_RESULTS]
+            ), f"The result {result} is not included in the output json file in category {SIMULATION_RESULTS}."
+        assert (
+            KPI in json_with_results
+        ), f"Subcategory {KPI} should be in json result file."
+        assert (
+            KPI_SCALARS_DICT in json_with_results[KPI]
+        ), f"{KPI_SCALARS_DICT} should be in subcategory {KPI} of the json result file."
+        assert (
+            ANNUITY_TOTAL in json_with_results[KPI][KPI_SCALARS_DICT]
+        ), f"{ANNUITY_TOTAL} should be in {KPI_SCALARS_DICT}, subcategory {KPI} of the json result file."
+        obj = json_with_results[SIMULATION_RESULTS][OBJECTIVE_VALUE]
+        annuity_total = json_with_results[KPI][KPI_SCALARS_DICT][ANNUITY_TOTAL]
+        assert annuity_total == pytest.approx(
+            obj, rel=1e-3
+        ), f"The {OBJECTIVE_VALUE} ({obj}) should be equal to the {ANNUITY_TOTAL} ({annuity_total}) in this specific case."
 
     def teardown_method(self):
         """ """

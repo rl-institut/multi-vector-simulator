@@ -24,7 +24,7 @@ import timeit
 import warnings
 
 from oemof.solph import processing
-import oemof.solph as solph
+from oemof import solph
 
 import multi_vector_simulator.D1_model_components as D1
 import multi_vector_simulator.D2_model_constraints as D2
@@ -33,11 +33,13 @@ from multi_vector_simulator.utils.constants import (
     PATH_OUTPUT_FOLDER,
     ES_GRAPH,
     PATHS_TO_PLOTS,
+    PLOT_SANKEY,
     PLOTS_ES,
     LP_FILE,
 )
 from multi_vector_simulator.utils.constants_json_strings import (
     ENERGY_BUSSES,
+    ENERGY_VECTOR,
     OEMOF_ASSET_TYPE,
     ACCEPTED_ASSETS_FOR_ASSET_GROUPS,
     OEMOF_GEN_STORAGE,
@@ -45,6 +47,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     OEMOF_SOURCE,
     OEMOF_TRANSFORMER,
     OEMOF_BUSSES,
+    OEMOF_ExtractionTurbineCHP,
     VALUE,
     SIMULATION_SETTINGS,
     LABEL,
@@ -63,7 +66,7 @@ from multi_vector_simulator.utils.exceptions import (
 )
 
 
-def run_oemof(dict_values, save_energy_system_graph=False):
+def run_oemof(dict_values, save_energy_system_graph=False, return_les=False):
     """
     Creates and solves energy system model generated from excel template inputs.
     Each component is included by calling its constructor function in D1_model_components.
@@ -74,6 +77,12 @@ def run_oemof(dict_values, save_energy_system_graph=False):
         Includes all dictionary values describing the whole project, including costs,
         technical parameters and components. In C0_data_processing, each component was attributed
         with a certain in/output bus.
+
+    save_energy_system_graph: bool
+        if set to True, saves a local copy of the energy system's graph
+
+    return_les: bool
+        if set to True, the return also includes the local_energy_system in third position
 
     Returns
     -------
@@ -105,9 +114,16 @@ def run_oemof(dict_values, save_energy_system_graph=False):
         dict_values, model, local_energy_system
     )
 
+    model_building.plot_sankey_diagramm(
+        dict_values, model, save_energy_system_graph=save_energy_system_graph
+    )
+
     timer.stop(dict_values, start)
 
-    return results_meta, results_main
+    if return_les is True:
+        return results_meta, results_main, local_energy_system
+    else:
+        return results_meta, results_main
 
 
 class model_building:
@@ -126,7 +142,8 @@ class model_building:
         """
         logging.info("Initializing oemof simulation.")
         model = solph.EnergySystem(
-            timeindex=dict_values[SIMULATION_SETTINGS][TIME_INDEX]
+            timeindex=dict_values[SIMULATION_SETTINGS][TIME_INDEX],
+            infer_last_interval=True,
         )
 
         # this dictionary will include all generated oemof objects
@@ -136,6 +153,7 @@ class model_building:
             OEMOF_SOURCE: {},
             OEMOF_TRANSFORMER: {},
             OEMOF_GEN_STORAGE: {},
+            OEMOF_ExtractionTurbineCHP: {},
         }
 
         return model, dict_model
@@ -162,7 +180,12 @@ class model_building:
 
         # Busses have to be defined first
         for bus in dict_values[ENERGY_BUSSES]:
-            D1.bus(model, dict_values[ENERGY_BUSSES][bus][LABEL], **dict_model)
+            D1.bus(
+                model,
+                dict_values[ENERGY_BUSSES][bus][LABEL],
+                energy_vector=dict_values[ENERGY_BUSSES][bus][ENERGY_VECTOR],
+                **dict_model,
+            )
 
         # Adding step by step all assets defined within the asset groups
         for asset_group in ACCEPTED_ASSETS_FOR_ASSET_GROUPS:
@@ -176,6 +199,8 @@ class model_building:
                             D1.transformer(
                                 model, dict_values[asset_group][asset], **dict_model
                             )
+                        elif type == OEMOF_ExtractionTurbineCHP:
+                            D1.chp(model, dict_values[asset_group][asset], **dict_model)
                         elif type == OEMOF_SINK:
                             D1.sink(
                                 model, dict_values[asset_group][asset], **dict_model
@@ -237,6 +262,34 @@ class model_building:
             logging.debug("Created graph of the energy system model.")
 
             graph.render()
+
+    def plot_sankey_diagramm(dict_values, model, save_energy_system_graph=False):
+        """
+        Prepare a sankey diagram of the simulated energy model
+
+        Parameters
+        ----------
+        dict_values: dict
+            All simulation inputs
+
+         model: `oemof.solph.network.EnergySystem`
+            oemof-solph object for energy system model
+
+        save_energy_system_graph: bool
+            if True, save the graph in the mvs output folder
+            Default: False
+
+        Returns
+        -------
+
+        """
+        if save_energy_system_graph is True:
+            from multi_vector_simulator.F1_plotting import ESGraphRenderer
+
+            graph = ESGraphRenderer(model)
+            dict_values[PATHS_TO_PLOTS][PLOT_SANKEY] = graph.sankey(
+                model.results["main"]
+            )
 
     def store_lp_file(dict_values, local_energy_system):
         """

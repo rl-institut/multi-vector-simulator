@@ -19,6 +19,74 @@ Here is a template for new release sections
 -
 ```
 
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
+## [1.1.0] - 2024-04-27
+
+### Added
+- Benchmark test (`tests/benchmark_test_inputs/objective_value_exception_equal_annuity`) for in `F0_output.parse_simulation_log` and data stored to `SIMULATION_RESULTS` as well as `OBJECTIVE_VALUE` (#901)
+- Constants `BENCHMARK_TEST_INPUT_FOLDER` and `BENCHMARK_TEST_OUTPUT_FOLDER` in `tests/_constants.py` (#901)
+- Tests `E3.test_add_total_consumption_from_provider_electricity_equivalent_two_providers_one_energy_carrier` and `E3.test_add_total_feedin_electricity_equivalent_two_providers_one_energy_carrier`(#932)
+- Add the argument `return_les` to the function `D0.run_oemof` to return the energy system if set to `True` (#923)
+- Save the content of the lp file into a string in the `dict_values` under `SIMULATION_SETTINGS->OUTPUT_LP_FILE` in server mode (#923)
+- Set `OUTPUT_LP_FILE` value to be by default `False` when coming from EPA in server mode (#923)
+- Function `server.run_sensitivity_analysis_step` to perform one step of a sensitivity analysis (#936)
+- Function `utils.nested_dict_crawler` to return mapping of path within a nested dict to the keys at the lowest nested level (#936)
+- Test `test_utils.TestAccessKPIs` to test the nested dict utils functions (#936)
+- `sankey` method to the `ESGraphRenderer` class to return a sankey diagram (#935)
+- `plot_sankey_diagramm` function in `D0_modelling_and_optimization.py` to add the dict of the sankey diagram (#935)
+- `ready_sankey_diagram` in `F2_autoreport.py` to add sankey diagram to output and report (#935)
+- "maximum_add_cap" to the keys returned to EPA after simulating got production assets (#939)
+- `PARAMETER_DOC` in `utils` can be used to get information about a parameter directly from the csv file `docs/MVS_parameters_list.csv` (#956)
+- Now oemof-solph ExtractionTurbine CHP component can be simulated (only tested from the json input) (#952)
+- The heat pump and chp components can now be simulated with MVS although no explicit support/documentation is present for running from the command line (#954)
+- Saving the raw oemof result in a pandas Dataframe with multi index (#958)
+- Raise error for wrongly formatted emission factor (#965)
+
+### Changed
+- `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
+- `input_template/csv_elements`: Added missing parameters and generalized units (#904)
+- `CONTRIBUTING.md` according to last lessons learnt (#904)
+- Set numpy version to lower or equal than `1.19.4` (#924)
+- `F2.create_app()` to specify tab name of Dash report to `scenario_name` (`scenario_id`) instead of `Dash` (#934)
+- Bugfix in functions `test_add_total_consumption_from_provider_electricity_equivalent` and `E3.test_add_total_feedin_electricity_equivalent` (#932)
+- `version.py`: Version number increased to 1.0.2dev, so simulations run before and after this fix can easily be identified (in the autoreport) (#932)
+- Enable capacity optimization for storage assets in the epa (#936)
+- Make the `utils` function `get_nested_value`and `set_nested_value` raise a Key error with a traceback indicating where in the nested dict this key was missing to help debugging (#936)
+- When the user ask for images to be produced (`-pdf` or `-png` options) a sankey diagram is added to the report and to the `dict_values` under `[PATH_TO_PLOTS][PLOT_SANKEY]` (#935)
+- Update requirements for numpy (v 1.21.0 or greater) and for dash (v 2.3.1 or greater) (#938)
+- `OPTIMIZED_ADD_CAP` replaced by "optimized_add_cap" in the assets keys returned to EPA after simulating (#939)
+- The if statement for adapting `MAXIMUM_CAP` for non-dispatchable production assets is now based on the value of `DISPATCHABILITY` and not on the existence of the key `FILENAME` in the `asset_dict` (#939)
+- The default values for the constraints are now located in `src/constants.py` under the variable `DEFAULT_CONSTRAINT_VALUES` (#953)
+- When a required parameter is missing its default value, defined in `docs/MVS_parameters_list.csv`, is used instead of raising an error (#956)
+- If an asset has 2 output busses, the output flow of only one of the busses is provided using its name `asset[FLOW][bus_name]` (#952)
+- The user can choose on which bus the investment will take place (useful for transformers with 2 inputs and 1 outputs or 1 input and 2 outputs) (#954)
+- energy_price and feedin of DSO (providers) can be provided as timeseries (#954)
+- The peak-demand pricing cost is applied to the consumption of DSO only (before was split between consumption and feedin) (#958)
+- Upgrade to `oemof-solph==0.5.1` (#965)
+
+### Removed
+- Input timeseries is now not returned to epa in `utils.data_parser.py` (#936)
+
+### Fixed
+- `OBJECTIVE_VALUE`, `SIMULTATION_TIME`, `MODELLING_TIME` now included in the `json_with_results.json` (#901)
+- Missing parameters in `input_template/csv_elements` (#904)
+- Confusing Dash report tab names (#933)
+- Calculation of `total_feedin` and `total_consumption_from_providers`, where multiple providers of one energy carrier were not aggregated correctly (#931)
+- Used `pandas.concat` instead of `DataFrame.append` to add rows to a `pandas.DataFrame` instance to suppress UserWarning (#937)
+- Add missing file for test `test_F0_output.TestLogCreation.test_parse_simulation_log` (#937)
+- Transformers can have multiple input or output busses (tested in `tests/test_D1_model_components` by `test_transformer_optimize_cap_multiple_output_busses_multiple_inst_cap`, `test_transformer_optimize_cap_multiple_output_busses_multiple_max_add_cap`, `test_transformer_fix_cap_multiple_output_busses_multiple_inst_cap` and in `tests/test_benchmark_special_features` by `test_benchmark_feature_parameters_as_timeseries_multiple_inputs`)(#949)
+- The constraints are not all set to default values if only one constraint is missing, only the missing constraint is set to default value (#953)
+- If the age of an asset is such that it should be replaced on the project's last year, we do not take it into account as the resell price would be deduced anyway (#965)
+- The test `test_c2_economic_functions.py::test_get_replacement_costs_one_reinvestment_age_asset_equal_asset_lifetime` was added to account for a field usecase and a solution was provided (#966)
+
+
 ## [1.0.0] - 2021-05-31
 
 ### Added
