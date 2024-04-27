@@ -22,6 +22,14 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Fixed
+
+## [1.1.0] - 2024-04-27
+
+### Added
 - Benchmark test (`tests/benchmark_test_inputs/objective_value_exception_equal_annuity`) for in `F0_output.parse_simulation_log` and data stored to `SIMULATION_RESULTS` as well as `OBJECTIVE_VALUE` (#901)
 - Constants `BENCHMARK_TEST_INPUT_FOLDER` and `BENCHMARK_TEST_OUTPUT_FOLDER` in `tests/_constants.py` (#901)
 - Tests `E3.test_add_total_consumption_from_provider_electricity_equivalent_two_providers_one_energy_carrier` and `E3.test_add_total_feedin_electricity_equivalent_two_providers_one_energy_carrier`(#932)
