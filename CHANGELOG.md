@@ -76,6 +76,8 @@ Here is a template for new release sections
 - Transformers can have multiple input or output busses (tested in `tests/test_D1_model_components` by `test_transformer_optimize_cap_multiple_output_busses_multiple_inst_cap`, `test_transformer_optimize_cap_multiple_output_busses_multiple_max_add_cap`, `test_transformer_fix_cap_multiple_output_busses_multiple_inst_cap` and in `tests/test_benchmark_special_features` by `test_benchmark_feature_parameters_as_timeseries_multiple_inputs`)(#949)
 - The constraints are not all set to default values if only one constraint is missing, only the missing constraint is set to default value (#953)
 - If the age of an asset is such that it should be replaced on the project's last year, we do not take it into account as the resell price would be deduced anyway (#965)
+- The test `test_c2_economic_functions.py::test_get_replacement_costs_one_reinvestment_age_asset_equal_asset_lifetime` was added to account for a field usecase and a solution was provided (#966)
+
 
 ## [1.0.0] - 2021-05-31
 

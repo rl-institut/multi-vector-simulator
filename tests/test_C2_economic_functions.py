@@ -185,6 +185,18 @@ def test_get_replacement_costs_no_reinvestment_residual():
     assert replacement_costs == exp
 
 
+def test_get_replacement_costs_one_reinvestment_age_asset_equal_asset_lifetime():
+    replacement_costs = C2.get_replacement_costs(
+        age_of_asset=10,
+        project_lifetime=20,
+        asset_lifetime=10,
+        first_time_investment=550,
+        discount_factor=0.1,
+    )
+    exp = 762.0488091862422
+    assert replacement_costs == exp
+
+
 def test_present_value_from_annuity():
     """
 
