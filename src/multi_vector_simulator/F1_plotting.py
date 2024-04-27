@@ -31,7 +31,7 @@ except ModuleNotFoundError:
 
 import graphviz
 import oemof
-import oemof.solph as solph
+from oemof import solph
 
 from multi_vector_simulator.utils.constants import (
     PROJECT_DATA,
@@ -261,17 +261,17 @@ class ESGraphRenderer:
 
         # draw a node for each of the network's component. The shape depends on the component's type
         for nd in self.energy_system.nodes:
-            if isinstance(nd, oemof.solph.network.Bus):
+            if isinstance(nd, oemof.network.Bus):
                 self.add_bus(nd.label)
                 # keep the bus reference for drawing edges later
                 self.busses.append(nd)
-            elif isinstance(nd, oemof.solph.network.Sink):
+            elif isinstance(nd, oemof.network.Sink):
                 self.add_sink(nd.label)
-            elif isinstance(nd, oemof.solph.network.Source):
+            elif isinstance(nd, oemof.network.Source):
                 self.add_source(nd.label)
-            elif isinstance(nd, oemof.solph.network.Transformer):
+            elif isinstance(nd, oemof.network.Transformer):
                 self.add_transformer(nd.label)
-            elif isinstance(nd, oemof.solph.components.GenericStorage):
+            elif isinstance(nd, solph.components.GenericStorage):
                 self.add_storage(nd.label)
             else:
                 logging.warning(
@@ -372,11 +372,11 @@ class ESGraphRenderer:
         b: `oemof.solph.network.Node`
             An oemof node (usually a Bus or a Component)
         """
-        if not isinstance(a, oemof.solph.network.Bus):
+        if not isinstance(a, oemof.network.Bus):
             a = fixed_width_text(a.label, char_num=self.txt_width)
         else:
             a = a.label
-        if not isinstance(b, oemof.solph.network.Bus):
+        if not isinstance(b, oemof.network.Bus):
             b = fixed_width_text(b.label, char_num=self.txt_width)
         else:
             b = b.label
@@ -404,7 +404,7 @@ class ESGraphRenderer:
 
         # draw a node for each of the network's component. The shape depends on the component's type
         for nd in self.energy_system.nodes:
-            if isinstance(nd, oemof.solph.network.Bus):
+            if isinstance(nd, oemof.network.Bus):
 
                 # keep the bus reference for drawing edges later
                 bus = nd

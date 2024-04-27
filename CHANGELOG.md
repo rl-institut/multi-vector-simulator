@@ -39,6 +39,7 @@ Here is a template for new release sections
 - Now oemof-solph ExtractionTurbine CHP component can be simulated (only tested from the json input) (#952)
 - The heat pump and chp components can now be simulated with MVS although no explicit support/documentation is present for running from the command line (#954)
 - Saving the raw oemof result in a pandas Dataframe with multi index (#958)
+- Raise error for wrongly formatted emission factor (#965)
 
 ### Changed
 - `F0_output.parse_simulation_log`, so that `SIMULATION_RESULTS` are not overwritten anymore (#901)
@@ -60,6 +61,7 @@ Here is a template for new release sections
 - The user can choose on which bus the investment will take place (useful for transformers with 2 inputs and 1 outputs or 1 input and 2 outputs) (#954)
 - energy_price and feedin of DSO (providers) can be provided as timeseries (#954)
 - The peak-demand pricing cost is applied to the consumption of DSO only (before was split between consumption and feedin) (#958)
+- Upgrade to `oemof-solph==0.5.1` (#965)
 
 ### Removed
 - Input timeseries is now not returned to epa in `utils.data_parser.py` (#936)
@@ -73,6 +75,7 @@ Here is a template for new release sections
 - Add missing file for test `test_F0_output.TestLogCreation.test_parse_simulation_log` (#937)
 - Transformers can have multiple input or output busses (tested in `tests/test_D1_model_components` by `test_transformer_optimize_cap_multiple_output_busses_multiple_inst_cap`, `test_transformer_optimize_cap_multiple_output_busses_multiple_max_add_cap`, `test_transformer_fix_cap_multiple_output_busses_multiple_inst_cap` and in `tests/test_benchmark_special_features` by `test_benchmark_feature_parameters_as_timeseries_multiple_inputs`)(#949)
 - The constraints are not all set to default values if only one constraint is missing, only the missing constraint is set to default value (#953)
+- If the age of an asset is such that it should be replaced on the project's last year, we do not take it into account as the resell price would be deduced anyway (#965)
 
 ## [1.0.0] - 2021-05-31
 

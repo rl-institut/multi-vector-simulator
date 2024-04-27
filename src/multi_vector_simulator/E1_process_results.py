@@ -300,7 +300,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     add_info_flows(
         evaluated_period=settings[EVALUATED_PERIOD][VALUE],
         dict_asset=dict_asset[INPUT_POWER],
-        flow=power_charge,
+        flow=power_charge.dropna(),
     )
 
     power_discharge = storage_bus[OEMOF_SEQUENCES][
@@ -313,7 +313,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     add_info_flows(
         evaluated_period=settings[EVALUATED_PERIOD][VALUE],
         dict_asset=dict_asset[OUTPUT_POWER],
-        flow=power_discharge,
+        flow=power_discharge.dropna(),
     )
 
     storage_capacity = storage_bus[OEMOF_SEQUENCES][
@@ -326,7 +326,7 @@ def get_storage_results(settings, storage_bus, dict_asset):
     add_info_flows(
         evaluated_period=settings[EVALUATED_PERIOD][VALUE],
         dict_asset=dict_asset[STORAGE_CAPACITY],
-        flow=storage_capacity,
+        flow=storage_capacity.dropna(),
         type=STORAGE_CAPACITY,
     )
 
@@ -739,7 +739,7 @@ def get_flow(settings, bus, dict_asset, flow_tuple, multi_bus=None):
     add_info_flows(
         evaluated_period=settings[EVALUATED_PERIOD][VALUE],
         dict_asset=dict_asset,
-        flow=flow,
+        flow=flow.dropna(),
         bus_name=multi_bus,
     )
     if multi_bus is None:

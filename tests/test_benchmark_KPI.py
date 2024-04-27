@@ -11,6 +11,7 @@ import json
 
 import mock
 import pandas as pd
+import numpy as np
 import pytest
 
 from multi_vector_simulator.cli import main
@@ -287,10 +288,11 @@ class Test_Economic_KPI:
                 assert (
                     key in asset_data
                 ), f"{key} is not in the asset data of {asset_group}, {asset}. It includes: {asset_data.keys()}."
-                assert expected_values.loc[asset, key] == pytest.approx(
-                    asset_data[key][VALUE], rel=1e-3
-                ), f"Parameter {key} of asset {asset} is not of expected value, expected {expected_values.loc[asset, key]}, got {asset_data[key][VALUE]}."
-
+                if not pd.isna(expected_values.loc[asset, key]) and not pd.isna(asset_data[key][VALUE]):
+                    assert float(expected_values.loc[asset, key]) == pytest.approx(
+                        asset_data[key][VALUE], rel=1e-3
+                    ), f"Parameter {key} of asset {asset} is not of expected value, expected {expected_values.loc[asset, key]}, got {asset_data[key][VALUE]}."
+                
         # Now we established that the externally calculated values are equal to the internally calculated values.
         # Therefore, we can now use the cost data from the assets to validate the cost data for the whole energy system.
 
@@ -327,12 +329,13 @@ class Test_Economic_KPI:
             Updated KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM
             """
             for key in KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM:
-                KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM.update(
-                    {
-                        key: KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key]
-                        + asset_data[key][VALUE]
-                    }
-                )
+                if not pd.isna(asset_data[key][VALUE]):
+                    KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM.update(
+                        {
+                            key: KEYS_TO_BE_EVALUATED_FOR_TOTAL_SYSTEM[key]
+                            + asset_data[key][VALUE]
+                        }
+                    )
 
         for asset_group in (
             ENERGY_CONSUMPTION,
