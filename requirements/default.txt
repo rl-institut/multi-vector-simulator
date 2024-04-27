@@ -5,3 +5,4 @@ kaleido>=0.0.2
 openpyxl>=3.0.5
 xlrd==1.2.0
 oemof.solph==0.5.1
+oemof.network==0.5.0a5
