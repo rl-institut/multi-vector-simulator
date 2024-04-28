@@ -12,7 +12,7 @@ Module E1 processes the oemof results.
 import logging
 import copy
 import pandas as pd
-
+from multi_vector_simulator.utils.helpers import reducable_demand_name
 from multi_vector_simulator.utils.constants import TYPE_NONE, TOTAL_FLOW
 from multi_vector_simulator.utils.constants_json_strings import (
     ECONOMIC_DATA,
@@ -70,6 +70,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     FIX_COST,
     LIFETIME_PRICE_DISPATCH,
     AVERAGE_SOC,
+    TYPE_ASSET,
 )
 
 # Oemof.solph variables
@@ -734,8 +735,21 @@ def get_flow(settings, bus, dict_asset, flow_tuple, multi_bus=None):
     the flow ('average_flow').
 
     """
-    flow = bus[OEMOF_SEQUENCES][(flow_tuple, OEMOF_FLOW)]
-    flow = cut_below_micro(flow, dict_asset[LABEL] + FLOW)
+
+    if dict_asset.get(TYPE_ASSET) == "reducable_demand":
+        flow_tuple = (flow_tuple[0], reducable_demand_name(dict_asset[LABEL]))
+        flow = bus[OEMOF_SEQUENCES][(flow_tuple, OEMOF_FLOW)]
+        flow = cut_below_micro(flow, dict_asset[LABEL] + FLOW)
+        flow_tuple = (flow_tuple[0], reducable_demand_name(dict_asset[LABEL], critical=True))
+
+        flow_crit = bus[OEMOF_SEQUENCES][(flow_tuple, OEMOF_FLOW)]
+        flow_crit = cut_below_micro(flow_crit, dict_asset[LABEL] + FLOW)
+        flow = flow + flow_crit
+
+    else:
+        flow = bus[OEMOF_SEQUENCES][(flow_tuple, OEMOF_FLOW)]
+        flow = cut_below_micro(flow, dict_asset[LABEL] + FLOW)
+
     add_info_flows(
         evaluated_period=settings[EVALUATED_PERIOD][VALUE],
         dict_asset=dict_asset,

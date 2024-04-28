@@ -47,6 +47,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MAXIMUM_ADD_CAP,
     MAXIMUM_ADD_CAP_NORMALIZED,
     DISPATCHABILITY,
+    TYPE_ASSET,
     OEMOF_ASSET_TYPE,
     OEMOF_GEN_STORAGE,
     OEMOF_SINK,
@@ -57,8 +58,13 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EMISSION_FACTOR,
     BETA,
     INVESTMENT_BUS,
+    REDUCABLE_DEMAND,
 )
-from multi_vector_simulator.utils.helpers import get_item_if_list, get_length_if_list
+from multi_vector_simulator.utils.helpers import (
+    get_item_if_list,
+    get_length_if_list,
+    reducable_demand_name,
+)
 from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
     WrongParameterFormatError,
@@ -354,7 +360,10 @@ def sink(model, dict_asset, **kwargs):
 
     """
     if TIMESERIES in dict_asset:
-        sink_non_dispatchable(model, dict_asset, **kwargs)
+        if dict_asset.get(TYPE_ASSET) == REDUCABLE_DEMAND:
+            sink_demand_reduction(model, dict_asset, **kwargs)
+        else:
+            sink_non_dispatchable(model, dict_asset, **kwargs)
 
     else:
         sink_dispatchable_optimize(model, dict_asset, **kwargs)
@@ -641,6 +650,23 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
     else:
         # single input and single output
 
+        min_load_opts = {"min": 0, "max": 1}
+        min_load = dict_asset.get(SOC_MIN, None)
+        if min_load is not None:
+            if min_load[VALUE] != 0:
+                logging.warning(
+                    f"Minimal load of {min_load[VALUE]} was set to asset {dict_asset[LABEL]}"
+                )
+            min_load_opts["min"] = min_load[VALUE]
+        max_load = dict_asset.get(SOC_MAX, None)
+        if max_load is not None:
+            if max_load[VALUE] != 1:
+                logging.warning(
+                    f"Maximal load of {max_load[VALUE]} was set to asset {dict_asset[LABEL]}"
+                )
+
+            min_load_opts["max"] = max_load[VALUE]
+
         check_list_parameters_transformers_single_input_single_output(
             dict_asset, model.timeindex.size
         )
@@ -650,6 +676,7 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION]]: solph.Flow(
                 nominal_value=dict_asset[INSTALLED_CAP][VALUE],
                 variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+                **min_load_opts,
             )
         }
         efficiencies = {
@@ -691,10 +718,14 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
     missing_dispatch_prices_or_efficiencies = None
 
     investment_bus = dict_asset.get(INVESTMENT_BUS)
+    invest_opts = {}
+    if dict_asset[MAXIMUM_ADD_CAP][VALUE] is not None:
+        invest_opts["maximum"] = dict_asset[MAXIMUM_ADD_CAP][VALUE]
+
     investment = solph.Investment(
         ep_costs=dict_asset[SIMULATION_ANNUITY][VALUE],
-        maximum=dict_asset[MAXIMUM_ADD_CAP][VALUE],
         existing=dict_asset[INSTALLED_CAP][VALUE],
+        **invest_opts,
     )
 
     # check if the transformer has multiple input or multiple output busses
@@ -801,6 +832,32 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
 
         # single input and single output
 
+        min_load_opts = {"min": 0, "max": 1}
+        min_load = dict_asset.get(SOC_MIN, None)
+        if min_load is not None:
+            if min_load[VALUE] != 0:
+                logging.warning(
+                    f"Minimal load of {min_load[VALUE]} was set to asset {dict_asset[LABEL]}"
+                )
+                min_load_opts["nonconvex"] = solph.NonConvex()
+            min_load_opts["min"] = min_load[VALUE]
+
+        max_load = dict_asset.get(SOC_MAX, None)
+        if max_load is not None:
+            if max_load[VALUE] != 1:
+                logging.warning(
+                    f"Maximal load of {max_load[VALUE]} was set to asset {dict_asset[LABEL]}"
+                )
+                min_load_opts["nonconvex"] = solph.NonConvex()
+
+            min_load_opts["max"] = max_load[VALUE]
+
+        if "nonconvex" in min_load_opts:
+            if invest_opts.get("maximum", None) is None:
+                raise ValueError(
+                    f"You need to provide a maximum_capacity to the asset {dict_asset[LABEL]}, if you set a minimal/maximal load different from 0/1"
+                )
+
         if investment_bus is None:
             investment_bus = dict_asset[OUTFLOW_DIRECTION]
 
@@ -826,6 +883,7 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
                 kwargs[OEMOF_BUSSES][bus]: solph.Flow(
                     investment=investment if bus == investment_bus else None,
                     variable_costs=dict_asset[DISPATCH_PRICE][VALUE],
+                    **min_load_opts,
                 )
             }
 
@@ -842,7 +900,6 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
             outputs=outputs,
             conversion_factors=efficiencies,
         )
-
         model.add(t)
         kwargs[OEMOF_TRANSFORMER].update({dict_asset[LABEL]: t})
 
@@ -1309,6 +1366,86 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     kwargs[OEMOF_SINK].update({dict_asset[LABEL]: sink_demand})
     logging.debug(
         f"Added: Non-dispatchable sink {dict_asset[LABEL]} to bus {dict_asset[INFLOW_DIRECTION]}"
+    )
+
+
+def sink_demand_reduction(model, dict_asset, **kwargs):
+    r"""
+    Defines a non dispatchable sink to serve critical and non-critical demand.
+
+    See :py:func:`~.sink` for more information, including parameters.
+
+    Notes
+    -----
+    Tested with:
+    - test_sink_non_dispatchable_single_input_bus()
+    - test_sink_non_dispatchable_multiple_input_busses()
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the sink object.
+
+    """
+    demand_reduction_factor = 1 - dict_asset[EFFICIENCY][VALUE]
+    tot_demand = dict_asset[TIMESERIES]
+    non_critical_demand_ts = tot_demand * demand_reduction_factor
+    non_critical_demand_peak = non_critical_demand_ts.max()
+    if non_critical_demand_peak == 0:
+        max_non_critical = 1
+    else:
+        max_non_critical = non_critical_demand_ts / non_critical_demand_peak
+    critical_demand_ts = tot_demand * dict_asset[EFFICIENCY][VALUE]
+
+    # check if the sink has multiple input busses
+    if isinstance(dict_asset[INFLOW_DIRECTION], list):
+        raise (
+            ValueError(
+                f"The reducable demand {dict_asset[LABEL]} does not support multiple input busses"
+            )
+        )
+        # inputs_noncritical = {}
+        # inputs_critical = {}
+        # index = 0
+        # for bus in dict_asset[INFLOW_DIRECTION]:
+        #     inputs_critical[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
+        #         fix=dict_asset[TIMESERIES], nominal_value=1
+        #     )
+        #     index += 1
+    else:
+        inputs_noncritical = {
+            kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
+                min=0,
+                max=max_non_critical,
+                nominal_value=non_critical_demand_peak,
+                variable_costs=-1e-15,
+            )
+        }
+        inputs_critical = {
+            kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
+                fix=critical_demand_ts, nominal_value=1
+            )
+        }
+
+    non_critical_demand = solph.components.Sink(
+        label=reducable_demand_name(dict_asset[LABEL]), inputs=inputs_noncritical,
+    )
+    critical_demand = solph.components.Sink(
+        label=reducable_demand_name(dict_asset[LABEL], critical=True),
+        inputs=inputs_critical,
+    )
+
+    # create and add demand sink and critical demand sink
+
+    model.add(critical_demand)
+    model.add(non_critical_demand)
+    kwargs[OEMOF_SINK].update(
+        {reducable_demand_name(dict_asset[LABEL]): non_critical_demand}
+    )
+    kwargs[OEMOF_SINK].update(
+        {reducable_demand_name(dict_asset[LABEL], critical=True): critical_demand}
+    )
+    logging.debug(
+        f"Added: Reducable Non-dispatchable sink {dict_asset[LABEL]} to bus {dict_asset[INFLOW_DIRECTION]}"
     )
 
 

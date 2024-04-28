@@ -23,7 +23,12 @@ Here is a template for new release sections
 
 ### Added
 
+- Introduce reducable demand. It should be listed within sinks, and provided an efficiency (number between 0 and 1). This efficiency correspond to the percent of the demand which must be provided (critical demand). The oemof-solph sinks which models the  non-critical part of the demand has very small variable_costs such that it should not influence the costs calculations but should be fulfilled rather than dumping energy into excess sinks. Developed for the server version. (#969)
+
+
 ### Changed
+
+- Add costs to excess sinks of busses. If the dictionary containing the information about the bus contains a key "price", its value will be applied to the variable costs of the sink (unit of the price is currency/energy unit, default currency/kWh). Developed for the server version. (#969)
 
 ### Fixed
 
