@@ -160,7 +160,9 @@ class OemofBusResults(pd.DataFrame):  # real results
             ts_index = pd.to_datetime(js["index"][:-1], unit="ms")
             investments = df.iloc[-1]
             ts_df.index = ts_index
-
+        for extra_var in ["status", "status_nominal"]:
+            if extra_var in ts_df:
+                ts_df.drop(extra_var, axis=1, inplace=True)
         super().__init__(
             data=ts_df.T.to_dict(orient="split")["data"],
             index=mindex,
