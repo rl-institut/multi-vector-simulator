@@ -4,6 +4,7 @@ In this module the tests run over whole simulation from main, not just single fu
 What should differ between the different functions is the input file
 
 """
+
 import argparse
 import os
 import shutil

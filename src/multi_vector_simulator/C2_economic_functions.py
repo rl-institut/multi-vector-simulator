@@ -13,6 +13,7 @@ Functionalities:
 - calculate present costs based on annuity
 - calculate effective fuel price cost, in case there is a annual fuel price change (this functionality still has to be checked in this module)
 """
+
 import logging
 import pandas as pd
 
@@ -25,6 +26,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     UNIT,
     LIFETIME_PRICE_DISPATCH,
 )
+
 
 # annuity factor to calculate present value of cash flows
 def annuity_factor(project_life, discount_factor):
@@ -258,9 +260,9 @@ def get_replacement_costs(
         # Subtraction of component value at end of life with last replacement (= number_of_investments - 1)
         replacement_costs -= value_at_project_end
         # Update cash flow projection (specific)
-        present_value_of_capital_expenditures.loc[
-            project_lifetime
-        ] = -value_at_project_end
+        present_value_of_capital_expenditures.loc[project_lifetime] = (
+            -value_at_project_end
+        )
 
     return replacement_costs
 

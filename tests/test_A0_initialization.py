@@ -114,7 +114,7 @@ class TestProcessUserArguments:
     def test_if_csv_opt_path_input_file_set_to_path_input_folder_mvs_csv_config_dot_json(
         self, m_args, tmpdir
     ):
-        """Check that the path_input_file is <path_input_folder>/mvs_csv_config.json """
+        """Check that the path_input_file is <path_input_folder>/mvs_csv_config.json"""
         os.mkdir(self.fake_input_path)
         os.mkdir(os.path.join(self.fake_input_path, CSV_ELEMENTS))
         user_inputs = A0.process_user_arguments()

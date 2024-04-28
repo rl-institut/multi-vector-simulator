@@ -322,7 +322,9 @@ def test_add_info_flows_storage_capacity():
         ), f"Parameter {parameter} should have been added to the dict_asset."
         if parameter == FLOW:
             assert_series_equal(
-                dict_test[FLOW].astype(np.int64), flow, check_names=False,
+                dict_test[FLOW].astype(np.int64),
+                flow,
+                check_names=False,
             )
         else:
             assert (
@@ -358,7 +360,9 @@ def test_add_info_flows_1_day():
             ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
 
     assert_series_equal(
-        dict_test[FLOW].astype(np.int64), flow, check_names=False,
+        dict_test[FLOW].astype(np.int64),
+        flow,
+        check_names=False,
     )
     assert dict_test[TOTAL_FLOW][VALUE] == sum(
         flow
@@ -393,7 +397,9 @@ def test_add_info_flows_365_days():
             ), f"Parameter {parameter} should have been added to the dict_asset with an {VALUE}."
 
     assert_series_equal(
-        dict_test[FLOW].astype(np.int64), flow, check_names=False,
+        dict_test[FLOW].astype(np.int64),
+        flow,
+        check_names=False,
     )
     assert dict_test[TOTAL_FLOW][VALUE] == sum(
         flow

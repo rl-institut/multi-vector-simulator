@@ -96,7 +96,10 @@ renewable_share_dso = 0.1
 dict_renewable_energy_use = {
     ENERGY_PRODUCTION: {
         dso
-        + DSO_CONSUMPTION: {ENERGY_VECTOR: electricity, TOTAL_FLOW: {VALUE: flow_dso},},
+        + DSO_CONSUMPTION: {
+            ENERGY_VECTOR: electricity,
+            TOTAL_FLOW: {VALUE: flow_dso},
+        },
         pv_plant: {
             ENERGY_VECTOR: electricity,
             TOTAL_FLOW: {VALUE: flow_pv_local},
@@ -730,7 +733,7 @@ def test_add_degree_of_net_zero_energy():
 
 
 def test_equation_degree_of_net_zero_energy():
-    """ Degree of NZE between 0 and 1."""
+    """Degree of NZE between 0 and 1."""
     total_feedin = 60
     total_grid_consumption = 80
     total_demand = 100

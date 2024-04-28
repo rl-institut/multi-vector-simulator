@@ -75,7 +75,13 @@ def generate_parameter_description(input_csv_file, output_rst_file):
             see_also = []
         lines = (
             lines
-            + [f".. _{props.ref}:", "", props.label, "^" * len(props.label), "",]
+            + [
+                f".. _{props.ref}:",
+                "",
+                props.label,
+                "^" * len(props.label),
+                "",
+            ]
             + [f"{p} {props[p]}" for p in parameter_properties]
             + [""]
             + [
@@ -83,7 +89,10 @@ def generate_parameter_description(input_csv_file, output_rst_file):
                 + ", ".join([f":ref:`{cat}`" for cat in props.category.split(";")])
             ]
             + see_also
-            + ["", "",]
+            + [
+                "",
+                "",
+            ]
         )
 
     with open(output_rst_file, "w") as ofs:
@@ -139,11 +148,22 @@ def generate_parameter_categories(
 
         lines = (
             lines
-            + [f".. _{props.ref}:", "", cat_label, "^" * len(cat_label), "",]
+            + [
+                f".. _{props.ref}:",
+                "",
+                cat_label,
+                "^" * len(cat_label),
+                "",
+            ]
             + props.description.split("\\n")
-            + ["",]
+            + [
+                "",
+            ]
             + [f"* :ref:`{p}`" for p in parameter_per_cat]
-            + ["", "",]
+            + [
+                "",
+                "",
+            ]
         )
 
     with open(output_rst_file, "w") as ofs:
@@ -194,10 +214,17 @@ def generate_kpi_categories(input_param_csv_file, input_cat_csv_file, output_rst
 
         lines = (
             lines
-            + [f"{props.description} These are the calculated {props.category} KPI:",]
-            + ["",]
+            + [
+                f"{props.description} These are the calculated {props.category} KPI:",
+            ]
+            + [
+                "",
+            ]
             + [f"* :ref:`{parameters[p]} <{p}>`" for p in parameter_per_cat]
-            + ["", "",]
+            + [
+                "",
+                "",
+            ]
         )
 
     with open(output_rst_file, "w") as ofs:
@@ -290,10 +317,19 @@ def generate_kpi_description(input_csv_file, output_path):
 
         # Write lines based on definitions to an *.inc file
         lines = (
-            [f".. _{props.ref}:", "", title, "^" * len(title), "",]
+            [
+                f".. _{props.ref}:",
+                "",
+                title,
+                "^" * len(title),
+                "",
+            ]
             + [f"{p} {props[p]}" for p in parameter_properties]
             + [f":Related indicators: {see_also}"]
-            + ["", "",]
+            + [
+                "",
+                "",
+            ]
         )
 
         with open(os.path.join(output_path, props.ref + ".inc"), "w") as ofs:

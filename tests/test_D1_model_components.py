@@ -49,10 +49,11 @@ D1_JSON = os.path.join(
     TEST_REPO_PATH, TEST_INPUT_DIRECTORY, "inputs_for_D1", JSON_FNAME
 )
 
+
 # fixtures that help creating variables and data needed for the tests
 @pytest.fixture()
 def get_json():
-    """ Reads input json file. """
+    """Reads input json file."""
     with open(D1_JSON) as json_file:
         dict_values = json.load(json_file)
     yield dict_values
@@ -60,7 +61,7 @@ def get_json():
 
 @pytest.fixture()
 def get_model():
-    """ Creates solph.EnergySystem model. """
+    """Creates solph.EnergySystem model."""
     time_index = pd.date_range(
         start=pd.to_datetime("2018-01-01 00:00:00"),
         end=pd.to_datetime("2018-12-31 23:00:00"),
@@ -71,7 +72,7 @@ def get_model():
 
 @pytest.fixture()
 def get_busses():
-    """ Creates busses (solph.Bus) dictionary. """
+    """Creates busses (solph.Bus) dictionary."""
     yield {
         "Fuel bus": solph.Bus(label="Fuel bus"),
         "Electricity bus": D1.CustomBus(
@@ -90,7 +91,7 @@ def get_busses():
 class TestTransformerComponent:
     @pytest.fixture(autouse=True)
     def setup_class(self, get_json, get_model, get_busses):
-        """ Sets up class attributes for the tests. """
+        """Sets up class attributes for the tests."""
         self.dict_values = get_json
         self.model = get_model
         self.transformers = {}
@@ -302,7 +303,6 @@ class TestTransformerComponent:
                 bus=self.busses,
             )
 
-
     def test_transformer_fix_cap_single_busses(self):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_single_busses"
@@ -314,7 +314,6 @@ class TestTransformerComponent:
             transformer=self.transformers,
             bus=self.busses,
         )
-
 
         # # only one output and one input bus
         # assert (
@@ -394,7 +393,9 @@ class TestTransformerComponent:
             optimize=False, dict_asset=dict_asset
         )
 
-    def test_transformer_fix_cap_multiple_input_busses(self,):
+    def test_transformer_fix_cap_multiple_input_busses(
+        self,
+    ):
         dict_asset = self.dict_values[ENERGY_CONVERSION][
             "transformer_fix_multiple_input_busses"
         ]
@@ -578,7 +579,7 @@ class TestTransformerComponent:
 class TestSinkComponent:
     @pytest.fixture(autouse=True)
     def setup_class(self, get_json, get_model, get_busses):
-        """ Sets up class attributes for the tests. """
+        """Sets up class attributes for the tests."""
         self.dict_values = get_json
         self.model = get_model
         self.busses = get_busses
@@ -639,7 +640,10 @@ class TestSinkComponent:
         dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
-            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
+            model=self.model,
+            dict_asset=dict_asset,
+            sink=self.sinks,
+            bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -651,7 +655,10 @@ class TestSinkComponent:
         dict_asset[TIMESERIES] = self.time_series
 
         D1.sink_non_dispatchable(
-            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
+            model=self.model,
+            dict_asset=dict_asset,
+            sink=self.sinks,
+            bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -662,7 +669,10 @@ class TestSinkComponent:
         dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_single"]
 
         D1.sink_dispatchable_optimize(
-            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
+            model=self.model,
+            dict_asset=dict_asset,
+            sink=self.sinks,
+            bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -673,7 +683,10 @@ class TestSinkComponent:
         dict_asset = self.dict_values[ENERGY_CONSUMPTION]["dispatchable_multiple"]
 
         D1.sink_dispatchable_optimize(
-            model=self.model, dict_asset=dict_asset, sink=self.sinks, bus=self.busses,
+            model=self.model,
+            dict_asset=dict_asset,
+            sink=self.sinks,
+            bus=self.busses,
         )
 
         self.helper_test_sink_in_model_and_dict(
@@ -684,7 +697,7 @@ class TestSinkComponent:
 class TestSourceComponent:
     @pytest.fixture(autouse=True)
     def setup_class(self, get_json, get_model, get_busses):
-        """ Sets up class attributes for the tests. """
+        """Sets up class attributes for the tests."""
         self.dict_values = get_json
         self.model = get_model
         self.busses = get_busses
@@ -828,7 +841,9 @@ class TestSourceComponent:
             timeseries="normalized",
         )
 
-    def test_source_dispatchable_optimize_timeseries_not_normalized_timeseries(self,):
+    def test_source_dispatchable_optimize_timeseries_not_normalized_timeseries(
+        self,
+    ):
         dict_asset = self.dict_values[ENERGY_PRODUCTION]["dispatchable_source_optimize"]
         dict_asset[TIMESERIES] = self.time_series
         dict_asset[TIMESERIES_PEAK] = {"unit": "kWp/H", "value": self.time_series.max()}
@@ -889,7 +904,7 @@ class TestSourceComponent:
 class TestStorageComponent:
     @pytest.fixture(autouse=True)
     def setup_class(self, get_json, get_model, get_busses):
-        """ Sets up class attributes for the tests. """
+        """Sets up class attributes for the tests."""
         self.dict_values = get_json
         self.model = get_model
         self.busses = get_busses

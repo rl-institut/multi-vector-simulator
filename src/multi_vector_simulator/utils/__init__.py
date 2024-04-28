@@ -45,7 +45,9 @@ class ParameterDocumentation:
     """Helper to access a parameter's information given its variable name"""
 
     def __init__(
-        self, param_info_file, label_header="label",
+        self,
+        param_info_file,
+        label_header="label",
     ):
         self.param_doc = pd.read_csv(param_info_file).set_index(label_header)
         self.label_hdr = label_header

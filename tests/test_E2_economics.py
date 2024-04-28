@@ -163,10 +163,12 @@ def test_calculate_operation_and_management_expenditures():
     installed_capacity = 10
     optimized_add_capacity = 10
     specific_om_cost = 5
-    operation_and_management_expenditures = E2.calculate_operation_and_management_expenditures(
-        specific_om_cost=specific_om_cost,
-        installed_capacity=installed_capacity,
-        optimized_add_capacity=optimized_add_capacity,
+    operation_and_management_expenditures = (
+        E2.calculate_operation_and_management_expenditures(
+            specific_om_cost=specific_om_cost,
+            installed_capacity=installed_capacity,
+            optimized_add_capacity=optimized_add_capacity,
+        )
     )
     assert operation_and_management_expenditures == specific_om_cost * (
         installed_capacity + optimized_add_capacity

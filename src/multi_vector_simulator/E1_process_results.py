@@ -9,6 +9,7 @@ Module E1 processes the oemof results.
 - add the evaluation of time series
 
 """
+
 import logging
 import copy
 import pandas as pd
@@ -740,7 +741,10 @@ def get_flow(settings, bus, dict_asset, flow_tuple, multi_bus=None):
         flow_tuple = (flow_tuple[0], reducable_demand_name(dict_asset[LABEL]))
         flow = bus[OEMOF_SEQUENCES][(flow_tuple, OEMOF_FLOW)]
         flow = cut_below_micro(flow, dict_asset[LABEL] + FLOW)
-        flow_tuple = (flow_tuple[0], reducable_demand_name(dict_asset[LABEL], critical=True))
+        flow_tuple = (
+            flow_tuple[0],
+            reducable_demand_name(dict_asset[LABEL], critical=True),
+        )
 
         flow_crit = bus[OEMOF_SEQUENCES][(flow_tuple, OEMOF_FLOW)]
         flow_crit = cut_below_micro(flow_crit, dict_asset[LABEL] + FLOW)
@@ -994,7 +998,7 @@ def convert_components_to_dataframe(dict_values):
     components_list = [keys_production, keys_conversion]
 
     # Defining the columns of the table and filling them up with the appropriate data
-    for (component_key, comp_dict) in zip(components_list, comp_dict_list):
+    for component_key, comp_dict in zip(components_list, comp_dict_list):
         for comps in component_key:
             # Define whether optimization takes place
             optimize = translate_optimizeCap_from_boolean_to_yes_no(

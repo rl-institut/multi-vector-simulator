@@ -633,7 +633,7 @@ def test_process_maximum_cap_constraint_maximumCap_is_0():
 
 
 def test_process_maximum_cap_constraint_maximumCap_is_int_smaller_than_installed_cap():
-    """"The asset has a maximumCap < installedCap which is invalid and being ignored."""
+    """ "The asset has a maximumCap < installedCap which is invalid and being ignored."""
     maxCap = 10
     dict_values = {
         group: {
@@ -672,7 +672,8 @@ def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_fuel_source()
 def test_process_maximum_cap_constraint_group_is_ENERGY_PRODUCTION_non_dispatchable_asset():
     # ToDo: change assertion errors
     """The asset belongs to the energy production group, and is a non-dispatchable asset.
-    As the maximumCap is used to define the maximum capacity of an asset, but used in oemof-solph to limit a flow, the value has to be translated."""
+    As the maximumCap is used to define the maximum capacity of an asset, but used in oemof-solph to limit a flow, the value has to be translated.
+    """
     timeseries_peak = 0.8
     group = ENERGY_PRODUCTION
     maxCap = 100
@@ -703,7 +704,13 @@ def test_process_maximum_cap_constraint_subasset():
     """For storages, the subassets have to be processes. This tests the procedure examplary."""
     dict_values = {
         group: {
-            asset: {subasset: {LABEL: asset, UNIT: unit, MAXIMUM_CAP: {VALUE: None},}}
+            asset: {
+                subasset: {
+                    LABEL: asset,
+                    UNIT: unit,
+                    MAXIMUM_CAP: {VALUE: None},
+                }
+            }
         }
     }
 
@@ -767,10 +774,16 @@ dict_test.update(
 def test_add_a_transformer_for_each_peak_demand_pricing_period_1_period():
     dict_test_trafo = deepcopy(dict_test)
     dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
-        dict_test_trafo, 1, 12,
+        dict_test_trafo,
+        1,
+        12,
     )
-    list_of_dso_energyConversion_assets = C0.add_a_transformer_for_each_peak_demand_pricing_period(
-        dict_test_trafo, dict_test[ENERGY_PROVIDERS][DSO], dict_availability_timeseries,
+    list_of_dso_energyConversion_assets = (
+        C0.add_a_transformer_for_each_peak_demand_pricing_period(
+            dict_test_trafo,
+            dict_test[ENERGY_PROVIDERS][DSO],
+            dict_availability_timeseries,
+        )
     )
     assert (
         len(list_of_dso_energyConversion_assets) == 1
@@ -794,10 +807,16 @@ def test_add_a_transformer_for_each_peak_demand_pricing_period_1_period():
 def test_add_a_transformer_for_each_peak_demand_pricing_period_2_periods():
     dict_test_trafo = deepcopy(dict_test)
     dict_availability_timeseries = C0.define_availability_of_peak_demand_pricing_assets(
-        dict_test_trafo, 2, 6,
+        dict_test_trafo,
+        2,
+        6,
     )
-    list_of_dso_energyConversion_assets = C0.add_a_transformer_for_each_peak_demand_pricing_period(
-        dict_test_trafo, dict_test[ENERGY_PROVIDERS][DSO], dict_availability_timeseries,
+    list_of_dso_energyConversion_assets = (
+        C0.add_a_transformer_for_each_peak_demand_pricing_period(
+            dict_test_trafo,
+            dict_test[ENERGY_PROVIDERS][DSO],
+            dict_availability_timeseries,
+        )
     )
     assert (
         len(list_of_dso_energyConversion_assets) == 2
@@ -1263,7 +1282,10 @@ def test_load_timeseries_from_csv_file_over_TIMESERIES():
         LABEL: "Electricity demand",
         OEMOF_ASSET_TYPE: OEMOF_SINK,
         UNIT: "kW",
-        TIMESERIES: {VALUE: [4, 5, 6], DATA_TYPE_JSON_KEY: TYPE_SERIES,},
+        TIMESERIES: {
+            VALUE: [4, 5, 6],
+            DATA_TYPE_JSON_KEY: TYPE_SERIES,
+        },
     }
     C0.receive_timeseries_from_csv(settings_dict, dict_asset, input_type="input")
     assert (dict_asset[TIMESERIES].values == np.array([1, 2, 3])).all()
