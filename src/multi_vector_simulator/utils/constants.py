@@ -4,6 +4,7 @@ General Constants
 """
 
 import os
+import pandas as pd
 from copy import deepcopy
 
 from multi_vector_simulator.utils.constants_json_strings import *
@@ -309,79 +310,27 @@ KNOWN_EXTRA_PARAMETERS = {
     },
 }
 
-ENERGY_CARRIER_UNIT = "energy_carrier_unit"
-DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
-    "LNG": {
-        UNIT: "kWh_eleq/kg",
-        VALUE: 12.69270292,
-        ENERGY_CARRIER_UNIT: "kg",
-    },
-    "Crude_oil": {
-        UNIT: "kWh_eleq/kg",
-        VALUE: 11.63042204,
-        ENERGY_CARRIER_UNIT: "kg",
-    },
-    "Diesel": {
-        UNIT: "kWh_eleq/l",
-        VALUE: 9.48030688,
-        ENERGY_CARRIER_UNIT: "l",
-    },  # https://epact.energy.gov/fuel-conversion-factors, conversion gallon->4.546092 l
-    "Kerosene": {
-        UNIT: "kWh_eleq/l",
-        VALUE: 8.908073954,
-        ENERGY_CARRIER_UNIT: "l",
-    },
-    "Gasoline": {
-        UNIT: "kWh_eleq/l",
-        VALUE: 8.735753974,
-        ENERGY_CARRIER_UNIT: "l",
-    },
-    "LPG": {
-        UNIT: "kWh_eleq/l",
-        VALUE: 6.472821609,
-        ENERGY_CARRIER_UNIT: "l",
-    },
-    "Ethane": {
-        UNIT: "kWh_eleq/l",
-        VALUE: 5.149767951,
-        ENERGY_CARRIER_UNIT: "l",
-    },
-    "H2": {
-        UNIT: "kWh_eleq/kgH2",
-        VALUE: 33.47281985,
-        ENERGY_CARRIER_UNIT: "kgH2",
-    },  # https://epact.energy.gov/fuel-conversion-factors
-    "Electricity": {
-        UNIT: "kWh_eleq/kWh_el",
-        VALUE: 1,
-        ENERGY_CARRIER_UNIT: "kWh_el",
-    },
-    "Biodiesel": {
-        UNIT: "kWh_eleq/l",
-        VALUE: 0.06290669,
-        ENERGY_CARRIER_UNIT: "l",
-    },
-    "Ethanol": {
-        UNIT: "kWh_eleq/l",
-        VALUE: 0.04242544,
-        ENERGY_CARRIER_UNIT: "l",
-    },
-    "Natural_gas": {
-        UNIT: "kWh_eleq/m3",
-        VALUE: 0.00933273,
-        ENERGY_CARRIER_UNIT: "l",
-    },  # https://epact.energy.gov/fuel-conversion-factors, conversion gallon->4.546092 l
-    "Gas": {
-        UNIT: "kWh_eleq/m3",
-        VALUE: 0.00933273,
-        ENERGY_CARRIER_UNIT: "l",
-    },  # https://epact.energy.gov/fuel-conversion-factors, conversion gallon->4.546092 l
-    "Heat": {
-        UNIT: "KWh_eleq/kWh_therm",
-        VALUE: 1.0002163,
-        ENERGY_CARRIER_UNIT: "kWh_therm",
-    },
-}
+WEIGHTS_ENERGY_CARRIER = "weights_energy_carrier"
+
+try:
+    energy_carriers_file = "energy_co2_conversion_factors.csv"
+    FILE_PATH = os.path.join(
+        os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        ),
+        "docs",
+    )
+    if os.path.exists(FILE_PATH):
+        FILE_PATH = PACKAGE_DATA_PATH
+
+    df = pd.read_csv(
+        os.path.join(FILE_PATH, "energy_co2_conversion_factors.csv"), index_col=0
+    )
+
+    DEFAULT_WEIGHTS_ENERGY_CARRIERS = df.to_dict(orient="index")
+except FileNotFoundError:
+    DEFAULT_WEIGHTS_ENERGY_CARRIERS = None
+
 
 # dict keys in results_json file
 TIMESERIES = "timeseries"

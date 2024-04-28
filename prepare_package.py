@@ -22,10 +22,11 @@ for pgk_data_src, pkg_data_dest in zip(
         os.path.join(".", pgk_data_src), os.path.join(pkg_data_folder, pkg_data_dest)
     )
 # Move the MVS parameters from the docs into the package_data folder
-shutil.copyfile(
-    os.path.join(".", "docs", "MVS_parameters_list.csv"),
-    os.path.join(pkg_data_folder, "MVS_parameters_list.csv"),
-)
+for doc_file in ("MVS_parameters_list.csv", "energy_co2_conversion_factors.csv"):
+    shutil.copyfile(
+        os.path.join(".", "docs", doc_file),
+        os.path.join(pkg_data_folder, doc_file),
+    )
 
 # Rebuild the package
 os.system("python setup.py sdist bdist_wheel")
