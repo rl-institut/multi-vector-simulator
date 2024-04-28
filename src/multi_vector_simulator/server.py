@@ -191,7 +191,7 @@ class OemofBusResults(pd.DataFrame):  # real results
         return optimized_capacity
 
 
-def run_simulation(json_dict, epa_format=True, **kwargs):
+def run_simulation(json_dict, epa_format=True, verbatim=False, **kwargs):
     r"""
      Starts MVS tool simulation from an input json file
 
@@ -311,7 +311,9 @@ def run_simulation(json_dict, epa_format=True, **kwargs):
     logging.debug("Convert results to json")
 
     if epa_format is True:
-        epa_dict_values = data_parser.convert_mvs_params_to_epa(dict_values)
+        epa_dict_values = data_parser.convert_mvs_params_to_epa(
+            dict_values, verbatim=verbatim
+        )
 
         json_values = F0.store_as_json(epa_dict_values)
         answer = json.loads(json_values)
