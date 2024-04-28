@@ -168,7 +168,7 @@ class TestTemporaryJsonFileDisposal:
 
 
 class TestConversionJsonToPythonTypes:
-    def setup(self):
+    def setup_method(self):
         self.n_days = 4
         self.start_date = pd.to_datetime("2018-01-01 00:00:00")
         self.end_date = self.start_date + pd.DateOffset(days=self.n_days - 1)
