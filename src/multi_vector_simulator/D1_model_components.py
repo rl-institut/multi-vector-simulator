@@ -597,9 +597,9 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
             }
             efficiencies = {}
             for i, efficiency in enumerate(dict_asset[EFFICIENCY][VALUE]):
-                efficiencies[
-                    kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION][i]]
-                ] = efficiency
+                efficiencies[kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION][i]]] = (
+                    efficiency
+                )
 
         elif isinstance(dict_asset[INFLOW_DIRECTION], str) and isinstance(
             dict_asset[OUTFLOW_DIRECTION], list
@@ -631,9 +631,9 @@ def transformer_constant_efficiency_fix(model, dict_asset, **kwargs):
 
             efficiencies = {}
             for i, efficiency in enumerate(dict_asset[EFFICIENCY][VALUE]):
-                efficiencies[
-                    kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][i]]
-                ] = efficiency
+                efficiencies[kwargs[OEMOF_BUSSES][dict_asset[OUTFLOW_DIRECTION][i]]] = (
+                    efficiency
+                )
 
         else:
             # multiple inputs and multiple outputs
@@ -772,9 +772,9 @@ def transformer_constant_efficiency_optimize(model, dict_asset, **kwargs):
 
             efficiencies = {}
             for i, efficiency in enumerate(dict_asset[EFFICIENCY][VALUE]):
-                efficiencies[
-                    kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION][i]]
-                ] = efficiency
+                efficiencies[kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION][i]]] = (
+                    efficiency
+                )
 
         elif isinstance(dict_asset[INFLOW_DIRECTION], str) and isinstance(
             dict_asset[OUTFLOW_DIRECTION], list
@@ -1053,7 +1053,7 @@ def storage_optimize(model, dict_asset, **kwargs):
         ],  # efficiency of discharge
         invest_relation_input_capacity=dict_asset[INPUT_POWER][C_RATE][VALUE],
         # storage can be charged with invest_relation_output_capacity*capacity in one timeperiod
-        invest_relation_output_capacity=dict_asset[OUTPUT_POWER][C_RATE][VALUE]
+        invest_relation_output_capacity=dict_asset[OUTPUT_POWER][C_RATE][VALUE],
         # storage can be emptied with invest_relation_output_capacity*capacity in one timeperiod
     )
     model.add(storage)
@@ -1185,7 +1185,8 @@ def source_dispatchable_optimize(model, dict_asset, **kwargs):
             )
         }
         source_dispatchable = solph.components.Source(
-            label=dict_asset[LABEL], outputs=outputs,
+            label=dict_asset[LABEL],
+            outputs=outputs,
         )
     else:
         if TIMESERIES in dict_asset:
@@ -1252,7 +1253,8 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
             )
         }
         source_dispatchable = solph.components.Source(
-            label=dict_asset[LABEL], outputs=outputs,
+            label=dict_asset[LABEL],
+            outputs=outputs,
         )
     else:
         if TIMESERIES in dict_asset:
@@ -1271,7 +1273,8 @@ def source_dispatchable_fix(model, dict_asset, **kwargs):
             )
         }
         source_dispatchable = solph.components.Source(
-            label=dict_asset[LABEL], outputs=outputs,
+            label=dict_asset[LABEL],
+            outputs=outputs,
         )
     model.add(source_dispatchable)
     kwargs[OEMOF_SOURCE].update({dict_asset[LABEL]: source_dispatchable})
@@ -1319,7 +1322,10 @@ def sink_dispatchable_optimize(model, dict_asset, **kwargs):
         }
 
     # create and add excess electricity sink to micro_grid_system - variable
-    sink_dispatchable = solph.components.Sink(label=dict_asset[LABEL], inputs=inputs,)
+    sink_dispatchable = solph.components.Sink(
+        label=dict_asset[LABEL],
+        inputs=inputs,
+    )
     model.add(sink_dispatchable)
     kwargs[OEMOF_SINK].update({dict_asset[LABEL]: sink_dispatchable})
     logging.debug(
@@ -1361,7 +1367,10 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
         }
 
     # create and add demand sink to micro_grid_system - fixed
-    sink_demand = solph.components.Sink(label=dict_asset[LABEL], inputs=inputs,)
+    sink_demand = solph.components.Sink(
+        label=dict_asset[LABEL],
+        inputs=inputs,
+    )
     model.add(sink_demand)
     kwargs[OEMOF_SINK].update({dict_asset[LABEL]: sink_demand})
     logging.debug(
@@ -1427,7 +1436,8 @@ def sink_demand_reduction(model, dict_asset, **kwargs):
         }
 
     non_critical_demand = solph.components.Sink(
-        label=reducable_demand_name(dict_asset[LABEL]), inputs=inputs_noncritical,
+        label=reducable_demand_name(dict_asset[LABEL]),
+        inputs=inputs_noncritical,
     )
     critical_demand = solph.components.Sink(
         label=reducable_demand_name(dict_asset[LABEL], critical=True),
@@ -1515,7 +1525,7 @@ def chp_optimize(model, dict_asset, **kwargs):
     -----
     Tested with:
     - test_to_be_written()
-    
+
     Returns
     -------
     Indirectly updated `model` and dict of asset in `kwargs` with the extraction turbine component.

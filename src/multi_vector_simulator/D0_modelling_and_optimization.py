@@ -313,7 +313,8 @@ class model_building:
             )
             logging.debug("Saving to lp-file.")
             local_energy_system.write(
-                path_lp_file, io_options={"symbolic_solver_labels": True},
+                path_lp_file,
+                io_options={"symbolic_solver_labels": True},
             )
 
     def simulating(dict_values, model, local_energy_system):

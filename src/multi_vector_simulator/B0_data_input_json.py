@@ -2,6 +2,7 @@
 Module B0 - Data input json
 ===========================
 """
+
 import logging
 import copy
 import json
@@ -321,7 +322,8 @@ def load_json(
         os.replace(
             path_input_file,
             os.path.join(
-                dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER_INPUTS], CSV_FNAME,
+                dict_values[SIMULATION_SETTINGS][PATH_OUTPUT_FOLDER_INPUTS],
+                CSV_FNAME,
             ),
         )
 

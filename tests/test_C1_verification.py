@@ -494,7 +494,7 @@ def test_check_time_series_values_between_0_and_1_False_smaller_0():
 
 @pytest.fixture()
 def get_dict_vals():
-    """ Reads input json file."""
+    """Reads input json file."""
     with open(os.path.join(JSON_PATH)) as json_file:
         dict_values = json.load(json_file)  # todo welches file???
     return dict_values

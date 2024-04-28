@@ -9,6 +9,7 @@ Future constraints are discussed in issue #133 (https://github.com/rl-institut/m
 
 constraints should be tested in-code (examples) and by comparing the lp file generated.
 """
+
 import logging
 import pyomo.environ as po
 from oemof.solph import constraints
@@ -178,7 +179,10 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
         (
             renewable_assets,
             non_renewable_assets,
-        ) = prepare_constraint_minimal_renewable_share(dict_values, dict_model,)
+        ) = prepare_constraint_minimal_renewable_share(
+            dict_values,
+            dict_model,
+        )
 
         def renewable_share_rule(model):
             renewable_generation = 0
@@ -237,7 +241,8 @@ def constraint_minimal_renewable_share(model, dict_values, dict_model):
 
 
 def prepare_constraint_minimal_renewable_share(
-    dict_values, dict_model,
+    dict_values,
+    dict_model,
 ):
     r"""
     Prepare creating the minimal renewable factor constraint by processing dict_values
@@ -429,10 +434,16 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
 
     if dict_values[CONSTRAINTS][MINIMAL_DEGREE_OF_AUTONOMY][VALUE] > 0:
 
-        demands = prepare_demand_assets(dict_values, dict_model,)
+        demands = prepare_demand_assets(
+            dict_values,
+            dict_model,
+        )
 
-        energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
-            dict_values, dict_model,
+        energy_provider_consumption_sources = (
+            prepare_energy_provider_consumption_sources(
+                dict_values,
+                dict_model,
+            )
         )
 
         def degree_of_autonomy_rule(model):
@@ -494,7 +505,8 @@ def constraint_minimal_degree_of_autonomy(model, dict_values, dict_model):
 
 
 def prepare_demand_assets(
-    dict_values, dict_model,
+    dict_values,
+    dict_model,
 ):
     r"""
     Perpare demand assets by processing `dict_values`
@@ -557,7 +569,8 @@ def prepare_demand_assets(
 
 
 def prepare_energy_provider_consumption_sources(
-    dict_values, dict_model,
+    dict_values,
+    dict_model,
 ):
     r"""
     Prepare energy provider consumption sources by processing `dict_values`.
@@ -624,7 +637,8 @@ def prepare_energy_provider_consumption_sources(
 
 
 def prepare_energy_provider_feedin_sinks(
-    dict_values, dict_model,
+    dict_values,
+    dict_model,
 ):
     r"""
     Prepare energy provider feedin sinks by processing `dict_values`.
@@ -719,11 +733,15 @@ def constraint_net_zero_energy(model, dict_values, dict_model):
     if dict_values[CONSTRAINTS][NET_ZERO_ENERGY][VALUE] == True:
 
         energy_provider_feedin_sinks = prepare_energy_provider_feedin_sinks(
-            dict_values, dict_model,
+            dict_values,
+            dict_model,
         )
 
-        energy_provider_consumption_sources = prepare_energy_provider_consumption_sources(
-            dict_values, dict_model,
+        energy_provider_consumption_sources = (
+            prepare_energy_provider_consumption_sources(
+                dict_values,
+                dict_model,
+            )
         )
 
         def net_zero_energy(model):

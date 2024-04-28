@@ -130,7 +130,7 @@ class TestAccessKPIs(unittest.TestCase):
             set_nested_value(dct, 400, ("b", "b1", "b12", "b122"))
 
     def test_set_nested_value_with_unexisting_key_in_middle_of_path(self):
-        """because the path diverges """
+        """because the path diverges"""
         dct = dict(a=dict(a1=1, a2=2), b=dict(b1=dict(b11=11, b12=dict(b121=121))))
         with self.assertRaises(KeyError):
             set_nested_value(dct, 400, ("b", "d1", "b12", "b121"))

@@ -153,7 +153,12 @@ MAP_MVS_EPA = {value: key for (key, value) in MAP_EPA_MVS.items()}
 EPA_PARAM_KEYS = {
     PROJECT_DATA: [PROJECT_ID, PROJECT_NAME, SCENARIO_ID, SCENARIO_NAME],
     SIMULATION_SETTINGS: [START_DATE, EVALUATED_PERIOD, TIMESTEP, OUTPUT_LP_FILE],
-    KPI: [KPI_SCALARS_DICT, KPI_UNCOUPLED_DICT, KPI_COST_MATRIX, KPI_SCALAR_MATRIX,],
+    KPI: [
+        KPI_SCALARS_DICT,
+        KPI_UNCOUPLED_DICT,
+        KPI_COST_MATRIX,
+        KPI_SCALAR_MATRIX,
+    ],
     "raw_results": ["index", "columns", "data"],
     "simulation_results": ["logs"],
 }
@@ -304,7 +309,7 @@ def convert_epa_params_to_mvs(epa_dict):
     - `ENERGY_PRODUCTION`:
         - Default value for `EMISSION_FACTOR` added
         - `DISPATCHABILITY` is always `False`, as no dispatchable fuel assets possible right now. Must be tackeld by EPA.
-     """
+    """
     epa_dict = deepcopy(epa_dict)
     dict_values = {}
 
@@ -413,9 +418,9 @@ def convert_epa_params_to_mvs(epa_dict):
                                 subasset[SOC_INITIAL] = {VALUE: None, UNIT: TYPE_NONE}
                                 # move the optimize cap property from STORAGE_CAPACITY to the asset level
                                 if OPTIMIZE_CAP in subasset:
-                                    dict_asset[asset_label][
-                                        OPTIMIZE_CAP
-                                    ] = subasset.pop(OPTIMIZE_CAP)
+                                    dict_asset[asset_label][OPTIMIZE_CAP] = (
+                                        subasset.pop(OPTIMIZE_CAP)
+                                    )
 
                 # move the unit outside the timeseries dict
                 if TIMESERIES in dict_asset[asset_label]:
@@ -500,7 +505,9 @@ def convert_epa_params_to_mvs(epa_dict):
                         dict_asset[asset_label][DSM] = False
                     # Dispatchability of energy consumption assets always False
                     dict_asset[asset_label].update(
-                        {DISPATCHABILITY: {UNIT: TYPE_BOOL, VALUE: False},}
+                        {
+                            DISPATCHABILITY: {UNIT: TYPE_BOOL, VALUE: False},
+                        }
                     )
 
                 if asset_group == ENERGY_PRODUCTION or ENERGY_PROVIDERS:
@@ -544,9 +551,9 @@ def convert_epa_params_to_mvs(epa_dict):
                 dict_values[CONSTRAINTS] = {}
 
             for missing_constraint in missing_params[CONSTRAINTS]:
-                dict_values[CONSTRAINTS][
-                    missing_constraint
-                ] = DEFAULT_CONSTRAINT_VALUES[missing_constraint]
+                dict_values[CONSTRAINTS][missing_constraint] = (
+                    DEFAULT_CONSTRAINT_VALUES[missing_constraint]
+                )
 
             missing_params.pop(CONSTRAINTS)
 

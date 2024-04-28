@@ -13,6 +13,7 @@ In module E3 the technical KPI are evaluated:
 - calculate onsite energy fraction (OEF)
 - calculate onsite energy matching (OEM)
 """
+
 import logging
 
 from multi_vector_simulator.utils.constants import DEFAULT_WEIGHTS_ENERGY_CARRIERS
@@ -861,7 +862,7 @@ def add_onsite_energy_fraction(dict_values):
     dict_values: dict
         dict with all project information and results
         after applying total_renewable_and_non_renewable_energy_origin
-    
+
     Returns
     -------
     None
@@ -942,7 +943,7 @@ def add_onsite_energy_matching(dict_values):
         after applying total_renewable_and_non_renewable_energy_origin and
         total_demand_and_excess_each_sector and
         add_onsite_energy_fraction
-    
+
     Returns
     -------
     None

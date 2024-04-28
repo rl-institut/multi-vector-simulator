@@ -144,7 +144,7 @@ def test_net_zero_energy_constraint_test_fails():
 
 
 def test_detect_excessive_excess_generation_in_bus_warning_is_logged(caplog):
-    """A logging.warning is printed due to excessive excess generation. """
+    """A logging.warning is printed due to excessive excess generation."""
     bus_label = "Test_bus"
     dict_values = {
         "optimizedFlows": {
@@ -162,7 +162,7 @@ def test_detect_excessive_excess_generation_in_bus_warning_is_logged(caplog):
 
 
 def test_detect_excessive_excess_generation_in_bus_no_excess(caplog):
-    """No excessive excess generation takes place. """
+    """No excessive excess generation takes place."""
     bus_label = "Test_bus"
     dict_values = {
         "optimizedFlows": {
@@ -183,7 +183,7 @@ def test_detect_excessive_excess_generation_in_bus_no_excess(caplog):
 
 
 def test_detect_excessive_excess_generation_in_bus_several_busses_two_warnings(caplog):
-    """Excessive excess generation takes place in two busses. """
+    """Excessive excess generation takes place in two busses."""
     excessive_excess_bus_1, excessive_excess_bus_2 = (
         "Bus_excessive_excess_1",
         "Bus_excessive_excess_2",
@@ -198,10 +198,18 @@ def test_detect_excessive_excess_generation_in_bus_several_busses_two_warnings(c
                 }
             ),
             excessive_excess_bus_1: pd.DataFrame(
-                {"inflow": [1, 2, 3], "outflow": [-1, -1, -2], "excess": [0, 1, 1],}
+                {
+                    "inflow": [1, 2, 3],
+                    "outflow": [-1, -1, -2],
+                    "excess": [0, 1, 1],
+                }
             ),
             excessive_excess_bus_2: pd.DataFrame(
-                {"inflow": [1, 2, 3], "outflow": [-1, -1, -1], "excess": [0, 1, 2],}
+                {
+                    "inflow": [1, 2, 3],
+                    "outflow": [-1, -1, -1],
+                    "excess": [0, 1, 2],
+                }
             ),
         }
     }
@@ -218,7 +226,8 @@ def test_detect_excessive_excess_generation_in_bus_several_busses_two_warnings(c
 def test_verify_state_of_charge_feasible(caplog):
     """Two cases are tested here
     Case 1 is no storage components in the energy system, hence no verification carried out
-    Case 2 is that all the SoC values are physically feasible, so no WARNING log messages"""
+    Case 2 is that all the SoC values are physically feasible, so no WARNING log messages
+    """
 
     # Test case: No storage components present in the system, so function is exited before any verification
     # Make an empty energyStorage dict signifying that there are no storage components in the energy system
@@ -243,7 +252,11 @@ def test_verify_state_of_charge_feasible(caplog):
 
     storage = "storage_01"
     # Add the SoC time series to the result JSON nested-dict
-    dict_values = {ENERGY_STORAGE: {storage: {TIMESERIES_SOC: soc_series},}}
+    dict_values = {
+        ENERGY_STORAGE: {
+            storage: {TIMESERIES_SOC: soc_series},
+        }
+    }
     # Test for the function's behavior with the current case
     with caplog.at_level(logging.WARNING):
         E4.verify_state_of_charge(dict_values=dict_values)

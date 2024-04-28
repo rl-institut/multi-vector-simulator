@@ -120,7 +120,10 @@ async def _print_pdf_from_chrome(path_pdf_report):
         "http://127.0.0.1:8050", {"waitUntil": "domcontentloaded", "timeout": 120000}
     )
     await page.waitForSelector(
-        ".dash-cell", {"visible": "true",},
+        ".dash-cell",
+        {
+            "visible": "true",
+        },
     )
     await page.pdf({"path": path_pdf_report, "format": "A4", "printBackground": True})
     await browser.close()
@@ -359,7 +362,9 @@ def insert_log_messages(log_dict):
 
 
 def insert_plotly_figure(
-    fig, id_plot=None, print_only=False,
+    fig,
+    id_plot=None,
+    print_only=False,
 ):
     r"""
     Insert a plotly figure in a dash app layout
@@ -406,7 +411,12 @@ def insert_plotly_figure(
     # Dynamic plotly figure for the app
     if print_only is False:
         rendered_plots.append(
-            dcc.Graph(className="no-print", id=id_plot, figure=fig, responsive=True,)
+            dcc.Graph(
+                className="no-print",
+                id=id_plot,
+                figure=fig,
+                responsive=True,
+            )
         )
 
     return html.Div(children=rendered_plots)
@@ -867,15 +877,17 @@ def create_app(results_json, path_sim_output=None):
                             ),
                             html.Div(
                                 className="cell imp_info2",
-                                children=[]
-                                if scenario_description == ""
-                                else [
-                                    html.Span(
-                                        "Scenario description  : ",
-                                        style={"font-weight": "bold"},
-                                    ),
-                                    f"{scenario_description}",
-                                ],
+                                children=(
+                                    []
+                                    if scenario_description == ""
+                                    else [
+                                        html.Span(
+                                            "Scenario description  : ",
+                                            style={"font-weight": "bold"},
+                                        ),
+                                        f"{scenario_description}",
+                                    ]
+                                ),
                             ),
                             html.Div(
                                 className="blockoftext",
@@ -921,7 +933,8 @@ def create_app(results_json, path_sim_output=None):
                                             html.H4(["Project Location"]),
                                             html.Iframe(
                                                 srcDoc=open(
-                                                    leaflet_map_path, "r",
+                                                    leaflet_map_path,
+                                                    "r",
                                                 ).read(),
                                                 height="400",
                                             ),
@@ -934,10 +947,12 @@ def create_app(results_json, path_sim_output=None):
                                                     ),
                                                     html.Img(
                                                         id="staticmapimage",
-                                                        src=""
-                                                        if MAP_STATIC is None
-                                                        else "data:image/png;base64,{}".format(
-                                                            MAP_STATIC.decode()
+                                                        src=(
+                                                            ""
+                                                            if MAP_STATIC is None
+                                                            else "data:image/png;base64,{}".format(
+                                                                MAP_STATIC.decode()
+                                                            )
                                                         ),
                                                         width="400px",
                                                         style={"marginLeft": "30px"},
@@ -1011,7 +1026,9 @@ def create_app(results_json, path_sim_output=None):
                                 "With this, the demands are met with the following dispatch schedules:"
                             ),
                             html.Div(
-                                children=ready_flows_plots(dict_values=results_json,)
+                                children=ready_flows_plots(
+                                    dict_values=results_json,
+                                )
                             ),
                             html.Div(
                                 className="add-cap-plot",
@@ -1028,7 +1045,8 @@ def create_app(results_json, path_sim_output=None):
                     insert_subsection(
                         title="Sankey diagram",
                         content=ready_sankey_diagram(
-                            dict_values=results_json, only_print=False,
+                            dict_values=results_json,
+                            only_print=False,
                         ),
                     ),
                     insert_subsection(
@@ -1042,7 +1060,8 @@ def create_app(results_json, path_sim_output=None):
                             html.Div(
                                 className="add-pie-plots",
                                 children=ready_costs_pie_plots(
-                                    dict_values=results_json, only_print=False,
+                                    dict_values=results_json,
+                                    only_print=False,
                                 ),
                             ),
                         ],
@@ -1065,7 +1084,9 @@ def create_app(results_json, path_sim_output=None):
                 children=[
                     html.Div(
                         className="cell",
-                        children=[insert_headings(heading_text="Logging Messages"),],
+                        children=[
+                            insert_headings(heading_text="Logging Messages"),
+                        ],
                     ),
                     html.Div(
                         children=[

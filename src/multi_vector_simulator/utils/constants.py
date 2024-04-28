@@ -2,6 +2,7 @@
 General Constants
 =================
 """
+
 import os
 from copy import deepcopy
 
@@ -163,7 +164,12 @@ REQUIRED_CSV_PARAMETERS = {
         LIFETIME,
         SPECIFIC_COSTS_OM,
     ],
-    SIMULATION_SETTINGS: [EVALUATED_PERIOD, OUTPUT_LP_FILE, START_DATE, TIMESTEP,],
+    SIMULATION_SETTINGS: [
+        EVALUATED_PERIOD,
+        OUTPUT_LP_FILE,
+        START_DATE,
+        TIMESTEP,
+    ],
     PROJECT_DATA: [
         COUNTRY,
         LATITUDE,
@@ -174,7 +180,12 @@ REQUIRED_CSV_PARAMETERS = {
         SCENARIO_NAME,
         SCENARIO_DESCRIPTION,
     ],
-    ECONOMIC_DATA: [CURR, DISCOUNTFACTOR, PROJECT_DURATION, TAX,],
+    ECONOMIC_DATA: [
+        CURR,
+        DISCOUNTFACTOR,
+        PROJECT_DURATION,
+        TAX,
+    ],
 }
 
 # list of csv filename which must be present within the CSV_ELEMENTS folder
@@ -261,19 +272,26 @@ KNOWN_EXTRA_PARAMETERS = {
         DEFAULT_VALUE: 0,
         UNIT: TYPE_FLOAT,
         WARNING_TEXT: "allows calculating the total emissions of the energy system (Values: Float). ",
-        REQUIRED_IN_CSV_ELEMENTS: [ENERGY_PRODUCTION, ENERGY_PROVIDERS,],
+        REQUIRED_IN_CSV_ELEMENTS: [
+            ENERGY_PRODUCTION,
+            ENERGY_PROVIDERS,
+        ],
     },
     MAXIMUM_EMISSIONS: {
         DEFAULT_VALUE: DEFAULT_CONSTRAINT_VALUES[MAXIMUM_EMISSIONS][VALUE],
         UNIT: TYPE_NONE,
         WARNING_TEXT: "allows setting a maximum amount of emissions of the optimized energy system (Values: None/Float). ",
-        REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
+        REQUIRED_IN_CSV_ELEMENTS: [
+            CONSTRAINTS,
+        ],
     },
     MINIMAL_DEGREE_OF_AUTONOMY: {
         DEFAULT_VALUE: DEFAULT_CONSTRAINT_VALUES[MINIMAL_DEGREE_OF_AUTONOMY][VALUE],
         UNIT: TYPE_FLOAT,
         WARNING_TEXT: "allows setting a minimum degree of autonomy of the optimized energy system (Values: Float). ",
-        REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
+        REQUIRED_IN_CSV_ELEMENTS: [
+            CONSTRAINTS,
+        ],
     },
     SCENARIO_DESCRIPTION: {
         DEFAULT_VALUE: "",
@@ -285,31 +303,69 @@ KNOWN_EXTRA_PARAMETERS = {
         DEFAULT_VALUE: DEFAULT_CONSTRAINT_VALUES[NET_ZERO_ENERGY][VALUE],
         UNIT: TYPE_BOOL,
         WARNING_TEXT: "allows to add a net zero energy constraint to optimization problem (activate by setting to `True`). ",
-        REQUIRED_IN_CSV_ELEMENTS: [CONSTRAINTS,],
+        REQUIRED_IN_CSV_ELEMENTS: [
+            CONSTRAINTS,
+        ],
     },
 }
 
 ENERGY_CARRIER_UNIT = "energy_carrier_unit"
 DEFAULT_WEIGHTS_ENERGY_CARRIERS = {
-    "LNG": {UNIT: "kWh_eleq/kg", VALUE: 12.69270292, ENERGY_CARRIER_UNIT: "kg",},
-    "Crude_oil": {UNIT: "kWh_eleq/kg", VALUE: 11.63042204, ENERGY_CARRIER_UNIT: "kg",},
+    "LNG": {
+        UNIT: "kWh_eleq/kg",
+        VALUE: 12.69270292,
+        ENERGY_CARRIER_UNIT: "kg",
+    },
+    "Crude_oil": {
+        UNIT: "kWh_eleq/kg",
+        VALUE: 11.63042204,
+        ENERGY_CARRIER_UNIT: "kg",
+    },
     "Diesel": {
         UNIT: "kWh_eleq/l",
         VALUE: 9.48030688,
         ENERGY_CARRIER_UNIT: "l",
     },  # https://epact.energy.gov/fuel-conversion-factors, conversion gallon->4.546092 l
-    "Kerosene": {UNIT: "kWh_eleq/l", VALUE: 8.908073954, ENERGY_CARRIER_UNIT: "l",},
-    "Gasoline": {UNIT: "kWh_eleq/l", VALUE: 8.735753974, ENERGY_CARRIER_UNIT: "l",},
-    "LPG": {UNIT: "kWh_eleq/l", VALUE: 6.472821609, ENERGY_CARRIER_UNIT: "l",},
-    "Ethane": {UNIT: "kWh_eleq/l", VALUE: 5.149767951, ENERGY_CARRIER_UNIT: "l",},
+    "Kerosene": {
+        UNIT: "kWh_eleq/l",
+        VALUE: 8.908073954,
+        ENERGY_CARRIER_UNIT: "l",
+    },
+    "Gasoline": {
+        UNIT: "kWh_eleq/l",
+        VALUE: 8.735753974,
+        ENERGY_CARRIER_UNIT: "l",
+    },
+    "LPG": {
+        UNIT: "kWh_eleq/l",
+        VALUE: 6.472821609,
+        ENERGY_CARRIER_UNIT: "l",
+    },
+    "Ethane": {
+        UNIT: "kWh_eleq/l",
+        VALUE: 5.149767951,
+        ENERGY_CARRIER_UNIT: "l",
+    },
     "H2": {
         UNIT: "kWh_eleq/kgH2",
         VALUE: 33.47281985,
         ENERGY_CARRIER_UNIT: "kgH2",
     },  # https://epact.energy.gov/fuel-conversion-factors
-    "Electricity": {UNIT: "kWh_eleq/kWh_el", VALUE: 1, ENERGY_CARRIER_UNIT: "kWh_el",},
-    "Biodiesel": {UNIT: "kWh_eleq/l", VALUE: 0.06290669, ENERGY_CARRIER_UNIT: "l",},
-    "Ethanol": {UNIT: "kWh_eleq/l", VALUE: 0.04242544, ENERGY_CARRIER_UNIT: "l",},
+    "Electricity": {
+        UNIT: "kWh_eleq/kWh_el",
+        VALUE: 1,
+        ENERGY_CARRIER_UNIT: "kWh_el",
+    },
+    "Biodiesel": {
+        UNIT: "kWh_eleq/l",
+        VALUE: 0.06290669,
+        ENERGY_CARRIER_UNIT: "l",
+    },
+    "Ethanol": {
+        UNIT: "kWh_eleq/l",
+        VALUE: 0.04242544,
+        ENERGY_CARRIER_UNIT: "l",
+    },
     "Natural_gas": {
         UNIT: "kWh_eleq/m3",
         VALUE: 0.00933273,
