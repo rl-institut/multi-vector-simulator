@@ -47,6 +47,7 @@ from multi_vector_simulator.utils.constants_json_strings import (
     MAXIMUM_ADD_CAP,
     MAXIMUM_ADD_CAP_NORMALIZED,
     DISPATCHABILITY,
+    TYPE_ASSET,
     OEMOF_ASSET_TYPE,
     OEMOF_GEN_STORAGE,
     OEMOF_SINK,
@@ -57,8 +58,13 @@ from multi_vector_simulator.utils.constants_json_strings import (
     EMISSION_FACTOR,
     BETA,
     INVESTMENT_BUS,
+    REDUCABLE_DEMAND,
 )
-from multi_vector_simulator.utils.helpers import get_item_if_list, get_length_if_list
+from multi_vector_simulator.utils.helpers import (
+    get_item_if_list,
+    get_length_if_list,
+    reducable_demand_name,
+)
 from multi_vector_simulator.utils.exceptions import (
     MissingParameterError,
     WrongParameterFormatError,
@@ -354,7 +360,10 @@ def sink(model, dict_asset, **kwargs):
 
     """
     if TIMESERIES in dict_asset:
-        sink_non_dispatchable(model, dict_asset, **kwargs)
+        if dict_asset.get(TYPE_ASSET) == REDUCABLE_DEMAND:
+            sink_demand_reduction(model, dict_asset, **kwargs)
+        else:
+            sink_non_dispatchable(model, dict_asset, **kwargs)
 
     else:
         sink_dispatchable_optimize(model, dict_asset, **kwargs)
@@ -1357,6 +1366,86 @@ def sink_non_dispatchable(model, dict_asset, **kwargs):
     kwargs[OEMOF_SINK].update({dict_asset[LABEL]: sink_demand})
     logging.debug(
         f"Added: Non-dispatchable sink {dict_asset[LABEL]} to bus {dict_asset[INFLOW_DIRECTION]}"
+    )
+
+
+def sink_demand_reduction(model, dict_asset, **kwargs):
+    r"""
+    Defines a non dispatchable sink to serve critical and non-critical demand.
+
+    See :py:func:`~.sink` for more information, including parameters.
+
+    Notes
+    -----
+    Tested with:
+    - test_sink_non_dispatchable_single_input_bus()
+    - test_sink_non_dispatchable_multiple_input_busses()
+
+    Returns
+    -------
+    Indirectly updated `model` and dict of asset in `kwargs` with the sink object.
+
+    """
+    demand_reduction_factor = 1 - dict_asset[EFFICIENCY][VALUE]
+    tot_demand = dict_asset[TIMESERIES]
+    non_critical_demand_ts = tot_demand * demand_reduction_factor
+    non_critical_demand_peak = non_critical_demand_ts.max()
+    if non_critical_demand_peak == 0:
+        max_non_critical = 1
+    else:
+        max_non_critical = non_critical_demand_ts / non_critical_demand_peak
+    critical_demand_ts = tot_demand * dict_asset[EFFICIENCY][VALUE]
+
+    # check if the sink has multiple input busses
+    if isinstance(dict_asset[INFLOW_DIRECTION], list):
+        raise (
+            ValueError(
+                f"The reducable demand {dict_asset[LABEL]} does not support multiple input busses"
+            )
+        )
+        # inputs_noncritical = {}
+        # inputs_critical = {}
+        # index = 0
+        # for bus in dict_asset[INFLOW_DIRECTION]:
+        #     inputs_critical[kwargs[OEMOF_BUSSES][bus]] = solph.Flow(
+        #         fix=dict_asset[TIMESERIES], nominal_value=1
+        #     )
+        #     index += 1
+    else:
+        inputs_noncritical = {
+            kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
+                min=0,
+                max=max_non_critical,
+                nominal_value=non_critical_demand_peak,
+                variable_costs=-1e-15,
+            )
+        }
+        inputs_critical = {
+            kwargs[OEMOF_BUSSES][dict_asset[INFLOW_DIRECTION]]: solph.Flow(
+                fix=critical_demand_ts, nominal_value=1
+            )
+        }
+
+    non_critical_demand = solph.components.Sink(
+        label=reducable_demand_name(dict_asset[LABEL]), inputs=inputs_noncritical,
+    )
+    critical_demand = solph.components.Sink(
+        label=reducable_demand_name(dict_asset[LABEL], critical=True),
+        inputs=inputs_critical,
+    )
+
+    # create and add demand sink and critical demand sink
+
+    model.add(critical_demand)
+    model.add(non_critical_demand)
+    kwargs[OEMOF_SINK].update(
+        {reducable_demand_name(dict_asset[LABEL]): non_critical_demand}
+    )
+    kwargs[OEMOF_SINK].update(
+        {reducable_demand_name(dict_asset[LABEL], critical=True): critical_demand}
+    )
+    logging.debug(
+        f"Added: Reducable Non-dispatchable sink {dict_asset[LABEL]} to bus {dict_asset[INFLOW_DIRECTION]}"
     )
 
 
