@@ -38,7 +38,7 @@ Presentations
 
 * : (Puranik, 2021): Sanket Puranik, Martha M. Hoffmann, Isidoros Kokos, Sergio Herraiz, Per Gjerløw: *Facilitating Local Multi-Vector Energy Systems with the E-LAND toolbox*, Workshop at "Sustainable Places 2021", `Link <https://www.sustainableplaces.eu/multi-vector-energy-systems>`__
 
-* :(Herraiz, 2021): Sergio Herraiz, Martha M. Hoffmann: *Facilitating local multi-vector energy systems: Integrated investment and operational planning.* Präsentation in Session 8: Cross-sectoral linkages and integration, Day 2: Linking Sectors and Technologies at the EMP-E 2021 (26-28. Oktober 2021), online. `conference schedule < https://emp-e-2021.b2match.io/page-4451>`__
+* :(Herraiz, 2021): Sergio Herraiz, Martha M. Hoffmann: *Facilitating local multi-vector energy systems: Integrated investment and operational planning.* Präsentation in Session 8: Cross-sectoral linkages and integration, Day 2: Linking Sectors and Technologies at the EMP-E 2021 (26-28. Oktober 2021), online. `conference schedule <https://emp-e-2021.b2match.io/page-4451>`__
 
 * :(Hoffmann, 2020c): *Introducing an open source simulation tool for sector-coupled energy system optimization: Multi-Vector Simulator (MVS)* Presentation at Energy Modelling Platform for Europe (EMP-E) 2020, 06. – 08. October 2020, online. Link to session: `Youtube <https://www.youtube.com/watch?v=ob2JRAZYC7E>`__
 
