@@ -13,17 +13,34 @@ The MVS is currently under development in the H2020 research project `E-LAND`. S
 Articles
 ^^^^^^^^
 
-* :(Hoffmann, 2020b): Martha M. Hoffmann, Sanket Puranik, Marc Juanpera, José M. Martín-Rapún, Heidi Tuiskula, & Philipp Blechinger: *Investment planning in multi-vector energy systems: Definition of key performance indicators*, Conference paper, presented at the CIRED 2020 Berlin Workshop (CIRED 2020), Berlin / online. 2020. DOI: `10.5281/zenodo.4449918 <http://doi.org/10.5281/zenodo.4449918>`__
+* :(Farrukh, 2022): Farhan Farrukh, Ciara Dunks, Martha Marie Hoffmann, Per Olav Dypvik: *Assessment of the potential of local solar generation for providing ship shore power in the Norwegian harbour Port of Borg*, 2022 18th International Conference on the European Energy Market (EEM), DOI: 10.1109/EEM54602.2022.9921031, `Link <https://ieeexplore.ieee.org/document/9921031>`__
+
+* :(Puranik, 2022): Sanket Puranik, Martha M. Hoffmann, Farhan Farrukh, Sunil Sharma: *Optimal investments into rooftop solar and batteries for a distribution grid company and prosumers: A case study in India.*, Conference Paper, 2022 IEEE 7th International Energy Conference (ENERGYCON). DOI: 10.1109/ENERGYCON53164.2022.9830341. `Link <https://ieeexplore.ieee.org/document/9830341>`__
+
+* :(Hoffmann, 2020b): Martha M. Hoffmann, Sanket Puranik, Marc Juanpera, José M. Martín-Rapún, Heidi Tuiskula, & Philipp Blechinger: *Investment planning in multi-vector energy systems: Definition of key performance indicators*, Conference paper, presented at the CIRED 2020 Berlin Workshop (CIRED 2020), Berlin / online. 2020. DOI: `Link <10.5281/zenodo.4449918 <http://doi.org/10.5281/zenodo.4449918>`__
+
+Reports
+^^^^^^^
+
+* :(AHK Chile, 2021): Christoph Meyer, Mar Ortiz, Annika Schüttler. AHK Chile, August 2021: German: Einsatz von grünem Wasserstoff zur netzfernen Stromversorgung in Insel- und kleineren Stromnetzen in Chile. Spanish: Uso de hidrógeno verde para el suministro de energía fuera de la red en microrredes y redes pequeñas de electricidad en Chile. Available on: `Link <https://chile.ahk.de/themen/energie/>`__
+
+* :(E-LAND, 2021b): Martha Hoffmann, Ciara Dunks, Sabine Haas. May 2021: Innovative Multi-Vector Simulator. Deliverable 4.4
 
 Posters
 ^^^^^^^
+
+* :(E-LAND, 2021a): E-LAND, 2021: Multi-Vector Simulator. Planning the energy supply system of the future. Product sheet. Available: `Link <https://elandh2020.eu/wp-content/uploads/2021/06/MVS-Tool-7.pdf>`__
 
 * :(Hoffmann, 2020a): Martha M. Hoffmann, Sanket Puranik, Marc Juanpera, José M. Martín-Rapún, Heidi Tuiskula, & Philipp Blechinger: *Investment planning in multi-vector energy systems: Definition of key performance indicators*, Conference poster, presented at the CIRED 2020 Berlin Workshop (CIRED 2020), Berlin / online: DOI: `10.5281/zenodo.4449969 <http://doi.org/10.5281/zenodo.4449969>`__
 
 Presentations
 ^^^^^^^^^^^^^
 
-* :(Hoffmann, 2020c): *Introducing an os simulation tool for sector-coupled energy sys opt: Multi-Vector Simulator (MVS)* Presentation at Energy Modelling Platform for Europe (EMP-E) 2020, 06. – 08. October 2020, online. Link to session: `Youtube <https://www.youtube.com/watch?v=ob2JRAZYC7E>`__
+* : (Puranik, 2021): Sanket Puranik, Martha M. Hoffmann, Isidoros Kokos, Sergio Herraiz, Per Gjerløw: *Facilitating Local Multi-Vector Energy Systems with the E-LAND toolbox*, Workshop at "Sustainable Places 2021", `Link <https://www.sustainableplaces.eu/multi-vector-energy-systems>`__
+
+* :(Herraiz, 2021): Sergio Herraiz, Martha M. Hoffmann: *Facilitating local multi-vector energy systems: Integrated investment and operational planning.* Präsentation in Session 8: Cross-sectoral linkages and integration, Day 2: Linking Sectors and Technologies at the EMP-E 2021 (26-28. Oktober 2021), online. `conference schedule <https://emp-e-2021.b2match.io/page-4451>`__
+
+* :(Hoffmann, 2020c): *Introducing an open source simulation tool for sector-coupled energy system optimization: Multi-Vector Simulator (MVS)* Presentation at Energy Modelling Platform for Europe (EMP-E) 2020, 06. – 08. October 2020, online. Link to session: `Youtube <https://www.youtube.com/watch?v=ob2JRAZYC7E>`__
 
 * :(Hoffmann, 2020d): *Multi-Vector Simulator*, session: *Building on experience: What to take from individual models for the oemof-community*, presentation at oemof developer meeting, 02. - 04. December 2020, online. Link: `conference schedule <https://github.com/oemof/oemof/wiki/Meeting-December-2020-%28online%29>`__
 
@@ -51,6 +68,11 @@ H2020 research project open_Plan
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The `H2020 research project open_plan <https://open-plan-tool.org/>`__ aims to build an open source tool to plan the design of a single energy cell. It will extend on the existing features of MVS to fullfil the requirements of its pilot projects. The project open_plan is funded until December 2022, the development of the graphical user interface will take place on the `github repository of open_plan <https://github.com/rl-institut/open_plan>`__.
+
+Consulting project with AHK Chile
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The MVS was applied to three case study locations in Chile to determine the local potential to use hydrogen for storing renewable generation. The locations included a grid on an island (Melinka), a region (Aysén) and a industrial site (Multiexport). More information can be found on the `RLI website <https://reiner-lemoine-institut.de/en/hydrogen-storage-potential-study-for-mini-grids-in-chile/>`__. A report in German and Spanish is available.
 
 .. _reference_bibliography:
 
