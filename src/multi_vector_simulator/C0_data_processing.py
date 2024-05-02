@@ -25,6 +25,7 @@ import logging
 import os
 import sys
 import pprint as pp
+import jsonschema
 import pandas as pd
 import warnings
 from multi_vector_simulator.version import version_num
@@ -37,6 +38,8 @@ from multi_vector_simulator.utils.constants import (
     FILENAME,
     HEADER,
     JSON_PROCESSED,
+    WEIGHTS_ENERGY_CARRIER,
+    DEFAULT_WEIGHTS_ENERGY_CARRIERS,
 )
 
 from multi_vector_simulator.utils.exceptions import MaximumCapValueInvalid
@@ -73,6 +76,8 @@ def all(dict_values):
     # todo check whether input values can be true
     # C1.check_input_values(dict_values)
     # todo Check, whether files (demand, generation) are existing
+
+    process_user_energy_carrier_weights(dict_values)
 
     # Adds costs to each asset and sub-asset, adds time series to assets
     process_all_assets(dict_values)
@@ -1848,6 +1853,50 @@ def treat_multiple_flows(dict_asset, dict_values, parameter):
     dict_asset[parameter][VALUE] = updated_values
     if len(values_info) > 0:
         dict_asset[parameter].update({"values_info": values_info})
+
+
+def process_user_energy_carrier_weights(dict_values):
+    """
+    Parameters
+    ----------
+    dict_asset:
+    dictionary of the asset
+    """
+    if WEIGHTS_ENERGY_CARRIER in dict_values:
+
+        SCHEMA = {
+            "type": "object",
+            "properties": {
+                "objects": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                            UNIT: {"type": "string"},
+                            VALUE: {"type": "number"},
+                            "energy_carrier_unit": {"type": "string"},
+                            "information source": {"type": "string"},
+                            "CO2 per energy_carrier_unit": {"type": "number"},
+                        },
+                        "required": [
+                            UNIT,
+                            VALUE,
+                        ],
+                    },
+                }
+            },
+        }
+
+        try:
+            jsonschema.validate(dict_values[WEIGHTS_ENERGY_CARRIER], SCHEMA)
+            valid_json = True
+        except jsonschema.exceptions.ValidationError:
+            valid_json = False
+            # TODO log validation error
+
+        if valid_json is True:
+            DEFAULT_WEIGHTS_ENERGY_CARRIERS.update(dict_values[WEIGHTS_ENERGY_CARRIER])
+            logging.info("Added user custom energy carrier weights")
 
 
 # reads timeseries specifically when the need comes from a multiple or output busses situation
