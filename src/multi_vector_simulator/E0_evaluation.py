@@ -109,7 +109,8 @@ def evaluate_dict(dict_values, results_main, results_meta):
         bus_data.update(
             {
                 dict_values[ENERGY_STORAGE][storage][LABEL]: solph.views.node(
-                    results_main, dict_values[ENERGY_STORAGE][storage][LABEL],
+                    results_main,
+                    dict_values[ENERGY_STORAGE][storage][LABEL],
                 )
             }
         )
@@ -160,9 +161,9 @@ def evaluate_dict(dict_values, results_main, results_meta):
                 + f") {SOC}"
             )
 
-            dict_values[OPTIMIZED_FLOWS][inflow_direction][
-                timeseries_name
-            ] = dict_values[ENERGY_STORAGE][storage][TIMESERIES_SOC]
+            dict_values[OPTIMIZED_FLOWS][inflow_direction][timeseries_name] = (
+                dict_values[ENERGY_STORAGE][storage][TIMESERIES_SOC]
+            )
 
     for group in [ENERGY_CONVERSION, ENERGY_PRODUCTION, ENERGY_CONSUMPTION]:
         for asset in dict_values[group]:

@@ -111,7 +111,8 @@ def test_prepare_constraint_minimal_renewable_share():
         renewable_assets,
         non_renewable_assets,
     ) = D2.prepare_constraint_minimal_renewable_share(
-        dict_values=dict_values, dict_model=dict_model,
+        dict_values=dict_values,
+        dict_model=dict_model,
     )
 
     assert (
@@ -184,7 +185,10 @@ def test_prepare_demand_assets():
         OEMOF_BUSSES: {electricity: electricity},
     }
 
-    demands = D2.prepare_demand_assets(dict_values, dict_model,)
+    demands = D2.prepare_demand_assets(
+        dict_values,
+        dict_model,
+    )
 
     assert (
         demand_profiles in demands
@@ -214,7 +218,9 @@ def test_prepare_energy_provider_consumption_sources():
     electricity = "Electricity"
     dso = "DSO"
     dict_values = {
-        ENERGY_PROVIDERS: {dso: {LABEL: dso},},
+        ENERGY_PROVIDERS: {
+            dso: {LABEL: dso},
+        },
         ENERGY_PRODUCTION: {
             dso
             + DSO_CONSUMPTION: {
@@ -225,12 +231,17 @@ def test_prepare_energy_provider_consumption_sources():
         },
     }
     dict_model = {
-        OEMOF_SOURCE: {dso + DSO_CONSUMPTION: dso + DSO_CONSUMPTION,},
+        OEMOF_SOURCE: {
+            dso + DSO_CONSUMPTION: dso + DSO_CONSUMPTION,
+        },
         OEMOF_BUSSES: {electricity: electricity},
     }
 
-    energy_provider_consumption_sources = D2.prepare_energy_provider_consumption_sources(
-        dict_values, dict_model,
+    energy_provider_consumption_sources = (
+        D2.prepare_energy_provider_consumption_sources(
+            dict_values,
+            dict_model,
+        )
     )
 
     DSO_source_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_CONSUMPTION
@@ -264,7 +275,9 @@ def test_prepare_energy_provider_feedin_sinks():
     electricity = "Electricity"
     dso = "DSO"
     dict_values = {
-        ENERGY_PROVIDERS: {dso: {LABEL: dso},},
+        ENERGY_PROVIDERS: {
+            dso: {LABEL: dso},
+        },
         ENERGY_CONSUMPTION: {
             dso
             + DSO_FEEDIN: {
@@ -275,12 +288,15 @@ def test_prepare_energy_provider_feedin_sinks():
         },
     }
     dict_model = {
-        OEMOF_SINK: {dso + DSO_FEEDIN: dso + DSO_FEEDIN,},
+        OEMOF_SINK: {
+            dso + DSO_FEEDIN: dso + DSO_FEEDIN,
+        },
         OEMOF_BUSSES: {electricity: electricity},
     }
 
     energy_provider_feedin_sinks = D2.prepare_energy_provider_feedin_sinks(
-        dict_values, dict_model,
+        dict_values,
+        dict_model,
     )
 
     DSO_sink_name = dict_values[ENERGY_PROVIDERS][dso][LABEL] + DSO_FEEDIN
@@ -366,7 +382,8 @@ class TestConstraints:
         """Checks if maximum emissions limit is properly added as a constraint"""
         # Create a solph model using the input values (especially the constraints setup as class variables above)
         model = D2.constraint_maximum_emissions(
-            model=solph.Model(self.model), dict_values=self.dict_values,
+            model=solph.Model(self.model),
+            dict_values=self.dict_values,
         )
         assert (
             model.integral_limit_emission_factor_constraint.upper.value

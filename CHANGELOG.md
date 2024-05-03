@@ -18,14 +18,29 @@ Here is a template for new release sections
 ### Fixed
 -
 ```
-
 ## [Unreleased]
 
 ### Added
+-
+### Changed
+-
+### Removed
+-
+### Fixed
+-
+
+## [1.1.1] - 2024-05-03
+
+### Added
+
+- Introduce reducable demand. It should be listed within sinks, and provided an efficiency (number between 0 and 1). This efficiency correspond to the percent of the demand which must be provided (critical demand). The oemof-solph sinks which models the  non-critical part of the demand has very small variable_costs such that it should not influence the costs calculations but should be fulfilled rather than dumping energy into excess sinks. Developed for the server version. (#969)
+- Possibility to set min and or max for the load of a transformer and solve for a non-convex optimization. The simulation time can be quite long with cbc solver! Developed for the server version. (#969) 
 
 ### Changed
 
-### Fixed
+- Add costs to excess sinks of busses. If the dictionary containing the information about the bus contains a key "price", its value will be applied to the variable costs of the sink (unit of the price is currency/energy unit, default currency/kWh). Developed for the server version. (#969)
+
+- black version was bumped to 24.3.0 (#971)
 
 ## [1.1.0] - 2024-04-27
 

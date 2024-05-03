@@ -172,7 +172,8 @@ def main(**kwargs):
     print("")
     logging.debug("Accessing script: D0_modelling_and_optimization")
     results_meta, results_main = D0.run_oemof(
-        dict_values, save_energy_system_graph=save_energy_system_graph,
+        dict_values,
+        save_energy_system_graph=save_energy_system_graph,
     )
 
     print("")
@@ -189,7 +190,6 @@ def main(**kwargs):
 
 
 def report(pdf=None, path_simulation_output_json=None, path_pdf_report=None):
-
     """Display the report of a MVS simulation
 
     Command line use:

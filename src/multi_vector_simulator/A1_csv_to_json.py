@@ -97,7 +97,8 @@ from multi_vector_simulator.utils.exceptions import (
 
 
 def create_input_json(
-    input_directory, pass_back=True,
+    input_directory,
+    pass_back=True,
 ):
     """Convert csv files to json file as input for the simulation.
 
@@ -515,7 +516,9 @@ def create_json_from_csv(
                     df.loc[STORAGE_FILENAME][column]
                 )
                 storage_dict = add_storage_components(
-                    storage_file_name, input_directory, single_dict[column][LABEL],
+                    storage_file_name,
+                    input_directory,
+                    single_dict[column][LABEL],
                 )
                 single_dict[column].update(storage_dict)
 

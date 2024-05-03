@@ -4,6 +4,7 @@ In this module the tests run over whole simulation from main, not just single fu
 What should differ between the different functions is the input file
 
 """
+
 import argparse
 import os
 import shutil
@@ -288,16 +289,19 @@ class Test_Economic_KPI:
                 assert (
                     key in asset_data
                 ), f"{key} is not in the asset data of {asset_group}, {asset}. It includes: {asset_data.keys()}."
-                if not pd.isna(expected_values.loc[asset, key]) and not pd.isna(asset_data[key][VALUE]):
+                if not pd.isna(expected_values.loc[asset, key]) and not pd.isna(
+                    asset_data[key][VALUE]
+                ):
                     assert float(expected_values.loc[asset, key]) == pytest.approx(
                         asset_data[key][VALUE], rel=1e-3
                     ), f"Parameter {key} of asset {asset} is not of expected value, expected {expected_values.loc[asset, key]}, got {asset_data[key][VALUE]}."
-                
+
         # Now we established that the externally calculated values are equal to the internally calculated values.
         # Therefore, we can now use the cost data from the assets to validate the cost data for the whole energy system.
 
         demand = pd.read_csv(
-            os.path.join(TEST_INPUT_PATH, USE_CASE, TIME_SERIES, "demand.csv"), sep=",",
+            os.path.join(TEST_INPUT_PATH, USE_CASE, TIME_SERIES, "demand.csv"),
+            sep=",",
         )
         aggregated_demand = demand.sum()[0]
 

@@ -8,6 +8,7 @@ Including:
 - find_valvue_by_key(): Finds value of a key in a nested dictionary.
 """
 
+from copy import deepcopy
 import os
 
 from multi_vector_simulator.utils.constants_json_strings import (
@@ -28,6 +29,9 @@ from multi_vector_simulator.utils.constants_json_strings import (
     INFLOW_DIRECTION,
     OUTFLOW_DIRECTION,
     ENERGY_VECTOR,
+    SUFFIX_CRITICAL,
+    SUFFIX_NONCRITICAL,
+    REDUCABLE_DEMAND,
 )
 
 
@@ -120,6 +124,17 @@ def get_length_if_list(list_or_float):
     return answer
 
 
+def reducable_demand_name(demand_name: str, critical: bool = False):
+    """Name for auto created bus related to peak demand pricing period"""
+
+    if critical is False:
+        suffix = SUFFIX_NONCRITICAL
+    else:
+        suffix = SUFFIX_CRITICAL
+
+    return f"{demand_name}_{suffix} {AUTO_CREATED_HIGHLIGHT}"
+
+
 def peak_demand_bus_name(dso_name: str, feedin: bool = False):
     """Name for auto created bus related to peak demand pricing period"""
 
@@ -182,5 +197,16 @@ def get_asset_types(dict_values):
             for bus in input_bus + output_bus:
                 asset_busses[bus] = dict_values[ENERGY_BUSSES][bus].get(ENERGY_VECTOR)
             asset_type["busses"] = asset_busses
-            asset_types.append(asset_type)
+            if asset_type[TYPE_ASSET] == REDUCABLE_DEMAND:
+
+                asset_label = asset_type["label"]
+                asset_type["label"] = reducable_demand_name(asset_label)
+                asset_types.append(asset_type)
+                crit_asset_type = deepcopy(asset_type)
+                crit_asset_type["label"] = reducable_demand_name(
+                    asset_label, critical=True
+                )
+                asset_types.append(crit_asset_type)
+            else:
+                asset_types.append(asset_type)
     return asset_types

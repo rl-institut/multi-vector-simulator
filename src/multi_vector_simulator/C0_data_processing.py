@@ -290,10 +290,12 @@ def define_excess_sinks(dict_values):
     for bus in dict_values[ENERGY_BUSSES]:
         excess_sink_name = bus + EXCESS_SINK
         energy_vector = dict_values[ENERGY_BUSSES][bus][ENERGY_VECTOR]
+        # TODO make this official if needed
+        excess_price = dict_values[ENERGY_BUSSES][bus].get("price", 0)
         define_sink(
             dict_values=dict_values,
             asset_key=excess_sink_name,
-            price={VALUE: 0, UNIT: CURR + "/" + UNIT},
+            price={VALUE: excess_price, UNIT: CURR + "/" + UNIT},
             inflow_direction=bus,
             energy_vector=energy_vector,
             asset_type="excess",
@@ -332,7 +334,9 @@ def energyConversion(dict_values, group):
             and HEADER in dict_values[group][asset][EFFICIENCY]
         ):
             receive_timeseries_from_csv(
-                dict_values[SIMULATION_SETTINGS], dict_values[group][asset], EFFICIENCY,
+                dict_values[SIMULATION_SETTINGS],
+                dict_values[group][asset],
+                EFFICIENCY,
             )
         # in case there is more than one parameter provided (either (A) n input busses and 1 output bus or (B) 1 input bus and n output busses)
         # dictionaries with filenames and headers will be replaced by timeseries, scalars will be mantained
@@ -396,7 +400,8 @@ def energyStorage(dict_values, group):
     for asset in dict_values[group]:
         for subasset in [STORAGE_CAPACITY, INPUT_POWER, OUTPUT_POWER]:
             define_missing_cost_data(
-                dict_values, dict_values[group][asset][subasset],
+                dict_values,
+                dict_values[group][asset][subasset],
             )
             evaluate_lifetime_costs(
                 dict_values[SIMULATION_SETTINGS],
@@ -502,7 +507,9 @@ def define_missing_cost_data(dict_values, dict_asset):
     if DISPATCH_PRICE in dict_asset:
         if isinstance(dict_asset[DISPATCH_PRICE][VALUE], dict):
             receive_timeseries_from_csv(
-                dict_values[SIMULATION_SETTINGS], dict_asset, DISPATCH_PRICE,
+                dict_values[SIMULATION_SETTINGS],
+                dict_asset,
+                DISPATCH_PRICE,
             )
         elif isinstance(dict_asset[DISPATCH_PRICE][VALUE], list):
             treat_multiple_flows(dict_asset, dict_values, DISPATCH_PRICE)
@@ -517,8 +524,14 @@ def define_missing_cost_data(dict_values, dict_asset):
         SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + UNIT},
         SPECIFIC_COSTS_OM: {VALUE: 0, UNIT: CURR + "/" + UNIT_YEAR},
         DISPATCH_PRICE: {VALUE: 0, UNIT: CURR + "/" + UNIT + "/" + UNIT_YEAR},
-        LIFETIME: {VALUE: economic_data[PROJECT_DURATION][VALUE], UNIT: UNIT_YEAR,},
-        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
+        LIFETIME: {
+            VALUE: economic_data[PROJECT_DURATION][VALUE],
+            UNIT: UNIT_YEAR,
+        },
+        AGE_INSTALLED: {
+            VALUE: 0,
+            UNIT: UNIT_YEAR,
+        },
     }
 
     # checks that an asset has all cost parameters needed for evaluation.
@@ -720,11 +733,17 @@ def define_auxiliary_assets_of_energy_providers(dict_values, dso_name):
     )
 
     dict_availability_timeseries = define_availability_of_peak_demand_pricing_assets(
-        dict_values, number_of_pricing_periods, months_in_a_period,
+        dict_values,
+        number_of_pricing_periods,
+        months_in_a_period,
     )
 
-    list_of_dso_energyConversion_assets = add_a_transformer_for_each_peak_demand_pricing_period(
-        dict_values, dso_dict, dict_availability_timeseries,
+    list_of_dso_energyConversion_assets = (
+        add_a_transformer_for_each_peak_demand_pricing_period(
+            dict_values,
+            dso_dict,
+            dict_availability_timeseries,
+        )
     )
 
     define_source(
@@ -1023,7 +1042,10 @@ def define_transformer_for_peak_demand_pricing(
         AVAILABILITY_DISPATCH: timeseries_availability,
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
-        SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
+        SPECIFIC_COSTS: {
+            VALUE: 0,
+            UNIT: CURR + "/" + dict_dso[UNIT],
+        },
         # the demand pricing is only applied to consumption
         SPECIFIC_COSTS_OM: {
             VALUE: dict_dso[PEAK_DEMAND_PRICING][VALUE],
@@ -1056,7 +1078,10 @@ def define_transformer_for_peak_demand_pricing(
         AVAILABILITY_DISPATCH: timeseries_availability,
         EFFICIENCY: {VALUE: 1, UNIT: "factor"},
         DEVELOPMENT_COSTS: {VALUE: 0, UNIT: CURR},
-        SPECIFIC_COSTS: {VALUE: 0, UNIT: CURR + "/" + dict_dso[UNIT],},
+        SPECIFIC_COSTS: {
+            VALUE: 0,
+            UNIT: CURR + "/" + dict_dso[UNIT],
+        },
         # the demand pricing is only applied to consumption
         SPECIFIC_COSTS_OM: {
             VALUE: 0,
@@ -1066,7 +1091,7 @@ def define_transformer_for_peak_demand_pricing(
         OEMOF_ASSET_TYPE: OEMOF_TRANSFORMER,
         ENERGY_VECTOR: dict_dso[ENERGY_VECTOR],
         AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR},
-        TYPE_ASSET: dict_dso.get(TYPE_ASSET)
+        TYPE_ASSET: dict_dso.get(TYPE_ASSET),
         # LIFETIME: {VALUE: 100, UNIT: UNIT_YEAR},
     }
     if dict_dso.get(DSO_FEEDIN_CAP, None) is not None:
@@ -1148,7 +1173,10 @@ def define_source(
         },
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         MAXIMUM_CAP: {VALUE: None, UNIT: "?"},
-        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
+        AGE_INSTALLED: {
+            VALUE: 0,
+            UNIT: UNIT_YEAR,
+        },
         ENERGY_VECTOR: energy_vector,
         EMISSION_FACTOR: emission_factor,
         TYPE_ASSET: asset_type,
@@ -1332,7 +1360,10 @@ def define_sink(
             VALUE: dict_values[ECONOMIC_DATA][PROJECT_DURATION][VALUE],
             UNIT: UNIT_YEAR,
         },
-        AGE_INSTALLED: {VALUE: 0, UNIT: UNIT_YEAR,},
+        AGE_INSTALLED: {
+            VALUE: 0,
+            UNIT: UNIT_YEAR,
+        },
         ENERGY_VECTOR: energy_vector,
         OPTIMIZE_CAP: {VALUE: True, UNIT: TYPE_BOOL},
         DISPATCHABILITY: {VALUE: True, UNIT: TYPE_BOOL},
@@ -1406,7 +1437,9 @@ def define_sink(
     for item in [SPECIFIC_COSTS, SPECIFIC_COSTS_OM]:
         if item in kwargs:
             sink.update(
-                {item: kwargs[item],}
+                {
+                    item: kwargs[item],
+                }
             )
 
     # update dictionary
@@ -1749,8 +1782,14 @@ def compute_timeseries_properties(dict_asset):
 
         dict_asset.update(
             {
-                TIMESERIES_PEAK: {VALUE: max(timeseries), UNIT: unit,},
-                TIMESERIES_TOTAL: {VALUE: sum(timeseries), UNIT: unit,},
+                TIMESERIES_PEAK: {
+                    VALUE: max(timeseries),
+                    UNIT: unit,
+                },
+                TIMESERIES_TOTAL: {
+                    VALUE: sum(timeseries),
+                    UNIT: unit,
+                },
                 TIMESERIES_AVERAGE: {
                     VALUE: sum(timeseries) / len(timeseries),
                     UNIT: unit,

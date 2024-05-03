@@ -13,7 +13,6 @@ The model F0 output defines all functions that store evaluation results to file.
 - Store dictionary to Json
 """
 
-
 import json
 import logging
 import os

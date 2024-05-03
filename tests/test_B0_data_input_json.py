@@ -107,9 +107,26 @@ class TestTemporaryJsonFileDisposal:
             JSON_CSV_PATH, path_output_folder=self.test_out_path, move_copy=True
         )
 
-        assert os.path.exists(os.path.join(CSV_PATH, CSV_ELEMENTS, CSV_FNAME,)) is False
+        assert (
+            os.path.exists(
+                os.path.join(
+                    CSV_PATH,
+                    CSV_ELEMENTS,
+                    CSV_FNAME,
+                )
+            )
+            is False
+        )
 
-        assert os.path.exists(os.path.join(CSV_PATH, CSV_FNAME,)) is False
+        assert (
+            os.path.exists(
+                os.path.join(
+                    CSV_PATH,
+                    CSV_FNAME,
+                )
+            )
+            is False
+        )
 
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
@@ -151,13 +168,19 @@ class TestTemporaryJsonFileDisposal:
 
 
 class TestConversionJsonToPythonTypes:
-    def setup(self):
+    def setup_method(self):
         self.n_days = 4
         self.start_date = pd.to_datetime("2018-01-01 00:00:00")
         self.end_date = self.start_date + pd.DateOffset(days=self.n_days - 1)
-        self.ti = pd.date_range(start=self.start_date, end=self.end_date, freq="1D",)
+        self.ti = pd.date_range(
+            start=self.start_date,
+            end=self.end_date,
+            freq="1D",
+        )
         self.ti_long = pd.date_range(
-            start=self.start_date, end=self.end_date, freq="1H",
+            start=self.start_date,
+            end=self.end_date,
+            freq="1H",
         )
         self.test_dict_series = {
             "series": {
