@@ -65,6 +65,7 @@ INPUT_TYPE = "input_type"
 OVERWRITE = "overwrite"
 DISPLAY_OUTPUT = "display_output"
 SAVE_PNG = "save_png"
+RUN_SENSITIVITY = "run_sensitivity"
 
 # Filenames of the json files stored to disc:
 JSON_PROCESSED = "json_input_processed"
@@ -78,6 +79,7 @@ USER_INPUT_ARGUMENTS = (
     INPUT_TYPE,
     OVERWRITE,
     DISPLAY_OUTPUT,
+    RUN_SENSITIVITY,
 )
 
 DEFAULT_MAIN_KWARGS = dict(
@@ -89,6 +91,7 @@ DEFAULT_MAIN_KWARGS = dict(
     path_output_folder=DEFAULT_OUTPUT_PATH,
     display_output="info",
     lp_file_output=False,
+    sensitivity=False,
 )
 # list of csv filename which must be present within the CSV_ELEMENTS folder with the parameters
 # associated to each of these filenames

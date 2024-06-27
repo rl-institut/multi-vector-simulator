@@ -1,0 +1,2 @@
+asset group,asset,parameter,min,max,step
+energyProviders,Transmission_system_operator,energy_price,0,1,0.5

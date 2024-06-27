@@ -64,6 +64,7 @@ from multi_vector_simulator.utils.constants import (
     PACKAGE_DATA_PATH,
     DEFAULT_INPUT_PATH,
     DEFAULT_OUTPUT_PATH,
+    RUN_SENSITIVITY,
     JSON_FNAME,
     CSV_FNAME,
     JSON_EXT,
@@ -215,6 +216,14 @@ def mvs_arg_parser():
 
     parser.add_argument("--version", action="version", version=version_num)
 
+    parser.add_argument(
+        "-s",
+        dest=RUN_SENSITIVITY,
+        nargs="?",
+        type=str,
+        help="path to the output folder for the simulation's results",
+        default=True,
+    )
     return parser
 
 
@@ -395,36 +404,71 @@ def process_user_arguments(
     save_png=None,
     lp_file_output=False,
     welcome_text=None,
+    sensitivity=None,
 ):
     """
     Process user command from terminal inputs. If inputs provided as arguments of the function,
     they will overwrite the command line arguments.
 
-    :param path_input_folder:
+    Parameters
+    ----------
+
+    path_input_folder: str
         Describes path to inputs folder (command line "-i")
-    :param input_type:
+
+    input_type: str
         Describes type of input to expect (command line "-ext")
-    :param path_output_folder:
+
+    path_output_folder: str
         Describes path to folder to be used for terminal output (command line "-o")
         Must not exist before
-    :param overwrite:
+
+    overwrite: str
         (Optional) Can force tool to replace existing output folder (command line "-f")
-    :param pdf_report:
+
+    pdf_report: str
         (Optional) Can generate an automatic pdf report of the simulation's results (Command line "-pdf")
-    :param save_png:
+
+    save_png: str
         (Optional) Can generate png figures with the simulation's results (Command line "-png")
-    :param display_output:
+
+    display_output: str
         (Optional) Determines which messages are used for terminal output (command line "-log")
         Allowed values are
         "debug": All logging messages,
         "info": All informative messages and warnings (default),
         "warning": All warnings,
         "error": Only errors,
-    :param lp_file_output:
+
+    lp_file_output: str
         Save linear equation system generated as lp file
-    :param welcome_text:
+
+    welcome_text: str
         Text to be displayed
-    :return: a dict with these arguments as keys (except welcome_text which is replaced by label)
+
+    Returns
+    -------
+
+    user_input: dict
+        Dictionary with these arguments as keys (except welcome_text which is replaced by label)
+
+    Notes
+    -----
+
+    Tested with:
+    - A0.test_input_folder_is_copied_in_output_within_folder_named_input()
+    - A0.test_input_folder_not_existing_raise_filenotfound_error()
+    - A0.test_if_json_opt_and_no_json_file_in_input_folder_raise_filenotfound_error()
+    - A0.test_if_csv_opt_and_csv_elements_folder_not_in_input_folder_raise_filenotfound_error()
+    - A0.test_if_csv_opt_path_input_file_set_to_path_input_folder_mvs_csv_config_dot_json()
+    - A0.test_if_log_opt_display_output_is_set_with_correct_value()
+    - A0.test_if_path_output_folder_exists_raise_fileexists_error()
+    - A0.test_if_f_opt_preexisting_path_output_folder_should_be_replaced()
+    - A0.test_if_path_output_folder_recursive_create_full_path()
+    - A0.test_if_pdf_opt_the_key_path_pdf_report_exists_in_user_inputs()
+    - A0.test_if_no_pdf_opt_the_key_path_pdf_report_does_not_exist_in_user_inputs()
+    - A0.test_if_png_pdf_not_active()
+    - A0.test_if_both_pdf_and_png_opt_raises_no_error()
     """
 
     logging.debug("Get user inputs from console")
@@ -506,6 +550,10 @@ def process_user_arguments(
         screen_level = logging.ERROR
     else:
         screen_level = logging.INFO
+
+    #if sensitivity is None:
+    #    sensitivity = args.get(RUN_SENSITIVITY, DEFAULT_MAIN_KWARGS[RUN_SENSITIVITY])
+
 
     # Define logging settings and path for saving log
     logger.define_logging(
