@@ -1,0 +1,15 @@
+energy_carrier_name,unit,value,energy_carrier_unit,information source,CO2 per energy_carrier_unit
+Biodiesel,kWh_eleq/l,0.06290669,l,,0
+Crude_oil,kWh_eleq/kg,11.63042204,kg,,0
+Diesel,kWh_eleq/l,9.48030688,l,"https://epact.energy.gov/fuel-conversion-factors, conversion gallon->4.546092 l",0
+Electricity,kWh_eleq/kWh_el,1,kWh_el,,0
+Ethane,kWh_eleq/l,5.149767951,l,,0
+Ethanol,kWh_eleq/l,0.04242544,l,,0
+Gas,kWh_eleq/m3,0.00933273,l,"https://epact.energy.gov/fuel-conversion-factors, conversion gallon->4.546092 l",0
+Gasoline,kWh_eleq/l,8.735753974,l,,0
+H2,kWh_eleq/kgH2,33.47281985,kgH2,"https://epact.energy.gov/fuel-conversion-factors",0
+Heat,KWh_eleq/kWh_therm,1.0002163,kWh_therm,,0
+Kerosene,kWh_eleq/l,8.908073954,l,,0
+LNG,kWh_eleq/kg,12.69270292,kg,,0
+LPG,kWh_eleq/l,6.472821609,l,,0
+Natural_gas,kWh_eleq/m3,0.00933273,l,"https://epact.energy.gov/fuel-conversion-factors, conversion gallon->4.546092 l",0
